@@ -1,0 +1,13 @@
+django>=3.0.8,<4.0
+mysqlclient
+uwsgi
+
+#Bootstrap Italia + Unical template
+git+https://github.com/italia/design-django-theme.git
+git+https://github.com/UniversitaDellaCalabria/django-unical-agid-template.git
+# SASS dynamic compiler
+libsass
+django_sass_processor
+
+# CRUD
+git+https://github.com/silentsokolov/django-admin-rangefilter.git
