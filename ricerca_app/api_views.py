@@ -11,7 +11,7 @@ from . serializers import *
 # one of the "safe" methods; GET, HEAD or OPTIONS
 
 class ApiResourceList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(user_ins=self.request.user)
