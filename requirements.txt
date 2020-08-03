@@ -11,3 +11,10 @@ django_sass_processor
 
 # CRUD
 git+https://github.com/silentsokolov/django-admin-rangefilter.git
+
+# Rest
+djangorestframework
+markdown
+# openAPI schema v3
+uritemplate
+pyyaml

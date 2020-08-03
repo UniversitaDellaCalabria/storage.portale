@@ -1,0 +1,191 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/ricerca/docenti/:
+    get:
+      operationId: listDocentes
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    nome:
+                      type: string
+                      maxLength: 200
+                    cognome:
+                      type: string
+                      maxLength: 200
+                  required:
+                  - nome
+                  - cognome
+          description: ''
+    post:
+      operationId: CreateDocente
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id001
+              properties:
+                nome:
+                  type: string
+                  maxLength: 200
+                cognome:
+                  type: string
+                  maxLength: 200
+              required:
+              - nome
+              - cognome
+          application/x-www-form-urlencoded:
+            schema: *id001
+          multipart/form-data:
+            schema: *id001
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  nome:
+                    type: string
+                    maxLength: 200
+                  cognome:
+                    type: string
+                    maxLength: 200
+                required:
+                - nome
+                - cognome
+          description: ''
+  /api/ricerca/docente/{id}/:
+    get:
+      operationId: RetrieveDocente
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this docente.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  nome:
+                    type: string
+                    maxLength: 200
+                  cognome:
+                    type: string
+                    maxLength: 200
+                required:
+                - nome
+                - cognome
+          description: ''
+    put:
+      operationId: UpdateDocente
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this docente.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id002
+              properties:
+                nome:
+                  type: string
+                  maxLength: 200
+                cognome:
+                  type: string
+                  maxLength: 200
+              required:
+              - nome
+              - cognome
+          application/x-www-form-urlencoded:
+            schema: *id002
+          multipart/form-data:
+            schema: *id002
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  nome:
+                    type: string
+                    maxLength: 200
+                  cognome:
+                    type: string
+                    maxLength: 200
+                required:
+                - nome
+                - cognome
+          description: ''
+    patch:
+      operationId: PartialUpdateDocente
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this docente.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id003
+              properties:
+                nome:
+                  type: string
+                  maxLength: 200
+                cognome:
+                  type: string
+                  maxLength: 200
+          application/x-www-form-urlencoded:
+            schema: *id003
+          multipart/form-data:
+            schema: *id003
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  nome:
+                    type: string
+                    maxLength: 200
+                  cognome:
+                    type: string
+                    maxLength: 200
+                required:
+                - nome
+                - cognome
+          description: ''
+    delete:
+      operationId: DestroyDocente
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this docente.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''

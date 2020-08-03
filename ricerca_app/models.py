@@ -38,6 +38,9 @@ class Docente(RicercaAbstract):
         db_table = 'DOCENTE'
         verbose_name_plural = _("Docente")
 
+    def __str__(self):
+        return '{} {}'.format(self.nome, self.cognome)
+
 
 class RicercaAster1(RicercaAbstract):
     descrizione = models.CharField(db_column='DESCRIZIONE',
