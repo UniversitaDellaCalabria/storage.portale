@@ -189,3 +189,2096 @@ paths:
       responses:
         '204':
           description: ''
+  /api/ricerca/aster/1/:
+    get:
+      operationId: listRicercaAster1s
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    descrizione:
+                      type: string
+                      maxLength: 200
+                  required:
+                  - descrizione
+          description: ''
+    post:
+      operationId: CreateRicercaAster1
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id004
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 200
+              required:
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id004
+          multipart/form-data:
+            schema: *id004
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - descrizione
+          description: ''
+  /api/ricerca/aster/1/{id}/:
+    get:
+      operationId: RetrieveRicercaAster1
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca aster1.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - descrizione
+          description: ''
+    put:
+      operationId: UpdateRicercaAster1
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca aster1.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id005
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 200
+              required:
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id005
+          multipart/form-data:
+            schema: *id005
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - descrizione
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaAster1
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca aster1.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id006
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 200
+          application/x-www-form-urlencoded:
+            schema: *id006
+          multipart/form-data:
+            schema: *id006
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - descrizione
+          description: ''
+    delete:
+      operationId: DestroyRicercaAster1
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca aster1.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/ricerca/aster/2/:
+    get:
+      operationId: listRicercaAster2s
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    descrizione:
+                      type: string
+                      maxLength: 200
+                  required:
+                  - descrizione
+          description: ''
+    post:
+      operationId: CreateRicercaAster2
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id007
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 200
+              required:
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id007
+          multipart/form-data:
+            schema: *id007
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - descrizione
+          description: ''
+  /api/ricerca/aster/2/{id}/:
+    get:
+      operationId: RetrieveRicercaAster2
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca aster2.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - descrizione
+          description: ''
+    put:
+      operationId: UpdateRicercaAster2
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca aster2.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id008
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 200
+              required:
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id008
+          multipart/form-data:
+            schema: *id008
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - descrizione
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaAster2
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca aster2.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id009
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 200
+          application/x-www-form-urlencoded:
+            schema: *id009
+          multipart/form-data:
+            schema: *id009
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - descrizione
+          description: ''
+    delete:
+      operationId: DestroyRicercaAster2
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca aster2.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/ricerca/erc/1/:
+    get:
+      operationId: listRicercaErc1s
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    cod_erc1:
+                      type: string
+                      maxLength: 40
+                    descrizione:
+                      type: string
+                      maxLength: 200
+                  required:
+                  - cod_erc1
+                  - descrizione
+          description: ''
+    post:
+      operationId: CreateRicercaErc1
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id010
+              properties:
+                cod_erc1:
+                  type: string
+                  maxLength: 40
+                descrizione:
+                  type: string
+                  maxLength: 200
+              required:
+              - cod_erc1
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id010
+          multipart/form-data:
+            schema: *id010
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cod_erc1:
+                    type: string
+                    maxLength: 40
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - cod_erc1
+                - descrizione
+          description: ''
+  /api/ricerca/erc/1/{id}/:
+    get:
+      operationId: RetrieveRicercaErc1
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca erc1.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cod_erc1:
+                    type: string
+                    maxLength: 40
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - cod_erc1
+                - descrizione
+          description: ''
+    put:
+      operationId: UpdateRicercaErc1
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca erc1.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id011
+              properties:
+                cod_erc1:
+                  type: string
+                  maxLength: 40
+                descrizione:
+                  type: string
+                  maxLength: 200
+              required:
+              - cod_erc1
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id011
+          multipart/form-data:
+            schema: *id011
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cod_erc1:
+                    type: string
+                    maxLength: 40
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - cod_erc1
+                - descrizione
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaErc1
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca erc1.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id012
+              properties:
+                cod_erc1:
+                  type: string
+                  maxLength: 40
+                descrizione:
+                  type: string
+                  maxLength: 200
+          application/x-www-form-urlencoded:
+            schema: *id012
+          multipart/form-data:
+            schema: *id012
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cod_erc1:
+                    type: string
+                    maxLength: 40
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                required:
+                - cod_erc1
+                - descrizione
+          description: ''
+    delete:
+      operationId: DestroyRicercaErc1
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca erc1.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/ricerca/erc/2/:
+    get:
+      operationId: listRicercaErc2s
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    cod_erc2:
+                      type: string
+                      maxLength: 60
+                    descrizione:
+                      type: string
+                      maxLength: 200
+                    ricerca_erc1:
+                      type: string
+                      nullable: true
+                  required:
+                  - cod_erc2
+                  - descrizione
+          description: ''
+    post:
+      operationId: CreateRicercaErc2
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id013
+              properties:
+                cod_erc2:
+                  type: string
+                  maxLength: 60
+                descrizione:
+                  type: string
+                  maxLength: 200
+                ricerca_erc1:
+                  type: string
+                  nullable: true
+              required:
+              - cod_erc2
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id013
+          multipart/form-data:
+            schema: *id013
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cod_erc2:
+                    type: string
+                    maxLength: 60
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                  ricerca_erc1:
+                    type: string
+                    nullable: true
+                required:
+                - cod_erc2
+                - descrizione
+          description: ''
+  /api/ricerca/erc/2/{id}/:
+    get:
+      operationId: RetrieveRicercaErc2
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca erc2.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cod_erc2:
+                    type: string
+                    maxLength: 60
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                  ricerca_erc1:
+                    type: string
+                    nullable: true
+                required:
+                - cod_erc2
+                - descrizione
+          description: ''
+    put:
+      operationId: UpdateRicercaErc2
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca erc2.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id014
+              properties:
+                cod_erc2:
+                  type: string
+                  maxLength: 60
+                descrizione:
+                  type: string
+                  maxLength: 200
+                ricerca_erc1:
+                  type: string
+                  nullable: true
+              required:
+              - cod_erc2
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id014
+          multipart/form-data:
+            schema: *id014
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cod_erc2:
+                    type: string
+                    maxLength: 60
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                  ricerca_erc1:
+                    type: string
+                    nullable: true
+                required:
+                - cod_erc2
+                - descrizione
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaErc2
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca erc2.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id015
+              properties:
+                cod_erc2:
+                  type: string
+                  maxLength: 60
+                descrizione:
+                  type: string
+                  maxLength: 200
+                ricerca_erc1:
+                  type: string
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id015
+          multipart/form-data:
+            schema: *id015
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cod_erc2:
+                    type: string
+                    maxLength: 60
+                  descrizione:
+                    type: string
+                    maxLength: 200
+                  ricerca_erc1:
+                    type: string
+                    nullable: true
+                required:
+                - cod_erc2
+                - descrizione
+          description: ''
+    delete:
+      operationId: DestroyRicercaErc2
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca erc2.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/ricerca/docente/gruppo/:
+    get:
+      operationId: listRicercaDocenteGruppos
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    docente:
+                      type: string
+                      nullable: true
+                    ricerca_gruppo:
+                      type: string
+                    dt_inizio:
+                      type: string
+                      format: date-time
+                      nullable: true
+                    dt_fine:
+                      type: string
+                      format: date-time
+                      nullable: true
+                  required:
+                  - ricerca_gruppo
+          description: ''
+    post:
+      operationId: CreateRicercaDocenteGruppo
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id016
+              properties:
+                docente:
+                  type: string
+                  nullable: true
+                ricerca_gruppo:
+                  type: string
+                dt_inizio:
+                  type: string
+                  format: date-time
+                  nullable: true
+                dt_fine:
+                  type: string
+                  format: date-time
+                  nullable: true
+              required:
+              - ricerca_gruppo
+          application/x-www-form-urlencoded:
+            schema: *id016
+          multipart/form-data:
+            schema: *id016
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_gruppo:
+                    type: string
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+                required:
+                - ricerca_gruppo
+          description: ''
+  /api/ricerca/docente/gruppo/{id}/:
+    get:
+      operationId: RetrieveRicercaDocenteGruppo
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente gruppo.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_gruppo:
+                    type: string
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+                required:
+                - ricerca_gruppo
+          description: ''
+    put:
+      operationId: UpdateRicercaDocenteGruppo
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente gruppo.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id017
+              properties:
+                docente:
+                  type: string
+                  nullable: true
+                ricerca_gruppo:
+                  type: string
+                dt_inizio:
+                  type: string
+                  format: date-time
+                  nullable: true
+                dt_fine:
+                  type: string
+                  format: date-time
+                  nullable: true
+              required:
+              - ricerca_gruppo
+          application/x-www-form-urlencoded:
+            schema: *id017
+          multipart/form-data:
+            schema: *id017
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_gruppo:
+                    type: string
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+                required:
+                - ricerca_gruppo
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaDocenteGruppo
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente gruppo.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id018
+              properties:
+                docente:
+                  type: string
+                  nullable: true
+                ricerca_gruppo:
+                  type: string
+                dt_inizio:
+                  type: string
+                  format: date-time
+                  nullable: true
+                dt_fine:
+                  type: string
+                  format: date-time
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id018
+          multipart/form-data:
+            schema: *id018
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_gruppo:
+                    type: string
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+                required:
+                - ricerca_gruppo
+          description: ''
+    delete:
+      operationId: DestroyRicercaDocenteGruppo
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente gruppo.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/ricerca/docente/linea_applicata/:
+    get:
+      operationId: listRicercaDocenteLineaApplicatas
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    docente:
+                      type: string
+                      nullable: true
+                    ricerca_linea_applicata:
+                      type: string
+                      nullable: true
+                    dt_inizio:
+                      type: string
+                      format: date-time
+                      nullable: true
+                    dt_fine:
+                      type: string
+                      format: date-time
+                      nullable: true
+          description: ''
+    post:
+      operationId: CreateRicercaDocenteLineaApplicata
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id019
+              properties:
+                docente:
+                  type: string
+                  nullable: true
+                ricerca_linea_applicata:
+                  type: string
+                  nullable: true
+                dt_inizio:
+                  type: string
+                  format: date-time
+                  nullable: true
+                dt_fine:
+                  type: string
+                  format: date-time
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id019
+          multipart/form-data:
+            schema: *id019
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_linea_applicata:
+                    type: string
+                    nullable: true
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+          description: ''
+  /api/ricerca/docente/linea_applicata/{id}/:
+    get:
+      operationId: RetrieveRicercaDocenteLineaApplicata
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente linea
+          applicata.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_linea_applicata:
+                    type: string
+                    nullable: true
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+          description: ''
+    put:
+      operationId: UpdateRicercaDocenteLineaApplicata
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente linea
+          applicata.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id020
+              properties:
+                docente:
+                  type: string
+                  nullable: true
+                ricerca_linea_applicata:
+                  type: string
+                  nullable: true
+                dt_inizio:
+                  type: string
+                  format: date-time
+                  nullable: true
+                dt_fine:
+                  type: string
+                  format: date-time
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id020
+          multipart/form-data:
+            schema: *id020
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_linea_applicata:
+                    type: string
+                    nullable: true
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaDocenteLineaApplicata
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente linea
+          applicata.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id021
+              properties:
+                docente:
+                  type: string
+                  nullable: true
+                ricerca_linea_applicata:
+                  type: string
+                  nullable: true
+                dt_inizio:
+                  type: string
+                  format: date-time
+                  nullable: true
+                dt_fine:
+                  type: string
+                  format: date-time
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id021
+          multipart/form-data:
+            schema: *id021
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_linea_applicata:
+                    type: string
+                    nullable: true
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+          description: ''
+    delete:
+      operationId: DestroyRicercaDocenteLineaApplicata
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente linea
+          applicata.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/ricerca/docente/linea_base/:
+    get:
+      operationId: listRicercaDocenteLineaBases
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    docente:
+                      type: string
+                      nullable: true
+                    ricerca_linea_base:
+                      type: string
+                      nullable: true
+                    dt_inizio:
+                      type: string
+                      format: date-time
+                      nullable: true
+                    dt_fine:
+                      type: string
+                      format: date-time
+                      nullable: true
+          description: ''
+    post:
+      operationId: CreateRicercaDocenteLineaBase
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id022
+              properties:
+                docente:
+                  type: string
+                  nullable: true
+                ricerca_linea_base:
+                  type: string
+                  nullable: true
+                dt_inizio:
+                  type: string
+                  format: date-time
+                  nullable: true
+                dt_fine:
+                  type: string
+                  format: date-time
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id022
+          multipart/form-data:
+            schema: *id022
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_linea_base:
+                    type: string
+                    nullable: true
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+          description: ''
+  /api/ricerca/docente/linea_base/{id}/:
+    get:
+      operationId: RetrieveRicercaDocenteLineaBase
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente linea
+          base.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_linea_base:
+                    type: string
+                    nullable: true
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+          description: ''
+    put:
+      operationId: UpdateRicercaDocenteLineaBase
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente linea
+          base.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id023
+              properties:
+                docente:
+                  type: string
+                  nullable: true
+                ricerca_linea_base:
+                  type: string
+                  nullable: true
+                dt_inizio:
+                  type: string
+                  format: date-time
+                  nullable: true
+                dt_fine:
+                  type: string
+                  format: date-time
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id023
+          multipart/form-data:
+            schema: *id023
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_linea_base:
+                    type: string
+                    nullable: true
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaDocenteLineaBase
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente linea
+          base.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id024
+              properties:
+                docente:
+                  type: string
+                  nullable: true
+                ricerca_linea_base:
+                  type: string
+                  nullable: true
+                dt_inizio:
+                  type: string
+                  format: date-time
+                  nullable: true
+                dt_fine:
+                  type: string
+                  format: date-time
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id024
+          multipart/form-data:
+            schema: *id024
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  docente:
+                    type: string
+                    nullable: true
+                  ricerca_linea_base:
+                    type: string
+                    nullable: true
+                  dt_inizio:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  dt_fine:
+                    type: string
+                    format: date-time
+                    nullable: true
+          description: ''
+    delete:
+      operationId: DestroyRicercaDocenteLineaBase
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca docente linea
+          base.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/ricerca/gruppo/:
+    get:
+      operationId: listRicercaGruppos
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    nome:
+                      type: string
+                      maxLength: 200
+                    descrizione:
+                      type: string
+                      maxLength: 2000
+                  required:
+                  - nome
+                  - descrizione
+          description: ''
+    post:
+      operationId: CreateRicercaGruppo
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id025
+              properties:
+                nome:
+                  type: string
+                  maxLength: 200
+                descrizione:
+                  type: string
+                  maxLength: 2000
+              required:
+              - nome
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id025
+          multipart/form-data:
+            schema: *id025
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  nome:
+                    type: string
+                    maxLength: 200
+                  descrizione:
+                    type: string
+                    maxLength: 2000
+                required:
+                - nome
+                - descrizione
+          description: ''
+  /api/ricerca/gruppo/{id}/:
+    get:
+      operationId: RetrieveRicercaGruppo
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca gruppo.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  nome:
+                    type: string
+                    maxLength: 200
+                  descrizione:
+                    type: string
+                    maxLength: 2000
+                required:
+                - nome
+                - descrizione
+          description: ''
+    put:
+      operationId: UpdateRicercaGruppo
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca gruppo.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id026
+              properties:
+                nome:
+                  type: string
+                  maxLength: 200
+                descrizione:
+                  type: string
+                  maxLength: 2000
+              required:
+              - nome
+              - descrizione
+          application/x-www-form-urlencoded:
+            schema: *id026
+          multipart/form-data:
+            schema: *id026
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  nome:
+                    type: string
+                    maxLength: 200
+                  descrizione:
+                    type: string
+                    maxLength: 2000
+                required:
+                - nome
+                - descrizione
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaGruppo
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca gruppo.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id027
+              properties:
+                nome:
+                  type: string
+                  maxLength: 200
+                descrizione:
+                  type: string
+                  maxLength: 2000
+          application/x-www-form-urlencoded:
+            schema: *id027
+          multipart/form-data:
+            schema: *id027
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  nome:
+                    type: string
+                    maxLength: 200
+                  descrizione:
+                    type: string
+                    maxLength: 2000
+                required:
+                - nome
+                - descrizione
+          description: ''
+    delete:
+      operationId: DestroyRicercaGruppo
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca gruppo.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/ricerca/linea_applicata/:
+    get:
+      operationId: listRicercaLineaApplicatas
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    descrizione:
+                      type: string
+                      maxLength: 400
+                    ricerca_aster2:
+                      type: string
+                    descr_pubblicaz_prog_brevetto:
+                      type: string
+                      nullable: true
+                      maxLength: 1000
+                    anno:
+                      type: integer
+                      maximum: 2147483647
+                      minimum: -2147483648
+                      nullable: true
+                  required:
+                  - descrizione
+                  - ricerca_aster2
+          description: ''
+    post:
+      operationId: CreateRicercaLineaApplicata
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id028
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 400
+                ricerca_aster2:
+                  type: string
+                descr_pubblicaz_prog_brevetto:
+                  type: string
+                  nullable: true
+                  maxLength: 1000
+                anno:
+                  type: integer
+                  maximum: 2147483647
+                  minimum: -2147483648
+                  nullable: true
+              required:
+              - descrizione
+              - ricerca_aster2
+          application/x-www-form-urlencoded:
+            schema: *id028
+          multipart/form-data:
+            schema: *id028
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 400
+                  ricerca_aster2:
+                    type: string
+                  descr_pubblicaz_prog_brevetto:
+                    type: string
+                    nullable: true
+                    maxLength: 1000
+                  anno:
+                    type: integer
+                    maximum: 2147483647
+                    minimum: -2147483648
+                    nullable: true
+                required:
+                - descrizione
+                - ricerca_aster2
+          description: ''
+  /api/ricerca/linea_applicata/{id}/:
+    get:
+      operationId: RetrieveRicercaLineaApplicata
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca linea applicata.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 400
+                  ricerca_aster2:
+                    type: string
+                  descr_pubblicaz_prog_brevetto:
+                    type: string
+                    nullable: true
+                    maxLength: 1000
+                  anno:
+                    type: integer
+                    maximum: 2147483647
+                    minimum: -2147483648
+                    nullable: true
+                required:
+                - descrizione
+                - ricerca_aster2
+          description: ''
+    put:
+      operationId: UpdateRicercaLineaApplicata
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca linea applicata.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id029
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 400
+                ricerca_aster2:
+                  type: string
+                descr_pubblicaz_prog_brevetto:
+                  type: string
+                  nullable: true
+                  maxLength: 1000
+                anno:
+                  type: integer
+                  maximum: 2147483647
+                  minimum: -2147483648
+                  nullable: true
+              required:
+              - descrizione
+              - ricerca_aster2
+          application/x-www-form-urlencoded:
+            schema: *id029
+          multipart/form-data:
+            schema: *id029
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 400
+                  ricerca_aster2:
+                    type: string
+                  descr_pubblicaz_prog_brevetto:
+                    type: string
+                    nullable: true
+                    maxLength: 1000
+                  anno:
+                    type: integer
+                    maximum: 2147483647
+                    minimum: -2147483648
+                    nullable: true
+                required:
+                - descrizione
+                - ricerca_aster2
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaLineaApplicata
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca linea applicata.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id030
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 400
+                ricerca_aster2:
+                  type: string
+                descr_pubblicaz_prog_brevetto:
+                  type: string
+                  nullable: true
+                  maxLength: 1000
+                anno:
+                  type: integer
+                  maximum: 2147483647
+                  minimum: -2147483648
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id030
+          multipart/form-data:
+            schema: *id030
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 400
+                  ricerca_aster2:
+                    type: string
+                  descr_pubblicaz_prog_brevetto:
+                    type: string
+                    nullable: true
+                    maxLength: 1000
+                  anno:
+                    type: integer
+                    maximum: 2147483647
+                    minimum: -2147483648
+                    nullable: true
+                required:
+                - descrizione
+                - ricerca_aster2
+          description: ''
+    delete:
+      operationId: DestroyRicercaLineaApplicata
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca linea applicata.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/ricerca/linea_base/:
+    get:
+      operationId: listRicercaLineaBases
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    descrizione:
+                      type: string
+                      maxLength: 400
+                    ricerca_erc2:
+                      type: string
+                    descr_pubblicaz_prog_brevetto:
+                      type: string
+                      nullable: true
+                      maxLength: 1000
+                    anno:
+                      type: integer
+                      maximum: 2147483647
+                      minimum: -2147483648
+                      nullable: true
+                  required:
+                  - descrizione
+                  - ricerca_erc2
+          description: ''
+    post:
+      operationId: CreateRicercaLineaBase
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id031
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 400
+                ricerca_erc2:
+                  type: string
+                descr_pubblicaz_prog_brevetto:
+                  type: string
+                  nullable: true
+                  maxLength: 1000
+                anno:
+                  type: integer
+                  maximum: 2147483647
+                  minimum: -2147483648
+                  nullable: true
+              required:
+              - descrizione
+              - ricerca_erc2
+          application/x-www-form-urlencoded:
+            schema: *id031
+          multipart/form-data:
+            schema: *id031
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 400
+                  ricerca_erc2:
+                    type: string
+                  descr_pubblicaz_prog_brevetto:
+                    type: string
+                    nullable: true
+                    maxLength: 1000
+                  anno:
+                    type: integer
+                    maximum: 2147483647
+                    minimum: -2147483648
+                    nullable: true
+                required:
+                - descrizione
+                - ricerca_erc2
+          description: ''
+  /api/ricerca/linea_base/{id}/:
+    get:
+      operationId: RetrieveRicercaLineaBase
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca linea base.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 400
+                  ricerca_erc2:
+                    type: string
+                  descr_pubblicaz_prog_brevetto:
+                    type: string
+                    nullable: true
+                    maxLength: 1000
+                  anno:
+                    type: integer
+                    maximum: 2147483647
+                    minimum: -2147483648
+                    nullable: true
+                required:
+                - descrizione
+                - ricerca_erc2
+          description: ''
+    put:
+      operationId: UpdateRicercaLineaBase
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca linea base.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id032
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 400
+                ricerca_erc2:
+                  type: string
+                descr_pubblicaz_prog_brevetto:
+                  type: string
+                  nullable: true
+                  maxLength: 1000
+                anno:
+                  type: integer
+                  maximum: 2147483647
+                  minimum: -2147483648
+                  nullable: true
+              required:
+              - descrizione
+              - ricerca_erc2
+          application/x-www-form-urlencoded:
+            schema: *id032
+          multipart/form-data:
+            schema: *id032
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 400
+                  ricerca_erc2:
+                    type: string
+                  descr_pubblicaz_prog_brevetto:
+                    type: string
+                    nullable: true
+                    maxLength: 1000
+                  anno:
+                    type: integer
+                    maximum: 2147483647
+                    minimum: -2147483648
+                    nullable: true
+                required:
+                - descrizione
+                - ricerca_erc2
+          description: ''
+    patch:
+      operationId: PartialUpdateRicercaLineaBase
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca linea base.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id033
+              properties:
+                descrizione:
+                  type: string
+                  maxLength: 400
+                ricerca_erc2:
+                  type: string
+                descr_pubblicaz_prog_brevetto:
+                  type: string
+                  nullable: true
+                  maxLength: 1000
+                anno:
+                  type: integer
+                  maximum: 2147483647
+                  minimum: -2147483648
+                  nullable: true
+          application/x-www-form-urlencoded:
+            schema: *id033
+          multipart/form-data:
+            schema: *id033
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  descrizione:
+                    type: string
+                    maxLength: 400
+                  ricerca_erc2:
+                    type: string
+                  descr_pubblicaz_prog_brevetto:
+                    type: string
+                    nullable: true
+                    maxLength: 1000
+                  anno:
+                    type: integer
+                    maximum: 2147483647
+                    minimum: -2147483648
+                    nullable: true
+                required:
+                - descrizione
+                - ricerca_erc2
+          description: ''
+    delete:
+      operationId: DestroyRicercaLineaBase
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this ricerca linea base.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
