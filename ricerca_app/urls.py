@@ -2,6 +2,9 @@ from django.conf import settings
 from django.urls import path, include
 from rest_framework import routers, permissions
 from rest_framework.schemas import get_schema_view
+from rest_framework.schemas.agid_schema_views import get_schema_view
+
+from rest_framework.schemas.openapi_agid import AgidSchemaGenerator as openapi_agid_generator
 
 
 from . import views
@@ -9,6 +12,29 @@ from . import api_views
 
 app_name = 'ricerca'
 base_url = 'api/ricerca'
+
+agid_api_dict = {'title': "Unical - Ricerca",
+                 #  'generator_class': openapi_agid_generator,
+                 'permission_classes': (permissions.AllowAny,),
+                 'description': "OpenData per la Ricerca in Unical",
+                 'termsOfService': 'https://tos.unical.it',
+                 'x-api-id': '00000000-0000-0000-0000-000000000001',
+                 'x-summary': 'OpenData per la Ricerca in Unical',
+                 'license': dict(name='apache2',
+                                 url='http://www.apache.org/licenses/LICENSE-2.0.html'),
+                 'servers': [dict(description='description',
+                                  url='https://storage.portale.unical.it'),
+                             dict(description='description',
+                                  url='https://ricerca.unical.it')],
+                 'tags': dict(description='description',
+                              name='api'),
+                         #  dict(description='description',
+                              #  name='public'),
+                 'contact': dict(email = 'giuseppe.demarco@unical.it',
+                                 name = 'Giuseppe De Marco',
+                                 url = 'https://github.com/UniversitaDellaCalabria'),
+                 'version': "0.1.2"
+}
 
 urlpatterns = [
                 # qui le chiamate alle risorse di felix
@@ -23,10 +49,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
 
     # dynamic Schema export resource
     urlpatterns += path('openapi',
-                        get_schema_view(title="Unical - Ricerca",
-                                        permission_classes=(permissions.AllowAny,),
-                                        description="OpenData per la Ricerca in Unical",
-                                        version="0.1"),
+                        get_schema_view(**agid_api_dict),
                         name='openapi-schema'),
 
     # qui API pubbliche
@@ -60,14 +83,14 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/docente/gruppo/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaDocenteGruppoDetail.as_view()),
 
-    urlpatterns += path('{}/docente/linea_applicata/'.format(base_url),
+    urlpatterns += path('{}/docente/linea-applicata/'.format(base_url),
                         api_views.ApiRicercaDocenteLineaApplicataList.as_view()),
-    urlpatterns += path('{}/docente/linea_applicata/<int:pk>/'.format(base_url),
+    urlpatterns += path('{}/docente/linea-applicata/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaDocenteLineaApplicataDetail.as_view()),
 
-    urlpatterns += path('{}/docente/linea_base/'.format(base_url),
+    urlpatterns += path('{}/docente/linea-base/'.format(base_url),
                         api_views.ApiRicercaDocenteLineaBaseList.as_view()),
-    urlpatterns += path('{}/docente/linea_base/<int:pk>/'.format(base_url),
+    urlpatterns += path('{}/docente/linea-base/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaDocenteLineaBaseDetail.as_view()),
 
     urlpatterns += path('{}/gruppo/'.format(base_url),
@@ -75,12 +98,12 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/gruppo/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaGruppoDetail.as_view()),
 
-    urlpatterns += path('{}/linea_applicata/'.format(base_url),
+    urlpatterns += path('{}/linea-applicata/'.format(base_url),
                         api_views.ApiRicercaLineaApplicataList.as_view()),
-    urlpatterns += path('{}/linea_applicata/<int:pk>/'.format(base_url),
+    urlpatterns += path('{}/linea-applicata/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaLineaApplicataDetail.as_view()),
 
-    urlpatterns += path('{}/linea_base/'.format(base_url),
+    urlpatterns += path('{}/linea-base/'.format(base_url),
                         api_views.ApiRicercaLineaBaseList.as_view()),
-    urlpatterns += path('{}/linea_base/<int:pk>/'.format(base_url),
+    urlpatterns += path('{}/linea-base/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaLineaBaseDetail.as_view()),
