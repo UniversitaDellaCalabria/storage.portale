@@ -13,7 +13,9 @@ django_sass_processor
 git+https://github.com/silentsokolov/django-admin-rangefilter.git
 
 # Rest
-djangorestframework
+#djangorestframework
+git+https://github.com/peppelinux/django-rest-framework@agid_oas3
+
 markdown
 # openAPI schema v3
 uritemplate
