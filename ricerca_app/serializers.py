@@ -3,9 +3,9 @@ from rest_framework import serializers
 from . models import *
 
 
-class DocenteSerializer(serializers.HyperlinkedModelSerializer):
+class PersonaleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Docente
+        model = Personale
         # Todo add @properties to Model to hanlde childs elements
         fields = ['nome', 'cognome',] # 'matricola', 'cod_fis']
         #  fields = '__all__'

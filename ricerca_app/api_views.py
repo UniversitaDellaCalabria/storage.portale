@@ -25,16 +25,16 @@ class ApiResourceDetail(generics.RetrieveUpdateDestroyAPIView):
 
 # =================================================
 
-class ApiDocenteList(ApiResourceList):
-    description = 'Available Professors and Researchers'
-    queryset = Docente.objects.all()
-    serializer_class = DocenteSerializer
+class ApiPersonaleList(ApiResourceList):
+    description = 'Available Personale, Professors and Researchers'
+    queryset = Personale.objects.all()
+    serializer_class = PersonaleSerializer
 
 
-class ApiDocenteDetail(ApiResourceDetail):
-    description = 'Detail of a Professor or Researcher'
-    queryset = Docente.objects.all()
-    serializer_class = DocenteSerializer
+class ApiPersonaleDetail(ApiResourceDetail):
+    description = 'Detail of Persona'
+    queryset = Personale.objects.all()
+    serializer_class = PersonaleSerializer
 
 # =================================================
 

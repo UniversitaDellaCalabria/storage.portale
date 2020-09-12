@@ -53,10 +53,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         name='openapi-schema'),
 
     # qui API pubbliche
-    urlpatterns += path('{}/docenti/'.format(base_url),
-                        api_views.ApiDocenteList.as_view()),
-    urlpatterns += path('{}/docente/<int:pk>/'.format(base_url),
-                        api_views.ApiDocenteDetail.as_view()),
+    urlpatterns += path('{}/persone/'.format(base_url),
+                        api_views.ApiPersonaleList.as_view()),
+    urlpatterns += path('{}/persona/<int:pk>/'.format(base_url),
+                        api_views.ApiPersonaleDetail.as_view()),
 
     urlpatterns += path('{}/aster/1/'.format(base_url),
                         api_views.ApiRicercaAster1List.as_view()),
@@ -88,9 +88,9 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/docente/linea-applicata/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaDocenteLineaApplicataDetail.as_view()),
 
-    urlpatterns += path('{}/docente/linea-base/'.format(base_url),
+    urlpatterns += path('{}/persona/linea-base/'.format(base_url),
                         api_views.ApiRicercaDocenteLineaBaseList.as_view()),
-    urlpatterns += path('{}/docente/linea-base/<int:pk>/'.format(base_url),
+    urlpatterns += path('{}/persona/linea-base/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaDocenteLineaBaseDetail.as_view()),
 
     urlpatterns += path('{}/gruppo/'.format(base_url),

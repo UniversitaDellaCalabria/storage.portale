@@ -14,6 +14,7 @@ class RicercaDocenteGruppoModelForm(forms.ModelForm):
 
 class RicercaDocenteGruppoInline(admin.TabularInline):
     model = RicercaDocenteGruppo
+    autocomplete_fields = ('docente',)
     #  sortable_field_name = "ordinamento"
     extra = 0
     form = RicercaDocenteGruppoModelForm
@@ -34,6 +35,7 @@ class RicercaDocenteLineaApplicataInline(admin.TabularInline):
     model = RicercaDocenteLineaApplicata
     #  sortable_field_name = "ordinamento"
     extra = 0
+    autocomplete_fields = ('docente',)
     form = RicercaDocenteLineaApplicataModelForm
     classes = ['collapse',]
 
@@ -50,6 +52,7 @@ class RicercaDocenteLineaBaseModelForm(forms.ModelForm):
 class RicercaDocenteLineaBaseInline(admin.TabularInline):
     model = RicercaDocenteLineaBase
     #  sortable_field_name = "ordinamento"
+    autocomplete_fields = ('docente', )
     extra = 0
     form = RicercaDocenteLineaBaseModelForm
     classes = ['collapse',]
@@ -98,5 +101,6 @@ class RicercaLineaBaseModelForm(forms.ModelForm):
 class RicercaLineaBaseInline(admin.TabularInline):
     model = RicercaLineaBase
     extra = 0
+    autocomplete_fields = ('ricerca_erc2', )
     form = RicercaLineaBaseModelForm
     classes = ['collapse',]
