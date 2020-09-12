@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.urls import path, include
 from rest_framework import routers, permissions
+from rest_framework.renderers import JSONOpenAPIRenderer
 from rest_framework.schemas import get_schema_view
 from rest_framework.schemas.agid_schema_views import get_schema_view
 
@@ -51,6 +52,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('openapi',
                         get_schema_view(**agid_api_dict),
                         name='openapi-schema'),
+    # dynamic Schema export resource
+    urlpatterns += path('openapi.json',
+                        get_schema_view(renderer_classes = [JSONOpenAPIRenderer],
+                                        **agid_api_dict),
+                        name='openapi-schema-json'),
 
     # qui API pubbliche
     urlpatterns += path('{}/persone/'.format(base_url),
