@@ -1,4 +1,4 @@
-Ricerca Unical
+Storage Portale Unical
 --------------
 
 ![CI build](https://travis-ci.org/UniversitaDellaCalabria/Ricerca.svg?branch=master)
