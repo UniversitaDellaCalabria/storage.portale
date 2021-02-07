@@ -14,10 +14,10 @@ class PersonaleAdmin(admin.ModelAdmin):
     search_fields = ('nome', 'cognome', 'matricola', 'email')
     list_display = ('nome', 'cognome', 'matricola', 'email')
     inlines = [
-               RicercaDocenteGruppoInline,
-               RicercaDocenteLineaBaseInline,
-               RicercaDocenteLineaApplicataInline,
-               ]
+        RicercaDocenteGruppoInline,
+        RicercaDocenteLineaBaseInline,
+        RicercaDocenteLineaApplicataInline,
+    ]
 
 
 @admin.register(RicercaGruppo)
@@ -45,7 +45,7 @@ class RicercaAster1Admin(admin.ModelAdmin):
 class RicercaAster2Admin(admin.ModelAdmin):
     list_display = ('ricerca_aster1', 'descrizione',)
     readonly_fields = ('user_ins', 'user_mod')
-    inlines = [RicercaLineaApplicataInline,]
+    inlines = [RicercaLineaApplicataInline, ]
 
 
 #  @admin.register(RicercaDocenteLineaApplicata)
@@ -70,12 +70,12 @@ class RicercaErc2Admin(admin.ModelAdmin):
     list_filter = ('ricerca_erc1', )
     list_display = ('cod_erc2', 'ricerca_erc1', 'descrizione',)
     readonly_fields = ('user_ins', 'user_mod')
-    inlines = [RicercaLineaBaseInline,]
+    inlines = [RicercaLineaBaseInline, ]
 
 
 @admin.register(RicercaLineaApplicata)
 class RicercaLineaApplicataAdmin(admin.ModelAdmin):
-    list_display = ('descrizione', 'ricerca_aster2', 'anno', 
+    list_display = ('descrizione', 'ricerca_aster2', 'anno',
                     'descr_pubblicaz_prog_brevetto')
     readonly_fields = ('user_ins', 'user_mod')
     inlines = [RicercaDocenteLineaApplicataInline,
@@ -84,8 +84,50 @@ class RicercaLineaApplicataAdmin(admin.ModelAdmin):
 
 @admin.register(RicercaLineaBase)
 class RicercaLineaBaseAdmin(admin.ModelAdmin):
-    list_display = ('descrizione', 'ricerca_erc2', 'anno', 
+    list_display = ('descrizione', 'ricerca_erc2', 'anno',
                     'descr_pubblicaz_prog_brevetto')
     autocomplete_fields = ('ricerca_erc2', )
     readonly_fields = ('user_ins', 'user_mod')
-    inlines = [RicercaDocenteLineaBaseInline,]
+    inlines = [RicercaDocenteLineaBaseInline, ]
+
+
+@admin.register(DidatticaDipartimento)
+class DipartimentoAdmin(admin.ModelAdmin):
+    readonly_fields = ('dip_des_it', 'dip_des_eng')
+    list_display = ('dip_cod', 'dip_des_it')
+
+
+@admin.register(ComuniAll)
+class ComuniAllAdmin(admin.ModelAdmin):
+    readonly_fields = ()
+    list_display = ()
+
+
+@admin.register(DidatticaCds)
+class DidatticaCdsAdmin(admin.ModelAdmin):
+    readonly_fields = ()
+    list_display = ()
+
+
+@admin.register(DidatticaCdsLingua)
+class DidatticaCdsLinguaAdmin(admin.ModelAdmin):
+    readonly_fields = ()
+    list_display = ()
+
+
+@admin.register(DidatticaRegolamento)
+class DidatticaRegolamentoAdmin(admin.ModelAdmin):
+    readonly_fields = ()
+    list_display = ()
+
+
+@admin.register(DidatticaTestiRegolamento)
+class DidatticaTestiRegolamentoAdmin(admin.ModelAdmin):
+    readonly_fields = ()
+    list_display = ()
+
+
+@admin.register(TerritorioIt)
+class TerritorioItAdmin(admin.ModelAdmin):
+    readonly_fields = ()
+    list_display = ()

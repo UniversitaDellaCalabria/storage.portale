@@ -18,7 +18,7 @@ class RicercaDocenteGruppoInline(admin.TabularInline):
     #  sortable_field_name = "ordinamento"
     extra = 0
     form = RicercaDocenteGruppoModelForm
-    classes = ['collapse',]
+    classes = ['collapse', ]
 
 # ===========================================================
 
@@ -37,9 +37,10 @@ class RicercaDocenteLineaApplicataInline(admin.TabularInline):
     extra = 0
     autocomplete_fields = ('docente',)
     form = RicercaDocenteLineaApplicataModelForm
-    classes = ['collapse',]
+    classes = ['collapse', ]
 
 # ===========================================================
+
 
 class RicercaDocenteLineaBaseModelForm(forms.ModelForm):
     class Meta:
@@ -55,9 +56,10 @@ class RicercaDocenteLineaBaseInline(admin.TabularInline):
     autocomplete_fields = ('docente', )
     extra = 0
     form = RicercaDocenteLineaBaseModelForm
-    classes = ['collapse',]
+    classes = ['collapse', ]
 
 # ===========================================================
+
 
 class RicercaAster2ModelForm(forms.ModelForm):
     class Meta:
@@ -72,9 +74,10 @@ class RicercaAster2Inline(admin.TabularInline):
     #  sortable_field_name = "ordinamento"
     extra = 0
     form = RicercaAster2ModelForm
-    classes = ['collapse',]
+    classes = ['collapse', ]
 
 # ==============================================================
+
 
 class RicercaLineaApplicataModelForm(forms.ModelForm):
     class Meta:
@@ -87,9 +90,10 @@ class RicercaLineaApplicataInline(admin.TabularInline):
     model = RicercaLineaApplicata
     extra = 0
     form = RicercaLineaApplicataModelForm
-    classes = ['collapse',]
+    classes = ['collapse', ]
 
 # ==============================================================
+
 
 class RicercaLineaBaseModelForm(forms.ModelForm):
     class Meta:
@@ -103,4 +107,21 @@ class RicercaLineaBaseInline(admin.TabularInline):
     extra = 0
     autocomplete_fields = ('ricerca_erc2', )
     form = RicercaLineaBaseModelForm
-    classes = ['collapse',]
+    classes = ['collapse', ]
+
+# ==============================================================
+
+
+# class DidatticaCdsLinguaModelForm(forms.ModelForm):
+#     class Meta:
+#         model = DidatticaCdsLingua
+#         fields = ('__all__')
+#         #exclude = ('user_ins', 'user_mod')
+#
+#
+# class DidatticaCdsLinguaInLine(admin.TabularInline):
+#     model = DidatticaCdsLingua
+#     extra = 0
+#     autocomplete_fields = ('cdsord', )
+#     form = DidatticaCdsLinguaModelForm
+#     classes = ['collapse', ]

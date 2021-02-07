@@ -5,10 +5,8 @@ from rest_framework.renderers import JSONOpenAPIRenderer
 from rest_framework.schemas import get_schema_view
 from rest_framework.schemas.agid_schema_views import get_schema_view
 
-from rest_framework.schemas.openapi_agid import AgidSchemaGenerator as openapi_agid_generator
 
 
-from . import views
 from . import api_views
 
 app_name = 'ricerca'
@@ -31,15 +29,15 @@ agid_api_dict = {'title': "Unical - Ricerca",
                                name='api'),
                           dict(description='description',
                                name='public')],
-                 'contact': dict(email = 'giuseppe.demarco@unical.it',
-                                 name = 'Giuseppe De Marco',
-                                 url = 'https://github.com/UniversitaDellaCalabria'),
+                 'contact': dict(email='giuseppe.demarco@unical.it',
+                                 name='Giuseppe De Marco',
+                                 url='https://github.com/UniversitaDellaCalabria'),
                  'version': "0.1.2"
-}
+                 }
 
 urlpatterns = [
-                # qui le chiamate alle risorse di felix
-                # ...
+    # qui le chiamate alle risorse di felix
+    # ...
 
 ]
 
@@ -54,7 +52,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         name='openapi-schema'),
     # dynamic Schema export resource
     urlpatterns += path('openapi.json',
-                        get_schema_view(renderer_classes = [JSONOpenAPIRenderer],
+                        get_schema_view(renderer_classes=[JSONOpenAPIRenderer],
                                         **agid_api_dict),
                         name='openapi-schema-json'),
 
@@ -113,3 +111,13 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiRicercaLineaBaseList.as_view()),
     urlpatterns += path('{}/linea-base/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaLineaBaseDetail.as_view()),
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+    urlpatterns += path('{}/cdslist'.format(base_url),
+                        api_views.ApiCdSList.as_view(),
+                        name='cdslist'),
+
+    urlpatterns += path('{}/cdsinfo'.format(base_url),
+                        api_views.ApiCdSInfo.as_view(),
+                        name='cdsinfo'),
