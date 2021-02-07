@@ -1,0 +1,11 @@
+05/02/2021
+
+- Endpoint '/api/ricerca/cdslist'
+	- Efficientamento query + controllo dei risultati (OK)
+	- Scrittura serializer custom (OK)
+	- Test OK (Coverage 99%)
+	
+- Endpoint '/api/ricerca/cdsinfo'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
