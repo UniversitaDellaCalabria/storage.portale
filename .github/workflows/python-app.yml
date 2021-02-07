@@ -47,7 +47,7 @@ jobs:
         flake8 ./ricerca_app --count --exit-zero --statistics
 
     - name: Test with Django tests
-      working-directory: ./example
+      working-directory: .
       run: |
         coverage erase
         coverage run ./manage.py test --settings=ricerca.settingslocal_test
@@ -58,7 +58,7 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: example/coverage.xml
+        file: ./coverage.xml
         flags: unittests
         env_vars: OS,PYTHON
         name: codecov-umbrella
@@ -67,4 +67,4 @@ jobs:
         # verbose: true
     - name: Bandit Security Scan
       run: |
-        bandit -r -x tests.py,ricerca_app/*
+        bandit -r -x tests.py ricerca_app/*

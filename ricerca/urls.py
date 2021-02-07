@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 
@@ -24,3 +25,6 @@ urlpatterns = [
 if 'ricerca_app' in settings.INSTALLED_APPS:
     import ricerca_app.urls
     urlpatterns += path('', include((ricerca_app.urls, 'ricerca',))),
+
+if 'silk' in settings.INSTALLED_APPS:
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
