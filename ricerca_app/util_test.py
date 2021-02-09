@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from .models import (DidatticaCds, DidatticaCdsLingua, DidatticaRegolamento, DidatticaDipartimento, ComuniAll,
-                     TerritorioIt, DidatticaTestiRegolamento)
+                     TerritorioIt, DidatticaTestiRegolamento, DidatticaAttivitaFormativa, DidatticaPdsRegolamento)
 
 
 # class ContextUnitTest(TestCase):
@@ -43,7 +43,8 @@ class DidatticaCdsLinguaUnitTest(TestCase):
     def create_didatticaCdsLingua(cls, **kwargs):
         data = {
             'lin_did_ord_id': 1,
-            'iso6392_cod': 'ita',
+            'lingua_des_it': 'ITALIANO',
+            'lingua_des_eng': 'ITALIAN',
         }
         for k, v in kwargs.items():
             data[k] = v
@@ -57,7 +58,6 @@ class DidatticaRegolamentoUnitTest(TestCase):
     def create_didatticaRegolamento(cls, **kwargs):
         data = {
             'regdid_id': 1,
-            'cds_id': 1,
             'aa_reg_did': 2020,
             'frequenza_obbligatoria': 0,
             'titolo_congiunto_cod': 'N',
@@ -123,4 +123,31 @@ class TerritorioItUnitTest(TestCase):
             data[k] = v
 
         obj = TerritorioIt.objects.create(**data)
+        return obj
+
+
+class DidatticaAttivitaFormativaUnitTest(TestCase):
+    @classmethod
+    def create_didatticaAttivitaFormativa(cls, **kwargs):
+        data = {
+            'af_id': '1',
+        }
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaAttivitaFormativa.objects.create(**data)
+        return obj
+
+
+class DidatticaPdsRegolamentoUnitTest(TestCase):
+    @classmethod
+    def create_didatticaPdsRegolamento(cls, **kwargs):
+        data = {
+            'aa_ord_id': 1,
+            'pds_regdid_id': 1,
+        }
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPdsRegolamento.objects.create(**data)
         return obj

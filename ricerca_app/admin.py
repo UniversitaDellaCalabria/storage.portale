@@ -29,8 +29,8 @@ class RicercaGruppoAdmin(admin.ModelAdmin):
 
 @admin.register(RicercaDocenteGruppo)
 class RicercaDocenteGruppoAdmin(admin.ModelAdmin):
-    list_display = ('docente', 'dt_inizio', 'dt_fine', 'ricerca_gruppo')
-    autocomplete_fields = ('docente',)
+    list_display = ('personale', 'dt_inizio', 'dt_fine', 'ricerca_gruppo')
+    autocomplete_fields = ('personale',)
     readonly_fields = ('user_ins', 'user_mod')
 
 

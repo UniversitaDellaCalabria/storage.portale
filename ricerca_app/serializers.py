@@ -38,21 +38,25 @@ class RicercaErc2Serializer(serializers.HyperlinkedModelSerializer):
 class RicercaDocenteGruppoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RicercaDocenteGruppo
-        fields = ['docente', 'ricerca_gruppo', 'dt_inizio', 'dt_fine']
+        fields = ['personale', 'ricerca_gruppo', 'dt_inizio', 'dt_fine']
 
 
 class RicercaDocenteLineaApplicataSerializer(
         serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RicercaDocenteLineaApplicata
-        fields = ['docente', 'ricerca_linea_applicata', 'dt_inizio', 'dt_fine']
+        fields = [
+            'personale',
+            'ricerca_linea_applicata',
+            'dt_inizio',
+            'dt_fine']
 
 
 class RicercaDocenteLineaBaseSerializer(
         serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RicercaDocenteLineaBase
-        fields = ['docente', 'ricerca_linea_base', 'dt_inizio', 'dt_fine']
+        fields = ['personale', 'ricerca_linea_base', 'dt_inizio', 'dt_fine']
 
 
 class RicercaGruppoSerializer(serializers.HyperlinkedModelSerializer):
@@ -112,7 +116,7 @@ class CdSListSerializer(CreateUpdateAbstract):
             'CourseType': query['tipo_corso_cod'],
             'CourseClassId': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
-            'CdSLanguage': query['didatticacdslingua__iso6392_cod'],
+            'CdSLanguage': query['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or query['didatticacdslingua__lingua_des_eng'] is None else query['didatticacdslingua__lingua_des_eng'],
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria']
@@ -140,7 +144,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CourseType': query['tipo_corso_cod'],
             'CourseClassId': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
-            'CdSLanguage': query['didatticacdslingua__iso6392_cod'],
+            'CdSLanguage': query['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or query['didatticacdslingua__lingua_des_eng'] is None else query['didatticacdslingua__lingua_des_eng'],
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
@@ -152,4 +156,39 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSFinalTest': query['PROVA_FINALE'],
             'CdSFinalTestMode': query['PROVA_FINALE_2'],
             'CdSSatisfactionSurvey': query['codicione'],
+        }
+
+
+class CdSStudyPlansSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        return {
+            'RegDidId': query['regdid__regdid_id'],
+            'StudyPlanId': query['pds_regdid__pds_regdid_id'],
+            'StudyPlanName': query['pds_regdid__pds_des_it'] if req_lang == 'it' or query['pds_regdid__pds_des_eng'] is None else query[
+                'pds_regdid__pds_des_eng'],
+            # 'StudyPlanName_it': query['pds_des_it'],
+            # 'StudyPlanName_eng': query['pds_des_eng'],
+            'StudyActivityID': query['af_id'],
+            'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
+            # 'StudyActivityName_it': query['didatticaattivitaformativa__des'],
+            # 'StudyActivityName_eng': query['didatticaattivitaformativa__af_gen_des_eng'],
+            'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityYear': query['anno_corso'],
+            'StudyActivitySemester': query['ciclo_des'],
+            'StudyActivityECTS': query['peso'],
+            'StudyActivitySSD': query['sett_des'],
+            'StudyActivityCompulsory': query['freq_obblig_flg'],
+            'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
+            # 'StudyActivityCdSName_it': query['didatticaattivitaformativa__cds__nome_cds_it'],
+            # 'StudyActivityCdSName_eng ': query['didatticaattivitaformativa__cds__nome_cds_eng'],
+
         }

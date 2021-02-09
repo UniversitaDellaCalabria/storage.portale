@@ -23,7 +23,8 @@ class ApiCdSListUnitTest(TestCase):
         DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
             'regdid_id': 1,
             'stato_regdid_cod': 'A',
-            'titolo_congiunto_cod': 'N'
+            'titolo_congiunto_cod': 'N',
+            'cds_id': 1,
         })
 
         url = reverse('ricerca:cdslist')
@@ -85,7 +86,7 @@ class ApiCdSListUnitTest(TestCase):
         assert res.json()[0]['RegDidId'] == 1
 
         # param: cdslanguage
-        data = {'cdslanguage': 'ita'}
+        data = {'cdslanguage': 'ITALIANO'}
         res = req.get(url, data=data)
         assert res.json()[0]['RegDidId'] == 1
 
@@ -105,7 +106,7 @@ class ApiCdSListUnitTest(TestCase):
         assert len(res.json()) == 0
 
         # param: all
-        data = {'cdslanguage': 'ita',
+        data = {'cdslanguage': 'ITALIAN',
                 'jointdegree': 'N',
                 'academicyear': 2020,
                 'departmentname': 'math and computer science',
@@ -177,7 +178,6 @@ class ApiCdSInfoUnitTest(TestCase):
 
     def test_apicdslist(self):
         req = Client()
-        #user = ContextUnitTest.create_user(username='staff',is_staff=True)
 
         dip = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
@@ -206,11 +206,6 @@ class ApiCdSInfoUnitTest(TestCase):
             'profilo': 'profiloprova',
             'clob_txt_ita': 'provadescrizione',
         })
-        # DidatticaTestiRegolamentoUnitTest.create_didatticaTestiRegolamento(**{
-        #     'txt_id': 3,
-        #     'regdid': reg,
-        #     'tipo_testo_regdid_cod': 'OBB_SPEC',
-        # })
 
         url = reverse('ricerca:cdsinfo')
 
@@ -225,6 +220,11 @@ class ApiCdSInfoUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()[0]['RegDidId'] == 1
 
+        # param: cdsid 10 doesn't exist
+        data = {'language': 'it', 'cdsid': 10}
+        res = req.get(url, data=data)
+        assert len(res.json()) == 0
+
         # param: language
         data = {'language': 'eng', 'cdsid': 1}
         res = req.get(url, data=data)
@@ -235,3 +235,43 @@ class ApiCdSInfoUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()[
             0]['CdSProfiles']['profiloprova']['FUNZIONI'] == 'provadescrizione'
+
+
+class ApiCdSStudyPlansUnitTest(TestCase):
+
+    def test_apicdslist(self):
+        req = Client()
+
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(**{
+            'regdid': regdid,
+
+        })
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'pds_regdid': pds,
+            'regdid': regdid,
+            'des': 'matematica',
+            'af_gen_des_eng': 'math',
+        })
+
+        url = reverse('ricerca:cdsstudyplans')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'cdsid': 1}
+        res = req.get(url, data=data)
+        assert res.json()[0]['RegDidId'] == 1
+
+        # language it
+        data = {'cdsid': 1, 'language': 'it'}
+        res = req.get(url, data=data)
+        assert res.json()[0]['StudyActivityName'] == 'matematica'
+
+        # language eng
+        data = {'cdsid': 1, 'language': 'eng'}
+        res = req.get(url, data=data)
+        assert res.json()[0]['StudyActivityName'] == 'math'

@@ -33,7 +33,7 @@ class ServiceDidatticaCds:
         }
 
         didatticacdslingua_params_to_query_field = {
-            'cdslanguage': 'didatticacdslingua__iso6392_cod__iexact',
+            'cdslanguage': f'didatticacdslingua__lingua_des_{language == "it" and "it" or "eng"}__iexact',
         }
 
         keywords = set(
@@ -59,7 +59,8 @@ class ServiceDidatticaCds:
                     'dip__dip_cod',
                     'dip__dip_des_it',
                     'dip__dip_des_eng',
-                    'didatticacdslingua__iso6392_cod',
+                    'didatticacdslingua__lingua_des_it',
+                    'didatticacdslingua__lingua_des_eng',
                     'cds_id',
                     'nome_cds_it',
                     'nome_cds_eng',

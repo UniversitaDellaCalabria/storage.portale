@@ -6,7 +6,6 @@ from rest_framework.schemas import get_schema_view
 from rest_framework.schemas.agid_schema_views import get_schema_view
 
 
-
 from . import api_views
 
 app_name = 'ricerca'
@@ -121,3 +120,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/cdsinfo'.format(base_url),
                         api_views.ApiCdSInfo.as_view(),
                         name='cdsinfo'),
+
+    urlpatterns += path('{}/cdsstudyplans'.format(base_url),
+                        api_views.ApiCdSStudyPlans.as_view(),
+                        name='cdsstudyplans'),

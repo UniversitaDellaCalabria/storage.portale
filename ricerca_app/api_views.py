@@ -240,6 +240,10 @@ class ApiCdSInfo(ApiEndpoint):
             self.language, QueryDict(
                 'regdid_id=' + cdsid_param))
         res = list(res)
+
+        if(len(res) == 0):
+            return None
+
         texts = DidatticaTestiRegolamento.objects.filter(regdid=cdsid_param)\
             .values('regdid__regdid_id', 'clob_txt_ita', 'clob_txt_eng', 'tipo_testo_regdid_cod', 'profilo', 'profilo_eng')
 
@@ -267,3 +271,28 @@ class ApiCdSInfo(ApiEndpoint):
 
         res[0]['PROFILO'] = list_profiles
         return res
+
+
+class ApiCdSStudyPlans(ApiEndpoint):
+    description = ''
+    serializer_class = CdSStudyPlansSerializer
+    #filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        cdsid_param = self.request.query_params.get('cdsid')
+        if not cdsid_param:
+            return None
+
+        # problemi con year = null, provare regdidid = 6343
+        # Fare test
+        # Chiedere corsi principali/moduli sottomoduli
+
+        studyactivity = DidatticaAttivitaFormativa.objects.filter(regdid=cdsid_param, af_id__isnull=False) \
+            .exclude(des__icontains='MODULO') \
+            .order_by('pds_regdid__pds_regdid_id', 'anno_corso', 'ciclo_des') \
+            .values('pds_regdid__pds_regdid_id', 'pds_regdid__pds_des_it', 'pds_regdid__pds_des_eng', 'regdid__regdid_id',
+                    'af_id', 'des', 'af_gen_des_eng', 'cds__cds_id', 'anno_corso',
+                    'ciclo_des', 'peso', 'sett_des', 'freq_obblig_flg',
+                    'cds__nome_cds_it', 'cds__nome_cds_eng')
+
+        return studyactivity
