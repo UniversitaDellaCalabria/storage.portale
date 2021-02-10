@@ -287,12 +287,34 @@ class ApiCdSStudyPlans(ApiEndpoint):
         # Fare test
         # Chiedere corsi principali/moduli sottomoduli
 
-        studyactivity = DidatticaAttivitaFormativa.objects.filter(regdid=cdsid_param, af_id__isnull=False) \
-            .exclude(des__icontains='MODULO') \
-            .order_by('pds_regdid__pds_regdid_id', 'anno_corso', 'ciclo_des') \
-            .values('pds_regdid__pds_regdid_id', 'pds_regdid__pds_des_it', 'pds_regdid__pds_des_eng', 'regdid__regdid_id',
-                    'af_id', 'des', 'af_gen_des_eng', 'cds__cds_id', 'anno_corso',
-                    'ciclo_des', 'peso', 'sett_des', 'freq_obblig_flg',
-                    'cds__nome_cds_it', 'cds__nome_cds_eng')
+        return ServiceDidatticaAttivitaFormativa.getListAttivitaFormativa(
+            regdid_id=cdsid_param)
 
-        return studyactivity
+
+class ApiStudyPlansActivities(ApiEndpoint):
+    description = ''
+    serializer_class = StudyPlansActivitiesSerializer
+    #filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        studyplanid_param = self.request.query_params.get('studyplanid')
+        if not studyplanid_param:
+            return None
+
+        return ServiceDidatticaAttivitaFormativa.getAttivitaFormativaByStudyPlan(
+            studyplanid=studyplanid_param)
+
+
+# class ApiStudyActivityInfo(ApiEndpoint):
+#     description = ''
+#     serializer_class = StudyActivityInfoSerializer
+#
+#     # filter_backends = [ApiCdsListFilter]
+#
+#     def get_queryset(self):
+#         studyactivityid = self.request.query_params.get('studyactivityid')
+#         if not studyactivityid:
+#             return None
+#
+# return
+# ServiceDidatticaAttivitaFormativa.getAttivitaFormativa(af_id=studyactivityid)

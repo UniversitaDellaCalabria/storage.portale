@@ -175,12 +175,8 @@ class CdSStudyPlansSerializer(CreateUpdateAbstract):
             'StudyPlanId': query['pds_regdid__pds_regdid_id'],
             'StudyPlanName': query['pds_regdid__pds_des_it'] if req_lang == 'it' or query['pds_regdid__pds_des_eng'] is None else query[
                 'pds_regdid__pds_des_eng'],
-            # 'StudyPlanName_it': query['pds_des_it'],
-            # 'StudyPlanName_eng': query['pds_des_eng'],
             'StudyActivityID': query['af_id'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
-            # 'StudyActivityName_it': query['didatticaattivitaformativa__des'],
-            # 'StudyActivityName_eng': query['didatticaattivitaformativa__af_gen_des_eng'],
             'StudyActivityCdSID': query['cds__cds_id'],
             'StudyActivityYear': query['anno_corso'],
             'StudyActivitySemester': query['ciclo_des'],
@@ -188,7 +184,52 @@ class CdSStudyPlansSerializer(CreateUpdateAbstract):
             'StudyActivitySSD': query['sett_des'],
             'StudyActivityCompulsory': query['freq_obblig_flg'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
-            # 'StudyActivityCdSName_it': query['didatticaattivitaformativa__cds__nome_cds_it'],
-            # 'StudyActivityCdSName_eng ': query['didatticaattivitaformativa__cds__nome_cds_eng'],
-
         }
+
+
+class StudyPlansActivitiesSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        return {
+            'StudyActivityID': query['af_id'],
+            'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
+            'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityYear': query['anno_corso'],
+            'StudyActivitySemester': query['ciclo_des'],
+            'StudyActivityECTS': query['peso'],
+            'StudyActivitySSD': query['sett_des'],
+            'StudyActivityCompulsory': query['freq_obblig_flg'],
+            'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
+        }
+
+# class StudyActivityInfoSerializer(CreateUpdateAbstract):
+#     def to_representation(self, instance):
+#         query = instance
+#         data = super().to_representation(instance)
+#         data.update(self.to_dict(query,
+#                                  str(self.context['language']).lower()))
+#         return data
+#
+#     @staticmethod
+#     def to_dict(query,
+#                 req_lang='en'):
+#         return {
+#             'StudyActivityID': query['af_id'],
+#             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
+#             'StudyActivityCdSID': query['cds__cds_id'],
+#             'StudyActivityYear': query['anno_corso'],
+#             'StudyActivitySemester': query['ciclo_des'],
+#             'StudyActivityECTS': query['peso'],
+#             'StudyActivitySSD': query['sett_des'],
+#             'StudyActivityCompulsory': query['freq_obblig_flg'],
+#             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
+#             'StudyActivitiesModules': query['MODULES'],
+#         }

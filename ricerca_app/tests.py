@@ -252,6 +252,8 @@ class ApiCdSStudyPlansUnitTest(TestCase):
             'regdid': regdid,
             'des': 'matematica',
             'af_gen_des_eng': 'math',
+            'af_id': 1,
+            'af_radice_id': 1,
         })
 
         url = reverse('ricerca:cdsstudyplans')
@@ -275,3 +277,96 @@ class ApiCdSStudyPlansUnitTest(TestCase):
         data = {'cdsid': 1, 'language': 'eng'}
         res = req.get(url, data=data)
         assert res.json()[0]['StudyActivityName'] == 'math'
+
+
+class ApiStudyPlansActivitiesUnitTest(TestCase):
+
+    def test_apistudyplansactivities(self):
+        req = Client()
+
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        pds1 = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(**{
+            'pds_regdid_id': 1,
+            'regdid': regdid,
+        })
+        pds2 = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(**{
+            'pds_regdid_id': 2,
+            'regdid': regdid,
+        })
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 1,
+            'pds_regdid': pds1,
+            'des': 'matematica',
+            'af_gen_des_eng': 'math',
+            'ciclo_des': 'Primo semestre',
+            'regdid': regdid,
+            'af_radice_id': 1,
+        })
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 2,
+            'pds_regdid': pds1,
+            'des': 'informatica',
+            'af_gen_des_eng': 'computer science',
+            'ciclo_des': 'Secondo semestre',
+            'regdid': regdid,
+            'af_radice_id': 2,
+        })
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 3,
+            'pds_regdid': pds1,
+            'des': 'informatica modulo 1',
+            'af_gen_des_eng': 'computer science modulo 1',
+            'ciclo_des': 'Secondo semestre',
+            'regdid': regdid,
+            'af_radice_id': 2,
+        })
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 4,
+            'pds_regdid': pds2,
+            'des': 'matematica2',
+            'af_gen_des_eng': 'math2',
+            'ciclo_des': 'Primo semestre',
+            'regdid': regdid,
+            'af_radice_id': 4,
+        })
+
+        url = reverse('ricerca:studyplansactivities')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'studyplanid': 1}
+        res = req.get(url, data=data)
+        assert res.json()[0]['StudyActivityID'] == 1
+
+        # 3 courses : 2 main courses, 1 module course, should return 2 courses
+        data = {'studyplanid': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()) == 2
+
+        # language it first semester
+        data = {'studyplanid': 1, 'language': 'it'}
+        res = req.get(url, data=data)
+        assert res.json()[0]['StudyActivityName'] == 'matematica'
+
+        # language eng first semester
+        data = {'studyplanid': 1, 'language': 'eng'}
+        res = req.get(url, data=data)
+        assert res.json()[0]['StudyActivityName'] == 'math'
+
+        # language it second semester
+        data = {'studyplanid': 1, 'language': 'it'}
+        res = req.get(url, data=data)
+        assert res.json()[1]['StudyActivityName'] == 'informatica'
+
+        # language eng second semester
+        data = {'studyplanid': 1, 'language': 'eng'}
+        res = req.get(url, data=data)
+        assert res.json()[1]['StudyActivityName'] == 'computer science'
+
+        data = {'studyplanid': 2}
+        res = req.get(url, data=data)
+        assert res.json()[0]['StudyActivityID'] == 4

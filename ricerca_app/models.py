@@ -252,6 +252,12 @@ class DidatticaAttivitaFormativa(InsModAbstract):
         managed = True
         db_table = 'didattica_attivita_formativa'
 
+    def __str__(self):
+        return '{}'.format(self.af_id)
+
+    def checkIfMainCourse(self):
+        return self.af_id == self.af_radice_id
+
 
 class DidatticaCds(InsModAbstract):
     # Field name made lowercase.
