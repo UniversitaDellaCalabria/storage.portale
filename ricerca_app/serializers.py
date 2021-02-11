@@ -210,26 +210,38 @@ class StudyPlansActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
         }
 
-# class StudyActivityInfoSerializer(CreateUpdateAbstract):
-#     def to_representation(self, instance):
-#         query = instance
-#         data = super().to_representation(instance)
-#         data.update(self.to_dict(query,
-#                                  str(self.context['language']).lower()))
-#         return data
-#
-#     @staticmethod
-#     def to_dict(query,
-#                 req_lang='en'):
-#         return {
-#             'StudyActivityID': query['af_id'],
-#             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
-#             'StudyActivityCdSID': query['cds__cds_id'],
-#             'StudyActivityYear': query['anno_corso'],
-#             'StudyActivitySemester': query['ciclo_des'],
-#             'StudyActivityECTS': query['peso'],
-#             'StudyActivitySSD': query['sett_des'],
-#             'StudyActivityCompulsory': query['freq_obblig_flg'],
-#             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
-#             'StudyActivitiesModules': query['MODULES'],
-#         }
+
+class StudyActivityInfoSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        return {
+            'StudyActivityID': query['af_id'],
+            'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
+            'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityYear': query['anno_corso'],
+            'StudyActivitySemester': query['ciclo_des'],
+            'StudyActivityECTS': query['peso'],
+            'StudyActivitySSD': query['sett_des'],
+            'StudyActivityCompulsory': query['freq_obblig_flg'],
+            'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
+            'StudyActivityTeachingUnitType': query['tipo_af_des'],
+            'StudyActivityContent': query['StudyActivityContent'],
+            'StudyActivityProgram': query['StudyActivityProgram'],
+            'StudyActivityLearningOutcomes': query['StudyActivityLearningOutcomes'],
+            'StudyActivityMethodology': query['StudyActivityMethodology'],
+            'StudyActivityEvaluation': query['StudyActivityEvaluation'],
+            'StudyActivityTextbooks': query['StudyActivityTextbooks'],
+            'StudyActivityWorkload': query['StudyActivityWorkload'],
+            'StudyActivityElearningLink': query['StudyActivityElearningLink'],
+            'StudyActivityElearningInfo': query['StudyActivityElearningInfo'],
+            'StudyActivityPrerequisites': query['StudyActivityPrerequisites'],
+            'StudyActivitiesModules': query['MODULES'],
+        }

@@ -2,7 +2,7 @@ from functools import reduce
 import operator
 
 from django.db.models import Q
-from .models import DidatticaCds, DidatticaAttivitaFormativa
+from .models import DidatticaCds, DidatticaAttivitaFormativa, DidatticaTestiAf
 
 
 class ServiceQueryBuilder:
@@ -112,15 +112,64 @@ class ServiceDidatticaAttivitaFormativa:
                     'ciclo_des', 'peso', 'sett_des', 'freq_obblig_flg',
                     'cds__nome_cds_it', 'cds__nome_cds_eng')
 
-    # @staticmethod
-    # def getAttivitaFormativaWithSubModules(af_id):
-    #     list_submodules = DidatticaAttivitaFormativa.objects.filter(af_radice_id=af_id) \
-    #         .exclude(af_id=af_id) \
-    #         .values('af_id', 'des', 'af_gen_des_eng', 'ciclo_des')
-    #     query = DidatticaAttivitaFormativa.objects.filter(af_id=af_id).order_by('anno_corso', 'ciclo_des') \
-    #             .values('af_id', 'des', 'af_gen_des_eng', 'cds__cds_id', 'anno_corso',
-    #                     'ciclo_des', 'peso', 'sett_des', 'freq_obblig_flg',
-    #                     'cds__nome_cds_it', 'cds__nome_cds_eng')
-    #     query[0]['MODULES'] = list_submodules
-    #
-    #     return query
+    @staticmethod
+    def getAttivitaFormativaWithSubModules(af_id, language):
+        list_submodules = DidatticaAttivitaFormativa.objects.filter(af_radice_id=af_id) \
+            .exclude(af_id=af_id) \
+            .values('af_id', 'des', 'af_gen_des_eng', 'ciclo_des')
+
+        # TODO: StudyActivityTeacherID e StudyActivityTeacherName, problema
+        # join con Personale
+        query = DidatticaAttivitaFormativa.objects.filter(af_id=af_id).order_by('anno_corso', 'ciclo_des') \
+            .values('af_id', 'des', 'af_gen_des_eng', 'cds__cds_id', 'anno_corso',
+                    'ciclo_des', 'peso', 'sett_des', 'freq_obblig_flg',
+                    'cds__nome_cds_it', 'cds__nome_cds_eng', 'tipo_af_des',
+                    )
+        texts_af = DidatticaTestiAf.objects.filter(
+            af_id=af_id).values(
+            'tipo_testo_af_cod',
+            'testo_af_ita',
+            'testo_af_eng')
+
+        query = list(query)
+        query[0]['MODULES'] = list()
+        for i in range(len(list_submodules)):
+            query[0]['MODULES'].append({
+                'StudyActivityID': list_submodules[i]['af_id'],
+                'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i]['af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
+                'StudyActivitySemester': list_submodules[i]['ciclo_des'],
+            })
+
+        query[0]['StudyActivityContent'] = None
+        query[0]['StudyActivityProgram'] = None
+        query[0]['StudyActivityLearningOutcomes'] = None
+        query[0]['StudyActivityMethodology'] = None
+        query[0]['StudyActivityEvaluation'] = None
+        query[0]['StudyActivityTextbooks'] = None
+        query[0]['StudyActivityWorkload'] = None
+        query[0]['StudyActivityElearningLink'] = None
+        query[0]['StudyActivityElearningInfo'] = None
+        query[0]['StudyActivityPrerequisites'] = None
+
+        dict_activity = {
+            'CONTENUTI': 'StudyActivityContent',
+            'PROGR_EST': 'StudyActivityProgram',
+            'OBIETT_FORM': 'StudyActivityLearningOutcomes',
+            'METODI_DID': 'StudyActivityMethodology',
+            'MOD_VER_APPR': 'StudyActivityEvaluation',
+            'TESTI_RIF': 'StudyActivityTextbooks',
+            'STIMA_CAR_LAV': 'StudyActivityWorkload',
+            'PREREQ': 'StudyActivityPrerequisites',
+            'LINK_TEAMS': 'StudyActivityElearningLink',
+            'CODICE_TEAMS': 'StudyActivityElearningInfo',
+            'PROPEDE': None,
+            'LINGUA_INS': None,
+            'PAG_WEB_DOC': None,
+            'ALTRO': None,
+        }
+
+        for text in texts_af:
+            query[0][dict_activity[text['tipo_testo_af_cod']]
+                     ] = text['testo_af_ita'] if language == 'it' or text['testo_af_eng'] is None else text['testo_af_eng']
+
+        return query

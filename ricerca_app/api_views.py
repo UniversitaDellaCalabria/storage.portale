@@ -305,16 +305,16 @@ class ApiStudyPlansActivities(ApiEndpoint):
             studyplanid=studyplanid_param)
 
 
-# class ApiStudyActivityInfo(ApiEndpoint):
-#     description = ''
-#     serializer_class = StudyActivityInfoSerializer
-#
-#     # filter_backends = [ApiCdsListFilter]
-#
-#     def get_queryset(self):
-#         studyactivityid = self.request.query_params.get('studyactivityid')
-#         if not studyactivityid:
-#             return None
-#
-# return
-# ServiceDidatticaAttivitaFormativa.getAttivitaFormativa(af_id=studyactivityid)
+class ApiStudyActivityInfo(ApiEndpoint):
+    description = ''
+    serializer_class = StudyActivityInfoSerializer
+
+    # filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        studyactivityid = self.request.query_params.get('studyactivityid')
+        if not studyactivityid:
+            return None
+
+        return ServiceDidatticaAttivitaFormativa.getAttivitaFormativaWithSubModules(
+            af_id=studyactivityid, language=self.language)

@@ -370,3 +370,59 @@ class ApiStudyPlansActivitiesUnitTest(TestCase):
         data = {'studyplanid': 2}
         res = req.get(url, data=data)
         assert res.json()[0]['StudyActivityID'] == 4
+
+
+class ApiStudyActivityInfoUnitTest(TestCase):
+
+    def test_apistudyactivityinfo(self):
+        req = Client()
+
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(**{
+            'pds_regdid_id': 1,
+            'regdid': regdid,
+        })
+        course = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 1,
+            'pds_regdid': pds,
+            'des': 'informatica',
+            'af_gen_des_eng': 'computer science',
+            'ciclo_des': 'Primo semestre',
+            'regdid': regdid,
+            'af_radice_id': 1,
+        })
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 2,
+            'pds_regdid': pds,
+            'des': 'informatica modulo 1',
+            'af_gen_des_eng': 'computer science modulo 1',
+            'ciclo_des': 'Secondo semestre',
+            'regdid': regdid,
+            'af_radice_id': 1,
+        })
+        DidatticaTestiAfUnitTest.create_didatticaTestiAf(**{
+            'tipo_testo_af_cod': 'CONTENUTI',
+            'testo_af_ita': 'Variabili',
+            'testo_af_eng': 'Variables',
+            'af': course,
+        })
+
+        url = reverse('ricerca:studyactivityinfo')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'studyactivityid': 1}
+        res = req.get(url, data=data)
+        assert res.json()[0]['StudyActivityID'] == 1
+
+        data = {'studyactivityid': 1, 'language': 'eng'}
+        res = req.get(url, data=data)
+        assert res.json()[0]['StudyActivityContent'] == 'Variables'
+
+        data = {'studyactivityid': 1}
+        res = req.get(url, data=data)
+        assert res.json()[0]['StudyActivityContent'] == 'Variabili'

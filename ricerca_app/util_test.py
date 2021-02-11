@@ -1,7 +1,8 @@
 from django.test import TestCase
 
 from .models import (DidatticaCds, DidatticaCdsLingua, DidatticaRegolamento, DidatticaDipartimento, ComuniAll,
-                     TerritorioIt, DidatticaTestiRegolamento, DidatticaAttivitaFormativa, DidatticaPdsRegolamento)
+                     TerritorioIt, DidatticaTestiRegolamento, DidatticaAttivitaFormativa, DidatticaPdsRegolamento,
+                     DidatticaTestiAf)
 
 
 # class ContextUnitTest(TestCase):
@@ -150,4 +151,17 @@ class DidatticaPdsRegolamentoUnitTest(TestCase):
             data[k] = v
 
         obj = DidatticaPdsRegolamento.objects.create(**data)
+        return obj
+
+
+class DidatticaTestiAfUnitTest(TestCase):
+    @classmethod
+    def create_didatticaTestiAf(cls, **kwargs):
+        data = {
+            # 'testi_af_id': 1,
+        }
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaTestiAf.objects.create(**data)
         return obj
