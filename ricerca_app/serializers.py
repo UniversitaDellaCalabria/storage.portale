@@ -233,6 +233,8 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityCompulsory': query['freq_obblig_flg'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
             'StudyActivityTeachingUnitType': query['tipo_af_des'],
+            'StudyActivityTeacherID': query['StudyActivityTeacherID'],
+            'StudyActivityTeacherName': query['StudyActivityTeacherName'],
             'StudyActivityContent': query['StudyActivityContent'],
             'StudyActivityProgram': query['StudyActivityProgram'],
             'StudyActivityLearningOutcomes': query['StudyActivityLearningOutcomes'],
@@ -244,4 +246,26 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityElearningInfo': query['StudyActivityElearningInfo'],
             'StudyActivityPrerequisites': query['StudyActivityPrerequisites'],
             'StudyActivitiesModules': query['MODULES'],
+        }
+
+
+class CdSMainTeachersSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        name = query['didatticacopertura__personale__cognome'] + " " + query['didatticacopertura__personale__nome'] + \
+            (" " + query['didatticacopertura__personale__middle_name']
+             if query['didatticacopertura__personale__middle_name'] is not None else "")
+        return {
+            'TeacherID': query['didatticacopertura__personale__id'],
+            'TeacherName': name,
+            'TeacherRole': query['didatticacopertura__personale__cd_ruolo'],
+            'TeacherSSD': query['didatticacopertura__personale__cd_ssd'],
         }

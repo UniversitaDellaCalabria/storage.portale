@@ -390,6 +390,7 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'matricola_resp_did': '111111',
         })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 2,
@@ -405,6 +406,17 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'testo_af_ita': 'Variabili',
             'testo_af_eng': 'Variables',
             'af': course,
+        })
+        p = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course,
+            'personale': p,
         })
 
         url = reverse('ricerca:studyactivityinfo')
@@ -426,3 +438,72 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         data = {'studyactivityid': 1}
         res = req.get(url, data=data)
         assert res.json()[0]['StudyActivityContent'] == 'Variabili'
+
+
+class ApiCdSMainTeachersUnitTest(TestCase):
+
+    def test_apicdsmainteachers(self):
+        req = Client()
+
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        course1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 1,
+            'des': 'matematica',
+            'af_gen_des_eng': 'math',
+            'ciclo_des': 'Primo semestre',
+            'regdid': regdid,
+            'af_radice_id': 1,
+        })
+        course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 2,
+            'des': 'informatica',
+            'af_gen_des_eng': 'computer science',
+            'ciclo_des': 'Secondo semestre',
+            'regdid': regdid,
+            'af_radice_id': 2,
+        })
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+        })
+        p2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Franco',
+            'middle_name': 'Luigi',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 2,
+            'matricola': '111111',
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course1,
+            'personale': p1,
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course2,
+            'personale': p2,
+        })
+
+        url = reverse('ricerca:cdsmainteachers')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'cdsid': 1}
+        res = req.get(url, data=data)
+        assert res.json()[0]['TeacherID'] == 1
+
+        data = {'cdsid': 1}
+        res = req.get(url, data=data)
+        assert res.json()[0]['TeacherName'] == 'Mungari Simone'
+
+        data = {'cdsid': 1}
+        res = req.get(url, data=data)
+        assert res.json()[1]['TeacherName'] == 'Garofalo Franco Luigi'

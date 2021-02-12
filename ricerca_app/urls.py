@@ -132,3 +132,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/studyactivityinfo'.format(base_url),
                         api_views.ApiStudyActivityInfo.as_view(),
                         name='studyactivityinfo'),
+
+    urlpatterns += path('{}/cdsmainteachers'.format(base_url),
+                        api_views.ApiCdSMainTeachers.as_view(),
+                        name='cdsmainteachers'),

@@ -318,3 +318,17 @@ class ApiStudyActivityInfo(ApiEndpoint):
 
         return ServiceDidatticaAttivitaFormativa.getAttivitaFormativaWithSubModules(
             af_id=studyactivityid, language=self.language)
+
+
+class ApiCdSMainTeachers(ApiEndpoint):
+    description = ''
+    serializer_class = CdSMainTeachersSerializer
+
+    # filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        regdid_id = self.request.query_params.get('cdsid')
+        if not regdid_id:
+            return None
+
+        return ServiceDidatticaAttivitaFormativa.getDocentiPerReg(regdid_id)

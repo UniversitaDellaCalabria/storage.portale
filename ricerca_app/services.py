@@ -2,7 +2,7 @@ from functools import reduce
 import operator
 
 from django.db.models import Q
-from .models import DidatticaCds, DidatticaAttivitaFormativa, DidatticaTestiAf
+from .models import DidatticaCds, DidatticaAttivitaFormativa, DidatticaTestiAf, DidatticaCopertura
 
 
 class ServiceQueryBuilder:
@@ -76,7 +76,6 @@ class ServiceDidatticaCds:
 
 class ServiceDidatticaAttivitaFormativa:
 
-    # filtrare quelli che hanno af_id = af_radice_id
     @staticmethod
     def getListAttivitaFormativa(regdid_id, only_main_course=True):
         query = DidatticaAttivitaFormativa.objects.filter(
@@ -118,20 +117,34 @@ class ServiceDidatticaAttivitaFormativa:
             .exclude(af_id=af_id) \
             .values('af_id', 'des', 'af_gen_des_eng', 'ciclo_des')
 
-        # TODO: StudyActivityTeacherID e StudyActivityTeacherName, problema
-        # join con Personale
         query = DidatticaAttivitaFormativa.objects.filter(af_id=af_id).order_by('anno_corso', 'ciclo_des') \
             .values('af_id', 'des', 'af_gen_des_eng', 'cds__cds_id', 'anno_corso',
                     'ciclo_des', 'peso', 'sett_des', 'freq_obblig_flg',
-                    'cds__nome_cds_it', 'cds__nome_cds_eng', 'tipo_af_des',
+                    'cds__nome_cds_it', 'cds__nome_cds_eng', 'tipo_af_des', 'matricola_resp_did',
                     )
+        copertura = DidatticaCopertura.objects.filter(
+            af_id=af_id).values(
+            'personale__id',
+            'personale__nome',
+            'personale__cognome',
+            'personale__matricola')
+        query = list(query)
+
+        query[0]['StudyActivityTeacherID'] = None
+        query[0]['StudyActivityTeacherName'] = None
+
+        for q in copertura:
+            if q['personale__matricola'] == query[0]['matricola_resp_did']:
+                query[0]['StudyActivityTeacherID'] = q['personale__id']
+                query[0]['StudyActivityTeacherName'] = '{} {}'.format(
+                    q['personale__cognome'], q['personale__nome'])
+
         texts_af = DidatticaTestiAf.objects.filter(
             af_id=af_id).values(
             'tipo_testo_af_cod',
             'testo_af_ita',
             'testo_af_eng')
 
-        query = list(query)
         query[0]['MODULES'] = list()
         for i in range(len(list_submodules)):
             query[0]['MODULES'].append({
@@ -171,5 +184,15 @@ class ServiceDidatticaAttivitaFormativa:
         for text in texts_af:
             query[0][dict_activity[text['tipo_testo_af_cod']]
                      ] = text['testo_af_ita'] if language == 'it' or text['testo_af_eng'] is None else text['testo_af_eng']
+
+        return query
+
+    @staticmethod
+    def getDocentiPerReg(regdid_id):
+
+        query = DidatticaAttivitaFormativa.objects.filter(regdid__regdid_id=regdid_id, didatticacopertura__personale__isnull=False) \
+            .order_by('didatticacopertura__personale__cd_ruolo', 'didatticacopertura__personale__cognome', 'didatticacopertura__personale__nome') \
+            .values('didatticacopertura__personale__id', 'didatticacopertura__personale__nome', 'didatticacopertura__personale__cognome', 'didatticacopertura__personale__middle_name',
+                    'didatticacopertura__personale__cd_ruolo', 'didatticacopertura__personale__cd_ssd').distinct()
 
         return query
