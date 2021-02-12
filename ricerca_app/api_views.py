@@ -2,12 +2,12 @@
 
 from django.http import QueryDict
 from rest_framework import generics, permissions
-from rest_framework.response import Response
 
 
 from .filters import *
 from .serializers import *
 from .services import *
+from .pagination import UnicalStorageApiPagination
 
 
 # permissions.IsAuthenticatedOrReadOnly
@@ -190,6 +190,8 @@ class ApiRicercaLineaBaseDetail(ApiResourceDetail):
 
 
 class ApiEndpoint(generics.GenericAPIView):
+    pagination_class = UnicalStorageApiPagination
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.language = None
@@ -207,7 +209,9 @@ class ApiEndpoint(generics.GenericAPIView):
         #     return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+
+        results = self.paginate_queryset(serializer.data)
+        return self.get_paginated_response(results)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -228,7 +232,7 @@ class ApiCdSList(ApiEndpoint):
 class ApiCdSInfo(ApiEndpoint):
     description = ''
     serializer_class = CdsInfoSerializer
-    #filter_backends = [ApiCdsInfoFilter]
+    filter_backends = [ApiCdsInfoFilter]
 
     # [?] Required Parameters (e.g. cdsid in this case), handle via urls?
     def get_queryset(self):
@@ -276,7 +280,7 @@ class ApiCdSInfo(ApiEndpoint):
 class ApiCdSStudyPlans(ApiEndpoint):
     description = ''
     serializer_class = CdSStudyPlansSerializer
-    #filter_backends = [ApiCdsListFilter]
+    filter_backends = [ApiCdSStudyPlansFilter]
 
     def get_queryset(self):
         cdsid_param = self.request.query_params.get('cdsid')
@@ -323,7 +327,6 @@ class ApiStudyActivityInfo(ApiEndpoint):
 class ApiCdSMainTeachers(ApiEndpoint):
     description = ''
     serializer_class = CdSMainTeachersSerializer
-
     # filter_backends = [ApiCdsListFilter]
 
     def get_queryset(self):
