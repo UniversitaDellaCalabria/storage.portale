@@ -9,3 +9,32 @@
 	- Query (OK)
 	- Serializer (OK)
 	- Test OK (Coverage 99%)
+
+12/02/2021
+
+- Endpoint '/api/ricerca/cdslist' e '/api/ricerca/cdsinfo'
+	- Aggiunto Filter e Pagination
+
+- Endpoint '/api/ricerca/cdsstudyplans'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+- Endpoint '/api/ricerca/studyplansactivities'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+- Endpoint '/api/ricerca/studyactivityinfo'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+- Endpoint '/api/ricerca/cdsmainteachers'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
