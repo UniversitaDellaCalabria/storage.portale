@@ -2,7 +2,8 @@ from functools import reduce
 import operator
 
 from django.db.models import Q
-from .models import DidatticaCds, DidatticaAttivitaFormativa, DidatticaTestiAf, DidatticaCopertura
+from .models import DidatticaCds, DidatticaAttivitaFormativa,\
+    DidatticaTestiAf, DidatticaCopertura, Personale
 
 
 class ServiceQueryBuilder:
@@ -194,5 +195,16 @@ class ServiceDidatticaAttivitaFormativa:
             .order_by('didatticacopertura__personale__cd_ruolo', 'didatticacopertura__personale__cognome', 'didatticacopertura__personale__nome') \
             .values('didatticacopertura__personale__id', 'didatticacopertura__personale__nome', 'didatticacopertura__personale__cognome', 'didatticacopertura__personale__middle_name',
                     'didatticacopertura__personale__cd_ruolo', 'didatticacopertura__personale__cd_ssd').distinct()
+
+        return query
+
+
+class ServiceDocente:
+    @staticmethod
+    def getResearchGroups(teacher_id):
+
+        query = Personale.objects.filter(id=teacher_id, fl_docente=1, ricercadocentegruppo__dt_fine__isnull=True) \
+                .order_by('ricercadocentegruppo__ricerca_gruppo__nome') \
+                .values('ricercadocentegruppo__ricerca_gruppo__id', 'ricercadocentegruppo__ricerca_gruppo__nome', 'ricercadocentegruppo__ricerca_gruppo__descrizione').distinct()
 
         return query

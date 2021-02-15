@@ -269,3 +269,21 @@ class CdSMainTeachersSerializer(CreateUpdateAbstract):
             'TeacherRole': query['didatticacopertura__personale__cd_ruolo'],
             'TeacherSSD': query['didatticacopertura__personale__cd_ssd'],
         }
+
+
+class TeacherResearchGroupsSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        return {
+            'RGroupID': query['ricercadocentegruppo__ricerca_gruppo__id'],
+            'RGroupName': query['ricercadocentegruppo__ricerca_gruppo__nome'],
+            'RGroupDescription': query['ricercadocentegruppo__ricerca_gruppo__descrizione'],
+        }

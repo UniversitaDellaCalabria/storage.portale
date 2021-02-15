@@ -298,7 +298,7 @@ class ApiCdSStudyPlans(ApiEndpoint):
 class ApiStudyPlansActivities(ApiEndpoint):
     description = ''
     serializer_class = StudyPlansActivitiesSerializer
-    #filter_backends = [ApiCdsListFilter]
+    # filter_backends = [ApiCdsListFilter]
 
     def get_queryset(self):
         studyplanid_param = self.request.query_params.get('studyplanid')
@@ -335,3 +335,16 @@ class ApiCdSMainTeachers(ApiEndpoint):
             return None
 
         return ServiceDidatticaAttivitaFormativa.getDocentiPerReg(regdid_id)
+
+
+class ApiTeacherResearchGroups(ApiEndpoint):
+    description = ''
+    serializer_class = TeacherResearchGroupsSerializer
+    # filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        teacher_id = self.request.query_params.get('teacherid')
+        if not teacher_id:
+            return None
+
+        return ServiceDocente.getResearchGroups(teacher_id)

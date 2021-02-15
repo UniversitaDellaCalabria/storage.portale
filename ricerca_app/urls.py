@@ -2,7 +2,6 @@ from django.conf import settings
 from django.urls import path, include
 from rest_framework import routers, permissions
 from rest_framework.renderers import JSONOpenAPIRenderer
-from rest_framework.schemas import get_schema_view
 from rest_framework.schemas.agid_schema_views import get_schema_view
 
 
@@ -136,3 +135,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/cdsmainteachers'.format(base_url),
                         api_views.ApiCdSMainTeachers.as_view(),
                         name='cdsmainteachers'),
+
+    urlpatterns += path('{}/teacherresearchgroups'.format(base_url),
+                        api_views.ApiTeacherResearchGroups.as_view(),
+                        name='teacherresearchgroups'),

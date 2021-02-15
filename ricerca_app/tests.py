@@ -9,7 +9,7 @@ class ApiCdSListUnitTest(TestCase):
 
     def test_apicdslist(self):
         req = Client()
-        #user = ContextUnitTest.create_user(username='staff',is_staff=True)
+        # user = ContextUnitTest.create_user(username='staff',is_staff=True)
 
         dip = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
@@ -509,3 +509,84 @@ class ApiCdSMainTeachersUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()[
             'results'][1]['TeacherName'] == 'Garofalo Franco Luigi'
+
+
+class ApiTeacherResearchGroupsUnitTest(TestCase):
+
+    def test_apiteacherresearchgroups(self):
+        req = Client()
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+        })
+        doc2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Franco',
+            'middle_name': 'Luigi',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 2,
+            'matricola': '111111',
+            'fl_docente': 1,
+        })
+
+        r1 = RicercaGruppoUnitTest.create_ricercaGruppo(**{
+            'id': 1,
+            'nome': 'Intelligenza Artificiale',
+            'descrizione': 'ricerca su Machine Learning',
+        })
+        r2 = RicercaGruppoUnitTest.create_ricercaGruppo(**{
+            'id': 2,
+            'nome': 'Intelligenza Artificiale',
+            'descrizione': 'ricerca su Deep Learning',
+        })
+        r3 = RicercaGruppoUnitTest.create_ricercaGruppo(**{
+            'id': 3,
+            'nome': 'Statistica',
+            'descrizione': 'ricerca su Variabili Aleatorie',
+        })
+
+        RicercaDocenteGruppoUnitTest.create_ricercaDocenteGruppo(**{
+            'personale': doc1,
+            'ricerca_gruppo': r1,
+            'id': 1,
+        })
+        RicercaDocenteGruppoUnitTest.create_ricercaDocenteGruppo(**{
+            'personale': doc1,
+            'ricerca_gruppo': r2,
+            'id': 2,
+        })
+        RicercaDocenteGruppoUnitTest.create_ricercaDocenteGruppo(**{
+            'personale': doc2,
+            'ricerca_gruppo': r3,
+            'id': 3,
+            'dt_fine': '2021-01-03',
+        })
+
+        url = reverse('ricerca:teacherresearchgroups')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'teacherid': 1}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['RGroupID'] == 1
+
+        # two groups for teacherid = 1
+        data = {'teacherid': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
+        # dt fine not null
+        data = {'teacherid': 2}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0

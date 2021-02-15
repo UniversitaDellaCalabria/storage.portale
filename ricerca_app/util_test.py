@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from .models import (DidatticaCds, DidatticaCdsLingua, DidatticaRegolamento, DidatticaDipartimento, ComuniAll,
                      TerritorioIt, DidatticaTestiRegolamento, DidatticaAttivitaFormativa, DidatticaPdsRegolamento,
-                     DidatticaTestiAf, Personale, DidatticaCopertura)
+                     DidatticaTestiAf, Personale, DidatticaCopertura, RicercaDocenteGruppo, RicercaGruppo)
 
 
 # class ContextUnitTest(TestCase):
@@ -186,4 +186,26 @@ class DidatticaCoperturaUnitTest(TestCase):
             data[k] = v
 
         obj = DidatticaCopertura.objects.create(**data)
+        return obj
+
+
+class RicercaDocenteGruppoUnitTest(TestCase):
+    @classmethod
+    def create_ricercaDocenteGruppo(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaDocenteGruppo.objects.create(**data)
+        return obj
+
+
+class RicercaGruppoUnitTest(TestCase):
+    @classmethod
+    def create_ricercaGruppo(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaGruppo.objects.create(**data)
         return obj
