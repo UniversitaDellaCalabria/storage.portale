@@ -119,8 +119,7 @@ class CdSListSerializer(CreateUpdateAbstract):
             'CdSLanguage': query['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or query['didatticacdslingua__lingua_des_eng'] is None else query['didatticacdslingua__lingua_des_eng'],
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
-            'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria']
-        }
+            'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria']}
 
 
 class CdsInfoSerializer(CreateUpdateAbstract):
@@ -287,3 +286,37 @@ class TeacherResearchGroupsSerializer(CreateUpdateAbstract):
             'RGroupName': query['ricercadocentegruppo__ricerca_gruppo__nome'],
             'RGroupDescription': query['ricercadocentegruppo__ricerca_gruppo__descrizione'],
         }
+
+
+class TeacherResearchLinesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        if query['Tipologia'] == 'applicata':
+            return {
+                'R&SLineID': query['ricercadocentelineaapplicata__ricerca_linea_applicata__id'],
+                'R&SLineDescription': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descrizione'],
+                'R&SLineResults': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descr_pubblicaz_prog_brevetto'],
+                'R&SLineASTER1Id': query['ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__id'],
+                'R&SLineASTER1Name': query['ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__descrizione'],
+                'R&SLineASTER2Id': query['ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__id'],
+                'R&SLineASTER2Name': query['ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__descrizione'],
+            }
+        else:
+            return {
+                'R&SLineID': query['ricercadocentelineabase__ricerca_linea_base__id'],
+                'R&SLineDescription': query['ricercadocentelineabase__ricerca_linea_base__descrizione'],
+                'R&SLineResults': query['ricercadocentelineabase__ricerca_linea_base__descr_pubblicaz_prog_brevetto'],
+                'R&SLineERC1Id': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__cod_erc1'],
+                'R&SLineERC1Name': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__descrizione'],
+                'R&SLineERC2Id': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__cod_erc2'],
+                'R&SLineERC2Name': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__descrizione'],
+            }

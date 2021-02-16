@@ -248,8 +248,14 @@ class ApiCdSInfo(ApiEndpoint):
         if(len(res) == 0):
             return None
 
-        texts = DidatticaTestiRegolamento.objects.filter(regdid=cdsid_param)\
-            .values('regdid__regdid_id', 'clob_txt_ita', 'clob_txt_eng', 'tipo_testo_regdid_cod', 'profilo', 'profilo_eng')
+        texts = DidatticaTestiRegolamento.objects.filter(
+            regdid=cdsid_param) .values(
+            'regdid__regdid_id',
+            'clob_txt_ita',
+            'clob_txt_eng',
+            'tipo_testo_regdid_cod',
+            'profilo',
+            'profilo_eng')
 
         list_profiles = {}
         last_profile = ""
@@ -348,3 +354,15 @@ class ApiTeacherResearchGroups(ApiEndpoint):
             return None
 
         return ServiceDocente.getResearchGroups(teacher_id)
+
+
+class ApiTeacherResearchLines(ApiEndpoint):
+    description = ''
+    serializer_class = TeacherResearchLinesSerializer
+    # filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        teacher_id = self.request.query_params.get('teacherid')
+        if not teacher_id:
+            return None
+        return ServiceDocente.getResearchLines(teacher_id)

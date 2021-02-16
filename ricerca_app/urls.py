@@ -139,3 +139,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/teacherresearchgroups'.format(base_url),
                         api_views.ApiTeacherResearchGroups.as_view(),
                         name='teacherresearchgroups'),
+
+    urlpatterns += path('{}/teacherresearchlines'.format(base_url),
+                        api_views.ApiTeacherResearchLines.as_view(),
+                        name='teacherresearchlines'),

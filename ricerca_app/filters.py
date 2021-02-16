@@ -87,22 +87,14 @@ class ApiCdsListFilter(GenericApiFilter):
 
 
 class ApiCdsInfoFilter(GenericApiFilter):
-    search_params = [
-        {
-            'name': 'cdsid',
-            'description': 'returns one cds filtered on didattica regolamento id',
-            'required': False,
-            'type': 'int'
-        }
-    ]
+    search_params = [{'name': 'cdsid',
+                      'description': 'returns one cds filtered on didattica regolamento id',
+                      'required': False,
+                      'type': 'int'}]
 
 
 class ApiCdSStudyPlansFilter(GenericApiFilter):
-    search_params = [
-        {
-            'name': 'cdsid',
-            'description': 'returns one cds filtered on didattica regolamento id',
-            'required': False,
-            'type': 'int'
-        }
-    ]
+    search_params = [{'name': 'cdsid',
+                      'description': 'returns one cds filtered on didattica regolamento id',
+                      'required': False,
+                      'type': 'int'}]

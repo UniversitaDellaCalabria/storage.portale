@@ -1,8 +1,28 @@
 from django.test import TestCase
 
-from .models import (DidatticaCds, DidatticaCdsLingua, DidatticaRegolamento, DidatticaDipartimento, ComuniAll,
-                     TerritorioIt, DidatticaTestiRegolamento, DidatticaAttivitaFormativa, DidatticaPdsRegolamento,
-                     DidatticaTestiAf, Personale, DidatticaCopertura, RicercaDocenteGruppo, RicercaGruppo)
+from .models import (
+    DidatticaCds,
+    DidatticaCdsLingua,
+    DidatticaRegolamento,
+    DidatticaDipartimento,
+    ComuniAll,
+    TerritorioIt,
+    DidatticaTestiRegolamento,
+    DidatticaAttivitaFormativa,
+    DidatticaPdsRegolamento,
+    DidatticaTestiAf,
+    Personale,
+    DidatticaCopertura,
+    RicercaDocenteGruppo,
+    RicercaGruppo,
+    RicercaDocenteLineaApplicata,
+    RicercaLineaApplicata,
+    RicercaAster2,
+    RicercaAster1,
+    RicercaDocenteLineaBase,
+    RicercaLineaBase,
+    RicercaErc2,
+    RicercaErc1)
 
 
 # class ContextUnitTest(TestCase):
@@ -208,4 +228,92 @@ class RicercaGruppoUnitTest(TestCase):
             data[k] = v
 
         obj = RicercaGruppo.objects.create(**data)
+        return obj
+
+
+class RicercaDocenteLineaApplicataUnitTest(TestCase):
+    @classmethod
+    def create_ricercaDocenteLineaApplicata(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaDocenteLineaApplicata.objects.create(**data)
+        return obj
+
+
+class RicercaLineaApplicataUnitTest(TestCase):
+    @classmethod
+    def create_ricercaLineaApplicata(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaLineaApplicata.objects.create(**data)
+        return obj
+
+
+class RicercaAster2UnitTest(TestCase):
+    @classmethod
+    def create_ricercaAster2(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaAster2.objects.create(**data)
+        return obj
+
+
+class RicercaAster1UnitTest(TestCase):
+    @classmethod
+    def create_ricercaAster1(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaAster1.objects.create(**data)
+        return obj
+
+
+class RicercaDocenteLineaBaseUnitTest(TestCase):
+    @classmethod
+    def create_ricercaDocenteLineaBase(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaDocenteLineaBase.objects.create(**data)
+        return obj
+
+
+class RicercaLineaBaseUnitTest(TestCase):
+    @classmethod
+    def create_ricercaLineaBase(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaLineaBase.objects.create(**data)
+        return obj
+
+
+class RicercaErc2UnitTest(TestCase):
+    @classmethod
+    def create_ricercaErc2(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaErc2.objects.create(**data)
+        return obj
+
+
+class RicercaErc1UnitTest(TestCase):
+    @classmethod
+    def create_ricercaErc1(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaErc1.objects.create(**data)
         return obj

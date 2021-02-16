@@ -34,8 +34,7 @@ class ServiceDidatticaCds:
         }
 
         didatticacdslingua_params_to_query_field = {
-            'cdslanguage': f'didatticacdslingua__lingua_des_{language == "it" and "it" or "eng"}__iexact',
-        }
+            'cdslanguage': f'didatticacdslingua__lingua_des_{language == "it" and "it" or "eng"}__iexact', }
 
         keywords = set(
             query_params.get(
@@ -90,12 +89,25 @@ class ServiceDidatticaAttivitaFormativa:
                         af_id=q.af_id)
             query = new_query
 
-        return query.order_by('pds_regdid__pds_regdid_id', 'anno_corso', 'ciclo_des') \
-            .values('pds_regdid__pds_regdid_id', 'pds_regdid__pds_des_it', 'pds_regdid__pds_des_eng',
-                    'regdid__regdid_id',
-                    'af_id', 'des', 'af_gen_des_eng', 'cds__cds_id', 'anno_corso',
-                    'ciclo_des', 'peso', 'sett_des', 'freq_obblig_flg',
-                    'cds__nome_cds_it', 'cds__nome_cds_eng')
+        return query.order_by(
+            'pds_regdid__pds_regdid_id',
+            'anno_corso',
+            'ciclo_des') .values(
+            'pds_regdid__pds_regdid_id',
+            'pds_regdid__pds_des_it',
+            'pds_regdid__pds_des_eng',
+            'regdid__regdid_id',
+            'af_id',
+            'des',
+            'af_gen_des_eng',
+            'cds__cds_id',
+            'anno_corso',
+            'ciclo_des',
+            'peso',
+            'sett_des',
+            'freq_obblig_flg',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng')
 
     @staticmethod
     def getAttivitaFormativaByStudyPlan(studyplanid):
@@ -107,22 +119,49 @@ class ServiceDidatticaAttivitaFormativa:
                 new_query = new_query | DidatticaAttivitaFormativa.objects.filter(
                     af_id=q.af_id)
 
-        return new_query.order_by('anno_corso', 'ciclo_des') \
-            .values('af_id', 'des', 'af_gen_des_eng', 'cds__cds_id', 'anno_corso',
-                    'ciclo_des', 'peso', 'sett_des', 'freq_obblig_flg',
-                    'cds__nome_cds_it', 'cds__nome_cds_eng')
+        return new_query.order_by(
+            'anno_corso',
+            'ciclo_des') .values(
+            'af_id',
+            'des',
+            'af_gen_des_eng',
+            'cds__cds_id',
+            'anno_corso',
+            'ciclo_des',
+            'peso',
+            'sett_des',
+            'freq_obblig_flg',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng')
 
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
-        list_submodules = DidatticaAttivitaFormativa.objects.filter(af_radice_id=af_id) \
-            .exclude(af_id=af_id) \
-            .values('af_id', 'des', 'af_gen_des_eng', 'ciclo_des')
+        list_submodules = DidatticaAttivitaFormativa.objects.filter(
+            af_radice_id=af_id) .exclude(
+            af_id=af_id) .values(
+            'af_id',
+            'des',
+            'af_gen_des_eng',
+            'ciclo_des')
 
-        query = DidatticaAttivitaFormativa.objects.filter(af_id=af_id).order_by('anno_corso', 'ciclo_des') \
-            .values('af_id', 'des', 'af_gen_des_eng', 'cds__cds_id', 'anno_corso',
-                    'ciclo_des', 'peso', 'sett_des', 'freq_obblig_flg',
-                    'cds__nome_cds_it', 'cds__nome_cds_eng', 'tipo_af_des', 'matricola_resp_did',
-                    )
+        query = DidatticaAttivitaFormativa.objects.filter(
+            af_id=af_id).order_by(
+            'anno_corso',
+            'ciclo_des') .values(
+            'af_id',
+            'des',
+            'af_gen_des_eng',
+            'cds__cds_id',
+            'anno_corso',
+            'ciclo_des',
+            'peso',
+            'sett_des',
+            'freq_obblig_flg',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng',
+            'tipo_af_des',
+            'matricola_resp_did',
+        )
         copertura = DidatticaCopertura.objects.filter(
             af_id=af_id).values(
             'personale__id',
@@ -191,10 +230,18 @@ class ServiceDidatticaAttivitaFormativa:
     @staticmethod
     def getDocentiPerReg(regdid_id):
 
-        query = DidatticaAttivitaFormativa.objects.filter(regdid__regdid_id=regdid_id, didatticacopertura__personale__isnull=False) \
-            .order_by('didatticacopertura__personale__cd_ruolo', 'didatticacopertura__personale__cognome', 'didatticacopertura__personale__nome') \
-            .values('didatticacopertura__personale__id', 'didatticacopertura__personale__nome', 'didatticacopertura__personale__cognome', 'didatticacopertura__personale__middle_name',
-                    'didatticacopertura__personale__cd_ruolo', 'didatticacopertura__personale__cd_ssd').distinct()
+        query = DidatticaAttivitaFormativa.objects.filter(
+            regdid__regdid_id=regdid_id,
+            didatticacopertura__personale__isnull=False) .order_by(
+            'didatticacopertura__personale__cd_ruolo',
+            'didatticacopertura__personale__cognome',
+            'didatticacopertura__personale__nome') .values(
+            'didatticacopertura__personale__id',
+            'didatticacopertura__personale__nome',
+            'didatticacopertura__personale__cognome',
+            'didatticacopertura__personale__middle_name',
+            'didatticacopertura__personale__cd_ruolo',
+            'didatticacopertura__personale__cd_ssd').distinct()
 
         return query
 
@@ -203,8 +250,49 @@ class ServiceDocente:
     @staticmethod
     def getResearchGroups(teacher_id):
 
-        query = Personale.objects.filter(id=teacher_id, fl_docente=1, ricercadocentegruppo__dt_fine__isnull=True) \
-                .order_by('ricercadocentegruppo__ricerca_gruppo__nome') \
-                .values('ricercadocentegruppo__ricerca_gruppo__id', 'ricercadocentegruppo__ricerca_gruppo__nome', 'ricercadocentegruppo__ricerca_gruppo__descrizione').distinct()
+        query = Personale.objects.filter(
+            id=teacher_id,
+            fl_docente=1,
+            ricercadocentegruppo__dt_fine__isnull=True) .order_by('ricercadocentegruppo__ricerca_gruppo__nome') .values(
+            'ricercadocentegruppo__ricerca_gruppo__id',
+            'ricercadocentegruppo__ricerca_gruppo__nome',
+            'ricercadocentegruppo__ricerca_gruppo__descrizione').distinct()
 
         return query
+
+    @staticmethod
+    def getResearchLines(teacher_id):
+        linea_applicata = Personale.objects.filter(
+            id=teacher_id,
+            fl_docente=1,
+            ricercadocentelineaapplicata__dt_fine__isnull=True) .order_by('ricercadocentelineaapplicata__ricerca_linea_applicata__id') .values(
+            'ricercadocentelineaapplicata__ricerca_linea_applicata__id',
+            'ricercadocentelineaapplicata__ricerca_linea_applicata__descrizione',
+            'ricercadocentelineaapplicata__ricerca_linea_applicata__descr_pubblicaz_prog_brevetto',
+            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__id',
+            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__descrizione',
+            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__id',
+            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__descrizione').distinct()
+
+        linea_base = Personale.objects.filter(
+            id=teacher_id,
+            fl_docente=1,
+            ricercadocentelineabase__dt_fine__isnull=True) .order_by('ricercadocentelineabase__ricerca_linea_base__id') .values(
+            'ricercadocentelineabase__ricerca_linea_base__id',
+            'ricercadocentelineabase__ricerca_linea_base__descrizione',
+            'ricercadocentelineabase__ricerca_linea_base__descr_pubblicaz_prog_brevetto',
+            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__cod_erc2',
+            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__descrizione',
+            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__cod_erc1',
+            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__descrizione').distinct()
+
+        linea_applicata = list(linea_applicata)
+        for linea in linea_applicata:
+            linea['Tipologia'] = 'applicata'
+        linea_base = list(linea_base)
+        for linea in linea_base:
+            linea['Tipologia'] = 'base'
+
+        linea_applicata.extend(linea_base)
+
+        return linea_applicata

@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from .util_test import *
+from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest, DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest, RicercaAster1UnitTest, RicercaAster2UnitTest, RicercaDocenteGruppoUnitTest, RicercaDocenteLineaApplicataUnitTest, RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest, RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -158,19 +158,16 @@ class ModelsToStringUnitTest(TestCase):
         })
         assert isinstance(didattica_cds.__str__(), str)
 
-        didattica_lingua = DidatticaCdsLinguaUnitTest.create_didatticaCdsLingua(**{
-            'cdsord': didattica_cds,
-        })
+        didattica_lingua = DidatticaCdsLinguaUnitTest.create_didatticaCdsLingua(
+            **{'cdsord': didattica_cds, })
         assert isinstance(didattica_lingua.__str__(), str)
 
-        didattica_regolamento = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
-            'regdid_id': 1,
-        })
+        didattica_regolamento = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(
+            **{'regdid_id': 1, })
         assert isinstance(didattica_regolamento.__str__(), str)
 
-        didattica_testi_regolamento = DidatticaTestiRegolamentoUnitTest.create_didatticaTestiRegolamento(**{
-            'regdid': didattica_regolamento,
-        })
+        didattica_testi_regolamento = DidatticaTestiRegolamentoUnitTest.create_didatticaTestiRegolamento(
+            **{'regdid': didattica_regolamento, })
         assert isinstance(didattica_testi_regolamento.__str__(), str)
 
 
@@ -243,10 +240,8 @@ class ApiCdSStudyPlansUnitTest(TestCase):
         req = Client()
 
         regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
-        pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(**{
-            'regdid': regdid,
-
-        })
+        pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
+            **{'regdid': regdid, })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'pds_regdid': pds,
             'regdid': regdid,
@@ -285,14 +280,10 @@ class ApiStudyPlansActivitiesUnitTest(TestCase):
         req = Client()
 
         regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
-        pds1 = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(**{
-            'pds_regdid_id': 1,
-            'regdid': regdid,
-        })
-        pds2 = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(**{
-            'pds_regdid_id': 2,
-            'regdid': regdid,
-        })
+        pds1 = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
+            **{'pds_regdid_id': 1, 'regdid': regdid, })
+        pds2 = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
+            **{'pds_regdid_id': 2, 'regdid': regdid, })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 1,
             'pds_regdid': pds1,
@@ -379,10 +370,8 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         req = Client()
 
         regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
-        pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(**{
-            'pds_regdid_id': 1,
-            'regdid': regdid,
-        })
+        pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
+            **{'pds_regdid_id': 1, 'regdid': regdid, })
         course = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 1,
             'pds_regdid': pds,
@@ -568,6 +557,11 @@ class ApiTeacherResearchGroupsUnitTest(TestCase):
             'id': 3,
             'dt_fine': '2021-01-03',
         })
+        RicercaDocenteGruppoUnitTest.create_ricercaDocenteGruppo(**{
+            'personale': doc2,
+            'ricerca_gruppo': r2,
+            'id': 4,
+        })
 
         url = reverse('ricerca:teacherresearchgroups')
 
@@ -589,4 +583,116 @@ class ApiTeacherResearchGroupsUnitTest(TestCase):
         # dt fine not null
         data = {'teacherid': 2}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 0
+        assert len(res.json()['results']) == 1
+
+
+class ApiTeacherResearchLinesUnitTest(TestCase):
+
+    def test_apiteacherresearchlinesunittest(self):
+        req = Client()
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+        })
+        doc2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Franco',
+            'middle_name': 'Luigi',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 2,
+            'matricola': '111111',
+            'fl_docente': 1,
+        })
+
+        erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics'
+        })
+        erc2 = RicercaErc2UnitTest.create_ricercaErc2(**{
+            'cod_erc2': 'cod1_erc2',
+            'descrizione': 'Machine learning',
+            'ricerca_erc1': erc1
+        })
+        linea_base = RicercaLineaBaseUnitTest.create_ricercaLineaBase(**{
+            'id': 1,
+            'ricerca_erc2': erc2,
+            'descrizione': 'regressione lineare',
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020'
+        })
+        RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
+            'personale': doc1,
+            'ricerca_linea_base': linea_base
+        })
+        RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
+            'personale': doc2,
+            'ricerca_linea_base': linea_base,
+            'dt_fine': '2021-01-03',
+        })
+
+        aster1 = RicercaAster1UnitTest.create_ricercaAster1(**{
+            'id': 1,
+            'descrizione': 'ICT & Design'
+        })
+        aster2 = RicercaAster2UnitTest.create_ricercaAster2(**{
+            'id': 2,
+            'descrizione': 'Algorithms. Data and signal processing',
+            'ricerca_aster1': aster1
+        })
+        linea_applicata = RicercaLineaApplicataUnitTest.create_ricercaLineaApplicata(**{
+            'id': 1,
+            'ricerca_aster2': aster2,
+            'descrizione': 'regressione lineare',
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020'
+        })
+        linea_applicata2 = RicercaLineaApplicataUnitTest.create_ricercaLineaApplicata(**{
+            'id': 2,
+            'ricerca_aster2': aster2,
+            'descrizione': 'random forest',
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2019'
+        })
+        RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
+            'personale': doc1,
+            'ricerca_linea_applicata': linea_applicata,
+            'dt_ins': '2021-01-03 15:47:21'
+        })
+        RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
+            'personale': doc1,
+            'ricerca_linea_applicata': linea_applicata2,
+            'dt_ins': '2021-01-03 15:47:21'
+        })
+        RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
+            'personale': doc2,
+            'ricerca_linea_applicata': linea_applicata,
+            'dt_ins': '2021-01-03 15:47:21'
+        })
+
+        url = reverse('ricerca:teacherresearchlines')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'teacherid': 1}
+        res = req.get(url, data=data)
+        assert res.json()[
+            'results'][0]['R&SLineDescription'] == 'regressione lineare'
+
+        data = {'teacherid': 1}
+        res = req.get(url, data=data)
+        print(res.json()['results'])
+        assert len(res.json()['results']) == 3
+
+        # teacherid 2 has one ricercalineabase (ended) and one
+        # ricercalineaapplicata
+        data = {'teacherid': 2}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
