@@ -38,3 +38,18 @@
 	- Serializer (OK)
 	- Test OK (Coverage 99%)
 	- Pagination OK
+
+19/02/2021
+
+- Endpoint '/api/ricerca/teacherresearchgroups'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+	
+- Endpoint '/api/ricerca/teacherresearchlines'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+	- NOTA: necessario un piccolo ritocco nel valori di output
