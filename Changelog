@@ -52,4 +52,4 @@
 	- Serializer (OK)
 	- Test OK (Coverage 99%)
 	- Pagination OK
-	- NOTA: necessario un piccolo ritocco nel valori di output
+	- NOTA: necessario un piccolo ritocco nei valori di output (al posto di ERC1-ERC2/ASTER1-ASTER2 inserire valori di ERC0)
