@@ -219,6 +219,8 @@ class ApiEndpoint(generics.GenericAPIView):
         return context
 
 
+# ----CdS----
+
 class ApiCdSList(ApiEndpoint):
     description = ''
     serializer_class = CdSListSerializer
@@ -293,10 +295,6 @@ class ApiCdSStudyPlans(ApiEndpoint):
         if not cdsid_param:
             return None
 
-        # problemi con year = null, provare regdidid = 6343
-        # Fare test
-        # Chiedere corsi principali/moduli sottomoduli
-
         return ServiceDidatticaAttivitaFormativa.getListAttivitaFormativa(
             regdid_id=cdsid_param)
 
@@ -342,6 +340,8 @@ class ApiCdSMainTeachers(ApiEndpoint):
 
         return ServiceDidatticaAttivitaFormativa.getDocentiPerReg(regdid_id)
 
+# ----Ricerca----
+
 
 class ApiTeacherResearchGroups(ApiEndpoint):
     description = ''
@@ -366,3 +366,44 @@ class ApiTeacherResearchLines(ApiEndpoint):
         if not teacher_id:
             return None
         return ServiceDocente.getResearchLines(teacher_id)
+
+
+# ----Docenti----
+
+class ApiTeachersList(ApiEndpoint):
+    description = ''
+    serializer_class = TeachersListSerializer
+    # filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        regdid = self.request.query_params.get('cdsid')
+        dip = self.request.query_params.get('departmentid')
+        role = self.request.query_params.get('role')
+
+        return ServiceDocente.teachersList(regdid, dip, role)
+
+
+class ApiTeacherStudyActivities(ApiEndpoint):
+    description = ''
+    serializer_class = TeacherStudyActivitiesSerializer
+    # filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        teacher = self.request.query_params.get('teacherid')
+        year = self.request.query_params.get('year')
+        yearFrom = self.request.query_params.get('yearFrom')
+        yearTo = self.request.query_params.get('yearTo')
+
+        return ServiceDocente.getAttivitaFormativeByDocente(
+            teacher, year, yearFrom, yearTo)
+
+
+class ApiTeacherInfo(ApiEndpoint):
+    description = ''
+    serializer_class = TeacherInfoSerializer
+    # filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        teacher = self.request.query_params.get('teacherid')
+
+        return ServiceDocente.getDocenteInfo(teacher)

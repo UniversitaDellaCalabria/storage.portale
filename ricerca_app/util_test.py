@@ -22,7 +22,7 @@ from .models import (
     RicercaDocenteLineaBase,
     RicercaLineaBase,
     RicercaErc2,
-    RicercaErc1)
+    RicercaErc1, RicercaErc0)
 
 
 # class ContextUnitTest(TestCase):
@@ -316,4 +316,15 @@ class RicercaErc1UnitTest(TestCase):
             data[k] = v
 
         obj = RicercaErc1.objects.create(**data)
+        return obj
+
+
+class RicercaErc0UnitTest(TestCase):
+    @classmethod
+    def create_ricercaErc0(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = RicercaErc0.objects.create(**data)
         return obj

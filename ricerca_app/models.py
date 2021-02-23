@@ -1627,6 +1627,12 @@ class RicercaAster1(InsModAbstract):
                                  related_name='user_mod_ra1',
                                  on_delete=models.SET_NULL,
                                  blank=True, null=True)
+    ricerca_erc0_cod = models.ForeignKey(
+        'RicercaErc0',
+        models.DO_NOTHING,
+        db_column='RICERCA_ERC0_COD',
+        blank=True,
+        null=True)
 
     class Meta:
         managed = True
@@ -1760,6 +1766,20 @@ class RicercaDocenteLineaBase(InsModAbstract):
         db_table = 'ricerca_docente_linea_base'
 
 
+class RicercaErc0(models.Model):
+    # Field name made lowercase.
+    erc0_cod = models.CharField(
+        db_column='ERC0_COD',
+        primary_key=True,
+        max_length=2)
+    # Field name made lowercase.
+    description = models.CharField(db_column='DESCRIPTION', max_length=100)
+
+    class Meta:
+        managed = True
+        db_table = 'ricerca_erc0'
+
+
 class RicercaErc1(InsModAbstract):
 
     cod_erc1 = models.CharField(
@@ -1776,6 +1796,12 @@ class RicercaErc1(InsModAbstract):
                                  related_name='user_mod_re1',
                                  on_delete=models.SET_NULL,
                                  blank=True, null=True)
+    ricerca_erc0_cod = models.ForeignKey(
+        RicercaErc0,
+        models.DO_NOTHING,
+        db_column='RICERCA_ERC0_COD',
+        blank=True,
+        null=True)
 
     class Meta:
         managed = True

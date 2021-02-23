@@ -1,7 +1,12 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest, DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest, RicercaAster1UnitTest, RicercaAster2UnitTest, RicercaDocenteGruppoUnitTest, RicercaDocenteLineaApplicataUnitTest, RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest, RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest
+from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, \
+    DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest, \
+    DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest, \
+    RicercaAster1UnitTest, RicercaAster2UnitTest, RicercaDocenteGruppoUnitTest, RicercaDocenteLineaApplicataUnitTest, \
+    RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest, \
+    RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -400,6 +405,7 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         p = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Franco',
+            'cognome': 'Garofalo',
             'cd_ruolo': 'PO',
             'id_ab': 1,
             'matricola': '111111',
@@ -488,7 +494,7 @@ class ApiCdSMainTeachersUnitTest(TestCase):
 
         data = {'cdsid': 1}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == 1
+        assert res.json()['results'][0]['TeacherID'] == '111112'
 
         data = {'cdsid': 1}
         res = req.get(url, data=data)
@@ -571,17 +577,17 @@ class ApiTeacherResearchGroupsUnitTest(TestCase):
 
         # GET
 
-        data = {'teacherid': 1}
+        data = {'teacherid': '111112'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RGroupID'] == 1
 
         # two groups for teacherid = 1
-        data = {'teacherid': 1}
+        data = {'teacherid': '111112'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
 
         # dt fine not null
-        data = {'teacherid': 2}
+        data = {'teacherid': '111111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -611,9 +617,15 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'fl_docente': 1,
         })
 
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+        })
+
         erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
             'cod_erc1': 'cod1_erc1',
-            'descrizione': 'Computer Science and Informatics'
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
         })
         erc2 = RicercaErc2UnitTest.create_ricercaErc2(**{
             'cod_erc2': 'cod1_erc2',
@@ -638,7 +650,8 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
 
         aster1 = RicercaAster1UnitTest.create_ricercaAster1(**{
             'id': 1,
-            'descrizione': 'ICT & Design'
+            'descrizione': 'ICT & Design',
+            'ricerca_erc0_cod': erc0,
         })
         aster2 = RicercaAster2UnitTest.create_ricercaAster2(**{
             'id': 2,
@@ -681,18 +694,282 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
 
         # GET
 
-        data = {'teacherid': 1}
+        data = {'teacherid': '111112'}
         res = req.get(url, data=data)
         assert res.json()[
             'results'][0]['R&SLineDescription'] == 'regressione lineare'
 
-        data = {'teacherid': 1}
+        data = {'teacherid': '111112'}
         res = req.get(url, data=data)
-        print(res.json()['results'])
         assert len(res.json()['results']) == 3
 
         # teacherid 2 has one ricercalineabase (ended) and one
         # ricercalineaapplicata
-        data = {'teacherid': 2}
+        data = {'teacherid': '111111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
+
+
+class ApiTeachersListUnitTest(TestCase):
+
+    def test_apiteacherslistunittest(self):
+        req = Client()
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+        })
+        doc2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Franco',
+            'middle_name': 'Luigi',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 2,
+            'matricola': '111111',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 2,
+        })
+        doc3 = PersonaleUnitTest.create_personale(**{
+            'id': 3,
+            'nome': 'Pippo',
+            'cognome': 'Inzaghi',
+            'cd_ruolo': 'PO',
+            'id_ab': 3,
+            'matricola': '111113',
+            'fl_docente': 1,
+            'flg_cessato': 1,
+            'aff_org': 1,
+        })
+        doc4 = PersonaleUnitTest.create_personale(**{
+            'id': 4,
+            'nome': 'Zlatan',
+            'cognome': 'Ibrahimovic',
+            'cd_ruolo': 'PO',
+            'id_ab': 4,
+            'matricola': '111114',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 42,
+        })
+
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': 1,
+            'dip_des_it': "Matematica e Informatica",
+            'dip_des_eng': "Math and Computer Science",
+        })
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 2,
+            'dip_cod': 2,
+            'dip_des_it': "Biologia",
+            'dip_des_eng': "Biology",
+        })
+
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        regdid2 = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 2,
+        })
+        course1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 1,
+            'des': 'matematica',
+            'af_gen_des_eng': 'math',
+            'ciclo_des': 'Primo semestre',
+            'regdid': regdid,
+            'af_radice_id': 1,
+        })
+        course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 2,
+            'des': 'informatica',
+            'af_gen_des_eng': 'computer science',
+            'ciclo_des': 'Secondo semestre',
+            'regdid': regdid2,
+            'af_radice_id': 2,
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course1,
+            'personale': doc1,
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course2,
+            'personale': doc1,
+        })
+
+        url = reverse('ricerca:teacherslist')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        # Three professor have flg_cessato = 0
+        res = req.get(url)
+        assert len(res.json()['results']) == 3
+
+        data = {'role': 'PO'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111111'
+
+        data = {'departmentid': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
+        data = {'departmentid': 42}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'departmentid': 1, 'role': 'PO'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'departmentid': 1, 'role': 'PA', 'language': 'eng'}
+        res = req.get(url, data=data)
+        assert res.json()[
+            'results'][0]['TeacherDepartmentName'] == "Math and Computer Science"
+
+        data = {'cdsid': 1}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111112'
+
+        data = {'cdsid': 2}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111112'
+
+        data = {'cdsid': 1, 'role': 'PA'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111112'
+
+
+class ApiTeacherStudyActivitiesUnitTest(TestCase):
+
+    def test_apiteacherstudyactivitiesunittest(self):
+        req = Client()
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+        })
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        course1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 1,
+            'des': 'matematica',
+            'af_gen_des_eng': 'math',
+            'ciclo_des': 'Primo semestre',
+            'regdid': regdid,
+            'af_radice_id': 1,
+            'anno_corso': 1,
+        })
+        course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 2,
+            'des': 'informatica',
+            'af_gen_des_eng': 'computer science',
+            'ciclo_des': 'Secondo semestre',
+            'regdid': regdid,
+            'af_radice_id': 2,
+            'anno_corso': 2,
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course1,
+            'personale': doc1,
+            'aa_id': 2019,
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course2,
+            'personale': doc1,
+            'aa_id': 2020,
+        })
+
+        url = reverse('ricerca:teacherstudyactivities')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'teacherid': '111112'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['StudyActivityID'] == 1
+
+        data = {'teacherid': '111112', 'year': 2020}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'teacherid': '111112', 'yearFrom': 2020}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'teacherid': '111112', 'yearTo': 2020}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
+        data = {'teacherid': '111112', 'yearFrom': 2019, 'yearTo': 2020}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
+
+class ApiTeacherInfoUnitTest(TestCase):
+
+    def test_apiteacherinfounittest(self):
+        req = Client()
+
+        PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Lionel',
+            'cognome': 'Messi',
+            'cd_ruolo': 'PO',
+            'id_ab': 2,
+            'matricola': '111113',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 99,
+        })
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': 1,
+            'dip_des_it': "Matematica e Informatica",
+            'dip_des_eng': "Math and Computer Science",
+        })
+
+        url = reverse('ricerca:teacherinfo')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'teacherid': '111112'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111112'
+
+        data = {'teacherid': '111113'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111113'

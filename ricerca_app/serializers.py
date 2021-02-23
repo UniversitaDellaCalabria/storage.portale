@@ -263,7 +263,7 @@ class CdSMainTeachersSerializer(CreateUpdateAbstract):
             (" " + query['didatticacopertura__personale__middle_name']
              if query['didatticacopertura__personale__middle_name'] is not None else "")
         return {
-            'TeacherID': query['didatticacopertura__personale__id'],
+            'TeacherID': query['didatticacopertura__personale__matricola'],
             'TeacherName': name,
             'TeacherRole': query['didatticacopertura__personale__cd_ruolo'],
             'TeacherSSD': query['didatticacopertura__personale__cd_ssd'],
@@ -300,23 +300,102 @@ class TeacherResearchLinesSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
-        if query['Tipologia'] == 'applicata':
-            return {
-                'R&SLineID': query['ricercadocentelineaapplicata__ricerca_linea_applicata__id'],
-                'R&SLineDescription': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descrizione'],
-                'R&SLineResults': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descr_pubblicaz_prog_brevetto'],
-                'R&SLineASTER1Id': query['ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__id'],
-                'R&SLineASTER1Name': query['ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__descrizione'],
-                'R&SLineASTER2Id': query['ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__id'],
-                'R&SLineASTER2Name': query['ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__descrizione'],
-            }
-        else:
+        if query['Tipologia'] == 'base':
             return {
                 'R&SLineID': query['ricercadocentelineabase__ricerca_linea_base__id'],
                 'R&SLineDescription': query['ricercadocentelineabase__ricerca_linea_base__descrizione'],
                 'R&SLineResults': query['ricercadocentelineabase__ricerca_linea_base__descr_pubblicaz_prog_brevetto'],
-                'R&SLineERC1Id': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__cod_erc1'],
-                'R&SLineERC1Name': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__descrizione'],
-                'R&SLineERC2Id': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__cod_erc2'],
-                'R&SLineERC2Name': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__descrizione'],
+                'R&SLineERC0Id': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
+                'R&SLineERC0Name': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__description'],
             }
+        else:
+            return {
+                'R&SLineID': query['ricercadocentelineaapplicata__ricerca_linea_applicata__id'],
+                'R&SLineDescription': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descrizione'],
+                'R&SLineResults': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descr_pubblicaz_prog_brevetto'],
+                'R&SLineERC0Id': query[
+                    'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__erc0_cod'],
+                'R&SLineERC0Name': query[
+                    'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__description'],
+            }
+
+
+class TeachersListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        full_name = query['cognome'] + " " + query['nome'] + \
+            (" " + query['middle_name']
+             if query['middle_name'] is not None else "")
+        return {
+            'TeacherID': query['matricola'],
+            'TeacherName': full_name,
+            'TeacherDepartmentID': query['dip_cod'],
+            'TeacherDepartmentName': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
+            'TeacherRole': query['cd_ruolo'],
+            'TeacherSSDCod': query['cd_ssd'],
+            'TeacherSSDDescription': query['ds_ssd'],
+        }
+
+
+class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'StudyActivityID': query['didatticacopertura__af__af_id'],
+            'StudyActivityName': query['didatticacopertura__af__des'] if req_lang == 'it' or query['didatticacopertura__af__af_gen_des_eng'] is None else query['didatticacopertura__af__af_gen_des_eng'],
+            'StudyActivityCdSID': query['didatticacopertura__af__regdid__regdid_id'],
+            'StudyActivityCdSName': query['didatticacopertura__af__cds__nome_cds_it'] if req_lang == 'it' or query[
+                'didatticacopertura__af__cds__nome_cds_eng'] is None else query['didatticacopertura__af__cds__nome_cds_eng'],
+            'StudyActivityAA': query['didatticacopertura__aa_id'],
+            'StudyActivityYear': query['didatticacopertura__af__anno_corso'],
+            'StudyActivitySemester': query['didatticacopertura__af__ciclo_des'],
+            'StudyActivityECTS': query['didatticacopertura__af__peso'],
+            'StudyActivityLanguage': query['didatticacopertura__af__lista_lin_did_af'],
+            'StudyActivitySSD': query['didatticacopertura__af__sett_des'],
+            'StudyActivityCompulsory': query['didatticacopertura__af__freq_obblig_flg'],
+        }
+
+
+class TeacherInfoSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        # if query['dip_des_it'] is None and query['dip_des_eng'] is None:
+        #     department = query['ds_aff_org']
+        # else:
+        #     department = query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query[
+        #         'dip_des_eng']
+        return {
+            'TeacherID': query['matricola'],
+            'TeacherCode': query['cod_fis'],
+            'TeacherFirstName': query['nome'] + (" " + query['middle_name']
+                                                 if query['middle_name'] is not None else ""),
+            'TeacherLastName': query['cognome'],
+            # query['aff_org'] if query['dip_cod'] is None else query['dip_cod'],
+            'TeacherDepartmentID': query['dip_cod'],
+            # department,
+            'TeacherDepartment': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
+            'TeacherRole': query['cd_ruolo'],
+            'TeacherSSDCod': query['cd_ssd'],
+            'TeacherSSDDescription': query['ds_ssd'],
+        }

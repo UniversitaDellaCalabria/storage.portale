@@ -2,8 +2,8 @@ from functools import reduce
 import operator
 
 from django.db.models import Q
-from .models import DidatticaCds, DidatticaAttivitaFormativa,\
-    DidatticaTestiAf, DidatticaCopertura, Personale
+from .models import DidatticaCds, DidatticaAttivitaFormativa, \
+    DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento
 
 
 class ServiceQueryBuilder:
@@ -167,6 +167,7 @@ class ServiceDidatticaAttivitaFormativa:
             'personale__id',
             'personale__nome',
             'personale__cognome',
+            'personale__middle_name',
             'personale__matricola')
         query = list(query)
 
@@ -175,9 +176,9 @@ class ServiceDidatticaAttivitaFormativa:
 
         for q in copertura:
             if q['personale__matricola'] == query[0]['matricola_resp_did']:
-                query[0]['StudyActivityTeacherID'] = q['personale__id']
-                query[0]['StudyActivityTeacherName'] = '{} {}'.format(
-                    q['personale__cognome'], q['personale__nome'])
+                query[0]['StudyActivityTeacherID'] = q['personale__matricola']
+                query[0]['StudyActivityTeacherName'] = q['personale__cognome'] + " " + q['personale__nome'] + \
+                    (" " + q['personale__middle_name'] if q['personale__middle_name'] is not None else "")
 
         texts_af = DidatticaTestiAf.objects.filter(
             af_id=af_id).values(
@@ -236,7 +237,7 @@ class ServiceDidatticaAttivitaFormativa:
             'didatticacopertura__personale__cd_ruolo',
             'didatticacopertura__personale__cognome',
             'didatticacopertura__personale__nome') .values(
-            'didatticacopertura__personale__id',
+            'didatticacopertura__personale__matricola',
             'didatticacopertura__personale__nome',
             'didatticacopertura__personale__cognome',
             'didatticacopertura__personale__middle_name',
@@ -251,7 +252,7 @@ class ServiceDocente:
     def getResearchGroups(teacher_id):
 
         query = Personale.objects.filter(
-            id=teacher_id,
+            matricola__exact=teacher_id,
             fl_docente=1,
             ricercadocentegruppo__dt_fine__isnull=True) .order_by('ricercadocentegruppo__ricerca_gruppo__nome') .values(
             'ricercadocentegruppo__ricerca_gruppo__id',
@@ -263,28 +264,24 @@ class ServiceDocente:
     @staticmethod
     def getResearchLines(teacher_id):
         linea_applicata = Personale.objects.filter(
-            id=teacher_id,
+            matricola__exact=teacher_id,
             fl_docente=1,
             ricercadocentelineaapplicata__dt_fine__isnull=True) .order_by('ricercadocentelineaapplicata__ricerca_linea_applicata__id') .values(
             'ricercadocentelineaapplicata__ricerca_linea_applicata__id',
             'ricercadocentelineaapplicata__ricerca_linea_applicata__descrizione',
             'ricercadocentelineaapplicata__ricerca_linea_applicata__descr_pubblicaz_prog_brevetto',
-            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__id',
-            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__descrizione',
-            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__id',
-            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__descrizione').distinct()
+            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__erc0_cod',
+            'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__description').distinct()
 
         linea_base = Personale.objects.filter(
-            id=teacher_id,
+            matricola__exact=teacher_id,
             fl_docente=1,
             ricercadocentelineabase__dt_fine__isnull=True) .order_by('ricercadocentelineabase__ricerca_linea_base__id') .values(
             'ricercadocentelineabase__ricerca_linea_base__id',
             'ricercadocentelineabase__ricerca_linea_base__descrizione',
             'ricercadocentelineabase__ricerca_linea_base__descr_pubblicaz_prog_brevetto',
-            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__cod_erc2',
-            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__descrizione',
-            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__cod_erc1',
-            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__descrizione').distinct()
+            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__erc0_cod',
+            'ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__description').distinct()
 
         linea_applicata = list(linea_applicata)
         for linea in linea_applicata:
@@ -296,3 +293,164 @@ class ServiceDocente:
         linea_applicata.extend(linea_base)
 
         return linea_applicata
+
+    @staticmethod
+    def teachersList(regdid, dip, role):
+        if dip:
+            department = DidatticaDipartimento.objects.filter(
+                dip_cod=dip).values(
+                "dip_cod", "dip_des_it", "dip_des_eng").first()
+            if department is None:
+                return None
+            query = Personale.objects.filter(
+                fl_docente=1,
+                aff_org=department["dip_cod"]) .values(
+                "matricola",
+                "nome",
+                "middle_name",
+                "cognome",
+                "cd_ruolo",
+                "cd_ssd",
+                "ds_ssd")
+            if role:
+                query = query.filter(cd_ruolo=role)
+            query = list(query)
+
+            for q in query:
+                q["dip_cod"] = department['dip_cod']
+                q["dip_des_it"] = department['dip_des_it']
+                q["dip_des_eng"] = department["dip_des_eng"]
+
+            return query
+
+        elif regdid:
+            if role:
+                query = Personale.objects.filter(
+                    fl_docente=1,
+                    cd_ruolo=role,
+                    didatticacopertura__af__isnull=False,
+                    didatticacopertura__af__regdid__regdid_id=regdid)
+            else:
+                query = Personale.objects.filter(
+                    fl_docente=1,
+                    didatticacopertura__af__isnull=False,
+                    didatticacopertura__af__regdid__regdid_id=regdid)
+        else:
+            if role:
+                query = Personale.objects.filter(
+                    fl_docente=1, flg_cessato=0, cd_ruolo=role)
+            else:
+                query = Personale.objects.filter(fl_docente=1, flg_cessato=0)
+
+        query = query.values(
+            "matricola",
+            "nome",
+            "middle_name",
+            "cognome",
+            "cd_ruolo",
+            "cd_ssd",
+            "ds_ssd",
+            "aff_org",
+            "ds_ssd").distinct()
+
+        query = list(query)
+
+        for q in query:
+            dep = DidatticaDipartimento.objects.filter(
+                dip_cod=q["aff_org"]).values(
+                "dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+            if len(dep) == 0:
+                q["dip_cod"] = None
+                q["dip_des_it"] = None
+                q["dip_des_eng"] = None
+            else:
+                dep = dep.first()
+                q["dip_cod"] = dep['dip_cod']
+                q["dip_des_it"] = dep['dip_des_it']
+                q["dip_des_eng"] = dep["dip_des_eng"]
+
+        return query
+
+    @staticmethod
+    def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo):
+
+        if year:
+            query = Personale.objects.filter(
+                fl_docente=1,
+                matricola__exact=teacher,
+                didatticacopertura__af__isnull=False,
+                didatticacopertura__aa_id=year)
+        elif yearFrom and yearTo:
+            query = Personale.objects.filter(
+                fl_docente=1,
+                matricola__exact=teacher,
+                didatticacopertura__af__isnull=False,
+                didatticacopertura__aa_id__gte=yearFrom,
+                didatticacopertura__aa_id__lte=yearTo)
+        elif yearFrom:
+            query = Personale.objects.filter(
+                fl_docente=1,
+                matricola__exact=teacher,
+                didatticacopertura__af__isnull=False,
+                didatticacopertura__aa_id__gte=yearFrom)
+        elif yearTo:
+            query = Personale.objects.filter(
+                fl_docente=1,
+                matricola__exact=teacher,
+                didatticacopertura__af__isnull=False,
+                didatticacopertura__aa_id__lte=yearTo)
+        else:
+            query = Personale.objects.filter(
+                fl_docente=1,
+                matricola__exact=teacher,
+                didatticacopertura__af__isnull=False)
+
+        return query.order_by(
+            'didatticacopertura__aa_id',
+            'didatticacopertura__af__anno_corso',
+            'didatticacopertura__af__des',
+            'didatticacopertura__af__af_gen_des_eng') .values(
+            'didatticacopertura__af__af_id',
+            'didatticacopertura__af__des',
+            'didatticacopertura__af__af_gen_des_eng',
+            'didatticacopertura__af__regdid__regdid_id',
+            'didatticacopertura__af__anno_corso',
+            'didatticacopertura__af__ciclo_des',
+            'didatticacopertura__af__peso',
+            'didatticacopertura__af__sett_des',
+            'didatticacopertura__af__freq_obblig_flg',
+            'didatticacopertura__af__cds__nome_cds_it',
+            'didatticacopertura__af__cds__nome_cds_eng',
+            'didatticacopertura__af__lista_lin_did_af',
+            'didatticacopertura__aa_id')
+
+    @staticmethod
+    def getDocenteInfo(teacher):
+        query = Personale.objects.filter(
+            fl_docente=1,
+            matricola__exact=teacher) .values(
+            "matricola",
+            "nome",
+            "middle_name",
+            "cognome",
+            "cd_ruolo",
+            "cd_ssd",
+            "ds_ssd",
+            "aff_org",
+            "cod_fis",
+            "ds_aff_org").distinct()
+        query = list(query)
+        for q in query:
+            dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
+                .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+            if len(dep) == 0:
+                q["dip_cod"] = None
+                q["dip_des_it"] = None
+                q["dip_des_eng"] = None
+            else:
+                dep = dep.first()
+                q["dip_cod"] = dep['dip_cod']
+                q["dip_des_it"] = dep['dip_des_it']
+                q["dip_des_eng"] = dep["dip_des_eng"]
+
+        return query
