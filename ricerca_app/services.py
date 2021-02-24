@@ -18,6 +18,9 @@ class ServiceQueryBuilder:
 class ServiceDidatticaCds:
     @staticmethod
     def cdslist(language, query_params):
+        # chiedere senza parametri come prendere l'ultimo academic year
+        # due possibilità: prendere la data dal sistema o fare l'order by
+
         didatticacds_params_to_query_field = {
             'coursetype': 'tipo_corso_cod',
             'courseclassid': 'cla_miur_cod',
@@ -468,7 +471,7 @@ class ServiceDottorato:
             'yearTo': 'idesse3_ddr__aa_regdid_id__lte',
             'regdid': 'idesse3_ddr__regdid_id_esse3__exact',
             'departmentid': 'dip_cod__dip_cod__exact',
-            'cdsid': 'cds_cod__exact',
+            'cdscod': 'cds_cod__exact',
             'pdscod': 'idesse3_ddpds__pds_cod__exact',
             'cycle': 'idesse3_ddr__num_ciclo',
         }

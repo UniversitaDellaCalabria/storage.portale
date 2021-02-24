@@ -25,49 +25,49 @@ class ApiCdsListFilter(GenericApiFilter):
     search_params = [
         {
             'name': 'academicyear',
-            'description': 'returns a list of cds filtered by academic year',
+            'description': 'Cds erogati in uno specifico anno accademico',
             'required': False,
             'type': 'int'
         },
         {
             'name': 'departmentid',
-            'description': 'returns a list of cds filtered by department id',
+            'description': 'Didattica dipartimento id',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'departmentname',
-            'description': 'returns a list of cds filtered by department name',
+            'description': 'Nome di un dipartimento',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'coursetype',
-            'description': 'returns a list of cds filtered by course type',
+            'description': 'Didattica cds course type',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'courseclassid',
-            'description': 'returns a list of cds filtered by course class id',
+            'description': 'Didattica cds course class id',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'courseclassname',
-            'description': 'returns a list of cds filtered by course class name',
+            'description': 'Didattica cds course class name',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'jointdegree',
-            'description': 'returns a list of cds filtered by joint degree',
+            'description': 'didattica cds joint degree',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'regdid_id',
-            'description': 'returns a list of cds filtered by didattica regolamento id',
+            'description': 'didattica regolamento id',
             'required': False,
             'type': 'int'
         },
@@ -79,7 +79,7 @@ class ApiCdsListFilter(GenericApiFilter):
         },
         {
             'name': 'language',
-            'description': 'returns a list of cds in italian or english ("it", "eng")',
+            'description': 'lingua dei risultati in output',
             'required': False,
             'type': 'string'
         },
@@ -88,13 +88,144 @@ class ApiCdsListFilter(GenericApiFilter):
 
 class ApiCdsInfoFilter(GenericApiFilter):
     search_params = [{'name': 'cdsid',
-                      'description': 'returns one cds filtered on didattica regolamento id',
-                      'required': False,
+                      'description': 'didattica regolamento id',
+                      'required': True,
                       'type': 'int'}]
 
 
 class ApiCdSStudyPlansFilter(GenericApiFilter):
-    search_params = [{'name': 'cdsid',
-                      'description': 'returns one cds filtered on didattica regolamento id',
-                      'required': False,
+    search_params = [{'name': 'studyplanid',
+                      'description': 'id di un piano di studio',
+                      'required': True,
                       'type': 'int'}]
+
+
+class ApiStudyActivityInfoFilter(GenericApiFilter):
+    search_params = [{'name': 'studyactivityid',
+                      'description': 'id di un\'attività formativa',
+                      'required': True,
+                      'type': 'int'}]
+
+
+class ApiCdSMainTeachersFilter(GenericApiFilter):
+    search_params = [{'name': 'cdsid',
+                      'description': 'didattica regolamento id',
+                      'required': True,
+                      'type': 'int'}]
+
+
+class ApiTeacherResearchGroupsFilter(GenericApiFilter):
+    search_params = [{'name': 'teacherid',
+                      'description': 'Matricola di un docente',
+                      'required': True,
+                      'type': 'string'}]
+
+
+class ApiTeacherResearchLinesFilter(GenericApiFilter):
+    search_params = [{'name': 'teacherid',
+                      'description': 'Matricola di un docente',
+                      'required': True,
+                      'type': 'string'}]
+
+
+class ApiTeachersListFilter(GenericApiFilter):
+    search_params = [
+        {
+            'name': 'cdsid',
+            'description': 'didattica regolamento id',
+            'required': False,
+            'type': 'int'
+        },
+        {
+            'name': 'departmentid',
+            'description': 'didattica dipartimento cod',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'role',
+            'description': 'Ruolo docente',
+            'required': False,
+            'type': 'string'
+        },
+    ]
+
+
+class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
+    search_params = [{'name': 'teacherid',
+                      'description': 'Matricola di un docente',
+                      'required': True,
+                      'type': 'string'},
+                     {'name': 'year',
+                      'description': 'Attività formative erogate in uno specifico anno',
+                      'required': False,
+                      'type': 'int'},
+                     {'name': 'yearFrom',
+                      'description': 'Attività formative erogate in un anno maggiore uguale a yearFrom',
+                      'required': False,
+                      'type': 'int'},
+                     {'name': 'yearTo',
+                      'description': 'Attività formative erogate in un anno minore uguale a yearTo',
+                      'required': False,
+                      'type': 'int'},
+                     ]
+
+
+class ApiTeacherInfoFilter(GenericApiFilter):
+    search_params = [{'name': 'teacherid',
+                      'description': 'Matricola di un docente',
+                      'required': True,
+                      'type': 'string'}]
+
+
+class ApiDoctoratesListFilter(GenericApiFilter):
+    search_params = [
+        {
+            'name': 'regdid',
+            'description': 'didattica dottorato regolamento id',
+            'required': False,
+            'type': 'int'
+        },
+        {
+            'name': 'year',
+            'description': 'didattica dottorato regolamento di uno specifico anno accademico',
+            'required': False,
+            'type': 'int'
+        },
+        {
+            'name': 'yearFrom',
+            'description': 'didattica dottorato regolamento con anno accademico maggiore uguale a yearTo',
+            'required': False,
+            'type': 'int'
+        },
+        {
+            'name': 'yearTo',
+            'description': 'didattica dottorato regolamento con anno accademico minore uguale a yearTo',
+            'required': False,
+            'type': 'int'
+        },
+        {
+            'name': 'departmentid',
+            'description': 'didattica dipartimento cod',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'cdscod',
+            'description': 'didattica dottorato cds cod',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'pdscod',
+            'description': 'codice del piano di studi del cds dottorato',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'cycle',
+            'description': 'numero ciclo del dottorato',
+            'required': False,
+            'type': 'int'
+        },
+    ]
