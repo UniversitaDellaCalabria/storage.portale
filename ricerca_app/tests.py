@@ -15,7 +15,6 @@ class ApiCdSListUnitTest(TestCase):
 
     def test_apicdslist(self):
         req = Client()
-        # user = ContextUnitTest.create_user(username='staff',is_staff=True)
 
         dip = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
@@ -65,11 +64,6 @@ class ApiCdSListUnitTest(TestCase):
         data = {'courseclassname': 'laurea in informatica'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
-
-        # param: courseclassgroup
-        # data = {'courseclassgroup': ''}
-        # res = req.get(url, data=data)
-        # assert res.json()[0]['RegDidId'] == 1
 
         # param: departmentid
         data = {'departmentid': 1}
