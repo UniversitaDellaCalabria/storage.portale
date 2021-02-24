@@ -6,7 +6,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest, \
     RicercaAster1UnitTest, RicercaAster2UnitTest, RicercaDocenteGruppoUnitTest, RicercaDocenteLineaApplicataUnitTest, \
     RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest, \
-    RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest
+    RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest, \
+    DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -726,7 +727,7 @@ class ApiTeachersListUnitTest(TestCase):
             'flg_cessato': 0,
             'aff_org': 1,
         })
-        doc2 = PersonaleUnitTest.create_personale(**{
+        PersonaleUnitTest.create_personale(**{
             'id': 2,
             'nome': 'Franco',
             'middle_name': 'Luigi',
@@ -738,7 +739,7 @@ class ApiTeachersListUnitTest(TestCase):
             'flg_cessato': 0,
             'aff_org': 2,
         })
-        doc3 = PersonaleUnitTest.create_personale(**{
+        PersonaleUnitTest.create_personale(**{
             'id': 3,
             'nome': 'Pippo',
             'cognome': 'Inzaghi',
@@ -749,7 +750,7 @@ class ApiTeachersListUnitTest(TestCase):
             'flg_cessato': 1,
             'aff_org': 1,
         })
-        doc4 = PersonaleUnitTest.create_personale(**{
+        PersonaleUnitTest.create_personale(**{
             'id': 4,
             'nome': 'Zlatan',
             'cognome': 'Ibrahimovic',
@@ -973,3 +974,81 @@ class ApiTeacherInfoUnitTest(TestCase):
         data = {'teacherid': '111113'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111113'
+
+
+class ApiDoctoratesListUnitTest(TestCase):
+
+    def test_apidoctorateslistunittest(self):
+        req = Client()
+
+        dip = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': 1,
+            'dip_des_it': "Matematica e Informatica",
+            'dip_des_eng': "Math and Computer Science",
+        })
+
+        cds = DidatticaDottoratoCdsUnitTest.create_didatticaDottoratoCds(**{
+            'dip_cod': dip,
+            'cds_id_esse3': 1,
+            'cds_cod': '111',
+            'aa_ord_id': 1,
+
+        })
+
+        DidatticaDottoratoPdsUnitTest.create_didatticaDottoratoPds(**{
+            'cds_id_esse3': cds,
+            'aa_ord': cds,
+            'pds_cod': 'GEN',
+        })
+
+        DidatticaDottoratoRegolamentoUnitTest.create_didatticaDottoratoRegolamento(**{
+            'regdid_id_esse3': 1,
+            'cds_id_esse3': cds,
+            'aa_ord': cds,
+            'aa_regdid_id': 2020,
+            'num_ciclo': 10,
+        })
+
+        url = reverse('ricerca:doctorateslist')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+
+        data = {'departmentid': 1}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+
+        data = {'year': 2020}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+
+        data = {'yearTo': 2019, 'yearFrom': 2018}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'yearTo': 2019}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'yearFrom': 2018}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'cdsid': '111'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+
+        data = {'pdscod': 'GEN'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+
+        data = {'cycle': 0}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0

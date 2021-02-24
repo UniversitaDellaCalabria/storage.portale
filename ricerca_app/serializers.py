@@ -108,7 +108,7 @@ class CdSListSerializer(CreateUpdateAbstract):
                 req_lang='en'):
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
-            'CdSId': query['cds_id'],
+            'CdSId': query['cds_cod'],
             'AcademicYear': query['didatticaregolamento__aa_reg_did'],
             'CdSName': query['nome_cds_it'] if req_lang == 'it' or query['nome_cds_eng'] is None else query['nome_cds_eng'],
             'DepartmentId': query['dip__dip_cod'],
@@ -135,7 +135,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 req_lang='en'):
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
-            'CdSId': query['cds_id'],
+            'CdSId': query['cds_cod'],
             'AcademicYear': query['didatticaregolamento__aa_reg_did'],
             'CdSName': query['nome_cds_it'] if req_lang == 'it' or query['nome_cds_eng'] is None else query['nome_cds_eng'],
             'DepartmentId': query['dip__dip_cod'],
@@ -176,7 +176,7 @@ class CdSStudyPlansSerializer(CreateUpdateAbstract):
                 'pds_regdid__pds_des_eng'],
             'StudyActivityID': query['af_id'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
-            'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityCdSID': query['cds__cds_cod'],
             'StudyActivityYear': query['anno_corso'],
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityECTS': query['peso'],
@@ -200,7 +200,7 @@ class StudyPlansActivitiesSerializer(CreateUpdateAbstract):
         return {
             'StudyActivityID': query['af_id'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
-            'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityCdSID': query['cds__cds_cod'],
             'StudyActivityYear': query['anno_corso'],
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityECTS': query['peso'],
@@ -224,7 +224,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
         return {
             'StudyActivityID': query['af_id'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
-            'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityCdSID': query['cds__cds_cod'],
             'StudyActivityYear': query['anno_corso'],
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityECTS': query['peso'],
@@ -380,22 +380,47 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-        # if query['dip_des_it'] is None and query['dip_des_eng'] is None:
-        #     department = query['ds_aff_org']
-        # else:
-        #     department = query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query[
-        #         'dip_des_eng']
         return {
             'TeacherID': query['matricola'],
             'TeacherCode': query['cod_fis'],
             'TeacherFirstName': query['nome'] + (" " + query['middle_name']
                                                  if query['middle_name'] is not None else ""),
             'TeacherLastName': query['cognome'],
-            # query['aff_org'] if query['dip_cod'] is None else query['dip_cod'],
             'TeacherDepartmentID': query['dip_cod'],
-            # department,
-            'TeacherDepartment': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
+            'TeacherDepartmentName': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
             'TeacherRole': query['cd_ruolo'],
             'TeacherSSDCod': query['cd_ssd'],
             'TeacherSSDDescription': query['ds_ssd'],
+            'TeacherEmail': query['email'],
+            'TeacherTel': query['telrif'],
+            'TeacherOffice': query['ds_aff_org'],
+        }
+
+
+class DoctoratesListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'AcademicYear': query['idesse3_ddr__aa_regdid_id'],
+            'DepartmentID': query['dip_cod__dip_cod'],
+            'DepartmentName': query['dip_cod__dip_des_it'] if req_lang == "it" or query['dip_cod__dip_des_eng'] is None else query['dip_cod__dip_des_eng'],
+            'DoctorateCdsCOD': query['cds_cod'],
+            'DoctorateCdsName': query['cdsord_des'],
+            'DoctorateRegID': query['idesse3_ddr__regdid_id_esse3'],
+            'DoctorateRegCOD': query['idesse3_ddr__regdid_cod'],
+            'DoctorateCdSDuration': query['durata_anni'],
+            'DoctorateCdSECTS': query['valore_min'],
+            'DoctorateCdSAttendance': query['idesse3_ddr__frequenza_obbligatoria'],
+            'CourseType': query['tipo_corso_cod'],
+            'CourseName': query['tipo_corso_des'],
+            'CycleNumber': query['idesse3_ddr__num_ciclo'],
+            'StudyPlanCOD': query['idesse3_ddpds__pds_cod'],
+            'StudyPlanDes': query['idesse3_ddpds__pds_des'],
         }

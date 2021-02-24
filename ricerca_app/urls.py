@@ -155,3 +155,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/teacherinfo'.format(base_url),
                         api_views.ApiTeacherInfo.as_view(),
                         name='teacherinfo'),
+
+    urlpatterns += path('{}/doctorateslist'.format(base_url),
+                        api_views.ApiDoctoratesList.as_view(),
+                        name='doctorateslist'),

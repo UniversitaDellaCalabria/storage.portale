@@ -22,7 +22,11 @@ from .models import (
     RicercaDocenteLineaBase,
     RicercaLineaBase,
     RicercaErc2,
-    RicercaErc1, RicercaErc0)
+    RicercaErc1,
+    RicercaErc0,
+    DidatticaDottoratoCds,
+    DidatticaDottoratoPds,
+    DidatticaDottoratoRegolamento)
 
 
 # class ContextUnitTest(TestCase):
@@ -327,4 +331,37 @@ class RicercaErc0UnitTest(TestCase):
             data[k] = v
 
         obj = RicercaErc0.objects.create(**data)
+        return obj
+
+
+class DidatticaDottoratoCdsUnitTest(TestCase):
+    @classmethod
+    def create_didatticaDottoratoCds(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaDottoratoCds.objects.create(**data)
+        return obj
+
+
+class DidatticaDottoratoPdsUnitTest(TestCase):
+    @classmethod
+    def create_didatticaDottoratoPds(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaDottoratoPds.objects.create(**data)
+        return obj
+
+
+class DidatticaDottoratoRegolamentoUnitTest(TestCase):
+    @classmethod
+    def create_didatticaDottoratoRegolamento(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaDottoratoRegolamento.objects.create(**data)
         return obj

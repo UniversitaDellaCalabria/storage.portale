@@ -3,7 +3,7 @@ import operator
 
 from django.db.models import Q
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
-    DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento
+    DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds
 
 
 class ServiceQueryBuilder:
@@ -61,7 +61,7 @@ class ServiceDidatticaCds:
                     'dip__dip_des_eng',
                     'didatticacdslingua__lingua_des_it',
                     'didatticacdslingua__lingua_des_eng',
-                    'cds_id',
+                    'cds_cod',
                     'nome_cds_it',
                     'nome_cds_eng',
                     'tipo_corso_cod',
@@ -100,7 +100,7 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id',
             'des',
             'af_gen_des_eng',
-            'cds__cds_id',
+            'cds__cds_cod',
             'anno_corso',
             'ciclo_des',
             'peso',
@@ -125,7 +125,7 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id',
             'des',
             'af_gen_des_eng',
-            'cds__cds_id',
+            'cds__cds_cod',
             'anno_corso',
             'ciclo_des',
             'peso',
@@ -151,7 +151,7 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id',
             'des',
             'af_gen_des_eng',
-            'cds__cds_id',
+            'cds__cds_cod',
             'anno_corso',
             'ciclo_des',
             'peso',
@@ -438,7 +438,9 @@ class ServiceDocente:
             "ds_ssd",
             "aff_org",
             "cod_fis",
-            "ds_aff_org").distinct()
+            "ds_aff_org",
+            "telrif",
+            "email").distinct()
         query = list(query)
         for q in query:
             dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
@@ -454,3 +456,45 @@ class ServiceDocente:
                 q["dip_des_eng"] = dep["dip_des_eng"]
 
         return query
+
+
+class ServiceDottorato:
+    @staticmethod
+    def getDoctorates(query_params):
+
+        params_to_query_field = {
+            'year': 'idesse3_ddr__aa_regdid_id__exact',
+            'yearFrom': 'idesse3_ddr__aa_regdid_id__gte',
+            'yearTo': 'idesse3_ddr__aa_regdid_id__lte',
+            'regdid': 'idesse3_ddr__regdid_id_esse3__exact',
+            'departmentid': 'dip_cod__dip_cod__exact',
+            'cdsid': 'cds_cod__exact',
+            'pdscod': 'idesse3_ddpds__pds_cod__exact',
+            'cycle': 'idesse3_ddr__num_ciclo',
+        }
+
+        query = DidatticaDottoratoCds.objects.filter(
+            ServiceQueryBuilder.build_filter_chain(
+                params_to_query_field, query_params))
+
+        return query.order_by(
+            'idesse3_ddr__aa_regdid_id',
+            'dip_cod__dip_cod',
+            'cds_cod',
+            'idesse3_ddpds__pds_cod') .values(
+            'dip_cod__dip_cod',
+            'dip_cod__dip_des_it',
+            'dip_cod__dip_des_eng',
+            'cds_cod',
+            'cdsord_des',
+            'tipo_corso_cod',
+            'tipo_corso_des',
+            'durata_anni',
+            'valore_min',
+            'idesse3_ddr__aa_regdid_id',
+            'idesse3_ddr__regdid_cod',
+            'idesse3_ddr__frequenza_obbligatoria',
+            'idesse3_ddr__num_ciclo',
+            'idesse3_ddpds__pds_cod',
+            'idesse3_ddpds__pds_des',
+            'idesse3_ddr__regdid_id_esse3')

@@ -407,3 +407,14 @@ class ApiTeacherInfo(ApiEndpoint):
         teacher = self.request.query_params.get('teacherid')
 
         return ServiceDocente.getDocenteInfo(teacher)
+
+# ----Dottorati----
+
+
+class ApiDoctoratesList(ApiEndpoint):
+    description = ''
+    serializer_class = DoctoratesListSerializer
+    # filter_backends = [ApiCdsListFilter]
+
+    def get_queryset(self):
+        return ServiceDottorato.getDoctorates(self.request.query_params)

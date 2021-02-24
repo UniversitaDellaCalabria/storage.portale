@@ -728,7 +728,8 @@ class DidatticaDottoratoCds(InsModAbstract):
         models.DO_NOTHING,
         db_column='DIP_COD',
         blank=True,
-        null=True)
+        null=True,
+        to_field='dip_cod')
 
     cds_id_esse3 = models.IntegerField(
         db_column='CDS_ID_ESSE3', primary_key=True)
