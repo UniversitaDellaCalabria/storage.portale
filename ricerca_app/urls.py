@@ -2,13 +2,9 @@ from django.conf import settings
 from django.urls import path, include
 from rest_framework import routers, permissions
 from rest_framework.renderers import JSONOpenAPIRenderer
-from rest_framework.schemas import get_schema_view
 from rest_framework.schemas.agid_schema_views import get_schema_view
 
-from rest_framework.schemas.openapi_agid import AgidSchemaGenerator as openapi_agid_generator
 
-
-from . import views
 from . import api_views
 
 app_name = 'ricerca'
@@ -31,15 +27,15 @@ agid_api_dict = {'title': "Unical - Ricerca",
                                name='api'),
                           dict(description='description',
                                name='public')],
-                 'contact': dict(email = 'giuseppe.demarco@unical.it',
-                                 name = 'Giuseppe De Marco',
-                                 url = 'https://github.com/UniversitaDellaCalabria'),
+                 'contact': dict(email='giuseppe.demarco@unical.it',
+                                 name='Giuseppe De Marco',
+                                 url='https://github.com/UniversitaDellaCalabria'),
                  'version': "0.1.2"
-}
+                 }
 
 urlpatterns = [
-                # qui le chiamate alle risorse di felix
-                # ...
+    # qui le chiamate alle risorse di felix
+    # ...
 
 ]
 
@@ -54,7 +50,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         name='openapi-schema'),
     # dynamic Schema export resource
     urlpatterns += path('openapi.json',
-                        get_schema_view(renderer_classes = [JSONOpenAPIRenderer],
+                        get_schema_view(renderer_classes=[JSONOpenAPIRenderer],
                                         **agid_api_dict),
                         name='openapi-schema-json'),
 
@@ -113,3 +109,53 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiRicercaLineaBaseList.as_view()),
     urlpatterns += path('{}/linea-base/<int:pk>/'.format(base_url),
                         api_views.ApiRicercaLineaBaseDetail.as_view()),
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+    urlpatterns += path('{}/cdslist'.format(base_url),
+                        api_views.ApiCdSList.as_view(),
+                        name='cdslist'),
+
+    urlpatterns += path('{}/cdsinfo'.format(base_url),
+                        api_views.ApiCdSInfo.as_view(),
+                        name='cdsinfo'),
+
+    urlpatterns += path('{}/cdsstudyplans'.format(base_url),
+                        api_views.ApiCdSStudyPlans.as_view(),
+                        name='cdsstudyplans'),
+
+    urlpatterns += path('{}/studyplansactivities'.format(base_url),
+                        api_views.ApiStudyPlansActivities.as_view(),
+                        name='studyplansactivities'),
+
+    urlpatterns += path('{}/studyactivityinfo'.format(base_url),
+                        api_views.ApiStudyActivityInfo.as_view(),
+                        name='studyactivityinfo'),
+
+    urlpatterns += path('{}/cdsmainteachers'.format(base_url),
+                        api_views.ApiCdSMainTeachers.as_view(),
+                        name='cdsmainteachers'),
+
+    urlpatterns += path('{}/teacherresearchgroups'.format(base_url),
+                        api_views.ApiTeacherResearchGroups.as_view(),
+                        name='teacherresearchgroups'),
+
+    urlpatterns += path('{}/teacherresearchlines'.format(base_url),
+                        api_views.ApiTeacherResearchLines.as_view(),
+                        name='teacherresearchlines'),
+
+    urlpatterns += path('{}/teacherslist'.format(base_url),
+                        api_views.ApiTeachersList.as_view(),
+                        name='teacherslist'),
+
+    urlpatterns += path('{}/teacherstudyactivities'.format(base_url),
+                        api_views.ApiTeacherStudyActivities.as_view(),
+                        name='teacherstudyactivities'),
+
+    urlpatterns += path('{}/teacherinfo'.format(base_url),
+                        api_views.ApiTeacherInfo.as_view(),
+                        name='teacherinfo'),
+
+    urlpatterns += path('{}/doctorateslist'.format(base_url),
+                        api_views.ApiDoctoratesList.as_view(),
+                        name='doctorateslist'),

@@ -1,0 +1,87 @@
+05/02/2021
+
+- Endpoint '/api/ricerca/cdslist'
+	- Efficientamento query + controllo dei risultati (OK)
+	- Scrittura serializer custom (OK)
+	- Test OK (Coverage 99%)
+	
+- Endpoint '/api/ricerca/cdsinfo'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+
+12/02/2021
+
+- Endpoint '/api/ricerca/cdslist' e '/api/ricerca/cdsinfo'
+	- Aggiunto Filter e Pagination
+
+- Endpoint '/api/ricerca/cdsstudyplans'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+- Endpoint '/api/ricerca/studyplansactivities'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+- Endpoint '/api/ricerca/studyactivityinfo'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+- Endpoint '/api/ricerca/cdsmainteachers'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+19/02/2021
+
+- Endpoint '/api/ricerca/teacherresearchgroups'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+	
+- Endpoint '/api/ricerca/teacherresearchlines'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+	- NOTA: necessario un piccolo ritocco nei valori di output (al posto di ERC1-ERC2/ASTER1-ASTER2 inserire valori di ERC0)
+	
+26/02/2021
+
+- Endpoint '/api/ricerca/teacherresearchlines'
+	- Cambiamento valori OK
+
+- Endpoint '/api/ricerca/doctorateslist'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+- Endpoint '/api/ricerca/teacherinfo'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+	- Missing some values (like CV)
+
+- Endpoint '/api/ricerca/teacherstudyactivities'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+- Endpoint '/api/ricerca/teacherslist'
+	- Query (OK)
+	- Serializer (OK)
+	- Test OK (Coverage 99%)
+	- Pagination OK
+
+- Added filters to each endpoint

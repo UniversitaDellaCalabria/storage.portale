@@ -1,6 +1,6 @@
 django>=3.0.8,<4.0
-mysqlclient
-uwsgi
+#mysqlclient
+# uwsgi
 
 #Bootstrap Italia + Unical template
 git+https://github.com/italia/design-django-theme.git

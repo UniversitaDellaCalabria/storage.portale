@@ -5,7 +5,6 @@ certs/keys/*
 *~
 *__pycache__*
 */.~lock*
-*/settingslocal.py
 !tests/settingslocal.py
 static/*
 certificates/*
