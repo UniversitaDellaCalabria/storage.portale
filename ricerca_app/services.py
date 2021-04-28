@@ -363,6 +363,7 @@ class ServiceDocente:
 
         query = list(query)
 
+
         departments = DidatticaDipartimento.objects.filter(
             dip_cod__in=dip_cods).values(
             "dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
