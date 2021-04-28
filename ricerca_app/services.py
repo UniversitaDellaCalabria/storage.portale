@@ -347,6 +347,9 @@ class ServiceDocente:
             else:
                 query = Personale.objects.filter(fl_docente=1, flg_cessato=0)
 
+        dip_cods = query.values_list("aff_org", flat=True).distinct()
+        dip_cods = list(dip_cods)
+
         query = query.values(
             "matricola",
             "nome",
@@ -360,19 +363,24 @@ class ServiceDocente:
 
         query = list(query)
 
+        departments = DidatticaDipartimento.objects.filter(
+            dip_cod__in=dip_cods).values(
+            "dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+
         for q in query:
-            dep = DidatticaDipartimento.objects.filter(
-                dip_cod=q["aff_org"]).values(
-                "dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
-            if len(dep) == 0:
+            found = False
+            for dep in departments:
+                if dep['dip_cod'] == q['aff_org']:
+                    q["dip_cod"] = dep['dip_cod']
+                    q["dip_des_it"] = dep['dip_des_it']
+                    q["dip_des_eng"] = dep["dip_des_eng"]
+                    found = True
+                    break
+
+            if not found:
                 q["dip_cod"] = None
                 q["dip_des_it"] = None
                 q["dip_des_eng"] = None
-            else:
-                dep = dep.first()
-                q["dip_cod"] = dep['dip_cod']
-                q["dip_des_it"] = dep['dip_des_it']
-                q["dip_des_eng"] = dep["dip_des_eng"]
 
         return query
 

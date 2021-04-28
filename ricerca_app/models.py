@@ -76,7 +76,7 @@ class ComuniAll(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'comuni_all'
+        db_table = 'COMUNI_ALL'
 
 
 class DidatticaAttivitaFormativa(InsModAbstract):
@@ -382,7 +382,7 @@ class DidatticaAttivitaFormativa(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_attivita_formativa'
+        db_table = 'DIDATTICA_ATTIVITA_FORMATIVA'
 
     def __str__(self):
         return '{}'.format(self.af_id)
@@ -599,7 +599,7 @@ class DidatticaCds(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_cds'
+        db_table = 'DIDATTICA_CDS'
 
     def __str__(self):
         return '{} {}'.format(self.cds_id, self.nome_cds_it)
@@ -637,7 +637,7 @@ class DidatticaCdsLingua(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'didattica_cds_lingua'
+        db_table = 'DIDATTICA_CDS_LINGUA'
 
     def __str__(self):
         return '{} {}'.format(self.lin_did_ord_id, self.lingua_des_it)
@@ -671,7 +671,7 @@ class DidatticaCopertura(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_copertura'
+        db_table = 'DIDATTICA_COPERTURA'
 
 
 class DidatticaDipartimento(InsModAbstract):
@@ -716,7 +716,7 @@ class DidatticaDipartimento(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_dipartimento'
+        db_table = 'DIDATTICA_DIPARTIMENTO'
 
     def __str__(self):
         return '{} {}'.format(self.dip_cod, self.dip_des_it)
@@ -851,7 +851,7 @@ class DidatticaDottoratoCds(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_dottorato_cds'
+        db_table = 'DIDATTICA_DOTTORATO_CDS'
         unique_together = (('cds_id_esse3', 'aa_ord_id'),)
 
 
@@ -918,7 +918,7 @@ class DidatticaDottoratoPds(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_dottorato_pds'
+        db_table = 'DIDATTICA_DOTTORATO_PDS'
 
 
 class DidatticaDottoratoRegolamento(InsModAbstract):
@@ -964,7 +964,7 @@ class DidatticaDottoratoRegolamento(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_dottorato_regolamento'
+        db_table = 'DIDATTICA_DOTTORATO_REGOLAMENTO'
 
 
 class DidatticaPdsRegolamento(InsModAbstract):
@@ -1004,7 +1004,7 @@ class DidatticaPdsRegolamento(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_pds_regolamento'
+        db_table = 'DIDATTICA_PDS_REGOLAMENTO'
 
 
 class DidatticaRegolamento(InsModAbstract):
@@ -1052,7 +1052,7 @@ class DidatticaRegolamento(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_regolamento'
+        db_table = 'DIDATTICA_REGOLAMENTO'
 
     def __str__(self):
         return '{} {}'.format(self.regdid_id, self.aa_reg_did)
@@ -1121,7 +1121,7 @@ class DidatticaTestiAf(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_testi_af'
+        db_table = 'DIDATTICA_TESTI_AF'
         unique_together = (('af', 'tipo_testo_af_cod'),)
 
 
@@ -1170,7 +1170,7 @@ class DidatticaTestiRegolamento(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'didattica_testi_regolamento'
+        db_table = 'DIDATTICA_TESTI_REGOLAMENTO'
 
     def __str__(self):
         return '{} {}'.format(self.txt_id, self.tipo_testo_regdid_cod)
@@ -1236,7 +1236,7 @@ class FunzioniUnitaOrganizzativa(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'funzioni_unita_organizzativa'
+        db_table = 'FUNZIONI_UNITA_ORGANIZZATIVA'
 
 
 class Personale(InsModAbstract):
@@ -1610,7 +1610,7 @@ class Personale(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'personale'
+        db_table = 'PERSONALE'
 
     def __str__(self):
         return '{} {} [{}]'.format(self.nome,
@@ -1637,7 +1637,7 @@ class RicercaAster1(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_aster1'
+        db_table = 'RICERCA_ASTER1'
 
     def __str__(self):
         return '{}'.format(self.descrizione)
@@ -1661,7 +1661,7 @@ class RicercaAster2(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_aster2'
+        db_table = 'RICERCA_ASTER2'
 
     def __str__(self):
         return '{} {}'.format(self.ricerca_aster1,
@@ -1694,7 +1694,7 @@ class RicercaDocenteGruppo(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_docente_gruppo'
+        db_table = 'RICERCA_DOCENTE_GRUPPO'
 
     def __str__(self):
         return '{} [{}]'.format(self.docente,
@@ -1733,7 +1733,7 @@ class RicercaDocenteLineaApplicata(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_docente_linea_applicata'
+        db_table = 'RICERCA_DOCENTE_LINEA_APPLICATA'
 
 
 class RicercaDocenteLineaBase(InsModAbstract):
@@ -1764,7 +1764,7 @@ class RicercaDocenteLineaBase(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_docente_linea_base'
+        db_table = 'RICERCA_DOCENTE_LINEA_BASE'
 
 
 class RicercaErc0(models.Model):
@@ -1778,7 +1778,7 @@ class RicercaErc0(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_erc0'
+        db_table = 'RICERCA_ERC0'
 
 
 class RicercaErc1(InsModAbstract):
@@ -1806,7 +1806,7 @@ class RicercaErc1(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_erc1'
+        db_table = 'RICERCA_ERC1'
 
     def __str__(self):
         return '{} {}'.format(self.cod_erc1,
@@ -1838,7 +1838,7 @@ class RicercaErc2(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_erc2'
+        db_table = 'RICERCA_ERC2'
 
     def __str__(self):
         return '{} {}'.format(self.cod_erc2,
@@ -1861,7 +1861,7 @@ class RicercaGruppo(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_gruppo'
+        db_table = 'RICERCA_GRUPPO'
 
     def __str__(self):
         return '{}'.format(self.nome)
@@ -1891,7 +1891,7 @@ class RicercaLineaApplicata(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_linea_applicata'
+        db_table = 'RICERCA_LINEA_APPLICATA'
 
     def __str__(self):
         return '{} {}'.format(self.ricerca_aster2, self.descrizione)
@@ -1919,7 +1919,7 @@ class RicercaLineaBase(InsModAbstract):
 
     class Meta:
         managed = True
-        db_table = 'ricerca_linea_base'
+        db_table = 'RICERCA_LINEA_BASE'
 
     def __str__(self):
         return '{} {}'.format(self.ricerca_erc2, self.descrizione)
@@ -1966,7 +1966,7 @@ class TerritorioIt(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'territorio_it'
+        db_table = 'TERRITORIO_IT'
 
     def __str__(self):
         return '{} {}'.format(self.cd_catasto, self.cd_istat)
@@ -2020,4 +2020,4 @@ class UnitaOrganizzativa(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'unita_organizzativa'
+        db_table = 'UNITA_ORGANIZZATIVA'
