@@ -72,3 +72,5 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# from django 3.2
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
