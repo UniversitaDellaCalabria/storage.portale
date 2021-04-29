@@ -1,0 +1,3 @@
+0 1 * * * username bash /opt/ricerca/uwsgi_setup/backup.sh
+0 4 * * * username find /opt/dumps_storage_portale -type f -mtime +30 -exec rm -f {} \;
+0 5 * * * username rsync -avu --delete /opt/dumps_storage_portale /media/gdrive/ICT_backups/storage.portale.unical.it/
