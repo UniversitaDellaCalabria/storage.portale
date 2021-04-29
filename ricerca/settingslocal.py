@@ -109,10 +109,10 @@ DATE_INPUT_FORMATS = ['%Y-%m-%d', '%d/%m/%Y']
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
 LANGUAGE_CODE = 'it-it'
-TIME_ZONE = 'Europe/Rome'
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
+# TIME_ZONE = 'Europe/Rome'
+# USE_I18N = True
+# USE_L10N = True
+# USE_TZ = True
 
 
 # email notification on error 500
