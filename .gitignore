@@ -10,6 +10,7 @@ static/*
 certificates/*
 !certificates/README.md
 data/metadata/*
+data/static/*
 !data/metadata/satosa.xml
 django_idp/pysaml2.py
 documentation/_build/
