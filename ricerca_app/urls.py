@@ -43,27 +43,24 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     router = routers.DefaultRouter()
     #  router.register('api/ricerca', api_views.ApiDocenteViewSet)
     urlpatterns += path('api', include(router.urls)),
-     
-    
+
     # API schemas
     try:
         urlpatterns += re_path('^openapi$',
-                                get_schema_view(**settings.OAS3_CONFIG),
-                                name='openapi-schema'),
+                               get_schema_view(**settings.OAS3_CONFIG),
+                               name='openapi-schema'),
         urlpatterns += re_path('^openapi.json$',
-                               get_schema_view(renderer_classes = [JSONOpenAPIRenderer],
+                               get_schema_view(renderer_classes=[JSONOpenAPIRenderer],
                                                **settings.OAS3_CONFIG),
                                name='openapi-schema-json'),
-    except:
+    except BaseException:
         urlpatterns += re_path('^openapi$',
-                                get_schema_view(**{}),
-                                name='openapi-schema'),
+                               get_schema_view(**{}),
+                               name='openapi-schema'),
         urlpatterns += re_path('^openapi.json$',
-                               get_schema_view(renderer_classes = [JSONOpenAPIRenderer],
-                                            **{}),
+                               get_schema_view(renderer_classes=[JSONOpenAPIRenderer],
+                                               **{}),
                                name='openapi-schema-json'),
-
-
 
     # dynamic Schema export resource
     # urlpatterns += path('openapi',
@@ -76,62 +73,6 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     #                     name='openapi-schema-json'),
 
     # qui API pubbliche
-    urlpatterns += path('{}/persone/'.format(base_url),
-                        api_views.ApiPersonaleList.as_view()),
-    urlpatterns += path('{}/persona/<int:pk>/'.format(base_url),
-                        api_views.ApiPersonaleDetail.as_view()),
-
-    urlpatterns += path('{}/aster/1/'.format(base_url),
-                        api_views.ApiRicercaAster1List.as_view()),
-    urlpatterns += path('{}/aster/1/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaAster1Detail.as_view()),
-
-    urlpatterns += path('{}/aster/2/'.format(base_url),
-                        api_views.ApiRicercaAster2List.as_view()),
-    urlpatterns += path('{}/aster/2/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaAster2Detail.as_view()),
-
-    urlpatterns += path('{}/erc/1/'.format(base_url),
-                        api_views.ApiRicercaErc1List.as_view()),
-    urlpatterns += path('{}/erc/1/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaErc1Detail.as_view()),
-
-    urlpatterns += path('{}/erc/2/'.format(base_url),
-                        api_views.ApiRicercaErc2List.as_view()),
-    urlpatterns += path('{}/erc/2/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaErc2Detail.as_view()),
-
-    urlpatterns += path('{}/docente/gruppo/'.format(base_url),
-                        api_views.ApiRicercaDocenteGruppoList.as_view()),
-    urlpatterns += path('{}/docente/gruppo/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaDocenteGruppoDetail.as_view()),
-
-    urlpatterns += path('{}/docente/linea-applicata/'.format(base_url),
-                        api_views.ApiRicercaDocenteLineaApplicataList.as_view()),
-    urlpatterns += path('{}/docente/linea-applicata/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaDocenteLineaApplicataDetail.as_view()),
-
-    urlpatterns += path('{}/persona/linea-base/'.format(base_url),
-                        api_views.ApiRicercaDocenteLineaBaseList.as_view()),
-    urlpatterns += path('{}/persona/linea-base/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaDocenteLineaBaseDetail.as_view()),
-
-    urlpatterns += path('{}/gruppo/'.format(base_url),
-                        api_views.ApiRicercaGruppoList.as_view()),
-    urlpatterns += path('{}/gruppo/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaGruppoDetail.as_view()),
-
-    urlpatterns += path('{}/linea-applicata/'.format(base_url),
-                        api_views.ApiRicercaLineaApplicataList.as_view()),
-    urlpatterns += path('{}/linea-applicata/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaLineaApplicataDetail.as_view()),
-
-    urlpatterns += path('{}/linea-base/'.format(base_url),
-                        api_views.ApiRicercaLineaBaseList.as_view()),
-    urlpatterns += path('{}/linea-base/<int:pk>/'.format(base_url),
-                        api_views.ApiRicercaLineaBaseDetail.as_view()),
-
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
     urlpatterns += path('{}/cdslist'.format(base_url),
                         api_views.ApiCdSList.as_view(),
