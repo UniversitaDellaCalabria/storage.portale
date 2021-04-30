@@ -54,8 +54,6 @@ class ApiCdSList(ApiEndpoint):
                   ' in italiano)'
     serializer_class = CdSListSerializer
     filter_backends = [ApiCdsListFilter]
-    # filter_backends = [filters.SearchFilter]
-    # search_fields = ['departmentid', 'email']
 
     def get_queryset(self):
         return ServiceDidatticaCds.cdslist(
@@ -72,7 +70,6 @@ class ApiCdSInfo(ApiEndpoint):
     serializer_class = CdsInfoSerializer
     filter_backends = [ApiCdsInfoFilter]
 
-    # [?] Required Parameters (e.g. cdsid in this case), handle via urls?
     def get_queryset(self):
         cdsid_param = self.request.query_params.get('cdsid')
         if not cdsid_param:
@@ -125,6 +122,7 @@ class ApiCdSStudyPlans(ApiEndpoint):
     description = 'Restituisce un elenco di Piani di Studio'
     serializer_class = CdSStudyPlansSerializer
     filter_backends = [ApiCdSStudyPlansFilter]
+
 
     def get_queryset(self):
         cdsid_param = self.request.query_params.get('cdsid')
