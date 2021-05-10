@@ -23,7 +23,9 @@ class ServiceDidatticaCds:
             currentAA = DidatticaRegolamento.objects.aggregate(
                 Max('aa_reg_did'))
             items = DidatticaCds.objects.filter(
-                didatticaregolamento__aa_reg_did__exact=currentAA['aa_reg_did__max'])
+                didatticaregolamento__aa_reg_did__exact=currentAA['aa_reg_did__max']) \
+                .filter(didatticaregolamento__stato_regdid_cod='A') \
+                .filter(didatticacdslingua__lin_did_ord_id__isnull=False)
         else:
             didatticacds_params_to_query_field = {
                 'coursetype': 'tipo_corso_cod',
@@ -60,6 +62,7 @@ class ServiceDidatticaCds:
                 .filter(ServiceQueryBuilder.build_filter_chain(didatticacdslingua_params_to_query_field,
                                                                query_params,
                                                                Q(didatticacdslingua__lin_did_ord_id__isnull=False)))
+
         return items.values('didatticaregolamento__regdid_id',
                             'didatticaregolamento__aa_reg_did',
                             'didatticaregolamento__frequenza_obbligatoria',
