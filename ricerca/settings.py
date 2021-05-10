@@ -21,10 +21,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 
     # SameSite Cookie workaround
     #  'djangosaml2.middleware.SamlSessionMiddleware'
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 # GETTEXT LOCALIZATION
 MIDDLEWARE.append('django.middleware.locale.LocaleMiddleware')
