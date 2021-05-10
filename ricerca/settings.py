@@ -27,6 +27,8 @@ MIDDLEWARE = [
     #  'djangosaml2.middleware.SamlSessionMiddleware'
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 # GETTEXT LOCALIZATION
 MIDDLEWARE.append('django.middleware.locale.LocaleMiddleware')
 LOCALE_PATHS = (
