@@ -23,9 +23,15 @@ class ServiceDidatticaCds:
             currentAA = DidatticaRegolamento.objects.aggregate(
                 Max('aa_reg_did'))
             items = DidatticaCds.objects.filter(
-                didatticaregolamento__aa_reg_did__exact=currentAA['aa_reg_did__max']) \
-                .filter(didatticaregolamento__stato_regdid_cod='A') \
-                .filter(didatticacdslingua__lin_did_ord_id__isnull=False)
+                didatticaregolamento__aa_reg_did__exact=currentAA['aa_reg_did__max'],
+                didatticaregolamento__stato_regdid_cod='A',
+                didatticacdslingua__lin_did_ord_id__isnull=False)
+            if len(items) == 0:
+                items = DidatticaCds.objects.filter(
+                    didatticaregolamento__aa_reg_did__exact=(currentAA['aa_reg_did__max']-1),
+                    didatticaregolamento__stato_regdid_cod='A',
+                    didatticacdslingua__lin_did_ord_id__isnull=False)
+
         else:
             didatticacds_params_to_query_field = {
                 'coursetype': 'tipo_corso_cod',
