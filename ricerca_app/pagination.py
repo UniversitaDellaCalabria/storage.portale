@@ -13,5 +13,6 @@ class UnicalStorageApiPagination(PageNumberPagination):
             'previous': self.get_previous_link(),
             'count': self.page.paginator.count,
             'total_pages': self.page.paginator.num_pages,
+            'page_number': self.page.number,
             'results': data
         })
