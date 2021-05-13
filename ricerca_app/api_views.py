@@ -133,7 +133,7 @@ class ApiCdSStudyPlans(ApiEndpoint):
             regdid_id=cdsid_param)
 
 
-class ApiStudyPlansActivities(ApiEndpoint):
+class ApiStudyPlanActivities(ApiEndpoint):
     description = 'Restituisce l’elenco degli insegnamenti' \
                   ' di un Piano di Studio con info sintetiche'
     serializer_class = StudyPlansActivitiesSerializer

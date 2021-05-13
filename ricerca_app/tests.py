@@ -236,7 +236,7 @@ class ApiCdSInfoUnitTest(TestCase):
 
 class ApiCdSStudyPlansUnitTest(TestCase):
 
-    def test_apicdslist(self):
+    def test_apicdsstudyplans(self):
         req = Client()
 
         regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
@@ -274,9 +274,9 @@ class ApiCdSStudyPlansUnitTest(TestCase):
         assert res.json()['results'][0]['StudyActivityName'] == 'math'
 
 
-class ApiStudyPlansActivitiesUnitTest(TestCase):
+class ApiStudyPlanActivitiesUnitTest(TestCase):
 
-    def test_apistudyplansactivities(self):
+    def test_apistudyplanactivities(self):
         req = Client()
 
         regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
@@ -321,7 +321,7 @@ class ApiStudyPlansActivitiesUnitTest(TestCase):
             'af_radice_id': 4,
         })
 
-        url = reverse('ricerca:studyplansactivities')
+        url = reverse('ricerca:studyplanactivities')
 
         # check url
         res = req.get(url)
