@@ -460,6 +460,7 @@ class ApiCdSMainTeachersUnitTest(TestCase):
             'cd_ruolo': 'PA',
             'id_ab': 1,
             'matricola': '111112',
+            'fl_docente': True,
         })
         p2 = PersonaleUnitTest.create_personale(**{
             'id': 2,
@@ -469,6 +470,7 @@ class ApiCdSMainTeachersUnitTest(TestCase):
             'cd_ruolo': 'PO',
             'id_ab': 2,
             'matricola': '111111',
+            'fl_docente': True,
         })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course1,

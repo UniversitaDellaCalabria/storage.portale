@@ -246,6 +246,7 @@ class ServiceDidatticaAttivitaFormativa:
     def getDocentiPerReg(regdid_id):
 
         query = DidatticaAttivitaFormativa.objects.filter(
+            didatticacopertura__personale__fl_docente=1,
             regdid__regdid_id=regdid_id,
             didatticacopertura__personale__isnull=False) .order_by(
             'didatticacopertura__personale__cd_ruolo',
