@@ -5,6 +5,7 @@ from rest_framework import generics, permissions
 
 
 from .filters import *
+from .models import DidatticaTestiRegolamento
 from .serializers import *
 from .services import *
 from .pagination import UnicalStorageApiPagination
