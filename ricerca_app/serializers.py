@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-from .models import *
-
 
 class CreateUpdateAbstract(serializers.Serializer):
     def create(self, validated_data):
@@ -105,6 +103,25 @@ class CdSStudyPlansSerializer(CreateUpdateAbstract):
             'StudyActivitySSD': query['sett_des'],
             'StudyActivityCompulsory': query['freq_obblig_flg'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
+        }
+
+
+class CdSStudyPlansUniqueSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        return {
+            'RegDidId': query['regdid__regdid_id'],
+            'StudyPlanId': query['pds_regdid_id'],
+            'StudyPlanCod': query['pds_cod'],
+            'StudyPlanName': query['pds_des_it'] if req_lang == 'it' or query['pds_des_eng'] is None else query['pds_des_eng'],
         }
 
 

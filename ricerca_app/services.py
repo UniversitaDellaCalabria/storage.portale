@@ -3,7 +3,8 @@ import operator
 
 from django.db.models import Q, Max
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
-    DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, DidatticaRegolamento
+    DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, DidatticaRegolamento, \
+    DidatticaPdsRegolamento
 
 
 class ServiceQueryBuilder:
@@ -28,7 +29,8 @@ class ServiceDidatticaCds:
                 didatticacdslingua__lin_did_ord_id__isnull=False)
             if len(items) == 0:
                 items = DidatticaCds.objects.filter(
-                    didatticaregolamento__aa_reg_did__exact=(currentAA['aa_reg_did__max']-1),
+                    didatticaregolamento__aa_reg_did__exact=(
+                        currentAA['aa_reg_did__max'] - 1),
                     didatticaregolamento__stato_regdid_cod='A',
                     didatticacdslingua__lin_did_ord_id__isnull=False)
 
@@ -89,6 +91,18 @@ class ServiceDidatticaCds:
 
 
 class ServiceDidatticaAttivitaFormativa:
+
+    @staticmethod
+    def getStudyPlans(regdid_id):
+        query = DidatticaPdsRegolamento.objects.filter(regdid=regdid_id)
+
+        return query.order_by(
+            'pds_des_it').values(
+            'regdid__regdid_id',
+            'pds_regdid_id',
+            'pds_cod',
+            'pds_des_it',
+            'pds_des_eng')
 
     @staticmethod
     def getListAttivitaFormativa(regdid_id, only_main_course=True):

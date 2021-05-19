@@ -274,6 +274,57 @@ class ApiCdSStudyPlansUnitTest(TestCase):
         assert res.json()['results'][0]['StudyActivityName'] == 'math'
 
 
+class ApiCdSStudyPlansUniqueUnitTest(TestCase):
+
+    def test_apicdsstudyplansunique(self):
+        req = Client()
+
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
+            **{'regdid': regdid,
+               'pds_regdid_id': 1,
+               'pds_cod': 1,
+               'pds_des_it': 'Intelligenza Artificiale',
+               'pds_des_eng': 'Artificial Intelligence'
+               })
+
+        DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
+            **{'regdid': regdid,
+               'pds_regdid_id': 2,
+               'pds_cod': 2,
+               'pds_des_it': 'Sicurezza',
+               'pds_des_eng': 'Security'
+               })
+
+        url = reverse('ricerca:cdsstudyplansunique')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'cdsid': 1}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['RegDidId'] == 1
+
+        # language it
+        data = {'cdsid': 1, 'language': 'it'}
+        res = req.get(url, data=data)
+        assert res.json()[
+            'results'][0]['StudyPlanName'] == 'Intelligenza Artificiale'
+
+        # language eng
+        data = {'cdsid': 1, 'language': 'eng'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][1]['StudyPlanName'] == 'Security'
+
+        # wrong cdsid
+        data = {'cdsid': 100, 'language': 'eng'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+
 class ApiStudyPlanActivitiesUnitTest(TestCase):
 
     def test_apistudyplanactivities(self):

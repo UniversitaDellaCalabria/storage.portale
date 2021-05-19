@@ -123,13 +123,26 @@ class ApiCdSStudyPlans(ApiEndpoint):
     serializer_class = CdSStudyPlansSerializer
     filter_backends = [ApiCdSStudyPlansFilter]
 
-
     def get_queryset(self):
         cdsid_param = self.request.query_params.get('cdsid')
         if not cdsid_param:
             return None
 
         return ServiceDidatticaAttivitaFormativa.getListAttivitaFormativa(
+            regdid_id=cdsid_param)
+
+
+class ApiCdSStudyPlansUnique(ApiEndpoint):
+    description = 'Restituisce un elenco di Piani di Studio senza attività formative correlate'
+    serializer_class = CdSStudyPlansUniqueSerializer
+    filter_backends = [ApiCdSStudyPlansFilter]
+
+    def get_queryset(self):
+        cdsid_param = self.request.query_params.get('cdsid')
+        if not cdsid_param:
+            return None
+
+        return ServiceDidatticaAttivitaFormativa.getStudyPlans(
             regdid_id=cdsid_param)
 
 
