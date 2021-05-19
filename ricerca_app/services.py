@@ -38,10 +38,10 @@ class ServiceDidatticaCds:
             didatticacds_params_to_query_field = {
                 'coursetype': 'tipo_corso_cod',
                 'courseclassid': 'cla_miur_cod',
-                'courseclassname': 'cla_miur_des__iexact',
+                'courseclassname': 'cla_miur_des__icontains',
                 # 'courseclassgroup': ... unspecified atm
                 'departmentid': 'dip__dip_cod',
-                'departmentname': f'dip__dip_des_{language == "it" and "it" or "eng"}__iexact',
+                'departmentname': f'dip__dip_des_{language == "it" and "it" or "eng"}__icontains',
             }
 
             didatticaregolamento_params_to_query_field = {
