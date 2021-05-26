@@ -74,27 +74,27 @@ if 'rest_framework' in settings.INSTALLED_APPS:
 
     # qui API pubbliche
 
-    urlpatterns += path('{}/cdslist'.format(base_url),
+    urlpatterns += path('{}/cds/'.format(base_url),
                         api_views.ApiCdSList.as_view(),
                         name='cdslist'),
 
-    urlpatterns += path('{}/cdsinfo'.format(base_url),
+    urlpatterns += path('{}/cds/<int:cdsid>/'.format(base_url),
                         api_views.ApiCdSInfo.as_view(),
                         name='cdsinfo'),
 
-    urlpatterns += path('{}/cdsstudyplans'.format(base_url),
+    urlpatterns += path('{}/cds/<int:cdsid>/studyplans'.format(base_url),
                         api_views.ApiCdSStudyPlans.as_view(),
                         name='cdsstudyplans'),
 
-    urlpatterns += path('{}/cdsstudyplansunique'.format(base_url),
+    urlpatterns += path('{}/cds/<int:cdsid>/studyplansunique'.format(base_url),
                         api_views.ApiCdSStudyPlansUnique.as_view(),
                         name='cdsstudyplansunique'),
 
-    urlpatterns += path('{}/studyplanactivities'.format(base_url),
+    urlpatterns += path('{}/cds/<int:cdsid>/studyplans/<int:studyplanid>/activities'.format(base_url),
                         api_views.ApiStudyPlanActivities.as_view(),
                         name='studyplanactivities'),
 
-    urlpatterns += path('{}/studyactivityinfo'.format(base_url),
+    urlpatterns += path('{}/cds/<int:cdsid>/studyplans/<int:studyplanid>/activities/<int:studyactivityid>/'.format(base_url),
                         api_views.ApiStudyActivityInfo.as_view(),
                         name='studyactivityinfo'),
 
@@ -102,23 +102,23 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiCdSMainTeachers.as_view(),
                         name='cdsmainteachers'),
 
-    urlpatterns += path('{}/teacherresearchgroups'.format(base_url),
+    urlpatterns += path('{}/teachers/<str:teacherid>/researchgroups'.format(base_url),
                         api_views.ApiTeacherResearchGroups.as_view(),
                         name='teacherresearchgroups'),
 
-    urlpatterns += path('{}/teacherresearchlines'.format(base_url),
+    urlpatterns += path('{}/teachers/<str:teacherid>/researchlines'.format(base_url),
                         api_views.ApiTeacherResearchLines.as_view(),
                         name='teacherresearchlines'),
 
-    urlpatterns += path('{}/teacherslist'.format(base_url),
+    urlpatterns += path('{}/teachers/'.format(base_url),
                         api_views.ApiTeachersList.as_view(),
                         name='teacherslist'),
 
-    urlpatterns += path('{}/teacherstudyactivities'.format(base_url),
+    urlpatterns += path('{}/teachers/<str:teacherid>/studyactivities'.format(base_url),
                         api_views.ApiTeacherStudyActivities.as_view(),
                         name='teacherstudyactivities'),
 
-    urlpatterns += path('{}/teacherinfo'.format(base_url),
+    urlpatterns += path('{}/teachers/<str:teacherid>/'.format(base_url),
                         api_views.ApiTeacherInfo.as_view(),
                         name='teacherinfo'),
 

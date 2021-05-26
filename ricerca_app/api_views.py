@@ -25,7 +25,7 @@ class ApiEndpoint(generics.GenericAPIView):
         super().__init__(**kwargs)
         self.language = None
 
-    def get(self, obj):
+    def get(self, obj, **kwargs):
         self.language = str(
             self.request.query_params.get(
                 'language', 'it')).lower()
@@ -72,13 +72,10 @@ class ApiCdSInfo(ApiEndpoint):
     filter_backends = [ApiCdsInfoFilter]
 
     def get_queryset(self):
-        cdsid_param = self.request.query_params.get('cdsid')
-        if not cdsid_param:
-            return None
-
+        cdsid_param = self.kwargs['cdsid']
         res = ServiceDidatticaCds.cdslist(
             self.language, QueryDict(
-                'regdid_id=' + cdsid_param))
+                'regdid_id=' + str(cdsid_param)))
         res = list(res)
 
         if(len(res) == 0):
@@ -125,9 +122,7 @@ class ApiCdSStudyPlans(ApiEndpoint):
     filter_backends = [ApiCdSStudyPlansFilter]
 
     def get_queryset(self):
-        cdsid_param = self.request.query_params.get('cdsid')
-        if not cdsid_param:
-            return None
+        cdsid_param = str(self.kwargs['cdsid'])
 
         return ServiceDidatticaAttivitaFormativa.getListAttivitaFormativa(
             regdid_id=cdsid_param)
@@ -139,9 +134,7 @@ class ApiCdSStudyPlansUnique(ApiEndpoint):
     filter_backends = [ApiCdSStudyPlansFilter]
 
     def get_queryset(self):
-        cdsid_param = self.request.query_params.get('cdsid')
-        if not cdsid_param:
-            return None
+        cdsid_param = str(self.kwargs['cdsid'])
 
         return ServiceDidatticaAttivitaFormativa.getStudyPlans(
             regdid_id=cdsid_param)
@@ -154,9 +147,7 @@ class ApiStudyPlanActivities(ApiEndpoint):
     filter_backends = [ApiCdSStudyPlansFilter]
 
     def get_queryset(self):
-        studyplanid_param = self.request.query_params.get('studyplanid')
-        if not studyplanid_param:
-            return None
+        studyplanid_param = str(self.kwargs['studyplanid'])
 
         return ServiceDidatticaAttivitaFormativa.getAttivitaFormativaByStudyPlan(
             studyplanid=studyplanid_param)
@@ -169,9 +160,7 @@ class ApiStudyActivityInfo(ApiEndpoint):
     filter_backends = [ApiStudyActivityInfoFilter]
 
     def get_queryset(self):
-        studyactivityid = self.request.query_params.get('studyactivityid')
-        if not studyactivityid:
-            return None
+        studyactivityid = str(self.kwargs['studyactivityid'])
 
         return ServiceDidatticaAttivitaFormativa.getAttivitaFormativaWithSubModules(
             af_id=studyactivityid, language=self.language)
@@ -203,9 +192,7 @@ class ApiTeacherResearchGroups(ApiEndpoint):
     filter_backends = [ApiTeacherResearchGroupsFilter]
 
     def get_queryset(self):
-        teacher_id = self.request.query_params.get('teacherid')
-        if not teacher_id:
-            return None
+        teacher_id = self.kwargs['teacherid']
 
         return ServiceDocente.getResearchGroups(teacher_id)
 
@@ -218,9 +205,8 @@ class ApiTeacherResearchLines(ApiEndpoint):
     filter_backends = [ApiTeacherResearchLinesFilter]
 
     def get_queryset(self):
-        teacher_id = self.request.query_params.get('teacherid')
-        if not teacher_id:
-            return None
+        teacher_id = self.kwargs['teacherid']
+
         return ServiceDocente.getResearchLines(teacher_id)
 
 
@@ -249,15 +235,13 @@ class ApiTeacherStudyActivities(ApiEndpoint):
     filter_backends = [ApiTeacherStudyActivitiesFilter]
 
     def get_queryset(self):
-        teacher = self.request.query_params.get('teacherid')
-        if not teacher:
-            return None
+        teacher_id = self.kwargs['teacherid']
         year = self.request.query_params.get('year')
         yearFrom = self.request.query_params.get('yearFrom')
         yearTo = self.request.query_params.get('yearTo')
 
         return ServiceDocente.getAttivitaFormativeByDocente(
-            teacher, year, yearFrom, yearTo)
+            teacher_id, year, yearFrom, yearTo)
 
 
 class ApiTeacherInfo(ApiEndpoint):
@@ -267,11 +251,9 @@ class ApiTeacherInfo(ApiEndpoint):
     filter_backends = [ApiTeacherInfoFilter]
 
     def get_queryset(self):
-        teacher = self.request.query_params.get('teacherid')
-        if not teacher:
-            return None
+        teacher_id = self.kwargs['teacherid']
 
-        return ServiceDocente.getDocenteInfo(teacher)
+        return ServiceDocente.getDocenteInfo(teacher_id)
 
 # ----Dottorati----
 
