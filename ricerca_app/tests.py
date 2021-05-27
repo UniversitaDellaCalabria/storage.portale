@@ -376,7 +376,11 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
             'af_radice_id': 4,
         })
 
-        url = reverse('ricerca:studyplanactivities', kwargs={'cdsid': 1, 'studyplanid': 1})
+        url = reverse(
+            'ricerca:studyplanactivities',
+            kwargs={
+                'cdsid': 1,
+                'studyplanid': 1})
 
         # check url
         res = req.get(url)
@@ -412,7 +416,11 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
         assert res.json()[
             'results'][1]['StudyActivityName'] == 'computer science'
 
-        url = reverse('ricerca:studyplanactivities', kwargs={'cdsid': 1, 'studyplanid': 2})
+        url = reverse(
+            'ricerca:studyplanactivities',
+            kwargs={
+                'cdsid': 1,
+                'studyplanid': 2})
         res = req.get(url)
         assert res.json()['results'][0]['StudyActivityID'] == 4
 
@@ -463,7 +471,12 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'personale': p,
         })
 
-        url = reverse('ricerca:studyactivityinfo', kwargs={'cdsid': 1, 'studyplanid': 1, 'studyactivityid': 1})
+        url = reverse(
+            'ricerca:studyactivityinfo',
+            kwargs={
+                'cdsid': 1,
+                'studyplanid': 1,
+                'studyactivityid': 1})
 
         # check url
         res = req.get(url)
@@ -617,7 +630,9 @@ class ApiTeacherResearchGroupsUnitTest(TestCase):
             'id': 4,
         })
 
-        url = reverse('ricerca:teacherresearchgroups', kwargs={'teacherid': '111112'})
+        url = reverse(
+            'ricerca:teacherresearchgroups', kwargs={
+                'teacherid': '111112'})
 
         # check url
         res = req.get(url)
@@ -633,7 +648,9 @@ class ApiTeacherResearchGroupsUnitTest(TestCase):
         assert len(res.json()['results']) == 2
 
         # dt fine not null
-        url = reverse('ricerca:teacherresearchgroups', kwargs={'teacherid': '111111'})
+        url = reverse(
+            'ricerca:teacherresearchgroups', kwargs={
+                'teacherid': '111111'})
         res = req.get(url)
         assert len(res.json()['results']) == 1
 
@@ -732,7 +749,9 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'dt_ins': '2021-01-03 15:47:21'
         })
 
-        url = reverse('ricerca:teacherresearchlines', kwargs={'teacherid': '111112'})
+        url = reverse(
+            'ricerca:teacherresearchlines', kwargs={
+                'teacherid': '111112'})
 
         # check url
         res = req.get(url)
@@ -749,7 +768,9 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
 
         # teacherid 2 has one ricercalineabase (ended) and one
         # ricercalineaapplicata
-        url = reverse('ricerca:teacherresearchlines', kwargs={'teacherid': '111111'})
+        url = reverse(
+            'ricerca:teacherresearchlines', kwargs={
+                'teacherid': '111111'})
         res = req.get(url)
         assert len(res.json()['results']) == 1
 
@@ -939,7 +960,9 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
             'aa_id': 2020,
         })
 
-        url = reverse('ricerca:teacherstudyactivities', kwargs={'teacherid': '111112'})
+        url = reverse(
+            'ricerca:teacherstudyactivities', kwargs={
+                'teacherid': '111112'})
 
         # check url
         res = req.get(url)
