@@ -61,7 +61,7 @@ class ApiCdSList(ApiEndpoint):
             self.language, self.request.query_params)
 
 
-class ApiCdSInfo(ApiEndpoint):
+class ApiCdSDetail(ApiEndpoint):
     description = 'Restituisce le informazioni di uno specifico' \
                   ' Corso di Studio che sono contenute nelle tabelle' \
                   ' DIDATTICA_REGOLAMENTO e DIDATTICA_TESTI_REGOLAMENTO' \
@@ -116,7 +116,7 @@ class ApiCdSInfo(ApiEndpoint):
         return res
 
 
-class ApiCdSStudyPlans(ApiEndpoint):
+class ApiCdSStudyPlansList(ApiEndpoint):
     description = 'Restituisce un elenco di Piani di Studio'
     serializer_class = CdSStudyPlansSerializer
     filter_backends = [ApiCdSStudyPlansFilter]
@@ -128,7 +128,7 @@ class ApiCdSStudyPlans(ApiEndpoint):
             regdid_id=cdsid_param)
 
 
-class ApiCdSStudyPlansUnique(ApiEndpoint):
+class ApiCdSStudyPlansUniqueList(ApiEndpoint):
     description = 'Restituisce un elenco di Piani di Studio senza attività formative correlate'
     serializer_class = CdSStudyPlansUniqueSerializer
     filter_backends = [ApiCdSStudyPlansFilter]
@@ -140,7 +140,7 @@ class ApiCdSStudyPlansUnique(ApiEndpoint):
             regdid_id=cdsid_param)
 
 
-class ApiStudyPlanActivities(ApiEndpoint):
+class ApiStudyPlanActivitiesList(ApiEndpoint):
     description = 'Restituisce l’elenco degli insegnamenti' \
                   ' di un Piano di Studio con info sintetiche'
     serializer_class = StudyPlansActivitiesSerializer
@@ -153,7 +153,7 @@ class ApiStudyPlanActivities(ApiEndpoint):
             studyplanid=studyplanid_param)
 
 
-class ApiStudyActivityInfo(ApiEndpoint):
+class ApiStudyActivityDetail(ApiEndpoint):
     description = 'Restituisce le informazioni' \
                   ' dettagliate su un singolo “Insegnamento”'
     serializer_class = StudyActivityInfoSerializer
@@ -166,7 +166,7 @@ class ApiStudyActivityInfo(ApiEndpoint):
             af_id=studyactivityid, language=self.language)
 
 
-class ApiCdSMainTeachers(ApiEndpoint):
+class ApiCdSMainTeachersList(ApiEndpoint):
     description = 'Fornisce l’elenco dei docenti di riferimento' \
                   ' (o di tutti i docenti ???) associati ad un CdS.' \
                   ' Per ogni docente riporta poche informazioni' \
@@ -185,7 +185,7 @@ class ApiCdSMainTeachers(ApiEndpoint):
 # ----Ricerca----
 
 
-class ApiTeacherResearchGroups(ApiEndpoint):
+class ApiTeacherResearchGroupsList(ApiEndpoint):
     description = 'La funzione restituisce l’elenco ' \
                   'dei gruppi di ricerca del docente ordinati per nome.'
     serializer_class = TeacherResearchGroupsSerializer
@@ -197,7 +197,7 @@ class ApiTeacherResearchGroups(ApiEndpoint):
         return ServiceDocente.getResearchGroups(teacher_id)
 
 
-class ApiTeacherResearchLines(ApiEndpoint):
+class ApiTeacherResearchLinesList(ApiEndpoint):
     description = 'La funzione restituisce l’elenco delle Linee di' \
                   ' ricerca del docente ordinati ' \
                   'per Tipo (applicata/di base) e Nome.'
@@ -227,7 +227,7 @@ class ApiTeachersList(ApiEndpoint):
         return ServiceDocente.teachersList(regdid, dip, role)
 
 
-class ApiTeacherStudyActivities(ApiEndpoint):
+class ApiTeacherStudyActivitiesList(ApiEndpoint):
     description = 'La funzione restituisce l’elenco degli insegnamenti' \
                   ' (per gli ultimi anni) ordinati per anno e nome' \
                   ' dell’insegnamento.'
@@ -244,7 +244,7 @@ class ApiTeacherStudyActivities(ApiEndpoint):
             teacher_id, year, yearFrom, yearTo)
 
 
-class ApiTeacherInfo(ApiEndpoint):
+class ApiTeacherDetail(ApiEndpoint):
     description = 'La funzione restituisce la scheda informativa' \
                   ' dettagliata di un docente'
     serializer_class = TeacherInfoSerializer
