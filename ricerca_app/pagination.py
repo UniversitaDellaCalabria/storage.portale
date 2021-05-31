@@ -21,7 +21,7 @@ class UnicalStorageApiPagination(PageNumberPagination):
 
     def encode_labels(self, data):
         labels = {}
-        if len(data) > 0:
+        if len(data) > 0 and hasattr(settings, 'LABEL_MAPPING'):
             d = data[0]
             for key in d.keys():
                 labels[key] = settings.LABEL_MAPPING[key]
