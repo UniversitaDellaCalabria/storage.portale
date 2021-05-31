@@ -127,6 +127,10 @@ class OpenApiSchemaUnitTest(TestCase):
         res = req.get(url)
         assert res.status_code == 200
 
+        url = reverse('ricerca:openapi-schema-json')
+        res = req.get(url)
+        assert res.status_code == 200
+
 
 class SerializersUnitTest(TestCase):
     def test_createUpdateAbstract(self):
