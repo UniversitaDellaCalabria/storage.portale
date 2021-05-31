@@ -77,3 +77,21 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # from django 3.2
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+#MAPPING LABEL
+
+LABEL_MAPPING = {
+    'RegDidId': 'ID Regolamento Didattico',
+    'CdSId': 'ID Corso di Studi',
+    'AcademicYear': 'Anno Accademico',
+    'CdSName': 'Nome Corso di Studi',
+    'DepartmentId': 'ID Dipartimento',
+    'DepartmentName': 'Nome Dipartimento',
+    'CourseType': 'Tipologia Corso',
+    'CourseClassId': 'ID Classe Corso',
+    'CourseClassName': 'Nome Classe Corso',
+    'CdSLanguage': 'Lingua Corso di Studi',
+    'CdSDuration': 'Durata Corso di Studi',
+    'CdSECTS': 'ECTS Corso di Studi',
+    'CdSAttendance': 'Frequenza Obbligatoria',
+}

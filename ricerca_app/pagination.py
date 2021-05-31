@@ -1,5 +1,6 @@
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from django.conf import settings
 
 
 class UnicalStorageApiPagination(PageNumberPagination):
@@ -14,5 +15,16 @@ class UnicalStorageApiPagination(PageNumberPagination):
             'count': self.page.paginator.count,
             'total_pages': self.page.paginator.num_pages,
             'page_number': self.page.number,
-            'results': data
+            'results': data,
+            'labels': self.encode_labels(data)
         })
+
+    def encode_labels(self, data):
+        labels = {}
+        if len(data) > 0:
+            d = data[0]
+            for key in d.keys():
+                labels[key] = settings.LABEL_MAPPING[key]
+
+        return labels
+
