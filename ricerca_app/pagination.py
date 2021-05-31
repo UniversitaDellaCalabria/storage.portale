@@ -23,8 +23,15 @@ class UnicalStorageApiPagination(PageNumberPagination):
         labels = {}
         if len(data) > 0 and hasattr(settings, 'LABEL_MAPPING'):
             d = data[0]
+            missing_key = False
             for key in d.keys():
+                if key not in settings.LABEL_MAPPING.keys():
+                    missing_key = True
+                    break
                 labels[key] = settings.LABEL_MAPPING[key]
+
+            if missing_key:
+                labels = {}
 
         return labels
 
