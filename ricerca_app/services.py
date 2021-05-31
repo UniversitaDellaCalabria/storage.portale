@@ -19,8 +19,11 @@ class ServiceQueryBuilder:
 class ServiceDidatticaCds:
     @staticmethod
     def cdslist(language, query_params):
+        query_params_size = len(query_params)
+        if 'page' in query_params:
+            query_params_size -= 1
 
-        if len(query_params) == 0:
+        if query_params_size == 0:
             currentAA = DidatticaRegolamento.objects.aggregate(
                 Max('aa_reg_did'))
             items = DidatticaCds.objects.filter(
@@ -45,7 +48,7 @@ class ServiceDidatticaCds:
             }
 
             didatticaregolamento_params_to_query_field = {
-                'academicyear': 'didatticaregolamento__aa_reg_did',
+                'academicyear': 'didatticaregolamento__aa_reg_did__exact',
                 'jointdegree': 'didatticaregolamento__titolo_congiunto_cod',
                 'regdid_id': 'didatticaregolamento__regdid_id',
             }
@@ -57,19 +60,19 @@ class ServiceDidatticaCds:
                 query_params.get(
                     'keywords', '').split(','))
 
+            q1 = ServiceQueryBuilder.build_filter_chain(
+                didatticacds_params_to_query_field, query_params)
+            q2 = ServiceQueryBuilder.build_filter_chain(
+                didatticaregolamento_params_to_query_field, query_params)
+            q3 = ServiceQueryBuilder.build_filter_chain(
+                didatticacdslingua_params_to_query_field, query_params)
+
             items = DidatticaCds.objects \
                 .filter(reduce(operator.and_,
                                [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
                                 for e in keywords],
-                               Q())) \
-                .filter(ServiceQueryBuilder.build_filter_chain(didatticacds_params_to_query_field,
-                                                               query_params)) \
-                .filter(ServiceQueryBuilder.build_filter_chain(didatticaregolamento_params_to_query_field,
-                                                               query_params,
-                                                               Q(didatticaregolamento__stato_regdid_cod='A'))) \
-                .filter(ServiceQueryBuilder.build_filter_chain(didatticacdslingua_params_to_query_field,
-                                                               query_params,
-                                                               Q(didatticacdslingua__lin_did_ord_id__isnull=False)))
+                               Q()), q1, q2, q3, didatticaregolamento__stato_regdid_cod='A',
+                        didatticacdslingua__lin_did_ord_id__isnull=False)
 
         return items.values('didatticaregolamento__regdid_id',
                             'didatticaregolamento__aa_reg_did',
