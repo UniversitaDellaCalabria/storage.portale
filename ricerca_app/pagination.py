@@ -34,4 +34,3 @@ class UnicalStorageApiPagination(PageNumberPagination):
                 labels = {}
 
         return labels
-
