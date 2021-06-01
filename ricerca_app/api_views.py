@@ -32,14 +32,9 @@ class ApiEndpointList(generics.GenericAPIView):
         queryset = self.get_queryset()
 
         serializer = self.get_serializer(queryset, many=True)
-        page = self.paginate_queryset(serializer.data)
 
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=False)
-        return Response(serializer.data)
+        results = self.paginate_queryset(serializer.data)
+        return self.get_paginated_response(results)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -58,9 +53,10 @@ class ApiEndpointDetail(ApiEndpointList):
 
         queryset = self.get_queryset()
 
-        serializer = self.get_serializer(queryset[0], many=False)
-
-        return Response(serializer.data)
+        if queryset is not None:
+            serializer = self.get_serializer(queryset[0], many=False)
+            return Response(serializer.data)
+        return Response({})
 
 
 # ----CdS----
