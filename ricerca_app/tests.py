@@ -238,7 +238,8 @@ class ApiCdSInfoUnitTest(TestCase):
         # param: language
         url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
         res = req.get(url)
-        assert res.json()['CdSProfiles']['profiloprova']['FUNZIONI'] == 'provadescrizione'
+        assert res.json()[
+            'CdSProfiles']['profiloprova']['FUNZIONI'] == 'provadescrizione'
 
 
 class ApiCdSStudyPlansUnitTest(TestCase):
@@ -1035,7 +1036,6 @@ class ApiTeacherInfoUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        print(res.json())
         assert res.json()['TeacherID'] == '111112'
 
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111113'})
