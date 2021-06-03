@@ -8,16 +8,18 @@ from .filters import *
 from .models import DidatticaTestiRegolamento
 from .serializers import *
 from .services import *
-from .pagination import UnicalStorageApiPagination
+from .pagination import UnicalStorageApiPaginationList
 
 
 # permissions.IsAuthenticatedOrReadOnly
 # allow authenticated users to perform any request. Requests for
 # unauthorised users will only be permitted if the request method is
 # one of the "safe" methods; GET, HEAD or OPTIONS
+from .utils import encode_labels_detail
+
 
 class ApiEndpointList(generics.GenericAPIView):
-    pagination_class = UnicalStorageApiPagination
+    pagination_class = UnicalStorageApiPaginationList
     permission_classes = [permissions.AllowAny]
     allowed_methods = ('GET',)
 
@@ -34,6 +36,10 @@ class ApiEndpointList(generics.GenericAPIView):
         serializer = self.get_serializer(queryset, many=True)
 
         results = self.paginate_queryset(serializer.data)
+        results = {
+            'data': results,
+            'language': self.language,
+        }
         return self.get_paginated_response(results)
 
     def get_serializer_context(self):
@@ -44,8 +50,6 @@ class ApiEndpointList(generics.GenericAPIView):
 
 class ApiEndpointDetail(ApiEndpointList):
 
-    pagination_class = None
-
     def get(self, obj, **kwargs):
         self.language = str(
             self.request.query_params.get(
@@ -55,8 +59,15 @@ class ApiEndpointDetail(ApiEndpointList):
 
         if queryset is not None:
             serializer = self.get_serializer(queryset[0], many=False)
-            return Response(serializer.data)
-        return Response({})
+            return Response({
+                'results': serializer.data,
+                'labels': encode_labels_detail(serializer.data, self.language)
+            })
+
+        return Response({
+            'results': {},
+            'labels': {}
+        })
 
 
 # ----CdS----

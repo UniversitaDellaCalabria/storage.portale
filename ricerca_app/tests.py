@@ -221,24 +221,24 @@ class ApiCdSInfoUnitTest(TestCase):
 
         data = {'language': 'it'}
         res = req.get(url, data=data)
-        assert res.json()['RegDidId'] == 1
+        assert res.json()['results']['RegDidId'] == 1
 
         # param: cdsid 10 doesn't exist
         url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 10})
         data = {'language': 'it'}
         res = req.get(url, data=data)
-        assert len(res.json()) == 0
+        assert len(res.json()['results']) == 0
 
         # param: language
         url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
         data = {'language': 'eng'}
         res = req.get(url, data=data)
-        assert res.json()['RegDidId'] == 1
+        assert res.json()['results']['RegDidId'] == 1
 
         # param: language
         url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
         res = req.get(url)
-        assert res.json()[
+        assert res.json()['results'][
             'CdSProfiles']['profiloprova']['FUNZIONI'] == 'provadescrizione'
 
 
@@ -489,14 +489,14 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['StudyActivityID'] == 1
+        assert res.json()['results']['StudyActivityID'] == 1
 
         data = {'language': 'eng'}
         res = req.get(url, data=data)
-        assert res.json()['StudyActivityContent'] == 'Variables'
+        assert res.json()['results']['StudyActivityContent'] == 'Variables'
 
         res = req.get(url)
-        assert res.json()['StudyActivityContent'] == 'Variabili'
+        assert res.json()['results']['StudyActivityContent'] == 'Variabili'
 
 
 class ApiCdSMainTeachersUnitTest(TestCase):
@@ -1036,11 +1036,11 @@ class ApiTeacherInfoUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['TeacherID'] == '111112'
+        assert res.json()['results']['TeacherID'] == '111112'
 
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111113'})
         res = req.get(url)
-        assert res.json()['TeacherID'] == '111113'
+        assert res.json()['results']['TeacherID'] == '111113'
 
 
 class ApiDoctoratesListUnitTest(TestCase):
