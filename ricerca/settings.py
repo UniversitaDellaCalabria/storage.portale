@@ -165,6 +165,9 @@ LABEL_MAPPING = {
         'CycleNumber': 'Cycle Number',
         'StudyPlanCOD': 'Study Plan Code',
         'StudyPlanDes': 'Study Plan Description',
+        'FUNZIONI': 'Tasks',
+        'COMPETENZE': 'Skills',
+        'SBOCCHI': 'Job Opportunities',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -250,5 +253,8 @@ LABEL_MAPPING = {
         'CycleNumber': 'Numero Ciclo',
         'StudyPlanCOD': 'Codice Piano di Studi',
         'StudyPlanDes': 'Descrizione Piano di Studi',
+        'FUNZIONI': 'Funzioni',
+        'COMPETENZE': 'Competenze',
+        'SBOCCHI': 'Sbocchi',
     }
 }

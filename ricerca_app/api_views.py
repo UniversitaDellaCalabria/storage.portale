@@ -30,7 +30,10 @@ class ApiEndpointList(generics.GenericAPIView):
     def get(self, obj, **kwargs):
         self.language = str(
             self.request.query_params.get(
-                'language', 'it')).lower()
+                'lang', 'null')).lower()
+        if self.language == 'null':
+            self.language = self.request.LANGUAGE_CODE
+
         queryset = self.get_queryset()
 
         serializer = self.get_serializer(queryset, many=True)
@@ -53,7 +56,9 @@ class ApiEndpointDetail(ApiEndpointList):
     def get(self, obj, **kwargs):
         self.language = str(
             self.request.query_params.get(
-                'language', 'it')).lower()
+                'lang', 'null')).lower()
+        if self.language == 'null':
+            self.language = self.request.LANGUAGE_CODE
 
         queryset = self.get_queryset()
 

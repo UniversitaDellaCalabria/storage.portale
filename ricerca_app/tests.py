@@ -40,13 +40,13 @@ class ApiCdSListUnitTest(TestCase):
 
         # GET
 
-        # param: language
-        data = {'language': 'it'}
+        # param: lang
+        data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
-        # param: language
-        data = {'language': 'eng'}
+        # param: lang
+        data = {'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -71,7 +71,7 @@ class ApiCdSListUnitTest(TestCase):
         assert res.json()['results'][0]['RegDidId'] == 1
 
         # param: departmentname
-        data = {'departmentname': 'matematica e informatica'}
+        data = {'departmentname': 'matematica e informatica', 'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -86,22 +86,22 @@ class ApiCdSListUnitTest(TestCase):
         assert res.json()['results'][0]['RegDidId'] == 1
 
         # param: cdslanguage
-        data = {'cdslanguage': 'ITALIANO'}
+        data = {'cdslanguage': 'ITALIANO', 'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
         # param: keywords ita
-        data = {'keywords': 'informatica'}
+        data = {'keywords': 'informatica', 'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
         # param: keywords eng
-        data = {'keywords': 'computer', 'language': 'eng'}
+        data = {'keywords': 'computer', 'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
         # param: keywords eng wrong
-        data = {'keywords': 'math', 'language': 'eng'}
+        data = {'keywords': 'math', 'lang': 'en'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
@@ -114,7 +114,7 @@ class ApiCdSListUnitTest(TestCase):
                 'courseclassname': 'laurea in informatica',
                 'courseclassid': '1',
                 'coursetype': '1',
-                'language': 'eng',
+                'lang': 'en',
                 }
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
@@ -216,28 +216,29 @@ class ApiCdSInfoUnitTest(TestCase):
 
         # GET
 
-        # param: language
+        # param: lang
         url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
 
-        data = {'language': 'it'}
+        data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results']['RegDidId'] == 1
 
         # param: cdsid 10 doesn't exist
         url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 10})
-        data = {'language': 'it'}
+        data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        # param: language
+        # param: lang
         url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
-        data = {'language': 'eng'}
+        data = {'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()['results']['RegDidId'] == 1
 
-        # param: language
+        # param: lang
         url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
-        res = req.get(url)
+        data = {'lang': 'it'}
+        res = req.get(url, data=data)
         assert res.json()['results'][
             'CdSProfiles']['profiloprova']['FUNZIONI'] == 'provadescrizione'
 
@@ -270,14 +271,14 @@ class ApiCdSStudyPlansUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results'][0]['RegDidId'] == 1
 
-        # language it
+        # lang it
 
-        data = {'language': 'it'}
+        data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['StudyActivityName'] == 'matematica'
 
-        # language eng
-        data = {'language': 'eng'}
+        # lang eng
+        data = {'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['StudyActivityName'] == 'math'
 
@@ -315,20 +316,20 @@ class ApiCdSStudyPlansUniqueUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results'][0]['RegDidId'] == 1
 
-        # language it
-        data = {'language': 'it'}
+        # lang it
+        data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()[
             'results'][0]['StudyPlanName'] == 'Intelligenza Artificiale'
 
-        # language eng
-        data = {'language': 'eng'}
+        # lang eng
+        data = {'lang': 'eng'}
         res = req.get(url, data=data)
         assert res.json()['results'][1]['StudyPlanName'] == 'Security'
 
         # wrong cdsid
         url = reverse('ricerca:cdsstudyplans', kwargs={'cdsid': 100})
-        data = {'language': 'eng'}
+        data = {'lang': 'eng'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
@@ -399,23 +400,23 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 2
 
-        # language it first semester
-        data = {'language': 'it'}
+        # lang it first semester
+        data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['StudyActivityName'] == 'matematica'
 
-        # language eng first semester
-        data = {'language': 'eng'}
+        # lang eng first semester
+        data = {'lang': 'eng'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['StudyActivityName'] == 'math'
 
-        # language it second semester
-        data = {'language': 'it'}
+        # lang it second semester
+        data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][1]['StudyActivityName'] == 'informatica'
 
-        # language eng second semester
-        data = {'language': 'eng'}
+        # lang eng second semester
+        data = {'lang': 'eng'}
         res = req.get(url, data=data)
         assert res.json()[
             'results'][1]['StudyActivityName'] == 'computer science'
@@ -491,11 +492,12 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results']['StudyActivityID'] == 1
 
-        data = {'language': 'eng'}
+        data = {'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()['results']['StudyActivityContent'] == 'Variables'
 
-        res = req.get(url)
+        data = {'lang': 'it'}
+        res = req.get(url, data=data)
         assert res.json()['results']['StudyActivityContent'] == 'Variabili'
 
 
@@ -900,7 +902,7 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'departmentid': 1, 'role': 'PA', 'language': 'eng'}
+        data = {'departmentid': 1, 'role': 'PA', 'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()[
             'results'][0]['TeacherDepartmentName'] == "Math and Computer Science"
