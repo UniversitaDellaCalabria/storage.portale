@@ -22,6 +22,8 @@ class ServiceDidatticaCds:
         query_params_size = len(query_params)
         if 'page' in query_params:
             query_params_size -= 1
+        if 'language' in query_params:
+            query_params_size -= 1
 
         if query_params_size == 0:
             currentAA = DidatticaRegolamento.objects.aggregate(
