@@ -15,7 +15,7 @@ from .pagination import UnicalStorageApiPaginationList
 # allow authenticated users to perform any request. Requests for
 # unauthorised users will only be permitted if the request method is
 # one of the "safe" methods; GET, HEAD or OPTIONS
-from .utils import encode_labels_detail
+from .utils import encode_labels
 
 
 class ApiEndpointList(generics.GenericAPIView):
@@ -66,7 +66,7 @@ class ApiEndpointDetail(ApiEndpointList):
             serializer = self.get_serializer(queryset[0], many=False)
             return Response({
                 'results': serializer.data,
-                'labels': encode_labels_detail(serializer.data, self.language)
+                'labels': encode_labels(serializer.data, self.language)
             })
 
         return Response({
@@ -152,18 +152,6 @@ class ApiCdSDetail(ApiEndpointDetail):
 class ApiCdSStudyPlansList(ApiEndpointList):
     description = 'Restituisce un elenco di Piani di Studio'
     serializer_class = CdSStudyPlansSerializer
-    filter_backends = [ApiCdSStudyPlansFilter]
-
-    def get_queryset(self):
-        cdsid_param = str(self.kwargs['cdsid'])
-
-        return ServiceDidatticaAttivitaFormativa.getListAttivitaFormativa(
-            regdid_id=cdsid_param)
-
-
-class ApiCdSStudyPlansUniqueList(ApiEndpointList):
-    description = 'Restituisce un elenco di Piani di Studio senza attività formative correlate'
-    serializer_class = CdSStudyPlansUniqueSerializer
     filter_backends = [ApiCdSStudyPlansFilter]
 
     def get_queryset(self):

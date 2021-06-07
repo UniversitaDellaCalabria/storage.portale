@@ -275,63 +275,14 @@ class ApiCdSStudyPlansUnitTest(TestCase):
 
         data = {'lang': 'it'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['StudyActivityName'] == 'matematica'
+        assert res.json()[
+            'results'][0]['StudyActivities'][0]['StudyActivityName'] == 'matematica'
 
         # lang eng
         data = {'lang': 'en'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['StudyActivityName'] == 'math'
-
-
-class ApiCdSStudyPlansUniqueUnitTest(TestCase):
-
-    def test_apicdsstudyplansunique(self):
-        req = Client()
-
-        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
-        DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
-            **{'regdid': regdid,
-               'pds_regdid_id': 1,
-               'pds_cod': 1,
-               'pds_des_it': 'Intelligenza Artificiale',
-               'pds_des_eng': 'Artificial Intelligence'
-               })
-
-        DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
-            **{'regdid': regdid,
-               'pds_regdid_id': 2,
-               'pds_cod': 2,
-               'pds_des_it': 'Sicurezza',
-               'pds_des_eng': 'Security'
-               })
-
-        url = reverse('ricerca:cdsstudyplansunique', kwargs={'cdsid': 1})
-
-        # check url
-        res = req.get(url)
-        assert res.status_code == 200
-
-        # GET
-
-        res = req.get(url)
-        assert res.json()['results'][0]['RegDidId'] == 1
-
-        # lang it
-        data = {'lang': 'it'}
-        res = req.get(url, data=data)
         assert res.json()[
-            'results'][0]['StudyPlanName'] == 'Intelligenza Artificiale'
-
-        # lang eng
-        data = {'lang': 'eng'}
-        res = req.get(url, data=data)
-        assert res.json()['results'][1]['StudyPlanName'] == 'Security'
-
-        # wrong cdsid
-        url = reverse('ricerca:cdsstudyplans', kwargs={'cdsid': 100})
-        data = {'lang': 'eng'}
-        res = req.get(url, data=data)
-        assert len(res.json()['results']) == 0
+            'results'][0]['StudyActivities'][0]['StudyActivityName'] == 'math'
 
 
 class ApiStudyPlanActivitiesUnitTest(TestCase):

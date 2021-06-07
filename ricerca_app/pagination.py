@@ -1,6 +1,6 @@
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from ricerca_app.utils import encode_labels_list
+from ricerca_app.utils import encode_labels
 
 
 class UnicalStorageApiPaginationList(PageNumberPagination):
@@ -16,5 +16,5 @@ class UnicalStorageApiPaginationList(PageNumberPagination):
             'total_pages': self.page.paginator.num_pages,
             'page_number': self.page.number,
             'results': data['data'],
-            'labels': encode_labels_list(data)
+            'labels': encode_labels(data)
         })

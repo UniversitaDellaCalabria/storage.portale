@@ -89,39 +89,19 @@ class CdSStudyPlansSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
-        return {
-            'RegDidId': query['regdid__regdid_id'],
-            'StudyPlanId': query['pds_regdid__pds_regdid_id'],
-            'StudyPlanName': query['pds_regdid__pds_des_it'] if req_lang == 'it' or query['pds_regdid__pds_des_eng'] is None else query[
-                'pds_regdid__pds_des_eng'],
-            'StudyActivityID': query['af_id'],
-            'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
-            'StudyActivityCdSID': query['cds__cds_cod'],
-            'StudyActivityYear': query['anno_corso'],
-            'StudyActivitySemester': query['ciclo_des'],
-            'StudyActivityECTS': query['peso'],
-            'StudyActivitySSD': query['sett_des'],
-            'StudyActivityCompulsory': query['freq_obblig_flg'],
-            'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
-        }
+        study_activities = []
+        for q in query['StudyActivities']:
+            study_activities.append(
+                StudyPlansActivitiesSerializer.to_dict(
+                    q, req_lang))
 
-
-class CdSStudyPlansUniqueSerializer(CreateUpdateAbstract):
-    def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query,
-                                 str(self.context['language']).lower()))
-        return data
-
-    @staticmethod
-    def to_dict(query,
-                req_lang='en'):
         return {
             'RegDidId': query['regdid__regdid_id'],
             'StudyPlanId': query['pds_regdid_id'],
-            'StudyPlanCod': query['pds_cod'],
-            'StudyPlanName': query['pds_des_it'] if req_lang == 'it' or query['pds_des_eng'] is None else query['pds_des_eng'],
+            'StudyPlanCOD': query['pds_cod'],
+            'StudyPlanName': query['pds_des_it'] if req_lang == 'it' or query['pds_des_eng'] is None else query[
+                'pds_des_eng'],
+            'StudyActivities': study_activities,
         }
 
 

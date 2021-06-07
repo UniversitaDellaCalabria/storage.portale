@@ -1,14 +1,19 @@
 from django.conf import settings
 
 
-def encode_labels_list(data):
+def encode_labels(data, language=None):
     labels = {}
-    language = data['language']
-    data = data['data']
+    d = None
+    if language is None:
+        language = data['language']
+        data = data['data']
+        if len(data) > 0:
+            d = data[0]
+    else:
+        d = data
 
-    label_mapping = settings.LABEL_MAPPING['it'] if language == "it" else settings.LABEL_MAPPING['en']
     if len(data) > 0 and hasattr(settings, 'LABEL_MAPPING'):
-        d = data[0]
+        label_mapping = settings.LABEL_MAPPING['it'] if language == "it" else settings.LABEL_MAPPING['en']
         for key in d.keys():
             labels[key] = label_mapping[key]
             if isinstance(d[key], dict):
@@ -16,21 +21,33 @@ def encode_labels_list(data):
                     labels[k] = {}
                     for k_temp, v_temp in d[key][k].items():
                         labels[k][k_temp] = label_mapping[k_temp]
+                    break
+            elif isinstance(d[key], list):
+                for instance in d[key]:
+                    for k_temp, v_temp in instance.items():
+                        labels[k_temp] = label_mapping[k_temp]
+                    break
 
     return labels
 
 
-def encode_labels_detail(data, language):
-    labels = {}
-
-    label_mapping = settings.LABEL_MAPPING['it'] if language == "it" else settings.LABEL_MAPPING['en']
-    if len(data) > 0 and hasattr(settings, 'LABEL_MAPPING'):
-        for key in data.keys():
-            labels[key] = label_mapping[key]
-            if isinstance(data[key], dict):
-                for k in data[key].keys():
-                    labels[k] = {}
-                    for k_temp, v_temp in data[key][k].items():
-                        labels[k][k_temp] = label_mapping[k_temp]
-
-    return labels
+# def encode_labels_detail(data, language):
+#     labels = {}
+#
+#     if len(data) > 0 and hasattr(settings, 'LABEL_MAPPING'):
+#         label_mapping = settings.LABEL_MAPPING['it'] if language == "it" else settings.LABEL_MAPPING['en']
+#         for key in data.keys():
+#             labels[key] = label_mapping[key]
+#             if isinstance(data[key], dict):
+#                 for k in data[key].keys():
+#                     labels[k] = {}
+#                     for k_temp, v_temp in data[key][k].items():
+#                         labels[k][k_temp] = label_mapping[k_temp]
+#                 break
+#             elif isinstance(data[key], list):
+#                 for instance in data[key]:
+#                     for k_temp, v_temp in instance.items():
+#                         labels[k_temp] = label_mapping[k_temp]
+#                     break
+#
+#     return labels
