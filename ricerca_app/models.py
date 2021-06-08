@@ -1616,6 +1616,14 @@ class Personale(InsModAbstract):
         return '{} {} [{}]'.format(self.nome,
                                    self.cognome, self.matricola)
 
+class PersonaleTipoContatto(models.Model):
+    cod_contatto = models.CharField(db_column='COD_CONTATTO', primary_key=True, max_length=20)  # Field name made lowercase.
+    descr_contatto = models.CharField(db_column='DESCR_CONTATTO', max_length=200)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'PERSONALE_TIPO_CONTATTO'
+
 class PersonaleContatti(models.Model):
     id_ab = models.IntegerField(db_column='ID_AB', primary_key=True)  # Field name made lowercase.
     cod_fis = models.CharField(db_column='COD_FIS', max_length=16, blank=True, null=True)  # Field name made lowercase.
@@ -1629,14 +1637,6 @@ class PersonaleContatti(models.Model):
         db_table = 'PERSONALE_CONTATTI'
         unique_together = (('id_ab', 'cd_tipo_cont', 'prg_priorita'),)
 
-
-class PersonaleTipoContatto(models.Model):
-    cod_contatto = models.CharField(db_column='COD_CONTATTO', primary_key=True, max_length=20)  # Field name made lowercase.
-    descr_contatto = models.CharField(db_column='DESCR_CONTATTO', max_length=200)  # Field name made lowercase.
-
-    class Meta:
-        managed = True
-        db_table = 'PERSONALE_TIPO_CONTATTO'
 
 class RicercaAster1(InsModAbstract):
 
