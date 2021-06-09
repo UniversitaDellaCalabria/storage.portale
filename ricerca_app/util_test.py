@@ -26,7 +26,7 @@ from .models import (
     RicercaErc0,
     DidatticaDottoratoCds,
     DidatticaDottoratoPds,
-    DidatticaDottoratoRegolamento)
+    DidatticaDottoratoRegolamento, PersonaleContatti, PersonaleTipoContatto)
 
 
 # class ContextUnitTest(TestCase):
@@ -364,4 +364,26 @@ class DidatticaDottoratoRegolamentoUnitTest(TestCase):
             data[k] = v
 
         obj = DidatticaDottoratoRegolamento.objects.create(**data)
+        return obj
+
+
+class PersonaleContattiUnitTest(TestCase):
+    @classmethod
+    def create_personaleContatti(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = PersonaleContatti.objects.create(**data)
+        return obj
+
+
+class PersonaleTipoContattoUnitTest(TestCase):
+    @classmethod
+    def create_personaleTipoContatto(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = PersonaleTipoContatto.objects.create(**data)
         return obj

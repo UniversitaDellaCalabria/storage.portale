@@ -4,7 +4,7 @@ import operator
 from django.db.models import Q, Max
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, DidatticaRegolamento, \
-    DidatticaPdsRegolamento
+    DidatticaPdsRegolamento, PersonaleContatti, PersonaleTipoContatto
 
 
 class ServiceQueryBuilder:
@@ -98,8 +98,14 @@ class ServiceDidatticaCds:
 class ServiceDidatticaAttivitaFormativa:
 
     @staticmethod
-    def getStudyPlans(regdid_id):
-        query = DidatticaPdsRegolamento.objects.filter(regdid=regdid_id)
+    def getStudyPlans(regdid_id=None, studyplanid=None):
+        if regdid_id is None and studyplanid is None:
+            return
+        elif regdid_id is not None:
+            query = DidatticaPdsRegolamento.objects.filter(regdid=regdid_id)
+        else:
+            query = DidatticaPdsRegolamento.objects.filter(
+                pds_regdid_id=studyplanid)
         query = query.order_by(
             'pds_des_it').values(
             'regdid__regdid_id',
@@ -443,6 +449,7 @@ class ServiceDocente:
         query = Personale.objects.filter(
             fl_docente=1,
             matricola__exact=teacher) .values(
+            "id_ab",
             "matricola",
             "nome",
             "middle_name",
@@ -456,9 +463,13 @@ class ServiceDocente:
             "telrif",
             "email").distinct()
         query = list(query)
+        contacts_types = PersonaleTipoContatto.objects.all().values("descr_contatto")
         for q in query:
             dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
                 .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+            contacts = PersonaleTipoContatto.objects.filter(
+                personalecontatti__id_ab=q["id_ab"]) .values(
+                "descr_contatto", "personalecontatti__contatto")
             if len(dep) == 0:
                 q["dip_cod"] = None
                 q["dip_des_it"] = None
@@ -468,6 +479,12 @@ class ServiceDocente:
                 q["dip_cod"] = dep['dip_cod']
                 q["dip_des_it"] = dep['dip_des_it']
                 q["dip_des_eng"] = dep["dip_des_eng"]
+
+            for c in contacts_types:
+                q[c['descr_contatto']] = []
+            for contact in contacts:
+                q[contact["descr_contatto"]].append(
+                    contact['personalecontatti__contatto'])
 
         return query
 

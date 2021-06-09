@@ -94,6 +94,13 @@ class ApiCdsInfoFilter(GenericApiFilter):
 
 
 class ApiCdSStudyPlansFilter(GenericApiFilter):
+    search_params = [{'name': 'cdsid',
+                      'description': 'didattica regolamento id',
+                      'required': True,
+                      'type': 'int'}]
+
+
+class ApiStudyPlanDetailFilter(GenericApiFilter):
     search_params = [{'name': 'studyplanid',
                       'description': 'id di un piano di studio',
                       'required': True,

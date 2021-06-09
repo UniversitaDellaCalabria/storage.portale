@@ -161,6 +161,18 @@ class ApiCdSStudyPlansList(ApiEndpointList):
             regdid_id=cdsid_param)
 
 
+class ApiStudyPlanDetail(ApiEndpointDetail):
+    description = 'Restituisce i dettagli su un singolo piano di studi'
+    serializer_class = CdSStudyPlansSerializer
+    filter_backends = [ApiStudyPlanDetailFilter]
+
+    def get_queryset(self):
+        studyplanid = str(self.kwargs['studyplanid'])
+
+        return ServiceDidatticaAttivitaFormativa.getStudyPlans(
+            regdid_id=None, studyplanid=studyplanid)
+
+
 class ApiStudyPlanActivitiesList(ApiEndpointList):
     description = 'Restituisce l’elenco degli insegnamenti' \
                   ' di un Piano di Studio con info sintetiche'

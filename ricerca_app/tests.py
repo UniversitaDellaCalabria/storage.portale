@@ -7,7 +7,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     RicercaAster1UnitTest, RicercaAster2UnitTest, RicercaDocenteGruppoUnitTest, RicercaDocenteLineaApplicataUnitTest, \
     RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest, \
     RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest, \
-    DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest
+    DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest, \
+    PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -283,6 +284,52 @@ class ApiCdSStudyPlansUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()[
             'results'][0]['StudyActivities'][0]['StudyActivityName'] == 'math'
+
+
+class ApiStudyPlanDetailUnitTest(TestCase):
+
+    def test_apicdsstudyplans(self):
+        req = Client()
+
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
+            **{'regdid': regdid, })
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'pds_regdid': pds,
+            'regdid': regdid,
+            'des': 'matematica',
+            'af_gen_des_eng': 'math',
+            'af_id': 1,
+            'af_radice_id': 1,
+        })
+
+        url = reverse(
+            'ricerca:studyplandetail',
+            kwargs={
+                'cdsid': 1,
+                'studyplanid': 1})
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results']['RegDidId'] == 1
+
+        # lang it
+
+        data = {'lang': 'it'}
+        res = req.get(url, data=data)
+        assert res.json()[
+            'results']['StudyActivities'][0]['StudyActivityName'] == 'matematica'
+
+        # lang eng
+        data = {'lang': 'en'}
+        res = req.get(url, data=data)
+        assert res.json()[
+            'results']['StudyActivities'][0]['StudyActivityName'] == 'math'
 
 
 class ApiStudyPlanActivitiesUnitTest(TestCase):
@@ -979,7 +1026,70 @@ class ApiTeacherInfoUnitTest(TestCase):
             'dip_des_it': "Matematica e Informatica",
             'dip_des_eng': "Math and Computer Science",
         })
+        tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+            **{'cod_contatto': 'EMAIL', 'descr_contatto': 'Posta Elettronica', })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Riferimento Ufficio',
+            'descr_contatto': 'Riferimento Ufficio',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'POSTA ELETTRONICA CERTIFICATA',
+            'descr_contatto': 'POSTA ELETTRONICA CERTIFICATA',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Posta Elettronica Privata',
+            'descr_contatto': 'Posta Elettronica Privata',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Fax',
+            'descr_contatto': 'Fax',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Residenza',
+            'descr_contatto': 'Telefono Residenza',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Domicilio',
+            'descr_contatto': 'Telefono Domicilio',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Cellulare',
+            'descr_contatto': 'Telefono Cellulare',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Cellulare Ufficio',
+            'descr_contatto': 'Telefono Cellulare Ufficio',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Ufficio',
+            'descr_contatto': 'Telefono Ufficio',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'URL Sito WEB Curriculum Vitae',
+            'descr_contatto': 'URL Sito WEB Curriculum Vitae',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'URL Sito WEB',
+            'descr_contatto': 'URL Sito WEB',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Skype',
+            'descr_contatto': 'Skype',
+        })
 
+        PersonaleContattiUnitTest.create_personaleContatti(**{
+            'cd_tipo_cont': tipo_contatto,
+            'id_ab': 1,
+            'contatto': 'email@email',
+            'prg_priorita': 1,
+
+        })
+        PersonaleContattiUnitTest.create_personaleContatti(**{
+            'cd_tipo_cont': tipo_contatto,
+            'id_ab': 2,
+            'contatto': 'email2@email',
+            'prg_priorita': 1,
+        })
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111112'})
 
         # check url

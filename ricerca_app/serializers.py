@@ -310,9 +310,21 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherRole': query['cd_ruolo'],
             'TeacherSSDCod': query['cd_ssd'],
             'TeacherSSDDescription': query['ds_ssd'],
-            'TeacherEmail': query['email'],
-            'TeacherTel': query['telrif'],
             'TeacherOffice': query['ds_aff_org'],
+            'TeacherOfficeReference': query['Riferimento Ufficio'],
+            'TeacherEmail': query['Posta Elettronica'],
+            'TeacherPEC': query['POSTA ELETTRONICA CERTIFICATA'],
+            'TeacherPrivateEmail': query['Posta Elettronica Privata'],
+            'TeacherTelOffice': query['Telefono Ufficio'],
+            'TeacherTelCelOffice': query['Telefono Cellulare Ufficio'],
+            'TeacherTelCel': query['Telefono Cellulare'],
+            'TeacherTelDomicile': query['Telefono Domicilio'],
+            'TeacherTelResidence': query['Telefono Residenza'],
+            'TeacherFax': query['Fax'],
+            'TeacherSkype': query['Skype'],
+            'TeacherWebSite': query['URL Sito WEB'],
+            'TeacherCV': query['URL Sito WEB Curriculum Vitae']
+
         }
 
 

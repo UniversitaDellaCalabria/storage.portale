@@ -21,12 +21,12 @@ def encode_labels(data, language=None):
                     labels[k] = {}
                     for k_temp, v_temp in d[key][k].items():
                         labels[k][k_temp] = label_mapping[k_temp]
-                    break
             elif isinstance(d[key], list):
                 for instance in d[key]:
-                    for k_temp, v_temp in instance.items():
-                        labels[k_temp] = label_mapping[k_temp]
-                    break
+                    if isinstance(instance, dict):
+                        for k_temp, v_temp in instance.items():
+                            labels[k_temp] = label_mapping[k_temp]
+                        break
 
     return labels
 
