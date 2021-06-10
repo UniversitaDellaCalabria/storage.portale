@@ -1232,3 +1232,81 @@ class ApiDegreeTypesListUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results'][0]['CourseType'] == 'L'
         assert len(res.json()['results']) == 3
+
+
+class ApiDepartmentsListUnitTest(TestCase):
+
+    def test_apidepartmentslist(self):
+        req = Client()
+
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': '001',
+            'dip_des_it': 'Dipartimento di Matematica e Informatica',
+            'dip_des_eng': 'Department of Math and Computer Science',
+            'dip_nome_breve': 'DEMACS',
+        })
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 2,
+            'dip_cod': '002',
+            'dip_des_it': 'Dipartimento di Letteratura',
+            'dip_des_eng': 'Department of Literature',
+            'dip_nome_breve': 'LIT',
+        })
+
+        url = reverse('ricerca:departmentslist')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()[
+            'results'][0]['DepartmentName'] == 'Department of Math and Computer Science'
+
+        data = {'lang': 'it'}
+        res = req.get(url, data=data)
+        assert res.json()[
+            'results'][0]['DepartmentName'] == 'Dipartimento di Matematica e Informatica'
+
+
+class ApiDepartmentDetailUnitTest(TestCase):
+
+    def test_apidepartmentdetail(self):
+        req = Client()
+
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': '001',
+            'dip_des_it': 'Dipartimento di Matematica e Informatica',
+            'dip_des_eng': 'Department of Math and Computer Science',
+            'dip_nome_breve': 'DEMACS',
+        })
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 2,
+            'dip_cod': '002',
+            'dip_des_it': 'Dipartimento di Letteratura',
+            'dip_des_eng': 'Department of Literature',
+            'dip_nome_breve': 'LIT',
+        })
+
+        url = reverse(
+            'ricerca:departmentdetail', kwargs={
+                'departmentid': '001'})
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()[
+            'results']['DepartmentName'] == 'Department of Math and Computer Science'
+
+        data = {'lang': 'it'}
+        res = req.get(url, data=data)
+        assert res.json()[
+            'results']['DepartmentName'] == 'Dipartimento di Matematica e Informatica'

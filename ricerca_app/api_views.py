@@ -309,3 +309,25 @@ class ApiDegreeTypesList(ApiEndpointList):
 
     def get_queryset(self):
         return ServiceDidatticaCds.getDegreeTypes()
+
+
+# ---- Dipartimenti ----
+
+
+class ApiDepartmentsList(ApiEndpointList):
+    description = 'La funzione restituisce la lista dei dipartimenti'
+    serializer_class = DepartmentsListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDipartimento.getDepartmentsList()
+
+
+class ApiDepartmentDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce uno specifico dipartimento'
+    serializer_class = DepartmentsListSerializer
+    filter_backends = [ApiDoctoratesListFilter]
+
+    def get_queryset(self):
+        departmentid = self.kwargs['departmentid']
+        return ServiceDipartimento.getDepartment(departmentid)

@@ -4,7 +4,7 @@ import operator
 from django.db.models import Q, Max
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, DidatticaRegolamento, \
-    DidatticaPdsRegolamento, PersonaleContatti, PersonaleTipoContatto
+    DidatticaPdsRegolamento, PersonaleTipoContatto
 
 
 class ServiceQueryBuilder:
@@ -535,3 +535,19 @@ class ServiceDottorato:
             'idesse3_ddpds__pds_cod',
             'idesse3_ddpds__pds_des',
             'idesse3_ddr__regdid_id_esse3')
+
+
+class ServiceDipartimento:
+
+    @staticmethod
+    def getDepartmentsList():
+        query = DidatticaDipartimento.objects.all().values(
+            "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
+        return query
+
+    @staticmethod
+    def getDepartment(departmentid):
+        query = DidatticaDipartimento.objects.filter(
+            dip_cod__exact=departmentid).values(
+            "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
+        return query

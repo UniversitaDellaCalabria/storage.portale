@@ -371,3 +371,21 @@ class DegreeTypesListSerializer(CreateUpdateAbstract):
             'CourseType': query['tipo_corso_cod'],
             'CourseTypeDescription': query['tipo_corso_des'],
         }
+
+
+class DepartmentsListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'DepartmentID': query['dip_cod'],
+            'DepartmentName': query['dip_des_it'] if req_lang == "it" or query[
+                'dip_des_eng'] is None else query['dip_des_eng'],
+            'DepartmentNameShort': query['dip_nome_breve'],
+        }

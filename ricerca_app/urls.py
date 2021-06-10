@@ -139,3 +139,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/degreetypes/'.format(base_url),
                         api_views.ApiDegreeTypesList.as_view(),
                         name='degreetypes'),
+
+    urlpatterns += path('{}/departments/'.format(base_url),
+                        api_views.ApiDepartmentsList.as_view(),
+                        name='departmentslist'),
+
+    urlpatterns += path('{}/departments/<str:departmentid>'.format(base_url),
+                        api_views.ApiDepartmentDetail.as_view(),
+                        name='departmentdetail'),
