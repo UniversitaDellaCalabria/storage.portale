@@ -355,3 +355,19 @@ class DoctoratesListSerializer(CreateUpdateAbstract):
             'StudyPlanCOD': query['idesse3_ddpds__pds_cod'],
             'StudyPlanDes': query['idesse3_ddpds__pds_des'],
         }
+
+
+class DegreeTypesListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'CourseType': query['tipo_corso_cod'],
+            'CourseTypeDescription': query['tipo_corso_des'],
+        }

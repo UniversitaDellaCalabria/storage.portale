@@ -1182,3 +1182,53 @@ class ApiDoctoratesListUnitTest(TestCase):
         data = {'cycle': 0}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
+
+
+class ApiDegreeTypesListUnitTest(TestCase):
+
+    def test_apidegreetypeslist(self):
+        req = Client()
+
+        dip = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+        })
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'dip': dip,
+            'cds_id': 1,
+            'tipo_corso_cod': 'L',
+            'tipo_corso_des': 'Laurea triennale',
+            'cdsord_id': 1,
+        })
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'dip': dip,
+            'cds_id': 2,
+            'tipo_corso_cod': 'LM5',
+            'tipo_corso_des': 'Laurea magistrale ciclo unico',
+            'cdsord_id': 2,
+        })
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'dip': dip,
+            'cds_id': 3,
+            'tipo_corso_cod': 'LM',
+            'tipo_corso_des': 'Laurea Magistrale',
+            'cdsord_id': 3,
+        })
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'dip': dip,
+            'cds_id': 4,
+            'tipo_corso_cod': 'L',
+            'tipo_corso_des': 'Laurea triennale',
+            'cdsord_id': 4,
+        })
+
+        url = reverse('ricerca:degreetypes')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results'][0]['CourseType'] == 'L'
+        assert len(res.json()['results']) == 3

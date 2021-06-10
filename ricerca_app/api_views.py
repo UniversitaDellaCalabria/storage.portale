@@ -298,3 +298,14 @@ class ApiDoctoratesList(ApiEndpointList):
 
     def get_queryset(self):
         return ServiceDottorato.getDoctorates(self.request.query_params)
+
+# ---- Tipologie Lauree ----
+
+
+class ApiDegreeTypesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle tipologie di lauree'
+    serializer_class = DegreeTypesListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDidatticaCds.getDegreeTypes()

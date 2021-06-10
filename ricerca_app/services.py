@@ -94,6 +94,12 @@ class ServiceDidatticaCds:
                             'valore_min',
                             'codicione').distinct()
 
+    @staticmethod
+    def getDegreeTypes():
+        query = DidatticaCds.objects.values(
+            "tipo_corso_cod", "tipo_corso_des").distinct()
+        return query
+
 
 class ServiceDidatticaAttivitaFormativa:
 
