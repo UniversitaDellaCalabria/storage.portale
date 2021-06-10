@@ -144,6 +144,6 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiDepartmentsList.as_view(),
                         name='departmentslist'),
 
-    urlpatterns += path('{}/departments/<str:departmentid>'.format(base_url),
+    urlpatterns += path('{}/departments/<str:departmentid>/'.format(base_url),
                         api_views.ApiDepartmentDetail.as_view(),
                         name='departmentdetail'),
