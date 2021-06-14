@@ -249,7 +249,12 @@ class ApiCdSStudyPlansUnitTest(TestCase):
     def test_apicdsstudyplans(self):
         req = Client()
 
-        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        cds = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'durata_anni': 3,
+        })
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'cds': cds,
+        })
         pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
             **{'regdid': regdid, })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
@@ -259,6 +264,7 @@ class ApiCdSStudyPlansUnitTest(TestCase):
             'af_gen_des_eng': 'math',
             'af_id': 1,
             'af_radice_id': 1,
+            'anno_corso': 1
         })
 
         url = reverse('ricerca:cdsstudyplans', kwargs={'cdsid': 1})
@@ -277,13 +283,13 @@ class ApiCdSStudyPlansUnitTest(TestCase):
         data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()[
-            'results'][0]['StudyActivities'][0]['StudyActivityName'] == 'matematica'
+            'results'][0]['StudyActivities']['1'][0]['StudyActivityName'] == 'matematica'
 
         # lang eng
         data = {'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()[
-            'results'][0]['StudyActivities'][0]['StudyActivityName'] == 'math'
+            'results'][0]['StudyActivities']['1'][0]['StudyActivityName'] == 'math'
 
 
 class ApiStudyPlanDetailUnitTest(TestCase):
@@ -291,7 +297,12 @@ class ApiStudyPlanDetailUnitTest(TestCase):
     def test_apicdsstudyplans(self):
         req = Client()
 
-        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        cds = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'durata_anni': 3,
+        })
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'cds': cds,
+        })
         pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
             **{'regdid': regdid, })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
@@ -301,6 +312,7 @@ class ApiStudyPlanDetailUnitTest(TestCase):
             'af_gen_des_eng': 'math',
             'af_id': 1,
             'af_radice_id': 1,
+            'anno_corso': 1
         })
 
         url = reverse(
@@ -323,13 +335,13 @@ class ApiStudyPlanDetailUnitTest(TestCase):
         data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()[
-            'results']['StudyActivities'][0]['StudyActivityName'] == 'matematica'
+            'results']['StudyActivities']['1'][0]['StudyActivityName'] == 'matematica'
 
         # lang eng
         data = {'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()[
-            'results']['StudyActivities'][0]['StudyActivityName'] == 'math'
+            'results']['StudyActivities']['1'][0]['StudyActivityName'] == 'math'
 
 
 class ApiStudyPlanActivitiesUnitTest(TestCase):

@@ -122,34 +122,61 @@ class ServiceDidatticaAttivitaFormativa:
         query = list(query)
         for q in query:
             activities = ServiceDidatticaAttivitaFormativa.getAttivitaFormativaByStudyPlan(
-                q['pds_regdid_id'])
-            q['StudyActivities'] = list(activities)
+                q['pds_regdid_id'], group=True)
+            q['StudyActivities'] = activities  # list(activities)
         return query
 
     @staticmethod
-    def getAttivitaFormativaByStudyPlan(studyplanid):
-        query = DidatticaAttivitaFormativa.objects.filter(
-            pds_regdid__pds_regdid_id=studyplanid, af_id__isnull=False)
-        new_query = DidatticaAttivitaFormativa.objects.none()
-        for q in query:
-            if q.checkIfMainCourse():
-                new_query = new_query | DidatticaAttivitaFormativa.objects.filter(
-                    af_id=q.af_id)
+    def getAttivitaFormativaByStudyPlan(studyplanid, group=False):
+        if group:
+            total_years = DidatticaPdsRegolamento.objects.filter(pds_regdid_id=studyplanid).values(
+                "regdid__cds__durata_anni").first()['regdid__cds__durata_anni']
+            final_query = {}
+            for i in range(total_years):
+                query = DidatticaAttivitaFormativa.objects.filter(
+                    pds_regdid__pds_regdid_id=studyplanid, af_id__isnull=False, anno_corso=(i + 1))
+                new_query = DidatticaAttivitaFormativa.objects.none()
+                for q in query:
+                    if q.checkIfMainCourse():
+                        new_query = new_query | DidatticaAttivitaFormativa.objects.filter(
+                            af_id=q.af_id)
+                final_query[i + 1] = new_query.order_by(
+                    'ciclo_des') .values(
+                    'af_id',
+                    'des',
+                    'af_gen_des_eng',
+                    'cds__cds_cod',
+                    'anno_corso',
+                    'ciclo_des',
+                    'peso',
+                    'sett_des',
+                    'freq_obblig_flg',
+                    'cds__nome_cds_it',
+                    'cds__nome_cds_eng')
+            return final_query
+        else:
+            query = DidatticaAttivitaFormativa.objects.filter(
+                pds_regdid__pds_regdid_id=studyplanid, af_id__isnull=False)
+            new_query = DidatticaAttivitaFormativa.objects.none()
+            for q in query:
+                if q.checkIfMainCourse():
+                    new_query = new_query | DidatticaAttivitaFormativa.objects.filter(
+                        af_id=q.af_id)
 
-        return new_query.order_by(
-            'anno_corso',
-            'ciclo_des') .values(
-            'af_id',
-            'des',
-            'af_gen_des_eng',
-            'cds__cds_cod',
-            'anno_corso',
-            'ciclo_des',
-            'peso',
-            'sett_des',
-            'freq_obblig_flg',
-            'cds__nome_cds_it',
-            'cds__nome_cds_eng')
+            return new_query.order_by(
+                'anno_corso',
+                'ciclo_des') .values(
+                'af_id',
+                'des',
+                'af_gen_des_eng',
+                'cds__cds_cod',
+                'anno_corso',
+                'ciclo_des',
+                'peso',
+                'sett_des',
+                'freq_obblig_flg',
+                'cds__nome_cds_it',
+                'cds__nome_cds_eng')
 
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):

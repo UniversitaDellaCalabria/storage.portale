@@ -18,9 +18,15 @@ def encode_labels(data, language=None):
             labels[key] = label_mapping[key]
             if isinstance(d[key], dict):
                 for k in d[key].keys():
-                    labels[k] = {}
-                    for k_temp, v_temp in d[key][k].items():
-                        labels[k][k_temp] = label_mapping[k_temp]
+                    if isinstance(d[key][k], dict):
+                        labels[k] = {}
+                        for k_temp, v_temp in d[key][k].items():
+                            labels[k][k_temp] = label_mapping[k_temp]
+                    else:
+                        for item in d[key][k]:
+                            for k_temp, v_temp in item.items():
+                                labels[k_temp] = label_mapping[k_temp]
+                            break
             elif isinstance(d[key], list):
                 for instance in d[key]:
                     if isinstance(instance, dict):

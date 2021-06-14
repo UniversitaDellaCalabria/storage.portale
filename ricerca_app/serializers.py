@@ -89,11 +89,13 @@ class CdSStudyPlansSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
-        study_activities = []
-        for q in query['StudyActivities']:
-            study_activities.append(
-                StudyPlansActivitiesSerializer.to_dict(
-                    q, req_lang))
+        study_activities = {}
+        for k in query['StudyActivities']:
+            study_activities[k] = []
+            for q in query['StudyActivities'][k]:
+                study_activities[k].append(
+                    StudyPlansActivitiesSerializer.to_dict(
+                        q, req_lang))
 
         return {
             'RegDidId': query['regdid__regdid_id'],
