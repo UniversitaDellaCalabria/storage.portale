@@ -504,7 +504,7 @@ class ServiceDocente:
             dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
                 .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
             contacts = PersonaleTipoContatto.objects.filter(
-                personalecontatti__id_ab=q["id_ab"]) .values(
+                personalecontatti__id_ab=q["id_ab"], descr_contatto__in=contacts_to_take) .values(
                 "descr_contatto", "personalecontatti__contatto")
             if len(dep) == 0:
                 q["dip_cod"] = None
