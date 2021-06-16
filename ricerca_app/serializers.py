@@ -305,7 +305,6 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         return {
             'TeacherID': query['matricola'],
-            'TeacherCode': query['cod_fis'],
             'TeacherFirstName': query['nome'] + (" " + query['middle_name']
                                                  if query['middle_name'] is not None else ""),
             'TeacherLastName': query['cognome'],
@@ -318,14 +317,9 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherOfficeReference': query['Riferimento Ufficio'],
             'TeacherEmail': query['Posta Elettronica'],
             'TeacherPEC': query['POSTA ELETTRONICA CERTIFICATA'],
-            'TeacherPrivateEmail': query['Posta Elettronica Privata'],
             'TeacherTelOffice': query['Telefono Ufficio'],
             'TeacherTelCelOffice': query['Telefono Cellulare Ufficio'],
-            'TeacherTelCel': query['Telefono Cellulare'],
-            'TeacherTelDomicile': query['Telefono Domicilio'],
-            'TeacherTelResidence': query['Telefono Residenza'],
             'TeacherFax': query['Fax'],
-            'TeacherSkype': query['Skype'],
             'TeacherWebSite': query['URL Sito WEB'],
             'TeacherCV': query['URL Sito WEB Curriculum Vitae']
 
