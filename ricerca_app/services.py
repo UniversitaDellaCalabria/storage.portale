@@ -494,12 +494,12 @@ class ServiceDocente:
             "cd_ssd",
             "ds_ssd",
             "aff_org",
-            "cod_fis",
             "ds_aff_org",
             "telrif",
             "email").distinct()
         query = list(query)
-        contacts_types = PersonaleTipoContatto.objects.all().values("descr_contatto")
+        contacts_to_take = ['Telefono Cellulare', 'Posta Elettronica', 'Fax', 'POSTA ELETTRONICA CERTIFICATA', 'Telefono Cellulare Ufficio', 'Telefono Ufficio', 'Riferimento Ufficio', 'URL Sito WEB', 'URL Sito WEB Curriculum Vitae']
+        contacts_types = PersonaleTipoContatto.objects.filter(descr_contatto__in=contacts_to_take).values("descr_contatto")
         for q in query:
             dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
                 .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
