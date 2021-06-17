@@ -104,14 +104,32 @@ class ServiceDidatticaCds:
 class ServiceDidatticaAttivitaFormativa:
 
     @staticmethod
-    def getStudyPlans(regdid_id=None, studyplanid=None):
-        if regdid_id is None and studyplanid is None:
+    def getStudyPlans(regdid_id=None):
+        if regdid_id is None:
             return
-        elif regdid_id is not None:
-            query = DidatticaPdsRegolamento.objects.filter(regdid=regdid_id)
-        else:
-            query = DidatticaPdsRegolamento.objects.filter(
-                pds_regdid_id=studyplanid)
+        # DidatticaPdsRegolamento.objects.filter(regdid=regdid_id)
+        query = DidatticaAttivitaFormativa.objects.filter(regdid=regdid_id)
+        query = query.order_by(
+            'pds_regdid_id__pds_des_it').values(
+            'regdid_id',
+            'pds_regdid_id',
+            'pds_cod',
+            'pds_regdid_id__pds_des_it',
+            'pds_regdid_id__pds_des_eng').distinct()
+        query = list(query)
+        for q in query:
+            activities = ServiceDidatticaAttivitaFormativa.getAttivitaFormativaByStudyPlan(
+                q['pds_regdid_id'], group=True)
+            q['StudyActivities'] = activities  # list(activities)
+        return query
+
+    @staticmethod
+    def getStudyPlan(studyplanid=None):
+        if studyplanid is None:
+            return
+
+        query = DidatticaPdsRegolamento.objects.filter(
+            pds_regdid_id=studyplanid)
         query = query.order_by(
             'pds_des_it').values(
             'regdid__regdid_id',
@@ -498,14 +516,26 @@ class ServiceDocente:
             "telrif",
             "email").distinct()
         query = list(query)
-        contacts_to_take = ['Telefono Cellulare', 'Posta Elettronica', 'Fax', 'POSTA ELETTRONICA CERTIFICATA', 'Telefono Cellulare Ufficio', 'Telefono Ufficio', 'Riferimento Ufficio', 'URL Sito WEB', 'URL Sito WEB Curriculum Vitae']
-        contacts_types = PersonaleTipoContatto.objects.filter(descr_contatto__in=contacts_to_take).values("descr_contatto")
+        contacts_to_take = [
+            'Telefono Cellulare',
+            'Posta Elettronica',
+            'Fax',
+            'POSTA ELETTRONICA CERTIFICATA',
+            'Telefono Cellulare Ufficio',
+            'Telefono Ufficio',
+            'Riferimento Ufficio',
+            'URL Sito WEB',
+            'URL Sito WEB Curriculum Vitae']
+        contacts_types = PersonaleTipoContatto.objects.filter(
+            descr_contatto__in=contacts_to_take).values("descr_contatto")
         for q in query:
             dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
                 .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
             contacts = PersonaleTipoContatto.objects.filter(
-                personalecontatti__id_ab=q["id_ab"], descr_contatto__in=contacts_to_take) .values(
-                "descr_contatto", "personalecontatti__contatto")
+                personalecontatti__id_ab=q["id_ab"],
+                descr_contatto__in=contacts_to_take) .values(
+                "descr_contatto",
+                "personalecontatti__contatto")
             if len(dep) == 0:
                 q["dip_cod"] = None
                 q["dip_des_it"] = None
