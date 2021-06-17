@@ -98,6 +98,35 @@ class CdSStudyPlansSerializer(CreateUpdateAbstract):
                         q, req_lang))
 
         return {
+            'RegDidId': query['regdid_id'],
+            'StudyPlanId': query['pds_regdid_id'],
+            'StudyPlanCOD': query['pds_cod'],
+            'StudyPlanName': query['pds_regdid_id__pds_des_it'] if req_lang == 'it' or query['pds_regdid_id__pds_des_eng'] is None else query[
+                'pds_regdid_id__pds_des_eng'],
+            'StudyActivities': study_activities,
+        }
+
+
+class CdSStudyPlanSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        study_activities = {}
+        for k in query['StudyActivities']:
+            study_activities[k] = []
+            for q in query['StudyActivities'][k]:
+                study_activities[k].append(
+                    StudyPlansActivitiesSerializer.to_dict(
+                        q, req_lang))
+
+        return {
             'RegDidId': query['regdid__regdid_id'],
             'StudyPlanId': query['pds_regdid_id'],
             'StudyPlanCOD': query['pds_cod'],
