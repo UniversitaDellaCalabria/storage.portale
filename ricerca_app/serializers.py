@@ -309,7 +309,8 @@ class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
         return {
             'StudyActivityID': query['didatticacopertura__af__af_id'],
             'StudyActivityName': query['didatticacopertura__af__des'] if req_lang == 'it' or query['didatticacopertura__af__af_gen_des_eng'] is None else query['didatticacopertura__af__af_gen_des_eng'],
-            'StudyActivityCdSID': query['didatticacopertura__af__regdid__regdid_id'],
+            'StudyActivityCdSID': query['didatticacopertura__af__cds_id'],
+            'StudyActivityRegDidId': query['didatticacopertura__af__regdid__regdid_id'],
             'StudyActivityCdSName': query['didatticacopertura__af__cds__nome_cds_it'] if req_lang == 'it' or query[
                 'didatticacopertura__af__cds__nome_cds_eng'] is None else query['didatticacopertura__af__cds__nome_cds_eng'],
             'StudyActivityAA': query['didatticacopertura__aa_id'],
