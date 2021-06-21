@@ -496,7 +496,8 @@ class ServiceDocente:
             'didatticacopertura__af__cds__nome_cds_it',
             'didatticacopertura__af__cds__nome_cds_eng',
             'didatticacopertura__af__lista_lin_did_af',
-            'didatticacopertura__aa_id')
+            'didatticacopertura__aa_id',
+            'didatticacopertura__af__cds_id')
 
     @staticmethod
     def getDocenteInfo(teacher):
@@ -611,3 +612,49 @@ class ServiceDipartimento:
             dip_cod__exact=departmentid).values(
             "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
         return query
+
+
+# class ServicePersonale:
+#
+#     @staticmethod
+#     def getAddressbook(keywords=None, structureid=None):
+#         if keywords is None and structureid is None:
+#             query = Personale.objects.filter(dt_rap_fin__gte=datetime.date.today())
+#         elif keywords is not None:
+#             query_keywords = Q()
+#             for k in keywords.split(" "):
+#                 q_nome = Q(nome__icointains=k)
+#                 q_cognome = Q(cognome__icontains=k)
+#                 query_keywords |= q_nome
+#                 query_keywords |= q_cognome
+#
+#             query = Personale.objects.filter(query_keywords, dt_rap_fin__gte=datetime.date.today())
+#         elif structureid is not None:
+#             query = Personale.objects.filter(aff_org__exact=structureid, dt_rap_fin__gte=datetime.date.today())
+#
+#         query = query.values("nome", "middle_name",
+#                                "cognome", "cd_ruolo",
+#                                "ds_ruolo",
+#                                "aff_org", "cod_fis",
+#                                "id_ab")
+#         query = list(query)
+#         contacts_to_take = [
+#             'Telefono Cellulare',
+#             'Posta Elettronica',
+#             'Fax',
+#             'POSTA ELETTRONICA CERTIFICATA',
+#             'Telefono Cellulare Ufficio',
+#             'Telefono Ufficio',
+#             'Riferimento Ufficio',
+#             'URL Sito WEB',
+#             'URL Sito WEB Curriculum Vitae']
+#         for q in query:
+#             f = FunzioniUnitaOrganizzativa.objects.filter(cod_fis__exact=q['cod_fis']).values("ds_funzione")
+#             s = UnitaOrganizzativa.objects.filter(uo__exact=q['aff_org']).values("descr")
+#             contacts = PersonaleContatti.objects.filter(id_ab=q['id_ab'], cd_tipo_cont__in=contacts_to_take).values("contatto", "cd_tipo_cont__descr_contatto")
+#             q['CONTATTI'] = contacts
+#             q['Funzione'] = f['ds_funzione']
+#             q['Struttura'] = s['descr']
+#
+#
+#         return query
