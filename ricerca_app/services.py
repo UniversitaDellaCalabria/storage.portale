@@ -73,7 +73,7 @@ class ServiceDidatticaCds:
                 .filter(reduce(operator.and_,
                                [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
                                 for e in keywords],
-                               Q()), q1, q2, q3, didatticaregolamento__stato_regdid_cod='A',
+                               Q()), q1, q2, q3,
                         didatticacdslingua__lin_did_ord_id__isnull=False)
 
         return items.values('didatticaregolamento__regdid_id',
