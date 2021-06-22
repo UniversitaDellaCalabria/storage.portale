@@ -83,6 +83,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 LABEL_MAPPING = {
     'en': {
         'RegDidId': 'Teaching Regulation ID',
+        'RegDidState': 'Teaching Regulation State',
         'CdSId': 'Course of Study ID',
         'AcademicYear': 'Academic Year',
         'CdSName': 'Course of Study Name',
@@ -186,6 +187,7 @@ LABEL_MAPPING = {
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
+        'RegDidState': 'Stato del Regolamento Didattico',
         'CdSId': 'ID Corso di Studi',
         'AcademicYear': 'Anno Accademico',
         'CdSName': 'Nome Corso di Studi',

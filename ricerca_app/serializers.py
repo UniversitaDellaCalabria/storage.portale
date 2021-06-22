@@ -39,7 +39,9 @@ class CdSListSerializer(CreateUpdateAbstract):
             'CdSLanguage': query['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or query['didatticacdslingua__lingua_des_eng'] is None else query['didatticacdslingua__lingua_des_eng'],
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
-            'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria']}
+            'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
+            'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
+        }
 
 
 class CdsInfoSerializer(CreateUpdateAbstract):
@@ -55,6 +57,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 req_lang='en'):
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
+            'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
             'CdSId': query['cds_cod'],
             'AcademicYear': query['didatticaregolamento__aa_reg_did'],
             'CdSName': query['nome_cds_it'] if req_lang == 'it' or query['nome_cds_eng'] is None else query['nome_cds_eng'],
