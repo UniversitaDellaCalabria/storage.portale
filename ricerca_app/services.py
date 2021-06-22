@@ -76,23 +76,25 @@ class ServiceDidatticaCds:
                                Q()), q1, q2, q3,
                         didatticacdslingua__lin_did_ord_id__isnull=False)
 
-        return items.values('didatticaregolamento__regdid_id',
-                            'didatticaregolamento__aa_reg_did',
-                            'didatticaregolamento__frequenza_obbligatoria',
-                            'dip__dip_cod',
-                            'dip__dip_des_it',
-                            'dip__dip_des_eng',
-                            'didatticacdslingua__lingua_des_it',
-                            'didatticacdslingua__lingua_des_eng',
-                            'cds_cod',
-                            'nome_cds_it',
-                            'nome_cds_eng',
-                            'tipo_corso_cod',
-                            'cla_miur_cod',
-                            'cla_miur_des',
-                            'durata_anni',
-                            'valore_min',
-                            'codicione').distinct()
+        return items.values(
+            'didatticaregolamento__regdid_id',
+            'didatticaregolamento__aa_reg_did',
+            'didatticaregolamento__frequenza_obbligatoria',
+            'dip__dip_cod',
+            'dip__dip_des_it',
+            'dip__dip_des_eng',
+            'didatticacdslingua__lingua_des_it',
+            'didatticacdslingua__lingua_des_eng',
+            'cds_cod',
+            'nome_cds_it',
+            'nome_cds_eng',
+            'tipo_corso_cod',
+            'cla_miur_cod',
+            'cla_miur_des',
+            'durata_anni',
+            'valore_min',
+            'codicione',
+            'didatticaregolamento__stato_regdid_cod').distinct()
 
     @staticmethod
     def getDegreeTypes():
