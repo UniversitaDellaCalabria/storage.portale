@@ -28,7 +28,7 @@ from .models import (
     DidatticaDottoratoPds,
     DidatticaDottoratoRegolamento,
     PersonaleContatti,
-    PersonaleTipoContatto,
+    PersonaleUoTipoContatto,
     FunzioniUnitaOrganizzativa,
     UnitaOrganizzativa)
 
@@ -389,7 +389,7 @@ class PersonaleTipoContattoUnitTest(TestCase):
         for k, v in kwargs.items():
             data[k] = v
 
-        obj = PersonaleTipoContatto.objects.create(**data)
+        obj = PersonaleUoTipoContatto.objects.create(**data)
         return obj
 
 

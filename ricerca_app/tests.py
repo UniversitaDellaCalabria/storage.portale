@@ -1435,11 +1435,11 @@ class ApiAddressbookListUnitTest(TestCase):
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '99',
-            'descr': 'Rettorato',
+            'denominazione': 'Rettorato',
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '1',
-            'descr': 'Dipartimento di Matematica e Informatica',
+            'denominazione': 'Dipartimento di Matematica e Informatica',
         })
 
         url = reverse('ricerca:addressbooklist')

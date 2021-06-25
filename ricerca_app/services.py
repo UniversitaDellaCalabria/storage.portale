@@ -654,7 +654,7 @@ class ServicePersonale:
             f = FunzioniUnitaOrganizzativa.objects.filter(
                 id_ab=q['id_ab'], termine__gte=datetime.datetime.today()).values("ds_funzione")
             s = UnitaOrganizzativa.objects.filter(
-                uo__exact=q['aff_org']).values("descr")
+                uo__exact=q['aff_org']).values("denominazione")
             for c in contacts_to_take:
                 q[c] = []
             contacts_temp = contacts.filter(
@@ -671,7 +671,7 @@ class ServicePersonale:
                 q['Funzione'] = None
 
             if len(s) > 0:
-                q['Struttura'] = s.first()['descr']
+                q['Struttura'] = s.first()['denominazione']
             else:
                 q['Struttura'] = None
 
