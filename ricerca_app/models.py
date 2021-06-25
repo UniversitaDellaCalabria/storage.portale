@@ -1618,8 +1618,14 @@ class Personale(InsModAbstract):
 
 
 class PersonaleTipoContatto(models.Model):
-    cod_contatto = models.CharField(db_column='COD_CONTATTO', primary_key=True, max_length=20)  # Field name made lowercase.
-    descr_contatto = models.CharField(db_column='DESCR_CONTATTO', max_length=200)  # Field name made lowercase.
+    # Field name made lowercase.
+    cod_contatto = models.CharField(
+        db_column='COD_CONTATTO',
+        primary_key=True,
+        max_length=20)
+    # Field name made lowercase.
+    descr_contatto = models.CharField(
+        db_column='DESCR_CONTATTO', max_length=200)
 
     class Meta:
         managed = True
@@ -1627,12 +1633,30 @@ class PersonaleTipoContatto(models.Model):
 
 
 class PersonaleContatti(models.Model):
-    id_ab = models.IntegerField(db_column='ID_AB', primary_key=True)  # Field name made lowercase.
-    cod_fis = models.CharField(db_column='COD_FIS', max_length=16, blank=True, null=True)  # Field name made lowercase.
-    cd_tipo_cont = models.ForeignKey('PersonaleTipoContatto', models.DO_NOTHING, db_column='CD_TIPO_CONT')  # Field name made lowercase.
-    contatto = models.CharField(db_column='CONTATTO', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    prg_priorita = models.IntegerField(db_column='PRG_PRIORITA')  # Field name made lowercase.
-    dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    id_ab = models.IntegerField(db_column='ID_AB', primary_key=True)
+    cod_fis = models.ForeignKey(
+        Personale,
+        models.DO_NOTHING,
+        db_column='COD_FIS',
+        blank=True,
+        null=True,
+        to_field='cod_fis')  # Field name made lowercase.
+    cd_tipo_cont = models.ForeignKey(
+        'PersonaleTipoContatto',
+        models.DO_NOTHING,
+        db_column='CD_TIPO_CONT')  # Field name made lowercase.
+    # Field name made lowercase.
+    contatto = models.CharField(
+        db_column='CONTATTO',
+        max_length=255,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    prg_priorita = models.IntegerField(db_column='PRG_PRIORITA')
+    # Field name made lowercase.
+    dt_ins_mod = models.DateField(
+        db_column='DT_INS_MOD', blank=True, null=True)
 
     class Meta:
         managed = True

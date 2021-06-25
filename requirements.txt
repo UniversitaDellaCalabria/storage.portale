@@ -1,5 +1,5 @@
 django>=3.0.8,<4.0
-#mysqlclient
+mysqlclient
 # uwsgi
 
 #Bootstrap Italia + Unical template

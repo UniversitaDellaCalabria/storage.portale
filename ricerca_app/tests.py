@@ -1,3 +1,4 @@
+
 from django.test import TestCase, Client
 from django.urls import reverse
 
@@ -8,7 +9,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest, \
     RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest, \
     DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest, \
-    PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest
+    PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest, FunzioniUnitaOrganizzativaUnitTest, \
+    UnitaOrganizzativaUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -1322,3 +1324,148 @@ class ApiDepartmentDetailUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()[
             'results']['DepartmentName'] == 'Dipartimento di Matematica e Informatica'
+
+
+class ApiAddressbookListUnitTest(TestCase):
+
+    def test_apiaddressbooklist(self):
+        req = Client()
+
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo': 'Professore Associato',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+            'cod_fis': 'SMN1',
+        })
+        p2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Lionel',
+            'cognome': 'Messi',
+            'cd_ruolo': 'AM',
+            'ds_ruolo': 'Amministrazione',
+            'id_ab': 2,
+            'matricola': '111113',
+            'fl_docente': 0,
+            'flg_cessato': 0,
+            'aff_org': 99,
+            'cod_fis': 'LNL1',
+        })
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': 1,
+            'dip_des_it': "Matematica e Informatica",
+            'dip_des_eng': "Math and Computer Science",
+        })
+        tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+            **{'cod_contatto': 'EMAIL', 'descr_contatto': 'Posta Elettronica', })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Riferimento Ufficio',
+            'descr_contatto': 'Riferimento Ufficio',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'POSTA ELETTRONICA CERTIFICATA',
+            'descr_contatto': 'POSTA ELETTRONICA CERTIFICATA',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Posta Elettronica Privata',
+            'descr_contatto': 'Posta Elettronica Privata',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Fax',
+            'descr_contatto': 'Fax',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Residenza',
+            'descr_contatto': 'Telefono Residenza',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Domicilio',
+            'descr_contatto': 'Telefono Domicilio',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Cellulare',
+            'descr_contatto': 'Telefono Cellulare',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Cellulare Ufficio',
+            'descr_contatto': 'Telefono Cellulare Ufficio',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Telefono Ufficio',
+            'descr_contatto': 'Telefono Ufficio',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'URL Sito WEB Curriculum Vitae',
+            'descr_contatto': 'URL Sito WEB Curriculum Vitae',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'URL Sito WEB',
+            'descr_contatto': 'URL Sito WEB',
+        })
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'Skype',
+            'descr_contatto': 'Skype',
+        })
+
+        PersonaleContattiUnitTest.create_personaleContatti(**{
+            'cd_tipo_cont': tipo_contatto,
+            'id_ab': 1,
+            'cod_fis': p1,
+            'contatto': 'email@email',
+            'prg_priorita': 1,
+
+        })
+        PersonaleContattiUnitTest.create_personaleContatti(**{
+            'cd_tipo_cont': tipo_contatto,
+            'id_ab': 2,
+            'contatto': 'email2@email',
+            'prg_priorita': 1,
+        })
+        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+            'id_ab': 2,
+            'ds_funzione': 'Amministrazione Rettorato',
+            'cod_fis': p2,
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '99',
+            'descr': 'Rettorato',
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'descr': 'Dipartimento di Matematica e Informatica',
+        })
+
+        url = reverse('ricerca:addressbooklist')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+        res = req.get(url)
+
+        assert len(res.json()['results']) == 2
+        assert res.json()['results'][0]['Email'][0] == 'email@email'
+        assert res.json()[
+            'results'][0]['Structure'] == 'Dipartimento di Matematica e Informatica'
+
+        data = {'structureid': '99', 'lang': 'it'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+        assert res.json()['results'][0]['Name'] == 'Messi Lionel'
+
+        data = {'keywords': 'Mungar'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+        assert res.json()['results'][0]['Function'] is None
+
+        data = {'keywords': 'Mungar', 'structureid': '99'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0

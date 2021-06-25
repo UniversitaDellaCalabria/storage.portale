@@ -333,12 +333,12 @@ class ApiDepartmentDetail(ApiEndpointDetail):
         return ServiceDipartimento.getDepartment(departmentid)
 
 
-# class ApiAddressbookList(ApiEndpointDetail):
-#     description = 'La funzione restituisce la rubrica telefonica del personale'
-#     serializer_class = AddressbookListSerializer
-#     filter_backends = [ApiAddressbookListFilter]
-#
-#     def get_queryset(self):
-#         keywords = self.request.query_params['keywords']
-#         structureid = self.request.query_params['structureid']
-#         return ServicePersonale.getAddressbook(keywords, structureid)
+class ApiAddressbookList(ApiEndpointList):
+    description = 'La funzione restituisce la rubrica telefonica del personale'
+    serializer_class = AddressbookListSerializer
+    #filter_backends = [ApiAddressbookListFilter]
+
+    def get_queryset(self):
+        keywords = self.request.query_params.get('keywords')
+        structureid = self.request.query_params.get('structureid')
+        return ServicePersonale.getAddressbook(keywords, structureid)
