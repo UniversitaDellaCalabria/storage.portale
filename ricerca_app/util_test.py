@@ -26,7 +26,11 @@ from .models import (
     RicercaErc0,
     DidatticaDottoratoCds,
     DidatticaDottoratoPds,
-    DidatticaDottoratoRegolamento, PersonaleContatti, PersonaleTipoContatto)
+    DidatticaDottoratoRegolamento,
+    PersonaleContatti,
+    PersonaleUoTipoContatto,
+    FunzioniUnitaOrganizzativa,
+    UnitaOrganizzativa)
 
 
 # class ContextUnitTest(TestCase):
@@ -385,5 +389,27 @@ class PersonaleTipoContattoUnitTest(TestCase):
         for k, v in kwargs.items():
             data[k] = v
 
-        obj = PersonaleTipoContatto.objects.create(**data)
+        obj = PersonaleUoTipoContatto.objects.create(**data)
+        return obj
+
+
+class FunzioniUnitaOrganizzativaUnitTest(TestCase):
+    @classmethod
+    def create_funzioniUnitaOrganizzativa(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = FunzioniUnitaOrganizzativa.objects.create(**data)
+        return obj
+
+
+class UnitaOrganizzativaUnitTest(TestCase):
+    @classmethod
+    def create_unitaOrganizzativa(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = UnitaOrganizzativa.objects.create(**data)
         return obj

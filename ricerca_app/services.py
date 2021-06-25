@@ -1,10 +1,11 @@
+import datetime
 from functools import reduce
 import operator
 
 from django.db.models import Q, Max
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, DidatticaRegolamento, \
-    DidatticaPdsRegolamento, PersonaleTipoContatto
+    DidatticaPdsRegolamento, FunzioniUnitaOrganizzativa, UnitaOrganizzativa
 
 
 class ServiceQueryBuilder:
@@ -505,7 +506,22 @@ class ServiceDocente:
     def getDocenteInfo(teacher):
         query = Personale.objects.filter(
             fl_docente=1,
-            matricola__exact=teacher) .values(
+            matricola__exact=teacher)
+        contacts_to_take = [
+            'Posta Elettronica',
+            'Fax',
+            'POSTA ELETTRONICA CERTIFICATA',
+            'Telefono Cellulare Ufficio',
+            'Telefono Ufficio',
+            'Riferimento Ufficio',
+            'URL Sito WEB',
+            'URL Sito WEB Curriculum Vitae']
+        contacts = query.filter(
+            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take).values(
+            "personalecontatti__cd_tipo_cont__descr_contatto",
+            "personalecontatti__contatto")
+        contacts = list(contacts)
+        query = query.values(
             "id_ab",
             "matricola",
             "nome",
@@ -517,28 +533,15 @@ class ServiceDocente:
             "aff_org",
             "ds_aff_org",
             "telrif",
-            "email").distinct()
-        query = list(query)
-        contacts_to_take = [
-            'Telefono Cellulare',
-            'Posta Elettronica',
-            'Fax',
-            'POSTA ELETTRONICA CERTIFICATA',
-            'Telefono Cellulare Ufficio',
-            'Telefono Ufficio',
-            'Riferimento Ufficio',
-            'URL Sito WEB',
-            'URL Sito WEB Curriculum Vitae']
-        contacts_types = PersonaleTipoContatto.objects.filter(
-            descr_contatto__in=contacts_to_take).values("descr_contatto")
+            "email")
         for q in query:
+            for c in contacts_to_take:
+                q[c] = []
+            for c in contacts:
+                q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
+                    c['personalecontatti__contatto'])
             dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
                 .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
-            contacts = PersonaleTipoContatto.objects.filter(
-                personalecontatti__id_ab=q["id_ab"],
-                descr_contatto__in=contacts_to_take) .values(
-                "descr_contatto",
-                "personalecontatti__contatto")
             if len(dep) == 0:
                 q["dip_cod"] = None
                 q["dip_des_it"] = None
@@ -548,12 +551,6 @@ class ServiceDocente:
                 q["dip_cod"] = dep['dip_cod']
                 q["dip_des_it"] = dep['dip_des_it']
                 q["dip_des_eng"] = dep["dip_des_eng"]
-
-            for c in contacts_types:
-                q[c['descr_contatto']] = []
-            for contact in contacts:
-                q[contact["descr_contatto"]].append(
-                    contact['personalecontatti__contatto'])
 
         return query
 
@@ -615,48 +612,67 @@ class ServiceDipartimento:
             "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
         return query
 
+# TODO: API finita ma è troppo lenta, servirebbero due join, uno dalle
+# strutture al personale e l'altro dai contatti al personale
 
-# class ServicePersonale:
-#
-#     @staticmethod
-#     def getAddressbook(keywords=None, structureid=None):
-#         if keywords is None and structureid is None:
-#             query = Personale.objects.filter(dt_rap_fin__gte=datetime.date.today())
-#         elif keywords is not None:
-#             query_keywords = Q()
-#             for k in keywords.split(" "):
-#                 q_nome = Q(nome__icointains=k)
-#                 q_cognome = Q(cognome__icontains=k)
-#                 query_keywords |= q_nome
-#                 query_keywords |= q_cognome
-#
-#             query = Personale.objects.filter(query_keywords, dt_rap_fin__gte=datetime.date.today())
-#         elif structureid is not None:
-#             query = Personale.objects.filter(aff_org__exact=structureid, dt_rap_fin__gte=datetime.date.today())
-#
-#         query = query.values("nome", "middle_name",
-#                                "cognome", "cd_ruolo",
-#                                "ds_ruolo",
-#                                "aff_org", "cod_fis",
-#                                "id_ab")
-#         query = list(query)
-#         contacts_to_take = [
-#             'Telefono Cellulare',
-#             'Posta Elettronica',
-#             'Fax',
-#             'POSTA ELETTRONICA CERTIFICATA',
-#             'Telefono Cellulare Ufficio',
-#             'Telefono Ufficio',
-#             'Riferimento Ufficio',
-#             'URL Sito WEB',
-#             'URL Sito WEB Curriculum Vitae']
-#         for q in query:
-#             f = FunzioniUnitaOrganizzativa.objects.filter(cod_fis__exact=q['cod_fis']).values("ds_funzione")
-#             s = UnitaOrganizzativa.objects.filter(uo__exact=q['aff_org']).values("descr")
-#             contacts = PersonaleContatti.objects.filter(id_ab=q['id_ab'], cd_tipo_cont__in=contacts_to_take).values("contatto", "cd_tipo_cont__descr_contatto")
-#             q['CONTATTI'] = contacts
-#             q['Funzione'] = f['ds_funzione']
-#             q['Struttura'] = s['descr']
-#
-#
-#         return query
+
+class ServicePersonale:
+
+    @staticmethod
+    def getAddressbook(keywords=None, structureid=None):
+        query_keywords = Q()
+        query_structure = Q()
+        if keywords is not None:
+            for k in keywords.split(" "):
+                q_cognome = Q(cognome__icontains=k)
+                query_keywords |= q_cognome
+        if structureid is not None:
+            query_structure = Q(aff_org__exact=structureid)
+
+        query = Personale.objects.filter(
+            query_keywords, query_structure, flg_cessato=0)
+
+        contacts_to_take = [
+            'Posta Elettronica',
+            'Fax',
+            'POSTA ELETTRONICA CERTIFICATA',
+            'Telefono Cellulare Ufficio',
+            'Telefono Ufficio',
+            'Riferimento Ufficio',
+            'URL Sito WEB',
+            'URL Sito WEB Curriculum Vitae']
+        contacts = query.filter(
+            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take)
+        query = query.values("nome", "middle_name",
+                             "cognome", "cd_ruolo",
+                             "ds_ruolo",
+                             "aff_org",
+                             "id_ab", "matricola")
+        query = list(query)
+
+        for q in query:
+            f = FunzioniUnitaOrganizzativa.objects.filter(
+                id_ab=q['id_ab'], termine__gte=datetime.datetime.today()).values("ds_funzione")
+            s = UnitaOrganizzativa.objects.filter(
+                uo__exact=q['aff_org']).values("denominazione")
+            for c in contacts_to_take:
+                q[c] = []
+            contacts_temp = contacts.filter(
+                id_ab=q['id_ab']).values(
+                "personalecontatti__cd_tipo_cont__descr_contatto",
+                "personalecontatti__contatto")
+            for c in contacts_temp:
+                q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
+                    c['personalecontatti__contatto'])
+
+            if len(f) > 0:
+                q['Funzione'] = f[0]['ds_funzione']
+            else:
+                q['Funzione'] = None
+
+            if len(s) > 0:
+                q['Struttura'] = s.first()['denominazione']
+            else:
+                q['Struttura'] = None
+
+        return query

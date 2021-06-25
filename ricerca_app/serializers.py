@@ -420,3 +420,34 @@ class DepartmentsListSerializer(CreateUpdateAbstract):
                 'dip_des_eng'] is None else query['dip_des_eng'],
             'DepartmentNameShort': query['dip_nome_breve'],
         }
+
+
+class AddressbookListSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        full_name = query['cognome'] + " " + query['nome'] + \
+            (" " + query['middle_name']
+             if query['middle_name'] is not None else "")
+        return {
+            'Name': full_name,
+            'ID': query['matricola'],
+            'Role': query['ds_ruolo'],
+            'Structure': query['Struttura'],
+            'Function': query['Funzione'],
+            'OfficeReference': query['Riferimento Ufficio'],
+            'Email': query['Posta Elettronica'],
+            'PEC': query['POSTA ELETTRONICA CERTIFICATA'],
+            'TelOffice': query['Telefono Ufficio'],
+            'TelCelOffice': query['Telefono Cellulare Ufficio'],
+            'Fax': query['Fax'],
+            'WebSite': query['URL Sito WEB'],
+            'CV': query['URL Sito WEB Curriculum Vitae']
+        }
