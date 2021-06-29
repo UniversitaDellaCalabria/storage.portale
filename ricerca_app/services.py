@@ -718,3 +718,15 @@ class ServicePersonale:
                 q['Struttura'] = None
 
         return query
+
+    @staticmethod
+    def getStructuresList():
+        query = UnitaOrganizzativa.objects.values(
+            "uo", "denominazione", "ds_tipo_nodo").distinct()
+        return query
+
+    @staticmethod
+    def getStructureTypes():
+        query = UnitaOrganizzativa.objects.values(
+            "ds_tipo_nodo", "cd_tipo_nodo").distinct()
+        return query

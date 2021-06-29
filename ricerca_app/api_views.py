@@ -342,3 +342,21 @@ class ApiAddressbookList(ApiEndpointList):
         keywords = self.request.query_params.get('keywords')
         structureid = self.request.query_params.get('structureid')
         return ServicePersonale.getAddressbook(keywords, structureid)
+
+
+class ApiStructuresList(ApiEndpointList):
+    description = 'La funzione restituisce le strutture organizzative'
+    serializer_class = StructuresListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServicePersonale.getStructuresList()
+
+
+class ApiStructuresTypes(ApiEndpointList):
+    description = 'La funzione restituisce le tipologie di strutture organizzative'
+    serializer_class = StructuresTypesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServicePersonale.getStructureTypes()
