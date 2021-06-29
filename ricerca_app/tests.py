@@ -459,6 +459,8 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'regdid': regdid,
             'af_radice_id': 1,
             'matricola_resp_did': '111111',
+            'mutuata_flg': 1,
+            'af_master_id': 2,
         })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 2,
@@ -468,6 +470,8 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'mutuata_flg': 0,
+            'af_master_id': 2,
         })
         DidatticaTestiAfUnitTest.create_didatticaTestiAf(**{
             'tipo_testo_af_cod': 'CONTENUTI',
@@ -511,6 +515,15 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results']['StudyActivityContent'] == 'Variabili'
+
+        url = reverse(
+            'ricerca:studyactivityinfo',
+            kwargs={
+                'cdsid': 1,
+                'studyplanid': 1,
+                'studyactivityid': 2})
+        res = req.get(url)
+        assert res.json()['results']['StudyActivityID'] == 2
 
 
 class ApiCdSMainTeachersUnitTest(TestCase):

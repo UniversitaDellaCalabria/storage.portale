@@ -175,6 +175,21 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
+        studyactivityroot = None
+        if query['ActivityRoot'] is not None:
+            studyactivityroot = StudyActivityMinimalInfoSerializer.to_dict(
+                query['ActivityRoot'], req_lang)
+
+        studyactivityborrowed = None
+        if query['BorrowedFrom'] is not None:
+            studyactivityborrowed = StudyActivityMinimalInfoSerializer.to_dict(
+                query['BorrowedFrom'], req_lang)
+
+        studyactivitiesborrowedfromthis = []
+        if len(query['ActivitiesBorrowedFromThis']) > 0:
+            for q in query['ActivitiesBorrowedFromThis']:
+                studyactivitiesborrowedfromthis.append(
+                    StudyActivityMinimalInfoSerializer.to_dict(q, req_lang))
         return {
             'StudyActivityID': query['af_id'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
@@ -200,6 +215,21 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityElearningInfo': query['StudyActivityElearningInfo'],
             'StudyActivityPrerequisites': query['StudyActivityPrerequisites'],
             'StudyActivitiesModules': query['MODULES'],
+            'StudyActivityRoot': studyactivityroot,
+            'StudyActivityBorrowedFrom': studyactivityborrowed,
+            'StudyActivitiesBorrowedFromThis': studyactivitiesborrowedfromthis,
+
+        }
+
+
+class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        return {
+            'StudyActivityID': query['af_id'],
+            'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
+            'StudyActivitySemester': query['ciclo_des'],
         }
 
 

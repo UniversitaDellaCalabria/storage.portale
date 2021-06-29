@@ -336,7 +336,7 @@ class ApiDepartmentDetail(ApiEndpointDetail):
 class ApiAddressbookList(ApiEndpointList):
     description = 'La funzione restituisce la rubrica telefonica del personale'
     serializer_class = AddressbookListSerializer
-    #filter_backends = [ApiAddressbookListFilter]
+    # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
         keywords = self.request.query_params.get('keywords')

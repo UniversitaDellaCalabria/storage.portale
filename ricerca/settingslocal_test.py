@@ -36,7 +36,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
-    #'silk.middleware.SilkyMiddleware',
+    # 'silk.middleware.SilkyMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -158,6 +158,9 @@ LABEL_MAPPING = {
         'StudyActivitiesModules': 'Modules',
         'StudyActivityAA': 'Academic Year',
         'StudyActivityLanguage': 'Language',
+        'StudyActivityRoot': 'Study Activity Root',
+        'StudyActivityBorrowedFrom': 'Borrowed from',
+        'StudyActivitiesBorrowedFromThis': 'Borrowed from this',
         'TeacherID': 'Teacher ID',
         'TeacherName': 'Teacher Name',
         'TeacherRole': 'Role',
@@ -282,6 +285,9 @@ LABEL_MAPPING = {
         'StudyActivitiesModules': 'Moduli',
         'StudyActivityAA': 'Anno Accademico',
         'StudyActivityLanguage': 'Lingua',
+        'StudyActivityRoot': 'Attività Formativa Principale',
+        'StudyActivityBorrowedFrom': 'Mutuata da',
+        'StudyActivitiesBorrowedFromThis': 'Mutuate da questa',
         'TeacherID': 'ID Docente',
         'TeacherName': 'Nome Docente',
         'TeacherRole': 'Ruolo Docente',
@@ -353,4 +359,4 @@ LABEL_MAPPING = {
     }
 }
 
-DEBUG=True
+DEBUG = True
