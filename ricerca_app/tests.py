@@ -459,6 +459,8 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'regdid': regdid,
             'af_radice_id': 1,
             'matricola_resp_did': '111111',
+            'mutuata_flg': 1,
+            'af_master_id': 2,
         })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 2,
@@ -468,6 +470,8 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'mutuata_flg': 0,
+            'af_master_id': 2,
         })
         DidatticaTestiAfUnitTest.create_didatticaTestiAf(**{
             'tipo_testo_af_cod': 'CONTENUTI',
@@ -511,6 +515,15 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results']['StudyActivityContent'] == 'Variabili'
+
+        url = reverse(
+            'ricerca:studyactivityinfo',
+            kwargs={
+                'cdsid': 1,
+                'studyplanid': 1,
+                'studyactivityid': 2})
+        res = req.get(url)
+        assert res.json()['results']['StudyActivityID'] == 2
 
 
 class ApiCdSMainTeachersUnitTest(TestCase):
@@ -1469,3 +1482,73 @@ class ApiAddressbookListUnitTest(TestCase):
         data = {'keywords': 'Mungar', 'structureid': '99'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
+
+
+class ApiStructuresListUnitTest(TestCase):
+
+    def test_apistructureslist(self):
+        req = Client()
+
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': 1,
+            'ds_tipo_nodo': 'rettorato',
+            'denominazione': 'RETTORATO',
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': 2,
+            'ds_tipo_nodo': 'direzione',
+            'denominazione': 'DIREZIONE',
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': 3,
+            'ds_tipo_nodo': 'uffici',
+            'denominazione': 'UFFICI    ',
+        })
+
+        url = reverse('ricerca:structureslist')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results'][0]['StructureTypeName'] == 'rettorato'
+        assert res.json()['results'][1]['StructureId'] == '2'
+        assert len(res.json()['results']) == 3
+
+
+class ApiStructuresTypesUnitTest(TestCase):
+
+    def test_apistructurestypes(self):
+        req = Client()
+
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'ds_tipo_nodo': 'facolta',
+            'cd_tipo_nodo': '000',
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'ds_tipo_nodo': 'direzione',
+            'cd_tipo_nodo': 'CDS',
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '3',
+            'ds_tipo_nodo': 'rettorato',
+            'cd_tipo_nodo': 'RET',
+        })
+
+        url = reverse('ricerca:structurestypes')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results'][0]['StructureTypeName'] == 'facolta'
+        assert res.json()['results'][1]['StructureTypeCOD'] == 'CDS'
+        assert len(res.json()['results']) == 3

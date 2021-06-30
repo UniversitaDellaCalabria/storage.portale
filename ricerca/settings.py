@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 from .settingslocal import *
 
 MIDDLEWARE = [
-    #'silk.middleware.SilkyMiddleware',
+    # 'silk.middleware.SilkyMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -78,7 +78,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # from django 3.2
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-#MAPPING LABEL
+# MAPPING LABEL
 
 LABEL_MAPPING = {
     'en': {
@@ -136,6 +136,9 @@ LABEL_MAPPING = {
         'StudyActivitiesModules': 'Modules',
         'StudyActivityAA': 'Academic Year',
         'StudyActivityLanguage': 'Language',
+        'StudyActivityRoot': 'Study Activity Root',
+        'StudyActivityBorrowedFrom': 'Borrowed from',
+        'StudyActivitiesBorrowedFromThis': 'Borrowed from this',
         'TeacherID': 'Teacher ID',
         'TeacherName': 'Teacher Name',
         'TeacherRole': 'Role',
@@ -204,6 +207,10 @@ LABEL_MAPPING = {
         'FUNZIONI': 'Tasks',
         'COMPETENZE': 'Skills',
         'SBOCCHI': 'Job Opportunities',
+        'StructureId': 'Structure Id',
+        'StructureTypeName' : 'Structure Type Name',
+        'StructureName' : 'Structure Name',
+        'StructureTypeCOD' : 'Structure Type COD',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -260,6 +267,9 @@ LABEL_MAPPING = {
         'StudyActivitiesModules': 'Moduli',
         'StudyActivityAA': 'Anno Accademico',
         'StudyActivityLanguage': 'Lingua',
+        'StudyActivityRoot': 'Attività Formativa Principale',
+        'StudyActivityBorrowedFrom': 'Mutuata da',
+        'StudyActivitiesBorrowedFromThis': 'Mutuate da questa',
         'TeacherID': 'ID Docente',
         'TeacherName': 'Nome Docente',
         'TeacherRole': 'Ruolo Docente',
@@ -328,5 +338,9 @@ LABEL_MAPPING = {
         'FUNZIONI': 'Funzioni',
         'COMPETENZE': 'Competenze',
         'SBOCCHI': 'Sbocchi',
+        'StructureId': 'Id Struttura',
+        'StructureTypeName' : 'Nome Tipologia Struttura',
+        'StructureName' : 'Nome Struttura',
+        'StructureTypeCOD' : 'Codice Struttura'
     }
 }
