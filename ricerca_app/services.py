@@ -201,6 +201,7 @@ class ServiceDidatticaAttivitaFormativa:
                 'cds__nome_cds_it',
                 'cds__nome_cds_eng')
 
+    # TODO: aggiungere label e pushare
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
@@ -229,7 +230,43 @@ class ServiceDidatticaAttivitaFormativa:
             'cds__nome_cds_eng',
             'tipo_af_des',
             'matricola_resp_did',
+            'mutuata_flg',
+            'af_master_id',
+            'af_radice_id',
         )
+
+        id_master = None
+        mutuata_da = None
+        if query.first()['mutuata_flg'] == 1:
+            id_master = query.first()['af_master_id']
+            mutuata_da = DidatticaAttivitaFormativa.objects.filter(
+                af_id=id_master).values(
+                'af_id',
+                'des',
+                'af_gen_des_eng',
+                'ciclo_des').first()
+
+        attivita_mutuate_da_questa = DidatticaAttivitaFormativa.objects.filter(
+            af_master_id=af_id, mutuata_flg=1) .exclude(
+            af_id=af_id) .values(
+            'af_id',
+            'des',
+            'af_gen_des_eng',
+            'ciclo_des')
+
+        id_radice = query.first()['af_radice_id']
+        activity_root = DidatticaAttivitaFormativa.objects.filter(
+            af_id=id_radice).exclude(
+            af_id=af_id).values(
+            'af_id',
+            'des',
+            'af_gen_des_eng',
+            'ciclo_des')
+        if len(activity_root) == 0:
+            activity_root = None
+        else:
+            activity_root = activity_root.first()
+
         copertura = DidatticaCopertura.objects.filter(
             af_id=af_id).values(
             'personale__id',
@@ -238,6 +275,11 @@ class ServiceDidatticaAttivitaFormativa:
             'personale__middle_name',
             'personale__matricola')
         query = list(query)
+
+        query[0]['BorrowedFrom'] = mutuata_da
+        query[0]['ActivitiesBorrowedFromThis'] = attivita_mutuate_da_questa
+
+        query[0]['ActivityRoot'] = activity_root
 
         query[0]['StudyActivityTeacherID'] = None
         query[0]['StudyActivityTeacherName'] = None
@@ -675,4 +717,16 @@ class ServicePersonale:
             else:
                 q['Struttura'] = None
 
+        return query
+
+    @staticmethod
+    def getStructuresList():
+        query = UnitaOrganizzativa.objects.values(
+            "uo", "denominazione", "ds_tipo_nodo").distinct()
+        return query
+
+    @staticmethod
+    def getStructureTypes():
+        query = UnitaOrganizzativa.objects.values(
+            "ds_tipo_nodo", "cd_tipo_nodo").distinct()
         return query

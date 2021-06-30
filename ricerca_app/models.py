@@ -1625,6 +1625,7 @@ class PersonaleUoTipoContatto(models.Model):
         managed = True
         db_table = 'PERSONALE_UO_TIPO_CONTATTO'
 
+
 class PersonaleContatti(models.Model):
     id_ab = models.IntegerField(db_column='ID_AB', primary_key=True)  # Field name made lowercase.
     cod_fis = models.ForeignKey(
@@ -1643,6 +1644,7 @@ class PersonaleContatti(models.Model):
         managed = True
         db_table = 'PERSONALE_CONTATTI'
         unique_together = (('id_ab', 'cd_tipo_cont', 'prg_priorita'),)
+
 
 class RicercaAster1(InsModAbstract):
 
