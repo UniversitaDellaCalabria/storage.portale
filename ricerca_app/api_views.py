@@ -353,9 +353,9 @@ class ApiStructuresList(ApiEndpointList):
         return ServicePersonale.getStructuresList()
 
 
-class ApiStructuresTypes(ApiEndpointList):
+class ApiStructureTypesList(ApiEndpointList):
     description = 'La funzione restituisce le tipologie di strutture organizzative'
-    serializer_class = StructuresTypesSerializer
+    serializer_class = StructureTypesSerializer
     filter_backends = []
 
     def get_queryset(self):

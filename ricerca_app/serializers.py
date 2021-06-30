@@ -500,7 +500,7 @@ class StructuresListSerializer(CreateUpdateAbstract):
         }
 
 
-class StructuresTypesSerializer(CreateUpdateAbstract):
+class StructureTypesSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance

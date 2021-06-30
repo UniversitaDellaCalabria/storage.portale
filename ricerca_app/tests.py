@@ -1540,7 +1540,7 @@ class ApiStructuresTypesUnitTest(TestCase):
             'cd_tipo_nodo': 'RET',
         })
 
-        url = reverse('ricerca:structurestypes')
+        url = reverse('ricerca:structuretypes')
 
         # check url
         res = req.get(url)
