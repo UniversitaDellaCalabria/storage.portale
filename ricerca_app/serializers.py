@@ -230,6 +230,7 @@ class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
             'StudyActivityID': query['af_id'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
             'StudyActivitySemester': query['ciclo_des'],
+            'StudyActivityRegDidId': query['regdid__regdid_id'],
         }
 
 

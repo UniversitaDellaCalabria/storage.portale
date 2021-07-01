@@ -201,7 +201,6 @@ class ServiceDidatticaAttivitaFormativa:
                 'cds__nome_cds_it',
                 'cds__nome_cds_eng')
 
-    # TODO: aggiungere label e pushare
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
@@ -244,7 +243,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_id',
                 'des',
                 'af_gen_des_eng',
-                'ciclo_des').first()
+                'ciclo_des',
+                'regdid__regdid_id').first()
 
         attivita_mutuate_da_questa = DidatticaAttivitaFormativa.objects.filter(
             af_master_id=af_id, mutuata_flg=1) .exclude(
@@ -252,7 +252,8 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id',
             'des',
             'af_gen_des_eng',
-            'ciclo_des')
+            'ciclo_des',
+            'regdid__regdid_id')
 
         id_radice = query.first()['af_radice_id']
         activity_root = DidatticaAttivitaFormativa.objects.filter(
@@ -261,7 +262,8 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id',
             'des',
             'af_gen_des_eng',
-            'ciclo_des')
+            'ciclo_des',
+            'regdid__regdid_id')
         if len(activity_root) == 0:
             activity_root = None
         else:
