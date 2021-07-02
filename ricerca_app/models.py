@@ -615,7 +615,8 @@ class DidatticaCdsLingua(models.Model):
         db_column='CDSORD_ID',
         blank=True,
         null=True,
-        to_field='cdsord_id')
+        to_field='cdsord_id',
+        related_name='didatticacdslingua')
 
     lingua_id = models.IntegerField(
         db_column='LINGUA_ID', blank=True, null=True)
@@ -1618,8 +1619,14 @@ class Personale(InsModAbstract):
 
 
 class PersonaleUoTipoContatto(models.Model):
-    cod_contatto = models.CharField(db_column='COD_CONTATTO', primary_key=True, max_length=20)  # Field name made lowercase.
-    descr_contatto = models.CharField(db_column='DESCR_CONTATTO', max_length=200)  # Field name made lowercase.
+    # Field name made lowercase.
+    cod_contatto = models.CharField(
+        db_column='COD_CONTATTO',
+        primary_key=True,
+        max_length=20)
+    # Field name made lowercase.
+    descr_contatto = models.CharField(
+        db_column='DESCR_CONTATTO', max_length=200)
 
     class Meta:
         managed = True
@@ -1627,7 +1634,8 @@ class PersonaleUoTipoContatto(models.Model):
 
 
 class PersonaleContatti(models.Model):
-    id_ab = models.IntegerField(db_column='ID_AB', primary_key=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    id_ab = models.IntegerField(db_column='ID_AB', primary_key=True)
     cod_fis = models.ForeignKey(
         Personale,
         models.DO_NOTHING,
@@ -1635,10 +1643,21 @@ class PersonaleContatti(models.Model):
         blank=True,
         null=True,
         to_field='cod_fis')  # Field name made lowercase.
-    cd_tipo_cont = models.ForeignKey('PersonaleUoTipoContatto', models.DO_NOTHING, db_column='CD_TIPO_CONT')  # Field name made lowercase.
-    contatto = models.CharField(db_column='CONTATTO', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    prg_priorita = models.IntegerField(db_column='PRG_PRIORITA')  # Field name made lowercase.
-    dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+    cd_tipo_cont = models.ForeignKey(
+        'PersonaleUoTipoContatto',
+        models.DO_NOTHING,
+        db_column='CD_TIPO_CONT')  # Field name made lowercase.
+    # Field name made lowercase.
+    contatto = models.CharField(
+        db_column='CONTATTO',
+        max_length=255,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    prg_priorita = models.IntegerField(db_column='PRG_PRIORITA')
+    # Field name made lowercase.
+    dt_ins_mod = models.DateField(
+        db_column='DT_INS_MOD', blank=True, null=True)
 
     class Meta:
         managed = True
@@ -2002,27 +2021,95 @@ class TerritorioIt(models.Model):
 
 
 class UnitaOrganizzativa(models.Model):
-    uo = models.CharField(db_column='UO', primary_key=True, max_length=40)  # Field name made lowercase.
-    id_ab = models.IntegerField(db_column='ID_AB', unique=True, blank=True, null=True)  # Field name made lowercase.
-    cd_tipo_nodo = models.CharField(db_column='CD_TIPO_NODO', max_length=10, default="000")  # Field name made lowercase.
-    ds_tipo_nodo = models.CharField(db_column='DS_TIPO_NODO', max_length=255, default="Non assegnato")  # Field name made lowercase.
-    denominazione = models.CharField(db_column='DENOMINAZIONE', max_length=255, default="Non assegnato")  # Field name made lowercase.
-    nome_esteso = models.CharField(db_column='NOME_ESTESO', max_length=255, default="Non assegnato")  # Field name made lowercase.
-    nome_breve = models.CharField(db_column='NOME_BREVE', max_length=50, default="Non assegnato")  # Field name made lowercase.
-    dt_inizio_val = models.DateTimeField(db_column='DT_INIZIO_VAL', blank=True, null=True)  # Field name made lowercase.
-    dt_fine_val = models.DateTimeField(db_column='DT_FINE_VAL', blank=True, null=True)  # Field name made lowercase.
-    dt_creazione = models.DateTimeField(db_column='DT_CREAZIONE', blank=True, null=True)  # Field name made lowercase.
-    uo_padre = models.CharField(db_column='UO_PADRE', max_length=40, blank=True, null=True)  # Field name made lowercase.
-    id_ab_padre = models.IntegerField(db_column='ID_AB_PADRE', blank=True, null=True)  # Field name made lowercase.
-    cd_tipo_nodo_padre = models.CharField(db_column='CD_TIPO_NODO_PADRE', max_length=10, blank=True, null=True)  # Field name made lowercase.
-    ds_tipo_nodo_padre = models.CharField(db_column='DS_TIPO_NODO_PADRE', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    cd_macrotipo_nodo_padre = models.CharField(db_column='CD_MACROTIPO_NODO_PADRE', max_length=10, blank=True, null=True)  # Field name made lowercase.
-    denominazione_padre = models.CharField(db_column='DENOMINAZIONE_PADRE', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    nome_esteso_padre = models.CharField(db_column='NOME_ESTESO_PADRE', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    nome_breve_padre = models.CharField(db_column='NOME_BREVE_PADRE', max_length=50, blank=True, null=True)  # Field name made lowercase.
-    dt_inizio_val_padre = models.DateTimeField(db_column='DT_INIZIO_VAL_PADRE', blank=True, null=True)  # Field name made lowercase.
-    dt_fine_val_padre = models.DateTimeField(db_column='DT_FINE_VAL_PADRE', blank=True, null=True)  # Field name made lowercase.
-    dt_creazione_padre = models.DateTimeField(db_column='DT_CREAZIONE_PADRE', blank=True, null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    uo = models.CharField(db_column='UO', primary_key=True, max_length=40)
+    # Field name made lowercase.
+    id_ab = models.IntegerField(
+        db_column='ID_AB',
+        unique=True,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    cd_tipo_nodo = models.CharField(
+        db_column='CD_TIPO_NODO',
+        max_length=10,
+        default="000")
+    ds_tipo_nodo = models.CharField(
+        db_column='DS_TIPO_NODO',
+        max_length=255,
+        default="Non assegnato")  # Field name made lowercase.
+    denominazione = models.CharField(
+        db_column='DENOMINAZIONE',
+        max_length=255,
+        default="Non assegnato")  # Field name made lowercase.
+    nome_esteso = models.CharField(
+        db_column='NOME_ESTESO',
+        max_length=255,
+        default="Non assegnato")  # Field name made lowercase.
+    # Field name made lowercase.
+    nome_breve = models.CharField(
+        db_column='NOME_BREVE',
+        max_length=50,
+        default="Non assegnato")
+    # Field name made lowercase.
+    dt_inizio_val = models.DateTimeField(
+        db_column='DT_INIZIO_VAL', blank=True, null=True)
+    # Field name made lowercase.
+    dt_fine_val = models.DateTimeField(
+        db_column='DT_FINE_VAL', blank=True, null=True)
+    # Field name made lowercase.
+    dt_creazione = models.DateTimeField(
+        db_column='DT_CREAZIONE', blank=True, null=True)
+    # Field name made lowercase.
+    uo_padre = models.CharField(
+        db_column='UO_PADRE',
+        max_length=40,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    id_ab_padre = models.IntegerField(
+        db_column='ID_AB_PADRE', blank=True, null=True)
+    cd_tipo_nodo_padre = models.CharField(
+        db_column='CD_TIPO_NODO_PADRE',
+        max_length=10,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    ds_tipo_nodo_padre = models.CharField(
+        db_column='DS_TIPO_NODO_PADRE',
+        max_length=255,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    cd_macrotipo_nodo_padre = models.CharField(
+        db_column='CD_MACROTIPO_NODO_PADRE',
+        max_length=10,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    denominazione_padre = models.CharField(
+        db_column='DENOMINAZIONE_PADRE',
+        max_length=255,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    nome_esteso_padre = models.CharField(
+        db_column='NOME_ESTESO_PADRE',
+        max_length=255,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    nome_breve_padre = models.CharField(
+        db_column='NOME_BREVE_PADRE',
+        max_length=50,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    dt_inizio_val_padre = models.DateTimeField(
+        db_column='DT_INIZIO_VAL_PADRE',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    dt_fine_val_padre = models.DateTimeField(
+        db_column='DT_FINE_VAL_PADRE', blank=True, null=True)
+    dt_creazione_padre = models.DateTimeField(
+        db_column='DT_CREAZIONE_PADRE',
+        blank=True,
+        null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -2030,12 +2117,31 @@ class UnitaOrganizzativa(models.Model):
 
 
 class UnitaOrganizzativaContatti(models.Model):
-    id_ab = models.OneToOneField(UnitaOrganizzativa, models.DO_NOTHING, db_column='ID_AB', primary_key=True)  # Field name made lowercase.
-    cd_tipo_cont = models.ForeignKey(PersonaleUoTipoContatto, models.DO_NOTHING, db_column='CD_TIPO_CONT')  # Field name made lowercase.
-    contatto = models.CharField(db_column='CONTATTO', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    prg_priorita = models.IntegerField(db_column='PRG_PRIORITA')  # Field name made lowercase.
-    denominazione = models.CharField(db_column='DENOMINAZIONE', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    dt_fine_val = models.DateTimeField(db_column='DT_FINE_VAL', blank=True, null=True)  # Field name made lowercase.
+    id_ab = models.OneToOneField(
+        UnitaOrganizzativa,
+        models.DO_NOTHING,
+        db_column='ID_AB',
+        primary_key=True)  # Field name made lowercase.
+    cd_tipo_cont = models.ForeignKey(
+        PersonaleUoTipoContatto,
+        models.DO_NOTHING,
+        db_column='CD_TIPO_CONT')  # Field name made lowercase.
+    # Field name made lowercase.
+    contatto = models.CharField(
+        db_column='CONTATTO',
+        max_length=255,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    prg_priorita = models.IntegerField(db_column='PRG_PRIORITA')
+    denominazione = models.CharField(
+        db_column='DENOMINAZIONE',
+        max_length=255,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    dt_fine_val = models.DateTimeField(
+        db_column='DT_FINE_VAL', blank=True, null=True)
 
     class Meta:
         managed = True

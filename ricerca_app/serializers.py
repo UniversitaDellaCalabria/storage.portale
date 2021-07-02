@@ -26,6 +26,10 @@ class CdSListSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
+        langs = []
+        for q in query['Languages']:
+            langs.append(q['didatticacdslingua__lingua_des_it'] if req_lang ==
+                         'it' or q['didatticacdslingua__lingua_des_eng'] is None else q['didatticacdslingua__lingua_des_eng'])
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'CdSId': query['cds_cod'],
@@ -36,7 +40,7 @@ class CdSListSerializer(CreateUpdateAbstract):
             'CourseType': query['tipo_corso_cod'],
             'CourseClassId': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
-            'CdSLanguage': query['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or query['didatticacdslingua__lingua_des_eng'] is None else query['didatticacdslingua__lingua_des_eng'],
+            'CdSLanguage': langs,
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
@@ -55,6 +59,11 @@ class CdsInfoSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
+        langs = []
+        for q in query['Languages']:
+            langs.append(q['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or q[
+                'didatticacdslingua__lingua_des_eng'] is None else q['didatticacdslingua__lingua_des_eng'])
+
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
@@ -66,7 +75,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CourseType': query['tipo_corso_cod'],
             'CourseClassId': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
-            'CdSLanguage': query['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or query['didatticacdslingua__lingua_des_eng'] is None else query['didatticacdslingua__lingua_des_eng'],
+            'CdSLanguage': langs,
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
