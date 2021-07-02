@@ -277,7 +277,7 @@ LABEL_MAPPING = {
         'TeacherRoleDescription': 'Ruolo',
         'TeacherSSD': 'SSD',
         'TeacherDepartmentID': 'ID Dipartimento',
-        'TeacherDepartmentName': 'Nome Dipartimento',
+        'TeacherDepartmentName': 'Dipartimento',
         'TeacherSSDCod': 'SSD',
         'TeacherSSDDescription': 'SSD',
         'TeacherCode': 'Codice Fiscale',
