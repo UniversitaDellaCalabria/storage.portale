@@ -723,7 +723,6 @@ class ServicePersonale:
         query = UnitaOrganizzativa.objects.values(
             "uo", "denominazione", "ds_tipo_nodo").distinct()
         query = query.filter(dt_fine_val__gte=datetime.datetime.today())
-        print(UnitaOrganizzativa.objects.all().values('uo'))
         return query
 
     @staticmethod
