@@ -152,10 +152,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiAddressbookList.as_view(),
                         name='addressbooklist'),
 
-    urlpatterns += path('{}/structuresList/'.format(base_url),
+    urlpatterns += path('{}/structures/'.format(base_url),
                         api_views.ApiStructuresList.as_view(),
                         name='structureslist'),
 
-    urlpatterns += path('{}/structuresTypes/'.format(base_url),
-                        api_views.ApiStructuresTypes.as_view(),
-                        name='structurestypes'),
+    urlpatterns += path('{}/structuretypes/'.format(base_url),
+                        api_views.ApiStructureTypesList.as_view(),
+                        name='structuretypes'),

@@ -1,3 +1,4 @@
+import datetime
 
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -1490,19 +1491,22 @@ class ApiStructuresListUnitTest(TestCase):
         req = Client()
 
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
-            'uo': 1,
+            'uo': '1',
             'ds_tipo_nodo': 'rettorato',
             'denominazione': 'RETTORATO',
+            'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
-            'uo': 2,
+            'uo': '2',
             'ds_tipo_nodo': 'direzione',
             'denominazione': 'DIREZIONE',
+            'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
-            'uo': 3,
+            'uo': '3',
             'ds_tipo_nodo': 'uffici',
-            'denominazione': 'UFFICI    ',
+            'denominazione': 'UFFICI',
+            'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
         })
 
         url = reverse('ricerca:structureslist')
@@ -1514,6 +1518,8 @@ class ApiStructuresListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
+        print(res.json())
+        print(datetime.datetime.today())
         assert res.json()['results'][0]['StructureTypeName'] == 'rettorato'
         assert res.json()['results'][1]['StructureId'] == '2'
         assert len(res.json()['results']) == 3
@@ -1540,7 +1546,7 @@ class ApiStructuresTypesUnitTest(TestCase):
             'cd_tipo_nodo': 'RET',
         })
 
-        url = reverse('ricerca:structurestypes')
+        url = reverse('ricerca:structuretypes')
 
         # check url
         res = req.get(url)

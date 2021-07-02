@@ -353,10 +353,21 @@ class ApiStructuresList(ApiEndpointList):
         return ServicePersonale.getStructuresList()
 
 
-class ApiStructuresTypes(ApiEndpointList):
+class ApiStructureTypesList(ApiEndpointList):
     description = 'La funzione restituisce le tipologie di strutture organizzative'
-    serializer_class = StructuresTypesSerializer
+    serializer_class = StructureTypesSerializer
     filter_backends = []
 
     def get_queryset(self):
         return ServicePersonale.getStructureTypes()
+
+
+# Api che definisce il dettaglio della struttura, al momento è stato bloccato
+# class ApiStructureDetail(ApiEndpointDetail):
+#     description = 'La funzione restituisce una specifica struttura'
+#     serializer_class = StructuresListSerializer
+#     filter_backends = [ApiStructuresListFilter]
+#
+#     def get_queryset(self):
+#         structureid = self.kwargs['structureid']
+#         return ServicePersonale.getStructure(structureid)

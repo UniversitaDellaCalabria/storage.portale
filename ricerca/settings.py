@@ -208,9 +208,9 @@ LABEL_MAPPING = {
         'COMPETENZE': 'Skills',
         'SBOCCHI': 'Job Opportunities',
         'StructureId': 'Structure Id',
-        'StructureTypeName' : 'Structure Type Name',
-        'StructureName' : 'Structure Name',
-        'StructureTypeCOD' : 'Structure Type COD',
+        'StructureTypeName': 'Structure Type Name',
+        'StructureName': 'Structure Name',
+        'StructureTypeCOD': 'Structure Type COD',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -339,8 +339,8 @@ LABEL_MAPPING = {
         'COMPETENZE': 'Competenze',
         'SBOCCHI': 'Sbocchi',
         'StructureId': 'Id Struttura',
-        'StructureTypeName' : 'Nome Tipologia Struttura',
-        'StructureName' : 'Nome Struttura',
-        'StructureTypeCOD' : 'Codice Struttura'
+        'StructureTypeName': 'Nome Tipologia Struttura',
+        'StructureName': 'Nome Struttura',
+        'StructureTypeCOD': 'Codice Struttura',
     }
 }
