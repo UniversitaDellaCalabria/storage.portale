@@ -164,6 +164,7 @@ LABEL_MAPPING = {
         'TeacherID': 'Teacher ID',
         'TeacherName': 'Teacher Name',
         'TeacherRole': 'Role',
+        'TeacherRoleDescription' : 'Role Description',
         'TeacherSSD': 'SSD',
         'TeacherDepartmentID': 'Department ID',
         'TeacherDepartmentName': 'Department Name',
@@ -258,7 +259,7 @@ LABEL_MAPPING = {
         'CdSProfiles': 'Profili',
         'CdSFinalTest': 'Test Finale',
         'CdSFinalTestMode': 'Modalità Test Finale',
-        'CdSSatisfactionSurvey': 'Codice Accesso Indagine Almalaurea',
+        'CdSSatisfactionSurvey': 'Soddisfazione e condizione occupazionale (fonte Almalaurea)',
         'StudyPlanId': 'ID Piano di Studi',
         'StudyPlanName': 'Nome Piano di Studi',
         'StudyPlanCod': 'Codice Piano di Studi',
@@ -294,7 +295,8 @@ LABEL_MAPPING = {
         'StudyActivitiesBorrowedFromThis': 'Mutuate da questa',
         'TeacherID': 'ID Docente',
         'TeacherName': 'Nome Docente',
-        'TeacherRole': 'Ruolo Docente',
+        'TeacherRole': 'Ruolo',
+        'TeacherRoleDescription' : 'Descrizione ruolo',
         'TeacherSSD': 'Codice SSD',
         'TeacherDepartmentID': 'ID Dipartimento',
         'TeacherDepartmentName': 'Nome Dipartimento',
@@ -364,6 +366,7 @@ LABEL_MAPPING = {
         'StructureTypeName' : 'Nome Tipologia Struttura',
         'StructureName' : 'Nome Struttura',
         'StructureTypeCOD' : 'Codice Struttura'
+
     }
 }
 

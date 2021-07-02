@@ -572,6 +572,7 @@ class ServiceDocente:
             "middle_name",
             "cognome",
             "cd_ruolo",
+            "ds_ruolo",
             "cd_ssd",
             "ds_ssd",
             "aff_org",
