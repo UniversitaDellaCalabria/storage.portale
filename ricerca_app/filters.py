@@ -236,3 +236,9 @@ class ApiDoctoratesListFilter(GenericApiFilter):
             'type': 'int'
         },
     ]
+
+# class ApiStructuresListFilter(GenericApiFilter):
+#     search_params = [{'name': 'uo',
+#                       'description': 'codice struttura',
+#                       'required': True,
+#                       'type': 'string'}]

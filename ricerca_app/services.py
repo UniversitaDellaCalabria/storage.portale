@@ -725,6 +725,8 @@ class ServicePersonale:
     def getStructuresList():
         query = UnitaOrganizzativa.objects.values(
             "uo", "denominazione", "ds_tipo_nodo").distinct()
+        query = query.filter(dt_fine_val__gte=datetime.datetime.today())
+        print(UnitaOrganizzativa.objects.all().values('uo'))
         return query
 
     @staticmethod
@@ -732,3 +734,10 @@ class ServicePersonale:
         query = UnitaOrganizzativa.objects.values(
             "ds_tipo_nodo", "cd_tipo_nodo").distinct()
         return query
+
+    # @staticmethod
+    # def getStructure(structureId):
+    #     query = UnitaOrganizzativa.objects.filter(
+    #         uo__exact=structureId).values(
+    #         'uo', 'ds_tipo_nodo', 'denominazione', 'uo_padre', 'denominazione_padre').distinct()
+    #     return query
