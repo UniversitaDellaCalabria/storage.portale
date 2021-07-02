@@ -1031,6 +1031,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             'nome': 'Simone',
             'cognome': 'Mungari',
             'cd_ruolo': 'PA',
+            'ds_ruolo': 'aa',
             'id_ab': 1,
             'matricola': '111112',
             'fl_docente': 1,
@@ -1042,6 +1043,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             'nome': 'Lionel',
             'cognome': 'Messi',
             'cd_ruolo': 'PO',
+            'ds_ruolo': 'ab',
             'id_ab': 2,
             'matricola': '111113',
             'fl_docente': 1,
@@ -1518,8 +1520,7 @@ class ApiStructuresListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        print(res.json())
-        print(datetime.datetime.today())
+
         assert res.json()['results'][0]['StructureTypeName'] == 'rettorato'
         assert res.json()['results'][1]['StructureId'] == '2'
         assert len(res.json()['results']) == 3
