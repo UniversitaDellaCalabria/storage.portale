@@ -126,7 +126,10 @@ class ApiCdSDetail(ApiEndpointDetail):
         list_profiles = {}
         last_profile = ""
 
-        res[0]['DESC_COR_BRE'] = None
+        res[0]['URL_CDS_DOC'] = None
+        res[0]['INTRO_CDS_FMT'] = None
+        res[0]['URL_CDS_VIDEO'] = None
+        #res[0]['DESC_COR_BRE'] = None
         res[0]['OBB_SPEC'] = None
         res[0]['REQ_ACC'] = None
         res[0]['REQ_ACC_2'] = None
