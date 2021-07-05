@@ -362,6 +362,14 @@ class ApiStructureTypesList(ApiEndpointList):
         return ServicePersonale.getStructureTypes()
 
 
+class ApiAcademicYearsList(ApiEndpointList):
+    description = 'La funzione restituisce gli anni accademici'
+    serializer_class = AcademicYearsListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDidatticaCds.getAcademicYears()
+
 # Api che definisce il dettaglio della struttura, al momento è stato bloccato
 # class ApiStructureDetail(ApiEndpointDetail):
 #     description = 'La funzione restituisce una specifica struttura'

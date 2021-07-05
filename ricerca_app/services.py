@@ -4,8 +4,9 @@ import operator
 
 from django.db.models import Q
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
-    DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, DidatticaPdsRegolamento, \
-    FunzioniUnitaOrganizzativa, UnitaOrganizzativa
+    DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
+    DidatticaPdsRegolamento, \
+    FunzioniUnitaOrganizzativa, UnitaOrganizzativa, DidatticaRegolamento
 
 
 class ServiceQueryBuilder:
@@ -97,6 +98,12 @@ class ServiceDidatticaCds:
     def getDegreeTypes():
         query = DidatticaCds.objects.values(
             "tipo_corso_cod", "tipo_corso_des").distinct()
+        return query
+
+    @staticmethod
+    def getAcademicYears():
+        query = DidatticaRegolamento.objects.values(
+            "aa_reg_did").distinct()
         return query
 
 
