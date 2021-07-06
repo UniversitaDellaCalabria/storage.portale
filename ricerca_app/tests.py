@@ -25,9 +25,11 @@ class ApiCdSListUnitTest(TestCase):
         })
         didatticaCds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'dip': dip,
+            'tipo_corso_cod': 'L',
         })
         DidatticaCdsLinguaUnitTest.create_didatticaCdsLingua(**{
             'cdsord': didatticaCds,
+            'iso6392_cod': 'ita',
         })
         DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
             'regdid_id': 1,
@@ -55,7 +57,7 @@ class ApiCdSListUnitTest(TestCase):
         assert res.json()['results'][0]['RegDidId'] == 1
 
         # param: coursetype
-        data = {'coursetype': '1'}
+        data = {'coursetype': 'L'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -90,7 +92,7 @@ class ApiCdSListUnitTest(TestCase):
         assert res.json()['results'][0]['RegDidId'] == 1
 
         # param: cdslanguage
-        data = {'cdslanguage': 'ITALIANO', 'lang': 'it'}
+        data = {'cdslanguage': 'ita', 'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -110,14 +112,14 @@ class ApiCdSListUnitTest(TestCase):
         assert len(res.json()['results']) == 0
 
         # param: all
-        data = {'cdslanguage': 'ITALIAN',
+        data = {'cdslanguage': 'ita',
                 'jointdegree': 'N',
                 'academicyear': 2020,
                 'departmentname': 'math and computer science',
                 'departmentid': 1,
                 'courseclassname': 'laurea in informatica',
                 'courseclassid': '1',
-                'coursetype': '1',
+                'coursetype': 'L',
                 'lang': 'en',
                 }
         res = req.get(url, data=data)
