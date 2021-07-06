@@ -159,3 +159,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/structuretypes/'.format(base_url),
                         api_views.ApiStructureTypesList.as_view(),
                         name='structuretypes'),
+
+    urlpatterns += path('{}/academicyears/'.format(base_url),
+                        api_views.ApiAcademicYearsList.as_view(),
+                        name='academicyears'),

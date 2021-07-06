@@ -79,7 +79,10 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
-            'CdSIntro': query['DESC_COR_BRE'],
+            # 'CdSIntro': query['DESC_COR_BRE'],
+            'CdSIntro': query['INTRO_CDS_FMT'],
+            'CdSDoc': query['URL_CDS_DOC'],
+            'CdSVideo': query['URL_CDS_VIDEO'],
             'CdSGoals': query['OBB_SPEC'],
             'CdSAccess': query['REQ_ACC'],
             'CdSAdmission': query['REQ_ACC_2'],
@@ -524,4 +527,19 @@ class StructureTypesSerializer(CreateUpdateAbstract):
         return {
             'StructureTypeName': query['ds_tipo_nodo'],
             'StructureTypeCOD': query['cd_tipo_nodo'],
+        }
+
+
+class AcademicYearsListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'AcademicYear': query['aa_reg_did']
         }

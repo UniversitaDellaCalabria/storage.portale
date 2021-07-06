@@ -106,9 +106,27 @@ class ApiCdSDetail(ApiEndpointDetail):
 
     def get_queryset(self):
         cdsid_param = self.kwargs['cdsid']
-        res = ServiceDidatticaCds.cdslist(
-            self.language, QueryDict(
-                'regdid_id=' + str(cdsid_param)))
+        res = DidatticaCds.objects.filter(didatticaregolamento__regdid_id=cdsid_param)
+        langs = res.prefetch_related('didatticacdslingua')
+
+        res = res.values(
+            'didatticaregolamento__regdid_id',
+            'didatticaregolamento__aa_reg_did',
+            'didatticaregolamento__frequenza_obbligatoria',
+            'dip__dip_cod',
+            'dip__dip_des_it',
+            'dip__dip_des_eng',
+            'cds_cod',
+            'cdsord_id',
+            'nome_cds_it',
+            'nome_cds_eng',
+            'tipo_corso_cod',
+            'cla_miur_cod',
+            'cla_miur_des',
+            'durata_anni',
+            'valore_min',
+            'codicione',
+            'didatticaregolamento__stato_regdid_cod').distinct()
         res = list(res)
 
         if len(res) == 0:
@@ -126,7 +144,14 @@ class ApiCdSDetail(ApiEndpointDetail):
         list_profiles = {}
         last_profile = ""
 
-        res[0]['DESC_COR_BRE'] = None
+        res[0]['Languages'] = langs.values(
+                "didatticacdslingua__lingua_des_it",
+                "didatticacdslingua__lingua_des_eng").distinct()
+
+        res[0]['URL_CDS_DOC'] = None
+        res[0]['INTRO_CDS_FMT'] = None
+        res[0]['URL_CDS_VIDEO'] = None
+        #res[0]['DESC_COR_BRE'] = None
         res[0]['OBB_SPEC'] = None
         res[0]['REQ_ACC'] = None
         res[0]['REQ_ACC_2'] = None
@@ -361,6 +386,14 @@ class ApiStructureTypesList(ApiEndpointList):
     def get_queryset(self):
         return ServicePersonale.getStructureTypes()
 
+
+class ApiAcademicYearsList(ApiEndpointList):
+    description = 'La funzione restituisce gli anni accademici'
+    serializer_class = AcademicYearsListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDidatticaCds.getAcademicYears()
 
 # Api che definisce il dettaglio della struttura, al momento è stato bloccato
 # class ApiStructureDetail(ApiEndpointDetail):
