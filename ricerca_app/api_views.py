@@ -1,6 +1,5 @@
 
 
-from django.http import QueryDict
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 
@@ -106,7 +105,8 @@ class ApiCdSDetail(ApiEndpointDetail):
 
     def get_queryset(self):
         cdsid_param = self.kwargs['cdsid']
-        res = DidatticaCds.objects.filter(didatticaregolamento__regdid_id=cdsid_param)
+        res = DidatticaCds.objects.filter(
+            didatticaregolamento__regdid_id=cdsid_param)
         langs = res.prefetch_related('didatticacdslingua')
 
         res = res.values(
@@ -145,13 +145,13 @@ class ApiCdSDetail(ApiEndpointDetail):
         last_profile = ""
 
         res[0]['Languages'] = langs.values(
-                "didatticacdslingua__lingua_des_it",
-                "didatticacdslingua__lingua_des_eng").distinct()
+            "didatticacdslingua__lingua_des_it",
+            "didatticacdslingua__lingua_des_eng").distinct()
 
         res[0]['URL_CDS_DOC'] = None
         res[0]['INTRO_CDS_FMT'] = None
         res[0]['URL_CDS_VIDEO'] = None
-        #res[0]['DESC_COR_BRE'] = None
+        # res[0]['DESC_COR_BRE'] = None
         res[0]['OBB_SPEC'] = None
         res[0]['REQ_ACC'] = None
         res[0]['REQ_ACC_2'] = None
@@ -404,3 +404,12 @@ class ApiAcademicYearsList(ApiEndpointList):
 #     def get_queryset(self):
 #         structureid = self.kwargs['structureid']
 #         return ServicePersonale.getStructure(structureid)
+
+
+class ApiRolesList(ApiEndpointList):
+    description = 'La funzione restituisce i ruoli'
+    serializer_class = RolesListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDocente.getRoles()

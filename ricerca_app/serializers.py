@@ -543,3 +543,19 @@ class AcademicYearsListSerializer(CreateUpdateAbstract):
         return {
             'AcademicYear': query['aa_reg_did']
         }
+
+
+class RolesListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'TeacherRole': query['cd_ruolo'],
+            'TeacherRoleDescription': query['ds_ruolo'],
+        }

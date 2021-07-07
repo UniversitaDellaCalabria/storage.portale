@@ -6,7 +6,7 @@ from django.db.models import Q
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
     DidatticaPdsRegolamento, \
-    FunzioniUnitaOrganizzativa, UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua
+    FunzioniUnitaOrganizzativa, UnitaOrganizzativa, DidatticaRegolamento
 
 
 class ServiceQueryBuilder:
@@ -109,7 +109,8 @@ class ServiceDidatticaCds:
             'didatticaregolamento__stato_regdid_cod').distinct()
         items = list(items)
         for item in items:
-            item['Languages'] = langs.filter(cdsord_id=item['cdsord_id']).values(
+            item['Languages'] = langs.filter(
+                cdsord_id=item['cdsord_id']).values(
                 "didatticacdslingua__lingua_des_it",
                 "didatticacdslingua__lingua_des_eng").distinct()
 
@@ -621,6 +622,12 @@ class ServiceDocente:
                 q["dip_des_it"] = dep['dip_des_it']
                 q["dip_des_eng"] = dep["dip_des_eng"]
 
+        return query
+
+    @staticmethod
+    def getRoles():
+        query = Personale.objects.values(
+            "cd_ruolo", "ds_ruolo").distinct()
         return query
 
 
