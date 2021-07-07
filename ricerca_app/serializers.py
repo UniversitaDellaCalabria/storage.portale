@@ -26,6 +26,10 @@ class CdSListSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
+        langs = []
+        for q in query['Languages']:
+            langs.append(q['didatticacdslingua__lingua_des_it'] if req_lang ==
+                         'it' or q['didatticacdslingua__lingua_des_eng'] is None else q['didatticacdslingua__lingua_des_eng'])
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'CdSId': query['cds_cod'],
@@ -36,7 +40,7 @@ class CdSListSerializer(CreateUpdateAbstract):
             'CourseType': query['tipo_corso_cod'],
             'CourseClassId': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
-            'CdSLanguage': query['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or query['didatticacdslingua__lingua_des_eng'] is None else query['didatticacdslingua__lingua_des_eng'],
+            'CdSLanguage': langs,
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
@@ -55,6 +59,11 @@ class CdsInfoSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
+        langs = []
+        for q in query['Languages']:
+            langs.append(q['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or q[
+                'didatticacdslingua__lingua_des_eng'] is None else q['didatticacdslingua__lingua_des_eng'])
+
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
@@ -66,11 +75,14 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CourseType': query['tipo_corso_cod'],
             'CourseClassId': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
-            'CdSLanguage': query['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or query['didatticacdslingua__lingua_des_eng'] is None else query['didatticacdslingua__lingua_des_eng'],
+            'CdSLanguage': langs,
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
-            'CdSIntro': query['DESC_COR_BRE'],
+            # 'CdSIntro': query['DESC_COR_BRE'],
+            'CdSIntro': query['INTRO_CDS_FMT'],
+            'CdSDoc': query['URL_CDS_DOC'],
+            'CdSVideo': query['URL_CDS_VIDEO'],
             'CdSGoals': query['OBB_SPEC'],
             'CdSAccess': query['REQ_ACC'],
             'CdSAdmission': query['REQ_ACC_2'],
@@ -515,4 +527,35 @@ class StructureTypesSerializer(CreateUpdateAbstract):
         return {
             'StructureTypeName': query['ds_tipo_nodo'],
             'StructureTypeCOD': query['cd_tipo_nodo'],
+        }
+
+
+class AcademicYearsListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'AcademicYear': query['aa_reg_did']
+        }
+
+
+class RolesListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'TeacherRole': query['cd_ruolo'],
+            'TeacherRoleDescription': query['ds_ruolo'],
         }

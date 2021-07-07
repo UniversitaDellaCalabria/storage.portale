@@ -25,9 +25,11 @@ class ApiCdSListUnitTest(TestCase):
         })
         didatticaCds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'dip': dip,
+            'tipo_corso_cod': 'L',
         })
         DidatticaCdsLinguaUnitTest.create_didatticaCdsLingua(**{
             'cdsord': didatticaCds,
+            'iso6392_cod': 'ita',
         })
         DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
             'regdid_id': 1,
@@ -55,7 +57,7 @@ class ApiCdSListUnitTest(TestCase):
         assert res.json()['results'][0]['RegDidId'] == 1
 
         # param: coursetype
-        data = {'coursetype': '1'}
+        data = {'coursetype': 'L'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -90,7 +92,7 @@ class ApiCdSListUnitTest(TestCase):
         assert res.json()['results'][0]['RegDidId'] == 1
 
         # param: cdslanguage
-        data = {'cdslanguage': 'ITALIANO', 'lang': 'it'}
+        data = {'cdslanguage': 'ita', 'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -110,14 +112,14 @@ class ApiCdSListUnitTest(TestCase):
         assert len(res.json()['results']) == 0
 
         # param: all
-        data = {'cdslanguage': 'ITALIAN',
+        data = {'cdslanguage': 'ita',
                 'jointdegree': 'N',
                 'academicyear': 2020,
                 'departmentname': 'math and computer science',
                 'departmentid': 1,
                 'courseclassname': 'laurea in informatica',
                 'courseclassid': '1',
-                'coursetype': '1',
+                'coursetype': 'L',
                 'lang': 'en',
                 }
         res = req.get(url, data=data)
@@ -1558,4 +1560,78 @@ class ApiStructuresTypesUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results'][0]['StructureTypeName'] == 'facolta'
         assert res.json()['results'][1]['StructureTypeCOD'] == 'CDS'
+        assert len(res.json()['results']) == 3
+
+
+class ApiRolesListUnitTest(TestCase):
+
+    def test_apiroleslist(self):
+        req = Client()
+
+        PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'id_ab': 1,
+            'matricola': '111112',
+            'cd_ruolo': 'f',
+            'ds_ruolo': 'g',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'id_ab': 2,
+            'matricola': '111113',
+            'cd_ruolo': 'g',
+            'ds_ruolo': 'h',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 3,
+            'id_ab': 3,
+            'matricola': '111115',
+            'cd_ruolo': 'l',
+            'ds_ruolo': 'o',
+        })
+
+        url = reverse('ricerca:roleslist')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results'][0]['TeacherRole'] == 'f'
+        assert res.json()['results'][1]['TeacherRoleDescription'] == 'h'
+        assert len(res.json()['results']) == 3
+
+
+class ApiAcademicYearsUnitTest(TestCase):
+
+    def test_apiacademicyears(self):
+        req = Client()
+
+        DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 1,
+            'aa_reg_did': 2015,
+        })
+        DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 2,
+            'aa_reg_did': 2016,
+        })
+        DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 3,
+            'aa_reg_did': 2017,
+        })
+
+        url = reverse('ricerca:academicyears')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        print(res.json())
+
+        assert res.json()['results'][1]['AcademicYear'] == 2016
         assert len(res.json()['results']) == 3

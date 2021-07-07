@@ -2,10 +2,11 @@ import datetime
 from functools import reduce
 import operator
 
-from django.db.models import Q, Max
+from django.db.models import Q
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
-    DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, DidatticaRegolamento, \
-    DidatticaPdsRegolamento, FunzioniUnitaOrganizzativa, UnitaOrganizzativa
+    DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
+    DidatticaPdsRegolamento, \
+    FunzioniUnitaOrganizzativa, UnitaOrganizzativa, DidatticaRegolamento
 
 
 class ServiceQueryBuilder:
@@ -20,73 +21,83 @@ class ServiceQueryBuilder:
 class ServiceDidatticaCds:
     @staticmethod
     def cdslist(language, query_params):
-        query_params_size = len(query_params)
-        if 'page' in query_params:
-            query_params_size -= 1
-        if 'lang' in query_params:
-            query_params_size -= 1
+        didatticacds_params_to_query_field = {
+            'coursetype': 'tipo_corso_cod',
+            'courseclassid': 'cla_miur_cod',
+            'courseclassname': 'cla_miur_des__icontains',
+            # 'courseclassgroup': ... unspecified atm
+            'departmentid': 'dip__dip_cod',
+            'departmentname': f'dip__dip_des_{language == "it" and "it" or "eng"}__icontains',
+        }
 
-        if query_params_size == 0:
-            currentAA = DidatticaRegolamento.objects.aggregate(
-                Max('aa_reg_did'))
-            items = DidatticaCds.objects.filter(
-                didatticaregolamento__aa_reg_did__exact=currentAA['aa_reg_did__max'],
-                didatticaregolamento__stato_regdid_cod='A',
-                didatticacdslingua__lin_did_ord_id__isnull=False)
-            if len(items) == 0:
-                items = DidatticaCds.objects.filter(
-                    didatticaregolamento__aa_reg_did__exact=(
-                        currentAA['aa_reg_did__max'] - 1),
-                    didatticaregolamento__stato_regdid_cod='A',
-                    didatticacdslingua__lin_did_ord_id__isnull=False)
+        didatticaregolamento_params_to_query_field = {
+            'academicyear': 'didatticaregolamento__aa_reg_did__exact',
+            'jointdegree': 'didatticaregolamento__titolo_congiunto_cod',
+            'regdid_id': 'didatticaregolamento__regdid_id',
+        }
 
+        didatticacdslingua_params_to_query_field = {
+            'cdslanguage': 'didatticacdslingua__iso6392_cod', }
+
+        keywords = set(
+            query_params.get(
+                'keywords', '').split(','))
+
+        coursetype_filter = query_params.get('coursetype', '')
+        courses_allowed = ['L', 'LM', 'LM5', 'LM6', 'M1-270', 'M2-270']
+
+        q1 = ServiceQueryBuilder.build_filter_chain(
+            didatticacds_params_to_query_field, query_params)
+        q2 = ServiceQueryBuilder.build_filter_chain(
+            didatticaregolamento_params_to_query_field, query_params)
+        q3 = ServiceQueryBuilder.build_filter_chain(
+            didatticacdslingua_params_to_query_field, query_params)
+
+        if 'academicyear' not in query_params:
+            if coursetype_filter == '':
+                items = DidatticaCds.objects \
+                    .filter(reduce(operator.and_,
+                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
+                                    for e in keywords],
+                                   Q()), q1, q2, q3,
+                            didatticacdslingua__lin_did_ord_id__isnull=False,
+                            didatticaregolamento__stato_regdid_cod__exact='A',
+                            tipo_corso_cod__in=courses_allowed)
+            else:
+                items = DidatticaCds.objects \
+                    .filter(reduce(operator.and_,
+                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
+                                    for e in keywords],
+                                   Q()), q1, q2, q3,
+                            didatticacdslingua__lin_did_ord_id__isnull=False,
+                            didatticaregolamento__stato_regdid_cod__exact='A')
         else:
-            didatticacds_params_to_query_field = {
-                'coursetype': 'tipo_corso_cod',
-                'courseclassid': 'cla_miur_cod',
-                'courseclassname': 'cla_miur_des__icontains',
-                # 'courseclassgroup': ... unspecified atm
-                'departmentid': 'dip__dip_cod',
-                'departmentname': f'dip__dip_des_{language == "it" and "it" or "eng"}__icontains',
-            }
+            if coursetype_filter == '':
+                items = DidatticaCds.objects \
+                    .filter(reduce(operator.and_,
+                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
+                                    for e in keywords],
+                                   Q()), q1, q2, q3,
+                            didatticacdslingua__lin_did_ord_id__isnull=False,
+                            tipo_corso_cod__in=courses_allowed)
+            else:
+                items = DidatticaCds.objects \
+                    .filter(reduce(operator.and_,
+                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
+                                    for e in keywords],
+                                   Q()), q1, q2, q3,
+                            didatticacdslingua__lin_did_ord_id__isnull=False)
 
-            didatticaregolamento_params_to_query_field = {
-                'academicyear': 'didatticaregolamento__aa_reg_did__exact',
-                'jointdegree': 'didatticaregolamento__titolo_congiunto_cod',
-                'regdid_id': 'didatticaregolamento__regdid_id',
-            }
-
-            didatticacdslingua_params_to_query_field = {
-                'cdslanguage': f'didatticacdslingua__lingua_des_{language == "it" and "it" or "eng"}__iexact', }
-
-            keywords = set(
-                query_params.get(
-                    'keywords', '').split(','))
-
-            q1 = ServiceQueryBuilder.build_filter_chain(
-                didatticacds_params_to_query_field, query_params)
-            q2 = ServiceQueryBuilder.build_filter_chain(
-                didatticaregolamento_params_to_query_field, query_params)
-            q3 = ServiceQueryBuilder.build_filter_chain(
-                didatticacdslingua_params_to_query_field, query_params)
-
-            items = DidatticaCds.objects \
-                .filter(reduce(operator.and_,
-                               [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
-                                for e in keywords],
-                               Q()), q1, q2, q3,
-                        didatticacdslingua__lin_did_ord_id__isnull=False)
-
-        return items.values(
+        langs = items.prefetch_related('didatticacdslingua')
+        items = items.values(
             'didatticaregolamento__regdid_id',
             'didatticaregolamento__aa_reg_did',
             'didatticaregolamento__frequenza_obbligatoria',
             'dip__dip_cod',
             'dip__dip_des_it',
             'dip__dip_des_eng',
-            'didatticacdslingua__lingua_des_it',
-            'didatticacdslingua__lingua_des_eng',
             'cds_cod',
+            'cdsord_id',
             'nome_cds_it',
             'nome_cds_eng',
             'tipo_corso_cod',
@@ -96,11 +107,25 @@ class ServiceDidatticaCds:
             'valore_min',
             'codicione',
             'didatticaregolamento__stato_regdid_cod').distinct()
+        items = list(items)
+        for item in items:
+            item['Languages'] = langs.filter(
+                cdsord_id=item['cdsord_id']).values(
+                "didatticacdslingua__lingua_des_it",
+                "didatticacdslingua__lingua_des_eng").distinct()
+
+        return items
 
     @staticmethod
     def getDegreeTypes():
         query = DidatticaCds.objects.values(
             "tipo_corso_cod", "tipo_corso_des").distinct()
+        return query
+
+    @staticmethod
+    def getAcademicYears():
+        query = DidatticaRegolamento.objects.values(
+            "aa_reg_did").distinct()
         return query
 
 
@@ -599,6 +624,12 @@ class ServiceDocente:
 
         return query
 
+    @staticmethod
+    def getRoles():
+        query = Personale.objects.values(
+            "cd_ruolo", "ds_ruolo").distinct()
+        return query
+
 
 class ServiceDottorato:
     @staticmethod
@@ -727,7 +758,6 @@ class ServicePersonale:
         query = UnitaOrganizzativa.objects.values(
             "uo", "denominazione", "ds_tipo_nodo").distinct()
         query = query.filter(dt_fine_val__gte=datetime.datetime.today())
-        print(UnitaOrganizzativa.objects.all().values('uo'))
         return query
 
     @staticmethod
