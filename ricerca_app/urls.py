@@ -163,3 +163,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/academicyears/'.format(base_url),
                         api_views.ApiAcademicYearsList.as_view(),
                         name='academicyears'),
+
+    urlpatterns += path('{}/roles/'.format(base_url),
+                        api_views.ApiRolesList.as_view(),
+                        name='roleslist'),

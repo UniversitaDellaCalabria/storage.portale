@@ -1561,3 +1561,77 @@ class ApiStructuresTypesUnitTest(TestCase):
         assert res.json()['results'][0]['StructureTypeName'] == 'facolta'
         assert res.json()['results'][1]['StructureTypeCOD'] == 'CDS'
         assert len(res.json()['results']) == 3
+
+
+class ApiRolesListUnitTest(TestCase):
+
+    def test_apiroleslist(self):
+        req = Client()
+
+        PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'id_ab': 1,
+            'matricola': '111112',
+            'cd_ruolo': 'f',
+            'ds_ruolo': 'g',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'id_ab': 2,
+            'matricola': '111113',
+            'cd_ruolo': 'g',
+            'ds_ruolo': 'h',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 3,
+            'id_ab': 3,
+            'matricola': '111115',
+            'cd_ruolo': 'l',
+            'ds_ruolo': 'o',
+        })
+
+        url = reverse('ricerca:roleslist')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results'][0]['TeacherRole'] == 'f'
+        assert res.json()['results'][1]['TeacherRoleDescription'] == 'h'
+        assert len(res.json()['results']) == 3
+
+
+class ApiAcademicYearsUnitTest(TestCase):
+
+    def test_apiacademicyears(self):
+        req = Client()
+
+        DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 1,
+            'aa_reg_did': 2015,
+        })
+        DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 2,
+            'aa_reg_did': 2016,
+        })
+        DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 3,
+            'aa_reg_did': 2017,
+        })
+
+        url = reverse('ricerca:academicyears')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        print(res.json())
+
+        assert res.json()['results'][1]['AcademicYear'] == 2016
+        assert len(res.json()['results']) == 3
