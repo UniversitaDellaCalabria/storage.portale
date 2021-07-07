@@ -1631,7 +1631,6 @@ class ApiAcademicYearsUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        print(res.json())
 
         assert res.json()['results'][1]['AcademicYear'] == 2016
         assert len(res.json()['results']) == 3
