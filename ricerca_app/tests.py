@@ -1228,7 +1228,7 @@ class ApiDegreeTypesListUnitTest(TestCase):
             'dip': dip,
             'cds_id': 1,
             'tipo_corso_cod': 'L',
-            'tipo_corso_des': 'Laurea triennale',
+            'tipo_corso_des': 'Laurea',
             'cdsord_id': 1,
         })
         DidatticaCdsUnitTest.create_didatticaCds(**{
@@ -1249,7 +1249,7 @@ class ApiDegreeTypesListUnitTest(TestCase):
             'dip': dip,
             'cds_id': 4,
             'tipo_corso_cod': 'L',
-            'tipo_corso_des': 'Laurea triennale',
+            'tipo_corso_des': 'Laurea',
             'cdsord_id': 4,
         })
 
