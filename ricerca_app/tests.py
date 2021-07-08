@@ -1296,12 +1296,12 @@ class ApiDepartmentsListUnitTest(TestCase):
 
         res = req.get(url)
         assert res.json()[
-            'results'][0]['DepartmentName'] == 'Department of Math and Computer Science'
+            'results'][0]['DepartmentName'] == 'Department of Literature'
 
         data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()[
-            'results'][0]['DepartmentName'] == 'Dipartimento di Matematica e Informatica'
+            'results'][0]['DepartmentName'] == 'Dipartimento di Letteratura'
 
 
 class ApiDepartmentDetailUnitTest(TestCase):
