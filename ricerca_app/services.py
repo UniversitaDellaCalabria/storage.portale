@@ -120,7 +120,7 @@ class ServiceDidatticaCds:
     @staticmethod
     def getDegreeTypes():
         query = DidatticaCds.objects.values(
-            "tipo_corso_cod", "tipo_corso_des").distinct()
+            "tipo_corso_cod", "tipo_corso_des").order_by('tipo_corso_des').distinct()
         return query
 
     @staticmethod
@@ -628,7 +628,7 @@ class ServiceDocente:
     @staticmethod
     def getRoles():
         query = Personale.objects.values(
-            "cd_ruolo", "ds_ruolo").distinct()
+            "cd_ruolo", "ds_ruolo").order_by('ds_ruolo').distinct()
         return query
 
 
