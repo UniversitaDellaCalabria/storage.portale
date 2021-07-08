@@ -106,7 +106,8 @@ class ServiceDidatticaCds:
             'durata_anni',
             'valore_min',
             'codicione',
-            'didatticaregolamento__stato_regdid_cod').distinct()
+            'didatticaregolamento__stato_regdid_cod')
+        items = items.order_by("nome_cds_it").distinct() if language == 'it' else items.order_by("nome_cds_eng").distinct()
         items = list(items)
         for item in items:
             item['Languages'] = langs.filter(
