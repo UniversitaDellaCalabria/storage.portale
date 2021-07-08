@@ -126,7 +126,7 @@ class ServiceDidatticaCds:
     @staticmethod
     def getAcademicYears():
         query = DidatticaRegolamento.objects.values(
-            "aa_reg_did").distinct()
+            "aa_reg_did").order_by('aa_reg_did').distinct()
         return query
 
 
@@ -677,10 +677,10 @@ class ServiceDottorato:
 class ServiceDipartimento:
 
     @staticmethod
-    def getDepartmentsList():
+    def getDepartmentsList(language):
         query = DidatticaDipartimento.objects.all().values(
             "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
-        return query
+        return query.order_by("dip_des_it") if language == 'it' else query.order_by("dip_des_eng")
 
     @staticmethod
     def getDepartment(departmentid):

@@ -345,7 +345,7 @@ class ApiDepartmentsList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-        return ServiceDipartimento.getDepartmentsList()
+        return ServiceDipartimento.getDepartmentsList(self.language)
 
 
 class ApiDepartmentDetail(ApiEndpointDetail):
