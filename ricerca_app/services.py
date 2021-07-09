@@ -2,11 +2,11 @@ import datetime
 from functools import reduce
 import operator
 
-from django.db.models import Q
+from django.db.models import CharField, Q, Value
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
     DidatticaPdsRegolamento, \
-    FunzioniUnitaOrganizzativa, UnitaOrganizzativa, DidatticaRegolamento
+    UnitaOrganizzativa, DidatticaRegolamento
 
 
 class ServiceQueryBuilder:
@@ -107,7 +107,8 @@ class ServiceDidatticaCds:
             'valore_min',
             'codicione',
             'didatticaregolamento__stato_regdid_cod')
-        items = items.order_by("nome_cds_it").distinct() if language == 'it' else items.order_by("nome_cds_eng").distinct()
+        items = items.order_by("nome_cds_it").distinct(
+        ) if language == 'it' else items.order_by("nome_cds_eng").distinct()
         items = list(items)
         for item in items:
             item['Languages'] = langs.filter(
@@ -120,7 +121,8 @@ class ServiceDidatticaCds:
     @staticmethod
     def getDegreeTypes():
         query = DidatticaCds.objects.values(
-            "tipo_corso_cod", "tipo_corso_des").order_by('tipo_corso_des').distinct()
+            "tipo_corso_cod",
+            "tipo_corso_des").order_by('tipo_corso_des').distinct()
         return query
 
     @staticmethod
@@ -680,7 +682,8 @@ class ServiceDipartimento:
     def getDepartmentsList(language):
         query = DidatticaDipartimento.objects.all().values(
             "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
-        return query.order_by("dip_des_it") if language == 'it' else query.order_by("dip_des_eng")
+        return query.order_by(
+            "dip_des_it") if language == 'it' else query.order_by("dip_des_eng")
 
     @staticmethod
     def getDepartment(departmentid):
@@ -688,9 +691,6 @@ class ServiceDipartimento:
             dip_cod__exact=departmentid).values(
             "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
         return query
-
-# TODO: API finita ma è troppo lenta, servirebbero due join, uno dalle
-# strutture al personale e l'altro dai contatti al personale
 
 
 class ServicePersonale:
@@ -707,7 +707,55 @@ class ServicePersonale:
             query_structure = Q(aff_org__exact=structureid)
 
         query = Personale.objects.filter(
-            query_keywords, query_structure, flg_cessato=0)
+            query_keywords,
+            query_structure,
+            flg_cessato=0,
+            aff_org__isnull=False).extra(
+            select={
+                'denominazione': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE'},
+            tables=['UNITA_ORGANIZZATIVA'],
+            where=[
+                'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG',
+            ]).order_by("cognome").values(
+            "nome",
+            "middle_name",
+            "cognome",
+            "cd_ruolo",
+            "ds_ruolo",
+            "aff_org",
+            "id_ab",
+            "matricola",
+            'personalecontatti__cd_tipo_cont__descr_contatto',
+            'personalecontatti__contatto',
+            'funzioniunitaorganizzativa__ds_funzione',
+            'funzioniunitaorganizzativa__termine',
+            'denominazione')
+
+        if structureid is None:
+            query2 = Personale.objects.filter(
+                query_keywords,
+                flg_cessato=0,
+                aff_org__isnull=True).annotate(
+                denominazione=Value(
+                    None,
+                    output_field=CharField())).order_by("cognome").values(
+                "nome",
+                "middle_name",
+                "cognome",
+                "cd_ruolo",
+                "ds_ruolo",
+                "aff_org",
+                "id_ab",
+                "matricola",
+                'personalecontatti__cd_tipo_cont__descr_contatto',
+                'personalecontatti__contatto',
+                'funzioniunitaorganizzativa__ds_funzione',
+                'funzioniunitaorganizzativa__termine',
+                'denominazione')
+            from itertools import chain
+            query = list(chain(*[query, query2]))
+        query = list(query)
+        query.sort(key=lambda x: x.get('cognome'), reverse=False)
 
         contacts_to_take = [
             'Posta Elettronica',
@@ -718,41 +766,36 @@ class ServicePersonale:
             'Riferimento Ufficio',
             'URL Sito WEB',
             'URL Sito WEB Curriculum Vitae']
-        contacts = query.filter(
-            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take)
-        query = query.values("nome", "middle_name",
-                             "cognome", "cd_ruolo",
-                             "ds_ruolo",
-                             "aff_org",
-                             "id_ab", "matricola")
-        query = list(query)
 
+        grouped = {}
+        last_id = -1
+        final_query = []
         for q in query:
-            f = FunzioniUnitaOrganizzativa.objects.filter(
-                id_ab=q['id_ab'], termine__gte=datetime.datetime.today()).values("ds_funzione")
-            s = UnitaOrganizzativa.objects.filter(
-                uo__exact=q['aff_org']).values("denominazione")
-            for c in contacts_to_take:
-                q[c] = []
-            contacts_temp = contacts.filter(
-                id_ab=q['id_ab']).values(
-                "personalecontatti__cd_tipo_cont__descr_contatto",
-                "personalecontatti__contatto")
-            for c in contacts_temp:
-                q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
-                    c['personalecontatti__contatto'])
+            if q['id_ab'] not in grouped:
+                grouped[q['id_ab']] = {
+                    'id_ab': q['id_ab'],
+                    'nome': q['nome'],
+                    'middle_name': q['middle_name'],
+                    'cognome': q['cognome'],
+                    'cd_ruolo': q['cd_ruolo'],
+                    'ds_ruolo': q['ds_ruolo'],
+                    'aff_org': q['aff_org'],
+                    'matricola': q['matricola'],
+                    'Funzione': q['funzioniunitaorganizzativa__ds_funzione'] if q['funzioniunitaorganizzativa__termine'] is not None and q['funzioniunitaorganizzativa__termine'] >= datetime.datetime.today() else None,
+                    'Struttura': q['denominazione'] if 'denominazione' in q.keys() else None,
+                }
+                for c in contacts_to_take:
+                    grouped[q['id_ab']][c] = []
 
-            if len(f) > 0:
-                q['Funzione'] = f[0]['ds_funzione']
-            else:
-                q['Funzione'] = None
+            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take:
+                grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
+                    q['personalecontatti__contatto'])
 
-            if len(s) > 0:
-                q['Struttura'] = s.first()['denominazione']
-            else:
-                q['Struttura'] = None
+            if last_id == -1 or last_id != q['id_ab']:
+                last_id = q['id_ab']
+                final_query.append(grouped[q['id_ab']])
 
-        return query
+        return final_query
 
     @staticmethod
     def getStructuresList():
