@@ -556,6 +556,6 @@ class RolesListSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
         return {
-            'TeacherRole': query['cd_ruolo'],
-            'TeacherRoleDescription': query['ds_ruolo'],
+            'Role': query['cd_ruolo'],
+            'RoleDescription': query['ds_ruolo'],
         }

@@ -74,7 +74,34 @@ class ApiEndpointDetail(ApiEndpointList):
         })
 
 
+class ApiEndpointListSupport(ApiEndpointList):
+    pagination_class = None
+    permission_classes = [permissions.AllowAny]
+    allowed_methods = ('GET',)
+
+    def get(self, obj, **kwargs):
+        self.language = str(
+            self.request.query_params.get(
+                'lang', 'null')).lower()
+        if self.language == 'null':
+            self.language = self.request.LANGUAGE_CODE
+
+        queryset = self.get_queryset()
+
+        if queryset is not None:
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'results': serializer.data,
+                'labels': encode_labels(list(serializer.data)[0], self.language)
+            })
+
+        return Response({
+            'results': {},
+            'labels': {}
+        })
+
 # ----CdS----
+
 
 class ApiCdSList(ApiEndpointList):
     description = 'Restituisce un elenco di Corsi di studio con un set' \
@@ -369,7 +396,7 @@ class ApiAddressbookList(ApiEndpointList):
         return ServicePersonale.getAddressbook(keywords, structureid)
 
 
-class ApiStructuresList(ApiEndpointList):
+class ApiStructuresList(ApiEndpointListSupport):
     description = 'La funzione restituisce le strutture organizzative'
     serializer_class = StructuresListSerializer
     filter_backends = []
@@ -387,7 +414,7 @@ class ApiStructureTypesList(ApiEndpointList):
         return ServicePersonale.getStructureTypes()
 
 
-class ApiAcademicYearsList(ApiEndpointList):
+class ApiAcademicYearsList(ApiEndpointListSupport):
     description = 'La funzione restituisce gli anni accademici'
     serializer_class = AcademicYearsListSerializer
     filter_backends = []
@@ -406,7 +433,7 @@ class ApiAcademicYearsList(ApiEndpointList):
 #         return ServicePersonale.getStructure(structureid)
 
 
-class ApiRolesList(ApiEndpointList):
+class ApiRolesList(ApiEndpointListSupport):
     description = 'La funzione restituisce i ruoli'
     serializer_class = RolesListSerializer
     filter_backends = []

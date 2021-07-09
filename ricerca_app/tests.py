@@ -1612,8 +1612,8 @@ class ApiRolesListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['results'][0]['TeacherRole'] == 'f'
-        assert res.json()['results'][1]['TeacherRoleDescription'] == 'h'
+        assert res.json()['results'][0]['Role'] == 'f'
+        assert res.json()['results'][1]['RoleDescription'] == 'h'
         assert len(res.json()['results']) == 3
 
 

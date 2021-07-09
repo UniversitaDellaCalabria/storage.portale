@@ -39,9 +39,9 @@ class ServiceDidatticaCds:
         didatticacdslingua_params_to_query_field = {
             'cdslanguage': 'didatticacdslingua__iso6392_cod', }
 
-        keywords = set(
-            query_params.get(
-                'keywords', '').split(','))
+        keywords = query_params.get('keywords', None)
+        if keywords is not None:
+            keywords = keywords.split(' ')
 
         coursetype_filter = query_params.get('coursetype', '')
         courses_allowed = ['L', 'LM', 'LM5', 'LM6', 'M1-270', 'M2-270']
@@ -53,39 +53,38 @@ class ServiceDidatticaCds:
         q3 = ServiceQueryBuilder.build_filter_chain(
             didatticacdslingua_params_to_query_field, query_params)
 
+        q4 = Q()
+        if keywords is None:
+            q4 = Q(cds_id__isnull=False)
+        else:
+            for k in keywords:
+                if language == "it":
+                    q = Q(nome_cds_it__icontains=k)
+                else:
+                    q = Q(nome_cds_eng__icontains=k)
+                q4 |= q
+
         if 'academicyear' not in query_params:
             if coursetype_filter == '':
                 items = DidatticaCds.objects \
-                    .filter(reduce(operator.and_,
-                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
-                                    for e in keywords],
-                                   Q()), q1, q2, q3,
+                    .filter(q1, q2, q3, q4,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
                             didatticaregolamento__stato_regdid_cod__exact='A',
                             tipo_corso_cod__in=courses_allowed)
             else:
                 items = DidatticaCds.objects \
-                    .filter(reduce(operator.and_,
-                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
-                                    for e in keywords],
-                                   Q()), q1, q2, q3,
+                    .filter(q4, q1, q2, q3,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
                             didatticaregolamento__stato_regdid_cod__exact='A')
         else:
             if coursetype_filter == '':
                 items = DidatticaCds.objects \
-                    .filter(reduce(operator.and_,
-                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
-                                    for e in keywords],
-                                   Q()), q1, q2, q3,
+                    .filter(q4, q1, q2, q3,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
                             tipo_corso_cod__in=courses_allowed)
             else:
                 items = DidatticaCds.objects \
-                    .filter(reduce(operator.and_,
-                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
-                                    for e in keywords],
-                                   Q()), q1, q2, q3,
+                    .filter(q4, q1, q2, q3,
                             didatticacdslingua__lin_did_ord_id__isnull=False)
 
         langs = items.prefetch_related('didatticacdslingua')
@@ -107,8 +106,7 @@ class ServiceDidatticaCds:
             'valore_min',
             'codicione',
             'didatticaregolamento__stato_regdid_cod')
-        items = items.order_by("nome_cds_it").distinct(
-        ) if language == 'it' else items.order_by("nome_cds_eng").distinct()
+        items = items.order_by("nome_cds_it") if language == 'it' else items.order_by("nome_cds_eng")
         items = list(items)
         for item in items:
             item['Languages'] = langs.filter(
