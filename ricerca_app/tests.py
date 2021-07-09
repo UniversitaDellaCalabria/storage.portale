@@ -1375,6 +1375,19 @@ class ApiAddressbookListUnitTest(TestCase):
             'aff_org': 99,
             'cod_fis': 'LNL1',
         })
+        PersonaleUnitTest.create_personale(**{
+            'id': 3,
+            'nome': 'Zlatan',
+            'cognome': 'Ibra',
+            'cd_ruolo': 'PO',
+            'ds_ruolo': 'Professore Ordinario',
+            'id_ab': 3,
+            'matricola': '111114',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': None,
+            'cod_fis': 'ZLT',
+        })
         DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
             'dip_cod': 1,
@@ -1443,6 +1456,7 @@ class ApiAddressbookListUnitTest(TestCase):
         PersonaleContattiUnitTest.create_personaleContatti(**{
             'cd_tipo_cont': tipo_contatto,
             'id_ab': 2,
+            'cod_fis': p2,
             'contatto': 'email2@email',
             'prg_priorita': 1,
         })
@@ -1468,11 +1482,10 @@ class ApiAddressbookListUnitTest(TestCase):
 
         # GET
         res = req.get(url)
-
-        assert len(res.json()['results']) == 2
-        assert res.json()['results'][0]['Email'][0] == 'email@email'
+        assert len(res.json()['results']) == 3
+        assert res.json()['results'][2]['Email'][0] == 'email@email'
         assert res.json()[
-            'results'][0]['Structure'] == 'Dipartimento di Matematica e Informatica'
+            'results'][2]['Structure'] == 'Dipartimento di Matematica e Informatica'
 
         data = {'structureid': '99', 'lang': 'it'}
         res = req.get(url, data=data)
