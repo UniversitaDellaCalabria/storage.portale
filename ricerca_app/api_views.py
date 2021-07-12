@@ -178,7 +178,7 @@ class ApiCdSDetail(ApiEndpointDetail):
         res[0]['URL_CDS_DOC'] = None
         res[0]['INTRO_CDS_FMT'] = None
         res[0]['URL_CDS_VIDEO'] = None
-        # res[0]['DESC_COR_BRE'] = None
+        res[0]['DESC_COR_BRE'] = None
         res[0]['OBB_SPEC'] = None
         res[0]['REQ_ACC'] = None
         res[0]['REQ_ACC_2'] = None
@@ -209,7 +209,6 @@ class ApiCdSDetail(ApiEndpointDetail):
                 else:
                     list_profiles[last_profile][text['tipo_testo_regdid_cod']
                                                 ] = text[f'clob_txt_{self.language == "it" and "ita" or "eng"}']
-
         res[0]['PROFILO'] = list_profiles
         return res
 

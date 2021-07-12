@@ -106,7 +106,8 @@ class ServiceDidatticaCds:
             'valore_min',
             'codicione',
             'didatticaregolamento__stato_regdid_cod')
-        items = items.order_by("nome_cds_it") if language == 'it' else items.order_by("nome_cds_eng")
+        items = items.order_by(
+            "nome_cds_it") if language == 'it' else items.order_by("nome_cds_eng")
         items = list(items)
         for item in items:
             item['Languages'] = langs.filter(
@@ -798,7 +799,7 @@ class ServicePersonale:
     @staticmethod
     def getStructuresList():
         query = UnitaOrganizzativa.objects.values(
-            "uo", "denominazione", "ds_tipo_nodo").distinct()
+            "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
         query = query.filter(dt_fine_val__gte=datetime.datetime.today())
         return query
 
