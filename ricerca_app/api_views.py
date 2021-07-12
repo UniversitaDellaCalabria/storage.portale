@@ -188,14 +188,27 @@ class ApiCdSDetail(ApiEndpointDetail):
 
         for text in texts:
             if text['tipo_testo_regdid_cod'] != 'FUNZIONI' and text['tipo_testo_regdid_cod'] != 'COMPETENZE' and text['tipo_testo_regdid_cod'] != 'SBOCCHI':
-                res[0][text['tipo_testo_regdid_cod']] = text[
-                    f'clob_txt_{self.language == "it" and "ita" or "eng"}']
+                if text['clob_txt_eng'] is None and self.language == "en":
+                    res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_ita']
+                else:
+                    res[0][text['tipo_testo_regdid_cod']] = text[
+                        f'clob_txt_{self.language == "it" and "ita" or "eng"}']
+
             else:
-                if text[f'{ self.language == "it" and "profilo" or "profilo_eng" }'] != last_profile:
+                if self.language == "en" and text["profilo_eng"] is None:
+                    if text["profilo"] != last_profile:
+                        last_profile = text["profilo"]
+                        list_profiles[last_profile] = {}
+                elif text[f'{ self.language == "it" and "profilo" or "profilo_eng" }'] != last_profile:
                     last_profile = text[f'{self.language == "it" and "profilo" or "profilo_eng"}']
                     list_profiles[last_profile] = {}
-                list_profiles[last_profile][text['tipo_testo_regdid_cod']
-                                            ] = text[f'clob_txt_{self.language == "it" and "ita" or "eng"}']
+
+                if text["clob_txt_eng"] is None and self.language == "en":
+                    list_profiles[last_profile][text['tipo_testo_regdid_cod']
+                                                ] = text["clob_txt_ita"]
+                else:
+                    list_profiles[last_profile][text['tipo_testo_regdid_cod']
+                                                ] = text[f'clob_txt_{self.language == "it" and "ita" or "eng"}']
 
         res[0]['PROFILO'] = list_profiles
         return res
