@@ -126,7 +126,7 @@ class ServiceDidatticaCds:
     @staticmethod
     def getAcademicYears():
         query = DidatticaRegolamento.objects.values(
-            "aa_reg_did").order_by('aa_reg_did').distinct()
+            "aa_reg_did").order_by('-aa_reg_did').distinct()
         return query
 
 
