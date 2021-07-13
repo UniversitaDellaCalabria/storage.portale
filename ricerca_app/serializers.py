@@ -79,8 +79,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
-            # 'CdSIntro': query['DESC_COR_BRE'],
-            'CdSIntro': query['INTRO_CDS_FMT'],
+            'CdSIntro': query['DESC_COR_BRE'],
+            # 'CdSIntro': query['INTRO_CDS_FMT'],
             'CdSDoc': query['URL_CDS_DOC'],
             'CdSVideo': query['URL_CDS_VIDEO'],
             'CdSGoals': query['OBB_SPEC'],
@@ -337,6 +337,7 @@ class TeachersListSerializer(CreateUpdateAbstract):
             'TeacherDepartmentID': query['dip_cod'],
             'TeacherDepartmentName': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
             'TeacherRole': query['cd_ruolo'],
+            'TeacherRoleDescription': query['ds_ruolo'],
             'TeacherSSDCod': query['cd_ssd'],
             'TeacherSSDDescription': query['ds_ssd'],
         }
@@ -483,7 +484,8 @@ class AddressbookListSerializer(CreateUpdateAbstract):
         return {
             'Name': full_name,
             'ID': query['matricola'],
-            'Role': query['ds_ruolo'],
+            'RoleDescription': query['ds_ruolo'],
+            'Role': query['cd_ruolo'],
             'Structure': query['Struttura'],
             'Function': query['Funzione'],
             'OfficeReference': query['Riferimento Ufficio'],
@@ -511,6 +513,7 @@ class StructuresListSerializer(CreateUpdateAbstract):
             'StructureId': query['uo'],
             'StructureName': query['denominazione'],
             'StructureTypeName': query['ds_tipo_nodo'],
+            'StructureTypeCOD': query['cd_tipo_nodo'],
         }
 
 
@@ -556,6 +559,6 @@ class RolesListSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
         return {
-            'TeacherRole': query['cd_ruolo'],
-            'TeacherRoleDescription': query['ds_ruolo'],
+            'Role': query['cd_ruolo'],
+            'RoleDescription': query['ds_ruolo'],
         }

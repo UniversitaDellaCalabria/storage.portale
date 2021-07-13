@@ -2,6 +2,7 @@
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
+import django_filters
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
@@ -61,7 +62,7 @@ class ApiEndpointDetail(ApiEndpointList):
 
         queryset = self.get_queryset()
 
-        if queryset is not None:
+        if queryset is not None and len(queryset) > 0:
             serializer = self.get_serializer(queryset[0], many=False)
             return Response({
                 'results': serializer.data,
@@ -74,7 +75,34 @@ class ApiEndpointDetail(ApiEndpointList):
         })
 
 
+class ApiEndpointListSupport(ApiEndpointList):
+    pagination_class = None
+    permission_classes = [permissions.AllowAny]
+    allowed_methods = ('GET',)
+
+    def get(self, obj, **kwargs):
+        self.language = str(
+            self.request.query_params.get(
+                'lang', 'null')).lower()
+        if self.language == 'null':
+            self.language = self.request.LANGUAGE_CODE
+
+        queryset = self.get_queryset()
+
+        if queryset is not None:
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'results': serializer.data,
+                'labels': encode_labels(list(serializer.data)[0], self.language)
+            })
+
+        return Response({
+            'results': {},
+            'labels': {}
+        })
+
 # ----CdS----
+
 
 class ApiCdSList(ApiEndpointList):
     description = 'Restituisce un elenco di Corsi di studio con un set' \
@@ -151,7 +179,7 @@ class ApiCdSDetail(ApiEndpointDetail):
         res[0]['URL_CDS_DOC'] = None
         res[0]['INTRO_CDS_FMT'] = None
         res[0]['URL_CDS_VIDEO'] = None
-        # res[0]['DESC_COR_BRE'] = None
+        res[0]['DESC_COR_BRE'] = None
         res[0]['OBB_SPEC'] = None
         res[0]['REQ_ACC'] = None
         res[0]['REQ_ACC_2'] = None
@@ -161,15 +189,27 @@ class ApiCdSDetail(ApiEndpointDetail):
 
         for text in texts:
             if text['tipo_testo_regdid_cod'] != 'FUNZIONI' and text['tipo_testo_regdid_cod'] != 'COMPETENZE' and text['tipo_testo_regdid_cod'] != 'SBOCCHI':
-                res[0][text['tipo_testo_regdid_cod']] = text[
-                    f'clob_txt_{self.language == "it" and "ita" or "eng"}']
+                if text['clob_txt_eng'] is None and self.language == "en":
+                    res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_ita']
+                else:
+                    res[0][text['tipo_testo_regdid_cod']] = text[
+                        f'clob_txt_{self.language == "it" and "ita" or "eng"}']
+
             else:
-                if text[f'{ self.language == "it" and "profilo" or "profilo_eng" }'] != last_profile:
+                if self.language == "en" and text["profilo_eng"] is None:
+                    if text["profilo"] != last_profile:
+                        last_profile = text["profilo"]
+                        list_profiles[last_profile] = {}
+                elif text[f'{ self.language == "it" and "profilo" or "profilo_eng" }'] != last_profile:
                     last_profile = text[f'{self.language == "it" and "profilo" or "profilo_eng"}']
                     list_profiles[last_profile] = {}
-                list_profiles[last_profile][text['tipo_testo_regdid_cod']
-                                            ] = text[f'clob_txt_{self.language == "it" and "ita" or "eng"}']
 
+                if text["clob_txt_eng"] is None and self.language == "en":
+                    list_profiles[last_profile][text['tipo_testo_regdid_cod']
+                                                ] = text["clob_txt_ita"]
+                else:
+                    list_profiles[last_profile][text['tipo_testo_regdid_cod']
+                                                ] = text[f'clob_txt_{self.language == "it" and "ita" or "eng"}']
         res[0]['PROFILO'] = list_profiles
         return res
 
@@ -366,10 +406,11 @@ class ApiAddressbookList(ApiEndpointList):
     def get_queryset(self):
         keywords = self.request.query_params.get('keywords')
         structureid = self.request.query_params.get('structureid')
-        return ServicePersonale.getAddressbook(keywords, structureid)
+        roles = self.request.query_params.get('roles')
+        return ServicePersonale.getAddressbook(keywords, structureid, roles)
 
 
-class ApiStructuresList(ApiEndpointList):
+class ApiStructuresList(ApiEndpointListSupport):
     description = 'La funzione restituisce le strutture organizzative'
     serializer_class = StructuresListSerializer
     filter_backends = []
@@ -387,7 +428,7 @@ class ApiStructureTypesList(ApiEndpointList):
         return ServicePersonale.getStructureTypes()
 
 
-class ApiAcademicYearsList(ApiEndpointList):
+class ApiAcademicYearsList(ApiEndpointListSupport):
     description = 'La funzione restituisce gli anni accademici'
     serializer_class = AcademicYearsListSerializer
     filter_backends = []
@@ -406,10 +447,21 @@ class ApiAcademicYearsList(ApiEndpointList):
 #         return ServicePersonale.getStructure(structureid)
 
 
-class ApiRolesList(ApiEndpointList):
+class ApiRolesList(ApiEndpointListSupport):
     description = 'La funzione restituisce i ruoli'
     serializer_class = RolesListSerializer
     filter_backends = []
 
     def get_queryset(self):
         return ServiceDocente.getRoles()
+
+
+class ApiPersonaleDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce una specifica persona'
+    serializer_class = AddressbookListSerializer
+    # filter_backends = [ApiAddressbookListFilter]
+
+    def get_queryset(self):
+        personale_id = self.kwargs['personaleid']
+
+        return ServicePersonale.getPersonale(personale_id)

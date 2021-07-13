@@ -2,11 +2,11 @@ import datetime
 from functools import reduce
 import operator
 
-from django.db.models import Q
+from django.db.models import CharField, Q, Value
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
     DidatticaPdsRegolamento, \
-    FunzioniUnitaOrganizzativa, UnitaOrganizzativa, DidatticaRegolamento
+    UnitaOrganizzativa, DidatticaRegolamento
 
 
 class ServiceQueryBuilder:
@@ -22,7 +22,6 @@ class ServiceDidatticaCds:
     @staticmethod
     def cdslist(language, query_params):
         didatticacds_params_to_query_field = {
-            'coursetype': 'tipo_corso_cod',
             'courseclassid': 'cla_miur_cod',
             'courseclassname': 'cla_miur_des__icontains',
             # 'courseclassgroup': ... unspecified atm
@@ -39,12 +38,13 @@ class ServiceDidatticaCds:
         didatticacdslingua_params_to_query_field = {
             'cdslanguage': 'didatticacdslingua__iso6392_cod', }
 
-        keywords = set(
-            query_params.get(
-                'keywords', '').split(','))
+        keywords = query_params.get('keywords', None)
+        if keywords is not None:
+            keywords = keywords.split(' ')
 
-        coursetype_filter = query_params.get('coursetype', '')
-        courses_allowed = ['L', 'LM', 'LM5', 'LM6', 'M1-270', 'M2-270']
+        courses_allowed = query_params.get('coursetype', '')
+        if courses_allowed != '':
+            courses_allowed = courses_allowed.split(",")
 
         q1 = ServiceQueryBuilder.build_filter_chain(
             didatticacds_params_to_query_field, query_params)
@@ -53,39 +53,38 @@ class ServiceDidatticaCds:
         q3 = ServiceQueryBuilder.build_filter_chain(
             didatticacdslingua_params_to_query_field, query_params)
 
+        q4 = Q()
+        if keywords is None:
+            q4 = Q(cds_id__isnull=False)
+        else:
+            for k in keywords:
+                if language == "it":
+                    q = Q(nome_cds_it__icontains=k)
+                else:
+                    q = Q(nome_cds_eng__icontains=k)
+                q4 |= q
+
         if 'academicyear' not in query_params:
-            if coursetype_filter == '':
+            if courses_allowed != '':
                 items = DidatticaCds.objects \
-                    .filter(reduce(operator.and_,
-                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
-                                    for e in keywords],
-                                   Q()), q1, q2, q3,
+                    .filter(q1, q2, q3, q4,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
                             didatticaregolamento__stato_regdid_cod__exact='A',
                             tipo_corso_cod__in=courses_allowed)
             else:
                 items = DidatticaCds.objects \
-                    .filter(reduce(operator.and_,
-                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
-                                    for e in keywords],
-                                   Q()), q1, q2, q3,
+                    .filter(q4, q1, q2, q3,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
                             didatticaregolamento__stato_regdid_cod__exact='A')
         else:
-            if coursetype_filter == '':
+            if courses_allowed != '':
                 items = DidatticaCds.objects \
-                    .filter(reduce(operator.and_,
-                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
-                                    for e in keywords],
-                                   Q()), q1, q2, q3,
+                    .filter(q4, q1, q2, q3,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
                             tipo_corso_cod__in=courses_allowed)
             else:
                 items = DidatticaCds.objects \
-                    .filter(reduce(operator.and_,
-                                   [Q(**{f'nome_cds_{language == "it" and "it" or "eng"}__icontains': e})
-                                    for e in keywords],
-                                   Q()), q1, q2, q3,
+                    .filter(q4, q1, q2, q3,
                             didatticacdslingua__lin_did_ord_id__isnull=False)
 
         langs = items.prefetch_related('didatticacdslingua')
@@ -107,7 +106,8 @@ class ServiceDidatticaCds:
             'valore_min',
             'codicione',
             'didatticaregolamento__stato_regdid_cod')
-        items = items.order_by("nome_cds_it").distinct() if language == 'it' else items.order_by("nome_cds_eng").distinct()
+        items = items.order_by(
+            "nome_cds_it") if language == 'it' else items.order_by("nome_cds_eng")
         items = list(items)
         for item in items:
             item['Languages'] = langs.filter(
@@ -120,13 +120,14 @@ class ServiceDidatticaCds:
     @staticmethod
     def getDegreeTypes():
         query = DidatticaCds.objects.values(
-            "tipo_corso_cod", "tipo_corso_des").order_by('tipo_corso_des').distinct()
+            "tipo_corso_cod",
+            "tipo_corso_des").order_by('tipo_corso_des').distinct()
         return query
 
     @staticmethod
     def getAcademicYears():
         query = DidatticaRegolamento.objects.values(
-            "aa_reg_did").order_by('aa_reg_did').distinct()
+            "aa_reg_did").order_by('-aa_reg_did').distinct()
         return query
 
 
@@ -449,6 +450,7 @@ class ServiceDocente:
                 "middle_name",
                 "cognome",
                 "cd_ruolo",
+                "ds_ruolo",
                 "cd_ssd",
                 "ds_ssd")
             if role:
@@ -490,6 +492,7 @@ class ServiceDocente:
             "middle_name",
             "cognome",
             "cd_ruolo",
+            "ds_ruolo",
             "cd_ssd",
             "ds_ssd",
             "aff_org",
@@ -680,7 +683,8 @@ class ServiceDipartimento:
     def getDepartmentsList(language):
         query = DidatticaDipartimento.objects.all().values(
             "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
-        return query.order_by("dip_des_it") if language == 'it' else query.order_by("dip_des_eng")
+        return query.order_by(
+            "dip_des_it") if language == 'it' else query.order_by("dip_des_eng")
 
     @staticmethod
     def getDepartment(departmentid):
@@ -689,16 +693,14 @@ class ServiceDipartimento:
             "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
         return query
 
-# TODO: API finita ma è troppo lenta, servirebbero due join, uno dalle
-# strutture al personale e l'altro dai contatti al personale
-
 
 class ServicePersonale:
 
     @staticmethod
-    def getAddressbook(keywords=None, structureid=None):
+    def getAddressbook(keywords=None, structureid=None, roles=None):
         query_keywords = Q()
         query_structure = Q()
+        query_roles = Q()
         if keywords is not None:
             for k in keywords.split(" "):
                 q_cognome = Q(cognome__icontains=k)
@@ -706,8 +708,62 @@ class ServicePersonale:
         if structureid is not None:
             query_structure = Q(aff_org__exact=structureid)
 
+        if roles is not None:
+            roles = roles.split(",")
+            query_roles = Q(cd_ruolo__in=roles)
+
         query = Personale.objects.filter(
-            query_keywords, query_structure, flg_cessato=0)
+            query_keywords,
+            query_structure,
+            query_roles,
+            flg_cessato=0,
+            aff_org__isnull=False).extra(
+            select={
+                'denominazione': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE'},
+            tables=['UNITA_ORGANIZZATIVA'],
+            where=[
+                'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG',
+            ]).order_by("cognome").values(
+            "nome",
+            "middle_name",
+            "cognome",
+            "cd_ruolo",
+            "ds_ruolo",
+            "aff_org",
+            "id_ab",
+            "matricola",
+            'personalecontatti__cd_tipo_cont__descr_contatto',
+            'personalecontatti__contatto',
+            'funzioniunitaorganizzativa__ds_funzione',
+            'funzioniunitaorganizzativa__termine',
+            'denominazione')
+
+        if structureid is None:
+            query2 = Personale.objects.filter(
+                query_keywords,
+                query_roles,
+                flg_cessato=0,
+                aff_org__isnull=True).annotate(
+                denominazione=Value(
+                    None,
+                    output_field=CharField())).order_by("cognome").values(
+                "nome",
+                "middle_name",
+                "cognome",
+                "cd_ruolo",
+                "ds_ruolo",
+                "aff_org",
+                "id_ab",
+                "matricola",
+                'personalecontatti__cd_tipo_cont__descr_contatto',
+                'personalecontatti__contatto',
+                'funzioniunitaorganizzativa__ds_funzione',
+                'funzioniunitaorganizzativa__termine',
+                'denominazione')
+            from itertools import chain
+            query = list(chain(*[query, query2]))
+        query = list(query)
+        query.sort(key=lambda x: x.get('cognome'), reverse=False)
 
         contacts_to_take = [
             'Posta Elettronica',
@@ -718,46 +774,41 @@ class ServicePersonale:
             'Riferimento Ufficio',
             'URL Sito WEB',
             'URL Sito WEB Curriculum Vitae']
-        contacts = query.filter(
-            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take)
-        query = query.values("nome", "middle_name",
-                             "cognome", "cd_ruolo",
-                             "ds_ruolo",
-                             "aff_org",
-                             "id_ab", "matricola")
-        query = list(query)
 
+        grouped = {}
+        last_id = -1
+        final_query = []
         for q in query:
-            f = FunzioniUnitaOrganizzativa.objects.filter(
-                id_ab=q['id_ab'], termine__gte=datetime.datetime.today()).values("ds_funzione")
-            s = UnitaOrganizzativa.objects.filter(
-                uo__exact=q['aff_org']).values("denominazione")
-            for c in contacts_to_take:
-                q[c] = []
-            contacts_temp = contacts.filter(
-                id_ab=q['id_ab']).values(
-                "personalecontatti__cd_tipo_cont__descr_contatto",
-                "personalecontatti__contatto")
-            for c in contacts_temp:
-                q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
-                    c['personalecontatti__contatto'])
+            if q['id_ab'] not in grouped:
+                grouped[q['id_ab']] = {
+                    'id_ab': q['id_ab'],
+                    'nome': q['nome'],
+                    'middle_name': q['middle_name'],
+                    'cognome': q['cognome'],
+                    'cd_ruolo': q['cd_ruolo'],
+                    'ds_ruolo': q['ds_ruolo'],
+                    'aff_org': q['aff_org'],
+                    'matricola': q['matricola'],
+                    'Funzione': q['funzioniunitaorganizzativa__ds_funzione'] if q['funzioniunitaorganizzativa__termine'] is not None and q['funzioniunitaorganizzativa__termine'] >= datetime.datetime.today() else None,
+                    'Struttura': q['denominazione'] if 'denominazione' in q.keys() else None,
+                }
+                for c in contacts_to_take:
+                    grouped[q['id_ab']][c] = []
 
-            if len(f) > 0:
-                q['Funzione'] = f[0]['ds_funzione']
-            else:
-                q['Funzione'] = None
+            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take:
+                grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
+                    q['personalecontatti__contatto'])
 
-            if len(s) > 0:
-                q['Struttura'] = s.first()['denominazione']
-            else:
-                q['Struttura'] = None
+            if last_id == -1 or last_id != q['id_ab']:
+                last_id = q['id_ab']
+                final_query.append(grouped[q['id_ab']])
 
-        return query
+        return final_query
 
     @staticmethod
     def getStructuresList():
         query = UnitaOrganizzativa.objects.values(
-            "uo", "denominazione", "ds_tipo_nodo").distinct()
+            "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
         query = query.filter(dt_fine_val__gte=datetime.datetime.today())
         return query
 
@@ -765,6 +816,63 @@ class ServicePersonale:
     def getStructureTypes():
         query = UnitaOrganizzativa.objects.values(
             "ds_tipo_nodo", "cd_tipo_nodo").distinct()
+        return query
+
+    @staticmethod
+    def getPersonale(personale_id):
+        query = Personale.objects.filter(
+            matricola__exact=personale_id,
+            flg_cessato=0,
+            aff_org__isnull=False,
+        ).extra(
+            select={
+                'Struttura': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE'},
+            tables=['UNITA_ORGANIZZATIVA'],
+            where=[
+                'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG'],
+        )
+        contacts_to_take = [
+            'Posta Elettronica',
+            'Fax',
+            'POSTA ELETTRONICA CERTIFICATA',
+            'Telefono Cellulare Ufficio',
+            'Telefono Ufficio',
+            'Riferimento Ufficio',
+            'URL Sito WEB',
+            'URL Sito WEB Curriculum Vitae']
+        contacts = query.filter(
+            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take).values(
+            "personalecontatti__cd_tipo_cont__descr_contatto",
+            "personalecontatti__contatto")
+        contacts = list(contacts)
+        query = query.values(
+            "id_ab",
+            "matricola",
+            "nome",
+            "middle_name",
+            "cognome",
+            "cd_ruolo",
+            "ds_ruolo",
+            "cd_ssd",
+            "ds_ssd",
+            "aff_org",
+            "ds_aff_org",
+            "telrif",
+            "email",
+            "Struttura",
+            'funzioniunitaorganizzativa__ds_funzione',
+            'funzioniunitaorganizzativa__termine',
+        )
+        for q in query:
+            if q["funzioniunitaorganizzativa__termine"] is not None and q["funzioniunitaorganizzativa__termine"] >= datetime.datetime.today():
+                q["Funzione"] = q["funzioniunitaorganizzativa__ds_funzione"]
+            else:
+                q["Funzione"] = None
+            for c in contacts_to_take:
+                q[c] = []
+            for c in contacts:
+                q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
+                    c['personalecontatti__contatto'])
         return query
 
     # @staticmethod

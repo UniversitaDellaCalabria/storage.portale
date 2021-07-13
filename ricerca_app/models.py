@@ -1188,7 +1188,8 @@ class FunzioniUnitaOrganizzativa(models.Model):
         models.DO_NOTHING,
         db_column='COD_FIS',
         blank=True,
-        null=True)
+        null=True,
+        to_field='cod_fis')
 
     comparto = models.CharField(
         db_column='COMPARTO',
@@ -1642,7 +1643,8 @@ class PersonaleContatti(models.Model):
         db_column='COD_FIS',
         blank=True,
         null=True,
-        to_field='cod_fis')  # Field name made lowercase.
+        to_field='cod_fis',
+        related_name='personalecontatti')  # Field name made lowercase.
     cd_tipo_cont = models.ForeignKey(
         'PersonaleUoTipoContatto',
         models.DO_NOTHING,

@@ -1375,6 +1375,19 @@ class ApiAddressbookListUnitTest(TestCase):
             'aff_org': 99,
             'cod_fis': 'LNL1',
         })
+        PersonaleUnitTest.create_personale(**{
+            'id': 3,
+            'nome': 'Zlatan',
+            'cognome': 'Ibra',
+            'cd_ruolo': 'PO',
+            'ds_ruolo': 'Professore Ordinario',
+            'id_ab': 3,
+            'matricola': '111114',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': None,
+            'cod_fis': 'ZLT',
+        })
         DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
             'dip_cod': 1,
@@ -1443,6 +1456,7 @@ class ApiAddressbookListUnitTest(TestCase):
         PersonaleContattiUnitTest.create_personaleContatti(**{
             'cd_tipo_cont': tipo_contatto,
             'id_ab': 2,
+            'cod_fis': p2,
             'contatto': 'email2@email',
             'prg_priorita': 1,
         })
@@ -1468,11 +1482,10 @@ class ApiAddressbookListUnitTest(TestCase):
 
         # GET
         res = req.get(url)
-
-        assert len(res.json()['results']) == 2
-        assert res.json()['results'][0]['Email'][0] == 'email@email'
+        assert len(res.json()['results']) == 3
+        assert res.json()['results'][2]['Email'][0] == 'email@email'
         assert res.json()[
-            'results'][0]['Structure'] == 'Dipartimento di Matematica e Informatica'
+            'results'][2]['Structure'] == 'Dipartimento di Matematica e Informatica'
 
         data = {'structureid': '99', 'lang': 'it'}
         res = req.get(url, data=data)
@@ -1487,6 +1500,11 @@ class ApiAddressbookListUnitTest(TestCase):
         data = {'keywords': 'Mungar', 'structureid': '99'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
+
+        data = {'roles': 'AM'}
+        res = req.get(url, data=data)
+        print(res.json())
+        assert res.json()['results'][0]['Name'] == 'Messi Lionel'
 
 
 class ApiStructuresListUnitTest(TestCase):
@@ -1599,8 +1617,8 @@ class ApiRolesListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['results'][0]['TeacherRole'] == 'f'
-        assert res.json()['results'][1]['TeacherRoleDescription'] == 'h'
+        assert res.json()['results'][0]['Role'] == 'f'
+        assert res.json()['results'][1]['RoleDescription'] == 'h'
         assert len(res.json()['results']) == 3
 
 
@@ -1634,3 +1652,104 @@ class ApiAcademicYearsUnitTest(TestCase):
 
         assert res.json()['results'][1]['AcademicYear'] == 2016
         assert len(res.json()['results']) == 3
+
+
+class ApiPersonaleDetailUnitTest(TestCase):
+
+    def test_apipersonaledetail(self):
+        req = Client()
+
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo': 'Professore Associato',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+            'cod_fis': 'SMN1',
+
+        })
+        p2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Lionel',
+            'cognome': 'Messi',
+            'cd_ruolo': 'AM',
+            'ds_ruolo': 'Amministrazione',
+            'id_ab': 2,
+            'matricola': '111113',
+            'fl_docente': 0,
+            'flg_cessato': 0,
+            'aff_org': 99,
+            'cod_fis': 'LNL1',
+        })
+
+        tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+            **{'cod_contatto': 'EMAIL', 'descr_contatto': 'Posta Elettronica', })
+
+        PersonaleContattiUnitTest.create_personaleContatti(**{
+            'cd_tipo_cont': tipo_contatto,
+            'id_ab': 1,
+            'cod_fis': p1,
+            'prg_priorita': 1
+        })
+        PersonaleContattiUnitTest.create_personaleContatti(**{
+            'cd_tipo_cont': tipo_contatto,
+            'id_ab': 2,
+            'cod_fis': p2,
+            'prg_priorita': 2
+        })
+
+        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+            'id_ab': 1,
+            'ds_funzione': 'Amministrazione',
+            'termine': "2999-12-1",
+            'cod_fis': p1
+
+        })
+
+        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+            'id_ab': 2,
+            'ds_funzione': 'Delega',
+            'termine': None,
+            'cod_fis': p2,
+        })
+
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'URL Sito WEB Curriculum Vitae',
+            'descr_contatto': 'URL Sito WEB Curriculum Vitae',
+        })
+
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'denominazione': 'Dipartimento di Matematica e Informatica',
+        })
+
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '99',
+            'denominazione': 'Dipartimento di Matematica e Informatica',
+        })
+
+        url = reverse(
+            'ricerca:personaledetail', kwargs={
+                'personaleid': "111112"})
+        url1 = reverse(
+            'ricerca:personaledetail', kwargs={
+                'personaleid': "111113"})
+
+        # check url
+        res = req.get(url)
+        res1 = req.get(url1)
+
+        assert res.status_code == 200
+        assert res1.status_code == 200
+        # GET
+
+        res = req.get(url)
+        res1 = req.get(url1)
+
+        assert res.json()['results']['ID'] == "111112"
+        assert res1.json()['results']['ID'] == "111113"
