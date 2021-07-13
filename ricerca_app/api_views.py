@@ -2,6 +2,7 @@
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
+import django_filters
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
@@ -405,7 +406,8 @@ class ApiAddressbookList(ApiEndpointList):
     def get_queryset(self):
         keywords = self.request.query_params.get('keywords')
         structureid = self.request.query_params.get('structureid')
-        return ServicePersonale.getAddressbook(keywords, structureid)
+        roles = self.request.query_params.get('roles')
+        return ServicePersonale.getAddressbook(keywords, structureid, roles)
 
 
 class ApiStructuresList(ApiEndpointListSupport):

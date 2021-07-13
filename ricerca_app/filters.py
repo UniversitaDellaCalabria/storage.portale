@@ -1,4 +1,7 @@
 from rest_framework import filters
+import django_filters
+
+from ricerca_app.models import DidatticaCds
 
 
 class GenericApiFilter(filters.SearchFilter):

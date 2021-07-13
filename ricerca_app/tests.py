@@ -1501,6 +1501,11 @@ class ApiAddressbookListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
+        data = {'roles': 'AM'}
+        res = req.get(url, data=data)
+        print(res.json())
+        assert res.json()['results'][0]['Name'] == 'Messi Lionel'
+
 
 class ApiStructuresListUnitTest(TestCase):
 
