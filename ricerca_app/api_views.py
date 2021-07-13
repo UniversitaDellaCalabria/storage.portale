@@ -61,7 +61,7 @@ class ApiEndpointDetail(ApiEndpointList):
 
         queryset = self.get_queryset()
 
-        if queryset is not None:
+        if queryset is not None and len(queryset) > 0:
             serializer = self.get_serializer(queryset[0], many=False)
             return Response({
                 'results': serializer.data,
@@ -452,3 +452,14 @@ class ApiRolesList(ApiEndpointListSupport):
 
     def get_queryset(self):
         return ServiceDocente.getRoles()
+
+
+class ApiPersonaleDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce una specifica persona'
+    serializer_class = AddressbookListSerializer
+    # filter_backends = [ApiAddressbookListFilter]
+
+    def get_queryset(self):
+        personale_id = self.kwargs['personaleid']
+
+        return ServicePersonale.getPersonale(personale_id)

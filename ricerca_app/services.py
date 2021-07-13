@@ -809,6 +809,63 @@ class ServicePersonale:
             "ds_tipo_nodo", "cd_tipo_nodo").distinct()
         return query
 
+    @staticmethod
+    def getPersonale(personale_id):
+        query = Personale.objects.filter(
+            matricola__exact=personale_id,
+            flg_cessato=0,
+            aff_org__isnull=False,
+        ).extra(
+            select={
+                'Struttura': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE'},
+            tables=['UNITA_ORGANIZZATIVA'],
+            where=[
+                'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG'],
+        )
+        contacts_to_take = [
+            'Posta Elettronica',
+            'Fax',
+            'POSTA ELETTRONICA CERTIFICATA',
+            'Telefono Cellulare Ufficio',
+            'Telefono Ufficio',
+            'Riferimento Ufficio',
+            'URL Sito WEB',
+            'URL Sito WEB Curriculum Vitae']
+        contacts = query.filter(
+            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take).values(
+            "personalecontatti__cd_tipo_cont__descr_contatto",
+            "personalecontatti__contatto")
+        contacts = list(contacts)
+        query = query.values(
+            "id_ab",
+            "matricola",
+            "nome",
+            "middle_name",
+            "cognome",
+            "cd_ruolo",
+            "ds_ruolo",
+            "cd_ssd",
+            "ds_ssd",
+            "aff_org",
+            "ds_aff_org",
+            "telrif",
+            "email",
+            "Struttura",
+            'funzioniunitaorganizzativa__ds_funzione',
+            'funzioniunitaorganizzativa__termine',
+        )
+        for q in query:
+            if q["funzioniunitaorganizzativa__termine"] is not None and q["funzioniunitaorganizzativa__termine"] >= datetime.datetime.today():
+                q["Funzione"] = q["funzioniunitaorganizzativa__ds_funzione"]
+            else:
+                q["Funzione"] = None
+            for c in contacts_to_take:
+                q[c] = []
+            for c in contacts:
+                q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
+                    c['personalecontatti__contatto'])
+        return query
+
     # @staticmethod
     # def getStructure(structureId):
     #     query = UnitaOrganizzativa.objects.filter(
