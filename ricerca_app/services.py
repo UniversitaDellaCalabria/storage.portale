@@ -22,7 +22,6 @@ class ServiceDidatticaCds:
     @staticmethod
     def cdslist(language, query_params):
         didatticacds_params_to_query_field = {
-            'coursetype': 'tipo_corso_cod',
             'courseclassid': 'cla_miur_cod',
             'courseclassname': 'cla_miur_des__icontains',
             # 'courseclassgroup': ... unspecified atm
@@ -43,8 +42,9 @@ class ServiceDidatticaCds:
         if keywords is not None:
             keywords = keywords.split(' ')
 
-        coursetype_filter = query_params.get('coursetype', '')
-        courses_allowed = ['L', 'LM', 'LM5', 'LM6', 'M1-270', 'M2-270']
+        courses_allowed = query_params.get('coursetype', '')
+        if courses_allowed != '':
+            courses_allowed = courses_allowed.split(",")
 
         q1 = ServiceQueryBuilder.build_filter_chain(
             didatticacds_params_to_query_field, query_params)
@@ -65,7 +65,7 @@ class ServiceDidatticaCds:
                 q4 |= q
 
         if 'academicyear' not in query_params:
-            if coursetype_filter == '':
+            if courses_allowed != '':
                 items = DidatticaCds.objects \
                     .filter(q1, q2, q3, q4,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
@@ -77,7 +77,7 @@ class ServiceDidatticaCds:
                             didatticacdslingua__lin_did_ord_id__isnull=False,
                             didatticaregolamento__stato_regdid_cod__exact='A')
         else:
-            if coursetype_filter == '':
+            if courses_allowed != '':
                 items = DidatticaCds.objects \
                     .filter(q4, q1, q2, q3,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
@@ -450,6 +450,7 @@ class ServiceDocente:
                 "middle_name",
                 "cognome",
                 "cd_ruolo",
+                "ds_ruolo",
                 "cd_ssd",
                 "ds_ssd")
             if role:
@@ -491,6 +492,7 @@ class ServiceDocente:
             "middle_name",
             "cognome",
             "cd_ruolo",
+            "ds_ruolo",
             "cd_ssd",
             "ds_ssd",
             "aff_org",
@@ -695,9 +697,10 @@ class ServiceDipartimento:
 class ServicePersonale:
 
     @staticmethod
-    def getAddressbook(keywords=None, structureid=None):
+    def getAddressbook(keywords=None, structureid=None, roles=None):
         query_keywords = Q()
         query_structure = Q()
+        query_roles = Q()
         if keywords is not None:
             for k in keywords.split(" "):
                 q_cognome = Q(cognome__icontains=k)
@@ -705,9 +708,14 @@ class ServicePersonale:
         if structureid is not None:
             query_structure = Q(aff_org__exact=structureid)
 
+        if roles is not None:
+            roles = roles.split(",")
+            query_roles = Q(cd_ruolo__in=roles)
+
         query = Personale.objects.filter(
             query_keywords,
             query_structure,
+            query_roles,
             flg_cessato=0,
             aff_org__isnull=False).extra(
             select={
@@ -733,6 +741,7 @@ class ServicePersonale:
         if structureid is None:
             query2 = Personale.objects.filter(
                 query_keywords,
+                query_roles,
                 flg_cessato=0,
                 aff_org__isnull=True).annotate(
                 denominazione=Value(

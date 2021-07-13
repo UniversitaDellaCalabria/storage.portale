@@ -337,6 +337,7 @@ class TeachersListSerializer(CreateUpdateAbstract):
             'TeacherDepartmentID': query['dip_cod'],
             'TeacherDepartmentName': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
             'TeacherRole': query['cd_ruolo'],
+            'TeacherRoleDescription': query['ds_ruolo'],
             'TeacherSSDCod': query['cd_ssd'],
             'TeacherSSDDescription': query['ds_ssd'],
         }

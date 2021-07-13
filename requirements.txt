@@ -9,6 +9,7 @@ git+https://github.com/UniversitaDellaCalabria/django-unical-agid-template.git
 libsass
 django_sass_processor
 django-cors-headers
+django-filter
 
 # CRUD
 git+https://github.com/silentsokolov/django-admin-rangefilter.git
