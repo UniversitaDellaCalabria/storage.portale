@@ -2,7 +2,6 @@
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
-import django_filters
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
