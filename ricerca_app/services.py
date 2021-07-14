@@ -2,11 +2,11 @@ import datetime
 from functools import reduce
 import operator
 
-from django.db.models import CharField, Q, Value
+from django.db.models import CharField, Q, Value, Max
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
     DidatticaPdsRegolamento, \
-    UnitaOrganizzativa, DidatticaRegolamento
+    UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua
 
 
 class ServiceQueryBuilder:
@@ -65,17 +65,22 @@ class ServiceDidatticaCds:
                 q4 |= q
 
         if 'academicyear' not in query_params:
+            last_active_year = DidatticaCds.objects.filter(
+                didatticaregolamento__stato_regdid_cod__exact='A').aggregate(
+                Max('didatticaregolamento__aa_reg_did'))['didatticaregolamento__aa_reg_did__max']
             if courses_allowed != '':
                 items = DidatticaCds.objects \
                     .filter(q1, q2, q3, q4,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
                             didatticaregolamento__stato_regdid_cod__exact='A',
+                            didatticaregolamento__aa_reg_did=last_active_year,
                             tipo_corso_cod__in=courses_allowed)
             else:
                 items = DidatticaCds.objects \
                     .filter(q4, q1, q2, q3,
                             didatticacdslingua__lin_did_ord_id__isnull=False,
-                            didatticaregolamento__stato_regdid_cod__exact='A')
+                            didatticaregolamento__stato_regdid_cod__exact='A',
+                            didatticaregolamento__aa_reg_did=last_active_year)
         else:
             if courses_allowed != '':
                 items = DidatticaCds.objects \
@@ -87,7 +92,6 @@ class ServiceDidatticaCds:
                     .filter(q4, q1, q2, q3,
                             didatticacdslingua__lin_did_ord_id__isnull=False)
 
-        langs = items.prefetch_related('didatticacdslingua')
         items = items.values(
             'didatticaregolamento__regdid_id',
             'didatticaregolamento__aa_reg_did',
@@ -106,15 +110,15 @@ class ServiceDidatticaCds:
             'valore_min',
             'codicione',
             'didatticaregolamento__titolo_congiunto_cod',
-            'didatticaregolamento__stato_regdid_cod')
+            'didatticaregolamento__stato_regdid_cod').distinct()
         items = items.order_by(
             "nome_cds_it") if language == 'it' else items.order_by("nome_cds_eng")
         items = list(items)
         for item in items:
-            item['Languages'] = langs.filter(
+            item['Languages'] = DidatticaCdsLingua.objects.filter(
                 cdsord_id=item['cdsord_id']).values(
-                "didatticacdslingua__lingua_des_it",
-                "didatticacdslingua__lingua_des_eng").distinct()
+                "lingua_des_it",
+                "lingua_des_eng").distinct()
 
         return items
 
