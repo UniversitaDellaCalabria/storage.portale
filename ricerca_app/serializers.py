@@ -45,6 +45,7 @@ class CdSListSerializer(CreateUpdateAbstract):
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
+            'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
         }
 
 
@@ -90,6 +91,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSFinalTest': query['PROVA_FINALE'],
             'CdSFinalTestMode': query['PROVA_FINALE_2'],
             'CdSSatisfactionSurvey': query['codicione'],
+            'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
         }
 
 

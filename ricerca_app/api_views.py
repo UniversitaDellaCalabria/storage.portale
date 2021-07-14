@@ -2,7 +2,6 @@
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
-import django_filters
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
@@ -154,6 +153,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             'durata_anni',
             'valore_min',
             'codicione',
+            'didatticaregolamento__titolo_congiunto_cod',
             'didatticaregolamento__stato_regdid_cod').distinct()
         res = list(res)
 
