@@ -244,7 +244,7 @@ LABEL_MAPPING = {
         'CdSFinalTest': 'Test Finale',
         'CdSFinalTestMode': 'Modalità Test Finale',
         'CdSSatisfactionSurvey': 'Soddisfazione e condizione occupazionale (fonte Almalaurea)',
-        'JointDegree' : 'Titolo congiunto',
+        'JointDegree' : 'Titolo Congiunto',
         'StudyPlanId': 'ID Piano di Studi',
         'StudyPlanName': 'Piano di Studi',
         'StudyPlanCod': 'Codice Piano di Studi',
