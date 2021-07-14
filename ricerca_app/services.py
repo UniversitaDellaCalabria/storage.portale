@@ -105,6 +105,7 @@ class ServiceDidatticaCds:
             'durata_anni',
             'valore_min',
             'codicione',
+            'didatticaregolamento__titolo_congiunto_cod',
             'didatticaregolamento__stato_regdid_cod')
         items = items.order_by(
             "nome_cds_it") if language == 'it' else items.order_by("nome_cds_eng")

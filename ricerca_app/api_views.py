@@ -153,6 +153,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             'durata_anni',
             'valore_min',
             'codicione',
+            'didatticaregolamento__titolo_congiunto_cod',
             'didatticaregolamento__stato_regdid_cod').distinct()
         res = list(res)
 
