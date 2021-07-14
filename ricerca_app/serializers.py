@@ -28,8 +28,8 @@ class CdSListSerializer(CreateUpdateAbstract):
                 req_lang='en'):
         langs = []
         for q in query['Languages']:
-            langs.append(q['didatticacdslingua__lingua_des_it'] if req_lang ==
-                         'it' or q['didatticacdslingua__lingua_des_eng'] is None else q['didatticacdslingua__lingua_des_eng'])
+            langs.append(q['lingua_des_it'] if req_lang ==
+                         'it' or q['lingua_des_eng'] is None else q['lingua_des_eng'])
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'CdSId': query['cds_cod'],
