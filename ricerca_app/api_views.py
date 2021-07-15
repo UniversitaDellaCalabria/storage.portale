@@ -406,8 +406,10 @@ class ApiAddressbookList(ApiEndpointList):
     def get_queryset(self):
         keywords = self.request.query_params.get('keywords')
         structureid = self.request.query_params.get('structureid')
+        structuretypes = self.request.query_params.get('structuretypes')
         roles = self.request.query_params.get('roles')
-        return ServicePersonale.getAddressbook(keywords, structureid, roles)
+        return ServicePersonale.getAddressbook(
+            keywords, structureid, structuretypes, roles)
 
 
 class ApiStructuresList(ApiEndpointListSupport):
