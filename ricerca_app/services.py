@@ -104,6 +104,7 @@ class ServiceDidatticaCds:
             'nome_cds_it',
             'nome_cds_eng',
             'tipo_corso_cod',
+            'tipo_corso_des',
             'cla_miur_cod',
             'cla_miur_des',
             'durata_anni',
@@ -702,7 +703,11 @@ class ServiceDipartimento:
 class ServicePersonale:
 
     @staticmethod
-    def getAddressbook(keywords=None, structureid=None, roles=None):
+    def getAddressbook(
+            keywords=None,
+            structureid=None,
+            structuretypes=None,
+            roles=None):
         query_keywords = Q()
         query_structure = Q()
         query_roles = Q()
@@ -712,7 +717,6 @@ class ServicePersonale:
                 query_keywords |= q_cognome
         if structureid is not None:
             query_structure = Q(aff_org__exact=structureid)
-
         if roles is not None:
             roles = roles.split(",")
             query_roles = Q(cd_ruolo__in=roles)
@@ -722,13 +726,33 @@ class ServicePersonale:
             query_structure,
             query_roles,
             flg_cessato=0,
-            aff_org__isnull=False).extra(
-            select={
-                'denominazione': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE'},
-            tables=['UNITA_ORGANIZZATIVA'],
-            where=[
-                'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG',
-            ]).order_by("cognome").values(
+            aff_org__isnull=False)
+
+        if structuretypes is not None:
+            structuretypes = structuretypes.split(",")
+            query = query.extra(
+                select={
+                    'denominazione': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE',
+                    'structure_type_cod': 'UNITA_ORGANIZZATIVA.CD_TIPO_NODO',
+                    'structure_type_name': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
+                tables=['UNITA_ORGANIZZATIVA'],
+                where=[
+                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG',
+                    'UNITA_ORGANIZZATIVA.CD_TIPO_NODO IN %s'
+                ],
+                params=(structuretypes,))
+        else:
+            query = query.extra(
+                select={
+                    'denominazione': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE',
+                    'structure_type_cod': 'UNITA_ORGANIZZATIVA.CD_TIPO_NODO',
+                    'structure_type_name': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
+                tables=['UNITA_ORGANIZZATIVA'],
+                where=[
+                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG',
+                ])
+
+        query = query.values(
             "nome",
             "middle_name",
             "cognome",
@@ -741,9 +765,11 @@ class ServicePersonale:
             'personalecontatti__contatto',
             'funzioniunitaorganizzativa__ds_funzione',
             'funzioniunitaorganizzativa__termine',
-            'denominazione')
+            'denominazione',
+            'structure_type_cod',
+            'structure_type_name')
 
-        if structureid is None:
+        if structureid is None and structuretypes is None:
             query2 = Personale.objects.filter(
                 query_keywords,
                 query_roles,
@@ -751,22 +777,31 @@ class ServicePersonale:
                 aff_org__isnull=True).annotate(
                 denominazione=Value(
                     None,
-                    output_field=CharField())).order_by("cognome").values(
-                "nome",
-                "middle_name",
-                "cognome",
-                "cd_ruolo",
-                "ds_ruolo",
-                "aff_org",
-                "id_ab",
-                "matricola",
-                'personalecontatti__cd_tipo_cont__descr_contatto',
-                'personalecontatti__contatto',
-                'funzioniunitaorganizzativa__ds_funzione',
-                'funzioniunitaorganizzativa__termine',
-                'denominazione')
+                    output_field=CharField())).annotate(
+                structure_type_cod=Value(
+                    None,
+                    output_field=CharField())).annotate(
+                        structure_type_name=Value(
+                            None,
+                            output_field=CharField())).order_by("cognome").values(
+                                "nome",
+                                "middle_name",
+                                "cognome",
+                                "cd_ruolo",
+                                "ds_ruolo",
+                                "aff_org",
+                                "id_ab",
+                                "matricola",
+                                'personalecontatti__cd_tipo_cont__descr_contatto',
+                                'personalecontatti__contatto',
+                                'funzioniunitaorganizzativa__ds_funzione',
+                                'funzioniunitaorganizzativa__termine',
+                                'denominazione',
+                                'structure_type_cod',
+                'structure_type_name')
             from itertools import chain
             query = list(chain(*[query, query2]))
+
         query = list(query)
         query.sort(key=lambda x: x.get('cognome'), reverse=False)
 
@@ -796,6 +831,8 @@ class ServicePersonale:
                     'matricola': q['matricola'],
                     'Funzione': q['funzioniunitaorganizzativa__ds_funzione'] if q['funzioniunitaorganizzativa__termine'] is not None and q['funzioniunitaorganizzativa__termine'] >= datetime.datetime.today() else None,
                     'Struttura': q['denominazione'] if 'denominazione' in q.keys() else None,
+                    'TipologiaStrutturaCod': q['structure_type_cod'] if 'structure_type_cod' in q.keys() else None,
+                    'TipologiaStrutturaNome': q['structure_type_name'] if 'structure_type_name' in q.keys() else None,
                 }
                 for c in contacts_to_take:
                     grouped[q['id_ab']][c] = []
@@ -825,17 +862,28 @@ class ServicePersonale:
 
     @staticmethod
     def getPersonale(personale_id):
-        query = Personale.objects.filter(
-            matricola__exact=personale_id,
-            flg_cessato=0,
-            aff_org__isnull=False,
-        ).extra(
-            select={
-                'Struttura': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE'},
-            tables=['UNITA_ORGANIZZATIVA'],
-            where=[
-                'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG'],
-        )
+        query = Personale.objects.filter(matricola__exact=personale_id)
+        if query.values('aff_org').first()['aff_org'] is None:
+            query = query.filter(
+                flg_cessato=0,
+            ).annotate(
+                Struttura=Value(
+                    None,
+                    output_field=CharField())).annotate(
+                TipologiaStrutturaCod=Value(None, output_field=CharField())).annotate(
+                TipologiaStrutturaNome=Value(None, output_field=CharField()))
+        else:
+            query = query.filter(
+                flg_cessato=0,
+            ).extra(
+                select={
+                    'Struttura': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE',
+                    'TipologiaStrutturaCod': 'UNITA_ORGANIZZATIVA.CD_TIPO_NODO',
+                    'TipologiaStrutturaNome': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
+                tables=['UNITA_ORGANIZZATIVA'],
+                where=[
+                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG',
+                ])
         contacts_to_take = [
             'Posta Elettronica',
             'Fax',
@@ -865,6 +913,8 @@ class ServicePersonale:
             "telrif",
             "email",
             "Struttura",
+            'TipologiaStrutturaCod',
+            'TipologiaStrutturaNome',
             'funzioniunitaorganizzativa__ds_funzione',
             'funzioniunitaorganizzativa__termine',
         )

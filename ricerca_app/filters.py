@@ -1,7 +1,5 @@
 from rest_framework import filters
 
-from ricerca_app.models import DidatticaCds
-
 
 class GenericApiFilter(filters.SearchFilter):
     def get_schema_operation_parameters(self, view):
