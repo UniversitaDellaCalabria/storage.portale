@@ -880,9 +880,9 @@ class ServicePersonale:
                     c['personalecontatti__contatto'])
         return query
 
-    # @staticmethod
-    # def getStructure(structureId):
-    #     query = UnitaOrganizzativa.objects.filter(
-    #         uo__exact=structureId).values(
-    #         'uo', 'ds_tipo_nodo', 'denominazione', 'uo_padre', 'denominazione_padre').distinct()
-    #     return query
+    @staticmethod
+    def getStructure(structureid):
+        query = UnitaOrganizzativa.objects.filter(
+            uo__exact=structureid).values(
+            'uo', 'ds_tipo_nodo', 'denominazione', 'uo_padre', 'denominazione_padre', 'unitaorganizzativacontatti__cd_tipo_cont', 'unitaorganizzativacontatti__contatto').distinct()
+        return query

@@ -183,6 +183,8 @@ LABEL_MAPPING = {
         'WebSite': 'URL Web Site',
         'CV': 'Curriculum Vitae',
         'Contacts': 'Contacts',
+        'ContactType' : 'Contact Type',
+        'Contact' : 'Contact',
         'Function': 'Function',
         'Structure': 'Structure',
         'Role': 'Role',
@@ -216,6 +218,8 @@ LABEL_MAPPING = {
         'StructureTypeName': 'Structure Type Name',
         'StructureName': 'Structure Name',
         'StructureTypeCOD': 'Structure Type COD',
+        'StructureFatherId' : 'Structure Father Id',
+        'StructureFatherName' : 'Structure Father Name',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -319,6 +323,8 @@ LABEL_MAPPING = {
         'WebSite': 'URL Sito WEB',
         'CV': 'Curriculum Vitae',
         'Contacts': 'Contatti',
+        'ContactType' : 'Tipo Contatto',
+        'Contact' : 'Contatto',
         'Function': 'Funzione',
         'Structure': 'Struttura',
         'Role': 'Ruolo',
@@ -352,5 +358,7 @@ LABEL_MAPPING = {
         'StructureTypeName': 'Nome Tipologia Struttura',
         'StructureName': 'Nome Struttura',
         'StructureTypeCOD': 'Codice Struttura',
+        'StructureFatherId' : 'Codice Struttura Padre',
+        'StructureFatherName' : 'Nome Struttura Padre',
     }
 }

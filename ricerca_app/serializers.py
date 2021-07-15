@@ -564,3 +564,22 @@ class RolesListSerializer(CreateUpdateAbstract):
             'Role': query['cd_ruolo'],
             'RoleDescription': query['ds_ruolo'],
         }
+class StructuresDetailSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'StructureId': query['uo'],
+            'StructureName': query['denominazione'],
+            'StructureFatherId' : query['uo_padre'],
+            'StructureFatherName' : query['denominazione_padre'],
+            'ContactType' : query['unitaorganizzativacontatti__cd_tipo_cont'],
+            'Contact': query['unitaorganizzativacontatti__contatto'],
+
+        }

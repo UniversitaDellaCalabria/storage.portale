@@ -11,7 +11,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest, \
     DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest, \
     PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest, FunzioniUnitaOrganizzativaUnitTest, \
-    UnitaOrganizzativaUnitTest
+    UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -1752,3 +1752,82 @@ class ApiPersonaleDetailUnitTest(TestCase):
 
         assert res.json()['results']['ID'] == "111112"
         assert res1.json()['results']['ID'] == "111113"
+
+
+class ApiStructureDetailUnitTest(TestCase):
+
+    def test_apistructuredetail(self):
+        req = Client()
+
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'ds_tipo_nodo': 'facolta',
+            'cd_tipo_nodo': '000',
+            'id_ab' : 1,
+            'denominazione' : 'aaa',
+            'denominazione_padre' : 'c',
+            'uo_padre' : '11',
+
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'ds_tipo_nodo': 'direzione',
+            'cd_tipo_nodo': 'CDS',
+            'id_ab': 2,
+            'denominazione': 'bbb',
+            'denominazione_padre': 'd',
+            'uo_padre': '22',
+        })
+        u3 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '3',
+            'ds_tipo_nodo': 'rettorato',
+            'cd_tipo_nodo': 'RET',
+            'id_ab': 3,
+            'denominazione': 'ccc',
+            'denominazione_padre': 'd',
+            'uo_padre': '33',
+        })
+
+        tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+            **{'cod_contatto': 'EMAIL', 'descr_contatto': 'Posta Elettronica', })
+
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            'cod_contatto': 'URL Sito WEB Curriculum Vitae',
+            'descr_contatto': 'URL Sito WEB Curriculum Vitae',
+        })
+
+        UnitaOrganizzativaContattiUnitTest.create_unitaOrganizzativaContatti(**{
+            'cd_tipo_cont': tipo_contatto,
+            'id_ab': u1,
+            'prg_priorita': 1,
+
+        })
+
+        UnitaOrganizzativaContattiUnitTest.create_unitaOrganizzativaContatti(**{
+            'cd_tipo_cont': tipo_contatto,
+            'id_ab': u2,
+            'prg_priorita': 2,
+        })
+
+        url = reverse('ricerca:structuredetail',  kwargs={
+                'structureid': "1"})
+
+        url1 = reverse('ricerca:structuredetail',  kwargs={
+                'structureid': "2"})
+
+
+        # check url
+        res = req.get(url)
+        res1 = req.get(url1)
+
+        assert res.status_code == 200
+        assert res1.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        res1 = req.get(url1)
+
+        assert res.json()['results']['StructureId'] == '1'
+
+        assert res1.json()['results']['StructureId'] == '2'

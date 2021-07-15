@@ -30,7 +30,7 @@ from .models import (
     PersonaleContatti,
     PersonaleUoTipoContatto,
     FunzioniUnitaOrganizzativa,
-    UnitaOrganizzativa)
+    UnitaOrganizzativa, UnitaOrganizzativaContatti)
 
 
 # class ContextUnitTest(TestCase):
@@ -413,3 +413,17 @@ class UnitaOrganizzativaUnitTest(TestCase):
 
         obj = UnitaOrganizzativa.objects.create(**data)
         return obj
+
+
+class UnitaOrganizzativaContattiUnitTest(TestCase):
+    @classmethod
+    def create_unitaOrganizzativaContatti(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = UnitaOrganizzativaContatti.objects.create(**data)
+        return obj
+
+
+

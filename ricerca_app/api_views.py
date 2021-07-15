@@ -436,15 +436,15 @@ class ApiAcademicYearsList(ApiEndpointListSupport):
     def get_queryset(self):
         return ServiceDidatticaCds.getAcademicYears()
 
-# Api che definisce il dettaglio della struttura, al momento è stato bloccato
-# class ApiStructureDetail(ApiEndpointDetail):
-#     description = 'La funzione restituisce una specifica struttura'
-#     serializer_class = StructuresListSerializer
-#     filter_backends = [ApiStructuresListFilter]
-#
-#     def get_queryset(self):
-#         structureid = self.kwargs['structureid']
-#         return ServicePersonale.getStructure(structureid)
+
+class ApiStructureDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce una specifica struttura'
+    serializer_class = StructuresDetailSerializer
+    # filter_backends = [ApiStructuresListFilter]
+
+    def get_queryset(self):
+        structure_id = self.kwargs['structureid']
+        return ServicePersonale.getStructure(structure_id)
 
 
 class ApiRolesList(ApiEndpointListSupport):

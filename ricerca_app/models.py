@@ -2123,7 +2123,8 @@ class UnitaOrganizzativaContatti(models.Model):
         UnitaOrganizzativa,
         models.DO_NOTHING,
         db_column='ID_AB',
-        primary_key=True)  # Field name made lowercase.
+        primary_key=True,
+        to_field='id_ab')  # Field name made lowercase.
     cd_tipo_cont = models.ForeignKey(
         PersonaleUoTipoContatto,
         models.DO_NOTHING,
