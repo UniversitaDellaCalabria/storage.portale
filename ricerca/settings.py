@@ -213,7 +213,7 @@ LABEL_MAPPING = {
         'COMPETENZE': 'Skills',
         'SBOCCHI': 'Job Opportunities',
         'StructureId': 'Structure Id',
-        'StructureTypeName': 'Structure Type Name',
+        'StructureTypeName': 'Type',
         'StructureName': 'Structure Name',
         'StructureTypeCOD': 'Structure Type COD',
     },
@@ -349,7 +349,7 @@ LABEL_MAPPING = {
         'COMPETENZE': 'Competenze',
         'SBOCCHI': 'Sbocchi',
         'StructureId': 'Id Struttura',
-        'StructureTypeName': 'Nome Tipologia Struttura',
+        'StructureTypeName': 'Tipologia',
         'StructureName': 'Nome Struttura',
         'StructureTypeCOD': 'Codice Struttura',
     }
