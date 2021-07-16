@@ -75,6 +75,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'DepartmentId': query['dip__dip_cod'],
             'DepartmentName': query['dip__dip_des_it'] if req_lang == 'it' or query['dip__dip_des_eng'] is None else query['dip__dip_des_eng'],
             'CourseType': query['tipo_corso_cod'],
+            'CourseTypeDescription': query['tipo_corso_des'],
             'CourseClassId': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
             'CdSLanguage': langs,
