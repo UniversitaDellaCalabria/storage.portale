@@ -148,6 +148,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             'nome_cds_it',
             'nome_cds_eng',
             'tipo_corso_cod',
+            'tipo_corso_des',
             'cla_miur_cod',
             'cla_miur_des',
             'durata_anni',
