@@ -1132,7 +1132,6 @@ class ApiTeacherInfoUnitTest(TestCase):
 
         res = req.get(url)
         assert res.json()['results']['TeacherID'] == '111112'
-        print(res.json())
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111113'})
         res = req.get(url)
         assert res.json()['results']['TeacherID'] == '111113'

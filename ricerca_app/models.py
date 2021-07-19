@@ -1241,6 +1241,143 @@ class FunzioniUnitaOrganizzativa(models.Model):
         db_table = 'FUNZIONI_UNITA_ORGANIZZATIVA'
 
 
+class LaboratorioAttivita(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    tipologia_attivita = models.CharField(db_column='TIPOLOGIA_ATTIVITA', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    id_laboratorio_dati = models.ForeignKey('RicercaDocenteLineaBase', models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_ATTIVITA'
+
+
+class LaboratorioAttrezzature(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_laboratorio_dati = models.ForeignKey('LaboratorioDatiBase', models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
+    tipologia = models.CharField(max_length=500, blank=True, null=True)
+    descrizione = models.TextField(blank=True, null=True)
+    fondi = models.CharField(max_length=500, blank=True, null=True)
+    costo_unitario = models.FloatField(blank=True, null=True)
+    quantita = models.IntegerField(blank=True, null=True)
+    tipo_rischi = models.CharField(max_length=500, blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_ATTREZZATURE'
+
+
+class LaboratorioDatiBase(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    dt_sottomissione = models.DateTimeField(db_column='DT_SOTTOMISSIONE', blank=True, null=True)  # Field name made lowercase.
+    referente_compilazione = models.CharField(db_column='REFERENTE_COMPILAZIONE', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    matricola_referente_compilazione = models.CharField(db_column='MATRICOLA_REFERENTE_COMPILAZIONE', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    email_compilazione = models.CharField(db_column='EMAIL_COMPILAZIONE', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    nome_laboratorio = models.CharField(db_column='NOME_LABORATORIO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    acronimo = models.CharField(db_column='ACRONIMO', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    logo_laboratorio = models.CharField(db_column='LOGO_LABORATORIO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    dipartimento_riferimento = models.CharField(db_column='DIPARTIMENTO_RIFERIMENTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    id_dipartimento_riferimento = models.IntegerField(db_column='ID_DIPARTIMENTO_RIFERIMENTO', blank=True, null=True)  # Field name made lowercase.
+    laboratorio_interdipartimentale = models.CharField(db_column='LABORATORIO_INTERDIPARTIMENTALE', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    infrastruttura_riferimento = models.CharField(db_column='INFRASTRUTTURA_RIFERIMENTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    altre_strutture_riferimento = models.CharField(db_column='ALTRE_STRUTTURE_RIFERIMENTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    descr_altre_strutture_riferimento_it = models.TextField(db_column='DESCR_ALTRE_STRUTTURE_RIFERIMENTO_IT', blank=True, null=True)  # Field name made lowercase.
+    descr_altre_strutture_riferimento_en = models.TextField(db_column='DESCR_ALTRE_STRUTTURE_RIFERIMENTO_EN', blank=True, null=True)  # Field name made lowercase.
+    ambito = models.CharField(db_column='AMBITO', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    finalita_ricerca_it = models.TextField(db_column='FINALITA_RICERCA_IT', blank=True, null=True)  # Field name made lowercase.
+    finalita_ricerca_en = models.TextField(db_column='FINALITA_RICERCA_EN', blank=True, null=True)  # Field name made lowercase.
+    finalita_didattica_it = models.TextField(db_column='FINALITA_DIDATTICA_IT', blank=True, null=True)  # Field name made lowercase.
+    finalita_didattica_en = models.TextField(db_column='FINALITA_DIDATTICA_EN', blank=True, null=True)  # Field name made lowercase.
+    finalita_servizi_it = models.TextField(db_column='FINALITA_SERVIZI_IT', blank=True, null=True)  # Field name made lowercase.
+    finalita_servizi_en = models.TextField(db_column='FINALITA_SERVIZI_EN', blank=True, null=True)  # Field name made lowercase.
+    responsabile_scientifico = models.CharField(db_column='RESPONSABILE_SCIENTIFICO', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    matricola_responsabile_scientifico = models.CharField(db_column='MATRICOLA_RESPONSABILE_SCIENTIFICO', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    sede_dimensione = models.CharField(db_column='SEDE_DIMENSIONE', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    sede_note_descrittive = models.TextField(db_column='SEDE_NOTE_DESCRITTIVE', blank=True, null=True)  # Field name made lowercase.
+    strumentazione_descrizione = models.TextField(db_column='STRUMENTAZIONE_DESCRIZIONE', blank=True, null=True)  # Field name made lowercase.
+    strumentazione_valore = models.CharField(db_column='STRUMENTAZIONE_VALORE', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    preposto_sicurezza = models.CharField(db_column='PREPOSTO_SICUREZZA', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    matricola_preposto_sicurezza = models.CharField(db_column='MATRICOLA_PREPOSTO_SICUREZZA', max_length=20, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_DATI_BASE'
+
+
+class LaboratorioDatiErc1(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
+    id_ricerca_erc1 = models.ForeignKey('RicercaErc1', models.DO_NOTHING, db_column='ID_RICERCA_ERC1', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_DATI_ERC1'
+
+
+class LaboratorioPersonaleRicerca(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
+    matricola_personale_ricerca = models.CharField(db_column='MATRICOLA_PERSONALE_RICERCA', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    cognomenome_origine = models.CharField(db_column='COGNOMENOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_PERSONALE_RICERCA'
+
+
+class LaboratorioPersonaleTecnico(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
+    matricola_personale_tecnico = models.CharField(db_column='MATRICOLA_PERSONALE_TECNICO', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    ruolo = models.CharField(db_column='RUOLO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    field_impegno = models.FloatField(db_column='%IMPEGNO', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it started with '_'.
+    cognomenome_origine = models.CharField(db_column='COGNOMENOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_PERSONALE_TECNICO'
+
+
+class LaboratorioServiziErogati(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
+    descrizione = models.TextField(blank=True, null=True)
+    matricola_responsabile = models.CharField(max_length=20, blank=True, null=True)
+    responsabile_origine = models.CharField(max_length=500, blank=True, null=True)
+    committenti = models.CharField(max_length=500, blank=True, null=True)
+    anno = models.IntegerField(blank=True, null=True)
+    durata_mesi = models.IntegerField(blank=True, null=True)
+    importo_euro = models.FloatField(blank=True, null=True)
+    strumentazione = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_SERVIZI_EROGATI'
+
+
+class LaboratorioServiziOfferti(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
+    nome_servizio = models.TextField(db_column='NOME_SERVIZIO', blank=True, null=True)  # Field name made lowercase.
+    descrizione_servizio = models.TextField(db_column='DESCRIZIONE_SERVIZIO', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_SERVIZI_OFFERTI'
+
+
+class LaboratorioUbicazione(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
+    edificio = models.CharField(db_column='EDIFICIO', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    piano = models.CharField(db_column='PIANO', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    sede_principale = models.CharField(db_column='SEDE_PRINCIPALE', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    note = models.TextField(db_column='NOTE', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_UBICAZIONE'
+
+
 class Personale(InsModAbstract):
 
     id_ab = models.IntegerField(db_column='ID_AB')
