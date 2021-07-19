@@ -853,7 +853,7 @@ class ServicePersonale:
         if keywords is not None:
             for k in keywords.split(" "):
                 q_denominazione = Q(denominazione__icontains=k)
-                query_keywords |= q_denominazione
+                query_keywords &= q_denominazione
 
         query = UnitaOrganizzativa.objects.filter(query_keywords).values(
             "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
