@@ -1132,7 +1132,7 @@ class ApiTeacherInfoUnitTest(TestCase):
 
         res = req.get(url)
         assert res.json()['results']['TeacherID'] == '111112'
-
+        print(res.json())
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111113'})
         res = req.get(url)
         assert res.json()['results']['TeacherID'] == '111113'
@@ -1789,9 +1789,9 @@ class ApiStructureDetailUnitTest(TestCase):
         })
 
         tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
-            **{'cod_contatto': 'EMAIL', 'descr_contatto': 'Posta Elettronica', })
+            **{'cod_contatto': 'PEC', 'descr_contatto': 'Posta Elettronica Certificata',})
 
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        tipo_contatto2 = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
             'cod_contatto': 'URL Sito WEB Curriculum Vitae',
             'descr_contatto': 'URL Sito WEB Curriculum Vitae',
         })
@@ -1827,6 +1827,9 @@ class ApiStructureDetailUnitTest(TestCase):
 
         res = req.get(url)
         res1 = req.get(url1)
+
+        print(res.json())
+        print(res1.json())
 
         assert res.json()['results']['StructureId'] == '1'
 

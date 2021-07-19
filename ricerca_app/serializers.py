@@ -582,7 +582,8 @@ class StructuresDetailSerializer(CreateUpdateAbstract):
             'StructureName': query['denominazione'],
             'StructureFatherId' : query['uo_padre'],
             'StructureFatherName' : query['denominazione_padre'],
-            'ContactType' : query['unitaorganizzativacontatti__cd_tipo_cont'],
-            'Contact': query['unitaorganizzativacontatti__contatto'],
+            'StructureEmail': query['EMAIL'],
+            'StructurePec': query['PEC'],
+            'StructureTfr': query['TFR'],
 
         }

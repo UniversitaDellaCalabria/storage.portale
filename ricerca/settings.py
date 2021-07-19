@@ -220,6 +220,9 @@ LABEL_MAPPING = {
         'StructureTypeCOD': 'Structure Type COD',
         'StructureFatherId' : 'Structure Father Id',
         'StructureFatherName' : 'Structure Father Name',
+        'StructureEmail': 'Structure Email',
+        'StructurePec' : 'Structure Pec',
+        'StructureTfr' : 'Structure Phone',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -360,5 +363,8 @@ LABEL_MAPPING = {
         'StructureTypeCOD': 'Codice Struttura',
         'StructureFatherId' : 'Codice Struttura Padre',
         'StructureFatherName' : 'Nome Struttura Padre',
+        'StructureEmail': 'Email Struttura',
+        'StructurePec' : 'Pec Struttura',
+        'StructureTfr' : 'Telefono Struttura',
     }
 }
