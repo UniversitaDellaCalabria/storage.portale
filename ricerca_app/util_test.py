@@ -424,6 +424,3 @@ class UnitaOrganizzativaContattiUnitTest(TestCase):
 
         obj = UnitaOrganizzativaContatti.objects.create(**data)
         return obj
-
-
-

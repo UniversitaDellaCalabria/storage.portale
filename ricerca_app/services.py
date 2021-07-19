@@ -962,5 +962,4 @@ class ServicePersonale:
             for c in contacts:
                 q[c['unitaorganizzativacontatti__cd_tipo_cont']].append(
                     c['unitaorganizzativacontatti__contatto'])
-            print(q)
         return query

@@ -568,6 +568,8 @@ class RolesListSerializer(CreateUpdateAbstract):
             'Role': query['cd_ruolo'],
             'RoleDescription': query['ds_ruolo'],
         }
+
+
 class StructuresDetailSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
@@ -581,8 +583,8 @@ class StructuresDetailSerializer(CreateUpdateAbstract):
         return {
             'StructureId': query['uo'],
             'StructureName': query['denominazione'],
-            'StructureFatherId' : query['uo_padre'],
-            'StructureFatherName' : query['denominazione_padre'],
+            'StructureFatherId': query['uo_padre'],
+            'StructureFatherName': query['denominazione_padre'],
             'StructureEmail': query['EMAIL'],
             'StructurePec': query['PEC'],
             'StructureTfr': query['TFR'],

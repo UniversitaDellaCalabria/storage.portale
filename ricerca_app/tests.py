@@ -1779,10 +1779,10 @@ class ApiStructureDetailUnitTest(TestCase):
             'uo': '1',
             'ds_tipo_nodo': 'facolta',
             'cd_tipo_nodo': '000',
-            'id_ab' : 1,
-            'denominazione' : 'aaa',
-            'denominazione_padre' : 'c',
-            'uo_padre' : '11',
+            'id_ab': 1,
+            'denominazione': 'aaa',
+            'denominazione_padre': 'c',
+            'uo_padre': '11',
 
         })
         u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
@@ -1794,7 +1794,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'denominazione_padre': 'd',
             'uo_padre': '22',
         })
-        u3 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '3',
             'ds_tipo_nodo': 'rettorato',
             'cd_tipo_nodo': 'RET',
@@ -1805,9 +1805,9 @@ class ApiStructureDetailUnitTest(TestCase):
         })
 
         tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
-            **{'cod_contatto': 'PEC', 'descr_contatto': 'Posta Elettronica Certificata',})
+            **{'cod_contatto': 'PEC', 'descr_contatto': 'Posta Elettronica Certificata', })
 
-        tipo_contatto2 = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
             'cod_contatto': 'URL Sito WEB Curriculum Vitae',
             'descr_contatto': 'URL Sito WEB Curriculum Vitae',
         })
@@ -1831,7 +1831,6 @@ class ApiStructureDetailUnitTest(TestCase):
         url1 = reverse('ricerca:structuredetail',  kwargs={
                 'structureid': "2"})
 
-
         # check url
         res = req.get(url)
         res1 = req.get(url1)
@@ -1844,9 +1843,5 @@ class ApiStructureDetailUnitTest(TestCase):
         res = req.get(url)
         res1 = req.get(url1)
 
-        print(res.json())
-        print(res1.json())
-
         assert res.json()['results']['StructureId'] == '1'
-
         assert res1.json()['results']['StructureId'] == '2'
