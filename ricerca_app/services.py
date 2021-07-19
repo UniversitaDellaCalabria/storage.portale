@@ -936,9 +936,30 @@ class ServicePersonale:
                     c['personalecontatti__contatto'])
         return query
 
-    # @staticmethod
-    # def getStructure(structureId):
-    #     query = UnitaOrganizzativa.objects.filter(
-    #         uo__exact=structureId).values(
-    #         'uo', 'ds_tipo_nodo', 'denominazione', 'uo_padre', 'denominazione_padre').distinct()
-    #     return query
+    @staticmethod
+    def getStructure(structureid):
+        query = UnitaOrganizzativa.objects.filter(
+            uo__exact=structureid)
+        contacts_to_take = [
+            'EMAIL',
+            'PEC',
+            'TFR',
+        ]
+        contacts = query.filter(
+            unitaorganizzativacontatti__cd_tipo_cont__in=contacts_to_take).values(
+            "unitaorganizzativacontatti__cd_tipo_cont",
+            "unitaorganizzativacontatti__contatto")
+        contacts = list(contacts)
+        query = query.values(
+            'uo',
+            'denominazione',
+            'uo_padre',
+            'denominazione_padre',
+        )
+        for q in query:
+            for c in contacts_to_take:
+                q[c] = []
+            for c in contacts:
+                q[c['unitaorganizzativacontatti__cd_tipo_cont']].append(
+                    c['unitaorganizzativacontatti__contatto'])
+        return query
