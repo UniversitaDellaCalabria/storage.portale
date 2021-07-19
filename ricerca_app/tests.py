@@ -1532,13 +1532,29 @@ class ApiStructuresListUnitTest(TestCase):
 
         url = reverse('ricerca:structureslist')
 
+        url_filter = reverse('ricerca:structuresfilterlist')
+
         # check url
         res = req.get(url)
+        assert res.status_code == 200
+
+        res = req.get(url_filter)
         assert res.status_code == 200
 
         # GET
 
         res = req.get(url)
+
+        assert res.json()['results'][0]['StructureTypeName'] == 'rettorato'
+        assert res.json()['results'][1]['StructureId'] == '2'
+        assert len(res.json()['results']) == 3
+
+        data = {'keywords': 'Direzione'}
+
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['StructureId'] == '2'
+
+        res = req.get(url_filter)
 
         assert res.json()['results'][0]['StructureTypeName'] == 'rettorato'
         assert res.json()['results'][1]['StructureId'] == '2'

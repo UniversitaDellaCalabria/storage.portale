@@ -160,6 +160,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiStructuresList.as_view(),
                         name='structureslist'),
 
+    urlpatterns += path('{}/structuresfilter/'.format(base_url),
+                        api_views.ApiStructuresFilterList.as_view(),
+                        name='structuresfilterlist'),
+
     urlpatterns += path('{}/structuretypes/'.format(base_url),
                         api_views.ApiStructureTypesList.as_view(),
                         name='structuretypes'),

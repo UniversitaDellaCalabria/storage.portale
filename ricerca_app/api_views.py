@@ -148,6 +148,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             'nome_cds_it',
             'nome_cds_eng',
             'tipo_corso_cod',
+            'tipo_corso_des',
             'cla_miur_cod',
             'cla_miur_des',
             'durata_anni',
@@ -412,8 +413,18 @@ class ApiAddressbookList(ApiEndpointList):
             keywords, structureid, structuretypes, roles)
 
 
-class ApiStructuresList(ApiEndpointListSupport):
+class ApiStructuresList(ApiEndpointList):
     description = 'La funzione restituisce le strutture organizzative'
+    serializer_class = StructuresListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        keywords = self.request.query_params.get('keywords')
+        return ServicePersonale.getStructuresList(keywords)
+
+
+class ApiStructuresFilterList(ApiEndpointListSupport):
+    description = 'La funzione restituisce le strutture organizzative senza paginazione'
     serializer_class = StructuresListSerializer
     filter_backends = []
 
