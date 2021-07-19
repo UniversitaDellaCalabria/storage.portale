@@ -848,8 +848,14 @@ class ServicePersonale:
         return final_query
 
     @staticmethod
-    def getStructuresList():
-        query = UnitaOrganizzativa.objects.values(
+    def getStructuresList(keywords=None):
+        query_keywords = Q()
+        if keywords is not None:
+            for k in keywords.split(" "):
+                q_denominazione = Q(denominazione__icontains=k)
+                query_keywords |= q_denominazione
+
+        query = UnitaOrganizzativa.objects.filter(query_keywords).values(
             "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
         query = query.filter(dt_fine_val__gte=datetime.datetime.today())
         return query
