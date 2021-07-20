@@ -1316,7 +1316,8 @@ class LaboratorioDatiErc1(models.Model):
 class LaboratorioPersonaleRicerca(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
-    matricola_personale_ricerca = models.CharField(db_column='MATRICOLA_PERSONALE_RICERCA', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    matricola_personale_ricerca = models.ForeignKey("Personale", models.DO_NOTHING, db_column='MATRICOLA_PERSONALE_RICERCA', blank=True,
+                      null=True)  # Field name made lowercase.
     cognomenome_origine = models.CharField(db_column='COGNOMENOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -1327,7 +1328,8 @@ class LaboratorioPersonaleRicerca(models.Model):
 class LaboratorioPersonaleTecnico(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
-    matricola_personale_tecnico = models.CharField(db_column='MATRICOLA_PERSONALE_TECNICO', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    matricola_personale_tecnico = models.ForeignKey("Personale", models.DO_NOTHING, db_column='MATRICOLA_PERSONALE_TECNICO', blank=True,
+                      null=True)  # Field name made lowercase.
     ruolo = models.CharField(db_column='RUOLO', max_length=400, blank=True, null=True)  # Field name made lowercase.
     field_impegno = models.FloatField(db_column='%IMPEGNO', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it started with '_'.
     cognomenome_origine = models.CharField(db_column='COGNOMENOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
@@ -1972,6 +1974,8 @@ class RicercaErc0(models.Model):
         max_length=2)
     # Field name made lowercase.
     description = models.CharField(db_column='DESCRIPTION', max_length=100)
+    description_en = models.CharField(db_column='DESCRIPTION_EN', max_length=100, blank=True,
+                                      null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
