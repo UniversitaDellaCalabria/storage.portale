@@ -6,7 +6,9 @@ from django.db.models import CharField, Q, Value, Max
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
     DidatticaPdsRegolamento, \
-    UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua
+    UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
+    LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
+    LaboratorioUbicazione
 
 
 class ServiceQueryBuilder:
@@ -636,8 +638,8 @@ class ServiceDocente:
 
     @staticmethod
     def getRoles():
-        query = Personale.objects.all().values(
-            "cd_ruolo", "ds_ruolo_locale").order_by('ds_ruolo_locale').distinct()
+        query = Personale.objects.all().values("cd_ruolo",
+                                               "ds_ruolo_locale").order_by('ds_ruolo_locale').distinct()
 
         return query
 
@@ -963,4 +965,75 @@ class ServicePersonale:
             for c in contacts:
                 q[c['unitaorganizzativacontatti__cd_tipo_cont']].append(
                     c['unitaorganizzativacontatti__contatto'])
+        return query
+
+
+class ServiceLaboratorio:
+
+    @staticmethod
+    def getLaboratoriesList(ambito, dip):
+        if dip:
+
+            query = LaboratorioDatiBase.objects.filter(
+                id_dipartimento_riferimento__dip_cod=dip).values(
+                'id',
+                'nome_laboratorio',
+                'ambito',
+                'dipartimento_riferimento',
+                'id_dipartimento_riferimento',
+                'sede_dimensione',
+                'responsabile_scientifico',
+                'matricola_responsabile_scientifico'
+            )
+            if ambito:
+                query = query.filter(ambito=ambito)
+            query = list(query)
+
+            return query
+        elif ambito:
+            query = LaboratorioDatiBase.objects.filter(
+                ambito=ambito).values(
+                'id',
+                'nome_laboratorio',
+                'ambito',
+                'dipartimento_riferimento',
+                'id_dipartimento_riferimento',
+                'sede_dimensione',
+                'responsabile_scientifico',
+                'matricola_responsabile_scientifico'
+            )
+            return query
+
+        query = LaboratorioDatiBase.objects.values(
+            'id',
+            'nome_laboratorio',
+            'ambito',
+            'dipartimento_riferimento',
+            'id_dipartimento_riferimento',
+            'sede_dimensione',
+            'responsabile_scientifico',
+            'matricola_responsabile_scientifico',
+        )
+
+        return query
+
+    @staticmethod
+    def getLaboratory(laboratoryid):
+        query = LaboratorioDatiBase.objects.filter(id__exact=laboratoryid).values("id", "referente_compilazione", "matricola_referente_compilazione", "nome_laboratorio", "acronimo", "logo_laboratorio", "id_dipartimento_riferimento__dip_cod", "id_dipartimento_riferimento__dip_des_it", "id_dipartimento_riferimento__dip_des_eng", "ambito", "finalita_servizi_it", "finalita_servizi_en", "finalita_ricerca_it", "finalita_ricerca_en", "finalita_didattica_en", "finalita_didattica_it", "responsabile_scientifico", "matricola_responsabile_scientifico")
+        activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati__id=laboratoryid).values("tipologia_attivita")
+        erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati__id=laboratoryid).values("id_ricerca_erc1__cod_erc1", "id_ricerca_erc1__descrizione", "id_ricerca_erc1__ricerca_erc0_cod__erc0_cod", "id_ricerca_erc1__ricerca_erc0_cod__description", "id_ricerca_erc1__ricerca_erc0_cod__description_en")
+        personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(id_laboratorio_dati__id=laboratoryid).values("matricola_personale_ricerca__matricola", "matricola_personale_ricerca__nome", "matricola_personale_ricerca__cognome", "matricola_personale_ricerca__middle_name")
+        personale_tecnico = LaboratorioPersonaleTecnico.objects.filter(id_laboratorio_dati__id=laboratoryid).values("matricola_personale_tecnico__matricola", "matricola_personale_tecnico__nome", "matricola_personale_tecnico__cognome", "matricola_personale_tecnico__middle_name", "ruolo")
+        servizi_offerti = LaboratorioServiziOfferti.objects.filter(id_laboratorio_dati__id=laboratoryid).values("nome_servizio", "descrizione_servizio")
+        ubicazione = LaboratorioUbicazione.objects.filter(id_laboratorio_dati__id=laboratoryid).values("edificio", "piano", "note")
+
+        query = list(query)
+        for q in query:
+            q['Activities'] = activities
+            q['Erc1'] = erc1
+            q['ResearchPersonnel'] = personale_ricerca
+            q['TechPersonnel'] = personale_tecnico
+            q['OfferedServices'] = servizi_offerti
+            q['Location'] = ubicazione
+
         return query

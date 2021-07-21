@@ -1270,7 +1270,7 @@ class LaboratorioDatiBase(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     dt_sottomissione = models.DateTimeField(db_column='DT_SOTTOMISSIONE', blank=True, null=True)  # Field name made lowercase.
     referente_compilazione = models.CharField(db_column='REFERENTE_COMPILAZIONE', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    matricola_referente_compilazione = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_REFERENTE_COMPILAZIONE', blank=True, null=True, related_name="matricola_referente_compilazione_personale")  # Field name made lowercase.
+    matricola_referente_compilazione = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_REFERENTE_COMPILAZIONE', blank=True, null=True, related_name="matricola_referente_compilazione_personale", to_field="matricola")  # Field name made lowercase.
     email_compilazione = models.CharField(db_column='EMAIL_COMPILAZIONE', max_length=200, blank=True, null=True)  # Field name made lowercase.
     nome_laboratorio = models.CharField(db_column='NOME_LABORATORIO', max_length=400, blank=True, null=True)  # Field name made lowercase.
     acronimo = models.CharField(db_column='ACRONIMO', max_length=100, blank=True, null=True)  # Field name made lowercase.
@@ -1290,13 +1290,13 @@ class LaboratorioDatiBase(models.Model):
     finalita_servizi_it = models.TextField(db_column='FINALITA_SERVIZI_IT', blank=True, null=True)  # Field name made lowercase.
     finalita_servizi_en = models.TextField(db_column='FINALITA_SERVIZI_EN', blank=True, null=True)  # Field name made lowercase.
     responsabile_scientifico = models.CharField(db_column='RESPONSABILE_SCIENTIFICO', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    matricola_responsabile_scientifico = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_RESPONSABILE_SCIENTIFICO', blank=True, null=True, related_name="matricola_responsabile_scientifico_personale")  # Field name made lowercase.
+    matricola_responsabile_scientifico = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_RESPONSABILE_SCIENTIFICO', blank=True, null=True, related_name="matricola_responsabile_scientifico_personale", to_field="matricola")  # Field name made lowercase.
     sede_dimensione = models.CharField(db_column='SEDE_DIMENSIONE', max_length=100, blank=True, null=True)  # Field name made lowercase.
     sede_note_descrittive = models.TextField(db_column='SEDE_NOTE_DESCRITTIVE', blank=True, null=True)  # Field name made lowercase.
     strumentazione_descrizione = models.TextField(db_column='STRUMENTAZIONE_DESCRIZIONE', blank=True, null=True)  # Field name made lowercase.
     strumentazione_valore = models.CharField(db_column='STRUMENTAZIONE_VALORE', max_length=100, blank=True, null=True)  # Field name made lowercase.
     preposto_sicurezza = models.CharField(db_column='PREPOSTO_SICUREZZA', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    matricola_preposto_sicurezza = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_PREPOSTO_SICUREZZA', blank=True, null=True, related_name="matricola_preposto_sicurezza_personale")  # Field name made lowercase.
+    matricola_preposto_sicurezza = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_PREPOSTO_SICUREZZA', blank=True, null=True, related_name="matricola_preposto_sicurezza_personale", to_field="matricola")  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -1317,7 +1317,7 @@ class LaboratorioPersonaleRicerca(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
     matricola_personale_ricerca = models.ForeignKey("Personale", models.DO_NOTHING, db_column='MATRICOLA_PERSONALE_RICERCA', blank=True,
-                      null=True)  # Field name made lowercase.
+                      null=True, to_field="matricola")  # Field name made lowercase.
     cognomenome_origine = models.CharField(db_column='COGNOMENOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -1329,7 +1329,7 @@ class LaboratorioPersonaleTecnico(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_laboratorio_dati = models.ForeignKey(LaboratorioDatiBase, models.DO_NOTHING, db_column='ID_LABORATORIO_DATI', blank=True, null=True)  # Field name made lowercase.
     matricola_personale_tecnico = models.ForeignKey("Personale", models.DO_NOTHING, db_column='MATRICOLA_PERSONALE_TECNICO', blank=True,
-                      null=True)  # Field name made lowercase.
+                      null=True, to_field="matricola")  # Field name made lowercase.
     ruolo = models.CharField(db_column='RUOLO', max_length=400, blank=True, null=True)  # Field name made lowercase.
     field_impegno = models.FloatField(db_column='%IMPEGNO', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it started with '_'.
     cognomenome_origine = models.CharField(db_column='COGNOMENOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
