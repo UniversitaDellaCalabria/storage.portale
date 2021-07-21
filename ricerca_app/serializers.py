@@ -592,6 +592,121 @@ class StructuresDetailSerializer(CreateUpdateAbstract):
         }
 
 
+class LaboratoryDetailSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        activities = LaboratoryDetailSerializer.to_dict_activities(query['Activities'])
+        erc1 = LaboratoryDetailSerializer.to_dict_erc1(query['Erc1'], req_lang)
+        research_personnel = LaboratoryDetailSerializer.to_dict_research_personnel(query['ResearchPersonnel'])
+        tech_personnel = LaboratoryDetailSerializer.to_dict_tech_personnel(query['TechPersonnel'])
+        offered_services = LaboratoryDetailSerializer.to_dict_offered_services(query['OfferedServices'])
+        location = LaboratoryDetailSerializer.to_dict_location(query['Location'])
+        return {
+            'LaboratoryId': query['id'],
+            'CompletionReferentId': query['matricola_referente_compilazione'],
+            'CompletionReferentName': query['referente_compilazione'],
+            'ScientificDirectorId': query['matricola_responsabile_scientifico'],
+            'ScientificDirectorName': query['responsabile_scientifico'],
+            'LaboratoryName': query['nome_laboratorio'],
+            'LaboratoryAcronym': query['acronimo'],
+            'LaboratoryLogo': query['logo_laboratorio'],
+            'DepartmentReferentId': query['id_dipartimento_riferimento__dip_cod'],
+            'DepartmentReferentName': query['id_dipartimento_riferimento__dip_des_it'] if req_lang == "it" or query['id_dipartimento_riferimento__dip_des_eng'] is None else query['id_dipartimento_riferimento__dip_des_eng'],
+            'LaboratoryScope': query['ambito'],
+            'LaboratoryServicesScope': query['finalita_servizi_it'] if req_lang == "it" or query['finalita_servizi_en'] is None else query['finalita_servizi_en'],
+            'LaboratoryResearchScope': query['finalita_ricerca_it'] if req_lang == "it" or query['finalita_ricerca_en'] is None else query['finalita_ricerca_en'],
+            'LaboratoryTeachingScope': query['finalita_didattica_it'] if req_lang == "it" or query['finalita_didattica_en'] is None else query['finalita_didattica_en'],
+            'LaboratoryActivities': activities,
+            'LaboratoryErc1': erc1,
+            'LaboratoryResearchPersonnel': research_personnel,
+            'LaboratoryTechPersonnel': tech_personnel,
+            'LaboratoryOfferedServices': offered_services,
+            'LaboratoryLocation': location,
+        }
+
+    @staticmethod
+    def to_dict_activities(query):
+        result = []
+        for q in query:
+            result.append({
+                'LaboratoryActivityType': q['tipologia_attivita']
+            })
+        return result
+
+    @staticmethod
+    def to_dict_erc1(query, req_lang="en"):
+        result = []
+        for q in query:
+            result.append({
+                'LaboratoryErc1Cod': q['id_ricerca_erc1__cod_erc1'],
+                'LaboratoryErc1Description': q['id_ricerca_erc1__descrizione'],
+                'LaboratoryErc0Cod': q['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
+                'LaboratoryErc0Description': q['id_ricerca_erc1__ricerca_erc0_cod__description'] if req_lang == "it" or q['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else q['id_ricerca_erc1__ricerca_erc0_cod__description_en'],
+            })
+        return result
+
+    @staticmethod
+    def to_dict_research_personnel(query):
+        result = []
+        for q in query:
+            if q['matricola_personale_ricerca__matricola'] is None:
+                full_name = None
+            else:
+                full_name = q['matricola_personale_ricerca__cognome'] + " " + q['matricola_personale_ricerca__nome'] + \
+                            (" " + q['matricola_personale_ricerca__middle_name']
+                             if q['matricola_personale_ricerca__middle_name'] is not None else "")
+            result.append({
+                'ResearchPersonnelID': q['matricola_personale_ricerca__matricola'],
+                'ResearchPersonnelName': full_name,
+            })
+        return result
+
+    @staticmethod
+    def to_dict_tech_personnel(query):
+        result = []
+        for q in query:
+            if q['matricola_personale_tecnico__matricola'] is None:
+                full_name = None
+            else:
+                full_name = q['matricola_personale_tecnico__cognome'] + " " + q['matricola_personale_tecnico__nome'] + \
+                            (" " + q['matricola_personale_tecnico__middle_name']
+                             if q['matricola_personale_tecnico__middle_name'] is not None else "")
+            result.append({
+                'TechPersonnelID': q['matricola_personale_tecnico__matricola'],
+                'TechPersonnelName': full_name,
+                'TechPersonnelRole': q['ruolo'],
+            })
+        return result
+
+    @staticmethod
+    def to_dict_offered_services(query):
+        result = []
+        for q in query:
+            result.append({
+                'ServiceName': q['nome_servizio'],
+                'ServiceDescription': q['descrizione_servizio'],
+            })
+        return result
+
+    @staticmethod
+    def to_dict_location(query):
+        result = []
+        for q in query:
+            result.append({
+                'LocationBuilding': q['edificio'],
+                'LocationFloor': q['piano'],
+                'LocationNotes': q['note'],
+            })
+        return result
+
+
 class LaboratoriesListSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):

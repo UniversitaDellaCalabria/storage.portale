@@ -60,7 +60,6 @@ class ApiEndpointDetail(ApiEndpointList):
             self.language = self.request.LANGUAGE_CODE
 
         queryset = self.get_queryset()
-
         if queryset is not None and len(queryset) > 0:
             serializer = self.get_serializer(queryset[0], many=False)
             return Response({
@@ -478,6 +477,17 @@ class ApiPersonaleDetail(ApiEndpointDetail):
         personale_id = self.kwargs['personaleid']
 
         return ServicePersonale.getPersonale(personale_id)
+
+
+class ApiLaboratoryDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce un laboratorio specifico'
+    serializer_class = LaboratoryDetailSerializer
+    # filter_backends = [ApiAddressbookListFilter]
+
+    def get_queryset(self):
+        laboratory_id = self.kwargs['laboratoryid']
+
+        return ServiceLaboratorio.getLaboratory(laboratory_id)
 
 
 class ApiLaboratoriesList(ApiEndpointListSupport):

@@ -3,7 +3,6 @@ import datetime
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from .models import DidatticaDipartimento
 from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, \
     DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest, \
     DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest, \
@@ -12,7 +11,9 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest, \
     DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest, \
     PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest, FunzioniUnitaOrganizzativaUnitTest, \
-    UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest, LaboratorioDatiBaseUnitTest
+    UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest, LaboratorioDatiBaseUnitTest, \
+    LaboratorioAttivitaUnitTest, LaboratorioDatiErc1UnitTest, LaboratorioPersonaleRicercaUnitTest, \
+    LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -1848,80 +1849,283 @@ class ApiStructureDetailUnitTest(TestCase):
 
 
 class ApiLaboratoriesListUnitTest(TestCase):
-    req = Client()
+    def test_apilaboratorieslist(self):
+        req = Client()
 
-    print(DidatticaDipartimento.objects.all().values('dip_id'))
-    dip1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
-        'dip_id': 1,
-        'dip_cod': '1',
-        'dip_des_it': "Matematica e Informatica",
-        'dip_des_eng': "Math and Computer Science",
-    })
+        dip1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': '1',
+            'dip_des_it': "Matematica e Informatica",
+            'dip_des_eng': "Math and Computer Science",
+        })
 
-    dip2 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
-        'dip_id': 2,
-        'dip_cod': '2',
-        'dip_des_it': "Matematica e Informatica",
-        'dip_des_eng': "Math and Computer Science",
-    })
+        dip2 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 2,
+            'dip_cod': '2',
+            'dip_des_it': "Matematica e Informatica",
+            'dip_des_eng': "Math and Computer Science",
+        })
 
-    p1 = PersonaleUnitTest.create_personale(**{
-        'id': 1,
-        'nome': 'Simone',
-        'cognome': 'Mungari',
-        'cd_ruolo': 'responsabile',
-        'id_ab': 1,
-        'matricola': '111111',
-    })
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'responsabile',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
 
-    p2 = PersonaleUnitTest.create_personale(**{
-        'id': 2,
-        'nome': 'Carmine',
-        'cognome': 'Carlucci',
-        'cd_ruolo': 'responsabile',
-        'id_ab': 2,
-        'matricola': '111112',
-    })
+        p2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Carmine',
+            'cognome': 'Carlucci',
+            'cd_ruolo': 'responsabile',
+            'id_ab': 2,
+            'matricola': '111112',
+        })
 
-    LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
-        'id': 1,
-        'nome_laboratorio': 'Informatica',
-        'ambito': 'Tecnico',
-        'dipartimento_riferimento': 'Informatica',
-        'id_dipartimento_riferimento': dip1,
-        'sede_dimensione': "290",
-        'responsabile_scientifico': 'Mungari Simone',
-        'matricola_responsabile_scientifico': p1,
-    })
+        LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 1,
+            'nome_laboratorio': 'Informatica',
+            'ambito': 'Tecnico',
+            'dipartimento_riferimento': 'Informatica',
+            'id_dipartimento_riferimento': dip1,
+            'sede_dimensione': "290",
+            'responsabile_scientifico': 'Mungari Simone',
+            'matricola_responsabile_scientifico': p1,
+        })
 
-    LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
-        'id': 2,
-        'nome_laboratorio': 'Informatica',
-        'ambito': 'Scientifico',
-        'dipartimento_riferimento': 'Matematica',
-        'id_dipartimento_riferimento': dip2,
-        'sede_dimensione': "291",
-        'responsabile_scientifico': 'Carlucci Carmine',
-        'matricola_responsabile_scientifico': p2,
-    })
+        LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 2,
+            'nome_laboratorio': 'Informatica',
+            'ambito': 'Scientifico',
+            'dipartimento_riferimento': 'Matematica',
+            'id_dipartimento_riferimento': dip2,
+            'sede_dimensione': "291",
+            'responsabile_scientifico': 'Carlucci Carmine',
+            'matricola_responsabile_scientifico': p2,
+        })
 
-    url = reverse('ricerca:laboratorieslist')
+        url = reverse('ricerca:laboratorieslist')
 
-    # check url
-    res = req.get(url)
+        # check url
+        res = req.get(url)
 
-    assert res.status_code == 200
+        assert res.status_code == 200
 
-    # GET
+        # GET
 
-    res = req.get(url)
+        res = req.get(url)
 
-    assert res.json()['results'][0]['LaboratoryId'] == 1
-    assert res.json()['results'][0]['Area'] == 'Tecnico'
-    assert res.json()['results'][0]['Dimension'] == '290'
+        assert res.json()['results'][0]['LaboratoryId'] == 1
+        assert res.json()['results'][0]['Area'] == 'Tecnico'
+        assert res.json()['results'][0]['Dimension'] == '290'
 
-    assert res.json()['results'][1]['LaboratoryId'] == 2
-    assert res.json()['results'][1]['Area'] == 'Scientifico'
-    assert res.json()['results'][1]['Dimension'] == '291'
+        assert res.json()['results'][1]['LaboratoryId'] == 2
+        assert res.json()['results'][1]['Area'] == 'Scientifico'
+        assert res.json()['results'][1]['Dimension'] == '291'
 
-    assert len(res.json()['results']) == 2
+        assert len(res.json()['results']) == 2
+
+
+class ApiLaboratoryDetailUnitTest(TestCase):
+
+    def test_apilaboratorydetail(self):
+        req = Client()
+
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+            'cod_fis': 'SMN1',
+
+        })
+        p2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Lionel',
+            'cognome': 'Messi',
+            'cd_ruolo': 'AM',
+            'ds_ruolo_locale': 'Amministrazione',
+            'id_ab': 2,
+            'matricola': '111113',
+            'fl_docente': 0,
+            'flg_cessato': 0,
+            'aff_org': 99,
+            'cod_fis': 'LNL1',
+        })
+        dip1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': 1,
+            'dip_des_it': "Matematica e Informatica",
+            'dip_des_eng': "Math and Computer Science",
+        })
+        dip2 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 2,
+            'dip_cod': 2,
+            'dip_des_it': "Lettere e filosofia",
+            'dip_des_eng': "Philosophy",
+        })
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+            'description_en': 'IT',
+        })
+        erc1_1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+        erc1_2 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc2',
+            'descrizione': 'Poetica Platone',
+            'ricerca_erc0_cod': erc0,
+        })
+
+        lab1 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 1,
+            'matricola_referente_compilazione': p1,
+            'nome_laboratorio': 'LAB1',
+            'id_dipartimento_riferimento': dip1,
+            'ambito': 'Tecnologico',
+            'matricola_responsabile_scientifico': p1,
+        })
+
+        lab2 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 2,
+            'matricola_referente_compilazione': p2,
+            'nome_laboratorio': 'LAB2',
+            'id_dipartimento_riferimento': dip2,
+            'ambito': 'Umanistico',
+            'matricola_responsabile_scientifico': p2,
+        })
+
+        LaboratorioAttivitaUnitTest.create_laboratorioAttivita(**{
+            'id': 1,
+            'tipologia_attivita': 'Ricerca',
+            'id_laboratorio_dati': lab1
+        })
+        LaboratorioAttivitaUnitTest.create_laboratorioAttivita(**{
+            'id': 2,
+            'tipologia_attivita': 'Didattica',
+            'id_laboratorio_dati': lab1
+        })
+        LaboratorioAttivitaUnitTest.create_laboratorioAttivita(**{
+            'id': 3,
+            'tipologia_attivita': 'Didattica',
+            'id_laboratorio_dati': lab2
+        })
+
+        LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
+            'id': 1,
+            'id_laboratorio_dati': lab1,
+            'id_ricerca_erc1': erc1_1,
+        })
+        LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
+            'id': 2,
+            'id_laboratorio_dati': lab2,
+            'id_ricerca_erc1': erc1_2,
+        })
+
+        LaboratorioPersonaleRicercaUnitTest.create_laboratorioPersonaleRicerca(**{
+            'id': 1,
+            'id_laboratorio_dati': lab1,
+            'matricola_personale_ricerca': p2,
+        })
+        LaboratorioPersonaleRicercaUnitTest.create_laboratorioPersonaleRicerca(**{
+            'id': 2,
+            'id_laboratorio_dati': lab1,
+            'matricola_personale_ricerca': p2,
+        })
+        LaboratorioPersonaleRicercaUnitTest.create_laboratorioPersonaleRicerca(**{
+            'id': 3,
+            'id_laboratorio_dati': lab2,
+            'matricola_personale_ricerca': p1,
+        })
+        LaboratorioPersonaleRicercaUnitTest.create_laboratorioPersonaleRicerca(**{
+            'id': 4,
+            'id_laboratorio_dati': lab2,
+            'matricola_personale_ricerca': p1,
+        })
+
+        LaboratorioPersonaleTecnicoUnitTest.create_laboratorioPersonaleTecnico(**{
+            'id': 1,
+            'id_laboratorio_dati': lab1,
+            'matricola_personale_tecnico': p1,
+            'ruolo': 'R1'
+        })
+        LaboratorioPersonaleTecnicoUnitTest.create_laboratorioPersonaleTecnico(**{
+            'id': 2,
+            'id_laboratorio_dati': lab1,
+            'matricola_personale_tecnico': p1,
+            'ruolo': 'R2'
+        })
+        LaboratorioPersonaleTecnicoUnitTest.create_laboratorioPersonaleTecnico(**{
+            'id': 3,
+            'id_laboratorio_dati': lab2,
+            'matricola_personale_tecnico': p2,
+            'ruolo': 'R1'
+        })
+        LaboratorioPersonaleTecnicoUnitTest.create_laboratorioPersonaleTecnico(**{
+            'id': 4,
+            'id_laboratorio_dati': lab2,
+            'matricola_personale_tecnico': p2,
+            'ruolo': 'R2'
+        })
+
+        LaboratorioServiziOffertiUnitTest.create_laboratorioServiziOfferti(**{
+            'id': 1,
+            'id_laboratorio_dati': lab1,
+            'nome_servizio': "S1"
+        })
+        LaboratorioServiziOffertiUnitTest.create_laboratorioServiziOfferti(**{
+            'id': 2,
+            'id_laboratorio_dati': lab2,
+            'nome_servizio': "S2"
+        })
+
+        LaboratorioUbicazioneUnitTest.create_laboratorioUbicazione(**{
+            'id': 1,
+            'id_laboratorio_dati': lab1,
+            'edificio': '31B',
+            'piano': '1',
+        })
+        LaboratorioUbicazioneUnitTest.create_laboratorioUbicazione(**{
+            'id': 2,
+            'id_laboratorio_dati': lab2,
+            'edificio': '31A',
+            'piano': '0',
+        })
+
+        url = reverse('ricerca:laboratorydetail',  kwargs={
+                'laboratoryid': "1"})
+
+        url1 = reverse('ricerca:laboratorydetail',  kwargs={
+                'laboratoryid': "2"})
+
+        # check url
+        res = req.get(url)
+        res1 = req.get(url1)
+
+        assert res.status_code == 200
+        assert res1.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        res1 = req.get(url1)
+
+        assert res.json()['results']['LaboratoryId'] == 1
+        assert res1.json()['results']['LaboratoryId'] == 2
+
+        assert res.json()['results']['DepartmentReferentName'] == 'Math and Computer Science'
+        assert res1.json()['results']['LaboratoryScope'] == 'Umanistico'
+
+        assert len(res.json()['results']['LaboratoryResearchPersonnel']) == 2
+        assert len(res1.json()['results']['LaboratoryTechPersonnel']) == 2

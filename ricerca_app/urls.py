@@ -180,6 +180,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiStructureDetail.as_view(),
                         name='structuredetail'),
 
+    urlpatterns += path('{}/laboratories/<str:laboratoryid>/'.format(base_url),
+                        api_views.ApiLaboratoryDetail.as_view(),
+                        name='laboratorydetail'),
+
     urlpatterns += path('{}/laboratories/'.format(base_url),
                         api_views.ApiLaboratoriesList.as_view(),
                         name='laboratorieslist'),

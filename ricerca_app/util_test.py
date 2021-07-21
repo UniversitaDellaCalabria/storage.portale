@@ -30,7 +30,9 @@ from .models import (
     PersonaleContatti,
     PersonaleUoTipoContatto,
     FunzioniUnitaOrganizzativa,
-    UnitaOrganizzativa, UnitaOrganizzativaContatti, LaboratorioDatiBase)
+    UnitaOrganizzativa, UnitaOrganizzativaContatti, LaboratorioAttivita, LaboratorioUbicazione,
+    LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioPersonaleTecnico, LaboratorioPersonaleRicerca,
+    LaboratorioDatiErc1, LaboratorioDatiBase, LaboratorioAttrezzature)
 
 
 # class ContextUnitTest(TestCase):
@@ -426,6 +428,17 @@ class UnitaOrganizzativaContattiUnitTest(TestCase):
         return obj
 
 
+class LaboratorioAttivitaUnitTest(TestCase):
+    @classmethod
+    def create_laboratorioAttivita(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = LaboratorioAttivita.objects.create(**data)
+        return obj
+
+
 class LaboratorioDatiBaseUnitTest(TestCase):
     @classmethod
     def create_laboratorioDatiBase(cls, **kwargs):
@@ -435,3 +448,61 @@ class LaboratorioDatiBaseUnitTest(TestCase):
 
         obj = LaboratorioDatiBase.objects.create(**data)
         return obj
+
+
+class LaboratorioDatiErc1UnitTest(TestCase):
+    @classmethod
+    def create_laboratorioDatiErc1(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = LaboratorioDatiErc1.objects.create(**data)
+        return obj
+
+
+class LaboratorioPersonaleRicercaUnitTest(TestCase):
+    @classmethod
+    def create_laboratorioPersonaleRicerca(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = LaboratorioPersonaleRicerca.objects.create(**data)
+        return obj
+
+
+class LaboratorioPersonaleTecnicoUnitTest(TestCase):
+    @classmethod
+    def create_laboratorioPersonaleTecnico(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = LaboratorioPersonaleTecnico.objects.create(**data)
+        return obj
+
+
+class LaboratorioServiziOffertiUnitTest(TestCase):
+    @classmethod
+    def create_laboratorioServiziOfferti(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = LaboratorioServiziOfferti.objects.create(**data)
+        return obj
+
+
+class LaboratorioUbicazioneUnitTest(TestCase):
+    @classmethod
+    def create_laboratorioUbicazione(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = LaboratorioUbicazione.objects.create(**data)
+        return obj
+
+
+
