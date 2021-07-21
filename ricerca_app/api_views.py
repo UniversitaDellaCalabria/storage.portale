@@ -478,3 +478,14 @@ class ApiPersonaleDetail(ApiEndpointDetail):
         personale_id = self.kwargs['personaleid']
 
         return ServicePersonale.getPersonale(personale_id)
+
+class ApiLaboratoriesList(ApiEndpointListSupport):
+    description = 'La funzione restituisce i laboratori'
+    serializer_class = LaboratoriesListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        ambito = self.request.query_params.get('area')
+        dip = self.request.query_params.get('department')
+
+        return ServiceLaboratorio.getLaboratoriesList(ambito, dip)

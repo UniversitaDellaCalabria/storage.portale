@@ -6,7 +6,7 @@ from django.db.models import CharField, Q, Value, Max
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
     DidatticaPdsRegolamento, \
-    UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua
+    UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase
 
 
 class ServiceQueryBuilder:
@@ -963,3 +963,56 @@ class ServicePersonale:
                 q[c['unitaorganizzativacontatti__cd_tipo_cont']].append(
                     c['unitaorganizzativacontatti__contatto'])
         return query
+
+
+class ServiceLaboratorio:
+
+    @staticmethod
+    def getLaboratoriesList(ambito, dip):
+        if dip:
+            department = DidatticaDipartimento.objects.filter(
+
+            )
+            query = LaboratorioDatiBase.objects.filter(
+                id_dipartimento_riferimento=dip).values(
+                'id',
+                'nome_laboratorio',
+                'ambito',
+                'dipartimento_riferimento',
+                'id_dipartimento_riferimento',
+                'sede_dimensione',
+                'responsabile_scientifico',
+                'matricola_responsabile_scientifico'
+            )
+            if ambito:
+                query = query.filter(ambito=ambito)
+            query = list(query)
+
+            return query
+        elif ambito:
+            query = LaboratorioDatiBase.objects.filter(
+                ambito=ambito).values(
+                'id',
+                'nome_laboratorio',
+                'ambito',
+                'dipartimento_riferimento',
+                'id_dipartimento_riferimento',
+                'sede_dimensione',
+                'responsabile_scientifico',
+                'matricola_responsabile_scientifico'
+            )
+            return query
+
+        query = LaboratorioDatiBase.objects.values(
+            'id',
+            'nome_laboratorio',
+            'ambito',
+            'dipartimento_riferimento',
+            'id_dipartimento_riferimento',
+            'sede_dimensione',
+            'responsabile_scientifico',
+            'matricola_responsabile_scientifico',
+        )
+
+        return query
+

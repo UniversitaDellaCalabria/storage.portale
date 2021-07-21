@@ -1844,3 +1844,6 @@ class ApiStructureDetailUnitTest(TestCase):
 
         assert res.json()['results']['StructureId'] == '1'
         assert res1.json()['results']['StructureId'] == '2'
+
+
+class ApiLaboratoriesListUnitTest(TestCase):

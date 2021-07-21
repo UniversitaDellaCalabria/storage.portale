@@ -590,3 +590,25 @@ class StructuresDetailSerializer(CreateUpdateAbstract):
             'StructureTfr': query['TFR'],
 
         }
+
+class LaboratoriesListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'LaboratoryId': query['id'],
+            'LaboratoryName': query['nome_laboratorio'],
+            'Area': query['ambito'],
+            'DepartmentName': query['dipartimento_riferimento'],
+            'DepartmentId': query['id_dipartimento_riferimento'],
+            'Dimension': query['sede_dimensione'],
+            'ScientificDirector': query['responsabile_scientifico'],
+            'ScientificDirectorId': query['matricola_responsabile_scientifico'],
+
+        }
