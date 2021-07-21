@@ -591,6 +591,7 @@ class StructuresDetailSerializer(CreateUpdateAbstract):
 
         }
 
+
 class LaboratoriesListSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):

@@ -636,8 +636,8 @@ class ServiceDocente:
 
     @staticmethod
     def getRoles():
-        query = Personale.objects.all().values(
-            "cd_ruolo", "ds_ruolo_locale").order_by('ds_ruolo_locale').distinct()
+        query = Personale.objects.all().values("cd_ruolo",
+                                               "ds_ruolo_locale").order_by('ds_ruolo_locale').distinct()
 
         return query
 
@@ -971,11 +971,9 @@ class ServiceLaboratorio:
     @staticmethod
     def getLaboratoriesList(ambito, dip):
         if dip:
-            department = DidatticaDipartimento.objects.filter(
 
-            )
             query = LaboratorioDatiBase.objects.filter(
-                id_dipartimento_riferimento=dip).values(
+                id_dipartimento_riferimento__dip_cod=dip).values(
                 'id',
                 'nome_laboratorio',
                 'ambito',
@@ -1016,4 +1014,3 @@ class ServiceLaboratorio:
         )
 
         return query
-

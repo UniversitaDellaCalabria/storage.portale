@@ -242,12 +242,3 @@ class ApiDoctoratesListFilter(GenericApiFilter):
 #                       'description': 'codice struttura',
 #                       'required': True,
 #                       'type': 'string'}]
-
-# class ApiLaboratoriesListFilter(GenericApiFilter):
-#     search_params = [{
-#                         'name': '',
-#                         'description': '',
-#                         'required': False,
-#                         'type': 'int'
-#
-#     }]

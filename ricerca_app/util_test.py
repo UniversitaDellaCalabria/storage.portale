@@ -425,6 +425,7 @@ class UnitaOrganizzativaContattiUnitTest(TestCase):
         obj = UnitaOrganizzativaContatti.objects.create(**data)
         return obj
 
+
 class LaboratorioDatiBaseUnitTest(TestCase):
     @classmethod
     def create_laboratorioDatiBase(cls, **kwargs):
@@ -434,4 +435,3 @@ class LaboratorioDatiBaseUnitTest(TestCase):
 
         obj = LaboratorioDatiBase.objects.create(**data)
         return obj
-

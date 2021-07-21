@@ -3,6 +3,7 @@ import datetime
 from django.test import TestCase, Client
 from django.urls import reverse
 
+from .models import DidatticaDipartimento
 from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, \
     DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest, \
     DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest, \
@@ -11,7 +12,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest, \
     DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest, \
     PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest, FunzioniUnitaOrganizzativaUnitTest, \
-    UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest
+    UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest, LaboratorioDatiBaseUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -1824,11 +1825,11 @@ class ApiStructureDetailUnitTest(TestCase):
             'prg_priorita': 2,
         })
 
-        url = reverse('ricerca:structuredetail',  kwargs={
-                'structureid': "1"})
+        url = reverse('ricerca:structuredetail', kwargs={
+            'structureid': "1"})
 
-        url1 = reverse('ricerca:structuredetail',  kwargs={
-                'structureid': "2"})
+        url1 = reverse('ricerca:structuredetail', kwargs={
+            'structureid': "2"})
 
         # check url
         res = req.get(url)
@@ -1847,3 +1848,80 @@ class ApiStructureDetailUnitTest(TestCase):
 
 
 class ApiLaboratoriesListUnitTest(TestCase):
+    req = Client()
+
+    print(DidatticaDipartimento.objects.all().values('dip_id'))
+    dip1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+        'dip_id': 1,
+        'dip_cod': '1',
+        'dip_des_it': "Matematica e Informatica",
+        'dip_des_eng': "Math and Computer Science",
+    })
+
+    dip2 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+        'dip_id': 2,
+        'dip_cod': '2',
+        'dip_des_it': "Matematica e Informatica",
+        'dip_des_eng': "Math and Computer Science",
+    })
+
+    p1 = PersonaleUnitTest.create_personale(**{
+        'id': 1,
+        'nome': 'Simone',
+        'cognome': 'Mungari',
+        'cd_ruolo': 'responsabile',
+        'id_ab': 1,
+        'matricola': '111111',
+    })
+
+    p2 = PersonaleUnitTest.create_personale(**{
+        'id': 2,
+        'nome': 'Carmine',
+        'cognome': 'Carlucci',
+        'cd_ruolo': 'responsabile',
+        'id_ab': 2,
+        'matricola': '111112',
+    })
+
+    LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+        'id': 1,
+        'nome_laboratorio': 'Informatica',
+        'ambito': 'Tecnico',
+        'dipartimento_riferimento': 'Informatica',
+        'id_dipartimento_riferimento': dip1,
+        'sede_dimensione': "290",
+        'responsabile_scientifico': 'Mungari Simone',
+        'matricola_responsabile_scientifico': p1,
+    })
+
+    LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+        'id': 2,
+        'nome_laboratorio': 'Informatica',
+        'ambito': 'Scientifico',
+        'dipartimento_riferimento': 'Matematica',
+        'id_dipartimento_riferimento': dip2,
+        'sede_dimensione': "291",
+        'responsabile_scientifico': 'Carlucci Carmine',
+        'matricola_responsabile_scientifico': p2,
+    })
+
+    url = reverse('ricerca:laboratorieslist')
+
+    # check url
+    res = req.get(url)
+
+    assert res.status_code == 200
+
+    # GET
+
+    res = req.get(url)
+
+    assert res.json()['results'][0]['LaboratoryId'] == 1
+    assert res.json()['results'][0]['Area'] == 'Tecnico'
+    assert res.json()['results'][0]['Dimension'] == '290'
+
+    assert res.json()['results'][1]['LaboratoryId'] == 2
+    assert res.json()['results'][1]['Area'] == 'Scientifico'
+    assert res.json()['results'][1]['Dimension'] == '291'
+
+    assert len(res.json()['results']) == 2

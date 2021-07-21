@@ -479,6 +479,7 @@ class ApiPersonaleDetail(ApiEndpointDetail):
 
         return ServicePersonale.getPersonale(personale_id)
 
+
 class ApiLaboratoriesList(ApiEndpointListSupport):
     description = 'La funzione restituisce i laboratori'
     serializer_class = LaboratoriesListSerializer

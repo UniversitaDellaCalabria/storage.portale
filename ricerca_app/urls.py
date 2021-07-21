@@ -181,5 +181,5 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         name='structuredetail'),
 
     urlpatterns += path('{}/laboratories/'.format(base_url),
-                            api_views.ApiLaboratoriesList.as_view(),
-                            name='laboratorieslist'),
+                        api_views.ApiLaboratoriesList.as_view(),
+                        name='laboratorieslist'),
