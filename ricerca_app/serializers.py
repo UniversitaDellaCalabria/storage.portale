@@ -341,7 +341,7 @@ class TeachersListSerializer(CreateUpdateAbstract):
             'TeacherDepartmentID': query['dip_cod'],
             'TeacherDepartmentName': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
             'TeacherRole': query['cd_ruolo'],
-            'TeacherRoleDescription': query['ds_ruolo'],
+            'TeacherRoleDescription': query['ds_ruolo_locale'],
             'TeacherSSDCod': query['cd_ssd'],
             'TeacherSSDDescription': query['ds_ssd'],
         }
@@ -392,7 +392,7 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherDepartmentID': query['dip_cod'],
             'TeacherDepartmentName': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
             'TeacherRole': query['cd_ruolo'],
-            'TeacherRoleDescription': query['ds_ruolo'],
+            'TeacherRoleDescription': query['ds_ruolo_locale'],
             'TeacherSSDCod': query['cd_ssd'],
             'TeacherSSDDescription': query['ds_ssd'],
             'TeacherOffice': query['ds_aff_org'],
@@ -488,7 +488,7 @@ class AddressbookListSerializer(CreateUpdateAbstract):
         return {
             'Name': full_name,
             'ID': query['matricola'],
-            'RoleDescription': query['ds_ruolo'],
+            'RoleDescription': query['ds_ruolo_locale'],
             'Role': query['cd_ruolo'],
             'Structure': query['Struttura'],
             'StructureTypeName': query['TipologiaStrutturaNome'],
@@ -566,7 +566,7 @@ class RolesListSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         return {
             'Role': query['cd_ruolo'],
-            'RoleDescription': query['ds_ruolo'],
+            'RoleDescription': query['ds_ruolo_locale'],
         }
 
 

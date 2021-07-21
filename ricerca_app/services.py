@@ -456,7 +456,7 @@ class ServiceDocente:
                 "middle_name",
                 "cognome",
                 "cd_ruolo",
-                "ds_ruolo",
+                "ds_ruolo_locale",
                 "cd_ssd",
                 "ds_ssd")
             if role:
@@ -498,7 +498,7 @@ class ServiceDocente:
             "middle_name",
             "cognome",
             "cd_ruolo",
-            "ds_ruolo",
+            "ds_ruolo_locale",
             "cd_ssd",
             "ds_ssd",
             "aff_org",
@@ -607,7 +607,7 @@ class ServiceDocente:
             "middle_name",
             "cognome",
             "cd_ruolo",
-            "ds_ruolo",
+            "ds_ruolo_locale",
             "cd_ssd",
             "ds_ssd",
             "aff_org",
@@ -636,8 +636,9 @@ class ServiceDocente:
 
     @staticmethod
     def getRoles():
-        query = Personale.objects.values(
-            "cd_ruolo", "ds_ruolo").order_by('ds_ruolo').distinct()
+        query = Personale.objects.all().values(
+            "cd_ruolo", "ds_ruolo_locale").order_by('ds_ruolo_locale').distinct()
+
         return query
 
 
@@ -757,7 +758,7 @@ class ServicePersonale:
             "middle_name",
             "cognome",
             "cd_ruolo",
-            "ds_ruolo",
+            "ds_ruolo_locale",
             "aff_org",
             "id_ab",
             "matricola",
@@ -788,7 +789,7 @@ class ServicePersonale:
                                 "middle_name",
                                 "cognome",
                                 "cd_ruolo",
-                                "ds_ruolo",
+                                "ds_ruolo_locale",
                                 "aff_org",
                                 "id_ab",
                                 "matricola",
@@ -826,7 +827,7 @@ class ServicePersonale:
                     'middle_name': q['middle_name'],
                     'cognome': q['cognome'],
                     'cd_ruolo': q['cd_ruolo'],
-                    'ds_ruolo': q['ds_ruolo'],
+                    'ds_ruolo_locale': q['ds_ruolo_locale'],
                     'aff_org': q['aff_org'],
                     'matricola': q['matricola'],
                     'Funzione': q['funzioniunitaorganizzativa__ds_funzione'] if q['funzioniunitaorganizzativa__termine'] is not None and q['funzioniunitaorganizzativa__termine'] >= datetime.datetime.today() else None,
@@ -911,7 +912,7 @@ class ServicePersonale:
             "middle_name",
             "cognome",
             "cd_ruolo",
-            "ds_ruolo",
+            "ds_ruolo_locale",
             "cd_ssd",
             "ds_ssd",
             "aff_org",
