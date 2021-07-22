@@ -1078,3 +1078,8 @@ class ServiceLaboratorio:
             q['Location'] = ubicazione
 
         return query
+
+    @staticmethod
+    def getLaboratoriesAreasList():
+        return LaboratorioDatiBase.objects.all().values(
+            "ambito").distinct().order_by("ambito")
