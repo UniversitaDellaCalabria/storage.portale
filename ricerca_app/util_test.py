@@ -30,9 +30,15 @@ from .models import (
     PersonaleContatti,
     PersonaleUoTipoContatto,
     FunzioniUnitaOrganizzativa,
-    UnitaOrganizzativa, UnitaOrganizzativaContatti, LaboratorioAttivita, LaboratorioUbicazione,
-    LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioPersonaleTecnico, LaboratorioPersonaleRicerca,
-    LaboratorioDatiErc1, LaboratorioDatiBase, LaboratorioAttrezzature)
+    UnitaOrganizzativa,
+    UnitaOrganizzativaContatti,
+    LaboratorioAttivita,
+    LaboratorioUbicazione,
+    LaboratorioServiziOfferti,
+    LaboratorioPersonaleTecnico,
+    LaboratorioPersonaleRicerca,
+    LaboratorioDatiErc1,
+    LaboratorioDatiBase)
 
 
 # class ContextUnitTest(TestCase):
@@ -503,6 +509,3 @@ class LaboratorioUbicazioneUnitTest(TestCase):
 
         obj = LaboratorioUbicazione.objects.create(**data)
         return obj
-
-
-

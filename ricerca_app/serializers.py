@@ -602,12 +602,17 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-        activities = LaboratoryDetailSerializer.to_dict_activities(query['Activities'])
+        activities = LaboratoryDetailSerializer.to_dict_activities(
+            query['Activities'])
         erc1 = LaboratoryDetailSerializer.to_dict_erc1(query['Erc1'], req_lang)
-        research_personnel = LaboratoryDetailSerializer.to_dict_research_personnel(query['ResearchPersonnel'])
-        tech_personnel = LaboratoryDetailSerializer.to_dict_tech_personnel(query['TechPersonnel'])
-        offered_services = LaboratoryDetailSerializer.to_dict_offered_services(query['OfferedServices'])
-        location = LaboratoryDetailSerializer.to_dict_location(query['Location'])
+        research_personnel = LaboratoryDetailSerializer.to_dict_research_personnel(
+            query['ResearchPersonnel'])
+        tech_personnel = LaboratoryDetailSerializer.to_dict_tech_personnel(
+            query['TechPersonnel'])
+        offered_services = LaboratoryDetailSerializer.to_dict_offered_services(
+            query['OfferedServices'])
+        location = LaboratoryDetailSerializer.to_dict_location(
+            query['Location'])
         return {
             'LaboratoryId': query['id'],
             'CompletionReferentId': query['matricola_referente_compilazione'],
@@ -660,8 +665,8 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
                 full_name = None
             else:
                 full_name = q['matricola_personale_ricerca__cognome'] + " " + q['matricola_personale_ricerca__nome'] + \
-                            (" " + q['matricola_personale_ricerca__middle_name']
-                             if q['matricola_personale_ricerca__middle_name'] is not None else "")
+                    (" " + q['matricola_personale_ricerca__middle_name']
+                     if q['matricola_personale_ricerca__middle_name'] is not None else "")
             result.append({
                 'ResearchPersonnelID': q['matricola_personale_ricerca__matricola'],
                 'ResearchPersonnelName': full_name,
@@ -676,8 +681,8 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
                 full_name = None
             else:
                 full_name = q['matricola_personale_tecnico__cognome'] + " " + q['matricola_personale_tecnico__nome'] + \
-                            (" " + q['matricola_personale_tecnico__middle_name']
-                             if q['matricola_personale_tecnico__middle_name'] is not None else "")
+                    (" " + q['matricola_personale_tecnico__middle_name']
+                     if q['matricola_personale_tecnico__middle_name'] is not None else "")
             result.append({
                 'TechPersonnelID': q['matricola_personale_tecnico__matricola'],
                 'TechPersonnelName': full_name,
