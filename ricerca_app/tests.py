@@ -2103,11 +2103,11 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'piano': '0',
         })
 
-        url = reverse('ricerca:laboratorydetail',  kwargs={
-                'laboratoryid': "1"})
+        url = reverse('ricerca:laboratorydetail', kwargs={
+            'laboratoryid': "1"})
 
-        url1 = reverse('ricerca:laboratorydetail',  kwargs={
-                'laboratoryid': "2"})
+        url1 = reverse('ricerca:laboratorydetail', kwargs={
+            'laboratoryid': "2"})
 
         # check url
         res = req.get(url)
@@ -2124,7 +2124,8 @@ class ApiLaboratoryDetailUnitTest(TestCase):
         assert res.json()['results']['LaboratoryId'] == 1
         assert res1.json()['results']['LaboratoryId'] == 2
 
-        assert res.json()['results']['DepartmentReferentName'] == 'Math and Computer Science'
+        assert res.json()[
+            'results']['DepartmentReferentName'] == 'Math and Computer Science'
         assert res1.json()['results']['LaboratoryScope'] == 'Umanistico'
 
         assert len(res.json()['results']['LaboratoryResearchPersonnel']) == 2
