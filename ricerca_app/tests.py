@@ -1915,16 +1915,29 @@ class ApiLaboratoriesListUnitTest(TestCase):
 
         # GET
 
-        res = req.get(url)
-
+        data = {'department': '1'}
+        res = req.get(url, data=data)
         assert res.json()['results'][0]['LaboratoryId'] == 1
-        assert res.json()['results'][0]['Area'] == 'Tecnico'
+        assert res.json()[
+            'results'][0]['ScientificDirector'] == 'Mungari Simone'
+
+        data = {'department': '2', 'area': 'Scientifico'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['LaboratoryId'] == 2
+        assert res.json()[
+            'results'][0]['ScientificDirector'] == 'Carlucci Carmine'
+
+        data = {'area': 'Tecnico'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['LaboratoryId'] == 1
         assert res.json()['results'][0]['Dimension'] == '290'
 
-        assert res.json()['results'][1]['LaboratoryId'] == 2
-        assert res.json()['results'][1]['Area'] == 'Scientifico'
-        assert res.json()['results'][1]['Dimension'] == '291'
+        data = {'area': 'Scientifico'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['LaboratoryId'] == 2
+        assert res.json()['results'][0]['Dimension'] == '291'
 
+        res = req.get(url)
         assert len(res.json()['results']) == 2
 
 
