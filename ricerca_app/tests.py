@@ -2143,3 +2143,34 @@ class ApiLaboratoryDetailUnitTest(TestCase):
 
         assert len(res.json()['results']['LaboratoryResearchPersonnel']) == 2
         assert len(res1.json()['results']['LaboratoryTechPersonnel']) == 2
+
+
+class ApiLaboratoriesAreasListUnitTest(TestCase):
+
+    def test_apiLaboratoriesAreasList(self):
+        req = Client()
+
+        LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 1,
+            'nome_laboratorio': 'LAB1',
+            'ambito': 'Tecnologico',
+        })
+
+        LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 2,
+            'nome_laboratorio': 'LAB2',
+            'ambito': 'Umanistico',
+        })
+
+        url = reverse('ricerca:laboratoriesareas')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+
+        assert len(res.json()['results']) == 2
