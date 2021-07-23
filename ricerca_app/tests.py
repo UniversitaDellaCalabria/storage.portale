@@ -1937,6 +1937,13 @@ class ApiLaboratoriesListUnitTest(TestCase):
         assert res.json()['results'][0]['LaboratoryId'] == 2
         assert res.json()['results'][0]['Dimension'] == '291'
 
+        data = {'keywords': 'Informatica'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['LaboratoryId'] == 1
+        assert res.json()['results'][0]['Dimension'] == '290'
+        assert res.json()[
+            'results'][0]['ScientificDirector'] == 'Mungari Simone'
+
         res = req.get(url)
         assert len(res.json()['results']) == 2
 

@@ -490,19 +490,20 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
         return ServiceLaboratorio.getLaboratory(laboratory_id)
 
 
-class ApiLaboratoriesList(ApiEndpointListSupport):
+class ApiLaboratoriesList(ApiEndpointList):
     description = 'La funzione restituisce i laboratori'
     serializer_class = LaboratoriesListSerializer
     filter_backends = []
 
     def get_queryset(self):
+        keywords = self.request.query_params.get('keywords')
         ambito = self.request.query_params.get('area')
         dip = self.request.query_params.get('department')
 
-        return ServiceLaboratorio.getLaboratoriesList(ambito, dip)
+        return ServiceLaboratorio.getLaboratoriesList(keywords, ambito, dip)
 
 
-class ApiLaboratoriesAreasList(ApiEndpointListSupport):
+class ApiLaboratoriesAreasList(ApiEndpointList):
     description = 'La funzione restituisce la lista degli ambiti dei laboratori'
     serializer_class = LaboratoriesAreasListSerializer
     filter_backends = []

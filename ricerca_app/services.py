@@ -971,50 +971,31 @@ class ServicePersonale:
 class ServiceLaboratorio:
 
     @staticmethod
-    def getLaboratoriesList(ambito, dip):
+    def getLaboratoriesList(keywords, ambito, dip):
+        query_keywords = Q()
+        query_ambito = Q()
+        query_dip = Q()
+
+        if keywords:
+            for k in keywords.split(" "):
+                q_nome = Q(nome_laboratorio__icontains=k)
+                query_keywords &= q_nome
+        if ambito:
+            query_ambito = Q(ambito__exact=ambito)
         if dip:
-
-            query = LaboratorioDatiBase.objects.filter(
-                id_dipartimento_riferimento__dip_cod=dip).values(
-                'id',
-                'nome_laboratorio',
-                'ambito',
-                'dipartimento_riferimento',
-                'id_dipartimento_riferimento',
-                'sede_dimensione',
-                'responsabile_scientifico',
-                'matricola_responsabile_scientifico'
-            )
-            if ambito:
-                query = query.filter(ambito=ambito)
-            query = list(query)
-
-            return query
-        elif ambito:
-            query = LaboratorioDatiBase.objects.filter(
-                ambito=ambito).values(
-                'id',
-                'nome_laboratorio',
-                'ambito',
-                'dipartimento_riferimento',
-                'id_dipartimento_riferimento',
-                'sede_dimensione',
-                'responsabile_scientifico',
-                'matricola_responsabile_scientifico'
-            )
-            return query
-
-        query = LaboratorioDatiBase.objects.values(
+            query_dip = Q(id_dipartimento_riferimento__dip_cod__exact=dip)
+        query = LaboratorioDatiBase.objects.filter(
+            query_keywords, query_ambito, query_dip
+        ).values(
             'id',
             'nome_laboratorio',
             'ambito',
             'dipartimento_riferimento',
-            'id_dipartimento_riferimento',
+            'id_dipartimento_riferimento__dip_cod',
             'sede_dimensione',
             'responsabile_scientifico',
-            'matricola_responsabile_scientifico',
+            'matricola_responsabile_scientifico'
         )
-
         return query
 
     @staticmethod
