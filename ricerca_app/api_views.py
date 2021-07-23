@@ -388,6 +388,15 @@ class ApiDepartmentsList(ApiEndpointList):
         return ServiceDipartimento.getDepartmentsList(self.language)
 
 
+class ApiDepartmentsFilterList(ApiEndpointListSupport):
+    description = 'La funzione restituisce la lista dei dipartimenti senza paginazione'
+    serializer_class = DepartmentsListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDipartimento.getDepartmentsList(self.language)
+
+
 class ApiDepartmentDetail(ApiEndpointDetail):
     description = 'La funzione restituisce uno specifico dipartimento'
     serializer_class = DepartmentsListSerializer
