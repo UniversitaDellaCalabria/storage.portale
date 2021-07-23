@@ -2154,12 +2154,6 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'edificio': '31B',
             'piano': '1',
         })
-        LaboratorioUbicazioneUnitTest.create_laboratorioUbicazione(**{
-            'id': 2,
-            'id_laboratorio_dati': lab2,
-            'edificio': '31A',
-            'piano': '0',
-        })
 
         url = reverse('ricerca:laboratorydetail', kwargs={
             'laboratoryid': "1"})
