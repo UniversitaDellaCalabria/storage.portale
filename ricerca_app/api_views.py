@@ -490,7 +490,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
         return ServiceLaboratorio.getLaboratory(laboratory_id)
 
 
-class ApiLaboratoriesList(ApiEndpointListSupport):
+class ApiLaboratoriesList(ApiEndpointList):
     description = 'La funzione restituisce i laboratori'
     serializer_class = LaboratoriesListSerializer
     filter_backends = []
