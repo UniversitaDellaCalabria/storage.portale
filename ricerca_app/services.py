@@ -1056,7 +1056,10 @@ class ServiceLaboratorio:
             q['ResearchPersonnel'] = personale_ricerca
             q['TechPersonnel'] = personale_tecnico
             q['OfferedServices'] = servizi_offerti
-            q['Location'] = ubicazione
+            if len(ubicazione) > 0:
+                q['Location'] = ubicazione.first()
+            else:
+                q['Location'] = None
 
         return query
 

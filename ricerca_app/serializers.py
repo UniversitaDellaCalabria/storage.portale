@@ -611,8 +611,11 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             query['TechPersonnel'])
         offered_services = LaboratoryDetailSerializer.to_dict_offered_services(
             query['OfferedServices'])
-        location = LaboratoryDetailSerializer.to_dict_location(
-            query['Location'])
+        if query['Location'] is None:
+            location = None
+        else:
+            location = LaboratoryDetailSerializer.to_dict_location(
+                query['Location'])
         return {
             'LaboratoryId': query['id'],
             'CompletionReferentId': query['matricola_referente_compilazione'],
@@ -702,13 +705,11 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict_location(query):
-        result = []
-        for q in query:
-            result.append({
-                'LocationBuilding': q['edificio'],
-                'LocationFloor': q['piano'],
-                'LocationNotes': q['note'],
-            })
+        result = {
+            'LocationBuilding': query['edificio'],
+            'LocationFloor': query['piano'],
+            'LocationNotes': query['note'],
+        }
         return result
 
 
