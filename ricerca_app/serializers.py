@@ -727,7 +727,7 @@ class LaboratoriesListSerializer(CreateUpdateAbstract):
             'LaboratoryName': query['nome_laboratorio'],
             'Area': query['ambito'],
             'DepartmentName': query['dipartimento_riferimento'],
-            'DepartmentId': query['id_dipartimento_riferimento'],
+            'DepartmentId': query['id_dipartimento_riferimento__dip_cod'],
             'Dimension': query['sede_dimensione'],
             'ScientificDirector': query['responsabile_scientifico'],
             'ScientificDirectorId': query['matricola_responsabile_scientifico'],

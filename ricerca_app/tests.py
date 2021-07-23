@@ -1305,6 +1305,44 @@ class ApiDepartmentsListUnitTest(TestCase):
             'results'][0]['DepartmentName'] == 'Dipartimento di Letteratura'
 
 
+class ApiDepartmentsFilterListUnitTest(TestCase):
+
+    def test_apidepartmentsfilterlist(self):
+        req = Client()
+
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': '001',
+            'dip_des_it': 'Dipartimento di Matematica e Informatica',
+            'dip_des_eng': 'Department of Math and Computer Science',
+            'dip_nome_breve': 'DEMACS',
+        })
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 2,
+            'dip_cod': '002',
+            'dip_des_it': 'Dipartimento di Letteratura',
+            'dip_des_eng': 'Department of Literature',
+            'dip_nome_breve': 'LIT',
+        })
+
+        url = reverse('ricerca:departmentsfilterlist')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()[
+            'results'][0]['DepartmentName'] == 'Department of Literature'
+
+        data = {'lang': 'it'}
+        res = req.get(url, data=data)
+        assert res.json()[
+            'results'][0]['DepartmentName'] == 'Dipartimento di Letteratura'
+
+
 class ApiDepartmentDetailUnitTest(TestCase):
 
     def test_apidepartmentdetail(self):
@@ -1936,6 +1974,13 @@ class ApiLaboratoriesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['LaboratoryId'] == 2
         assert res.json()['results'][0]['Dimension'] == '291'
+
+        data = {'keywords': 'Informatica'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['LaboratoryId'] == 1
+        assert res.json()['results'][0]['Dimension'] == '290'
+        assert res.json()[
+            'results'][0]['ScientificDirector'] == 'Mungari Simone'
 
         res = req.get(url)
         assert len(res.json()['results']) == 2

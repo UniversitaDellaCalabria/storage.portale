@@ -388,6 +388,15 @@ class ApiDepartmentsList(ApiEndpointList):
         return ServiceDipartimento.getDepartmentsList(self.language)
 
 
+class ApiDepartmentsFilterList(ApiEndpointListSupport):
+    description = 'La funzione restituisce la lista dei dipartimenti senza paginazione'
+    serializer_class = DepartmentsListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDipartimento.getDepartmentsList(self.language)
+
+
 class ApiDepartmentDetail(ApiEndpointDetail):
     description = 'La funzione restituisce uno specifico dipartimento'
     serializer_class = DepartmentsListSerializer
@@ -496,13 +505,14 @@ class ApiLaboratoriesList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
+        keywords = self.request.query_params.get('keywords')
         ambito = self.request.query_params.get('area')
         dip = self.request.query_params.get('department')
 
-        return ServiceLaboratorio.getLaboratoriesList(ambito, dip)
+        return ServiceLaboratorio.getLaboratoriesList(keywords, ambito, dip)
 
 
-class ApiLaboratoriesAreasList(ApiEndpointListSupport):
+class ApiLaboratoriesAreasList(ApiEndpointList):
     description = 'La funzione restituisce la lista degli ambiti dei laboratori'
     serializer_class = LaboratoriesAreasListSerializer
     filter_backends = []
