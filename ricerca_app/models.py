@@ -1146,6 +1146,12 @@ class DidatticaTestiRegolamento(InsModAbstract):
     clob_txt_eng = models.TextField(
         db_column='CLOB_TXT_ENG', blank=True, null=True)
 
+    testo_regdid_url = models.CharField(
+        db_column='TESTO_REGDID_URL',
+        max_length=1024,
+        blank=True,
+        null=True)
+
     profilo = models.TextField(db_column='PROFILO', blank=True, null=True)
 
     profilo_eng = models.TextField(
