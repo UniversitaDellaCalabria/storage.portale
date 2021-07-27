@@ -209,6 +209,11 @@ class ApiCdSInfoUnitTest(TestCase):
             'tipo_testo_regdid_cod': 'DESC_COR_BRE',
         })
         DidatticaTestiRegolamentoUnitTest.create_didatticaTestiRegolamento(**{
+            'txt_id': 3,
+            'regdid': reg,
+            'tipo_testo_regdid_cod': 'URL_CDS_VIDEO',
+        })
+        DidatticaTestiRegolamentoUnitTest.create_didatticaTestiRegolamento(**{
             'txt_id': 2,
             'regdid': reg,
             'tipo_testo_regdid_cod': 'FUNZIONI',

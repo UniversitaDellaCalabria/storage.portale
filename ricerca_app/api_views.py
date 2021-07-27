@@ -165,6 +165,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             'regdid__regdid_id',
             'clob_txt_ita',
             'clob_txt_eng',
+            'testo_regdid_url',
             'tipo_testo_regdid_cod',
             'profilo',
             'profilo_eng')
@@ -188,7 +189,10 @@ class ApiCdSDetail(ApiEndpointDetail):
         res[0]['PROVA_FINALE_2'] = None
 
         for text in texts:
-            if text['tipo_testo_regdid_cod'] != 'FUNZIONI' and text['tipo_testo_regdid_cod'] != 'COMPETENZE' and text['tipo_testo_regdid_cod'] != 'SBOCCHI':
+            if "URL" in text['tipo_testo_regdid_cod']:
+                res[0][text['tipo_testo_regdid_cod']] = text['testo_regdid_url']
+
+            elif text['tipo_testo_regdid_cod'] != 'FUNZIONI' and text['tipo_testo_regdid_cod'] != 'COMPETENZE' and text['tipo_testo_regdid_cod'] != 'SBOCCHI':
                 if text['clob_txt_eng'] is None and self.language == "en":
                     res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_ita']
                 else:
