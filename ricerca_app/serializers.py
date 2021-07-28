@@ -82,7 +82,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
-            'CdSIntro': query['INTRO_CDS_FMT'],
+            'CdSIntro': query['INTRO_CDS_FMT'] if query['INTRO_CDS_FMT'] is not None else query['DESC_COR_BRE'],
             'CdSDoc': query['URL_CDS_DOC'],
             'CdSVideo': query['URL_CDS_VIDEO'],
             'CdSGoals': query['OBB_SPEC'],
