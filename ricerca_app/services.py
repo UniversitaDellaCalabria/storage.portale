@@ -851,16 +851,31 @@ class ServicePersonale:
         return final_query
 
     @staticmethod
-    def getStructuresList(keywords=None):
+    def getStructuresList(keywords=None, father=None):
+
         query_keywords = Q()
-        if keywords is not None:
+
+        if father == 'None':
+            query = UnitaOrganizzativa.objects.filter(uo_padre=None).values(
+                "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
+
+            return query
+
+        elif father is not None:
+
+            query = UnitaOrganizzativa.objects.filter(uo_padre=father).values(
+                "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
+            return query
+
+        elif keywords is not None:
             for k in keywords.split(" "):
                 q_denominazione = Q(denominazione__icontains=k)
                 query_keywords &= q_denominazione
-
         query = UnitaOrganizzativa.objects.filter(query_keywords).values(
             "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
         query = query.filter(dt_fine_val__gte=datetime.datetime.today())
+
+
         return query
 
     @staticmethod
@@ -971,7 +986,7 @@ class ServicePersonale:
 class ServiceLaboratorio:
 
     @staticmethod
-    def getLaboratoriesList(keywords, ambito, dip):
+    def getLaboratoriesList(keywords, ambito, dip, erc1):
         query_keywords = Q()
         query_ambito = Q()
         query_dip = Q()
@@ -984,6 +999,7 @@ class ServiceLaboratorio:
             query_ambito = Q(ambito__exact=ambito)
         if dip:
             query_dip = Q(id_dipartimento_riferimento__dip_cod__exact=dip)
+
         query = LaboratorioDatiBase.objects.filter(
             query_keywords, query_ambito, query_dip
         ).values(
@@ -1067,3 +1083,14 @@ class ServiceLaboratorio:
     def getLaboratoriesAreasList():
         return LaboratorioDatiBase.objects.all().values(
             "ambito").distinct().order_by("ambito")
+
+    @staticmethod
+    def getErc1List(erc0):
+        if erc0:
+
+            query = LaboratorioDatiErc1.objects.filter(id_ricerca_erc1__ricerca_erc0_cod=erc0).values('id_ricerca_erc1').distinct()
+        else:
+
+            query = LaboratorioDatiErc1.objects.values('id_ricerca_erc1').distinct()
+
+        return query

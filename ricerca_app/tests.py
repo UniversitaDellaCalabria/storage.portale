@@ -1559,6 +1559,7 @@ class ApiStructuresListUnitTest(TestCase):
             'uo': '1',
             'ds_tipo_nodo': 'rettorato',
             'denominazione': 'RETTORATO',
+            'uo_padre' : '1',
             'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
@@ -1589,14 +1590,23 @@ class ApiStructuresListUnitTest(TestCase):
 
         res = req.get(url)
 
-        assert res.json()['results'][0]['StructureTypeName'] == 'rettorato'
-        assert res.json()['results'][1]['StructureId'] == '2'
-        assert len(res.json()['results']) == 3
+        data = {'father': 'None'}
+        res = req.get(url, data=data)
+
+        assert res.json()['results'][1]['StructureTypeName'] == 'uffici'
+        assert res.json()['results'][0]['StructureId'] == '2'
+        assert len(res.json()['results']) == 2
 
         data = {'keywords': 'Direzione'}
 
         res = req.get(url, data=data)
+
         assert res.json()['results'][0]['StructureId'] == '2'
+
+        data = {'father': '1'}
+        res = req.get(url, data=data)
+
+        assert res.json()['results'][0]['StructureId'] == '1'
 
         res = req.get(url_filter)
 
@@ -2218,3 +2228,51 @@ class ApiLaboratoriesAreasListUnitTest(TestCase):
         res = req.get(url)
 
         assert len(res.json()['results']) == 2
+
+
+class ApiErc1ListUnitTest(TestCase):
+
+    def test_apiLaboratoriesAreasList(self):
+        req = Client()
+
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+            'description_en': 'IT',
+        })
+        erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+        l1 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 1,
+            'nome_laboratorio': 'Informatica',
+            'ambito': 'Tecnico',
+            'dipartimento_riferimento': 'Informatica',
+            'sede_dimensione': "290",
+            'responsabile_scientifico': 'Mungari Simone',
+        })
+
+        LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
+            'id': 1,
+            'id_laboratorio_dati': l1,
+            'id_ricerca_erc1': erc1,
+        })
+
+        url = reverse('ricerca:erc1list')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'erc0' : '111'}
+        res = req.get(url, data=data)
+
+        assert res.json()['results'][0]['IdErc1'] == 1
+
+
+        assert len(res.json()['results']) == 1
