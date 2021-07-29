@@ -193,14 +193,13 @@ class ApiCdSDetail(ApiEndpointDetail):
                 res[0][text['tipo_testo_regdid_cod']] = text['testo_regdid_url']
 
             elif text['tipo_testo_regdid_cod'] != 'FUNZIONI' and text['tipo_testo_regdid_cod'] != 'COMPETENZE' and text['tipo_testo_regdid_cod'] != 'SBOCCHI':
-                if text['clob_txt_eng'] is None and self.language == "en":
+                if (text['clob_txt_eng'] is None and self.language != "it") or self.language == 'it':
                     res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_ita']
                 else:
-                    res[0][text['tipo_testo_regdid_cod']] = text[
-                        f'clob_txt_{self.language == "it" and "ita" or "eng"}']
+                    res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_eng']
 
             else:
-                if self.language == "en" and text["profilo_eng"] is None:
+                if (self.language != "it" and text["profilo_eng"] is None) or self.language == 'it':
                     if text["profilo"] != last_profile:
                         last_profile = text["profilo"]
                         list_profiles[last_profile] = {}
@@ -208,12 +207,12 @@ class ApiCdSDetail(ApiEndpointDetail):
                     last_profile = text[f'{self.language == "it" and "profilo" or "profilo_eng"}']
                     list_profiles[last_profile] = {}
 
-                if text["clob_txt_eng"] is None and self.language == "en":
+                if (text["clob_txt_eng"] is None and self.language != "it") or self.language == 'it':
                     list_profiles[last_profile][text['tipo_testo_regdid_cod']
                                                 ] = text["clob_txt_ita"]
                 else:
                     list_profiles[last_profile][text['tipo_testo_regdid_cod']
-                                                ] = text[f'clob_txt_{self.language == "it" and "ita" or "eng"}']
+                                                ] = text['clob_txt_eng']
         res[0]['PROFILO'] = list_profiles
         return res
 
