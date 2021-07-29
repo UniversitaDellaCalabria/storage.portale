@@ -431,7 +431,9 @@ class ApiStructuresList(ApiEndpointList):
 
     def get_queryset(self):
         keywords = self.request.query_params.get('keywords')
-        return ServicePersonale.getStructuresList(keywords)
+        father = self.request.query_params.get('father')
+
+        return ServicePersonale.getStructuresList(keywords, father)
 
 
 class ApiStructuresFilterList(ApiEndpointListSupport):
@@ -511,8 +513,9 @@ class ApiLaboratoriesList(ApiEndpointList):
         keywords = self.request.query_params.get('keywords')
         ambito = self.request.query_params.get('area')
         dip = self.request.query_params.get('department')
+        erc1 = self.request.query_params.get('erc1')
 
-        return ServiceLaboratorio.getLaboratoriesList(keywords, ambito, dip)
+        return ServiceLaboratorio.getLaboratoriesList(keywords, ambito, dip, erc1)
 
 
 class ApiLaboratoriesAreasList(ApiEndpointList):
@@ -522,3 +525,15 @@ class ApiLaboratoriesAreasList(ApiEndpointList):
 
     def get_queryset(self):
         return ServiceLaboratorio.getLaboratoriesAreasList()
+
+
+class ApiErc1List(ApiEndpointList):
+    description = 'La funzione restituisce la lista degli erc1'
+    serializer_class = Erc1ListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        erc0 = self.request.query_params.get('erc0')
+
+        return ServiceLaboratorio.getErc1List(erc0)
