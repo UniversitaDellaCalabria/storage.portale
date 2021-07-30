@@ -184,11 +184,6 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiStructureDetail.as_view(),
                         name='structuredetail'),
 
-    urlpatterns += path(
-        '{}/structures/<str:structureid>/personnel/'.format(base_url),
-        api_views.ApiStructurePersonnelList.as_view(),
-        name='structurepersonnel'),
-
     urlpatterns += path('{}/laboratories/<str:laboratoryid>/'.format(base_url),
                         api_views.ApiLaboratoryDetail.as_view(),
                         name='laboratorydetail'),

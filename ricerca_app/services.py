@@ -710,10 +710,13 @@ class ServicePersonale:
             keywords=None,
             structureid=None,
             structuretypes=None,
-            roles=None):
+            roles=None,
+            structuretree=None):
+
         query_keywords = Q()
         query_structure = Q()
         query_roles = Q()
+        query_structuretree = Q()
         if keywords is not None:
             for k in keywords.split(" "):
                 q_cognome = Q(cognome__icontains=k)
@@ -723,11 +726,16 @@ class ServicePersonale:
         if roles is not None:
             roles = roles.split(",")
             query_roles = Q(cd_ruolo__in=roles)
+        if structuretree is not None:
+            query_structuretree = ServicePersonale.getStructurePersonnelChild(
+                Q(), structuretree)
+            query_structuretree |= Q(aff_org=structuretree)
 
         query = Personale.objects.filter(
             query_keywords,
             query_structure,
             query_roles,
+            query_structuretree,
             flg_cessato=0,
             aff_org__isnull=False)
 
@@ -772,7 +780,7 @@ class ServicePersonale:
             'structure_type_cod',
             'structure_type_name')
 
-        if structureid is None and structuretypes is None:
+        if structureid is None and structuretypes is None and structuretree is None:
             query2 = Personale.objects.filter(
                 query_keywords,
                 query_roles,
@@ -980,22 +988,6 @@ class ServicePersonale:
                 q[c['unitaorganizzativacontatti__cd_tipo_cont']].append(
                     c['unitaorganizzativacontatti__contatto'])
         return query
-
-    @staticmethod
-    def getStructurePersonnel(structureid=None):
-
-        structures_tree = ServicePersonale.getStructurePersonnelChild(
-            Q(), structureid)
-
-        structures_tree |= Q(aff_org=structureid)
-
-        query = Personale.objects.filter(structures_tree, flg_cessato=0)
-
-        return query.values(
-            "nome",
-            "middle_name",
-            "cognome",
-            "matricola").distinct().order_by('cognome')
 
     @staticmethod
     def getStructurePersonnelChild(structures_tree, structureid=None):

@@ -423,8 +423,9 @@ class ApiAddressbookList(ApiEndpointList):
         structureid = self.request.query_params.get('structureid')
         structuretypes = self.request.query_params.get('structuretypes')
         roles = self.request.query_params.get('roles')
+        structuretree = self.request.query_params.get('structuretree')
         return ServicePersonale.getAddressbook(
-            keywords, structureid, structuretypes, roles)
+            keywords, structureid, structuretypes, roles, structuretree)
 
 
 class ApiStructuresList(ApiEndpointList):
@@ -541,14 +542,3 @@ class ApiErc1List(ApiEndpointList):
         erc0 = self.request.query_params.get('erc0')
 
         return ServiceLaboratorio.getErc1List(erc0)
-
-
-class ApiStructurePersonnelList(ApiEndpointListSupport):
-    description = 'La funzione restituisce la lista del personale di una struttura organizzativa'
-    serializer_class = StructurePersonnelListSerializer
-    filter_backends = []
-
-    def get_queryset(self):
-        structureid = self.kwargs['structureid']
-
-        return ServicePersonale.getStructurePersonnel(structureid)
