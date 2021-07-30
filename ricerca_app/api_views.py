@@ -87,7 +87,7 @@ class ApiEndpointListSupport(ApiEndpointList):
 
         queryset = self.get_queryset()
 
-        if queryset is not None:
+        if queryset is not None and len(queryset) > 0:
             serializer = self.get_serializer(queryset, many=True)
             return Response({
                 'results': serializer.data,
