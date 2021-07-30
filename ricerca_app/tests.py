@@ -1419,6 +1419,67 @@ class ApiAddressbookListUnitTest(TestCase):
             'aff_org': 99,
             'cod_fis': 'LNL1',
         })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'uo_padre': '1',
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '3',
+            'uo_padre': '2',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 10,
+            'nome': 'Simone10',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 10,
+            'matricola': '111119',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+            'cod_fis': 'SMN10',
+
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 55,
+            'nome': 'Simone2',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 55,
+            'matricola': '111166',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 2,
+            'cod_fis': 'SMN25',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 13,
+            'nome': 'Simone13',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 13,
+            'matricola': '1111145',
+            'fl_docente': 0,
+            'flg_cessato': 1,
+            'aff_org': 2,
+            'cod_fis': 'SMN13',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 4,
+            'nome': 'Simone4',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 4,
+            'matricola': '111115',
+            'fl_docente': 0,
+            'flg_cessato': 0,
+            'aff_org': 3,
+            'cod_fis': 'SMN4',
+        })
         PersonaleUnitTest.create_personale(**{
             'id': 3,
             'nome': 'Zlatan',
@@ -1526,7 +1587,7 @@ class ApiAddressbookListUnitTest(TestCase):
 
         # GET
         res = req.get(url)
-        assert len(res.json()['results']) == 3
+        assert len(res.json()['results']) == 6
         assert res.json()['results'][2]['Email'][0] == 'email@email'
         assert res.json()[
             'results'][2]['Structure'] == 'Dipartimento di Matematica e Informatica'
@@ -1538,7 +1599,7 @@ class ApiAddressbookListUnitTest(TestCase):
 
         data = {'keywords': 'Mungar'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 4
         assert res.json()['results'][0]['Function'] is None
 
         data = {'keywords': 'Mungar', 'structureid': '99'}
@@ -1548,6 +1609,15 @@ class ApiAddressbookListUnitTest(TestCase):
         data = {'roles': 'AM'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['Name'] == 'Messi Lionel'
+
+        data = {'structuretree': '1'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 4
+
+        data = {'structuretree': '2'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
 
 
 class ApiStructuresListUnitTest(TestCase):
@@ -2275,95 +2345,3 @@ class ApiErc1ListUnitTest(TestCase):
         assert res.json()['results'][0]['IdErc1'] == 1
 
         assert len(res.json()['results']) == 1
-
-
-class ApiStructurePersonnelListUnitTest(TestCase):
-
-    def test_apistructurepersonnellist(self):
-        req = Client()
-
-        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
-            'uo': '1',
-        })
-        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
-            'uo': '2',
-            'uo_padre': '1',
-        })
-        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
-            'uo': '3',
-            'uo_padre': '2',
-        })
-        PersonaleUnitTest.create_personale(**{
-            'id': 1,
-            'nome': 'Simone',
-            'cognome': 'Mungari',
-            'cd_ruolo': 'PA',
-            'ds_ruolo_locale': 'Professore Associato',
-            'id_ab': 1,
-            'matricola': '111112',
-            'fl_docente': 1,
-            'flg_cessato': 0,
-            'aff_org': 1,
-            'cod_fis': 'SMN1',
-
-        })
-        PersonaleUnitTest.create_personale(**{
-            'id': 2,
-            'nome': 'Simone2',
-            'cognome': 'Mungari',
-            'cd_ruolo': 'PA',
-            'ds_ruolo_locale': 'Professore Associato',
-            'id_ab': 2,
-            'matricola': '111113',
-            'fl_docente': 1,
-            'flg_cessato': 0,
-            'aff_org': 2,
-            'cod_fis': 'SMN2',
-        })
-        PersonaleUnitTest.create_personale(**{
-            'id': 3,
-            'nome': 'Simone3',
-            'cognome': 'Mungari',
-            'cd_ruolo': 'PA',
-            'ds_ruolo_locale': 'Professore Associato',
-            'id_ab': 3,
-            'matricola': '111114',
-            'fl_docente': 0,
-            'flg_cessato': 1,
-            'aff_org': 2,
-            'cod_fis': 'SMN3',
-        })
-        PersonaleUnitTest.create_personale(**{
-            'id': 4,
-            'nome': 'Simone4',
-            'cognome': 'Mungari',
-            'cd_ruolo': 'PA',
-            'ds_ruolo_locale': 'Professore Associato',
-            'id_ab': 4,
-            'matricola': '111115',
-            'fl_docente': 0,
-            'flg_cessato': 0,
-            'aff_org': 3,
-            'cod_fis': 'SMN4',
-        })
-
-        url1 = reverse('ricerca:structurepersonnel', kwargs={
-            'structureid': "1"})
-
-        url2 = reverse('ricerca:structurepersonnel', kwargs={
-            'structureid': "2"})
-
-        # check url
-        res1 = req.get(url1)
-        res2 = req.get(url2)
-
-        assert res1.status_code == 200
-        assert res2.status_code == 200
-
-        # GET
-
-        res1 = req.get(url1)
-        res2 = req.get(url2)
-
-        assert len(res1.json()['results']) == 3
-        assert len(res2.json()['results']) == 2

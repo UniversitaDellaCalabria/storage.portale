@@ -763,23 +763,3 @@ class Erc1ListSerializer(CreateUpdateAbstract):
         return {
             'IdErc1': query['id_ricerca_erc1'],
         }
-
-
-class StructurePersonnelListSerializer(CreateUpdateAbstract):
-    def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query,
-                                 str(self.context['language']).lower()))
-        return data
-
-    @staticmethod
-    def to_dict(query,
-                req_lang='en'):
-        full_name = query['cognome'] + " " + query['nome'] + \
-            (" " + query['middle_name']
-             if query['middle_name'] is not None else "")
-        return {
-            'Name': full_name,
-            'ID': query['matricola'],
-        }
