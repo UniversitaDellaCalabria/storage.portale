@@ -1610,8 +1610,8 @@ class ApiStructuresListUnitTest(TestCase):
 
         res = req.get(url_filter)
 
-        assert res.json()['results'][0]['StructureTypeName'] == 'rettorato'
-        assert res.json()['results'][1]['StructureId'] == '2'
+        assert res.json()['results'][0]['StructureTypeName'] == 'direzione'
+        assert res.json()['results'][1]['StructureId'] == '1'
         assert len(res.json()['results']) == 3
 
 

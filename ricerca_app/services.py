@@ -873,7 +873,7 @@ class ServicePersonale:
             "uo",
             "denominazione",
             "ds_tipo_nodo",
-            "cd_tipo_nodo").distinct()
+            "cd_tipo_nodo").distinct().order_by('denominazione')
 
         return query
 
@@ -995,7 +995,7 @@ class ServicePersonale:
             "nome",
             "middle_name",
             "cognome",
-            "matricola").distinct()
+            "matricola").distinct().order_by('cognome')
 
     @staticmethod
     def getStructurePersonnelChild(structures_tree, structureid=None):
