@@ -509,5 +509,3 @@ class LaboratorioUbicazioneUnitTest(TestCase):
 
         obj = LaboratorioUbicazione.objects.create(**data)
         return obj
-
-

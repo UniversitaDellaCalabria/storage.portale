@@ -1247,6 +1247,28 @@ class FunzioniUnitaOrganizzativa(models.Model):
         db_table = 'FUNZIONI_UNITA_ORGANIZZATIVA'
 
 
+class LaboratorioAltriDipartimenti(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    id_laboratorio_dati = models.ForeignKey(
+        'LaboratorioDatiBase',
+        models.DO_NOTHING,
+        db_column='ID_LABORATORIO_DATI',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    id_dip = models.ForeignKey(
+        DidatticaDipartimento,
+        models.DO_NOTHING,
+        db_column='id_dip',
+        blank=True,
+        null=True)
+    descr_dip_lab = models.CharField(max_length=400, blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_ALTRI_DIPARTIMENTI'
+
+
 class LaboratorioAttivita(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)
@@ -1455,6 +1477,12 @@ class LaboratorioDatiBase(models.Model):
         null=True,
         related_name="matricola_preposto_sicurezza_personale",
         to_field="matricola")  # Field name made lowercase.
+    # Field name made lowercase.
+    sito_web = models.CharField(
+        db_column='SITO_WEB',
+        max_length=1024,
+        blank=True,
+        null=True)
 
     class Meta:
         managed = True

@@ -193,13 +193,15 @@ class ApiCdSDetail(ApiEndpointDetail):
                 res[0][text['tipo_testo_regdid_cod']] = text['testo_regdid_url']
 
             elif text['tipo_testo_regdid_cod'] != 'FUNZIONI' and text['tipo_testo_regdid_cod'] != 'COMPETENZE' and text['tipo_testo_regdid_cod'] != 'SBOCCHI':
-                if (text['clob_txt_eng'] is None and self.language != "it") or self.language == 'it':
+                if (text['clob_txt_eng'] is None and self.language !=
+                        "it") or self.language == 'it':
                     res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_ita']
                 else:
                     res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_eng']
 
             else:
-                if (self.language != "it" and text["profilo_eng"] is None) or self.language == 'it':
+                if (self.language !=
+                        "it" and text["profilo_eng"] is None) or self.language == 'it':
                     if text["profilo"] != last_profile:
                         last_profile = text["profilo"]
                         list_profiles[last_profile] = {}
@@ -207,7 +209,8 @@ class ApiCdSDetail(ApiEndpointDetail):
                     last_profile = text[f'{self.language == "it" and "profilo" or "profilo_eng"}']
                     list_profiles[last_profile] = {}
 
-                if (text["clob_txt_eng"] is None and self.language != "it") or self.language == 'it':
+                if (text["clob_txt_eng"] is None and self.language !=
+                        "it") or self.language == 'it':
                     list_profiles[last_profile][text['tipo_testo_regdid_cod']
                                                 ] = text["clob_txt_ita"]
                 else:
@@ -515,7 +518,8 @@ class ApiLaboratoriesList(ApiEndpointList):
         dip = self.request.query_params.get('department')
         erc1 = self.request.query_params.get('erc1')
 
-        return ServiceLaboratorio.getLaboratoriesList(keywords, ambito, dip, erc1)
+        return ServiceLaboratorio.getLaboratoriesList(
+            keywords, ambito, dip, erc1)
 
 
 class ApiLaboratoriesAreasList(ApiEndpointList):
@@ -537,3 +541,14 @@ class ApiErc1List(ApiEndpointList):
         erc0 = self.request.query_params.get('erc0')
 
         return ServiceLaboratorio.getErc1List(erc0)
+
+
+class ApiStructurePersonnelList(ApiEndpointListSupport):
+    description = 'La funzione restituisce la lista del personale di una struttura organizzativa'
+    serializer_class = StructurePersonnelListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        structureid = self.kwargs['structureid']
+
+        return ServicePersonale.getStructurePersonnel(structureid)

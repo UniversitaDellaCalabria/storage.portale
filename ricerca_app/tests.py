@@ -1559,7 +1559,7 @@ class ApiStructuresListUnitTest(TestCase):
             'uo': '1',
             'ds_tipo_nodo': 'rettorato',
             'denominazione': 'RETTORATO',
-            'uo_padre' : '1',
+            'uo_padre': '1',
             'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
@@ -2269,10 +2269,101 @@ class ApiErc1ListUnitTest(TestCase):
 
         # GET
 
-        data = {'erc0' : '111'}
+        data = {'erc0': '111'}
         res = req.get(url, data=data)
 
         assert res.json()['results'][0]['IdErc1'] == 1
 
-
         assert len(res.json()['results']) == 1
+
+
+class ApiStructurePersonnelListUnitTest(TestCase):
+
+    def test_apistructurepersonnellist(self):
+        req = Client()
+
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'uo_padre': '1',
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '3',
+            'uo_padre': '2',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+            'cod_fis': 'SMN1',
+
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Simone2',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 2,
+            'matricola': '111113',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 2,
+            'cod_fis': 'SMN2',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 3,
+            'nome': 'Simone3',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 3,
+            'matricola': '111114',
+            'fl_docente': 0,
+            'flg_cessato': 1,
+            'aff_org': 2,
+            'cod_fis': 'SMN3',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 4,
+            'nome': 'Simone4',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 4,
+            'matricola': '111115',
+            'fl_docente': 0,
+            'flg_cessato': 0,
+            'aff_org': 3,
+            'cod_fis': 'SMN4',
+        })
+
+        url1 = reverse('ricerca:structurepersonnel', kwargs={
+            'structureid': "1"})
+
+        url2 = reverse('ricerca:structurepersonnel', kwargs={
+            'structureid': "2"})
+
+        # check url
+        res1 = req.get(url1)
+        res2 = req.get(url2)
+
+        assert res1.status_code == 200
+        assert res2.status_code == 200
+
+        # GET
+
+        res1 = req.get(url1)
+        res2 = req.get(url2)
+
+        assert len(res1.json()['results']) == 3
+        assert len(res2.json()['results']) == 2

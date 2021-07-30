@@ -854,27 +854,26 @@ class ServicePersonale:
     def getStructuresList(keywords=None, father=None):
 
         query_keywords = Q()
+        query_father = Q()
 
         if father == 'None':
-            query = UnitaOrganizzativa.objects.filter(uo_padre=None).values(
-                "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
-
-            return query
-
+            query_father = Q(uo_padre__isnull=True)
         elif father is not None:
+            query_father = Q(uo_padre=father)
 
-            query = UnitaOrganizzativa.objects.filter(uo_padre=father).values(
-                "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
-            return query
-
-        elif keywords is not None:
+        if keywords is not None:
             for k in keywords.split(" "):
                 q_denominazione = Q(denominazione__icontains=k)
                 query_keywords &= q_denominazione
-        query = UnitaOrganizzativa.objects.filter(query_keywords).values(
-            "uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo").distinct()
-        query = query.filter(dt_fine_val__gte=datetime.datetime.today())
 
+        query = UnitaOrganizzativa.objects.filter(
+            query_keywords,
+            query_father,
+            dt_fine_val__gte=datetime.datetime.today()).values(
+            "uo",
+            "denominazione",
+            "ds_tipo_nodo",
+            "cd_tipo_nodo").distinct()
 
         return query
 
@@ -982,6 +981,34 @@ class ServicePersonale:
                     c['unitaorganizzativacontatti__contatto'])
         return query
 
+    @staticmethod
+    def getStructurePersonnel(structureid=None):
+
+        structures_tree = ServicePersonale.getStructurePersonnelChild(
+            Q(), structureid)
+
+        structures_tree |= Q(aff_org=structureid)
+
+        query = Personale.objects.filter(structures_tree, flg_cessato=0)
+
+        return query.values(
+            "nome",
+            "middle_name",
+            "cognome",
+            "matricola").distinct()
+
+    @staticmethod
+    def getStructurePersonnelChild(structures_tree, structureid=None):
+        child_structures = UnitaOrganizzativa.objects.filter(
+            uo_padre=structureid).values("uo")
+
+        for child in child_structures:
+            structures_tree |= Q(aff_org=child["uo"])
+            structures_tree = ServicePersonale.getStructurePersonnelChild(
+                structures_tree, child['uo'])
+
+        return structures_tree
+
 
 class ServiceLaboratorio:
 
@@ -1088,9 +1115,11 @@ class ServiceLaboratorio:
     def getErc1List(erc0):
         if erc0:
 
-            query = LaboratorioDatiErc1.objects.filter(id_ricerca_erc1__ricerca_erc0_cod=erc0).values('id_ricerca_erc1').distinct()
+            query = LaboratorioDatiErc1.objects.filter(
+                id_ricerca_erc1__ricerca_erc0_cod=erc0).values('id_ricerca_erc1').distinct()
         else:
 
-            query = LaboratorioDatiErc1.objects.values('id_ricerca_erc1').distinct()
+            query = LaboratorioDatiErc1.objects.values(
+                'id_ricerca_erc1').distinct()
 
         return query
