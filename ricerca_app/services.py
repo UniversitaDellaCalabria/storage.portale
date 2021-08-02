@@ -866,7 +866,7 @@ class ServicePersonale:
 
         if father == 'None':
             query_father = Q(uo_padre__isnull=True)
-        elif father is not None and father != '':
+        elif father:
             query_father = Q(uo_padre=father)
 
         if keywords is not None:
