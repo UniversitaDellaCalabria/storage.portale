@@ -446,7 +446,8 @@ class ApiStructuresFilterList(ApiEndpointListSupport):
     filter_backends = []
 
     def get_queryset(self):
-        return ServicePersonale.getStructuresList()
+        father = self.request.query_params.get('father')
+        return ServicePersonale.getStructuresList(father=father)
 
 
 class ApiStructureTypesList(ApiEndpointListSupport):
