@@ -2072,6 +2072,33 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'matricola_responsabile_scientifico': p2,
         })
 
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+            'description_en': 'IT',
+        })
+
+        erc1_1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+
+        lab1 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 3,
+            'matricola_referente_compilazione': p1,
+            'nome_laboratorio': 'LAB2',
+            'id_dipartimento_riferimento': dip2,
+            'ambito': 'Tecnologico',
+            'matricola_responsabile_scientifico': p2,
+        })
+
+        LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
+            'id': 3,
+            'id_laboratorio_dati': lab1,
+            'id_ricerca_erc1': erc1_1,
+        })
+
         url = reverse('ricerca:laboratorieslist')
 
         # check url
@@ -2110,8 +2137,12 @@ class ApiLaboratoriesListUnitTest(TestCase):
         assert res.json()[
             'results'][0]['ScientificDirector'] == 'Mungari Simone'
 
+        data = {'erc1': 'cod1_erc1'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['LaboratoryId'] == 3
+
         res = req.get(url)
-        assert len(res.json()['results']) == 2
+        assert len(res.json()['results']) == 3
 
 
 class ApiLaboratoryDetailUnitTest(TestCase):
@@ -2388,3 +2419,77 @@ class ApiErc1ListUnitTest(TestCase):
         assert res.json()['results'][0]['IdErc1'] == 1
 
         assert len(res.json()['results']) == 1
+
+
+class ApiErc0ListUnitTest(TestCase):
+
+    def test_apiLaboratoriesAreasList(self):
+
+        req = Client()
+
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+            'description_en': 'IT',
+        })
+
+        erc01 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '112',
+            'description': 'ITA',
+            'description_en': 'ITA',
+        })
+
+        erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+
+        l1 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 1,
+            'nome_laboratorio': 'Informatica',
+            'ambito': 'Tecnico',
+            'dipartimento_riferimento': 'Informatica',
+            'sede_dimensione': "290",
+            'responsabile_scientifico': 'Mungari Simone',
+        })
+
+        LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
+            'id': 1,
+            'id_laboratorio_dati': l1,
+            'id_ricerca_erc1': erc1,
+        })
+
+        erc12 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc12',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc01,
+        })
+
+        l2 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 2,
+            'nome_laboratorio': 'Informatica',
+            'ambito': 'Tecnico',
+            'dipartimento_riferimento': 'Informatica',
+            'sede_dimensione': "291",
+            'responsabile_scientifico': 'Mungari Simone',
+        })
+
+        LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
+            'id': 2,
+            'id_laboratorio_dati': l2,
+            'id_ricerca_erc1': erc12,
+        })
+
+        url = reverse('ricerca:erc0list')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        assert res.json()['results'][0]['IdErc0'] == '111'
+
+        assert len(res.json()['results']) == 2

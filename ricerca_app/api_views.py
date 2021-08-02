@@ -543,3 +543,13 @@ class ApiErc1List(ApiEndpointList):
         erc0 = self.request.query_params.get('erc0')
 
         return ServiceLaboratorio.getErc1List(erc0)
+
+
+class ApiErc0List(ApiEndpointList):
+    description = 'La funzione restituisce la lista degli erc0'
+    serializer_class = Erc0ListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceLaboratorio.getErc0List()

@@ -199,3 +199,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/erc1list/'.format(base_url),
                         api_views.ApiErc1List.as_view(),
                         name='erc1list'),
+
+    urlpatterns += path('{}/erc0list/'.format(base_url),
+                        api_views.ApiErc0List.as_view(),
+                        name='erc0list'),

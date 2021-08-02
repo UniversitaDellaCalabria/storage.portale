@@ -1024,6 +1024,7 @@ class ServiceLaboratorio:
         query_keywords = Q()
         query_ambito = Q()
         query_dip = Q()
+        query_erc1 = Q()
 
         if keywords:
             for k in keywords.split(" "):
@@ -1034,8 +1035,13 @@ class ServiceLaboratorio:
         if dip:
             query_dip = Q(id_dipartimento_riferimento__dip_cod__exact=dip)
 
+        if erc1:
+            erc1_allowed = erc1.split(",")
+            query_erc1 = Q(
+                laboratoriodatierc1__id_ricerca_erc1__cod_erc1__in=erc1_allowed)
+
         query = LaboratorioDatiBase.objects.filter(
-            query_keywords, query_ambito, query_dip
+            query_keywords, query_ambito, query_dip, query_erc1
         ).values(
             'id',
             'nome_laboratorio',
@@ -1123,10 +1129,21 @@ class ServiceLaboratorio:
         if erc0:
 
             query = LaboratorioDatiErc1.objects.filter(
-                id_ricerca_erc1__ricerca_erc0_cod=erc0).values('id_ricerca_erc1').distinct()
+                id_ricerca_erc1__ricerca_erc0_cod=erc0).values(
+                'id_ricerca_erc1', 'id_ricerca_erc1__descrizione').distinct()
         else:
 
             query = LaboratorioDatiErc1.objects.values(
-                'id_ricerca_erc1').distinct()
+                'id_ricerca_erc1', 'id_ricerca_erc1__descrizione').distinct()
+
+        return query
+
+    @staticmethod
+    def getErc0List():
+
+        query = LaboratorioDatiErc1.objects.all(). values(
+            'id_ricerca_erc1__ricerca_erc0_cod__erc0_cod',
+            'id_ricerca_erc1__ricerca_erc0_cod__description',
+            'id_ricerca_erc1__ricerca_erc0_cod__description_en').distinct()
 
         return query
