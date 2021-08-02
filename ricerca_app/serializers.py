@@ -579,16 +579,39 @@ class StructuresDetailSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
+        personnel_functions = None
+        if query['FunzioniPersonale'] is not None:
+            personnel_functions = StructuresDetailSerializer.to_dict_personnel_functions(
+                query['FunzioniPersonale'])
         return {
             'StructureId': query['uo'],
             'StructureName': query['denominazione'],
+            'StructureTypeName': query['ds_tipo_nodo'],
+            'StructureTypeCOD': query['cd_tipo_nodo'],
             'StructureFatherId': query['uo_padre'],
             'StructureFatherName': query['denominazione_padre'],
             'StructureEmail': query['EMAIL'],
             'StructurePec': query['PEC'],
             'StructureTfr': query['TFR'],
-
+            'StructurePersonnelFunctions': personnel_functions
         }
+
+    @staticmethod
+    def to_dict_personnel_functions(query):
+        result = []
+        for q in query:
+            if q['cod_fis__matricola'] is None:
+                full_name = None
+            else:
+                full_name = q['cod_fis__cognome'] + " " + q['cod_fis__nome'] + \
+                    (" " + q['cod_fis__middle_name']
+                     if q['cod_fis__middle_name'] is not None else "")
+            result.append({
+                'ID': q['cod_fis__matricola'],
+                'Name': full_name,
+                'Function': q['ds_funzione'],
+            })
+        return result
 
 
 class LaboratoryDetailSerializer(CreateUpdateAbstract):
