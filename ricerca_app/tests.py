@@ -1619,7 +1619,6 @@ class ApiAddressbookListUnitTest(TestCase):
         assert len(res.json()['results']) == 2
 
 
-
 class ApiStructuresListUnitTest(TestCase):
 
     def test_apistructureslist(self):
@@ -1899,6 +1898,34 @@ class ApiStructureDetailUnitTest(TestCase):
     def test_apistructuredetail(self):
         req = Client()
 
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+            'cod_fis': 'SMN1',
+
+        })
+        p2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Lionel',
+            'cognome': 'Messi',
+            'cd_ruolo': 'AM',
+            'ds_ruolo_locale': 'Amministrazione',
+            'id_ab': 2,
+            'matricola': '111113',
+            'fl_docente': 0,
+            'flg_cessato': 0,
+            'aff_org': 99,
+            'cod_fis': 'LNL1',
+        })
+
         u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '1',
             'ds_tipo_nodo': 'facolta',
@@ -1947,6 +1974,22 @@ class ApiStructureDetailUnitTest(TestCase):
             'cd_tipo_cont': tipo_contatto,
             'id_ab': u2,
             'prg_priorita': 2,
+        })
+
+        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+            'id_ab': 1,
+            'ds_funzione': 'Amministrazione',
+            'termine': "2999-12-1",
+            'cod_fis': p1,
+            'unita_organizzativa': u1,
+        })
+
+        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+            'id_ab': 2,
+            'ds_funzione': 'Delega',
+            'termine': None,
+            'cod_fis': p2,
+            'unita_organizzativa': u2,
         })
 
         url = reverse('ricerca:structuredetail', kwargs={

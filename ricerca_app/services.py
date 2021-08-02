@@ -8,7 +8,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaPdsRegolamento, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
-    LaboratorioUbicazione
+    LaboratorioUbicazione, FunzioniUnitaOrganizzativa
 
 
 class ServiceQueryBuilder:
@@ -980,6 +980,8 @@ class ServicePersonale:
             'denominazione',
             'uo_padre',
             'denominazione_padre',
+            "ds_tipo_nodo",
+            "cd_tipo_nodo",
         )
         for q in query:
             for c in contacts_to_take:
@@ -987,6 +989,19 @@ class ServicePersonale:
             for c in contacts:
                 q[c['unitaorganizzativacontatti__cd_tipo_cont']].append(
                     c['unitaorganizzativacontatti__contatto'])
+            funzioni_personale = FunzioniUnitaOrganizzativa.objects.filter(
+                unita_organizzativa__uo=q['uo'],
+                termine__gt=datetime.datetime.now()).values(
+                "ds_funzione",
+                "cod_fis__nome",
+                "cod_fis__cognome",
+                "cod_fis__middle_name",
+                "cod_fis__matricola")
+            if len(funzioni_personale) > 0:
+                q['FunzioniPersonale'] = funzioni_personale
+            else:
+                q['FunzioniPersonale'] = None
+
         return query
 
     @staticmethod
