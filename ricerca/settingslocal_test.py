@@ -219,6 +219,7 @@ LABEL_MAPPING = {
         'RoleDescription': 'Role',
         'ID': 'ID',
         'IdErc1': 'Id Erc1',
+        'IdErc0': 'IdErc0',
         'Name': 'Name',
         'RGroupID': 'Group ID',
         'RGroupName': 'Group Name',
@@ -288,6 +289,7 @@ LABEL_MAPPING = {
         'LaboratoryErc0Cod': 'Erc0 Code',
         'LaboratoryErc0Description': 'Erc0 Description',
         'LaboratoryActivityType': 'Activity Type',
+        'Description':'Description',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -405,6 +407,7 @@ LABEL_MAPPING = {
         'RoleDescription': 'Ruolo',
         'ID': 'ID',
         'IdErc1': 'Id Erc1',
+        'IdErc0': 'IdErc0',
         'Name': 'Nome',
         'RGroupID': 'ID Gruppo di Ricerca',
         'RGroupName': 'Nome Gruppo di Ricerca',
@@ -474,6 +477,7 @@ LABEL_MAPPING = {
         'LaboratoryErc0Cod': 'Codice Erc0',
         'LaboratoryErc0Description': 'Descrizione Erc0',
         'LaboratoryActivityType': 'Tipologia Attività',
+        'Description':'Descrizione',
     }
 }
 
