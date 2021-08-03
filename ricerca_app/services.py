@@ -717,6 +717,7 @@ class ServicePersonale:
         query_structure = Q()
         query_roles = Q()
         query_structuretree = Q()
+
         if keywords is not None:
             for k in keywords.split(" "):
                 q_cognome = Q(cognome__icontains=k)
