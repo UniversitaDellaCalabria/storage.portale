@@ -436,8 +436,9 @@ class ApiStructuresList(ApiEndpointList):
     def get_queryset(self):
         keywords = self.request.query_params.get('keywords')
         father = self.request.query_params.get('father')
+        type = self.request.query_params.get('type')
 
-        return ServicePersonale.getStructuresList(keywords, father)
+        return ServicePersonale.getStructuresList(keywords, father, type)
 
 
 class ApiStructuresFilterList(ApiEndpointListSupport):

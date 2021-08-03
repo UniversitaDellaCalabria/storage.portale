@@ -1627,6 +1627,7 @@ class ApiStructuresListUnitTest(TestCase):
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '1',
             'ds_tipo_nodo': 'rettorato',
+            'cd_tipo_nodo': 'RET',
             'denominazione': 'RETTORATO',
             'uo_padre': '1',
             'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
@@ -1634,12 +1635,14 @@ class ApiStructuresListUnitTest(TestCase):
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '2',
             'ds_tipo_nodo': 'direzione',
+            'cd_tipo_nodo': 'DIR',
             'denominazione': 'DIREZIONE',
             'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '3',
             'ds_tipo_nodo': 'uffici',
+            'cd_tipo_nodo': 'UFF',
             'denominazione': 'UFFICI',
             'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
         })
@@ -1667,18 +1670,22 @@ class ApiStructuresListUnitTest(TestCase):
         assert len(res.json()['results']) == 2
 
         data = {'keywords': 'Direzione'}
-
         res = req.get(url, data=data)
-
         assert res.json()['results'][0]['StructureId'] == '2'
+
+        data = {'type': 'DIR,UFF'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
+        data = {'type': 'DIR,UFF', 'keywords': 'Direzione'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
         data = {'father': '1'}
         res = req.get(url, data=data)
-
         assert res.json()['results'][0]['StructureId'] == '1'
 
         res = req.get(url_filter)
-
         assert res.json()['results'][0]['StructureTypeName'] == 'direzione'
         assert res.json()['results'][1]['StructureId'] == '1'
         assert len(res.json()['results']) == 3

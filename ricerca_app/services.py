@@ -859,10 +859,11 @@ class ServicePersonale:
         return final_query
 
     @staticmethod
-    def getStructuresList(keywords=None, father=None):
+    def getStructuresList(keywords=None, father=None, type=None):
 
         query_keywords = Q()
         query_father = Q()
+        query_type = Q()
 
         if father == 'None':
             query_father = Q(uo_padre__isnull=True)
@@ -874,9 +875,15 @@ class ServicePersonale:
                 q_denominazione = Q(denominazione__icontains=k)
                 query_keywords &= q_denominazione
 
+        if type:
+            for k in type.split(","):
+                q_type = Q(cd_tipo_nodo=k)
+                query_type |= q_type
+
         query = UnitaOrganizzativa.objects.filter(
             query_keywords,
             query_father,
+            query_type,
             dt_fine_val__gte=datetime.datetime.today()).values(
             "uo",
             "denominazione",
