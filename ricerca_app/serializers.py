@@ -638,7 +638,8 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         else:
             location = LaboratoryDetailSerializer.to_dict_location(
                 query['Location'])
-        extra_departments = LaboratoriesListSerializer.to_dict_extra_departments(query['ExtraDepartments'], req_lang)
+        extra_departments = LaboratoriesListSerializer.to_dict_extra_departments(
+            query['ExtraDepartments'], req_lang)
 
         return {
             'LaboratoryId': query['id'],
@@ -749,7 +750,8 @@ class LaboratoriesListSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-        extra_departments = LaboratoriesListSerializer.to_dict_extra_departments(query['ExtraDepartments'], req_lang)
+        extra_departments = LaboratoriesListSerializer.to_dict_extra_departments(
+            query['ExtraDepartments'], req_lang)
         return {
             'LaboratoryId': query['id'],
             'LaboratoryName': query['nome_laboratorio'],
@@ -767,10 +769,8 @@ class LaboratoriesListSerializer(CreateUpdateAbstract):
     def to_dict_extra_departments(query, lang='en'):
         result = []
         for q in query:
-            result.append({
-                'DepartmentID': q['id_dip__dip_cod'],
-                'DepartmentName': q["id_dip__dip_des_it"] if lang == "it" or q['id_dip__dip_des_eng'] is None else q["id_dip__dip_des_eng"],
-            })
+            result.append({'DepartmentID': q['id_dip__dip_cod'], 'DepartmentName': q["id_dip__dip_des_it"]
+                          if lang == "it" or q['id_dip__dip_des_eng'] is None else q["id_dip__dip_des_eng"], })
         return result
 
 

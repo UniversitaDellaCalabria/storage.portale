@@ -1064,8 +1064,13 @@ class ServiceLaboratorio:
 
         for q in query:
             if q['laboratorio_interdipartimentale'] == 'SI':
-                other_dep = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=q['id']).values("id_dip__dip_cod", "id_dip__dip_des_it", "id_dip__dip_des_eng").distinct()
-                q['ExtraDepartments'] = other_dep.order_by("id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
+                other_dep = LaboratorioAltriDipartimenti.objects.filter(
+                    id_laboratorio_dati=q['id']).values(
+                    "id_dip__dip_cod",
+                    "id_dip__dip_des_it",
+                    "id_dip__dip_des_eng").distinct()
+                q['ExtraDepartments'] = other_dep.order_by(
+                    "id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
             else:
                 q['ExtraDepartments'] = []
 
@@ -1123,9 +1128,11 @@ class ServiceLaboratorio:
             id_laboratorio_dati__id=laboratoryid).values(
             "edificio", "piano", "note")
 
-        other_dep = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=laboratoryid).values("id_dip__dip_cod",
-                                                                                                    "id_dip__dip_des_it",
-                                                                                                    "id_dip__dip_des_eng").distinct()
+        other_dep = LaboratorioAltriDipartimenti.objects.filter(
+            id_laboratorio_dati=laboratoryid).values(
+            "id_dip__dip_cod",
+            "id_dip__dip_des_it",
+            "id_dip__dip_des_eng").distinct()
         query = list(query)
         for q in query:
             q['Activities'] = activities
@@ -1139,7 +1146,8 @@ class ServiceLaboratorio:
                 q['Location'] = None
 
             if q['laboratorio_interdipartimentale'] == 'SI':
-                q['ExtraDepartments'] = other_dep.order_by("id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
+                q['ExtraDepartments'] = other_dep.order_by(
+                    "id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
             else:
                 q['ExtraDepartments'] = []
 

@@ -2108,11 +2108,8 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'id_ricerca_erc1': erc1_1,
         })
 
-        LaboratorioAltriDipartimentiUnitTest.create_laboratorioAltriDipartimenti(**{
-            'id': 1,
-            'id_laboratorio_dati': lab2,
-            'id_dip': dip1,
-        })
+        LaboratorioAltriDipartimentiUnitTest.create_laboratorioAltriDipartimenti(
+            **{'id': 1, 'id_laboratorio_dati': lab2, 'id_dip': dip1, })
 
         url = reverse('ricerca:laboratorieslist')
 
@@ -2330,11 +2327,8 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'piano': '1',
         })
 
-        LaboratorioAltriDipartimentiUnitTest.create_laboratorioAltriDipartimenti(**{
-            'id': 1,
-            'id_laboratorio_dati': lab1,
-            'id_dip': dip2,
-        })
+        LaboratorioAltriDipartimentiUnitTest.create_laboratorioAltriDipartimenti(
+            **{'id': 1, 'id_laboratorio_dati': lab1, 'id_dip': dip2, })
 
         url = reverse('ricerca:laboratorydetail', kwargs={
             'laboratoryid': "1"})
