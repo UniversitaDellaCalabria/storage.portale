@@ -38,7 +38,7 @@ from .models import (
     LaboratorioPersonaleTecnico,
     LaboratorioPersonaleRicerca,
     LaboratorioDatiErc1,
-    LaboratorioDatiBase)
+    LaboratorioDatiBase, LaboratorioAltriDipartimenti)
 
 
 # class ContextUnitTest(TestCase):
@@ -508,4 +508,15 @@ class LaboratorioUbicazioneUnitTest(TestCase):
             data[k] = v
 
         obj = LaboratorioUbicazione.objects.create(**data)
+        return obj
+
+
+class LaboratorioAltriDipartimentiUnitTest(TestCase):
+    @classmethod
+    def create_laboratorioAltriDipartimenti(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = LaboratorioAltriDipartimenti.objects.create(**data)
         return obj

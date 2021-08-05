@@ -507,7 +507,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
     def get_queryset(self):
         laboratory_id = self.kwargs['laboratoryid']
 
-        return ServiceLaboratorio.getLaboratory(laboratory_id)
+        return ServiceLaboratorio.getLaboratory(self.language, laboratory_id)
 
 
 class ApiLaboratoriesList(ApiEndpointList):
@@ -522,7 +522,7 @@ class ApiLaboratoriesList(ApiEndpointList):
         erc1 = self.request.query_params.get('erc1')
 
         return ServiceLaboratorio.getLaboratoriesList(
-            keywords, ambito, dip, erc1)
+            self.language, keywords, ambito, dip, erc1)
 
 
 class ApiLaboratoriesAreasList(ApiEndpointList):

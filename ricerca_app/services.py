@@ -8,7 +8,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaPdsRegolamento, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
-    LaboratorioUbicazione, FunzioniUnitaOrganizzativa
+    LaboratorioUbicazione, FunzioniUnitaOrganizzativa, LaboratorioAltriDipartimenti
 
 
 class ServiceQueryBuilder:
@@ -1028,7 +1028,7 @@ class ServicePersonale:
 class ServiceLaboratorio:
 
     @staticmethod
-    def getLaboratoriesList(keywords, ambito, dip, erc1):
+    def getLaboratoriesList(language, keywords, ambito, dip, erc1):
         query_keywords = Q()
         query_ambito = Q()
         query_dip = Q()
@@ -1058,12 +1058,21 @@ class ServiceLaboratorio:
             'id_dipartimento_riferimento__dip_cod',
             'sede_dimensione',
             'responsabile_scientifico',
-            'matricola_responsabile_scientifico'
+            'matricola_responsabile_scientifico',
+            'laboratorio_interdipartimentale',
         )
+
+        for q in query:
+            if q['laboratorio_interdipartimentale'] == 'SI':
+                other_dep = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=q['id']).values("id_dip__dip_cod", "id_dip__dip_des_it", "id_dip__dip_des_eng").distinct()
+                q['ExtraDepartments'] = other_dep.order_by("id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
+            else:
+                q['ExtraDepartments'] = []
+
         return query
 
     @staticmethod
-    def getLaboratory(laboratoryid):
+    def getLaboratory(language, laboratoryid):
         query = LaboratorioDatiBase.objects.filter(
             id__exact=laboratoryid).values(
             "id",
@@ -1083,7 +1092,8 @@ class ServiceLaboratorio:
             "finalita_didattica_en",
             "finalita_didattica_it",
             "responsabile_scientifico",
-            "matricola_responsabile_scientifico")
+            "matricola_responsabile_scientifico",
+            'laboratorio_interdipartimentale')
         activities = LaboratorioAttivita.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values("tipologia_attivita")
         erc1 = LaboratorioDatiErc1.objects.filter(
@@ -1113,6 +1123,9 @@ class ServiceLaboratorio:
             id_laboratorio_dati__id=laboratoryid).values(
             "edificio", "piano", "note")
 
+        other_dep = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=laboratoryid).values("id_dip__dip_cod",
+                                                                                                    "id_dip__dip_des_it",
+                                                                                                    "id_dip__dip_des_eng").distinct()
         query = list(query)
         for q in query:
             q['Activities'] = activities
@@ -1125,6 +1138,11 @@ class ServiceLaboratorio:
             else:
                 q['Location'] = None
 
+            if q['laboratorio_interdipartimentale'] == 'SI':
+                q['ExtraDepartments'] = other_dep.order_by("id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
+            else:
+                q['ExtraDepartments'] = []
+
         return query
 
     @staticmethod
@@ -1135,7 +1153,6 @@ class ServiceLaboratorio:
     @staticmethod
     def getErc1List(erc0):
         if erc0:
-
             query = LaboratorioDatiErc1.objects.filter(
                 id_ricerca_erc1__ricerca_erc0_cod=erc0).values(
                 'id_ricerca_erc1', 'id_ricerca_erc1__descrizione').distinct()

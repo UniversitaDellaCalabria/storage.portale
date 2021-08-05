@@ -255,6 +255,8 @@ LABEL_MAPPING = {
         'StructureTfr': 'Phone',
         'StructurePersonnelFunctions': 'Administrative Staff',
         'LaboratoryId': 'ID',
+        'Interdepartmental': 'Interdepartmental',
+        'ExtraDepartments': 'Other Departments',
         'CompletionReferentName': 'Completion Referent Name',
         'CompletionReferentId': 'Completion Referent ID',
         'ScientificDirectorId': 'Scientific Director',
@@ -289,7 +291,7 @@ LABEL_MAPPING = {
         'LaboratoryErc0Cod': 'Erc0 Code',
         'LaboratoryErc0Description': 'Erc0 Description',
         'LaboratoryActivityType': 'Activity Type',
-        'Description':'Description',
+        'Description':'Description'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -321,6 +323,8 @@ LABEL_MAPPING = {
         'JointDegree' : 'Titolo Congiunto',
         'LaboratoryId': 'Id Laboratorio',
         'LaboratoryName': 'Nome Laboratorio',
+        'Interdepartmental': 'Interdipartimentale',
+        'ExtraDepartments': 'Altri dipartimenti',
         'Area': 'Ambito',
         'Dimension': 'Dimensione',
         'ScientificDirector': 'Responsabile Scientifico',
