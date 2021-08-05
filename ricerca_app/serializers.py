@@ -638,6 +638,9 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         else:
             location = LaboratoryDetailSerializer.to_dict_location(
                 query['Location'])
+        extra_departments = LaboratoriesListSerializer.to_dict_extra_departments(
+            query['ExtraDepartments'], req_lang)
+
         return {
             'LaboratoryId': query['id'],
             'CompletionReferentId': query['matricola_referente_compilazione'],
@@ -649,6 +652,8 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'LaboratoryLogo': query['logo_laboratorio'],
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_cod'],
             'DepartmentReferentName': query['id_dipartimento_riferimento__dip_des_it'] if req_lang == "it" or query['id_dipartimento_riferimento__dip_des_eng'] is None else query['id_dipartimento_riferimento__dip_des_eng'],
+            'Interdepartmental': query['laboratorio_interdipartimentale'],
+            'ExtraDepartments': extra_departments,
             'LaboratoryScope': query['ambito'],
             'LaboratoryServicesScope': query['finalita_servizi_it'] if req_lang == "it" or query['finalita_servizi_en'] is None else query['finalita_servizi_en'],
             'LaboratoryResearchScope': query['finalita_ricerca_it'] if req_lang == "it" or query['finalita_ricerca_en'] is None else query['finalita_ricerca_en'],
@@ -745,17 +750,28 @@ class LaboratoriesListSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
+        extra_departments = LaboratoriesListSerializer.to_dict_extra_departments(
+            query['ExtraDepartments'], req_lang)
         return {
             'LaboratoryId': query['id'],
             'LaboratoryName': query['nome_laboratorio'],
             'Area': query['ambito'],
             'DepartmentName': query['dipartimento_riferimento'],
             'DepartmentId': query['id_dipartimento_riferimento__dip_cod'],
+            'Interdepartmental': query['laboratorio_interdipartimentale'],
+            'ExtraDepartments': extra_departments,
             'Dimension': query['sede_dimensione'],
             'ScientificDirector': query['responsabile_scientifico'],
             'ScientificDirectorId': query['matricola_responsabile_scientifico'],
-
         }
+
+    @staticmethod
+    def to_dict_extra_departments(query, lang='en'):
+        result = []
+        for q in query:
+            result.append({'DepartmentID': q['id_dip__dip_cod'], 'DepartmentName': q["id_dip__dip_des_it"]
+                          if lang == "it" or q['id_dip__dip_des_eng'] is None else q["id_dip__dip_des_eng"], })
+        return result
 
 
 class LaboratoriesAreasListSerializer(CreateUpdateAbstract):

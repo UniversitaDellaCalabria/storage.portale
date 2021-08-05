@@ -13,7 +13,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest, FunzioniUnitaOrganizzativaUnitTest, \
     UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest, LaboratorioDatiBaseUnitTest, \
     LaboratorioAttivitaUnitTest, LaboratorioDatiErc1UnitTest, LaboratorioPersonaleRicercaUnitTest, \
-    LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest
+    LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest, \
+    LaboratorioAltriDipartimentiUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -2057,7 +2058,7 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'matricola': '111112',
         })
 
-        LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+        lab2 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
             'id': 1,
             'nome_laboratorio': 'Informatica',
             'ambito': 'Tecnico',
@@ -2066,6 +2067,7 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'sede_dimensione': "290",
             'responsabile_scientifico': 'Mungari Simone',
             'matricola_responsabile_scientifico': p1,
+            'laboratorio_interdipartimentale': 'SI',
         })
 
         LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
@@ -2105,6 +2107,9 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'id_laboratorio_dati': lab1,
             'id_ricerca_erc1': erc1_1,
         })
+
+        LaboratorioAltriDipartimentiUnitTest.create_laboratorioAltriDipartimenti(
+            **{'id': 1, 'id_laboratorio_dati': lab2, 'id_dip': dip1, })
 
         url = reverse('ricerca:laboratorieslist')
 
@@ -2219,6 +2224,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'id_dipartimento_riferimento': dip1,
             'ambito': 'Tecnologico',
             'matricola_responsabile_scientifico': p1,
+            'laboratorio_interdipartimentale': 'SI',
         })
 
         lab2 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
@@ -2320,6 +2326,9 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'edificio': '31B',
             'piano': '1',
         })
+
+        LaboratorioAltriDipartimentiUnitTest.create_laboratorioAltriDipartimenti(
+            **{'id': 1, 'id_laboratorio_dati': lab1, 'id_dip': dip2, })
 
         url = reverse('ricerca:laboratorydetail', kwargs={
             'laboratoryid': "1"})
