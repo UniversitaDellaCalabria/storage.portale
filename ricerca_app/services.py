@@ -894,8 +894,11 @@ class ServicePersonale:
         return query
 
     @staticmethod
-    def getStructureTypes():
-        query = UnitaOrganizzativa.objects.values(
+    def getStructureTypes(father=None):
+        father_query = Q()
+        if father is not None:
+            father_query = Q(uo_padre=father)
+        query = UnitaOrganizzativa.objects.filter(father_query).values(
             "ds_tipo_nodo", "cd_tipo_nodo").distinct()
         return query
 
