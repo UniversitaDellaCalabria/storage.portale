@@ -1709,6 +1709,7 @@ class ApiStructuresTypesUnitTest(TestCase):
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '3',
+            'uo_padre': '1',
             'ds_tipo_nodo': 'rettorato',
             'cd_tipo_nodo': 'RET',
         })
@@ -1725,6 +1726,10 @@ class ApiStructuresTypesUnitTest(TestCase):
         assert res.json()['results'][0]['StructureTypeName'] == 'facolta'
         assert res.json()['results'][1]['StructureTypeCOD'] == 'CDS'
         assert len(res.json()['results']) == 3
+
+        data = {'father': '1'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
 
 class ApiRolesListUnitTest(TestCase):
