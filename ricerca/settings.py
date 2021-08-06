@@ -242,6 +242,8 @@ LABEL_MAPPING = {
         'LaboratoryName': 'Name',
         'LaboratoryAcronym': 'Acronym',
         'LaboratoryLogo': 'Logo',
+        'LaboratoryURL': 'URL',
+        'LaboratoryEquipment': 'Equipment',
         'DepartmentReferentId': 'Department Referent ID',
         'DepartmentReferentName': 'Department Referent Name',
         'LaboratoryScope': 'Scope',
@@ -301,6 +303,8 @@ LABEL_MAPPING = {
         'JointDegree' : 'Titolo Congiunto',
         'LaboratoryId': 'Id Laboratorio',
         'LaboratoryName': 'Nome Laboratorio',
+        'LaboratoryURL': 'URL',
+        'LaboratoryEquipment': 'Strumentazione',
         'Interdepartmental': 'Interdipartimentale',
         'ExtraDepartments': 'Altri dipartimenti',
         'Area': 'Ambito',
@@ -459,6 +463,6 @@ LABEL_MAPPING = {
         'LaboratoryErc0Cod': 'Codice Erc0',
         'LaboratoryErc0Description': 'Descrizione Erc0',
         'LaboratoryActivityType': 'Tipologia Attività',
-        'Description':'Descrizione',
+        'Description': 'Descrizione',
     }
 }

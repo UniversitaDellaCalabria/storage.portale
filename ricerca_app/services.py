@@ -1101,7 +1101,9 @@ class ServiceLaboratorio:
             "finalita_didattica_it",
             "responsabile_scientifico",
             "matricola_responsabile_scientifico",
-            'laboratorio_interdipartimentale')
+            'laboratorio_interdipartimentale',
+            'sito_web',
+            'strumentazione_descrizione',)
         activities = LaboratorioAttivita.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values("tipologia_attivita")
         erc1 = LaboratorioDatiErc1.objects.filter(
