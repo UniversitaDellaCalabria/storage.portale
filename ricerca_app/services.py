@@ -1045,7 +1045,7 @@ class ServiceLaboratorio:
             query_ambito = Q(ambito__exact=ambito)
         if dip:
             query_dip = Q(id_dipartimento_riferimento__dip_cod__exact=dip)
-
+            query_dip |= Q(laboratorioaltridipartimenti__id_dip__dip_cod=dip)
         if erc1:
             erc1_allowed = erc1.split(",")
             query_erc1 = Q(
@@ -1063,7 +1063,7 @@ class ServiceLaboratorio:
             'responsabile_scientifico',
             'matricola_responsabile_scientifico',
             'laboratorio_interdipartimentale',
-        )
+        ).distinct()
 
         for q in query:
             if q['laboratorio_interdipartimentale'] == 'SI':
