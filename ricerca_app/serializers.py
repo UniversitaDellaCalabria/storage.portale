@@ -650,6 +650,8 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'LaboratoryName': query['nome_laboratorio'],
             'LaboratoryAcronym': query['acronimo'],
             'LaboratoryLogo': query['logo_laboratorio'],
+            'LaboratoryURL': query['sito_web'],
+            'LaboratoryEquipment': query['strumentazione_descrizione'],
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_cod'],
             'DepartmentReferentName': query['id_dipartimento_riferimento__dip_des_it'] if req_lang == "it" or query['id_dipartimento_riferimento__dip_des_eng'] is None else query['id_dipartimento_riferimento__dip_des_eng'],
             'Interdepartmental': query['laboratorio_interdipartimentale'],
