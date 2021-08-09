@@ -802,7 +802,7 @@ class Erc1ListSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
         return {
-            'IdErc1': query['id_ricerca_erc1'],
+            'IdErc1': query['id_ricerca_erc1__cod_erc1'],
             'Description': query['id_ricerca_erc1__descrizione'],
         }
 

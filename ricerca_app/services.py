@@ -1168,11 +1168,11 @@ class ServiceLaboratorio:
         if erc0:
             query = LaboratorioDatiErc1.objects.filter(
                 id_ricerca_erc1__ricerca_erc0_cod=erc0).values(
-                'id_ricerca_erc1', 'id_ricerca_erc1__descrizione').distinct()
+                'id_ricerca_erc1__cod_erc1', 'id_ricerca_erc1__descrizione').distinct()
         else:
 
             query = LaboratorioDatiErc1.objects.values(
-                'id_ricerca_erc1', 'id_ricerca_erc1__descrizione').distinct()
+                'id_ricerca_erc1__cod_erc1', 'id_ricerca_erc1__descrizione').distinct()
 
         return query
 
