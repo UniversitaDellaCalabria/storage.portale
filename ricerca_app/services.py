@@ -794,7 +794,9 @@ class ServicePersonale:
             'funzioniunitaorganizzativa__termine',
             'denominazione',
             'structure_type_cod',
-            'structure_type_name')
+            'structure_type_name',
+            'fl_docente',
+        )
 
         if structureid is None and structuretypes is None and structuretree is None:
             query2 = Personale.objects.filter(
@@ -825,7 +827,8 @@ class ServicePersonale:
                                 'funzioniunitaorganizzativa__termine',
                                 'denominazione',
                                 'structure_type_cod',
-                'structure_type_name')
+                                'structure_type_name',
+                                'fl_docente',)
             from itertools import chain
             query = list(chain(*[query, query2]))
 
@@ -860,6 +863,7 @@ class ServicePersonale:
                     'Struttura': q['denominazione'] if 'denominazione' in q.keys() else None,
                     'TipologiaStrutturaCod': q['structure_type_cod'] if 'structure_type_cod' in q.keys() else None,
                     'TipologiaStrutturaNome': q['structure_type_name'] if 'structure_type_name' in q.keys() else None,
+                    'fl_docente': q['fl_docente'],
                 }
                 for c in contacts_to_take:
                     grouped[q['id_ab']][c] = []
@@ -974,6 +978,7 @@ class ServicePersonale:
             'TipologiaStrutturaNome',
             'funzioniunitaorganizzativa__ds_funzione',
             'funzioniunitaorganizzativa__termine',
+            'fl_docente',
         )
         for q in query:
             if q["funzioniunitaorganizzativa__termine"] is not None and q["funzioniunitaorganizzativa__termine"] >= datetime.datetime.today():

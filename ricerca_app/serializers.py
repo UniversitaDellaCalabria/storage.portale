@@ -516,7 +516,8 @@ class AddressbookListSerializer(CreateUpdateAbstract):
             'TelCelOffice': query['Telefono Cellulare Ufficio'],
             'Fax': query['Fax'],
             'WebSite': query['URL Sito WEB'],
-            'CV': query['URL Sito WEB Curriculum Vitae']
+            'CV': query['URL Sito WEB Curriculum Vitae'],
+            'Teacher': query['fl_docente'],
         }
 
 
