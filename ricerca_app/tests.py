@@ -1036,7 +1036,7 @@ class ApiTeacherInfoUnitTest(TestCase):
     def test_apiteacherinfounittest(self):
         req = Client()
 
-        PersonaleUnitTest.create_personale(**{
+        p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
             'cognome': 'Mungari',
@@ -1047,6 +1047,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             'fl_docente': 1,
             'flg_cessato': 0,
             'aff_org': 1,
+            'cod_fis': 'SMNMNG',
         })
         PersonaleUnitTest.create_personale(**{
             'id': 2,
@@ -1130,6 +1131,14 @@ class ApiTeacherInfoUnitTest(TestCase):
             'contatto': 'email2@email',
             'prg_priorita': 1,
         })
+
+        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+            'cod_fis': p1,
+            'termine': '2222-03-26',
+            'ds_funzione': 'Direttore',
+            'matricola': '1111112',
+        })
+
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111112'})
 
         # check url
@@ -2125,7 +2134,7 @@ class ApiLaboratoriesListUnitTest(TestCase):
 
         # GET
 
-        data = {'department': '1'}
+        data = {'department': '1', 'teacher': '111111'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['LaboratoryId'] == 1
         assert res.json()[
