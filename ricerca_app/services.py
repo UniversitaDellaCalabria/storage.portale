@@ -602,6 +602,15 @@ class ServiceDocente:
             "personalecontatti__cd_tipo_cont__descr_contatto",
             "personalecontatti__contatto")
         contacts = list(contacts)
+
+        functions = FunzioniUnitaOrganizzativa.objects.filter(
+            matricola=teacher,
+            termine__gt=datetime.datetime.now(),
+            decorrenza__lt=datetime.datetime.now()).values(
+            "ds_funzione",
+            "unita_organizzativa_id__uo",
+            "unita_organizzativa_id__denominazione")
+
         query = query.values(
             "id_ab",
             "matricola",
@@ -622,6 +631,7 @@ class ServiceDocente:
             for c in contacts:
                 q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     c['personalecontatti__contatto'])
+
             dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
                 .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
             if len(dep) == 0:
@@ -633,6 +643,11 @@ class ServiceDocente:
                 q["dip_cod"] = dep['dip_cod']
                 q["dip_des_it"] = dep['dip_des_it']
                 q["dip_des_eng"] = dep["dip_des_eng"]
+
+            if len(functions) == 0:
+                q["Functions"] = None
+            else:
+                q["Functions"] = functions
 
         return query
 
@@ -1031,11 +1046,12 @@ class ServicePersonale:
 class ServiceLaboratorio:
 
     @staticmethod
-    def getLaboratoriesList(language, keywords, ambito, dip, erc1):
+    def getLaboratoriesList(language, keywords, ambito, dip, erc1, teacher):
         query_keywords = Q()
         query_ambito = Q()
         query_dip = Q()
         query_erc1 = Q()
+        query_teacher = Q()
 
         if keywords:
             for k in keywords.split(" "):
@@ -1050,9 +1066,12 @@ class ServiceLaboratorio:
             erc1_allowed = erc1.split(",")
             query_erc1 = Q(
                 laboratoriodatierc1__id_ricerca_erc1__cod_erc1__in=erc1_allowed)
+        if teacher:
+            query_teacher = Q(
+                matricola_responsabile_scientifico__exact=teacher)
 
         query = LaboratorioDatiBase.objects.filter(
-            query_keywords, query_ambito, query_dip, query_erc1
+            query_keywords, query_ambito, query_dip, query_erc1, query_teacher
         ).values(
             'id',
             'nome_laboratorio',
@@ -1168,11 +1187,13 @@ class ServiceLaboratorio:
         if erc0:
             query = LaboratorioDatiErc1.objects.filter(
                 id_ricerca_erc1__ricerca_erc0_cod=erc0).values(
-                'id_ricerca_erc1__cod_erc1', 'id_ricerca_erc1__descrizione').distinct()
+                'id_ricerca_erc1__cod_erc1',
+                'id_ricerca_erc1__descrizione').distinct()
         else:
 
             query = LaboratorioDatiErc1.objects.values(
-                'id_ricerca_erc1__cod_erc1', 'id_ricerca_erc1__descrizione').distinct()
+                'id_ricerca_erc1__cod_erc1',
+                'id_ricerca_erc1__descrizione').distinct()
 
         return query
 

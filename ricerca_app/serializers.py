@@ -383,6 +383,10 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
+        functions = None
+        if query["Functions"] is not None:
+            functions = TeacherInfoSerializer.to_dict_functions(
+                query["Functions"])
         return {
             'TeacherID': query['matricola'],
             'TeacherFirstName': query['nome'] + (" " + query['middle_name']
@@ -402,9 +406,21 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherTelCelOffice': query['Telefono Cellulare Ufficio'],
             'TeacherFax': query['Fax'],
             'TeacherWebSite': query['URL Sito WEB'],
-            'TeacherCV': query['URL Sito WEB Curriculum Vitae']
+            'TeacherCV': query['URL Sito WEB Curriculum Vitae'],
+            'TeacherFunctions': functions,
 
         }
+
+    @staticmethod
+    def to_dict_functions(query):
+        functions = []
+        for q in query:
+            functions.append({
+                'TeacherRole': q['ds_funzione'],
+                'StructureId': q['unita_organizzativa_id__uo'],
+                'StructureName': q['unita_organizzativa_id__denominazione'],
+            })
+        return functions
 
 
 class DoctoratesListSerializer(CreateUpdateAbstract):
