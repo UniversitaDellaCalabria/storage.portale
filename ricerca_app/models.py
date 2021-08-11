@@ -1696,7 +1696,7 @@ class LaboratorioUbicazione(models.Model):
 
 class Personale(InsModAbstract):
 
-    id_ab = models.IntegerField(db_column='ID_AB')
+    id_ab = models.IntegerField(db_column='ID_AB', unique=True)
     cd_esterno = models.CharField(
         db_column='CD_ESTERNO',
         max_length=60,
@@ -2118,6 +2118,143 @@ class PersonaleContatti(models.Model):
         managed = True
         db_table = 'PERSONALE_CONTATTI'
         unique_together = (('id_ab', 'cd_tipo_cont', 'prg_priorita'),)
+
+
+class PubblicazioneAutori(models.Model):
+    # Field name made lowercase.
+    item = models.ForeignKey(
+        'PubblicazioneDatiBase',
+        models.DO_NOTHING,
+        db_column='ITEM_ID')
+    codice_fiscale = models.CharField(
+        db_column='CODICE_FISCALE',
+        max_length=16,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    id_ab = models.ForeignKey(
+        Personale,
+        models.DO_NOTHING,
+        db_column='ID_AB',
+        blank=True,
+        null=True,
+        to_field='id_ab')  # Field name made lowercase.
+    # Field name made lowercase.
+    first_name = models.CharField(
+        db_column='FIRST_NAME',
+        max_length=1020,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    last_name = models.CharField(
+        db_column='LAST_NAME',
+        max_length=1020,
+        blank=True,
+        null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'PUBBLICAZIONE_AUTORI'
+
+
+class PubblicazioneCollection(models.Model):
+    # Field name made lowercase.
+    collection_id = models.IntegerField(
+        db_column='COLLECTION_ID', primary_key=True)
+    community = models.ForeignKey(
+        'PubblicazioneCommunity',
+        models.DO_NOTHING,
+        db_column='COMMUNITY_ID',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    collection_name = models.CharField(
+        db_column='COLLECTION_NAME',
+        max_length=512,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    type_miur = models.CharField(
+        db_column='TYPE_MIUR',
+        max_length=50,
+        blank=True,
+        null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'PUBBLICAZIONE_COLLECTION'
+
+
+class PubblicazioneCommunity(models.Model):
+    # Field name made lowercase.
+    community_id = models.IntegerField(
+        db_column='COMMUNITY_ID', primary_key=True)
+    community_name = models.CharField(
+        db_column='COMMUNITY_NAME',
+        max_length=512,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    parent_community_id = models.IntegerField(
+        db_column='PARENT_COMMUNITY_ID',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    parent_community_name = models.CharField(
+        db_column='PARENT_COMMUNITY_NAME',
+        max_length=512,
+        blank=True,
+        null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'PUBBLICAZIONE_COMMUNITY'
+
+
+class PubblicazioneDatiBase(models.Model):
+    # Field name made lowercase.
+    item_id = models.IntegerField(db_column='ITEM_ID', primary_key=True)
+    # Field name made lowercase.
+    title = models.TextField(db_column='TITLE', blank=True, null=True)
+    # Field name made lowercase.
+    des_abstract = models.TextField(
+        db_column='DES_ABSTRACT', blank=True, null=True)
+    # Field name made lowercase.
+    des_abstracteng = models.TextField(
+        db_column='DES_ABSTRACTENG', blank=True, null=True)
+    # Field name made lowercase.
+    lan_iso = models.CharField(
+        db_column='LAN_ISO',
+        max_length=200,
+        blank=True,
+        null=True)
+    lan_iso_i18n = models.CharField(
+        db_column='LAN_ISO_I18N',
+        max_length=400,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    collection = models.ForeignKey(
+        PubblicazioneCollection,
+        models.DO_NOTHING,
+        db_column='COLLECTION_ID',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    date_issued_year = models.IntegerField(
+        db_column='DATE_ISSUED_YEAR', blank=True, null=True)
+    pubblicazione = models.CharField(
+        db_column='PUBBLICAZIONE',
+        max_length=1024,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    label_pubblicazione = models.CharField(
+        db_column='LABEL_PUBBLICAZIONE',
+        max_length=100,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    contributors = models.TextField(
+        db_column='CONTRIBUTORS', blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'PUBBLICAZIONE_DATI_BASE'
 
 
 class RicercaAster1(InsModAbstract):
