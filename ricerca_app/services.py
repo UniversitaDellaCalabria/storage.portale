@@ -8,7 +8,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaPdsRegolamento, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
-    LaboratorioUbicazione, FunzioniUnitaOrganizzativa, LaboratorioAltriDipartimenti
+    LaboratorioUbicazione, FunzioniUnitaOrganizzativa, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
+    PubblicazioneAutori
 
 
 class ServiceQueryBuilder:
@@ -655,6 +656,50 @@ class ServiceDocente:
     def getRoles():
         query = Personale.objects.all().values("cd_ruolo",
                                                "ds_ruolo_locale").order_by('ds_ruolo_locale').distinct()
+
+        return query
+
+    @staticmethod
+    def getPublicationsList(
+            teacherid=None,
+            keywords=None,
+            year=None,
+            type=None):
+        query_keywords = Q()
+        query_year = Q()
+        query_type = Q()
+
+        if keywords is not None:
+            for k in keywords.split(" "):
+                q_title = Q(title__icontains=k)
+                query_keywords &= q_title
+        if year is not None:
+            query_year = Q(date_issued_year=year)
+        if type is not None:
+            query_type = Q(collection_id__community_id__community_id=type)
+
+        query = PubblicazioneDatiBase.objects.filter(
+            query_keywords,
+            query_year,
+            query_type,
+            pubblicazioneautori__id_ab__matricola=teacherid).values(
+            "item_id",
+            "title",
+            "des_abstract",
+            "des_abstracteng",
+            "collection_id__collection_name",
+            "collection_id__community_id__community_name",
+            "pubblicazione",
+            "label_pubblicazione",
+            "contributors",
+            'date_issued_year').order_by("title").distinct()
+        for q in query:
+            autori = PubblicazioneAutori.objects.filter(item_id=q['item_id']).values(
+                "id_ab__nome", "id_ab__cognome", "id_ab__middle_name", "id_ab__matricola")
+            if len(autori) == 0:
+                q['Authors'] = []
+            else:
+                q['Authors'] = autori
 
         return query
 

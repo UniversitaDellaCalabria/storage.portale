@@ -556,3 +556,18 @@ class ApiErc0List(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceLaboratorio.getErc0List()
+
+
+class ApiPublicationsList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle pubblicazioni di un dato docente'
+    serializer_class = PublicationsListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        teacher_id = self.kwargs['teacherid']
+        keywords = self.request.query_params.get('keywords')
+        year = self.request.query_params.get('year')
+        type = self.request.query_params.get('type')
+
+        return ServiceDocente.getPublicationsList(
+            teacher_id, keywords, year, type)

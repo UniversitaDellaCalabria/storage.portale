@@ -38,7 +38,12 @@ from .models import (
     LaboratorioPersonaleTecnico,
     LaboratorioPersonaleRicerca,
     LaboratorioDatiErc1,
-    LaboratorioDatiBase, LaboratorioAltriDipartimenti)
+    LaboratorioDatiBase,
+    LaboratorioAltriDipartimenti,
+    PubblicazioneAutori,
+    PubblicazioneDatiBase,
+    PubblicazioneCommunity,
+    PubblicazioneCollection)
 
 
 # class ContextUnitTest(TestCase):
@@ -519,4 +524,48 @@ class LaboratorioAltriDipartimentiUnitTest(TestCase):
             data[k] = v
 
         obj = LaboratorioAltriDipartimenti.objects.create(**data)
+        return obj
+
+
+class PubblicazioneAutoriUnitTest(TestCase):
+    @classmethod
+    def create_pubblicazioneAutori(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = PubblicazioneAutori.objects.create(**data)
+        return obj
+
+
+class PubblicazioneCollectionUnitTest(TestCase):
+    @classmethod
+    def create_pubblicazioneCollection(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = PubblicazioneCollection.objects.create(**data)
+        return obj
+
+
+class PubblicazioneCommunityUnitTest(TestCase):
+    @classmethod
+    def create_pubblicazioneCommunity(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = PubblicazioneCommunity.objects.create(**data)
+        return obj
+
+
+class PubblicazioneDatiBaseUnitTest(TestCase):
+    @classmethod
+    def create_pubblicazioneDatiBase(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = PubblicazioneDatiBase.objects.create(**data)
         return obj
