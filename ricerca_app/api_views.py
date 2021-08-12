@@ -571,3 +571,12 @@ class ApiPublicationsList(ApiEndpointList):
 
         return ServiceDocente.getPublicationsList(
             teacher_id, keywords, year, type)
+
+
+class ApiPublicationsCommunityTypesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle tipologie di pubblicazioni'
+    serializer_class = PublicationsCommunityTypesListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDocente.getPublicationsCommunityTypesList()

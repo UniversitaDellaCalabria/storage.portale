@@ -286,6 +286,8 @@ LABEL_MAPPING = {
         'PublicationYear': 'Publication Year',
         'AuthorId': 'ID',
         'AuthorName': 'Name',
+        'CommunityId': 'Id',
+        'CommunityName': 'Name',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -492,5 +494,7 @@ LABEL_MAPPING = {
         'PublicationYear': 'Anno di Pubblicazione',
         'AuthorId': 'ID',
         'AuthorName': 'Nome',
+        'CommunityId': 'Id',
+        'CommunityName': 'Nome',
     }
 }
