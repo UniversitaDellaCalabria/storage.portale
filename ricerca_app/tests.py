@@ -2639,3 +2639,26 @@ class ApiPublicationsListUnitTest(TestCase):
 
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
+
+
+class ApiPublicationsCommunityTypesListUnitTest(TestCase):
+
+    def test_apiPublicationsCommunityTypesList(self):
+        PubblicazioneCommunityUnitTest.create_pubblicazioneCommunity(**{
+            'community_id': 1,
+            'community_name': 'Comm 1',
+        })
+        PubblicazioneCommunityUnitTest.create_pubblicazioneCommunity(**{
+            'community_id': 2,
+            'community_name': 'Comm 2',
+        })
+
+        req = Client()
+
+        url = reverse('ricerca:publicationscommunitytypes')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+        assert res.json()['results'][0]['CommunityName'] == 'Comm 1'

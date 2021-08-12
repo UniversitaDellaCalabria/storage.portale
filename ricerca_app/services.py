@@ -9,7 +9,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, FunzioniUnitaOrganizzativa, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
-    PubblicazioneAutori
+    PubblicazioneAutori, PubblicazioneCommunity
 
 
 class ServiceQueryBuilder:
@@ -692,15 +692,29 @@ class ServiceDocente:
             "pubblicazione",
             "label_pubblicazione",
             "contributors",
-            'date_issued_year').order_by("title").distinct()
+            'date_issued_year').order_by(
+            "date_issued_year",
+            "title").distinct()
         for q in query:
-            autori = PubblicazioneAutori.objects.filter(item_id=q['item_id']).values(
-                "id_ab__nome", "id_ab__cognome", "id_ab__middle_name", "id_ab__matricola")
+            autori = PubblicazioneAutori.objects.filter(
+                item_id=q['item_id']).values(
+                "id_ab__nome",
+                "id_ab__cognome",
+                "id_ab__middle_name",
+                "id_ab__matricola",
+                "first_name",
+                "last_name")
             if len(autori) == 0:
                 q['Authors'] = []
             else:
                 q['Authors'] = autori
 
+        return query
+
+    @staticmethod
+    def getPublicationsCommunityTypesList():
+        query = PubblicazioneCommunity.objects.all().values(
+            "community_id", "community_name").order_by("community_id").distinct()
         return query
 
 

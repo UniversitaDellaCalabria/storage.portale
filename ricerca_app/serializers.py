@@ -870,7 +870,7 @@ class PublicationsListSerializer(CreateUpdateAbstract):
         result = []
         for q in query:
             if q['id_ab__matricola'] is None:
-                full_name = None
+                full_name = q['last_name'] + " " + q['first_name']
             else:
                 full_name = q['id_ab__cognome'] + " " + q['id_ab__nome'] + \
                     (" " + q['id_ab__middle_name']
@@ -880,3 +880,19 @@ class PublicationsListSerializer(CreateUpdateAbstract):
                 'AuthorName': full_name,
             })
         return result
+
+
+class PublicationsCommunityTypesListSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'CommunityId': query['community_id'],
+            'CommunityName': query['community_name'],
+        }
