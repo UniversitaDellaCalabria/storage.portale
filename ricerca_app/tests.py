@@ -1023,6 +1023,10 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
+        data = {'year': 2020}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
         data = {'yearTo': 2020}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
@@ -1124,6 +1128,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             'id_ab': 1,
             'contatto': 'email@email',
             'prg_priorita': 1,
+            'cod_fis': p1,
 
         })
         PersonaleContattiUnitTest.create_personaleContatti(**{
@@ -1136,8 +1141,9 @@ class ApiTeacherInfoUnitTest(TestCase):
         FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
             'cod_fis': p1,
             'termine': '2222-03-26',
+            'decorrenza': '1900-01-01',
             'ds_funzione': 'Direttore',
-            'matricola': '1111112',
+            'matricola': '111112',
         })
 
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111112'})
@@ -1584,6 +1590,7 @@ class ApiAddressbookListUnitTest(TestCase):
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '99',
             'denominazione': 'Rettorato',
+            'cd_tipo_nodo': 'AMM',
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '1',
@@ -2779,7 +2786,11 @@ class ApiPublicationDetailUnitTest(TestCase):
 
         req = Client()
 
-        url = reverse('ricerca:publicationdetail', kwargs={'teacherid': '111112', 'publicationid': '1'})
+        url = reverse(
+            'ricerca:publicationdetail',
+            kwargs={
+                'teacherid': '111112',
+                'publicationid': '1'})
 
         # check url
         res = req.get(url)
@@ -2787,9 +2798,14 @@ class ApiPublicationDetailUnitTest(TestCase):
         assert res.status_code == 200
 
         # GET
-        assert res.json()['results']['PublicationAbstract'] == 'abstract inglese'
+        assert res.json()[
+            'results']['PublicationAbstract'] == 'abstract inglese'
 
-        url = reverse('ricerca:publicationdetail', kwargs={'teacherid': '111112', 'publicationid': '2'})
+        url = reverse(
+            'ricerca:publicationdetail',
+            kwargs={
+                'teacherid': '111112',
+                'publicationid': '2'})
 
         res = req.get(url)
         assert res.json()['results']['PublicationYear'] == 2019

@@ -144,9 +144,7 @@ class ServiceDidatticaAttivitaFormativa:
 
     @staticmethod
     def getStudyPlans(regdid_id=None):
-        if regdid_id is None:
-            return
-        # DidatticaPdsRegolamento.objects.filter(regdid=regdid_id)
+
         query = DidatticaAttivitaFormativa.objects.filter(regdid=regdid_id)
         query = query.order_by(
             'pds_regdid_id__pds_des_it').values(
@@ -164,8 +162,6 @@ class ServiceDidatticaAttivitaFormativa:
 
     @staticmethod
     def getStudyPlan(studyplanid=None):
-        if studyplanid is None:
-            return
 
         query = DidatticaPdsRegolamento.objects.filter(
             pds_regdid_id=studyplanid)
@@ -714,7 +710,8 @@ class ServiceDocente:
     @staticmethod
     def getPublication(publicationid=None):
 
-        query = PubblicazioneDatiBase.objects.filter(item_id=publicationid).values(
+        query = PubblicazioneDatiBase.objects.filter(
+            item_id=publicationid).values(
             "item_id",
             "title",
             "des_abstract",
