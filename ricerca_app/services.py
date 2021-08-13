@@ -144,9 +144,7 @@ class ServiceDidatticaAttivitaFormativa:
 
     @staticmethod
     def getStudyPlans(regdid_id=None):
-        if regdid_id is None:
-            return
-        # DidatticaPdsRegolamento.objects.filter(regdid=regdid_id)
+
         query = DidatticaAttivitaFormativa.objects.filter(regdid=regdid_id)
         query = query.order_by(
             'pds_regdid_id__pds_des_it').values(
@@ -164,8 +162,6 @@ class ServiceDidatticaAttivitaFormativa:
 
     @staticmethod
     def getStudyPlan(studyplanid=None):
-        if studyplanid is None:
-            return
 
         query = DidatticaPdsRegolamento.objects.filter(
             pds_regdid_id=studyplanid)
@@ -698,6 +694,39 @@ class ServiceDocente:
         for q in query:
             autori = PubblicazioneAutori.objects.filter(
                 item_id=q['item_id']).values(
+                "id_ab__nome",
+                "id_ab__cognome",
+                "id_ab__middle_name",
+                "id_ab__matricola",
+                "first_name",
+                "last_name")
+            if len(autori) == 0:
+                q['Authors'] = []
+            else:
+                q['Authors'] = autori
+
+        return query
+
+    @staticmethod
+    def getPublication(publicationid=None):
+
+        query = PubblicazioneDatiBase.objects.filter(
+            item_id=publicationid).values(
+            "item_id",
+            "title",
+            "des_abstract",
+            "des_abstracteng",
+            "collection_id__collection_name",
+            "collection_id__community_id__community_name",
+            "pubblicazione",
+            "label_pubblicazione",
+            "contributors",
+            'date_issued_year').order_by(
+            "date_issued_year",
+            "title").distinct()
+        for q in query:
+            autori = PubblicazioneAutori.objects.filter(
+                item_id=publicationid).values(
                 "id_ab__nome",
                 "id_ab__cognome",
                 "id_ab__middle_name",
