@@ -580,3 +580,13 @@ class ApiPublicationsCommunityTypesList(ApiEndpointList):
 
     def get_queryset(self):
         return ServiceDocente.getPublicationsCommunityTypesList()
+
+
+class ApiPublicationDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce il dettaglio di una pubblicazione'
+    serializer_class = PublicationsListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        publicationid = self.kwargs['publicationid']
+        return ServiceDocente.getPublication(publicationid)

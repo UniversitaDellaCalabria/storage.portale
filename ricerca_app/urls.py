@@ -136,6 +136,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiPublicationsList.as_view(),
                         name='publications'),
 
+    urlpatterns += path('{}/teachers/<str:teacherid>/publications/<str:publicationid>/'.format(base_url),
+                        api_views.ApiPublicationDetail.as_view(),
+                        name='publicationdetail'),
+
     urlpatterns += path('{}/doctorateslist/'.format(base_url),
                         api_views.ApiDoctoratesList.as_view(),
                         name='doctorateslist'),

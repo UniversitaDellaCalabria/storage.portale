@@ -712,6 +712,38 @@ class ServiceDocente:
         return query
 
     @staticmethod
+    def getPublication(publicationid=None):
+
+        query = PubblicazioneDatiBase.objects.filter(item_id=publicationid).values(
+            "item_id",
+            "title",
+            "des_abstract",
+            "des_abstracteng",
+            "collection_id__collection_name",
+            "collection_id__community_id__community_name",
+            "pubblicazione",
+            "label_pubblicazione",
+            "contributors",
+            'date_issued_year').order_by(
+            "date_issued_year",
+            "title").distinct()
+        for q in query:
+            autori = PubblicazioneAutori.objects.filter(
+                item_id=publicationid).values(
+                "id_ab__nome",
+                "id_ab__cognome",
+                "id_ab__middle_name",
+                "id_ab__matricola",
+                "first_name",
+                "last_name")
+            if len(autori) == 0:
+                q['Authors'] = []
+            else:
+                q['Authors'] = autori
+
+        return query
+
+    @staticmethod
     def getPublicationsCommunityTypesList():
         query = PubblicazioneCommunity.objects.all().values(
             "community_id", "community_name").order_by("community_id").distinct()
