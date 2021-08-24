@@ -589,4 +589,5 @@ class ApiPublicationDetail(ApiEndpointDetail):
 
     def get_queryset(self):
         publicationid = self.kwargs['publicationid']
-        return ServiceDocente.getPublication(publicationid)
+        teacherid = self.kwargs['teacherid']
+        return ServiceDocente.getPublication(publicationid, teacherid)

@@ -710,7 +710,7 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getPublication(publicationid=None):
+    def getPublication(publicationid=None, teacherid=None):
 
         query = PubblicazioneDatiBase.objects.filter(
             item_id=publicationid).values(
@@ -739,6 +739,8 @@ class ServiceDocente:
                 q['Authors'] = []
             else:
                 q['Authors'] = autori
+
+            q['ReferenceAuthor'] = teacherid
 
         return query
 
@@ -1289,7 +1291,7 @@ class ServiceLaboratorio:
             query = LaboratorioDatiErc1.objects.values(
                 'id_ricerca_erc1__cod_erc1',
                 'id_ricerca_erc1__descrizione').distinct()
-
+        'Erc'
         return query
 
     @staticmethod
