@@ -288,6 +288,7 @@ LABEL_MAPPING = {
         'AuthorName': 'Name',
         'CommunityId': 'Id',
         'CommunityName': 'Name',
+        'PublicationReferenceAuthor': 'Reference Author',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -496,5 +497,6 @@ LABEL_MAPPING = {
         'AuthorName': 'Nome',
         'CommunityId': 'Id',
         'CommunityName': 'Nome',
+        'PublicationReferenceAuthor': 'Autore Principale',
     }
 }

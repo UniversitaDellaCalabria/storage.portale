@@ -852,6 +852,7 @@ class PublicationsListSerializer(CreateUpdateAbstract):
         if query['Authors'] is not None:
             authors = PublicationsListSerializer.to_dict_authors(
                 query['Authors'])
+
         return {
             'PublicationId': query['item_id'],
             'PublicationTitle': query['title'],
@@ -863,6 +864,7 @@ class PublicationsListSerializer(CreateUpdateAbstract):
             'PublicationContributors': query['contributors'],
             'PublicationYear': query['date_issued_year'],
             'PublicationAuthors': authors,
+            'PublicationReferenceAuthor': query['ReferenceAuthor'],
         }
 
     @staticmethod

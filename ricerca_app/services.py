@@ -705,6 +705,8 @@ class ServiceDocente:
             else:
                 q['Authors'] = autori
 
+            q['ReferenceAuthor'] = teacherid
+
         return query
 
     @staticmethod
