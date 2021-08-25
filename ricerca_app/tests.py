@@ -2471,7 +2471,7 @@ class ApiErc1ListUnitTest(TestCase):
         data = {'erc0': '111'}
         res = req.get(url, data=data)
 
-        assert res.json()['results'][0]['IdErc1'] == 'cod1_erc1'
+        assert res.json()['results'][0]['IdErc0'] == '111'
 
         assert len(res.json()['results']) == 1
 

@@ -311,6 +311,7 @@ LABEL_MAPPING = {
         'CommunityId': 'Id',
         'CommunityName': 'Name',
         'PublicationReferenceAuthor': 'Reference Author',
+        'Erc1List': 'Erc1 List',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -520,6 +521,7 @@ LABEL_MAPPING = {
         'CommunityId': 'Id',
         'CommunityName': 'Nome',
         'PublicationReferenceAuthor': 'Autore Principale',
+        'Erc1List': 'Lista Erc1 Associati',
     }
 }
 

@@ -818,12 +818,29 @@ class Erc1ListSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-        pass
+
+        erc1 = Erc1ListSerializer.to_dict_erc1_list(query['Erc1'], req_lang)
 
         return {
-            'IdErc1': query['id_ricerca_erc1__cod_erc1'],
-            'Description': query['id_ricerca_erc1__descrizione'],
+            'IdErc0': query['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
+            'Description': query['id_ricerca_erc1__ricerca_erc0_cod__description']
+            if req_lang == "it" or query['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else query[
+                'id_ricerca_erc1__ricerca_erc0_cod__description_en'],
+            'Erc1List': erc1,
         }
+
+    @staticmethod
+    def to_dict_erc1_list(query, req_lang="en"):
+
+        result = []
+
+        for q in query:
+            result.append({
+                'IdErc1': q['id_ricerca_erc1__cod_erc1'],
+                'Description': q['id_ricerca_erc1__descrizione'],
+            })
+
+        return result
 
 
 class Erc0ListSerializer(CreateUpdateAbstract):

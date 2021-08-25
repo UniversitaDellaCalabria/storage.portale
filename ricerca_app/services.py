@@ -440,7 +440,13 @@ class ServiceDocente:
         return linea_applicata
 
     @staticmethod
-    def teachersList(regdid, dip, role):
+    def teachersList(keywords, regdid, dip, role):
+
+        # if keywords is not None:
+        #     for k in keywords.split(" "):
+        #         q_cognome = Q(cognome__icontains=k)
+        #         query_keywords |= q_cognome
+
         if dip:
             department = DidatticaDipartimento.objects.filter(
                 dip_cod=dip).values(
@@ -1280,18 +1286,20 @@ class ServiceLaboratorio:
             "ambito").distinct().order_by("ambito")
 
     @staticmethod
-    def getErc1List(erc0):
-        if erc0:
-            query = LaboratorioDatiErc1.objects.filter(
-                id_ricerca_erc1__ricerca_erc0_cod=erc0).values(
-                'id_ricerca_erc1__cod_erc1',
-                'id_ricerca_erc1__descrizione').distinct()
-        else:
+    def getErc1List():
 
-            query = LaboratorioDatiErc1.objects.values(
-                'id_ricerca_erc1__cod_erc1',
-                'id_ricerca_erc1__descrizione').distinct()
-        'Erc'
+        query = LaboratorioDatiErc1.objects.all().values(
+            'id_ricerca_erc1__ricerca_erc0_cod__erc0_cod',
+            'id_ricerca_erc1__ricerca_erc0_cod__description',
+            'id_ricerca_erc1__ricerca_erc0_cod__description_en').distinct()
+
+        query = list(query)
+
+        for q in query:
+
+            q['Erc1'] = LaboratorioDatiErc1.objects.filter(
+                id_ricerca_erc1__ricerca_erc0_cod=q['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod']).values(
+                'id_ricerca_erc1__cod_erc1', 'id_ricerca_erc1__descrizione').distinct()
         return query
 
     @staticmethod

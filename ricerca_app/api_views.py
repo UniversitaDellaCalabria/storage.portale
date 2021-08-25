@@ -324,11 +324,13 @@ class ApiTeachersList(ApiEndpointList):
     filter_backends = [ApiTeachersListFilter]
 
     def get_queryset(self):
+
+        keywords = self.request.query_params.get('keywords')
         regdid = self.request.query_params.get('cdsid')
         dip = self.request.query_params.get('departmentid')
         role = self.request.query_params.get('role')
 
-        return ServiceDocente.teachersList(regdid, dip, role)
+        return ServiceDocente.teachersList(keywords, regdid, dip, role)
 
 
 class ApiTeacherStudyActivitiesList(ApiEndpointList):
@@ -538,6 +540,16 @@ class ApiLaboratoriesAreasList(ApiEndpointList):
 
 class ApiErc1List(ApiEndpointList):
     description = 'La funzione restituisce la lista degli erc1'
+    serializer_class = Erc1ListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceLaboratorio.getErc1List()
+
+
+class ApiErc1FilterList(ApiEndpointList):
+    description = 'La funzione restituisce la lista degli erc1 senza paginazione'
     serializer_class = Erc1ListSerializer
     filter_backends = []
 

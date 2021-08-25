@@ -209,6 +209,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiErc1List.as_view(),
                         name='erc1list'),
 
+    urlpatterns += path('{}/erc1filter/'.format(base_url),
+                        api_views.ApiErc1FilterList.as_view(),
+                        name='erc1filterlist'),
+
     urlpatterns += path('{}/erc0list/'.format(base_url),
                         api_views.ApiErc0List.as_view(),
                         name='erc0list'),
