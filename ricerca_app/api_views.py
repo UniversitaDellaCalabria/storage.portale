@@ -548,7 +548,7 @@ class ApiErc1List(ApiEndpointList):
         return ServiceLaboratorio.getErc1List()
 
 
-class ApiErc1FilterList(ApiEndpointList):
+class ApiErc1FilterList(ApiEndpointListSupport):
     description = 'La funzione restituisce la lista degli erc1 senza paginazione'
     serializer_class = Erc1ListSerializer
     filter_backends = []
