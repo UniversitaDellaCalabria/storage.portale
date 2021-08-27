@@ -2252,6 +2252,11 @@ class PubblicazioneDatiBase(models.Model):
     contributors = models.TextField(
         db_column='CONTRIBUTORS', blank=True, null=True)
 
+    # Field name made lowercase.
+    url_pubblicazione = models.CharField(
+        db_column='URL_PUBBLICAZIONE', max_length=500, blank=True,
+        null=True)
+
     class Meta:
         managed = True
         db_table = 'PUBBLICAZIONE_DATI_BASE'

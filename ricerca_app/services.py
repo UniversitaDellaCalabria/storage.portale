@@ -694,7 +694,8 @@ class ServiceDocente:
             "pubblicazione",
             "label_pubblicazione",
             "contributors",
-            'date_issued_year').order_by(
+            'date_issued_year',
+            'url_pubblicazione').order_by(
             "date_issued_year",
             "title").distinct()
         for q in query:
@@ -729,7 +730,8 @@ class ServiceDocente:
             "pubblicazione",
             "label_pubblicazione",
             "contributors",
-            'date_issued_year').order_by(
+            'date_issued_year',
+            'url_pubblicazione').order_by(
             "date_issued_year",
             "title").distinct()
         for q in query:

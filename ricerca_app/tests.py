@@ -2612,6 +2612,7 @@ class ApiPublicationsListUnitTest(TestCase):
             'pubblicazione': 'Giornale 1',
             'label_pubblicazione': 'Rivista',
             'collection_id': 1,
+            'url_pubblicazione': 'aaa',
         })
 
         PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
@@ -2623,6 +2624,8 @@ class ApiPublicationsListUnitTest(TestCase):
             'pubblicazione': 'Convegno Cosenza',
             'label_pubblicazione': 'Convegno',
             'collection_id': 2,
+            'url_pubblicazione': 'aba',
+
         })
 
         PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
@@ -2634,6 +2637,8 @@ class ApiPublicationsListUnitTest(TestCase):
             'pubblicazione': 'Convegno Cosenza',
             'label_pubblicazione': 'Convegno',
             'collection_id': 2,
+            'url_pubblicazione': 'ccc',
+
         })
 
         PubblicazioneAutoriUnitTest.create_pubblicazioneAutori(**{
