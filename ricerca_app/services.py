@@ -734,6 +734,7 @@ class ServiceDocente:
             'url_pubblicazione').order_by(
             "date_issued_year",
             "title").distinct()
+
         for q in query:
             autori = PubblicazioneAutori.objects.filter(
                 item_id=publicationid).values(
