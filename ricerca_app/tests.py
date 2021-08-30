@@ -923,6 +923,12 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 3
 
+        data = {'keywords': 'gar'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111111'
+
+        print(res.json())
+
         data = {'role': 'PO'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111111'

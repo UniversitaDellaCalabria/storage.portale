@@ -442,10 +442,12 @@ class ServiceDocente:
     @staticmethod
     def teachersList(keywords, regdid, dip, role):
 
-        # if keywords is not None:
-        #     for k in keywords.split(" "):
-        #         q_cognome = Q(cognome__icontains=k)
-        #         query_keywords |= q_cognome
+        query_keywords = Q()
+
+        if keywords is not None:
+            for k in keywords.split(" "):
+                q_cognome = Q(cognome__icontains=k)
+                query_keywords &= q_cognome
 
         if dip:
             department = DidatticaDipartimento.objects.filter(
@@ -454,6 +456,7 @@ class ServiceDocente:
             if department is None:
                 return None
             query = Personale.objects.filter(
+                query_keywords,
                 fl_docente=1,
                 aff_org=department["dip_cod"]) .values(
                 "matricola",
@@ -463,9 +466,9 @@ class ServiceDocente:
                 "cd_ruolo",
                 "ds_ruolo_locale",
                 "cd_ssd",
-                "ds_ssd")
+                "ds_ssd").order_by('cognome', 'nome', 'middle_name')
             if role:
-                query = query.filter(cd_ruolo=role)
+                query = query.filter(query_keywords, cd_ruolo=role)
             query = list(query)
 
             for q in query:
@@ -478,21 +481,25 @@ class ServiceDocente:
         elif regdid:
             if role:
                 query = Personale.objects.filter(
+                    query_keywords,
                     fl_docente=1,
                     cd_ruolo=role,
                     didatticacopertura__af__isnull=False,
                     didatticacopertura__af__regdid__regdid_id=regdid)
             else:
                 query = Personale.objects.filter(
+                    query_keywords,
                     fl_docente=1,
                     didatticacopertura__af__isnull=False,
                     didatticacopertura__af__regdid__regdid_id=regdid)
         else:
             if role:
                 query = Personale.objects.filter(
+                    query_keywords,
                     fl_docente=1, flg_cessato=0, cd_ruolo=role)
             else:
-                query = Personale.objects.filter(fl_docente=1, flg_cessato=0)
+                query = Personale.objects.filter(
+                    query_keywords, fl_docente=1, flg_cessato=0)
 
         dip_cods = query.values_list("aff_org", flat=True).distinct()
         dip_cods = list(dip_cods)
@@ -507,7 +514,7 @@ class ServiceDocente:
             "cd_ssd",
             "ds_ssd",
             "aff_org",
-            "ds_ssd").distinct()
+            "ds_ssd").distinct().order_by('cognome', 'nome', 'middle_name')
 
         query = list(query)
 
@@ -696,7 +703,7 @@ class ServiceDocente:
             "contributors",
             'date_issued_year',
             'url_pubblicazione').order_by(
-            "date_issued_year",
+            "-date_issued_year",
             "title").distinct()
         for q in query:
             autori = PubblicazioneAutori.objects.filter(
