@@ -1708,6 +1708,10 @@ class ApiStructuresListUnitTest(TestCase):
         assert res.json()['results'][1]['StructureId'] == '1'
         assert len(res.json()['results']) == 3
 
+        data = {'type': 'DIR,UFF'}
+        res = req.get(url_filter, data=data)
+        assert len(res.json()['results']) == 2
+
 
 class ApiStructuresTypesUnitTest(TestCase):
 
