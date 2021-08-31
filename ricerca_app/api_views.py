@@ -549,7 +549,9 @@ class ApiErc1List(ApiEndpointList):
 
     def get_queryset(self):
 
-        return ServiceLaboratorio.getErc1List()
+        laboratorio = self.request.query_params.get('laboratory')
+
+        return ServiceLaboratorio.getErc1List(laboratorio)
 
 
 class ApiErc1FilterList(ApiEndpointListSupport):

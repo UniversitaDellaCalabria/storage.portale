@@ -643,7 +643,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         activities = LaboratoryDetailSerializer.to_dict_activities(
             query['Activities'])
-        erc1 = LaboratoryDetailSerializer.to_dict_erc1(query['Erc1'], req_lang)
+        erc1 = Erc1ListSerializer.to_dict(query['Erc1'][0], req_lang)
         research_personnel = LaboratoryDetailSerializer.to_dict_research_personnel(
             query['ResearchPersonnel'])
         tech_personnel = LaboratoryDetailSerializer.to_dict_tech_personnel(
@@ -691,18 +691,6 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         for q in query:
             result.append({
                 'LaboratoryActivityType': q['tipologia_attivita']
-            })
-        return result
-
-    @staticmethod
-    def to_dict_erc1(query, req_lang="en"):
-        result = []
-        for q in query:
-            result.append({
-                'LaboratoryErc1Cod': q['id_ricerca_erc1__cod_erc1'],
-                'LaboratoryErc1Description': q['id_ricerca_erc1__descrizione'],
-                'LaboratoryErc0Cod': q['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
-                'LaboratoryErc0Description': q['id_ricerca_erc1__ricerca_erc0_cod__description'] if req_lang == "it" or q['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else q['id_ricerca_erc1__ricerca_erc0_cod__description_en'],
             })
         return result
 

@@ -1238,13 +1238,7 @@ class ServiceLaboratorio:
             'strumentazione_descrizione',)
         activities = LaboratorioAttivita.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values("tipologia_attivita")
-        erc1 = LaboratorioDatiErc1.objects.filter(
-            id_laboratorio_dati__id=laboratoryid).values(
-            "id_ricerca_erc1__cod_erc1",
-            "id_ricerca_erc1__descrizione",
-            "id_ricerca_erc1__ricerca_erc0_cod__erc0_cod",
-            "id_ricerca_erc1__ricerca_erc0_cod__description",
-            "id_ricerca_erc1__ricerca_erc0_cod__description_en")
+        erc1 = ServiceLaboratorio.getErc1List(laboratoryid)
         personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values(
             "matricola_personale_ricerca__matricola",
@@ -1296,9 +1290,16 @@ class ServiceLaboratorio:
             "ambito").distinct().order_by("ambito")
 
     @staticmethod
-    def getErc1List():
+    def getErc1List(laboratorio):
 
-        query = LaboratorioDatiErc1.objects.all().values(
+        query_laboratorio = Q()
+
+        if laboratorio:
+            query_laboratorio = Q(id_laboratorio_dati__exact=laboratorio)
+
+        query = LaboratorioDatiErc1.objects.filter(
+            query_laboratorio,
+        ).values(
             'id_ricerca_erc1__ricerca_erc0_cod__erc0_cod',
             'id_ricerca_erc1__ricerca_erc0_cod__description',
             'id_ricerca_erc1__ricerca_erc0_cod__description_en').distinct()
@@ -1308,8 +1309,11 @@ class ServiceLaboratorio:
         for q in query:
 
             q['Erc1'] = LaboratorioDatiErc1.objects.filter(
+                query_laboratorio,
                 id_ricerca_erc1__ricerca_erc0_cod=q['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod']).values(
-                'id_ricerca_erc1__cod_erc1', 'id_ricerca_erc1__descrizione').distinct()
+                'id_ricerca_erc1__cod_erc1',
+                'id_ricerca_erc1__descrizione').distinct()
+
         return query
 
     @staticmethod
