@@ -845,6 +845,10 @@ class ApiTeachersListUnitTest(TestCase):
             'fl_docente': 1,
             'flg_cessato': 0,
             'aff_org': 2,
+            'cv_full_it': 'AAA',
+            'cv_short_it': 'A',
+            'cv_full_eng': 'BBB',
+            'cv_short_eng': 'B',
         })
         PersonaleUnitTest.create_personale(**{
             'id': 3,
@@ -927,11 +931,9 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111111'
 
-        print(res.json())
-
         data = {'role': 'PO'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111111'
+        assert res.json()['results'][0]['TeacherCVFullIta'] == 'AAA'
 
         data = {'departmentid': 1}
         res = req.get(url, data=data)
@@ -1059,6 +1061,11 @@ class ApiTeacherInfoUnitTest(TestCase):
             'flg_cessato': 0,
             'aff_org': 1,
             'cod_fis': 'SMNMNG',
+            'cv_full_it': 'AAA',
+            'cv_short_it': 'A',
+            'cv_full_eng': 'BBB',
+            'cv_short_eng': 'B',
+
         })
         PersonaleUnitTest.create_personale(**{
             'id': 2,
@@ -1428,6 +1435,10 @@ class ApiAddressbookListUnitTest(TestCase):
             'flg_cessato': 0,
             'aff_org': 1,
             'cod_fis': 'SMN1',
+            'cv_full_it': 'AAA',
+            'cv_short_it': 'A',
+            'cv_full_eng': 'BBB',
+            'cv_short_eng': 'B',
         })
         p2 = PersonaleUnitTest.create_personale(**{
             'id': 2,
@@ -1441,6 +1452,10 @@ class ApiAddressbookListUnitTest(TestCase):
             'flg_cessato': 0,
             'aff_org': 99,
             'cod_fis': 'LNL1',
+            'cv_full_it': 'BBB',
+            'cv_short_it': 'B',
+            'cv_full_eng': 'AA',
+            'cv_short_eng': 'A',
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '2',
@@ -1619,7 +1634,7 @@ class ApiAddressbookListUnitTest(TestCase):
         data = {'structureid': '99', 'lang': 'it'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
-        assert res.json()['results'][0]['Name'] == 'Messi Lionel'
+        assert res.json()['results'][0]['TeacherCVShortIta'] == 'B'
 
         data = {'keywords': 'Mungar'}
         res = req.get(url, data=data)
@@ -1849,6 +1864,10 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'flg_cessato': 0,
             'aff_org': 1,
             'cod_fis': 'SMN1',
+            'cv_full_it': 'AAA',
+            'cv_short_it': 'A',
+            'cv_full_eng': 'BBB',
+            'cv_short_eng': 'B',
 
         })
         p2 = PersonaleUnitTest.create_personale(**{
@@ -1946,6 +1965,7 @@ class ApiPersonaleDetailUnitTest(TestCase):
         res = req.get(url)
         res1 = req.get(url1)
 
+        assert res.json()['results']['TeacherCVFullEng'] == "BBB"
         assert res.json()['results']['ID'] == "111112"
         assert res1.json()['results']['ID'] == "111113"
 

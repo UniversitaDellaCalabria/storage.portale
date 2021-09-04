@@ -343,6 +343,10 @@ class TeachersListSerializer(CreateUpdateAbstract):
             'TeacherRoleDescription': query['ds_ruolo_locale'],
             'TeacherSSDCod': query['cd_ssd'],
             'TeacherSSDDescription': query['ds_ssd'],
+            'TeacherCVFullIta': query['cv_full_it'],
+            'TeacherCVFullEng': query['cv_full_eng'],
+            'TeacherCVShortIta': query['cv_short_it'],
+            'TeacherCVShortEng': query['cv_short_eng'],
         }
 
 
@@ -408,7 +412,10 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherWebSite': query['URL Sito WEB'],
             'TeacherCV': query['URL Sito WEB Curriculum Vitae'],
             'TeacherFunctions': functions,
-
+            'TeacherCVFullIta': query['cv_full_it'],
+            'TeacherCVFullEng': query['cv_full_eng'],
+            'TeacherCVShortIta': query['cv_short_it'],
+            'TeacherCVShortEng': query['cv_short_eng'],
         }
 
     @staticmethod
@@ -518,6 +525,11 @@ class AddressbookListSerializer(CreateUpdateAbstract):
             'WebSite': query['URL Sito WEB'],
             'CV': query['URL Sito WEB Curriculum Vitae'],
             'Teacher': query['fl_docente'],
+            'TeacherCVFullIta': query['cv_full_it'],
+            'TeacherCVFullEng': query['cv_full_eng'],
+            'TeacherCVShortIta': query['cv_short_it'],
+            'TeacherCVShortEng': query['cv_short_eng'],
+
         }
 
 

@@ -466,7 +466,11 @@ class ServiceDocente:
                 "cd_ruolo",
                 "ds_ruolo_locale",
                 "cd_ssd",
-                "ds_ssd").order_by('cognome', 'nome', 'middle_name')
+                "ds_ssd",
+                "cv_full_it",
+                "cv_short_it",
+                "cv_full_eng",
+                "cv_short_eng").order_by('cognome', 'nome', 'middle_name')
             if role:
                 query = query.filter(query_keywords, cd_ruolo=role)
             query = list(query)
@@ -514,7 +518,12 @@ class ServiceDocente:
             "cd_ssd",
             "ds_ssd",
             "aff_org",
-            "ds_ssd").distinct().order_by('cognome', 'nome', 'middle_name')
+            "ds_ssd",
+            "cv_full_it",
+            "cv_short_it",
+            "cv_full_eng",
+            "cv_short_eng"
+        ).distinct().order_by('cognome', 'nome', 'middle_name')
 
         query = list(query)
 
@@ -634,7 +643,12 @@ class ServiceDocente:
             "aff_org",
             "ds_aff_org",
             "telrif",
-            "email")
+            "email",
+            "cv_full_it",
+            "cv_short_it",
+            "cv_full_eng",
+            "cv_short_eng"
+        )
         for q in query:
             for c in contacts_to_take:
                 q[c] = []
@@ -904,6 +918,10 @@ class ServicePersonale:
             'structure_type_cod',
             'structure_type_name',
             'fl_docente',
+            "cv_full_it",
+            "cv_short_it",
+            "cv_full_eng",
+            "cv_short_eng"
         )
 
         if structureid is None and structuretypes is None and structuretree is None:
@@ -936,7 +954,12 @@ class ServicePersonale:
                                 'denominazione',
                                 'structure_type_cod',
                                 'structure_type_name',
-                                'fl_docente',)
+                                'fl_docente',
+                                "cv_full_it",
+                                "cv_short_it",
+                                "cv_full_eng",
+                                "cv_short_eng",
+            )
             from itertools import chain
             query = list(chain(*[query, query2]))
 
@@ -972,6 +995,11 @@ class ServicePersonale:
                     'TipologiaStrutturaCod': q['structure_type_cod'] if 'structure_type_cod' in q.keys() else None,
                     'TipologiaStrutturaNome': q['structure_type_name'] if 'structure_type_name' in q.keys() else None,
                     'fl_docente': q['fl_docente'],
+                    'cv_full_it': q['cv_full_it'],
+                    'cv_full_eng': q['cv_full_eng'],
+                    'cv_short_it': q['cv_short_it'],
+                    'cv_short_eng': q['cv_short_eng'],
+
                 }
                 for c in contacts_to_take:
                     grouped[q['id_ab']][c] = []
@@ -983,7 +1011,6 @@ class ServicePersonale:
             if last_id == -1 or last_id != q['id_ab']:
                 last_id = q['id_ab']
                 final_query.append(grouped[q['id_ab']])
-
         return final_query
 
     @staticmethod
@@ -1087,6 +1114,10 @@ class ServicePersonale:
             'funzioniunitaorganizzativa__ds_funzione',
             'funzioniunitaorganizzativa__termine',
             'fl_docente',
+            "cv_full_it",
+            "cv_short_it",
+            "cv_full_eng",
+            "cv_short_eng"
         )
         for q in query:
             if q["funzioniunitaorganizzativa__termine"] is not None and q["funzioniunitaorganizzativa__termine"] >= datetime.datetime.today():

@@ -313,6 +313,10 @@ LABEL_MAPPING = {
         'PublicationReferenceAuthor': 'Reference Author',
         'Erc1List': 'Erc1 List',
         'PublicationUrl': 'Publication Url',
+        'TeacherCVFullIta':'Teacher CV Full Ita',
+        'TeacherCVFullEng':'Teacher CV Full Eng',
+        'TeacherCVShortIta':'Teacher CV Short Ita',
+        'TeacherCVShortEng':'Teacher CV Short Eng',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -524,6 +528,10 @@ LABEL_MAPPING = {
         'PublicationReferenceAuthor': 'Autore Principale',
         'Erc1List': 'Lista Erc1 Associati',
         'PublicationUrl': 'Url Pubblicazione',
+        'TeacherCVFullIta':'CV completo in italiano',
+        'TeacherCVFullEng':'CV completo in inglese',
+        'TeacherCVShortIta':'CV breve in italiano',
+        'TeacherCVShortEng':'CV breve in inglese',
     }
 }
 

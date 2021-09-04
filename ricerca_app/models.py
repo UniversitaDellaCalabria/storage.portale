@@ -2062,6 +2062,21 @@ class Personale(InsModAbstract):
                                  related_name='user_mod_personale',
                                  on_delete=models.SET_NULL,
                                  blank=True, null=True)
+    # Field name made lowercase.
+    cv_full_it = models.TextField(
+        db_column='CV_FULL_IT', blank=True, null=True)
+
+    # Field name made lowercase.
+    cv_short_it = models.TextField(
+        db_column='CV_SHORT_IT', blank=True, null=True)
+
+    # Field name made lowercase.
+    cv_full_eng = models.TextField(
+        db_column='CV_FULL_ENG', blank=True, null=True)
+
+    # Field name made lowercase.
+    cv_short_eng = models.TextField(
+        db_column='CV_SHORT_ENG', blank=True, null=True)
 
     class Meta:
         managed = True
