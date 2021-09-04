@@ -1969,7 +1969,6 @@ class ApiPersonaleDetailUnitTest(TestCase):
         assert res.json()['results']['ID'] == "111112"
         assert res1.json()['results']['ID'] == "111113"
 
-
 class ApiStructureDetailUnitTest(TestCase):
 
     def test_apistructuredetail(self):

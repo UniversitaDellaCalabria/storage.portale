@@ -529,7 +529,6 @@ class AddressbookListSerializer(CreateUpdateAbstract):
             'TeacherCVFullEng': query['cv_full_eng'],
             'TeacherCVShortIta': query['cv_short_it'],
             'TeacherCVShortEng': query['cv_short_eng'],
-
         }
 
 

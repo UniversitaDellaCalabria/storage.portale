@@ -2103,6 +2103,7 @@ class PersonaleUoTipoContatto(models.Model):
 
 
 class PersonaleContatti(models.Model):
+
     # Field name made lowercase.
     id_ab = models.IntegerField(db_column='ID_AB', primary_key=True)
     cod_fis = models.ForeignKey(

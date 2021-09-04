@@ -295,6 +295,7 @@ LABEL_MAPPING = {
         'TeacherCVFullEng':'Teacher CV Full Eng',
         'TeacherCVShortIta':'Teacher CV Short Ita',
         'TeacherCVShortEng':'Teacher CV Short Eng',
+
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',

@@ -999,7 +999,6 @@ class ServicePersonale:
                     'cv_full_eng': q['cv_full_eng'],
                     'cv_short_it': q['cv_short_it'],
                     'cv_short_eng': q['cv_short_eng'],
-
                 }
                 for c in contacts_to_take:
                     grouped[q['id_ab']][c] = []
