@@ -931,9 +931,9 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111111'
 
-        data = {'role': 'PO'}
+        data = {'role': 'PO', 'lang': 'it'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherCVFullIta'] == 'AAA'
+        assert res.json()['results'][0]['TeacherCVFull'] == 'AAA'
 
         data = {'departmentid': 1}
         res = req.get(url, data=data)
@@ -1634,7 +1634,7 @@ class ApiAddressbookListUnitTest(TestCase):
         data = {'structureid': '99', 'lang': 'it'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
-        assert res.json()['results'][0]['TeacherCVShortIta'] == 'B'
+        assert res.json()['results'][0]['TeacherCVShort'] == 'B'
 
         data = {'keywords': 'Mungar'}
         res = req.get(url, data=data)
@@ -1965,9 +1965,10 @@ class ApiPersonaleDetailUnitTest(TestCase):
         res = req.get(url)
         res1 = req.get(url1)
 
-        assert res.json()['results']['TeacherCVFullEng'] == "BBB"
+        assert res.json()['results']['TeacherCVFull'] == "BBB"
         assert res.json()['results']['ID'] == "111112"
         assert res1.json()['results']['ID'] == "111113"
+
 
 class ApiStructureDetailUnitTest(TestCase):
 
