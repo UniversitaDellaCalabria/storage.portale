@@ -9,7 +9,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, FunzioniUnitaOrganizzativa, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
-    PubblicazioneAutori, PubblicazioneCommunity
+    PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo
 
 
 class ServiceQueryBuilder:
@@ -102,6 +102,7 @@ class ServiceDidatticaCds:
             'dip__dip_cod',
             'dip__dip_des_it',
             'dip__dip_des_eng',
+            'cds_id',
             'cds_cod',
             'cdsord_id',
             'nome_cds_it',
@@ -198,6 +199,7 @@ class ServiceDidatticaAttivitaFormativa:
                     'af_id',
                     'des',
                     'af_gen_des_eng',
+                    'cds__cds_id',
                     'cds__cds_cod',
                     'regdid__regdid_id',
                     'anno_corso',
@@ -224,6 +226,7 @@ class ServiceDidatticaAttivitaFormativa:
                 'des',
                 'af_gen_des_eng',
                 'cds__cds_cod',
+                'cds__cds_id',
                 'regdid__regdid_id',
                 'anno_corso',
                 'ciclo_des',
@@ -251,6 +254,7 @@ class ServiceDidatticaAttivitaFormativa:
             'des',
             'af_gen_des_eng',
             'cds__cds_cod',
+            'cds__cds_id',
             'regdid__regdid_id',
             'anno_corso',
             'ciclo_des',
@@ -403,6 +407,21 @@ class ServiceDocente:
             'ricercadocentegruppo__ricerca_gruppo__id',
             'ricercadocentegruppo__ricerca_gruppo__nome',
             'ricercadocentegruppo__ricerca_gruppo__descrizione').distinct()
+
+        return query
+
+    @staticmethod
+    def getAllResearchGroups():
+
+        # query_teacher = Q()
+        #
+        # if teacher:
+        #     query_teacher = Q(ricercadocentegruppo__personale_id__exact=teacher)
+
+        query = RicercaGruppo.objects.order_by('nome').values(
+            'id',
+            'nome',
+            'descrizione').distinct()
 
         return query
 

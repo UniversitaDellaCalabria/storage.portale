@@ -1,9 +1,9 @@
 from django.conf import settings
-from django.urls import path, include, re_path
-from rest_framework import routers, permissions
+from django.urls import path, re_path
+from django.views.generic import TemplateView
+from rest_framework import permissions
 from rest_framework.renderers import JSONOpenAPIRenderer
-from rest_framework.schemas.agid_schema_views import get_schema_view
-
+from rest_framework.schemas import get_schema_view
 
 from . import api_views
 
@@ -40,9 +40,14 @@ urlpatterns = [
 ]
 
 if 'rest_framework' in settings.INSTALLED_APPS:
-    router = routers.DefaultRouter()
+    # router = routers.DefaultRouter()
     #  router.register('api/ricerca', api_views.ApiDocenteViewSet)
-    urlpatterns += path('api', include(router.urls)),
+    # urlpatterns += path('api', include(router.urls)),
+
+    urlpatterns += path('api/',
+                        TemplateView.as_view(template_name='redoc.html',
+                                             extra_context={'schema_url': 'openapi-schema'}),
+                        name='api-redoc'),
 
     # API schemas
     try:
@@ -98,7 +103,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
 
     urlpatterns += path(
         '{}/cds/<int:cdsid>/studyplans/<int:studyplanid>/activities/<int:studyactivityid>/'.format(base_url),
-        api_views.ApiStudyActivityDetail.as_view(),
+        api_views.ApiStudyActivityInfo.as_view(),
         name='studyactivityinfo'),
 
     urlpatterns += path('{}/activities/<int:studyactivityid>/'.format(base_url),
@@ -113,6 +118,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/teachers/<str:teacherid>/researchgroups/'.format(base_url),
         api_views.ApiTeacherResearchGroupsList.as_view(),
         name='teacherresearchgroups'),
+
+    urlpatterns += path(
+        '{}/researchgroups/'.format(base_url),
+        api_views.ApiResearchGroupsList.as_view(),
+        name='researchgroups'),
 
     urlpatterns += path(
         '{}/teachers/<str:teacherid>/researchlines/'.format(base_url),

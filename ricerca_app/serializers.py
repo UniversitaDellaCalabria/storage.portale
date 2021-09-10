@@ -32,7 +32,8 @@ class CdSListSerializer(CreateUpdateAbstract):
                          'it' or q['lingua_des_eng'] is None else q['lingua_des_eng'])
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
-            'CdSId': query['cds_cod'],
+            'CdSId': query['cds_id'],
+            'CdSCod': query['cds_cod'],
             'AcademicYear': query['didatticaregolamento__aa_reg_did'],
             'CdSName': query['nome_cds_it'] if req_lang == 'it' or query['nome_cds_eng'] is None else query['nome_cds_eng'],
             'DepartmentId': query['dip__dip_cod'],
@@ -69,7 +70,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
-            'CdSId': query['cds_cod'],
+            'CdSId': query['cds_id'],
+            'CdSCod': query['cds_cod'],
             'AcademicYear': query['didatticaregolamento__aa_reg_did'],
             'CdSName': query['nome_cds_it'] if req_lang == 'it' or query['nome_cds_eng'] is None else query['nome_cds_eng'],
             'DepartmentId': query['dip__dip_cod'],
@@ -168,7 +170,8 @@ class StudyPlansActivitiesSerializer(CreateUpdateAbstract):
         return {
             'StudyActivityID': query['af_id'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
-            'StudyActivityCdSID': query['cds__cds_cod'],
+            'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityCdSCod': query['cds__cds_cod'],
             'StudyActivityRegDidId': query['regdid__regdid_id'],
             'StudyActivityYear': query['anno_corso'],
             'StudyActivitySemester': query['ciclo_des'],
@@ -208,7 +211,8 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
         return {
             'StudyActivityID': query['af_id'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
-            'StudyActivityCdSID': query['cds__cds_cod'],
+            'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityCdSCod': query['cds__cds_cod'],
             'StudyActivityRegDidId': query['regdid__regdid_id'],
             'StudyActivityYear': query['anno_corso'],
             'StudyActivitySemester': query['ciclo_des'],
@@ -286,6 +290,24 @@ class TeacherResearchGroupsSerializer(CreateUpdateAbstract):
             'RGroupID': query['ricercadocentegruppo__ricerca_gruppo__id'],
             'RGroupName': query['ricercadocentegruppo__ricerca_gruppo__nome'],
             'RGroupDescription': query['ricercadocentegruppo__ricerca_gruppo__descrizione'],
+        }
+
+
+class ResearchGroupsSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        return {
+            'RGroupID': query['id'],
+            'RGroupName': query['nome'],
+            'RGroupDescription': query['descrizione'],
         }
 
 

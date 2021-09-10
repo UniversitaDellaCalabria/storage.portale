@@ -2843,3 +2843,40 @@ class ApiPublicationDetailUnitTest(TestCase):
 
         res = req.get(url)
         assert res.json()['results']['PublicationYear'] == 2019
+
+
+class ApiResearchGroupsUnitTest(TestCase):
+
+    def test_apiresearchgroups(self):
+        req = Client()
+
+        RicercaGruppoUnitTest.create_ricercaGruppo(**{
+            'id': 1,
+            'nome': 'Intelligenza Artificiale',
+            'descrizione': 'ricerca su Machine Learning',
+        })
+        RicercaGruppoUnitTest.create_ricercaGruppo(**{
+            'id': 2,
+            'nome': 'Intelligenza Artificiale',
+            'descrizione': 'ricerca su Deep Learning',
+        })
+        RicercaGruppoUnitTest.create_ricercaGruppo(**{
+            'id': 3,
+            'nome': 'Statistica',
+            'descrizione': 'ricerca su Variabili Aleatorie',
+        })
+
+        url = reverse(
+            'ricerca:researchgroups')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results'][0]['RGroupID'] == 1
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 3

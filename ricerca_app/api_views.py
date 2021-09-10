@@ -2,6 +2,7 @@
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
+from rest_framework.schemas.openapi import AutoSchema
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
@@ -142,6 +143,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             'dip__dip_cod',
             'dip__dip_des_it',
             'dip__dip_des_eng',
+            'cds_id',
             'cds_cod',
             'cdsord_id',
             'nome_cds_it',
@@ -270,6 +272,25 @@ class ApiStudyActivityDetail(ApiEndpointDetail):
             af_id=studyactivityid, language=self.language)
 
 
+class StudyActivityInfo(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'ApiStudyActivityInfo'
+
+
+class ApiStudyActivityInfo(ApiEndpointDetail):
+    description = 'Restituisce le informazioni' \
+                  ' dettagliate su un singolo “Insegnamento”'
+    serializer_class = StudyActivityInfoSerializer
+    filter_backends = [ApiStudyActivityInfoFilter]
+    schema = StudyActivityInfo()
+
+    def get_queryset(self):
+        studyactivityid = str(self.kwargs['studyactivityid'])
+
+        return ServiceDidatticaAttivitaFormativa.getAttivitaFormativaWithSubModules(
+            af_id=studyactivityid, language=self.language)
+
+
 class ApiCdSMainTeachersList(ApiEndpointList):
     description = 'Fornisce l’elenco dei docenti di riferimento' \
                   ' (o di tutti i docenti ???) associati ad un CdS.' \
@@ -299,6 +320,19 @@ class ApiTeacherResearchGroupsList(ApiEndpointList):
         teacher_id = self.kwargs['teacherid']
 
         return ServiceDocente.getResearchGroups(teacher_id)
+
+
+class ApiResearchGroupsList(ApiEndpointList):
+    description = 'La funzione restituisce l’elenco ' \
+                  'dei gruppi di ricerca ordinati per nome.'
+    serializer_class = ResearchGroupsSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        # teacher = self.request.query_params.get('teacher')
+
+        return ServiceDocente.getAllResearchGroups()
 
 
 class ApiTeacherResearchLinesList(ApiEndpointList):
@@ -396,10 +430,16 @@ class ApiDepartmentsList(ApiEndpointList):
         return ServiceDipartimento.getDepartmentsList(self.language)
 
 
+class DepartmentsFilterList(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'ApiDepartmentsFilterList'
+
+
 class ApiDepartmentsFilterList(ApiEndpointListSupport):
     description = 'La funzione restituisce la lista dei dipartimenti senza paginazione'
     serializer_class = DepartmentsListSerializer
     filter_backends = []
+    schema = DepartmentsFilterList()
 
     def get_queryset(self):
         return ServiceDipartimento.getDepartmentsList(self.language)
@@ -443,10 +483,16 @@ class ApiStructuresList(ApiEndpointList):
         return ServicePersonale.getStructuresList(keywords, father, type)
 
 
+class StructuresFilterList(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'ApiStructuresFilterList'
+
+
 class ApiStructuresFilterList(ApiEndpointListSupport):
     description = 'La funzione restituisce le strutture organizzative senza paginazione'
     serializer_class = StructuresListSerializer
     filter_backends = []
+    schema = StructuresFilterList()
 
     def get_queryset(self):
 
@@ -554,10 +600,16 @@ class ApiErc1List(ApiEndpointList):
         return ServiceLaboratorio.getErc1List(laboratorio)
 
 
+class Erc1FilterList(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'ApiErc1FilterList'
+
+
 class ApiErc1FilterList(ApiEndpointListSupport):
     description = 'La funzione restituisce la lista degli erc1 senza paginazione'
     serializer_class = Erc1ListSerializer
     filter_backends = []
+    schema = Erc1FilterList()
 
     def get_queryset(self):
 
