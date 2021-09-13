@@ -140,6 +140,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             'didatticaregolamento__regdid_id',
             'didatticaregolamento__aa_reg_did',
             'didatticaregolamento__frequenza_obbligatoria',
+            'dip__dip_id',
             'dip__dip_cod',
             'dip__dip_des_it',
             'dip__dip_des_eng',

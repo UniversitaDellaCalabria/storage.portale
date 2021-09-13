@@ -28,7 +28,8 @@ class ServiceDidatticaCds:
             'courseclassid': 'cla_miur_cod',
             'courseclassname': 'cla_miur_des__icontains',
             # 'courseclassgroup': ... unspecified atm
-            'departmentid': 'dip__dip_cod',
+            'departmentid': 'dip__dip_id',
+            'departmentcod': 'dip__dip_cod',
             'departmentname': f'dip__dip_des_{language == "it" and "it" or "eng"}__icontains',
         }
 
@@ -99,6 +100,7 @@ class ServiceDidatticaCds:
             'didatticaregolamento__regdid_id',
             'didatticaregolamento__aa_reg_did',
             'didatticaregolamento__frequenza_obbligatoria',
+            'dip__dip_id',
             'dip__dip_cod',
             'dip__dip_des_it',
             'dip__dip_des_eng',
@@ -619,7 +621,8 @@ class ServiceDocente:
             'didatticacopertura__af__cds__nome_cds_eng',
             'didatticacopertura__af__lista_lin_did_af',
             'didatticacopertura__aa_id',
-            'didatticacopertura__af__cds_id')
+            'didatticacopertura__af__cds_id',
+            'didatticacopertura__af__cds_id__cds_cod')
 
     @staticmethod
     def getDocenteInfo(teacher):
