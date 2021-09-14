@@ -20,3 +20,4 @@ tests/sp/metadata/*
 .pytest_cache
 *.sqlite3
 ricerca/settingslocal.py
+.idea/*
