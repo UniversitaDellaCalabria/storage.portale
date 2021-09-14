@@ -384,6 +384,7 @@ class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         return {
             'StudyActivityID': query['didatticacopertura__af__af_id'],
+            'StudyActivityCod': query['didatticacopertura__af__af_gen_cod'],
             'StudyActivityName': query['didatticacopertura__af__des'] if req_lang == 'it' or query['didatticacopertura__af__af_gen_des_eng'] is None else query['didatticacopertura__af__af_gen_des_eng'],
             'StudyActivityCdSID': query['didatticacopertura__af__cds_id'],
             'StudyActivityCdSCod': query['didatticacopertura__af__cds_id__cds_cod'],
@@ -397,6 +398,13 @@ class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityLanguage': query['didatticacopertura__af__lista_lin_did_af'],
             'StudyActivitySSD': query['didatticacopertura__af__sett_des'],
             'StudyActivityCompulsory': query['didatticacopertura__af__freq_obblig_flg'],
+            'StudyActivityPartitionCod': query['didatticacopertura__fat_part_stu_cod'],
+            'StudyActivityPartitionDescription': query['didatticacopertura__fat_part_stu_des'],
+            'SingleStudyActivityPartitionCod': query['didatticacopertura__part_stu_cod'],
+            'SingleStudyActivityPartitionDescription': query['didatticacopertura__part_stu_des'],
+            'StudyActivityPartitionType': query['didatticacopertura__tipo_fat_stu_cod'],
+            'StudyActivityPartitionStart': query['didatticacopertura__part_ini'],
+            'StudyActivityPartitionEnd': query['didatticacopertura__part_fine'],
         }
 
 

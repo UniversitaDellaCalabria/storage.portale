@@ -1004,6 +1004,13 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
             'af': course1,
             'personale': doc1,
             'aa_id': 2019,
+            'fat_part_stu_des': '111',
+            'fat_part_stu_cod': 'AA',
+            'part_stu_des': '11',
+            'part_stu_cod': 'A',
+            'tipo_fat_stu_cod': 'ALF',
+            'part_ini': 'A',
+            'part_fine': 'Z'
         })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course2,

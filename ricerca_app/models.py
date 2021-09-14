@@ -670,6 +670,49 @@ class DidatticaCopertura(InsModAbstract):
 
     ore = models.IntegerField(db_column='ORE', blank=True, null=True)
 
+    # Field name made lowercase.
+    fat_part_stu_cod = models.CharField(
+        db_column='FAT_PART_STU_COD',
+        max_length=50,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    fat_part_stu_des = models.CharField(
+        db_column='FAT_PART_STU_DES',
+        max_length=100,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    part_stu_cod = models.CharField(
+        db_column='PART_STU_COD',
+        max_length=50,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    part_stu_des = models.CharField(
+        db_column='PART_STU_DES',
+        max_length=200,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    tipo_fat_stu_cod = models.CharField(
+        db_column='TIPO_FAT_STU_COD',
+        max_length=20,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    part_ini = models.CharField(
+        db_column='PART_INI',
+        max_length=100,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    part_fine = models.CharField(
+        db_column='PART_FINE',
+        max_length=100,
+        blank=True,
+        null=True)
+
     class Meta:
         managed = True
         db_table = 'DIDATTICA_COPERTURA'

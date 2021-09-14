@@ -609,6 +609,7 @@ class ServiceDocente:
             'didatticacopertura__af__des',
             'didatticacopertura__af__af_gen_des_eng') .values(
             'didatticacopertura__af__af_id',
+            'didatticacopertura__af__af_gen_cod',
             'didatticacopertura__af__des',
             'didatticacopertura__af__af_gen_des_eng',
             'didatticacopertura__af__regdid__regdid_id',
@@ -622,7 +623,15 @@ class ServiceDocente:
             'didatticacopertura__af__lista_lin_did_af',
             'didatticacopertura__aa_id',
             'didatticacopertura__af__cds_id',
-            'didatticacopertura__af__cds_id__cds_cod')
+            'didatticacopertura__af__cds_id__cds_cod',
+            'didatticacopertura__fat_part_stu_des',
+            'didatticacopertura__fat_part_stu_cod',
+            'didatticacopertura__part_stu_des',
+            'didatticacopertura__part_stu_cod',
+            'didatticacopertura__tipo_fat_stu_cod',
+            'didatticacopertura__part_ini',
+            'didatticacopertura__part_fine',
+        )
 
     @staticmethod
     def getDocenteInfo(teacher):
