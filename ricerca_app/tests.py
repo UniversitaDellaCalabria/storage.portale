@@ -1003,7 +1003,7 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course1,
             'personale': doc1,
-            'aa_id': 2019,
+            'aa_off_id': 2019,
             'fat_part_stu_des': '111',
             'fat_part_stu_cod': 'AA',
             'part_stu_des': '11',
@@ -1015,7 +1015,7 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course2,
             'personale': doc1,
-            'aa_id': 2020,
+            'aa_off_id': 2020,
         })
 
         url = reverse(

@@ -383,20 +383,20 @@ class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
         return {
-            'StudyActivityID': query['didatticacopertura__af__af_id'],
-            'StudyActivityCod': query['didatticacopertura__af__af_gen_cod'],
-            'StudyActivityName': query['didatticacopertura__af__des'] if req_lang == 'it' or query['didatticacopertura__af__af_gen_des_eng'] is None else query['didatticacopertura__af__af_gen_des_eng'],
-            'StudyActivityCdSID': query['didatticacopertura__af__cds_id'],
-            'StudyActivityCdSCod': query['didatticacopertura__af__cds_id__cds_cod'],
-            'StudyActivityRegDidId': query['didatticacopertura__af__regdid__regdid_id'],
-            'StudyActivityCdSName': query['didatticacopertura__af__cds__nome_cds_it'] if req_lang == 'it' or query[
+            'StudyActivityID': query['didatticacopertura__af_id'],
+            'StudyActivityCod': query['didatticacopertura__af_gen_cod'],
+            'StudyActivityName': query['didatticacopertura__af_gen_des'] if req_lang == 'it' or query['didatticacopertura__af_gen_des_eng'] is None else query['didatticacopertura__af_gen_des_eng'],
+            'StudyActivityCdSID': query['didatticacopertura__cds_id'],
+            'StudyActivityCdSCod': query['didatticacopertura__cds_cod'],
+            'StudyActivityRegDidId': query['didatticacopertura__regdid_id'],
+            'StudyActivityCdSName': query['didatticacopertura__cds_des'] if req_lang == 'it' or query[
                 'didatticacopertura__af__cds__nome_cds_eng'] is None else query['didatticacopertura__af__cds__nome_cds_eng'],
-            'StudyActivityAA': query['didatticacopertura__aa_id'],
-            'StudyActivityYear': query['didatticacopertura__af__anno_corso'],
-            'StudyActivitySemester': query['didatticacopertura__af__ciclo_des'],
-            'StudyActivityECTS': query['didatticacopertura__af__peso'],
+            'StudyActivityAA': query['didatticacopertura__aa_off_id'],
+            'StudyActivityYear': query['didatticacopertura__anno_corso'],
+            'StudyActivitySemester': query['didatticacopertura__ciclo_des'],
+            'StudyActivityECTS': query['didatticacopertura__peso'],
             'StudyActivityLanguage': query['didatticacopertura__af__lista_lin_did_af'],
-            'StudyActivitySSD': query['didatticacopertura__af__sett_des'],
+            'StudyActivitySSD': query['didatticacopertura__sett_des'],
             'StudyActivityCompulsory': query['didatticacopertura__af__freq_obblig_flg'],
             'StudyActivityPartitionCod': query['didatticacopertura__fat_part_stu_cod'],
             'StudyActivityPartitionDescription': query['didatticacopertura__fat_part_stu_des'],

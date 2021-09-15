@@ -577,26 +577,26 @@ class ServiceDocente:
                 fl_docente=1,
                 matricola__exact=teacher,
                 didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_id=year)
+                didatticacopertura__aa_off_id=year)
         elif yearFrom and yearTo:
             query = Personale.objects.filter(
                 fl_docente=1,
                 matricola__exact=teacher,
                 didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_id__gte=yearFrom,
-                didatticacopertura__aa_id__lte=yearTo)
+                didatticacopertura__aa_off_id__gte=yearFrom,
+                didatticacopertura__aa_off_id__lte=yearTo)
         elif yearFrom:
             query = Personale.objects.filter(
                 fl_docente=1,
                 matricola__exact=teacher,
                 didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_id__gte=yearFrom)
+                didatticacopertura__aa_off_id__gte=yearFrom)
         elif yearTo:
             query = Personale.objects.filter(
                 fl_docente=1,
                 matricola__exact=teacher,
                 didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_id__lte=yearTo)
+                didatticacopertura__aa_off_id__lte=yearTo)
         else:
             query = Personale.objects.filter(
                 fl_docente=1,
@@ -604,26 +604,26 @@ class ServiceDocente:
                 didatticacopertura__af__isnull=False)
 
         return query.order_by(
-            'didatticacopertura__aa_id',
-            'didatticacopertura__af__anno_corso',
-            'didatticacopertura__af__des',
-            'didatticacopertura__af__af_gen_des_eng') .values(
-            'didatticacopertura__af__af_id',
-            'didatticacopertura__af__af_gen_cod',
-            'didatticacopertura__af__des',
-            'didatticacopertura__af__af_gen_des_eng',
-            'didatticacopertura__af__regdid__regdid_id',
-            'didatticacopertura__af__anno_corso',
-            'didatticacopertura__af__ciclo_des',
-            'didatticacopertura__af__peso',
-            'didatticacopertura__af__sett_des',
+            'didatticacopertura__aa_off_id',
+            'didatticacopertura__anno_corso',
+            'didatticacopertura__af_gen_des',
+            'didatticacopertura__af_gen_des_eng') .values(
+            'didatticacopertura__af_id',
+            'didatticacopertura__af_gen_cod',
+            'didatticacopertura__af_gen_des',
+            'didatticacopertura__af_gen_des_eng',
+            'didatticacopertura__regdid_id',
+            'didatticacopertura__anno_corso',
+            'didatticacopertura__ciclo_des',
+            'didatticacopertura__peso',
+            'didatticacopertura__sett_des',
             'didatticacopertura__af__freq_obblig_flg',
-            'didatticacopertura__af__cds__nome_cds_it',
+            'didatticacopertura__cds_des',
             'didatticacopertura__af__cds__nome_cds_eng',
             'didatticacopertura__af__lista_lin_did_af',
-            'didatticacopertura__aa_id',
-            'didatticacopertura__af__cds_id',
-            'didatticacopertura__af__cds_id__cds_cod',
+            'didatticacopertura__aa_off_id',
+            'didatticacopertura__cds_id',
+            'didatticacopertura__cds_cod',
             'didatticacopertura__fat_part_stu_des',
             'didatticacopertura__fat_part_stu_cod',
             'didatticacopertura__part_stu_des',
