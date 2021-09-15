@@ -3,7 +3,7 @@
 {% block breadcrumbs %}
 <ul class="breadcrumb">
 
-    <li><a href="{% url 'unicms_api:unicms-api-redoc' %}">API Root</a></li>
+    <li><a href="{% url 'ricerca_app:api-redoc' %}">API Root</a></li>
 
     {% for breadcrumb_name, breadcrumb_url in breadcrumblist %}
         {% if forloop.last %}
