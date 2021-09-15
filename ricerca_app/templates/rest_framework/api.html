@@ -3,7 +3,7 @@
 {% block breadcrumbs %}
 <ul class="breadcrumb">
 
-    <li><a href="{% url 'api-redoc' %}">API Root</a></li>
+    <li><a href="{% url 'ricerca:api-redoc' %}">API Root</a></li>
 
     {% for breadcrumb_name, breadcrumb_url in breadcrumblist %}
         {% if forloop.last %}
