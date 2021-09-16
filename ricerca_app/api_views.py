@@ -326,12 +326,10 @@ class ApiTeacherResearchGroupsList(ApiEndpointList):
 class ApiResearchGroupsList(ApiEndpointList):
     description = 'La funzione restituisce l’elenco ' \
                   'dei gruppi di ricerca ordinati per nome.'
-    serializer_class = ResearchGroupsSerializer
+    serializer_class = AllResearchGroupsSerializer
     filter_backends = []
 
     def get_queryset(self):
-
-        # teacher = self.request.query_params.get('teacher')
 
         return ServiceDocente.getAllResearchGroups()
 

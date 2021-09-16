@@ -9,7 +9,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, FunzioniUnitaOrganizzativa, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
-    PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo
+    PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo
 
 
 class ServiceQueryBuilder:
@@ -415,16 +415,24 @@ class ServiceDocente:
     @staticmethod
     def getAllResearchGroups():
 
-        # query_teacher = Q()
-        #
-        # if teacher:
-        #     query_teacher = Q(ricercadocentegruppo__personale_id__exact=teacher)
-
         query = RicercaGruppo.objects.order_by('nome').values(
             'id',
             'nome',
             'descrizione').distinct()
 
+        for q in query:
+            teachers = RicercaDocenteGruppo.objects.filter(
+                ricerca_gruppo_id=q['id']).values(
+                'personale_id__matricola',
+                'personale_id__nome',
+                'personale_id__middle_name',
+                'personale_id__cognome',
+                'personale_id__ds_sede')
+
+            if len(teachers) == 0:
+                q['Teachers'] = []
+            else:
+                q['Teachers'] = teachers
         return query
 
     @staticmethod

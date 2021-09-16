@@ -304,6 +304,7 @@ LABEL_MAPPING = {
         'PublicationUrl': 'Publication Url',
         'TeacherCVFull':'Teacher CV Full',
         'TeacherCVShort':'Teacher CV Short',
+        'Teachers': 'Teachers',
 
     },
     'it': {
@@ -529,5 +530,7 @@ LABEL_MAPPING = {
         'PublicationUrl': 'Url Pubblicazione',
         'TeacherCVFull':'CV completo',
         'TeacherCVShort':'CV breve',
+        'Teachers': 'Docenti',
+
     }
 }

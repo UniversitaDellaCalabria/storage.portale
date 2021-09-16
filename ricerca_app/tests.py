@@ -2861,6 +2861,7 @@ class ApiResearchGroupsUnitTest(TestCase):
             'id': 1,
             'nome': 'Intelligenza Artificiale',
             'descrizione': 'ricerca su Machine Learning',
+
         })
         RicercaGruppoUnitTest.create_ricercaGruppo(**{
             'id': 2,
