@@ -331,7 +331,10 @@ class ApiResearchGroupsList(ApiEndpointList):
 
     def get_queryset(self):
 
-        return ServiceDocente.getAllResearchGroups()
+        teacher = self.request.query_params.get('teacherid')
+        dip = self.request.query_params.get('departmentid')
+
+        return ServiceDocente.getAllResearchGroups(teacher, dip)
 
 
 class ApiTeacherResearchLinesList(ApiEndpointList):
@@ -347,7 +350,35 @@ class ApiTeacherResearchLinesList(ApiEndpointList):
         return ServiceDocente.getResearchLines(teacher_id)
 
 
+class ApiBaseResearchLinesList(ApiEndpointList):
+    description = 'La funzione restituisce l’elenco delle Linee di' \
+                  ' ricerca di base'
+    serializer_class = BaseResearchLinesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        teacher = self.request.query_params.get('teacherid')
+        dip = self.request.query_params.get('departmentid')
+        year = self.request.query_params.get('year')
+
+        return ServiceDocente.getBaseResearchLines(teacher, dip, year)
+
+
+class ApiApplicateResearchLinesList(ApiEndpointList):
+    description = 'La funzione restituisce l’elenco delle Linee di' \
+                  ' ricerca applicate'
+    serializer_class = ApplicateResearchLinesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        teacher = self.request.query_params.get('teacherid')
+        dip = self.request.query_params.get('departmentid')
+        year = self.request.query_params.get('year')
+
+        return ServiceDocente.getApplicateResearchLines(teacher, dip, year)
+
 # ----Docenti----
+
 
 class ApiTeachersList(ApiEndpointList):
     description = 'Restituisce un elenco di Docenti con un set minimo di ' \

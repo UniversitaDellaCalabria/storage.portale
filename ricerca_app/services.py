@@ -9,7 +9,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, FunzioniUnitaOrganizzativa, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
-    PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo
+    PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
+    RicercaLineaApplicata, RicercaDocenteLineaApplicata
 
 
 class ServiceQueryBuilder:
@@ -413,27 +414,73 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getAllResearchGroups():
+    def getAllResearchGroups(teacher, dip):
 
         query = RicercaGruppo.objects.order_by('nome').values(
             'id',
             'nome',
             'descrizione').distinct()
 
-        for q in query:
-            teachers = RicercaDocenteGruppo.objects.filter(
-                ricerca_gruppo_id=q['id']).values(
-                'personale_id__matricola',
-                'personale_id__nome',
-                'personale_id__middle_name',
-                'personale_id__cognome',
-                'personale_id__ds_sede')
+        if teacher:
+            res = []
+            for q in query:
+                teachers = RicercaDocenteGruppo.objects.filter(
+                    ricerca_gruppo_id=q['id']).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
 
-            if len(teachers) == 0:
-                q['Teachers'] = []
-            else:
-                q['Teachers'] = teachers
-        return query
+                q['Teachers'] = None
+
+                for t in teachers:
+                    if t['personale_id__matricola'] == teacher:
+                        q['Teachers'] = teachers
+
+                if q['Teachers'] is not None:
+                    res.append(q)
+
+            return res
+        elif dip:
+            res = []
+            for q in query:
+                teachers = RicercaDocenteGruppo.objects.filter(
+                    ricerca_gruppo_id=q['id']).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                q['Teachers'] = None
+
+                for t in teachers:
+                    if t['personale_id__sede'] == dip:
+                        q['Teachers'] = teachers
+
+                if q['Teachers'] is not None:
+                    res.append(q)
+
+            return res
+        else:
+            for q in query:
+                teachers = RicercaDocenteGruppo.objects.filter(
+                    ricerca_gruppo_id=q['id']).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                if len(teachers) == 0:
+                    q['Teachers'] = []
+                else:
+                    q['Teachers'] = teachers
+            return query
 
     @staticmethod
     def getResearchLines(teacher_id):
@@ -467,6 +514,180 @@ class ServiceDocente:
         linea_applicata.extend(linea_base)
 
         return linea_applicata
+
+    @staticmethod
+    def getBaseResearchLines(teacher, dip, year):
+        if year:
+            query = RicercaLineaBase.objects.filter(
+                anno__exact=year).order_by('descrizione').values(
+                'id',
+                'descrizione',
+                'descr_pubblicaz_prog_brevetto',
+                'anno',
+                'ricerca_erc2_id__cod_erc2',
+                'ricerca_erc2_id__descrizione',
+            ).distinct()
+        else:
+            query = RicercaLineaBase.objects.order_by('descrizione').values(
+                'id',
+                'descrizione',
+                'descr_pubblicaz_prog_brevetto',
+                'anno',
+                'ricerca_erc2_id__cod_erc2',
+                'ricerca_erc2_id__descrizione',
+            ).distinct()
+
+        if teacher:
+            res = []
+            for q in query:
+                teachers = RicercaDocenteLineaBase.objects.filter(
+                    ricerca_linea_base_id=q['id']).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                q['Teachers'] = None
+
+                for t in teachers:
+                    if t['personale_id__matricola'] == teacher:
+                        q['Teachers'] = teachers
+
+                if q['Teachers'] is not None:
+                    res.append(q)
+
+            return res
+
+        elif dip:
+            res = []
+            for q in query:
+                teachers = RicercaDocenteLineaBase.objects.filter(
+                    ricerca_linea_base_id=q['id']).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                q['Teachers'] = None
+
+                for t in teachers:
+                    if t['personale_id__sede'] == dip:
+                        q['Teachers'] = teachers
+
+                if q['Teachers'] is not None:
+                    res.append(q)
+
+            return res
+
+        else:
+            for q in query:
+                teachers = RicercaDocenteLineaBase.objects.filter(
+                    ricerca_linea_base_id=q['id']
+                ).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                if len(teachers) == 0:
+                    q['Teachers'] = []
+                else:
+                    q['Teachers'] = teachers
+
+        return query
+
+    @staticmethod
+    def getApplicateResearchLines(teacher, dip, year):
+        if year:
+            query = RicercaLineaApplicata.objects.filter(
+                anno__exact=year).order_by('descrizione').values(
+                'id',
+                'descrizione',
+                'descr_pubblicaz_prog_brevetto',
+                'anno',
+                'ricerca_aster2_id__ricerca_aster1_id',
+                'ricerca_aster2_id__descrizione',
+            ).distinct()
+        else:
+            query = RicercaLineaApplicata.objects.order_by('descrizione').values(
+                'id',
+                'descrizione',
+                'descr_pubblicaz_prog_brevetto',
+                'anno',
+                'ricerca_aster2_id__ricerca_aster1_id',
+                'ricerca_aster2_id__descrizione',
+            ).distinct()
+
+        if teacher:
+            res = []
+            for q in query:
+                teachers = RicercaDocenteLineaApplicata.objects.filter(
+                    ricerca_linea_applicata_id=q['id']).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                q['Teachers'] = None
+
+                for t in teachers:
+                    if t['personale_id__matricola'] == teacher:
+                        q['Teachers'] = teachers
+
+                if q['Teachers'] is not None:
+                    res.append(q)
+
+            return res
+
+        elif dip:
+            res = []
+            for q in query:
+                teachers = RicercaDocenteLineaApplicata.objects.filter(
+                    ricerca_linea_applicata_id=q['id']).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                q['Teachers'] = None
+
+                for t in teachers:
+                    if t['personale_id__sede'] == dip:
+                        q['Teachers'] = teachers
+
+                if q['Teachers'] is not None:
+                    res.append(q)
+
+            return res
+
+        else:
+            for q in query:
+                teachers = RicercaDocenteLineaApplicata.objects.filter(
+                    ricerca_linea_applicata_id=q['id']
+                ).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                if len(teachers) == 0:
+                    q['Teachers'] = []
+                else:
+                    q['Teachers'] = teachers
+
+        return query
 
     @staticmethod
     def teachersList(keywords, regdid, dip, role):

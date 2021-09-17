@@ -346,7 +346,8 @@ class AllResearchGroupsSerializer(CreateUpdateAbstract):
             result.append({
                 'TeacherID': q['personale_id__matricola'],
                 'TeacherName': full_name,
-                'DepartmentName': q['personale_id__ds_sede']
+                'DepartmentName': q['personale_id__ds_sede'],
+                'DepartmentCod': q['personale_id__sede']
             })
         return result
 
@@ -381,6 +382,90 @@ class TeacherResearchLinesSerializer(CreateUpdateAbstract):
                 'R&SLineERC0Name': query[
                     'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__description'],
             }
+
+
+class BaseResearchLinesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        teachers = None
+        if query['Teachers'] is not None:
+            teachers = BaseResearchLinesSerializer.to_dict_teachers(
+                query['Teachers'])
+        return{
+            'R&SLineID': query['id'],
+            'R&SLineDescription': query['descrizione'],
+            'R&SLineResults': query['descr_pubblicaz_prog_brevetto'],
+            'R&SYear': query['anno'],
+            'R&SLineErc2ID': query['ricerca_erc2_id__cod_erc2'],
+            'R&SLineErc2Name': query['ricerca_erc2_id__descrizione'],
+            'Teachers': teachers
+        }
+
+    @staticmethod
+    def to_dict_teachers(query):
+        result = []
+        for q in query:
+            full_name = q['personale_id__cognome'] + " " + q['personale_id__nome'] + \
+                (" " + q['personale_id__middle_name']
+                 if q['personale_id__middle_name'] is not None else "")
+            result.append({
+                'TeacherID': q['personale_id__matricola'],
+                'TeacherName': full_name,
+                'DepartmentName': q['personale_id__ds_sede'],
+                'DepartmentCod': q['personale_id__sede'],
+            })
+        return result
+
+
+class ApplicateResearchLinesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        teachers = None
+        if query['Teachers'] is not None:
+            teachers = ApplicateResearchLinesSerializer.to_dict_teachers(
+                query['Teachers'])
+        return{
+            'R&SLineID': query['id'],
+            'R&SLineDescription': query['descrizione'],
+            'R&SLineResults': query['descr_pubblicaz_prog_brevetto'],
+            'R&SYear': query['anno'],
+            'R&SLineErc2ID': query['ricerca_aster2_id__ricerca_aster1_id'],
+            'R&SLineErc2Name': query['ricerca_aster2_id__descrizione'],
+            'Teachers': teachers
+        }
+
+    @staticmethod
+    def to_dict_teachers(query):
+        result = []
+        for q in query:
+            full_name = q['personale_id__cognome'] + " " + q['personale_id__nome'] + \
+                (" " + q['personale_id__middle_name']
+                 if q['personale_id__middle_name'] is not None else "")
+            result.append({
+                'TeacherID': q['personale_id__matricola'],
+                'TeacherName': full_name,
+                'DepartmentName': q['personale_id__ds_sede'],
+                'DepartmentCod': q['personale_id__sede'],
+            })
+        return result
 
 
 class TeachersListSerializer(CreateUpdateAbstract):

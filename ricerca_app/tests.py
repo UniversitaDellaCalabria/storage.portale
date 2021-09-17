@@ -2857,21 +2857,28 @@ class ApiResearchGroupsUnitTest(TestCase):
     def test_apiresearchgroups(self):
         req = Client()
 
-        RicercaGruppoUnitTest.create_ricercaGruppo(**{
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'ds_sede': 'DIMES',
+            'sede': '1111',
+
+        })
+        ricerca_gruppo1 = RicercaGruppoUnitTest.create_ricercaGruppo(**{
             'id': 1,
             'nome': 'Intelligenza Artificiale',
             'descrizione': 'ricerca su Machine Learning',
 
         })
-        RicercaGruppoUnitTest.create_ricercaGruppo(**{
-            'id': 2,
-            'nome': 'Intelligenza Artificiale',
-            'descrizione': 'ricerca su Deep Learning',
-        })
-        RicercaGruppoUnitTest.create_ricercaGruppo(**{
-            'id': 3,
-            'nome': 'Statistica',
-            'descrizione': 'ricerca su Variabili Aleatorie',
+
+        RicercaDocenteGruppoUnitTest.create_ricercaDocenteGruppo(**{
+            'personale': doc1,
+            'ricerca_gruppo': ricerca_gruppo1
         })
 
         url = reverse(
@@ -2887,4 +2894,163 @@ class ApiResearchGroupsUnitTest(TestCase):
         assert res.json()['results'][0]['RGroupID'] == 1
 
         res = req.get(url)
-        assert len(res.json()['results']) == 3
+        assert len(res.json()['results']) == 1
+
+        data = {'teacherid': '111112'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'teacherid': '111111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'departmentid': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
+class ApiBaseResearchLineUnitTest(TestCase):
+
+    def test_apibaseresearchline(self):
+        req = Client()
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'ds_sede': 'DIMES',
+            'sede': '1111'
+        })
+
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+        })
+
+        erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+        erc2 = RicercaErc2UnitTest.create_ricercaErc2(**{
+            'cod_erc2': 'cod1_erc2',
+            'descrizione': 'Machine learning',
+            'ricerca_erc1': erc1
+        })
+        linea_base = RicercaLineaBaseUnitTest.create_ricercaLineaBase(**{
+            'id': 1,
+            'ricerca_erc2': erc2,
+            'descrizione': 'regressione lineare',
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
+            'anno': '2016',
+
+        })
+        RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
+            'personale': doc1,
+            'ricerca_linea_base': linea_base
+        })
+
+        url = reverse('ricerca:baseresearchlines')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()[
+            'results'][0]['R&SLineDescription'] == 'regressione lineare'
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+        data = {'year': 2020}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'teacherid': '111112'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'departmentid': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
+class ApiApplicateResearchLineUnitTest(TestCase):
+
+    def test_apiapplicateresearchline(self):
+        req = Client()
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'ds_sede': 'DIMES',
+            'sede': '1111'
+        })
+
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+        })
+
+        aster1 = RicercaAster1UnitTest.create_ricercaAster1(**{
+            'id': 1,
+            'descrizione': 'ICT & Design',
+            'ricerca_erc0_cod': erc0,
+        })
+        aster2 = RicercaAster2UnitTest.create_ricercaAster2(**{
+            'id': 2,
+            'descrizione': 'Algorithms. Data and signal processing',
+            'ricerca_aster1': aster1
+        })
+        linea_applicata = RicercaLineaApplicataUnitTest.create_ricercaLineaApplicata(**{
+            'id': 1,
+            'ricerca_aster2': aster2,
+            'descrizione': 'regressione lineare',
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
+            'anno': '2016'
+        })
+
+        RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
+            'personale': doc1,
+            'ricerca_linea_applicata': linea_applicata,
+            'dt_ins': '2021-01-03 15:47:21'
+        })
+
+        url = reverse('ricerca:applicateresearchlines')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()[
+            'results'][0]['R&SLineDescription'] == 'regressione lineare'
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+        data = {'year': 2020}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'teacherid': '111112'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'departmentid': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1

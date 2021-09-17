@@ -326,7 +326,11 @@ LABEL_MAPPING = {
         'TeacherCVFull':'Teacher CV Full',
         'TeacherCVShort':'Teacher CV Short',
         'Teachers': 'Teachers',
-
+        'R&SLineErc2ID': 'Erc2 Cod',
+        'R&SLineErc2Name': 'Erc2 Name',
+        'R&SYear': 'Research Year',
+        'R&SLineAster2ID': 'Research Aster 2 ID',
+        'R&SLineAster2Name': 'Research Aster 2 Name',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -552,6 +556,10 @@ LABEL_MAPPING = {
         'TeacherCVFull':'CV completo',
         'TeacherCVShort':'CV breve',
         'Teachers': 'Docenti',
-
+        'R&SLineErc2ID': 'Codice Erc2',
+        'R&SLineErc2Name': 'Nome Erc2',
+        'R&SYear': 'Anno di ricerca',
+        'R&SLineAster2ID': 'ID Aster2',
+        'R&SLineAster2Name': 'Nome Aster2',
     }
 }

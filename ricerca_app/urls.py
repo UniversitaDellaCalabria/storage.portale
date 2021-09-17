@@ -129,6 +129,16 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         api_views.ApiTeacherResearchLinesList.as_view(),
         name='teacherresearchlines'),
 
+    urlpatterns += path(
+        '{}/baseresearchlines/'.format(base_url),
+        api_views.ApiBaseResearchLinesList.as_view(),
+        name='baseresearchlines'),
+
+    urlpatterns += path(
+        '{}/applicateresearchlines/'.format(base_url),
+        api_views.ApiApplicateResearchLinesList.as_view(),
+        name='applicateresearchlines'),
+
     urlpatterns += path('{}/teachers/'.format(base_url),
                         api_views.ApiTeachersList.as_view(),
                         name='teacherslist'),
