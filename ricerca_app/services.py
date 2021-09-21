@@ -2,7 +2,7 @@ import datetime
 from functools import reduce
 import operator
 
-from django.db.models import CharField, Q, Value, Max
+from django.db.models import CharField, Q, Value
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
     DidatticaPdsRegolamento, \
@@ -69,33 +69,20 @@ class ServiceDidatticaCds:
                     q = Q(nome_cds_eng__icontains=k)
                 q4 |= q
 
+        items = DidatticaCds.objects \
+            .filter(q4, q1, q2, q3,
+                    didatticacdslingua__lin_did_ord_id__isnull=False)
+
         if 'academicyear' not in query_params:
-            last_active_year = DidatticaCds.objects.filter(
-                didatticaregolamento__stato_regdid_cod__exact='A').aggregate(
-                Max('didatticaregolamento__aa_reg_did'))['didatticaregolamento__aa_reg_did__max']
-            if courses_allowed != '':
-                items = DidatticaCds.objects \
-                    .filter(q1, q2, q3, q4,
-                            didatticacdslingua__lin_did_ord_id__isnull=False,
-                            didatticaregolamento__stato_regdid_cod__exact='A',
-                            didatticaregolamento__aa_reg_did=last_active_year,
-                            tipo_corso_cod__in=courses_allowed)
-            else:
-                items = DidatticaCds.objects \
-                    .filter(q4, q1, q2, q3,
-                            didatticacdslingua__lin_did_ord_id__isnull=False,
-                            didatticaregolamento__stato_regdid_cod__exact='A',
-                            didatticaregolamento__aa_reg_did=last_active_year)
-        else:
-            if courses_allowed != '':
-                items = DidatticaCds.objects \
-                    .filter(q4, q1, q2, q3,
-                            didatticacdslingua__lin_did_ord_id__isnull=False,
-                            tipo_corso_cod__in=courses_allowed)
-            else:
-                items = DidatticaCds.objects \
-                    .filter(q4, q1, q2, q3,
-                            didatticacdslingua__lin_did_ord_id__isnull=False)
+            # last_active_year = DidatticaCds.objects.filter(
+            #     didatticaregolamento__stato_regdid_cod__exact='A').aggregate(
+            #     Max('didatticaregolamento__aa_reg_did'))['didatticaregolamento__aa_reg_did__max']
+
+            items = items.filter(
+                didatticaregolamento__stato_regdid_cod__exact='A')
+
+        if courses_allowed != '':
+            items = items.filter(tipo_corso_cod__in=courses_allowed)
 
         items = items.values(
             'didatticaregolamento__regdid_id',
