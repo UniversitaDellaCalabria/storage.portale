@@ -28,6 +28,7 @@ class ServiceDidatticaCds:
         didatticacds_params_to_query_field = {
             'courseclassid': 'cla_miur_cod',
             'courseclassname': 'cla_miur_des__icontains',
+            'cdscod': 'cds_cod',
             # 'courseclassgroup': ... unspecified atm
             'departmentid': 'dip__dip_id',
             'departmentcod': 'dip__dip_cod',
@@ -187,6 +188,7 @@ class ServiceDidatticaAttivitaFormativa:
                 final_query[i + 1] = new_query.order_by(
                     'ciclo_des') .values(
                     'af_id',
+                    'af_gen_cod',
                     'des',
                     'af_gen_des_eng',
                     'cds__cds_id',
@@ -213,6 +215,7 @@ class ServiceDidatticaAttivitaFormativa:
                 'anno_corso',
                 'ciclo_des') .values(
                 'af_id',
+                'af_gen_cod',
                 'des',
                 'af_gen_des_eng',
                 'cds__cds_cod',
@@ -232,6 +235,7 @@ class ServiceDidatticaAttivitaFormativa:
             af_radice_id=af_id) .exclude(
             af_id=af_id) .values(
             'af_id',
+            'af_gen_cod',
             'des',
             'af_gen_des_eng',
             'ciclo_des')
@@ -241,6 +245,7 @@ class ServiceDidatticaAttivitaFormativa:
             'anno_corso',
             'ciclo_des') .values(
             'af_id',
+            'af_gen_cod',
             'des',
             'af_gen_des_eng',
             'cds__cds_cod',
@@ -267,6 +272,7 @@ class ServiceDidatticaAttivitaFormativa:
             mutuata_da = DidatticaAttivitaFormativa.objects.filter(
                 af_id=id_master).values(
                 'af_id',
+                'af_gen_cod',
                 'des',
                 'af_gen_des_eng',
                 'ciclo_des',
@@ -276,6 +282,7 @@ class ServiceDidatticaAttivitaFormativa:
             af_master_id=af_id, mutuata_flg=1) .exclude(
             af_id=af_id) .values(
             'af_id',
+            'af_gen_cod',
             'des',
             'af_gen_des_eng',
             'ciclo_des',
@@ -286,6 +293,7 @@ class ServiceDidatticaAttivitaFormativa:
             af_id=id_radice).exclude(
             af_id=af_id).values(
             'af_id',
+            'af_gen_cod',
             'des',
             'af_gen_des_eng',
             'ciclo_des',
@@ -328,6 +336,7 @@ class ServiceDidatticaAttivitaFormativa:
         for i in range(len(list_submodules)):
             query[0]['MODULES'].append({
                 'StudyActivityID': list_submodules[i]['af_id'],
+                'StudyActivityCod': list_submodules[i]['af_gen_cod'],
                 'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i]['af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
                 'StudyActivitySemester': list_submodules[i]['ciclo_des'],
             })
@@ -363,7 +372,6 @@ class ServiceDidatticaAttivitaFormativa:
         for text in texts_af:
             query[0][dict_activity[text['tipo_testo_af_cod']]
                      ] = text['testo_af_ita'] if language == 'it' or text['testo_af_eng'] is None else text['testo_af_eng']
-
         return query
 
     @staticmethod
@@ -689,7 +697,7 @@ class ServiceDocente:
         if dip:
             department = DidatticaDipartimento.objects.filter(
                 dip_cod=dip).values(
-                "dip_cod", "dip_des_it", "dip_des_eng").first()
+                "dip_id", "dip_cod", "dip_des_it", "dip_des_eng").first()
             if department is None:
                 return None
             query = Personale.objects.filter(
@@ -713,6 +721,7 @@ class ServiceDocente:
             query = list(query)
 
             for q in query:
+                q["dip_id"] = department['dip_id']
                 q["dip_cod"] = department['dip_cod']
                 q["dip_des_it"] = department['dip_des_it']
                 q["dip_des_eng"] = department["dip_des_eng"]
@@ -772,6 +781,7 @@ class ServiceDocente:
             found = False
             for dep in departments:
                 if dep['dip_cod'] == q['aff_org']:
+                    q["dip_id"] = dep['dip_id']
                     q["dip_cod"] = dep['dip_cod']
                     q["dip_des_it"] = dep['dip_des_it']
                     q["dip_des_eng"] = dep["dip_des_eng"]
@@ -779,6 +789,7 @@ class ServiceDocente:
                     break
 
             if not found:
+                q["dip_id"] = None
                 q["dip_cod"] = None
                 q["dip_des_it"] = None
                 q["dip_des_eng"] = None
@@ -906,11 +917,13 @@ class ServiceDocente:
             dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
                 .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
             if len(dep) == 0:
+                q["dip_id"] = None
                 q["dip_cod"] = None
                 q["dip_des_it"] = None
                 q["dip_des_eng"] = None
             else:
                 dep = dep.first()
+                q["dip_id"] = dep['dip_id']
                 q["dip_cod"] = dep['dip_cod']
                 q["dip_des_it"] = dep['dip_des_it']
                 q["dip_des_eng"] = dep["dip_des_eng"]
@@ -1052,6 +1065,7 @@ class ServiceDottorato:
             'dip_cod__dip_cod',
             'cds_cod',
             'idesse3_ddpds__pds_cod') .values(
+            'dip_cod__dip_id',
             'dip_cod__dip_cod',
             'dip_cod__dip_des_it',
             'dip_cod__dip_des_eng',
@@ -1075,7 +1089,7 @@ class ServiceDipartimento:
     @staticmethod
     def getDepartmentsList(language):
         query = DidatticaDipartimento.objects.all().values(
-            "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
+            "dip_id", "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
         return query.order_by(
             "dip_des_it") if language == 'it' else query.order_by("dip_des_eng")
 
@@ -1083,7 +1097,7 @@ class ServiceDipartimento:
     def getDepartment(departmentid):
         query = DidatticaDipartimento.objects.filter(
             dip_cod__exact=departmentid).values(
-            "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
+            "dip_id", "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
         return query
 
 

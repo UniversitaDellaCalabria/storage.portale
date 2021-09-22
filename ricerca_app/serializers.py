@@ -171,6 +171,7 @@ class StudyPlansActivitiesSerializer(CreateUpdateAbstract):
                 req_lang='en'):
         return {
             'StudyActivityID': query['af_id'],
+            'StudyActivityCod': query['af_gen_cod'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
             'StudyActivityCdSID': query['cds__cds_id'],
             'StudyActivityCdSCod': query['cds__cds_cod'],
@@ -212,6 +213,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
                     StudyActivityMinimalInfoSerializer.to_dict(q, req_lang))
         return {
             'StudyActivityID': query['af_id'],
+            'StudyActivityCod': query['af_gen_cod'],
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
             'StudyActivityCdSID': query['cds__cds_id'],
             'StudyActivityCdSCod': query['cds__cds_cod'],
@@ -484,7 +486,8 @@ class TeachersListSerializer(CreateUpdateAbstract):
         return {
             'TeacherID': query['matricola'],
             'TeacherName': full_name,
-            'TeacherDepartmentID': query['dip_cod'],
+            'TeacherDepartmentID': query['dip_id'],
+            'TeacherDepartmentCod': query['dip_cod'],
             'TeacherDepartmentName': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
             'TeacherRole': query['cd_ruolo'],
             'TeacherRoleDescription': query['ds_ruolo_locale'],
@@ -550,7 +553,8 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherFirstName': query['nome'] + (" " + query['middle_name']
                                                  if query['middle_name'] is not None else ""),
             'TeacherLastName': query['cognome'],
-            'TeacherDepartmentID': query['dip_cod'],
+            'TeacherDepartmentID': query['dip_id'],
+            'TeacherDepartmentCod': query['dip_cod'],
             'TeacherDepartmentName': query['dip_des_it'] if req_lang == "it" or query['dip_des_eng'] is None else query['dip_des_eng'],
             'TeacherRole': query['cd_ruolo'],
             'TeacherRoleDescription': query['ds_ruolo_locale'],
@@ -594,7 +598,8 @@ class DoctoratesListSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         return {
             'AcademicYear': query['idesse3_ddr__aa_regdid_id'],
-            'DepartmentID': query['dip_cod__dip_cod'],
+            'DepartmentID': query['dip_cod__dip_id'],
+            'DepartmentCod': query['dip_cod__dip_cod'],
             'DepartmentName': query['dip_cod__dip_des_it'] if req_lang == "it" or query['dip_cod__dip_des_eng'] is None else query['dip_cod__dip_des_eng'],
             'DoctorateCdsCOD': query['cds_cod'],
             'DoctorateCdsName': query['cdsord_des'],
@@ -638,7 +643,8 @@ class DepartmentsListSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
         return {
-            'DepartmentID': query['dip_cod'],
+            'DepartmentID': query['dip_id'],
+            'DepartmentCod': query['dip_cod'],
             'DepartmentName': query['dip_des_it'] if req_lang == "it" or query[
                 'dip_des_eng'] is None else query['dip_des_eng'],
             'DepartmentNameShort': query['dip_nome_breve'],
