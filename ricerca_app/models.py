@@ -913,6 +913,11 @@ class DidatticaCopertura(InsModAbstract):
         max_length=500,
         blank=True,
         null=True)
+    # Field name made lowercase.
+    coper_peso = models.FloatField(
+        db_column='COPER_PESO', blank=True, null=True)
+    # Field name made lowercase.
+    ore = models.PositiveIntegerField(db_column='ORE', blank=True, null=True)
 
     class Meta:
         managed = True

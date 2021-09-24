@@ -200,7 +200,9 @@ class ServiceDidatticaAttivitaFormativa:
                     'sett_des',
                     'freq_obblig_flg',
                     'cds__nome_cds_it',
-                    'cds__nome_cds_eng')
+                    'cds__nome_cds_eng',
+                    'didatticacopertura__coper_peso',
+                    'didatticacopertura__ore')
             return final_query
         else:
             query = DidatticaAttivitaFormativa.objects.filter(
@@ -227,7 +229,9 @@ class ServiceDidatticaAttivitaFormativa:
                 'sett_des',
                 'freq_obblig_flg',
                 'cds__nome_cds_it',
-                'cds__nome_cds_eng')
+                'cds__nome_cds_eng',
+                'didatticacopertura__coper_peso',
+                'didatticacopertura__ore')
 
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
@@ -263,6 +267,8 @@ class ServiceDidatticaAttivitaFormativa:
             'mutuata_flg',
             'af_master_id',
             'af_radice_id',
+            'didatticacopertura__coper_peso',
+            'didatticacopertura__ore'
         )
 
         id_master = None
@@ -276,7 +282,10 @@ class ServiceDidatticaAttivitaFormativa:
                 'des',
                 'af_gen_des_eng',
                 'ciclo_des',
-                'regdid__regdid_id').first()
+                'regdid__regdid_id',
+                'didatticacopertura__coper_peso',
+                'didatticacopertura__ore'
+            ).first()
 
         attivita_mutuate_da_questa = DidatticaAttivitaFormativa.objects.filter(
             af_master_id=af_id, mutuata_flg=1) .exclude(
@@ -286,7 +295,10 @@ class ServiceDidatticaAttivitaFormativa:
             'des',
             'af_gen_des_eng',
             'ciclo_des',
-            'regdid__regdid_id')
+            'regdid__regdid_id',
+            'didatticacopertura__coper_peso',
+            'didatticacopertura__ore'
+        )
 
         id_radice = query.first()['af_radice_id']
         activity_root = DidatticaAttivitaFormativa.objects.filter(
@@ -297,7 +309,10 @@ class ServiceDidatticaAttivitaFormativa:
             'des',
             'af_gen_des_eng',
             'ciclo_des',
-            'regdid__regdid_id')
+            'regdid__regdid_id',
+            'didatticacopertura__coper_peso',
+            'didatticacopertura__ore'
+        )
         if len(activity_root) == 0:
             activity_root = None
         else:
@@ -702,7 +717,7 @@ class ServiceDocente:
                 return None
             query = Personale.objects.filter(
                 query_keywords,
-                fl_docente=1,
+                didatticacopertura__af__isnull=False,
                 aff_org=department["dip_cod"]) .values(
                 "matricola",
                 "nome",
@@ -732,24 +747,24 @@ class ServiceDocente:
             if role:
                 query = Personale.objects.filter(
                     query_keywords,
-                    fl_docente=1,
                     cd_ruolo=role,
                     didatticacopertura__af__isnull=False,
                     didatticacopertura__af__regdid__regdid_id=regdid)
             else:
                 query = Personale.objects.filter(
                     query_keywords,
-                    fl_docente=1,
                     didatticacopertura__af__isnull=False,
                     didatticacopertura__af__regdid__regdid_id=regdid)
         else:
             if role:
                 query = Personale.objects.filter(
                     query_keywords,
-                    fl_docente=1, flg_cessato=0, cd_ruolo=role)
+                    didatticacopertura__af__isnull=False,
+                    flg_cessato=0,
+                    cd_ruolo=role)
             else:
                 query = Personale.objects.filter(
-                    query_keywords, fl_docente=1, flg_cessato=0)
+                    query_keywords, didatticacopertura__af__isnull=False, flg_cessato=0)
 
         dip_cods = query.values_list("aff_org", flat=True).distinct()
         dip_cods = list(dip_cods)
@@ -801,32 +816,27 @@ class ServiceDocente:
 
         if year:
             query = Personale.objects.filter(
-                fl_docente=1,
                 matricola__exact=teacher,
                 didatticacopertura__af__isnull=False,
                 didatticacopertura__aa_off_id=year)
         elif yearFrom and yearTo:
             query = Personale.objects.filter(
-                fl_docente=1,
                 matricola__exact=teacher,
                 didatticacopertura__af__isnull=False,
                 didatticacopertura__aa_off_id__gte=yearFrom,
                 didatticacopertura__aa_off_id__lte=yearTo)
         elif yearFrom:
             query = Personale.objects.filter(
-                fl_docente=1,
                 matricola__exact=teacher,
                 didatticacopertura__af__isnull=False,
                 didatticacopertura__aa_off_id__gte=yearFrom)
         elif yearTo:
             query = Personale.objects.filter(
-                fl_docente=1,
                 matricola__exact=teacher,
                 didatticacopertura__af__isnull=False,
                 didatticacopertura__aa_off_id__lte=yearTo)
         else:
             query = Personale.objects.filter(
-                fl_docente=1,
                 matricola__exact=teacher,
                 didatticacopertura__af__isnull=False)
 
@@ -858,12 +868,14 @@ class ServiceDocente:
             'didatticacopertura__tipo_fat_stu_cod',
             'didatticacopertura__part_ini',
             'didatticacopertura__part_fine',
+            'didatticacopertura__coper_peso',
+            'didatticacopertura__ore'
         )
 
     @staticmethod
     def getDocenteInfo(teacher):
         query = Personale.objects.filter(
-            fl_docente=1,
+            didatticacopertura__af__isnull=False,
             matricola__exact=teacher)
         contacts_to_take = [
             'Posta Elettronica',

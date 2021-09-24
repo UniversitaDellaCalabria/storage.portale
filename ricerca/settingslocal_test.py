@@ -332,6 +332,8 @@ LABEL_MAPPING = {
         'R&SYear': 'Research Year',
         'R&SLineAster2ID': 'Research Aster 2 ID',
         'R&SLineAster2Name': 'Research Aster 2 Name',
+        'Hours': 'Hours',
+        'Cover': 'Cover'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -563,5 +565,7 @@ LABEL_MAPPING = {
         'R&SYear': 'Anno di ricerca',
         'R&SLineAster2ID': 'ID Aster2',
         'R&SLineAster2Name': 'Nome Aster2',
+        'Hours': 'Ore',
+        'Cover': 'Peso'
     }
 }

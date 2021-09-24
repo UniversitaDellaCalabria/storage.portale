@@ -182,7 +182,8 @@ class StudyPlansActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivitySSD': query['sett_des'],
             'StudyActivityCompulsory': query['freq_obblig_flg'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
-        }
+            'Hours': query['didatticacopertura__ore'],
+            'Cover': query['didatticacopertura__coper_peso']}
 
 
 class StudyActivityInfoSerializer(CreateUpdateAbstract):
@@ -241,8 +242,8 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityRoot': studyactivityroot,
             'StudyActivityBorrowedFrom': studyactivityborrowed,
             'StudyActivitiesBorrowedFromThis': studyactivitiesborrowedfromthis,
-
-        }
+            'Hours': query['didatticacopertura__ore'],
+            'Cover': query['didatticacopertura__coper_peso']}
 
 
 class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
@@ -531,6 +532,8 @@ class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityPartitionType': query['didatticacopertura__tipo_fat_stu_cod'],
             'StudyActivityPartitionStart': query['didatticacopertura__part_ini'],
             'StudyActivityPartitionEnd': query['didatticacopertura__part_fine'],
+            'Hours': query['didatticacopertura__ore'],
+            'Cover': query['didatticacopertura__coper_peso']
         }
 
 
