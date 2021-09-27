@@ -83,26 +83,26 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiCdSList.as_view(),
                         name='cdslist'),
 
-    urlpatterns += path('{}/cds/<int:cdsid>/'.format(base_url),
+    urlpatterns += path('{}/cds/<int:regdidid>/'.format(base_url),
                         api_views.ApiCdSDetail.as_view(),
                         name='cdsinfo'),
 
-    urlpatterns += path('{}/cds/<int:cdsid>/studyplans/'.format(base_url),
+    urlpatterns += path('{}/cds/<int:regdidid>/studyplans/'.format(base_url),
                         api_views.ApiCdSStudyPlansList.as_view(),
                         name='cdsstudyplans'),
 
     urlpatterns += path(
-        '{}/cds/<int:cdsid>/studyplans/<int:studyplanid>/'.format(base_url),
+        '{}/cds/<int:regdidid>/studyplans/<int:studyplanid>/'.format(base_url),
         api_views.ApiStudyPlanDetail.as_view(),
         name='studyplandetail'),
 
     urlpatterns += path(
-        '{}/cds/<int:cdsid>/studyplans/<int:studyplanid>/activities/'.format(base_url),
+        '{}/cds/<int:regdidid>/studyplans/<int:studyplanid>/activities/'.format(base_url),
         api_views.ApiStudyPlanActivitiesList.as_view(),
         name='studyplanactivities'),
 
     urlpatterns += path(
-        '{}/cds/<int:cdsid>/studyplans/<int:studyplanid>/activities/<int:studyactivityid>/'.format(base_url),
+        '{}/cds/<int:regdidid>/studyplans/<int:studyplanid>/activities/<int:studyactivityid>/'.format(base_url),
         api_views.ApiStudyActivityInfo.as_view(),
         name='studyactivityinfo'),
 
@@ -110,9 +110,9 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiStudyActivityDetail.as_view(),
                         name='studyactivityinfo'),
 
-    urlpatterns += path('{}/cdsmainteachers/'.format(base_url),
-                        api_views.ApiCdSMainTeachersList.as_view(),
-                        name='cdsmainteachers'),
+    # urlpatterns += path('{}/cdsmainteachers/'.format(base_url),
+    #                     api_views.ApiCdSMainTeachersList.as_view(),
+    #                     name='cdsmainteachers'),
 
     urlpatterns += path(
         '{}/teachers/<str:teacherid>/researchgroups/'.format(base_url),

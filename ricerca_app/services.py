@@ -389,24 +389,24 @@ class ServiceDidatticaAttivitaFormativa:
                      ] = text['testo_af_ita'] if language == 'it' or text['testo_af_eng'] is None else text['testo_af_eng']
         return query
 
-    @staticmethod
-    def getDocentiPerReg(regdid_id):
-
-        query = DidatticaAttivitaFormativa.objects.filter(
-            didatticacopertura__personale__fl_docente=1,
-            regdid__regdid_id=regdid_id,
-            didatticacopertura__personale__isnull=False) .order_by(
-            'didatticacopertura__personale__cd_ruolo',
-            'didatticacopertura__personale__cognome',
-            'didatticacopertura__personale__nome') .values(
-            'didatticacopertura__personale__matricola',
-            'didatticacopertura__personale__nome',
-            'didatticacopertura__personale__cognome',
-            'didatticacopertura__personale__middle_name',
-            'didatticacopertura__personale__cd_ruolo',
-            'didatticacopertura__personale__cd_ssd').distinct()
-
-        return query
+    # @staticmethod
+    # def getDocentiPerReg(regdid_id):
+    #
+    #     query = DidatticaAttivitaFormativa.objects.filter(
+    #         didatticacopertura__personale__fl_docente=1,
+    #         regdid__regdid_id=regdid_id,
+    #         didatticacopertura__personale__isnull=False) .order_by(
+    #         'didatticacopertura__personale__cd_ruolo',
+    #         'didatticacopertura__personale__cognome',
+    #         'didatticacopertura__personale__nome') .values(
+    #         'didatticacopertura__personale__matricola',
+    #         'didatticacopertura__personale__nome',
+    #         'didatticacopertura__personale__cognome',
+    #         'didatticacopertura__personale__middle_name',
+    #         'didatticacopertura__personale__cd_ruolo',
+    #         'didatticacopertura__personale__cd_ssd').distinct()
+    #
+    #     return query
 
 
 class ServiceDocente:
@@ -1493,6 +1493,7 @@ class ServiceLaboratorio:
             'nome_laboratorio',
             'ambito',
             'dipartimento_riferimento',
+            'id_dipartimento_riferimento__dip_id',
             'id_dipartimento_riferimento__dip_cod',
             'sede_dimensione',
             'responsabile_scientifico',
@@ -1524,6 +1525,7 @@ class ServiceLaboratorio:
             "nome_laboratorio",
             "acronimo",
             "logo_laboratorio",
+            "id_dipartimento_riferimento__dip_id",
             "id_dipartimento_riferimento__dip_cod",
             "id_dipartimento_riferimento__dip_des_it",
             "id_dipartimento_riferimento__dip_des_eng",

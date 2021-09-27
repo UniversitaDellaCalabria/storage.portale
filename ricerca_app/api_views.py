@@ -131,7 +131,7 @@ class ApiCdSDetail(ApiEndpointDetail):
     filter_backends = [ApiCdsInfoFilter]
 
     def get_queryset(self):
-        cdsid_param = self.kwargs['cdsid']
+        cdsid_param = self.kwargs['regdidid']
         res = DidatticaCds.objects.filter(
             didatticaregolamento__regdid_id=cdsid_param)
         langs = res.prefetch_related('didatticacdslingua')
@@ -229,7 +229,7 @@ class ApiCdSStudyPlansList(ApiEndpointList):
     filter_backends = [ApiCdSStudyPlansFilter]
 
     def get_queryset(self):
-        cdsid_param = str(self.kwargs['cdsid'])
+        cdsid_param = str(self.kwargs['regdidid'])
 
         return ServiceDidatticaAttivitaFormativa.getStudyPlans(
             regdid_id=cdsid_param)
@@ -292,21 +292,21 @@ class ApiStudyActivityInfo(ApiEndpointDetail):
             af_id=studyactivityid, language=self.language)
 
 
-class ApiCdSMainTeachersList(ApiEndpointList):
-    description = 'Fornisce l’elenco dei docenti di riferimento' \
-                  ' (o di tutti i docenti ???) associati ad un CdS.' \
-                  ' Per ogni docente riporta poche informazioni' \
-                  ' identificative: Nome, Ruolo, Settore scientifico' \
-                  ' disciplinare, …'
-    serializer_class = CdSMainTeachersSerializer
-    filter_backends = [ApiCdSMainTeachersFilter]
-
-    def get_queryset(self):
-        regdid_id = self.request.query_params.get('cdsid')
-        if not regdid_id:
-            return None
-
-        return ServiceDidatticaAttivitaFormativa.getDocentiPerReg(regdid_id)
+# class ApiCdSMainTeachersList(ApiEndpointList):
+#     description = 'Fornisce l’elenco dei docenti di riferimento' \
+#                   ' (o di tutti i docenti ???) associati ad un CdS.' \
+#                   ' Per ogni docente riporta poche informazioni' \
+#                   ' identificative: Nome, Ruolo, Settore scientifico' \
+#                   ' disciplinare, …'
+#     serializer_class = CdSMainTeachersSerializer
+#     filter_backends = [ApiCdSMainTeachersFilter]
+#
+#     def get_queryset(self):
+#         regdid_id = self.request.query_params.get('cdsid')
+#         if not regdid_id:
+#             return None
+#
+#         return ServiceDidatticaAttivitaFormativa.getDocentiPerReg(regdid_id)
 
 # ----Ricerca----
 
@@ -389,7 +389,7 @@ class ApiTeachersList(ApiEndpointList):
 
     def get_queryset(self):
 
-        keywords = self.request.query_params.get('keywords')
+        keywords = self.request.query_params.get('search')
         regdid = self.request.query_params.get('cdsid')
         dip = self.request.query_params.get('departmentid')
         role = self.request.query_params.get('role')

@@ -258,26 +258,26 @@ class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
         }
 
 
-class CdSMainTeachersSerializer(CreateUpdateAbstract):
-    def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query,
-                                 str(self.context['language']).lower()))
-        return data
-
-    @staticmethod
-    def to_dict(query,
-                req_lang='en'):
-        name = query['didatticacopertura__personale__cognome'] + " " + query['didatticacopertura__personale__nome'] + \
-            (" " + query['didatticacopertura__personale__middle_name']
-             if query['didatticacopertura__personale__middle_name'] is not None else "")
-        return {
-            'TeacherID': query['didatticacopertura__personale__matricola'],
-            'TeacherName': name,
-            'TeacherRole': query['didatticacopertura__personale__cd_ruolo'],
-            'TeacherSSD': query['didatticacopertura__personale__cd_ssd'],
-        }
+# class CdSMainTeachersSerializer(CreateUpdateAbstract):
+#     def to_representation(self, instance):
+#         query = instance
+#         data = super().to_representation(instance)
+#         data.update(self.to_dict(query,
+#                                  str(self.context['language']).lower()))
+#         return data
+#
+#     @staticmethod
+#     def to_dict(query,
+#                 req_lang='en'):
+#         name = query['didatticacopertura__personale__cognome'] + " " + query['didatticacopertura__personale__nome'] + \
+#             (" " + query['didatticacopertura__personale__middle_name']
+#              if query['didatticacopertura__personale__middle_name'] is not None else "")
+#         return {
+#             'TeacherID': query['didatticacopertura__personale__matricola'],
+#             'TeacherName': name,
+#             'TeacherRole': query['didatticacopertura__personale__cd_ruolo'],
+#             'TeacherSSD': query['didatticacopertura__personale__cd_ssd'],
+#         }
 
 
 class TeacherResearchGroupsSerializer(CreateUpdateAbstract):
@@ -838,7 +838,8 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'LaboratoryAcronym': query['acronimo'],
             'LaboratoryLogo': query['logo_laboratorio'],
             'LaboratoryEquipment': query['strumentazione_descrizione'],
-            'DepartmentReferentId': query['id_dipartimento_riferimento__dip_cod'],
+            'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
+            'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
             'DepartmentReferentName': query['id_dipartimento_riferimento__dip_des_it'] if req_lang == "it" or query['id_dipartimento_riferimento__dip_des_eng'] is None else query['id_dipartimento_riferimento__dip_des_eng'],
             'Interdepartmental': query['laboratorio_interdipartimentale'],
             'ExtraDepartments': extra_departments,
@@ -934,7 +935,8 @@ class LaboratoriesListSerializer(CreateUpdateAbstract):
             'LaboratoryName': query['nome_laboratorio'],
             'Area': query['ambito'],
             'DepartmentName': query['dipartimento_riferimento'],
-            'DepartmentId': query['id_dipartimento_riferimento__dip_cod'],
+            'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
+            'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
             'Interdepartmental': query['laboratorio_interdipartimentale'],
             'ExtraDepartments': extra_departments,
             'Dimension': query['sede_dimensione'],
