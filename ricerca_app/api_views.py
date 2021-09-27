@@ -389,8 +389,8 @@ class ApiTeachersList(ApiEndpointList):
 
     def get_queryset(self):
 
-        keywords = self.request.query_params.get('search')
-        regdid = self.request.query_params.get('cdsid')
+        keywords = self.request.query_params.get('keywords')
+        regdid = self.request.query_params.get('regdidid')
         dip = self.request.query_params.get('departmentid')
         role = self.request.query_params.get('role')
 

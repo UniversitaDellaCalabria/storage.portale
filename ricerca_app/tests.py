@@ -223,7 +223,7 @@ class ApiCdSInfoUnitTest(TestCase):
             'clob_txt_ita': 'provadescrizione',
         })
 
-        url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
+        url = reverse('ricerca:cdsinfo', kwargs={'regdidid': 1})
 
         # check url
         res = req.get(url)
@@ -232,26 +232,26 @@ class ApiCdSInfoUnitTest(TestCase):
         # GET
 
         # param: lang
-        url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
+        url = reverse('ricerca:cdsinfo', kwargs={'regdidid': 1})
 
         data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results']['RegDidId'] == 1
 
         # param: cdsid 10 doesn't exist
-        url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 10})
+        url = reverse('ricerca:cdsinfo', kwargs={'regdidid': 10})
         data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
         # param: lang
-        url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
+        url = reverse('ricerca:cdsinfo', kwargs={'regdidid': 1})
         data = {'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()['results']['RegDidId'] == 1
 
         # param: lang
-        url = reverse('ricerca:cdsinfo', kwargs={'cdsid': 1})
+        url = reverse('ricerca:cdsinfo', kwargs={'regdidid': 1})
         data = {'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][
@@ -281,7 +281,7 @@ class ApiCdSStudyPlansUnitTest(TestCase):
             'anno_corso': 1
         })
 
-        url = reverse('ricerca:cdsstudyplans', kwargs={'cdsid': 1})
+        url = reverse('ricerca:cdsstudyplans', kwargs={'regdidid': 1})
 
         # check url
         res = req.get(url)
@@ -332,7 +332,7 @@ class ApiStudyPlanDetailUnitTest(TestCase):
         url = reverse(
             'ricerca:studyplandetail',
             kwargs={
-                'cdsid': 1,
+                'regdidid': 1,
                 'studyplanid': 1})
 
         # check url
@@ -408,7 +408,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
         url = reverse(
             'ricerca:studyplanactivities',
             kwargs={
-                'cdsid': 1,
+                'regdidid': 1,
                 'studyplanid': 1})
 
         # check url
@@ -448,7 +448,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
         url = reverse(
             'ricerca:studyplanactivities',
             kwargs={
-                'cdsid': 1,
+                'regdidid': 1,
                 'studyplanid': 2})
         res = req.get(url)
         assert res.json()['results'][0]['StudyActivityID'] == 4
@@ -507,7 +507,7 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         url = reverse(
             'ricerca:studyactivityinfo',
             kwargs={
-                'cdsid': 1,
+                'regdidid': 1,
                 'studyplanid': 1,
                 'studyactivityid': 1})
 
@@ -531,83 +531,83 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         url = reverse(
             'ricerca:studyactivityinfo',
             kwargs={
-                'cdsid': 1,
+                'regdidid': 1,
                 'studyplanid': 1,
                 'studyactivityid': 2})
         res = req.get(url)
         assert res.json()['results']['StudyActivityID'] == 2
 
 
-class ApiCdSMainTeachersUnitTest(TestCase):
-
-    def test_apicdsmainteachers(self):
-        req = Client()
-
-        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
-        course1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
-            'af_id': 1,
-            'des': 'matematica',
-            'af_gen_des_eng': 'math',
-            'ciclo_des': 'Primo semestre',
-            'regdid': regdid,
-            'af_radice_id': 1,
-        })
-        course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
-            'af_id': 2,
-            'des': 'informatica',
-            'af_gen_des_eng': 'computer science',
-            'ciclo_des': 'Secondo semestre',
-            'regdid': regdid,
-            'af_radice_id': 2,
-        })
-        p1 = PersonaleUnitTest.create_personale(**{
-            'id': 1,
-            'nome': 'Simone',
-            'cognome': 'Mungari',
-            'cd_ruolo': 'PA',
-            'id_ab': 1,
-            'matricola': '111112',
-            'fl_docente': True,
-        })
-        p2 = PersonaleUnitTest.create_personale(**{
-            'id': 2,
-            'nome': 'Franco',
-            'middle_name': 'Luigi',
-            'cognome': 'Garofalo',
-            'cd_ruolo': 'PO',
-            'id_ab': 2,
-            'matricola': '111111',
-            'fl_docente': True,
-        })
-        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
-            'af': course1,
-            'personale': p1,
-        })
-        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
-            'af': course2,
-            'personale': p2,
-        })
-
-        url = reverse('ricerca:cdsmainteachers')
-
-        # check url
-        res = req.get(url)
-        assert res.status_code == 200
-
-        # GET
-
-        data = {'cdsid': 1}
-        res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111112'
-
-        data = {'cdsid': 1}
-        res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherName'] == 'Mungari Simone'
-
-        data = {'cdsid': 1}
-        res = req.get(url, data=data)
-        assert res.json()[
-            'results'][1]['TeacherName'] == 'Garofalo Franco Luigi'
+# class ApiCdSMainTeachersUnitTest(TestCase):
+#
+#     def test_apicdsmainteachers(self):
+#         req = Client()
+#
+#         regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+#         course1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+#             'af_id': 1,
+#             'des': 'matematica',
+#             'af_gen_des_eng': 'math',
+#             'ciclo_des': 'Primo semestre',
+#             'regdid': regdid,
+#             'af_radice_id': 1,
+#         })
+#         course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+#             'af_id': 2,
+#             'des': 'informatica',
+#             'af_gen_des_eng': 'computer science',
+#             'ciclo_des': 'Secondo semestre',
+#             'regdid': regdid,
+#             'af_radice_id': 2,
+#         })
+#         p1 = PersonaleUnitTest.create_personale(**{
+#             'id': 1,
+#             'nome': 'Simone',
+#             'cognome': 'Mungari',
+#             'cd_ruolo': 'PA',
+#             'id_ab': 1,
+#             'matricola': '111112',
+#             'fl_docente': True,
+#         })
+#         p2 = PersonaleUnitTest.create_personale(**{
+#             'id': 2,
+#             'nome': 'Franco',
+#             'middle_name': 'Luigi',
+#             'cognome': 'Garofalo',
+#             'cd_ruolo': 'PO',
+#             'id_ab': 2,
+#             'matricola': '111111',
+#             'fl_docente': True,
+#         })
+#         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+#             'af': course1,
+#             'personale': p1,
+#         })
+#         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+#             'af': course2,
+#             'personale': p2,
+#         })
+#
+#         url = reverse('ricerca:cdsmainteachers')
+#
+#         # check url
+#         res = req.get(url)
+#         assert res.status_code == 200
+#
+#         # GET
+#
+#         data = {'regdidid': 1}
+#         res = req.get(url, data=data)
+#         assert res.json()['results'][0]['TeacherID'] == '111112'
+#
+#         data = {'regdidid': 1}
+#         res = req.get(url, data=data)
+#         assert res.json()['results'][0]['TeacherName'] == 'Mungari Simone'
+#
+#         data = {'regdidid': 1}
+#         res = req.get(url, data=data)
+#         assert res.json()[
+#             'results'][1]['TeacherName'] == 'Garofalo Franco Luigi'
 
 
 class ApiTeacherResearchGroupsUnitTest(TestCase):
@@ -941,15 +941,15 @@ class ApiTeachersListUnitTest(TestCase):
         assert res.json()[
             'results'][0]['TeacherDepartmentName'] == "Math and Computer Science"
 
-        data = {'cdsid': 1}
+        data = {'regdidid': 1}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111112'
 
-        data = {'cdsid': 2}
+        data = {'regdidid': 2}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111111'
 
-        data = {'cdsid': 1, 'role': 'PA'}
+        data = {'regdidid': 1, 'role': 'PA'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111112'
 
@@ -1258,7 +1258,7 @@ class ApiDoctoratesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'cdsid': '111'}
+        data = {'regdidid': '111'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
 
