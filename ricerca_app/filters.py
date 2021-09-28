@@ -128,6 +128,17 @@ class ApiTeacherResearchGroupsFilter(GenericApiFilter):
                       'type': 'string'}]
 
 
+class ApiResearchGroupsListFilter(GenericApiFilter):
+    search_params = [{'name': 'teacherid',
+                      'description': 'Matricola di un docente',
+                      'required': True,
+                      'type': 'string'},
+                     {'name': 'departmentid',
+                      'description': 'Codice di un dipartimento',
+                      'required': True,
+                      'type': 'string'}]
+
+
 class ApiTeacherResearchLinesFilter(GenericApiFilter):
     search_params = [{'name': 'teacherid',
                       'description': 'Matricola di un docente',
@@ -156,6 +167,38 @@ class ApiTeachersListFilter(GenericApiFilter):
             'type': 'string'
         },
     ]
+
+
+class ApiBaseResearchLinesListFilter(GenericApiFilter):
+    search_params = [{'name': 'teacherid',
+                      'description': 'Matricola di un docente',
+                      'required': True,
+                      'type': 'string'},
+                     {'name': 'departmentid',
+                      'description': 'Codice di un dipartimento',
+                      'required': True,
+                      'type': 'string'},
+                     {'name': 'year',
+                      'description': 'Anno',
+                      'required': True,
+                      'type': 'int'},
+                     ]
+
+
+class ApiApplicateResearchLinesListFilter(GenericApiFilter):
+    search_params = [{'name': 'teacherid',
+                      'description': 'Matricola di un docente',
+                      'required': True,
+                      'type': 'string'},
+                     {'name': 'departmentid',
+                      'description': 'Codice di un dipartimento',
+                      'required': True,
+                      'type': 'string'},
+                     {'name': 'year',
+                      'description': 'Anno',
+                      'required': True,
+                      'type': 'int'},
+                     ]
 
 
 class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
@@ -237,8 +280,101 @@ class ApiDoctoratesListFilter(GenericApiFilter):
         },
     ]
 
-# class ApiStructuresListFilter(GenericApiFilter):
-#     search_params = [{'name': 'uo',
-#                       'description': 'codice struttura',
-#                       'required': True,
-#                       'type': 'string'}]
+
+class ApiAddressbookListFilter(GenericApiFilter):
+    search_params = [
+        {
+            'name': 'structureid',
+            'description': 'codice struttura',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'structuretypes',
+            'description': 'tipologia struttura',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'roles',
+            'description': 'ruoli personale',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'structuretree',
+            'description': 'albero struttura',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'personaleid',
+            'description': 'matricola personale',
+            'required': False,
+            'type': 'string'
+        },
+    ]
+
+
+class ApiStructuresListFilter(GenericApiFilter):
+    search_params = [{'name': 'father',
+                      'description': 'codice struttura padre',
+                      'required': False,
+                      'type': 'string'},
+                     {'name': 'type',
+                      'description': 'codice tipologia struttura',
+                      'required': False,
+                      'type': 'string'},
+                     {'name': 'structureid',
+                      'description': 'codice struttura',
+                      'required': False,
+                      'type': 'string'},
+                     ]
+
+
+class ApiLaboratoriesListFilter(GenericApiFilter):
+    search_params = [{'name': 'area',
+                      'description': 'ambito laboratorio',
+                      'required': False,
+                      'type': 'string'},
+                     {'name': 'department',
+                      'description': 'codice dipartimento',
+                      'required': False,
+                      'type': 'string'},
+                     {'name': 'erc1',
+                      'description': 'codice ricerca erc1',
+                      'required': False,
+                      'type': 'string'},
+                     {'name': 'teacher',
+                      'description': 'matricola docente',
+                      'required': False,
+                      'type': 'string'},
+                     ]
+
+
+class ApiErc1ListFilter(GenericApiFilter):
+    search_params = [{'name': 'laboratory',
+                      'description': 'id laboratorio',
+                      'required': False,
+                      'type': 'string'},
+                     ]
+
+
+class ApiPublicationsListFilter(GenericApiFilter):
+    search_params = [{'name': 'teacherid',
+                      'description': 'matricola docente',
+                      'required': False,
+                      'type': 'string'},
+                     {'name': 'year',
+                      'description': 'anno',
+                      'required': False,
+                      'type': 'int'},
+                     {'name': 'type',
+                      'description': 'id tipologia di community',
+                      'required': False,
+                      'type': 'string'},
+                     {'name': 'publicationid',
+                      'description': 'id pubblicazione',
+                      'required': False,
+                      'type': 'string'},
+                     ]

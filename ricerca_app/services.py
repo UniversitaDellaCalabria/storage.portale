@@ -44,9 +44,9 @@ class ServiceDidatticaCds:
         didatticacdslingua_params_to_query_field = {
             'cdslanguage': 'didatticacdslingua__iso6392_cod', }
 
-        keywords = query_params.get('keywords', None)
-        if keywords is not None:
-            keywords = keywords.split(' ')
+        search = query_params.get('search', None)
+        if search is not None:
+            search = search.split(' ')
 
         courses_allowed = query_params.get('coursetype', '')
         if courses_allowed != '':
@@ -60,10 +60,10 @@ class ServiceDidatticaCds:
             didatticacdslingua_params_to_query_field, query_params)
 
         q4 = Q()
-        if keywords is None:
+        if search is None:
             q4 = Q(cds_id__isnull=False)
         else:
-            for k in keywords:
+            for k in search:
                 if language == "it":
                     q = Q(nome_cds_it__icontains=k)
                 else:
@@ -700,14 +700,14 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def teachersList(keywords, regdid, dip, role):
+    def teachersList(search, regdid, dip, role):
 
-        query_keywords = Q()
+        query_search = Q()
 
-        if keywords is not None:
-            for k in keywords.split(" "):
+        if search is not None:
+            for k in search.split(" "):
                 q_cognome = Q(cognome__icontains=k)
-                query_keywords &= q_cognome
+                query_search &= q_cognome
 
         if dip:
             department = DidatticaDipartimento.objects.filter(
@@ -716,7 +716,7 @@ class ServiceDocente:
             if department is None:
                 return None
             query = Personale.objects.filter(
-                query_keywords,
+                query_search,
                 didatticacopertura__af__isnull=False,
                 aff_org=department["dip_cod"]) .values(
                 "matricola",
@@ -732,7 +732,7 @@ class ServiceDocente:
                 "cv_full_eng",
                 "cv_short_eng").order_by('cognome', 'nome', 'middle_name')
             if role:
-                query = query.filter(query_keywords, cd_ruolo=role)
+                query = query.filter(query_search, cd_ruolo=role)
             query = list(query)
 
             for q in query:
@@ -746,25 +746,25 @@ class ServiceDocente:
         elif regdid:
             if role:
                 query = Personale.objects.filter(
-                    query_keywords,
+                    query_search,
                     cd_ruolo=role,
                     didatticacopertura__af__isnull=False,
                     didatticacopertura__af__regdid__regdid_id=regdid)
             else:
                 query = Personale.objects.filter(
-                    query_keywords,
+                    query_search,
                     didatticacopertura__af__isnull=False,
                     didatticacopertura__af__regdid__regdid_id=regdid)
         else:
             if role:
                 query = Personale.objects.filter(
-                    query_keywords,
+                    query_search,
                     didatticacopertura__af__isnull=False,
                     flg_cessato=0,
                     cd_ruolo=role)
             else:
                 query = Personale.objects.filter(
-                    query_keywords, didatticacopertura__af__isnull=False, flg_cessato=0)
+                    query_search, didatticacopertura__af__isnull=False, flg_cessato=0)
 
         dip_cods = query.values_list("aff_org", flat=True).distinct()
         dip_cods = list(dip_cods)
@@ -957,24 +957,24 @@ class ServiceDocente:
     @staticmethod
     def getPublicationsList(
             teacherid=None,
-            keywords=None,
+            search=None,
             year=None,
             type=None):
-        query_keywords = Q()
+        query_search = Q()
         query_year = Q()
         query_type = Q()
 
-        if keywords is not None:
-            for k in keywords.split(" "):
+        if search is not None:
+            for k in search.split(" "):
                 q_title = Q(title__icontains=k)
-                query_keywords &= q_title
+                query_search &= q_title
         if year is not None:
             query_year = Q(date_issued_year=year)
         if type is not None:
             query_type = Q(collection_id__community_id__community_id=type)
 
         query = PubblicazioneDatiBase.objects.filter(
-            query_keywords,
+            query_search,
             query_year,
             query_type,
             pubblicazioneautori__id_ab__matricola=teacherid).values(
@@ -1117,21 +1117,21 @@ class ServicePersonale:
 
     @staticmethod
     def getAddressbook(
-            keywords=None,
+            search=None,
             structureid=None,
             structuretypes=None,
             roles=None,
             structuretree=None):
 
-        query_keywords = Q()
+        query_search = Q()
         query_structure = Q()
         query_roles = Q()
         query_structuretree = Q()
 
-        if keywords is not None:
-            for k in keywords.split(" "):
+        if search is not None:
+            for k in search.split(" "):
                 q_cognome = Q(cognome__icontains=k)
-                query_keywords |= q_cognome
+                query_search |= q_cognome
         if structureid is not None:
             query_structure = Q(aff_org__exact=structureid)
         if roles is not None:
@@ -1143,7 +1143,7 @@ class ServicePersonale:
             query_structuretree |= Q(aff_org=structuretree)
 
         query = Personale.objects.filter(
-            query_keywords,
+            query_search,
             query_structure,
             query_roles,
             query_structuretree,
@@ -1199,7 +1199,7 @@ class ServicePersonale:
 
         if structureid is None and structuretypes is None and structuretree is None:
             query2 = Personale.objects.filter(
-                query_keywords,
+                query_search,
                 query_roles,
                 flg_cessato=0,
                 aff_org__isnull=True).annotate(
@@ -1286,9 +1286,9 @@ class ServicePersonale:
         return final_query
 
     @staticmethod
-    def getStructuresList(keywords=None, father=None, type=None):
+    def getStructuresList(search=None, father=None, type=None):
 
-        query_keywords = Q()
+        query_search = Q()
         query_father = Q()
         query_type = Q()
 
@@ -1297,10 +1297,10 @@ class ServicePersonale:
         elif father:
             query_father = Q(uo_padre=father)
 
-        if keywords is not None:
-            for k in keywords.split(" "):
+        if search is not None:
+            for k in search.split(" "):
                 q_denominazione = Q(denominazione__icontains=k)
-                query_keywords &= q_denominazione
+                query_search &= q_denominazione
 
         if type:
             for k in type.split(","):
@@ -1308,7 +1308,7 @@ class ServicePersonale:
                 query_type |= q_type
 
         query = UnitaOrganizzativa.objects.filter(
-            query_keywords,
+            query_search,
             query_father,
             query_type,
             dt_fine_val__gte=datetime.datetime.today()).values(
@@ -1462,17 +1462,17 @@ class ServicePersonale:
 class ServiceLaboratorio:
 
     @staticmethod
-    def getLaboratoriesList(language, keywords, ambito, dip, erc1, teacher):
-        query_keywords = Q()
+    def getLaboratoriesList(language, search, ambito, dip, erc1, teacher):
+        query_search = Q()
         query_ambito = Q()
         query_dip = Q()
         query_erc1 = Q()
         query_teacher = Q()
 
-        if keywords:
-            for k in keywords.split(" "):
+        if search:
+            for k in search.split(" "):
                 q_nome = Q(nome_laboratorio__icontains=k)
-                query_keywords &= q_nome
+                query_search &= q_nome
         if ambito:
             query_ambito = Q(ambito__exact=ambito)
         if dip:
@@ -1487,7 +1487,7 @@ class ServiceLaboratorio:
                 matricola_responsabile_scientifico__exact=teacher)
 
         query = LaboratorioDatiBase.objects.filter(
-            query_keywords, query_ambito, query_dip, query_erc1, query_teacher
+            query_search, query_ambito, query_dip, query_erc1, query_teacher
         ).values(
             'id',
             'nome_laboratorio',

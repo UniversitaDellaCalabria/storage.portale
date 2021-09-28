@@ -583,7 +583,7 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
         for q in query:
             functions.append({
                 'TeacherRole': q['ds_funzione'],
-                'StructureId': q['unita_organizzativa_id__uo'],
+                'StructureCod': q['unita_organizzativa_id__uo'],
                 'StructureName': q['unita_organizzativa_id__denominazione'],
             })
         return functions
@@ -702,7 +702,7 @@ class StructuresListSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
         return {
-            'StructureId': query['uo'],
+            'StructureCod': query['uo'],
             'StructureName': query['denominazione'],
             'StructureTypeName': query['ds_tipo_nodo'],
             'StructureTypeCOD': query['cd_tipo_nodo'],
@@ -771,7 +771,7 @@ class StructuresDetailSerializer(CreateUpdateAbstract):
             personnel_functions = StructuresDetailSerializer.to_dict_personnel_functions(
                 query['FunzioniPersonale'])
         return {
-            'StructureId': query['uo'],
+            'StructureCod': query['uo'],
             'StructureName': query['denominazione'],
             'StructureTypeName': query['ds_tipo_nodo'],
             'StructureTypeCOD': query['cd_tipo_nodo'],

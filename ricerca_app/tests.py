@@ -100,18 +100,18 @@ class ApiCdSListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
-        # param: keywords ita
-        data = {'keywords': 'informatica', 'lang': 'it'}
+        # param: search ita
+        data = {'search': 'informatica', 'lang': 'it'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
-        # param: keywords eng
-        data = {'keywords': 'computer', 'lang': 'en'}
+        # param: search eng
+        data = {'search': 'computer', 'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
-        # param: keywords eng wrong
-        data = {'keywords': 'math', 'lang': 'en'}
+        # param: search eng wrong
+        data = {'search': 'math', 'lang': 'en'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
@@ -920,7 +920,7 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 2
 
-        data = {'keywords': 'gar'}
+        data = {'search': 'gar'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111111'
 
@@ -1655,12 +1655,12 @@ class ApiAddressbookListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
         assert res.json()['results'][0]['TeacherCVShort'] == 'B'
 
-        data = {'keywords': 'Mungar'}
+        data = {'search': 'Mungar'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 4
         assert res.json()['results'][0]['Function'] is None
 
-        data = {'keywords': 'Mungar', 'structureid': '99'}
+        data = {'search': 'Mungar', 'structureid': '99'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
@@ -1724,28 +1724,28 @@ class ApiStructuresListUnitTest(TestCase):
         res = req.get(url, data=data)
 
         assert res.json()['results'][1]['StructureTypeName'] == 'uffici'
-        assert res.json()['results'][0]['StructureId'] == '2'
+        assert res.json()['results'][0]['StructureCod'] == '2'
         assert len(res.json()['results']) == 2
 
-        data = {'keywords': 'Direzione'}
+        data = {'search': 'Direzione'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['StructureId'] == '2'
+        assert res.json()['results'][0]['StructureCod'] == '2'
 
         data = {'type': 'DIR,UFF'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
 
-        data = {'type': 'DIR,UFF', 'keywords': 'Direzione'}
+        data = {'type': 'DIR,UFF', 'search': 'Direzione'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
         data = {'father': '1'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['StructureId'] == '1'
+        assert res.json()['results'][0]['StructureCod'] == '1'
 
         res = req.get(url_filter)
         assert res.json()['results'][0]['StructureTypeName'] == 'direzione'
-        assert res.json()['results'][1]['StructureId'] == '1'
+        assert res.json()['results'][1]['StructureCod'] == '1'
         assert len(res.json()['results']) == 3
 
         data = {'type': 'DIR,UFF'}
@@ -2106,8 +2106,8 @@ class ApiStructureDetailUnitTest(TestCase):
         res = req.get(url)
         res1 = req.get(url1)
 
-        assert res.json()['results']['StructureId'] == '1'
-        assert res1.json()['results']['StructureId'] == '2'
+        assert res.json()['results']['StructureCod'] == '1'
+        assert res1.json()['results']['StructureCod'] == '2'
 
 
 class ApiLaboratoriesListUnitTest(TestCase):
@@ -2230,7 +2230,7 @@ class ApiLaboratoriesListUnitTest(TestCase):
         assert res.json()['results'][0]['LaboratoryId'] == 2
         assert res.json()['results'][0]['Dimension'] == '291'
 
-        data = {'keywords': 'Informatica'}
+        data = {'search': 'Informatica'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['LaboratoryId'] == 1
         assert res.json()['results'][0]['Dimension'] == '290'
@@ -2712,7 +2712,7 @@ class ApiPublicationsListUnitTest(TestCase):
         assert res.json()[
             'results'][0]['PublicationAbstract'] == 'abstract inglese'
 
-        data = {'year': 2020, 'keywords': 'pub', 'type': 1}
+        data = {'year': 2020, 'search': 'pub', 'type': 1}
 
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
