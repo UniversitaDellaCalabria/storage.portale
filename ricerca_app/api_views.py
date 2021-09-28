@@ -112,7 +112,7 @@ class ApiCdSList(ApiEndpointList):
                   ' selezionata (in mancanza, per le lingue straniere si' \
                   ' restituiscono dati in inglese o, se non presenti,' \
                   ' in italiano)'
-    serializer_class = CdSListSerializer
+    serializer_class = CdSSerializer
     filter_backends = [ApiCdsListFilter]
 
     def get_queryset(self):
@@ -332,7 +332,7 @@ class ApiResearchGroupsList(ApiEndpointList):
     def get_queryset(self):
 
         teacher = self.request.query_params.get('teacherid')
-        dip = self.request.query_params.get('departmentid')
+        dip = self.request.query_params.get('departmentcod')
 
         return ServiceDocente.getAllResearchGroups(teacher, dip)
 
@@ -358,7 +358,7 @@ class ApiBaseResearchLinesList(ApiEndpointList):
 
     def get_queryset(self):
         teacher = self.request.query_params.get('teacherid')
-        dip = self.request.query_params.get('departmentid')
+        dip = self.request.query_params.get('departmentcod')
         year = self.request.query_params.get('year')
 
         return ServiceDocente.getBaseResearchLines(teacher, dip, year)
@@ -372,7 +372,7 @@ class ApiApplicateResearchLinesList(ApiEndpointList):
 
     def get_queryset(self):
         teacher = self.request.query_params.get('teacherid')
-        dip = self.request.query_params.get('departmentid')
+        dip = self.request.query_params.get('departmentcod')
         year = self.request.query_params.get('year')
 
         return ServiceDocente.getApplicateResearchLines(teacher, dip, year)
@@ -384,14 +384,14 @@ class ApiTeachersList(ApiEndpointList):
     description = 'Restituisce un elenco di Docenti con un set minimo di ' \
                   'informazioni identificative: Nome, Ruolo, ' \
                   'Settore scientifico disciplinare, …'
-    serializer_class = TeachersListSerializer
+    serializer_class = TeachersSerializer
     filter_backends = [ApiTeachersListFilter]
 
     def get_queryset(self):
 
         search = self.request.query_params.get('search')
         regdid = self.request.query_params.get('regdidid')
-        dip = self.request.query_params.get('departmentid')
+        dip = self.request.query_params.get('departmentcod')
         role = self.request.query_params.get('role')
 
         return ServiceDocente.teachersList(search, regdid, dip, role)
@@ -430,7 +430,7 @@ class ApiTeacherDetail(ApiEndpointDetail):
 
 class ApiDoctoratesList(ApiEndpointList):
     description = 'La funzione restituisce una lista di dottorati'
-    serializer_class = DoctoratesListSerializer
+    serializer_class = DoctoratesSerializer
     filter_backends = [ApiDoctoratesListFilter]
 
     def get_queryset(self):
@@ -441,7 +441,7 @@ class ApiDoctoratesList(ApiEndpointList):
 
 class ApiDegreeTypesList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle tipologie di lauree'
-    serializer_class = DegreeTypesListSerializer
+    serializer_class = DegreeTypesSerializer
     filter_backends = []
 
     def get_queryset(self):
@@ -453,7 +453,7 @@ class ApiDegreeTypesList(ApiEndpointList):
 
 class ApiDepartmentsList(ApiEndpointList):
     description = 'La funzione restituisce la lista dei dipartimenti'
-    serializer_class = DepartmentsListSerializer
+    serializer_class = DepartmentsSerializer
     filter_backends = []
 
     def get_queryset(self):
@@ -467,7 +467,7 @@ class DepartmentsFilterList(AutoSchema):
 
 class ApiDepartmentsFilterList(ApiEndpointListSupport):
     description = 'La funzione restituisce la lista dei dipartimenti senza paginazione'
-    serializer_class = DepartmentsListSerializer
+    serializer_class = DepartmentsSerializer
     filter_backends = []
     schema = DepartmentsFilterList()
 
@@ -477,17 +477,17 @@ class ApiDepartmentsFilterList(ApiEndpointListSupport):
 
 class ApiDepartmentDetail(ApiEndpointDetail):
     description = 'La funzione restituisce uno specifico dipartimento'
-    serializer_class = DepartmentsListSerializer
-    filter_backends = [ApiDoctoratesListFilter]
+    serializer_class = DepartmentsSerializer
+    filter_backends = []
 
     def get_queryset(self):
-        departmentid = self.kwargs['departmentid']
-        return ServiceDipartimento.getDepartment(departmentid)
+        departmentcod = self.kwargs['departmentcod']
+        return ServiceDipartimento.getDepartment(departmentcod)
 
 
 class ApiAddressbookList(ApiEndpointList):
     description = 'La funzione restituisce la rubrica telefonica del personale'
-    serializer_class = AddressbookListSerializer
+    serializer_class = AddressbookSerializer
     filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
@@ -502,7 +502,7 @@ class ApiAddressbookList(ApiEndpointList):
 
 class ApiStructuresList(ApiEndpointList):
     description = 'La funzione restituisce le strutture organizzative'
-    serializer_class = StructuresListSerializer
+    serializer_class = StructuresSerializer
     filter_backends = [ApiStructuresListFilter]
 
     def get_queryset(self):
@@ -520,7 +520,7 @@ class StructuresFilterList(AutoSchema):
 
 class ApiStructuresFilterList(ApiEndpointListSupport):
     description = 'La funzione restituisce le strutture organizzative senza paginazione'
-    serializer_class = StructuresListSerializer
+    serializer_class = StructuresSerializer
     filter_backends = [ApiStructuresListFilter]
     schema = StructuresFilterList()
 
@@ -545,7 +545,7 @@ class ApiStructureTypesList(ApiEndpointListSupport):
 
 class ApiAcademicYearsList(ApiEndpointListSupport):
     description = 'La funzione restituisce gli anni accademici'
-    serializer_class = AcademicYearsListSerializer
+    serializer_class = AcademicYearsSerializer
     filter_backends = []
 
     def get_queryset(self):
@@ -564,7 +564,7 @@ class ApiStructureDetail(ApiEndpointDetail):
 
 class ApiRolesList(ApiEndpointListSupport):
     description = 'La funzione restituisce i ruoli'
-    serializer_class = RolesListSerializer
+    serializer_class = RolesSerializer
     filter_backends = []
 
     def get_queryset(self):
@@ -573,7 +573,7 @@ class ApiRolesList(ApiEndpointListSupport):
 
 class ApiPersonaleDetail(ApiEndpointDetail):
     description = 'La funzione restituisce una specifica persona'
-    serializer_class = AddressbookListSerializer
+    serializer_class = AddressbookSerializer
     # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
@@ -595,7 +595,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
 
 class ApiLaboratoriesList(ApiEndpointList):
     description = 'La funzione restituisce i laboratori'
-    serializer_class = LaboratoriesListSerializer
+    serializer_class = LaboratoriesSerializer
     filter_backends = [ApiLaboratoriesListFilter]
 
     def get_queryset(self):
@@ -611,7 +611,7 @@ class ApiLaboratoriesList(ApiEndpointList):
 
 class ApiLaboratoriesAreasList(ApiEndpointList):
     description = 'La funzione restituisce la lista degli ambiti dei laboratori'
-    serializer_class = LaboratoriesAreasListSerializer
+    serializer_class = LaboratoriesAreasSerializer
     filter_backends = []
 
     def get_queryset(self):
@@ -620,7 +620,7 @@ class ApiLaboratoriesAreasList(ApiEndpointList):
 
 class ApiErc1List(ApiEndpointList):
     description = 'La funzione restituisce la lista degli erc1'
-    serializer_class = Erc1ListSerializer
+    serializer_class = Erc1Serializer
     filter_backends = [ApiErc1ListFilter]
 
     def get_queryset(self):
@@ -637,7 +637,7 @@ class Erc1FilterList(AutoSchema):
 
 class ApiErc1FilterList(ApiEndpointListSupport):
     description = 'La funzione restituisce la lista degli erc1 senza paginazione'
-    serializer_class = Erc1ListSerializer
+    serializer_class = Erc1Serializer
     filter_backends = [ApiErc1ListFilter]
     schema = Erc1FilterList()
 
@@ -648,7 +648,7 @@ class ApiErc1FilterList(ApiEndpointListSupport):
 
 class ApiErc0List(ApiEndpointList):
     description = 'La funzione restituisce la lista degli erc0'
-    serializer_class = Erc0ListSerializer
+    serializer_class = Erc0Serializer
     filter_backends = []
 
     def get_queryset(self):
@@ -658,7 +658,7 @@ class ApiErc0List(ApiEndpointList):
 
 class ApiPublicationsList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle pubblicazioni di un dato docente'
-    serializer_class = PublicationsListSerializer
+    serializer_class = PublicationsSerializer
     filter_backends = [ApiPublicationsListFilter]
 
     def get_queryset(self):
@@ -673,7 +673,7 @@ class ApiPublicationsList(ApiEndpointList):
 
 class ApiPublicationsCommunityTypesList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle tipologie di pubblicazioni'
-    serializer_class = PublicationsCommunityTypesListSerializer
+    serializer_class = PublicationsCommunityTypesSerializer
     filter_backends = []
 
     def get_queryset(self):
@@ -682,7 +682,7 @@ class ApiPublicationsCommunityTypesList(ApiEndpointList):
 
 class ApiPublicationDetail(ApiEndpointDetail):
     description = 'La funzione restituisce il dettaglio di una pubblicazione'
-    serializer_class = PublicationsListSerializer
+    serializer_class = PublicationsSerializer
     filter_backends = []
 
     def get_queryset(self):

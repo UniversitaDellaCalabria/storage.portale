@@ -1106,9 +1106,9 @@ class ServiceDipartimento:
             "dip_des_it") if language == 'it' else query.order_by("dip_des_eng")
 
     @staticmethod
-    def getDepartment(departmentid):
+    def getDepartment(departmentcod):
         query = DidatticaDipartimento.objects.filter(
-            dip_cod__exact=departmentid).values(
+            dip_cod__exact=departmentcod).values(
             "dip_id", "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
         return query
 

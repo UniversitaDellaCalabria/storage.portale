@@ -75,8 +75,8 @@ class ApiCdSListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
-        # param: departmentid
-        data = {'departmentid': 1}
+        # param: departmentcod
+        data = {'departmentcod': 1}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -120,7 +120,7 @@ class ApiCdSListUnitTest(TestCase):
                 'jointdegree': 'N',
                 'academicyear': 2020,
                 'departmentname': 'math and computer science',
-                'departmentid': 1,
+                'departmentcod': 1,
                 'courseclassname': 'laurea in informatica',
                 'courseclassid': '1',
                 'coursetype': 'L',
@@ -928,15 +928,15 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherCVFull'] is None
 
-        data = {'departmentid': 42}
+        data = {'departmentcod': 42}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'departmentid': 1, 'role': 'PO'}
+        data = {'departmentcod': 1, 'role': 'PO'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'departmentid': 1, 'role': 'PA', 'lang': 'en'}
+        data = {'departmentcod': 1, 'role': 'PA', 'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()[
             'results'][0]['TeacherDepartmentName'] == "Math and Computer Science"
@@ -1238,7 +1238,7 @@ class ApiDoctoratesListUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
 
-        data = {'departmentid': 1}
+        data = {'departmentcod': 1}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
 
@@ -1419,7 +1419,7 @@ class ApiDepartmentDetailUnitTest(TestCase):
 
         url = reverse(
             'ricerca:departmentdetail', kwargs={
-                'departmentid': '001'})
+                'departmentcod': '001'})
 
         # check url
         res = req.get(url)
@@ -2916,7 +2916,7 @@ class ApiResearchGroupsUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'departmentid': '1111'}
+        data = {'departmentcod': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -2989,7 +2989,7 @@ class ApiBaseResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'departmentid': '1111'}
+        data = {'departmentcod': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -3063,6 +3063,6 @@ class ApiApplicateResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'departmentid': '1111'}
+        data = {'departmentcod': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1

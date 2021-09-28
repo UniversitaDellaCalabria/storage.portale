@@ -15,7 +15,7 @@ class CreateUpdateAbstract(serializers.Serializer):
             pass
 
 
-class CdSListSerializer(CreateUpdateAbstract):
+class CdSSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -471,7 +471,7 @@ class ApplicateResearchLinesSerializer(CreateUpdateAbstract):
         return result
 
 
-class TeachersListSerializer(CreateUpdateAbstract):
+class TeachersSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -589,7 +589,7 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
         return functions
 
 
-class DoctoratesListSerializer(CreateUpdateAbstract):
+class DoctoratesSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -619,7 +619,7 @@ class DoctoratesListSerializer(CreateUpdateAbstract):
         }
 
 
-class DegreeTypesListSerializer(CreateUpdateAbstract):
+class DegreeTypesSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -635,7 +635,7 @@ class DegreeTypesListSerializer(CreateUpdateAbstract):
         }
 
 
-class DepartmentsListSerializer(CreateUpdateAbstract):
+class DepartmentsSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -654,7 +654,7 @@ class DepartmentsListSerializer(CreateUpdateAbstract):
         }
 
 
-class AddressbookListSerializer(CreateUpdateAbstract):
+class AddressbookSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -691,7 +691,7 @@ class AddressbookListSerializer(CreateUpdateAbstract):
         }
 
 
-class StructuresListSerializer(CreateUpdateAbstract):
+class StructuresSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -725,7 +725,7 @@ class StructureTypesSerializer(CreateUpdateAbstract):
         }
 
 
-class AcademicYearsListSerializer(CreateUpdateAbstract):
+class AcademicYearsSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -740,7 +740,7 @@ class AcademicYearsListSerializer(CreateUpdateAbstract):
         }
 
 
-class RolesListSerializer(CreateUpdateAbstract):
+class RolesSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -813,7 +813,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         activities = LaboratoryDetailSerializer.to_dict_activities(
             query['Activities'])
-        erc1 = Erc1ListSerializer.to_dict(query['Erc1'][0], req_lang)
+        erc1 = Erc1Serializer.to_dict(query['Erc1'][0], req_lang)
         research_personnel = LaboratoryDetailSerializer.to_dict_research_personnel(
             query['ResearchPersonnel'])
         tech_personnel = LaboratoryDetailSerializer.to_dict_tech_personnel(
@@ -825,7 +825,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         else:
             location = LaboratoryDetailSerializer.to_dict_location(
                 query['Location'])
-        extra_departments = LaboratoriesListSerializer.to_dict_extra_departments(
+        extra_departments = LaboratoriesSerializer.to_dict_extra_departments(
             query['ExtraDepartments'], req_lang)
 
         return {
@@ -918,7 +918,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         return result
 
 
-class LaboratoriesListSerializer(CreateUpdateAbstract):
+class LaboratoriesSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -928,7 +928,7 @@ class LaboratoriesListSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-        extra_departments = LaboratoriesListSerializer.to_dict_extra_departments(
+        extra_departments = LaboratoriesSerializer.to_dict_extra_departments(
             query['ExtraDepartments'], req_lang)
         return {
             'LaboratoryId': query['id'],
@@ -953,7 +953,7 @@ class LaboratoriesListSerializer(CreateUpdateAbstract):
         return result
 
 
-class LaboratoriesAreasListSerializer(CreateUpdateAbstract):
+class LaboratoriesAreasSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -968,7 +968,7 @@ class LaboratoriesAreasListSerializer(CreateUpdateAbstract):
         }
 
 
-class Erc1ListSerializer(CreateUpdateAbstract):
+class Erc1Serializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -979,7 +979,7 @@ class Erc1ListSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
 
-        erc1 = Erc1ListSerializer.to_dict_erc1_list(query['Erc1'], req_lang)
+        erc1 = Erc1Serializer.to_dict_erc1_list(query['Erc1'], req_lang)
 
         return {
             'IdErc0': query['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
@@ -1003,7 +1003,7 @@ class Erc1ListSerializer(CreateUpdateAbstract):
         return result
 
 
-class Erc0ListSerializer(CreateUpdateAbstract):
+class Erc0Serializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -1017,7 +1017,7 @@ class Erc0ListSerializer(CreateUpdateAbstract):
                 if req_lang == "it" or query['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else query['id_ricerca_erc1__ricerca_erc0_cod__description_en']}
 
 
-class PublicationsListSerializer(CreateUpdateAbstract):
+class PublicationsSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -1029,7 +1029,7 @@ class PublicationsListSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         authors = None
         if query['Authors'] is not None:
-            authors = PublicationsListSerializer.to_dict_authors(
+            authors = PublicationsSerializer.to_dict_authors(
                 query['Authors'])
         return {
             'PublicationId': query['item_id'],
@@ -1063,7 +1063,7 @@ class PublicationsListSerializer(CreateUpdateAbstract):
         return result
 
 
-class PublicationsCommunityTypesListSerializer(CreateUpdateAbstract):
+class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
