@@ -30,8 +30,8 @@ class ApiCdsListFilter(GenericApiFilter):
             'type': 'int'
         },
         {
-            'name': 'departmentid',
-            'description': 'Didattica dipartimento id',
+            'name': 'departmentcod',
+            'description': 'Didattica dipartimento cod',
             'required': False,
             'type': 'string'
         },
@@ -133,7 +133,7 @@ class ApiResearchGroupsListFilter(GenericApiFilter):
                       'description': 'Matricola di un docente',
                       'required': True,
                       'type': 'string'},
-                     {'name': 'departmentid',
+                     {'name': 'departmentcod',
                       'description': 'Codice di un dipartimento',
                       'required': True,
                       'type': 'string'}]
@@ -155,7 +155,7 @@ class ApiTeachersListFilter(GenericApiFilter):
             'type': 'int'
         },
         {
-            'name': 'departmentid',
+            'name': 'departmentcod',
             'description': 'didattica dipartimento cod',
             'required': False,
             'type': 'string'
@@ -174,7 +174,7 @@ class ApiBaseResearchLinesListFilter(GenericApiFilter):
                       'description': 'Matricola di un docente',
                       'required': True,
                       'type': 'string'},
-                     {'name': 'departmentid',
+                     {'name': 'departmentcod',
                       'description': 'Codice di un dipartimento',
                       'required': True,
                       'type': 'string'},
@@ -190,7 +190,7 @@ class ApiApplicateResearchLinesListFilter(GenericApiFilter):
                       'description': 'Matricola di un docente',
                       'required': True,
                       'type': 'string'},
-                     {'name': 'departmentid',
+                     {'name': 'departmentcod',
                       'description': 'Codice di un dipartimento',
                       'required': True,
                       'type': 'string'},
@@ -255,7 +255,7 @@ class ApiDoctoratesListFilter(GenericApiFilter):
             'type': 'int'
         },
         {
-            'name': 'departmentid',
+            'name': 'departmentcod',
             'description': 'didattica dipartimento cod',
             'required': False,
             'type': 'string'

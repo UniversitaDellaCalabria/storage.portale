@@ -730,7 +730,10 @@ class ServiceDocente:
                 "cv_full_it",
                 "cv_short_it",
                 "cv_full_eng",
-                "cv_short_eng").order_by('cognome', 'nome', 'middle_name')
+                "cv_short_eng").order_by(
+                'cognome',
+                'nome',
+                'middle_name').distinct()
             if role:
                 query = query.filter(query_search, cd_ruolo=role)
             query = list(query)
