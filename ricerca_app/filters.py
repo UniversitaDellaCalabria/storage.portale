@@ -91,12 +91,6 @@ class ApiCdsListFilter(GenericApiFilter):
             'required': False,
             'type': 'string'
         },
-        {
-            'name': 'lang',
-            'description': 'lingua dei risultati in output',
-            'required': False,
-            'type': 'string'
-        },
     ]
 
 
