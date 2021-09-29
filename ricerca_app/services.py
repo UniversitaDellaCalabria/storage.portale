@@ -424,7 +424,7 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getAllResearchGroups(teacher, dip):
+    def getAllResearchGroups(teacher, department):
 
         query = RicercaGruppo.objects.order_by('nome').values(
             'id',
@@ -453,7 +453,7 @@ class ServiceDocente:
                     res.append(q)
 
             return res
-        elif dip:
+        elif department:
             res = []
             for q in query:
                 teachers = RicercaDocenteGruppo.objects.filter(
@@ -468,7 +468,7 @@ class ServiceDocente:
                 q['Teachers'] = None
 
                 for t in teachers:
-                    if t['personale_id__sede'] == dip:
+                    if t['personale_id__sede'] == department:
                         q['Teachers'] = teachers
 
                 if q['Teachers'] is not None:
