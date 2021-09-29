@@ -635,7 +635,7 @@ class DegreeTypesSerializer(CreateUpdateAbstract):
         }
 
 
-class DepartmentsSerializer(CreateUpdateAbstract):
+class DepartmentSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -756,7 +756,7 @@ class RolesSerializer(CreateUpdateAbstract):
         }
 
 
-class StructuresDetailSerializer(CreateUpdateAbstract):
+class StructureDetailSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -768,7 +768,7 @@ class StructuresDetailSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         personnel_functions = None
         if query['FunzioniPersonale'] is not None:
-            personnel_functions = StructuresDetailSerializer.to_dict_personnel_functions(
+            personnel_functions = StructureDetailSerializer.to_dict_personnel_functions(
                 query['FunzioniPersonale'])
         return {
             'StructureCod': query['uo'],
@@ -1017,7 +1017,7 @@ class Erc0Serializer(CreateUpdateAbstract):
                 if req_lang == "it" or query['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else query['id_ricerca_erc1__ricerca_erc0_cod__description_en']}
 
 
-class PublicationsSerializer(CreateUpdateAbstract):
+class PublicationSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -1029,7 +1029,7 @@ class PublicationsSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         authors = None
         if query['Authors'] is not None:
-            authors = PublicationsSerializer.to_dict_authors(
+            authors = PublicationSerializer.to_dict_authors(
                 query['Authors'])
         return {
             'PublicationId': query['item_id'],

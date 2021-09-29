@@ -16,6 +16,14 @@ class GenericApiFilter(filters.SearchFilter):
                     },
                 }
             )
+        params.append(
+            {
+                'name': 'lang',
+                'required': False,
+                'in': 'query',
+                'description': 'language (it or en)',
+            }
+        )
         return params
 
 
@@ -32,6 +40,12 @@ class ApiCdsListFilter(GenericApiFilter):
         {
             'name': 'departmentcod',
             'description': 'Didattica dipartimento cod',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'departmentid',
+            'description': 'Didattica dipartimento id',
             'required': False,
             'type': 'string'
         },
@@ -73,12 +87,12 @@ class ApiCdsListFilter(GenericApiFilter):
         },
         {
             'name': 'cdslanguage',
-            'description': '...',
+            'description': 'Lingua del corso di studi',
             'required': False,
             'type': 'string'
         },
         {
-            'name': 'language',
+            'name': 'lang',
             'description': 'lingua dei risultati in output',
             'required': False,
             'type': 'string'
@@ -97,7 +111,8 @@ class ApiCdSStudyPlansFilter(GenericApiFilter):
     search_params = [{'name': 'cdsid',
                       'description': 'didattica regolamento id',
                       'required': True,
-                      'type': 'int'}]
+                      'type': 'int'},
+                     ]
 
 
 class ApiStudyPlanDetailFilter(GenericApiFilter):
@@ -129,11 +144,11 @@ class ApiTeacherResearchGroupsFilter(GenericApiFilter):
 
 
 class ApiResearchGroupsListFilter(GenericApiFilter):
-    search_params = [{'name': 'teacherid',
+    search_params = [{'name': 'teacher',
                       'description': 'Matricola di un docente',
                       'required': True,
                       'type': 'string'},
-                     {'name': 'departmentcod',
+                     {'name': 'department',
                       'description': 'Codice di un dipartimento',
                       'required': True,
                       'type': 'string'}]
@@ -155,7 +170,7 @@ class ApiTeachersListFilter(GenericApiFilter):
             'type': 'int'
         },
         {
-            'name': 'departmentcod',
+            'name': 'department',
             'description': 'didattica dipartimento cod',
             'required': False,
             'type': 'string'
@@ -170,11 +185,11 @@ class ApiTeachersListFilter(GenericApiFilter):
 
 
 class ApiBaseResearchLinesListFilter(GenericApiFilter):
-    search_params = [{'name': 'teacherid',
+    search_params = [{'name': 'teacher',
                       'description': 'Matricola di un docente',
                       'required': True,
                       'type': 'string'},
-                     {'name': 'departmentcod',
+                     {'name': 'department',
                       'description': 'Codice di un dipartimento',
                       'required': True,
                       'type': 'string'},
@@ -186,11 +201,11 @@ class ApiBaseResearchLinesListFilter(GenericApiFilter):
 
 
 class ApiApplicateResearchLinesListFilter(GenericApiFilter):
-    search_params = [{'name': 'teacherid',
+    search_params = [{'name': 'teacher',
                       'description': 'Matricola di un docente',
                       'required': True,
                       'type': 'string'},
-                     {'name': 'departmentcod',
+                     {'name': 'department',
                       'description': 'Codice di un dipartimento',
                       'required': True,
                       'type': 'string'},

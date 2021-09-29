@@ -2,7 +2,7 @@ import datetime
 from functools import reduce
 import operator
 
-from django.db.models import CharField, Q, Value
+from django.db.models import CharField, Q, Value, F
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
     DidatticaPdsRegolamento, \
@@ -107,8 +107,8 @@ class ServiceDidatticaCds:
             'codicione',
             'didatticaregolamento__titolo_congiunto_cod',
             'didatticaregolamento__stato_regdid_cod').distinct()
-        items = items.order_by(
-            "nome_cds_it") if language == 'it' else items.order_by("nome_cds_eng")
+        items = items.order_by("nome_cds_it") if language == 'it' else items.order_by(
+            F("nome_cds_eng").asc(nulls_last=True))
         items = list(items)
         for item in items:
             item['Languages'] = DidatticaCdsLingua.objects.filter(

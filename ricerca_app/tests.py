@@ -686,7 +686,7 @@ class ApiTeacherResearchGroupsUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results'][0]['RGroupID'] == 1
 
-        # two groups for teacherid = 1
+        # two groups for teacher = 1
         res = req.get(url)
         assert len(res.json()['results']) == 2
 
@@ -809,7 +809,7 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 3
 
-        # teacherid 2 has one ricercalineabase (ended) and one
+        # teacher 2 has one ricercalineabase (ended) and one
         # ricercalineaapplicata
         url = reverse(
             'ricerca:teacherresearchlines', kwargs={
@@ -928,15 +928,15 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherCVFull'] is None
 
-        data = {'departmentcod': 42}
+        data = {'department': 42}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'departmentcod': 1, 'role': 'PO'}
+        data = {'department': 1, 'role': 'PO'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'departmentcod': 1, 'role': 'PA', 'lang': 'en'}
+        data = {'department': 1, 'role': 'PA', 'lang': 'en'}
         res = req.get(url, data=data)
         assert res.json()[
             'results'][0]['TeacherDepartmentName'] == "Math and Computer Science"
@@ -1238,7 +1238,7 @@ class ApiDoctoratesListUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
 
-        data = {'departmentcod': 1}
+        data = {'department': 1}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
 
@@ -2908,15 +2908,15 @@ class ApiResearchGroupsUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 1
 
-        data = {'teacherid': '111112'}
+        data = {'teacher': '111112'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'teacherid': '111111'}
+        data = {'teacher': '111111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'departmentcod': '1111'}
+        data = {'department': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -2985,11 +2985,11 @@ class ApiBaseResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'teacherid': '111112'}
+        data = {'teacher': '111112'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'departmentcod': '1111'}
+        data = {'department': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -3059,10 +3059,10 @@ class ApiApplicateResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'teacherid': '111112'}
+        data = {'teacher': '111112'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'departmentcod': '1111'}
+        data = {'department': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1

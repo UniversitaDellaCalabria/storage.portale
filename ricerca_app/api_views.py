@@ -241,17 +241,17 @@ class ApiStudyPlanDetail(ApiEndpointDetail):
     filter_backends = [ApiStudyPlanDetailFilter]
 
     def get_queryset(self):
-        studyplanid = str(self.kwargs['studyplanid'])
+        studyplan = str(self.kwargs['studyplanid'])
 
         return ServiceDidatticaAttivitaFormativa.getStudyPlan(
-            studyplanid=studyplanid)
+            studyplanid=studyplan)
 
 
 class ApiStudyPlanActivitiesList(ApiEndpointList):
     description = 'Restituisce l’elenco degli insegnamenti' \
                   ' di un Piano di Studio con info sintetiche'
     serializer_class = StudyPlansActivitiesSerializer
-    filter_backends = [ApiCdSStudyPlansFilter]
+    filter_backends = [ApiStudyPlanDetailFilter]
 
     def get_queryset(self):
         studyplanid_param = str(self.kwargs['studyplanid'])
@@ -267,10 +267,10 @@ class ApiStudyActivityDetail(ApiEndpointDetail):
     filter_backends = [ApiStudyActivityInfoFilter]
 
     def get_queryset(self):
-        studyactivityid = str(self.kwargs['studyactivityid'])
+        studyactivity = str(self.kwargs['studyactivityid'])
 
         return ServiceDidatticaAttivitaFormativa.getAttivitaFormativaWithSubModules(
-            af_id=studyactivityid, language=self.language)
+            af_id=studyactivity, language=self.language)
 
 
 class StudyActivityInfo(AutoSchema):
@@ -286,10 +286,10 @@ class ApiStudyActivityInfo(ApiEndpointDetail):
     schema = StudyActivityInfo()
 
     def get_queryset(self):
-        studyactivityid = str(self.kwargs['studyactivityid'])
+        studyactivity = str(self.kwargs['studyactivityid'])
 
         return ServiceDidatticaAttivitaFormativa.getAttivitaFormativaWithSubModules(
-            af_id=studyactivityid, language=self.language)
+            af_id=studyactivity, language=self.language)
 
 
 # class ApiCdSMainTeachersList(ApiEndpointList):
@@ -331,8 +331,8 @@ class ApiResearchGroupsList(ApiEndpointList):
 
     def get_queryset(self):
 
-        teacher = self.request.query_params.get('teacherid')
-        dip = self.request.query_params.get('departmentcod')
+        teacher = self.request.query_params.get('teacher')
+        dip = self.request.query_params.get('department')
 
         return ServiceDocente.getAllResearchGroups(teacher, dip)
 
@@ -345,9 +345,9 @@ class ApiTeacherResearchLinesList(ApiEndpointList):
     filter_backends = [ApiTeacherResearchLinesFilter]
 
     def get_queryset(self):
-        teacher_id = self.kwargs['teacherid']
+        teacher = self.kwargs['teacherid']
 
-        return ServiceDocente.getResearchLines(teacher_id)
+        return ServiceDocente.getResearchLines(teacher)
 
 
 class ApiBaseResearchLinesList(ApiEndpointList):
@@ -357,8 +357,8 @@ class ApiBaseResearchLinesList(ApiEndpointList):
     filter_backends = [ApiBaseResearchLinesListFilter]
 
     def get_queryset(self):
-        teacher = self.request.query_params.get('teacherid')
-        dip = self.request.query_params.get('departmentcod')
+        teacher = self.request.query_params.get('teacher')
+        dip = self.request.query_params.get('department')
         year = self.request.query_params.get('year')
 
         return ServiceDocente.getBaseResearchLines(teacher, dip, year)
@@ -371,8 +371,8 @@ class ApiApplicateResearchLinesList(ApiEndpointList):
     filter_backends = [ApiApplicateResearchLinesListFilter]
 
     def get_queryset(self):
-        teacher = self.request.query_params.get('teacherid')
-        dip = self.request.query_params.get('departmentcod')
+        teacher = self.request.query_params.get('teacher')
+        dip = self.request.query_params.get('department')
         year = self.request.query_params.get('year')
 
         return ServiceDocente.getApplicateResearchLines(teacher, dip, year)
@@ -391,7 +391,7 @@ class ApiTeachersList(ApiEndpointList):
 
         search = self.request.query_params.get('search')
         regdid = self.request.query_params.get('regdidid')
-        dip = self.request.query_params.get('departmentcod')
+        dip = self.request.query_params.get('department')
         role = self.request.query_params.get('role')
 
         return ServiceDocente.teachersList(search, regdid, dip, role)
@@ -421,9 +421,9 @@ class ApiTeacherDetail(ApiEndpointDetail):
     filter_backends = [ApiTeacherInfoFilter]
 
     def get_queryset(self):
-        teacher_id = self.kwargs['teacherid']
+        teacher = self.kwargs['teacherid']
 
-        return ServiceDocente.getDocenteInfo(teacher_id)
+        return ServiceDocente.getDocenteInfo(teacher)
 
 # ----Dottorati----
 
@@ -453,7 +453,7 @@ class ApiDegreeTypesList(ApiEndpointList):
 
 class ApiDepartmentsList(ApiEndpointList):
     description = 'La funzione restituisce la lista dei dipartimenti'
-    serializer_class = DepartmentsSerializer
+    serializer_class = DepartmentSerializer
     filter_backends = []
 
     def get_queryset(self):
@@ -467,7 +467,7 @@ class DepartmentsFilterList(AutoSchema):
 
 class ApiDepartmentsFilterList(ApiEndpointListSupport):
     description = 'La funzione restituisce la lista dei dipartimenti senza paginazione'
-    serializer_class = DepartmentsSerializer
+    serializer_class = DepartmentSerializer
     filter_backends = []
     schema = DepartmentsFilterList()
 
@@ -477,12 +477,12 @@ class ApiDepartmentsFilterList(ApiEndpointListSupport):
 
 class ApiDepartmentDetail(ApiEndpointDetail):
     description = 'La funzione restituisce uno specifico dipartimento'
-    serializer_class = DepartmentsSerializer
+    serializer_class = DepartmentSerializer
     filter_backends = []
 
     def get_queryset(self):
-        departmentcod = self.kwargs['departmentcod']
-        return ServiceDipartimento.getDepartment(departmentcod)
+        department = self.kwargs['departmentcod']
+        return ServiceDipartimento.getDepartment(department)
 
 
 class ApiAddressbookList(ApiEndpointList):
@@ -554,12 +554,12 @@ class ApiAcademicYearsList(ApiEndpointListSupport):
 
 class ApiStructureDetail(ApiEndpointDetail):
     description = 'La funzione restituisce una specifica struttura'
-    serializer_class = StructuresDetailSerializer
+    serializer_class = StructureDetailSerializer
     filter_backends = [ApiStructuresListFilter]
 
     def get_queryset(self):
-        structure_id = self.kwargs['structureid']
-        return ServicePersonale.getStructure(structure_id)
+        structure = self.kwargs['structureid']
+        return ServicePersonale.getStructure(structure)
 
 
 class ApiRolesList(ApiEndpointListSupport):
@@ -577,9 +577,9 @@ class ApiPersonaleDetail(ApiEndpointDetail):
     # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
-        personale_id = self.kwargs['personaleid']
+        personale = self.kwargs['personaleid']
 
-        return ServicePersonale.getPersonale(personale_id)
+        return ServicePersonale.getPersonale(personale)
 
 
 class ApiLaboratoryDetail(ApiEndpointDetail):
@@ -588,9 +588,9 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
     # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
-        laboratory_id = self.kwargs['laboratoryid']
+        laboratory = self.kwargs['laboratoryid']
 
-        return ServiceLaboratorio.getLaboratory(self.language, laboratory_id)
+        return ServiceLaboratorio.getLaboratory(self.language, laboratory)
 
 
 class ApiLaboratoriesList(ApiEndpointList):
@@ -658,17 +658,17 @@ class ApiErc0List(ApiEndpointList):
 
 class ApiPublicationsList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle pubblicazioni di un dato docente'
-    serializer_class = PublicationsSerializer
+    serializer_class = PublicationSerializer
     filter_backends = [ApiPublicationsListFilter]
 
     def get_queryset(self):
-        teacher_id = self.kwargs['teacherid']
+        teacher = self.kwargs['teacherid']
         search = self.request.query_params.get('search')
         year = self.request.query_params.get('year')
         type = self.request.query_params.get('type')
 
         return ServiceDocente.getPublicationsList(
-            teacher_id, search, year, type)
+            teacher, search, year, type)
 
 
 class ApiPublicationsCommunityTypesList(ApiEndpointList):
@@ -682,10 +682,10 @@ class ApiPublicationsCommunityTypesList(ApiEndpointList):
 
 class ApiPublicationDetail(ApiEndpointDetail):
     description = 'La funzione restituisce il dettaglio di una pubblicazione'
-    serializer_class = PublicationsSerializer
+    serializer_class = PublicationSerializer
     filter_backends = []
 
     def get_queryset(self):
-        publicationid = self.kwargs['publicationid']
-        teacherid = self.kwargs['teacherid']
-        return ServiceDocente.getPublication(publicationid, teacherid)
+        publication = self.kwargs['publicationid']
+        teacher = self.kwargs['teacherid']
+        return ServiceDocente.getPublication(publication, teacher)
