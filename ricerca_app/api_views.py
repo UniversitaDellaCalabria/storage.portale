@@ -391,7 +391,7 @@ class ApiTeachersList(ApiEndpointList):
     def get_queryset(self):
 
         search = self.request.query_params.get('search')
-        regdidid = self.request.query_params.get('regdidid')
+        regdidid = self.request.query_params.get('regdid')
         department = self.request.query_params.get('department')
         role = self.request.query_params.get('role')
 
@@ -493,9 +493,9 @@ class ApiAddressbookList(ApiEndpointList):
 
     def get_queryset(self):
         search = self.request.query_params.get('search')
-        structureid = self.request.query_params.get('structureid')
+        structureid = self.request.query_params.get('structure')
         structuretypes = self.request.query_params.get('structuretypes')
-        roles = self.request.query_params.get('roles')
+        roles = self.request.query_params.get('role')
         structuretree = self.request.query_params.get('structuretree')
         return ServicePersonale.getAddressbook(
             search, structureid, structuretypes, roles, structuretree)
@@ -663,7 +663,7 @@ class ApiPublicationsList(ApiEndpointList):
     filter_backends = [ApiPublicationsListFilter]
 
     def get_queryset(self):
-        teacherid = self.kwargs['teacherid']
+        teacherid = self.kwargs['teacher']
         search = self.request.query_params.get('search')
         year = self.request.query_params.get('year')
         type = self.request.query_params.get('type')

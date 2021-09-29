@@ -38,7 +38,7 @@ class ServiceDidatticaCds:
         didatticaregolamento_params_to_query_field = {
             'academicyear': 'didatticaregolamento__aa_reg_did__exact',
             'jointdegree': 'didatticaregolamento__titolo_congiunto_cod',
-            'regdid_id': 'didatticaregolamento__regdid_id',
+            'regdid': 'didatticaregolamento__regdid_id',
         }
 
         didatticacdslingua_params_to_query_field = {
