@@ -79,7 +79,7 @@ class ApiCdsListFilter(GenericApiFilter):
         },
         {
             'name': 'jointdegree',
-            'description': 'Titolo conginto',
+            'description': 'Titolo congiunto',
             'required': False,
             'schema': {
                     'type': 'string',
