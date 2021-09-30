@@ -709,110 +709,78 @@ class ServiceDocente:
                 q_cognome = Q(cognome__icontains=k)
                 query_search &= q_cognome
 
-        if dip:
-            department = DidatticaDipartimento.objects.filter(
-                dip_cod=dip).values(
-                "dip_id", "dip_cod", "dip_des_it", "dip_des_eng").first()
-            if department is None:
-                return None
-            query = Personale.objects.filter(
-                query_search,
-                didatticacopertura__af__isnull=False,
-                aff_org=department["dip_cod"]) .values(
-                "matricola",
-                "nome",
-                "middle_name",
-                "cognome",
-                "cd_ruolo",
-                "ds_ruolo_locale",
-                "cd_ssd",
-                "ds_ssd",
-                "cv_full_it",
-                "cv_short_it",
-                "cv_full_eng",
-                "cv_short_eng").order_by(
-                'cognome',
-                'nome',
-                'middle_name').distinct()
-            if role:
-                query = query.filter(query_search, cd_ruolo=role)
-            query = list(query)
+        query = Personale.objects.filter(query_search,
+                                         didatticacopertura__af__isnull=False,
+                                         flg_cessato=0)\
+                                  .values("matricola",
+                                          "nome",
+                                          "middle_name",
+                                          "cognome",
+                                          "cd_ruolo",
+                                          "ds_ruolo_locale",
+                                          "cd_ssd",
+                                          "ds_ssd",
+                                          "cv_full_it",
+                                          "cv_short_it",
+                                          "cv_full_eng",
+                                          "cv_short_eng")\
+                                  .order_by('cognome',
+                                            'nome',
+                                            'middle_name')\
+                                  .distinct()
 
+        if regdid:
+            query = query.filter(didatticacopertura__af__regdid__regdid_id=regdid)
+
+        if role:
+            roles = roles.split(",")
+            query_roles = Q(cd_ruolo__in=roles)
+            query = query.filter(query_roles)
+
+        if dip:
+            department = DidatticaDipartimento.objects.filter(dip_cod=dip)\
+                                                      .values("dip_id",
+                                                              "dip_cod",
+                                                              "dip_des_it",
+                                                              "dip_des_eng").first()
+            if not department: return None
+            query = query.filter(aff_org=department["dip_cod"])
+            query = list(query)
             for q in query:
                 q["dip_id"] = department['dip_id']
                 q["dip_cod"] = department['dip_cod']
                 q["dip_des_it"] = department['dip_des_it']
                 q["dip_des_eng"] = department["dip_des_eng"]
 
-            return query
-
-        elif regdid:
-            if role:
-                query = Personale.objects.filter(
-                    query_search,
-                    cd_ruolo=role,
-                    didatticacopertura__af__isnull=False,
-                    didatticacopertura__af__regdid__regdid_id=regdid)
-            else:
-                query = Personale.objects.filter(
-                    query_search,
-                    didatticacopertura__af__isnull=False,
-                    didatticacopertura__af__regdid__regdid_id=regdid)
         else:
-            if role:
-                query = Personale.objects.filter(
-                    query_search,
-                    didatticacopertura__af__isnull=False,
-                    flg_cessato=0,
-                    cd_ruolo=role)
-            else:
-                query = Personale.objects.filter(
-                    query_search, didatticacopertura__af__isnull=False, flg_cessato=0)
+            dip_cods = query.values_list("aff_org", flat=True).distinct()
+            dip_cods = list(dip_cods)
 
-        dip_cods = query.values_list("aff_org", flat=True).distinct()
-        dip_cods = list(dip_cods)
+            departments = DidatticaDipartimento.objects.filter(dip_cod__in=dip_cods)\
+                                                       .values("dip_id",
+                                                               "dip_cod",
+                                                               "dip_des_it",
+                                                               "dip_des_eng")
 
-        query = query.values(
-            "matricola",
-            "nome",
-            "middle_name",
-            "cognome",
-            "cd_ruolo",
-            "ds_ruolo_locale",
-            "cd_ssd",
-            "ds_ssd",
-            "aff_org",
-            "ds_ssd",
-            "cv_full_it",
-            "cv_short_it",
-            "cv_full_eng",
-            "cv_short_eng"
-        ).distinct().order_by('cognome', 'nome', 'middle_name')
+            for q in query:
+                found = False
+                for dep in departments:
+                    if dep['dip_cod'] == q['aff_org']:
+                        q["dip_id"] = dep['dip_id']
+                        q["dip_cod"] = dep['dip_cod']
+                        q["dip_des_it"] = dep['dip_des_it']
+                        q["dip_des_eng"] = dep["dip_des_eng"]
+                        found = True
+                        break
 
-        query = list(query)
-
-        departments = DidatticaDipartimento.objects.filter(
-            dip_cod__in=dip_cods).values(
-            "dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
-
-        for q in query:
-            found = False
-            for dep in departments:
-                if dep['dip_cod'] == q['aff_org']:
-                    q["dip_id"] = dep['dip_id']
-                    q["dip_cod"] = dep['dip_cod']
-                    q["dip_des_it"] = dep['dip_des_it']
-                    q["dip_des_eng"] = dep["dip_des_eng"]
-                    found = True
-                    break
-
-            if not found:
-                q["dip_id"] = None
-                q["dip_cod"] = None
-                q["dip_des_it"] = None
-                q["dip_des_eng"] = None
+                if not found:
+                    q["dip_id"] = None
+                    q["dip_cod"] = None
+                    q["dip_des_it"] = None
+                    q["dip_des_eng"] = None
 
         return query
+
 
     @staticmethod
     def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo):
