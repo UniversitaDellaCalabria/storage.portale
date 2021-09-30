@@ -663,7 +663,7 @@ class ApiPublicationsList(ApiEndpointList):
     filter_backends = [ApiPublicationsListFilter]
 
     def get_queryset(self):
-        teacherid = self.kwargs['teacher']
+        teacherid = self.kwargs['teacherid']
         search = self.request.query_params.get('search')
         year = self.request.query_params.get('year')
         type = self.request.query_params.get('type')

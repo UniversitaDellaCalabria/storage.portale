@@ -43,13 +43,13 @@ class ApiCdsListFilter(GenericApiFilter):
         },
         {
             'name': 'departmentcod',
-            'description': 'Didattica dipartimento cod',
+            'description': 'Codice di un dipartimento',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'departmentid',
-            'description': 'Didattica dipartimento id',
+            'description': 'Id di un dipartimento',
             'required': False,
             'type': 'string'
         },
@@ -61,31 +61,34 @@ class ApiCdsListFilter(GenericApiFilter):
         },
         {
             'name': 'coursetype',
-            'description': 'Didattica cds course type',
+            'description': 'Tipologia di corso di studi',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'courseclassid',
-            'description': 'Didattica cds course class id',
+            'description': 'Id della classe di un corso di studi',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'courseclassname',
-            'description': 'Didattica cds course class name',
+            'description': 'Nome delle classe di un corso di studi',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'jointdegree',
-            'description': 'didattica cds joint degree',
+            'description': 'Titolo conginto',
             'required': False,
-            'type': 'string'
+            'schema': {
+                    'type': 'string',
+                    "example": ["D", "N", "S"],
+            },
         },
         {
             'name': 'regdid',
-            'description': 'didattica regolamento id',
+            'description': 'Id regolamento didattico',
             'required': False,
             'type': 'int'
         },
@@ -101,12 +104,12 @@ class ApiCdsListFilter(GenericApiFilter):
 # not used!
 # class ApiCdSMainTeachersFilter(GenericApiFilter):
     # search_params = [
-        # {
-            # 'name': 'regdid',
-            # 'description': 'ID regolamento didattico',
-            # 'required': True,
-            # 'type': 'int'
-        # }
+    # {
+    # 'name': 'regdid',
+    # 'description': 'ID regolamento didattico',
+    # 'required': True,
+    # 'type': 'int'
+    # }
     # ]
 
 
@@ -137,13 +140,13 @@ class ApiTeachersListFilter(GenericApiFilter):
         },
         {
             'name': 'department',
-            'description': 'Codice dipartimento',
+            'description': 'Codice di un dipartimento',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'role',
-            'description': 'Ruolo docente',
+            'description': 'Ruolo di un docente',
             'required': False,
             'type': 'string'
         },
@@ -197,75 +200,71 @@ class ApiApplicateResearchLinesListFilter(GenericApiFilter):
 
 
 class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
-    search_params = [
-        {
-            'name': 'year',
-            'description': 'Attività formative erogate in uno specifico anno',
-            'required': False,
-            'type': 'int'
-        },
-        {
-            'name': 'yearFrom',
-            'description': 'Attività formative erogate in un anno maggiore uguale a yearFrom',
-            'required': False,
-            'type': 'int'
-        },
-        {
-            'name': 'yearTo',
-            'description': 'Attività formative erogate in un anno minore uguale a yearTo',
-            'required': False,
-            'type': 'int'
-        },
-    ]
+    search_params = [{'name': 'year',
+                      'description': 'Attività formative erogate in uno specifico anno',
+                      'required': False,
+                      'type': 'int'},
+                     {'name': 'yearFrom',
+                      'description': 'Attività formative erogate in un anno maggiore uguale a yearFrom',
+                      'required': False,
+                      'type': 'int'},
+                     {'name': 'yearTo',
+                      'description': 'Attività formative erogate in un anno minore uguale a yearTo',
+                      'required': False,
+                      'type': 'int'},
+                     ]
 
 
 class ApiDoctoratesListFilter(GenericApiFilter):
     search_params = [
         {
             'name': 'regdid',
-            'description': 'didattica dottorato regolamento id',
+            'description': 'Id regolamento didattico dottorato',
             'required': False,
             'type': 'int'
         },
         {
             'name': 'year',
-            'description': 'didattica dottorato regolamento di uno specifico anno accademico',
+            'description': 'Regolamento didattico dottorato di uno specifico anno accademico',
             'required': False,
             'type': 'int'
         },
         {
             'name': 'yearFrom',
-            'description': 'didattica dottorato regolamento con anno accademico maggiore uguale a yearTo',
+            'description': 'Regolamento didattico dottorato di uno specifico anno accademico maggiore uguale a yearTo',
             'required': False,
             'type': 'int'
         },
         {
             'name': 'yearTo',
-            'description': 'didattica dottorato regolamento con anno accademico minore uguale a yearTo',
+            'description': 'Regolamento didattico dottorato di uno specifico anno accademico minore uguale a yearTo',
             'required': False,
             'type': 'int'
         },
         {
             'name': 'departmentcod',
-            'description': 'didattica dipartimento cod',
+            'description': 'Codice di un dipartimento',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'cdscod',
-            'description': 'didattica dottorato cds cod',
+            'description': 'Codice di un corso di studi',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'pdscod',
-            'description': 'codice del piano di studi del cds dottorato',
+            'description': 'Codice del piano di studi del dottorato',
             'required': False,
-            'type': 'string'
+            'schema': {
+                'type': 'string',
+                "example": ["GEN"],
+            },
         },
         {
             'name': 'cycle',
-            'description': 'numero ciclo del dottorato',
+            'description': 'Numero ciclo del dottorato',
             'required': False,
             'type': 'int'
         },
@@ -276,33 +275,33 @@ class ApiAddressbookListFilter(GenericApiFilter):
     search_params = [
         {
             'name': 'structure',
-            'description': 'codice struttura',
+            'description': 'Codice di una struttura',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'structuretypes',
-            'description': 'tipologia struttura',
+            'description': 'Codice della tipologia di struttura',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'role',
-            'description': 'ruoli personale',
+            'description': 'Ruolo personale',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'structuretree',
-            'description': 'albero struttura',
+            'description': 'Albero struttura',
             'required': False,
             'type': 'string'
         },
         # {
-            # 'name': 'personaleid',
-            # 'description': 'matricola personale',
-            # 'required': False,
-            # 'type': 'string'
+        # 'name': 'personaleid',
+        # 'description': 'matricola personale',
+        # 'required': False,
+        # 'type': 'string'
         # },
     ]
 
@@ -311,13 +310,13 @@ class ApiStructuresListFilter(GenericApiFilter):
     search_params = [
         {
             'name': 'father',
-            'description': 'codice struttura padre',
+            'description': 'Codice della struttura padre',
             'required': False,
             'type': 'string'
         },
         {
             'name': 'type',
-            'description': 'codice tipologia struttura',
+            'description': 'Codice della tipologia di struttura',
             'required': False,
             'type': 'string'
         },
@@ -325,39 +324,35 @@ class ApiStructuresListFilter(GenericApiFilter):
 
 
 class ApiLaboratoriesListFilter(GenericApiFilter):
-    search_params = [
-        {
-            'name': 'area',
-            'description': 'ambito laboratorio',
-            'required': False,
-            'type': 'string'
-        },
-        {
-            'name': 'department',
-            'description': 'codice dipartimento',
-            'required': False,
-            'type': 'string'
-        },
-        {
-            'name': 'erc1',
-            'description': 'codice ricerca erc1',
-            'required': False,
-            'type': 'string'
-        },
-        {
-            'name': 'teacher',
-            'description': 'matricola docente',
-            'required': False,
-            'type': 'string'
-        },
-    ]
+    search_params = [{'name': 'area',
+                      'description': 'Ambito di un laboratorio',
+                      'required': False,
+                      'schema': {'type': 'string',
+                                 "example": ["Informatico/Multimediale",
+                                             "Scientifico/Tecnologico",
+                                             "Sezione/Centro"],
+                                 },
+                      },
+                     {'name': 'department',
+                      'description': 'Codice di un dipartimento',
+                      'required': False,
+                      'type': 'string'},
+                     {'name': 'erc1',
+                      'description': 'Codice di ricerca erc1',
+                      'required': False,
+                      'type': 'string'},
+                     {'name': 'teacher',
+                      'description': 'Matricola di un docente',
+                      'required': False,
+                      'type': 'string'},
+                     ]
 
 
 class ApiErc1ListFilter(GenericApiFilter):
     search_params = [
         {
             'name': 'laboratory',
-            'description': 'id laboratorio',
+            'description': 'Id di un laboratorio',
             'required': False,
             'type': 'string'
         },
@@ -374,13 +369,13 @@ class ApiPublicationsListFilter(GenericApiFilter):
         },
         {
             'name': 'year',
-            'description': 'anno',
+            'description': 'Anno',
             'required': False,
             'type': 'int'
         },
         {
             'name': 'type',
-            'description': 'id tipologia di community',
+            'description': 'Id di una tipologia di community',
             'required': False,
             'type': 'string'
         },

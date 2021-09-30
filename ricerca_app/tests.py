@@ -941,15 +941,15 @@ class ApiTeachersListUnitTest(TestCase):
         assert res.json()[
             'results'][0]['TeacherDepartmentName'] == "Math and Computer Science"
 
-        data = {'regdidid': 1}
+        data = {'regdid': 1}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111112'
 
-        data = {'regdidid': 2}
+        data = {'regdid': 2}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111111'
 
-        data = {'regdidid': 1, 'role': 'PA'}
+        data = {'regdid': 1, 'role': 'PA'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111112'
 
@@ -1650,7 +1650,7 @@ class ApiAddressbookListUnitTest(TestCase):
         assert res.json()[
             'results'][2]['Structure'] == 'Dipartimento di Matematica e Informatica'
 
-        data = {'structureid': '99', 'lang': 'it'}
+        data = {'structure': '99', 'lang': 'it'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
         assert res.json()['results'][0]['TeacherCVShort'] == 'B'
@@ -1660,11 +1660,11 @@ class ApiAddressbookListUnitTest(TestCase):
         assert len(res.json()['results']) == 4
         assert res.json()['results'][0]['Function'] is None
 
-        data = {'search': 'Mungar', 'structureid': '99'}
+        data = {'search': 'Mungar', 'structure': '99'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'roles': 'AM'}
+        data = {'role': 'AM'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['Name'] == 'Messi Lionel'
 
