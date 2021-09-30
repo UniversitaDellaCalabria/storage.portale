@@ -700,7 +700,7 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def teachersList(search, regdid, dip, role):
+    def teachersList(search, regdid, dip, role, cds):
 
         query_search = Q()
 
@@ -712,38 +712,40 @@ class ServiceDocente:
         query = Personale.objects.filter(query_search,
                                          didatticacopertura__af__isnull=False,
                                          flg_cessato=0)\
-                                  .values("matricola",
-                                          "nome",
-                                          "middle_name",
-                                          "cognome",
-                                          "cd_ruolo",
-                                          "ds_ruolo_locale",
-                                          "cd_ssd",
-                                          "ds_ssd",
-                                          "cv_full_it",
-                                          "cv_short_it",
-                                          "cv_full_eng",
-                                          "cv_short_eng")\
-                                  .order_by('cognome',
-                                            'nome',
-                                            'middle_name')\
-                                  .distinct()
+            .values("matricola",
+                    "nome",
+                    "middle_name",
+                    "cognome",
+                    "cd_ruolo",
+                    "ds_ruolo_locale",
+                    "cd_ssd",
+                    "aff_org",
+                    "ds_ssd",
+                    "cv_full_it",
+                    "cv_short_it",
+                    "cv_full_eng",
+                    "cv_short_eng")\
+            .order_by('cognome',
+                      'nome',
+                      'middle_name')\
+            .distinct()
 
         if regdid:
-            query = query.filter(didatticacopertura__af__regdid__regdid_id=regdid)
+            query = query.filter(
+                didatticacopertura__af__regdid__regdid_id=regdid)
 
         if role:
-            roles = roles.split(",")
+            roles = role.split(",")
             query_roles = Q(cd_ruolo__in=roles)
             query = query.filter(query_roles)
-
+        if cds:
+            query = query.filter(
+                didatticacopertura__cds_cod=cds)
         if dip:
-            department = DidatticaDipartimento.objects.filter(dip_cod=dip)\
-                                                      .values("dip_id",
-                                                              "dip_cod",
-                                                              "dip_des_it",
-                                                              "dip_des_eng").first()
-            if not department: return None
+            department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
+                "dip_id", "dip_cod", "dip_des_it", "dip_des_eng").first()
+            if not department:
+                return None
             query = query.filter(aff_org=department["dip_cod"])
             query = list(query)
             for q in query:
@@ -756,11 +758,9 @@ class ServiceDocente:
             dip_cods = query.values_list("aff_org", flat=True).distinct()
             dip_cods = list(dip_cods)
 
-            departments = DidatticaDipartimento.objects.filter(dip_cod__in=dip_cods)\
-                                                       .values("dip_id",
-                                                               "dip_cod",
-                                                               "dip_des_it",
-                                                               "dip_des_eng")
+            departments = DidatticaDipartimento.objects.filter(
+                dip_cod__in=dip_cods) .values(
+                "dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
 
             for q in query:
                 found = False
@@ -780,7 +780,6 @@ class ServiceDocente:
                     q["dip_des_eng"] = None
 
         return query
-
 
     @staticmethod
     def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo):

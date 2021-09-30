@@ -139,6 +139,12 @@ class ApiTeachersListFilter(GenericApiFilter):
             'type': 'int'
         },
         {
+            'name': 'cds',
+            'description': 'Codice del corso di studi',
+            'required': False,
+            'type': 'string'
+        },
+        {
             'name': 'department',
             'description': 'Codice di un dipartimento',
             'required': False,

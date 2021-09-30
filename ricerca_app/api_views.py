@@ -394,8 +394,10 @@ class ApiTeachersList(ApiEndpointList):
         regdidid = self.request.query_params.get('regdid')
         department = self.request.query_params.get('department')
         role = self.request.query_params.get('role')
+        cds = self.request.query_params.get('cds')
 
-        return ServiceDocente.teachersList(search, regdidid, department, role)
+        return ServiceDocente.teachersList(
+            search, regdidid, department, role, cds)
 
 
 class ApiTeacherStudyActivitiesList(ApiEndpointList):
