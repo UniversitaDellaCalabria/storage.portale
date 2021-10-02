@@ -182,7 +182,7 @@ class ApiBaseResearchLinesListFilter(GenericApiFilter):
     ]
 
 
-class ApiApplicateResearchLinesListFilter(GenericApiFilter):
+class ApiAppliedResearchLinesListFilter(GenericApiFilter):
     search_params = [
         {
             'name': 'teacher',

@@ -410,18 +410,18 @@ class ServiceDidatticaAttivitaFormativa:
 
 
 class ServiceDocente:
-    @staticmethod
-    def getResearchGroups(teacher_id):
-
-        query = Personale.objects.filter(
-            matricola__exact=teacher_id,
-            fl_docente=1,
-            ricercadocentegruppo__dt_fine__isnull=True) .order_by('ricercadocentegruppo__ricerca_gruppo__nome') .values(
-            'ricercadocentegruppo__ricerca_gruppo__id',
-            'ricercadocentegruppo__ricerca_gruppo__nome',
-            'ricercadocentegruppo__ricerca_gruppo__descrizione').distinct()
-
-        return query
+    # @staticmethod
+    # def getResearchGroups(teacher_id):
+    #
+    #     query = Personale.objects.filter(
+    #         matricola__exact=teacher_id,
+    #         fl_docente=1,
+    #         ricercadocentegruppo__dt_fine__isnull=True) .order_by('ricercadocentegruppo__ricerca_gruppo__nome') .values(
+    #         'ricercadocentegruppo__ricerca_gruppo__id',
+    #         'ricercadocentegruppo__ricerca_gruppo__nome',
+    #         'ricercadocentegruppo__ricerca_gruppo__descrizione').distinct()
+    #
+    #     return query
 
     @staticmethod
     def getAllResearchGroups(teacher, department):
@@ -613,7 +613,7 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getApplicateResearchLines(teacher, dip, year):
+    def getAppliedResearchLines(teacher, dip, year):
         if year:
             query = RicercaLineaApplicata.objects.filter(
                 anno__exact=year).order_by('descrizione').values(
@@ -846,7 +846,7 @@ class ServiceDocente:
     def getDocenteInfo(teacher):
         query = Personale.objects.filter(
             didatticacopertura__af__isnull=False,
-            matricola__exact=teacher)
+            matricola__exact=teacher).distinct()
         contacts_to_take = [
             'Posta Elettronica',
             'Fax',

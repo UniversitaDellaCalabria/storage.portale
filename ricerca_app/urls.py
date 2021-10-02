@@ -114,10 +114,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     #                     api_views.ApiCdSMainTeachersList.as_view(),
     #                     name='cdsmainteachers'),
 
-    urlpatterns += path(
-        '{}/teachers/<str:teacherid>/researchgroups/'.format(base_url),
-        api_views.ApiTeacherResearchGroupsList.as_view(),
-        name='teacherresearchgroups'),
+    # urlpatterns += path(
+    #     '{}/teachers/<str:teacherid>/researchgroups/'.format(base_url),
+    #     api_views.ApiTeacherResearchGroupsList.as_view(),
+    #     name='teacherresearchgroups'),
 
     urlpatterns += path(
         '{}/researchgroups/'.format(base_url),
@@ -135,9 +135,9 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         name='baseresearchlines'),
 
     urlpatterns += path(
-        '{}/applicateresearchlines/'.format(base_url),
-        api_views.ApiApplicateResearchLinesList.as_view(),
-        name='applicateresearchlines'),
+        '{}/appliedresearchlines/'.format(base_url),
+        api_views.ApiAppliedResearchLinesList.as_view(),
+        name='appliedresearchlines'),
 
     urlpatterns += path('{}/teachers/'.format(base_url),
                         api_views.ApiTeachersList.as_view(),

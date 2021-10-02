@@ -311,16 +311,16 @@ class ApiStudyActivityInfo(ApiEndpointDetail):
 # ----Ricerca----
 
 
-class ApiTeacherResearchGroupsList(ApiEndpointList):
-    description = 'La funzione restituisce l’elenco ' \
-                  'dei gruppi di ricerca del docente ordinati per nome.'
-    serializer_class = TeacherResearchGroupsSerializer
-    filter_backends = []
-
-    def get_queryset(self):
-        teacherid = self.kwargs['teacherid']
-
-        return ServiceDocente.getResearchGroups(teacherid)
+# class ApiTeacherResearchGroupsList(ApiEndpointList):
+#     description = 'La funzione restituisce l’elenco ' \
+#                   'dei gruppi di ricerca del docente ordinati per nome.'
+#     serializer_class = TeacherResearchGroupsSerializer
+#     filter_backends = []
+#
+#     def get_queryset(self):
+#         teacherid = self.kwargs['teacherid']
+#
+#         return ServiceDocente.getResearchGroups(teacherid)
 
 
 class ApiResearchGroupsList(ApiEndpointList):
@@ -364,18 +364,18 @@ class ApiBaseResearchLinesList(ApiEndpointList):
         return ServiceDocente.getBaseResearchLines(teacher, department, year)
 
 
-class ApiApplicateResearchLinesList(ApiEndpointList):
+class ApiAppliedResearchLinesList(ApiEndpointList):
     description = 'La funzione restituisce l’elenco delle Linee di' \
                   ' ricerca applicate'
-    serializer_class = ApplicateResearchLinesSerializer
-    filter_backends = [ApiApplicateResearchLinesListFilter]
+    serializer_class = AppliedResearchLinesSerializer
+    filter_backends = [ApiAppliedResearchLinesListFilter]
 
     def get_queryset(self):
         teacher = self.request.query_params.get('teacher')
         department = self.request.query_params.get('department')
         year = self.request.query_params.get('year')
 
-        return ServiceDocente.getApplicateResearchLines(
+        return ServiceDocente.getAppliedResearchLines(
             teacher, department, year)
 
 # ----Docenti----

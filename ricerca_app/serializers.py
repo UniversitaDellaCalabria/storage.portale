@@ -280,41 +280,41 @@ class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
 #         }
 
 
-class TeacherResearchGroupsSerializer(CreateUpdateAbstract):
-    def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query,
-                                 str(self.context['language']).lower()))
-        return data
+# class TeacherResearchGroupsSerializer(CreateUpdateAbstract):
+#     def to_representation(self, instance):
+#         query = instance
+#         data = super().to_representation(instance)
+#         data.update(self.to_dict(query,
+#                                  str(self.context['language']).lower()))
+#         return data
+#
+#     @staticmethod
+#     def to_dict(query,
+#                 req_lang='en'):
+#         return {
+#             'RGroupID': query['ricercadocentegruppo__ricerca_gruppo__id'],
+#             'RGroupName': query['ricercadocentegruppo__ricerca_gruppo__nome'],
+#             'RGroupDescription': query['ricercadocentegruppo__ricerca_gruppo__descrizione'],
+#         }
 
-    @staticmethod
-    def to_dict(query,
-                req_lang='en'):
-        return {
-            'RGroupID': query['ricercadocentegruppo__ricerca_gruppo__id'],
-            'RGroupName': query['ricercadocentegruppo__ricerca_gruppo__nome'],
-            'RGroupDescription': query['ricercadocentegruppo__ricerca_gruppo__descrizione'],
-        }
 
-
-class ResearchGroupsSerializer(CreateUpdateAbstract):
-    def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query,
-                                 str(self.context['language']).lower()))
-        return data
-
-    @staticmethod
-    def to_dict(query,
-                req_lang='en'):
-
-        return {
-            'RGroupID': query['id'],
-            'RGroupName': query['nome'],
-            'RGroupDescription': query['descrizione'],
-        }
+# class ResearchGroupsSerializer(CreateUpdateAbstract):
+#     def to_representation(self, instance):
+#         query = instance
+#         data = super().to_representation(instance)
+#         data.update(self.to_dict(query,
+#                                  str(self.context['language']).lower()))
+#         return data
+#
+#     @staticmethod
+#     def to_dict(query,
+#                 req_lang='en'):
+#
+#         return {
+#             'RGroupID': query['id'],
+#             'RGroupName': query['nome'],
+#             'RGroupDescription': query['descrizione'],
+#         }
 
 
 class AllResearchGroupsSerializer(CreateUpdateAbstract):
@@ -369,20 +369,20 @@ class TeacherResearchLinesSerializer(CreateUpdateAbstract):
                 req_lang='en'):
         if query['Tipologia'] == 'base':
             return {
-                'R&SLineID': query['ricercadocentelineabase__ricerca_linea_base__id'],
-                'R&SLineDescription': query['ricercadocentelineabase__ricerca_linea_base__descrizione'],
-                'R&SLineResults': query['ricercadocentelineabase__ricerca_linea_base__descr_pubblicaz_prog_brevetto'],
-                'R&SLineERC0Id': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
-                'R&SLineERC0Name': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__description'],
+                'RLineID': query['ricercadocentelineabase__ricerca_linea_base__id'],
+                'RLineDescription': query['ricercadocentelineabase__ricerca_linea_base__descrizione'],
+                'RLineResults': query['ricercadocentelineabase__ricerca_linea_base__descr_pubblicaz_prog_brevetto'],
+                'RLineERC0Id': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
+                'RLineERC0Name': query['ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__description'],
             }
         else:
             return {
-                'R&SLineID': query['ricercadocentelineaapplicata__ricerca_linea_applicata__id'],
-                'R&SLineDescription': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descrizione'],
-                'R&SLineResults': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descr_pubblicaz_prog_brevetto'],
-                'R&SLineERC0Id': query[
+                'RLineID': query['ricercadocentelineaapplicata__ricerca_linea_applicata__id'],
+                'RLineDescription': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descrizione'],
+                'RLineResults': query['ricercadocentelineaapplicata__ricerca_linea_applicata__descr_pubblicaz_prog_brevetto'],
+                'RLineERC0Id': query[
                     'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__erc0_cod'],
-                'R&SLineERC0Name': query[
+                'RLineERC0Name': query[
                     'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__description'],
             }
 
@@ -404,12 +404,12 @@ class BaseResearchLinesSerializer(CreateUpdateAbstract):
             teachers = BaseResearchLinesSerializer.to_dict_teachers(
                 query['Teachers'])
         return{
-            'R&SLineID': query['id'],
-            'R&SLineDescription': query['descrizione'],
-            'R&SLineResults': query['descr_pubblicaz_prog_brevetto'],
-            'R&SYear': query['anno'],
-            'R&SLineErc2ID': query['ricerca_erc2_id__cod_erc2'],
-            'R&SLineErc2Name': query['ricerca_erc2_id__descrizione'],
+            'RLineID': query['id'],
+            'RLineDescription': query['descrizione'],
+            'RLineResults': query['descr_pubblicaz_prog_brevetto'],
+            'RYear': query['anno'],
+            'RLineErc2ID': query['ricerca_erc2_id__cod_erc2'],
+            'RLineErc2Name': query['ricerca_erc2_id__descrizione'],
             'Teachers': teachers
         }
 
@@ -429,7 +429,7 @@ class BaseResearchLinesSerializer(CreateUpdateAbstract):
         return result
 
 
-class ApplicateResearchLinesSerializer(CreateUpdateAbstract):
+class AppliedResearchLinesSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -443,15 +443,15 @@ class ApplicateResearchLinesSerializer(CreateUpdateAbstract):
                 req_lang='en'):
         teachers = None
         if query['Teachers'] is not None:
-            teachers = ApplicateResearchLinesSerializer.to_dict_teachers(
+            teachers = AppliedResearchLinesSerializer.to_dict_teachers(
                 query['Teachers'])
         return{
-            'R&SLineID': query['id'],
-            'R&SLineDescription': query['descrizione'],
-            'R&SLineResults': query['descr_pubblicaz_prog_brevetto'],
-            'R&SYear': query['anno'],
-            'R&SLineErc2ID': query['ricerca_aster2_id__ricerca_aster1_id'],
-            'R&SLineErc2Name': query['ricerca_aster2_id__descrizione'],
+            'RLineID': query['id'],
+            'RLineDescription': query['descrizione'],
+            'RLineResults': query['descr_pubblicaz_prog_brevetto'],
+            'RYear': query['anno'],
+            'RLineErc2ID': query['ricerca_aster2_id__ricerca_aster1_id'],
+            'RLineErc2Name': query['ricerca_aster2_id__descrizione'],
             'Teachers': teachers
         }
 
