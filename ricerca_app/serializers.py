@@ -1017,6 +1017,20 @@ class Erc0Serializer(CreateUpdateAbstract):
                 if req_lang == "it" or query['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else query['id_ricerca_erc1__ricerca_erc0_cod__description_en']}
 
 
+# class Erc2Serializer(CreateUpdateAbstract):
+#
+#     def to_representation(self, instance):
+#         query = instance
+#         data = super().to_representation(instance)
+#         data.update(self.to_dict(query, str(self.context['language']).lower()))
+#         return data
+#
+#     @staticmethod
+#     def to_dict(query, req_lang='en'):
+#         return {'CodErc2': query['cod_erc2'],
+#                 'Description': query['descrizione']}
+
+
 class PublicationSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):

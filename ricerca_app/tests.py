@@ -2910,7 +2910,7 @@ class ApiResearchGroupsUnitTest(TestCase):
 
         data = {'teacher': '111112'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'teacher': '111111'}
         res = req.get(url, data=data)
@@ -2981,9 +2981,17 @@ class ApiBaseResearchLineUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 1
 
+        data = {'search': 'reg'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
         data = {'year': 2020}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
+
+        data = {'teacher': '111112', 'department': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
         data = {'teacher': '111112'}
         res = req.get(url, data=data)
@@ -3055,6 +3063,10 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 1
 
+        data = {'search': 'reg'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
         data = {'year': 2020}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
@@ -3064,5 +3076,9 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
         data = {'department': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'teacher': '111112', 'department': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1

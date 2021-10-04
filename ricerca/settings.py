@@ -215,11 +215,11 @@ LABEL_MAPPING = {
         'RGroupID': 'Group ID',
         'RGroupName': 'Group Name',
         'RGroupDescription': 'Group Description',
-        'R&SLineID': 'Research Line ID',
-        'R&SLineDescription': 'Description',
-        'R&SLineResults': 'Results',
-        'R&SLineERC0Id': 'ERC0 ID',
-        'R&SLineERC0Name': 'ERC0 Name',
+        'RLineID': 'Research Line ID',
+        'RLineDescription': 'Description',
+        'RLineResults': 'Results',
+        'RLineERC0Id': 'ERC0 ID',
+        'RLineERC0Name': 'ERC0 Name',
         'DepartmentID': 'Department ID',
         'DepartmentCod': 'Department Code',
         'DoctorateCdsCOD': 'Course of Study Code',
@@ -313,7 +313,9 @@ LABEL_MAPPING = {
         'RLineAster2ID': 'Research Aster 2 ID',
         'RLineAster2Name': 'Research Aster 2 Name',
         'Hours': 'Hours',
-        'Cover': 'Cover'
+        'Cover': 'Cover',
+        'CodErc2': 'Erc2 Cod',
+
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -547,6 +549,7 @@ LABEL_MAPPING = {
         'RLineAster2ID': 'ID Aster2',
         'RLineAster2Name': 'Nome Aster2',
         'Hours': 'Ore',
-        'Cover': 'Peso'
+        'Cover': 'Peso',
+        'CodErc2': 'Codice Erc2',
     }
 }

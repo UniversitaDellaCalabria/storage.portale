@@ -331,10 +331,11 @@ class ApiResearchGroupsList(ApiEndpointList):
 
     def get_queryset(self):
 
+        search = self.request.query_params.get('search')
         teacher = self.request.query_params.get('teacher')
         department = self.request.query_params.get('department')
 
-        return ServiceDocente.getAllResearchGroups(teacher, department)
+        return ServiceDocente.getAllResearchGroups(search, teacher, department)
 
 
 class ApiTeacherResearchLinesList(ApiEndpointList):
@@ -357,11 +358,14 @@ class ApiBaseResearchLinesList(ApiEndpointList):
     filter_backends = [ApiBaseResearchLinesListFilter]
 
     def get_queryset(self):
+
+        search = self.request.query_params.get('search')
         teacher = self.request.query_params.get('teacher')
         department = self.request.query_params.get('department')
         year = self.request.query_params.get('year')
 
-        return ServiceDocente.getBaseResearchLines(teacher, department, year)
+        return ServiceDocente.getBaseResearchLines(
+            search, teacher, department, year)
 
 
 class ApiAppliedResearchLinesList(ApiEndpointList):
@@ -371,12 +375,13 @@ class ApiAppliedResearchLinesList(ApiEndpointList):
     filter_backends = [ApiAppliedResearchLinesListFilter]
 
     def get_queryset(self):
+        search = self.request.query_params.get('search')
         teacher = self.request.query_params.get('teacher')
         department = self.request.query_params.get('department')
         year = self.request.query_params.get('year')
 
         return ServiceDocente.getAppliedResearchLines(
-            teacher, department, year)
+            search, teacher, department, year)
 
 # ----Docenti----
 
@@ -631,6 +636,15 @@ class ApiErc1List(ApiEndpointList):
         laboratory = self.request.query_params.get('laboratory')
 
         return ServiceLaboratorio.getErc1List(laboratory)
+
+# class ApiErc2List(ApiEndpointList):
+#     description = 'La funzione restituisce la lista degli erc2'
+#     serializer_class = Erc2Serializer
+#     filter_backends = []
+#
+#     def get_queryset(self):
+#
+#         return ServiceLaboratorio.getErc2List()
 
 
 class Erc1FilterList(AutoSchema):
