@@ -10,7 +10,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, FunzioniUnitaOrganizzativa, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
-    RicercaLineaApplicata, RicercaDocenteLineaApplicata
+    RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2
 
 
 class ServiceQueryBuilder:
@@ -686,15 +686,30 @@ class ServiceDocente:
     def teachersList(search, regdid, dip, role, cds):
 
         query_search = Q()
+        query_dip = Q()
+        query_roles = Q()
+        query_cds = Q()
+        query_regdid = Q()
 
         if search is not None:
             for k in search.split(" "):
                 q_cognome = Q(cognome__icontains=k)
                 query_search &= q_cognome
 
+        if regdid:
+            query_regdid = Q(didatticacopertura__af__regdid__regdid_id=regdid)
+        if role:
+            roles = role.split(",")
+            query_roles = Q(cd_ruolo__in=roles)
+        if cds:
+            query_cds = Q(didatticacopertura__cds_cod=cds)
+
         query = Personale.objects.filter(query_search,
+                                         query_cds,
+                                         query_regdid,
+                                         query_roles,
                                          didatticacopertura__af__isnull=False,
-                                         flg_cessato=0)\
+                                         flg_cessato=0) \
             .values("matricola",
                     "nome",
                     "middle_name",
@@ -707,23 +722,12 @@ class ServiceDocente:
                     "cv_full_it",
                     "cv_short_it",
                     "cv_full_eng",
-                    "cv_short_eng")\
+                    "cv_short_eng") \
             .order_by('cognome',
                       'nome',
-                      'middle_name')\
+                      'middle_name') \
             .distinct()
 
-        if regdid:
-            query = query.filter(
-                didatticacopertura__af__regdid__regdid_id=regdid)
-
-        if role:
-            roles = role.split(",")
-            query_roles = Q(cd_ruolo__in=roles)
-            query = query.filter(query_roles)
-        if cds:
-            query = query.filter(
-                didatticacopertura__cds_cod=cds)
         if dip:
             department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
                 "dip_id", "dip_cod", "dip_des_it", "dip_des_eng").first()
@@ -1585,17 +1589,14 @@ class ServiceLaboratorio:
 
         return query
 
-    # @staticmethod
-    # def getErc2List():
-    #     query = ServiceLaboratorio.getErc1List(None)
-    #     print(query)
-    #
-    #     for q in query:
-    #         q['Erc2'] = []
-    #
-    #         q['Erc2'] = RicercaErc2.objects.filter(
-    #             ricerca_erc1_id=q['Erc1'['id_ricerca_erc1__id']]).values(
-    #             'cod_erc2',
-    #             'descrizione').distinct()
-    #
-    #     return query
+    @staticmethod
+    def getErc2List():
+        query = ServiceLaboratorio.getErc1List(None)
+
+        for q in query:
+            for i in range(len(q['Erc1'])):
+                q['Erc1'][i]['Erc2'] = RicercaErc2.objects.filter(
+                    ricerca_erc1_id=q['Erc1'][i]['id_ricerca_erc1__id']).values(
+                    'cod_erc2',
+                    'descrizione').distinct()
+        return query

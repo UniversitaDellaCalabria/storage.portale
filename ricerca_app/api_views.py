@@ -637,14 +637,14 @@ class ApiErc1List(ApiEndpointList):
 
         return ServiceLaboratorio.getErc1List(laboratory)
 
-# class ApiErc2List(ApiEndpointList):
-#     description = 'La funzione restituisce la lista degli erc2'
-#     serializer_class = Erc2Serializer
-#     filter_backends = []
-#
-#     def get_queryset(self):
-#
-#         return ServiceLaboratorio.getErc2List()
+class ApiErc2List(ApiEndpointList):
+    description = 'La funzione restituisce la lista degli erc2'
+    serializer_class = Erc2Serializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceLaboratorio.getErc2List()
 
 
 class Erc1FilterList(AutoSchema):

@@ -2524,6 +2524,56 @@ class ApiErc1ListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
+class ApiErc2ListUnitTest(TestCase):
+
+    def test_apiLaboratoriesAreasList(self):
+        req = Client()
+
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+            'description_en': 'IT',
+        })
+        erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+        l1 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 1,
+            'nome_laboratorio': 'Informatica',
+            'ambito': 'Tecnico',
+            'dipartimento_riferimento': 'Informatica',
+            'sede_dimensione': "290",
+            'responsabile_scientifico': 'Mungari Simone',
+        })
+
+        LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
+            'id': 1,
+            'id_laboratorio_dati': l1,
+            'id_ricerca_erc1': erc1,
+        })
+        RicercaErc2UnitTest.create_ricercaErc2(**{
+            'cod_erc2':'cod_erc2',
+            'descrizione': 'Sicurezza Informatica',
+            'ricerca_erc1': erc1
+
+        })
+        url = reverse('ricerca:erc2list')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'laboratory': '1'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        assert len(res.json()['results']) == 1
+
 class ApiErc0ListUnitTest(TestCase):
 
     def test_apiLaboratoriesAreasList(self):

@@ -237,9 +237,9 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiErc0List.as_view(),
                         name='erc0list'),
 
-    # urlpatterns += path('{}/erc2list/'.format(base_url),
-    #                     api_views.ApiErc2List.as_view(),
-    #                     name='erc2list'),
+    urlpatterns += path('{}/erc2list/'.format(base_url),
+                        api_views.ApiErc2List.as_view(),
+                        name='erc2list'),
 
     urlpatterns += path('{}/publicationscommunitytypes/'.format(base_url),
                         api_views.ApiPublicationsCommunityTypesList.as_view(),

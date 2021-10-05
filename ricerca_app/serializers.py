@@ -1017,18 +1017,47 @@ class Erc0Serializer(CreateUpdateAbstract):
                 if req_lang == "it" or query['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else query['id_ricerca_erc1__ricerca_erc0_cod__description_en']}
 
 
-# class Erc2Serializer(CreateUpdateAbstract):
-#
-#     def to_representation(self, instance):
-#         query = instance
-#         data = super().to_representation(instance)
-#         data.update(self.to_dict(query, str(self.context['language']).lower()))
-#         return data
-#
-#     @staticmethod
-#     def to_dict(query, req_lang='en'):
-#         return {'CodErc2': query['cod_erc2'],
-#                 'Description': query['descrizione']}
+class Erc2Serializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        erc1 = Erc2Serializer.to_dict_erc1_list(query['Erc1'], req_lang)
+
+        return {
+            'IdErc0': query['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
+            'Description': query['id_ricerca_erc1__ricerca_erc0_cod__description']
+            if req_lang == "it" or query['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else query[
+                'id_ricerca_erc1__ricerca_erc0_cod__description_en'],
+            'Erc1List': erc1,
+        }
+
+    @staticmethod
+    def to_dict_erc1_list(query, req_lang="en"):
+        result = []
+        for q in query:
+            result.append({
+                'IdErc1': q['id_ricerca_erc1__cod_erc1'],
+                'Description': q['id_ricerca_erc1__descrizione'],
+                'Erc2List': Erc2Serializer.to_dict_erc2_list(q['Erc2'], req_lang),
+            })
+        return result
+
+
+    @staticmethod
+    def to_dict_erc2_list(query, req_lang="en"):
+        result = []
+        for q in query:
+            result.append({
+                'CodErc2': q['cod_erc2'],
+                 'Description': q['descrizione'],
+            })
+        return result
 
 
 class PublicationSerializer(CreateUpdateAbstract):
