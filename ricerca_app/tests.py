@@ -65,8 +65,8 @@ class ApiCdSListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
-        # param: courseclassid
-        data = {'courseclassid': '1'}
+        # param: courseclasscod
+        data = {'courseclasscod': '1'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -122,7 +122,7 @@ class ApiCdSListUnitTest(TestCase):
                 'departmentname': 'math and computer science',
                 'departmentcod': 1,
                 'courseclassname': 'laurea in informatica',
-                'courseclassid': '1',
+                'courseclasscod': '1',
                 'coursetype': 'L',
                 'lang': 'en',
                 }
@@ -2181,6 +2181,12 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'ricerca_erc0_cod': erc0,
         })
 
+        LaboratorioPersonaleRicercaUnitTest.create_laboratorioPersonaleRicerca(**{
+            'id': 1,
+            'id_laboratorio_dati': lab2,
+            'matricola_personale_ricerca': p2,
+        })
+
         lab1 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
             'id': 3,
             'matricola_referente_compilazione': p1,
@@ -2188,6 +2194,13 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'id_dipartimento_riferimento': dip2,
             'ambito': 'Tecnologico',
             'matricola_responsabile_scientifico': p2,
+        })
+
+        LaboratorioPersonaleTecnicoUnitTest.create_laboratorioPersonaleTecnico(**{
+            'id': 1,
+            'id_laboratorio_dati': lab1,
+            'matricola_personale_tecnico': p1,
+            'ruolo': 'R1'
         })
 
         LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
@@ -2213,6 +2226,16 @@ class ApiLaboratoriesListUnitTest(TestCase):
         assert res.json()['results'][0]['LaboratoryId'] == 1
         assert res.json()[
             'results'][0]['ScientificDirector'] == 'Mungari Simone'
+
+        data = {'person': '111111'}
+        res = req.get(url, data=data)
+        print(res.json())
+        assert len(res.json()['results']) == 1
+
+        data = {'person': '111112'}
+        res = req.get(url, data=data)
+        print(res.json())
+        assert len(res.json()['results']) == 1
 
         data = {'department': '2', 'area': 'Scientifico'}
         res = req.get(url, data=data)
@@ -2554,7 +2577,7 @@ class ApiErc2ListUnitTest(TestCase):
             'id_ricerca_erc1': erc1,
         })
         RicercaErc2UnitTest.create_ricercaErc2(**{
-            'cod_erc2':'cod_erc2',
+            'cod_erc2': 'cod_erc2',
             'descrizione': 'Sicurezza Informatica',
             'ricerca_erc1': erc1
 
@@ -2573,6 +2596,7 @@ class ApiErc2ListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
         assert len(res.json()['results']) == 1
+
 
 class ApiErc0ListUnitTest(TestCase):
 

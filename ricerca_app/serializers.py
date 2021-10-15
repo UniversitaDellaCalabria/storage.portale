@@ -41,8 +41,10 @@ class CdSSerializer(CreateUpdateAbstract):
             'DepartmentName': query['dip__dip_des_it'] if req_lang == 'it' or query['dip__dip_des_eng'] is None else query['dip__dip_des_eng'],
             'CourseType': query['tipo_corso_cod'],
             'CourseTypeDescription': query['tipo_corso_des'],
-            'CourseClassId': query['cla_miur_cod'],
+            'CourseClassCod': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
+            'CourseInterClassCod': query['intercla_miur_cod'],
+            'CourseInterClassDes': query['intercla_miur_des'],
             'CdSLanguage': langs,
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
@@ -80,7 +82,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'DepartmentName': query['dip__dip_des_it'] if req_lang == 'it' or query['dip__dip_des_eng'] is None else query['dip__dip_des_eng'],
             'CourseType': query['tipo_corso_cod'],
             'CourseTypeDescription': query['tipo_corso_des'],
-            'CourseClassId': query['cla_miur_cod'],
+            'CourseClassCod': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
             'CdSLanguage': langs,
             'CdSDuration': query['durata_anni'],
@@ -930,6 +932,11 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         extra_departments = LaboratoriesSerializer.to_dict_extra_departments(
             query['ExtraDepartments'], req_lang)
+        research_personnel = LaboratoriesSerializer.to_dict_research_personnel(
+            query['ResearchPersonnel'])
+        tech_personnel = LaboratoriesSerializer.to_dict_tech_personnel(
+            query['TechPersonnel'])
+
         return {
             'LaboratoryId': query['id'],
             'LaboratoryName': query['nome_laboratorio'],
@@ -942,6 +949,8 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             'Dimension': query['sede_dimensione'],
             'ScientificDirector': query['responsabile_scientifico'],
             'ScientificDirectorId': query['matricola_responsabile_scientifico'],
+            'LaboratoryResearchPersonnel': research_personnel,
+            'LaboratoryTechPersonnel': tech_personnel,
         }
 
     @staticmethod
@@ -950,6 +959,39 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
         for q in query:
             result.append({'DepartmentID': q['id_dip__dip_cod'], 'DepartmentName': q["id_dip__dip_des_it"]
                           if lang == "it" or q['id_dip__dip_des_eng'] is None else q["id_dip__dip_des_eng"], })
+        return result
+
+    @staticmethod
+    def to_dict_research_personnel(query):
+        result = []
+        for q in query:
+            if q['matricola_personale_ricerca__matricola'] is None:
+                full_name = None
+            else:
+                full_name = q['matricola_personale_ricerca__cognome'] + " " + q['matricola_personale_ricerca__nome'] + \
+                    (" " + q['matricola_personale_ricerca__middle_name']
+                     if q['matricola_personale_ricerca__middle_name'] is not None else "")
+            result.append({
+                'ResearchPersonnelID': q['matricola_personale_ricerca__matricola'],
+                'ResearchPersonnelName': full_name,
+            })
+        return result
+
+    @staticmethod
+    def to_dict_tech_personnel(query):
+        result = []
+        for q in query:
+            if q['matricola_personale_tecnico__matricola'] is None:
+                full_name = None
+            else:
+                full_name = q['matricola_personale_tecnico__cognome'] + " " + q['matricola_personale_tecnico__nome'] + \
+                    (" " + q['matricola_personale_tecnico__middle_name']
+                     if q['matricola_personale_tecnico__middle_name'] is not None else "")
+            result.append({
+                'TechPersonnelID': q['matricola_personale_tecnico__matricola'],
+                'TechPersonnelName': full_name,
+                'TechPersonnelRole': q['ruolo'],
+            })
         return result
 
 
@@ -1048,14 +1090,13 @@ class Erc2Serializer(CreateUpdateAbstract):
             })
         return result
 
-
     @staticmethod
     def to_dict_erc2_list(query, req_lang="en"):
         result = []
         for q in query:
             result.append({
                 'CodErc2': q['cod_erc2'],
-                 'Description': q['descrizione'],
+                'Description': q['descrizione'],
             })
         return result
 

@@ -387,7 +387,7 @@ class ApiAppliedResearchLinesList(ApiEndpointList):
 
 
 class ApiTeachersList(ApiEndpointList):
-    description = 'Restituisce un elenco di Docenti con un set minimo di ' \
+    description = 'Restituisce un elenco di Docenti che hanno una copertura attiva in ateneo, con un set minimo di ' \
                   'informazioni identificative: Nome, Ruolo, ' \
                   'Settore scientifico disciplinare, …'
     serializer_class = TeachersSerializer
@@ -403,6 +403,24 @@ class ApiTeachersList(ApiEndpointList):
 
         return ServiceDocente.teachersList(
             search, regdidid, department, role, cds)
+
+# class ApiCopertureList(ApiEndpointList):
+#     description = 'Restituisce un elenco di Docenti con il fl_docente=1 e fl_cessato=0'\
+#             'con un set minimo di informazioni identificative: Nome, Ruolo, ' \
+#                   'Settore scientifico disciplinare, …'
+#     serializer_class = TeachersSerializer
+#     filter_backends = [ApiTeachersListFilter]
+#
+#     def get_queryset(self):
+#
+#         search = self.request.query_params.get('search')
+#         regdidid = self.request.query_params.get('regdid')
+#         department = self.request.query_params.get('department')
+#         role = self.request.query_params.get('role')
+#         cds = self.request.query_params.get('cds')
+#
+#         return ServiceDocente.copertureList(
+#             search, regdidid, department, role, cds)
 
 
 class ApiTeacherStudyActivitiesList(ApiEndpointList):
@@ -612,9 +630,10 @@ class ApiLaboratoriesList(ApiEndpointList):
         department = self.request.query_params.get('department')
         erc1 = self.request.query_params.get('erc1')
         teacher = self.request.query_params.get('teacher')
+        person = self.request.query_params.get('person')
 
         return ServiceLaboratorio.getLaboratoriesList(
-            self.language, search, area, department, erc1, teacher)
+            self.language, search, area, department, erc1, teacher, person)
 
 
 class ApiLaboratoriesAreasList(ApiEndpointList):
@@ -636,6 +655,7 @@ class ApiErc1List(ApiEndpointList):
         laboratory = self.request.query_params.get('laboratory')
 
         return ServiceLaboratorio.getErc1List(laboratory)
+
 
 class ApiErc2List(ApiEndpointList):
     description = 'La funzione restituisce la lista degli erc2'

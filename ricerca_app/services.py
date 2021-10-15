@@ -26,7 +26,7 @@ class ServiceDidatticaCds:
     @staticmethod
     def cdslist(language, query_params):
         didatticacds_params_to_query_field = {
-            'courseclassid': 'cla_miur_cod',
+            'courseclasscod': 'cla_miur_cod',
             'courseclassname': 'cla_miur_des__icontains',
             'cdscod': 'cds_cod',
             # 'courseclassgroup': ... unspecified atm
@@ -60,6 +60,7 @@ class ServiceDidatticaCds:
             didatticacdslingua_params_to_query_field, query_params)
 
         q4 = Q()
+
         if search is None:
             q4 = Q(cds_id__isnull=False)
         else:
@@ -71,8 +72,8 @@ class ServiceDidatticaCds:
                 q4 |= q
 
         items = DidatticaCds.objects \
-            .filter(q4, q1, q2, q3,
-                    didatticacdslingua__lin_did_ord_id__isnull=False)
+            .filter(q4, q1, q2, q3)
+        # didatticacdslingua__lin_did_ord_id__isnull=False
 
         if 'academicyear' not in query_params:
             # last_active_year = DidatticaCds.objects.filter(
@@ -102,6 +103,8 @@ class ServiceDidatticaCds:
             'tipo_corso_des',
             'cla_miur_cod',
             'cla_miur_des',
+            'intercla_miur_cod',
+            'intercla_miur_des',
             'durata_anni',
             'valore_min',
             'codicione',
@@ -686,7 +689,6 @@ class ServiceDocente:
     def teachersList(search, regdid, dip, role, cds):
 
         query_search = Q()
-        query_dip = Q()
         query_roles = Q()
         query_cds = Q()
         query_regdid = Q()
@@ -703,6 +705,8 @@ class ServiceDocente:
             query_roles = Q(cd_ruolo__in=roles)
         if cds:
             query_cds = Q(didatticacopertura__cds_cod=cds)
+
+        # last_academic_year = ServiceDidatticaCds.getAcademicYears()[0]['aa_reg_did']
 
         query = Personale.objects.filter(query_search,
                                          query_cds,
@@ -767,6 +771,92 @@ class ServiceDocente:
                     q["dip_des_eng"] = None
 
         return query
+
+    # @staticmethod
+    # def copertureList(search, regdid, dip, role, cds):
+    #
+    #     query_search = Q()
+    #     query_dip = Q()
+    #     query_roles = Q()
+    #     query_cds = Q()
+    #     query_regdid = Q()
+    #
+    #     if search is not None:
+    #         for k in search.split(" "):
+    #             q_cognome = Q(cognome__icontains=k)
+    #             query_search &= q_cognome
+    #
+    #     if regdid:
+    #         query_regdid = Q(didatticacopertura__af__regdid__regdid_id=regdid)
+    #     if role:
+    #         roles = role.split(",")
+    #         query_roles = Q(cd_ruolo__in=roles)
+    #     if cds:
+    #         query_cds = Q(didatticacopertura__cds_cod=cds)
+    #
+    #     query = Personale.objects.filter(query_search,
+    #                                      query_cds,
+    #                                      query_regdid,
+    #                                      query_roles,
+    #                                      didatticacopertura__af__isnull=False,
+    #                                      flg_cessato=0) \
+    #         .values("matricola",
+    #                 "nome",
+    #                 "middle_name",
+    #                 "cognome",
+    #                 "cd_ruolo",
+    #                 "ds_ruolo_locale",
+    #                 "cd_ssd",
+    #                 "aff_org",
+    #                 "ds_ssd",
+    #                 "cv_full_it",
+    #                 "cv_short_it",
+    #                 "cv_full_eng",
+    #                 "cv_short_eng") \
+    #         .order_by('cognome',
+    #                   'nome',
+    #                   'middle_name') \
+    #         .distinct()
+    #
+    #     if dip:
+    #         department = DidatticaDipartimento.objects.filter(dip_cod=dip).values(
+    #             "dip_id", "dip_cod", "dip_des_it", "dip_des_eng").first()
+    #         if not department:
+    #             return None
+    #         query = query.filter(aff_org=department["dip_cod"])
+    #         query = list(query)
+    #         for q in query:
+    #             q["dip_id"] = department['dip_id']
+    #             q["dip_cod"] = department['dip_cod']
+    #             q["dip_des_it"] = department['dip_des_it']
+    #             q["dip_des_eng"] = department["dip_des_eng"]
+    #
+    #     else:
+    #         dip_cods = query.values_list("aff_org", flat=True).distinct()
+    #         dip_cods = list(dip_cods)
+    #
+    #         departments = DidatticaDipartimento.objects.filter(
+    #             dip_cod__in=dip_cods).values(
+    #             "dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+    #
+    #         for q in query:
+    #             found = False
+    #             for dep in departments:
+    #                 if dep['dip_cod'] == q['aff_org']:
+    #                     q["dip_id"] = dep['dip_id']
+    #                     q["dip_cod"] = dep['dip_cod']
+    #                     q["dip_des_it"] = dep['dip_des_it']
+    #                     q["dip_des_eng"] = dep["dip_des_eng"]
+    #                     found = True
+    #                     break
+    #
+    #             if not found:
+    #                 q["dip_id"] = None
+    #                 q["dip_cod"] = None
+    #                 q["dip_des_it"] = None
+    #                 q["dip_des_eng"] = None
+    #
+    #     return query
 
     @staticmethod
     def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo):
@@ -1419,7 +1509,14 @@ class ServicePersonale:
 class ServiceLaboratorio:
 
     @staticmethod
-    def getLaboratoriesList(language, search, ambito, dip, erc1, teacher):
+    def getLaboratoriesList(
+            language,
+            search,
+            ambito,
+            dip,
+            erc1,
+            teacher,
+            person):
         query_search = Q()
         query_ambito = Q()
         query_dip = Q()
@@ -1459,6 +1556,22 @@ class ServiceLaboratorio:
         ).distinct()
 
         for q in query:
+            personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
+                id_laboratorio_dati__id=q['id']).values(
+                "matricola_personale_ricerca__matricola",
+                "matricola_personale_ricerca__nome",
+                "matricola_personale_ricerca__cognome",
+                "matricola_personale_ricerca__middle_name")
+            personale_tecnico = LaboratorioPersonaleTecnico.objects.filter(
+                id_laboratorio_dati__id=q['id']).values(
+                "matricola_personale_tecnico__matricola",
+                "matricola_personale_tecnico__nome",
+                "matricola_personale_tecnico__cognome",
+                "matricola_personale_tecnico__middle_name",
+                "ruolo")
+
+            q['TechPersonnel'] = personale_tecnico
+            q['ResearchPersonnel'] = personale_ricerca
             if q['laboratorio_interdipartimentale'] == 'SI':
                 other_dep = LaboratorioAltriDipartimenti.objects.filter(
                     id_laboratorio_dati=q['id']).values(
@@ -1469,6 +1582,16 @@ class ServiceLaboratorio:
                     "id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
             else:
                 q['ExtraDepartments'] = []
+        if person:
+            res = []
+            for q in query:
+                for i in q['TechPersonnel']:
+                    if person == i['matricola_personale_tecnico__matricola']:
+                        res.append(q)
+                for t in q['ResearchPersonnel']:
+                    if person == t['matricola_personale_ricerca__matricola']:
+                        res.append(q)
+            return res
 
         return query
 
@@ -1597,6 +1720,5 @@ class ServiceLaboratorio:
             for i in range(len(q['Erc1'])):
                 q['Erc1'][i]['Erc2'] = RicercaErc2.objects.filter(
                     ricerca_erc1_id=q['Erc1'][i]['id_ricerca_erc1__id']).values(
-                    'cod_erc2',
-                    'descrizione').distinct()
+                    'cod_erc2', 'descrizione').distinct()
         return query
