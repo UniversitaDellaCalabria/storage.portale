@@ -299,7 +299,7 @@ class ApiDoctoratesListFilter(GenericApiFilter):
             'required': False,
             'schema': {
                 'type': 'string',
-                "example": ["GEN"],
+                "example": "GEN",
             },
         },
         {
@@ -371,9 +371,7 @@ class ApiLaboratoriesListFilter(GenericApiFilter):
                       'description': 'Ambito di un laboratorio',
                       'required': False,
                       'schema': {'type': 'string',
-                                 "example": ["Informatico/Multimediale",
-                                             "Scientifico/Tecnologico",
-                                             "Sezione/Centro"],
+                                 "example": "Informatico/Multimediale",
                                  },
                       },
                      {'name': 'department',
