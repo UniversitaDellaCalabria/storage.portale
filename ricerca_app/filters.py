@@ -11,9 +11,7 @@ class GenericApiFilter(filters.SearchFilter):
                     'required': search_param.get('required', False),
                     'in': 'query',
                     'description': search_param['description'],
-                    'schema': {
-                        'type': search_param.get('type', 'string'),
-                    },
+                    'schema': search_param.get('schema', {'type': 'string'}),
                 }
             )
         params.append(
@@ -24,7 +22,7 @@ class GenericApiFilter(filters.SearchFilter):
                 'description': 'language',
                 'schema': {
                     'type': 'string',
-                    "example": ["en"],
+                    "example": "en",
                 },
             }
         )
@@ -39,7 +37,10 @@ class ApiCdsListFilter(GenericApiFilter):
             'name': 'academicyear',
             'description': 'Cds erogati in uno specifico anno accademico',
             'required': False,
-            'type': 'int'
+            'schema':{
+                    'type': 'integer',
+                    'format': 'int32',
+                      }
         },
         {
             'name': 'departmentcod',
@@ -82,7 +83,7 @@ class ApiCdsListFilter(GenericApiFilter):
             'description': 'Titolo congiunto',
             'required': False,
             'schema': {
-                    'type': 'string',
+                    'type': 'array',
                     "example": ["D", "N", "S"],
             },
         },
@@ -90,8 +91,10 @@ class ApiCdsListFilter(GenericApiFilter):
             'name': 'regdid',
             'description': 'Id regolamento didattico',
             'required': False,
-            'type': 'int'
-        },
+            'schema':{
+                    'type': 'integer',
+                    'format': 'int32',
+                      }},
         {
             'name': 'cdslanguage',
             'description': 'Lingua del corso di studi',
@@ -136,8 +139,10 @@ class ApiTeachersListFilter(GenericApiFilter):
             'name': 'regdid',
             'description': 'Id regolamento didattico',
             'required': False,
-            'type': 'int'
-        },
+            'schema':{
+                    'type': 'integer',
+                    'format': 'int32',
+                      }        },
         {
             'name': 'cds',
             'description': 'Codice del corso di studi',
@@ -177,8 +182,10 @@ class ApiBaseResearchLinesListFilter(GenericApiFilter):
             'name': 'year',
             'description': 'Anno',
             'required': True,
-            'type': 'int'
-        },
+            'schema':{
+                    'type': 'integer',
+                    'format': 'int32',
+                      }   },
     ]
 
 
@@ -200,7 +207,10 @@ class ApiAppliedResearchLinesListFilter(GenericApiFilter):
             'name': 'year',
             'description': 'Anno',
             'required': True,
-            'type': 'int'
+            'schema':{
+                    'type': 'integer',
+                    'format': 'int32',
+                      }
         },
     ]
 
@@ -209,15 +219,27 @@ class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
     search_params = [{'name': 'year',
                       'description': 'Attività formative erogate in uno specifico anno',
                       'required': False,
-                      'type': 'int'},
+                      'schema':{
+                    'type': 'integer',
+                    'format': 'int32',
+                                }
+                      },
                      {'name': 'yearFrom',
                       'description': 'Attività formative erogate in un anno maggiore uguale a yearFrom',
                       'required': False,
-                      'type': 'int'},
+                      'schema': {
+                          'type': 'integer',
+                          'format': 'int32',
+                                 }
+                      },
                      {'name': 'yearTo',
                       'description': 'Attività formative erogate in un anno minore uguale a yearTo',
                       'required': False,
-                      'type': 'int'},
+                      'schema':{
+                            'type': 'integer',
+                            'format': 'int32',
+                                }
+                      },
                      ]
 
 
@@ -227,26 +249,38 @@ class ApiDoctoratesListFilter(GenericApiFilter):
             'name': 'regdid',
             'description': 'Id regolamento didattico dottorato',
             'required': False,
-            'type': 'int'
+            'schema': {
+                          'type': 'integer',
+                          'format': 'int32',
+                        }
         },
         {
             'name': 'year',
             'description': 'Regolamento didattico dottorato di uno specifico anno accademico',
             'required': False,
-            'type': 'int'
-        },
+            'schema': {
+                          'type': 'integer',
+                          'format': 'int32',
+                    }
+            },
         {
             'name': 'yearFrom',
             'description': 'Regolamento didattico dottorato di uno specifico anno accademico maggiore uguale a yearTo',
             'required': False,
-            'type': 'int'
-        },
+            'schema': {
+                          'type': 'integer',
+                          'format': 'int32',
+                    }
+            },
         {
             'name': 'yearTo',
             'description': 'Regolamento didattico dottorato di uno specifico anno accademico minore uguale a yearTo',
             'required': False,
-            'type': 'int'
-        },
+            'schema': {
+                          'type': 'integer',
+                          'format': 'int32',
+                    }
+            },
         {
             'name': 'departmentcod',
             'description': 'Codice di un dipartimento',
@@ -272,7 +306,10 @@ class ApiDoctoratesListFilter(GenericApiFilter):
             'name': 'cycle',
             'description': 'Numero ciclo del dottorato',
             'required': False,
-            'type': 'int'
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+                    }
         },
     ]
 
@@ -377,7 +414,10 @@ class ApiPublicationsListFilter(GenericApiFilter):
             'name': 'year',
             'description': 'Anno',
             'required': False,
-            'type': 'int'
+            'schema': {
+                          'type': 'integer',
+                          'format': 'int32',
+                    },
         },
         {
             'name': 'type',

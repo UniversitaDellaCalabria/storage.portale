@@ -147,6 +147,25 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     #                     api_views.ApiCopertureList.as_view(),
     #                     name='coperturelist'),
 
+    # urlpatterns += path(
+    #     '{}/coperture/<str:teacherid>/studyactivities/'.format(base_url),
+    #     api_views.ApiCopertureStudyActivitiesList.as_view(),
+    #     name='teacherstudyactivities'),
+    #
+    # urlpatterns += path('{}/coperture/<str:teacherid>/'.format(base_url),
+    #                     api_views.ApiCopertureDetail.as_view(),
+    #                     name='teacherinfo'),
+    #
+    # urlpatterns += path('{}/coperture/<str:teacherid>/publications/'.format(base_url),
+    #                     api_views.ApiCoperturePublicationsList.as_view(),
+    #                     name='publications'),
+    #
+    # urlpatterns += path(
+    #     '{}/coperture/<str:teacherid>/publications/<str:publicationid>/'.format(base_url),
+    #     api_views.ApiCoperturePublicationDetail.as_view(),
+    #     name='publicationdetail'),
+    #
+
     urlpatterns += path(
         '{}/teachers/<str:teacherid>/studyactivities/'.format(base_url),
         api_views.ApiTeacherStudyActivitiesList.as_view(),
