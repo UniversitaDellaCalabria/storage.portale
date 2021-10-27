@@ -104,7 +104,7 @@ class ApiEndpointListSupport(ApiEndpointList):
 
 # ----CdS----
 
-class ApiStatus(generics.GenericAPIView):
+class ApiStatus(APIView):
     description = 'Restituisce lo stato( health check API ) '
 
 
