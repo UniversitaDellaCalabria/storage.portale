@@ -3,7 +3,6 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
-from rest_framework.views import APIView
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
@@ -11,7 +10,6 @@ from .serializers import *
 from .services import *
 from .pagination import UnicalStorageApiPaginationList
 
-from django.http import HttpResponse
 
 # permissions.IsAuthenticatedOrReadOnly
 # allow authenticated users to perform any request. Requests for
@@ -415,23 +413,24 @@ class ApiTeachersList(ApiEndpointList):
         return ServiceDocente.teachersList(
             search, regdidid, department, role, cds)
 
-# class ApiCopertureList(ApiEndpointList):
-#     description = 'Restituisce un elenco di Docenti con il fl_docente=1 e fl_cessato=0'\
-#             'con un set minimo di informazioni identificative: Nome, Ruolo, ' \
-#                   'Settore scientifico disciplinare, …'
-#     serializer_class = TeachersSerializer
-#     filter_backends = [ApiTeachersListFilter]
-#
-#     def get_queryset(self):
-#
-#         search = self.request.query_params.get('search')
-#         regdidid = self.request.query_params.get('regdid')
-#         department = self.request.query_params.get('department')
-#         role = self.request.query_params.get('role')
-#         cds = self.request.query_params.get('cds')
-#
-#         return ServiceDocente.copertureList(
-#             search, regdidid, department, role, cds)
+
+class ApiCopertureList(ApiEndpointList):
+    description = 'Restituisce un elenco di Docenti con il fl_docente=1 e fl_cessato=0'\
+        'con un set minimo di informazioni identificative: Nome, Ruolo, ' \
+                  'Settore scientifico disciplinare, …'
+    serializer_class = TeachersSerializer
+    filter_backends = [ApiTeachersListFilter]
+
+    def get_queryset(self):
+
+        search = self.request.query_params.get('search')
+        regdidid = self.request.query_params.get('regdid')
+        department = self.request.query_params.get('department')
+        role = self.request.query_params.get('role')
+        cds = self.request.query_params.get('cds')
+
+        return ServiceDocente.copertureList(
+            search, regdidid, department, role, cds)
 
 
 class ApiTeacherStudyActivitiesList(ApiEndpointList):

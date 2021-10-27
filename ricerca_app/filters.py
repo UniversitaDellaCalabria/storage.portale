@@ -37,7 +37,7 @@ class ApiCdsListFilter(GenericApiFilter):
             'name': 'academicyear',
             'description': 'Cds erogati in uno specifico anno accademico',
             'required': False,
-            'schema':{
+            'schema': {
                     'type': 'integer',
                     'format': 'int32',
                       }
@@ -91,10 +91,11 @@ class ApiCdsListFilter(GenericApiFilter):
             'name': 'regdid',
             'description': 'Id regolamento didattico',
             'required': False,
-            'schema':{
+            'schema': {
                     'type': 'integer',
                     'format': 'int32',
-                      }},
+                      }
+        },
         {
             'name': 'cdslanguage',
             'description': 'Lingua del corso di studi',
@@ -139,10 +140,11 @@ class ApiTeachersListFilter(GenericApiFilter):
             'name': 'regdid',
             'description': 'Id regolamento didattico',
             'required': False,
-            'schema':{
+            'schema': {
                     'type': 'integer',
                     'format': 'int32',
-                      }        },
+                    }
+        },
         {
             'name': 'cds',
             'description': 'Codice del corso di studi',
@@ -182,10 +184,11 @@ class ApiBaseResearchLinesListFilter(GenericApiFilter):
             'name': 'year',
             'description': 'Anno',
             'required': True,
-            'schema':{
+            'schema': {
                     'type': 'integer',
                     'format': 'int32',
-                      }   },
+                      }
+        },
     ]
 
 
@@ -207,7 +210,7 @@ class ApiAppliedResearchLinesListFilter(GenericApiFilter):
             'name': 'year',
             'description': 'Anno',
             'required': True,
-            'schema':{
+            'schema': {
                     'type': 'integer',
                     'format': 'int32',
                       }
@@ -219,9 +222,9 @@ class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
     search_params = [{'name': 'year',
                       'description': 'Attività formative erogate in uno specifico anno',
                       'required': False,
-                      'schema':{
-                    'type': 'integer',
-                    'format': 'int32',
+                      'schema': {
+                            'type': 'integer',
+                            'format': 'int32',
                                 }
                       },
                      {'name': 'yearFrom',
@@ -235,7 +238,7 @@ class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
                      {'name': 'yearTo',
                       'description': 'Attività formative erogate in un anno minore uguale a yearTo',
                       'required': False,
-                      'schema':{
+                      'schema': {
                             'type': 'integer',
                             'format': 'int32',
                                 }

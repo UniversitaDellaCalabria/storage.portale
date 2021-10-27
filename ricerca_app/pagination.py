@@ -6,16 +6,15 @@ from ricerca_app.utils import encode_labels
 from django.utils.encoding import force_str
 
 
-
 class UnicalStorageApiPaginationList(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 250
-    
+
     def url_refactor(self, url):
         pattern = re.compile(r"https?://")
         return pattern.sub('//', url) if url else None
-    
+
     def get_paginated_response(self, data):
         return Response({
             'next':  self.url_refactor(self.get_next_link()),
@@ -90,4 +89,3 @@ class UnicalStorageApiPaginationList(PageNumberPagination):
                 },
             )
         return parameters
-

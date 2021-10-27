@@ -2229,12 +2229,10 @@ class ApiLaboratoriesListUnitTest(TestCase):
 
         data = {'person': '111111'}
         res = req.get(url, data=data)
-        print(res.json())
         assert len(res.json()['results']) == 1
 
         data = {'person': '111112'}
         res = req.get(url, data=data)
-        print(res.json())
         assert len(res.json()['results']) == 1
 
         data = {'department': '2', 'area': 'Scientifico'}
@@ -3157,3 +3155,138 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
+
+class ApiCopertureListUnitTest(TestCase):
+
+    def test_apicoperturelistunittest(self):
+        req = Client()
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 1,
+        })
+        doc2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Franco',
+            'middle_name': 'Luigi',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 2,
+            'matricola': '111111',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 2,
+            'cv_full_it': 'AAA',
+            'cv_short_it': 'A',
+            'cv_full_eng': 'BBB',
+            'cv_short_eng': 'B',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 3,
+            'nome': 'Pippo',
+            'cognome': 'Inzaghi',
+            'cd_ruolo': 'PO',
+            'id_ab': 3,
+            'matricola': '111113',
+            'fl_docente': 1,
+            'flg_cessato': 1,
+            'aff_org': 1,
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 4,
+            'nome': 'Zlatan',
+            'cognome': 'Ibrahimovic',
+            'cd_ruolo': 'PO',
+            'id_ab': 4,
+            'matricola': '111114',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'aff_org': 42,
+        })
+
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': 1,
+            'dip_des_it': "Matematica e Informatica",
+            'dip_des_eng': "Math and Computer Science",
+        })
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+        regdid2 = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 2,
+        })
+        course1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 1,
+            'des': 'matematica',
+            'af_gen_des_eng': 'math',
+            'ciclo_des': 'Primo semestre',
+            'regdid': regdid,
+            'af_radice_id': 1,
+        })
+        course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 2,
+            'des': 'informatica',
+            'af_gen_des_eng': 'computer science',
+            'ciclo_des': 'Secondo semestre',
+            'regdid': regdid2,
+            'af_radice_id': 2,
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course1,
+            'personale': doc1,
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course2,
+            'personale': doc2,
+        })
+
+        url = reverse('ricerca:coperturelist')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        # Three professor have flg_cessato = 0
+        res = req.get(url)
+        assert len(res.json()['results']) == 2
+
+        data = {'search': 'gar'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111111'
+
+        data = {'role': 'PA', 'lang': 'it'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherCVFull'] is None
+
+        data = {'department': 42}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'department': 1, 'role': 'PO'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'department': 1, 'role': 'PA', 'lang': 'en'}
+        res = req.get(url, data=data)
+        assert res.json()[
+            'results'][0]['TeacherDepartmentName'] == "Math and Computer Science"
+
+        data = {'regdid': 1}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111112'
+
+        data = {'regdid': 2}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111111'
+
+        data = {'regdid': 1, 'role': 'PA'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['TeacherID'] == '111112'
