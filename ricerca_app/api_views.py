@@ -3,6 +3,7 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
+from rest_framework.views import APIView
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
@@ -10,6 +11,7 @@ from .serializers import *
 from .services import *
 from .pagination import UnicalStorageApiPaginationList
 
+from django.http import HttpResponse
 
 # permissions.IsAuthenticatedOrReadOnly
 # allow authenticated users to perform any request. Requests for
@@ -101,6 +103,14 @@ class ApiEndpointListSupport(ApiEndpointList):
         })
 
 # ----CdS----
+
+class ApiStatus(generics.GenericAPIView):
+    description = 'Restituisce lo stato( health check API ) '
+
+
+    def get(self, *args, **kwargs):
+
+        return Response(content_type='application/problem+json')
 
 
 class ApiCdSList(ApiEndpointList):
