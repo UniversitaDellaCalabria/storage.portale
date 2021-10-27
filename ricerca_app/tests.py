@@ -3156,3 +3156,4 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         data = {'teacher': '111112', 'department': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
+

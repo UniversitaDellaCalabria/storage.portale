@@ -79,9 +79,9 @@ if 'rest_framework' in settings.INSTALLED_APPS:
 
     # qui API pubbliche
 
-    urlpatterns += path('status/',
-                        api_views.ApiStatus.as_view(),
-                        name='status'),
+    # urlpatterns += path('status/',
+    #                     api_views.ApiStatus.as_view(),
+    #                     name='status'),
 
     urlpatterns += path('{}/cds/'.format(base_url),
                         api_views.ApiCdSList.as_view(),

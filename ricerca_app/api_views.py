@@ -104,14 +104,14 @@ class ApiEndpointListSupport(ApiEndpointList):
 
 # ----CdS----
 
-class ApiStatus(APIView):
-
-    description = 'Restituisce lo stato( health check API ) '
-
-
-    def get(self, *args, **kwargs):
-
-        return Response(content_type='application/problem+json')
+# class ApiStatus(APIView):
+#
+#     description = 'Restituisce lo stato( health check API ) '
+#
+#
+#     def get(self, *args, **kwargs):
+#
+#         return Response(content_type='application/problem+json')
 
 
 class ApiCdSList(ApiEndpointList):
