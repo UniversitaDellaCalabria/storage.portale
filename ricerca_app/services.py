@@ -773,7 +773,7 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def copertureList(search, regdid, dip, role, cds):
+    def teachingCoveragesList(search, regdid, dip, role, cds):
 
         query_search = Q()
         Q()

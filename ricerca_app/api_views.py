@@ -414,7 +414,7 @@ class ApiTeachersList(ApiEndpointList):
             search, regdidid, department, role, cds)
 
 
-class ApiCopertureList(ApiEndpointList):
+class ApiTeachingCoveragesList(ApiEndpointList):
     description = 'Restituisce un elenco di Docenti con il fl_docente=1 e fl_cessato=0'\
         'con un set minimo di informazioni identificative: Nome, Ruolo, ' \
                   'Settore scientifico disciplinare, …'
@@ -429,7 +429,7 @@ class ApiCopertureList(ApiEndpointList):
         role = self.request.query_params.get('role')
         cds = self.request.query_params.get('cds')
 
-        return ServiceDocente.copertureList(
+        return ServiceDocente.teachingCoveragesList(
             search, regdidid, department, role, cds)
 
 

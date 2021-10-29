@@ -147,26 +147,28 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiTeachersList.as_view(),
                         name='teacherslist'),
 
-    urlpatterns += path('{}/coperture/'.format(base_url),
-                        api_views.ApiCopertureList.as_view(),
-                        name='coperturelist'),
+    urlpatterns += path('{}/teaching-coverages/'.format(base_url),
+                        api_views.ApiTeachingCoveragesList.as_view(),
+                        name='teachingcoverageslist'),
 
     urlpatterns += path(
-        '{}/coperture/<str:teacherid>/studyactivities/'.format(base_url),
+        '{}/teaching-coverages/<str:teacherid>/studyactivities/'.format(base_url),
         api_views.ApiTeacherStudyActivitiesList.as_view(),
-        name='coperturestudyactivities'),
+        name='teachingcoveragesstudyactivities'),
 
-    urlpatterns += path('{}/coperture/<str:teacherid>/'.format(base_url),
+    urlpatterns += path('{}/teaching-coverages/<str:teacherid>/'.format(base_url),
                         api_views.ApiTeacherDetail.as_view(),
-                        name='copertureinfo'),
-
-    urlpatterns += path('{}/coperture/<str:teacherid>/publications/'.format(
-        base_url), api_views.ApiPublicationsList.as_view(), name='coperturepublications'),
+                        name='teachingcoveragesinfo'),
 
     urlpatterns += path(
-        '{}/coperture/<str:teacherid>/publications/<str:publicationid>/'.format(base_url),
+        '{}/teaching-coverages/<str:teacherid>/publications/'.format(base_url),
+        api_views.ApiPublicationsList.as_view(),
+        name='teachingcoveragespublications'),
+
+    urlpatterns += path(
+        '{}/teaching-coverages/<str:teacherid>/publications/<str:publicationid>/'.format(base_url),
         api_views.ApiPublicationDetail.as_view(),
-        name='coperturepublicationdetail'),
+        name='teachingcoveragespublicationdetail'),
 
     urlpatterns += path(
         '{}/teachers/<str:teacherid>/studyactivities/'.format(base_url),

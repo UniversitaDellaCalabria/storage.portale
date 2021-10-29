@@ -3156,9 +3156,9 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
-class ApiCopertureListUnitTest(TestCase):
+class ApiTeachingsCoveragesListUnitTest(TestCase):
 
-    def test_apicoperturelistunittest(self):
+    def test_apiteachingCoverageslistunittest(self):
         req = Client()
 
         doc1 = PersonaleUnitTest.create_personale(**{
@@ -3246,7 +3246,7 @@ class ApiCopertureListUnitTest(TestCase):
             'personale': doc2,
         })
 
-        url = reverse('ricerca:coperturelist')
+        url = reverse('ricerca:teachingcoverageslist')
 
         # check url
         res = req.get(url)
