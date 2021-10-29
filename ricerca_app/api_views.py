@@ -162,6 +162,8 @@ class ApiCdSDetail(ApiEndpointDetail):
             'tipo_corso_des',
             'cla_miur_cod',
             'cla_miur_des',
+            'intercla_miur_cod',
+            'intercla_miur_des',
             'durata_anni',
             'valore_min',
             'codicione',

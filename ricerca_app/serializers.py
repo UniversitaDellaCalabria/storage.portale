@@ -84,6 +84,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CourseTypeDescription': query['tipo_corso_des'],
             'CourseClassCod': query['cla_miur_cod'],
             'CourseClassName': query['cla_miur_des'],
+            'CourseInterClassCod': query['intercla_miur_cod'],
+            'CourseInterClassDes': query['intercla_miur_des'],
             'CdSLanguage': langs,
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
