@@ -640,10 +640,9 @@ class ApiLaboratoriesList(ApiEndpointList):
         department = self.request.query_params.get('department')
         erc1 = self.request.query_params.get('erc1')
         teacher = self.request.query_params.get('teacher')
-        person = self.request.query_params.get('person')
 
         return ServiceLaboratorio.getLaboratoriesList(
-            self.language, search, area, department, erc1, teacher, person)
+            self.language, search, area, department, erc1, teacher)
 
 
 class ApiLaboratoriesAreasList(ApiEndpointList):

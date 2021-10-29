@@ -1516,12 +1516,11 @@ class ServiceLaboratorio:
             dip,
             erc1,
             teacher,
-            person):
+    ):
         query_search = Q()
         query_ambito = Q()
         query_dip = Q()
         query_erc1 = Q()
-        query_teacher = Q()
 
         if search:
             for k in search.split(" "):
@@ -1536,12 +1535,9 @@ class ServiceLaboratorio:
             erc1_allowed = erc1.split(",")
             query_erc1 = Q(
                 laboratoriodatierc1__id_ricerca_erc1__cod_erc1__in=erc1_allowed)
-        if teacher:
-            query_teacher = Q(
-                matricola_responsabile_scientifico__exact=teacher)
 
         query = LaboratorioDatiBase.objects.filter(
-            query_search, query_ambito, query_dip, query_erc1, query_teacher
+            query_search, query_ambito, query_dip, query_erc1
         ).values(
             'id',
             'nome_laboratorio',
@@ -1582,14 +1578,16 @@ class ServiceLaboratorio:
                     "id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
             else:
                 q['ExtraDepartments'] = []
-        if person:
+        if teacher:
             res = []
             for q in query:
+                if teacher == q['matricola_responsabile_scientifico']:
+                    res.append(q)
                 for i in q['TechPersonnel']:
-                    if person == i['matricola_personale_tecnico__matricola']:
+                    if teacher == i['matricola_personale_tecnico__matricola']:
                         res.append(q)
                 for t in q['ResearchPersonnel']:
-                    if person == t['matricola_personale_ricerca__matricola']:
+                    if teacher == t['matricola_personale_ricerca__matricola']:
                         res.append(q)
             return res
 

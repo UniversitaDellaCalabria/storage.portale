@@ -2227,13 +2227,13 @@ class ApiLaboratoriesListUnitTest(TestCase):
         assert res.json()[
             'results'][0]['ScientificDirector'] == 'Mungari Simone'
 
-        data = {'person': '111111'}
+        data = {'teacher': '111111'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
-        data = {'person': '111112'}
+        data = {'teacher': '111112'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 3
 
         data = {'department': '2', 'area': 'Scientifico'}
         res = req.get(url, data=data)
