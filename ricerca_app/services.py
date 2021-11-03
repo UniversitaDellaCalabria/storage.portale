@@ -1607,6 +1607,7 @@ class ServiceLaboratorio:
             "id_dipartimento_riferimento__dip_cod",
             "id_dipartimento_riferimento__dip_des_it",
             "id_dipartimento_riferimento__dip_des_eng",
+            "infrastruttura_riferimento",
             "ambito",
             "finalita_servizi_it",
             "finalita_servizi_en",

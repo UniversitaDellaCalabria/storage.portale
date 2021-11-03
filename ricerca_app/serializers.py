@@ -845,6 +845,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
             'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
             'DepartmentReferentName': query['id_dipartimento_riferimento__dip_des_it'] if req_lang == "it" or query['id_dipartimento_riferimento__dip_des_eng'] is None else query['id_dipartimento_riferimento__dip_des_eng'],
+            'InfrastructureReferentName': query['infrastruttura_riferimento'],
             'Interdepartmental': query['laboratorio_interdipartimentale'],
             'ExtraDepartments': extra_departments,
             'LaboratoryScope': query['ambito'],
