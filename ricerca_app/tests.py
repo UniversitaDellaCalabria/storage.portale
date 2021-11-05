@@ -945,7 +945,6 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {'department': 1, 'role': 'PA', 'lang': 'en'}
         res = req.get(url, data=data)
-        print(res.json())
         assert len(res.json()['results']) == 1
 
         data = {'regdid': 1}
