@@ -739,6 +739,7 @@ class AddressbookStructuresSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
+
         return {
             'StructureCod': query['uo'],
             'StructureName': query['denominazione'],

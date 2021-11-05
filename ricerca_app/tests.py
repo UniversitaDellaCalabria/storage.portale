@@ -959,6 +959,10 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111112'
 
+        data = {'cds': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
 
 class ApiTeacherStudyActivitiesUnitTest(TestCase):
 
@@ -3433,6 +3437,10 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
         data = {'regdid': 1, 'role': 'PA'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111112'
+
+        data = {'cds': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
 
 
 # class ApiAllPublicationsListUnitTest(TestCase):
