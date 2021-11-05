@@ -745,8 +745,8 @@ class AddressbookStructuresSerializer(CreateUpdateAbstract):
             'StructureTypeName': query['structure_type_name'],
             'StructureTypeCOD': query['structure_type_cod'],
         }
-    
-    
+
+
 class AcademicYearsSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):

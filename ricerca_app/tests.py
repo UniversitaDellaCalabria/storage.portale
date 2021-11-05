@@ -1206,8 +1206,6 @@ class ApiTeacherInfoUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results']['TeacherID'] == '111112'
 
-
-
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111113'})
         res = req.get(url)
         assert len(res.json()['results']) == 0
@@ -1894,10 +1892,7 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'uo': '2',
             'uo_padre': '1',
         })
-        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
-            'uo': '3',
-            'uo_padre': '2',
-        })
+
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',

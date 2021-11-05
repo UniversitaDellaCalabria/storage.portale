@@ -973,8 +973,9 @@ class ServiceDocente:
                 q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     c['personalecontatti__contatto'])
 
-            dep = DidatticaDipartimento.objects.filter(dip_cod=q["cd_uo_aff_org"]) \
-                .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+            dep = DidatticaDipartimento.objects.filter(
+                dip_cod=q["cd_uo_aff_org"]) .values(
+                "dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
             if len(dep) == 0:
                 q["dip_id"] = None
                 q["dip_cod"] = None
@@ -1596,16 +1597,16 @@ class ServicePersonale:
             query_type,
             flg_cessato=0,
             cd_uo_aff_org__isnull=False,
-            ).extra(
-                select={
-                    'uo': 'UNITA_ORGANIZZATIVA.UO',
-                    'denominazione': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE',
-                    'structure_type_cod': 'UNITA_ORGANIZZATIVA.CD_TIPO_NODO',
-                    'structure_type_name': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
-                tables=['UNITA_ORGANIZZATIVA'],
-                where=[
-                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG',
-                ])
+        ).extra(
+            select={
+                'uo': 'UNITA_ORGANIZZATIVA.UO',
+                'denominazione': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE',
+                'structure_type_cod': 'UNITA_ORGANIZZATIVA.CD_TIPO_NODO',
+                'structure_type_name': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
+            tables=['UNITA_ORGANIZZATIVA'],
+            where=[
+                'UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG',
+            ])
 
         query = query.values(
             'uo',
