@@ -454,8 +454,8 @@ class AppliedResearchLinesSerializer(CreateUpdateAbstract):
             'RLineDescription': query['descrizione'],
             'RLineResults': query['descr_pubblicaz_prog_brevetto'],
             'RYear': query['anno'],
-            'RLineErc2ID': query['ricerca_aster2_id__ricerca_aster1_id'],
-            'RLineErc2Name': query['ricerca_aster2_id__descrizione'],
+            'RLineAster2Id': query['ricerca_aster2_id__ricerca_aster1_id'],
+            'RLineAster2Name': query['ricerca_aster2_id__descrizione'],
             'Teachers': teachers
         }
 
@@ -1164,3 +1164,48 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
             'CommunityId': query['community_id'],
             'CommunityName': query['community_name'],
         }
+
+
+class PublicationsSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        # authors = None
+        # if query['Authors'] is not None:
+        #     authors = PublicationsSerializer.to_dict_authors(
+        #         query['Authors'])
+        return {
+            'PublicationId': query['item_id'],
+            'PublicationTitle': query['title'],
+            'PublicationAbstract': query['des_abstract'] if req_lang == "it" or query['des_abstracteng'] is None else query['des_abstracteng'],
+            'PublicationCollection': query['collection_id__collection_name'],
+            'PublicationCommunity': query['collection_id__community_id__community_name'],
+            'Publication': query['pubblicazione'],
+            'PublicationLabel': query['label_pubblicazione'],
+            'PublicationContributors': query['contributors'],
+            'PublicationYear': query['date_issued_year'],
+            # 'PublicationAuthors': authors,
+            'PublicationUrl': query['url_pubblicazione'],
+        }
+
+    # @staticmethod
+    # def to_dict_authors(query):
+    #     result = []
+    #     for q in query:
+    #         if q['id_ab__matricola'] is None:
+    #             full_name = q['last_name'] + " " + q['first_name']
+    #         else:
+    #             full_name = q['id_ab__cognome'] + " " + q['id_ab__nome'] + \
+    #                 (" " + q['id_ab__middle_name']
+    #                  if q['id_ab__middle_name'] is not None else "")
+    #         result.append({
+    #             'AuthorId': q['id_ab__matricola'],
+    #             'AuthorName': full_name,
+    #         })
+    #     return result

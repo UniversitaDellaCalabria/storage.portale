@@ -1099,6 +1099,58 @@ class ServiceDocente:
             "community_id", "community_name").order_by("community_id").distinct()
         return query
 
+    @staticmethod
+    def getAllPublicationsList(
+            search=None,
+            year=None,
+            type=None):
+        query_search = Q()
+        query_year = Q()
+        query_type = Q()
+
+        if search is not None:
+            for k in search.split(" "):
+                q_title = Q(title__icontains=k)
+                query_search &= q_title
+        if year is not None:
+            query_year = Q(date_issued_year=year)
+        if type is not None:
+            query_type = Q(collection_id__community_id__community_id=type)
+
+        query = PubblicazioneDatiBase.objects.filter(
+            query_search,
+            query_year,
+            query_type,
+        ).values(
+            "item_id",
+            "title",
+            "des_abstract",
+            "des_abstracteng",
+            "collection_id__collection_name",
+            "collection_id__community_id__community_name",
+            "pubblicazione",
+            "label_pubblicazione",
+            "contributors",
+            'date_issued_year',
+            'url_pubblicazione').order_by(
+            "-date_issued_year",
+            "title").distinct()
+        # for q in query:
+        #     autori = PubblicazioneAutori.objects.filter(
+        #         item_id=q['item_id']).values(
+        #         "id_ab__nome",
+        #         "id_ab__cognome",
+        #         "id_ab__middle_name",
+        #         "id_ab__matricola",
+        #         "first_name",
+        #         "last_name")
+        #     if len(autori) == 0:
+        #         q['Authors'] = []
+        #     else:
+        #         q['Authors'] = autori
+
+        return query
+
 
 class ServiceDottorato:
     @staticmethod

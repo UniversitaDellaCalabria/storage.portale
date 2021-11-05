@@ -319,6 +319,8 @@ LABEL_MAPPING = {
         'Hours': 'Hours',
         'Cover': 'Cover',
         'CodErc2': 'Erc2 Cod',
+        'RLineAster2Id': 'Aster2 Cod',
+        'RLineAster2Name': 'Aster2 Name'
 
     },
     'it': {
@@ -559,5 +561,7 @@ LABEL_MAPPING = {
         'Hours': 'Ore',
         'Cover': 'Peso',
         'CodErc2': 'Codice Erc2',
+        'RLineAster2Id': 'Codice Aster2',
+        'RLineAster2Name': 'Nome Aster2'
     }
 }

@@ -271,3 +271,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/publicationscommunitytypes/'.format(base_url),
                         api_views.ApiPublicationsCommunityTypesList.as_view(),
                         name='publicationscommunitytypes'),
+
+    urlpatterns += path(
+        '{}/publications/'.format(base_url),
+        api_views.ApiAllPublicationsList.as_view(),
+        name='publicationslist'),

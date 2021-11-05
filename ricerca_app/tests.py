@@ -3290,3 +3290,86 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
         data = {'regdid': 1, 'role': 'PA'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherID'] == '111112'
+
+
+class ApiAllPublicationsListUnitTest(TestCase):
+
+    def test_apiAllPublicationsList(self):
+
+        PubblicazioneCommunityUnitTest.create_pubblicazioneCommunity(**{
+            'community_id': 1,
+            'community_name': 'Community 1',
+        })
+
+        PubblicazioneCommunityUnitTest.create_pubblicazioneCommunity(**{
+            'community_id': 2,
+            'community_name': 'Community 2',
+        })
+
+        PubblicazioneCollectionUnitTest.create_pubblicazioneCollection(**{
+            'collection_id': 1,
+            'community_id': 1,
+            'collection_name': 'Collection 1',
+        })
+
+        PubblicazioneCollectionUnitTest.create_pubblicazioneCollection(**{
+            'collection_id': 2,
+            'community_id': 2,
+            'collection_name': 'Collection 2',
+        })
+
+        PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
+            'item_id': 1,
+            'title': 'pub1',
+            'des_abstract': 'abstract italiano',
+            'des_abstracteng': 'abstract inglese',
+            'date_issued_year': 2020,
+            'pubblicazione': 'Giornale 1',
+            'label_pubblicazione': 'Rivista',
+            'collection_id': 1,
+            'url_pubblicazione': 'aaa',
+        })
+
+        PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
+            'item_id': 2,
+            'title': 'pub2',
+            'des_abstract': 'abstract italiano2',
+            'des_abstracteng': 'abstract inglese2',
+            'date_issued_year': 2019,
+            'pubblicazione': 'Convegno Cosenza',
+            'label_pubblicazione': 'Convegno',
+            'collection_id': 2,
+            'url_pubblicazione': 'aba',
+
+        })
+
+        PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
+            'item_id': 3,
+            'title': 'pub3',
+            'des_abstract': 'abstract italiano3',
+            'des_abstracteng': 'abstract inglese3',
+            'date_issued_year': 2019,
+            'pubblicazione': 'Convegno Cosenza',
+            'label_pubblicazione': 'Convegno',
+            'collection_id': 2,
+            'url_pubblicazione': 'ccc',
+
+        })
+
+        req = Client()
+
+        url = reverse('ricerca:publicationslist')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+        assert res.json()[
+            'results'][0]['PublicationAbstract'] == 'abstract inglese'
+
+        data = {'year': 2020, 'search': 'pub', 'type': 1}
+
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1

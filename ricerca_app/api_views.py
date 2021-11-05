@@ -737,3 +737,18 @@ class ApiPublicationDetail(ApiEndpointDetail):
         publicationid = self.kwargs['publicationid']
         teacherid = self.kwargs['teacherid']
         return ServiceDocente.getPublication(publicationid, teacherid)
+
+
+class ApiAllPublicationsList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle pubblicazioni'
+    serializer_class = PublicationsSerializer
+    filter_backends = [ApiPublicationsListFilter]
+
+    def get_queryset(self):
+
+        search = self.request.query_params.get('search')
+        year = self.request.query_params.get('year')
+        type = self.request.query_params.get('type')
+
+        return ServiceDocente.getAllPublicationsList(
+            search, year, type)
