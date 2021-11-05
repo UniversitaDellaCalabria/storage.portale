@@ -272,7 +272,12 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiPublicationsCommunityTypesList.as_view(),
                         name='publicationscommunitytypes'),
 
+    # urlpatterns += path(
+    #     '{}/publications/'.format(base_url),
+    #     api_views.ApiAllPublicationsList.as_view(),
+    #     name='publicationslist'),
+
     urlpatterns += path(
-        '{}/publications/'.format(base_url),
-        api_views.ApiAllPublicationsList.as_view(),
-        name='publicationslist'),
+        '{}/addressbookstructures/'.format(base_url),
+        api_views.ApiAddressbookStructuresList.as_view(),
+        name='allstructureslist'),

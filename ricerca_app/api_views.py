@@ -278,6 +278,7 @@ class ApiStudyActivityDetail(ApiEndpointDetail):
     filter_backends = []
 
     def get_queryset(self):
+
         studyactivityid = str(self.kwargs['studyactivityid'])
 
         return ServiceDidatticaAttivitaFormativa.getAttivitaFormativaWithSubModules(
@@ -691,7 +692,9 @@ class ApiErc1FilterList(ApiEndpointListSupport):
 
     def get_queryset(self):
 
-        return ServiceLaboratorio.getErc1List()
+        laboratory = self.request.query_params.get('laboratory')
+
+        return ServiceLaboratorio.getErc1List(laboratory)
 
 
 class ApiErc0List(ApiEndpointList):
@@ -739,16 +742,30 @@ class ApiPublicationDetail(ApiEndpointDetail):
         return ServiceDocente.getPublication(publicationid, teacherid)
 
 
-class ApiAllPublicationsList(ApiEndpointList):
-    description = 'La funzione restituisce la lista delle pubblicazioni'
-    serializer_class = PublicationsSerializer
-    filter_backends = [ApiPublicationsListFilter]
+# class ApiAllPublicationsList(ApiEndpointList):
+#     description = 'La funzione restituisce la lista delle pubblicazioni'
+#     serializer_class = PublicationsSerializer
+#     filter_backends = [ApiPublicationsListFilter]
+#
+#     def get_queryset(self):
+#
+#         search = self.request.query_params.get('search')
+#         year = self.request.query_params.get('year')
+#         type = self.request.query_params.get('type')
+#
+#         return ServiceDocente.getAllPublicationsList(
+#             search, year, type)
+
+
+class ApiAddressbookStructuresList(ApiEndpointList):
+    description = 'La funzione restituisce le strutture organizzative a cui un docente afferisce'
+    serializer_class = AddressbookStructuresSerializer
+    filter_backends = [ApiStructuresListFilter]
 
     def get_queryset(self):
 
-        search = self.request.query_params.get('search')
-        year = self.request.query_params.get('year')
-        type = self.request.query_params.get('type')
+        # search = self.request.query_params.get('search')
+        # father = self.request.query_params.get('father')
+        # type = self.request.query_params.get('type')
 
-        return ServiceDocente.getAllPublicationsList(
-            search, year, type)
+        return ServicePersonale.getAllStructuresList()

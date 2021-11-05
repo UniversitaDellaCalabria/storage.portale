@@ -721,7 +721,7 @@ class ServiceDocente:
                     "cd_ruolo",
                     "ds_ruolo_locale",
                     "cd_ssd",
-                    "aff_org",
+                    "cd_uo_aff_org",
                     "ds_ssd",
                     "cv_full_it",
                     "cv_short_it",
@@ -737,7 +737,7 @@ class ServiceDocente:
                 "dip_id", "dip_cod", "dip_des_it", "dip_des_eng").first()
             if not department:
                 return None
-            query = query.filter(aff_org=department["dip_cod"])
+            query = query.filter(cd_uo_aff_org=department["dip_cod"])
             query = list(query)
             for q in query:
                 q["dip_id"] = department['dip_id']
@@ -746,7 +746,7 @@ class ServiceDocente:
                 q["dip_des_eng"] = department["dip_des_eng"]
 
         else:
-            dip_cods = query.values_list("aff_org", flat=True).distinct()
+            dip_cods = query.values_list("cd_uo_aff_org", flat=True).distinct()
             dip_cods = list(dip_cods)
 
             departments = DidatticaDipartimento.objects.filter(
@@ -756,7 +756,7 @@ class ServiceDocente:
             for q in query:
                 found = False
                 for dep in departments:
-                    if dep['dip_cod'] == q['aff_org']:
+                    if dep['dip_cod'] == q['cd_uo_aff_org']:
                         q["dip_id"] = dep['dip_id']
                         q["dip_cod"] = dep['dip_cod']
                         q["dip_des_it"] = dep['dip_des_it']
@@ -807,7 +807,7 @@ class ServiceDocente:
                     "cd_ruolo",
                     "ds_ruolo_locale",
                     "cd_ssd",
-                    "aff_org",
+                    "cd_uo_aff_org",
                     "ds_ssd",
                     "cv_full_it",
                     "cv_short_it",
@@ -823,7 +823,7 @@ class ServiceDocente:
                 "dip_id", "dip_cod", "dip_des_it", "dip_des_eng").first()
             if not department:
                 return None
-            query = query.filter(aff_org=department["dip_cod"])
+            query = query.filter(cd_uo_aff_org=department["dip_cod"])
             query = list(query)
             for q in query:
                 q["dip_id"] = department['dip_id']
@@ -832,7 +832,7 @@ class ServiceDocente:
                 q["dip_des_eng"] = department["dip_des_eng"]
 
         else:
-            dip_cods = query.values_list("aff_org", flat=True).distinct()
+            dip_cods = query.values_list("cd_uo_aff_org", flat=True).distinct()
             dip_cods = list(dip_cods)
 
             departments = DidatticaDipartimento.objects.filter(
@@ -842,7 +842,7 @@ class ServiceDocente:
             for q in query:
                 found = False
                 for dep in departments:
-                    if dep['dip_cod'] == q['aff_org']:
+                    if dep['dip_cod'] == q['cd_uo_aff_org']:
                         q["dip_id"] = dep['dip_id']
                         q["dip_cod"] = dep['dip_cod']
                         q["dip_des_it"] = dep['dip_des_it']
@@ -957,7 +957,7 @@ class ServiceDocente:
             "ds_ruolo_locale",
             "cd_ssd",
             "ds_ssd",
-            "aff_org",
+            "cd_uo_aff_org",
             "ds_aff_org",
             "telrif",
             "email",
@@ -973,7 +973,7 @@ class ServiceDocente:
                 q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     c['personalecontatti__contatto'])
 
-            dep = DidatticaDipartimento.objects.filter(dip_cod=q["aff_org"]) \
+            dep = DidatticaDipartimento.objects.filter(dip_cod=q["cd_uo_aff_org"]) \
                 .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
             if len(dep) == 0:
                 q["dip_id"] = None
@@ -1099,57 +1099,68 @@ class ServiceDocente:
             "community_id", "community_name").order_by("community_id").distinct()
         return query
 
-    @staticmethod
-    def getAllPublicationsList(
-            search=None,
-            year=None,
-            type=None):
-        query_search = Q()
-        query_year = Q()
-        query_type = Q()
-
-        if search is not None:
-            for k in search.split(" "):
-                q_title = Q(title__icontains=k)
-                query_search &= q_title
-        if year is not None:
-            query_year = Q(date_issued_year=year)
-        if type is not None:
-            query_type = Q(collection_id__community_id__community_id=type)
-
-        query = PubblicazioneDatiBase.objects.filter(
-            query_search,
-            query_year,
-            query_type,
-        ).values(
-            "item_id",
-            "title",
-            "des_abstract",
-            "des_abstracteng",
-            "collection_id__collection_name",
-            "collection_id__community_id__community_name",
-            "pubblicazione",
-            "label_pubblicazione",
-            "contributors",
-            'date_issued_year',
-            'url_pubblicazione').order_by(
-            "-date_issued_year",
-            "title").distinct()
-        # for q in query:
-        #     autori = PubblicazioneAutori.objects.filter(
-        #         item_id=q['item_id']).values(
-        #         "id_ab__nome",
-        #         "id_ab__cognome",
-        #         "id_ab__middle_name",
-        #         "id_ab__matricola",
-        #         "first_name",
-        #         "last_name")
-        #     if len(autori) == 0:
-        #         q['Authors'] = []
-        #     else:
-        #         q['Authors'] = autori
-
-        return query
+    # @staticmethod
+    # def getAllPublicationsList(
+    #         search=None,
+    #         year=None,
+    #         type=None):
+    #     query_search = Q()
+    #     query_year = Q()
+    #     query_type = Q()
+    #
+    #     if search is not None:
+    #         for k in search.split(" "):
+    #             q_title = Q(title__icontains=k)
+    #             query_search &= q_title
+    #     if year is not None:
+    #         query_year = Q(date_issued_year=year)
+    #     if type is not None:
+    #         query_type = Q(collection_id__community_id__community_id=type)
+    #
+    #     query = PubblicazioneDatiBase.objects.filter(
+    #         query_search,
+    #         query_year,
+    #         query_type,
+    #     ).extra(
+    #         select={
+    #             'first_name': 'PUBBLICAZIONE_AUTORI.FIRST_NAME',
+    #             'last_name': 'PUBBLICAZIONE_AUTORI.LAST_NAME',
+    #             },
+    #         tables=['PUBBLICAZIONE_AUTORI'],
+    #         where=[
+    #             'PUBBLICAZIONE_AUTORI.ITEM_ID=PUBBLICAZIONE_DATI_BASE.ITEM_ID',
+    #         ]
+    #     ).values(
+    #         "item_id",
+    #         "title",
+    #         "des_abstract",
+    #         "des_abstracteng",
+    #         "collection_id__collection_name",
+    #         "collection_id__community_id__community_name",
+    #         "pubblicazione",
+    #         "label_pubblicazione",
+    #         "contributors",
+    #         'date_issued_year',
+    #         'url_pubblicazione',
+    #         'first_name',
+    #         'last_name').order_by(
+    #         "-date_issued_year",
+    #         "title").distinct()
+    #     # for q in query:
+    #     #     autori = PubblicazioneAutori.objects.filter(
+    #     #         item_id=q['item_id']).values(
+    #     #         "id_ab__nome",
+    #     #         "id_ab__cognome",
+    #     #         "id_ab__middle_name",
+    #     #         "id_ab__matricola",
+    #     #         "first_name",
+    #     #         "last_name")
+    #     #     if len(autori) == 0:
+    #     #         q['Authors'] = []
+    #     #     else:
+    #     #         q['Authors'] = autori
+    #
+    #     return query
 
 
 class ServiceDottorato:
@@ -1232,14 +1243,14 @@ class ServicePersonale:
                 q_cognome = Q(cognome__icontains=k)
                 query_search |= q_cognome
         if structureid is not None:
-            query_structure = Q(aff_org__exact=structureid)
+            query_structure = Q(cd_uo_aff_org__exact=structureid)
         if roles is not None:
             roles = roles.split(",")
             query_roles = Q(cd_ruolo__in=roles)
         if structuretree is not None:
             query_structuretree = ServicePersonale.getStructurePersonnelChild(
                 Q(), structuretree)
-            query_structuretree |= Q(aff_org=structuretree)
+            query_structuretree |= Q(cd_uo_aff_org=structuretree)
 
         query = Personale.objects.filter(
             query_search,
@@ -1247,7 +1258,7 @@ class ServicePersonale:
             query_roles,
             query_structuretree,
             flg_cessato=0,
-            aff_org__isnull=False)
+            cd_uo_aff_org__isnull=False)
 
         if structuretypes is not None:
             structuretypes = structuretypes.split(",")
@@ -1258,7 +1269,7 @@ class ServicePersonale:
                     'structure_type_name': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
                 tables=['UNITA_ORGANIZZATIVA'],
                 where=[
-                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG',
+                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG',
                     'UNITA_ORGANIZZATIVA.CD_TIPO_NODO IN %s'
                 ],
                 params=(structuretypes,))
@@ -1270,7 +1281,7 @@ class ServicePersonale:
                     'structure_type_name': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
                 tables=['UNITA_ORGANIZZATIVA'],
                 where=[
-                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG',
+                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG',
                 ])
 
         query = query.values(
@@ -1279,7 +1290,7 @@ class ServicePersonale:
             "cognome",
             "cd_ruolo",
             "ds_ruolo_locale",
-            "aff_org",
+            "cd_uo_aff_org",
             "id_ab",
             "matricola",
             'personalecontatti__cd_tipo_cont__descr_contatto',
@@ -1301,7 +1312,7 @@ class ServicePersonale:
                 query_search,
                 query_roles,
                 flg_cessato=0,
-                aff_org__isnull=True).annotate(
+                cd_uo_aff_org__isnull=True).annotate(
                 denominazione=Value(
                     None,
                     output_field=CharField())).annotate(
@@ -1316,7 +1327,7 @@ class ServicePersonale:
                                 "cognome",
                                 "cd_ruolo",
                                 "ds_ruolo_locale",
-                                "aff_org",
+                                "cd_uo_aff_org",
                                 "id_ab",
                                 "matricola",
                                 'personalecontatti__cd_tipo_cont__descr_contatto',
@@ -1360,7 +1371,7 @@ class ServicePersonale:
                     'cognome': q['cognome'],
                     'cd_ruolo': q['cd_ruolo'],
                     'ds_ruolo_locale': q['ds_ruolo_locale'],
-                    'aff_org': q['aff_org'],
+                    'cd_uo_aff_org': q['cd_uo_aff_org'],
                     'matricola': q['matricola'],
                     'Funzione': q['funzioniunitaorganizzativa__ds_funzione'] if q['funzioniunitaorganizzativa__termine'] is not None and q['funzioniunitaorganizzativa__termine'] >= datetime.datetime.today() else None,
                     'Struttura': q['denominazione'] if 'denominazione' in q.keys() else None,
@@ -1430,7 +1441,7 @@ class ServicePersonale:
     @staticmethod
     def getPersonale(personale_id):
         query = Personale.objects.filter(matricola__exact=personale_id)
-        if query.values('aff_org').first()['aff_org'] is None:
+        if query.values('cd_uo_aff_org').first()['cd_uo_aff_org'] is None:
             query = query.filter(
                 flg_cessato=0,
             ).annotate(
@@ -1449,7 +1460,7 @@ class ServicePersonale:
                     'TipologiaStrutturaNome': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
                 tables=['UNITA_ORGANIZZATIVA'],
                 where=[
-                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.AFF_ORG',
+                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG',
                 ])
         contacts_to_take = [
             'Posta Elettronica',
@@ -1475,7 +1486,7 @@ class ServicePersonale:
             "ds_ruolo_locale",
             "cd_ssd",
             "ds_ssd",
-            "aff_org",
+            "cd_uo_aff_org",
             "ds_aff_org",
             "telrif",
             "email",
@@ -1551,11 +1562,71 @@ class ServicePersonale:
             uo_padre=structureid).values("uo")
 
         for child in child_structures:
-            structures_tree |= Q(aff_org=child["uo"])
+            structures_tree |= Q(cd_uo_aff_org=child["uo"])
             structures_tree = ServicePersonale.getStructurePersonnelChild(
                 structures_tree, child['uo'])
 
         return structures_tree
+
+    @staticmethod
+    def getAllStructuresList():
+
+        query_search = Q()
+        query_father = Q()
+        query_type = Q()
+
+        # if father == 'None':
+        #     query_father = Q(uo_padre__isnull=True)
+        # elif father:
+        #     query_father = Q(uo_padre=father)
+        #
+        # if search is not None:
+        #     for k in search.split(" "):
+        #         q_denominazione = Q(denominazione__icontains=k)
+        #         query_search &= q_denominazione
+        #
+        # if type:
+        #     for k in type.split(","):
+        #         q_type = Q(cd_tipo_nodo=k)
+        #         query_type |= q_type
+
+        query = Personale.objects.filter(
+            query_search,
+            query_father,
+            query_type,
+            flg_cessato=0,
+            cd_uo_aff_org__isnull=False,
+            ).extra(
+                select={
+                    'uo': 'UNITA_ORGANIZZATIVA.UO',
+                    'denominazione': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE',
+                    'structure_type_cod': 'UNITA_ORGANIZZATIVA.CD_TIPO_NODO',
+                    'structure_type_name': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
+                tables=['UNITA_ORGANIZZATIVA'],
+                where=[
+                    'UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG',
+                ])
+
+        query = query.values(
+            'uo',
+            'denominazione',
+            'structure_type_cod',
+            'structure_type_name',
+        ).distinct()
+
+        # query = UnitaOrganizzativa.objects.filter(
+        #     query_search,
+        #     query_father,
+        #     query_type,
+        #     dt_fine_val__gte=datetime.datetime.today(),
+        #     personale__flg_cessato=0,
+        #     personale__aff_org__isnull=False).values(
+        #     "uo",
+        #     "denominazione",
+        #     "ds_tipo_nodo",
+        #     "cd_tipo_nodo").distinct().order_by('denominazione')
+
+        return query
 
 
 class ServiceLaboratorio:

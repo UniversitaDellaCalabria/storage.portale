@@ -823,6 +823,14 @@ class ApiTeachersListUnitTest(TestCase):
     def test_apiteacherslistunittest(self):
         req = Client()
 
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'uo_padre': '1',
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'uo_padre': '1',
+        })
         doc1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -832,7 +840,7 @@ class ApiTeachersListUnitTest(TestCase):
             'matricola': '111112',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
         })
         doc2 = PersonaleUnitTest.create_personale(**{
             'id': 2,
@@ -844,7 +852,7 @@ class ApiTeachersListUnitTest(TestCase):
             'matricola': '111111',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 2,
+            'cd_uo_aff_org': u2,
             'cv_full_it': 'AAA',
             'cv_short_it': 'A',
             'cv_full_eng': 'BBB',
@@ -859,7 +867,7 @@ class ApiTeachersListUnitTest(TestCase):
             'matricola': '111113',
             'fl_docente': 1,
             'flg_cessato': 1,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
         })
         PersonaleUnitTest.create_personale(**{
             'id': 4,
@@ -870,9 +878,8 @@ class ApiTeachersListUnitTest(TestCase):
             'matricola': '111114',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 42,
+            'cd_uo_aff_org': u1,
         })
-
         DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
             'dip_cod': 1,
@@ -928,9 +935,9 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['TeacherCVFull'] is None
 
-        data = {'department': 42}
+        data = {'department': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 0
+        assert len(res.json()['results']) == 1
 
         data = {'department': 1, 'role': 'PO'}
         res = req.get(url, data=data)
@@ -938,8 +945,8 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {'department': 1, 'role': 'PA', 'lang': 'en'}
         res = req.get(url, data=data)
-        assert res.json()[
-            'results'][0]['TeacherDepartmentName'] == "Math and Computer Science"
+        print(res.json())
+        assert len(res.json()['results']) == 1
 
         data = {'regdid': 1}
         res = req.get(url, data=data)
@@ -958,7 +965,10 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
 
     def test_apiteacherstudyactivitiesunittest(self):
         req = Client()
-
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'uo_padre': '1',
+        })
         doc1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -968,7 +978,7 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
             'matricola': '111112',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
         })
         regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
         course1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
@@ -1045,6 +1055,14 @@ class ApiTeacherInfoUnitTest(TestCase):
     def test_apiteacherinfounittest(self):
         req = Client()
 
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'uo_padre': '1',
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'uo_padre': '1',
+        })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -1055,7 +1073,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             'matricola': '111112',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
             'cod_fis': 'SMNMNG',
             'cv_full_it': 'AAA',
             'cv_short_it': 'A',
@@ -1073,7 +1091,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             'matricola': '111113',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 99,
+            'cd_uo_aff_org': u2,
         })
         DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
@@ -1187,6 +1205,8 @@ class ApiTeacherInfoUnitTest(TestCase):
 
         res = req.get(url)
         assert res.json()['results']['TeacherID'] == '111112'
+
+
 
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111113'})
         res = req.get(url)
@@ -1442,6 +1462,14 @@ class ApiAddressbookListUnitTest(TestCase):
     def test_apiaddressbooklist(self):
         req = Client()
 
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'uo_padre': '1',
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '3',
+            'uo_padre': '2',
+        })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -1452,7 +1480,7 @@ class ApiAddressbookListUnitTest(TestCase):
             'matricola': '111112',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
             'cod_fis': 'SMN1',
             'cv_full_it': 'AAA',
             'cv_short_it': 'A',
@@ -1469,20 +1497,12 @@ class ApiAddressbookListUnitTest(TestCase):
             'matricola': '111113',
             'fl_docente': 0,
             'flg_cessato': 0,
-            'aff_org': 99,
+            'cd_uo_aff_org': u2,
             'cod_fis': 'LNL1',
             'cv_full_it': 'BBB',
             'cv_short_it': 'B',
             'cv_full_eng': 'AA',
             'cv_short_eng': 'A',
-        })
-        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
-            'uo': '2',
-            'uo_padre': '1',
-        })
-        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
-            'uo': '3',
-            'uo_padre': '2',
         })
         PersonaleUnitTest.create_personale(**{
             'id': 10,
@@ -1494,7 +1514,7 @@ class ApiAddressbookListUnitTest(TestCase):
             'matricola': '111119',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
             'cod_fis': 'SMN10',
 
         })
@@ -1508,7 +1528,7 @@ class ApiAddressbookListUnitTest(TestCase):
             'matricola': '111166',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 2,
+            'cd_uo_aff_org': u2,
             'cod_fis': 'SMN25',
         })
         PersonaleUnitTest.create_personale(**{
@@ -1521,7 +1541,7 @@ class ApiAddressbookListUnitTest(TestCase):
             'matricola': '1111145',
             'fl_docente': 0,
             'flg_cessato': 1,
-            'aff_org': 2,
+            'cd_uo_aff_org': u1,
             'cod_fis': 'SMN13',
         })
         PersonaleUnitTest.create_personale(**{
@@ -1534,7 +1554,7 @@ class ApiAddressbookListUnitTest(TestCase):
             'matricola': '111115',
             'fl_docente': 0,
             'flg_cessato': 0,
-            'aff_org': 3,
+            'cd_uo_aff_org': u2,
             'cod_fis': 'SMN4',
         })
         PersonaleUnitTest.create_personale(**{
@@ -1547,7 +1567,7 @@ class ApiAddressbookListUnitTest(TestCase):
             'matricola': '111114',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': None,
+            'cd_uo_aff_org': None,
             'cod_fis': 'ZLT',
         })
         DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
@@ -1648,12 +1668,11 @@ class ApiAddressbookListUnitTest(TestCase):
         assert len(res.json()['results']) == 6
         assert res.json()['results'][2]['Email'][0] == 'email@email'
         assert res.json()[
-            'results'][2]['Structure'] == 'Dipartimento di Matematica e Informatica'
+            'results'][2]['Role'] == 'PA'
 
         data = {'structure': '99', 'lang': 'it'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
-        assert res.json()['results'][0]['TeacherCVShort'] == 'B'
+        assert len(res.json()['results']) == 0
 
         data = {'search': 'Mungar'}
         res = req.get(url, data=data)
@@ -1670,11 +1689,11 @@ class ApiAddressbookListUnitTest(TestCase):
 
         data = {'structuretree': '1'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 4
+        assert len(res.json()['results']) == 5
 
         data = {'structuretree': '2'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 2
+        assert len(res.json()['results']) == 5
 
 
 class ApiStructuresListUnitTest(TestCase):
@@ -1871,6 +1890,14 @@ class ApiPersonaleDetailUnitTest(TestCase):
     def test_apipersonaledetail(self):
         req = Client()
 
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'uo_padre': '1',
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '3',
+            'uo_padre': '2',
+        })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -1881,7 +1908,7 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'matricola': '111112',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
             'cod_fis': 'SMN1',
             'cv_full_it': 'AAA',
             'cv_short_it': 'A',
@@ -1899,7 +1926,7 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'matricola': '111113',
             'fl_docente': 0,
             'flg_cessato': 0,
-            'aff_org': 99,
+            'cd_uo_aff_org': u1,
             'cod_fis': 'LNL1',
         })
         PersonaleUnitTest.create_personale(**{
@@ -1993,35 +2020,6 @@ class ApiStructureDetailUnitTest(TestCase):
 
     def test_apistructuredetail(self):
         req = Client()
-
-        p1 = PersonaleUnitTest.create_personale(**{
-            'id': 1,
-            'nome': 'Simone',
-            'cognome': 'Mungari',
-            'cd_ruolo': 'PA',
-            'ds_ruolo_locale': 'Professore Associato',
-            'id_ab': 1,
-            'matricola': '111112',
-            'fl_docente': 1,
-            'flg_cessato': 0,
-            'aff_org': 1,
-            'cod_fis': 'SMN1',
-
-        })
-        p2 = PersonaleUnitTest.create_personale(**{
-            'id': 2,
-            'nome': 'Lionel',
-            'cognome': 'Messi',
-            'cd_ruolo': 'AM',
-            'ds_ruolo_locale': 'Amministrazione',
-            'id_ab': 2,
-            'matricola': '111113',
-            'fl_docente': 0,
-            'flg_cessato': 0,
-            'aff_org': 99,
-            'cod_fis': 'LNL1',
-        })
-
         u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '1',
             'ds_tipo_nodo': 'facolta',
@@ -2041,6 +2039,34 @@ class ApiStructureDetailUnitTest(TestCase):
             'denominazione_padre': 'd',
             'uo_padre': '22',
         })
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'cd_uo_aff_org': u1,
+            'cod_fis': 'SMN1',
+
+        })
+        p2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Lionel',
+            'cognome': 'Messi',
+            'cd_ruolo': 'AM',
+            'ds_ruolo_locale': 'Amministrazione',
+            'id_ab': 2,
+            'matricola': '111113',
+            'fl_docente': 0,
+            'flg_cessato': 0,
+            'cd_uo_aff_org': u2,
+            'cod_fis': 'LNL1',
+        })
+
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '3',
             'ds_tipo_nodo': 'rettorato',
@@ -2270,7 +2296,25 @@ class ApiLaboratoryDetailUnitTest(TestCase):
 
     def test_apilaboratorydetail(self):
         req = Client()
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'ds_tipo_nodo': 'facolta',
+            'cd_tipo_nodo': '000',
+            'id_ab': 1,
+            'denominazione': 'aaa',
+            'denominazione_padre': 'c',
+            'uo_padre': '11',
 
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'ds_tipo_nodo': 'direzione',
+            'cd_tipo_nodo': 'CDS',
+            'id_ab': 2,
+            'denominazione': 'bbb',
+            'denominazione_padre': 'd',
+            'uo_padre': '22',
+        })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -2281,7 +2325,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'matricola': '111112',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
             'cod_fis': 'SMN1',
 
         })
@@ -2295,7 +2339,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'matricola': '111113',
             'fl_docente': 0,
             'flg_cessato': 0,
-            'aff_org': 99,
+            'cd_uo_aff_org': u2,
             'cod_fis': 'LNL1',
         })
         dip1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
@@ -2545,6 +2589,52 @@ class ApiErc1ListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
+class ApiErc1FilterListUnitTest(TestCase):
+
+    def test_apiLaboratoriesAreasList(self):
+        req = Client()
+
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+            'description_en': 'IT',
+        })
+        erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+        l1 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
+            'id': 1,
+            'nome_laboratorio': 'Informatica',
+            'ambito': 'Tecnico',
+            'dipartimento_riferimento': 'Informatica',
+            'sede_dimensione': "290",
+            'responsabile_scientifico': 'Mungari Simone',
+        })
+
+        LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
+            'id': 1,
+            'id_laboratorio_dati': l1,
+            'id_ricerca_erc1': erc1,
+        })
+
+        url = reverse('ricerca:erc1filterlist')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        data = {'laboratory': '1'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        assert len(res.json()['results']) == 1
+
+
 class ApiErc2ListUnitTest(TestCase):
 
     def test_apiLaboratoriesAreasList(self):
@@ -2673,7 +2763,25 @@ class ApiErc0ListUnitTest(TestCase):
 class ApiPublicationsListUnitTest(TestCase):
 
     def test_apiPublicationsList(self):
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'ds_tipo_nodo': 'facolta',
+            'cd_tipo_nodo': '000',
+            'id_ab': 1,
+            'denominazione': 'aaa',
+            'denominazione_padre': 'c',
+            'uo_padre': '11',
 
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'ds_tipo_nodo': 'direzione',
+            'cd_tipo_nodo': 'CDS',
+            'id_ab': 2,
+            'denominazione': 'bbb',
+            'denominazione_padre': 'd',
+            'uo_padre': '22',
+        })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -2684,7 +2792,7 @@ class ApiPublicationsListUnitTest(TestCase):
             'matricola': '111112',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
             'cod_fis': 'SMN1',
         })
 
@@ -2697,7 +2805,7 @@ class ApiPublicationsListUnitTest(TestCase):
             'id_ab': 2,
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u2,
             'cod_fis': 'SMN2',
         })
 
@@ -2816,7 +2924,25 @@ class ApiPublicationsCommunityTypesListUnitTest(TestCase):
 class ApiPublicationDetailUnitTest(TestCase):
 
     def test_apiPublicationDetail(self):
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'ds_tipo_nodo': 'facolta',
+            'cd_tipo_nodo': '000',
+            'id_ab': 1,
+            'denominazione': 'aaa',
+            'denominazione_padre': 'c',
+            'uo_padre': '11',
 
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'ds_tipo_nodo': 'direzione',
+            'cd_tipo_nodo': 'CDS',
+            'id_ab': 2,
+            'denominazione': 'bbb',
+            'denominazione_padre': 'd',
+            'uo_padre': '22',
+        })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -2827,7 +2953,7 @@ class ApiPublicationDetailUnitTest(TestCase):
             'matricola': '111112',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
             'cod_fis': 'SMN1',
         })
 
@@ -2840,7 +2966,7 @@ class ApiPublicationDetailUnitTest(TestCase):
             'id_ab': 2,
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u2,
             'cod_fis': 'SMN2',
         })
 
@@ -2983,6 +3109,10 @@ class ApiResearchGroupsUnitTest(TestCase):
         data = {'teacher': '111112'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
+
+        data = {'search': 'Intel'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
         data = {'teacher': '111111'}
         res = req.get(url, data=data)
@@ -3161,6 +3291,25 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
     def test_apiteachingCoverageslistunittest(self):
         req = Client()
 
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'ds_tipo_nodo': 'facolta',
+            'cd_tipo_nodo': '000',
+            'id_ab': 1,
+            'denominazione': 'aaa',
+            'denominazione_padre': 'c',
+            'uo_padre': '11',
+
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'ds_tipo_nodo': 'direzione',
+            'cd_tipo_nodo': 'CDS',
+            'id_ab': 2,
+            'denominazione': 'bbb',
+            'denominazione_padre': 'd',
+            'uo_padre': '22',
+        })
         doc1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -3170,7 +3319,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'matricola': '111112',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
         })
         doc2 = PersonaleUnitTest.create_personale(**{
             'id': 2,
@@ -3182,7 +3331,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'matricola': '111111',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 2,
+            'cd_uo_aff_org': u2,
             'cv_full_it': 'AAA',
             'cv_short_it': 'A',
             'cv_full_eng': 'BBB',
@@ -3197,7 +3346,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'matricola': '111113',
             'fl_docente': 1,
             'flg_cessato': 1,
-            'aff_org': 1,
+            'cd_uo_aff_org': u1,
         })
         PersonaleUnitTest.create_personale(**{
             'id': 4,
@@ -3208,7 +3357,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'matricola': '111114',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'aff_org': 42,
+            'cd_uo_aff_org': u2,
         })
 
         DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
@@ -3292,84 +3441,132 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
         assert res.json()['results'][0]['TeacherID'] == '111112'
 
 
-class ApiAllPublicationsListUnitTest(TestCase):
+# class ApiAllPublicationsListUnitTest(TestCase):
+#
+#     def test_apiAllPublicationsList(self):
+#
+#         PubblicazioneCommunityUnitTest.create_pubblicazioneCommunity(**{
+#             'community_id': 1,
+#             'community_name': 'Community 1',
+#         })
+#
+#         PubblicazioneCommunityUnitTest.create_pubblicazioneCommunity(**{
+#             'community_id': 2,
+#             'community_name': 'Community 2',
+#         })
+#
+#         PubblicazioneCollectionUnitTest.create_pubblicazioneCollection(**{
+#             'collection_id': 1,
+#             'community_id': 1,
+#             'collection_name': 'Collection 1',
+#         })
+#
+#         PubblicazioneCollectionUnitTest.create_pubblicazioneCollection(**{
+#             'collection_id': 2,
+#             'community_id': 2,
+#             'collection_name': 'Collection 2',
+#         })
+#
+#         PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
+#             'item_id': 1,
+#             'title': 'pub1',
+#             'des_abstract': 'abstract italiano',
+#             'des_abstracteng': 'abstract inglese',
+#             'date_issued_year': 2020,
+#             'pubblicazione': 'Giornale 1',
+#             'label_pubblicazione': 'Rivista',
+#             'collection_id': 1,
+#             'url_pubblicazione': 'aaa',
+#         })
+#
+#         PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
+#             'item_id': 2,
+#             'title': 'pub2',
+#             'des_abstract': 'abstract italiano2',
+#             'des_abstracteng': 'abstract inglese2',
+#             'date_issued_year': 2019,
+#             'pubblicazione': 'Convegno Cosenza',
+#             'label_pubblicazione': 'Convegno',
+#             'collection_id': 2,
+#             'url_pubblicazione': 'aba',
+#
+#         })
+#
+#         PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
+#             'item_id': 3,
+#             'title': 'pub3',
+#             'des_abstract': 'abstract italiano3',
+#             'des_abstracteng': 'abstract inglese3',
+#             'date_issued_year': 2019,
+#             'pubblicazione': 'Convegno Cosenza',
+#             'label_pubblicazione': 'Convegno',
+#             'collection_id': 2,
+#             'url_pubblicazione': 'ccc',
+#
+#         })
+#
+#         req = Client()
+#
+#         url = reverse('ricerca:publicationslist')
+#
+#         # check url
+#         res = req.get(url)
+#
+#         assert res.status_code == 200
+#
+#         # GET
+#         assert res.json()[
+#             'results'][0]['PublicationAbstract'] == 'abstract inglese'
+#
+#         data = {'year': 2020, 'search': 'pub', 'type': 1}
+#
+#         res = req.get(url, data=data)
+#         assert len(res.json()['results']) == 1
 
-    def test_apiAllPublicationsList(self):
 
-        PubblicazioneCommunityUnitTest.create_pubblicazioneCommunity(**{
-            'community_id': 1,
-            'community_name': 'Community 1',
-        })
+class ApiAllStructuresListUnitTest(TestCase):
 
-        PubblicazioneCommunityUnitTest.create_pubblicazioneCommunity(**{
-            'community_id': 2,
-            'community_name': 'Community 2',
-        })
-
-        PubblicazioneCollectionUnitTest.create_pubblicazioneCollection(**{
-            'collection_id': 1,
-            'community_id': 1,
-            'collection_name': 'Collection 1',
-        })
-
-        PubblicazioneCollectionUnitTest.create_pubblicazioneCollection(**{
-            'collection_id': 2,
-            'community_id': 2,
-            'collection_name': 'Collection 2',
-        })
-
-        PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
-            'item_id': 1,
-            'title': 'pub1',
-            'des_abstract': 'abstract italiano',
-            'des_abstracteng': 'abstract inglese',
-            'date_issued_year': 2020,
-            'pubblicazione': 'Giornale 1',
-            'label_pubblicazione': 'Rivista',
-            'collection_id': 1,
-            'url_pubblicazione': 'aaa',
-        })
-
-        PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
-            'item_id': 2,
-            'title': 'pub2',
-            'des_abstract': 'abstract italiano2',
-            'des_abstracteng': 'abstract inglese2',
-            'date_issued_year': 2019,
-            'pubblicazione': 'Convegno Cosenza',
-            'label_pubblicazione': 'Convegno',
-            'collection_id': 2,
-            'url_pubblicazione': 'aba',
-
-        })
-
-        PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
-            'item_id': 3,
-            'title': 'pub3',
-            'des_abstract': 'abstract italiano3',
-            'des_abstracteng': 'abstract inglese3',
-            'date_issued_year': 2019,
-            'pubblicazione': 'Convegno Cosenza',
-            'label_pubblicazione': 'Convegno',
-            'collection_id': 2,
-            'url_pubblicazione': 'ccc',
-
-        })
-
+    def test_apiallstructureslist(self):
         req = Client()
 
-        url = reverse('ricerca:publicationslist')
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'ds_tipo_nodo': 'rettorato',
+            'cd_tipo_nodo': 'RET',
+            'denominazione': 'RETTORATO',
+            'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'ds_tipo_nodo': 'direzione',
+            'cd_tipo_nodo': 'DIR',
+            'denominazione': 'DIREZIONE',
+            'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
+        })
+        UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '3',
+            'ds_tipo_nodo': 'uffici',
+            'cd_tipo_nodo': 'UFF',
+            'denominazione': 'UFFICI',
+            'dt_fine_val': datetime.datetime.today() + datetime.timedelta(days=1),
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+            'cd_uo_aff_org': u1,
+        })
+
+        url = reverse('ricerca:allstructureslist')
 
         # check url
         res = req.get(url)
-
         assert res.status_code == 200
 
         # GET
-        assert res.json()[
-            'results'][0]['PublicationAbstract'] == 'abstract inglese'
 
-        data = {'year': 2020, 'search': 'pub', 'type': 1}
-
-        res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        res = req.get(url)
+        assert len(res.json()['results']) == 0

@@ -2142,11 +2142,9 @@ class Personale(InsModAbstract):
         blank=True,
         null=True)
 
-    aff_org = models.CharField(
-        db_column='AFF_ORG',
-        max_length=6,
-        blank=True,
-        null=True)
+    cd_uo_aff_org = models.ForeignKey('UnitaOrganizzativa', models.DO_NOTHING, db_column='CD_UO_AFF_ORG', blank=True,
+                                      null=True)  # Field name made lowercase.
+
     ds_aff_org = models.CharField(
         db_column='DS_AFF_ORG',
         max_length=255,
@@ -2158,11 +2156,9 @@ class Personale(InsModAbstract):
         blank=True,
         null=True)
 
-    aff_org2 = models.CharField(
-        db_column='AFF_ORG2',
-        max_length=6,
-        blank=True,
-        null=True)
+    cd_csa_aff_org2 = models.CharField(db_column='CD_CSA_AFF_ORG2', max_length=6, blank=True,
+                                       null=True)  # Field name made lowercase.
+
     ds_aff_org2 = models.CharField(
         db_column='DS_AFF_ORG2',
         max_length=255,
@@ -2174,11 +2170,9 @@ class Personale(InsModAbstract):
         blank=True,
         null=True)
 
-    aff_org3 = models.CharField(
-        db_column='AFF_ORG3',
-        max_length=6,
-        blank=True,
-        null=True)
+    cd_csa_aff_org3 = models.CharField(db_column='CD_CSA_AFF_ORG3', max_length=6, blank=True,
+                                       null=True)  # Field name made lowercase.
+
     ds_aff_org3 = models.CharField(
         db_column='DS_AFF_ORG3',
         max_length=255,
@@ -2190,11 +2184,9 @@ class Personale(InsModAbstract):
         blank=True,
         null=True)
 
-    aff_org4 = models.CharField(
-        db_column='AFF_ORG4',
-        max_length=6,
-        blank=True,
-        null=True)
+    cd_csa_aff_org4 = models.CharField(db_column='CD_CSA_AFF_ORG4', max_length=6, blank=True,
+                                       null=True)  # Field name made lowercase.
+
     ds_aff_org4 = models.CharField(
         db_column='DS_AFF_ORG4',
         max_length=255,
@@ -2326,6 +2318,9 @@ class Personale(InsModAbstract):
     # Field name made lowercase.
     cv_short_eng = models.TextField(
         db_column='CV_SHORT_ENG', blank=True, null=True)
+
+    cd_csa = models.CharField(db_column='CD_CSA', max_length=40, blank=True, null=True)  # Field name made lowercase.
+
 
     class Meta:
         managed = True
