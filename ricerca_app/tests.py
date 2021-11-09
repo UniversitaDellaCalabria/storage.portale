@@ -1666,35 +1666,34 @@ class ApiAddressbookListUnitTest(TestCase):
 
         # GET
         res = req.get(url)
-        assert len(res.json()['results']) == 6
-        assert res.json()['results'][2]['Email'][0] == 'email@email'
+        assert len(res.json()['results']) == 1
         assert res.json()[
-            'results'][2]['Role'] == 'PA'
+            'results'][0]['Role'] == 'PO'
 
         data = {'structure': '99', 'lang': 'it'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'search': 'Mungar'}
+        data = {'search': 'Ibra'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 4
+        assert len(res.json()['results']) == 1
         assert res.json()['results'][0]['Function'] is None
 
         data = {'search': 'Mungar', 'structure': '99'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'role': 'AM'}
+        data = {'role': 'PO'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['Name'] == 'Messi Lionel'
+        assert res.json()['results'][0]['Name'] == 'Ibra Zlatan'
 
         data = {'structuretree': '1'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 5
+        assert len(res.json()['results']) == 0
 
         data = {'structuretree': '2'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 5
+        assert len(res.json()['results']) == 0
 
 
 class ApiStructuresListUnitTest(TestCase):
@@ -3571,4 +3570,16 @@ class ApiAllStructuresListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
+        assert len(res.json()['results']) == 0
+
+        data = {'search': 'Direzione'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'type': 'DIR,UFF'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'father': '1'}
+        res = req.get(url, data=data)
         assert len(res.json()['results']) == 0

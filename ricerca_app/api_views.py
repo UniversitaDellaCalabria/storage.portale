@@ -764,8 +764,8 @@ class ApiAddressbookStructuresList(ApiEndpointList):
 
     def get_queryset(self):
 
-        # search = self.request.query_params.get('search')
-        # father = self.request.query_params.get('father')
-        # type = self.request.query_params.get('type')
+        search = self.request.query_params.get('search')
+        father = self.request.query_params.get('father')
+        type = self.request.query_params.get('type')
 
-        return ServicePersonale.getAllStructuresList()
+        return ServicePersonale.getAllStructuresList(search, father, type)

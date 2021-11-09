@@ -1126,10 +1126,14 @@ class ServiceDocente:
     #         select={
     #             'first_name': 'PUBBLICAZIONE_AUTORI.FIRST_NAME',
     #             'last_name': 'PUBBLICAZIONE_AUTORI.LAST_NAME',
+    #             'matricola': 'PERSONALE.MATRICOLA',
+    #
     #             },
-    #         tables=['PUBBLICAZIONE_AUTORI'],
+    #         tables=['PUBBLICAZIONE_AUTORI','PERSONALE'],
     #         where=[
     #             'PUBBLICAZIONE_AUTORI.ITEM_ID=PUBBLICAZIONE_DATI_BASE.ITEM_ID',
+    #             'PERSONALE.ID_AB=PUBBLICAZIONE_AUTORI.ID_AB'
+    #
     #         ]
     #     ).values(
     #         "item_id",
@@ -1144,7 +1148,8 @@ class ServiceDocente:
     #         'date_issued_year',
     #         'url_pubblicazione',
     #         'first_name',
-    #         'last_name').order_by(
+    #         'last_name',
+    #         'matricola').order_by(
     #         "-date_issued_year",
     #         "title").distinct()
     #     # for q in query:
@@ -1259,7 +1264,8 @@ class ServicePersonale:
             query_roles,
             query_structuretree,
             flg_cessato=0,
-            cd_uo_aff_org__isnull=False)
+            cd_uo_aff_org__isnull=False,
+            dt_rap_fin__gte=datetime.datetime.today())
 
         if structuretypes is not None:
             structuretypes = structuretypes.split(",")
@@ -1566,66 +1572,49 @@ class ServicePersonale:
             structures_tree |= Q(cd_uo_aff_org=child["uo"])
             structures_tree = ServicePersonale.getStructurePersonnelChild(
                 structures_tree, child['uo'])
-
         return structures_tree
 
     @staticmethod
-    def getAllStructuresList():
+    def getAllStructuresList(search, father, type):
 
         query_search = Q()
         query_father = Q()
         query_type = Q()
 
-        # if father == 'None':
-        #     query_father = Q(uo_padre__isnull=True)
-        # elif father:
-        #     query_father = Q(uo_padre=father)
-        #
-        # if search is not None:
-        #     for k in search.split(" "):
-        #         q_denominazione = Q(denominazione__icontains=k)
-        #         query_search &= q_denominazione
-        #
-        # if type:
-        #     for k in type.split(","):
-        #         q_type = Q(cd_tipo_nodo=k)
-        #         query_type |= q_type
+        if father == 'None':
+            query_father = Q(uo_padre__isnull=True)
+        elif father:
+            query_father = Q(uo_padre=father)
 
-        query = Personale.objects.filter(
-            query_search,
-            query_father,
-            query_type,
-            flg_cessato=0,
-            cd_uo_aff_org__isnull=False,
-        ).extra(
+        if search is not None:
+            for k in search.split(" "):
+                q_denominazione = Q(denominazione__icontains=k)
+                query_search &= q_denominazione
+
+        if type:
+            for k in type.split(","):
+                q_type = Q(cd_tipo_nodo=k)
+                query_type |= q_type
+
+        query = UnitaOrganizzativa.objects.filter(query_search,
+                                                  query_father,
+                                                  query_type).extra(
             select={
-                'uo': 'UNITA_ORGANIZZATIVA.UO',
-                'denominazione': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE',
-                'structure_type_cod': 'UNITA_ORGANIZZATIVA.CD_TIPO_NODO',
-                'structure_type_name': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
-            tables=['UNITA_ORGANIZZATIVA'],
+                'matricola': 'PERSONALE.MATRICOLA',
+                'cd_uo_aff_org': 'PERSONALE.CD_UO_AFF_ORG'},
+            tables=['PERSONALE'],
             where=[
                 'UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG',
-            ])
+                'PERSONALE.FLG_CESSATO=0',
+                'PERSONALE.CD_UO_AFF_ORG is not NULL']
+        )
 
         query = query.values(
             'uo',
             'denominazione',
-            'structure_type_cod',
-            'structure_type_name',
+            'cd_tipo_nodo',
+            'ds_tipo_nodo',
         ).distinct()
-
-        # query = UnitaOrganizzativa.objects.filter(
-        #     query_search,
-        #     query_father,
-        #     query_type,
-        #     dt_fine_val__gte=datetime.datetime.today(),
-        #     personale__flg_cessato=0,
-        #     personale__aff_org__isnull=False).values(
-        #     "uo",
-        #     "denominazione",
-        #     "ds_tipo_nodo",
-        #     "cd_tipo_nodo").distinct().order_by('denominazione')
 
         return query
 

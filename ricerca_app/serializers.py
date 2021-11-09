@@ -743,8 +743,8 @@ class AddressbookStructuresSerializer(CreateUpdateAbstract):
         return {
             'StructureCod': query['uo'],
             'StructureName': query['denominazione'],
-            'StructureTypeName': query['structure_type_name'],
-            'StructureTypeCOD': query['structure_type_cod'],
+            'StructureTypeName': query['cd_tipo_nodo'],
+            'StructureTypeCOD': query['ds_tipo_nodo'],
         }
 
 
@@ -1199,6 +1199,7 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
 #         # if query['Authors'] is not None:
 #         #     authors = PublicationsSerializer.to_dict_authors(
 #         #         query['Authors'])
+#         full_name = query['first_name'] + " " + query['last_name']
 #         return {
 #             'PublicationId': query['item_id'],
 #             'PublicationTitle': query['title'],
@@ -1211,22 +1212,23 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
 #             'PublicationYear': query['date_issued_year'],
 #             # 'PublicationAuthors': authors,
 #             'PublicationUrl': query['url_pubblicazione'],
-#             'AuthorId': query['first_name'],
-#             'AuthorName': query['last_name']
+#             'AuthorId': query['matricola'],
+#             'AuthorName': full_name
+#
 #         }
-
-    # @staticmethod
-    # def to_dict_authors(query):
-    #     result = []
-    #     for q in query:
-    #         if q['id_ab__matricola'] is None:
-    #             full_name = q['last_name'] + " " + q['first_name']
-    #         else:
-    #             full_name = q['id_ab__cognome'] + " " + q['id_ab__nome'] + \
-    #                 (" " + q['id_ab__middle_name']
-    #                  if q['id_ab__middle_name'] is not None else "")
-    #         result.append({
-    #             'AuthorId': q['id_ab__matricola'],
-    #             'AuthorName': full_name,
-    #         })
-    #     return result
+#
+#     # @staticmethod
+#     # def to_dict_authors(query):
+#     #     result = []
+#     #     for q in query:
+#     #         if q['id_ab__matricola'] is None:
+#     #             full_name = q['last_name'] + " " + q['first_name']
+#     #         else:
+#     #             full_name = q['id_ab__cognome'] + " " + q['id_ab__nome'] + \
+#     #                 (" " + q['id_ab__middle_name']
+#     #                  if q['id_ab__middle_name'] is not None else "")
+#     #         result.append({
+#     #             'AuthorId': q['id_ab__matricola'],
+#     #             'AuthorName': full_name,
+#     #         })
+#     #     return result
