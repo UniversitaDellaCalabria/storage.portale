@@ -3583,3 +3583,8 @@ class ApiAllStructuresListUnitTest(TestCase):
         data = {'father': '1'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
+
+        data = {'father': 'None'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+

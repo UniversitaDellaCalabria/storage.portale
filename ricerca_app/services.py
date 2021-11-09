@@ -1575,7 +1575,7 @@ class ServicePersonale:
         return structures_tree
 
     @staticmethod
-    def getAllStructuresList(search, father, type):
+    def getAllStructuresList(search=None, father=None, type=None):
 
         query_search = Q()
         query_father = Q()
