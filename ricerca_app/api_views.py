@@ -427,7 +427,7 @@ class ApiTeachingCoveragesList(ApiEndpointList):
         'con un set minimo di informazioni identificative: Nome, Ruolo, ' \
                   'Settore scientifico disciplinare, …'
     serializer_class = TeachersSerializer
-    filter_backends = []
+    filter_backends = [ApiTeachersListFilter]
     schema = TeachingCoveragesList()
 
     def get_queryset(self):
