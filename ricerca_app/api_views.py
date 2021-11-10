@@ -417,12 +417,18 @@ class ApiTeachersList(ApiEndpointList):
             search, regdidid, department, role, cds)
 
 
+class TeachingCoveragesList(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'ApiTeachingCoveragesList'
+
+
 class ApiTeachingCoveragesList(ApiEndpointList):
     description = 'Restituisce un elenco di Docenti con il fl_docente=1 e fl_cessato=0'\
         'con un set minimo di informazioni identificative: Nome, Ruolo, ' \
                   'Settore scientifico disciplinare, …'
     serializer_class = TeachersSerializer
-    filter_backends = [ApiTeachersListFilter]
+    filter_backends = []
+    schema = TeachingCoveragesList()
 
     def get_queryset(self):
 

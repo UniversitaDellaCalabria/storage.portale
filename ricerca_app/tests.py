@@ -3587,4 +3587,3 @@ class ApiAllStructuresListUnitTest(TestCase):
         data = {'father': 'None'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
-
