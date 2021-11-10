@@ -750,7 +750,7 @@ class ApiPublicationDetail(ApiEndpointDetail):
 
 # class ApiAllPublicationsList(ApiEndpointList):
 #     description = 'La funzione restituisce la lista delle pubblicazioni'
-#     serializer_class = PublicationsSerializer
+#     serializer_class = AllPublicationsSerializer
 #     filter_backends = [ApiPublicationsListFilter]
 #
 #     def get_queryset(self):

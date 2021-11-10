@@ -1105,24 +1105,21 @@ class ServiceDocente:
     #         search=None,
     #         year=None,
     #         type=None):
-    #     query_search = Q()
-    #     query_year = Q()
-    #     query_type = Q()
+    #     # query_search = Q()
+    #     # query_year = Q()
+    #     # query_type = Q()
     #
-    #     if search is not None:
-    #         for k in search.split(" "):
-    #             q_title = Q(title__icontains=k)
-    #             query_search &= q_title
-    #     if year is not None:
-    #         query_year = Q(date_issued_year=year)
-    #     if type is not None:
-    #         query_type = Q(collection_id__community_id__community_id=type)
+    #     # if search is not None:
+    #     #     for k in search.split(" "):
+    #     #         q_title = Q(title__icontains=k)
+    #     #         query_search &= q_title
+    #     # if year is not None:
+    #     #
+    #     #     query_year = Q(date_issued_year=year)
+    #     # if type is not None:
+    #     #     query_type = Q(collection_id__community_id__community_id=type)
     #
-    #     query = PubblicazioneDatiBase.objects.filter(
-    #         query_search,
-    #         query_year,
-    #         query_type,
-    #     ).extra(
+    #     query = PubblicazioneDatiBase.objects.extra(
     #         select={
     #             'first_name': 'PUBBLICAZIONE_AUTORI.FIRST_NAME',
     #             'last_name': 'PUBBLICAZIONE_AUTORI.LAST_NAME',
@@ -1147,11 +1144,15 @@ class ServiceDocente:
     #         "contributors",
     #         'date_issued_year',
     #         'url_pubblicazione',
+    #         'matricola',
     #         'first_name',
-    #         'last_name',
-    #         'matricola').order_by(
+    #         'last_name').order_by(
     #         "-date_issued_year",
     #         "title").distinct()
+    #
+    #     # for q in query:
+    #     #     q['Authors'] = q['first_name']+" "+ q['last_name']
+    #
     #     # for q in query:
     #     #     autori = PubblicazioneAutori.objects.filter(
     #     #         item_id=q['item_id']).values(
@@ -1159,8 +1160,7 @@ class ServiceDocente:
     #     #         "id_ab__cognome",
     #     #         "id_ab__middle_name",
     #     #         "id_ab__matricola",
-    #     #         "first_name",
-    #     #         "last_name")
+    #     #         )
     #     #     if len(autori) == 0:
     #     #         q['Authors'] = []
     #     #     else:

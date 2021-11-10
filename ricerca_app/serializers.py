@@ -1185,7 +1185,7 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
         }
 
 
-# class PublicationsSerializer(CreateUpdateAbstract):
+# class AllPublicationsSerializer(CreateUpdateAbstract):
 #
 #     def to_representation(self, instance):
 #         query = instance
@@ -1195,11 +1195,10 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
 #
 #     @staticmethod
 #     def to_dict(query, req_lang='en'):
-#         # authors = None
-#         # if query['Authors'] is not None:
-#         #     authors = PublicationsSerializer.to_dict_authors(
+#
+#         # authors = AllPublicationsSerializer.to_dict_authors(
 #         #         query['Authors'])
-#         full_name = query['first_name'] + " " + query['last_name']
+#         # print(query)
 #         return {
 #             'PublicationId': query['item_id'],
 #             'PublicationTitle': query['title'],
@@ -1212,8 +1211,6 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
 #             'PublicationYear': query['date_issued_year'],
 #             # 'PublicationAuthors': authors,
 #             'PublicationUrl': query['url_pubblicazione'],
-#             'AuthorId': query['matricola'],
-#             'AuthorName': full_name
 #
 #         }
 #
@@ -1221,14 +1218,10 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
 #     # def to_dict_authors(query):
 #     #     result = []
 #     #     for q in query:
-#     #         if q['id_ab__matricola'] is None:
+#     #         if q['matricola'] is not None:
 #     #             full_name = q['last_name'] + " " + q['first_name']
-#     #         else:
-#     #             full_name = q['id_ab__cognome'] + " " + q['id_ab__nome'] + \
-#     #                 (" " + q['id_ab__middle_name']
-#     #                  if q['id_ab__middle_name'] is not None else "")
 #     #         result.append({
-#     #             'AuthorId': q['id_ab__matricola'],
+#     #             'AuthorId': q['matricola'],
 #     #             'AuthorName': full_name,
 #     #         })
 #     #     return result

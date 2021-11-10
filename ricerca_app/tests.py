@@ -3445,6 +3445,51 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
 # class ApiAllPublicationsListUnitTest(TestCase):
 #
 #     def test_apiAllPublicationsList(self):
+#         u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+#             'uo': '1',
+#             'ds_tipo_nodo': 'facolta',
+#             'cd_tipo_nodo': '000',
+#             'id_ab': 1,
+#             'denominazione': 'aaa',
+#             'denominazione_padre': 'c',
+#             'uo_padre': '11',
+#
+#         })
+#         u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+#             'uo': '2',
+#             'ds_tipo_nodo': 'direzione',
+#             'cd_tipo_nodo': 'CDS',
+#             'id_ab': 2,
+#             'denominazione': 'bbb',
+#             'denominazione_padre': 'd',
+#             'uo_padre': '22',
+#         })
+#         p1 = PersonaleUnitTest.create_personale(**{
+#             'id': 1,
+#             'nome': 'Simone',
+#             'cognome': 'Mungari',
+#             'cd_ruolo': 'PA',
+#             'ds_ruolo_locale': 'Professore Associato',
+#             'id_ab': 1,
+#             'matricola': '111112',
+#             'fl_docente': 1,
+#             'flg_cessato': 0,
+#             'cd_uo_aff_org': u1,
+#             'cod_fis': 'SMN1',
+#         })
+#
+#         p2 = PersonaleUnitTest.create_personale(**{
+#             'id': 2,
+#             'nome': 'Simone',
+#             'cognome': 'Mungari',
+#             'cd_ruolo': 'PA',
+#             'ds_ruolo_locale': 'Professore Associato',
+#             'id_ab': 2,
+#             'fl_docente': 1,
+#             'flg_cessato': 0,
+#             'cd_uo_aff_org': u2,
+#             'cod_fis': 'SMN2',
+#         })
 #
 #         PubblicazioneCommunityUnitTest.create_pubblicazioneCommunity(**{
 #             'community_id': 1,
@@ -3506,6 +3551,17 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
 #
 #         })
 #
+#         PubblicazioneAutoriUnitTest.create_pubblicazioneAutori(**{
+#             'item_id': 1,
+#             'id_ab': p1,
+#         })
+#
+#         PubblicazioneAutoriUnitTest.create_pubblicazioneAutori(**{
+#             'item_id': 3,
+#             'id_ab': p2,
+#
+#         })
+#
 #         req = Client()
 #
 #         url = reverse('ricerca:publicationslist')
@@ -3516,13 +3572,10 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
 #         assert res.status_code == 200
 #
 #         # GET
+#         print(res.json())
 #         assert res.json()[
-#             'results'][0]['PublicationAbstract'] == 'abstract inglese'
-#
-#         data = {'year': 2020, 'search': 'pub', 'type': 1}
-#
-#         res = req.get(url, data=data)
-#         assert len(res.json()['results']) == 1
+#                    'results'][0]['PublicationAbstract'] == 'abstract inglese'
+
 
 
 class ApiAllStructuresListUnitTest(TestCase):
