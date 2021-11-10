@@ -2989,6 +2989,10 @@ class UnitaOrganizzativa(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
 
+    # Field name made lowercase.
+    ds_mission = models.TextField(
+        db_column='DS_MISSION', blank=True, null=True)
+
     class Meta:
         managed = True
         db_table = 'UNITA_ORGANIZZATIVA'

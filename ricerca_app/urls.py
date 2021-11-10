@@ -112,7 +112,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
 
     urlpatterns += path('{}/activities/<int:studyactivityid>/'.format(base_url),
                         api_views.ApiStudyActivityDetail.as_view(),
-                        name='studyactivityinfo'),
+                        name='studyactivitydetail'),
 
     # urlpatterns += path('{}/cdsmainteachers/'.format(base_url),
     #                     api_views.ApiCdSMainTeachersList.as_view(),
@@ -272,12 +272,22 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiPublicationsCommunityTypesList.as_view(),
                         name='publicationscommunitytypes'),
 
-    # urlpatterns += path(
-    #     '{}/publications/'.format(base_url),
-    #     api_views.ApiAllPublicationsList.as_view(),
-    #     name='publicationslist'),
+    urlpatterns += path(
+        '{}/publications/'.format(base_url),
+        api_views.ApiAllPublicationsList.as_view(),
+        name='publicationslist'),
+
+    urlpatterns += path(
+        '{}/publications/<str:publicationid>/'.format(base_url),
+        api_views.ApiPublicationInfo.as_view(),
+        name='publicationinfo'),
 
     urlpatterns += path(
         '{}/addressbookstructures/'.format(base_url),
         api_views.ApiAddressbookStructuresList.as_view(),
         name='allstructureslist'),
+
+    urlpatterns += path(
+        '{}/addressbookstructures/<str:structureid>/'.format(base_url),
+        api_views.ApiAddressbookStructureDetail.as_view(),
+        name='addressbookstructuredetail'),

@@ -341,8 +341,8 @@ LABEL_MAPPING = {
         'Cover': 'Cover',
         'CodErc2': 'Erc2 Cod',
         'RLineAster2Id': 'Aster2 Cod',
-        'RLineAster2Name': 'Aster2 Name'
-
+        'RLineAster2Name': 'Aster2 Name',
+        'StructureMission': 'Structure Mission',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -583,6 +583,7 @@ LABEL_MAPPING = {
         'Cover': 'Peso',
         'CodErc2': 'Codice Erc2',
         'RLineAster2Id': 'Codice Aster2',
-        'RLineAster2Name': 'Nome Aster2'
+        'RLineAster2Name': 'Nome Aster2',
+        'StructureMission': 'Obiettivo Struttura'
     }
 }
