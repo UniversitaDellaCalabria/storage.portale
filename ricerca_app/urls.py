@@ -274,12 +274,12 @@ if 'rest_framework' in settings.INSTALLED_APPS:
 
     urlpatterns += path(
         '{}/publications/'.format(base_url),
-        api_views.ApiAllPublicationsList.as_view(),
+        api_views.ApiPublicationsList.as_view(),
         name='publicationslist'),
 
     urlpatterns += path(
         '{}/publications/<str:publicationid>/'.format(base_url),
-        api_views.ApiPublicationInfo.as_view(),
+        api_views.ApiPublicationDetail.as_view(),
         name='publicationinfo'),
 
     urlpatterns += path(

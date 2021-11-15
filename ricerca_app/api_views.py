@@ -715,18 +715,17 @@ class ApiErc0List(ApiEndpointList):
 
 class ApiPublicationsList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle pubblicazioni di un dato docente'
-    serializer_class = PublicationSerializer
+    serializer_class = ListPublicationSerializer
     filter_backends = [ApiPublicationsListFilter]
 
     def get_queryset(self):
-        teacherid = self.kwargs['teacherid']
+        teacherid = self.kwargs.get('teacherid')
         search = self.request.query_params.get('search')
         year = self.request.query_params.get('year')
         type = self.request.query_params.get('type')
-        contributor = self.request.query_params.get('contributor')
 
         return ServiceDocente.getPublicationsList(
-            teacherid, search, year, type, contributor)
+            teacherid, search, year, type)
 
 
 class ApiPublicationsCommunityTypesList(ApiEndpointList):
@@ -745,36 +744,8 @@ class ApiPublicationDetail(ApiEndpointDetail):
 
     def get_queryset(self):
         publicationid = self.kwargs['publicationid']
-        teacherid = self.kwargs['teacherid']
-        return ServiceDocente.getPublication(publicationid, teacherid)
 
-
-class ApiAllPublicationsList(ApiEndpointList):
-    description = 'La funzione restituisce la lista delle pubblicazioni'
-    serializer_class = AllPublicationsSerializer
-    filter_backends = [ApiPublicationsListFilter]
-
-    def get_queryset(self):
-
-        search = self.request.query_params.get('search')
-        year = self.request.query_params.get('year')
-        type = self.request.query_params.get('type')
-        contributors = self.request.query_params.get('contributors')
-
-        return ServiceDocente.getAllPublicationsList(
-            search, year, type, contributors)
-
-
-class ApiPublicationInfo(ApiEndpointDetail):
-    description = 'La funzione restituisce il dettaglio di una particolare pubblicazione'
-    serializer_class = ParticularPublicationSerializer
-    filter_backends = []
-
-    def get_queryset(self):
-
-        publicationid = self.kwargs['publicationid']
-
-        return ServiceDocente.getPublicationInfo(publicationid)
+        return ServiceDocente.getPublication(publicationid)
 
 
 class ApiAddressbookStructuresList(ApiEndpointList):

@@ -1142,7 +1142,7 @@ class PublicationSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
         authors = None
-        if query['Authors'] is not None:
+        if query.get('Authors') is not None:
             authors = PublicationSerializer.to_dict_authors(
                 query['Authors'])
         return {
@@ -1156,7 +1156,6 @@ class PublicationSerializer(CreateUpdateAbstract):
             'PublicationContributors': query['contributors'],
             'PublicationYear': query['date_issued_year'],
             'PublicationAuthors': authors,
-            'PublicationReferenceAuthor': query['ReferenceAuthor'],
             'PublicationUrl': query['url_pubblicazione'],
         }
 
@@ -1175,6 +1174,15 @@ class PublicationSerializer(CreateUpdateAbstract):
                 'AuthorName': full_name,
             })
         return result
+
+
+class ListPublicationSerializer(PublicationSerializer):
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        response = PublicationSerializer.to_dict(query, req_lang)
+        response.pop('PublicationAuthors')
+        return response
 
 
 class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
@@ -1191,73 +1199,3 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
             'CommunityId': query['community_id'],
             'CommunityName': query['community_name'],
         }
-
-
-class AllPublicationsSerializer(CreateUpdateAbstract):
-
-    def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query, str(self.context['language']).lower()))
-        return data
-
-    @staticmethod
-    def to_dict(query, req_lang='en'):
-
-        return {
-            'PublicationId': query['item_id'],
-            'PublicationTitle': query['title'],
-            'PublicationAbstract': query['des_abstract'] if req_lang == "it" or query['des_abstracteng'] is None else query['des_abstracteng'],
-            'PublicationCollection': query['collection_id__collection_name'],
-            'PublicationCommunity': query['collection_id__community_id__community_name'],
-            'Publication': query['pubblicazione'],
-            'PublicationLabel': query['label_pubblicazione'],
-            'PublicationContributors': query['contributors'],
-            'PublicationYear': query['date_issued_year'],
-            'PublicationUrl': query['url_pubblicazione'],
-        }
-
-
-class ParticularPublicationSerializer(CreateUpdateAbstract):
-
-    def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query, str(self.context['language']).lower()))
-        return data
-
-    @staticmethod
-    def to_dict(query, req_lang='en'):
-        authors = None
-        if query['Authors'] is not None:
-            authors = ParticularPublicationSerializer.to_dict_authors(
-                query['Authors'])
-        return {
-            'PublicationId': query['item_id'],
-            'PublicationTitle': query['title'],
-            'PublicationAbstract': query['des_abstract'] if req_lang == "it" or query['des_abstracteng'] is None else query['des_abstracteng'],
-            'PublicationCollection': query['collection_id__collection_name'],
-            'PublicationCommunity': query['collection_id__community_id__community_name'],
-            'Publication': query['pubblicazione'],
-            'PublicationLabel': query['label_pubblicazione'],
-            'PublicationContributors': query['contributors'],
-            'PublicationYear': query['date_issued_year'],
-            'PublicationAuthors': authors,
-            'PublicationUrl': query['url_pubblicazione'],
-        }
-
-    @staticmethod
-    def to_dict_authors(query):
-        result = []
-        for q in query:
-            if q['id_ab__matricola'] is None:
-                full_name = q['last_name'] + " " + q['first_name']
-            else:
-                full_name = q['id_ab__cognome'] + " " + q['id_ab__nome'] + \
-                    (" " + q['id_ab__middle_name']
-                     if q['id_ab__middle_name'] is not None else "")
-            result.append({
-                'AuthorId': q['id_ab__matricola'],
-                'AuthorName': full_name,
-            })
-        return result

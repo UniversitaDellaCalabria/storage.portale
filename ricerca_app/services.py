@@ -1007,26 +1007,30 @@ class ServiceDocente:
             teacherid=None,
             search=None,
             year=None,
-            type=None,
-            contributor=None):
+            type=None
+    ):
         query_search = Q()
         query_year = Q()
         query_type = Q()
+        query_teacher = Q()
 
         if search is not None:
             for k in search.split(" "):
-                q_title = Q(title__icontains=k)
-                query_search &= q_title
+                query_search = Q(
+                    title__icontains=k) | Q(
+                    contributors__icontains=k)
         if year is not None:
             query_year = Q(date_issued_year=year)
         if type is not None:
             query_type = Q(collection_id__community_id__community_id=type)
+        if teacherid:
+            query_teacher = Q(pubblicazioneautori__id_ab__matricola=teacherid)
 
         query = PubblicazioneDatiBase.objects.filter(
             query_search,
             query_year,
             query_type,
-            pubblicazioneautori__id_ab__matricola=teacherid).values(
+            query_teacher).values(
             "item_id",
             "title",
             "des_abstract",
@@ -1041,51 +1045,10 @@ class ServiceDocente:
             "-date_issued_year",
             "title").distinct()
 
-        if contributor is not None:
-            res = []
-            for q in query:
-                contributors = PubblicazioneAutori.objects.filter(
-                    item_id=q['item_id']).values(
-                    "id_ab__nome",
-                    "id_ab__cognome",
-                    "id_ab__middle_name",
-                    "id_ab__matricola",
-                    "first_name",
-                    "last_name"
-                )
-
-                q['Authors'] = None
-                for t in contributors:
-                    if t['id_ab__matricola'] == contributor:
-                        q['Authors'] = contributors
-
-                if q['Authors'] is not None:
-                    res.append(q)
-
-                q['ReferenceAuthor'] = teacherid
-
-            return res
-
-        for q in query:
-            autori = PubblicazioneAutori.objects.filter(
-                item_id=q['item_id']).values(
-                "id_ab__nome",
-                "id_ab__cognome",
-                "id_ab__middle_name",
-                "id_ab__matricola",
-                "first_name",
-                "last_name")
-            if len(autori) == 0:
-                q['Authors'] = []
-            else:
-                q['Authors'] = autori
-
-            q['ReferenceAuthor'] = teacherid
-
         return query
 
     @staticmethod
-    def getPublication(publicationid=None, teacherid=None):
+    def getPublication(publicationid=None):
 
         query = PubblicazioneDatiBase.objects.filter(
             item_id=publicationid).values(
@@ -1116,8 +1079,6 @@ class ServiceDocente:
                 q['Authors'] = []
             else:
                 q['Authors'] = autori
-
-            q['ReferenceAuthor'] = teacherid
 
         return query
 
@@ -1125,86 +1086,6 @@ class ServiceDocente:
     def getPublicationsCommunityTypesList():
         query = PubblicazioneCommunity.objects.all().values(
             "community_id", "community_name").order_by("community_id").distinct()
-        return query
-
-    @staticmethod
-    def getAllPublicationsList(
-            search=None,
-            year=None,
-            type=None,
-            contributors=None):
-
-        query_search = Q()
-        query_year = Q()
-        query_type = Q()
-        query_contributors = Q()
-
-        if search is not None:
-            for k in search.split(" "):
-                q_title = Q(title__icontains=k)
-                query_search &= q_title
-        if year is not None:
-            query_year = Q(date_issued_year=year)
-        if type is not None:
-            query_type = Q(collection_id__community_id__community_id=type)
-        if contributors is not None:
-            for k in contributors.split(" "):
-                q_contr = Q(contributors__icontains=k)
-                query_contributors &= q_contr
-
-        query = PubblicazioneDatiBase.objects.filter(
-            query_search, query_year, query_type, query_contributors
-        ).values(
-            "item_id",
-            "title",
-            "des_abstract",
-            "des_abstracteng",
-            "collection_id__collection_name",
-            "collection_id__community_id__community_name",
-            "pubblicazione",
-            "label_pubblicazione",
-            "contributors",
-            'date_issued_year',
-            'url_pubblicazione',
-        ).order_by(
-            "-date_issued_year",
-            "title").distinct()
-
-        return query
-
-    @staticmethod
-    def getPublicationInfo(publicationid=None):
-
-        query = PubblicazioneDatiBase.objects.filter(
-            item_id=publicationid).values(
-            "item_id",
-            "title",
-            "des_abstract",
-            "des_abstracteng",
-            "collection_id__collection_name",
-            "collection_id__community_id__community_name",
-            "pubblicazione",
-            "label_pubblicazione",
-            "contributors",
-            'date_issued_year',
-            'url_pubblicazione').order_by(
-            "date_issued_year",
-            "title").distinct()
-
-        for q in query:
-            autori = PubblicazioneAutori.objects.filter(
-                item_id=publicationid).values(
-                "id_ab__nome",
-                "id_ab__cognome",
-                "id_ab__middle_name",
-                "id_ab__matricola",
-                "first_name",
-                "last_name")
-            if len(autori) == 0:
-                q['Authors'] = []
-            else:
-                q['Authors'] = autori
-
         return query
 
 
