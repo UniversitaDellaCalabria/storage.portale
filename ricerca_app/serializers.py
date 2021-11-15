@@ -975,6 +975,12 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             'ScientificDirectorId': query['matricola_responsabile_scientifico'],
             'LaboratoryResearchPersonnel': research_personnel,
             'LaboratoryTechPersonnel': tech_personnel,
+            'LaboratoryServicesScope': query['finalita_servizi_it'] if req_lang == "it" or query[
+                'finalita_servizi_en'] is None else query['finalita_servizi_en'],
+            'LaboratoryResearchScope': query['finalita_ricerca_it'] if req_lang == "it" or query[
+                'finalita_ricerca_en'] is None else query['finalita_ricerca_en'],
+            'LaboratoryTeachingScope': query['finalita_didattica_it'] if req_lang == "it" or query[
+                'finalita_didattica_en'] is None else query['finalita_didattica_en'],
         }
 
     @staticmethod

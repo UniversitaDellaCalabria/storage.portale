@@ -1432,7 +1432,7 @@ class DidatticaTestiRegolamento(InsModAbstract):
         return '{} {}'.format(self.txt_id, self.tipo_testo_regdid_cod)
 
 
-class FunzioniUnitaOrganizzativa(models.Model):
+class UnitaOrganizzativaFunzioni(models.Model):
     matricola = models.CharField(
         db_column='MATRICOLA',
         max_length=6,
@@ -1493,7 +1493,7 @@ class FunzioniUnitaOrganizzativa(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'FUNZIONI_UNITA_ORGANIZZATIVA'
+        db_table = 'UNITA_ORGANIZZATIVA_FUNZIONI'
 
 
 class LaboratorioAltriDipartimenti(models.Model):

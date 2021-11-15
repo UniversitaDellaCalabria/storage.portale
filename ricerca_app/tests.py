@@ -10,7 +10,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest, \
     RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest, \
     DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest, \
-    PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest, FunzioniUnitaOrganizzativaUnitTest, \
+    PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest, UnitaOrganizzativaFunzioniUnitTest, \
     UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest, LaboratorioDatiBaseUnitTest, \
     LaboratorioAttivitaUnitTest, LaboratorioDatiErc1UnitTest, LaboratorioPersonaleRicercaUnitTest, \
     LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest, \
@@ -1268,7 +1268,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             'prg_priorita': 1,
         })
 
-        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'cod_fis': p1,
             'termine': '2222-03-26',
             'decorrenza': '1900-01-01',
@@ -1721,7 +1721,7 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'contatto': 'email2@email',
             'prg_priorita': 1,
         })
-        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'id_ab': 2,
             'ds_funzione': 'Amministrazione Rettorato',
             'cod_fis': p2,
@@ -2033,7 +2033,7 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'prg_priorita': 2
         })
 
-        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'id_ab': 1,
             'ds_funzione': 'Amministrazione',
             'termine': "2999-12-1",
@@ -2041,7 +2041,7 @@ class ApiPersonaleDetailUnitTest(TestCase):
 
         })
 
-        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'id_ab': 2,
             'ds_funzione': 'Delega',
             'termine': None,
@@ -2173,7 +2173,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'prg_priorita': 2,
         })
 
-        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'id_ab': 1,
             'ds_funzione': 'Amministrazione',
             'termine': "2999-12-1",
@@ -2181,7 +2181,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'unita_organizzativa': u1,
         })
 
-        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'id_ab': 2,
             'ds_funzione': 'Delega',
             'termine': None,
@@ -3915,7 +3915,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'prg_priorita': 2,
         })
 
-        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'id_ab': 1,
             'ds_funzione': 'Amministrazione',
             'termine': "2999-12-1",
@@ -3923,7 +3923,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'unita_organizzativa': u1,
         })
 
-        FunzioniUnitaOrganizzativaUnitTest.create_funzioniUnitaOrganizzativa(**{
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'id_ab': 2,
             'ds_funzione': 'Delega',
             'termine': None,

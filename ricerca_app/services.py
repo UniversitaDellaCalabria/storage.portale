@@ -8,7 +8,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaPdsRegolamento, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
-    LaboratorioUbicazione, FunzioniUnitaOrganizzativa, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
+    LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
     RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2
 
@@ -939,7 +939,7 @@ class ServiceDocente:
             "personalecontatti__contatto")
         contacts = list(contacts)
 
-        functions = FunzioniUnitaOrganizzativa.objects.filter(
+        functions = UnitaOrganizzativaFunzioni.objects.filter(
             matricola=teacher,
             termine__gt=datetime.datetime.now(),
             decorrenza__lt=datetime.datetime.now()).values(
@@ -1341,8 +1341,8 @@ class ServicePersonale:
             "matricola",
             'personalecontatti__cd_tipo_cont__descr_contatto',
             'personalecontatti__contatto',
-            'funzioniunitaorganizzativa__ds_funzione',
-            'funzioniunitaorganizzativa__termine',
+            'unitaorganizzativafunzioni__ds_funzione',
+            'unitaorganizzativafunzioni__termine',
             'denominazione',
             'structure_type_cod',
             'structure_type_name',
@@ -1378,8 +1378,8 @@ class ServicePersonale:
                                 "matricola",
                                 'personalecontatti__cd_tipo_cont__descr_contatto',
                                 'personalecontatti__contatto',
-                                'funzioniunitaorganizzativa__ds_funzione',
-                                'funzioniunitaorganizzativa__termine',
+                                'unitaorganizzativafunzioni__ds_funzione',
+                                'unitaorganizzativafunzioni__termine',
                                 'denominazione',
                                 'structure_type_cod',
                                 'structure_type_name',
@@ -1419,7 +1419,7 @@ class ServicePersonale:
                     'ds_ruolo_locale': q['ds_ruolo_locale'],
                     'cd_uo_aff_org': q['cd_uo_aff_org'],
                     'matricola': q['matricola'],
-                    'Funzione': q['funzioniunitaorganizzativa__ds_funzione'] if q['funzioniunitaorganizzativa__termine'] is not None and q['funzioniunitaorganizzativa__termine'] >= datetime.datetime.today() else None,
+                    'Funzione': q['unitaorganizzativafunzioni__ds_funzione'] if q['unitaorganizzativafunzioni__termine'] is not None and q['unitaorganizzativafunzioni__termine'] >= datetime.datetime.today() else None,
                     'Struttura': q['denominazione'] if 'denominazione' in q.keys() else None,
                     'TipologiaStrutturaCod': q['structure_type_cod'] if 'structure_type_cod' in q.keys() else None,
                     'TipologiaStrutturaNome': q['structure_type_name'] if 'structure_type_name' in q.keys() else None,
@@ -1539,8 +1539,8 @@ class ServicePersonale:
             "Struttura",
             'TipologiaStrutturaCod',
             'TipologiaStrutturaNome',
-            'funzioniunitaorganizzativa__ds_funzione',
-            'funzioniunitaorganizzativa__termine',
+            'unitaorganizzativafunzioni__ds_funzione',
+            'unitaorganizzativafunzioni__termine',
             'fl_docente',
             "cv_full_it",
             "cv_short_it",
@@ -1548,8 +1548,8 @@ class ServicePersonale:
             "cv_short_eng"
         )
         for q in query:
-            if q["funzioniunitaorganizzativa__termine"] is not None and q["funzioniunitaorganizzativa__termine"] >= datetime.datetime.today():
-                q["Funzione"] = q["funzioniunitaorganizzativa__ds_funzione"]
+            if q["unitaorganizzativafunzioni__termine"] is not None and q["unitaorganizzativafunzioni__termine"] >= datetime.datetime.today():
+                q["Funzione"] = q["unitaorganizzativafunzioni__ds_funzione"]
             else:
                 q["Funzione"] = None
             for c in contacts_to_take:
@@ -1588,7 +1588,7 @@ class ServicePersonale:
             for c in contacts:
                 q[c['unitaorganizzativacontatti__cd_tipo_cont']].append(
                     c['unitaorganizzativacontatti__contatto'])
-            funzioni_personale = FunzioniUnitaOrganizzativa.objects.filter(
+            funzioni_personale = UnitaOrganizzativaFunzioni.objects.filter(
                 unita_organizzativa__uo=q['uo'],
                 termine__gt=datetime.datetime.now()).values(
                 "ds_funzione",
@@ -1702,6 +1702,12 @@ class ServiceLaboratorio:
             'responsabile_scientifico',
             'matricola_responsabile_scientifico',
             'laboratorio_interdipartimentale',
+            "finalita_servizi_it",
+            "finalita_servizi_en",
+            "finalita_ricerca_it",
+            "finalita_ricerca_en",
+            "finalita_didattica_en",
+            "finalita_didattica_it",
         ).distinct()
 
         for q in query:

@@ -29,7 +29,7 @@ from .models import (
     DidatticaDottoratoRegolamento,
     PersonaleContatti,
     PersonaleUoTipoContatto,
-    FunzioniUnitaOrganizzativa,
+    UnitaOrganizzativaFunzioni,
     UnitaOrganizzativa,
     UnitaOrganizzativaContatti,
     LaboratorioAttivita,
@@ -406,14 +406,14 @@ class PersonaleTipoContattoUnitTest(TestCase):
         return obj
 
 
-class FunzioniUnitaOrganizzativaUnitTest(TestCase):
+class UnitaOrganizzativaFunzioniUnitTest(TestCase):
     @classmethod
-    def create_funzioniUnitaOrganizzativa(cls, **kwargs):
+    def create_unitaOrganizzativaFunzioni(cls, **kwargs):
         data = {}
         for k, v in kwargs.items():
             data[k] = v
 
-        obj = FunzioniUnitaOrganizzativa.objects.create(**data)
+        obj = UnitaOrganizzativaFunzioni.objects.create(**data)
         return obj
 
 
