@@ -9,7 +9,7 @@ from django.utils.encoding import force_str
 class UnicalStorageApiPaginationList(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
-    max_page_size = 250
+    max_page_size = 1000
 
     def url_refactor(self, url):
         pattern = re.compile(r"https?://")
