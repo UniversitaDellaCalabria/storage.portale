@@ -153,21 +153,22 @@ if 'rest_framework' in settings.INSTALLED_APPS:
 
     urlpatterns += path(
         '{}/teaching-coverages/<str:teacherid>/studyactivities/'.format(base_url),
-        api_views.ApiTeacherStudyActivitiesList.as_view(),
+        api_views.ApiTeachingCoverageActivitiesList.as_view(),
         name='teachingcoveragesstudyactivities'),
 
-    urlpatterns += path('{}/teaching-coverages/<str:teacherid>/'.format(base_url),
-                        api_views.ApiTeacherDetail.as_view(),
-                        name='teachingcoveragesinfo'),
+    urlpatterns += path(
+        '{}/teaching-coverages/<str:teacherid>/'.format(base_url),
+        api_views.ApiTeachingCoverageDetail.as_view(),
+        name='teachingcoveragesinfo'),
 
     urlpatterns += path(
         '{}/teaching-coverages/<str:teacherid>/publications/'.format(base_url),
-        api_views.ApiPublicationsList.as_view(),
+        api_views.ApiTeachingCoveragePublicationsList.as_view(),
         name='teachingcoveragespublications'),
 
     urlpatterns += path(
         '{}/teaching-coverages/<str:teacherid>/publications/<str:publicationid>/'.format(base_url),
-        api_views.ApiPublicationDetail.as_view(),
+        api_views.ApiTeachingCoveragePublicationDetail.as_view(),
         name='teachingcoveragespublicationdetail'),
 
     urlpatterns += path(

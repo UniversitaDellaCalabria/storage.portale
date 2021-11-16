@@ -419,7 +419,7 @@ class ApiTeachersList(ApiEndpointList):
 
 class TeachingCoveragesList(AutoSchema):
     def get_operation_id(self, path, method):
-        return 'ApiTeachingCoveragesList'
+        return 'listTeachingCoverages'
 
 
 class ApiTeachingCoveragesList(ApiEndpointList):
@@ -459,6 +459,15 @@ class ApiTeacherStudyActivitiesList(ApiEndpointList):
             teacherid, year, yearFrom, yearTo)
 
 
+class TeachingCoverageStudyActivitiesList(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'listTeachingCoverageStudyActivities'
+
+
+class ApiTeachingCoverageActivitiesList(ApiTeacherStudyActivitiesList):
+    schema = TeachingCoverageStudyActivitiesList()
+
+
 class ApiTeacherDetail(ApiEndpointDetail):
     description = 'La funzione restituisce la scheda informativa' \
                   ' dettagliata di un docente'
@@ -469,6 +478,16 @@ class ApiTeacherDetail(ApiEndpointDetail):
         teacherid = self.kwargs['teacherid']
 
         return ServiceDocente.getDocenteInfo(teacherid)
+
+
+class TeachingCoveragesInfo(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'retrieveTeachingCoverageInfo'
+
+
+class ApiTeachingCoverageDetail(ApiTeacherDetail):
+    schema = TeachingCoveragesInfo()
+
 
 # ----Dottorati----
 
@@ -728,6 +747,15 @@ class ApiPublicationsList(ApiEndpointList):
             teacherid, search, year, type)
 
 
+class TeachingCoveragePublicationsList(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'listTeachingCoveragePublications'
+
+
+class ApiTeachingCoveragePublicationsList(ApiPublicationsList):
+    schema = TeachingCoveragePublicationsList()
+
+
 class ApiPublicationsCommunityTypesList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle tipologie di pubblicazioni'
     serializer_class = PublicationsCommunityTypesSerializer
@@ -746,6 +774,15 @@ class ApiPublicationDetail(ApiEndpointDetail):
         publicationid = self.kwargs['publicationid']
 
         return ServiceDocente.getPublication(publicationid)
+
+
+class TeachingCoveragePublicationsDetail(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'retrieveTeachingCoveragePublication'
+
+
+class ApiTeachingCoveragePublicationDetail(ApiPublicationDetail):
+    schema = TeachingCoveragePublicationsDetail()
 
 
 class ApiAddressbookStructuresList(ApiEndpointList):
