@@ -203,9 +203,8 @@ class ServiceDidatticaAttivitaFormativa:
                     'sett_des',
                     'freq_obblig_flg',
                     'cds__nome_cds_it',
-                    'cds__nome_cds_eng',
-                    'didatticacopertura__coper_peso',
-                    'didatticacopertura__ore')
+                    'cds__nome_cds_eng'
+                )
             return final_query
         else:
             query = DidatticaAttivitaFormativa.objects.filter(
@@ -233,8 +232,7 @@ class ServiceDidatticaAttivitaFormativa:
                 'freq_obblig_flg',
                 'cds__nome_cds_it',
                 'cds__nome_cds_eng',
-                'didatticacopertura__coper_peso',
-                'didatticacopertura__ore')
+            )
 
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
