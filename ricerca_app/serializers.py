@@ -831,8 +831,6 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-        activities = LaboratoryDetailSerializer.to_dict_activities(
-            query['Activities'])
         erc1 = Erc1Serializer.to_dict(query['Erc1'][0], req_lang)
         research_personnel = LaboratoryDetailSerializer.to_dict_research_personnel(
             query['ResearchPersonnel'])
@@ -840,6 +838,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             query['TechPersonnel'])
         offered_services = LaboratoryDetailSerializer.to_dict_offered_services(
             query['OfferedServices'])
+        scopes = LaboratoryDetailSerializer.to_dict_scopes(query['Scopes'])
         if query['Location'] is None:
             location = None
         else:
@@ -861,14 +860,14 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
             'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
             'DepartmentReferentName': query['id_dipartimento_riferimento__dip_des_it'] if req_lang == "it" or query['id_dipartimento_riferimento__dip_des_eng'] is None else query['id_dipartimento_riferimento__dip_des_eng'],
-            'InfrastructureReferentName': query['infrastruttura_riferimento'],
+            'InfrastructureReferentName': query['id_infrastruttura_riferimento__descrizione'],
             'Interdepartmental': query['laboratorio_interdipartimentale'],
             'ExtraDepartments': extra_departments,
             'LaboratoryScope': query['ambito'],
             'LaboratoryServicesScope': query['finalita_servizi_it'] if req_lang == "it" or query['finalita_servizi_en'] is None else query['finalita_servizi_en'],
             'LaboratoryResearchScope': query['finalita_ricerca_it'] if req_lang == "it" or query['finalita_ricerca_en'] is None else query['finalita_ricerca_en'],
             'LaboratoryTeachingScope': query['finalita_didattica_it'] if req_lang == "it" or query['finalita_didattica_en'] is None else query['finalita_didattica_en'],
-            'LaboratoryActivities': activities,
+            'LaboratoryScopes': scopes,
             'LaboratoryErc1': erc1,
             'LaboratoryResearchPersonnel': research_personnel,
             'LaboratoryTechPersonnel': tech_personnel,
@@ -878,12 +877,11 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         }
 
     @staticmethod
-    def to_dict_activities(query):
+    def to_dict_scopes(query, lang='en'):
         result = []
         for q in query:
-            result.append({
-                'LaboratoryActivityType': q['tipologia_attivita']
-            })
+            result.append({'ScopeID': q['id_tipologia_attivita__id'],
+                           'ScopeDescription': q["id_tipologia_attivita__descrizione"]})
         return result
 
     @staticmethod
@@ -955,6 +953,8 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             query['ResearchPersonnel'])
         tech_personnel = LaboratoriesSerializer.to_dict_tech_personnel(
             query['TechPersonnel'])
+        scopes = LaboratoriesSerializer.to_dict_scopes(
+            query['Scopes'])
 
         return {
             'LaboratoryId': query['id'],
@@ -965,10 +965,12 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
             'Interdepartmental': query['laboratorio_interdipartimentale'],
             'ExtraDepartments': extra_departments,
+            'InfrastructureReferentName': query['id_infrastruttura_riferimento__descrizione'],
             'Dimension': query['sede_dimensione'],
             'ScientificDirector': query['responsabile_scientifico'],
             'ScientificDirectorId': query['matricola_responsabile_scientifico'],
             'LaboratoryResearchPersonnel': research_personnel,
+            'LaboratoryScopes': scopes,
             'LaboratoryTechPersonnel': tech_personnel,
             'LaboratoryServicesScope': query['finalita_servizi_it'] if req_lang == "it" or query[
                 'finalita_servizi_en'] is None else query['finalita_servizi_en'],
@@ -984,6 +986,13 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
         for q in query:
             result.append({'DepartmentID': q['id_dip__dip_cod'], 'DepartmentName': q["id_dip__dip_des_it"]
                           if lang == "it" or q['id_dip__dip_des_eng'] is None else q["id_dip__dip_des_eng"], })
+        return result
+
+    @staticmethod
+    def to_dict_scopes(query, lang='en'):
+        result = []
+        for q in query:
+            result.append({'ScopeID': q['id_tipologia_attivita__id'], 'ScopeDescription': q["id_tipologia_attivita__descrizione"]})
         return result
 
     @staticmethod
@@ -1193,4 +1202,20 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
         return {
             'CommunityId': query['community_id'],
             'CommunityName': query['community_name'],
+        }
+
+
+class InfrastructuresSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'InfrastructureId': query['id'],
+            'InfrastructureDescription': query['descrizione'],
         }

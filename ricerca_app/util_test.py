@@ -43,7 +43,9 @@ from .models import (
     PubblicazioneAutori,
     PubblicazioneDatiBase,
     PubblicazioneCommunity,
-    PubblicazioneCollection)
+    PubblicazioneCollection,
+    LaboratorioInfrastruttura,
+    LaboratorioTipologiaAttivita)
 
 
 # class ContextUnitTest(TestCase):
@@ -568,4 +570,26 @@ class PubblicazioneDatiBaseUnitTest(TestCase):
             data[k] = v
 
         obj = PubblicazioneDatiBase.objects.create(**data)
+        return obj
+
+
+class LaboratorioInfrastrutturaUnitTest(TestCase):
+    @classmethod
+    def create_laboratorioInfrastruttura(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = LaboratorioInfrastruttura.objects.create(**data)
+        return obj
+
+
+class LaboratorioTipologiaAttivitaUnitTest(TestCase):
+    @classmethod
+    def create_laboratorioTipologiaAttivita(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = LaboratorioTipologiaAttivita.objects.create(**data)
         return obj

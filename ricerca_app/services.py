@@ -10,7 +10,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
-    RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2
+    RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura
 
 
 class ServiceQueryBuilder:
@@ -1005,12 +1005,14 @@ class ServiceDocente:
             teacherid=None,
             search=None,
             year=None,
-            type=None
+            type=None,
+            structureid=None
     ):
         query_search = Q()
         query_year = Q()
         query_type = Q()
         query_teacher = Q()
+        query_structure = Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -1023,12 +1025,16 @@ class ServiceDocente:
             query_type = Q(collection_id__community_id__community_id=type)
         if teacherid:
             query_teacher = Q(pubblicazioneautori__id_ab__matricola=teacherid)
+        if structureid:
+            query_structure = Q(
+                pubblicazioneautori__id_ab__cd_uo_aff_org=structureid)
 
         query = PubblicazioneDatiBase.objects.filter(
             query_search,
             query_year,
             query_type,
-            query_teacher).values(
+            query_teacher,
+            query_structure).values(
             "item_id",
             "title",
             "des_abstract",
@@ -1548,11 +1554,14 @@ class ServiceLaboratorio:
             dip,
             erc1,
             teacher,
+            infrastructure,
+            scope
     ):
         query_search = Q()
         query_ambito = Q()
         query_dip = Q()
         query_erc1 = Q()
+        query_infrastructure = Q()
 
         if search:
             for k in search.split(" "):
@@ -1567,10 +1576,16 @@ class ServiceLaboratorio:
             erc1_allowed = erc1.split(",")
             query_erc1 = Q(
                 laboratoriodatierc1__id_ricerca_erc1__cod_erc1__in=erc1_allowed)
+        if infrastructure:
+            query_infrastructure = Q(
+                id_infrastruttura_riferimento__id=infrastructure)
 
         query = LaboratorioDatiBase.objects.filter(
-            query_search, query_ambito, query_dip, query_erc1
-        ).values(
+            query_search,
+            query_ambito,
+            query_dip,
+            query_erc1,
+            query_infrastructure).values(
             'id',
             'nome_laboratorio',
             'ambito',
@@ -1587,6 +1602,7 @@ class ServiceLaboratorio:
             "finalita_ricerca_en",
             "finalita_didattica_en",
             "finalita_didattica_it",
+            "id_infrastruttura_riferimento__descrizione",
         ).distinct()
 
         for q in query:
@@ -1604,8 +1620,27 @@ class ServiceLaboratorio:
                 "matricola_personale_tecnico__middle_name",
                 "ruolo")
 
+            finalita = LaboratorioAttivita.objects.filter(
+                id_laboratorio_dati=q['id']).values(
+                "id_tipologia_attivita__id",
+                "id_tipologia_attivita__descrizione"
+            ).distinct()
+
+            personale_tecnico = list(personale_tecnico)
+            personale_ricerca = list(personale_ricerca)
+
+            for p in personale_tecnico:
+                if q['matricola_responsabile_scientifico'] == p['matricola_personale_tecnico__matricola']:
+                    personale_tecnico.remove(p)
+
+            for p in personale_ricerca:
+                if q['matricola_responsabile_scientifico'] == p['matricola_personale_ricerca__matricola']:
+                    personale_ricerca.remove(p)
+
             q['TechPersonnel'] = personale_tecnico
             q['ResearchPersonnel'] = personale_ricerca
+            q['Scopes'] = finalita
+
             if q['laboratorio_interdipartimentale'] == 'SI':
                 other_dep = LaboratorioAltriDipartimenti.objects.filter(
                     id_laboratorio_dati=q['id']).values(
@@ -1629,6 +1664,14 @@ class ServiceLaboratorio:
                         res.append(q)
             return res
 
+        # if scope:
+        #     res = []
+        #     for q in query:
+        #         for s in q['Scopes']:
+        #             if scope == s['id_tipologia_attivita__id']:
+        #                 res.append(q)
+        #     return res
+
         return query
 
     @staticmethod
@@ -1645,7 +1688,7 @@ class ServiceLaboratorio:
             "id_dipartimento_riferimento__dip_cod",
             "id_dipartimento_riferimento__dip_des_it",
             "id_dipartimento_riferimento__dip_des_eng",
-            "infrastruttura_riferimento",
+            "id_infrastruttura_riferimento__descrizione",
             "ambito",
             "finalita_servizi_it",
             "finalita_servizi_en",
@@ -1658,8 +1701,11 @@ class ServiceLaboratorio:
             'laboratorio_interdipartimentale',
             'sito_web',
             'strumentazione_descrizione',)
-        activities = LaboratorioAttivita.objects.filter(
-            id_laboratorio_dati__id=laboratoryid).values("tipologia_attivita")
+        finalita = LaboratorioAttivita.objects.filter(
+            id_laboratorio_dati=laboratoryid).values(
+            "id_tipologia_attivita__id",
+            "id_tipologia_attivita__descrizione"
+        ).distinct()
         erc1 = ServiceLaboratorio.getErc1List(laboratoryid)
         personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values(
@@ -1688,7 +1734,7 @@ class ServiceLaboratorio:
             "id_dip__dip_des_eng").distinct()
         query = list(query)
         for q in query:
-            q['Activities'] = activities
+            q['Scopes'] = finalita
             q['Erc1'] = erc1
             q['ResearchPersonnel'] = personale_ricerca
             q['TechPersonnel'] = personale_tecnico
@@ -1710,6 +1756,12 @@ class ServiceLaboratorio:
     def getLaboratoriesAreasList():
         return LaboratorioDatiBase.objects.all().values(
             "ambito").distinct().order_by("ambito")
+
+    @staticmethod
+    def getInfrastructures():
+        return LaboratorioInfrastruttura.objects.all().values(
+            "id",
+            "descrizione").distinct()
 
     @staticmethod
     def getErc1List(laboratorio):

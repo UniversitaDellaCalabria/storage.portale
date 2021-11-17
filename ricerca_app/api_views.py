@@ -668,9 +668,11 @@ class ApiLaboratoriesList(ApiEndpointList):
         department = self.request.query_params.get('department')
         erc1 = self.request.query_params.get('erc1')
         teacher = self.request.query_params.get('teacher')
+        infrastructure = self.request.query_params.get('infrastructure')
+        scope = self.request.query_params.get('scope')
 
         return ServiceLaboratorio.getLaboratoriesList(
-            self.language, search, area, department, erc1, teacher)
+            self.language, search, area, department, erc1, teacher, infrastructure, scope)
 
 
 class ApiLaboratoriesAreasList(ApiEndpointList):
@@ -742,9 +744,10 @@ class ApiPublicationsList(ApiEndpointList):
         search = self.request.query_params.get('search')
         year = self.request.query_params.get('year')
         type = self.request.query_params.get('type')
+        structureid = self.request.query_params.get('structureid')
 
         return ServiceDocente.getPublicationsList(
-            teacherid, search, year, type)
+            teacherid, search, year, type, structureid)
 
 
 class TeachingCoveragePublicationsList(AutoSchema):
@@ -809,3 +812,13 @@ class ApiAddressbookStructureDetail(ApiEndpointDetail):
         structureid = self.kwargs['structureid']
 
         return ServicePersonale.getStructure(structureid)
+
+
+class ApiInfrastructuresList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle infrastrutture di riferimento'
+    serializer_class = InfrastructuresSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceLaboratorio.getInfrastructures()

@@ -322,7 +322,11 @@ LABEL_MAPPING = {
         'RLineAster2Id': 'Aster2 Cod',
         'RLineAster2Name': 'Aster2 Name',
         'StructureMission': 'Structure Mission',
-
+        'InfrastructureId' : 'Infrastructure Id',
+        'InfrastructureDescription': 'Infrastructure Description',
+        'LaboratoryScopes': 'Laboratory Scopes',
+        'ScopeID': 'Scope ID',
+        'ScopeDescription': 'Scope Description'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -564,6 +568,11 @@ LABEL_MAPPING = {
         'CodErc2': 'Codice Erc2',
         'RLineAster2Id': 'Codice Aster2',
         'RLineAster2Name': 'Nome Aster2',
-        'StructureMission': 'Obiettivo Struttura'
+        'StructureMission': 'Obiettivo Struttura',
+        'InfrastructureId' : 'Id Infrastruttura',
+        'InfrastructureDescription': 'Descrizione Infrastruttura',
+        'LaboratoryScopes': 'Finalità Laboratorio',
+        'ScopeID': 'ID Finalità',
+        'ScopeDescription': 'Descrizione Finalità'
     }
 }

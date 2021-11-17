@@ -15,7 +15,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     LaboratorioAttivitaUnitTest, LaboratorioDatiErc1UnitTest, LaboratorioPersonaleRicercaUnitTest, \
     LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest, \
     LaboratorioAltriDipartimentiUnitTest, PubblicazioneDatiBaseUnitTest, PubblicazioneCommunityUnitTest, \
-    PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest
+    PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -2297,6 +2297,14 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'matricola_responsabile_scientifico': p2,
         })
 
+        a1 = LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(
+            **{"id": 1, "descrizione": "aaa"})
+        LaboratorioAttivitaUnitTest.create_laboratorioAttivita(**{
+            'id': 1,
+            'id_laboratorio_dati': lab1,
+            "id_tipologia_attivita": a1
+        })
+
         LaboratorioPersonaleTecnicoUnitTest.create_laboratorioPersonaleTecnico(**{
             'id': 1,
             'id_laboratorio_dati': lab1,
@@ -2463,21 +2471,23 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'ambito': 'Umanistico',
             'matricola_responsabile_scientifico': p2,
         })
-
+        a1 = LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(
+            **{"id": 1, "descrizione": "aaa"})
         LaboratorioAttivitaUnitTest.create_laboratorioAttivita(**{
             'id': 1,
-            'tipologia_attivita': 'Ricerca',
-            'id_laboratorio_dati': lab1
+            'id_laboratorio_dati': lab1,
+            "id_tipologia_attivita": a1
         })
         LaboratorioAttivitaUnitTest.create_laboratorioAttivita(**{
             'id': 2,
-            'tipologia_attivita': 'Didattica',
-            'id_laboratorio_dati': lab1
+            'id_laboratorio_dati': lab1,
+            "id_tipologia_attivita": a1
+
         })
         LaboratorioAttivitaUnitTest.create_laboratorioAttivita(**{
             'id': 3,
-            'tipologia_attivita': 'Didattica',
-            'id_laboratorio_dati': lab2
+            'id_laboratorio_dati': lab2,
+            "id_tipologia_attivita": a1
         })
 
         LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
@@ -3951,3 +3961,28 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
 
         assert res.json()['results']['StructureCod'] == '1'
         assert res1.json()['results']['StructureCod'] == '2'
+
+
+class ApiInfrastructuresListUnitTest(TestCase):
+
+    def test_apiinfrastrucureslist(self):
+
+        req = Client()
+
+        LaboratorioInfrastrutturaUnitTest.create_laboratorioInfrastruttura(**{
+            "id": 1,
+            "descrizione": "SILA"
+        })
+
+        url = reverse('ricerca:infrastructures')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+
+        assert len(res.json()['results']) == 1

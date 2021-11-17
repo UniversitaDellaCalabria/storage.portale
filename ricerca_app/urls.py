@@ -292,3 +292,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/addressbookstructures/<str:structureid>/'.format(base_url),
         api_views.ApiAddressbookStructureDetail.as_view(),
         name='addressbookstructuredetail'),
+
+    urlpatterns += path(
+        '{}/infrastructures/'.format(base_url),
+        api_views.ApiInfrastructuresList.as_view(),
+        name='infrastructures'),
