@@ -2259,6 +2259,15 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'laboratorio_interdipartimentale': 'SI',
         })
 
+        a1 = LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(
+            **{"id": 2, "descrizione": "ricerca", })
+
+        LaboratorioAttivitaUnitTest.create_laboratorioAttivita(**{
+            "id": 2,
+            "id_laboratorio_dati": lab2,
+            "id_tipologia_attivita": a1,
+        })
+
         LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
             'id': 2,
             'nome_laboratorio': 'Informatica',
@@ -2339,6 +2348,10 @@ class ApiLaboratoriesListUnitTest(TestCase):
         data = {'teacher': '111111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
+
+        data = {'scope': '1'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
         data = {'teacher': '111112'}
         res = req.get(url, data=data)

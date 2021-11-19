@@ -1585,7 +1585,8 @@ class ServiceLaboratorio:
             query_ambito,
             query_dip,
             query_erc1,
-            query_infrastructure).values(
+            query_infrastructure
+        ).values(
             'id',
             'nome_laboratorio',
             'ambito',
@@ -1619,7 +1620,6 @@ class ServiceLaboratorio:
                 "matricola_personale_tecnico__cognome",
                 "matricola_personale_tecnico__middle_name",
                 "ruolo")
-
             finalita = LaboratorioAttivita.objects.filter(
                 id_laboratorio_dati=q['id']).values(
                 "id_tipologia_attivita__id",
@@ -1651,27 +1651,27 @@ class ServiceLaboratorio:
                     "id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
             else:
                 q['ExtraDepartments'] = []
-        if teacher:
+
+        if scope or teacher:
             res = []
-            for q in query:
-                if teacher == q['matricola_responsabile_scientifico']:
-                    res.append(q)
-                for i in q['TechPersonnel']:
-                    if teacher == i['matricola_personale_tecnico__matricola']:
+            if scope:
+                for q in query:
+                    for s in q['Scopes']:
+                        if str(s['id_tipologia_attivita__id']) == scope:
+                            res.append(q)
+            if teacher:
+                for q in query:
+                    if teacher == q['matricola_responsabile_scientifico'] and q not in res:
                         res.append(q)
-                for t in q['ResearchPersonnel']:
-                    if teacher == t['matricola_personale_ricerca__matricola']:
-                        res.append(q)
+                        continue
+                    for i in q['TechPersonnel']:
+                        if teacher == i['matricola_personale_tecnico__matricola'] and q not in res:
+                            res.append(q)
+                            continue
+                    for t in q['ResearchPersonnel']:
+                        if teacher == t['matricola_personale_ricerca__matricola'] and q not in res:
+                            res.append(q)
             return res
-
-        # if scope:
-        #     res = []
-        #     for q in query:
-        #         for s in q['Scopes']:
-        #             if scope == s['id_tipologia_attivita__id']:
-        #                 res.append(q)
-        #     return res
-
         return query
 
     @staticmethod
