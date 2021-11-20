@@ -1652,8 +1652,36 @@ class ServiceLaboratorio:
             else:
                 q['ExtraDepartments'] = []
 
+        if teacher and scope:
+            res = []
+            res1 = []
+            if scope:
+                for q in query:
+                    for s in q['Scopes']:
+                        if str(s['id_tipologia_attivita__id']) == scope:
+                            res.append(q)
+            if teacher:
+                for q in query:
+                    if teacher == q['matricola_responsabile_scientifico']:
+                        res1.append(q)
+                        continue
+                    for i in q['TechPersonnel']:
+                        if teacher == i['matricola_personale_tecnico__matricola']:
+                            res1.append(q)
+                            continue
+                    for t in q['ResearchPersonnel']:
+                        if teacher == t['matricola_personale_ricerca__matricola']:
+                            res1.append(q)
+            if len(res) > len(res1):
+                res = [val for val in res if val in res1]
+            else:
+                res = [val for val in res1 if val in res]
+
+            return res
+
         if scope or teacher:
             res = []
+
             if scope:
                 for q in query:
                     for s in q['Scopes']:

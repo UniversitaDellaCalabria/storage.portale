@@ -2357,6 +2357,14 @@ class ApiLaboratoriesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 3
 
+        data = {'teacher': '111112', 'scope': '1'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'teacher': '111111', 'scope': '1'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
         data = {'department': '2', 'area': 'Scientifico'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['LaboratoryId'] == 2
