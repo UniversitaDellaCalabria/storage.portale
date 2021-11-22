@@ -10,7 +10,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
-    RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura
+    RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita
 
 
 class ServiceQueryBuilder:
@@ -1170,7 +1170,6 @@ class ServicePersonale:
         query_structuretree = Q()
         query_function = Q()
 
-
         if search is not None:
             for k in search.split(" "):
                 q_cognome = Q(cognome__icontains=k)
@@ -1185,7 +1184,8 @@ class ServicePersonale:
                 Q(), structuretree)
             query_structuretree |= Q(cd_uo_aff_org=structuretree)
         if query_function is not None:
-            query_function = Q(unitaorganizzativafunzioni__ds_funzione=function)
+            query_function = Q(
+                unitaorganizzativafunzioni__ds_funzione=function)
 
         query = Personale.objects.filter(
             query_search,
@@ -1793,6 +1793,12 @@ class ServiceLaboratorio:
             "ambito").distinct().order_by("ambito")
 
     @staticmethod
+    def getScopes():
+        return LaboratorioTipologiaAttivita.objects.all().values(
+            "id",
+            "descrizione").distinct().order_by("id")
+
+    @staticmethod
     def getInfrastructures():
         return LaboratorioInfrastruttura.objects.all().values(
             "id",
@@ -1845,4 +1851,48 @@ class ServiceLaboratorio:
                 q['Erc1'][i]['Erc2'] = RicercaErc2.objects.filter(
                     ricerca_erc1_id=q['Erc1'][i]['id_ricerca_erc1__id']).values(
                     'cod_erc2', 'descrizione').distinct()
+        return query
+
+
+class ServiceBrevetto:
+
+    @staticmethod
+    def getBrevets(search, techarea):
+
+        query_search = Q()
+        query_techarea = Q()
+
+        if search is not None:
+            for k in search.split(" "):
+                q_nome = Q(titolo__icontains=k)
+                query_search &= q_nome
+        if techarea:
+            query_techarea = Q(id_area_tecnologica=techarea)
+
+        query = BrevettoDatiBase.objects.filter(
+            query_search,
+            query_techarea).values(
+            "id",
+            "id_univoco",
+            "titolo",
+            "url_immagine",
+            "breve_descrizione",
+            "url_knowledge_share",
+            "id_area_tecnologica",
+            "id_area_tecnologica__descr_area_ita",
+            "id_area_tecnologica__descr_area_eng",
+        ).distinct()
+
+        for q in query:
+            inventori = BrevettoInventori.objects.filter(
+                id_brevetto=q['id']).values(
+                    "matricola_inventore",
+                    "cognomenome_origine",
+            ).distinct()
+
+            if len(inventori) == 0:
+                q['Inventori'] = []
+            else:
+                q['Inventori'] = inventori
+
         return query

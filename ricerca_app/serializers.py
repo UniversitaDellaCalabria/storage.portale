@@ -1045,6 +1045,22 @@ class LaboratoriesAreasSerializer(CreateUpdateAbstract):
         }
 
 
+class LaboratoriesScopesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'ScopeID': query['id'],
+            'ScopeDescription': query['descrizione'],
+        }
+
+
 class Erc1Serializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
@@ -1220,3 +1236,41 @@ class InfrastructuresSerializer(CreateUpdateAbstract):
             'InfrastructureId': query['id'],
             'InfrastructureDescription': query['descrizione'],
         }
+
+
+class BrevetsSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        inventors = None
+        if query.get('Inventori') is not None:
+            inventors = BrevetsSerializer.to_dict_inventors(
+                query['Inventori'])
+        return {
+            'BrevetId': query['id'],
+            'BrevetUniqueId': query['id_univoco'],
+            'BrevetTitle': query['titolo'],
+            'BrevetImage': query["url_immagine"],
+            'BrevetAbstract': query["breve_descrizione"],
+            'BrevetUrlKnowledgeShare': query["url_knowledge_share"],
+            'BrevetTechAreaId': query["id_area_tecnologica"],
+            'BrevetAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
+            'BrevetInventors': inventors,
+        }
+
+    @staticmethod
+    def to_dict_inventors(query):
+        result = []
+        for q in query:
+            full_name = q["cognomenome_origine"]
+            result.append({
+                'AuthorId': q['matricola_inventore'],
+                'AuthorName': full_name,
+            })
+        return result

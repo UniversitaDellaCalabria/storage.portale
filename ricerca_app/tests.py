@@ -15,7 +15,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     LaboratorioAttivitaUnitTest, LaboratorioDatiErc1UnitTest, LaboratorioPersonaleRicercaUnitTest, \
     LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest, \
     LaboratorioAltriDipartimentiUnitTest, PubblicazioneDatiBaseUnitTest, PubblicazioneCommunityUnitTest, \
-    PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest
+    PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
+    BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -4006,4 +4007,88 @@ class ApiInfrastructuresListUnitTest(TestCase):
 
         res = req.get(url)
 
+        assert len(res.json()['results']) == 1
+
+
+class ApiLaboratoriesScopesListUnitTest(TestCase):
+
+    def test_apilaboratoriesscopeslist(self):
+
+        req = Client()
+
+        LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(**{
+            "id": 1,
+            "descrizione": "Ricerca"
+        })
+
+        url = reverse('ricerca:laboratories-scopes')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+
+        assert len(res.json()['results']) == 1
+
+
+class ApiBrevetsListUnitTest(TestCase):
+
+    def test_apibrevetslist(self):
+
+        req = Client()
+
+        p = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
+
+        t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(**{
+            "id": 1,
+            "descr_area_ita": "aaa",
+            "descr_area_eng": "aaa",
+        })
+        b1 = BrevettoDatiBaseUnitTest.create_brevettoDatiBase(**{
+            "id": 1,
+            "id_univoco": '100010',
+            "titolo": 'Ingegneria del sw',
+            "url_immagine": 'aaaa',
+            "breve_descrizione": 'applicazione',
+            "url_knowledge_share": 'aaaa',
+            "id_area_tecnologica": t1,
+        })
+
+        BrevettoInventoriUnitTest.create_brevettoInventori(**{
+            "id": 1,
+            "id_brevetto": b1,
+            "matricola_inventore": p,
+            "cognomenome_origine": "garofalo"
+        })
+
+        url = reverse('ricerca:brevets')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+
+        assert len(res.json()['results']) == 1
+
+        data = {'search': 'sw'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'techarea': 1}
+        res = req.get(url, data=data)
         assert len(res.json()['results']) == 1

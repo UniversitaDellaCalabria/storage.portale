@@ -326,7 +326,16 @@ LABEL_MAPPING = {
         'InfrastructureDescription': 'Infrastructure Description',
         'LaboratoryScopes': 'Laboratory Scopes',
         'ScopeID': 'Scope ID',
-        'ScopeDescription': 'Scope Description'
+        'ScopeDescription': 'Scope Description',
+        'BrevetId': 'Brevet Id',
+        'BrevetUniqueId': 'Brevet Unique Id',
+        'BrevetTitle': 'Brevet Title',
+        'BrevetImage': 'Brevet Image',
+        'BrevetAbstract': 'Brevet Abstract',
+        'BrevetUrlKnowledgeShare': 'Brevet Url Knowledge Share',
+        'BrevetTechAreaId': 'Brevet Tech-Area Id',
+        'BrevetAreaDescription': 'Brevet Area Description',
+        'BrevetInventors': 'Brevet Inventors',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -573,6 +582,15 @@ LABEL_MAPPING = {
         'InfrastructureDescription': 'Descrizione Infrastruttura',
         'LaboratoryScopes': 'Finalità Laboratorio',
         'ScopeID': 'ID Finalità',
-        'ScopeDescription': 'Descrizione Finalità'
+        'ScopeDescription': 'Descrizione Finalità',
+        'BrevetId': 'Id Brevetto',
+        'BrevetUniqueId': 'Id Univoco Brevetto',
+        'BrevetTitle': 'Titolo Brevetto',
+        'BrevetImage': 'Immagine Brevetto',
+        'BrevetAbstract': 'Abstract Brevetto',
+        'BrevetUrlKnowledgeShare': 'Url Knowledge Share Brevetto',
+        'BrevetTechAreaId': 'Area Tecnologica Brevetto',
+        'BrevetAreaDescription': 'Descrizione Area Tecnologica',
+        'BrevetInventors': 'Inventori Brevetto',
     }
 }

@@ -45,7 +45,10 @@ from .models import (
     PubblicazioneCommunity,
     PubblicazioneCollection,
     LaboratorioInfrastruttura,
-    LaboratorioTipologiaAttivita)
+    LaboratorioTipologiaAttivita,
+    BrevettoDatiBase,
+    BrevettoInventori,
+    TipologiaAreaTecnologica)
 
 
 # class ContextUnitTest(TestCase):
@@ -592,4 +595,37 @@ class LaboratorioTipologiaAttivitaUnitTest(TestCase):
             data[k] = v
 
         obj = LaboratorioTipologiaAttivita.objects.create(**data)
+        return obj
+
+
+class BrevettoDatiBaseUnitTest(TestCase):
+    @classmethod
+    def create_brevettoDatiBase(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = BrevettoDatiBase.objects.create(**data)
+        return obj
+
+
+class BrevettoInventoriUnitTest(TestCase):
+    @classmethod
+    def create_brevettoInventori(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = BrevettoInventori.objects.create(**data)
+        return obj
+
+
+class TipologiaAreaTecnologicaUnitTest(TestCase):
+    @classmethod
+    def create_tipologiaAreaTecnologica(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = TipologiaAreaTecnologica.objects.create(**data)
         return obj

@@ -298,7 +298,12 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         api_views.ApiInfrastructuresList.as_view(),
         name='infrastructures'),
 
-    # urlpatterns += path(
-    #     '{}/brevets/'.format(base_url),
-    #     api_views.ApiBrevetsList.as_view(),
-    #     name='brevets'),
+    urlpatterns += path(
+        '{}/brevets/'.format(base_url),
+        api_views.ApiBrevetsList.as_view(),
+        name='brevets'),
+
+    urlpatterns += path(
+        '{}/laboratories-scopes/'.format(base_url),
+        api_views.ApiLaboratoriesScopesList.as_view(),
+        name='laboratories-scopes'),

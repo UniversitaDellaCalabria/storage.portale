@@ -826,11 +826,24 @@ class ApiInfrastructuresList(ApiEndpointList):
         return ServiceLaboratorio.getInfrastructures()
 
 
-# class ApiBrevetsList(ApiEndpointList):
-#     description = 'La funzione restituisce la lista dei brevetti'
-#     serializer_class = BrevetsSerializer
-#     filter_backends = []
-#
-#     def get_queryset(self):
-#
-#         return ServiceLaboratorio.getInfrastructures()
+class ApiBrevetsList(ApiEndpointList):
+    description = 'La funzione restituisce la lista dei brevetti'
+    serializer_class = BrevetsSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        search = self.request.query_params.get('search')
+        techarea = self.request.query_params.get('techarea')
+
+        return ServiceBrevetto.getBrevets(search, techarea)
+
+
+class ApiLaboratoriesScopesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle finalità dei laboratori'
+    serializer_class = LaboratoriesScopesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceLaboratorio.getScopes()
