@@ -560,8 +560,10 @@ class ApiAddressbookList(ApiEndpointList):
         structuretypes = self.request.query_params.get('structuretypes')
         roles = self.request.query_params.get('role')
         structuretree = self.request.query_params.get('structuretree')
+        function = self.request.query_params.get('function')
+
         return ServicePersonale.getAddressbook(
-            search, structureid, structuretypes, roles, structuretree)
+            search, structureid, structuretypes, roles, structuretree, function)
 
 
 class ApiStructuresList(ApiEndpointList):
@@ -822,3 +824,13 @@ class ApiInfrastructuresList(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceLaboratorio.getInfrastructures()
+
+
+# class ApiBrevetsList(ApiEndpointList):
+#     description = 'La funzione restituisce la lista dei brevetti'
+#     serializer_class = BrevetsSerializer
+#     filter_backends = []
+#
+#     def get_queryset(self):
+#
+#         return ServiceLaboratorio.getInfrastructures()

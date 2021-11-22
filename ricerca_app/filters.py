@@ -389,6 +389,14 @@ class ApiLaboratoriesListFilter(GenericApiFilter):
                       'description': 'Matricola di un docente',
                       'required': False,
                       'type': 'string'},
+                     {'name': 'scope',
+                      'description': 'Scopo di un laboratorio',
+                      'required': False,
+                      'schema': {
+                          'type': 'integer',
+                          'format': 'int32',
+                      }
+                      },
                      ]
 
 

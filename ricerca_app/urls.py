@@ -297,3 +297,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/infrastructures/'.format(base_url),
         api_views.ApiInfrastructuresList.as_view(),
         name='infrastructures'),
+
+    # urlpatterns += path(
+    #     '{}/brevets/'.format(base_url),
+    #     api_views.ApiBrevetsList.as_view(),
+    #     name='brevets'),

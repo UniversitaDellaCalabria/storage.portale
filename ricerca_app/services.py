@@ -1161,12 +1161,15 @@ class ServicePersonale:
             structureid=None,
             structuretypes=None,
             roles=None,
-            structuretree=None):
+            structuretree=None,
+            function=None):
 
         query_search = Q()
         query_structure = Q()
         query_roles = Q()
         query_structuretree = Q()
+        query_function = Q()
+
 
         if search is not None:
             for k in search.split(" "):
@@ -1181,12 +1184,15 @@ class ServicePersonale:
             query_structuretree = ServicePersonale.getStructurePersonnelChild(
                 Q(), structuretree)
             query_structuretree |= Q(cd_uo_aff_org=structuretree)
+        if query_function is not None:
+            query_function = Q(unitaorganizzativafunzioni__ds_funzione=function)
 
         query = Personale.objects.filter(
             query_search,
             query_structure,
             query_roles,
             query_structuretree,
+            query_function,
             flg_cessato=0,
             cd_uo_aff_org__isnull=False,
             dt_rap_fin__gte=datetime.datetime.today())
@@ -1604,6 +1610,7 @@ class ServiceLaboratorio:
             "finalita_didattica_en",
             "finalita_didattica_it",
             "id_infrastruttura_riferimento__descrizione",
+            "acronimo",
         ).distinct()
 
         for q in query:

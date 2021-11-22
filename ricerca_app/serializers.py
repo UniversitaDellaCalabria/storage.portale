@@ -959,6 +959,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
         return {
             'LaboratoryId': query['id'],
             'LaboratoryName': query['nome_laboratorio'],
+            'LaboratoryAcronym': query['acronimo'],
             'Area': query['ambito'],
             'DepartmentName': query['dipartimento_riferimento'],
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
