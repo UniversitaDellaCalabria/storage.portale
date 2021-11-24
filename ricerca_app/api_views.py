@@ -258,11 +258,18 @@ class ApiStudyPlanDetail(ApiEndpointDetail):
             studyplanid=studyplanid)
 
 
+class StudyPlanActivitiesList(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'listCdsStudyPlanActivities'
+
+
 class ApiStudyPlanActivitiesList(ApiEndpointList):
     description = 'Restituisce l’elenco degli insegnamenti' \
                   ' di un Piano di Studio con info sintetiche'
     serializer_class = StudyPlansActivitiesSerializer
     filter_backends = []
+    schema = StudyPlanActivitiesList()
+
 
     def get_queryset(self):
         studyplanid = str(self.kwargs['studyplanid'])
@@ -287,7 +294,7 @@ class ApiStudyActivityDetail(ApiEndpointDetail):
 
 class StudyActivityInfo(AutoSchema):
     def get_operation_id(self, path, method):
-        return 'ApiStudyActivityInfo'
+        return 'retrieveCdsStudyPlanActivity'
 
 
 class ApiStudyActivityInfo(ApiEndpointDetail):
