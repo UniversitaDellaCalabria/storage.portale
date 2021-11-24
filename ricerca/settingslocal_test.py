@@ -357,6 +357,16 @@ LABEL_MAPPING = {
         'PatentTechAreaId': 'Patent Tech-Area Id',
         'PatentAreaDescription': 'Patent Area Description',
         'PatentInventors': 'Patent Inventors',
+        'SpinoffId': 'Spinoff Id',
+        'SpinoffPIva': 'Spinoff P.Iva',
+        'SpinoffAgencyName': 'Spinoff Agency Name',
+        'SpinoffImage': 'Spinoff Image',
+        'SpinoffDescription': 'Spinoff Description',
+        'SpinoffUnicalReferent': 'Unical Referent Spinoff',
+        'SpinoffUnicalReferentId': 'Unical Referent Id',
+        'SpinoffTechAreaId': 'Spinoff Tech Area Id',
+        'SpinoffTechAreaDescription': 'Spinoff Area Description',
+        'SpinoffAgencyUrl': 'Spinoff Agency Url',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -613,5 +623,16 @@ LABEL_MAPPING = {
         'PatentTechAreaId': 'Area Tecnologica Brevetto',
         'PatentAreaDescription': 'Descrizione Area Tecnologica',
         'PatentInventors': 'Inventori Brevetto',
+        'SpinoffId': 'Id Spinoff',
+        'SpinoffPIva': 'P. Iva Spinoff',
+        'SpinoffAgencyName': 'Nome Azienda Spinoff',
+        'SpinoffImage': 'Immagine Spinoff',
+        'SpinoffDescription': 'Descrizione Spinoff',
+        'SpinoffUnicalReferent': 'Referente Unical Spinoff',
+        'SpinoffUnicalReferentId': 'Matricola Referente Unical',
+        'SpinoffTechAreaId': 'Id Area Tecnologica Spinoff',
+        'SpinoffTechAreaDescription': 'Descrizione Area Tecnologica Spinoff',
+        'SpinoffAgencyUrl': 'Url Azienda Spinoff',
+
     }
 }

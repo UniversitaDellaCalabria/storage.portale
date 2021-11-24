@@ -48,7 +48,8 @@ from .models import (
     LaboratorioTipologiaAttivita,
     BrevettoDatiBase,
     BrevettoInventori,
-    TipologiaAreaTecnologica)
+    TipologiaAreaTecnologica,
+    SpinoffDatiBase)
 
 
 # class ContextUnitTest(TestCase):
@@ -629,3 +630,15 @@ class TipologiaAreaTecnologicaUnitTest(TestCase):
 
         obj = TipologiaAreaTecnologica.objects.create(**data)
         return obj
+
+
+class SpinoffDatiBaseUnitTest(TestCase):
+    @classmethod
+    def create_spinoffDatiBase(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SpinoffDatiBase.objects.create(**data)
+        return obj
+

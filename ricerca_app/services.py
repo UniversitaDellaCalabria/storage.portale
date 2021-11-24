@@ -10,7 +10,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
-    RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita
+    RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita, \
+    SpinoffDatiBase, SpinoffAreaInnovazioneS3Calabria
 
 
 class ServiceQueryBuilder:
@@ -1894,5 +1895,41 @@ class ServiceBrevetto:
                 q['Inventori'] = []
             else:
                 q['Inventori'] = inventori
+
+        return query
+
+
+class ServiceSpinoff:
+
+    @staticmethod
+    def getSpinoffs(search, techarea):
+
+        query_search = Q()
+        query_techarea = Q()
+
+        if search is not None:
+            for k in search.split(" "):
+                q_nome = Q(descrizione_ita__icontains=k)
+                query_search &= q_nome
+        if techarea:
+            query_techarea = Q(id_area_tecnologica=techarea)
+
+        query = SpinoffDatiBase.objects.filter(
+            query_search,
+            query_techarea,
+            is_spinoff=1).values(
+            "id",
+            "piva",
+            "nome_azienda",
+            "url_immagine",
+            "url_sito_web",
+            "descrizione_ita",
+            "descrizione_eng",
+            "referente_unical",
+            "matricola_referente_unical",
+            "id_area_tecnologica",
+            "id_area_tecnologica__descr_area_ita",
+            "id_area_tecnologica__descr_area_eng",
+        ).distinct()
 
         return query

@@ -16,7 +16,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest, \
     LaboratorioAltriDipartimentiUnitTest, PubblicazioneDatiBaseUnitTest, PubblicazioneCommunityUnitTest, \
     PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
-    BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest
+    BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffDatiBaseUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -4081,6 +4081,59 @@ class ApiPatentsListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
         data = {'search': 'sw'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'techarea': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
+class ApiSpinoffsListUnitTest(TestCase):
+
+    def test_apispinoffslist(self):
+
+        req = Client()
+
+        p = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
+
+        t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
+            **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
+
+        SpinoffDatiBaseUnitTest.create_spinoffDatiBase(**{
+            "id": 1,
+            "piva": '1111sc',
+            "nome_azienda": 'Revelis',
+            "url_immagine": 'aaaa',
+            "url_sito_web": 'bbbb',
+            "descrizione_ita": 'applicazione',
+            "descrizione_eng": "description",
+            "id_area_tecnologica": t1,
+            "referente_unical": "Garofalo",
+            "matricola_referente_unical": p,
+            "is_spinoff": 1,
+        })
+
+        url = reverse('ricerca:spin-offs')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+        data = {'search': 'appl'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 

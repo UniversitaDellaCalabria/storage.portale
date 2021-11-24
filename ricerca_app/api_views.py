@@ -862,3 +862,16 @@ class ApiLaboratoriesScopesList(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceLaboratorio.getScopes()
+
+
+class ApiSpinoffsList(ApiEndpointList):
+    description = 'La funzione restituisce la lista degli spin-off'
+    serializer_class = SpinoffsSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        search = self.request.query_params.get('search')
+        techarea = self.request.query_params.get('techarea')
+
+        return ServiceSpinoff.getSpinoffs(search, techarea)

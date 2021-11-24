@@ -1274,3 +1274,28 @@ class PatentsSerializer(CreateUpdateAbstract):
                 'AuthorName': full_name,
             })
         return result
+
+
+class SpinoffsSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+            'SpinoffId': query['id'],
+            'SpinoffPIva': query['piva'],
+            'SpinoffAgencyName': query['nome_azienda'],
+            'SpinoffAgencyUrl': query['url_sito_web'],
+            'SpinoffImage': query["url_immagine"],
+            'SpinoffDescription': query["descrizione_ita"]if req_lang == "it" or query["descrizione_eng"] is None else query['descrizione_eng'],
+            'SpinoffUnicalReferent': query["referente_unical"],
+            'SpinoffUnicalReferentId': query['matricola_referente_unical'],
+            'SpinoffTechAreaId': query["id_area_tecnologica"],
+            'SpinoffTechAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
+        }

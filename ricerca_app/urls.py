@@ -307,3 +307,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/laboratories-scopes/'.format(base_url),
         api_views.ApiLaboratoriesScopesList.as_view(),
         name='laboratories-scopes'),
+
+    urlpatterns += path(
+        '{}/spin-offs/'.format(base_url),
+        api_views.ApiSpinoffsList.as_view(),
+        name='spin-offs'),
