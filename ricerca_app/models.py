@@ -3220,3 +3220,86 @@ class TipologiaAreaTecnologica(models.Model):
     class Meta:
         managed = True
         db_table = 'TIPOLOGIA_AREA_TECNOLOGICA'
+
+
+class SpinoffAreaInnovazioneS3Calabria(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    descr_area_s3 = models.CharField(
+        db_column='DESCR_AREA_S3', max_length=1000)
+
+    class Meta:
+        managed = True
+        db_table = 'SPINOFF_AREA_INNOVAZIONE_S3_CALABRIA'
+
+
+class SpinoffDatiBase(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    piva = models.CharField(
+        db_column='PIVA',
+        max_length=30,
+        blank=True,
+        null=True)
+    nome_azienda = models.CharField(
+        db_column='NOME_AZIENDA',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    url_immagine = models.CharField(
+        db_column='URL_IMMAGINE',
+        max_length=4000,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    descrizione_ita = models.TextField(
+        db_column='DESCRIZIONE_ITA', blank=True, null=True)
+    # Field name made lowercase.
+    descrizione_eng = models.TextField(
+        db_column='DESCRIZIONE_ENG', blank=True, null=True)
+    url_sito_web = models.CharField(
+        db_column='URL_SITO_WEB',
+        max_length=4000,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    referente_unical = models.CharField(
+        db_column='REFERENTE_UNICAL',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    matricola_referente_unical = models.ForeignKey(
+        Personale,
+        models.DO_NOTHING,
+        db_column='MATRICOLA_REFERENTE_UNICAL',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    ceo = models.CharField(
+        db_column='CEO',
+        max_length=1000,
+        blank=True,
+        null=True)
+    id_area_tecnologica = models.ForeignKey(
+        'TipologiaAreaTecnologica',
+        models.DO_NOTHING,
+        db_column='ID_AREA_TECNOLOGICA',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    id_area_innovazione_s3_calabria = models.ForeignKey(
+        SpinoffAreaInnovazioneS3Calabria,
+        models.DO_NOTHING,
+        db_column='ID_AREA_INNOVAZIONE_S3_CALABRIA',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    is_startup = models.PositiveIntegerField(
+        db_column='IS_STARTUP', blank=True, null=True)
+    # Field name made lowercase.
+    is_spinoff = models.PositiveIntegerField(
+        db_column='IS_SPINOFF', blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'SPINOFF_DATI_BASE'

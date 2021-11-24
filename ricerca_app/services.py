@@ -1857,7 +1857,7 @@ class ServiceLaboratorio:
 class ServiceBrevetto:
 
     @staticmethod
-    def getBrevets(search, techarea):
+    def getPatents(search, techarea):
 
         query_search = Q()
         query_techarea = Q()

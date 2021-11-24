@@ -1197,7 +1197,7 @@ class PublicationSerializer(CreateUpdateAbstract):
         return result
 
 
-class ListPublicationSerializer(PublicationSerializer):
+class PublicationsSerializer(PublicationSerializer):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
@@ -1238,7 +1238,7 @@ class InfrastructuresSerializer(CreateUpdateAbstract):
         }
 
 
-class BrevetsSerializer(CreateUpdateAbstract):
+class PatentsSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -1250,18 +1250,18 @@ class BrevetsSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         inventors = None
         if query.get('Inventori') is not None:
-            inventors = BrevetsSerializer.to_dict_inventors(
+            inventors = PatentsSerializer.to_dict_inventors(
                 query['Inventori'])
         return {
-            'BrevetId': query['id'],
-            'BrevetUniqueId': query['id_univoco'],
-            'BrevetTitle': query['titolo'],
-            'BrevetImage': query["url_immagine"],
-            'BrevetAbstract': query["breve_descrizione"],
-            'BrevetUrlKnowledgeShare': query["url_knowledge_share"],
-            'BrevetTechAreaId': query["id_area_tecnologica"],
-            'BrevetAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
-            'BrevetInventors': inventors,
+            'PatentId': query['id'],
+            'PatentUniqueId': query['id_univoco'],
+            'PatentTitle': query['titolo'],
+            'PatentImage': query["url_immagine"],
+            'PatentAbstract': query["breve_descrizione"],
+            'PatentUrlKnowledgeShare': query["url_knowledge_share"],
+            'PatentTechAreaId': query["id_area_tecnologica"],
+            'PatentAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
+            'PatentInventors': inventors,
         }
 
     @staticmethod

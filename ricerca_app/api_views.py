@@ -738,7 +738,7 @@ class ApiErc0List(ApiEndpointList):
 
 class ApiPublicationsList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle pubblicazioni di un dato docente'
-    serializer_class = ListPublicationSerializer
+    serializer_class = PublicationsSerializer
     filter_backends = [ApiPublicationsListFilter]
 
     def get_queryset(self):
@@ -761,6 +761,15 @@ class ApiTeachingCoveragePublicationsList(ApiPublicationsList):
     schema = TeachingCoveragePublicationsList()
 
 
+class TeacherPublicationsList(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'listTeacherPublications'
+
+
+class ApiTeacherPublicationsList(ApiPublicationsList):
+    schema = TeacherPublicationsList()
+
+
 class ApiPublicationsCommunityTypesList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle tipologie di pubblicazioni'
     serializer_class = PublicationsCommunityTypesSerializer
@@ -779,6 +788,15 @@ class ApiPublicationDetail(ApiEndpointDetail):
         publicationid = self.kwargs['publicationid']
 
         return ServiceDocente.getPublication(publicationid)
+
+
+class TeacherPublicationDetail(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'retrieveTeacherPublication'
+
+
+class ApiTeacherPublicationDetail(ApiPublicationDetail):
+    schema = TeacherPublicationDetail()
 
 
 class TeachingCoveragePublicationsDetail(AutoSchema):
@@ -804,16 +822,13 @@ class ApiAddressbookStructuresList(ApiEndpointList):
         return ServicePersonale.getAllStructuresList(search, father, type)
 
 
-class ApiAddressbookStructureDetail(ApiEndpointDetail):
-    description = 'La funzione restituisce una specifica struttura'
-    serializer_class = StructureDetailSerializer
-    filter_backends = [ApiStructuresListFilter]
+class AddressbookStructureDetail(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'retrieveAddressbookStructureDetail'
 
-    def get_queryset(self):
 
-        structureid = self.kwargs['structureid']
-
-        return ServicePersonale.getStructure(structureid)
+class ApiAddressbookStructureDetail(ApiStructureDetail):
+    schema = AddressbookStructureDetail()
 
 
 class ApiInfrastructuresList(ApiEndpointList):
@@ -826,9 +841,9 @@ class ApiInfrastructuresList(ApiEndpointList):
         return ServiceLaboratorio.getInfrastructures()
 
 
-class ApiBrevetsList(ApiEndpointList):
+class ApiPatentsList(ApiEndpointList):
     description = 'La funzione restituisce la lista dei brevetti'
-    serializer_class = BrevetsSerializer
+    serializer_class = PatentsSerializer
     filter_backends = []
 
     def get_queryset(self):
@@ -836,7 +851,7 @@ class ApiBrevetsList(ApiEndpointList):
         search = self.request.query_params.get('search')
         techarea = self.request.query_params.get('techarea')
 
-        return ServiceBrevetto.getBrevets(search, techarea)
+        return ServiceBrevetto.getPatents(search, techarea)
 
 
 class ApiLaboratoriesScopesList(ApiEndpointList):

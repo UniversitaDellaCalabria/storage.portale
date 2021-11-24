@@ -181,12 +181,12 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         name='teacherinfo'),
 
     urlpatterns += path('{}/teachers/<str:teacherid>/publications/'.format(base_url),
-                        api_views.ApiPublicationsList.as_view(),
+                        api_views.ApiTeacherPublicationsList.as_view(),
                         name='publications'),
 
     urlpatterns += path(
         '{}/teachers/<str:teacherid>/publications/<str:publicationid>/'.format(base_url),
-        api_views.ApiPublicationDetail.as_view(),
+        api_views.ApiTeacherPublicationDetail.as_view(),
         name='publicationdetail'),
 
     urlpatterns += path('{}/doctorateslist/'.format(base_url),
@@ -299,9 +299,9 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         name='infrastructures'),
 
     urlpatterns += path(
-        '{}/brevets/'.format(base_url),
-        api_views.ApiBrevetsList.as_view(),
-        name='brevets'),
+        '{}/patents/'.format(base_url),
+        api_views.ApiPatentsList.as_view(),
+        name='patents'),
 
     urlpatterns += path(
         '{}/laboratories-scopes/'.format(base_url),

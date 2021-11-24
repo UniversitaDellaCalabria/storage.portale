@@ -4016,10 +4016,8 @@ class ApiLaboratoriesScopesListUnitTest(TestCase):
 
         req = Client()
 
-        LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(**{
-            "id": 1,
-            "descrizione": "Ricerca"
-        })
+        LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(
+            **{"id": 1, "descrizione": "Ricerca"})
 
         url = reverse('ricerca:laboratories-scopes')
 
@@ -4035,9 +4033,9 @@ class ApiLaboratoriesScopesListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
-class ApiBrevetsListUnitTest(TestCase):
+class ApiPatentsListUnitTest(TestCase):
 
-    def test_apibrevetslist(self):
+    def test_apipatentslist(self):
 
         req = Client()
 
@@ -4050,11 +4048,8 @@ class ApiBrevetsListUnitTest(TestCase):
             'matricola': '111111',
         })
 
-        t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(**{
-            "id": 1,
-            "descr_area_ita": "aaa",
-            "descr_area_eng": "aaa",
-        })
+        t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
+            **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
         b1 = BrevettoDatiBaseUnitTest.create_brevettoDatiBase(**{
             "id": 1,
             "id_univoco": '100010',
@@ -4072,7 +4067,7 @@ class ApiBrevetsListUnitTest(TestCase):
             "cognomenome_origine": "garofalo"
         })
 
-        url = reverse('ricerca:brevets')
+        url = reverse('ricerca:patents')
 
         # check url
         res = req.get(url)
