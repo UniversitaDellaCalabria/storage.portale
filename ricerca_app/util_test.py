@@ -641,4 +641,3 @@ class SpinoffDatiBaseUnitTest(TestCase):
 
         obj = SpinoffDatiBase.objects.create(**data)
         return obj
-
