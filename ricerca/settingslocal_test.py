@@ -271,7 +271,7 @@ LABEL_MAPPING = {
         'StructurePersonnelFunctions': 'Administrative Staff',
         'LaboratoryId': 'ID',
         'Interdepartmental': 'Interdepartmental',
-        'InfrastructureReferentName': 'Infrastructure Referent Name',
+        'InfrastructureName': 'Infrastructure Name',
         'ExtraDepartments': 'Other Departments',
         'CompletionReferentName': 'Completion Referent Name',
         'CompletionReferentId': 'Completion Referent ID',
@@ -369,7 +369,6 @@ LABEL_MAPPING = {
         'SpinoffAgencyUrl': 'Spinoff Agency Url',
         'IsSpinoff': 'Is Spinoff',
         'IsStartup': 'Is Startup',
-        'InfrastructureReferentId': 'Infrastructure Referent Id',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -408,7 +407,7 @@ LABEL_MAPPING = {
         'LaboratoryURL': 'Pagina Web',
         'LaboratoryEquipment': 'Strumentazione',
         'Interdepartmental': 'Interdipartimentale',
-        'InfrastructureReferentName': 'Infrastruttura di Riferimento',
+        'InfrastructureName': 'Infrastruttura di Riferimento',
         'ExtraDepartments': 'Altri dipartimenti',
         'Area': 'Ambito',
         'Dimension': 'Dimensione',
@@ -638,6 +637,5 @@ LABEL_MAPPING = {
         'SpinoffAgencyUrl': 'Url Azienda Spinoff',
         'IsSpinoff': 'Spinoff',
         'IsStartup': 'Startup',
-        'InfrastructureReferentId': 'ID Infrastruttura Riferimento',
     }
 }

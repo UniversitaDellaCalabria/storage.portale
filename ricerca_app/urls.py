@@ -317,3 +317,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/spin-offs/<str:spinoffid>/'.format(base_url),
         api_views.ApiSpinoffDetail.as_view(),
         name='spin-off-detail'),
+
+    urlpatterns += path(
+        '{}/patents/<str:patentid>'.format(base_url),
+        api_views.ApiPatentDetail.as_view(),
+        name='patentdetail'),

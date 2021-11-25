@@ -1901,6 +1901,37 @@ class ServiceBrevetto:
         return query
 
 
+    @staticmethod
+    def getPatentDetail(patentid):
+
+        query = BrevettoDatiBase.objects.filter(
+            id=patentid).values(
+            "id",
+            "id_univoco",
+            "titolo",
+            "url_immagine",
+            "breve_descrizione",
+            "url_knowledge_share",
+            "id_area_tecnologica",
+            "id_area_tecnologica__descr_area_ita",
+            "id_area_tecnologica__descr_area_eng",
+        )
+
+        for q in query:
+            inventori = BrevettoInventori.objects.filter(
+                id_brevetto=q['id']).values(
+                    "matricola_inventore",
+                    "cognomenome_origine",
+            ).distinct()
+
+            if len(inventori) == 0:
+                q['Inventori'] = []
+            else:
+                q['Inventori'] = inventori
+
+        return query
+
+
 class ServiceSpinoff:
 
     @staticmethod

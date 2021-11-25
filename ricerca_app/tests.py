@@ -4089,6 +4089,55 @@ class ApiPatentsListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
+class ApiPatentDetailUnitTest(TestCase):
+
+    def test_apipatentdetail(self):
+
+        req = Client()
+
+        p = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
+
+        t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
+            **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
+        b1 = BrevettoDatiBaseUnitTest.create_brevettoDatiBase(**{
+            "id": 1,
+            "id_univoco": '100010',
+            "titolo": 'Ingegneria del sw',
+            "url_immagine": 'aaaa',
+            "breve_descrizione": 'applicazione',
+            "url_knowledge_share": 'aaaa',
+            "id_area_tecnologica": t1,
+        })
+
+        BrevettoInventoriUnitTest.create_brevettoInventori(**{
+            "id": 1,
+            "id_brevetto": b1,
+            "matricola_inventore": p,
+            "cognomenome_origine": "garofalo"
+        })
+
+        url = reverse('ricerca:patentdetail', kwargs={'patentid': '1'})
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+
+        assert res.json()['results']['PatentId'] == 1
+
+
+
 class ApiSpinoffsListUnitTest(TestCase):
 
     def test_apispinoffslist(self):
