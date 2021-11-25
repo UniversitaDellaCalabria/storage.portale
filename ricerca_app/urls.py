@@ -309,16 +309,21 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         name='laboratories-scopes'),
 
     urlpatterns += path(
-        '{}/spin-offs/'.format(base_url),
-        api_views.ApiSpinoffsList.as_view(),
-        name='spin-offs'),
+        '{}/companies/'.format(base_url),
+        api_views.ApiCompaniesList.as_view(),
+        name='companies'),
 
     urlpatterns += path(
-        '{}/spin-offs/<str:spinoffid>/'.format(base_url),
-        api_views.ApiSpinoffDetail.as_view(),
-        name='spin-off-detail'),
+        '{}/companies/<str:companyid>/'.format(base_url),
+        api_views.ApiCompanyDetail.as_view(),
+        name='companydetail'),
 
     urlpatterns += path(
         '{}/patents/<str:patentid>'.format(base_url),
         api_views.ApiPatentDetail.as_view(),
         name='patentdetail'),
+
+    urlpatterns += path(
+        '{}/tech-areas/'.format(base_url),
+        api_views.ApiTechAreasList.as_view(),
+        name='techareaslist'),

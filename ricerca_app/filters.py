@@ -466,7 +466,7 @@ class ApiPatentsListFilter(GenericApiFilter):
     ]
 
 
-class ApiSpinoffsListFilter(GenericApiFilter):
+class ApiCompaniesListFilter(GenericApiFilter):
     search_params = [
         {
             'name': 'techarea',

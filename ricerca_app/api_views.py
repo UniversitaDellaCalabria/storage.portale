@@ -882,10 +882,10 @@ class ApiLaboratoriesScopesList(ApiEndpointList):
         return ServiceLaboratorio.getScopes()
 
 
-class ApiSpinoffsList(ApiEndpointList):
+class ApiCompaniesList(ApiEndpointList):
     description = 'La funzione restituisce la lista degli spin-off'
-    serializer_class = SpinoffsSerializer
-    filter_backends = [ApiSpinoffsListFilter]
+    serializer_class = CompaniesSerializer
+    filter_backends = [ApiCompaniesListFilter]
 
     def get_queryset(self):
 
@@ -894,16 +894,26 @@ class ApiSpinoffsList(ApiEndpointList):
         spinoff = self.request.query_params.get('spinoff')
         startup = self.request.query_params.get('startup')
 
-        return ServiceSpinoff.getSpinoffs(search, techarea, spinoff, startup)
+        return ServiceCompany.getCompanies(search, techarea, spinoff, startup)
 
 
-class ApiSpinoffDetail(ApiEndpointDetail):
+class ApiCompanyDetail(ApiEndpointDetail):
     description = 'La funzione restituisce un particolare spinoff/startup'
-    serializer_class = SpinoffsSerializer
+    serializer_class = CompaniesSerializer
     filter_backends = []
 
     def get_queryset(self):
 
-        spinoffid = self.kwargs['spinoffid']
+        companyid = self.kwargs['companyid']
 
-        return ServiceSpinoff.getSpinoffDetail(spinoffid)
+        return ServiceCompany.getCompanyDetail(companyid)
+
+
+class ApiTechAreasList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle aree tecnologiche'
+    serializer_class = TechAreasSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceCompany.getTechAreas()

@@ -4138,9 +4138,9 @@ class ApiPatentDetailUnitTest(TestCase):
 
 
 
-class ApiSpinoffsListUnitTest(TestCase):
+class ApiCompaniesListUnitTest(TestCase):
 
-    def test_apispinoffslist(self):
+    def test_apicompanieslist(self):
 
         req = Client()
 
@@ -4171,7 +4171,7 @@ class ApiSpinoffsListUnitTest(TestCase):
             "is_startup": 0,
         })
 
-        url = reverse('ricerca:spin-offs')
+        url = reverse('ricerca:companies')
 
         # check url
         res = req.get(url)
@@ -4192,9 +4192,9 @@ class ApiSpinoffsListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
-class ApiSpinoffDetailUnitTest(TestCase):
+class ApiCompanyDetailUnitTest(TestCase):
 
-    def test_apispinoffdetail(self):
+    def test_apicompanydetail(self):
 
         req = Client()
 
@@ -4225,7 +4225,7 @@ class ApiSpinoffDetailUnitTest(TestCase):
             "is_startup": 0,
         })
 
-        url = reverse('ricerca:spin-off-detail', kwargs={'spinoffid': '1'})
+        url = reverse('ricerca:companydetail', kwargs={'companyid': '1'})
 
         # check url
         res = req.get(url)
@@ -4236,3 +4236,25 @@ class ApiSpinoffDetailUnitTest(TestCase):
 
         res = req.get(url)
         assert res.json()['results']['SpinoffId'] == 1
+
+
+class ApiTechAreasListUnitTest(TestCase):
+
+    def test_apitechareaslist(self):
+
+        req = Client()
+
+        TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
+            **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
+
+        url = reverse('ricerca:techareaslist')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1

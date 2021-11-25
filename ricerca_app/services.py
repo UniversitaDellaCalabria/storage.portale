@@ -11,7 +11,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
     RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita, \
-    SpinoffStartupDatiBase
+    SpinoffStartupDatiBase, TipologiaAreaTecnologica
 
 
 class ServiceQueryBuilder:
@@ -1932,10 +1932,10 @@ class ServiceBrevetto:
         return query
 
 
-class ServiceSpinoff:
+class ServiceCompany:
 
     @staticmethod
-    def getSpinoffs(search, techarea, spinoff, startup):
+    def getCompanies(search, techarea, spinoff, startup):
 
         query_search = Q()
         query_techarea = Q()
@@ -1944,7 +1944,7 @@ class ServiceSpinoff:
 
         if search is not None:
             for k in search.split(" "):
-                q_nome = Q(descrizione_ita__icontains=k)
+                q_nome = Q(descrizione_ita__icontains=k) | Q(nome_azienda__icontains=k)
                 query_search &= q_nome
         if techarea:
             query_techarea = Q(id_area_tecnologica=techarea)
@@ -1978,10 +1978,10 @@ class ServiceSpinoff:
         return query
 
     @staticmethod
-    def getSpinoffDetail(spinoffid):
+    def getCompanyDetail(companyid):
 
         query = SpinoffStartupDatiBase.objects.filter(
-            id=spinoffid
+            id=companyid
         ).values(
             "id",
             "piva",
@@ -1998,5 +1998,17 @@ class ServiceSpinoff:
             "is_startup",
             "is_spinoff",
         )
+
+        return query
+
+
+    @staticmethod
+    def getTechAreas():
+
+        query = TipologiaAreaTecnologica.objects.values(
+            "id",
+            "descr_area_ita",
+            "descr_area_eng",
+        ).distinct()
 
         return query
