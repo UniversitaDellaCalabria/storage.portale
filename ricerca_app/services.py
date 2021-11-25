@@ -11,7 +11,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
     RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita, \
-    SpinoffDatiBase
+    SpinoffStartupDatiBase
 
 
 class ServiceQueryBuilder:
@@ -1610,6 +1610,7 @@ class ServiceLaboratorio:
             "finalita_ricerca_en",
             "finalita_didattica_en",
             "finalita_didattica_it",
+            "id_infrastruttura_riferimento__id",
             "id_infrastruttura_riferimento__descrizione",
             "acronimo",
         ).distinct()
@@ -1724,6 +1725,7 @@ class ServiceLaboratorio:
             "id_dipartimento_riferimento__dip_cod",
             "id_dipartimento_riferimento__dip_des_it",
             "id_dipartimento_riferimento__dip_des_eng",
+            "id_infrastruttura_riferimento__id",
             "id_infrastruttura_riferimento__descrizione",
             "ambito",
             "finalita_servizi_it",
@@ -1902,10 +1904,12 @@ class ServiceBrevetto:
 class ServiceSpinoff:
 
     @staticmethod
-    def getSpinoffs(search, techarea):
+    def getSpinoffs(search, techarea, spinoff, startup):
 
         query_search = Q()
         query_techarea = Q()
+        query_spinoff = Q()
+        query_startup = Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -1913,11 +1917,17 @@ class ServiceSpinoff:
                 query_search &= q_nome
         if techarea:
             query_techarea = Q(id_area_tecnologica=techarea)
+        if spinoff:
+            query_spinoff = Q(is_spinoff=spinoff)
+        if startup:
+            query_startup = Q(is_startup=startup)
 
-        query = SpinoffDatiBase.objects.filter(
+        query = SpinoffStartupDatiBase.objects.filter(
             query_search,
             query_techarea,
-            is_spinoff=1).values(
+            query_spinoff,
+            query_startup,
+        ).values(
             "id",
             "piva",
             "nome_azienda",
@@ -1930,6 +1940,32 @@ class ServiceSpinoff:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_startup",
+            "is_spinoff",
         ).distinct()
+
+        return query
+
+    @staticmethod
+    def getSpinoffDetail(spinoffid):
+
+        query = SpinoffStartupDatiBase.objects.filter(
+            id=spinoffid
+        ).values(
+            "id",
+            "piva",
+            "nome_azienda",
+            "url_immagine",
+            "url_sito_web",
+            "descrizione_ita",
+            "descrizione_eng",
+            "referente_unical",
+            "matricola_referente_unical",
+            "id_area_tecnologica",
+            "id_area_tecnologica__descr_area_ita",
+            "id_area_tecnologica__descr_area_eng",
+            "is_startup",
+            "is_spinoff",
+        )
 
         return query

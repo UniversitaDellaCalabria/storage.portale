@@ -49,7 +49,7 @@ from .models import (
     BrevettoDatiBase,
     BrevettoInventori,
     TipologiaAreaTecnologica,
-    SpinoffDatiBase)
+    SpinoffStartupDatiBase)
 
 
 # class ContextUnitTest(TestCase):
@@ -632,12 +632,12 @@ class TipologiaAreaTecnologicaUnitTest(TestCase):
         return obj
 
 
-class SpinoffDatiBaseUnitTest(TestCase):
+class SpinoffStartupDatiBaseUnitTest(TestCase):
     @classmethod
-    def create_spinoffDatiBase(cls, **kwargs):
+    def create_spinoffStartupDatiBase(cls, **kwargs):
         data = {}
         for k, v in kwargs.items():
             data[k] = v
 
-        obj = SpinoffDatiBase.objects.create(**data)
+        obj = SpinoffStartupDatiBase.objects.create(**data)
         return obj

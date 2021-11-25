@@ -397,6 +397,14 @@ class ApiLaboratoriesListFilter(GenericApiFilter):
                           'format': 'int32',
                       }
                       },
+                     {'name': 'infrastructure',
+                      'description': 'Id Infrastruttura Riferimento',
+                      'required': False,
+                      'schema': {
+                          'type': 'integer',
+                          'format': 'int32',
+                      }
+                      },
                      ]
 
 
@@ -449,6 +457,38 @@ class ApiPatentsListFilter(GenericApiFilter):
         {
             'name': 'techarea',
             'description': 'Area Tecnologica',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+    ]
+
+
+class ApiSpinoffsListFilter(GenericApiFilter):
+    search_params = [
+        {
+            'name': 'techarea',
+            'description': 'Area Tecnologica',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+        {
+            'name': 'spinoff',
+            'description': 'Spinoff',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+        {
+            'name': 'startup',
+            'description': 'Startup',
             'required': False,
             'schema': {
                 'type': 'integer',

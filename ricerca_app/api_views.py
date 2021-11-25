@@ -270,7 +270,6 @@ class ApiStudyPlanActivitiesList(ApiEndpointList):
     filter_backends = []
     schema = StudyPlanActivitiesList()
 
-
     def get_queryset(self):
         studyplanid = str(self.kwargs['studyplanid'])
 
@@ -851,7 +850,7 @@ class ApiInfrastructuresList(ApiEndpointList):
 class ApiPatentsList(ApiEndpointList):
     description = 'La funzione restituisce la lista dei brevetti'
     serializer_class = PatentsSerializer
-    filter_backends = []
+    filter_backends = [ApiPatentsListFilter]
 
     def get_queryset(self):
 
@@ -874,11 +873,25 @@ class ApiLaboratoriesScopesList(ApiEndpointList):
 class ApiSpinoffsList(ApiEndpointList):
     description = 'La funzione restituisce la lista degli spin-off'
     serializer_class = SpinoffsSerializer
-    filter_backends = []
+    filter_backends = [ApiSpinoffsListFilter]
 
     def get_queryset(self):
 
         search = self.request.query_params.get('search')
         techarea = self.request.query_params.get('techarea')
+        spinoff = self.request.query_params.get('spinoff')
+        startup = self.request.query_params.get('startup')
 
-        return ServiceSpinoff.getSpinoffs(search, techarea)
+        return ServiceSpinoff.getSpinoffs(search, techarea, spinoff, startup)
+
+
+class ApiSpinoffDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce un particolare spinoff/startup'
+    serializer_class = SpinoffsSerializer
+    filter_backends = [ApiSpinoffsListFilter]
+
+    def get_queryset(self):
+
+        spinoffid = self.kwargs['spinoffid']
+
+        return ServiceSpinoff.getSpinoffDetail(spinoffid)

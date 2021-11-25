@@ -3181,6 +3181,7 @@ class BrevettoInventori(models.Model):
         'Personale',
         models.DO_NOTHING,
         db_column='MATRICOLA_INVENTORE',
+        to_field='matricola',
         blank=True,
         null=True)  # Field name made lowercase.
     cognomenome_origine = models.CharField(
@@ -3222,7 +3223,7 @@ class TipologiaAreaTecnologica(models.Model):
         db_table = 'TIPOLOGIA_AREA_TECNOLOGICA'
 
 
-class SpinoffAreaInnovazioneS3Calabria(models.Model):
+class SpinoffStartupAreaInnovazioneS3Calabria(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)
     # Field name made lowercase.
@@ -3231,10 +3232,10 @@ class SpinoffAreaInnovazioneS3Calabria(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'SPINOFF_AREA_INNOVAZIONE_S3_CALABRIA'
+        db_table = 'SPINOFF_STARTUP_AREA_INNOVAZIONE_S3_CALABRIA'
 
 
-class SpinoffDatiBase(models.Model):
+class SpinoffStartupDatiBase(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)
     # Field name made lowercase.
@@ -3288,7 +3289,7 @@ class SpinoffDatiBase(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     id_area_innovazione_s3_calabria = models.ForeignKey(
-        SpinoffAreaInnovazioneS3Calabria,
+        SpinoffStartupAreaInnovazioneS3Calabria,
         models.DO_NOTHING,
         db_column='ID_AREA_INNOVAZIONE_S3_CALABRIA',
         blank=True,
@@ -3302,4 +3303,4 @@ class SpinoffDatiBase(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'SPINOFF_DATI_BASE'
+        db_table = 'SPINOFF_STARTUP_DATI_BASE'

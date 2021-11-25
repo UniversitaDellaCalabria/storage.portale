@@ -16,7 +16,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest, \
     LaboratorioAltriDipartimentiUnitTest, PubblicazioneDatiBaseUnitTest, PubblicazioneCommunityUnitTest, \
     PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
-    BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffDatiBaseUnitTest
+    BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -4107,7 +4107,7 @@ class ApiSpinoffsListUnitTest(TestCase):
         t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
             **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
 
-        SpinoffDatiBaseUnitTest.create_spinoffDatiBase(**{
+        SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
             "id": 1,
             "piva": '1111sc',
             "nome_azienda": 'Revelis',
@@ -4119,6 +4119,7 @@ class ApiSpinoffsListUnitTest(TestCase):
             "referente_unical": "Garofalo",
             "matricola_referente_unical": p,
             "is_spinoff": 1,
+            "is_startup": 0,
         })
 
         url = reverse('ricerca:spin-offs')
@@ -4133,10 +4134,56 @@ class ApiSpinoffsListUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 1
 
-        data = {'search': 'appl'}
+        data = {'search': 'appl', 'spinoff': '1', 'startup': '0'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
         data = {'techarea': 1}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
+
+
+class ApiSpinoffDetailUnitTest(TestCase):
+
+    def test_apispinoffdetail(self):
+
+        req = Client()
+
+        p = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
+
+        t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
+            **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
+
+        SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
+            "id": 1,
+            "piva": '1111sc',
+            "nome_azienda": 'Revelis',
+            "url_immagine": 'aaaa',
+            "url_sito_web": 'bbbb',
+            "descrizione_ita": 'applicazione',
+            "descrizione_eng": "description",
+            "id_area_tecnologica": t1,
+            "referente_unical": "Garofalo",
+            "matricola_referente_unical": p,
+            "is_spinoff": 1,
+            "is_startup": 0,
+        })
+
+        url = reverse('ricerca:spin-off-detail', kwargs={'spinoffid': '1'})
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results']['SpinoffId'] == 1

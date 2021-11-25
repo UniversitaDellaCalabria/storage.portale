@@ -312,3 +312,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/spin-offs/'.format(base_url),
         api_views.ApiSpinoffsList.as_view(),
         name='spin-offs'),
+
+    urlpatterns += path(
+        '{}/spin-offs/<str:spinoffid>/'.format(base_url),
+        api_views.ApiSpinoffDetail.as_view(),
+        name='spin-off-detail'),

@@ -367,6 +367,9 @@ LABEL_MAPPING = {
         'SpinoffTechAreaId': 'Spinoff Tech Area Id',
         'SpinoffTechAreaDescription': 'Spinoff Area Description',
         'SpinoffAgencyUrl': 'Spinoff Agency Url',
+        'IsSpinoff': 'Is Spinoff',
+        'IsStartup': 'Is Startup',
+        'InfrastructureReferentId': 'Infrastructure Referent Id',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -633,6 +636,8 @@ LABEL_MAPPING = {
         'SpinoffTechAreaId': 'Id Area Tecnologica Spinoff',
         'SpinoffTechAreaDescription': 'Descrizione Area Tecnologica Spinoff',
         'SpinoffAgencyUrl': 'Url Azienda Spinoff',
-
+        'IsSpinoff': 'Spinoff',
+        'IsStartup': 'Startup',
+        'InfrastructureReferentId': 'ID Infrastruttura Riferimento',
     }
 }

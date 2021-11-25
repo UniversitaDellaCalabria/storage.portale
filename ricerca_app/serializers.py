@@ -860,6 +860,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
             'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
             'DepartmentReferentName': query['id_dipartimento_riferimento__dip_des_it'] if req_lang == "it" or query['id_dipartimento_riferimento__dip_des_eng'] is None else query['id_dipartimento_riferimento__dip_des_eng'],
+            'InfrastructureReferentId': query['id_infrastruttura_riferimento__id'],
             'InfrastructureReferentName': query['id_infrastruttura_riferimento__descrizione'],
             'Interdepartmental': query['laboratorio_interdipartimentale'],
             'ExtraDepartments': extra_departments,
@@ -966,6 +967,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
             'Interdepartmental': query['laboratorio_interdipartimentale'],
             'ExtraDepartments': extra_departments,
+            'InfrastructureReferentId': query['id_infrastruttura_riferimento__id'],
             'InfrastructureReferentName': query['id_infrastruttura_riferimento__descrizione'],
             'Dimension': query['sede_dimensione'],
             'ScientificDirector': query['responsabile_scientifico'],
@@ -1298,4 +1300,6 @@ class SpinoffsSerializer(CreateUpdateAbstract):
             'SpinoffUnicalReferentId': query['matricola_referente_unical'],
             'SpinoffTechAreaId': query["id_area_tecnologica"],
             'SpinoffTechAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
+            'IsSpinoff': query['is_spinoff'],
+            'IsStartup': query['is_startup'],
         }
