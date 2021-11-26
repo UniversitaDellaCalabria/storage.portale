@@ -370,6 +370,16 @@ LABEL_MAPPING = {
         'IsSpinoff': 'Is Spinoff',
         'IsStartup': 'Is Startup',
         'PersonFunctions': ' Funzioni Persona',
+        'ProjectId': 'Project Id',
+        'TerritorialScopeId': 'Territorial Scope Id',
+        'TerritorialScopeDescription': ' Territorial Scope Description',
+        'TypeProgramId': 'Type Program Id',
+        'TypeProgramDescription': 'Type Program Description',
+        'ProjectTitle': 'Project Title',
+        'ProjectDescription': 'Project Description',
+        'ProjectAbstract': 'Project Abstract',
+        'ProjectImage': 'Project Image',
+
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -639,5 +649,14 @@ LABEL_MAPPING = {
         'IsSpinoff': 'Spinoff',
         'IsStartup': 'Startup',
         'PersonFunctions': ' Funzioni Persona',
+        'ProjectId': 'Id Progetto',
+        'TerritorialScopeId': 'Id Ambito Territoriale',
+        'TerritorialScopeDescription': ' Decrizione Ambito Territoriale',
+        'TypeProgramId': 'Id Tipologia Programma',
+        'TypeProgramDescription': 'Descrizione Tipologia Programma',
+        'ProjectTitle': 'Titolo Progetto',
+        'ProjectDescription': 'Descrizione Progetto',
+        'ProjectAbstract': 'Abstract Progetto',
+        'ProjectImage': 'Immagine Progetto',
     }
 }

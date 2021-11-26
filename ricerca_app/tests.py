@@ -16,7 +16,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest, \
     LaboratorioAltriDipartimentiUnitTest, PubblicazioneDatiBaseUnitTest, PubblicazioneCommunityUnitTest, \
     PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
-    BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest
+    BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest, \
+    ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -2095,8 +2096,6 @@ class ApiPersonaleDetailUnitTest(TestCase):
         res = req.get(url)
         res1 = req.get(url1)
 
-        print(res.json())
-        print(res1.json())
         assert res.json()['results']['TeacherCVFull'] == "BBB"
         assert res.json()['results']['ID'] == "111112"
         assert res1.json()['results']['ID'] == "111113"
@@ -4147,7 +4146,6 @@ class ApiPatentDetailUnitTest(TestCase):
         assert res.json()['results']['PatentId'] == 1
 
 
-
 class ApiCompaniesListUnitTest(TestCase):
 
     def test_apicompanieslist(self):
@@ -4267,4 +4265,51 @@ class ApiTechAreasListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+
+class ApiProjectsListUnitTest(TestCase):
+
+    def test_apiprojectslist(self):
+
+        req = Client()
+
+        t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
+            **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
+
+        a1 = ProgettoAmbitoTerritorialeUnitTest.create_progettoAmbitoTerritoriale(
+            **{"id": 1, "ambito_territoriale": "europeo", })
+
+        p1 = ProgettoTipologiaProgrammaUnitTest.create_progettoTipologiaProgramma(
+            **{"id": 1, "nome_programma": "AAA"})
+
+        ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
+            "id": 1,
+            "id_ambito_territoriale": a1,
+            "id_tipologia_programma": p1,
+            "titolo": "Motore",
+            "descr_breve": "Mot",
+            "abstract_ita": "Motore",
+            "abstract_eng": "Engine",
+            "id_area_tecnologica": t1,
+        })
+
+        url = reverse('ricerca:projects')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+        data = {'search': 'mot'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'techarea': 1}
+        res = req.get(url, data=data)
         assert len(res.json()['results']) == 1

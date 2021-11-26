@@ -327,3 +327,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/tech-areas/'.format(base_url),
         api_views.ApiTechAreasList.as_view(),
         name='techareaslist'),
+
+    urlpatterns += path(
+        '{}/projects/'.format(base_url),
+        api_views.ApiProjectsList.as_view(),
+        name='projects'),

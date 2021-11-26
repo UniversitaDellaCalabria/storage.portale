@@ -860,7 +860,6 @@ class ApiPatentsList(ApiEndpointList):
         return ServiceBrevetto.getPatents(search, techarea)
 
 
-
 class ApiPatentDetail(ApiEndpointDetail):
     description = 'La funzione restituisce uno specifico brevetto'
     serializer_class = PatentsSerializer
@@ -871,6 +870,7 @@ class ApiPatentDetail(ApiEndpointDetail):
         patentid = self.kwargs['patentid']
 
         return ServiceBrevetto.getPatentDetail(patentid)
+
 
 class ApiLaboratoriesScopesList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle finalità dei laboratori'
@@ -917,3 +917,16 @@ class ApiTechAreasList(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceCompany.getTechAreas()
+
+
+class ApiProjectsList(ApiEndpointList):
+    description = 'La funzione restituisce la lista dei progetti'
+    serializer_class = ProjectsSerializer
+    filter_backends = [ApiProjectsListFilter]
+
+    def get_queryset(self):
+
+        search = self.request.query_params.get('search')
+        techarea = self.request.query_params.get('techarea')
+
+        return ServiceProgetto.getProjects(search, techarea)

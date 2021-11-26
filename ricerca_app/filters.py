@@ -496,3 +496,17 @@ class ApiCompaniesListFilter(GenericApiFilter):
             },
         },
     ]
+
+
+class ApiProjectsListFilter(GenericApiFilter):
+    search_params = [
+        {
+            'name': 'techarea',
+            'description': 'Area Tecnologica',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+    ]

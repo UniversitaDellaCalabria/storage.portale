@@ -49,7 +49,10 @@ from .models import (
     BrevettoDatiBase,
     BrevettoInventori,
     TipologiaAreaTecnologica,
-    SpinoffStartupDatiBase)
+    SpinoffStartupDatiBase,
+    ProgettoDatiBase,
+    ProgettoTipologiaProgramma,
+    ProgettoAmbitoTerritoriale)
 
 
 # class ContextUnitTest(TestCase):
@@ -640,4 +643,37 @@ class SpinoffStartupDatiBaseUnitTest(TestCase):
             data[k] = v
 
         obj = SpinoffStartupDatiBase.objects.create(**data)
+        return obj
+
+
+class ProgettoDatiBaseUnitTest(TestCase):
+    @classmethod
+    def create_progettoDatiBase(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = ProgettoDatiBase.objects.create(**data)
+        return obj
+
+
+class ProgettoAmbitoTerritorialeUnitTest(TestCase):
+    @classmethod
+    def create_progettoAmbitoTerritoriale(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = ProgettoAmbitoTerritoriale.objects.create(**data)
+        return obj
+
+
+class ProgettoTipologiaProgrammaUnitTest(TestCase):
+    @classmethod
+    def create_progettoTipologiaProgramma(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = ProgettoTipologiaProgramma.objects.create(**data)
         return obj

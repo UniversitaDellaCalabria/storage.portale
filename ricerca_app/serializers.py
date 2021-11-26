@@ -1369,7 +1369,30 @@ class TechAreasSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
 
+        return {'TechAreaId': query['id'], 'TechAreaDescription': query["descr_area_ita"]
+                if req_lang == "it" or query["descr_area_eng"] is None else query['descr_area_eng'], }
+
+
+class ProjectsSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
         return {
-            'TechAreaId': query['id'],
-            'TechAreaDescription': query["descr_area_ita"] if req_lang == "it" or query["descr_area_eng"] is None else query['descr_area_eng'],
+            'ProjectId': query['id'],
+            'TerritorialScopeId': query['id_ambito_territoriale__id'],
+            'TerritorialScopeDescription': query['id_ambito_territoriale__ambito_territoriale'],
+            'TypeProgramId': query['id_tipologia_programma__id'],
+            'TypeProgramDescription': query['id_tipologia_programma__nome_programma'],
+            'ProjectTitle': query['titolo'],
+            'ProjectDescription': query['descr_breve'],
+            'ProjectAbstract': query['abstract_ita'] if req_lang == "it" or query['abstract_eng'] is None else query['abstract_eng'],
+            'TechAreaId': query["id_area_tecnologica"],
+            'TechAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
+            'ProjectImage': query['url_immagine'],
         }

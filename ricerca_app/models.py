@@ -3304,3 +3304,107 @@ class SpinoffStartupDatiBase(models.Model):
     class Meta:
         managed = True
         db_table = 'SPINOFF_STARTUP_DATI_BASE'
+
+
+class ProgettoAmbitoTerritoriale(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    ambito_territoriale = models.CharField(
+        db_column='AMBITO_TERRITORIALE', max_length=100)
+
+    class Meta:
+        managed = True
+        db_table = 'PROGETTO_AMBITO_TERRITORIALE'
+
+
+class ProgettoDatiBase(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    anno_avvio = models.IntegerField(
+        db_column='ANNO_AVVIO', blank=True, null=True)
+    id_ambito_territoriale = models.ForeignKey(
+        ProgettoAmbitoTerritoriale,
+        models.DO_NOTHING,
+        db_column='ID_AMBITO_TERRITORIALE',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    id_tipologia_programma = models.ForeignKey(
+        'ProgettoTipologiaProgramma',
+        models.DO_NOTHING,
+        db_column='ID_TIPOLOGIA_PROGRAMMA',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    id_area_tecnologica = models.ForeignKey(
+        'TipologiaAreaTecnologica',
+        models.DO_NOTHING,
+        db_column='ID_AREA_TECNOLOGICA',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    id_dipartimento = models.IntegerField(
+        db_column='ID_DIPARTIMENTO', blank=True, null=True)
+    # Field name made lowercase.
+    titolo = models.CharField(
+        db_column='TITOLO',
+        max_length=4000,
+        blank=True,
+        null=True)
+    # Field name made lowercase.
+    descr_breve = models.TextField(
+        db_column='DESCR_BREVE', blank=True, null=True)
+    url_immagine = models.CharField(
+        db_column='URL_IMMAGINE',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    abstract_ita = models.TextField(
+        db_column='ABSTRACT_ITA', blank=True, null=True)
+    # Field name made lowercase.
+    abstract_eng = models.TextField(
+        db_column='ABSTRACT_ENG', blank=True, null=True)
+    url_sito_web = models.CharField(
+        db_column='URL_SITO_WEB',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'PROGETTO_DATI_BASE'
+
+
+class ProgettoResponsabileScientifico(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    matricola = models.ForeignKey(
+        Personale,
+        models.DO_NOTHING,
+        db_column='MATRICOLA',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    nome_origine = models.CharField(
+        db_column='NOME_ORIGINE',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    id_progetto = models.IntegerField(db_column='ID_PROGETTO')
+
+    class Meta:
+        managed = True
+        db_table = 'PROGETTO_RESPONSABILE_SCIENTIFICO'
+
+
+class ProgettoTipologiaProgramma(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    nome_programma = models.CharField(
+        db_column='NOME_PROGRAMMA', max_length=1000)
+
+    class Meta:
+        managed = True
+        db_table = 'PROGETTO_TIPOLOGIA_PROGRAMMA'

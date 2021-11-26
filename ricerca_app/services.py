@@ -11,7 +11,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
     RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita, \
-    SpinoffStartupDatiBase, TipologiaAreaTecnologica
+    SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase
 
 
 class ServiceQueryBuilder:
@@ -1423,7 +1423,7 @@ class ServicePersonale:
             "funzione",
             "unita_organizzativa_id__uo",
             "unita_organizzativa_id__denominazione",
-            )
+        )
 
         query = query.values(
             "id_ab",
@@ -1912,7 +1912,6 @@ class ServiceBrevetto:
 
         return query
 
-
     @staticmethod
     def getPatentDetail(patentid):
 
@@ -1956,7 +1955,9 @@ class ServiceCompany:
 
         if search is not None:
             for k in search.split(" "):
-                q_nome = Q(descrizione_ita__icontains=k) | Q(nome_azienda__icontains=k)
+                q_nome = Q(
+                    descrizione_ita__icontains=k) | Q(
+                    nome_azienda__icontains=k)
                 query_search &= q_nome
         if techarea:
             query_techarea = Q(id_area_tecnologica=techarea)
@@ -2013,7 +2014,6 @@ class ServiceCompany:
 
         return query
 
-
     @staticmethod
     def getTechAreas():
 
@@ -2021,6 +2021,43 @@ class ServiceCompany:
             "id",
             "descr_area_ita",
             "descr_area_eng",
+        ).distinct()
+
+        return query
+
+
+class ServiceProgetto:
+
+    @staticmethod
+    def getProjects(search, techarea):
+
+        query_search = Q()
+        query_techarea = Q()
+
+        if search is not None:
+            for k in search.split(" "):
+                q_nome = Q(titolo__icontains=k)
+                query_search &= q_nome
+        if techarea:
+            query_techarea = Q(id_area_tecnologica=techarea)
+
+        query = ProgettoDatiBase.objects.filter(
+            query_search,
+            query_techarea,
+        ).values(
+            "id",
+            "id_ambito_territoriale__id",
+            "id_ambito_territoriale__ambito_territoriale",
+            "id_tipologia_programma__id",
+            "id_tipologia_programma__nome_programma",
+            "titolo",
+            "descr_breve",
+            "url_immagine",
+            "abstract_ita",
+            "abstract_eng",
+            "id_area_tecnologica",
+            "id_area_tecnologica__descr_area_ita",
+            "id_area_tecnologica__descr_area_eng",
         ).distinct()
 
         return query
