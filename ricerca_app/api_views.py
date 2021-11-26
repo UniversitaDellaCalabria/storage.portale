@@ -645,7 +645,7 @@ class ApiRolesList(ApiEndpointListSupport):
 
 class ApiPersonaleDetail(ApiEndpointDetail):
     description = 'La funzione restituisce una specifica persona'
-    serializer_class = AddressbookSerializer
+    serializer_class = PersonaleSerializer
     # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):

@@ -1414,6 +1414,17 @@ class ServicePersonale:
             "personalecontatti__cd_tipo_cont__descr_contatto",
             "personalecontatti__contatto")
         contacts = list(contacts)
+
+        functions = UnitaOrganizzativaFunzioni.objects.filter(
+            matricola=personale_id,
+            termine__gt=datetime.datetime.now(),
+            decorrenza__lt=datetime.datetime.now()).values(
+            "ds_funzione",
+            "funzione",
+            "unita_organizzativa_id__uo",
+            "unita_organizzativa_id__denominazione",
+            )
+
         query = query.values(
             "id_ab",
             "matricola",
@@ -1440,15 +1451,16 @@ class ServicePersonale:
             "cv_short_eng"
         )
         for q in query:
-            if q["unitaorganizzativafunzioni__termine"] is not None and q["unitaorganizzativafunzioni__termine"] >= datetime.datetime.today():
-                q["Funzione"] = q["unitaorganizzativafunzioni__ds_funzione"]
-            else:
-                q["Funzione"] = None
             for c in contacts_to_take:
                 q[c] = []
             for c in contacts:
                 q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     c['personalecontatti__contatto'])
+
+            if len(functions) == 0:
+                q["Functions"] = None
+            else:
+                q["Functions"] = functions
         return query
 
     @staticmethod

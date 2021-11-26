@@ -369,6 +369,7 @@ LABEL_MAPPING = {
         'SpinoffAgencyUrl': 'Spinoff Agency Url',
         'IsSpinoff': 'Is Spinoff',
         'IsStartup': 'Is Startup',
+        'PersonFunctions': ' Funzioni Persona',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -637,5 +638,6 @@ LABEL_MAPPING = {
         'SpinoffAgencyUrl': 'Url Azienda Spinoff',
         'IsSpinoff': 'Spinoff',
         'IsStartup': 'Startup',
+        'PersonFunctions': ' Funzioni Persona',
     }
 }

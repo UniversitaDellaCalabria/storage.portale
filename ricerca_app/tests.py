@@ -2064,6 +2064,14 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'denominazione': 'Dipartimento di Matematica e Informatica',
         })
 
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
+            'cod_fis': p1,
+            'termine': '2222-03-26',
+            'decorrenza': '1900-01-01',
+            'ds_funzione': 'Direttore',
+            'matricola': '111112',
+        })
+
         url = reverse(
             'ricerca:personaledetail', kwargs={
                 'personaleid': "111112"})
@@ -2087,6 +2095,8 @@ class ApiPersonaleDetailUnitTest(TestCase):
         res = req.get(url)
         res1 = req.get(url1)
 
+        print(res.json())
+        print(res1.json())
         assert res.json()['results']['TeacherCVFull'] == "BBB"
         assert res.json()['results']['ID'] == "111112"
         assert res1.json()['results']['ID'] == "111113"

@@ -690,6 +690,59 @@ class AddressbookSerializer(CreateUpdateAbstract):
         }
 
 
+class PersonaleSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        full_name = query['cognome'] + " " + query['nome'] + \
+            (" " + query['middle_name']
+             if query['middle_name'] is not None else "")
+        functions = None
+        if query["Functions"] is not None:
+            functions = PersonaleSerializer.to_dict_functions(
+                query["Functions"])
+        return {
+            'Name': full_name,
+            'ID': query['matricola'],
+            'RoleDescription': query['ds_ruolo_locale'],
+            'Role': query['cd_ruolo'],
+            'Structure': query['Struttura'],
+            'StructureTypeName': query['TipologiaStrutturaNome'],
+            'StructureTypeCOD': query['TipologiaStrutturaCod'],
+            'OfficeReference': query['Riferimento Ufficio'],
+            'Email': query['Posta Elettronica'],
+            'PEC': query['POSTA ELETTRONICA CERTIFICATA'],
+            'TelOffice': query['Telefono Ufficio'],
+            'TelCelOffice': query['Telefono Cellulare Ufficio'],
+            'Fax': query['Fax'],
+            'WebSite': query['URL Sito WEB'],
+            'CV': query['URL Sito WEB Curriculum Vitae'],
+            'Teacher': query['fl_docente'],
+            'PersonFunctions': functions,
+            'TeacherCVFull': query['cv_full_it'] if req_lang == "it" or query['cv_full_eng'] is None else query['cv_full_eng'],
+            'TeacherCVShort': query['cv_short_it'] if req_lang == "it" or query['cv_short_eng'] is None else query['cv_short_eng'],
+        }
+
+    @staticmethod
+    def to_dict_functions(query):
+        functions = []
+        for q in query:
+            functions.append({
+                'TeacherRole': q['ds_funzione'],
+                'Function': q['funzione'],
+                'StructureCod': q['unita_organizzativa_id__uo'],
+                'StructureName': q['unita_organizzativa_id__denominazione'],
+            })
+        return functions
+
+
 class StructuresSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
