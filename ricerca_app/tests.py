@@ -17,7 +17,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     LaboratorioAltriDipartimentiUnitTest, PubblicazioneDatiBaseUnitTest, PubblicazioneCommunityUnitTest, \
     PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
     BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest, \
-    ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest
+    ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
+    UnitaOrganizzativaTipoFunzioniUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -4274,6 +4275,15 @@ class ApiProjectsListUnitTest(TestCase):
 
         req = Client()
 
+        p = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
+
         t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
             **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
 
@@ -4294,6 +4304,9 @@ class ApiProjectsListUnitTest(TestCase):
             "id_area_tecnologica": t1,
         })
 
+        ProgettoResponsabileScientificoUnitTest.create_progettoResponsabileScientifico(
+            **{"matricola": p, "nome_origine": "Simone", "id_progetto": 1, })
+
         url = reverse('ricerca:projects')
 
         # check url
@@ -4312,4 +4325,77 @@ class ApiProjectsListUnitTest(TestCase):
 
         data = {'techarea': 1}
         res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
+class ApiProjectDetailUnitTest(TestCase):
+
+    def test_apiprojectdetail(self):
+
+        req = Client()
+
+        p = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
+
+        t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
+            **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
+
+        a1 = ProgettoAmbitoTerritorialeUnitTest.create_progettoAmbitoTerritoriale(
+            **{"id": 1, "ambito_territoriale": "europeo", })
+
+        p1 = ProgettoTipologiaProgrammaUnitTest.create_progettoTipologiaProgramma(
+            **{"id": 1, "nome_programma": "AAA"})
+
+        ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
+            "id": 1,
+            "id_ambito_territoriale": a1,
+            "id_tipologia_programma": p1,
+            "titolo": "Motore",
+            "descr_breve": "Mot",
+            "abstract_ita": "Motore",
+            "abstract_eng": "Engine",
+            "id_area_tecnologica": t1,
+        })
+
+        ProgettoResponsabileScientificoUnitTest.create_progettoResponsabileScientifico(
+            **{"matricola": p, "nome_origine": "Simone", "id_progetto": 1, })
+
+        url = reverse('ricerca:projectdetail', kwargs={'projectid': '1'})
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results']['ProjectId'] == 1
+
+
+class ApiStructureFunctionsListUnitTest(TestCase):
+
+    def test_apistructurefunctionslist(self):
+
+        req = Client()
+
+        UnitaOrganizzativaTipoFunzioniUnitTest.create_unitaOrganizzativaTipoFunzioni(
+            **{"cd_tipo_nod": 'apl', "funzione": "nbb45", "descr_funzione": "aaa", })
+
+        url = reverse('ricerca:functions')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
         assert len(res.json()['results']) == 1

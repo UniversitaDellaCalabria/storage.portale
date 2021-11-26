@@ -1383,8 +1383,14 @@ class ProjectsSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
+        responsabili = None
+        if query.get('Responsabili') is not None:
+            responsabili = ProjectsSerializer.to_dict_directors(
+                query['Responsabili'])
         return {
             'ProjectId': query['id'],
+            'ProjectYear': query['anno_avvio'],
+            'ProjectDepartmentId': query['id_dipartimento'],
             'TerritorialScopeId': query['id_ambito_territoriale__id'],
             'TerritorialScopeDescription': query['id_ambito_territoriale__ambito_territoriale'],
             'TypeProgramId': query['id_tipologia_programma__id'],
@@ -1395,4 +1401,34 @@ class ProjectsSerializer(CreateUpdateAbstract):
             'TechAreaId': query["id_area_tecnologica"],
             'TechAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
             'ProjectImage': query['url_immagine'],
+            'ScientificDirectors': responsabili,
+        }
+
+    @staticmethod
+    def to_dict_directors(query):
+        result = []
+        for q in query:
+            full_name = q["nome_origine"]
+            result.append({
+                'ScientificDirectorId': q['matricola'],
+                'ScientificDirectorName': full_name,
+            })
+        return result
+
+
+class StructureFunctionsSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+            'StructureTypeCOD': query['cd_tipo_nod'],
+            'Function': query['funzione'],
+            'FunctionDescription': query['descr_funzione'],
         }

@@ -1496,6 +1496,24 @@ class UnitaOrganizzativaFunzioni(models.Model):
         db_table = 'UNITA_ORGANIZZATIVA_FUNZIONI'
 
 
+class UnitaOrganizzativaTipoFunzioni(models.Model):
+    # Field name made lowercase.
+    cd_tipo_nod = models.CharField(
+        db_column='CD_TIPO_NOD',
+        primary_key=True,
+        max_length=100)
+    # Field name made lowercase.
+    funzione = models.CharField(db_column='FUNZIONE', max_length=100)
+    # Field name made lowercase.
+    descr_funzione = models.CharField(
+        db_column='DESCR_FUNZIONE', max_length=1000)
+
+    class Meta:
+        managed = True
+        db_table = 'UNITA_ORGANIZZATIVA_TIPO_FUNZIONI'
+        unique_together = (('cd_tipo_nod', 'funzione'),)
+
+
 class LaboratorioAltriDipartimenti(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)

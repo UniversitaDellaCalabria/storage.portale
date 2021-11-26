@@ -52,7 +52,9 @@ from .models import (
     SpinoffStartupDatiBase,
     ProgettoDatiBase,
     ProgettoTipologiaProgramma,
-    ProgettoAmbitoTerritoriale)
+    ProgettoAmbitoTerritoriale,
+    ProgettoResponsabileScientifico,
+    UnitaOrganizzativaTipoFunzioni)
 
 
 # class ContextUnitTest(TestCase):
@@ -676,4 +678,26 @@ class ProgettoTipologiaProgrammaUnitTest(TestCase):
             data[k] = v
 
         obj = ProgettoTipologiaProgramma.objects.create(**data)
+        return obj
+
+
+class ProgettoResponsabileScientificoUnitTest(TestCase):
+    @classmethod
+    def create_progettoResponsabileScientifico(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = ProgettoResponsabileScientifico.objects.create(**data)
+        return obj
+
+
+class UnitaOrganizzativaTipoFunzioniUnitTest(TestCase):
+    @classmethod
+    def create_unitaOrganizzativaTipoFunzioni(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = UnitaOrganizzativaTipoFunzioni.objects.create(**data)
         return obj

@@ -332,3 +332,13 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/projects/'.format(base_url),
         api_views.ApiProjectsList.as_view(),
         name='projects'),
+
+    urlpatterns += path(
+        '{}/projects/<str:projectid>/'.format(base_url),
+        api_views.ApiProjectDetail.as_view(),
+        name='projectdetail'),
+
+    urlpatterns += path(
+        '{}/functions/'.format(base_url),
+        api_views.ApiStructureFunctionsList.as_view(),
+        name='functions'),

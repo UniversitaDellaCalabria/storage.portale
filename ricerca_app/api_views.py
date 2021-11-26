@@ -930,3 +930,25 @@ class ApiProjectsList(ApiEndpointList):
         techarea = self.request.query_params.get('techarea')
 
         return ServiceProgetto.getProjects(search, techarea)
+
+
+class ApiProjectDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce il dettaglio'
+    serializer_class = ProjectsSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        projectid = self.kwargs['projectid']
+
+        return ServiceProgetto.getProjectDetail(projectid)
+
+
+class ApiStructureFunctionsList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle funzioni della unità organizzativa'
+    serializer_class = StructureFunctionsSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServicePersonale.getStructureFunctions()

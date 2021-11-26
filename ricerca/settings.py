@@ -116,7 +116,8 @@ LABEL_MAPPING = {
         'LaboratoryName': 'Laboratory Name',
         'Area': 'Area',
         'Dimension': 'Dimension',
-        'ScientificDirector': 'Sceintific Director',
+        'ScientificDirector': 'Scientific Director',
+        'ScientificDirectors': 'Scientific Directors',
         'ScientificDirectorId': 'Id Scientific Director',
         'StudyPlanId': 'Study Plan ID',
         'StudyPlanName': 'Study Plan Name',
@@ -358,6 +359,9 @@ LABEL_MAPPING = {
         'ProjectDescription': 'Project Description',
         'ProjectAbstract': 'Project Abstract',
         'ProjectImage': 'Project Image',
+        'ProjectYear': 'Project Year',
+        'ProjectDepartmentId': 'Project Department Id',
+        'FunctionDescription': 'Function Description',
 
     },
     'it': {
@@ -637,5 +641,9 @@ LABEL_MAPPING = {
         'ProjectDescription': 'Descrizione Progetto',
         'ProjectAbstract': 'Abstract Progetto',
         'ProjectImage': 'Immagine Progetto',
+        'ScientificDirectors': 'Responsabili Scientifici',
+        'ProjectYear': 'Anno Avvio Progetto',
+        'ProjectDepartmentId': 'Dipartimento Progetto',
+        'FunctionDescription': 'Descrizione Funzione',
     }
 }

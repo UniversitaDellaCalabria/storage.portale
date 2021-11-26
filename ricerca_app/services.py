@@ -11,7 +11,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
     RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita, \
-    SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase
+    SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase, ProgettoResponsabileScientifico, UnitaOrganizzativaTipoFunzioni
 
 
 class ServiceQueryBuilder:
@@ -1377,6 +1377,16 @@ class ServicePersonale:
         return query
 
     @staticmethod
+    def getStructureFunctions():
+
+        query = UnitaOrganizzativaTipoFunzioni.objects.values(
+            "cd_tipo_nod",
+            "funzione",
+            "descr_funzione").distinct().order_by("cd_tipo_nod")
+
+        return query
+
+    @staticmethod
     def getPersonale(personale_id):
         query = Personale.objects.filter(matricola__exact=personale_id)
         if query.values('cd_uo_aff_org').first()['cd_uo_aff_org'] is None:
@@ -2036,7 +2046,12 @@ class ServiceProgetto:
 
         if search is not None:
             for k in search.split(" "):
-                q_nome = Q(titolo__icontains=k)
+                q_nome = Q(
+                    titolo__icontains=k) | Q(
+                    id_area_tecnologica__descr_area_ita__icontains=k) | Q(
+                    id_dipartimento__icontains=k) | Q(
+                    anno_avvio__icontains=k) | Q(
+                    id_ambito_territoriale__ambito_territoriale__icontains=k)
                 query_search &= q_nome
         if techarea:
             query_techarea = Q(id_area_tecnologica=techarea)
@@ -2051,6 +2066,8 @@ class ServiceProgetto:
             "id_tipologia_programma__id",
             "id_tipologia_programma__nome_programma",
             "titolo",
+            "anno_avvio",
+            "id_dipartimento",
             "descr_breve",
             "url_immagine",
             "abstract_ita",
@@ -2059,5 +2076,52 @@ class ServiceProgetto:
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
         ).distinct()
+
+        for q in query:
+            responsabili = ProgettoResponsabileScientifico.objects.filter(
+                id_progetto=q['id']).values(
+                "matricola",
+                "nome_origine",
+            )
+            if len(responsabili) == 0:
+                q['Responsabili'] = []
+            else:
+                q['Responsabili'] = responsabili
+
+        return query
+
+    @staticmethod
+    def getProjectDetail(projectid):
+
+        query = ProgettoDatiBase.objects.filter(
+            id=projectid
+        ).values(
+            "id",
+            "id_ambito_territoriale__id",
+            "id_ambito_territoriale__ambito_territoriale",
+            "id_tipologia_programma__id",
+            "id_tipologia_programma__nome_programma",
+            "titolo",
+            "anno_avvio",
+            "id_dipartimento",
+            "descr_breve",
+            "url_immagine",
+            "abstract_ita",
+            "abstract_eng",
+            "id_area_tecnologica",
+            "id_area_tecnologica__descr_area_ita",
+            "id_area_tecnologica__descr_area_eng",
+        ).distinct()
+
+        for q in query:
+            responsabili = ProgettoResponsabileScientifico.objects.filter(
+                id_progetto=q['id']).values(
+                "matricola",
+                "nome_origine",
+            )
+            if len(responsabili) == 0:
+                q['Responsabili'] = []
+            else:
+                q['Responsabili'] = responsabili
 
         return query
