@@ -2049,7 +2049,7 @@ class ServiceProgetto:
                 q_nome = Q(
                     titolo__icontains=k) | Q(
                     id_area_tecnologica__descr_area_ita__icontains=k) | Q(
-                    id_dipartimento__icontains=k) | Q(
+                    id_dipartimento__dip_des_it__icontains=k) | Q(
                     anno_avvio__icontains=k) | Q(
                     id_ambito_territoriale__ambito_territoriale__icontains=k)
                 query_search &= q_nome
