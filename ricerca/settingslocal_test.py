@@ -383,7 +383,7 @@ LABEL_MAPPING = {
         'ProjectYear': 'Project Year',
         'ProjectDepartmentId': 'Project Department Id',
         'FunctionDescription': 'Function Description',
-
+        'FunctionCod': 'Function Cod',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -666,5 +666,7 @@ LABEL_MAPPING = {
         'ProjectYear': 'Anno Avvio Progetto',
         'ProjectDepartmentId': 'Dipartimento Progetto',
         'FunctionDescription': 'Descrizione Funzione',
+        'FunctionCod': 'Codice Funzione',
+
     }
 }

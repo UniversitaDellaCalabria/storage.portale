@@ -714,6 +714,7 @@ class PersonaleSerializer(CreateUpdateAbstract):
             'RoleDescription': query['ds_ruolo_locale'],
             'Role': query['cd_ruolo'],
             'Structure': query['Struttura'],
+            'StructureCod': query['CodStruttura'],
             'StructureTypeName': query['TipologiaStrutturaNome'],
             'StructureTypeCOD': query['TipologiaStrutturaCod'],
             'OfficeReference': query['Riferimento Ufficio'],
@@ -736,7 +737,7 @@ class PersonaleSerializer(CreateUpdateAbstract):
         for q in query:
             functions.append({
                 'TeacherRole': q['ds_funzione'],
-                'Function': q['funzione'],
+                'FunctionCod': q['funzione'],
                 'StructureCod': q['unita_organizzativa_id__uo'],
                 'StructureName': q['unita_organizzativa_id__denominazione'],
             })
@@ -870,6 +871,7 @@ class StructureDetailSerializer(CreateUpdateAbstract):
                 'ID': q['cod_fis__matricola'],
                 'Name': full_name,
                 'Function': q['ds_funzione'],
+                'FunctionCod': q['funzione'],
             })
         return result
 

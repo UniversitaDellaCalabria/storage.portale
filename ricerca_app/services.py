@@ -1397,13 +1397,15 @@ class ServicePersonale:
                     None,
                     output_field=CharField())).annotate(
                 TipologiaStrutturaCod=Value(None, output_field=CharField())).annotate(
-                TipologiaStrutturaNome=Value(None, output_field=CharField()))
+                TipologiaStrutturaNome=Value(None, output_field=CharField())).annotate(
+                CodStruttura=Value(None, output_field=CharField()))
         else:
             query = query.filter(
                 flg_cessato=0,
             ).extra(
                 select={
                     'Struttura': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE',
+                    'CodStruttura': 'UNITA_ORGANIZZATIVA.UO',
                     'TipologiaStrutturaCod': 'UNITA_ORGANIZZATIVA.CD_TIPO_NODO',
                     'TipologiaStrutturaNome': 'UNITA_ORGANIZZATIVA.DS_TIPO_NODO'},
                 tables=['UNITA_ORGANIZZATIVA'],
@@ -1450,6 +1452,7 @@ class ServicePersonale:
             "telrif",
             "email",
             "Struttura",
+            'CodStruttura',
             'TipologiaStrutturaCod',
             'TipologiaStrutturaNome',
             'unitaorganizzativafunzioni__ds_funzione',
@@ -1506,6 +1509,7 @@ class ServicePersonale:
                 unita_organizzativa__uo=q['uo'],
                 termine__gt=datetime.datetime.now()).values(
                 "ds_funzione",
+                "funzione",
                 "cod_fis__nome",
                 "cod_fis__cognome",
                 "cod_fis__middle_name",
