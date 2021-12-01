@@ -1751,6 +1751,11 @@ class LaboratorioDatiBase(models.Model):
         db_column='ID_INFRASTRUTTURA_RIFERIMENTO',
         blank=True,
         null=True)  # Field name made lowercase.
+    nome_file_logo = models.CharField(
+        db_column='NOME_FILE_LOGO',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -3267,9 +3272,9 @@ class SpinoffStartupDatiBase(models.Model):
         max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
-    url_immagine = models.CharField(
-        db_column='URL_IMMAGINE',
-        max_length=4000,
+    nome_file_logo = models.CharField(
+        db_column='NOME_FILE_LOGO',
+        max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
     # Field name made lowercase.

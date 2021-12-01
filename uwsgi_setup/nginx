@@ -70,6 +70,12 @@ server {
         autoindex off;
     }
 
+    # Django media
+    location /media  {
+        alias /media;  # your Django project's media files - amend as required
+        autoindex off;
+    }
+
     # Finally, send all non-media requests to the Django server.
     location / {
         uwsgi_pass  ricerca;

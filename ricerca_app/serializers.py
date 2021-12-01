@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.conf import settings
 
 
 class CreateUpdateAbstract(serializers.Serializer):
@@ -910,7 +911,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'ScientificDirectorName': query['responsabile_scientifico'],
             'LaboratoryName': query['nome_laboratorio'],
             'LaboratoryAcronym': query['acronimo'],
-            'LaboratoryLogo': query['logo_laboratorio'],
+            'LaboratoryLogo': f'{settings.LABORATORIES_MEDIA_PATH}/{query["nome_file_logo"]}' if query['nome_file_logo'] else '',
             'LaboratoryEquipment': query['strumentazione_descrizione'],
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
             'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
@@ -1016,6 +1017,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             'LaboratoryId': query['id'],
             'LaboratoryName': query['nome_laboratorio'],
             'LaboratoryAcronym': query['acronimo'],
+            'LaboratoryLogo': f'{settings.LABORATORIES_MEDIA_PATH}/{query["nome_file_logo"]}' if query['nome_file_logo'] else '',
             'Area': query['ambito'],
             'DepartmentName': query['dipartimento_riferimento'],
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
@@ -1349,7 +1351,7 @@ class CompaniesSerializer(CreateUpdateAbstract):
             'SpinoffPIva': query['piva'],
             'SpinoffAgencyName': query['nome_azienda'],
             'SpinoffAgencyUrl': query['url_sito_web'],
-            'SpinoffImage': query["url_immagine"],
+            'SpinoffImage': f'{settings.COMPANIES_MEDIA_PATH}/{query["nome_file_logo"]}' if query['nome_file_logo'] else '',
             'SpinoffDescription': query["descrizione_ita"]if req_lang == "it" or query["descrizione_eng"] is None else query['descrizione_eng'],
             'SpinoffUnicalReferent': query["referente_unical"],
             'SpinoffUnicalReferentId': query['matricola_referente_unical'],

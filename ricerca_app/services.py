@@ -1639,6 +1639,7 @@ class ServiceLaboratorio:
             "id_infrastruttura_riferimento__id",
             "id_infrastruttura_riferimento__descrizione",
             "acronimo",
+            "nome_file_logo",
         ).distinct()
 
         for q in query:
@@ -1746,7 +1747,7 @@ class ServiceLaboratorio:
             "matricola_referente_compilazione",
             "nome_laboratorio",
             "acronimo",
-            "logo_laboratorio",
+            "nome_file_logo",
             "id_dipartimento_riferimento__dip_id",
             "id_dipartimento_riferimento__dip_cod",
             "id_dipartimento_riferimento__dip_des_it",
@@ -1989,7 +1990,7 @@ class ServiceCompany:
             "id",
             "piva",
             "nome_azienda",
-            "url_immagine",
+            "nome_file_logo",
             "url_sito_web",
             "descrizione_ita",
             "descrizione_eng",
@@ -2013,7 +2014,7 @@ class ServiceCompany:
             "id",
             "piva",
             "nome_azienda",
-            "url_immagine",
+            "nome_file_logo",
             "url_sito_web",
             "descrizione_ita",
             "descrizione_eng",

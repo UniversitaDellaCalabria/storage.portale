@@ -3,6 +3,8 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
+from rest_framework.filters import OrderingFilter
+
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
@@ -18,9 +20,11 @@ from .pagination import UnicalStorageApiPaginationList
 from .utils import encode_labels
 
 
-class ApiEndpointList(generics.GenericAPIView):
+class ApiEndpointList(generics.ListAPIView):
     pagination_class = UnicalStorageApiPaginationList
     permission_classes = [permissions.AllowAny]
+    # filter_backends = [OrderingFilter]
+    # ordering_fields = '__all__'
     allowed_methods = ('GET',)
 
     def __init__(self, **kwargs):
@@ -850,7 +854,7 @@ class ApiInfrastructuresList(ApiEndpointList):
 class ApiPatentsList(ApiEndpointList):
     description = 'La funzione restituisce la lista dei brevetti'
     serializer_class = PatentsSerializer
-    filter_backends = [ApiPatentsListFilter]
+    filter_backends = [ApiPatentsListFilter, OrderingFilter]
 
     def get_queryset(self):
 
@@ -922,7 +926,7 @@ class ApiTechAreasList(ApiEndpointList):
 class ApiProjectsList(ApiEndpointList):
     description = 'La funzione restituisce la lista dei progetti'
     serializer_class = ProjectsSerializer
-    filter_backends = [ApiProjectsListFilter]
+    filter_backends = [ApiProjectsListFilter, OrderingFilter]
 
     def get_queryset(self):
 
