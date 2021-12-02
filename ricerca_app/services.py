@@ -1184,7 +1184,7 @@ class ServicePersonale:
             query_structuretree = ServicePersonale.getStructurePersonnelChild(
                 Q(), structuretree)
             query_structuretree |= Q(cd_uo_aff_org=structuretree)
-        if query_function is not None:
+        if function is not None:
             query_function = Q(
                 unitaorganizzativafunzioni__ds_funzione=function)
 
