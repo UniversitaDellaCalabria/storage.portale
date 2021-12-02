@@ -583,8 +583,8 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
         for q in query:
             functions.append({
                 'TeacherRole': q['ds_funzione'],
-                'StructureCod': q['unita_organizzativa_id__uo'],
-                'StructureName': q['unita_organizzativa_id__denominazione'],
+                'StructureCod': q['cd_csa__uo'],
+                'StructureName': q['cd_csa__denominazione'],
             })
         return functions
 
@@ -739,8 +739,8 @@ class PersonaleSerializer(CreateUpdateAbstract):
             functions.append({
                 'TeacherRole': q['ds_funzione'],
                 'FunctionCod': q['funzione'],
-                'StructureCod': q['unita_organizzativa_id__uo'],
-                'StructureName': q['unita_organizzativa_id__denominazione'],
+                'StructureCod': q['cd_csa__uo'],
+                'StructureName': q['cd_csa__denominazione'],
             })
         return functions
 

@@ -943,8 +943,8 @@ class ServiceDocente:
             termine__gt=datetime.datetime.now(),
             decorrenza__lt=datetime.datetime.now()).values(
             "ds_funzione",
-            "unita_organizzativa_id__uo",
-            "unita_organizzativa_id__denominazione")
+            "cd_csa__uo",
+            "cd_csa__denominazione")
 
         query = query.values(
             "id_ab",
@@ -1433,8 +1433,8 @@ class ServicePersonale:
             decorrenza__lt=datetime.datetime.now()).values(
             "ds_funzione",
             "funzione",
-            "unita_organizzativa_id__uo",
-            "unita_organizzativa_id__denominazione",
+            "cd_csa__uo",
+            "cd_csa__denominazione",
         )
 
         query = query.values(
@@ -1498,6 +1498,7 @@ class ServicePersonale:
             "ds_tipo_nodo",
             "cd_tipo_nodo",
             "ds_mission",
+            "cd_csa",
         )
         for q in query:
             for c in contacts_to_take:
@@ -1506,7 +1507,7 @@ class ServicePersonale:
                 q[c['unitaorganizzativacontatti__cd_tipo_cont']].append(
                     c['unitaorganizzativacontatti__contatto'])
             funzioni_personale = UnitaOrganizzativaFunzioni.objects.filter(
-                unita_organizzativa__uo=q['uo'],
+                cd_csa=q['cd_csa'],
                 termine__gt=datetime.datetime.now()).values(
                 "ds_funzione",
                 "funzione",

@@ -2114,6 +2114,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'denominazione': 'aaa',
             'denominazione_padre': 'c',
             'uo_padre': '11',
+            'cd_csa': '1',
 
         })
         u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
@@ -2124,6 +2125,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'denominazione': 'bbb',
             'denominazione_padre': 'd',
             'uo_padre': '22',
+            'cd_csa': '2',
         })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
@@ -2189,7 +2191,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'ds_funzione': 'Amministrazione',
             'termine': "2999-12-1",
             'cod_fis': p1,
-            'unita_organizzativa': u1,
+            'cd_csa': u1,
         })
 
         UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
@@ -2197,7 +2199,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'ds_funzione': 'Delega',
             'termine': None,
             'cod_fis': p2,
-            'unita_organizzativa': u2,
+            'cd_csa': u2,
         })
 
         url = reverse('ricerca:structuredetail', kwargs={
@@ -3962,7 +3964,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'ds_funzione': 'Amministrazione',
             'termine': "2999-12-1",
             'cod_fis': p1,
-            'unita_organizzativa': u1,
+            'cd_csa': u1,
         })
 
         UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
@@ -3970,7 +3972,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'ds_funzione': 'Delega',
             'termine': None,
             'cod_fis': p2,
-            'unita_organizzativa': u2,
+            'cd_csa': u2,
         })
 
         url = reverse('ricerca:addressbookstructuredetail', kwargs={
