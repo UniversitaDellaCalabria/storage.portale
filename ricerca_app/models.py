@@ -2482,13 +2482,6 @@ class Personale(InsModAbstract):
     cv_short_eng = models.TextField(
         db_column='CV_SHORT_ENG', blank=True, null=True)
 
-    # Field name made lowercase.
-    cd_csa = models.CharField(
-        db_column='CD_CSA',
-        max_length=40,
-        blank=True,
-        null=True)
-
     class Meta:
         managed = True
         db_table = 'PERSONALE'

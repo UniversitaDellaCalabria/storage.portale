@@ -1184,7 +1184,7 @@ class ServicePersonale:
             query_structuretree = ServicePersonale.getStructurePersonnelChild(
                 Q(), structuretree)
             query_structuretree |= Q(cd_uo_aff_org=structuretree)
-        if query_function is not None:
+        if function is not None:
             query_function = Q(
                 unitaorganizzativafunzioni__ds_funzione=function)
 
@@ -1197,6 +1197,7 @@ class ServicePersonale:
             flg_cessato=0,
             cd_uo_aff_org__isnull=False,
             dt_rap_fin__gte=datetime.datetime.today())
+
 
         if structuretypes is not None:
             structuretypes = structuretypes.split(",")
@@ -1244,7 +1245,6 @@ class ServicePersonale:
             "cv_full_eng",
             "cv_short_eng"
         )
-
         if structureid is None and structuretypes is None and structuretree is None:
             query2 = Personale.objects.filter(
                 query_search,
@@ -1283,7 +1283,6 @@ class ServicePersonale:
             )
             from itertools import chain
             query = list(chain(*[query, query2]))
-
         query = list(query)
         query.sort(key=lambda x: x.get('cognome'), reverse=False)
 
