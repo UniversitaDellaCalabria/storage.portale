@@ -1315,7 +1315,7 @@ class PatentsSerializer(CreateUpdateAbstract):
             'PatentId': query['id'],
             'PatentUniqueId': query['id_univoco'],
             'PatentTitle': query['titolo'],
-            'PatentImage': query["url_immagine"],
+            'PatentImage': f'{settings.PATENTS_MEDIA_PATH}/{query["nome_file_logo"]}' if query['nome_file_logo'] else '',
             'PatentAbstract': query["breve_descrizione"],
             'PatentUrlKnowledgeShare': query["url_knowledge_share"],
             'PatentTechAreaId': query["id_area_tecnologica"],

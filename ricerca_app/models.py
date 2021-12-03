@@ -3158,6 +3158,8 @@ class BrevettoDatiBase(models.Model):
         max_length=2000,
         blank=True,
         null=True)
+    nome_file_logo = models.CharField(db_column='NOME_FILE_LOGO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+
 
     class Meta:
         managed = True
