@@ -854,7 +854,7 @@ class ApiInfrastructuresList(ApiEndpointList):
 class ApiPatentsList(ApiEndpointList):
     description = 'La funzione restituisce la lista dei brevetti'
     serializer_class = PatentsSerializer
-    filter_backends = [ApiPatentsListFilter, OrderingFilter]
+    filter_backends = [ApiPatentsListFilter]
 
     def get_queryset(self):
 

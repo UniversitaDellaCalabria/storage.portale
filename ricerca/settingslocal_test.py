@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'accounts.User'
 LABORATORIES_MEDIA_PATH = f'{MEDIA_URL}laboratori/loghi'
 COMPANIES_MEDIA_PATH = f'{MEDIA_URL}spinoff-startup/loghi'
+PATENTS_MEDIA_PATH = f'{MEDIA_URL}brevetti/loghi'
 MIDDLEWARE = [
     # 'silk.middleware.SilkyMiddleware',
     'django.middleware.security.SecurityMiddleware',
