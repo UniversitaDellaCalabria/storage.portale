@@ -1547,6 +1547,7 @@ class UnitaOrganizzativaFunzioni(models.Model):
         UnitaOrganizzativa,
         models.DO_NOTHING,
         db_column='CD_CSA',
+        to_field='cd_csa',
         blank=True,
         null=True)  # Field name made lowercase.
     cod_fis = models.ForeignKey(
