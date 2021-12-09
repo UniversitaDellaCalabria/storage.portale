@@ -1639,7 +1639,7 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'cd_uo_aff_org': u2,
             'cod_fis': 'SMN4',
         })
-        PersonaleUnitTest.create_personale(**{
+        p3 = PersonaleUnitTest.create_personale(**{
             'id': 3,
             'nome': 'Zlatan',
             'cognome': 'Ibra',
@@ -1729,6 +1729,13 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'ds_funzione': 'Amministrazione Rettorato',
             'cod_fis': p2,
         })
+        UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
+            'cod_fis': p3,
+            'termine': '2222-03-26',
+            'decorrenza': '1900-01-01',
+            'ds_funzione': 'Direttore',
+            'matricola': '111114',
+        })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '99',
             'denominazione': 'Rettorato',
@@ -1758,7 +1765,10 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         data = {'search': 'Ibra'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
-        assert res.json()['results'][0]['Function'] is None
+
+        data = {'search': 'Mungar', 'structure': '99'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
 
         data = {'search': 'Mungar', 'structure': '99'}
         res = req.get(url, data=data)
@@ -1775,6 +1785,7 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         data = {'structuretree': '2'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
+
 
 
 class ApiStructuresListUnitTest(TestCase):

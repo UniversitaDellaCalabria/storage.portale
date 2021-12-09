@@ -666,8 +666,12 @@ class AddressbookSerializer(CreateUpdateAbstract):
     def to_dict(query,
                 req_lang='en'):
         full_name = query['cognome'] + " " + query['nome'] + \
-            (" " + query['middle_name']
-             if query['middle_name'] is not None else "")
+                    (" " + query['middle_name']
+                     if query['middle_name'] is not None else "")
+        functions = None
+        if query["Functions"] is not None:
+            functions = AddressbookSerializer.to_dict_functions(
+                query["Functions"])
         return {
             'Name': full_name,
             'ID': query['matricola'],
@@ -676,7 +680,6 @@ class AddressbookSerializer(CreateUpdateAbstract):
             'Structure': query['Struttura'],
             'StructureTypeName': query['TipologiaStrutturaNome'],
             'StructureTypeCOD': query['TipologiaStrutturaCod'],
-            'Function': query['Funzione'],
             'OfficeReference': query['Riferimento Ufficio'],
             'Email': query['Posta Elettronica'],
             'PEC': query['POSTA ELETTRONICA CERTIFICATA'],
@@ -684,11 +687,24 @@ class AddressbookSerializer(CreateUpdateAbstract):
             'TelCelOffice': query['Telefono Cellulare Ufficio'],
             'Fax': query['Fax'],
             'WebSite': query['URL Sito WEB'],
+            'PersonFunctions': functions,
             'CV': query['URL Sito WEB Curriculum Vitae'],
             'Teacher': query['fl_docente'],
             'TeacherCVFull': query['cv_full_it'] if req_lang == "it" or query['cv_full_eng'] is None else query['cv_full_eng'],
             'TeacherCVShort': query['cv_short_it'] if req_lang == "it" or query['cv_short_eng'] is None else query['cv_short_eng'],
         }
+
+    @staticmethod
+    def to_dict_functions(query):
+        functions = []
+        for q in query:
+            functions.append({
+                'TeacherRole': q['ds_funzione'],
+                'FunctionCod': q['funzione'],
+                'StructureCod': q['cd_csa__uo'],
+                'StructureName': q['cd_csa__denominazione'],
+            })
+        return functions
 
 
 class PersonaleSerializer(CreateUpdateAbstract):

@@ -1233,8 +1233,6 @@ class ServicePersonale:
             "matricola",
             'personalecontatti__cd_tipo_cont__descr_contatto',
             'personalecontatti__contatto',
-            'unitaorganizzativafunzioni__ds_funzione',
-            'unitaorganizzativafunzioni__termine',
             'denominazione',
             'structure_type_cod',
             'structure_type_name',
@@ -1244,7 +1242,7 @@ class ServicePersonale:
             "cv_full_eng",
             "cv_short_eng"
         )
-
+        query = list(query)
         if structureid is None and structuretypes is None and structuretree is None:
             query2 = Personale.objects.filter(
                 query_search,
@@ -1270,8 +1268,6 @@ class ServicePersonale:
                                 "matricola",
                                 'personalecontatti__cd_tipo_cont__descr_contatto',
                                 'personalecontatti__contatto',
-                                'unitaorganizzativafunzioni__ds_funzione',
-                                'unitaorganizzativafunzioni__termine',
                                 'denominazione',
                                 'structure_type_cod',
                                 'structure_type_name',
@@ -1286,7 +1282,6 @@ class ServicePersonale:
 
         query = list(query)
         query.sort(key=lambda x: x.get('cognome'), reverse=False)
-
         contacts_to_take = [
             'Posta Elettronica',
             'Fax',
@@ -1300,7 +1295,18 @@ class ServicePersonale:
         grouped = {}
         last_id = -1
         final_query = []
+
         for q in query:
+            functions = UnitaOrganizzativaFunzioni.objects.filter(
+                matricola=q['matricola'],
+                termine__gt=datetime.datetime.now(),
+                decorrenza__lt=datetime.datetime.now()).values(
+                "ds_funzione",
+                "funzione",
+                "cd_csa__uo",
+                "cd_csa__denominazione",
+            )
+
             if q['id_ab'] not in grouped:
                 grouped[q['id_ab']] = {
                     'id_ab': q['id_ab'],
@@ -1311,7 +1317,6 @@ class ServicePersonale:
                     'ds_ruolo_locale': q['ds_ruolo_locale'],
                     'cd_uo_aff_org': q['cd_uo_aff_org'],
                     'matricola': q['matricola'],
-                    'Funzione': q['unitaorganizzativafunzioni__ds_funzione'] if q['unitaorganizzativafunzioni__termine'] is not None and q['unitaorganizzativafunzioni__termine'] >= datetime.datetime.today() else None,
                     'Struttura': q['denominazione'] if 'denominazione' in q.keys() else None,
                     'TipologiaStrutturaCod': q['structure_type_cod'] if 'structure_type_cod' in q.keys() else None,
                     'TipologiaStrutturaNome': q['structure_type_name'] if 'structure_type_name' in q.keys() else None,
@@ -1324,7 +1329,12 @@ class ServicePersonale:
                 for c in contacts_to_take:
                     grouped[q['id_ab']][c] = []
 
-            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take:
+                if len(functions) == 0:
+                    grouped[q['id_ab']]["Functions"] = None
+                else:
+                    grouped[q['id_ab']]["Functions"] = functions
+
+            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take :
                 grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     q['personalecontatti__contatto'])
 
