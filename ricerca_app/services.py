@@ -1198,6 +1198,7 @@ class ServicePersonale:
             cd_uo_aff_org__isnull=False,
             dt_rap_fin__gte=datetime.datetime.today())
 
+
         if structuretypes is not None:
             structuretypes = structuretypes.split(",")
             query = query.extra(
@@ -1279,7 +1280,6 @@ class ServicePersonale:
             )
             from itertools import chain
             query = list(chain(*[query, query2]))
-
         query = list(query)
         query.sort(key=lambda x: x.get('cognome'), reverse=False)
         contacts_to_take = [
