@@ -2065,7 +2065,7 @@ class ServiceProgetto:
                 q_nome = Q(
                     titolo__icontains=k) | Q(
                     id_area_tecnologica__descr_area_ita__icontains=k) | Q(
-                    id_dipartimento__dip_des_it__icontains=k) | Q(
+                    uo__denominazione__icontains=k) | Q(
                     anno_avvio__icontains=k) | Q(
                     id_ambito_territoriale__ambito_territoriale__icontains=k)
                 query_search &= q_nome
@@ -2083,7 +2083,8 @@ class ServiceProgetto:
             "id_tipologia_programma__nome_programma",
             "titolo",
             "anno_avvio",
-            "id_dipartimento",
+            "uo",
+            "uo__denominazione",
             "descr_breve",
             "url_immagine",
             "abstract_ita",
@@ -2119,7 +2120,8 @@ class ServiceProgetto:
             "id_tipologia_programma__nome_programma",
             "titolo",
             "anno_avvio",
-            "id_dipartimento",
+            "uo",
+            "uo__denominazione",
             "descr_breve",
             "url_immagine",
             "abstract_ita",

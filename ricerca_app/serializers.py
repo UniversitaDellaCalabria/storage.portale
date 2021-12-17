@@ -1410,7 +1410,8 @@ class ProjectsSerializer(CreateUpdateAbstract):
         return {
             'ProjectId': query['id'],
             'ProjectYear': query['anno_avvio'],
-            'ProjectDepartmentId': query['id_dipartimento'],
+            'InfrastructureId': query['uo'],
+            'InfrastructureDescription':query['uo__denominazione'],
             'TerritorialScopeId': query['id_ambito_territoriale__id'],
             'TerritorialScopeDescription': query['id_ambito_territoriale__ambito_territoriale'],
             'TypeProgramId': query['id_tipologia_programma__id'],

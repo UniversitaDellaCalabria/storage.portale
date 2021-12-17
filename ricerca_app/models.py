@@ -3365,12 +3365,7 @@ class ProgettoDatiBase(models.Model):
         db_column='ID_AREA_TECNOLOGICA',
         blank=True,
         null=True)  # Field name made lowercase.
-    id_dipartimento = models.ForeignKey(
-        DidatticaDipartimento,
-        models.DO_NOTHING,
-        db_column='ID_DIPARTIMENTO',
-        blank=True,
-        null=True)  # Field name made lowercase.
+    uo = models.ForeignKey('UnitaOrganizzativa', models.DO_NOTHING, db_column='UO', blank=True, null=True)  # Field name made lowercase.
     # Field name made lowercase.
     titolo = models.CharField(
         db_column='TITOLO',
