@@ -1898,10 +1898,11 @@ class ServiceLaboratorio:
 class ServiceBrevetto:
 
     @staticmethod
-    def getPatents(search, techarea):
+    def getPatents(search, techarea, structureid):
 
         query_search = Q()
         query_techarea = Q()
+        query_structure = Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -1909,10 +1910,13 @@ class ServiceBrevetto:
                 query_search &= q_nome
         if techarea:
             query_techarea = Q(id_area_tecnologica=techarea)
+        if structureid:
+            query_structure = Q(brevettoinventori__matricola_inventore__cd_uo_aff_org=structureid)
 
         query = BrevettoDatiBase.objects.filter(
             query_search,
-            query_techarea).values(
+            query_techarea,
+            query_structure).values(
             "id",
             "id_univoco",
             "titolo",

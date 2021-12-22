@@ -860,8 +860,9 @@ class ApiPatentsList(ApiEndpointList):
 
         search = self.request.query_params.get('search')
         techarea = self.request.query_params.get('techarea')
+        structureid = self.request.query_params.get('structureid')
 
-        return ServiceBrevetto.getPatents(search, techarea)
+        return ServiceBrevetto.getPatents(search, techarea,structureid)
 
 
 class ApiPatentDetail(ApiEndpointDetail):
