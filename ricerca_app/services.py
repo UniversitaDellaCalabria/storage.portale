@@ -34,6 +34,7 @@ class ServiceDidatticaCds:
             'departmentid': 'dip__dip_id',
             'departmentcod': 'dip__dip_cod',
             'departmentname': f'dip__dip_des_{language == "it" and "it" or "eng"}__icontains',
+            'area': 'area_cds__icontains',
         }
 
         didatticaregolamento_params_to_query_field = {
@@ -110,7 +111,8 @@ class ServiceDidatticaCds:
             'valore_min',
             'codicione',
             'didatticaregolamento__titolo_congiunto_cod',
-            'didatticaregolamento__stato_regdid_cod').distinct()
+            'didatticaregolamento__stato_regdid_cod',
+            'area_cds').distinct()
         items = items.order_by("nome_cds_it") if language == 'it' else items.order_by(
             F("nome_cds_eng").asc(nulls_last=True))
         items = list(items)
@@ -1050,6 +1052,10 @@ class ServiceDocente:
             "-date_issued_year",
             "title").distinct()
 
+        for q in query:
+            if q['date_issued_year'] == 9999:
+                q['date_issued_year'] = 'in stampa'
+
         return query
 
     @staticmethod
@@ -1334,7 +1340,7 @@ class ServicePersonale:
                 else:
                     grouped[q['id_ab']]["Functions"] = functions
 
-            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take :
+            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take:
                 grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     q['personalecontatti__contatto'])
 
@@ -1911,7 +1917,8 @@ class ServiceBrevetto:
         if techarea:
             query_techarea = Q(id_area_tecnologica=techarea)
         if structure:
-            query_structure = Q(brevettoinventori__matricola_inventore__cd_uo_aff_org=structure)
+            query_structure = Q(
+                brevettoinventori__matricola_inventore__cd_uo_aff_org=structure)
 
         query = BrevettoDatiBase.objects.filter(
             query_search,

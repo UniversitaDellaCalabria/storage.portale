@@ -390,6 +390,7 @@ LABEL_MAPPING = {
         'ProjectDepartmentId': 'Project Department Id',
         'FunctionDescription': 'Function Description',
         'FunctionCod': 'Function Cod',
+        'AreaCds': 'Cds Area',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -673,6 +674,6 @@ LABEL_MAPPING = {
         'ProjectDepartmentId': 'Dipartimento Progetto',
         'FunctionDescription': 'Descrizione Funzione',
         'FunctionCod': 'Codice Funzione',
-
+        'AreaCds': 'Area Cds',
     }
 }

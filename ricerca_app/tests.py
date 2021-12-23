@@ -33,6 +33,7 @@ class ApiCdSListUnitTest(TestCase):
         didatticaCds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'dip': dip,
             'tipo_corso_cod': 'L',
+            'area_cds': 'scienze',
         })
         DidatticaCdsLinguaUnitTest.create_didatticaCdsLingua(**{
             'cdsord': didatticaCds,
@@ -70,6 +71,11 @@ class ApiCdSListUnitTest(TestCase):
 
         # param: courseclasscod
         data = {'courseclasscod': '1'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['RegDidId'] == 1
+
+        # param: area
+        data = {'area': 'scienze'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -198,6 +204,7 @@ class ApiCdSInfoUnitTest(TestCase):
         })
         didatticaCds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'dip': dip,
+            'area_cds': 'Scienze',
         })
         DidatticaCdsLinguaUnitTest.create_didatticaCdsLingua(**{
             'cdsord': didatticaCds,
@@ -1735,6 +1742,7 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'decorrenza': '1900-01-01',
             'ds_funzione': 'Direttore',
             'matricola': '111114',
+
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '99',
@@ -1762,7 +1770,7 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'search': 'Ibra'}
+        data = {'search': 'Ibra', 'function': 'Direttore'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -1785,7 +1793,6 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         data = {'structuretree': '2'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
-
 
 
 class ApiStructuresListUnitTest(TestCase):
@@ -2315,6 +2322,10 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'ricerca_erc0_cod': erc0,
         })
 
+        i1 = LaboratorioInfrastrutturaUnitTest.create_laboratorioInfrastruttura(**{
+            'id': 1,
+        })
+
         LaboratorioPersonaleRicercaUnitTest.create_laboratorioPersonaleRicerca(**{
             'id': 1,
             'id_laboratorio_dati': lab2,
@@ -2328,6 +2339,7 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'id_dipartimento_riferimento': dip2,
             'ambito': 'Tecnologico',
             'matricola_responsabile_scientifico': p2,
+            'id_infrastruttura_riferimento': i1,
         })
 
         a1 = LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(
@@ -2399,6 +2411,10 @@ class ApiLaboratoriesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['LaboratoryId'] == 1
         assert res.json()['results'][0]['Dimension'] == '290'
+
+        data = {'infrastructure': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
         data = {'area': 'Scientifico'}
         res = req.get(url, data=data)
@@ -3005,7 +3021,7 @@ class ApiPublicationsListUnitTest(TestCase):
             'title': 'pub3',
             'des_abstract': 'abstract italiano3',
             'des_abstracteng': 'abstract inglese3',
-            'date_issued_year': 2019,
+            'date_issued_year': 9999,
             'pubblicazione': 'Convegno Cosenza',
             'label_pubblicazione': 'Convegno',
             'collection_id': 2,
@@ -3045,7 +3061,8 @@ class ApiPublicationsListUnitTest(TestCase):
             'year': 2020,
             'search': 'pub',
             'type': 1,
-            'contributor': '111119'}
+            'contributor': '111119',
+            'structure': '1'}
 
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
@@ -3900,7 +3917,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'denominazione': 'aaa',
             'denominazione_padre': 'c',
             'uo_padre': '11',
-            'cd_csa':1,
+            'cd_csa': 1,
         })
         u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '2',
@@ -3910,7 +3927,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'denominazione': 'bbb',
             'denominazione_padre': 'd',
             'uo_padre': '22',
-            'cd_csa':2,
+            'cd_csa': 2,
         })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,

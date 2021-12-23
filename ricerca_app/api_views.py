@@ -172,14 +172,16 @@ class ApiCdSDetail(ApiEndpointDetail):
             'valore_min',
             'codicione',
             'didatticaregolamento__titolo_congiunto_cod',
-            'didatticaregolamento__stato_regdid_cod').distinct()
+            'didatticaregolamento__stato_regdid_cod',
+            'area_cds'
+        ).distinct()
         res = list(res)
 
         if len(res) == 0:
             return None
 
         texts = DidatticaTestiRegolamento.objects.filter(
-            regdid=cdsid_param) .values(
+            regdid=cdsid_param).values(
             'regdid__regdid_id',
             'clob_txt_ita',
             'clob_txt_eng',
@@ -207,16 +209,12 @@ class ApiCdSDetail(ApiEndpointDetail):
         res[0]['PROVA_FINALE_2'] = None
 
         for text in texts:
-            if "URL" in text['tipo_testo_regdid_cod']:
-                res[0][text['tipo_testo_regdid_cod']] = text['testo_regdid_url']
-
-            elif text['tipo_testo_regdid_cod'] != 'FUNZIONI' and text['tipo_testo_regdid_cod'] != 'COMPETENZE' and text['tipo_testo_regdid_cod'] != 'SBOCCHI':
+            if text['tipo_testo_regdid_cod'] != 'FUNZIONI' and text['tipo_testo_regdid_cod'] != 'COMPETENZE' and text['tipo_testo_regdid_cod'] != 'SBOCCHI':
                 if (text['clob_txt_eng'] is None and self.language !=
                         "it") or self.language == 'it':
                     res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_ita']
                 else:
                     res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_eng']
-
             else:
                 if (self.language !=
                         "it" and text["profilo_eng"] is None) or self.language == 'it':
@@ -862,7 +860,7 @@ class ApiPatentsList(ApiEndpointList):
         techarea = self.request.query_params.get('techarea')
         structure = self.request.query_params.get('structure')
 
-        return ServiceBrevetto.getPatents(search, techarea,structure)
+        return ServiceBrevetto.getPatents(search, techarea, structure)
 
 
 class ApiPatentDetail(ApiEndpointDetail):
