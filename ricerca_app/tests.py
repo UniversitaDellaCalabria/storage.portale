@@ -33,6 +33,7 @@ class ApiCdSListUnitTest(TestCase):
         didatticaCds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'dip': dip,
             'tipo_corso_cod': 'L',
+            'area_cds': 'scienze',
         })
         DidatticaCdsLinguaUnitTest.create_didatticaCdsLingua(**{
             'cdsord': didatticaCds,
@@ -70,6 +71,11 @@ class ApiCdSListUnitTest(TestCase):
 
         # param: courseclasscod
         data = {'courseclasscod': '1'}
+        res = req.get(url, data=data)
+        assert res.json()['results'][0]['RegDidId'] == 1
+
+        # param: area
+        data = {'area': 'scienze'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['RegDidId'] == 1
 
@@ -198,6 +204,7 @@ class ApiCdSInfoUnitTest(TestCase):
         })
         didatticaCds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'dip': dip,
+            'area_cds': 'Scienze',
         })
         DidatticaCdsLinguaUnitTest.create_didatticaCdsLingua(**{
             'cdsord': didatticaCds,
