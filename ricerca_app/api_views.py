@@ -756,10 +756,10 @@ class ApiPublicationsList(ApiEndpointList):
         search = self.request.query_params.get('search')
         year = self.request.query_params.get('year')
         type = self.request.query_params.get('type')
-        structureid = self.request.query_params.get('structureid')
+        structure = self.request.query_params.get('structure')
 
         return ServiceDocente.getPublicationsList(
-            teacherid, search, year, type, structureid)
+            teacherid, search, year, type, structure)
 
 
 class TeachingCoveragePublicationsList(AutoSchema):
@@ -860,9 +860,9 @@ class ApiPatentsList(ApiEndpointList):
 
         search = self.request.query_params.get('search')
         techarea = self.request.query_params.get('techarea')
-        structureid = self.request.query_params.get('structureid')
+        structure = self.request.query_params.get('structure')
 
-        return ServiceBrevetto.getPatents(search, techarea,structureid)
+        return ServiceBrevetto.getPatents(search, techarea,structure)
 
 
 class ApiPatentDetail(ApiEndpointDetail):

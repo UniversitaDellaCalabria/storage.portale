@@ -1007,7 +1007,7 @@ class ServiceDocente:
             search=None,
             year=None,
             type=None,
-            structureid=None
+            structure=None
     ):
         query_search = Q()
         query_year = Q()
@@ -1026,9 +1026,9 @@ class ServiceDocente:
             query_type = Q(collection_id__community_id__community_id=type)
         if teacherid:
             query_teacher = Q(pubblicazioneautori__id_ab__matricola=teacherid)
-        if structureid:
+        if structure:
             query_structure = Q(
-                pubblicazioneautori__id_ab__cd_uo_aff_org=structureid)
+                pubblicazioneautori__id_ab__cd_uo_aff_org=structure)
 
         query = PubblicazioneDatiBase.objects.filter(
             query_search,
@@ -1898,7 +1898,7 @@ class ServiceLaboratorio:
 class ServiceBrevetto:
 
     @staticmethod
-    def getPatents(search, techarea, structureid):
+    def getPatents(search, techarea, structure):
 
         query_search = Q()
         query_techarea = Q()
@@ -1910,8 +1910,8 @@ class ServiceBrevetto:
                 query_search &= q_nome
         if techarea:
             query_techarea = Q(id_area_tecnologica=techarea)
-        if structureid:
-            query_structure = Q(brevettoinventori__matricola_inventore__cd_uo_aff_org=structureid)
+        if structure:
+            query_structure = Q(brevettoinventori__matricola_inventore__cd_uo_aff_org=structure)
 
         query = BrevettoDatiBase.objects.filter(
             query_search,
