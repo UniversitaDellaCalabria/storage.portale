@@ -97,6 +97,11 @@ class ApiCdsListFilter(GenericApiFilter):
             }
         },
         {
+            'name': 'cdscod',
+            'description': 'Codice di un Corso di Studi',
+            'required': False,
+        },
+        {
             'name': 'cdslanguage',
             'description': 'Lingua del corso di studi',
             'required': False,
@@ -122,13 +127,13 @@ class ApiResearchGroupsListFilter(GenericApiFilter):
         {
             'name': 'teacher',
             'description': 'Matricola di un docente',
-            'required': True,
+            'required': False,
             'type': 'string'
         },
         {
             'name': 'department',
             'description': 'Codice di un dipartimento',
-            'required': True,
+            'required': False,
             'type': 'string'
         }
     ]
@@ -171,19 +176,19 @@ class ApiBaseResearchLinesListFilter(GenericApiFilter):
         {
             'name': 'teacher',
             'description': 'Matricola di un docente',
-            'required': True,
+            'required': False,
             'type': 'string'
         },
         {
             'name': 'department',
             'description': 'Codice di un dipartimento',
-            'required': True,
+            'required': False,
             'type': 'string'
         },
         {
             'name': 'year',
             'description': 'Anno',
-            'required': True,
+            'required': False,
             'schema': {
                     'type': 'integer',
                     'format': 'int32',
@@ -197,19 +202,19 @@ class ApiAppliedResearchLinesListFilter(GenericApiFilter):
         {
             'name': 'teacher',
             'description': 'Matricola di un docente',
-            'required': True,
+            'required': False,
             'type': 'string'
         },
         {
             'name': 'department',
             'description': 'Codice di un dipartimento',
-            'required': True,
+            'required': False,
             'type': 'string'
         },
         {
             'name': 'year',
             'description': 'Anno',
-            'required': True,
+            'required': False,
             'schema': {
                     'type': 'integer',
                     'format': 'int32',
@@ -422,12 +427,6 @@ class ApiErc1ListFilter(GenericApiFilter):
 class ApiPublicationsListFilter(GenericApiFilter):
     search_params = [
         {
-            'name': 'teacher',
-            'description': 'Matricola di un docente',
-            'required': True,
-            'type': 'string'
-        },
-        {
             'name': 'year',
             'description': 'Anno',
             'required': False,
@@ -445,7 +444,7 @@ class ApiPublicationsListFilter(GenericApiFilter):
         {
             'name': 'structure',
             'description': 'Struttura di un docente',
-            'required': True,
+            'required': False,
             'type': 'string'
         },
 
