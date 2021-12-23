@@ -462,6 +462,12 @@ class ApiPatentsListFilter(GenericApiFilter):
                 'format': 'int32',
             },
         },
+        {
+            'name': 'structure',
+            'description': 'Codice di una struttura',
+            'required': False,
+            'type': 'string'
+        },
     ]
 
 
