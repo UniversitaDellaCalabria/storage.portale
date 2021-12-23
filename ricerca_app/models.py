@@ -596,8 +596,12 @@ class DidatticaCds(InsModAbstract):
         max_length=5,
         blank=True,
         null=True)
-    area_cds = models.CharField(db_column='AREA_CDS', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-
+    # Field name made lowercase.
+    area_cds = models.CharField(
+        db_column='AREA_CDS',
+        max_length=1000,
+        blank=True,
+        null=True)
 
     class Meta:
         managed = True
@@ -3161,8 +3165,11 @@ class BrevettoDatiBase(models.Model):
         max_length=2000,
         blank=True,
         null=True)
-    nome_file_logo = models.CharField(db_column='NOME_FILE_LOGO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-
+    nome_file_logo = models.CharField(
+        db_column='NOME_FILE_LOGO',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -3367,7 +3374,12 @@ class ProgettoDatiBase(models.Model):
         db_column='ID_AREA_TECNOLOGICA',
         blank=True,
         null=True)  # Field name made lowercase.
-    uo = models.ForeignKey('UnitaOrganizzativa', models.DO_NOTHING, db_column='UO', blank=True, null=True)  # Field name made lowercase.
+    uo = models.ForeignKey(
+        'UnitaOrganizzativa',
+        models.DO_NOTHING,
+        db_column='UO',
+        blank=True,
+        null=True)  # Field name made lowercase.
     # Field name made lowercase.
     titolo = models.CharField(
         db_column='TITOLO',

@@ -668,8 +668,8 @@ class AddressbookSerializer(CreateUpdateAbstract):
     def to_dict(query,
                 req_lang='en'):
         full_name = query['cognome'] + " " + query['nome'] + \
-                    (" " + query['middle_name']
-                     if query['middle_name'] is not None else "")
+            (" " + query['middle_name']
+             if query['middle_name'] is not None else "")
         functions = None
         if query["Functions"] is not None:
             functions = AddressbookSerializer.to_dict_functions(
@@ -1413,7 +1413,7 @@ class ProjectsSerializer(CreateUpdateAbstract):
             'ProjectId': query['id'],
             'ProjectYear': query['anno_avvio'],
             'InfrastructureId': query['uo'],
-            'InfrastructureDescription':query['uo__denominazione'],
+            'InfrastructureDescription': query['uo__denominazione'],
             'TerritorialScopeId': query['id_ambito_territoriale__id'],
             'TerritorialScopeDescription': query['id_ambito_territoriale__ambito_territoriale'],
             'TypeProgramId': query['id_tipologia_programma__id'],

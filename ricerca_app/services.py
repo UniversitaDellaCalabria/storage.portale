@@ -1340,7 +1340,7 @@ class ServicePersonale:
                 else:
                     grouped[q['id_ab']]["Functions"] = functions
 
-            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take :
+            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take:
                 grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     q['personalecontatti__contatto'])
 
@@ -1917,7 +1917,8 @@ class ServiceBrevetto:
         if techarea:
             query_techarea = Q(id_area_tecnologica=techarea)
         if structure:
-            query_structure = Q(brevettoinventori__matricola_inventore__cd_uo_aff_org=structure)
+            query_structure = Q(
+                brevettoinventori__matricola_inventore__cd_uo_aff_org=structure)
 
         query = BrevettoDatiBase.objects.filter(
             query_search,
