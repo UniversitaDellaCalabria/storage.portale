@@ -1033,7 +1033,6 @@ class ServiceDocente:
         if structure:
             query_structure = Q(
                 pubblicazioneautori__id_ab__cd_uo_aff_org=structure)
-
         query = PubblicazioneDatiBase.objects.filter(
             query_search,
             query_year,
