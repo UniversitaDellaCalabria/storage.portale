@@ -2,6 +2,7 @@ import datetime
 from functools import reduce
 import operator
 
+
 from django.db.models import CharField, Q, Value, F
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
@@ -457,7 +458,6 @@ class ServiceDocente:
                     for t in teachers:
                         if t['personale_id__matricola'] == teacher:
                             q['Teachers'] = teachers
-
                     if q['Teachers'] is not None:
                         res.append(q)
                 if teacher is None:
@@ -474,6 +474,8 @@ class ServiceDocente:
 
                     if q['Teachers'] is not None:
                         res.append(q)
+            # eliminazione duplicati di res
+            res = [i for n, i in enumerate(res) if i not in res[n + 1:]]
             return res
 
         else:
@@ -918,7 +920,7 @@ class ServiceDocente:
             'didatticacopertura__part_fine',
             'didatticacopertura__coper_peso',
             'didatticacopertura__ore'
-        )
+        ).order_by('-didatticacopertura__aa_off_id')
 
     @staticmethod
     def getDocenteInfo(teacher):
@@ -1031,7 +1033,6 @@ class ServiceDocente:
         if structure:
             query_structure = Q(
                 pubblicazioneautori__id_ab__cd_uo_aff_org=structure)
-
         query = PubblicazioneDatiBase.objects.filter(
             query_search,
             query_year,
@@ -1050,6 +1051,7 @@ class ServiceDocente:
             'date_issued_year',
             'url_pubblicazione').order_by(
             "-date_issued_year",
+            "collection_id__community_id__community_name",
             "title").distinct()
 
         for q in query:
@@ -1076,6 +1078,9 @@ class ServiceDocente:
             'url_pubblicazione').order_by(
             "date_issued_year",
             "title").distinct()
+        for q in query:
+            if q['date_issued_year'] == 9999:
+                q['date_issued_year'] = 'in stampa'
 
         for q in query:
             autori = PubblicazioneAutori.objects.filter(
@@ -2103,7 +2108,9 @@ class ServiceProgetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
-        ).distinct()
+        ).distinct().order_by(
+            '-anno_avvio',
+            'id_ambito_territoriale__ambito_territoriale')
 
         for q in query:
             responsabili = ProgettoResponsabileScientifico.objects.filter(
