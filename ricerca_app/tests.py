@@ -1119,7 +1119,7 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['results'][0]['StudyActivityID'] == 1
+        assert res.json()['results'][0]['StudyActivityID'] == 2
 
         res = req.get(url)
         assert len(res.json()['results']) == 2
@@ -3278,7 +3278,7 @@ class ApiResearchGroupsUnitTest(TestCase):
 
         data = {'teacher': '111112'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 2
+        assert len(res.json()['results']) == 1
 
         data = {'search': 'Intel'}
         res = req.get(url, data=data)
