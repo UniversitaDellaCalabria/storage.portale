@@ -2322,9 +2322,8 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'ricerca_erc0_cod': erc0,
         })
 
-        i1 = LaboratorioInfrastrutturaUnitTest.create_laboratorioInfrastruttura(**{
-            'id': 1,
-        })
+        i1 = LaboratorioInfrastrutturaUnitTest.create_laboratorioInfrastruttura(
+            **{'id': 1, })
 
         LaboratorioPersonaleRicercaUnitTest.create_laboratorioPersonaleRicerca(**{
             'id': 1,

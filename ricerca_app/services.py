@@ -474,7 +474,8 @@ class ServiceDocente:
 
                     if q['Teachers'] is not None:
                         res.append(q)
-            res = [i for n, i in enumerate(res) if i not in res[n + 1:]] #eliminazione duplicati di res
+            # eliminazione duplicati di res
+            res = [i for n, i in enumerate(res) if i not in res[n + 1:]]
             return res
 
         else:
@@ -2108,7 +2109,9 @@ class ServiceProgetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
-        ).distinct().order_by('-anno_avvio','id_ambito_territoriale__ambito_territoriale')
+        ).distinct().order_by(
+            '-anno_avvio',
+            'id_ambito_territoriale__ambito_territoriale')
 
         for q in query:
             responsabili = ProgettoResponsabileScientifico.objects.filter(
