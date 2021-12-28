@@ -4446,3 +4446,51 @@ class ApiStructureFunctionsListUnitTest(TestCase):
 
         res = req.get(url)
         assert len(res.json()['results']) == 1
+
+
+class ApiTerritorialScopesListUnitTest(TestCase):
+
+    def test_apiterritorialscopeslist(self):
+
+        req = Client()
+
+        ProgettoAmbitoTerritorialeUnitTest.create_progettoAmbitoTerritoriale(**{
+            'id': 1,
+            'ambito_territoriale': 'aaa',
+        })
+
+        url = reverse('ricerca:territorial-scopes')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+
+class ApiProgramTypesListUnitTest(TestCase):
+
+    def test_apiprogramtypeslist(self):
+
+        req = Client()
+
+        ProgettoTipologiaProgrammaUnitTest.create_progettoTipologiaProgramma(**{
+            'id': 1,
+            'nome_programma': 'aaa',
+        })
+
+        url = reverse('ricerca:program-types')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1

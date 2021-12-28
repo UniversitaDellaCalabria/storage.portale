@@ -1455,3 +1455,37 @@ class StructureFunctionsSerializer(CreateUpdateAbstract):
             'Function': query['funzione'],
             'FunctionDescription': query['descr_funzione'],
         }
+
+
+class TerritorialScopesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+            'TerritorialScopeId': query['id'],
+            'TerritorialScopeDescription': query['ambito_territoriale'],
+        }
+
+
+class ProgramTypesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+            'TypeProgramId': query['id'],
+            'TypeProgramDescription': query['nome_programma'],
+        }
