@@ -4315,6 +4315,17 @@ class ApiProjectsListUnitTest(TestCase):
             'matricola': '111111',
         })
 
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'ds_tipo_nodo': 'facolta',
+            'cd_tipo_nodo': '000',
+            'id_ab': 1,
+            'denominazione': 'aaa',
+            'denominazione_padre': 'c',
+            'uo_padre': '11',
+            'cd_csa': 1,
+        })
+
         t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
             **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
 
@@ -4326,6 +4337,7 @@ class ApiProjectsListUnitTest(TestCase):
 
         ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
             "id": 1,
+            "uo": u1,
             "id_ambito_territoriale": a1,
             "id_tipologia_programma": p1,
             "titolo": "Motore",
@@ -4355,6 +4367,10 @@ class ApiProjectsListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
         data = {'techarea': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'infrastructure': 1}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
