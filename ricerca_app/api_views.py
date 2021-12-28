@@ -931,8 +931,10 @@ class ApiProjectsList(ApiEndpointList):
 
         search = self.request.query_params.get('search')
         techarea = self.request.query_params.get('techarea')
+        infrastructure = self.request.query_params.get('infrastructure')
 
-        return ServiceProgetto.getProjects(search, techarea)
+
+        return ServiceProgetto.getProjects(search, techarea, infrastructure)
 
 
 class ApiProjectDetail(ApiEndpointDetail):

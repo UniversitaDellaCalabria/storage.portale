@@ -514,4 +514,13 @@ class ApiProjectsListFilter(GenericApiFilter):
                 'format': 'int32',
             },
         },
+        {
+            'name': 'infrastructure',
+            'description': 'Id Infrastruttura Riferimento',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
     ]

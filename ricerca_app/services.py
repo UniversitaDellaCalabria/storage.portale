@@ -2071,10 +2071,11 @@ class ServiceCompany:
 class ServiceProgetto:
 
     @staticmethod
-    def getProjects(search, techarea):
+    def getProjects(search, techarea, infrastructure):
 
         query_search = Q()
         query_techarea = Q()
+        query_infrastructure = Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -2087,10 +2088,13 @@ class ServiceProgetto:
                 query_search &= q_nome
         if techarea:
             query_techarea = Q(id_area_tecnologica=techarea)
+        if infrastructure:
+            query_infrastructure = Q(uo=infrastructure)
 
         query = ProgettoDatiBase.objects.filter(
             query_search,
             query_techarea,
+            query_infrastructure,
         ).values(
             "id",
             "id_ambito_territoriale__id",
