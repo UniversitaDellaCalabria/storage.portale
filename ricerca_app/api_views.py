@@ -978,3 +978,13 @@ class ApiProgramTypesList(ApiEndpointList):
 
         return ServiceProgetto.getProgramTypes()
 
+
+class ApiCdsAreasList(ApiEndpointListSupport):
+    description = 'La funzione restituisce la lista delle aree dei cds'
+    serializer_class = CdsAreasSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceDidatticaCds.getCdsAreas()
+

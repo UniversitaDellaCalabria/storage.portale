@@ -352,3 +352,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/program-types/'.format(base_url),
         api_views.ApiProgramTypesList.as_view(),
         name='program-types'),
+
+    urlpatterns += path(
+        '{}/cds-areas/'.format(base_url),
+        api_views.ApiCdsAreasList.as_view(),
+        name='cds-areas'),

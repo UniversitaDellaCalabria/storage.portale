@@ -1489,3 +1489,19 @@ class ProgramTypesSerializer(CreateUpdateAbstract):
             'TypeProgramId': query['id'],
             'TypeProgramDescription': query['nome_programma'],
         }
+
+
+class CdsAreasSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+            'AreaCds': query['area_cds'],
+        }

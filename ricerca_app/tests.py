@@ -4494,3 +4494,26 @@ class ApiProgramTypesListUnitTest(TestCase):
 
         res = req.get(url)
         assert len(res.json()['results']) == 1
+
+
+class ApiCdsAreasListUnitTest(TestCase):
+
+    def test_apicdsareaslist(self):
+
+        req = Client()
+
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'area_cds': 'aaa',
+        })
+
+        url = reverse('ricerca:cds-areas')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
