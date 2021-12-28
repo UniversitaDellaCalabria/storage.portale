@@ -957,3 +957,24 @@ class ApiStructureFunctionsList(ApiEndpointList):
     def get_queryset(self):
 
         return ServicePersonale.getStructureFunctions()
+
+
+class ApiTerritorialScopesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista degli ambiti territoriali'
+    serializer_class = TerritorialScopesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceProgetto.getTerritorialScopes()
+
+
+class ApiProgramTypesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle tipologie di programmi di progetto'
+    serializer_class = ProgramTypesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceProgetto.getProgramTypes()
+

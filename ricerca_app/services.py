@@ -12,7 +12,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
     RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita, \
-    SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase, ProgettoResponsabileScientifico, UnitaOrganizzativaTipoFunzioni
+    SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase, ProgettoResponsabileScientifico, UnitaOrganizzativaTipoFunzioni, ProgettoAmbitoTerritoriale, \
+    ProgettoTipologiaProgramma
 
 
 class ServiceQueryBuilder:
@@ -2163,5 +2164,25 @@ class ServiceProgetto:
                 q['Responsabili'] = []
             else:
                 q['Responsabili'] = responsabili
+
+        return query
+
+    @staticmethod
+    def getTerritorialScopes():
+
+        query = ProgettoAmbitoTerritoriale.objects.values(
+            "id",
+            "ambito_territoriale"
+            ).distinct()
+
+        return query
+
+    @staticmethod
+    def getProgramTypes():
+
+        query = ProgettoTipologiaProgramma.objects.values(
+            "id",
+            "nome_programma"
+        ).distinct()
 
         return query

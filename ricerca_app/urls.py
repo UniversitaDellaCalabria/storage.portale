@@ -342,3 +342,13 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/functions/'.format(base_url),
         api_views.ApiStructureFunctionsList.as_view(),
         name='functions'),
+
+    urlpatterns += path(
+        '{}/territorial-scopes/'.format(base_url),
+        api_views.ApiTerritorialScopesList.as_view(),
+        name='territorial-scopes'),
+
+    urlpatterns += path(
+        '{}/program-types/'.format(base_url),
+        api_views.ApiProgramTypesList.as_view(),
+        name='program-types'),
