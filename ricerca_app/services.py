@@ -139,6 +139,13 @@ class ServiceDidatticaCds:
             "aa_reg_did").order_by('-aa_reg_did').distinct()
         return query
 
+    @staticmethod
+    def getCdsAreas():
+        query = DidatticaCds.objects.values(
+            "area_cds"
+        ).distinct()
+        return query
+
 
 class ServiceDidatticaAttivitaFormativa:
 
