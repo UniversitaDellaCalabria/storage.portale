@@ -523,4 +523,22 @@ class ApiProjectsListFilter(GenericApiFilter):
                 'format': 'int32',
             },
         },
+        {
+            'name': 'programtype',
+            'description': 'Id Tipologia Programma',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+        {
+            'name': 'territorialscope',
+            'description': 'Id Ambito Territoriale',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
     ]
