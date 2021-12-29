@@ -344,14 +344,14 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         name='functions'),
 
     urlpatterns += path(
-        '{}/project-territorial-scopes/'.format(base_url),
-        api_views.ApiTerritorialScopesList.as_view(),
-        name='project-territorial-scopes'),
+        '{}/projects-territorial-scopes/'.format(base_url),
+        api_views.ApiProjectsTerritorialScopesList.as_view(),
+        name='projects-territorial-scopes'),
 
     urlpatterns += path(
-        '{}/project-program-types/'.format(base_url),
-        api_views.ApiProgramTypesList.as_view(),
-        name='project-program-types'),
+        '{}/projects-program-types/'.format(base_url),
+        api_views.ApiProjectsProgramTypesList.as_view(),
+        name='projects-program-types'),
 
     urlpatterns += path(
         '{}/cds-areas/'.format(base_url),
@@ -359,6 +359,6 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         name='cds-areas'),
 
     urlpatterns += path(
-        '{}/project-infrastructures/'.format(base_url),
-        api_views.ApiProjectInfrastructuresList.as_view(),
-        name='project-infrastructures'),
+        '{}/projects-infrastructures/'.format(base_url),
+        api_views.ApiProjectsInfrastructuresList.as_view(),
+        name='projects-infrastructures'),

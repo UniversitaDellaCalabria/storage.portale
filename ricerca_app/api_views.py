@@ -924,7 +924,7 @@ class ApiTechAreasList(ApiEndpointList):
 
 class ApiProjectsList(ApiEndpointList):
     description = 'La funzione restituisce la lista dei progetti'
-    serializer_class = ProjectsSerializer
+    serializer_class = ProjectSerializer
     filter_backends = [ApiProjectsListFilter, OrderingFilter]
 
     def get_queryset(self):
@@ -941,7 +941,7 @@ class ApiProjectsList(ApiEndpointList):
 
 class ApiProjectDetail(ApiEndpointDetail):
     description = 'La funzione restituisce il dettaglio'
-    serializer_class = ProjectsSerializer
+    serializer_class = ProjectSerializer
     filter_backends = []
 
     def get_queryset(self):
@@ -961,7 +961,7 @@ class ApiStructureFunctionsList(ApiEndpointList):
         return ServicePersonale.getStructureFunctions()
 
 
-class ApiTerritorialScopesList(ApiEndpointList):
+class ApiProjectsTerritorialScopesList(ApiEndpointList):
     description = 'La funzione restituisce la lista degli ambiti territoriali'
     serializer_class = TerritorialScopesSerializer
     filter_backends = []
@@ -971,7 +971,7 @@ class ApiTerritorialScopesList(ApiEndpointList):
         return ServiceProgetto.getTerritorialScopes()
 
 
-class ApiProgramTypesList(ApiEndpointList):
+class ApiProjectsProgramTypesList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle tipologie di programmi di progetto'
     serializer_class = ProgramTypesSerializer
     filter_backends = []
@@ -991,7 +991,7 @@ class ApiCdsAreasList(ApiEndpointListSupport):
         return ServiceDidatticaCds.getCdsAreas()
 
 
-class ApiProjectInfrastructuresList(ApiEndpointList):
+class ApiProjectsInfrastructuresList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle infrastrutture dei progetti'
     serializer_class = ProjectInfrastructuresSerializer
     filter_backends = []

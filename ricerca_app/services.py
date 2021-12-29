@@ -2215,4 +2215,10 @@ class ServiceProgetto:
             "uo__denominazione",
         ).distinct()
 
+        query = list(query)
+
+        for q in query:
+            if q['uo'] == None:
+                query.remove(q)
+
         return query

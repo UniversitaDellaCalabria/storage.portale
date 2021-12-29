@@ -4465,7 +4465,7 @@ class ApiTerritorialScopesListUnitTest(TestCase):
         ProgettoAmbitoTerritorialeUnitTest.create_progettoAmbitoTerritoriale(
             **{'id': 1, 'ambito_territoriale': 'aaa', })
 
-        url = reverse('ricerca:project-territorial-scopes')
+        url = reverse('ricerca:projects-territorial-scopes')
 
         # check url
         res = req.get(url)
@@ -4487,7 +4487,7 @@ class ApiProgramTypesListUnitTest(TestCase):
         ProgettoTipologiaProgrammaUnitTest.create_progettoTipologiaProgramma(
             **{'id': 1, 'nome_programma': 'aaa', })
 
-        url = reverse('ricerca:project-program-types')
+        url = reverse('ricerca:projects-program-types')
 
         # check url
         res = req.get(url)
@@ -4537,7 +4537,7 @@ class ApiProjectInfrastructuresListUnitTest(TestCase):
             'uo': u1,
         })
 
-        url = reverse('ricerca:project-infrastructures')
+        url = reverse('ricerca:projects-infrastructures')
 
         # check url
         res = req.get(url)

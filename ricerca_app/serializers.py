@@ -1395,7 +1395,7 @@ class TechAreasSerializer(CreateUpdateAbstract):
                 if req_lang == "it" or query["descr_area_eng"] is None else query['descr_area_eng'], }
 
 
-class ProjectsSerializer(CreateUpdateAbstract):
+class ProjectSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -1407,7 +1407,7 @@ class ProjectsSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         responsabili = None
         if query.get('Responsabili') is not None:
-            responsabili = ProjectsSerializer.to_dict_directors(
+            responsabili = ProjectSerializer.to_dict_directors(
                 query['Responsabili'])
         return {
             'ProjectId': query['id'],
