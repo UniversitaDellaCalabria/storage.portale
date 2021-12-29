@@ -4374,6 +4374,14 @@ class ApiProjectsListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
+        data = {'programtype': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'territorialscope': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
 
 class ApiProjectDetailUnitTest(TestCase):
 
@@ -4454,12 +4462,10 @@ class ApiTerritorialScopesListUnitTest(TestCase):
 
         req = Client()
 
-        ProgettoAmbitoTerritorialeUnitTest.create_progettoAmbitoTerritoriale(**{
-            'id': 1,
-            'ambito_territoriale': 'aaa',
-        })
+        ProgettoAmbitoTerritorialeUnitTest.create_progettoAmbitoTerritoriale(
+            **{'id': 1, 'ambito_territoriale': 'aaa', })
 
-        url = reverse('ricerca:territorial-scopes')
+        url = reverse('ricerca:project-territorial-scopes')
 
         # check url
         res = req.get(url)
@@ -4478,12 +4484,10 @@ class ApiProgramTypesListUnitTest(TestCase):
 
         req = Client()
 
-        ProgettoTipologiaProgrammaUnitTest.create_progettoTipologiaProgramma(**{
-            'id': 1,
-            'nome_programma': 'aaa',
-        })
+        ProgettoTipologiaProgrammaUnitTest.create_progettoTipologiaProgramma(
+            **{'id': 1, 'nome_programma': 'aaa', })
 
-        url = reverse('ricerca:program-types')
+        url = reverse('ricerca:project-program-types')
 
         # check url
         res = req.get(url)
@@ -4507,6 +4511,33 @@ class ApiCdsAreasListUnitTest(TestCase):
         })
 
         url = reverse('ricerca:cds-areas')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+
+class ApiProjectInfrastructuresListUnitTest(TestCase):
+
+    def test_apiprojectinfrastructureslist(self):
+
+        req = Client()
+
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': 1,
+            'denominazione': 'aaaa',
+        })
+        ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
+            'uo': u1,
+        })
+
+        url = reverse('ricerca:project-infrastructures')
 
         # check url
         res = req.get(url)

@@ -443,7 +443,7 @@ class ServiceDocente:
 
         if search is not None:
             for k in search.split(" "):
-                q_nome = Q(nome__icontains=k)
+                q_nome = Q(nome__icontains=k) | Q(descrizione__icontains=k)
                 query_search &= q_nome
 
         query = RicercaGruppo.objects.filter(query_search).order_by(
@@ -2079,11 +2079,18 @@ class ServiceCompany:
 class ServiceProgetto:
 
     @staticmethod
-    def getProjects(search, techarea, infrastructure):
+    def getProjects(
+            search,
+            techarea,
+            infrastructure,
+            programtype,
+            territorialscope):
 
         query_search = Q()
         query_techarea = Q()
         query_infrastructure = Q()
+        query_programtype = Q()
+        query_territorialscope = Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -2098,11 +2105,17 @@ class ServiceProgetto:
             query_techarea = Q(id_area_tecnologica=techarea)
         if infrastructure:
             query_infrastructure = Q(uo=infrastructure)
+        if programtype:
+            query_programtype = Q(id_tipologia_programma=programtype)
+        if territorialscope:
+            query_territorialscope = Q(id_ambito_territoriale=territorialscope)
 
         query = ProgettoDatiBase.objects.filter(
             query_search,
             query_techarea,
             query_infrastructure,
+            query_territorialscope,
+            query_programtype,
         ).values(
             "id",
             "id_ambito_territoriale__id",
@@ -2180,7 +2193,7 @@ class ServiceProgetto:
         query = ProgettoAmbitoTerritoriale.objects.values(
             "id",
             "ambito_territoriale"
-            ).distinct()
+        ).distinct()
 
         return query
 
@@ -2190,6 +2203,16 @@ class ServiceProgetto:
         query = ProgettoTipologiaProgramma.objects.values(
             "id",
             "nome_programma"
+        ).distinct()
+
+        return query
+
+    @staticmethod
+    def getProjectInfrastructures():
+
+        query = ProgettoDatiBase.objects.values(
+            "uo",
+            "uo__denominazione",
         ).distinct()
 
         return query
