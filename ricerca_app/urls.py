@@ -344,16 +344,21 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         name='functions'),
 
     urlpatterns += path(
-        '{}/territorial-scopes/'.format(base_url),
+        '{}/project-territorial-scopes/'.format(base_url),
         api_views.ApiTerritorialScopesList.as_view(),
-        name='territorial-scopes'),
+        name='project-territorial-scopes'),
 
     urlpatterns += path(
-        '{}/program-types/'.format(base_url),
+        '{}/project-program-types/'.format(base_url),
         api_views.ApiProgramTypesList.as_view(),
-        name='program-types'),
+        name='project-program-types'),
 
     urlpatterns += path(
         '{}/cds-areas/'.format(base_url),
         api_views.ApiCdsAreasList.as_view(),
         name='cds-areas'),
+
+    urlpatterns += path(
+        '{}/project-infrastructures/'.format(base_url),
+        api_views.ApiProjectInfrastructuresList.as_view(),
+        name='project-infrastructures'),

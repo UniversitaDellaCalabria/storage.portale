@@ -643,7 +643,7 @@ LABEL_MAPPING = {
         'ProjectAbstract': 'Abstract',
         'ProjectImage': 'Immagine Progetto',
         'ScientificDirectors': 'Responsabili Scientifici',
-        'ProjectYear': 'Anno Avvio Progetto',
+        'ProjectYear': 'Anno Avvio',
         'ProjectDepartmentId': 'Dipartimento Progetto',
         'FunctionDescription': 'Descrizione Funzione',
         'FunctionCod': 'Codice Funzione',

@@ -932,9 +932,11 @@ class ApiProjectsList(ApiEndpointList):
         search = self.request.query_params.get('search')
         techarea = self.request.query_params.get('techarea')
         infrastructure = self.request.query_params.get('infrastructure')
+        programtype = self.request.query_params.get('programtype')
+        territorialscope = self.request.query_params.get('territorialscope')
 
-
-        return ServiceProgetto.getProjects(search, techarea, infrastructure)
+        return ServiceProgetto.getProjects(
+            search, techarea, infrastructure, programtype, territorialscope)
 
 
 class ApiProjectDetail(ApiEndpointDetail):
@@ -988,3 +990,12 @@ class ApiCdsAreasList(ApiEndpointListSupport):
 
         return ServiceDidatticaCds.getCdsAreas()
 
+
+class ApiProjectInfrastructuresList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle infrastrutture dei progetti'
+    serializer_class = ProjectInfrastructuresSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceProgetto.getProjectInfrastructures()

@@ -1505,3 +1505,20 @@ class CdsAreasSerializer(CreateUpdateAbstract):
         return {
             'AreaCds': query['area_cds'],
         }
+
+
+class ProjectInfrastructuresSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+            'InfrastructureId': query['uo'],
+            'InfrastructureDescription': query['uo__denominazione'],
+        }
