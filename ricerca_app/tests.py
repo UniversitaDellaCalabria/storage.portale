@@ -224,6 +224,7 @@ class ApiCdSInfoUnitTest(TestCase):
             'txt_id': 3,
             'regdid': reg,
             'tipo_testo_regdid_cod': 'URL_CDS_VIDEO',
+            'clob_txt_ita':'https:....',
         })
         DidatticaTestiRegolamentoUnitTest.create_didatticaTestiRegolamento(**{
             'txt_id': 2,
@@ -231,6 +232,12 @@ class ApiCdSInfoUnitTest(TestCase):
             'tipo_testo_regdid_cod': 'FUNZIONI',
             'profilo': 'profiloprova',
             'clob_txt_ita': 'provadescrizione',
+        })
+        DidatticaTestiRegolamentoUnitTest.create_didatticaTestiRegolamento(**{
+            'txt_id': 4,
+            'regdid': reg,
+            'tipo_testo_regdid_cod': 'URL_CDS_VIDEO',
+            'clob_txt_ita': 'pdf',
         })
 
         url = reverse('ricerca:cdsinfo', kwargs={'regdidid': 1})

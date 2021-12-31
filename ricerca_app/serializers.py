@@ -110,6 +110,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
         }
 
+
     @staticmethod
     def to_dict_video(query):
         if 'https' in query or 'http' in query:
