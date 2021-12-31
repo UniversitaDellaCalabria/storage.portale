@@ -71,6 +71,10 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         for q in query['Languages']:
             langs.append(q['didatticacdslingua__lingua_des_it'] if req_lang == 'it' or q[
                 'didatticacdslingua__lingua_des_eng'] is None else q['didatticacdslingua__lingua_des_eng'])
+        video = None
+        if query['URL_CDS_VIDEO'] is not None:
+            video = CdsInfoSerializer.to_dict_video(
+                query['URL_CDS_VIDEO'])
 
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
@@ -95,7 +99,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
             'CdSIntro': query['INTRO_CDS_FMT'] if query['INTRO_CDS_FMT'] is not None else query['DESC_COR_BRE'],
             'CdSDoc': query['URL_CDS_DOC'],
-            'CdSVideo': query['URL_CDS_VIDEO'],
+            'CdSVideo': video,
             'CdSGoals': query['OBB_SPEC'],
             'CdSAccess': query['REQ_ACC'],
             'CdSAdmission': query['REQ_ACC_2'],
@@ -105,6 +109,14 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSSatisfactionSurvey': query['codicione'],
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
         }
+
+    @staticmethod
+    def to_dict_video(query):
+        if 'https' in query or 'http' in query:
+            return query
+        else:
+            query = f'{settings.CDS_BROCHURE_MEDIA_PATH}/{query}'
+            return query
 
 
 class CdSStudyPlansSerializer(CreateUpdateAbstract):
