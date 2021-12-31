@@ -32,11 +32,15 @@ INSTALLED_APPS = [
     'ricerca_app',
     # 'silk',
     # 'ricerca_app.apps.RicercaAppConfig',
+    
+    # cors headers
+    'corsheaders',
 ]
 AUTH_USER_MODEL = 'accounts.User'
 LABORATORIES_MEDIA_PATH = f'{MEDIA_URL}laboratori/loghi'
 COMPANIES_MEDIA_PATH = f'{MEDIA_URL}spinoff-startup/loghi'
 PATENTS_MEDIA_PATH = f'{MEDIA_URL}brevetti/loghi'
+CDS_BROCHURE_MEDIA_PATH = f'{MEDIA_URL}cds_media_brochure'
 MIDDLEWARE = [
     # 'silk.middleware.SilkyMiddleware',
     'django.middleware.security.SecurityMiddleware',
