@@ -32,6 +32,9 @@ INSTALLED_APPS = [
     'ricerca_app',
     # 'silk',
     # 'ricerca_app.apps.RicercaAppConfig',
+    
+    # cors headers
+    'corsheaders',
 ]
 AUTH_USER_MODEL = 'accounts.User'
 LABORATORIES_MEDIA_PATH = f'{MEDIA_URL}laboratori/loghi'
