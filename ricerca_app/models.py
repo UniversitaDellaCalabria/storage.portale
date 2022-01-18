@@ -602,6 +602,8 @@ class DidatticaCds(InsModAbstract):
         max_length=1000,
         blank=True,
         null=True)
+    area_cds_en = models.CharField(db_column='AREA_CDS_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+
 
     class Meta:
         managed = True
