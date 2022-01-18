@@ -114,7 +114,8 @@ class ServiceDidatticaCds:
             'codicione',
             'didatticaregolamento__titolo_congiunto_cod',
             'didatticaregolamento__stato_regdid_cod',
-            'area_cds').distinct()
+            'area_cds',
+            'area_cds_en').distinct()
         items = items.order_by("nome_cds_it") if language == 'it' else items.order_by(
             F("nome_cds_eng").asc(nulls_last=True))
         items = list(items)

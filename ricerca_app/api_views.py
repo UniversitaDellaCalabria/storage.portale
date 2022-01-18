@@ -173,7 +173,8 @@ class ApiCdSDetail(ApiEndpointDetail):
             'codicione',
             'didatticaregolamento__titolo_congiunto_cod',
             'didatticaregolamento__stato_regdid_cod',
-            'area_cds'
+            'area_cds',
+            'area_cds_en',
         ).distinct()
         res = list(res)
 
