@@ -99,6 +99,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
             'CdSIntro': query['INTRO_CDS_FMT'] if query['INTRO_CDS_FMT'] is not None else query['DESC_COR_BRE'],
             'CdSDoc': query['URL_CDS_DOC'],
+            'CdsUrl': query['URL_CDS'],
             'CdSVideo': video,
             'CdSGoals': query['OBB_SPEC'],
             'CdSAccess': query['REQ_ACC'],
