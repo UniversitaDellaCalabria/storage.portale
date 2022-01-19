@@ -395,6 +395,7 @@ LABEL_MAPPING = {
         'FunctionDescription': 'Function Description',
         'FunctionCod': 'Function Cod',
         'AreaCds': 'Cds Area',
+        'CdsUrl': 'Url Cds',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -679,5 +680,6 @@ LABEL_MAPPING = {
         'FunctionDescription': 'Descrizione Funzione',
         'FunctionCod': 'Codice Funzione',
         'AreaCds': 'Area Cds',
+        'CdsUrl': 'Url Cds',
     }
 }

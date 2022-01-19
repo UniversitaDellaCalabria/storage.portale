@@ -199,6 +199,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             "didatticacdslingua__lingua_des_eng").distinct()
 
         res[0]['URL_CDS_DOC'] = None
+        res[0]['URL_CDS'] = None
         res[0]['INTRO_CDS_FMT'] = None
         res[0]['URL_CDS_VIDEO'] = None
         res[0]['DESC_COR_BRE'] = None
