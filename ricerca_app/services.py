@@ -146,6 +146,12 @@ class ServiceDidatticaCds:
             "area_cds",
             "area_cds_en",
         ).distinct()
+
+        query = list(query)
+
+        for q in query:
+            if q['area_cds'] == None:
+                query.remove(q)
         return query
 
 
