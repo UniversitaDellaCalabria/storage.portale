@@ -143,7 +143,8 @@ class ServiceDidatticaCds:
     @staticmethod
     def getCdsAreas():
         query = DidatticaCds.objects.values(
-            "area_cds"
+            "area_cds",
+            "area_cds_en",
         ).distinct()
         return query
 
