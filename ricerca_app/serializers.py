@@ -82,7 +82,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSId': query['cds_id'],
             'CdSCod': query['cds_cod'],
             'AcademicYear': query['didatticaregolamento__aa_reg_did'],
-            'AreaCds': query['area_cds'],
+            'AreaCds': query['area_cds'] if req_lang=='it' or query['area_cds_en'] is None else query['area_cds_en'],
             'CdSName': query['nome_cds_it'] if req_lang == 'it' or query['nome_cds_eng'] is None else query['nome_cds_eng'],
             'DepartmentId': query['dip__dip_id'],
             'DepartmentCod': query['dip__dip_cod'],
@@ -1517,7 +1517,7 @@ class CdsAreasSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
 
         return {
-            'AreaCds': query['area_cds'],
+            'AreaCds': query['area_cds'] if req_lang=='it' or query['area_cds_en'] is None else query['area_cds_en'],
         }
 
 
