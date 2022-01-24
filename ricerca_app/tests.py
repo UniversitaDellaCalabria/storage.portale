@@ -839,9 +839,21 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'descrizione': 'regressione lineare',
             'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020'
         })
+
+        linea_base2 = RicercaLineaBaseUnitTest.create_ricercaLineaBase(**{
+            'id': 7,
+            'ricerca_erc2': erc2,
+            'descrizione': 'regressione lineare',
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 20201'
+        })
+
         RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
             'personale': doc1,
             'ricerca_linea_base': linea_base
+        })
+        RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
+            'personale': doc2,
+            'ricerca_linea_base': linea_base2
         })
         RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
             'personale': doc2,
@@ -902,6 +914,7 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'results'][0]['RLineDescription'] == 'regressione lineare'
 
         res = req.get(url)
+        print(res.json())
         assert len(res.json()['results']) == 3
 
         # teacher 2 has one ricercalineabase (ended) and one
@@ -910,7 +923,8 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'ricerca:teacherresearchlines', kwargs={
                 'teacherid': '111111'})
         res = req.get(url)
-        assert len(res.json()['results']) == 1
+        print(res.json())
+        assert len(res.json()['results']) == 2
 
 
 class ApiTeachersListUnitTest(TestCase):
@@ -4515,6 +4529,11 @@ class ApiCdsAreasListUnitTest(TestCase):
 
         DidatticaCdsUnitTest.create_didatticaCds(**{
             'area_cds': 'aaa',
+        })
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'cds_id':2,
+            'cdsord_id':3,
+            'area_cds': None,
         })
 
         url = reverse('ricerca:cds-areas')
