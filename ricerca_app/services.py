@@ -541,6 +541,14 @@ class ServiceDocente:
         for linea in linea_base:
             linea['Tipologia'] = 'base'
 
+        for l in linea_base:
+            if l['ricercadocentelineabase__ricerca_linea_base__id'] == None:
+                linea_base.remove(l)
+
+        for l in linea_applicata:
+            if l['ricercadocentelineaapplicata__ricerca_linea_applicata__id'] == None:
+                linea_applicata.remove(l)
+
         linea_applicata.extend(linea_base)
 
         return linea_applicata
