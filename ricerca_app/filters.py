@@ -107,6 +107,12 @@ class ApiCdsListFilter(GenericApiFilter):
             'required': False,
             'type': 'string'
         },
+        {
+            'name': 'area',
+            'description': 'Area del Corso di Studio',
+            'required': False,
+            'type': 'string'
+        },
     ]
 
 
