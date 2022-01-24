@@ -3692,7 +3692,7 @@ class ApiAllPublicationsListUnitTest(TestCase):
             'title': 'pub3',
             'des_abstract': 'abstract italiano3',
             'des_abstracteng': 'abstract inglese3',
-            'date_issued_year': 2019,
+            'date_issued_year': 9999,
             'pubblicazione': 'Convegno Cosenza',
             'label_pubblicazione': 'Convegno',
             'collection_id': 2,
@@ -3711,7 +3711,7 @@ class ApiAllPublicationsListUnitTest(TestCase):
 
         # GET
         assert res.json()[
-            'results'][0]['PublicationAbstract'] == 'abstract inglese'
+            'results'][1]['PublicationAbstract'] == 'abstract inglese'
 
         data = {
             'year': 2020,
