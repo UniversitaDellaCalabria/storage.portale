@@ -1429,6 +1429,12 @@ class ServicePersonale:
             "ds_tipo_nodo",
             "cd_tipo_nodo").distinct().order_by('denominazione')
 
+        for q in query:
+            url = DidatticaDipartimentoUrl.objects\
+                                          .filter(dip_cod=q['uo'])\
+                                          .values_list('dip_url', flat=True)
+            q['dip_url'] = url[0] if url else ''
+
         return query
 
     @staticmethod
@@ -1584,6 +1590,10 @@ class ServicePersonale:
             else:
                 q['FunzioniPersonale'] = None
 
+            url = DidatticaDipartimentoUrl.objects\
+                                          .filter(dip_cod=q['uo'])\
+                                          .values_list('dip_url', flat=True)
+            q['dip_url'] = url[0] if url else ''
         return query
 
     @staticmethod

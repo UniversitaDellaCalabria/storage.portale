@@ -984,7 +984,8 @@ class DidatticaDipartimentoUrl(models.Model):
     dip_cod = models.OneToOneField(DidatticaDipartimento,
                                    models.DO_NOTHING,
                                    db_column='DIP_COD',
-                                   primary_key=True)  # Field name made lowercase.
+                                   primary_key=True,
+                                   to_field='dip_cod')  # Field name made lowercase.
     dip_url = models.CharField(db_column='DIP_URL',
                                max_length=4000)  # Field name made lowercase.
 
