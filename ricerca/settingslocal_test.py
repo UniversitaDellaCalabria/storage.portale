@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'ricerca_app',
     # 'silk',
     # 'ricerca_app.apps.RicercaAppConfig',
-    
+
     # cors headers
     'corsheaders',
 ]
@@ -396,6 +396,7 @@ LABEL_MAPPING = {
         'FunctionCod': 'Function Cod',
         'AreaCds': 'Cds Area',
         'CdsUrl': 'Url Cds',
+        'DepartmentURL': 'URL',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -681,5 +682,6 @@ LABEL_MAPPING = {
         'FunctionCod': 'Codice Funzione',
         'AreaCds': 'Area Cds',
         'CdsUrl': 'Url Cds',
+        'DepartmentURL': 'URL',
     }
 }

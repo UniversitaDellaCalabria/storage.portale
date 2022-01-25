@@ -14,10 +14,10 @@ from .settingslocal import *
 
 MIDDLEWARE = [
     # 'silk.middleware.SilkyMiddleware',
-    
+
     # cors headers
     'corsheaders.middleware.CorsMiddleware',
-    
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -268,6 +268,7 @@ LABEL_MAPPING = {
         'DepartmentReferentId': 'Department Referent ID',
         'DepartmentReferentCod': 'Department Referent Cod',
         'DepartmentReferentName': 'Department',
+        'DepartmentURL': 'URL',
         'LaboratoryScope': 'Scope',
         'LaboratoryServicesScope': 'Services Scope',
         'LaboratoryResearchScope': 'Research Scope',
@@ -552,6 +553,7 @@ LABEL_MAPPING = {
         'DepartmentReferentId': 'Dipartimento di Riferimento',
         'DepartmentReferentCod': 'Codice Dipartimento di Riferimento',
         'DepartmentReferentName': 'Dipartimento di Riferimento',
+        'DepartmentURL': 'URL',
         'LaboratoryScope': 'Ambito',
         'LaboratoryServicesScope': 'Finalità  dei servizi',
         'LaboratoryResearchScope': 'Finalità Ricerca',
