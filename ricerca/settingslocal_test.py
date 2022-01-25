@@ -397,6 +397,7 @@ LABEL_MAPPING = {
         'AreaCds': 'Cds Area',
         'CdsUrl': 'Url Cds',
         'DepartmentURL': 'URL',
+        'StructureURL': 'URL',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -683,5 +684,6 @@ LABEL_MAPPING = {
         'AreaCds': 'Area Cds',
         'CdsUrl': 'Url Cds',
         'DepartmentURL': 'URL',
+        'StructureURL': 'URL',
     }
 }

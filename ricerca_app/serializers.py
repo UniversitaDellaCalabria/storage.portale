@@ -793,6 +793,7 @@ class StructuresSerializer(CreateUpdateAbstract):
             'StructureName': query['denominazione'],
             'StructureTypeName': query['ds_tipo_nodo'],
             'StructureTypeCOD': query['cd_tipo_nodo'],
+            'StructureURL': query['dip_url']
         }
 
 
@@ -887,7 +888,8 @@ class StructureDetailSerializer(CreateUpdateAbstract):
             'StructurePec': query['PEC'],
             'StructureTfr': query['TFR'],
             'StructurePersonnelFunctions': personnel_functions,
-            'StructureMission': query['ds_mission']
+            'StructureMission': query['ds_mission'],
+            'StructureURL': query['dip_url']
 
         }
 
