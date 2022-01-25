@@ -980,6 +980,19 @@ class DidatticaDipartimento(InsModAbstract):
         return '{} {}'.format(self.dip_cod, self.dip_des_it)
 
 
+class DidatticaDipartimentoUrl(models.Model):
+    dip_cod = models.OneToOneField(DidatticaDipartimento,
+                                   models.DO_NOTHING,
+                                   db_column='DIP_COD',
+                                   primary_key=True)  # Field name made lowercase.
+    dip_url = models.CharField(db_column='DIP_URL',
+                               max_length=4000)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_DIPARTIMENTO_URL'
+
+
 class DidatticaDottoratoCds(InsModAbstract):
     dip_cod = models.ForeignKey(
         DidatticaDipartimento,

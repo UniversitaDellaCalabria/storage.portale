@@ -6,7 +6,7 @@ import operator
 from django.db.models import CharField, Q, Value, F
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
-    DidatticaPdsRegolamento, \
+    DidatticaPdsRegolamento, DidatticaDipartimentoUrl, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
@@ -1176,16 +1176,35 @@ class ServiceDipartimento:
 
     @staticmethod
     def getDepartmentsList(language):
-        query = DidatticaDipartimento.objects.all().values(
-            "dip_id", "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
-        return query.order_by(
-            "dip_des_it") if language == 'it' else query.order_by("dip_des_eng")
+        query = DidatticaDipartimento.objects.all()\
+                                     .values("dip_id", "dip_cod",
+                                             "dip_des_it", "dip_des_eng",
+                                             "dip_nome_breve")
+
+        query = query.order_by("dip_des_it") if language == 'it' \
+                               else query.order_by("dip_des_eng")
+
+        for q in query:
+            url = DidatticaDipartimentoUrl.objects\
+                                          .filter(dip_cod=q['dip_cod'])\
+                                          .values_list('dip_url', flat=True)
+            q['dip_url'] = url[0] if url else ''
+
+        return query
 
     @staticmethod
     def getDepartment(departmentcod):
-        query = DidatticaDipartimento.objects.filter(
-            dip_cod__exact=departmentcod).values(
-            "dip_id", "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
+        query = DidatticaDipartimento.objects\
+                                     .filter(dip_cod__exact=departmentcod)\
+                                     .values("dip_id", "dip_cod",
+                                             "dip_des_it", "dip_des_eng",
+                                             "dip_nome_breve")
+        dip_cod = query.first()['dip_cod']
+        url = DidatticaDipartimentoUrl.objects\
+                                          .filter(dip_cod=dip_cod)\
+                                          .values_list('dip_url', flat=True)
+        for q in query:
+            q['dip_url'] = url[0] if url else ''
         return query
 
 
