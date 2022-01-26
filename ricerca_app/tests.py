@@ -4445,7 +4445,6 @@ class ApiProjectDetailUnitTest(TestCase):
 
         ProgettoResponsabileScientificoUnitTest.create_progettoResponsabileScientifico(
             **{"matricola": p, "nome_origine": "Simone", "id_progetto": 1, })
-
         ProgettoRicercatoreUnitTest.create_progettoRicercatore(**{
             "matricola": p,
             "nome_origine": 'Simone',
