@@ -4366,6 +4366,17 @@ class ApiProjectsListUnitTest(TestCase):
             "id_area_tecnologica": t1,
         })
 
+        pr2 = ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
+            "id": 2,
+            "id_ambito_territoriale": a1,
+            "id_tipologia_programma": p1,
+            "titolo": "Motore",
+            "descr_breve": "Mot",
+            "abstract_ita": "Motore",
+            "abstract_eng": "Engine",
+            "id_area_tecnologica": t1,
+        })
+
         ProgettoResponsabileScientificoUnitTest.create_progettoResponsabileScientifico(
             **{"matricola": p, "nome_origine": "Simone", "id_progetto": 1, })
 
@@ -4385,15 +4396,15 @@ class ApiProjectsListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'search': 'mot'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'techarea': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'infrastructure': 1}
         res = req.get(url, data=data)
@@ -4401,11 +4412,11 @@ class ApiProjectsListUnitTest(TestCase):
 
         data = {'programtype': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'territorialscope': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
 
 class ApiProjectDetailUnitTest(TestCase):
