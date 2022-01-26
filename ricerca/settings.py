@@ -368,6 +368,9 @@ LABEL_MAPPING = {
         'FunctionCod': 'Function Cod',
         'AreaCds': 'Cds Area',
         'CdsUrl': 'Url Cds',
+        'Researchers': 'Researchers',
+        'ResearcherId': 'ResearcherId',
+        'ResearcherName': 'ResearcherName'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -653,5 +656,8 @@ LABEL_MAPPING = {
         'FunctionCod': 'Codice Funzione',
         'AreaCds': 'Area Cds',
         'CdsUrl': 'Url Cds',
+        'Researchers': 'Ricercatori',
+        'ResearcherId': 'Matricola Ricercatore',
+        'ResearcherName': 'Nome Ricercatore'
     }
 }
