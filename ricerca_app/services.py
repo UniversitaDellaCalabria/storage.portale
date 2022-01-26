@@ -6,7 +6,7 @@ import operator
 from django.db.models import CharField, Q, Value, F
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
-    DidatticaPdsRegolamento, \
+    DidatticaPdsRegolamento, DidatticaDipartimentoUrl, \
     UnitaOrganizzativa, DidatticaRegolamento, DidatticaCdsLingua, LaboratorioDatiBase, LaboratorioAttivita, \
     LaboratorioDatiErc1, LaboratorioPersonaleRicerca, LaboratorioPersonaleTecnico, LaboratorioServiziOfferti, \
     LaboratorioUbicazione, UnitaOrganizzativaFunzioni, LaboratorioAltriDipartimenti, PubblicazioneDatiBase, \
@@ -1176,16 +1176,35 @@ class ServiceDipartimento:
 
     @staticmethod
     def getDepartmentsList(language):
-        query = DidatticaDipartimento.objects.all().values(
-            "dip_id", "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
-        return query.order_by(
-            "dip_des_it") if language == 'it' else query.order_by("dip_des_eng")
+        query = DidatticaDipartimento.objects.all()\
+                                     .values("dip_id", "dip_cod",
+                                             "dip_des_it", "dip_des_eng",
+                                             "dip_nome_breve")
+
+        query = query.order_by("dip_des_it") if language == 'it' \
+                               else query.order_by("dip_des_eng")
+
+        for q in query:
+            url = DidatticaDipartimentoUrl.objects\
+                                          .filter(dip_cod=q['dip_cod'])\
+                                          .values_list('dip_url', flat=True)
+            q['dip_url'] = url[0] if url else ''
+
+        return query
 
     @staticmethod
     def getDepartment(departmentcod):
-        query = DidatticaDipartimento.objects.filter(
-            dip_cod__exact=departmentcod).values(
-            "dip_id", "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve")
+        query = DidatticaDipartimento.objects\
+                                     .filter(dip_cod__exact=departmentcod)\
+                                     .values("dip_id", "dip_cod",
+                                             "dip_des_it", "dip_des_eng",
+                                             "dip_nome_breve")
+        dip_cod = query.first()['dip_cod']
+        url = DidatticaDipartimentoUrl.objects\
+                                          .filter(dip_cod=dip_cod)\
+                                          .values_list('dip_url', flat=True)
+        for q in query:
+            q['dip_url'] = url[0] if url else ''
         return query
 
 
@@ -1232,6 +1251,7 @@ class ServicePersonale:
             flg_cessato=0,
             cd_uo_aff_org__isnull=False,
             dt_rap_fin__gte=datetime.datetime.today())
+
 
         if structuretypes is not None:
             structuretypes = structuretypes.split(",")
@@ -1314,7 +1334,6 @@ class ServicePersonale:
             )
             from itertools import chain
             query = list(chain(*[query, query2]))
-
         query = list(query)
         query.sort(key=lambda x: x.get('cognome'), reverse=False)
         contacts_to_take = [
@@ -1409,6 +1428,12 @@ class ServicePersonale:
             "denominazione",
             "ds_tipo_nodo",
             "cd_tipo_nodo").distinct().order_by('denominazione')
+
+        for q in query:
+            url = DidatticaDipartimentoUrl.objects\
+                                          .filter(dip_cod=q['uo'])\
+                                          .values_list('dip_url', flat=True)
+            q['dip_url'] = url[0] if url else ''
 
         return query
 
@@ -1565,6 +1590,10 @@ class ServicePersonale:
             else:
                 q['FunzioniPersonale'] = None
 
+            url = DidatticaDipartimentoUrl.objects\
+                                          .filter(dip_cod=q['uo'])\
+                                          .values_list('dip_url', flat=True)
+            q['dip_url'] = url[0] if url else ''
         return query
 
     @staticmethod

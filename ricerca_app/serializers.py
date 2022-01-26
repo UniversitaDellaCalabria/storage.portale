@@ -667,6 +667,7 @@ class DepartmentSerializer(CreateUpdateAbstract):
             'DepartmentName': query['dip_des_it'] if req_lang == "it" or query[
                 'dip_des_eng'] is None else query['dip_des_eng'],
             'DepartmentNameShort': query['dip_nome_breve'],
+            'DepartmentURL': query['dip_url']
         }
 
 
@@ -792,6 +793,7 @@ class StructuresSerializer(CreateUpdateAbstract):
             'StructureName': query['denominazione'],
             'StructureTypeName': query['ds_tipo_nodo'],
             'StructureTypeCOD': query['cd_tipo_nodo'],
+            'StructureURL': query['dip_url']
         }
 
 
@@ -886,7 +888,8 @@ class StructureDetailSerializer(CreateUpdateAbstract):
             'StructurePec': query['PEC'],
             'StructureTfr': query['TFR'],
             'StructurePersonnelFunctions': personnel_functions,
-            'StructureMission': query['ds_mission']
+            'StructureMission': query['ds_mission'],
+            'StructureURL': query['dip_url']
 
         }
 

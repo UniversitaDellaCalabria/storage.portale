@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'ricerca_app',
     # 'silk',
     # 'ricerca_app.apps.RicercaAppConfig',
-    
+
     # cors headers
     'corsheaders',
 ]
@@ -396,6 +396,8 @@ LABEL_MAPPING = {
         'FunctionCod': 'Function Cod',
         'AreaCds': 'Cds Area',
         'CdsUrl': 'Url Cds',
+        'DepartmentURL': 'URL',
+        'StructureURL': 'URL',
         'Researchers': 'Researchers',
         'ResearcherId': 'ResearcherId',
         'ResearcherName': 'ResearcherName'
@@ -684,6 +686,8 @@ LABEL_MAPPING = {
         'FunctionCod': 'Codice Funzione',
         'AreaCds': 'Area Cds',
         'CdsUrl': 'Url Cds',
+        'DepartmentURL': 'URL',
+        'StructureURL': 'URL',
         'Researchers': 'Ricercatori',
         'ResearcherId': 'Matricola Ricercatore',
         'ResearcherName': 'Nome Ricercatore'

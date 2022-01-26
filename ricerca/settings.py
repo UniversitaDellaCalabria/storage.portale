@@ -14,10 +14,10 @@ from .settingslocal import *
 
 MIDDLEWARE = [
     # 'silk.middleware.SilkyMiddleware',
-    
+
     # cors headers
     'corsheaders.middleware.CorsMiddleware',
-    
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -268,6 +268,8 @@ LABEL_MAPPING = {
         'DepartmentReferentId': 'Department Referent ID',
         'DepartmentReferentCod': 'Department Referent Cod',
         'DepartmentReferentName': 'Department',
+        'DepartmentURL': 'URL',
+        'StructureURL': 'URL',
         'LaboratoryScope': 'Scope',
         'LaboratoryServicesScope': 'Services Scope',
         'LaboratoryResearchScope': 'Research Scope',
@@ -336,7 +338,7 @@ LABEL_MAPPING = {
         'PatentTitle': 'Patent Title',
         'PatentImage': 'Patent Image',
         'PatentAbstract': 'Patent Abstract',
-        'PatentUrlKnowledgeShare': 'Patent Url Knowledge Share',
+        'PatentUrlKnowledgeShare': 'Patent Knowledge Share',
         'PatentTechAreaId': 'Patent Tech-Area Id',
         'PatentAreaDescription': 'Area Description',
         'PatentInventors': 'Patent Inventors',
@@ -555,6 +557,8 @@ LABEL_MAPPING = {
         'DepartmentReferentId': 'Dipartimento di Riferimento',
         'DepartmentReferentCod': 'Codice Dipartimento di Riferimento',
         'DepartmentReferentName': 'Dipartimento di Riferimento',
+        'DepartmentURL': 'URL',
+        'StructureURL': 'URL',
         'LaboratoryScope': 'Ambito',
         'LaboratoryServicesScope': 'Finalità  dei servizi',
         'LaboratoryResearchScope': 'Finalità Ricerca',
@@ -623,7 +627,7 @@ LABEL_MAPPING = {
         'PatentTitle': 'Titolo Brevetto',
         'PatentImage': 'Immagine Brevetto',
         'PatentAbstract': 'Abstract Brevetto',
-        'PatentUrlKnowledgeShare': 'Url Knowledge Share Brevetto',
+        'PatentUrlKnowledgeShare': 'Scheda Knowledge Share',
         'PatentTechAreaId': 'Area Tecnologica Brevetto',
         'PatentAreaDescription': 'Area Tecnologica',
         'PatentInventors': 'Inventori Brevetto',
