@@ -13,7 +13,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
     RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita, \
     SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase, ProgettoResponsabileScientifico, UnitaOrganizzativaTipoFunzioni, ProgettoAmbitoTerritoriale, \
-    ProgettoTipologiaProgramma
+    ProgettoTipologiaProgramma, ProgettoRicercatore
 
 
 class ServiceQueryBuilder:
@@ -2188,10 +2188,20 @@ class ServiceProgetto:
                 "matricola",
                 "nome_origine",
             )
+            ricercatori = ProgettoRicercatore.objects.filter(
+                id_progetto=q['id']).values(
+                "matricola",
+                "nome_origine",
+            )
             if len(responsabili) == 0:
                 q['Responsabili'] = []
             else:
                 q['Responsabili'] = responsabili
+
+            if len(ricercatori) == 0:
+                q['Ricercatori'] = []
+            else:
+                q['Ricercatori'] = ricercatori
 
         return query
 
@@ -2225,10 +2235,20 @@ class ServiceProgetto:
                 "matricola",
                 "nome_origine",
             )
+            ricercatori = ProgettoRicercatore.objects.filter(
+                id_progetto=q['id']).values(
+                "matricola",
+                "nome_origine",
+            )
             if len(responsabili) == 0:
                 q['Responsabili'] = []
             else:
                 q['Responsabili'] = responsabili
+
+            if len(ricercatori) == 0:
+                q['Ricercatori'] = []
+            else:
+                q['Ricercatori'] = ricercatori
 
         return query
 

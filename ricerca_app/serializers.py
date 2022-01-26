@@ -1423,9 +1423,13 @@ class ProjectSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
         responsabili = None
+        ricercatori = None
         if query.get('Responsabili') is not None:
             responsabili = ProjectSerializer.to_dict_directors(
                 query['Responsabili'])
+        if query.get('Ricercatori') is not None:
+            ricercatori = ProjectSerializer.to_dict_researchers(
+                query['Ricercatori'])
         return {
             'ProjectId': query['id'],
             'ProjectYear': query['anno_avvio'],
@@ -1442,6 +1446,7 @@ class ProjectSerializer(CreateUpdateAbstract):
             'TechAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
             'ProjectImage': query['url_immagine'],
             'ScientificDirectors': responsabili,
+            'Researchers': ricercatori,
         }
 
     @staticmethod
@@ -1452,6 +1457,17 @@ class ProjectSerializer(CreateUpdateAbstract):
             result.append({
                 'ScientificDirectorId': q['matricola'],
                 'ScientificDirectorName': full_name,
+            })
+        return result
+
+    @staticmethod
+    def to_dict_researchers(query):
+        result = []
+        for q in query:
+            full_name = q["nome_origine"]
+            result.append({
+                'ResearcherId': q['matricola'],
+                'ResearcherName': full_name,
             })
         return result
 

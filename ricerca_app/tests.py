@@ -18,7 +18,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
     BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest, \
     ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
-    UnitaOrganizzativaTipoFunzioniUnitTest
+    UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -914,7 +914,6 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'results'][0]['RLineDescription'] == 'regressione lineare'
 
         res = req.get(url)
-        print(res.json())
         assert len(res.json()['results']) == 3
 
         # teacher 2 has one ricercalineabase (ended) and one
@@ -923,7 +922,6 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'ricerca:teacherresearchlines', kwargs={
                 'teacherid': '111111'})
         res = req.get(url)
-        print(res.json())
         assert len(res.json()['results']) == 2
 
 
@@ -4356,9 +4354,20 @@ class ApiProjectsListUnitTest(TestCase):
         p1 = ProgettoTipologiaProgrammaUnitTest.create_progettoTipologiaProgramma(
             **{"id": 1, "nome_programma": "AAA"})
 
-        ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
+        pr1 = ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
             "id": 1,
             "uo": u1,
+            "id_ambito_territoriale": a1,
+            "id_tipologia_programma": p1,
+            "titolo": "Motore",
+            "descr_breve": "Mot",
+            "abstract_ita": "Motore",
+            "abstract_eng": "Engine",
+            "id_area_tecnologica": t1,
+        })
+
+        pr2 = ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
+            "id": 2,
             "id_ambito_territoriale": a1,
             "id_tipologia_programma": p1,
             "titolo": "Motore",
@@ -4371,6 +4380,12 @@ class ApiProjectsListUnitTest(TestCase):
         ProgettoResponsabileScientificoUnitTest.create_progettoResponsabileScientifico(
             **{"matricola": p, "nome_origine": "Simone", "id_progetto": 1, })
 
+        ProgettoRicercatoreUnitTest.create_progettoRicercatore(**{
+            "matricola": p,
+            "nome_origine": 'Simone',
+            "id_progetto": pr1,
+        })
+
         url = reverse('ricerca:projects')
 
         # check url
@@ -4381,15 +4396,15 @@ class ApiProjectsListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'search': 'mot'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'techarea': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'infrastructure': 1}
         res = req.get(url, data=data)
@@ -4397,11 +4412,11 @@ class ApiProjectsListUnitTest(TestCase):
 
         data = {'programtype': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'territorialscope': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
 
 class ApiProjectDetailUnitTest(TestCase):
@@ -4428,7 +4443,7 @@ class ApiProjectDetailUnitTest(TestCase):
         p1 = ProgettoTipologiaProgrammaUnitTest.create_progettoTipologiaProgramma(
             **{"id": 1, "nome_programma": "AAA"})
 
-        ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
+        pr1 = ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
             "id": 1,
             "id_ambito_territoriale": a1,
             "id_tipologia_programma": p1,
@@ -4441,6 +4456,11 @@ class ApiProjectDetailUnitTest(TestCase):
 
         ProgettoResponsabileScientificoUnitTest.create_progettoResponsabileScientifico(
             **{"matricola": p, "nome_origine": "Simone", "id_progetto": 1, })
+        ProgettoRicercatoreUnitTest.create_progettoRicercatore(**{
+            "matricola": p,
+            "nome_origine": 'Simone',
+            "id_progetto": pr1,
+        })
 
         url = reverse('ricerca:projectdetail', kwargs={'projectid': '1'})
 

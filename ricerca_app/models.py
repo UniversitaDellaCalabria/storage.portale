@@ -3426,6 +3426,16 @@ class ProgettoDatiBase(models.Model):
         managed = True
         db_table = 'PROGETTO_DATI_BASE'
 
+class ProgettoRicercatore(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    matricola = models.ForeignKey(Personale, models.DO_NOTHING, db_column='MATRICOLA', blank=True, null=True)  # Field name made lowercase.
+    nome_origine = models.CharField(db_column='NOME_ORIGINE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    id_progetto = models.ForeignKey(ProgettoDatiBase, models.DO_NOTHING, db_column='ID_PROGETTO')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'PROGETTO_RICERCATORE'
+
 
 class ProgettoResponsabileScientifico(models.Model):
     # Field name made lowercase.

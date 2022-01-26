@@ -398,6 +398,9 @@ LABEL_MAPPING = {
         'CdsUrl': 'Url Cds',
         'DepartmentURL': 'URL',
         'StructureURL': 'URL',
+        'Researchers': 'Researchers',
+        'ResearcherId': 'ResearcherId',
+        'ResearcherName': 'ResearcherName'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -685,5 +688,8 @@ LABEL_MAPPING = {
         'CdsUrl': 'Url Cds',
         'DepartmentURL': 'URL',
         'StructureURL': 'URL',
+        'Researchers': 'Ricercatori',
+        'ResearcherId': 'Matricola Ricercatore',
+        'ResearcherName': 'Nome Ricercatore'
     }
 }

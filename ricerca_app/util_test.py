@@ -54,7 +54,8 @@ from .models import (
     ProgettoTipologiaProgramma,
     ProgettoAmbitoTerritoriale,
     ProgettoResponsabileScientifico,
-    UnitaOrganizzativaTipoFunzioni)
+    UnitaOrganizzativaTipoFunzioni,
+    ProgettoRicercatore)
 
 
 # class ContextUnitTest(TestCase):
@@ -689,6 +690,17 @@ class ProgettoResponsabileScientificoUnitTest(TestCase):
             data[k] = v
 
         obj = ProgettoResponsabileScientifico.objects.create(**data)
+        return obj
+
+
+class ProgettoRicercatoreUnitTest(TestCase):
+    @classmethod
+    def create_progettoRicercatore(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = ProgettoRicercatore.objects.create(**data)
         return obj
 
 
