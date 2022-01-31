@@ -4414,6 +4414,10 @@ class ApiProjectsListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
 
+        data = {'-programtype': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
         data = {'territorialscope': 1}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
