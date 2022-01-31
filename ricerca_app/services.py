@@ -721,9 +721,8 @@ class ServiceDocente:
         query_regdid = Q()
 
         if search is not None:
-            for k in search.split(" "):
-                q_cognome = Q(cognome__icontains=k)
-                query_search &= q_cognome
+            q_cognome = Q(cognome__istartswith=search)
+            query_search &= q_cognome
 
         if regdid:
             query_regdid = Q(didatticacopertura__af__regdid__regdid_id=regdid)
@@ -1226,9 +1225,8 @@ class ServicePersonale:
         query_function = Q()
 
         if search is not None:
-            for k in search.split(" "):
-                q_cognome = Q(cognome__icontains=k)
-                query_search |= q_cognome
+            q_cognome = Q(cognome__istartswith=search)
+            query_search |= q_cognome
         if structureid is not None:
             query_structure = Q(cd_uo_aff_org__exact=structureid)
         if roles is not None:
@@ -2129,13 +2127,15 @@ class ServiceProgetto:
             techarea,
             infrastructure,
             programtype,
-            territorialscope):
+            territorialscope,
+            notprogramtype):
 
         query_search = Q()
         query_techarea = Q()
         query_infrastructure = Q()
         query_programtype = Q()
         query_territorialscope = Q()
+        query_notprogramtype = Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -2151,15 +2151,20 @@ class ServiceProgetto:
         if infrastructure:
             query_infrastructure = Q(uo=infrastructure)
         if programtype:
-            query_programtype = Q(id_tipologia_programma=programtype)
+            programtype = programtype.split(",")
+            query_programtype = Q(id_tipologia_programma__in=programtype)
         if territorialscope:
             query_territorialscope = Q(id_ambito_territoriale=territorialscope)
+        if notprogramtype:
+            notprogramtype = notprogramtype.split(",")
+            query_notprogramtype= ~Q(id_tipologia_programma__in=notprogramtype)
 
         query = ProgettoDatiBase.objects.filter(
             query_search,
             query_techarea,
             query_infrastructure,
             query_territorialscope,
+            query_notprogramtype,
             query_programtype,
         ).values(
             "id",
