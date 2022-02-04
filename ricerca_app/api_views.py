@@ -1,10 +1,9 @@
-
-
 from rest_framework import generics, permissions
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
-from rest_framework.filters import OrderingFilter
-
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
@@ -1003,3 +1002,17 @@ class ApiProjectsInfrastructuresList(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceProgetto.getProjectInfrastructures()
+
+
+class ApiPersonnelCfList(ApiEndpointList):
+    autentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    description = 'La funzione restituisce la lista dei cf del personale'
+    serializer_class = PersonnelCfSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        roles = self.request.query_params.get('roles')
+
+        return ServicePersonale.getPersonnelCfs(roles)
