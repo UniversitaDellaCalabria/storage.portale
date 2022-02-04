@@ -1005,7 +1005,7 @@ class ApiProjectsInfrastructuresList(ApiEndpointList):
 
 
 class ApiPersonnelCfList(ApiEndpointList):
-    autentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     description = 'La funzione restituisce la lista dei cf del personale'
     serializer_class = PersonnelCfSerializer
