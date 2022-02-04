@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from rest_framework import permissions
 from rest_framework.renderers import JSONOpenAPIRenderer
 from rest_framework.schemas import get_schema_view
+from rest_framework.authtoken.views import obtain_auth_token
 
 from . import api_views
 
@@ -362,3 +363,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/projects-infrastructures/'.format(base_url),
         api_views.ApiProjectsInfrastructuresList.as_view(),
         name='projects-infrastructures'),
+
+    urlpatterns += path(
+        '{}/personnel-cfs/'.format(base_url),
+        api_views.ApiPersonnelCfList.as_view(),
+        name='personnel-cfs'),
+
+    if 'rest_framework.authtoken' in settings.INSTALLED_APPS:
+        urlpatterns += path('api/token', obtain_auth_token, name="auth_token"),

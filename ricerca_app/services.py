@@ -1650,6 +1650,35 @@ class ServicePersonale:
         return query
 
 
+    @staticmethod
+    def getPersonnelCfs(roles):
+
+        query_roles = Q()
+
+        if roles is not None:
+            roles = roles.split(",")
+            query_roles = Q(cd_ruolo__in=roles)
+
+        query = Personale.objects.filter(
+            query_roles,
+            flg_cessato=0,
+            dt_rap_fin__gte=datetime.datetime.today())
+
+        query = query.values(
+            "nome",
+            "middle_name",
+            "cognome",
+            "cod_fis",
+            "cd_ruolo",
+            "ds_ruolo_locale",
+            "cd_uo_aff_org",
+            "ds_aff_org",
+            "matricola",
+        ).order_by("cognome")
+
+        return query
+
+
 class ServiceLaboratorio:
 
     @staticmethod

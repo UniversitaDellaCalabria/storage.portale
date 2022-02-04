@@ -1,7 +1,11 @@
 import datetime
 
+from django.contrib.auth import get_user_model
+from rest_framework.authtoken.models import Token
 from django.test import TestCase, Client
 from django.urls import reverse
+
+
 
 from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, \
     DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest, \
@@ -4598,3 +4602,70 @@ class ApiProjectInfrastructuresListUnitTest(TestCase):
 
         res = req.get(url)
         assert len(res.json()['results']) == 1
+
+
+class ApiPersonnelCfsListUnitTest(TestCase):
+
+    def test_apipersonnelcfslist(self):
+        req = Client()
+
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'uo_padre': '1',
+        })
+        u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '3',
+            'uo_padre': '2',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'cd_uo_aff_org': u1,
+            'dt_rap_fin': '2023-01-03',
+            'ds_aff_org': 'aaa',
+            'cod_fis': 'SMN1',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Lionel',
+            'cognome': 'Messi',
+            'cd_ruolo': 'AM',
+            'ds_ruolo_locale': 'Amministrazione',
+            'id_ab': 2,
+            'matricola': '111113',
+            'fl_docente': 0,
+            'flg_cessato': 0,
+            'cd_uo_aff_org': u2,
+            'dt_rap_fin': '2023-01-03',
+            'ds_aff_org': 'bbb',
+            'cod_fis': 'LNL1',
+        })
+        usr = get_user_model().objects.create(
+            **{
+                'username': 'test',
+                'password': 'password',
+            }
+        )
+        token = Token.objects.create(user=usr)
+
+        url = reverse('ricerca:personnel-cfs')
+
+        # GET
+        res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {token.key}')
+        print(res.json())
+        assert len(res.json()['results']) == 2
+        assert res.json()[
+            'results'][0]['Role'] == 'AM'
+
+        data = {'roles': 'PA'}
+        res = req.get(url, data=data, HTTP_AUTHORIZATION= f'Token {token.key}')
+        assert res.json()['results'][0]['Name'] == 'Mungari Simone'
+
+

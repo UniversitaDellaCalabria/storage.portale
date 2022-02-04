@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 'accounts.apps.AccountsConfig',
     'rest_framework',
+    'rest_framework.authtoken',
     'ricerca_app',
     # 'silk',
     # 'ricerca_app.apps.RicercaAppConfig',
@@ -36,6 +37,11 @@ INSTALLED_APPS = [
     # cors headers
     'corsheaders',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 AUTH_USER_MODEL = 'accounts.User'
 LABORATORIES_MEDIA_PATH = f'{MEDIA_URL}laboratori/loghi'
 COMPANIES_MEDIA_PATH = f'{MEDIA_URL}spinoff-startup/loghi'
@@ -400,7 +406,8 @@ LABEL_MAPPING = {
         'StructureURL': 'URL',
         'Researchers': 'Researchers',
         'ResearcherId': 'ResearcherId',
-        'ResearcherName': 'ResearcherName'
+        'ResearcherName': 'ResearcherName',
+        'CF': 'Fiscal Code',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -690,6 +697,7 @@ LABEL_MAPPING = {
         'StructureURL': 'URL',
         'Researchers': 'Ricercatori',
         'ResearcherId': 'Matricola Ricercatore',
-        'ResearcherName': 'Nome Ricercatore'
+        'ResearcherName': 'Nome Ricercatore',
+        'CF': 'Codice Fiscale',
     }
 }

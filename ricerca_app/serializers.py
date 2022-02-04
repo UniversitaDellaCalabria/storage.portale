@@ -1555,3 +1555,27 @@ class ProjectInfrastructuresSerializer(CreateUpdateAbstract):
             'InfrastructureId': query['uo'],
             'InfrastructureDescription': query['uo__denominazione'],
         }
+
+
+class PersonnelCfSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        full_name = query['cognome'] + " " + query['nome'] + \
+                    (" " + query['middle_name']
+                     if query['middle_name'] is not None else "")
+        return {
+            'Name': full_name,
+            'CF': query['cod_fis'],
+            'ID': query['matricola'],
+            'RoleDescription': query['ds_ruolo_locale'],
+            'Role': query['cd_ruolo'],
+            'InfrastructureId': query['cd_uo_aff_org'],
+            'InfrastructureDescription': query['ds_aff_org'],
+        }
