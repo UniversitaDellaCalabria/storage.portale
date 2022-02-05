@@ -4659,7 +4659,6 @@ class ApiPersonnelCfsListUnitTest(TestCase):
 
         # GET
         res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {token.key}')
-        print(res.json())
         assert len(res.json()['results']) == 2
         assert res.json()[
             'results'][0]['Role'] == 'AM'

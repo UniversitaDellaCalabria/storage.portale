@@ -148,11 +148,18 @@ class ServiceDidatticaCds:
         ).distinct()
 
         query = list(query)
-
+        res = []
         for q in query:
-            if q['area_cds'] == None:
-                query.remove(q)
-        return query
+            res.append(q['area_cds'])
+
+        res = list(dict.fromkeys(res))
+        temp = []
+        for q in query:
+            if q['area_cds'] not in temp and q['area_cds'] in res and q['area_cds'] is not None:
+                temp.append(q)
+                res.remove(q['area_cds'])
+
+        return temp
 
 
 class ServiceDidatticaAttivitaFormativa:
