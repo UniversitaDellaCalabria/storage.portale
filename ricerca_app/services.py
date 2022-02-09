@@ -1752,6 +1752,11 @@ class ServiceLaboratorio:
         ).distinct()
 
         for q in query:
+            if q['dipartimento_riferimento'] is not None:
+                temp = q['dipartimento_riferimento'].rsplit(',',1)
+                q['dipartimento_riferimento'] = temp[0] + ', ' + temp[1]
+
+        for q in query:
             personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
                 id_laboratorio_dati__id=q['id']).values(
                 "matricola_personale_ricerca__matricola",
