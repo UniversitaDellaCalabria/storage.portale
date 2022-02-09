@@ -864,7 +864,9 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'ricerca_linea_base': linea_base,
             'dt_fine': '2021-01-03',
         })
-
+        RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
+            'personale': doc2,
+        })
         aster1 = RicercaAster1UnitTest.create_ricercaAster1(**{
             'id': 1,
             'descrizione': 'ICT & Design',
@@ -900,6 +902,10 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
         RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
             'personale': doc2,
             'ricerca_linea_applicata': linea_applicata,
+            'dt_ins': '2021-01-03 15:47:21'
+        })
+        RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
+            'personale': doc2,
             'dt_ins': '2021-01-03 15:47:21'
         })
 
@@ -3271,17 +3277,35 @@ class ApiResearchGroupsUnitTest(TestCase):
             'sede': '1111',
 
         })
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+        })
+
+        RicercaErc1UnitTest.create_ricercaErc1(**{
+            'id': 1,
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
         ricerca_gruppo1 = RicercaGruppoUnitTest.create_ricercaGruppo(**{
             'id': 1,
             'nome': 'Intelligenza Artificiale',
             'descrizione': 'ricerca su Machine Learning',
-
+            'ricerca_erc1_id': 1,
+        })
+        ricerca_gruppo2 = RicercaGruppoUnitTest.create_ricercaGruppo(**{
+            'id': 2,
+            'nome': 'machine learning',
+            'descrizione': 'ricerca su Machine Learning',
+            'ricerca_erc1_id': 1,
         })
 
         RicercaDocenteGruppoUnitTest.create_ricercaDocenteGruppo(**{
             'personale': doc1,
             'ricerca_gruppo': ricerca_gruppo1
         })
+
 
         url = reverse(
             'ricerca:researchgroups')
@@ -3296,19 +3320,23 @@ class ApiResearchGroupsUnitTest(TestCase):
         assert res.json()['results'][0]['RGroupID'] == 1
 
         res = req.get(url)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'teacher': '111112'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
+        data = {'coderc1': 'cod1_erc1'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
         data = {'search': 'Intel'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'teacher': '111111'}
+        data = {'teacher': '111112','department': '1111'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 0
+        assert len(res.json()['results']) == 1
 
         data = {'department': '1111'}
         res = req.get(url, data=data)
@@ -3476,6 +3504,100 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         data = {'teacher': '111112', 'department': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
+
+
+class ApiAllResearchLinesUnitTest(TestCase):
+
+    def test_apiallbresearchlines(self):
+        req = Client()
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'ds_sede': 'DIMES',
+            'sede': '1111'
+        })
+
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+        })
+
+        erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+            'cod_erc1': 'cod1_erc1',
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+        erc2 = RicercaErc2UnitTest.create_ricercaErc2(**{
+            'cod_erc2': 'cod1_erc2',
+            'descrizione': 'Machine learning',
+            'ricerca_erc1': erc1
+        })
+        linea_base = RicercaLineaBaseUnitTest.create_ricercaLineaBase(**{
+            'id': 1,
+            'ricerca_erc2': erc2,
+            'descrizione': 'regressione lineare',
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
+            'anno': '2016',
+
+        })
+
+        aster1 = RicercaAster1UnitTest.create_ricercaAster1(**{
+            'id': 1,
+            'descrizione': 'ICT & Design',
+            'ricerca_erc0_cod': erc0,
+        })
+        aster2 = RicercaAster2UnitTest.create_ricercaAster2(**{
+            'id': 2,
+            'descrizione': 'Algorithms. Data and signal processing',
+            'ricerca_aster1': aster1
+        })
+        linea_applicata = RicercaLineaApplicataUnitTest.create_ricercaLineaApplicata(**{
+            'id': 1,
+            'ricerca_aster2': aster2,
+            'descrizione': 'regressione lineare',
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
+            'anno': '2016'
+        })
+        RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
+            'personale': doc1,
+            'ricerca_linea_applicata': linea_applicata,
+            'dt_ins': '2021-01-03 15:47:21'
+        })
+        RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
+            'personale': doc1,
+            'ricerca_linea_base': linea_base
+        })
+
+
+        url = reverse('ricerca:allresearchlines')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 2
+
+        data = {'search': 'reg'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
+        data = {'year': 2020}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 0
+
+        data = {'department': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
 
 
 class ApiTeachingsCoveragesListUnitTest(TestCase):

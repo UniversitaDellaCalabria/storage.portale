@@ -2976,6 +2976,7 @@ class RicercaGruppo(InsModAbstract):
     nome = models.CharField(db_column='NOME', max_length=200)
 
     descrizione = models.TextField(db_column='DESCRIZIONE')
+    ricerca_erc1 = models.ForeignKey(RicercaErc1, models.DO_NOTHING, db_column='RICERCA_ERC1_ID', blank=True, null=True)  # Field name made lowercase.
     user_ins = models.ForeignKey(get_user_model(),
                                  related_name='user_ins_rg',
                                  on_delete=models.SET_NULL,

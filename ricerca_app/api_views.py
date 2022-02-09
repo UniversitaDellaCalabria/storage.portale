@@ -355,8 +355,9 @@ class ApiResearchGroupsList(ApiEndpointList):
         search = self.request.query_params.get('search')
         teacher = self.request.query_params.get('teacher')
         department = self.request.query_params.get('department')
+        cod = self.request.query_params.get('coderc1')
 
-        return ServiceDocente.getAllResearchGroups(search, teacher, department)
+        return ServiceDocente.getAllResearchGroups(search, teacher, department, cod)
 
 
 class ApiTeacherResearchLinesList(ApiEndpointList):
@@ -403,6 +404,21 @@ class ApiAppliedResearchLinesList(ApiEndpointList):
 
         return ServiceDocente.getAppliedResearchLines(
             search, teacher, department, year)
+
+
+class ApiAllResearchLinesList(ApiEndpointList):
+    description = 'La funzione restituisce l’elenco di tutte le Linee di' \
+                  ' ricerca'
+    serializer_class = AllResearchLinesSerializer
+    filter_backends = [ApiAllResearchLinesListFilter]
+
+    def get_queryset(self):
+
+        search = self.request.query_params.get('search')
+        year = self.request.query_params.get('year')
+        department = self.request.query_params.get('department')
+
+        return ServiceDocente.getAllResearchLines(search, year, department)
 
 # ----Docenti----
 
@@ -484,6 +500,7 @@ class ApiTeacherDetail(ApiEndpointDetail):
     filter_backends = []
 
     def get_queryset(self):
+
         teacherid = self.kwargs['teacherid']
 
         return ServiceDocente.getDocenteInfo(teacherid)

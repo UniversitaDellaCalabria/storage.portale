@@ -141,6 +141,12 @@ class ApiResearchGroupsListFilter(GenericApiFilter):
             'description': 'Codice di un dipartimento',
             'required': False,
             'type': 'string'
+        },
+        {
+            'name': 'erc1cod',
+            'description': 'Codice di un erc',
+            'required': False,
+            'type': 'string'
         }
     ]
 
@@ -185,6 +191,26 @@ class ApiBaseResearchLinesListFilter(GenericApiFilter):
             'required': False,
             'type': 'string'
         },
+        {
+            'name': 'department',
+            'description': 'Codice di un dipartimento',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'year',
+            'description': 'Anno',
+            'required': False,
+            'schema': {
+                    'type': 'integer',
+                    'format': 'int32',
+            }
+        },
+    ]
+
+
+class ApiAllResearchLinesListFilter(GenericApiFilter):
+    search_params = [
         {
             'name': 'department',
             'description': 'Codice di un dipartimento',
