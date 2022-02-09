@@ -452,17 +452,21 @@ class ServiceDocente:
     #     return query
 
     @staticmethod
-    def getAllResearchGroups(search, teacher, department):
+    def getAllResearchGroups(search, teacher, department, cod):
 
         query_search = Q()
+        query_cod = Q()
 
         if search is not None:
             for k in search.split(" "):
                 q_nome = Q(nome__icontains=k) | Q(descrizione__icontains=k)
                 query_search &= q_nome
 
-        query = RicercaGruppo.objects.filter(query_search).order_by(
-            'nome').values('id', 'nome', 'descrizione').distinct()
+        if cod:
+            query_cod = Q(ricerca_erc1_id__cod_erc1__exact=cod)
+
+        query = RicercaGruppo.objects.filter(query_search, query_cod).order_by(
+            'nome').values('id', 'nome', 'descrizione','ricerca_erc1_id__cod_erc1', 'ricerca_erc1_id__descrizione').distinct()
 
         if teacher is not None or department is not None:
             res = []
@@ -555,6 +559,129 @@ class ServiceDocente:
         for l in linea_applicata:
             if l['ricercadocentelineaapplicata__ricerca_linea_applicata__id'] == None:
                 linea_applicata.remove(l)
+
+        linea_applicata.extend(linea_base)
+
+        return linea_applicata
+
+    @staticmethod
+    def getAllResearchLines(search, year, department):
+
+        query_search = Q()
+        query_year = Q()
+
+
+        if search is not None:
+            for k in search.split(" "):
+                q_descrizione = Q(descrizione__icontains=k)
+                query_search &= q_descrizione
+        if year is not None:
+            query_year = Q(anno=year)
+
+        linea_base = RicercaLineaBase.objects.filter(
+            query_search,
+            query_year,
+            ).order_by('descrizione').values(
+            'id',
+            'descrizione',
+            'descr_pubblicaz_prog_brevetto',
+            'anno',
+            'ricerca_erc2_id__cod_erc2',
+            'ricerca_erc2_id__descrizione',
+        ).distinct()
+
+        linea_applicata = RicercaLineaApplicata.objects.filter(
+            query_search,
+            query_year,
+        ).order_by('descrizione').values(
+            'id',
+            'descrizione',
+            'descr_pubblicaz_prog_brevetto',
+            'anno',
+            'ricerca_aster2_id__ricerca_aster1_id',
+            'ricerca_aster2_id__descrizione',
+        ).distinct()
+
+        for q in linea_base:
+            teachers = RicercaDocenteLineaBase.objects.filter(
+                ricerca_linea_base_id=q['id']
+            ).values(
+                'personale_id__matricola',
+                'personale_id__nome',
+                'personale_id__middle_name',
+                'personale_id__cognome',
+                'personale_id__ds_sede',
+                'personale_id__sede')
+
+            if len(teachers) == 0:
+                q['Teachers'] = []
+            else:
+                q['Teachers'] = teachers
+
+        for q in linea_applicata:
+            teachers = RicercaDocenteLineaApplicata.objects.filter(
+                ricerca_linea_applicata_id=q['id']
+            ).values(
+                'personale_id__matricola',
+                'personale_id__nome',
+                'personale_id__middle_name',
+                'personale_id__cognome',
+                'personale_id__ds_sede',
+                'personale_id__sede')
+
+            if len(teachers) == 0:
+                q['Teachers'] = []
+            else:
+                q['Teachers'] = teachers
+
+        linea_applicata = list(linea_applicata)
+        for linea in linea_applicata:
+            linea['Tipologia'] = 'applicata'
+        linea_base = list(linea_base)
+        for linea in linea_base:
+            linea['Tipologia'] = 'base'
+
+        if department is not None:
+            res = []
+            for q in linea_base:
+                teachers = RicercaDocenteLineaBase.objects.filter(
+                    ricerca_linea_base_id=q['id']).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                q['Teachers'] = None
+
+                for t in teachers:
+                    if t['personale_id__sede'] == department:
+                        q['Teachers'] = teachers
+
+                if q['Teachers'] is not None:
+                    res.append(q)
+
+            for q in linea_applicata:
+                teachers = RicercaDocenteLineaApplicata.objects.filter(
+                    ricerca_linea_applicata_id=q['id']).values(
+                    'personale_id__matricola',
+                    'personale_id__nome',
+                    'personale_id__middle_name',
+                    'personale_id__cognome',
+                    'personale_id__ds_sede',
+                    'personale_id__sede')
+
+                q['Teachers'] = None
+
+                for t in teachers:
+                    if t['personale_id__sede'] == department:
+                        q['Teachers'] = teachers
+
+                if q['Teachers'] is not None:
+                        res.append(q)
+
+            return res
 
         linea_applicata.extend(linea_base)
 
@@ -967,7 +1094,9 @@ class ServiceDocente:
             'URL Sito WEB',
             'URL Sito WEB Curriculum Vitae']
         contacts = query.filter(
-            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take).values(
+            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take,
+            personalecontatti__prg_priorita__gte=900,
+        ).values(
             "personalecontatti__cd_tipo_cont__descr_contatto",
             "personalecontatti__contatto")
         contacts = list(contacts)
@@ -1497,7 +1626,8 @@ class ServicePersonale:
             'URL Sito WEB',
             'URL Sito WEB Curriculum Vitae']
         contacts = query.filter(
-            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take).values(
+            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take,
+            personalecontatti__prg_priorita__gte=900).values(
             "personalecontatti__cd_tipo_cont__descr_contatto",
             "personalecontatti__contatto")
         contacts = list(contacts)

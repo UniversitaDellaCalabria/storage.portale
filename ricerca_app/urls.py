@@ -371,3 +371,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
 
     if 'rest_framework.authtoken' in settings.INSTALLED_APPS:
         urlpatterns += path('api/token', obtain_auth_token, name="auth_token"),
+
+    urlpatterns += path(
+        '{}/allresearchlines/'.format(base_url),
+        api_views.ApiAllResearchLinesList.as_view(),
+        name='allresearchlines'),
