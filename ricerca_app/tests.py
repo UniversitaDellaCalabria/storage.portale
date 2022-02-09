@@ -864,7 +864,9 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'ricerca_linea_base': linea_base,
             'dt_fine': '2021-01-03',
         })
-
+        RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
+            'personale': doc2,
+        })
         aster1 = RicercaAster1UnitTest.create_ricercaAster1(**{
             'id': 1,
             'descrizione': 'ICT & Design',
@@ -900,6 +902,10 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
         RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
             'personale': doc2,
             'ricerca_linea_applicata': linea_applicata,
+            'dt_ins': '2021-01-03 15:47:21'
+        })
+        RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
+            'personale': doc2,
             'dt_ins': '2021-01-03 15:47:21'
         })
 
@@ -3276,7 +3282,7 @@ class ApiResearchGroupsUnitTest(TestCase):
             'description': 'IT',
         })
 
-        erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
+        RicercaErc1UnitTest.create_ricercaErc1(**{
             'id': 1,
             'cod_erc1': 'cod1_erc1',
             'descrizione': 'Computer Science and Informatics',
@@ -3288,11 +3294,18 @@ class ApiResearchGroupsUnitTest(TestCase):
             'descrizione': 'ricerca su Machine Learning',
             'ricerca_erc1_id': 1,
         })
+        ricerca_gruppo2 = RicercaGruppoUnitTest.create_ricercaGruppo(**{
+            'id': 2,
+            'nome': 'machine learning',
+            'descrizione': 'ricerca su Machine Learning',
+            'ricerca_erc1_id': 1,
+        })
 
         RicercaDocenteGruppoUnitTest.create_ricercaDocenteGruppo(**{
             'personale': doc1,
             'ricerca_gruppo': ricerca_gruppo1
         })
+
 
         url = reverse(
             'ricerca:researchgroups')
@@ -3307,7 +3320,7 @@ class ApiResearchGroupsUnitTest(TestCase):
         assert res.json()['results'][0]['RGroupID'] == 1
 
         res = req.get(url)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'teacher': '111112'}
         res = req.get(url, data=data)
@@ -3315,15 +3328,15 @@ class ApiResearchGroupsUnitTest(TestCase):
 
         data = {'coderc1': 'cod1_erc1'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'search': 'Intel'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'teacher': '111111'}
+        data = {'teacher': '111112','department': '1111'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 0
+        assert len(res.json()['results']) == 1
 
         data = {'department': '1111'}
         res = req.get(url, data=data)
