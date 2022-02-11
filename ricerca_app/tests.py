@@ -22,7 +22,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
     BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest, \
     ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
-    UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest
+    UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -4790,3 +4790,104 @@ class ApiPersonnelCfsListUnitTest(TestCase):
         assert res.json()['results'][0]['Name'] == 'Mungari Simone'
 
 
+class ApiSortingContactsUnitTest(TestCase):
+
+    def test_apisortingcontactslist(self):
+
+        req = Client()
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '1',
+            'uo_padre': '1',
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'cd_uo_aff_org': u1,
+            'ds_aff_org': 'aaaa'
+        })
+        PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Franco',
+            'middle_name': 'Luigi',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 2,
+            'matricola': '111111',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'cd_uo_aff_org': u1,
+            'ds_aff_org': 'bbbb'
+        })
+
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'personale_id': 1,
+            'cds_cod': '1',
+            'aa_off_id': 2021
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'personale_id': 2,
+            'cds_cod': '1',
+            'aa_off_id': 2022
+        })
+
+
+
+        url = reverse('ricerca:sorting-contacts',kwargs={'cdscod': '1'})
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 2
+
+
+class ApiHighFormationMastersListUnitTest(TestCase):
+
+    def test_apihighformationmasterslist(self):
+
+        req = Client()
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'ds_aff_org': 'aaaa'
+        })
+
+        AltaFormazioneDatiBaseUnitTest.create_altaFormazioneDatiBase(**{
+            'id': 1,
+            'titolo_it': 'AAAA',
+            'titolo_en': 'AAAA',
+            'matricola_direttore_scientifico': doc1,
+        })
+
+        url = reverse('ricerca:high-formation-masters')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+        data = {'search': 'AAA'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1

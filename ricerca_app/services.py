@@ -13,7 +13,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     PubblicazioneAutori, PubblicazioneCommunity, RicercaGruppo, RicercaDocenteGruppo, RicercaLineaBase, RicercaDocenteLineaBase, \
     RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita, \
     SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase, ProgettoResponsabileScientifico, UnitaOrganizzativaTipoFunzioni, ProgettoAmbitoTerritoriale, \
-    ProgettoTipologiaProgramma, ProgettoRicercatore
+    ProgettoTipologiaProgramma, ProgettoRicercatore, AltaFormazioneDatiBase, AltaFormazionePartner,AltaFormazioneTipoCorso, AltaFormazionePianoDidattico, \
+    AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno
 
 
 class ServiceQueryBuilder:
@@ -160,6 +161,82 @@ class ServiceDidatticaCds:
                 res.remove(q['area_cds'])
 
         return temp
+
+    @staticmethod
+    def getContacts(cdscod):
+        date = datetime.date.today()
+        last_year = int(date.strftime("%Y")) - 1
+        current_year = int(date.strftime("%Y"))
+        years = [last_year,current_year]
+        query = DidatticaCopertura.objects.filter(
+            cds_cod=cdscod,
+            aa_off_id__in=years,
+            personale__flg_cessato=0,
+            personale__fl_docente=1,
+        ).values(
+            'personale__nome',
+            'personale__cognome',
+            'personale__middle_name',
+            'personale__matricola',
+            'personale__cd_uo_aff_org',
+            'personale__ds_aff_org'
+        ).order_by('personale__cognome')
+        for q in query:
+            q['DepartmentUrl'] = DidatticaDipartimentoUrl.objects.filter(dip_cod=q['personale__cd_uo_aff_org']).values(
+                'dip_url'
+            )
+        return query
+
+
+    @staticmethod
+    def getHighFormationMasters(search):
+
+        query_search = Q()
+
+        if search is not None:
+            for k in search.split(" "):
+                q_nome = Q(titolo_it__icontains=k)
+                query_search &= q_nome
+
+        query = AltaFormazioneDatiBase.objects.filter(
+            query_search
+        ).values(
+            'id',
+            'titolo_it',
+            'titolo_en',
+            'id_alta_formazione_tipo_corso',
+            'id_alta_formazione_mod_erogazione',
+            'ore',
+            'mesi',
+            'sede_corso',
+            'num_min_partecipanti',
+            'num_max_partecipanti',
+            'uditori_ammessi',
+            'num_max_uditori',
+            'requisiti_ammissione',
+            'titolo_rilasciato',
+            'doppio_titolo',
+            'matricola_direttore_scientifico',
+            'nome_origine_direttore_scientifico',
+            'quota_iscrizione',
+            'quota_uditori',
+            'funzione_lavoro',
+            'obiettivi_formativi_summer_school',
+            'competenze',
+            'sbocchi_occupazionali',
+            'obiettivi_formativi_corso',
+            'modalita_svolgimento_prova_finale',
+            'numero_moduli',
+            'stage_tirocinio',
+            'ore_stage_tirocinio',
+            'cfu_stage',
+            'mesi_stage',
+            'tipo_aziende_enti_tirocinio',
+            'contenuti_tempi_criteri_cfu',
+            'project_work'
+        ).order_by('titolo_it','id')
+
+        return query
 
 
 class ServiceDidatticaAttivitaFormativa:
@@ -1422,6 +1499,7 @@ class ServicePersonale:
             "matricola",
             'personalecontatti__cd_tipo_cont__descr_contatto',
             'personalecontatti__contatto',
+            'personalecontatti__prg_priorita',
             'denominazione',
             'structure_type_cod',
             'structure_type_name',
@@ -1457,6 +1535,7 @@ class ServicePersonale:
                                 "matricola",
                                 'personalecontatti__cd_tipo_cont__descr_contatto',
                                 'personalecontatti__contatto',
+                                'personalecontatti__prg_priorita',
                                 'denominazione',
                                 'structure_type_cod',
                                 'structure_type_name',
@@ -1522,7 +1601,7 @@ class ServicePersonale:
                 else:
                     grouped[q['id_ab']]["Functions"] = functions
 
-            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take:
+            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take and q['personalecontatti__prg_priorita'] >= 900:
                 grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     q['personalecontatti__contatto'])
 

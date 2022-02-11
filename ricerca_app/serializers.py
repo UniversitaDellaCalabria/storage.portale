@@ -1634,3 +1634,74 @@ class PersonnelCfSerializer(CreateUpdateAbstract):
             'InfrastructureId': query['cd_uo_aff_org'],
             'InfrastructureDescription': query['ds_aff_org'],
         }
+
+
+class SortingContactsSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        full_name = query['personale__cognome'] + " " + query['personale__nome'] + \
+                    (" " + query['personale__middle_name']
+                     if query['personale__middle_name'] is not None else "")
+        return {
+            'Name': full_name,
+            'ID': query['personale__matricola'],
+            'TeacherDepartmentID': query['personale__cd_uo_aff_org'],
+            'TeacherOffice': query['personale__ds_aff_org'],
+            'DepartmentURL': query['DepartmentUrl'],
+        }
+
+
+class HighFormationMastersSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        # full_name = query['personale__cognome'] + " " + query['personale__nome'] + \
+        #             (" " + query['personale__middle_name']
+        #              if query['personale__middle_name'] is not None else "")
+        return {
+            'ID': query['id'],
+            'MasterTitle': query['titolo_it'] if req_lang=='it' or query['titolo_en'] is None else query['titolo_en'],
+            'HighFormationTypeId': query['id_alta_formazione_tipo_corso'],
+            'HighFormationErogationMode': query['id_alta_formazione_mod_erogazione'],
+            'HighFormationHours': query['ore'],
+            'HighFormationMonths': query['mesi'],
+            'HighFormationCourseStructure': query['sede_corso'],
+            'HighFormationMinParticipants': query['num_min_partecipanti'],
+            'HighFormationMaxParticipants': query['num_max_partecipanti'],
+            'ListenersAccepted': query['uditori_ammessi'],
+            'MaxListeners': query['num_max_uditori'],
+            'AdmissionRequirements': query['requisiti_ammissione'],
+            'TitleIssued': query['titolo_rilasciato'],
+            'DoubleTitle': query['doppio_titolo'],
+            'ScientificDirectorId': query['matricola_direttore_scientifico'],
+            'ScientificDirectorName': query['nome_origine_direttore_scientifico'],
+            'SubscriptionFee': query['quota_iscrizione'],
+            'ListenersFee': query['quota_uditori'],
+            'WorkFunction': query['funzione_lavoro'],
+            'FormationObjectivesSummerSchool': query['obiettivi_formativi_summer_school'],
+            'Skills': query['competenze'],
+            'JobOpportunities': query['sbocchi_occupazionali'],
+            'CourseObjectives': query['obiettivi_formativi_corso'],
+            'FinalTestMode': query['modalita_svolgimento_prova_finale'],
+            'NumModules': query['numero_moduli'],
+            'Internship': query['stage_tirocinio'],
+            'InternshipHours': query['ore_stage_tirocinio'],
+            'InternshipCFU': query['cfu_stage'],
+            'InternshipMonths': query['mesi_stage'],
+            'TypeCompaniesInternship': query['tipo_aziende_enti_tirocinio'],
+            'ContentTimesCriteriaCFU': query['contenuti_tempi_criteri_cfu'],
+            'ProjectWork': query['project_work']
+        }

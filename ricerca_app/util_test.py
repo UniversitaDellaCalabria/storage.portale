@@ -55,7 +55,16 @@ from .models import (
     ProgettoAmbitoTerritoriale,
     ProgettoResponsabileScientifico,
     UnitaOrganizzativaTipoFunzioni,
-    ProgettoRicercatore)
+    ProgettoRicercatore,
+    AltaFormazioneDatiBase,
+    AltaFormazioneModalitaErogazione,
+    AltaFormazioneModalitaSelezione,
+    AltaFormazioneConsiglioScientificoEsterno,
+    AltaFormazioneConsiglioScientificoInterno,
+    AltaFormazionePartner,
+    AltaFormazioneIncaricoDidattico,
+    AltaFormazionePianoDidattico,
+    AltaFormazioneTipoCorso)
 
 
 # class ContextUnitTest(TestCase):
@@ -713,3 +722,102 @@ class UnitaOrganizzativaTipoFunzioniUnitTest(TestCase):
 
         obj = UnitaOrganizzativaTipoFunzioni.objects.create(**data)
         return obj
+
+
+class AltaFormazioneDatiBaseUnitTest(TestCase):
+    @classmethod
+    def create_altaFormazioneDatiBase(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = AltaFormazioneDatiBase.objects.create(**data)
+        return obj
+
+
+# class AltaFormazioneModalitaErogazioneUnitTest(TestCase):
+#     @classmethod
+#     def create_altaFormazioneModalitaErogazione(cls, **kwargs):
+#         data = {}
+#         for k, v in kwargs.items():
+#             data[k] = v
+#
+#         obj = AltaFormazioneModalitaErogazione.objects.create(**data)
+#         return obj
+#
+#
+# class AltaFormazioneModalitaSelezioneUnitTest(TestCase):
+#     @classmethod
+#     def create_altaFormazioneModalitaSelezione(cls, **kwargs):
+#         data = {}
+#         for k, v in kwargs.items():
+#             data[k] = v
+#
+#         obj = AltaFormazioneModalitaSelezione.objects.create(**data)
+#         return obj
+#
+#
+# class AltaFormazioneConsiglioScientificoEsternoUnitTest(TestCase):
+#     @classmethod
+#     def create_altaFormazioneConsiglioScientificoEsterno(cls, **kwargs):
+#         data = {}
+#         for k, v in kwargs.items():
+#             data[k] = v
+#
+#         obj = AltaFormazioneConsiglioScientificoEsterno.objects.create(**data)
+#         return obj
+#
+#
+# class AltaFormazioneConsiglioScientificoInternoUnitTest(TestCase):
+#     @classmethod
+#     def create_altaFormazioneConsiglioScientificoInterno(cls, **kwargs):
+#         data = {}
+#         for k, v in kwargs.items():
+#             data[k] = v
+#
+#         obj = AltaFormazioneConsiglioScientificoInterno.objects.create(**data)
+#         return obj
+#
+#
+# class AltaFormazionePartnerUnitTest(TestCase):
+#     @classmethod
+#     def create_altaFormazionePartner(cls, **kwargs):
+#         data = {}
+#         for k, v in kwargs.items():
+#             data[k] = v
+#
+#         obj = AltaFormazionePartner.objects.create(**data)
+#         return obj
+#
+#
+# class AltaFormazioneIncaricoDidatticoUnitTest(TestCase):
+#     @classmethod
+#     def create_altaFormazioneIncaricoDidattico(cls, **kwargs):
+#         data = {}
+#         for k, v in kwargs.items():
+#             data[k] = v
+#
+#         obj = AltaFormazioneIncaricoDidattico.objects.create(**data)
+#         return obj
+#
+#
+# class AltaFormazionePianoDidatticoUnitTest(TestCase):
+#     @classmethod
+#     def create_altaFormazionePianoDidattico(cls, **kwargs):
+#         data = {}
+#         for k, v in kwargs.items():
+#             data[k] = v
+#
+#         obj = AltaFormazionePianoDidattico.objects.create(**data)
+#         return obj
+#
+#
+# class AltaFormazioneTipoCorsoUnitTest(TestCase):
+#     @classmethod
+#     def create_altaFormazioneTipoCorso(cls, **kwargs):
+#         data = {}
+#         for k, v in kwargs.items():
+#             data[k] = v
+#
+#         obj = AltaFormazioneTipoCorso.objects.create(**data)
+#         return obj
