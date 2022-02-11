@@ -1033,3 +1033,27 @@ class ApiPersonnelCfList(ApiEndpointList):
         roles = self.request.query_params.get('roles')
 
         return ServicePersonale.getPersonnelCfs(roles)
+
+
+class ApiSortingContacts(ApiEndpointList):
+    description = 'La funzione riceve in input il codice di un corso di studio e restituisce i docenti che appartengono a quel cds con dipartimento e uffici'
+    serializer_class = SortingContactsSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        cdscod = self.kwargs['cdscod']
+
+        return ServiceDidatticaCds.getContacts(cdscod)
+
+
+class ApiHighFormationMastersList(ApiEndpointList):
+    description = 'La funzione restituisce i master alta formazione'
+    serializer_class = HighFormationMastersSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        search = self.request.query_params.get('search')
+
+        return ServiceDidatticaCds.getHighFormationMasters(search)

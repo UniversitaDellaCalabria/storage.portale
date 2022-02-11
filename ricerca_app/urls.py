@@ -376,3 +376,13 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/allresearchlines/'.format(base_url),
         api_views.ApiAllResearchLinesList.as_view(),
         name='allresearchlines'),
+
+    urlpatterns += path(
+        '{}/sorting-contacts/<str:cdscod>/'.format(base_url),
+        api_views.ApiSortingContacts.as_view(),
+        name='sorting-contacts'),
+
+    urlpatterns += path(
+        '{}/high-formation-masters/'.format(base_url),
+        api_views.ApiHighFormationMastersList.as_view(),
+        name='high-formation-masters'),
