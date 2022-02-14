@@ -377,6 +377,7 @@ LABEL_MAPPING = {
         'MasterTitle': 'Master Title',
         'HighFormationTypeId': 'High Formation Type Id',
         'HighFormationErogationMode': 'High Formation Erogation Mode',
+        'HighFormationErogationModeDescription': 'High Formation Erogation Mode Description',
         'HighFormationHours': 'Hours',
         'HighFormationMonths': 'Months',
         'HighFormationCourseStructure': 'Course Structure',
@@ -402,7 +403,21 @@ LABEL_MAPPING = {
         'InternshipMonths': 'Internship Months',
         'TypeCompaniesInternship': 'Type Companies Internship',
         'ContentTimesCriteriaCFU': 'Content Times Criteria CFU',
-        'ProjectWork': 'Project Work'
+        'ProjectWork': 'Project Work',
+        'HighFormationMasterPartners': 'High Formation Master Partners',
+        'PartnerDenomination': 'Partner Denomination',
+        'PartnerURL': 'Partner URL',
+        'PartnerType': 'Partner Type',
+        'HighFormationMasterSelectionModes': 'High Formation Master Selection Modes',
+        'SelectionType': 'Selection Type',
+        'SelectionId': 'Selection Mode Id',
+        'HighFormationMasterInternalCouncil': 'High Formation Master Internal Council',
+        'PersonId': 'Person Id',
+        'PersonName': 'Person Name',
+        'HighFormationMasterExternalCouncil': 'High Formation Master External Council',
+        'Institution': 'Institution',
+        'PartnerId': 'Partner Id'
+
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -722,6 +737,20 @@ LABEL_MAPPING = {
         'InternshipMonths': 'Mesi Stage/Tirocinio',
         'TypeCompaniesInternship': 'Tipologia Aziende Enti Tirocinio',
         'ContentTimesCriteriaCFU': 'Contenuti, Tempi e Criteri CFU',
-        'ProjectWork': 'Progetto di Lavoro'
+        'ProjectWork': 'Progetto di Lavoro',
+        'HighFormationMasterPartners': 'Partner del Master',
+        'PartnerDenomination': 'Denominazione del Partner',
+        'PartnerURL': 'Sito Web del Partner',
+        'PartnerType': 'Tipologia del Partner',
+        'HighFormationErogationModeDescription': 'Descrizione Modalità Erogazione',
+        'HighFormationMasterSelectionModes': 'Modalità di Selezione Master',
+        'SelectionType': 'Tipologia Selezione',
+        'SelectionId': 'Id Modalita Selezione',
+        'HighFormationMasterInternalCouncil': 'Consiglio Scientifico Interno',
+        'PersonId': 'Matricola Persona',
+        'PersonName': 'Nome Persona',
+        'HighFormationMasterExternalCouncil': 'Consiglio Scientifico Esterno',
+        'Institution': 'Ente',
+        'PartnerId': 'Id Partner'
     }
 }

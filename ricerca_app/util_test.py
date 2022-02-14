@@ -756,50 +756,50 @@ class AltaFormazioneModalitaErogazioneUnitTest(TestCase):
         return obj
 
 
-# class AltaFormazioneModalitaSelezioneUnitTest(TestCase):
-#     @classmethod
-#     def create_altaFormazioneModalitaSelezione(cls, **kwargs):
-#         data = {}
-#         for k, v in kwargs.items():
-#             data[k] = v
-#
-#         obj = AltaFormazioneModalitaSelezione.objects.create(**data)
-#         return obj
-#
-#
-# class AltaFormazioneConsiglioScientificoEsternoUnitTest(TestCase):
-#     @classmethod
-#     def create_altaFormazioneConsiglioScientificoEsterno(cls, **kwargs):
-#         data = {}
-#         for k, v in kwargs.items():
-#             data[k] = v
-#
-#         obj = AltaFormazioneConsiglioScientificoEsterno.objects.create(**data)
-#         return obj
-#
-#
-# class AltaFormazioneConsiglioScientificoInternoUnitTest(TestCase):
-#     @classmethod
-#     def create_altaFormazioneConsiglioScientificoInterno(cls, **kwargs):
-#         data = {}
-#         for k, v in kwargs.items():
-#             data[k] = v
-#
-#         obj = AltaFormazioneConsiglioScientificoInterno.objects.create(**data)
-#         return obj
-#
-#
-# class AltaFormazionePartnerUnitTest(TestCase):
-#     @classmethod
-#     def create_altaFormazionePartner(cls, **kwargs):
-#         data = {}
-#         for k, v in kwargs.items():
-#             data[k] = v
-#
-#         obj = AltaFormazionePartner.objects.create(**data)
-#         return obj
-#
-#
+class AltaFormazioneModalitaSelezioneUnitTest(TestCase):
+    @classmethod
+    def create_altaFormazioneModalitaSelezione(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = AltaFormazioneModalitaSelezione.objects.create(**data)
+        return obj
+
+
+class AltaFormazioneConsiglioScientificoEsternoUnitTest(TestCase):
+    @classmethod
+    def create_altaFormazioneConsiglioScientificoEsterno(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = AltaFormazioneConsiglioScientificoEsterno.objects.create(**data)
+        return obj
+
+
+class AltaFormazioneConsiglioScientificoInternoUnitTest(TestCase):
+    @classmethod
+    def create_altaFormazioneConsiglioScientificoInterno(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = AltaFormazioneConsiglioScientificoInterno.objects.create(**data)
+        return obj
+
+
+class AltaFormazionePartnerUnitTest(TestCase):
+    @classmethod
+    def create_altaFormazionePartner(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = AltaFormazionePartner.objects.create(**data)
+        return obj
+
+
 # class AltaFormazioneIncaricoDidatticoUnitTest(TestCase):
 #     @classmethod
 #     def create_altaFormazioneIncaricoDidattico(cls, **kwargs):
