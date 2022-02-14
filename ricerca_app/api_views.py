@@ -1055,5 +1055,29 @@ class ApiHighFormationMastersList(ApiEndpointList):
     def get_queryset(self):
 
         search = self.request.query_params.get('search')
+        director = self.request.query_params.get('director')
+        coursetype = self.request.query_params.get('coursetype')
+        erogation = self.request.query_params.get('erogation')
 
-        return ServiceDidatticaCds.getHighFormationMasters(search)
+
+        return ServiceDidatticaCds.getHighFormationMasters(search, director, coursetype, erogation)
+
+
+class ApiErogationModesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle modalità di erogazione'
+    serializer_class = ErogationModesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceDidatticaCds.getErogationModes()
+
+
+class ApiCourseTypesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista dei tipi di corso'
+    serializer_class = CourseTypesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceDidatticaCds.getCourseTypes()

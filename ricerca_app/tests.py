@@ -22,7 +22,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
     BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest, \
     ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
-    UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest
+    UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -4869,11 +4869,23 @@ class ApiHighFormationMastersListUnitTest(TestCase):
             'ds_aff_org': 'aaaa'
         })
 
+        aftc = AltaFormazioneTipoCorsoUnitTest.create_altaFormazioneTipoCorso(**{
+            'id': 3,
+            'tipo_corso_descr': 'AAAA'
+        })
+
+        afme = AltaFormazioneModalitaErogazioneUnitTest.create_altaFormazioneModalitaErogazione(**{
+            'id': 3,
+            'descrizione': 'AAAA'
+        })
+
         AltaFormazioneDatiBaseUnitTest.create_altaFormazioneDatiBase(**{
             'id': 1,
             'titolo_it': 'AAAA',
             'titolo_en': 'AAAA',
             'matricola_direttore_scientifico': doc1,
+            'id_alta_formazione_tipo_corso': aftc,
+            'id_alta_formazione_mod_erogazione': afme,
         })
 
         url = reverse('ricerca:high-formation-masters')
@@ -4890,4 +4902,62 @@ class ApiHighFormationMastersListUnitTest(TestCase):
 
         data = {'search': 'AAA'}
         res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'coursetype': '3'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'erogation': '3'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
+
+
+class ApiErogationModesListUnitTest(TestCase):
+
+    def test_apierogationmodeslist(self):
+
+        req = Client()
+
+        AltaFormazioneModalitaErogazioneUnitTest.create_altaFormazioneModalitaErogazione(**{
+            'id': 1,
+            'descrizione': 'AAAA'
+        })
+
+        url = reverse('ricerca:erogation-modes')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+
+class ApiCourseTypesListUnitTest(TestCase):
+
+    def test_apicoursetypeslist(self):
+
+        req = Client()
+
+        AltaFormazioneTipoCorsoUnitTest.create_altaFormazioneTipoCorso(**{
+            'id': 1,
+            'tipo_corso_descr': 'AAAA'
+        })
+
+        url = reverse('ricerca:course-types')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
         assert len(res.json()['results']) == 1

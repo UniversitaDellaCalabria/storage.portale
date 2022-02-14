@@ -1705,3 +1705,38 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
             'ContentTimesCriteriaCFU': query['contenuti_tempi_criteri_cfu'],
             'ProjectWork': query['project_work']
         }
+
+
+
+class ErogationModesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+            'ID': query['id'],
+            'Description': query['descrizione']
+        }
+
+
+class CourseTypesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        return {
+            'ID': query['id'],
+            'Description': query['tipo_corso_descr']
+        }
+
