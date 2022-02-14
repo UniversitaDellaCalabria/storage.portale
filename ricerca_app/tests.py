@@ -22,7 +22,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
     BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest, \
     ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
-    UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest
+    UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest,\
+    AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -4879,13 +4880,47 @@ class ApiHighFormationMastersListUnitTest(TestCase):
             'descrizione': 'AAAA'
         })
 
-        AltaFormazioneDatiBaseUnitTest.create_altaFormazioneDatiBase(**{
+        a1 = AltaFormazioneDatiBaseUnitTest.create_altaFormazioneDatiBase(**{
             'id': 1,
             'titolo_it': 'AAAA',
             'titolo_en': 'AAAA',
             'matricola_direttore_scientifico': doc1,
             'id_alta_formazione_tipo_corso': aftc,
             'id_alta_formazione_mod_erogazione': afme,
+        })
+
+        AltaFormazioneDatiBaseUnitTest.create_altaFormazioneDatiBase(**{
+            'id': 2,
+            'titolo_it': 'AAAA',
+            'titolo_en': 'AAAA',
+            'matricola_direttore_scientifico': doc1,
+            'id_alta_formazione_tipo_corso': aftc,
+            'id_alta_formazione_mod_erogazione': afme,
+        })
+
+        AltaFormazioneConsiglioScientificoEsternoUnitTest.create_altaFormazioneConsiglioScientificoEsterno(**{
+            'nome_cons': 'Simone',
+            'ruolo_cons': 'docente',
+            'ente_cons': 'università',
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazioneConsiglioScientificoInternoUnitTest.create_altaFormazioneConsiglioScientificoInterno(**{
+            'nome_origine_cons': 'Simone',
+            'matricola_cons': doc1,
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazionePartnerUnitTest.create_altaFormazionePartner(**{
+            'denominazione': 'aaaa',
+            'tipologia': 'bbbb',
+            'sito_web': 'aaaa',
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazioneModalitaSelezioneUnitTest.create_altaFormazioneModalitaSelezione(**{
+            'tipo_selezione': 'chiusa',
+            'id_alta_formazione_dati_base': a1
         })
 
         url = reverse('ricerca:high-formation-masters')
@@ -4898,19 +4933,19 @@ class ApiHighFormationMastersListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'search': 'AAA'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'coursetype': '3'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'erogation': '3'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
 
 

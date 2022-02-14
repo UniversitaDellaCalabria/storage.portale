@@ -1671,6 +1671,26 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
         # full_name = query['personale__cognome'] + " " + query['personale__nome'] + \
         #             (" " + query['personale__middle_name']
         #              if query['personale__middle_name'] is not None else "")
+
+        partners = None
+        if query.get('Partners') is not None:
+            partners = HighFormationMastersSerializer.to_dict_partners(
+                query['Partners'])
+
+        selections = None
+        if query.get('Selections') is not None:
+            selections = HighFormationMastersSerializer.to_dict_selections(
+                query['Selections'])
+
+        internal_council = None
+        if query.get('InternalCouncil') is not None:
+            internal_council = HighFormationMastersSerializer.to_dict_internal_council(
+                query['InternalCouncil'])
+
+        external_council = None
+        if query.get('ExternalCouncil') is not None:
+            external_council = HighFormationMastersSerializer.to_dict_external_council(
+                query['ExternalCouncil'])
         return {
             'ID': query['id'],
             'MasterTitle': query['titolo_it'] if req_lang=='it' or query['titolo_en'] is None else query['titolo_en'],
@@ -1703,8 +1723,57 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
             'InternshipMonths': query['mesi_stage'],
             'TypeCompaniesInternship': query['tipo_aziende_enti_tirocinio'],
             'ContentTimesCriteriaCFU': query['contenuti_tempi_criteri_cfu'],
-            'ProjectWork': query['project_work']
+            'ProjectWork': query['project_work'],
+            'HighFormationMasterPartners': partners,
+            'HighFormationMasterSelectionModes': selections,
+            'HighFormationMasterInternalCouncil': internal_council,
+            'HighFormationMasterExternalCouncil': external_council,
         }
+
+    @staticmethod
+    def to_dict_partners(query):
+        result = []
+        for q in query:
+            result.append({
+                'PartnerId': q['id'],
+                'PartnerDenomination': q['denominazione'],
+                'PartnerType': q['tipologia'],
+                'PartnerURL': q['sito_web']
+            })
+        return result
+
+    @staticmethod
+    def to_dict_selections(query):
+        result = []
+        for q in query:
+            result.append({
+                'SelectionId': q['id'],
+                'SelectionType': q['tipo_selezione']
+            })
+        return result
+
+    @staticmethod
+    def to_dict_internal_council(query):
+        result = []
+        for q in query:
+            full_name = q["nome_origine_cons"]
+            result.append({
+                'PersonId': q['matricola_cons'],
+                'PersonName': full_name,
+            })
+        return result
+
+    @staticmethod
+    def to_dict_external_council(query):
+        result = []
+        for q in query:
+            full_name = q["nome_cons"]
+            result.append({
+                'PersonName': full_name,
+                'Role': q['ruolo_cons'],
+                'Institution': q['ente_cons']
+            })
+        return result
 
 
 

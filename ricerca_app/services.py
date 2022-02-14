@@ -249,6 +249,54 @@ class ServiceDidatticaCds:
             'project_work'
         ).order_by('titolo_it','id')
 
+        for q in query:
+            partners = AltaFormazionePartner.objects.filter(
+                id_alta_formazione_dati_base=q['id']).values(
+                    "id",
+                    "denominazione",
+                    "tipologia",
+                    "sito_web"
+            ).distinct()
+
+            if len(partners) == 0:
+                q['Partners'] = []
+            else:
+                q['Partners'] = partners
+
+            selections = AltaFormazioneModalitaSelezione.objects.filter(
+                id_alta_formazione_dati_base=q['id']).values(
+                    "id",
+                    "tipo_selezione",
+            ).distinct()
+
+            if len(selections) == 0:
+                q['Selections'] = []
+            else:
+                q['Selections'] = selections
+
+            internal_scientific_council = AltaFormazioneConsiglioScientificoInterno.objects.filter(
+                id_alta_formazione_dati_base=q['id']).values(
+                'matricola_cons',
+                'nome_origine_cons'
+            )
+
+            if len(internal_scientific_council) == 0:
+                q['InternalCouncil'] = []
+            else:
+                q['InternalCouncil'] = internal_scientific_council
+
+            external_scientific_council = AltaFormazioneConsiglioScientificoEsterno.objects.filter(
+                id_alta_formazione_dati_base=q['id']).values(
+                'nome_cons',
+                'ruolo_cons',
+                'ente_cons'
+            )
+
+            if len(external_scientific_council) == 0:
+                q['ExternalCouncil'] = []
+            else:
+                q['ExternalCouncil'] = external_scientific_council
+
         return query
 
     @staticmethod
