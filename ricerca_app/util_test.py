@@ -734,18 +734,28 @@ class AltaFormazioneDatiBaseUnitTest(TestCase):
         obj = AltaFormazioneDatiBase.objects.create(**data)
         return obj
 
+class AltaFormazioneTipoCorsoUnitTest(TestCase):
+    @classmethod
+    def create_altaFormazioneTipoCorso(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
 
-# class AltaFormazioneModalitaErogazioneUnitTest(TestCase):
-#     @classmethod
-#     def create_altaFormazioneModalitaErogazione(cls, **kwargs):
-#         data = {}
-#         for k, v in kwargs.items():
-#             data[k] = v
-#
-#         obj = AltaFormazioneModalitaErogazione.objects.create(**data)
-#         return obj
-#
-#
+        obj = AltaFormazioneTipoCorso.objects.create(**data)
+        return obj
+
+
+class AltaFormazioneModalitaErogazioneUnitTest(TestCase):
+    @classmethod
+    def create_altaFormazioneModalitaErogazione(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = AltaFormazioneModalitaErogazione.objects.create(**data)
+        return obj
+
+
 # class AltaFormazioneModalitaSelezioneUnitTest(TestCase):
 #     @classmethod
 #     def create_altaFormazioneModalitaSelezione(cls, **kwargs):
@@ -811,13 +821,3 @@ class AltaFormazioneDatiBaseUnitTest(TestCase):
 #         obj = AltaFormazionePianoDidattico.objects.create(**data)
 #         return obj
 #
-#
-# class AltaFormazioneTipoCorsoUnitTest(TestCase):
-#     @classmethod
-#     def create_altaFormazioneTipoCorso(cls, **kwargs):
-#         data = {}
-#         for k, v in kwargs.items():
-#             data[k] = v
-#
-#         obj = AltaFormazioneTipoCorso.objects.create(**data)
-#         return obj

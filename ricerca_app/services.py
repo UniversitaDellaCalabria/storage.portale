@@ -189,17 +189,30 @@ class ServiceDidatticaCds:
 
 
     @staticmethod
-    def getHighFormationMasters(search):
+    def getHighFormationMasters(search, director, coursetype, erogation):
 
         query_search = Q()
+        query_director = Q()
+        query_coursetype = Q()
+        query_erogation = Q()
+
 
         if search is not None:
             for k in search.split(" "):
                 q_nome = Q(titolo_it__icontains=k)
                 query_search &= q_nome
+        if director:
+            query_director = Q(matricola_direttore_scientifico__exact=director)
+        if coursetype:
+            query_coursetype = Q(id_alta_formazione_tipo_corso=coursetype)
+        if erogation:
+            query_erogation = Q(id_alta_formazione_mod_erogazione=erogation)
 
         query = AltaFormazioneDatiBase.objects.filter(
-            query_search
+            query_search,
+            query_director,
+            query_erogation,
+            query_coursetype,
         ).values(
             'id',
             'titolo_it',
@@ -235,6 +248,26 @@ class ServiceDidatticaCds:
             'contenuti_tempi_criteri_cfu',
             'project_work'
         ).order_by('titolo_it','id')
+
+        return query
+
+    @staticmethod
+    def getErogationModes():
+
+        query = AltaFormazioneModalitaErogazione.objects.values(
+            'id',
+            'descrizione'
+        )
+
+        return query
+
+    @staticmethod
+    def getCourseTypes():
+
+        query = AltaFormazioneTipoCorso.objects.values(
+            'id',
+            'tipo_corso_descr'
+        )
 
         return query
 

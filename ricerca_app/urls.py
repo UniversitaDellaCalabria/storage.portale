@@ -386,3 +386,13 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/high-formation-masters/'.format(base_url),
         api_views.ApiHighFormationMastersList.as_view(),
         name='high-formation-masters'),
+
+    urlpatterns += path(
+        '{}/erogation-modes/'.format(base_url),
+        api_views.ApiErogationModesList.as_view(),
+        name='erogation-modes'),
+
+    urlpatterns += path(
+        '{}/course-types/'.format(base_url),
+        api_views.ApiCourseTypesList.as_view(),
+        name='course-types'),
