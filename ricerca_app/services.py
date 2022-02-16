@@ -297,6 +297,37 @@ class ServiceDidatticaCds:
             else:
                 q['ExternalCouncil'] = external_scientific_council
 
+            teaching_plan = AltaFormazionePianoDidattico.objects.filter(
+                id_alta_formazione_dati_base=q['id']).values(
+                'id',
+                'modulo',
+                'ssd',
+                'num_ore',
+                'cfu',
+                'verifica_finale'
+            )
+
+            if len(teaching_plan) == 0:
+                q['TeachingPlan'] = []
+            else:
+                q['TeachingPlan'] = teaching_plan
+
+            teaching_assignments = AltaFormazioneIncaricoDidattico.objects.filter(
+                id_alta_formazione_dati_base=q['id']).values(
+                'id',
+                'modulo',
+                'num_ore',
+                'docente',
+                'qualifica',
+                'ente',
+                'tipologia'
+            )
+
+            if len(teaching_assignments) == 0:
+                q['TeachingAssignments'] = []
+            else:
+                q['TeachingAssignments'] = teaching_assignments
+
         return query
 
     @staticmethod

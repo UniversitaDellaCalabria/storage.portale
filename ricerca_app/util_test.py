@@ -800,24 +800,24 @@ class AltaFormazionePartnerUnitTest(TestCase):
         return obj
 
 
-# class AltaFormazioneIncaricoDidatticoUnitTest(TestCase):
-#     @classmethod
-#     def create_altaFormazioneIncaricoDidattico(cls, **kwargs):
-#         data = {}
-#         for k, v in kwargs.items():
-#             data[k] = v
-#
-#         obj = AltaFormazioneIncaricoDidattico.objects.create(**data)
-#         return obj
-#
-#
-# class AltaFormazionePianoDidatticoUnitTest(TestCase):
-#     @classmethod
-#     def create_altaFormazionePianoDidattico(cls, **kwargs):
-#         data = {}
-#         for k, v in kwargs.items():
-#             data[k] = v
-#
-#         obj = AltaFormazionePianoDidattico.objects.create(**data)
-#         return obj
-#
+class AltaFormazioneIncaricoDidatticoUnitTest(TestCase):
+    @classmethod
+    def create_altaFormazioneIncaricoDidattico(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = AltaFormazioneIncaricoDidattico.objects.create(**data)
+        return obj
+
+
+class AltaFormazionePianoDidatticoUnitTest(TestCase):
+    @classmethod
+    def create_altaFormazionePianoDidattico(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = AltaFormazionePianoDidattico.objects.create(**data)
+        return obj
+

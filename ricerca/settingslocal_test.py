@@ -450,8 +450,20 @@ LABEL_MAPPING = {
         'PersonName': 'Person Name',
         'HighFormationMasterExternalCouncil': 'High Formation Master External Council',
         'Institution': 'Institution',
-        'PartnerId': 'Partner Id'
-
+        'PartnerId': 'Partner Id',
+        'HighFormationMasterTeachingPlans': 'High Formation Master Teaching Plans',
+        'TeachingPlanCFU': 'Teaching PlanC FU',
+        'TeachingPlanFinalTest': 'Teaching Plan Final Test',
+        'TeachingPlanSSD': 'Teaching Plan SSD',
+        'TeachingPlanModule': 'Teaching Plan Module',
+        'TeachingPlanHours': 'Teaching Plan Hours',
+        'HighFormationMasterTeachingAssignments': 'High Formation Master Teaching Assignments',
+        'TeachingAssignmentsModule': 'Teaching Assignments Module',
+        'TeachingAssignmentsHours': 'Teaching Assignments Hours',
+        'TeachingAssignmentsTeachers': 'Teaching Assignments Teachers',
+        'TeachingAssignmentsQualification': 'Teaching Assignments Qualification',
+        'TeachingAssignmentsInstitution': 'Teaching Assignments Institution',
+        'TeachingAssignmentsType': 'Teaching Assignments Type',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -785,6 +797,19 @@ LABEL_MAPPING = {
         'PersonName': 'Nome Persona',
         'HighFormationMasterExternalCouncil': 'Consiglio Scientifico Esterno',
         'Institution': 'Ente',
-        'PartnerId': 'Id Partner'
+        'PartnerId': 'Id Partner',
+        'HighFormationMasterTeachingPlans': 'Piani Didattici',
+        'TeachingPlanCFU': 'CFU Piano Didattico',
+        'TeachingPlanFinalTest': 'Test Finale Piano Didattico',
+        'TeachingPlanSSD': 'SSD Piano Didattico',
+        'TeachingPlanModule': 'Modulo Piano Didattico',
+        'TeachingPlanHours': 'Ore Piano Didattico',
+        'HighFormationMasterTeachingAssignments': 'Alta Formazione Incarichi Didattici',
+        'TeachingAssignmentsModule': 'Modulo Incarico Didattico',
+        'TeachingAssignmentsHours': 'Ore Incarico Didattico',
+        'TeachingAssignmentsTeachers': 'Docenti Incarico Didattico',
+        'TeachingAssignmentsQualification': 'Qualifica Incarico Didattico',
+        'TeachingAssignmentsInstitution': 'Ente Incarico Didattico',
+        'TeachingAssignmentsType': 'Tipologia Incarico Didattico',
     }
 }

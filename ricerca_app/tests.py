@@ -23,7 +23,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest, \
     ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
     UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest,\
-    AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest
+    AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
+    AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -4920,6 +4921,27 @@ class ApiHighFormationMastersListUnitTest(TestCase):
 
         AltaFormazioneModalitaSelezioneUnitTest.create_altaFormazioneModalitaSelezione(**{
             'tipo_selezione': 'chiusa',
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazioneIncaricoDidatticoUnitTest.create_altaFormazioneIncaricoDidattico(**{
+            'id': 1,
+            'modulo': 'AAA',
+            'qualifica': 'SSF',
+            'num_ore': 13,
+            'ente': 'Università',
+            'tipologia': 'Prova',
+            'docente': 'Mungari',
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazionePianoDidatticoUnitTest.create_altaFormazionePianoDidattico(**{
+            'id': 1,
+            'modulo': 'AAA',
+            'ssd': 'SSF',
+            'num_ore': 13,
+            'cfu': 2,
+            'verifica_finale': 1,
             'id_alta_formazione_dati_base': a1
         })
 
