@@ -1691,6 +1691,16 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
         if query.get('ExternalCouncil') is not None:
             external_council = HighFormationMastersSerializer.to_dict_external_council(
                 query['ExternalCouncil'])
+
+        teaching_plans = None
+        if query.get('TeachingPlan') is not None:
+            teaching_plans = HighFormationMastersSerializer.to_dict_teachings_plan(
+                query['TeachingPlan'])
+
+        teaching_assignments = None
+        if query.get('TeachingAssignments') is not None:
+            teaching_assignments = HighFormationMastersSerializer.to_dict_teaching_assignments(
+                query['TeachingAssignments'])
         return {
             'ID': query['id'],
             'MasterTitle': query['titolo_it'] if req_lang=='it' or query['titolo_en'] is None else query['titolo_en'],
@@ -1728,6 +1738,9 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
             'HighFormationMasterSelectionModes': selections,
             'HighFormationMasterInternalCouncil': internal_council,
             'HighFormationMasterExternalCouncil': external_council,
+            'HighFormationMasterTeachingPlans': teaching_plans,
+            'HighFormationMasterTeachingAssignments': teaching_assignments,
+
         }
 
     @staticmethod
@@ -1772,6 +1785,33 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
                 'PersonName': full_name,
                 'Role': q['ruolo_cons'],
                 'Institution': q['ente_cons']
+            })
+        return result
+
+    @staticmethod
+    def to_dict_teachings_plan(query):
+        result = []
+        for q in query:
+            result.append({
+                'TeachingPlanModule': q['modulo'],
+                'TeachingPlanSSD': q['ssd'],
+                'TeachingPlanHours': q['num_ore'],
+                'TeachingPlanCFU': q['cfu'],
+                'TeachingPlanFinalTest': q['verifica_finale']
+            })
+        return result
+
+    @staticmethod
+    def to_dict_teaching_assignments(query):
+        result = []
+        for q in query:
+            result.append({
+                'TeachingAssignmentsModule': q['modulo'],
+                'TeachingAssignmentsHours': q['num_ore'],
+                'TeachingAssignmentsTeachers': q['docente'],
+                'TeachingAssignmentsQualification': q['qualifica'],
+                'TeachingAssignmentsInstitution': q['ente'],
+                'TeachingAssignmentsType': q['tipologia'],
             })
         return result
 
