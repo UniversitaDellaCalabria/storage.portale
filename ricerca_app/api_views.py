@@ -417,8 +417,11 @@ class ApiAllResearchLinesList(ApiEndpointList):
         search = self.request.query_params.get('search')
         year = self.request.query_params.get('year')
         department = self.request.query_params.get('department')
+        ercs = self.request.query_params.get('ercs')
+        asters = self.request.query_params.get('asters')
 
-        return ServiceDocente.getAllResearchLines(search, year, department)
+
+        return ServiceDocente.getAllResearchLines(search, year, department, ercs, asters)
 
 # ----Docenti----
 
