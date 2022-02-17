@@ -754,10 +754,12 @@ class ServiceDocente:
         return linea_applicata
 
     @staticmethod
-    def getAllResearchLines(search, year, department):
+    def getAllResearchLines(search, year, department, ercs, asters):
 
         query_search = Q()
         query_year = Q()
+        query_ercs = Q()
+        query_asters = Q()
 
 
         if search is not None:
@@ -766,10 +768,18 @@ class ServiceDocente:
                 query_search &= q_descrizione
         if year is not None:
             query_year = Q(anno=year)
+        if ercs is not None:
+            ercs = ercs.split(",")
+            query_ercs = Q(ricerca_erc2_id__cod_erc2__in=ercs)
+
+        if asters is not None:
+            asters = asters.split(",")
+            query_asters = Q(ricerca_aster2_id__ricerca_aster1_id__in=asters)
 
         linea_base = RicercaLineaBase.objects.filter(
             query_search,
             query_year,
+            query_ercs,
             ).order_by('descrizione').values(
             'id',
             'descrizione',
@@ -782,6 +792,7 @@ class ServiceDocente:
         linea_applicata = RicercaLineaApplicata.objects.filter(
             query_search,
             query_year,
+            query_asters,
         ).order_by('descrizione').values(
             'id',
             'descrizione',
@@ -790,6 +801,15 @@ class ServiceDocente:
             'ricerca_aster2_id__ricerca_aster1_id',
             'ricerca_aster2_id__descrizione',
         ).distinct()
+
+        if ercs is not None and asters is not None:
+            pass
+
+        elif ercs is not None:
+            linea_applicata = []
+
+        elif asters is not None:
+            linea_base = []
 
         for q in linea_base:
             teachers = RicercaDocenteLineaBase.objects.filter(
@@ -873,8 +893,9 @@ class ServiceDocente:
             return res
 
         linea_applicata.extend(linea_base)
+        linee = sorted(linea_applicata, key=lambda d: d['descrizione'])
 
-        return linea_applicata
+        return linee
 
     @staticmethod
     def getBaseResearchLines(search, teacher, dip, year):
@@ -1057,7 +1078,7 @@ class ServiceDocente:
 
         # last_academic_year = ServiceDidatticaCds.getAcademicYears()[0]['aa_reg_did']
 
-        query = Personale.objects.filter(query_search,
+        query1 = Personale.objects.filter(query_search,
                                          query_cds,
                                          query_regdid,
                                          query_roles,
@@ -1080,6 +1101,32 @@ class ServiceDocente:
                       'nome',
                       'middle_name') \
             .distinct()
+
+        query2 = Personale.objects.filter(query_search,
+                                          query_cds,
+                                          query_regdid,
+                                          query_roles,
+                                          fl_docente=1,
+                                          flg_cessato=0) \
+            .values("matricola",
+                    "nome",
+                    "middle_name",
+                    "cognome",
+                    "cd_ruolo",
+                    "ds_ruolo_locale",
+                    "cd_ssd",
+                    "cd_uo_aff_org",
+                    "ds_ssd",
+                    "cv_full_it",
+                    "cv_short_it",
+                    "cv_full_eng",
+                    "cv_short_eng") \
+            .order_by('cognome',
+                      'nome',
+                      'middle_name') \
+            .distinct()
+
+        query = (query1 | query2).order_by('cognome','nome').distinct()
 
         if dip:
             department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
@@ -1270,9 +1317,16 @@ class ServiceDocente:
 
     @staticmethod
     def getDocenteInfo(teacher):
-        query = Personale.objects.filter(
+        query1 = Personale.objects.filter(
             didatticacopertura__af__isnull=False,
             matricola__exact=teacher).distinct()
+        query2 = Personale.objects.filter(
+            fl_docente=1,
+            flg_cessato=0,
+            matricola__exact=teacher).distinct()
+
+        query = (query1 | query2).distinct()
+
         contacts_to_take = [
             'Posta Elettronica',
             'Fax',

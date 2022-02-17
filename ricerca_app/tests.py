@@ -1044,7 +1044,7 @@ class ApiTeachersListUnitTest(TestCase):
 
         # Three professor have flg_cessato = 0
         res = req.get(url)
-        assert len(res.json()['results']) == 2
+        assert len(res.json()['results']) == 3
 
         data = {'search': 'gar'}
         res = req.get(url, data=data)
@@ -1056,11 +1056,11 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {'department': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'department': 1, 'role': 'PO'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 0
+        assert len(res.json()['results']) == 1
 
         data = {'department': 1, 'role': 'PA', 'lang': 'en'}
         res = req.get(url, data=data)
@@ -1330,7 +1330,7 @@ class ApiTeacherInfoUnitTest(TestCase):
 
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111113'})
         res = req.get(url)
-        assert len(res.json()['results']) == 0
+        assert res.json()['results']['TeacherFirstName'] == 'Lionel'
 
 
 class ApiDoctoratesListUnitTest(TestCase):
@@ -3597,6 +3597,18 @@ class ApiAllResearchLinesUnitTest(TestCase):
         assert len(res.json()['results']) == 0
 
         data = {'department': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
+        data = {'ercs': 'cod1_erc2'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'asters': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'ercs': 'cod1_erc2','asters': 1}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
 
