@@ -47,6 +47,8 @@ LABORATORIES_MEDIA_PATH = f'{MEDIA_URL}laboratori/loghi'
 COMPANIES_MEDIA_PATH = f'{MEDIA_URL}spinoff-startup/loghi'
 PATENTS_MEDIA_PATH = f'{MEDIA_URL}brevetti/loghi'
 CDS_BROCHURE_MEDIA_PATH = f'{MEDIA_URL}cds_media_brochure'
+ENCRYPTION_KEY = b'ZQrQunzh7RizTreT3uO1TC3pF1KrLOvZMJsbx1AQIns='
+
 MIDDLEWARE = [
     # 'silk.middleware.SilkyMiddleware',
     'django.middleware.security.SecurityMiddleware',
