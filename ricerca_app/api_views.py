@@ -1091,10 +1091,16 @@ class ApiCourseTypesList(ApiEndpointList):
         return ServiceDidatticaCds.getCourseTypes()
 
 
+class ApiPersonIdSchema(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'getPersonId'
+
+
 class ApiPersonId(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     description = 'La funzione restituisce il codice criptato di una persona'
+    schema = ApiPersonIdSchema
 
     def post(self, request, *args, **kwargs):
         data = request.data
