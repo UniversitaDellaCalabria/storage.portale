@@ -3,10 +3,12 @@ from django.conf import settings
 
 
 def encrypt(value):
-    return Fernet(settings.ENCRYPTION_KEY).encrypt(value.encode())
+    value = str(value)
+    return Fernet(settings.ENCRYPTION_KEY).encrypt(value.encode()).decode()
 
 
 def decrypt(value):
+    value = str(value)
     return Fernet(settings.ENCRYPTION_KEY).decrypt(value.encode()).decode()
 
 
