@@ -613,6 +613,39 @@ class DidatticaCds(InsModAbstract):
         return '{} {}'.format(self.cds_id, self.nome_cds_it)
 
 
+class DidatticaCdsAltriDati(models.Model):
+    cds = models.OneToOneField(DidatticaCds, models.DO_NOTHING, db_column='CDS_ID', primary_key=True)  # Field name made lowercase.
+    matricola_coordinatore = models.ForeignKey('Personale', models.DO_NOTHING, related_name='coordinatore', db_column='MATRICOLA_COORDINATORE', blank=True, null=True)  # Field name made lowercase.
+    nome_origine_coordinatore = models.CharField(db_column='NOME_ORIGINE_COORDINATORE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    matricola_vice_coordinatore = models.ForeignKey('Personale', models.DO_NOTHING, related_name='vice_coordinatore', db_column='MATRICOLA_VICE_COORDINATORE', blank=True, null=True)  # Field name made lowercase.
+    nome_origine_vice_coordinatore = models.CharField(db_column='NOME_ORIGINE_VICE_COORDINATORE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    num_posti = models.IntegerField(db_column='NUM_POSTI', blank=True, null=True)  # Field name made lowercase.
+    modalita_iscrizione = models.TextField(db_column='MODALITA_ISCRIZIONE', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_ALTRI_DATI'
+
+
+class DidatticaCdsAltriDatiUfficio(models.Model):
+    cds = models.OneToOneField(DidatticaCdsAltriDati, models.DO_NOTHING, db_column='CDS_ID', primary_key=True)  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
+    nome_ufficio = models.CharField(db_column='NOME_UFFICIO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    matricola_riferimento = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_RIFERIMENTO', blank=True, null=True)  # Field name made lowercase.
+    nome_origine_riferimento = models.CharField(db_column='NOME_ORIGINE_RIFERIMENTO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    telefono = models.CharField(db_column='TELEFONO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    email = models.CharField(db_column='EMAIL', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    edificio = models.CharField(db_column='EDIFICIO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    piano = models.CharField(db_column='PIANO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    orari = models.CharField(db_column='ORARI', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    sportello_online = models.CharField(db_column='SPORTELLO_ONLINE', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_ALTRI_DATI_UFFICIO'
+        unique_together = (('cds', 'ordine'),)
+
+
 class DidatticaCdsLingua(models.Model):
 
     lin_did_ord_id = models.IntegerField(
@@ -3501,6 +3534,8 @@ class AltaFormazioneDatiBase(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     titolo_it = models.CharField(db_column='TITOLO_IT', max_length=512, blank=True, null=True)  # Field name made lowercase.
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=512, blank=True, null=True)  # Field name made lowercase.
+    anno_rilevazione = models.IntegerField(db_column='ANNO_RILEVAZIONE', blank=True, null=True)  # Field name made lowercase.
+    id_dipartiento_riferimento = models.ForeignKey('DidatticaDipartimento', models.DO_NOTHING,db_column='ID_DIPARTIENTO_RIFERIMENTO', blank=True, null=True)  # Field name made lowercase.
     id_alta_formazione_tipo_corso = models.ForeignKey('AltaFormazioneTipoCorso', models.DO_NOTHING, db_column='ID_ALTA_FORMAZIONE_TIPO_CORSO', blank=True, null=True)  # Field name made lowercase.
     lingua = models.CharField(db_column='LINGUA', max_length=512, blank=True, null=True)  # Field name made lowercase.
     id_alta_formazione_mod_erogazione = models.ForeignKey('AltaFormazioneModalitaErogazione', models.DO_NOTHING, db_column='ID_ALTA_FORMAZIONE_MOD_EROGAZIONE', blank=True, null=True)  # Field name made lowercase.

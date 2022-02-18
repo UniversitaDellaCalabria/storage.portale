@@ -1,4 +1,13 @@
 from django.conf import settings
+from django.core.signing import Signer
+
+
+def encrypt(value):
+    return Signer().sign_object(value)
+
+
+def decrypt(value):
+    return Signer().unsign_object(value)
 
 
 def encode_labels(data, language=None):

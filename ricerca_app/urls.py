@@ -396,3 +396,8 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/course-types/'.format(base_url),
         api_views.ApiCourseTypesList.as_view(),
         name='course-types'),
+
+    urlpatterns += path(
+        '{}/get-person-id/'.format(base_url),
+        api_views.ApiPersonId.as_view(),
+        name='get-person-id'),

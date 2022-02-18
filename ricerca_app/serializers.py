@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
+from .utils import encrypt
 
 
 class CreateUpdateAbstract(serializers.Serializer):
@@ -367,7 +368,7 @@ class AllResearchGroupsSerializer(CreateUpdateAbstract):
                 (" " + q['personale_id__middle_name']
                  if q['personale_id__middle_name'] is not None else "")
             result.append({
-                'TeacherID': q['personale_id__matricola'],
+                'TeacherID': encrypt(q['personale_id__matricola']),
                 'TeacherName': full_name,
                 'DepartmentName': q['personale_id__ds_sede'],
                 'DepartmentCod': q['personale_id__sede']
@@ -441,7 +442,7 @@ class BaseResearchLinesSerializer(CreateUpdateAbstract):
                 (" " + q['personale_id__middle_name']
                  if q['personale_id__middle_name'] is not None else "")
             result.append({
-                'TeacherID': q['personale_id__matricola'],
+                'TeacherID': encrypt(q['personale_id__matricola']),
                 'TeacherName': full_name,
                 'DepartmentName': q['personale_id__ds_sede'],
                 'DepartmentCod': q['personale_id__sede'],
@@ -483,7 +484,7 @@ class AppliedResearchLinesSerializer(CreateUpdateAbstract):
                 (" " + q['personale_id__middle_name']
                  if q['personale_id__middle_name'] is not None else "")
             result.append({
-                'TeacherID': q['personale_id__matricola'],
+                'TeacherID': encrypt(q['personale_id__matricola']),
                 'TeacherName': full_name,
                 'DepartmentName': q['personale_id__ds_sede'],
                 'DepartmentCod': q['personale_id__sede'],
@@ -513,6 +514,10 @@ class AllResearchLinesSerializer(CreateUpdateAbstract):
                 'RLineDescription': query['descrizione'],
                 'RLineResults': query['descr_pubblicaz_prog_brevetto'],
                 'RYear': query['anno'],
+                'RLineERC0Id': query['ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__erc0_cod'],
+                'RLineERC0Name': query['ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description'] if req_lang == "it" or query['ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description_en'] is None else query['ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description_en'],
+                'RLineERC1Id': query['ricerca_erc2_id__ricerca_erc1_id__cod_erc1'],
+                'RLineERC1Name': query['ricerca_erc2_id__ricerca_erc1_id__descrizione'],
                 'RLineErc2ID': query['ricerca_erc2_id__cod_erc2'],
                 'RLineErc2Name': query['ricerca_erc2_id__descrizione'],
                 'Teachers': teachers
@@ -536,7 +541,7 @@ class AllResearchLinesSerializer(CreateUpdateAbstract):
                         (" " + q['personale_id__middle_name']
                          if q['personale_id__middle_name'] is not None else "")
             result.append({
-                'TeacherID': q['personale_id__matricola'],
+                'TeacherID': encrypt(q['personale_id__matricola']),
                 'TeacherName': full_name,
                 'DepartmentName': q['personale_id__ds_sede'],
                 'DepartmentCod': q['personale_id__sede'],
@@ -558,7 +563,7 @@ class TeachersSerializer(CreateUpdateAbstract):
             (" " + query['middle_name']
              if query['middle_name'] is not None else "")
         return {
-            'TeacherID': query['matricola'],
+            'TeacherID': encrypt(query['matricola']),
             'TeacherName': full_name,
             'TeacherDepartmentID': query['dip_id'],
             'TeacherDepartmentCod': query['dip_cod'],
@@ -623,7 +628,7 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             functions = TeacherInfoSerializer.to_dict_functions(
                 query["Functions"])
         return {
-            'TeacherID': query['matricola'],
+            'TeacherID': encrypt(query['matricola']),
             'TeacherFirstName': query['nome'] + (" " + query['middle_name']
                                                  if query['middle_name'] is not None else ""),
             'TeacherLastName': query['cognome'],
@@ -740,13 +745,10 @@ class AddressbookSerializer(CreateUpdateAbstract):
         full_name = query['cognome'] + " " + query['nome'] + \
             (" " + query['middle_name']
              if query['middle_name'] is not None else "")
-        functions = None
-        if query["Functions"] is not None:
-            functions = AddressbookSerializer.to_dict_functions(
-                query["Functions"])
+
         return {
             'Name': full_name,
-            'ID': query['matricola'],
+            'ID': encrypt(query['matricola']),
             'RoleDescription': query['ds_ruolo_locale'],
             'Role': query['cd_ruolo'],
             'Structure': query['Struttura'],
@@ -759,24 +761,9 @@ class AddressbookSerializer(CreateUpdateAbstract):
             'TelCelOffice': query['Telefono Cellulare Ufficio'],
             'Fax': query['Fax'],
             'WebSite': query['URL Sito WEB'],
-            'PersonFunctions': functions,
             'CV': query['URL Sito WEB Curriculum Vitae'],
-            'Teacher': query['fl_docente'],
-            'TeacherCVFull': query['cv_full_it'] if req_lang == "it" or query['cv_full_eng'] is None else query['cv_full_eng'],
-            'TeacherCVShort': query['cv_short_it'] if req_lang == "it" or query['cv_short_eng'] is None else query['cv_short_eng'],
+            'Teacher': query['fl_docente']
         }
-
-    @staticmethod
-    def to_dict_functions(query):
-        functions = []
-        for q in query:
-            functions.append({
-                'TeacherRole': q['ds_funzione'],
-                'FunctionCod': q['funzione'],
-                'StructureCod': q['cd_csa__uo'],
-                'StructureName': q['cd_csa__denominazione'],
-            })
-        return functions
 
 
 class PersonaleSerializer(CreateUpdateAbstract):
@@ -799,7 +786,7 @@ class PersonaleSerializer(CreateUpdateAbstract):
                 query["Functions"])
         return {
             'Name': full_name,
-            'ID': query['matricola'],
+            'ID': encrypt(query['matricola']),
             'RoleDescription': query['ds_ruolo_locale'],
             'Role': query['cd_ruolo'],
             'Structure': query['Struttura'],
@@ -959,7 +946,7 @@ class StructureDetailSerializer(CreateUpdateAbstract):
                     (" " + q['cod_fis__middle_name']
                      if q['cod_fis__middle_name'] is not None else "")
             result.append({
-                'ID': q['cod_fis__matricola'],
+                'ID': encrypt(q['cod_fis__matricola']),
                 'Name': full_name,
                 'Function': q['ds_funzione'],
                 'FunctionCod': q['funzione'],
@@ -995,9 +982,9 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
 
         return {
             'LaboratoryId': query['id'],
-            'CompletionReferentId': query['matricola_referente_compilazione'],
+            'CompletionReferentId': encrypt(query['matricola_referente_compilazione']),
             'CompletionReferentName': query['referente_compilazione'],
-            'ScientificDirectorId': query['matricola_responsabile_scientifico'],
+            'ScientificDirectorId': encrypt(query['matricola_responsabile_scientifico']),
             'ScientificDirectorName': query['responsabile_scientifico'],
             'LaboratoryName': query['nome_laboratorio'],
             'LaboratoryAcronym': query['acronimo'],
@@ -1042,7 +1029,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
                     (" " + q['matricola_personale_ricerca__middle_name']
                      if q['matricola_personale_ricerca__middle_name'] is not None else "")
             result.append({
-                'ResearchPersonnelID': q['matricola_personale_ricerca__matricola'],
+                'ResearchPersonnelID': encrypt(q['matricola_personale_ricerca__matricola']),
                 'ResearchPersonnelName': full_name,
             })
         return result
@@ -1058,7 +1045,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
                     (" " + q['matricola_personale_tecnico__middle_name']
                      if q['matricola_personale_tecnico__middle_name'] is not None else "")
             result.append({
-                'TechPersonnelID': q['matricola_personale_tecnico__matricola'],
+                'TechPersonnelID': encrypt(q['matricola_personale_tecnico__matricola']),
                 'TechPersonnelName': full_name,
                 'TechPersonnelRole': q['ruolo'],
             })
@@ -1118,7 +1105,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             'InfrastructureName': query['id_infrastruttura_riferimento__descrizione'],
             'Dimension': query['sede_dimensione'],
             'ScientificDirector': query['responsabile_scientifico'],
-            'ScientificDirectorId': query['matricola_responsabile_scientifico'],
+            'ScientificDirectorId': encrypt(query['matricola_responsabile_scientifico']),
             'LaboratoryResearchPersonnel': research_personnel,
             'LaboratoryScopes': scopes,
             'LaboratoryTechPersonnel': tech_personnel,
@@ -1156,7 +1143,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
                     (" " + q['matricola_personale_ricerca__middle_name']
                      if q['matricola_personale_ricerca__middle_name'] is not None else "")
             result.append({
-                'ResearchPersonnelID': q['matricola_personale_ricerca__matricola'],
+                'ResearchPersonnelID': encrypt(q['matricola_personale_ricerca__matricola']),
                 'ResearchPersonnelName': full_name,
             })
         return result
@@ -1172,7 +1159,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
                     (" " + q['matricola_personale_tecnico__middle_name']
                      if q['matricola_personale_tecnico__middle_name'] is not None else "")
             result.append({
-                'TechPersonnelID': q['matricola_personale_tecnico__matricola'],
+                'TechPersonnelID': encrypt(q['matricola_personale_tecnico__matricola']),
                 'TechPersonnelName': full_name,
                 'TechPersonnelRole': q['ruolo'],
             })
@@ -1340,7 +1327,7 @@ class PublicationSerializer(CreateUpdateAbstract):
                     (" " + q['id_ab__middle_name']
                      if q['id_ab__middle_name'] is not None else "")
             result.append({
-                'AuthorId': q['id_ab__matricola'],
+                'AuthorId': encrypt(q['id_ab__matricola']),
                 'AuthorName': full_name,
             })
         return result
@@ -1419,7 +1406,7 @@ class PatentsSerializer(CreateUpdateAbstract):
         for q in query:
             full_name = q["cognomenome_origine"]
             result.append({
-                'AuthorId': q['matricola_inventore'],
+                'AuthorId': encrypt(q['matricola_inventore']),
                 'AuthorName': full_name,
             })
         return result
@@ -1444,7 +1431,7 @@ class CompaniesSerializer(CreateUpdateAbstract):
             'SpinoffImage': f'{settings.COMPANIES_MEDIA_PATH}/{query["nome_file_logo"]}' if query['nome_file_logo'] else '',
             'SpinoffDescription': query["descrizione_ita"]if req_lang == "it" or query["descrizione_eng"] is None else query['descrizione_eng'],
             'SpinoffUnicalReferent': query["referente_unical"],
-            'SpinoffUnicalReferentId': query['matricola_referente_unical'],
+            'SpinoffUnicalReferentId': encrypt(query['matricola_referente_unical']),
             'TechAreaId': query["id_area_tecnologica"],
             'TechAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
             'IsSpinoff': query['is_spinoff'],
@@ -1510,7 +1497,7 @@ class ProjectSerializer(CreateUpdateAbstract):
         for q in query:
             full_name = q["nome_origine"]
             result.append({
-                'ScientificDirectorId': q['matricola'],
+                'ScientificDirectorId': encrypt(q['matricola']),
                 'ScientificDirectorName': full_name,
             })
         return result
@@ -1521,7 +1508,7 @@ class ProjectSerializer(CreateUpdateAbstract):
         for q in query:
             full_name = q["nome_origine"]
             result.append({
-                'ResearcherId': q['matricola'],
+                'ResearcherId': encrypt(q['matricola']),
                 'ResearcherName': full_name,
             })
         return result
@@ -1651,7 +1638,7 @@ class SortingContactsSerializer(CreateUpdateAbstract):
                      if query['personale__middle_name'] is not None else "")
         return {
             'Name': full_name,
-            'ID': query['personale__matricola'],
+            'ID': encrypt(query['personale__matricola']),
             'TeacherDepartmentID': query['personale__cd_uo_aff_org'],
             'TeacherOffice': query['personale__ds_aff_org'],
             'DepartmentURL': query['DepartmentUrl'],
@@ -1716,7 +1703,7 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
             'AdmissionRequirements': query['requisiti_ammissione'],
             'TitleIssued': query['titolo_rilasciato'],
             'DoubleTitle': query['doppio_titolo'],
-            'ScientificDirectorId': query['matricola_direttore_scientifico'],
+            'ScientificDirectorId': encrypt(query['matricola_direttore_scientifico']),
             'ScientificDirectorName': query['nome_origine_direttore_scientifico'],
             'SubscriptionFee': query['quota_iscrizione'],
             'ListenersFee': query['quota_uditori'],
@@ -1771,7 +1758,7 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
         for q in query:
             full_name = q["nome_origine_cons"]
             result.append({
-                'PersonId': q['matricola_cons'],
+                'PersonId': encrypt(q['matricola_cons']),
                 'PersonName': full_name,
             })
         return result

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from django.test import TestCase, Client
 from django.urls import reverse
+from .utils import encrypt
 
 
 
@@ -1048,7 +1049,7 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {'search': 'gar'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111111'
+        assert res.json()['results'][0]['TeacherID'] == encrypt('111111')
 
         data = {'role': 'PA', 'lang': 'it'}
         res = req.get(url, data=data)
@@ -1068,15 +1069,15 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {'regdid': 1}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111112'
+        assert res.json()['results'][0]['TeacherID'] == encrypt('111112')
 
         data = {'regdid': 2}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111111'
+        assert res.json()['results'][0]['TeacherID'] == encrypt('111111')
 
         data = {'regdid': 1, 'role': 'PA'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111112'
+        assert res.json()['results'][0]['TeacherID'] == encrypt('111112')
 
         data = {'cds': 1}
         res = req.get(url, data=data)
@@ -1317,7 +1318,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             'matricola': '111112',
         })
 
-        url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111112'})
+        url = reverse('ricerca:teacherinfo', kwargs={'teacherid': encrypt('111112')})
 
         # check url
         res = req.get(url)
@@ -1326,9 +1327,9 @@ class ApiTeacherInfoUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['results']['TeacherID'] == '111112'
+        assert res.json()['results']['TeacherID'] == encrypt('111112')
 
-        url = reverse('ricerca:teacherinfo', kwargs={'teacherid': '111113'})
+        url = reverse('ricerca:teacherinfo', kwargs={'teacherid': encrypt('111113')})
         res = req.get(url)
         assert res.json()['results']['TeacherFirstName'] == 'Lionel'
 
@@ -2125,13 +2126,13 @@ class ApiPersonaleDetailUnitTest(TestCase):
 
         url = reverse(
             'ricerca:personaledetail', kwargs={
-                'personaleid': "111112"})
+                'personaleid': encrypt("111112")})
         url1 = reverse(
             'ricerca:personaledetail', kwargs={
-                'personaleid': "111113"})
+                'personaleid': encrypt("111113")})
         url2 = reverse(
             'ricerca:personaledetail', kwargs={
-                'personaleid': "111114"})
+                'personaleid': encrypt("111114")})
 
         # check url
         res = req.get(url)
@@ -2146,9 +2147,8 @@ class ApiPersonaleDetailUnitTest(TestCase):
         res = req.get(url)
         res1 = req.get(url1)
 
-        assert res.json()['results']['TeacherCVFull'] == "BBB"
-        assert res.json()['results']['ID'] == "111112"
-        assert res1.json()['results']['ID'] == "111113"
+        assert res.json()['results']['ID'] == encrypt("111112")
+        assert res1.json()['results']['ID'] == encrypt("111113")
 
 
 class ApiStructureDetailUnitTest(TestCase):
@@ -3600,7 +3600,7 @@ class ApiAllResearchLinesUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
 
-        data = {'ercs': 'cod1_erc2'}
+        data = {'ercs': 'cod1_erc1'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -3608,7 +3608,7 @@ class ApiAllResearchLinesUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'ercs': 'cod1_erc2','asters': 1}
+        data = {'ercs': 'cod1_erc1','asters': 1}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
 
@@ -3737,7 +3737,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
 
         data = {'search': 'gar'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111111'
+        assert res.json()['results'][0]['TeacherID'] == encrypt('111111')
 
         data = {'role': 'PA', 'lang': 'it'}
         res = req.get(url, data=data)
@@ -3758,15 +3758,15 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
 
         data = {'regdid': 1}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111112'
+        assert res.json()['results'][0]['TeacherID'] == encrypt('111112')
 
         data = {'regdid': 2}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111111'
+        assert res.json()['results'][0]['TeacherID'] == encrypt('111111')
 
         data = {'regdid': 1, 'role': 'PA'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['TeacherID'] == '111112'
+        assert res.json()['results'][0]['TeacherID'] == encrypt('111112')
 
         data = {'cds': 1}
         res = req.get(url, data=data)
@@ -5030,3 +5030,47 @@ class ApiCourseTypesListUnitTest(TestCase):
 
         res = req.get(url)
         assert len(res.json()['results']) == 1
+
+
+class ApiPersonIdUnitTest(TestCase):
+
+    def test_apipersonid(self):
+        req = Client()
+
+        PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'ds_aff_org': 'aaaa'
+        })
+
+        usr = get_user_model().objects.create(
+            **{
+                'username': 'test',
+                'password': 'password',
+            }
+        )
+        token = Token.objects.create(user=usr)
+
+        url = reverse('ricerca:get-person-id')
+
+        # GET
+        res = req.get(url,HTTP_AUTHORIZATION= f'Token {token.key}')
+        assert res.status_code == 405
+
+        # POST
+        res = req.post(url,{"test":"test"}, HTTP_AUTHORIZATION=f'Token {token.key}')
+        assert res.status_code == 404
+
+        # POST
+        res = req.post(url,{"id":"99999"}, HTTP_AUTHORIZATION=f'Token {token.key}')
+        assert res.status_code == 404
+
+        # POST
+        res = req.post(url, {"id": "111112"}, HTTP_AUTHORIZATION=f'Token {token.key}')
+        assert res.status_code == 200
