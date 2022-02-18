@@ -1,13 +1,15 @@
+from cryptography.fernet import Fernet
 from django.conf import settings
-from django.core.signing import Signer
 
 
 def encrypt(value):
-    return Signer().sign_object(value)
+    value = str(value)
+    return Fernet(settings.ENCRYPTION_KEY).encrypt(value.encode()).decode()
 
 
 def decrypt(value):
-    return Signer().unsign_object(value)
+    value = str(value)
+    return Fernet(settings.ENCRYPTION_KEY).decrypt(value.encode()).decode()
 
 
 def encode_labels(data, language=None):
