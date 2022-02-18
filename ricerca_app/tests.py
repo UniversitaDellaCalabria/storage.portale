@@ -914,7 +914,7 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
 
         url = reverse(
             'ricerca:teacherresearchlines', kwargs={
-                'teacherid': '111112'})
+                'teacherid': encrypt('111112')})
 
         # check url
         res = req.get(url)
@@ -933,7 +933,7 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
         # ricercalineaapplicata
         url = reverse(
             'ricerca:teacherresearchlines', kwargs={
-                'teacherid': '111111'})
+                'teacherid': encrypt('111111')})
         res = req.get(url)
         assert len(res.json()['results']) == 2
 
@@ -1142,7 +1142,7 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
 
         url = reverse(
             'ricerca:teacherstudyactivities', kwargs={
-                'teacherid': '111112'})
+                'teacherid': encrypt('111112')})
 
         # check url
         res = req.get(url)
@@ -3076,7 +3076,7 @@ class ApiPublicationsListUnitTest(TestCase):
 
         req = Client()
 
-        url = reverse('ricerca:publications', kwargs={'teacherid': '111112'})
+        url = reverse('ricerca:publications', kwargs={'teacherid': encrypt('111112')})
 
         # check url
         res = req.get(url)
@@ -3240,7 +3240,7 @@ class ApiPublicationDetailUnitTest(TestCase):
         url = reverse(
             'ricerca:publicationdetail',
             kwargs={
-                'teacherid': '111112',
+                'teacherid': encrypt('111112'),
                 'publicationid': '1'})
 
         # check url
@@ -3255,7 +3255,7 @@ class ApiPublicationDetailUnitTest(TestCase):
         url = reverse(
             'ricerca:publicationdetail',
             kwargs={
-                'teacherid': '111112',
+                'teacherid': encrypt('111112'),
                 'publicationid': '2'})
 
         res = req.get(url)
