@@ -371,7 +371,7 @@ class ApiTeacherResearchLinesList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-        teacherid = self.kwargs['teacherid']
+        teacherid = decrypt(self.kwargs['teacherid'])
 
         return ServiceDocente.getResearchLines(teacherid)
 
@@ -484,7 +484,7 @@ class ApiTeacherStudyActivitiesList(ApiEndpointList):
     filter_backends = [ApiTeacherStudyActivitiesFilter]
 
     def get_queryset(self):
-        teacherid = self.kwargs['teacherid']
+        teacherid = decrypt(self.kwargs['teacherid'])
         year = self.request.query_params.get('year')
         yearFrom = self.request.query_params.get('yearFrom')
         yearTo = self.request.query_params.get('yearTo')
@@ -776,7 +776,7 @@ class ApiPublicationsList(ApiEndpointList):
     filter_backends = [ApiPublicationsListFilter]
 
     def get_queryset(self):
-        teacherid = self.kwargs.get('teacherid')
+        teacherid = decrypt(self.kwargs.get('teacherid')) if self.kwargs.get('teacherid') else ''
         search = self.request.query_params.get('search')
         year = self.request.query_params.get('year')
         type = self.request.query_params.get('type')
