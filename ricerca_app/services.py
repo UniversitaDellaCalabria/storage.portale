@@ -652,7 +652,8 @@ class ServiceDocente:
                 query_search &= q_nome
 
         if cod:
-            query_cod = Q(ricerca_erc1_id__cod_erc1__exact=cod)
+            cod = cod.split(",")
+            query_cod = Q(ricerca_erc1_id__cod_erc1__in=cod)
 
         query = RicercaGruppo.objects.filter(query_search, query_cod).order_by(
             'nome').values('id', 'nome', 'descrizione','ricerca_erc1_id__cod_erc1', 'ricerca_erc1_id__descrizione').distinct()
@@ -754,13 +755,14 @@ class ServiceDocente:
         return linea_applicata
 
     @staticmethod
-    def getAllResearchLines(search, year, department, ercs, asters):
+    def getAllResearchLines(search, year, department, ercs, asters, exclude_base=False, exclude_applied=False):
+        if exclude_applied and exclude_base:
+            return []
 
         query_search = Q()
         query_year = Q()
         query_ercs = Q()
         query_asters = Q()
-
 
         if search is not None:
             for k in search.split(" "):
@@ -770,37 +772,47 @@ class ServiceDocente:
             query_year = Q(anno=year)
         if ercs is not None:
             ercs = ercs.split(",")
-            query_ercs = Q(ricerca_erc2_id__cod_erc2__in=ercs)
+            query_ercs = Q(ricerca_erc2_id__ricerca_erc1_id__cod_erc1__in=ercs)
 
         if asters is not None:
             asters = asters.split(",")
             query_asters = Q(ricerca_aster2_id__ricerca_aster1_id__in=asters)
 
-        linea_base = RicercaLineaBase.objects.filter(
-            query_search,
-            query_year,
-            query_ercs,
-            ).order_by('descrizione').values(
-            'id',
-            'descrizione',
-            'descr_pubblicaz_prog_brevetto',
-            'anno',
-            'ricerca_erc2_id__cod_erc2',
-            'ricerca_erc2_id__descrizione',
-        ).distinct()
+        linea_base = []
+        linea_applicata = []
 
-        linea_applicata = RicercaLineaApplicata.objects.filter(
-            query_search,
-            query_year,
-            query_asters,
-        ).order_by('descrizione').values(
-            'id',
-            'descrizione',
-            'descr_pubblicaz_prog_brevetto',
-            'anno',
-            'ricerca_aster2_id__ricerca_aster1_id',
-            'ricerca_aster2_id__descrizione',
-        ).distinct()
+        if not exclude_base:
+            linea_base = RicercaLineaBase.objects.filter(
+                query_search,
+                query_year,
+                query_ercs,
+                ).order_by('descrizione').values(
+                'id',
+                'descrizione',
+                'descr_pubblicaz_prog_brevetto',
+                'anno',
+                'ricerca_erc2_id__cod_erc2',
+                'ricerca_erc2_id__descrizione',
+                'ricerca_erc2_id__ricerca_erc1_id__cod_erc1',
+                'ricerca_erc2_id__ricerca_erc1_id__descrizione',
+                'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__erc0_cod',
+                'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description',
+                'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description_en'
+            ).distinct()
+
+        if not exclude_applied:
+            linea_applicata = RicercaLineaApplicata.objects.filter(
+                query_search,
+                query_year,
+                query_asters,
+            ).order_by('descrizione').values(
+                'id',
+                'descrizione',
+                'descr_pubblicaz_prog_brevetto',
+                'anno',
+                'ricerca_aster2_id__ricerca_aster1_id',
+                'ricerca_aster2_id__descrizione',
+            ).distinct()
 
         if ercs is not None and asters is not None:
             pass
@@ -846,6 +858,8 @@ class ServiceDocente:
         linea_applicata = list(linea_applicata)
         for linea in linea_applicata:
             linea['Tipologia'] = 'applicata'
+
+
         linea_base = list(linea_base)
         for linea in linea_base:
             linea['Tipologia'] = 'base'
@@ -892,7 +906,9 @@ class ServiceDocente:
 
             return res
 
+
         linea_applicata.extend(linea_base)
+
         linee = sorted(linea_applicata, key=lambda d: d['descrizione'])
 
         return linee
@@ -1594,14 +1610,12 @@ class ServicePersonale:
             structureid=None,
             structuretypes=None,
             roles=None,
-            structuretree=None,
-            function=None):
+            structuretree=None):
 
         query_search = Q()
         query_structure = Q()
         query_roles = Q()
         query_structuretree = Q()
-        query_function = Q()
 
         if search is not None:
             q_cognome = Q(cognome__istartswith=search)
@@ -1615,16 +1629,12 @@ class ServicePersonale:
             query_structuretree = ServicePersonale.getStructurePersonnelChild(
                 Q(), structuretree)
             query_structuretree |= Q(cd_uo_aff_org=structuretree)
-        if function is not None:
-            query_function = Q(
-                unitaorganizzativafunzioni__ds_funzione=function)
 
         query = Personale.objects.filter(
             query_search,
             query_structure,
             query_roles,
             query_structuretree,
-            query_function,
             flg_cessato=0,
             cd_uo_aff_org__isnull=False,
             dt_rap_fin__gte=datetime.datetime.today())
@@ -1670,10 +1680,6 @@ class ServicePersonale:
             'structure_type_cod',
             'structure_type_name',
             'fl_docente',
-            "cv_full_it",
-            "cv_short_it",
-            "cv_full_eng",
-            "cv_short_eng"
         )
         query = list(query)
         if structureid is None and structuretypes is None and structuretree is None:
@@ -1706,10 +1712,6 @@ class ServicePersonale:
                                 'structure_type_cod',
                                 'structure_type_name',
                                 'fl_docente',
-                                "cv_full_it",
-                                "cv_short_it",
-                                "cv_full_eng",
-                                "cv_short_eng",
             )
             from itertools import chain
             query = list(chain(*[query, query2]))
@@ -1730,15 +1732,6 @@ class ServicePersonale:
         final_query = []
 
         for q in query:
-            functions = UnitaOrganizzativaFunzioni.objects.filter(
-                matricola=q['matricola'],
-                termine__gt=datetime.datetime.now(),
-                decorrenza__lt=datetime.datetime.now()).values(
-                "ds_funzione",
-                "funzione",
-                "cd_csa__uo",
-                "cd_csa__denominazione",
-            )
 
             if q['id_ab'] not in grouped:
                 grouped[q['id_ab']] = {
@@ -1754,18 +1747,9 @@ class ServicePersonale:
                     'TipologiaStrutturaCod': q['structure_type_cod'] if 'structure_type_cod' in q.keys() else None,
                     'TipologiaStrutturaNome': q['structure_type_name'] if 'structure_type_name' in q.keys() else None,
                     'fl_docente': q['fl_docente'],
-                    'cv_full_it': q['cv_full_it'],
-                    'cv_full_eng': q['cv_full_eng'],
-                    'cv_short_it': q['cv_short_it'],
-                    'cv_short_eng': q['cv_short_eng'],
                 }
                 for c in contacts_to_take:
                     grouped[q['id_ab']][c] = []
-
-                if len(functions) == 0:
-                    grouped[q['id_ab']]["Functions"] = None
-                else:
-                    grouped[q['id_ab']]["Functions"] = functions
 
             if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take and q['personalecontatti__prg_priorita'] >= 900:
                 grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(

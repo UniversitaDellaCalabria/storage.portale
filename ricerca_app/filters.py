@@ -226,6 +226,36 @@ class ApiAllResearchLinesListFilter(GenericApiFilter):
                     'format': 'int32',
             }
         },
+        {
+            'name': 'department',
+            'description': 'Dipartimento',
+            'required': False,
+            'type': 'string',
+        },
+        {
+            'name': 'ercs',
+            'description': 'Lista di codici erc1',
+            'required': False,
+            'type': 'string',
+        },
+        {
+            'name': 'aster',
+            'description': 'Lista di codici aster1',
+            'required': False,
+            'type': 'string',
+        },
+        {
+            'name': 'exclude_base',
+            'description': 'Esclude le linee di ricerca di base',
+            'required': False,
+            'type': 'boolean',
+        },
+        {
+            'name': 'exclude_applied',
+            'description': 'Esclude le linee di ricerca applicate',
+            'required': False,
+            'type': 'boolean',
+        },
     ]
 
 

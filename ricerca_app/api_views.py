@@ -1,9 +1,11 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
+from rest_framework.views import APIView
+
 
 from .filters import *
 from .models import DidatticaTestiRegolamento
@@ -16,7 +18,8 @@ from .pagination import UnicalStorageApiPaginationList
 # allow authenticated users to perform any request. Requests for
 # unauthorised users will only be permitted if the request method is
 # one of the "safe" methods; GET, HEAD or OPTIONS
-from .utils import encode_labels
+from .utils import encode_labels, encrypt, decrypt
+
 
 
 class ApiEndpointList(generics.ListAPIView):
@@ -419,9 +422,12 @@ class ApiAllResearchLinesList(ApiEndpointList):
         department = self.request.query_params.get('department')
         ercs = self.request.query_params.get('ercs')
         asters = self.request.query_params.get('asters')
+        exclude_base = self.request.query_params.get('exclude_base')
+        exclude_applied = self.request.query_params.get('exclude_applied')
 
 
-        return ServiceDocente.getAllResearchLines(search, year, department, ercs, asters)
+
+        return ServiceDocente.getAllResearchLines(search, year, department, ercs, asters, exclude_base, exclude_applied)
 
 # ----Docenti----
 
@@ -504,7 +510,7 @@ class ApiTeacherDetail(ApiEndpointDetail):
 
     def get_queryset(self):
 
-        teacherid = self.kwargs['teacherid']
+        teacherid = decrypt(self.kwargs['teacherid'])
 
         return ServiceDocente.getDocenteInfo(teacherid)
 
@@ -589,10 +595,9 @@ class ApiAddressbookList(ApiEndpointList):
         structuretypes = self.request.query_params.get('structuretypes')
         roles = self.request.query_params.get('role')
         structuretree = self.request.query_params.get('structuretree')
-        function = self.request.query_params.get('function')
 
         return ServicePersonale.getAddressbook(
-            search, structureid, structuretypes, roles, structuretree, function)
+            search, structureid, structuretypes, roles, structuretree)
 
 
 class ApiStructuresList(ApiEndpointList):
@@ -672,7 +677,7 @@ class ApiPersonaleDetail(ApiEndpointDetail):
     # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
-        personaleid = self.kwargs['personaleid']
+        personaleid = decrypt(self.kwargs['personaleid'])
 
         return ServicePersonale.getPersonale(personaleid)
 
@@ -1084,3 +1089,19 @@ class ApiCourseTypesList(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceDidatticaCds.getCourseTypes()
+
+
+class ApiPersonId(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    description = 'La funzione restituisce il codice criptato di una persona'
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        matricola = data.get("id","")
+        if not matricola:
+            return Response("Il dato non è stato inserito", status=status.HTTP_404_NOT_FOUND)
+        p = Personale.objects.filter(matricola=matricola).first()
+        if not p:
+            return Response("Il dato non esiste", status=status.HTTP_404_NOT_FOUND)
+        return Response(encrypt(matricola))
