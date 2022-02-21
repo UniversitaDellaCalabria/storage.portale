@@ -2405,13 +2405,13 @@ class ApiLaboratoriesListUnitTest(TestCase):
 
         # GET
 
-        data = {'department': '1', 'teacher': '111111'}
+        data = {'department': '1', 'teacher': encrypt('111111')}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['LaboratoryId'] == 1
         assert res.json()[
             'results'][0]['ScientificDirector'] == 'Mungari Simone'
 
-        data = {'teacher': '111111'}
+        data = {'teacher': encrypt('111111')}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
 
@@ -2419,15 +2419,15 @@ class ApiLaboratoriesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'teacher': '111112'}
+        data = {'teacher': encrypt('111112')}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 3
 
-        data = {'teacher': '111112', 'scope': '1'}
+        data = {'teacher': encrypt('111112'), 'scope': '1'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'teacher': '111111', 'scope': '1'}
+        data = {'teacher': encrypt('111111'), 'scope': '1'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -3324,7 +3324,7 @@ class ApiResearchGroupsUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 2
 
-        data = {'teacher': '111112'}
+        data = {'teacher': encrypt('111112')}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -3336,7 +3336,7 @@ class ApiResearchGroupsUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'teacher': '111112','department': '1111'}
+        data = {'teacher': encrypt('111112'),'department': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -3413,11 +3413,11 @@ class ApiBaseResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'teacher': '111112', 'department': '1111'}
+        data = {'teacher': encrypt('111112'), 'department': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'teacher': '111112'}
+        data = {'teacher': encrypt('111112')}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -3495,7 +3495,7 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'teacher': '111112'}
+        data = {'teacher': encrypt('111112')}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -3503,7 +3503,7 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'teacher': '111112', 'department': '1111'}
+        data = {'teacher': encrypt('111112'), 'department': '1111'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
