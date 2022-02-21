@@ -1861,7 +1861,7 @@ class Asters1Serializer(CreateUpdateAbstract):
 
         for q in query:
             result.append({
-                'IdErc1': q['id'],
+                'IdAster1': q['id'],
                 'Description': q['descrizione'],
             })
 
@@ -1891,7 +1891,7 @@ class Asters2Serializer(CreateUpdateAbstract):
         result = []
         for q in query:
             result.append({
-                'IdErc1': q['id'],
+                'IdAster1': q['id'],
                 'Description': q['descrizione'],
                 'Aster2List': Asters2Serializer.to_dict_aster2_list(q['Aster2'], req_lang),
             })
