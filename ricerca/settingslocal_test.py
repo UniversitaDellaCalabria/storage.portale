@@ -468,6 +468,10 @@ LABEL_MAPPING = {
         'TeachingAssignmentsQualification': 'Teaching Assignments Qualification',
         'TeachingAssignmentsInstitution': 'Teaching Assignments Institution',
         'TeachingAssignmentsType': 'Teaching Assignments Type',
+        'IdAster1': 'Aster 1 Id',
+        'IdAster2' : 'Aster 2 Id',
+        'Aster1List': 'Aster1 List',
+        'Aster2List': 'Aster2 List',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -607,6 +611,8 @@ LABEL_MAPPING = {
         'ID': 'ID',
         'IdErc1': 'Id Erc1',
         'IdErc0': 'IdErc0',
+        'IdAster1': 'Id Aster 1',
+        'IdAster2' : 'Id Aster 2',
         'Name': 'Nome',
         'RGroupID': 'ID Gruppo di Ricerca',
         'RGroupName': 'Nome Gruppo di Ricerca',
@@ -817,5 +823,7 @@ LABEL_MAPPING = {
         'TeachingAssignmentsQualification': 'Qualifica Incarico Didattico',
         'TeachingAssignmentsInstitution': 'Ente Incarico Didattico',
         'TeachingAssignmentsType': 'Tipologia Incarico Didattico',
+        'Aster1List': 'Lista Aster1',
+        'Aster2List': 'Lista Aster2',
     }
 }

@@ -1836,3 +1836,73 @@ class CourseTypesSerializer(CreateUpdateAbstract):
             'Description': query['tipo_corso_descr']
         }
 
+
+class Asters1Serializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        aster1 = Asters1Serializer.to_dict_aster1_list(query['Aster1'], req_lang)
+
+        return {
+            'IdErc0': query['erc0_cod'],
+            'Description': query['description'] if req_lang == "it" or query['description_en'] is None else query['description_en'],
+            'Aster1List': aster1,
+        }
+
+    @staticmethod
+    def to_dict_aster1_list(query, req_lang="en"):
+        result = []
+
+        for q in query:
+            result.append({
+                'IdErc1': q['id'],
+                'Description': q['descrizione'],
+            })
+
+        return result
+
+
+class Asters2Serializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+        aster1 = Asters2Serializer.to_dict_aster1_list(query['Aster1'], req_lang)
+
+        return {
+            'IdErc0': query['erc0_cod'],
+            'Description': query['description'] if req_lang == "it" or query['description_en'] is None else query['description_en'],
+            'Aster1List': aster1,
+        }
+
+    @staticmethod
+    def to_dict_aster1_list(query, req_lang="en"):
+        result = []
+        for q in query:
+            result.append({
+                'IdErc1': q['id'],
+                'Description': q['descrizione'],
+                'Aster2List': Asters2Serializer.to_dict_aster2_list(q['Aster2'], req_lang),
+            })
+        return result
+
+    @staticmethod
+    def to_dict_aster2_list(query, req_lang="en"):
+        result = []
+        for q in query:
+            result.append({
+                'IdAster2': q['id'],
+                'Description': q['descrizione'],
+            })
+        return result

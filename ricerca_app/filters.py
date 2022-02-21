@@ -248,13 +248,17 @@ class ApiAllResearchLinesListFilter(GenericApiFilter):
             'name': 'exclude_base',
             'description': 'Esclude le linee di ricerca di base',
             'required': False,
-            'type': 'boolean',
+            'schema': {
+                    'type': 'boolean',
+            }
         },
         {
             'name': 'exclude_applied',
             'description': 'Esclude le linee di ricerca applicate',
             'required': False,
-            'type': 'boolean',
+            'schema': {
+                    'type': 'boolean',
+            }
         },
     ]
 

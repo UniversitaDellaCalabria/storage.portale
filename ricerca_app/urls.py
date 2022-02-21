@@ -401,3 +401,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/get-person-id/'.format(base_url),
         api_views.ApiPersonId.as_view(),
         name='get-person-id'),
+
+    urlpatterns += path('{}/aster1list/'.format(base_url),
+                    api_views.ApiAster1List.as_view(),
+                    name='aster1list'),
+
+    urlpatterns += path('{}/aster2list/'.format(base_url),
+                    api_views.ApiAster2List.as_view(),
+                    name='aster2list'),
