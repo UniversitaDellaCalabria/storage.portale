@@ -144,7 +144,7 @@ class ApiResearchGroupsListFilter(GenericApiFilter):
         },
         {
             'name': 'erc1cod',
-            'description': 'Codice di un erc',
+            'description': 'Lista di Codici di erc1',
             'required': False,
             'type': 'string'
         }
@@ -239,7 +239,7 @@ class ApiAllResearchLinesListFilter(GenericApiFilter):
             'type': 'string',
         },
         {
-            'name': 'aster',
+            'name': 'asters',
             'description': 'Lista di codici aster1',
             'required': False,
             'type': 'string',
@@ -606,5 +606,40 @@ class ApiProjectsListFilter(GenericApiFilter):
                 'type': 'integer',
                 'format': 'int32',
             },
+        },
+    ]
+
+
+class ApiHighFormationMastersListFilter(GenericApiFilter):
+    search_params = [
+        {
+            'name': 'coursetype',
+            'description': 'Tipo Corso',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+        {
+            'name': 'erogation',
+            'description': 'Erogazione',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+        {
+            'name': 'department',
+            'description': 'Dipartimento',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'director',
+            'description': 'Direttore Scientifico',
+            'required': False,
+            'type': 'string'
         },
     ]

@@ -4871,6 +4871,12 @@ class ApiHighFormationMastersListUnitTest(TestCase):
 
         req = Client()
 
+        dip = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': '1111',
+            'dip_des_it': 'Informatica'
+        })
+
         doc1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -4900,6 +4906,7 @@ class ApiHighFormationMastersListUnitTest(TestCase):
             'matricola_direttore_scientifico': doc1,
             'id_alta_formazione_tipo_corso': aftc,
             'id_alta_formazione_mod_erogazione': afme,
+            'id_dipartiento_riferimento': dip,
         })
 
         AltaFormazioneDatiBaseUnitTest.create_altaFormazioneDatiBase(**{
@@ -4980,6 +4987,10 @@ class ApiHighFormationMastersListUnitTest(TestCase):
         data = {'erogation': '3'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
+
+        data = {'department': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
 
 

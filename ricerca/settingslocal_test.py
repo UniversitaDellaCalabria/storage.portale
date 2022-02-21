@@ -472,6 +472,7 @@ LABEL_MAPPING = {
         'IdAster2' : 'Aster 2 Id',
         'Aster1List': 'Aster1 List',
         'Aster2List': 'Aster2 List',
+        'HighFormationMasterYear': ' High Formation Master Year',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -805,6 +806,7 @@ LABEL_MAPPING = {
         'SelectionType': 'Tipologia Selezione',
         'SelectionId': 'Id Modalita Selezione',
         'HighFormationMasterInternalCouncil': 'Consiglio Scientifico Interno',
+        'HighFormationMasterYear': ' Anno Master Alta Formazione',
         'PersonId': 'Matricola Persona',
         'PersonName': 'Nome Persona',
         'HighFormationMasterExternalCouncil': 'Consiglio Scientifico Esterno',

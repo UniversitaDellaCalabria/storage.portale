@@ -1058,7 +1058,7 @@ class ApiSortingContacts(ApiEndpointList):
 class ApiHighFormationMastersList(ApiEndpointList):
     description = 'La funzione restituisce i master alta formazione'
     serializer_class = HighFormationMastersSerializer
-    filter_backends = []
+    filter_backends = [ApiHighFormationMastersListFilter]
 
     def get_queryset(self):
 
@@ -1066,9 +1066,10 @@ class ApiHighFormationMastersList(ApiEndpointList):
         director = self.request.query_params.get('director')
         coursetype = self.request.query_params.get('coursetype')
         erogation = self.request.query_params.get('erogation')
+        department = self.request.query_params.get('department')
 
 
-        return ServiceDidatticaCds.getHighFormationMasters(search, director, coursetype, erogation)
+        return ServiceDidatticaCds.getHighFormationMasters(search, director, coursetype, erogation, department)
 
 
 class ApiErogationModesList(ApiEndpointList):
