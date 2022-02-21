@@ -356,7 +356,7 @@ class ApiResearchGroupsList(ApiEndpointList):
     def get_queryset(self):
 
         search = self.request.query_params.get('search')
-        teacher = self.request.query_params.get('teacher')
+        teacher = decrypt(self.request.query_params.get('teacher'))
         department = self.request.query_params.get('department')
         cod = self.request.query_params.get('coderc1')
 
@@ -385,7 +385,7 @@ class ApiBaseResearchLinesList(ApiEndpointList):
     def get_queryset(self):
 
         search = self.request.query_params.get('search')
-        teacher = self.request.query_params.get('teacher')
+        teacher = decrypt(self.request.query_params.get('teacher'))
         department = self.request.query_params.get('department')
         year = self.request.query_params.get('year')
 
@@ -401,7 +401,7 @@ class ApiAppliedResearchLinesList(ApiEndpointList):
 
     def get_queryset(self):
         search = self.request.query_params.get('search')
-        teacher = self.request.query_params.get('teacher')
+        teacher = decrypt(self.request.query_params.get('teacher'))
         department = self.request.query_params.get('department')
         year = self.request.query_params.get('year')
 
@@ -703,7 +703,7 @@ class ApiLaboratoriesList(ApiEndpointList):
         area = self.request.query_params.get('area')
         department = self.request.query_params.get('department')
         erc1 = self.request.query_params.get('erc1')
-        teacher = self.request.query_params.get('teacher')
+        teacher = decrypt(self.request.query_params.get('teacher'))
         infrastructure = self.request.query_params.get('infrastructure')
         scope = self.request.query_params.get('scope')
 

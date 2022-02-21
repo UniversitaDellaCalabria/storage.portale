@@ -3,11 +3,15 @@ from django.conf import settings
 
 
 def encrypt(value):
+    if not value:
+        return None
     value = str(value)
     return Fernet(settings.ENCRYPTION_KEY).encrypt(value.encode()).decode()
 
 
 def decrypt(value):
+    if not value:
+        return None
     value = str(value)
     return Fernet(settings.ENCRYPTION_KEY).decrypt(value.encode()).decode()
 
