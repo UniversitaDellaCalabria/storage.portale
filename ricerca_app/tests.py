@@ -5074,3 +5074,65 @@ class ApiPersonIdUnitTest(TestCase):
         # POST
         res = req.post(url, {"id": "111112"}, HTTP_AUTHORIZATION=f'Token {token.key}')
         assert res.status_code == 200
+
+
+class ApiAster1ListUnitTest(TestCase):
+
+    def test_apiaster1list(self):
+        req = Client()
+
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+            'description_en': 'IT',
+        })
+        RicercaAster1UnitTest.create_ricercaAster1(**{
+            'id': 1,
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+
+        url = reverse('ricerca:aster1list')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        assert len(res.json()['results']) == 1
+
+
+class ApiAster2ListUnitTest(TestCase):
+
+    def test_apiaster2list(self):
+        req = Client()
+
+        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
+            'erc0_cod': '111',
+            'description': 'IT',
+            'description_en': 'IT',
+        })
+        aster1 = RicercaAster1UnitTest.create_ricercaAster1(**{
+            'id': 1,
+            'descrizione': 'Computer Science and Informatics',
+            'ricerca_erc0_cod': erc0,
+        })
+
+        RicercaAster2UnitTest.create_ricercaAster2(**{
+            'id': 1,
+            'descrizione': 'Sicurezza Informatica',
+            'ricerca_aster1_id': 1
+
+        })
+        url = reverse('ricerca:aster2list')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        assert len(res.json()['results']) == 1

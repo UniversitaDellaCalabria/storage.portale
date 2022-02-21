@@ -1111,3 +1111,23 @@ class ApiPersonId(APIView):
         if not p:
             return Response("Il dato non esiste", status=status.HTTP_404_NOT_FOUND)
         return Response(encrypt(matricola))
+
+
+class ApiAster1List(ApiEndpointList):
+    description = 'La funzione restituisce la lista degli aster1'
+    serializer_class = Asters1Serializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceLaboratorio.getAster1List()
+
+
+class ApiAster2List(ApiEndpointList):
+    description = 'La funzione restituisce la lista degli aster2'
+    serializer_class = Asters2Serializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceLaboratorio.getAster2List()

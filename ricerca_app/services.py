@@ -14,7 +14,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaLineaApplicata, RicercaDocenteLineaApplicata, RicercaErc2, LaboratorioInfrastruttura, BrevettoDatiBase, BrevettoInventori, LaboratorioTipologiaAttivita, \
     SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase, ProgettoResponsabileScientifico, UnitaOrganizzativaTipoFunzioni, ProgettoAmbitoTerritoriale, \
     ProgettoTipologiaProgramma, ProgettoRicercatore, AltaFormazioneDatiBase, AltaFormazionePartner,AltaFormazioneTipoCorso, AltaFormazionePianoDidattico, \
-    AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno
+    AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
+    RicercaAster1, RicercaAster2, RicercaErc0
 
 
 class ServiceQueryBuilder:
@@ -764,17 +765,17 @@ class ServiceDocente:
         query_ercs = Q()
         query_asters = Q()
 
-        if search is not None:
+        if search:
             for k in search.split(" "):
                 q_descrizione = Q(descrizione__icontains=k)
                 query_search &= q_descrizione
-        if year is not None:
+        if year:
             query_year = Q(anno=year)
-        if ercs is not None:
+        if ercs:
             ercs = ercs.split(",")
             query_ercs = Q(ricerca_erc2_id__ricerca_erc1_id__cod_erc1__in=ercs)
 
-        if asters is not None:
+        if asters:
             asters = asters.split(",")
             query_asters = Q(ricerca_aster2_id__ricerca_aster1_id__in=asters)
 
@@ -814,13 +815,13 @@ class ServiceDocente:
                 'ricerca_aster2_id__descrizione',
             ).distinct()
 
-        if ercs is not None and asters is not None:
+        if ercs and asters:
             pass
 
-        elif ercs is not None:
+        elif ercs:
             linea_applicata = []
 
-        elif asters is not None:
+        elif asters:
             linea_base = []
 
         for q in linea_base:
@@ -2356,6 +2357,44 @@ class ServiceLaboratorio:
                     'cod_erc2', 'descrizione').distinct()
         return query
 
+
+    @staticmethod
+    def getAster1List():
+
+        query = RicercaErc0.objects.values(
+            'erc0_cod',
+            'description',
+            'description_en'
+        )
+
+        for q in query:
+
+            q['Aster1'] = []
+
+            q['Aster1'] = RicercaAster1.objects.filter(ricerca_erc0_cod=q['erc0_cod']).values(
+                'id',
+                'descrizione'
+            ).distinct()
+
+            query = list(query)
+
+            if len(q['Aster1']) == 0:
+                query.remove(q)
+
+        return query
+
+    @staticmethod
+    def getAster2List():
+
+        query = ServiceLaboratorio.getAster1List()
+
+        for q in query:
+            for i in range(len(q['Aster1'])):
+                q['Aster1'][i]['Aster2'] = RicercaAster2.objects.filter(
+                    ricerca_aster1_id=q['Aster1'][i]['id']).values(
+                    'id', 'descrizione').distinct()
+
+        return query
 
 class ServiceBrevetto:
 
