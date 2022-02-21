@@ -247,7 +247,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityCompulsory': query['freq_obblig_flg'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
             'StudyActivityTeachingUnitType': query['tipo_af_des'],
-            'StudyActivityTeacherID': query['StudyActivityTeacherID'],
+            'StudyActivityTeacherID': encrypt(query['StudyActivityTeacherID']),
             'StudyActivityTeacherName': query['StudyActivityTeacherName'],
             'StudyActivityContent': query['StudyActivityContent'],
             'StudyActivityProgram': query['StudyActivityProgram'],
