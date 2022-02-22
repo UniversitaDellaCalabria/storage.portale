@@ -15,7 +15,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase, ProgettoResponsabileScientifico, UnitaOrganizzativaTipoFunzioni, ProgettoAmbitoTerritoriale, \
     ProgettoTipologiaProgramma, ProgettoRicercatore, AltaFormazioneDatiBase, AltaFormazionePartner,AltaFormazioneTipoCorso, AltaFormazionePianoDidattico, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
-    RicercaAster1, RicercaAster2, RicercaErc0
+    RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati
 
 
 class ServiceQueryBuilder:
@@ -127,6 +127,27 @@ class ServiceDidatticaCds:
                 "lingua_des_it",
                 "lingua_des_eng").distinct()
 
+            item['OtherData'] = DidatticaCdsAltriDati.objects.filter(cds_id=item['cds_id']).values(
+                'matricola_coordinatore',
+                'nome_origine_coordinatore',
+                'matricola_vice_coordinatore',
+                'nome_origine_vice_coordinatore',
+                'num_posti',
+                'modalita_iscrizione'
+            ).distinct()
+
+            item['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=item['cds_id']).values(
+                'ordine',
+                'nome_ufficio',
+                'matricola_riferimento',
+                'nome_origine_riferimento',
+                'telefono',
+                'email',
+                'edificio',
+                'piano',
+                'orari',
+                'sportello_online'
+            ).distinct()
         return items
 
     @staticmethod
@@ -340,6 +361,107 @@ class ServiceDidatticaCds:
         return query
 
     @staticmethod
+    def getHighFormationMaster(master_id):
+
+
+        query = AltaFormazioneDatiBase.objects.filter(
+            id=master_id
+        ).values(
+            'id',
+            'titolo_it',
+            'titolo_en',
+            'id_alta_formazione_tipo_corso',
+            'id_alta_formazione_mod_erogazione',
+            'ore',
+            'mesi',
+            'anno_rilevazione',
+            'id_dipartiento_riferimento',
+            'id_dipartiento_riferimento__dip_cod',
+            'id_dipartiento_riferimento__dip_des_it',
+            'id_dipartiento_riferimento__dip_des_eng',
+            'sede_corso',
+            'num_min_partecipanti',
+            'num_max_partecipanti',
+            'uditori_ammessi',
+            'num_max_uditori',
+            'requisiti_ammissione',
+            'titolo_rilasciato',
+            'doppio_titolo',
+            'matricola_direttore_scientifico',
+            'nome_origine_direttore_scientifico',
+            'quota_iscrizione',
+            'quota_uditori',
+            'funzione_lavoro',
+            'obiettivi_formativi_summer_school',
+            'competenze',
+            'sbocchi_occupazionali',
+            'obiettivi_formativi_corso',
+            'modalita_svolgimento_prova_finale',
+            'numero_moduli',
+            'stage_tirocinio',
+            'ore_stage_tirocinio',
+            'cfu_stage',
+            'mesi_stage',
+            'tipo_aziende_enti_tirocinio',
+            'contenuti_tempi_criteri_cfu',
+            'project_work'
+        ).order_by('titolo_it', 'id')
+
+        query = list(query)
+
+        query[0]['Partners'] = AltaFormazionePartner.objects.filter(
+            id_alta_formazione_dati_base=master_id).values(
+            "id",
+            "denominazione",
+            "tipologia",
+            "sito_web"
+        ).distinct()
+
+
+        query[0]['Selections'] = AltaFormazioneModalitaSelezione.objects.filter(
+            id_alta_formazione_dati_base=master_id).values(
+            "id",
+            "tipo_selezione",
+        ).distinct()
+
+        query[0]['InternalCouncil'] = AltaFormazioneConsiglioScientificoInterno.objects.filter(
+            id_alta_formazione_dati_base=master_id).values(
+            'matricola_cons',
+            'nome_origine_cons'
+        ).distinct()
+
+        query[0]['ExternalCouncil'] = AltaFormazioneConsiglioScientificoEsterno.objects.filter(
+            id_alta_formazione_dati_base=master_id).values(
+            'nome_cons',
+            'ruolo_cons',
+            'ente_cons'
+        ).distinct()
+
+        query[0]['TeachingPlan'] = AltaFormazionePianoDidattico.objects.filter(
+            id_alta_formazione_dati_base=master_id).values(
+            'id',
+            'modulo',
+            'ssd',
+            'num_ore',
+            'cfu',
+            'verifica_finale'
+        ).distinct()
+
+        query[0]['TeachingAssignments'] = AltaFormazioneIncaricoDidattico.objects.filter(
+            id_alta_formazione_dati_base=master_id).values(
+            'id',
+            'modulo',
+            'num_ore',
+            'docente',
+            'qualifica',
+            'ente',
+            'tipologia'
+        ).distinct()
+
+        return query
+
+
+    @staticmethod
     def getErogationModes():
 
         query = AltaFormazioneModalitaErogazione.objects.values(
@@ -489,6 +611,9 @@ class ServiceDidatticaAttivitaFormativa:
             'cds__nome_cds_it',
             'cds__nome_cds_eng',
             'tipo_af_des',
+            'tipo_af_cod',
+            'tipo_af_intercla_cod',
+            'tipo_af_intercla_des',
             'matricola_resp_did',
             'mutuata_flg',
             'af_master_id',

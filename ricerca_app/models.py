@@ -226,6 +226,10 @@ class DidatticaAttivitaFormativa(InsModAbstract):
         max_length=80,
         blank=True,
         null=True)
+    tipo_af_intercla_cod = models.CharField(db_column='TIPO_AF_INTERCLA_COD', max_length=40, blank=True,
+                                            null=True)  # Field name made lowercase.
+    tipo_af_intercla_des = models.CharField(db_column='TIPO_AF_INTERCLA_DES', max_length=200, blank=True,
+                                            null=True)  # Field name made lowercase.
 
     amb_id = models.IntegerField(db_column='AMB_ID', blank=True, null=True)
     ambito_des = models.CharField(

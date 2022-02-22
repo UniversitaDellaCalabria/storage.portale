@@ -25,7 +25,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
     UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest,\
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
-    AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest
+    AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -41,6 +41,7 @@ class ApiCdSListUnitTest(TestCase):
             'dip': dip,
             'tipo_corso_cod': 'L',
             'area_cds': 'scienze',
+            'cds_id': 1,
         })
         DidatticaCdsLinguaUnitTest.create_didatticaCdsLingua(**{
             'cdsord': didatticaCds,
@@ -52,6 +53,18 @@ class ApiCdSListUnitTest(TestCase):
             'titolo_congiunto_cod': 'N',
             'cds_id': 1,
         })
+
+        DidatticaCdsAltriDatiUfficioUnitTest.create_didatticaCdsAltriDatiUfficio(**{
+            'cds_id': 1,
+            'edificio': 2,
+            'ordine': 1,
+        })
+
+        DidatticaCdsAltriDatiUnitTest.create_didatticaCdsAltriDati(**{
+            'cds_id': 1,
+            'num_posti': 2
+        })
+
 
         url = reverse('ricerca:cdslist')
 
@@ -4993,6 +5006,107 @@ class ApiHighFormationMastersListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
+class ApiHighFormationMasterDetailUnitTest(TestCase):
+
+    def test_apihighformationmasterdetail(self):
+
+        req = Client()
+
+        dip = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': '1111',
+            'dip_des_it': 'Informatica'
+        })
+
+        doc1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'ds_aff_org': 'aaaa'
+        })
+
+        aftc = AltaFormazioneTipoCorsoUnitTest.create_altaFormazioneTipoCorso(**{
+            'id': 3,
+            'tipo_corso_descr': 'AAAA'
+        })
+
+        afme = AltaFormazioneModalitaErogazioneUnitTest.create_altaFormazioneModalitaErogazione(**{
+            'id': 3,
+            'descrizione': 'AAAA'
+        })
+
+        a1 = AltaFormazioneDatiBaseUnitTest.create_altaFormazioneDatiBase(**{
+            'id': 1,
+            'titolo_it': 'AAAA',
+            'titolo_en': 'AAAA',
+            'matricola_direttore_scientifico': doc1,
+            'id_alta_formazione_tipo_corso': aftc,
+            'id_alta_formazione_mod_erogazione': afme,
+            'id_dipartiento_riferimento': dip,
+        })
+
+        AltaFormazioneConsiglioScientificoEsternoUnitTest.create_altaFormazioneConsiglioScientificoEsterno(**{
+            'nome_cons': 'Simone',
+            'ruolo_cons': 'docente',
+            'ente_cons': 'università',
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazioneConsiglioScientificoInternoUnitTest.create_altaFormazioneConsiglioScientificoInterno(**{
+            'nome_origine_cons': 'Simone',
+            'matricola_cons': doc1,
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazionePartnerUnitTest.create_altaFormazionePartner(**{
+            'denominazione': 'aaaa',
+            'tipologia': 'bbbb',
+            'sito_web': 'aaaa',
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazioneModalitaSelezioneUnitTest.create_altaFormazioneModalitaSelezione(**{
+            'tipo_selezione': 'chiusa',
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazioneIncaricoDidatticoUnitTest.create_altaFormazioneIncaricoDidattico(**{
+            'id': 1,
+            'modulo': 'AAA',
+            'qualifica': 'SSF',
+            'num_ore': 13,
+            'ente': 'Università',
+            'tipologia': 'Prova',
+            'docente': 'Mungari',
+            'id_alta_formazione_dati_base': a1
+        })
+
+        AltaFormazionePianoDidatticoUnitTest.create_altaFormazionePianoDidattico(**{
+            'id': 1,
+            'modulo': 'AAA',
+            'ssd': 'SSF',
+            'num_ore': 13,
+            'cfu': 2,
+            'verifica_finale': 1,
+            'id_alta_formazione_dati_base': a1
+        })
+
+        url = reverse('ricerca:high-formation-master-detail',kwargs={'id': 1})
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results']['ID'] == 1
 
 
 class ApiErogationModesListUnitTest(TestCase):

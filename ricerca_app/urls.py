@@ -388,6 +388,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         name='high-formation-masters'),
 
     urlpatterns += path(
+        '{}/high-formation-masters/<int:id>/'.format(base_url),
+        api_views.ApiHighFormationMastersDetail.as_view(),
+        name='high-formation-master-detail'),
+
+    urlpatterns += path(
         '{}/erogation-modes/'.format(base_url),
         api_views.ApiErogationModesList.as_view(),
         name='erogation-modes'),
