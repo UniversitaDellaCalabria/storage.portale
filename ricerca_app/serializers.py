@@ -32,6 +32,14 @@ class CdSSerializer(CreateUpdateAbstract):
         for q in query['Languages']:
             langs.append(q['lingua_des_it'] if req_lang ==
                          'it' or q['lingua_des_eng'] is None else q['lingua_des_eng'])
+        data = None
+        if query["OtherData"] is not None:
+            data = CdSSerializer.to_dict_data(
+                query["OtherData"])
+        offices_data = None
+        if query["OfficesData"] is not None:
+            offices_data = CdSSerializer.to_dict_offices_data(
+                query["OfficesData"])
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'CdSId': query['cds_id'],
@@ -54,7 +62,39 @@ class CdSSerializer(CreateUpdateAbstract):
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
+            'OtherData': data,
+            'OfficesData': offices_data,
         }
+
+    @staticmethod
+    def to_dict_data(query):
+        data = []
+        for q in query:
+            data.append({
+                'DirectorId': encrypt(q['matricola_coordinatore']),
+                'DirectorName': q['nome_origine_coordinatore'],
+                'DeputyDirectorId': encrypt(q['matricola_vice_coordinatore']),
+                'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
+                'SeatsNumber': q['num_posti'],
+                'RegistrationMode': q['modalita_iscrizione']
+            })
+        return data
+
+    @staticmethod
+    def to_dict_offices_data(query):
+        data = []
+        for q in query:
+            data.append({
+                'Order': q['ordine'],
+                'OfficeDirector': encrypt(q['matricola_riferimento']),
+                'OfficeDirectorName': q['nome_origine_riferimento'],
+                'TelOffice': q['telefono'],
+                'Email': q['email'],
+                'Floor': q['piano'],
+                'Timetables': q['orari'],
+                'OnlineCounter': q['sportello_online']
+            })
+        return data
 
 
 class CdsInfoSerializer(CreateUpdateAbstract):
@@ -76,6 +116,15 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         if query['URL_CDS_VIDEO'] is not None:
             video = CdsInfoSerializer.to_dict_video(
                 query['URL_CDS_VIDEO'])
+
+        data = None
+        if query["OtherData"] is not None:
+            data = CdsInfoSerializer.to_dict_data(
+                query["OtherData"])
+        offices_data = None
+        if query["OfficesData"] is not None:
+            offices_data = CdsInfoSerializer.to_dict_offices_data(
+                query["OfficesData"])
 
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
@@ -110,6 +159,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSFinalTestMode': query['PROVA_FINALE_2'],
             'CdSSatisfactionSurvey': query['codicione'],
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
+            'OtherData': data,
+            'OfficesData': offices_data,
         }
 
 
@@ -120,6 +171,36 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         else:
             query = f'{settings.CDS_BROCHURE_MEDIA_PATH}/{query}'
             return query
+
+    @staticmethod
+    def to_dict_data(query):
+        data = []
+        for q in query:
+            data.append({
+                'DirectorId': encrypt(q['matricola_coordinatore']),
+                'DirectorName': q['nome_origine_coordinatore'],
+                'DeputyDirectorId': encrypt(q['matricola_vice_coordinatore']),
+                'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
+                'SeatsNumber': q['num_posti'],
+                'RegistrationMode': q['modalita_iscrizione']
+            })
+        return data
+
+    @staticmethod
+    def to_dict_offices_data(query):
+        data = []
+        for q in query:
+            data.append({
+                'Order': q['ordine'],
+                'OfficeDirector': encrypt(q['matricola_riferimento']),
+                'OfficeDirectorName': q['nome_origine_riferimento'],
+                'TelOffice': q['telefono'],
+                'Email': q['email'],
+                'Floor': q['piano'],
+                'Timetables': q['orari'],
+                'OnlineCounter': q['sportello_online']
+            })
+        return data
 
 
 class CdSStudyPlansSerializer(CreateUpdateAbstract):
@@ -246,7 +327,10 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivitySSD': query['sett_des'],
             'StudyActivityCompulsory': query['freq_obblig_flg'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
+            'StudyActivityTeachingUnitTypeCod': query['tipo_af_cod'],
             'StudyActivityTeachingUnitType': query['tipo_af_des'],
+            'StudyActivityInterclassTeachingUnitTypeCod': query['tipo_af_intercla_cod'],
+            'StudyActivityInterclassTeachingUnitType': query['tipo_af_intercla_des'],
             'StudyActivityTeacherID': encrypt(query['StudyActivityTeacherID']),
             'StudyActivityTeacherName': query['StudyActivityTeacherName'],
             'StudyActivityContent': query['StudyActivityContent'],

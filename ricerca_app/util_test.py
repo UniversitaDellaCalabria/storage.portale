@@ -64,7 +64,9 @@ from .models import (
     AltaFormazionePartner,
     AltaFormazioneIncaricoDidattico,
     AltaFormazionePianoDidattico,
-    AltaFormazioneTipoCorso)
+    AltaFormazioneTipoCorso,
+    DidatticaCdsAltriDati,
+    DidatticaCdsAltriDatiUfficio)
 
 
 # class ContextUnitTest(TestCase):
@@ -819,5 +821,27 @@ class AltaFormazionePianoDidatticoUnitTest(TestCase):
             data[k] = v
 
         obj = AltaFormazionePianoDidattico.objects.create(**data)
+        return obj
+
+
+class DidatticaCdsAltriDatiUnitTest(TestCase):
+    @classmethod
+    def create_didatticaCdsAltriDati(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaCdsAltriDati.objects.create(**data)
+        return obj
+
+
+class DidatticaCdsAltriDatiUfficioUnitTest(TestCase):
+    @classmethod
+    def create_didatticaCdsAltriDatiUfficio(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaCdsAltriDatiUfficio.objects.create(**data)
         return obj
 

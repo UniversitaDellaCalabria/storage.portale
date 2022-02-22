@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 
 from .filters import *
-from .models import DidatticaTestiRegolamento
+from .models import DidatticaTestiRegolamento, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio
 from .serializers import *
 from .services import *
 from .pagination import UnicalStorageApiPaginationList
@@ -237,6 +237,29 @@ class ApiCdSDetail(ApiEndpointDetail):
                     list_profiles[last_profile][text['tipo_testo_regdid_cod']
                                                 ] = text['clob_txt_eng']
         res[0]['PROFILO'] = list_profiles
+
+        res[0]['OtherData'] = DidatticaCdsAltriDati.objects.filter(cds_id=res[0]['cds_id']).values(
+            'matricola_coordinatore',
+            'nome_origine_coordinatore',
+            'matricola_vice_coordinatore',
+            'nome_origine_vice_coordinatore',
+            'num_posti',
+            'modalita_iscrizione'
+        ).distinct()
+
+        res[0]['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=res[0]['cds_id']).values(
+            'ordine',
+            'nome_ufficio',
+            'matricola_riferimento',
+            'nome_origine_riferimento',
+            'telefono',
+            'email',
+            'edificio',
+            'piano',
+            'orari',
+            'sportello_online'
+        ).distinct()
+
         return res
 
 
@@ -1070,6 +1093,18 @@ class ApiHighFormationMastersList(ApiEndpointList):
 
 
         return ServiceDidatticaCds.getHighFormationMasters(search, director, coursetype, erogation, department)
+
+
+class ApiHighFormationMastersDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce il dettaglio di un master'
+    serializer_class = HighFormationMastersSerializer
+    filter_backends = [ApiHighFormationMastersListFilter]
+
+    def get_queryset(self):
+
+        master_id = self.kwargs['id']
+
+        return ServiceDidatticaCds.getHighFormationMaster(master_id)
 
 
 class ApiErogationModesList(ApiEndpointList):
