@@ -969,6 +969,19 @@ class DidatticaCopertura(InsModAbstract):
         db_table = 'DIDATTICA_COPERTURA'
 
 
+class DidatticaCoperturaDettaglioOre(models.Model):
+    ore_coper_det_id = models.IntegerField(db_column='ORE_COPER_DET_ID', primary_key=True)  # Field name made lowercase.
+    coper = models.ForeignKey(DidatticaCopertura, models.DO_NOTHING, db_column='COPER_ID')  # Field name made lowercase.
+    tipo_att_did_cod = models.CharField(db_column='TIPO_ATT_DID_COD', max_length=10)  # Field name made lowercase.
+    ore = models.DecimalField(db_column='ORE', max_digits=6, decimal_places=2)  # Field name made lowercase.
+    dt_ins = models.DateField(db_column='DT_INS', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_COPERTURA_DETTAGLIO_ORE'
+
+
 class DidatticaDipartimento(InsModAbstract):
 
     dip_id = models.IntegerField(db_column='DIP_ID', primary_key=True)
