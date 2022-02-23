@@ -550,7 +550,11 @@ class ServiceDidatticaAttivitaFormativa:
                     'sett_des',
                     'freq_obblig_flg',
                     'cds__nome_cds_it',
-                    'cds__nome_cds_eng'
+                    'cds__nome_cds_eng',
+                    'tipo_af_des',
+                    'tipo_af_cod',
+                    'tipo_af_intercla_cod',
+                    'tipo_af_intercla_des'
                 )
             return final_query
         else:
@@ -579,6 +583,10 @@ class ServiceDidatticaAttivitaFormativa:
                 'freq_obblig_flg',
                 'cds__nome_cds_it',
                 'cds__nome_cds_eng',
+                'tipo_af_des',
+                'tipo_af_cod',
+                'tipo_af_intercla_cod',
+                'tipo_af_intercla_des'
             )
 
     @staticmethod
@@ -1232,8 +1240,7 @@ class ServiceDocente:
                                          query_cds,
                                          query_regdid,
                                          query_roles,
-                                         didatticacopertura__af__isnull=False,
-                                         flg_cessato=0) \
+                                         didatticacopertura__af__isnull=False) \
             .values("matricola",
                     "nome",
                     "middle_name",
@@ -1256,8 +1263,7 @@ class ServiceDocente:
                                           query_cds,
                                           query_regdid,
                                           query_roles,
-                                          fl_docente=1,
-                                          flg_cessato=0) \
+                                          fl_docente=1) \
             .values("matricola",
                     "nome",
                     "middle_name",
@@ -1277,6 +1283,9 @@ class ServiceDocente:
             .distinct()
 
         query = (query1 | query2).order_by('cognome','nome').distinct()
+
+        if not regdid:
+            query = query.filter(flg_cessato=0)
 
         if dip:
             department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
