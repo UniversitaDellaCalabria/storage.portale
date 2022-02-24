@@ -15,7 +15,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase, ProgettoResponsabileScientifico, UnitaOrganizzativaTipoFunzioni, ProgettoAmbitoTerritoriale, \
     ProgettoTipologiaProgramma, ProgettoRicercatore, AltaFormazioneDatiBase, AltaFormazionePartner,AltaFormazioneTipoCorso, AltaFormazionePianoDidattico, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
-    RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati
+    RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre
 
 
 class ServiceQueryBuilder:
@@ -626,8 +626,7 @@ class ServiceDidatticaAttivitaFormativa:
             'mutuata_flg',
             'af_master_id',
             'af_radice_id',
-            'didatticacopertura__coper_peso',
-            'didatticacopertura__ore'
+            'didatticacopertura__coper_peso'
         )
 
         id_master = None
@@ -642,8 +641,7 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_gen_des_eng',
                 'ciclo_des',
                 'regdid__regdid_id',
-                'didatticacopertura__coper_peso',
-                'didatticacopertura__ore'
+                'didatticacopertura__coper_peso'
             ).first()
 
         attivita_mutuate_da_questa = DidatticaAttivitaFormativa.objects.filter(
@@ -655,8 +653,7 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'ciclo_des',
             'regdid__regdid_id',
-            'didatticacopertura__coper_peso',
-            'didatticacopertura__ore'
+            'didatticacopertura__coper_peso'
         )
 
         id_radice = query.first()['af_radice_id']
@@ -669,8 +666,7 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'ciclo_des',
             'regdid__regdid_id',
-            'didatticacopertura__coper_peso',
-            'didatticacopertura__ore'
+            'didatticacopertura__coper_peso'
         )
         if len(activity_root) == 0:
             activity_root = None
@@ -685,6 +681,15 @@ class ServiceDidatticaAttivitaFormativa:
             'personale__middle_name',
             'personale__matricola')
         query = list(query)
+
+        query[0]['Hours'] = DidatticaCoperturaDettaglioOre.objects.filter(coper_id__af_id=af_id).values(
+            'tipo_att_did_cod',
+            'ore',
+            'coper_id__personale_id__matricola',
+            'coper_id__personale_id__nome',
+            'coper_id__personale_id__cognome',
+            'coper_id__personale_id__middle_name'
+        )
 
         query[0]['BorrowedFrom'] = mutuata_da
         query[0]['ActivitiesBorrowedFromThis'] = attivita_mutuate_da_questa

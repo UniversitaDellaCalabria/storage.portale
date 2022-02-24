@@ -489,7 +489,10 @@ LABEL_MAPPING = {
         'OnlineCounter': 'Online Counter',
         'StudyActivityTeachingUnitTypeCod': 'Study Activity Teaching Unit Type Cod',
         'StudyActivityInterclassTeachingUnitTypeCod': 'Study Activity Interclass Teaching Unit Type Cod',
-        'StudyActivityInterclassTeachingUnitType': 'Study Activity Interclass Teaching Unit Type'
+        'StudyActivityInterclassTeachingUnitType': 'Study Activity Interclass Teaching Unit Type',
+        'ActivityType': 'Activity Type',
+        'StudyActivityHours': 'Study Activity Hours'
+
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -860,6 +863,9 @@ LABEL_MAPPING = {
         'OnlineCounter': 'Sportello Online',
         'StudyActivityTeachingUnitTypeCod': 'Codice Tipologia Insegnamento',
         'StudyActivityInterclassTeachingUnitTypeCod': 'Codice Tipologia Insegnamento Interclasse',
-        'StudyActivityInterclassTeachingUnitType': 'Tipologia Insegnamento Interclasse'
+        'StudyActivityInterclassTeachingUnitType': 'Tipologia Insegnamento Interclasse',
+        'ActivityType': 'Tipologia Attività Didattica',
+        'StudyActivityHours': 'Ore Attività Didattica'
+
     }
 }
