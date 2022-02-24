@@ -318,6 +318,11 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             for q in query['ActivitiesBorrowedFromThis']:
                 studyactivitiesborrowedfromthis.append(
                     StudyActivityMinimalInfoSerializer.to_dict(q, req_lang))
+
+        ore = None
+        if query['Hours'] is not None:
+            ore = StudyActivityInfoSerializer.to_dict_hours(
+                query['Hours'])
         return {
             'StudyActivityID': query['af_id'],
             'StudyActivityCod': query['af_gen_cod'],
@@ -328,6 +333,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityYear': query['anno_corso'],
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityECTS': query['peso'],
+            'StudyActivityHours': ore,
             'StudyActivitySSD': query['sett_des'],
             'StudyActivityCompulsory': query['freq_obblig_flg'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
@@ -351,6 +357,21 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityRoot': studyactivityroot,
             'StudyActivityBorrowedFrom': studyactivityborrowed,
             'StudyActivitiesBorrowedFromThis': studyactivitiesborrowedfromthis}
+
+    @staticmethod
+    def to_dict_hours(query):
+        hours = []
+        for q in query:
+            full_name = q['coper_id__personale_id__cognome'] + " " + q['coper_id__personale_id__nome'] + \
+                        (" " + q['coper_id__personale_id__middle_name']
+                         if q['coper_id__personale_id__middle_name'] is not None else "")
+            hours.append({
+                'ActivityType': q['tipo_att_did_cod'],
+                'Hours': q['ore'],
+                'StudyActivityTeacherID': encrypt(q['coper_id__personale_id__matricola']),
+                'StudyActivityTeacherName': full_name
+            })
+        return hours
 
 
 class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
