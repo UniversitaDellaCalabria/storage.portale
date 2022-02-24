@@ -86,6 +86,7 @@ class CdSSerializer(CreateUpdateAbstract):
         for q in query:
             data.append({
                 'Order': q['ordine'],
+                'OfficeName': encrypt(q['nome_ufficio']),
                 'OfficeDirector': encrypt(q['matricola_riferimento']),
                 'OfficeDirectorName': q['nome_origine_riferimento'],
                 'TelOffice': q['telefono'],
@@ -192,6 +193,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         for q in query:
             data.append({
                 'Order': q['ordine'],
+                'OfficeName': encrypt(q['nome_ufficio']),
                 'OfficeDirector': encrypt(q['matricola_riferimento']),
                 'OfficeDirectorName': q['nome_origine_riferimento'],
                 'TelOffice': q['telefono'],
