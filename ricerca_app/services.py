@@ -590,6 +590,81 @@ class ServiceDidatticaAttivitaFormativa:
             )
 
     @staticmethod
+    def getAllActivities(department, academic_year, cds, teacher, teaching, ssd, period, course_year):
+
+        query_department = Q()
+        query_academic_year = Q()
+        query_cds = Q()
+        query_teacher = Q()
+        query_teaching = Q()
+        query_period = Q()
+        query_ssd = Q()
+        query_course_year = Q()
+
+
+        if academic_year:
+            query_academic_year = Q(af_id__aa_ord_id=academic_year)
+        if course_year:
+            query_course_year = Q(af_id__anno_corso=course_year)
+        if department:
+            for k in department.split(" "):
+                q_department = Q(af_id__cds_id__dip_id__dip_des_it__icontains=k)
+                query_department &= q_department
+        if cds:
+            for k in cds.split(" "):
+                q_cds = Q(af_id__cds_id__nome_cds_it__icontains=k)
+                query_cds &= q_cds
+        if teacher:
+            for k in teacher.split(" "):
+                q_teacher = Q(personale_id__cognome__icontains=k)
+                query_teacher &= q_teacher
+        if teaching:
+            for k in teaching.split(" "):
+                q_teaching = Q(af_id__des__icontains=k)
+                query_teaching &= q_teaching
+        if ssd:
+            for k in ssd.split(" "):
+                q_ssd = Q(af_id__sett_des__icontains=k)
+                query_ssd &= q_ssd
+        if period:
+            query_period = Q(af_id__ciclo_des=period)
+
+        query = DidatticaCopertura.objects.filter(
+            query_department,
+            query_academic_year,
+            query_cds,
+            query_period,
+            query_ssd,
+            query_teaching,
+            query_teacher,
+            query_course_year
+        ).values(
+            'af_id',
+            'af_id__af_gen_cod',
+            'af_id__des',
+            'af_id__af_gen_des_eng',
+            'af_id__sett_des',
+            'af_id__ciclo_des',
+            'af_id__aa_ord_id',
+            'af_id__regdid_id',
+            'af_id__cds_id',
+            'af_id__cds_id__cds_cod',
+            'af_id__cds_id__nome_cds_it',
+            'af_id__cds_id__nome_cds_eng',
+            'af_id__cds_id__dip_id__dip_cod',
+            'af_id__cds_id__dip_id__dip_des_it',
+            'af_id__cds_id__dip_id__dip_des_eng',
+            'personale_id__nome',
+            'personale_id__cognome',
+            'personale_id__middle_name',
+            'af_id__anno_corso'
+        ).distinct()
+
+        return query
+
+
+
+    @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
             af_radice_id=af_id) .exclude(

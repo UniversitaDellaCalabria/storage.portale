@@ -111,6 +111,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         api_views.ApiStudyActivityInfo.as_view(),
         name='studyactivityinfo'),
 
+    urlpatterns += path('{}/activities/'.format(base_url),
+                        api_views.ApiAllStudyActivitiesList.as_view(),
+                        name='activities'),
+
     urlpatterns += path('{}/activities/<int:studyactivityid>/'.format(base_url),
                         api_views.ApiStudyActivityDetail.as_view(),
                         name='studyactivitydetail'),

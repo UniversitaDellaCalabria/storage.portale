@@ -306,6 +306,26 @@ class ApiStudyPlanActivitiesList(ApiEndpointList):
             studyplanid=studyplanid)
 
 
+class ApiAllStudyActivitiesList(ApiEndpointList):
+    description = 'Restituisce l’elenco degli insegnamenti' \
+                  ' di un Piano di Studio con info sintetiche'
+    serializer_class = StudyActivitiesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        department = self.request.query_params.get('department')
+        cds = self.request.query_params.get('cds')
+        academic_year = self.request.query_params.get('academic_year')
+        period = self.request.query_params.get('period')
+        ssd = self.request.query_params.get('ssd')
+        teaching = self.request.query_params.get('teaching')
+        teacher = decrypt(self.request.query_params.get('teacher'))
+        course_year = self.request.query_params.get('course_year')
+
+        return ServiceDidatticaAttivitaFormativa.getAllActivities(department, cds, academic_year, period, ssd, teacher, teaching, course_year)
+
+
 class ApiStudyActivityDetail(ApiEndpointDetail):
     description = 'Restituisce le informazioni' \
                   ' dettagliate su un singolo “Insegnamento”'

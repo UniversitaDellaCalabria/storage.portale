@@ -455,7 +455,8 @@ LABEL_MAPPING = {
         'StudyActivityInterclassTeachingUnitTypeCod': 'Study Activity Interclass Teaching Unit Type Cod',
         'StudyActivityInterclassTeachingUnitType': 'Study Activity Interclass Teaching Unit Type',
         'ActivityType': 'Activity Type',
-        'StudyActivityHours': 'Study Activity Hours'
+        'StudyActivityHours': 'Study Activity Hours',
+        'StudyActivityAcademicYear': 'Study Activity Academic Year'
 
     },
     'it': {
