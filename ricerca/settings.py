@@ -457,8 +457,8 @@ LABEL_MAPPING = {
         'StudyActivityInterclassTeachingUnitType': 'Study Activity Interclass Teaching Unit Type',
         'ActivityType': 'Activity Type',
         'StudyActivityHours': 'Study Activity Hours',
-        'StudyActivityAcademicYear': 'Study Activity Academic Year'
-
+        'StudyActivityAcademicYear': 'Study Activity Academic Year',
+        'StudyActivityDevelopmentGoal': 'Study Activity Development Goal'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -832,7 +832,9 @@ LABEL_MAPPING = {
         'StudyActivityInterclassTeachingUnitTypeCod': 'Codice Tipologia Insegnamento Interclasse',
         'StudyActivityInterclassTeachingUnitType': 'Tipologia Insegnamento Interclasse',
         'ActivityType': 'Tipologia Attività Didattica',
-        'StudyActivityHours': 'Ore Attività Didattica'
+        'StudyActivityHours': 'Ore Attività Didattica',
+        'StudyActivityAcademicYear': 'Anno Accademico Attività Didattica',
+        'StudyActivityDevelopmentGoal': 'Obiettivo Attività Didattica'
 
     }
 }

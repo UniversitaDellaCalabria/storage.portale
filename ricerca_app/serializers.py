@@ -306,6 +306,9 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
+
+        full_name = str(query['personale_id__cognome']) + " " + str(query['personale_id__nome'])
+
         return {
             'StudyActivityID': query['af_id'],
             'StudyActivityCod': query['af_id__af_gen_cod'],
@@ -316,11 +319,26 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'DepartmentName': query['af_id__cds_id__dip_id__dip_des_it'] if req_lang == 'it' or query['af_id__cds_id__dip_id__dip_des_eng'] is None else query['af_id__cds_id__dip_id__dip_des_eng'],
             'DepartmentCod': query['af_id__cds_id__dip_id__dip_cod'],
             'StudyActivityYear': query['af_id__anno_corso'],
-            'StudyActivityAcademicYear': query['af_id__aa_ord_id'],
+            'StudyActivityAcademicYear': query['aa_off_id'],
             'StudyActivitySemester': query['af_id__ciclo_des'],
             'StudyActivitySSD': query['af_id__sett_des'],
             'StudyActivityCdSName': query['af_id__cds_id__nome_cds_it'] if req_lang == 'it' or query['af_id__cds_id__nome_cds_eng'] is None else query['af_id__cds_id__nome_cds_eng'],
+            'StudyActivityTeacherID': encrypt(query['personale_id__matricola']),
+            'StudyActivityTeacherName': full_name,
         }
+
+    # @staticmethod
+    # def to_dict_teachers(query):
+    #     result = []
+    #     for q in query:
+    #         full_name = q['cognome'] + " " + q['nome'] + \
+    #                     (" " + q['middle_name']
+    #                      if q['middle_name'] is not None else "")
+    #         result.append({
+    #             'TeacherID': encrypt(q['matricola']),
+    #             'TeacherName': full_name,
+    #         })
+    #     return result
 
 
 class StudyActivityInfoSerializer(CreateUpdateAbstract):
@@ -384,6 +402,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityElearningLink': query['StudyActivityElearningLink'],
             'StudyActivityElearningInfo': query['StudyActivityElearningInfo'],
             'StudyActivityPrerequisites': query['StudyActivityPrerequisites'],
+            'StudyActivityDevelopmentGoal': query['StudyActivityDevelopmentGoal'],
             'StudyActivitiesModules': query['MODULES'],
             'StudyActivityRoot': studyactivityroot,
             'StudyActivityBorrowedFrom': studyactivityborrowed,

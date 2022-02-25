@@ -590,7 +590,7 @@ class ServiceDidatticaAttivitaFormativa:
             )
 
     @staticmethod
-    def getAllActivities(department, academic_year, cds, teacher, teaching, ssd, period, course_year):
+    def getAllActivities(department, cds, academic_year, period, ssd, teacher, teaching, course_year):
 
         query_department = Q()
         query_academic_year = Q()
@@ -603,7 +603,7 @@ class ServiceDidatticaAttivitaFormativa:
 
 
         if academic_year:
-            query_academic_year = Q(af_id__aa_ord_id=academic_year)
+            query_academic_year = Q(aa_off_id=academic_year)
         if course_year:
             query_course_year = Q(af_id__anno_corso=course_year)
         if department:
@@ -616,7 +616,7 @@ class ServiceDidatticaAttivitaFormativa:
                 query_cds &= q_cds
         if teacher:
             for k in teacher.split(" "):
-                q_teacher = Q(personale_id__cognome__icontains=k)
+                q_teacher = Q(personale_id__cognome__istartswith=k)
                 query_teacher &= q_teacher
         if teaching:
             for k in teaching.split(" "):
@@ -645,7 +645,7 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id__af_gen_des_eng',
             'af_id__sett_des',
             'af_id__ciclo_des',
-            'af_id__aa_ord_id',
+            'aa_off_id',
             'af_id__regdid_id',
             'af_id__cds_id',
             'af_id__cds_id__cds_cod',
@@ -654,11 +654,25 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id__cds_id__dip_id__dip_cod',
             'af_id__cds_id__dip_id__dip_des_it',
             'af_id__cds_id__dip_id__dip_des_eng',
+            'af_id__anno_corso',
+            'personale_id__matricola',
             'personale_id__nome',
             'personale_id__cognome',
-            'personale_id__middle_name',
-            'af_id__anno_corso'
-        ).distinct()
+        ).distinct().order_by('af_id__des')
+
+
+        # for q in query:
+        #     teachers = Personale.objects.filter(id=q['personale_id']).values(
+        #         'nome',
+        #         'cognome',
+        #         'middle_name',
+        #         'matricola'
+        #     )
+        #
+        #     if len(teachers) == 0:
+        #         q['Teachers'] = []
+        #     else:
+        #         q['Teachers'] = teachers
 
         return query
 
@@ -805,6 +819,7 @@ class ServiceDidatticaAttivitaFormativa:
         query[0]['StudyActivityElearningLink'] = None
         query[0]['StudyActivityElearningInfo'] = None
         query[0]['StudyActivityPrerequisites'] = None
+        query[0]['StudyActivityDevelopmentGoal'] = None
 
         dict_activity = {
             'CONTENUTI': 'StudyActivityContent',
@@ -817,6 +832,7 @@ class ServiceDidatticaAttivitaFormativa:
             'PREREQ': 'StudyActivityPrerequisites',
             'LINK_TEAMS': 'StudyActivityElearningLink',
             'CODICE_TEAMS': 'StudyActivityElearningInfo',
+            'OB_SVIL_SOS': 'StudyActivityDevelopmentGoal',
             'PROPEDE': None,
             'LINGUA_INS': None,
             'PAG_WEB_DOC': None,
@@ -1316,7 +1332,7 @@ class ServiceDocente:
 
         # last_academic_year = ServiceDidatticaCds.getAcademicYears()[0]['aa_reg_did']
 
-        query1 = Personale.objects.filter(query_search,
+        query = Personale.objects.filter(query_search,
                                          query_cds,
                                          query_regdid,
                                          query_roles,
@@ -1338,31 +1354,6 @@ class ServiceDocente:
                       'nome',
                       'middle_name') \
             .distinct()
-
-        query2 = Personale.objects.filter(query_search,
-                                          query_cds,
-                                          query_regdid,
-                                          query_roles,
-                                          fl_docente=1) \
-            .values("matricola",
-                    "nome",
-                    "middle_name",
-                    "cognome",
-                    "cd_ruolo",
-                    "ds_ruolo_locale",
-                    "cd_ssd",
-                    "cd_uo_aff_org",
-                    "ds_ssd",
-                    "cv_full_it",
-                    "cv_short_it",
-                    "cv_full_eng",
-                    "cv_short_eng") \
-            .order_by('cognome',
-                      'nome',
-                      'middle_name') \
-            .distinct()
-
-        query = (query1 | query2).order_by('cognome','nome').distinct()
 
         if not regdid:
             query = query.filter(flg_cessato=0)
