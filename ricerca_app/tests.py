@@ -575,6 +575,98 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         assert res.json()['results']['StudyActivityID'] == 2
 
 
+
+class ApiAllStudyActivitiesListUnitTest(TestCase):
+
+    def test_apiallstudyactivitieslist(self):
+        req = Client()
+
+        regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
+
+        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_cod': 'aaaa',
+            'dip_des_it': 'storia',
+            'dip_des_eng': 'history'
+        })
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'cds_id': 1,
+            'cds_cod': 'aaa',
+            'nome_cds_it': 'Matematica',
+            'nome_cds_eng': 'Math',
+            'dip_id': 1,
+        })
+        course = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 1,
+            'des': 'informatica',
+            'af_gen_des_eng': 'computer science',
+            'ciclo_des': 'Primo semestre',
+            'regdid': regdid,
+            'af_radice_id': 1,
+            'matricola_resp_did': '111111',
+            'mutuata_flg': 1,
+            'af_master_id': 2,
+            'sett_des': 'Interdisciplinare',
+            'cds_id': 1,
+            'anno_corso': 1,
+
+        })
+
+        p = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af': course,
+            'personale': p,
+            'aa_off_id': 2015,
+        })
+
+        url = reverse(
+            'ricerca:activities')
+
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+        data = {'department': 'storia'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'teaching': 'informatica'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'cds': 'Matematica'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'ssd': 'Interdisciplinare'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'period': 'Primo semestre'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'course_year': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'academic_year': 2015}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
 class ApiStudyActivityDetailUnitTest(TestCase):
 
     def test_apistudyactivityinfo(self):
@@ -1058,7 +1150,7 @@ class ApiTeachersListUnitTest(TestCase):
 
         # Three professor have flg_cessato = 0
         res = req.get(url)
-        assert len(res.json()['results']) == 3
+        assert len(res.json()['results']) == 2
 
         data = {'search': 'gar'}
         res = req.get(url, data=data)
@@ -1070,11 +1162,11 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {'department': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 2
+        assert len(res.json()['results']) == 1
 
         data = {'department': 1, 'role': 'PO'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 0
 
         data = {'department': 1, 'role': 'PA', 'lang': 'en'}
         res = req.get(url, data=data)
