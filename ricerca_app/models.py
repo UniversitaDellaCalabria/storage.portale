@@ -395,6 +395,17 @@ class DidatticaAttivitaFormativa(InsModAbstract):
         return self.af_id == self.af_radice_id
 
 
+class DidatticaAttivitaFormativaModalita(models.Model):
+    mod_did_af_id = models.IntegerField(db_column='MOD_DID_AF_ID', primary_key=True)  # Field name made lowercase.
+    af = models.ForeignKey(DidatticaAttivitaFormativa, models.DO_NOTHING, db_column='AF_ID')  # Field name made lowercase.
+    mod_did_cod = models.CharField(db_column='MOD_DID_COD', max_length=40)  # Field name made lowercase.
+    mod_did_des = models.CharField(db_column='MOD_DID_DES', max_length=1000)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_ATTIVITA_FORMATIVA_MODALITA'
+
+
 class DidatticaCds(InsModAbstract):
 
     cds_id = models.IntegerField(db_column='CDS_ID', primary_key=True)

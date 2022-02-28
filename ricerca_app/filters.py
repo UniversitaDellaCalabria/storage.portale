@@ -143,7 +143,7 @@ class ApiResearchGroupsListFilter(GenericApiFilter):
             'type': 'string'
         },
         {
-            'name': 'erc1cod',
+            'name': 'coderc1',
             'description': 'Lista di Codici di erc1',
             'required': False,
             'type': 'string'

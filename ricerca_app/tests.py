@@ -25,7 +25,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
     UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest,\
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
-    AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest
+    AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -715,6 +715,13 @@ class ApiStudyActivityDetailUnitTest(TestCase):
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course,
             'personale': p,
+        })
+
+        DidatticaAttivitaFormativaModalitaUnitTest.create_didatticaAttivitaFormativaModalita(**{
+            'mod_did_af_id': 1,
+            'af_id': 1,
+            'mod_did_cod': 'c',
+            'mod_did_des': 'convenzionale'
         })
 
         url = reverse(

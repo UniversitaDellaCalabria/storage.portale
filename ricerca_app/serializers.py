@@ -372,6 +372,11 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
         if query['Hours'] is not None:
             ore = StudyActivityInfoSerializer.to_dict_hours(
                 query['Hours'])
+
+        modalities = None
+        if query['Modalities'] is not None:
+            modalities = StudyActivityInfoSerializer.to_dict_modalities(
+                query['Modalities'])
         return {
             'StudyActivityID': query['af_id'],
             'StudyActivityCod': query['af_gen_cod'],
@@ -383,6 +388,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityECTS': query['peso'],
             'StudyActivityHours': ore,
+            'StudyActivityModalities': modalities,
             'StudyActivitySSD': query['sett_des'],
             'StudyActivityCompulsory': query['freq_obblig_flg'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
@@ -422,6 +428,17 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
                 'StudyActivityTeacherName': full_name
             })
         return hours
+
+    @staticmethod
+    def to_dict_modalities(query):
+        modalities = []
+        for q in query:
+            modalities.append({
+                'ModalityActivityId': q['mod_did_af_id'],
+                'ModalityActivityCod': q['mod_did_cod'],
+                'ModalityActivityDescription': q['mod_did_des'],
+            })
+        return modalities
 
 
 class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
