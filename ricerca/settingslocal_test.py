@@ -494,7 +494,11 @@ LABEL_MAPPING = {
         'ActivityType': 'Activity Type',
         'StudyActivityHours': 'Study Activity Hours',
         'StudyActivityAcademicYear': 'Study Activity Academic Year',
-        'StudyActivityDevelopmentGoal': 'Study Activity Development Goal'
+        'StudyActivityDevelopmentGoal': 'Study Activity Development Goal',
+        'StudyActivityModalities': 'Study Activity Modalities',
+        'ModalityActivityId': 'Modality Activity Id',
+        'ModalityActivityCod': 'Modality Activity Cod',
+        'ModalityActivityDescription': 'Modality Activity Description'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -870,6 +874,10 @@ LABEL_MAPPING = {
         'ActivityType': 'Tipologia Attività Didattica',
         'StudyActivityHours': 'Ore Attività Didattica',
         'StudyActivityAcademicYear': 'Anno Accademico Attività Didattica',
-        'StudyActivityDevelopmentGoal': 'Obiettivo Attività Didattica'
+        'StudyActivityDevelopmentGoal': 'Obiettivo Attività Didattica',
+        'StudyActivityModalities': 'Modalità Attività Didattica',
+        'ModalityActivityId': 'Id Modalità Attività Didattica',
+        'ModalityActivityCod': 'Codice Modalità Attività Didattica',
+        'ModalityActivityDescription': 'Descrizione Modalità Attività Didattica'
     }
 }

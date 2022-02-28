@@ -15,7 +15,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     SpinoffStartupDatiBase, TipologiaAreaTecnologica, ProgettoDatiBase, ProgettoResponsabileScientifico, UnitaOrganizzativaTipoFunzioni, ProgettoAmbitoTerritoriale, \
     ProgettoTipologiaProgramma, ProgettoRicercatore, AltaFormazioneDatiBase, AltaFormazionePartner,AltaFormazioneTipoCorso, AltaFormazionePianoDidattico, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
-    RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre
+    RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
+    DidatticaAttivitaFormativaModalita
 
 
 class ServiceQueryBuilder:
@@ -681,8 +682,8 @@ class ServiceDidatticaAttivitaFormativa:
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
-            af_radice_id=af_id) .exclude(
-            af_id=af_id) .values(
+            af_radice_id=af_id).exclude(
+            af_id=af_id).values(
             'af_id',
             'af_gen_cod',
             'des',
@@ -778,6 +779,12 @@ class ServiceDidatticaAttivitaFormativa:
             'coper_id__personale_id__nome',
             'coper_id__personale_id__cognome',
             'coper_id__personale_id__middle_name'
+        )
+
+        query[0]['Modalities'] = DidatticaAttivitaFormativaModalita.objects.filter(af_id=af_id).values(
+            'mod_did_af_id',
+            'mod_did_cod',
+            'mod_did_des'
         )
 
         query[0]['BorrowedFrom'] = mutuata_da
