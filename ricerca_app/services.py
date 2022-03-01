@@ -16,7 +16,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     ProgettoTipologiaProgramma, ProgettoRicercatore, AltaFormazioneDatiBase, AltaFormazionePartner,AltaFormazioneTipoCorso, AltaFormazionePianoDidattico, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
-    DidatticaAttivitaFormativaModalita
+    DidatticaAttivitaFormativaModalita, RicercaErc1
 
 
 class ServiceQueryBuilder:
@@ -655,6 +655,10 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id__cds_id__dip_id__dip_cod',
             'af_id__cds_id__dip_id__dip_des_it',
             'af_id__cds_id__dip_id__dip_des_eng',
+            'fat_part_stu_cod',
+            'fat_part_stu_des',
+            'part_stu_cod',
+            'part_stu_des',
             'af_id__anno_corso',
             'personale_id__matricola',
             'personale_id__nome',
@@ -769,7 +773,12 @@ class ServiceDidatticaAttivitaFormativa:
             'personale__nome',
             'personale__cognome',
             'personale__middle_name',
-            'personale__matricola')
+            'personale__matricola',
+            'fat_part_stu_cod',
+            'fat_part_stu_des',
+            'part_stu_cod',
+            'part_stu_des',
+        )
         query = list(query)
 
         query[0]['Hours'] = DidatticaCoperturaDettaglioOre.objects.filter(coper_id__af_id=af_id).values(
@@ -795,11 +804,23 @@ class ServiceDidatticaAttivitaFormativa:
         query[0]['StudyActivityTeacherID'] = None
         query[0]['StudyActivityTeacherName'] = None
 
+        query[0]['PartitionCod'] = None
+        query[0]['PartitionDescription'] = None
+        query[0]['ExtendedPartitionCod'] = None
+        query[0]['ExtendedPartitionDescription'] = None
+
         for q in copertura:
             if q['personale__matricola'] == query[0]['matricola_resp_did']:
                 query[0]['StudyActivityTeacherID'] = q['personale__matricola']
-                query[0]['StudyActivityTeacherName'] = q['personale__cognome'] + " " + q['personale__nome'] + \
-                    (" " + q['personale__middle_name'] if q['personale__middle_name'] is not None else "")
+                if q['personale__cognome'] and q['personale__nome']:
+                    query[0]['StudyActivityTeacherName'] = f"{q['personale__cognome']} {q['personale__nome']}"
+                    if q['personale__middle_name']:
+                        query[0]['StudyActivityTeacherName'] = f"{query[0]['StudyActivityTeacherName']} {q['personale__middle_name']}"
+
+            query[0]['PartitionCod'] = q['part_stu_cod']
+            query[0]['PartitionDescription'] = q['part_stu_des']
+            query[0]['ExtendedPartitionCod'] = q['fat_part_stu_cod']
+            query[0]['ExtendedPartitionDescription'] = q['fat_part_stu_des']
 
         texts_af = DidatticaTestiAf.objects.filter(
             af_id=af_id).values(
@@ -2465,7 +2486,24 @@ class ServiceLaboratorio:
             "id_tipologia_attivita__id",
             "id_tipologia_attivita__descrizione"
         ).distinct()
-        erc1 = ServiceLaboratorio.getErc1List(laboratoryid)
+
+
+        erc1 = LaboratorioDatiErc1.objects.filter(
+            id_laboratorio_dati=laboratoryid).values(
+            'id_ricerca_erc1__ricerca_erc0_cod__erc0_cod',
+            'id_ricerca_erc1__ricerca_erc0_cod__description',
+            'id_ricerca_erc1__ricerca_erc0_cod__description_en').distinct()
+
+        query = list(query)
+
+        for q in erc1:
+            q['Erc1'] = LaboratorioDatiErc1.objects.filter(
+            id_laboratorio_dati=laboratoryid).filter(
+                id_ricerca_erc1__ricerca_erc0_cod=q['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod']).values(
+                'id_ricerca_erc1__id',
+                'id_ricerca_erc1__cod_erc1',
+                'id_ricerca_erc1__descrizione').distinct()
+
         personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values(
             "matricola_personale_ricerca__matricola",
@@ -2494,7 +2532,7 @@ class ServiceLaboratorio:
         query = list(query)
         for q in query:
             q['Scopes'] = finalita
-            q['Erc1'] = erc1
+            q['LaboratoryErc1'] = erc1
             q['ResearchPersonnel'] = personale_ricerca
             q['TechPersonnel'] = personale_tecnico
             q['OfferedServices'] = servizi_offerti
@@ -2508,7 +2546,6 @@ class ServiceLaboratorio:
                     "id_dip__dip_des_it") if language == "it" else other_dep.order_by("id_dip__dip_des_eng")
             else:
                 q['ExtraDepartments'] = []
-
         return query
 
     @staticmethod
@@ -2529,51 +2566,42 @@ class ServiceLaboratorio:
             "descrizione").distinct()
 
     @staticmethod
-    def getErc1List(laboratorio):
+    def getErc1List():
 
-        query_laboratorio = Q()
-
-        if laboratorio:
-            query_laboratorio = Q(id_laboratorio_dati__exact=laboratorio)
-
-        query = LaboratorioDatiErc1.objects.filter(
-            query_laboratorio,
-        ).values(
-            'id_ricerca_erc1__ricerca_erc0_cod__erc0_cod',
-            'id_ricerca_erc1__ricerca_erc0_cod__description',
-            'id_ricerca_erc1__ricerca_erc0_cod__description_en').distinct()
+        query = RicercaErc0.objects.values(
+            'erc0_cod',
+            'description',
+            'description_en').distinct()
 
         query = list(query)
 
         for q in query:
 
-            q['Erc1'] = LaboratorioDatiErc1.objects.filter(
-                query_laboratorio,
-                id_ricerca_erc1__ricerca_erc0_cod=q['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod']).values(
-                'id_ricerca_erc1__id',
-                'id_ricerca_erc1__cod_erc1',
-                'id_ricerca_erc1__descrizione').distinct()
-
+            q['Erc1'] = RicercaErc1.objects.filter(
+                ricerca_erc0_cod=q['erc0_cod']).values(
+                'id',
+                'cod_erc1',
+                'descrizione').distinct()
         return query
 
     @staticmethod
     def getErc0List():
 
-        query = LaboratorioDatiErc1.objects.all(). values(
-            'id_ricerca_erc1__ricerca_erc0_cod__erc0_cod',
-            'id_ricerca_erc1__ricerca_erc0_cod__description',
-            'id_ricerca_erc1__ricerca_erc0_cod__description_en').distinct()
+        query = RicercaErc0.objects.all().values(
+            'erc0_cod',
+            'description',
+            'description_en').distinct()
 
         return query
 
     @staticmethod
     def getErc2List():
-        query = ServiceLaboratorio.getErc1List(None)
+        query = ServiceLaboratorio.getErc1List()
 
         for q in query:
             for i in range(len(q['Erc1'])):
                 q['Erc1'][i]['Erc2'] = RicercaErc2.objects.filter(
-                    ricerca_erc1_id=q['Erc1'][i]['id_ricerca_erc1__id']).values(
+                    ricerca_erc1_id=q['Erc1'][i]['id']).values(
                     'cod_erc2', 'descrizione').distinct()
         return query
 

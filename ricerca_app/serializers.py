@@ -322,6 +322,10 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityAcademicYear': query['aa_off_id'],
             'StudyActivitySemester': query['af_id__ciclo_des'],
             'StudyActivitySSD': query['af_id__sett_des'],
+            'StudyActivityPartitionCod': query['part_stu_cod'],
+            'StudyActivityPartitionDes': query['part_stu_des'],
+            'StudyActivityExtendedPartitionCod': query['fat_part_stu_cod'],
+            'StudyActivityExtendedPartitionDes': query['fat_part_stu_des'],
             'StudyActivityCdSName': query['af_id__cds_id__nome_cds_it'] if req_lang == 'it' or query['af_id__cds_id__nome_cds_eng'] is None else query['af_id__cds_id__nome_cds_eng'],
             'StudyActivityTeacherID': encrypt(query['personale_id__matricola']),
             'StudyActivityTeacherName': full_name,
@@ -398,6 +402,10 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityInterclassTeachingUnitType': query['tipo_af_intercla_des'],
             'StudyActivityTeacherID': encrypt(query['StudyActivityTeacherID']),
             'StudyActivityTeacherName': query['StudyActivityTeacherName'],
+            'StudyActivityPartitionCod': query['PartitionCod'],
+            'StudyActivityPartitionDes': query['PartitionDescription'],
+            'StudyActivityExtendedPartitionCod': query['ExtendedPartitionCod'],
+            'StudyActivityExtendedPartitionDes': query['ExtendedPartitionDescription'],
             'StudyActivityContent': query['StudyActivityContent'],
             'StudyActivityProgram': query['StudyActivityProgram'],
             'StudyActivityLearningOutcomes': query['StudyActivityLearningOutcomes'],
@@ -418,9 +426,11 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
     def to_dict_hours(query):
         hours = []
         for q in query:
-            full_name = q['coper_id__personale_id__cognome'] + " " + q['coper_id__personale_id__nome'] + \
-                        (" " + q['coper_id__personale_id__middle_name']
-                         if q['coper_id__personale_id__middle_name'] is not None else "")
+            full_name = None
+            if q['coper_id__personale_id__cognome'] and q['coper_id__personale_id__nome']:
+                full_name = f"{q['coper_id__personale_id__cognome']} {q['coper_id__personale_id__nome']}"
+                if q['coper_id__personale_id__middle_name']:
+                    full_name = f"{full_name} {q['coper_id__personale_id__middle_name']}"
             hours.append({
                 'ActivityType': q['tipo_att_did_cod'],
                 'Hours': q['ore'],
@@ -1140,7 +1150,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-        erc1 = Erc1Serializer.to_dict(query['Erc1'][0], req_lang)
+        erc0 = LaboratoryDetailSerializer.to_dict_erc0(query['LaboratoryErc1'], req_lang)
         research_personnel = LaboratoryDetailSerializer.to_dict_research_personnel(
             query['ResearchPersonnel'])
         tech_personnel = LaboratoryDetailSerializer.to_dict_tech_personnel(
@@ -1178,7 +1188,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'LaboratoryResearchScope': query['finalita_ricerca_it'] if req_lang == "it" or query['finalita_ricerca_en'] is None else query['finalita_ricerca_en'],
             'LaboratoryTeachingScope': query['finalita_didattica_it'] if req_lang == "it" or query['finalita_didattica_en'] is None else query['finalita_didattica_en'],
             'LaboratoryScopes': scopes,
-            'LaboratoryErc1': erc1,
+            'LaboratoryErc1': erc0,
             'LaboratoryResearchPersonnel': research_personnel,
             'LaboratoryTechPersonnel': tech_personnel,
             'LaboratoryOfferedServices': offered_services,
@@ -1193,6 +1203,33 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             result.append({'ScopeID': q['id_tipologia_attivita__id'],
                            'ScopeDescription': q["id_tipologia_attivita__descrizione"]})
         return result
+
+    @staticmethod
+    def to_dict_erc0(query, req_lang='en'):
+        result = []
+        for q in query:
+            result.append({
+                'IdErc0': q['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
+                'Description': q['id_ricerca_erc1__ricerca_erc0_cod__description']
+                if req_lang == "it" or q['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else q[
+                    'id_ricerca_erc1__ricerca_erc0_cod__description_en'],
+                'Erc1List': LaboratoryDetailSerializer.to_dict_erc1_list(q['Erc1'], req_lang),
+            })
+        return result
+
+    @staticmethod
+    def to_dict_erc1_list(query, req_lang="en"):
+
+        result = []
+
+        for q in query:
+            result.append({
+                'IdErc1': q['id_ricerca_erc1__cod_erc1'],
+                'Description': q['id_ricerca_erc1__descrizione'],
+
+            })
+        return result
+
 
     @staticmethod
     def to_dict_research_personnel(query):
@@ -1387,10 +1424,10 @@ class Erc1Serializer(CreateUpdateAbstract):
         erc1 = Erc1Serializer.to_dict_erc1_list(query['Erc1'], req_lang)
 
         return {
-            'IdErc0': query['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
-            'Description': query['id_ricerca_erc1__ricerca_erc0_cod__description']
-            if req_lang == "it" or query['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else query[
-                'id_ricerca_erc1__ricerca_erc0_cod__description_en'],
+            'IdErc0': query['erc0_cod'],
+            'Description': query['description']
+            if req_lang == "it" or query['description_en'] is None else query[
+                'description_en'],
             'Erc1List': erc1,
         }
 
@@ -1401,8 +1438,8 @@ class Erc1Serializer(CreateUpdateAbstract):
 
         for q in query:
             result.append({
-                'IdErc1': q['id_ricerca_erc1__cod_erc1'],
-                'Description': q['id_ricerca_erc1__descrizione'],
+                'IdErc1': q['cod_erc1'],
+                'Description': q['descrizione'],
             })
 
         return result
@@ -1418,8 +1455,8 @@ class Erc0Serializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-        return {'IdErc0': query['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod'], 'Description': query['id_ricerca_erc1__ricerca_erc0_cod__description']
-                if req_lang == "it" or query['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else query['id_ricerca_erc1__ricerca_erc0_cod__description_en']}
+        return {'IdErc0': query['erc0_cod'], 'Description': query['description']
+                if req_lang == "it" or query['description_en'] is None else query['description_en']}
 
 
 class Erc2Serializer(CreateUpdateAbstract):
@@ -1435,10 +1472,10 @@ class Erc2Serializer(CreateUpdateAbstract):
         erc1 = Erc2Serializer.to_dict_erc1_list(query['Erc1'], req_lang)
 
         return {
-            'IdErc0': query['id_ricerca_erc1__ricerca_erc0_cod__erc0_cod'],
-            'Description': query['id_ricerca_erc1__ricerca_erc0_cod__description']
-            if req_lang == "it" or query['id_ricerca_erc1__ricerca_erc0_cod__description_en'] is None else query[
-                'id_ricerca_erc1__ricerca_erc0_cod__description_en'],
+            'IdErc0': query['erc0_cod'],
+            'Description': query['description']
+            if req_lang == "it" or query['description_en'] is None else query[
+                'description_en'],
             'Erc1List': erc1,
         }
 
@@ -1447,8 +1484,8 @@ class Erc2Serializer(CreateUpdateAbstract):
         result = []
         for q in query:
             result.append({
-                'IdErc1': q['id_ricerca_erc1__cod_erc1'],
-                'Description': q['id_ricerca_erc1__descrizione'],
+                'IdErc1': q['cod_erc1'],
+                'Description': q['descrizione'],
                 'Erc2List': Erc2Serializer.to_dict_erc2_list(q['Erc2'], req_lang),
             })
         return result

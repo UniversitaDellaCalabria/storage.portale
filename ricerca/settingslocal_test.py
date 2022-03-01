@@ -119,6 +119,7 @@ DATABASES = {
 
 # MAPPING LABEL
 
+
 LABEL_MAPPING = {
     'en': {
         'RegDidId': 'Teaching Regulation ID',
@@ -498,7 +499,11 @@ LABEL_MAPPING = {
         'StudyActivityModalities': 'Study Activity Modalities',
         'ModalityActivityId': 'Modality Activity Id',
         'ModalityActivityCod': 'Modality Activity Cod',
-        'ModalityActivityDescription': 'Modality Activity Description'
+        'ModalityActivityDescription': 'Modality Activity Description',
+        'StudyActivityPartitionCod': 'Study Activity Partition Code',
+        'StudyActivityPartitionDes': 'Study Activity Partition Description',
+        'StudyActivityExtendedPartitionCod': 'Study Activity Extended Partition Code',
+        'StudyActivityExtendedPartitionDes': 'Study Activity Extended Partition Description',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -878,6 +883,10 @@ LABEL_MAPPING = {
         'StudyActivityModalities': 'Modalità Attività Didattica',
         'ModalityActivityId': 'Id Modalità Attività Didattica',
         'ModalityActivityCod': 'Codice Modalità Attività Didattica',
-        'ModalityActivityDescription': 'Descrizione Modalità Attività Didattica'
+        'ModalityActivityDescription': 'Descrizione Modalità Attività Didattica',
+        'StudyActivityPartitionCod': 'Codice Partizionamento',
+        'StudyActivityPartitionDes': 'Descrizione Partizionamento',
+        'StudyActivityExtendedPartitionCod': 'Codice Esteso Partizionamento',
+        'StudyActivityExtendedPartitionDes': 'Descrizione Estesa Partizionamento',
     }
 }

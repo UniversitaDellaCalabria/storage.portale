@@ -766,13 +766,12 @@ class ApiLaboratoriesAreasList(ApiEndpointList):
 class ApiErc1List(ApiEndpointList):
     description = 'La funzione restituisce la lista degli erc1'
     serializer_class = Erc1Serializer
-    filter_backends = [ApiErc1ListFilter]
+    filter_backends = []
 
     def get_queryset(self):
 
-        laboratory = self.request.query_params.get('laboratory')
 
-        return ServiceLaboratorio.getErc1List(laboratory)
+        return ServiceLaboratorio.getErc1List()
 
 
 class ApiErc2List(ApiEndpointList):
@@ -793,14 +792,13 @@ class Erc1FilterList(AutoSchema):
 class ApiErc1FilterList(ApiEndpointListSupport):
     description = 'La funzione restituisce la lista degli erc1 senza paginazione'
     serializer_class = Erc1Serializer
-    filter_backends = [ApiErc1ListFilter]
+    filter_backends = []
     schema = Erc1FilterList()
 
     def get_queryset(self):
 
-        laboratory = self.request.query_params.get('laboratory')
 
-        return ServiceLaboratorio.getErc1List(laboratory)
+        return ServiceLaboratorio.getErc1List()
 
 
 class ApiErc0List(ApiEndpointList):
