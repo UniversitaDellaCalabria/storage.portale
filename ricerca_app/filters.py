@@ -658,8 +658,7 @@ class ApiAllActivitiesListFilter(GenericApiFilter):
             'description': 'CDS',
             'required': False,
             'schema': {
-                'type': 'integer',
-                'format': 'int32',
+                'type': 'string',
             },
         },
         {
