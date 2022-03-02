@@ -608,7 +608,7 @@ class ServiceDidatticaAttivitaFormativa:
         if course_year:
             query_course_year = Q(af_id__anno_corso=course_year)
         if department:
-            query_department = Q(af_id__cds_id__dip_id__dip_cod=k)
+            query_department = Q(af_id__cds_id__dip_id__dip_cod=department)
         if cds:
             for k in cds.split(" "):
                 q_cds = Q(af_id__cds_id__nome_cds_it__icontains=k)
