@@ -610,9 +610,7 @@ class ServiceDidatticaAttivitaFormativa:
         if department:
             query_department = Q(af_id__cds_id__dip_id__dip_cod=department)
         if cds:
-            for k in cds.split(" "):
-                q_cds = Q(af_id__cds_id__nome_cds_it__icontains=k)
-                query_cds &= q_cds
+            query_cds = Q(af_id__regdid_id=cds)
         if teacher:
             for k in teacher.split(" "):
                 q_teacher = Q(personale_id__cognome__istartswith=k)

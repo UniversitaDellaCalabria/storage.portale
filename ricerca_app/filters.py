@@ -643,3 +643,65 @@ class ApiHighFormationMastersListFilter(GenericApiFilter):
             'type': 'string'
         },
     ]
+
+
+class ApiAllActivitiesListFilter(GenericApiFilter):
+    search_params = [
+        {
+            'name': 'department',
+            'description': 'Dipartimento',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'cds',
+            'description': 'CDS',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+        {
+            'name': 'period',
+            'description': 'Periodo',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'academic_year',
+            'description': 'Anno Accademico',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+        {
+            'name': 'ssd',
+            'description': 'SSD',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'teaching',
+            'description': 'Insegnamento',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'teacher',
+            'description': 'Docente',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'course_year',
+            'description': 'Anno Di Corso',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+    ]

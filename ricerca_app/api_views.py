@@ -310,7 +310,7 @@ class ApiAllStudyActivitiesList(ApiEndpointList):
     description = 'Restituisce l’elenco degli insegnamenti' \
                   ' di un Piano di Studio con info sintetiche'
     serializer_class = StudyActivitiesSerializer
-    filter_backends = []
+    filter_backends = [ApiAllActivitiesListFilter]
 
     def get_queryset(self):
 
