@@ -690,7 +690,8 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_cod',
             'des',
             'af_gen_des_eng',
-            'ciclo_des')
+            'ciclo_des',
+            'matricola_resp_did')
 
         query = DidatticaAttivitaFormativa.objects.filter(
             af_id=af_id).order_by(
@@ -815,10 +816,10 @@ class ServiceDidatticaAttivitaFormativa:
                     if q['personale__middle_name']:
                         query[0]['StudyActivityTeacherName'] = f"{query[0]['StudyActivityTeacherName']} {q['personale__middle_name']}"
 
-            query[0]['PartitionCod'] = q['part_stu_cod']
-            query[0]['PartitionDescription'] = q['part_stu_des']
-            query[0]['ExtendedPartitionCod'] = q['fat_part_stu_cod']
-            query[0]['ExtendedPartitionDescription'] = q['fat_part_stu_des']
+                query[0]['PartitionCod'] = q['part_stu_cod']
+                query[0]['PartitionDescription'] = q['part_stu_des']
+                query[0]['ExtendedPartitionCod'] = q['fat_part_stu_cod']
+                query[0]['ExtendedPartitionDescription'] = q['fat_part_stu_des']
 
         texts_af = DidatticaTestiAf.objects.filter(
             af_id=af_id).values(
@@ -828,11 +829,24 @@ class ServiceDidatticaAttivitaFormativa:
 
         query[0]['MODULES'] = list()
         for i in range(len(list_submodules)):
+            copertura = DidatticaCopertura.objects.filter(
+                af_id=list_submodules[i]['af_id'],
+                personale__matricola=list_submodules[i]['matricola_resp_did']).values(
+                'fat_part_stu_cod',
+                'fat_part_stu_des',
+                'part_stu_cod',
+                'part_stu_des',
+            ).first()
+
             query[0]['MODULES'].append({
                 'StudyActivityID': list_submodules[i]['af_id'],
                 'StudyActivityCod': list_submodules[i]['af_gen_cod'],
                 'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i]['af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
                 'StudyActivitySemester': list_submodules[i]['ciclo_des'],
+                'StudyActivityPartitionCod': copertura['part_stu_cod'] if copertura else None,
+                'StudyActivityPartitionDescription': copertura['part_stu_des'] if copertura else None,
+                'StudyActivityExtendedPartitionCod': copertura['fat_part_stu_cod'] if copertura else None,
+                'StudyActivityExtendedPartitionDes': copertura['fat_part_stu_des'] if copertura else None,
             })
 
         query[0]['StudyActivityContent'] = None
