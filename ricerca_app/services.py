@@ -931,7 +931,7 @@ class ServiceDocente:
 
         if search is not None:
             for k in search.split(" "):
-                q_nome = Q(nome__icontains=k) | Q(descrizione__icontains=k)
+                q_nome = Q(nome__icontains=k) | Q(descrizione__icontains=k) | Q(ricerca_erc1_id__descrizione__icontains=k) | Q(ricercadocentegruppo__personale_id__cognome__istartswith=k)
                 query_search &= q_nome
 
         if cod:
@@ -1049,7 +1049,7 @@ class ServiceDocente:
 
         if search:
             for k in search.split(" "):
-                q_descrizione = Q(descrizione__icontains=k)
+                q_descrizione = Q(descrizione__icontains=k) | Q(ricerca_erc1_id__descrizione__icontains=k) | Q(ricercadocentegruppo__personale_id__cognome__istartswith=k)
                 query_search &= q_descrizione
         if year:
             query_year = Q(anno=year)
