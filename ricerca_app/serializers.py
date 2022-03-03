@@ -330,6 +330,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityCdSName': query['af_id__cds_id__nome_cds_it'] if req_lang == 'it' or query['af_id__cds_id__nome_cds_eng'] is None else query['af_id__cds_id__nome_cds_eng'],
             'StudyActivityTeacherID': encrypt(query['personale_id__matricola']),
             'StudyActivityTeacherName': full_name,
+            'StudyPlanDes': query['pds_des'],
         }
 
     # @staticmethod

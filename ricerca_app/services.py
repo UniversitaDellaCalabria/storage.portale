@@ -664,6 +664,7 @@ class ServiceDidatticaAttivitaFormativa:
             'personale_id__matricola',
             'personale_id__nome',
             'personale_id__cognome',
+            'pds_des'
         ).distinct().order_by('af_id__des')
 
 
