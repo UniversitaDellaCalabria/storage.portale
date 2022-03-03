@@ -644,6 +644,7 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id__af_gen_cod',
             'af_id__des',
             'af_id__af_gen_des_eng',
+            'af_id__sett_cod',
             'af_id__sett_des',
             'af_id__ciclo_des',
             'aa_off_id',

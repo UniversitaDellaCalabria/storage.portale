@@ -789,6 +789,7 @@ class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivitySemester': query['didatticacopertura__ciclo_des'],
             'StudyActivityECTS': query['didatticacopertura__peso'],
             'StudyActivityLanguage': query['didatticacopertura__af__lista_lin_did_af'],
+            'StudyActivitySSDCod': query['didatticacopertura__sett_cod'],
             'StudyActivitySSD': query['didatticacopertura__sett_des'],
             'StudyActivityCompulsory': query['didatticacopertura__af__freq_obblig_flg'],
             'StudyActivityPartitionCod': query['didatticacopertura__fat_part_stu_cod'],
