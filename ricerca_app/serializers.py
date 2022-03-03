@@ -328,8 +328,8 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityExtendedPartitionCod': query['fat_part_stu_cod'],
             'StudyActivityExtendedPartitionDes': query['fat_part_stu_des'],
             'StudyActivityCdSName': query['af_id__cds_id__nome_cds_it'] if req_lang == 'it' or query['af_id__cds_id__nome_cds_eng'] is None else query['af_id__cds_id__nome_cds_eng'],
-            'StudyActivityTeacherID': encrypt(query['personale_id__matricola']),
-            'StudyActivityTeacherName': full_name,
+            'StudyActivityTeacherID': encrypt(query['personale_id__matricola']) if query['personale_id__matricola'] else None,
+            'StudyActivityTeacherName': full_name if query['personale_id__matricola'] else None,
             'StudyPlanDes': query['pds_des'],
         }
 
