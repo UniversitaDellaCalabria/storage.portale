@@ -489,9 +489,11 @@ class ApiTeachersList(ApiEndpointList):
         department = self.request.query_params.get('department')
         role = self.request.query_params.get('role')
         cds = self.request.query_params.get('cds')
+        year = self.request.query_params.get('year')
+
 
         return ServiceDocente.teachersList(
-            search, regdidid, department, role, cds)
+            search, regdidid, department, role, cds, year)
 
 
 class TeachingCoveragesList(AutoSchema):
@@ -514,9 +516,10 @@ class ApiTeachingCoveragesList(ApiEndpointList):
         department = self.request.query_params.get('department')
         role = self.request.query_params.get('role')
         cds = self.request.query_params.get('cds')
+        year = self.request.query_params.get('year')
 
         return ServiceDocente.teachingCoveragesList(
-            search, regdidid, department, role, cds)
+            search, regdidid, department, role, cds, year)
 
 
 class ApiTeacherStudyActivitiesList(ApiEndpointList):

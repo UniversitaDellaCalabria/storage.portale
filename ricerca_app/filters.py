@@ -180,6 +180,15 @@ class ApiTeachersListFilter(GenericApiFilter):
             'required': False,
             'type': 'string'
         },
+        {
+            'name': 'year',
+            'description': 'Anno Erogazione Attività',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            }
+        },
     ]
 
 

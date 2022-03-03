@@ -1356,12 +1356,13 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def teachersList(search, regdid, dip, role, cds):
+    def teachersList(search, regdid, dip, role, cds, year):
 
         query_search = Q()
         query_roles = Q()
         query_cds = Q()
         query_regdid = Q()
+        query_year = Q()
 
         if search is not None:
             q_cognome = Q(cognome__istartswith=search)
@@ -1374,6 +1375,8 @@ class ServiceDocente:
             query_roles = Q(cd_ruolo__in=roles)
         if cds:
             query_cds = Q(didatticacopertura__cds_cod=cds)
+        if year:
+            query_year = Q(didatticacopertura__aa_off_id=year)
 
         # last_academic_year = ServiceDidatticaCds.getAcademicYears()[0]['aa_reg_did']
 
@@ -1381,6 +1384,7 @@ class ServiceDocente:
                                          query_cds,
                                          query_regdid,
                                          query_roles,
+                                         query_year,
                                          didatticacopertura__af__isnull=False) \
             .values("matricola",
                     "nome",
@@ -1444,13 +1448,14 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def teachingCoveragesList(search, regdid, dip, role, cds):
+    def teachingCoveragesList(search, regdid, dip, role, cds, year):
 
         query_search = Q()
         Q()
         query_roles = Q()
         query_cds = Q()
         query_regdid = Q()
+        query_year = Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -1464,11 +1469,14 @@ class ServiceDocente:
             query_roles = Q(cd_ruolo__in=roles)
         if cds:
             query_cds = Q(didatticacopertura__cds_cod=cds)
+        if year:
+            query_year = Q(didatticacopertura__aa_off_id=year)
 
         query = Personale.objects.filter(query_search,
                                          query_cds,
                                          query_regdid,
                                          query_roles,
+                                         query_year,
                                          didatticacopertura__af__isnull=False,
                                          flg_cessato=0) \
             .values("matricola",
