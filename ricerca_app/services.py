@@ -1049,7 +1049,7 @@ class ServiceDocente:
 
         if search:
             for k in search.split(" "):
-                q_descrizione = Q(descrizione__icontains=k) | Q(ricerca_erc1_id__descrizione__icontains=k) | Q(ricercadocentegruppo__personale_id__cognome__istartswith=k)
+                q_descrizione = Q(descrizione__icontains=k)
                 query_search &= q_descrizione
         if year:
             query_year = Q(anno=year)
