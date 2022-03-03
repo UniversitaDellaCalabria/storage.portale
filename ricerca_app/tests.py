@@ -606,6 +606,7 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
             'matricola_resp_did': '111111',
             'mutuata_flg': 1,
             'af_master_id': 2,
+            'sett_cod': 'INF/01',
             'sett_des': 'Interdisciplinare',
             'cds_id': 1,
             'anno_corso': 1,
@@ -650,7 +651,7 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'ssd': 'Interdisciplinare'}
+        data = {'ssd': 'INF'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 

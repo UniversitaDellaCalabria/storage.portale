@@ -625,7 +625,7 @@ class ServiceDidatticaAttivitaFormativa:
                 query_teaching &= q_teaching
         if ssd:
             for k in ssd.split(" "):
-                q_ssd = Q(af_id__sett_des__icontains=k)
+                q_ssd = Q(af_id__sett_cod__icontains=k)
                 query_ssd &= q_ssd
         if period:
             query_period = Q(af_id__ciclo_des=period)
