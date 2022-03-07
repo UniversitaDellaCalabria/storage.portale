@@ -1613,44 +1613,6 @@ class ApiDepartmentsListUnitTest(TestCase):
             'results'][0]['DepartmentName'] == 'Dipartimento di Letteratura'
 
 
-class ApiDepartmentsFilterListUnitTest(TestCase):
-
-    def test_apidepartmentsfilterlist(self):
-        req = Client()
-
-        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
-            'dip_id': 1,
-            'dip_cod': '001',
-            'dip_des_it': 'Dipartimento di Matematica e Informatica',
-            'dip_des_eng': 'Department of Math and Computer Science',
-            'dip_nome_breve': 'DEMACS',
-        })
-        DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
-            'dip_id': 2,
-            'dip_cod': '002',
-            'dip_des_it': 'Dipartimento di Letteratura',
-            'dip_des_eng': 'Department of Literature',
-            'dip_nome_breve': 'LIT',
-        })
-
-        url = reverse('ricerca:departmentsfilterlist')
-
-        # check url
-        res = req.get(url)
-        assert res.status_code == 200
-
-        # GET
-
-        res = req.get(url)
-        assert res.json()[
-            'results'][0]['DepartmentName'] == 'Department of Literature'
-
-        data = {'lang': 'it'}
-        res = req.get(url, data=data)
-        assert res.json()[
-            'results'][0]['DepartmentName'] == 'Dipartimento di Letteratura'
-
-
 class ApiDepartmentDetailUnitTest(TestCase):
 
     def test_apidepartmentdetail(self):
@@ -1970,13 +1932,10 @@ class ApiStructuresListUnitTest(TestCase):
 
         url = reverse('ricerca:structureslist')
 
-        url_filter = reverse('ricerca:structuresfilterlist')
-
         # check url
         res = req.get(url)
         assert res.status_code == 200
 
-        res = req.get(url_filter)
         assert res.status_code == 200
 
         # GET
@@ -2006,14 +1965,6 @@ class ApiStructuresListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert res.json()['results'][0]['StructureCod'] == '1'
 
-        res = req.get(url_filter)
-        assert res.json()['results'][0]['StructureTypeName'] == 'direzione'
-        assert res.json()['results'][1]['StructureCod'] == '1'
-        assert len(res.json()['results']) == 3
-
-        data = {'type': 'DIR,UFF'}
-        res = req.get(url_filter, data=data)
-        assert len(res.json()['results']) == 2
 
 
 class ApiStructuresTypesUnitTest(TestCase):
@@ -2863,52 +2814,6 @@ class ApiErc1ListUnitTest(TestCase):
         })
 
         url = reverse('ricerca:erc1list')
-
-        # check url
-        res = req.get(url)
-
-        assert res.status_code == 200
-
-        # GET
-
-        data = {'laboratory': '1'}
-        res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
-
-        assert len(res.json()['results']) == 1
-
-
-class ApiErc1FilterListUnitTest(TestCase):
-
-    def test_apiLaboratoriesAreasList(self):
-        req = Client()
-
-        erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
-            'erc0_cod': '111',
-            'description': 'IT',
-            'description_en': 'IT',
-        })
-        erc1 = RicercaErc1UnitTest.create_ricercaErc1(**{
-            'cod_erc1': 'cod1_erc1',
-            'descrizione': 'Computer Science and Informatics',
-            'ricerca_erc0_cod': erc0,
-        })
-        l1 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
-            'id': 1,
-            'nome_laboratorio': 'Informatica',
-            'ambito': 'Tecnico',
-            'dipartimento_riferimento': 'Informatica',
-            'sede_dimensione': "290",
-            'responsabile_scientifico': 'Mungari Simone',
-        })
-
-        LaboratorioDatiErc1UnitTest.create_laboratorioDatiErc1(**{
-            'id': 1,
-            'id_laboratorio_dati': l1,
-            'id_ricerca_erc1': erc1,
-        })
-
-        url = reverse('ricerca:erc1filterlist')
 
         # check url
         res = req.get(url)

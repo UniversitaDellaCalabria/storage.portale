@@ -605,21 +605,6 @@ class ApiDepartmentsList(ApiEndpointList):
         return ServiceDipartimento.getDepartmentsList(self.language)
 
 
-class DepartmentsFilterList(AutoSchema):
-    def get_operation_id(self, path, method):
-        return 'ApiDepartmentsFilterList'
-
-
-class ApiDepartmentsFilterList(ApiEndpointListSupport):
-    description = 'La funzione restituisce la lista dei dipartimenti senza paginazione'
-    serializer_class = DepartmentSerializer
-    filter_backends = []
-    schema = DepartmentsFilterList()
-
-    def get_queryset(self):
-        return ServiceDipartimento.getDepartmentsList(self.language)
-
-
 class ApiDepartmentDetail(ApiEndpointDetail):
     description = 'La funzione restituisce uno specifico dipartimento'
     serializer_class = DepartmentSerializer
@@ -657,26 +642,6 @@ class ApiStructuresList(ApiEndpointList):
         type = self.request.query_params.get('type')
 
         return ServicePersonale.getStructuresList(search, father, type)
-
-
-class StructuresFilterList(AutoSchema):
-    def get_operation_id(self, path, method):
-        return 'ApiStructuresFilterList'
-
-
-class ApiStructuresFilterList(ApiEndpointListSupport):
-    description = 'La funzione restituisce le strutture organizzative senza paginazione'
-    serializer_class = StructuresSerializer
-    filter_backends = [ApiStructuresListFilter]
-    schema = StructuresFilterList()
-
-    def get_queryset(self):
-
-        father = self.request.query_params.get('father')
-
-        type = self.request.query_params.get('type')
-
-        return ServicePersonale.getStructuresList(father=father, type=type)
 
 
 class ApiStructureTypesList(ApiEndpointListSupport):
@@ -785,23 +750,6 @@ class ApiErc2List(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceLaboratorio.getErc2List()
-
-
-class Erc1FilterList(AutoSchema):
-    def get_operation_id(self, path, method):
-        return 'ApiErc1FilterList'
-
-
-class ApiErc1FilterList(ApiEndpointListSupport):
-    description = 'La funzione restituisce la lista degli erc1 senza paginazione'
-    serializer_class = Erc1Serializer
-    filter_backends = []
-    schema = Erc1FilterList()
-
-    def get_queryset(self):
-
-
-        return ServiceLaboratorio.getErc1List()
 
 
 class ApiErc0List(ApiEndpointList):

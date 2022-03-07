@@ -206,10 +206,6 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiDepartmentsList.as_view(),
                         name='departmentslist'),
 
-    urlpatterns += path('{}/departmentsfilter/'.format(base_url),
-                        api_views.ApiDepartmentsFilterList.as_view(),
-                        name='departmentsfilterlist'),
-
     urlpatterns += path('{}/departments/<str:departmentcod>/'.format(base_url),
                         api_views.ApiDepartmentDetail.as_view(),
                         name='departmentdetail'),
@@ -225,10 +221,6 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/structures/'.format(base_url),
                         api_views.ApiStructuresList.as_view(),
                         name='structureslist'),
-
-    urlpatterns += path('{}/structuresfilter/'.format(base_url),
-                        api_views.ApiStructuresFilterList.as_view(),
-                        name='structuresfilterlist'),
 
     urlpatterns += path('{}/structuretypes/'.format(base_url),
                         api_views.ApiStructureTypesList.as_view(),
@@ -261,10 +253,6 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/erc1list/'.format(base_url),
                         api_views.ApiErc1List.as_view(),
                         name='erc1list'),
-
-    urlpatterns += path('{}/erc1filter/'.format(base_url),
-                        api_views.ApiErc1FilterList.as_view(),
-                        name='erc1filterlist'),
 
     urlpatterns += path('{}/erc0list/'.format(base_url),
                         api_views.ApiErc0List.as_view(),
