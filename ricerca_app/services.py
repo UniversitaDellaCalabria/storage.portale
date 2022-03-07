@@ -2402,6 +2402,7 @@ class ServiceLaboratorio:
                 "id_tipologia_attivita__descrizione"
             ).distinct()
 
+
             personale_tecnico = list(personale_tecnico)
             personale_ricerca = list(personale_ricerca)
 
