@@ -1621,7 +1621,6 @@ class UnitaOrganizzativa(models.Model):
 
 
 class UnitaOrganizzativaFunzioni(models.Model):
-    id = models.AutoField(primary_key=True)
     matricola = models.CharField(
         db_column='MATRICOLA',
         max_length=6,
