@@ -1333,7 +1333,7 @@ class DidatticaPdsRegolamento(InsModAbstract):
         blank=True,
         null=True)
 
-    aa_ord_id = models.IntegerField(db_column='AA_ORD_ID')
+    # aa_ord_id = models.IntegerField(db_column='AA_ORD_ID')
 
     class Meta:
         managed = True

@@ -209,7 +209,7 @@ class DidatticaPdsRegolamentoUnitTest(TestCase):
     @classmethod
     def create_didatticaPdsRegolamento(cls, **kwargs):
         data = {
-            'aa_ord_id': 1,
+            # 'aa_ord_id': 1,
             'pds_regdid_id': 1,
         }
         for k, v in kwargs.items():
