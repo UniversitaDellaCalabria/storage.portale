@@ -212,6 +212,7 @@ class DidatticaPdsRegolamentoUnitTest(TestCase):
             # 'aa_ord_id': 1,
             'pds_regdid_id': 1,
         }
+
         for k, v in kwargs.items():
             data[k] = v
 
