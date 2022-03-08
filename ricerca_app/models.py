@@ -1681,7 +1681,7 @@ class UnitaOrganizzativaFunzioni(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'UNITA_ORGANIZZATIVA_FUNZIONI'
+        db_table = 'FUNZIONI_UNITA_ORGANIZZATIVA'
 
 
 class UnitaOrganizzativaTipoFunzioni(models.Model):

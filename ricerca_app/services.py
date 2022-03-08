@@ -1047,6 +1047,7 @@ class ServiceDocente:
         query_ercs = Q()
         query_asters = Q()
 
+
         if search:
             for k in search.split(" "):
                 q_descrizione = Q(descrizione__icontains=k)
