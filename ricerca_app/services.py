@@ -2842,7 +2842,8 @@ class ServiceProgetto:
             infrastructure,
             programtype,
             territorialscope,
-            notprogramtype):
+            notprogramtype,
+            year):
 
         query_search = Q()
         query_techarea = Q()
@@ -2850,6 +2851,7 @@ class ServiceProgetto:
         query_programtype = Q()
         query_territorialscope = Q()
         query_notprogramtype = Q()
+        query_year = Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -2872,6 +2874,8 @@ class ServiceProgetto:
         if notprogramtype:
             notprogramtype = notprogramtype.split(",")
             query_notprogramtype= ~Q(id_tipologia_programma__in=notprogramtype)
+        if year:
+            query_year= ~Q(anno_avvio=year)
 
         query = ProgettoDatiBase.objects.filter(
             query_search,
@@ -2880,6 +2884,7 @@ class ServiceProgetto:
             query_territorialscope,
             query_notprogramtype,
             query_programtype,
+            query_year,
         ).values(
             "id",
             "id_ambito_territoriale__id",

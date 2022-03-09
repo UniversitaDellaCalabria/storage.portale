@@ -953,10 +953,15 @@ class ApiProjectsList(ApiEndpointList):
         programtype = self.request.query_params.get('programtype')
         territorialscope = self.request.query_params.get('territorialscope')
         notprogramtype = self.request.query_params.get('-programtype')
+        year =self.request.query_params.get('year')
 
-
-        return ServiceProgetto.getProjects(
-            search, techarea, infrastructure, programtype, territorialscope, notprogramtype)
+        return ServiceProgetto.getProjects(search,
+                                           techarea,
+                                           infrastructure,
+                                           programtype,
+                                           territorialscope,
+                                           notprogramtype,
+                                           year)
 
 
 class ApiProjectDetail(ApiEndpointDetail):

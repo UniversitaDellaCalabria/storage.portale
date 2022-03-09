@@ -4522,6 +4522,7 @@ class ApiProjectsListUnitTest(TestCase):
             "abstract_ita": "Motore",
             "abstract_eng": "Engine",
             "id_area_tecnologica": t1,
+            "anno_avvio": 2021
         })
 
         pr2 = ProgettoDatiBaseUnitTest.create_progettoDatiBase(**{
@@ -4533,6 +4534,7 @@ class ApiProjectsListUnitTest(TestCase):
             "abstract_ita": "Motore",
             "abstract_eng": "Engine",
             "id_area_tecnologica": t1,
+            "anno_avvio": 2020
         })
 
         ProgettoResponsabileScientificoUnitTest.create_progettoResponsabileScientifico(
@@ -4579,6 +4581,10 @@ class ApiProjectsListUnitTest(TestCase):
         data = {'territorialscope': 1}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
+
+        data = {'year': 2021}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
 
 class ApiProjectDetailUnitTest(TestCase):
