@@ -1875,6 +1875,7 @@ class ServicePersonale:
     @staticmethod
     def getAddressbook(
             search=None,
+            phone=None,
             structureid=None,
             structuretypes=None,
             roles=None,
@@ -1887,8 +1888,7 @@ class ServicePersonale:
 
         if search is not None:
             q_cognome = Q(cognome__istartswith=search)
-            q_telefono = Q(personalecontatti__contatto__contains=search)
-            query_search = q_cognome | q_telefono
+            query_search |= q_cognome
         if structureid is not None:
             query_structure = Q(cd_uo_aff_org__exact=structureid)
         if roles is not None:
@@ -2027,6 +2027,14 @@ class ServicePersonale:
             if last_id == -1 or last_id != q['id_ab']:
                 last_id = q['id_ab']
                 final_query.append(grouped[q['id_ab']])
+
+        if phone:
+            filtered = []
+            for item in final_query:
+                if phone in item['Telefono Cellulare Ufficio'] or phone in item['Telefono Ufficio']:
+                    filtered.append(item)
+            return filtered
+
         return final_query
 
     @staticmethod
