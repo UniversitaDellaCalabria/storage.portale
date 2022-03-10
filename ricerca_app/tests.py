@@ -1774,6 +1774,8 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         })
         tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
             **{'cod_contatto': 'EMAIL', 'descr_contatto': 'Posta Elettronica', })
+        tipo_contatto_phone = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+            **{'cod_contatto': 'Telefono Ufficio', 'descr_contatto': 'Telefono Ufficio', })
         PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
             'cod_contatto': 'Riferimento Ufficio',
             'descr_contatto': 'Riferimento Ufficio',
@@ -1806,10 +1808,10 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'cod_contatto': 'Telefono Cellulare Ufficio',
             'descr_contatto': 'Telefono Cellulare Ufficio',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
-            'cod_contatto': 'Telefono Ufficio',
-            'descr_contatto': 'Telefono Ufficio',
-        })
+        # PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+            # 'cod_contatto': 'Telefono Ufficio',
+            # 'descr_contatto': 'Telefono Ufficio',
+        # })
         PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
             'cod_contatto': 'URL Sito WEB Curriculum Vitae',
             'descr_contatto': 'URL Sito WEB Curriculum Vitae',
@@ -1838,6 +1840,14 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'contatto': 'email2@email',
             'prg_priorita': 1,
         })
+        PersonaleContattiUnitTest.create_personaleContatti(**{
+            'cd_tipo_cont': tipo_contatto_phone,
+            'id_ab': 3,
+            'cod_fis': p1,
+            'contatto': '999',
+            'prg_priorita': 1,
+        })
+
         UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'id_ab': 2,
             'ds_funzione': 'Amministrazione Rettorato',
@@ -1892,6 +1902,10 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         data = {'role': 'PO'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['Name'] == 'Ibra Zlatan'
+
+        data = {'phone': '999'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
         data = {'structuretree': '1'}
         res = req.get(url, data=data)

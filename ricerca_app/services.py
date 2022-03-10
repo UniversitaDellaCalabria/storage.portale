@@ -1875,11 +1875,11 @@ class ServicePersonale:
     @staticmethod
     def getAddressbook(
             search=None,
-            phone=None,
             structureid=None,
             structuretypes=None,
             roles=None,
-            structuretree=None):
+            structuretree=None,
+            phone=None):
 
         query_search = Q()
         query_structure = Q()
@@ -1887,8 +1887,7 @@ class ServicePersonale:
         query_structuretree = Q()
 
         if search is not None:
-            q_cognome = Q(cognome__istartswith=search)
-            query_search |= q_cognome
+            query_search = Q(cognome__istartswith=search)
         if structureid is not None:
             query_structure = Q(cd_uo_aff_org__exact=structureid)
         if roles is not None:

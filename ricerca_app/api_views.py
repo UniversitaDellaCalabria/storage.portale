@@ -629,7 +629,7 @@ class ApiAddressbookList(ApiEndpointList):
         structuretree = self.request.query_params.get('structuretree')
 
         return ServicePersonale.getAddressbook(
-            search, structureid, structuretypes, roles, structuretree)
+            search, structureid, structuretypes, roles, structuretree, phone)
 
 
 class ApiStructuresList(ApiEndpointList):
