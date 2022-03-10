@@ -2874,7 +2874,7 @@ class ServiceProgetto:
             query_territorialscope = Q(id_ambito_territoriale=territorialscope)
         if notprogramtype:
             notprogramtype = notprogramtype.split(",")
-            query_notprogramtype= Q(id_tipologia_programma__in=notprogramtype)
+            query_notprogramtype= ~Q(id_tipologia_programma__in=notprogramtype)
         if year:
             query_year= Q(anno_avvio=year)
 
