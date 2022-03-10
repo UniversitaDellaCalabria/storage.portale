@@ -400,6 +400,12 @@ class ApiDoctoratesListFilter(GenericApiFilter):
 class ApiAddressbookListFilter(GenericApiFilter):
     search_params = [
         {
+            'name': 'phone',
+            'description': 'Numero di telefono',
+            'required': False,
+            'type': 'string'
+        },
+        {
             'name': 'structure',
             'description': 'Codice di una struttura',
             'required': False,
