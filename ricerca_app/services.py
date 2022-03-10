@@ -2030,7 +2030,8 @@ class ServicePersonale:
         if phone:
             filtered = []
             for item in final_query:
-                if phone in item['Telefono Cellulare Ufficio'] or phone in item['Telefono Ufficio']:
+                numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
+                if any(phone in string for string in numbers):
                     filtered.append(item)
             return filtered
 

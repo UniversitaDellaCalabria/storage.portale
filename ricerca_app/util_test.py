@@ -420,9 +420,9 @@ class PersonaleContattiUnitTest(TestCase):
         return obj
 
 
-class PersonaleTipoContattoUnitTest(TestCase):
+class PersonaleUoTipoContattoUnitTest(TestCase):
     @classmethod
-    def create_personaleTipoContatto(cls, **kwargs):
+    def create_personaleUoTipoContatto(cls, **kwargs):
         data = {}
         for k, v in kwargs.items():
             data[k] = v

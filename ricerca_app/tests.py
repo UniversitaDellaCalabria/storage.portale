@@ -15,7 +15,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest, \
     RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest, \
     DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest, \
-    PersonaleTipoContattoUnitTest, PersonaleContattiUnitTest, UnitaOrganizzativaFunzioniUnitTest, \
+    PersonaleUoTipoContattoUnitTest, PersonaleContattiUnitTest, UnitaOrganizzativaFunzioniUnitTest, \
     UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest, LaboratorioDatiBaseUnitTest, \
     LaboratorioAttivitaUnitTest, LaboratorioDatiErc1UnitTest, LaboratorioPersonaleRicercaUnitTest, \
     LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest, \
@@ -1357,53 +1357,53 @@ class ApiTeacherInfoUnitTest(TestCase):
             'part_ini': 'A',
             'part_fine': 'Z'
         })
-        tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+        tipo_contatto = PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(
             **{'cod_contatto': 'EMAIL', 'descr_contatto': 'Posta Elettronica', })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Riferimento Ufficio',
             'descr_contatto': 'Riferimento Ufficio',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'POSTA ELETTRONICA CERTIFICATA',
             'descr_contatto': 'POSTA ELETTRONICA CERTIFICATA',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Posta Elettronica Privata',
             'descr_contatto': 'Posta Elettronica Privata',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Fax',
             'descr_contatto': 'Fax',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Telefono Residenza',
             'descr_contatto': 'Telefono Residenza',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Telefono Domicilio',
             'descr_contatto': 'Telefono Domicilio',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Telefono Cellulare',
             'descr_contatto': 'Telefono Cellulare',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Telefono Cellulare Ufficio',
             'descr_contatto': 'Telefono Cellulare Ufficio',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Telefono Ufficio',
             'descr_contatto': 'Telefono Ufficio',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'URL Sito WEB Curriculum Vitae',
             'descr_contatto': 'URL Sito WEB Curriculum Vitae',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'URL Sito WEB',
             'descr_contatto': 'URL Sito WEB',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Skype',
             'descr_contatto': 'Skype',
         })
@@ -1772,39 +1772,39 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'dip_des_it': "Matematica e Informatica",
             'dip_des_eng': "Math and Computer Science",
         })
-        tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+        tipo_contatto = PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(
             **{'cod_contatto': 'EMAIL', 'descr_contatto': 'Posta Elettronica', })
-        tipo_contatto_phone = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+        tipo_contatto_phone = PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(
             **{'cod_contatto': 'Telefono Ufficio', 'descr_contatto': 'Telefono Ufficio', })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Riferimento Ufficio',
             'descr_contatto': 'Riferimento Ufficio',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'POSTA ELETTRONICA CERTIFICATA',
             'descr_contatto': 'POSTA ELETTRONICA CERTIFICATA',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Posta Elettronica Privata',
             'descr_contatto': 'Posta Elettronica Privata',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Fax',
             'descr_contatto': 'Fax',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Telefono Residenza',
             'descr_contatto': 'Telefono Residenza',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Telefono Domicilio',
             'descr_contatto': 'Telefono Domicilio',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Telefono Cellulare',
             'descr_contatto': 'Telefono Cellulare',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Telefono Cellulare Ufficio',
             'descr_contatto': 'Telefono Cellulare Ufficio',
         })
@@ -1812,15 +1812,15 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             # 'cod_contatto': 'Telefono Ufficio',
             # 'descr_contatto': 'Telefono Ufficio',
         # })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'URL Sito WEB Curriculum Vitae',
             'descr_contatto': 'URL Sito WEB Curriculum Vitae',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'URL Sito WEB',
             'descr_contatto': 'URL Sito WEB',
         })
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'Skype',
             'descr_contatto': 'Skype',
         })
@@ -1843,10 +1843,11 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         PersonaleContattiUnitTest.create_personaleContatti(**{
             'cd_tipo_cont': tipo_contatto_phone,
             'id_ab': 3,
-            'cod_fis': p1,
+            'cod_fis': p3,
             'contatto': '999',
-            'prg_priorita': 1,
+            'prg_priorita': 1000,
         })
+
 
         UnitaOrganizzativaFunzioniUnitTest.create_unitaOrganizzativaFunzioni(**{
             'id_ab': 2,
@@ -2148,7 +2149,7 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'cod_fis': 'AB',
         })
 
-        tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+        tipo_contatto = PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(
             **{'cod_contatto': 'EMAIL', 'descr_contatto': 'Posta Elettronica', })
 
         PersonaleContattiUnitTest.create_personaleContatti(**{
@@ -2179,7 +2180,7 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'cod_fis': p2,
         })
 
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'URL Sito WEB Curriculum Vitae',
             'descr_contatto': 'URL Sito WEB Curriculum Vitae',
         })
@@ -2292,10 +2293,10 @@ class ApiStructureDetailUnitTest(TestCase):
             'uo_padre': '33',
         })
 
-        tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+        tipo_contatto = PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(
             **{'cod_contatto': 'PEC', 'descr_contatto': 'Posta Elettronica Certificata', })
 
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'URL Sito WEB Curriculum Vitae',
             'descr_contatto': 'URL Sito WEB Curriculum Vitae',
         })
@@ -4158,10 +4159,10 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'cd_csa': 3,
         })
 
-        tipo_contatto = PersonaleTipoContattoUnitTest.create_personaleTipoContatto(
+        tipo_contatto = PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(
             **{'cod_contatto': 'PEC', 'descr_contatto': 'Posta Elettronica Certificata', })
 
-        PersonaleTipoContattoUnitTest.create_personaleTipoContatto(**{
+        PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(**{
             'cod_contatto': 'URL Sito WEB Curriculum Vitae',
             'descr_contatto': 'URL Sito WEB Curriculum Vitae',
         })
