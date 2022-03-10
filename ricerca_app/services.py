@@ -1887,7 +1887,8 @@ class ServicePersonale:
 
         if search is not None:
             q_cognome = Q(cognome__istartswith=search)
-            query_search |= q_cognome
+            q_telefono = Q(telrif__contains=search)
+            query_search = q_cognome | q_telefono
         if structureid is not None:
             query_structure = Q(cd_uo_aff_org__exact=structureid)
         if roles is not None:
