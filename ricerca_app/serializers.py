@@ -1912,6 +1912,7 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
             'HighFormationErogationMode': query['id_alta_formazione_mod_erogazione'],
             'HighFormationHours': query['ore'],
             'HighFormationMonths': query['mesi'],
+            'HighFormationLanguage': query['lingua'],
             'HighFormationCourseStructure': query['sede_corso'],
             'HighFormationMinParticipants': query['num_min_partecipanti'],
             'HighFormationMaxParticipants': query['num_max_partecipanti'],
