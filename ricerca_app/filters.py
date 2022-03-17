@@ -666,6 +666,12 @@ class ApiHighFormationMastersListFilter(GenericApiFilter):
             'required': False,
             'type': 'string'
         },
+        {
+            'name': 'language',
+            'description': 'Lingua Master',
+            'required': False,
+            'type': 'string'
+        },
     ]
 
 
