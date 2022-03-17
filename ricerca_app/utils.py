@@ -1,5 +1,7 @@
 from cryptography.fernet import Fernet
+
 from django.conf import settings
+from django.http import Http404
 
 
 def encrypt(value):
@@ -13,7 +15,10 @@ def decrypt(value):
     if not value:
         return None
     value = str(value)
-    return Fernet(settings.ENCRYPTION_KEY).decrypt(value.encode()).decode()
+    try:
+        return Fernet(settings.ENCRYPTION_KEY).decrypt(value.encode()).decode()
+    except:
+        raise Http404
 
 
 def encode_labels(data, language=None):
