@@ -1,9 +1,11 @@
 import datetime
-from functools import reduce
 import operator
 
-
 from django.db.models import CharField, Q, Value, F
+from django.http import Http404
+
+from functools import reduce
+
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaTestiAf, DidatticaCopertura, Personale, DidatticaDipartimento, DidatticaDottoratoCds, \
     DidatticaPdsRegolamento, DidatticaDipartimentoUrl, \
@@ -729,6 +731,7 @@ class ServiceDidatticaAttivitaFormativa:
 
         id_master = None
         mutuata_da = None
+        if not query: raise Http404
         if query.first()['mutuata_flg'] == 1:
             id_master = query.first()['af_master_id']
             mutuata_da = DidatticaAttivitaFormativa.objects.filter(
