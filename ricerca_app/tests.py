@@ -733,6 +733,7 @@ class ApiStudyActivityDetailUnitTest(TestCase):
             'ore': 3,
         })
 
+
         url = reverse(
             'ricerca:studyactivitydetail',
             kwargs={'studyactivityid': 1})
