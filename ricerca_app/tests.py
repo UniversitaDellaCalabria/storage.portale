@@ -25,7 +25,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
     UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest,\
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
-    AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest
+    AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
+    DidatticaCoperturaDettaglioOreUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -714,6 +715,7 @@ class ApiStudyActivityDetailUnitTest(TestCase):
             'matricola': '111111',
         })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'coper_id': 1,
             'af': course,
             'personale': p,
         })
@@ -723,6 +725,12 @@ class ApiStudyActivityDetailUnitTest(TestCase):
             'af_id': 1,
             'mod_did_cod': 'c',
             'mod_did_des': 'convenzionale'
+        })
+
+        DidatticaCoperturaDettaglioOreUnitTest.create_didatticaCoperturaDettaglioOre(**{
+            'tipo_att_did_cod': 444,
+            'coper_id': 1,
+            'ore': 3,
         })
 
         url = reverse(
@@ -4942,6 +4950,7 @@ class ApiHighFormationMastersListUnitTest(TestCase):
             'id': 1,
             'titolo_it': 'AAAA',
             'titolo_en': 'AAAA',
+            'lingua': 'ita',
             'matricola_direttore_scientifico': doc1,
             'id_alta_formazione_tipo_corso': aftc,
             'id_alta_formazione_mod_erogazione': afme,
@@ -5018,6 +5027,10 @@ class ApiHighFormationMastersListUnitTest(TestCase):
         data = {'search': 'AAA'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 2
+
+        data = {'language': 'ita'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
         data = {'coursetype': '3'}
         res = req.get(url, data=data)
