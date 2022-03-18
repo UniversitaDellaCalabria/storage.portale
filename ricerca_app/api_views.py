@@ -642,7 +642,6 @@ class ApiStructuresList(ApiEndpointList):
         father = self.request.query_params.get('father')
         depth = self.request.query_params.get('depth')
         type = self.request.query_params.get('type')
-
         return ServicePersonale.getStructuresList(search, father, type, depth)
 
 
