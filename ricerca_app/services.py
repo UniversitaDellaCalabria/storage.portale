@@ -1409,7 +1409,10 @@ class ServiceDocente:
                     "cv_full_it",
                     "cv_short_it",
                     "cv_full_eng",
-                    "cv_short_eng") \
+                    "cv_short_eng",
+                    "profilo",
+                    "ds_profilo",
+                    "ds_profilo_breve") \
             .order_by('cognome',
                       'nome',
                       'middle_name') \
@@ -1502,7 +1505,10 @@ class ServiceDocente:
                     "cv_full_it",
                     "cv_short_it",
                     "cv_full_eng",
-                    "cv_short_eng") \
+                    "cv_short_eng",
+                    "profilo",
+                    "ds_profilo",
+                    "ds_profilo_breve") \
             .order_by('cognome',
                       'nome',
                       'middle_name') \
@@ -1663,7 +1669,11 @@ class ServiceDocente:
             "cv_full_it",
             "cv_short_it",
             "cv_full_eng",
-            "cv_short_eng"
+            "cv_short_eng",
+            'profilo',
+            'ds_profilo',
+            'ds_profilo_breve'
+
         )
         for q in query:
             for c in contacts_to_take:
@@ -1958,6 +1968,9 @@ class ServicePersonale:
             'structure_type_cod',
             'structure_type_name',
             'fl_docente',
+            'profilo',
+            'ds_profilo',
+            'ds_profilo_breve'
         )
         query = list(query)
         if structureid is None and structuretypes is None and structuretree is None:
@@ -1990,6 +2003,9 @@ class ServicePersonale:
                                 'structure_type_cod',
                                 'structure_type_name',
                                 'fl_docente',
+                                'profilo',
+                                'ds_profilo',
+                                'ds_profilo_breve'
             )
             from itertools import chain
             query = list(chain(*[query, query2]))
@@ -2025,6 +2041,9 @@ class ServicePersonale:
                     'TipologiaStrutturaCod': q['structure_type_cod'] if 'structure_type_cod' in q.keys() else None,
                     'TipologiaStrutturaNome': q['structure_type_name'] if 'structure_type_name' in q.keys() else None,
                     'fl_docente': q['fl_docente'],
+                    'profilo': q['profilo'],
+                    'ds_profilo': q['ds_profilo'],
+                    'ds_profilo_breve': q['ds_profilo_breve']
                 }
                 for c in contacts_to_take:
                     grouped[q['id_ab']][c] = []
@@ -2195,7 +2214,10 @@ class ServicePersonale:
             "cv_full_it",
             "cv_short_it",
             "cv_full_eng",
-            "cv_short_eng"
+            "cv_short_eng",
+            'profilo',
+            'ds_profilo',
+            'ds_profilo_breve'
         )
         for q in query:
             for c in contacts_to_take:

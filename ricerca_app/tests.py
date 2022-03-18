@@ -3678,7 +3678,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'id_ab': 2,
             'denominazione': 'bbb',
             'denominazione_padre': 'd',
-            'uo_padre': '22',
+            'uo_padre': '22'
         })
         doc1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
@@ -3690,6 +3690,9 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'fl_docente': 1,
             'flg_cessato': 0,
             'cd_uo_aff_org': u1,
+            'profilo': '111',
+            'ds_profilo': 'abcds',
+            'ds_profilo_breve': 'afv'
         })
         doc2 = PersonaleUnitTest.create_personale(**{
             'id': 2,
@@ -3706,6 +3709,9 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'cv_short_it': 'A',
             'cv_full_eng': 'BBB',
             'cv_short_eng': 'B',
+            'profilo': '111',
+            'ds_profilo': 'abcds',
+            'ds_profilo_breve': 'afv'
         })
         PersonaleUnitTest.create_personale(**{
             'id': 3,
@@ -3717,6 +3723,9 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'fl_docente': 1,
             'flg_cessato': 1,
             'cd_uo_aff_org': u1,
+            'profilo': '111',
+            'ds_profilo': 'abcds',
+            'ds_profilo_breve': 'afv'
         })
         PersonaleUnitTest.create_personale(**{
             'id': 4,
@@ -3728,6 +3737,9 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'fl_docente': 1,
             'flg_cessato': 0,
             'cd_uo_aff_org': u2,
+            'profilo': '111',
+            'ds_profilo': 'abcds',
+            'ds_profilo_breve': 'afv'
         })
 
         DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
