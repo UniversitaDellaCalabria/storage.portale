@@ -640,9 +640,10 @@ class ApiStructuresList(ApiEndpointList):
     def get_queryset(self):
         search = self.request.query_params.get('search')
         father = self.request.query_params.get('father')
+        depth = self.request.query_params.get('depth')
         type = self.request.query_params.get('type')
 
-        return ServicePersonale.getStructuresList(search, father, type)
+        return ServicePersonale.getStructuresList(search, father, type, depth)
 
 
 class ApiStructureTypesList(ApiEndpointListSupport):
