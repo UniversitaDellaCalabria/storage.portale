@@ -19,6 +19,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1
+from . serializers import StructuresSerializer
 
 
 class ServiceQueryBuilder:
@@ -2065,7 +2066,7 @@ class ServicePersonale:
         return final_query
 
     @staticmethod
-    def getStructuresList(search=None, father=None, type=None):
+    def getStructuresList(search=None, father=None, type=None, depth=0):
 
         query_search = Q()
         query_father = Q()
@@ -2101,6 +2102,20 @@ class ServicePersonale:
                                           .filter(dip_cod=q['uo'])\
                                           .values_list('dip_url', flat=True)
             q['dip_url'] = url[0] if url else ''
+
+            if depth == '1':
+                q['childs'] = []
+                sub_query = UnitaOrganizzativa.objects.filter(
+                    query_search,
+                    query_type,
+                    uo_padre=q['uo'],
+                    dt_fine_val__gte=datetime.datetime.today()).values(
+                    "uo",
+                    "denominazione",
+                    "ds_tipo_nodo",
+                    "cd_tipo_nodo").distinct().order_by('denominazione')
+                for sq in sub_query:
+                    q['childs'].append(StructuresSerializer.to_dict(sq))
 
         return query
 
