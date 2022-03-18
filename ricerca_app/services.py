@@ -1673,6 +1673,7 @@ class ServiceDocente:
             'profilo',
             'ds_profilo',
             'ds_profilo_breve'
+
         )
         for q in query:
             for c in contacts_to_take:
