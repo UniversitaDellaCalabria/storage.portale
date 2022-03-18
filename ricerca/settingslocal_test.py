@@ -505,7 +505,10 @@ LABEL_MAPPING = {
         'StudyActivityPartitionDes': 'Study Activity Partition Description',
         'StudyActivityExtendedPartitionCod': 'Study Activity Extended Partition Code',
         'StudyActivityExtendedPartitionDes': 'Study Activity Extended Partition Description',
-        'HighFormationLanguage': 'High Formation Language'
+        'HighFormationLanguage': 'High Formation Language',
+        'ProfileId': 'Profile',
+        'ProfileDescription': 'Profile Description',
+        'ProfileShortDescription': 'Profile Short Description'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -891,6 +894,9 @@ LABEL_MAPPING = {
         'StudyActivityPartitionDes': 'Descrizione Partizionamento',
         'StudyActivityExtendedPartitionCod': 'Codice Esteso Partizionamento',
         'StudyActivityExtendedPartitionDes': 'Descrizione Estesa Partizionamento',
-        'HighFormationLanguage': 'Alta Formazione Lingua'
+        'HighFormationLanguage': 'Alta Formazione Lingua',
+        'ProfileId': 'Profilo',
+        'ProfileDescription': 'Descrizione Profilo',
+        'ProfileShortDescription': 'Descrizione Breve Profilo'
     }
 }

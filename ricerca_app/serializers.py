@@ -764,6 +764,9 @@ class TeachersSerializer(CreateUpdateAbstract):
             'TeacherSSDDescription': query['ds_ssd'],
             'TeacherCVFull': query['cv_full_it'] if req_lang == "it" or query['cv_full_eng'] is None else query['cv_full_eng'],
             'TeacherCVShort': query['cv_short_it'] if req_lang == "it" or query['cv_short_eng'] is None else query['cv_short_eng'],
+            'ProfileId': query['profilo'],
+            'ProfileDescription': query['ds_profilo'],
+            'ProfileShortDescription': query['ds_profilo_breve'],
         }
 
 
@@ -841,6 +844,9 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherFunctions': functions,
             'TeacherCVFull': query['cv_full_it'] if req_lang == "it" or query['cv_full_eng'] is None else query['cv_full_eng'],
             'TeacherCVShort': query['cv_short_it'] if req_lang == "it" or query['cv_short_eng'] is None else query['cv_short_eng'],
+            'ProfileId': query['profilo'],
+            'ProfileDescription': query['ds_profilo'],
+            'ProfileShortDescription': query['ds_profilo_breve'],
         }
 
     @staticmethod
@@ -952,7 +958,10 @@ class AddressbookSerializer(CreateUpdateAbstract):
             'Fax': query['Fax'],
             'WebSite': query['URL Sito WEB'],
             'CV': query['URL Sito WEB Curriculum Vitae'],
-            'Teacher': query['fl_docente']
+            'Teacher': query['fl_docente'],
+            'ProfileId': query['profilo'],
+            'ProfileDescription': query['ds_profilo'],
+            'ProfileShortDescription': query['ds_profilo_breve'],
         }
 
 
@@ -995,6 +1004,9 @@ class PersonaleSerializer(CreateUpdateAbstract):
             'PersonFunctions': functions,
             'TeacherCVFull': query['cv_full_it'] if req_lang == "it" or query['cv_full_eng'] is None else query['cv_full_eng'],
             'TeacherCVShort': query['cv_short_it'] if req_lang == "it" or query['cv_short_eng'] is None else query['cv_short_eng'],
+            'ProfileId': query['profilo'],
+            'ProfileDescription': query['ds_profilo'],
+            'ProfileShortDescription':query['ds_profilo_breve'],
         }
 
     @staticmethod
