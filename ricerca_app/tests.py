@@ -1985,7 +1985,7 @@ class ApiStructuresListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'father': '1'}
+        data = {'father': '1', 'depth': '1'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['StructureCod'] == '1'
 

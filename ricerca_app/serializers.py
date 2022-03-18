@@ -1020,13 +1020,17 @@ class StructuresSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-        return {
+        d = {
             'StructureCod': query['uo'],
             'StructureName': query['denominazione'],
             'StructureTypeName': query['ds_tipo_nodo'],
             'StructureTypeCOD': query['cd_tipo_nodo'],
-            'StructureURL': query['dip_url']
         }
+        if 'dip_url' in query:
+            d['StructureURL'] = query['dip_url']
+        if 'childs' in query:
+            d['StructureChilds'] = query.get('childs', [])
+        return d
 
 
 class StructureTypesSerializer(CreateUpdateAbstract):
