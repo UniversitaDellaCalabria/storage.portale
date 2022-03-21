@@ -472,7 +472,9 @@ LABEL_MAPPING = {
         'HighFormationLanguage': 'High Formation Language',
         'ProfileId': 'Profile',
         'ProfileDescription': 'Profile Description',
-        'ProfileShortDescription': 'Profile Short Description'
+        'ProfileShortDescription': 'Profile Short Description',
+        'HighFormationTypeDescription': 'High Formation Type Description',
+        'HighFormationErogationModeDescription': 'High Formation Erogation Mode Description'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -862,6 +864,8 @@ LABEL_MAPPING = {
         'HighFormationLanguage': 'Alta Formazione Lingua',
         'ProfileId': 'Profilo',
         'ProfileDescription': 'Descrizione Profilo',
-        'ProfileShortDescription': 'Descrizione Breve Profilo'
+        'ProfileShortDescription': 'Descrizione Breve Profilo',
+        'HighFormationTypeDescription': 'Alta Formazione Descrizione Tipo Corso',
+        'HighFormationErogationModeDescription': 'Alta Formazione Descrizione Modalità Erogazione'
     }
 }
