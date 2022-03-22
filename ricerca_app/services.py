@@ -227,7 +227,7 @@ class ServiceDidatticaCds:
 
         if search is not None:
             for k in search.split(" "):
-                q_nome = Q(titolo_it__icontains=k)
+                q_nome = Q(titolo_it__icontains=k) | Q(matricola_direttore_scientifico__cognome__istartswith=k)
                 query_search &= q_nome
         if director:
             query_director = Q(matricola_direttore_scientifico__exact=director)
