@@ -1066,8 +1066,10 @@ class ApiHighFormationMastersList(ApiEndpointList):
         erogation = self.request.query_params.get('erogation')
         department = self.request.query_params.get('department')
         language = self.request.query_params.get('language')
+        year = self.request.query_params.get('year')
 
-        return ServiceDidatticaCds.getHighFormationMasters(search, director, coursetype, erogation, department, language)
+
+        return ServiceDidatticaCds.getHighFormationMasters(search, director, coursetype, erogation, department, language, year)
 
 
 class ApiHighFormationMastersDetail(ApiEndpointDetail):

@@ -215,7 +215,7 @@ class ServiceDidatticaCds:
 
 
     @staticmethod
-    def getHighFormationMasters(search, director, coursetype, erogation, department, language):
+    def getHighFormationMasters(search, director, coursetype, erogation, department, language, year):
 
         query_search = Q()
         query_director = Q()
@@ -223,6 +223,7 @@ class ServiceDidatticaCds:
         query_erogation = Q()
         query_department = Q()
         query_language = Q()
+        query_year = Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -238,6 +239,8 @@ class ServiceDidatticaCds:
             query_department = Q(id_dipartiento_riferimento__dip_cod=department)
         if language:
             query_language = Q(lingua__exact=language)
+        if year:
+            query_year = Q(anno_rilevazione__exact=year)
 
         query = AltaFormazioneDatiBase.objects.filter(
             query_search,
@@ -246,6 +249,7 @@ class ServiceDidatticaCds:
             query_coursetype,
             query_department,
             query_language,
+            query_year,
         ).values(
             'id',
             'titolo_it',
