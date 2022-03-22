@@ -3579,7 +3579,7 @@ class AltaFormazioneDatiBase(models.Model):
     requisiti_ammissione = models.TextField(db_column='REQUISITI_AMMISSIONE', blank=True, null=True)  # Field name made lowercase.
     titolo_rilasciato = models.TextField(db_column='TITOLO_RILASCIATO', blank=True, null=True)  # Field name made lowercase.
     doppio_titolo = models.TextField(db_column='DOPPIO_TITOLO', blank=True, null=True)  # Field name made lowercase.
-    matricola_direttore_scientifico = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_DIRETTORE_SCIENTIFICO', blank=True, null=True)  # Field name made lowercase.
+    matricola_direttore_scientifico = models.ForeignKey('Personale', models.DO_NOTHING, to_field='matricola', db_column='MATRICOLA_DIRETTORE_SCIENTIFICO', blank=True, null=True)  # Field name made lowercase.
     nome_origine_direttore_scientifico = models.TextField(db_column='NOME_ORIGINE_DIRETTORE_SCIENTIFICO', blank=True, null=True)  # Field name made lowercase.
     quota_iscrizione = models.FloatField(db_column='QUOTA_ISCRIZIONE', blank=True, null=True)  # Field name made lowercase.
     quota_uditori = models.FloatField(db_column='QUOTA_UDITORI', blank=True, null=True)  # Field name made lowercase.
