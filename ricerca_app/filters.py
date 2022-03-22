@@ -681,6 +681,15 @@ class ApiHighFormationMastersListFilter(GenericApiFilter):
             'required': False,
             'type': 'string'
         },
+        {
+            'name': 'year',
+            'description': 'Anno Rilevazione',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
     ]
 
 
