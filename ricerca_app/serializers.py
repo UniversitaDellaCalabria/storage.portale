@@ -2146,3 +2146,55 @@ class Asters2Serializer(CreateUpdateAbstract):
                 'Description': q['descrizione'],
             })
         return result
+
+
+class DoctoratesActivitiesSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        main_teachers = None
+        if query.get('MainTeachers') is not None:
+            main_teachers = DoctoratesActivitiesSerializer.to_dict_teachers(
+                query['MainTeachers'])
+        other_teachers = None
+        if query.get('OtherTeachers') is not None:
+            other_teachers = DoctoratesActivitiesSerializer.to_dict_teachers(
+                query['OtherTeachers'])
+
+        return {
+            'ID': query['id'],
+            'ActivityName': query['nome_af'],
+            'SSD': query['ssd'],
+            'Hours': query['numero_ore'],
+            'CFU': query['cfu'],
+            'ActivityType': query['tipo_af'],
+            'ReferentDoctorate': query['rif_dottorato'],
+            'ReferentStructureId': query['id_struttura_proponente'],
+            'ReferentStructureName': query['struttura_proponente_origine'],
+            'ActivityContents': query['contenuti_af'],
+            'Prerequisities': query['prerequisiti'],
+            'MinStudents': query['num_min_studenti'],
+            'MaxStudents': query['num_max_studenti'],
+            'FinalTest': query['verifica_finale'],
+            'FinalTestMode': query['modalita_verifica'],
+            'MainTeachers': main_teachers,
+            'OtherTeachers': other_teachers,
+        }
+
+    @staticmethod
+    def to_dict_teachers(query):
+        result = []
+        for q in query:
+            full_name = q["cognome_nome_origine"]
+            result.append({
+                'PersonId': encrypt(q['matricola']),
+                'PersonName': full_name,
+            })
+        return result

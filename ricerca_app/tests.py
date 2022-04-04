@@ -26,7 +26,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest,\
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
-    DidatticaCoperturaDettaglioOreUnitTest
+    DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
+    DidatticaDottoratoAttivitaFormativaDocenteUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -5313,3 +5314,104 @@ class ApiAster2ListUnitTest(TestCase):
         # GET
 
         assert len(res.json()['results']) == 1
+
+
+
+class ApiDoctoratesActivitiesListlUnitTest(TestCase):
+
+    def test_apidoctoratesactivitieslist(self):
+
+        req = Client()
+
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 1,
+            'nome_af': 'AAAA',
+            'struttura_proponente_origine': 'dimes',
+            'rif_dottorato': 'matematica'
+
+        })
+
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 2,
+            'nome_af': 'BBBB',
+            'struttura_proponente_origine': 'aaaa',
+            'rif_dottorato': 'umanistici'
+
+        })
+
+        DidatticaDottoratoAttivitaFormativaDocenteUnitTest.create_didatticaDottoratoAttivitaFormativaDocente(**{
+            'id_didattica_dottorato_attivita_formativa': 1,
+            'cognome_nome_origine': 'Simone',
+            'matricola': '111',
+        })
+
+        DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest.create_didatticaDottoratoAttivitaFormativaAltriDocenti(**{
+            'id_didattica_dottorato_attivita_formativa': 1,
+            'cognome_nome_origine': 'Carmine',
+            'matricola': '2222',
+        })
+
+
+
+        url = reverse('ricerca:doctorates-activities-list')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 2
+
+        data = {'search': 'AAA'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'structure': 'dimes'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'doctorate': 'umanistici'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
+class ApiDoctoratesActivityDetailUnitTest(TestCase):
+
+    def test_apidoctoratesactivitydetail(self):
+
+        req = Client()
+
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 1,
+            'nome_af': 'AAAA',
+
+        })
+
+        DidatticaDottoratoAttivitaFormativaDocenteUnitTest.create_didatticaDottoratoAttivitaFormativaDocente(**{
+            'id_didattica_dottorato_attivita_formativa': 1,
+            'cognome_nome_origine': 'Simone',
+            'matricola': '111',
+        })
+
+        DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest.create_didatticaDottoratoAttivitaFormativaAltriDocenti(**{
+            'id_didattica_dottorato_attivita_formativa': 1,
+            'cognome_nome_origine': 'Carmine',
+            'matricola': '2222',
+        })
+
+
+
+        url = reverse('ricerca:doctorates-activity-detail',kwargs={'id': 1})
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results']['ID'] == 1

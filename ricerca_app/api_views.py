@@ -1144,3 +1144,30 @@ class ApiAster2List(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceLaboratorio.getAster2List()
+
+
+class ApiDoctoratesActivitiesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle attività dei dottorati'
+    serializer_class = DoctoratesActivitiesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        search = self.request.query_params.get('search')
+        structure = self.request.query_params.get('structure')
+        doctorate = self.request.query_params.get('doctorate')
+
+
+        return ServiceDottorato.getDoctoratesActivities(search, structure, doctorate)
+
+
+class ApiDoctoratesActivityDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce il dettaglio di una attività riferita ad un dottorato'
+    serializer_class = DoctoratesActivitiesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        activity_id = self.kwargs['id']
+
+        return ServiceDottorato.getDoctoratesActivity(activity_id)

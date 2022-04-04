@@ -406,3 +406,12 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/aster2list/'.format(base_url),
                     api_views.ApiAster2List.as_view(),
                     name='aster2list'),
+
+    urlpatterns += path('{}/doctorates-activities-list/'.format(base_url),
+                        api_views.ApiDoctoratesActivitiesList.as_view(),
+                        name='doctorates-activities-list'),
+
+    urlpatterns += path(
+        '{}/doctorates-activities-list/<int:id>/'.format(base_url),
+        api_views.ApiDoctoratesActivityDetail.as_view(),
+        name='doctorates-activity-detail'),
