@@ -68,7 +68,10 @@ from .models import (
     DidatticaCdsAltriDati,
     DidatticaCdsAltriDatiUfficio,
     DidatticaAttivitaFormativaModalita,
-    DidatticaCoperturaDettaglioOre)
+    DidatticaCoperturaDettaglioOre,
+    DidatticaDottoratoAttivitaFormativa,
+    DidatticaDottoratoAttivitaFormativaDocente,
+    DidatticaDottoratoAttivitaFormativaAltriDocenti)
 
 
 # class ContextUnitTest(TestCase):
@@ -867,4 +870,37 @@ class DidatticaCoperturaDettaglioOreUnitTest(TestCase):
             data[k] = v
 
         obj = DidatticaCoperturaDettaglioOre.objects.create(**data)
+        return obj
+
+
+class DidatticaDottoratoAttivitaFormativaUnitTest(TestCase):
+    @classmethod
+    def create_didatticaDottoratoAttivitaFormativa(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaDottoratoAttivitaFormativa.objects.create(**data)
+        return obj
+
+
+class DidatticaDottoratoAttivitaFormativaDocenteUnitTest(TestCase):
+    @classmethod
+    def create_didatticaDottoratoAttivitaFormativaDocente(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaDottoratoAttivitaFormativaDocente.objects.create(**data)
+        return obj
+
+
+class DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest(TestCase):
+    @classmethod
+    def create_didatticaDottoratoAttivitaFormativaAltriDocenti(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.create(**data)
         return obj

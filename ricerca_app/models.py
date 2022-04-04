@@ -1055,6 +1055,56 @@ class DidatticaDipartimentoUrl(models.Model):
         db_table = 'DIDATTICA_DIPARTIMENTO_URL'
 
 
+class DidatticaDottoratoAttivitaFormativa(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome_af = models.CharField(db_column='NOME_AF', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    ssd = models.CharField(db_column='SSD', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    numero_ore = models.IntegerField(db_column='NUMERO_ORE', blank=True, null=True)  # Field name made lowercase.
+    cfu = models.IntegerField(db_column='CFU', blank=True, null=True)  # Field name made lowercase.
+    tipo_af = models.CharField(db_column='TIPO_AF', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    rif_dottorato = models.CharField(db_column='RIF_DOTTORATO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    id_struttura_proponente = models.ForeignKey('UnitaOrganizzativa', models.DO_NOTHING, db_column='ID_STRUTTURA_PROPONENTE', blank=True, null=True)  # Field name made lowercase.
+    struttura_proponente_origine = models.TextField(db_column='STRUTTURA_PROPONENTE_ORIGINE', blank=True, null=True)  # Field name made lowercase.
+    contenuti_af = models.TextField(db_column='CONTENUTI_AF', blank=True, null=True)  # Field name made lowercase.
+    prerequisiti = models.TextField(db_column='PREREQUISITI', blank=True, null=True)  # Field name made lowercase.
+    num_min_studenti = models.IntegerField(db_column='NUM_MIN_STUDENTI', blank=True, null=True)  # Field name made lowercase.
+    num_max_studenti = models.IntegerField(db_column='NUM_MAX_STUDENTI', blank=True, null=True)  # Field name made lowercase.
+    verifica_finale = models.CharField(db_column='VERIFICA_FINALE', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    modalita_verifica = models.CharField(db_column='MODALITA_VERIFICA', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    user_mod_id = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA'
+
+
+class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_didattica_dottorato_attivita_formativa = models.IntegerField(db_column='ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA', blank=True, null=True)  # Field name made lowercase.
+    matricola = models.CharField(db_column='MATRICOLA', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    user_mod_id = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA_ALTRI_DOCENTI'
+
+
+class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_didattica_dottorato_attivita_formativa = models.IntegerField(db_column='ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA', blank=True, null=True)  # Field name made lowercase.
+    matricola = models.CharField(db_column='MATRICOLA', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    user_mod_id = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA_DOCENTE'
+
+
 class DidatticaDottoratoCds(InsModAbstract):
     dip_cod = models.ForeignKey(
         DidatticaDipartimento,

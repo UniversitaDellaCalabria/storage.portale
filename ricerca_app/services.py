@@ -18,7 +18,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     ProgettoTipologiaProgramma, ProgettoRicercatore, AltaFormazioneDatiBase, AltaFormazionePartner,AltaFormazioneTipoCorso, AltaFormazionePianoDidattico, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
-    DidatticaAttivitaFormativaModalita, RicercaErc1
+    DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente
 from . serializers import StructuresSerializer
 
 
@@ -1860,6 +1860,116 @@ class ServiceDottorato:
             'idesse3_ddpds__pds_cod',
             'idesse3_ddpds__pds_des',
             'idesse3_ddr__regdid_id_esse3')
+
+    @staticmethod
+    def getDoctoratesActivities(search=None, structure=None, doctorate=None):
+
+        query_search = Q()
+        query_structure = Q()
+        query_doctorate = Q()
+
+
+        if search is not None:
+            query_search = Q(nome_af__icontains=search)
+        if structure:
+            query_structure = Q(struttura_proponente_origine__icontains=structure)
+        if doctorate:
+            query_doctorate = Q(rif_dottorato__icontains=doctorate)
+
+        query = DidatticaDottoratoAttivitaFormativa.objects.filter(
+            query_search,
+            query_structure,
+            query_doctorate,
+        ).values(
+            "id",
+            "nome_af",
+            "ssd",
+            "numero_ore",
+            "cfu",
+            "tipo_af",
+            "rif_dottorato",
+            "id_struttura_proponente",
+            "struttura_proponente_origine",
+            "contenuti_af",
+            "prerequisiti",
+            "num_min_studenti",
+            "num_max_studenti",
+            "verifica_finale",
+            "modalita_verifica"
+        )
+        for q in query:
+            main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
+                id_didattica_dottorato_attivita_formativa=q['id']).values(
+                'matricola',
+                'cognome_nome_origine'
+            )
+
+            if len(main_teachers) == 0:
+                q['MainTeachers'] = []
+            else:
+                q['MainTeachers'] = main_teachers
+
+            other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
+                id_didattica_dottorato_attivita_formativa=q['id']).values(
+                'matricola',
+                'cognome_nome_origine'
+            )
+
+            if len(other_teachers) == 0:
+                q['OtherTeachers'] = []
+            else:
+                q['OtherTeachers'] = other_teachers
+
+        return query
+
+    @staticmethod
+    def getDoctoratesActivity(activity_id):
+
+
+        query = DidatticaDottoratoAttivitaFormativa.objects.filter(
+            id=activity_id,
+        ).values(
+            "id",
+            "nome_af",
+            "ssd",
+            "numero_ore",
+            "cfu",
+            "tipo_af",
+            "rif_dottorato",
+            "id_struttura_proponente",
+            "struttura_proponente_origine",
+            "contenuti_af",
+            "prerequisiti",
+            "num_min_studenti",
+            "num_max_studenti",
+            "verifica_finale",
+            "modalita_verifica"
+        )
+
+        for q in query:
+            main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
+                id_didattica_dottorato_attivita_formativa=q['id']).values(
+                'matricola',
+                'cognome_nome_origine'
+            )
+
+            if len(main_teachers) == 0:
+                q['MainTeachers'] = []
+            else:
+                q['MainTeachers'] = main_teachers
+
+            other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
+                id_didattica_dottorato_attivita_formativa=q['id']).values(
+                'matricola',
+                'cognome_nome_origine'
+            )
+
+            if len(other_teachers) == 0:
+                q['OtherTeachers'] = []
+            else:
+                q['OtherTeachers'] = other_teachers
+
+        return query
 
 
 class ServiceDipartimento:
