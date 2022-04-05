@@ -638,7 +638,7 @@ class ServiceDidatticaAttivitaFormativa:
                 query_teacher &= q_teacher
         if teaching:
             for k in teaching.split(" "):
-                q_teaching = Q(af_id__des__icontains=k)
+                q_teaching = Q(af_id__des__icontains=k) | Q(af_id__af_gen_des_eng__icontains=k)
                 query_teaching &= q_teaching
         if ssd:
             for k in ssd.split(" "):
