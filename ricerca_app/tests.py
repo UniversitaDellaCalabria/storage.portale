@@ -628,6 +628,8 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
             'personale': p,
             'aa_off_id': 2015,
             'matricola_resp_did': '111111',
+            'sett_cod': 'INF/01',
+            'sett_des': 'Interdisciplinare',
         })
 
         url = reverse(
@@ -648,11 +650,11 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
 
         data = {'teaching': 'informatica'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 0
 
         data = {'cds': 'Matematica'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 0
 
         data = {'ssd': 'INF'}
         res = req.get(url, data=data)

@@ -610,7 +610,7 @@ class ServiceDidatticaAttivitaFormativa:
             )
 
     @staticmethod
-    def getAllActivities(department, cds, academic_year, period, ssd, teacher, teaching, course_year):
+    def getAllActivities(language, department, cds, academic_year, period, ssd, teacher, teaching, course_year):
 
         query_department = Q()
         query_academic_year = Q()
@@ -630,19 +630,25 @@ class ServiceDidatticaAttivitaFormativa:
             query_department = Q(af_id__cds_id__dip_id__dip_cod=department)
         if cds:
             for k in cds.split(" "):
-                q_cds = Q(af_id__cds_id__nome_cds_it__icontains=k) | Q(af_id__cds_id__nome_cds_eng__icontains=k)
-                query_cds &= q_cds
+                if language == "it":
+                    q = Q(af_id__cds_id__nome_cds_it__icontains=k)
+                else:
+                    q = Q(af_id__cds_id__nome_cds_eng__icontains=k)
+                query_cds |= q
         if teacher:
             for k in teacher.split(" "):
                 q_teacher = Q(personale_id__cognome__istartswith=k)
                 query_teacher &= q_teacher
         if teaching:
             for k in teaching.split(" "):
-                q_teaching = Q(af_id__des__icontains=k) | Q(af_id__af_gen_des_eng__icontains=k)
-                query_teaching &= q_teaching
+                if language == "it":
+                    q_teaching = Q(af_id__des__icontains=k)
+                else:
+                    q_teaching = Q(af_id__af_gen_des_eng__icontains=k)
+                query_teaching |= q_teaching
         if ssd:
             for k in ssd.split(" "):
-                q_ssd = Q(af_id__sett_cod__icontains=k)
+                q_ssd = Q(sett_cod__icontains=k)
                 query_ssd &= q_ssd
         if period:
             query_period = Q(af_id__ciclo_des=period)
@@ -661,8 +667,8 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_cod',
             'af_id__des',
             'af_id__af_gen_des_eng',
-            'af_id__sett_cod',
-            'af_id__sett_des',
+            'sett_cod',
+            'sett_des',
             'af_id__ciclo_des',
             'aa_off_id',
             'af_id__regdid_id',
