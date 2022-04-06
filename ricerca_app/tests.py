@@ -627,6 +627,7 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
             'af': course,
             'personale': p,
             'aa_off_id': 2015,
+            'matricola_resp_did': '111111',
         })
 
         url = reverse(

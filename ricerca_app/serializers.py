@@ -307,11 +307,13 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
     def to_dict(query,
                 req_lang='en'):
 
-        full_name = str(query['personale_id__cognome']) + " " + str(query['personale_id__nome'])
+        # if query['DirectorName'] is not None:
+        #     teacher = StudyActivitiesSerializer.to_dict_teachers(
+        #         query['DirectorName'])
 
         return {
             'StudyActivityID': query['af_id'],
-            'StudyActivityCod': query['af_id__af_gen_cod'],
+            'StudyActivityCod': query['af_gen_cod'],
             'StudyActivityName': query['af_id__des'] if req_lang == 'it' or query['af_id__af_gen_des_eng'] is None else query['af_id__af_gen_des_eng'],
             'StudyActivityCdSID': query['af_id__cds_id'],
             'StudyActivityCdSCod': query['af_id__cds_id__cds_cod'],
@@ -328,8 +330,8 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityExtendedPartitionCod': query['fat_part_stu_cod'],
             'StudyActivityExtendedPartitionDes': query['fat_part_stu_des'],
             'StudyActivityCdSName': query['af_id__cds_id__nome_cds_it'] if req_lang == 'it' or query['af_id__cds_id__nome_cds_eng'] is None else query['af_id__cds_id__nome_cds_eng'],
-            'StudyActivityTeacherID': encrypt(query['personale_id__matricola']) if query['personale_id__matricola'] else None,
-            'StudyActivityTeacherName': full_name if query['personale_id__matricola'] else None,
+            'StudyActivityTeacherID': encrypt(query['matricola_resp_did']) if query['matricola_resp_did'] else None,
+            'StudyActivityTeacherName': query['DirectorName'],
             'StudyPlanDes': query['pds_des'],
         }
 
@@ -341,7 +343,6 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
     #                     (" " + q['middle_name']
     #                      if q['middle_name'] is not None else "")
     #         result.append({
-    #             'TeacherID': encrypt(q['matricola']),
     #             'TeacherName': full_name,
     #         })
     #     return result
