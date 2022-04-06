@@ -658,7 +658,7 @@ class ServiceDidatticaAttivitaFormativa:
             query_course_year
         ).values(
             'af_id',
-            'af_id__af_gen_cod',
+            'af_gen_cod',
             'af_id__des',
             'af_id__af_gen_des_eng',
             'af_id__sett_cod',
@@ -678,25 +678,18 @@ class ServiceDidatticaAttivitaFormativa:
             'part_stu_cod',
             'part_stu_des',
             'af_id__anno_corso',
-            'personale_id__matricola',
-            'personale_id__nome',
-            'personale_id__cognome',
+            'matricola_resp_did',
             'pds_des'
         ).distinct().order_by('af_id__des')
 
 
-        # for q in query:
-        #     teachers = Personale.objects.filter(id=q['personale_id']).values(
-        #         'nome',
-        #         'cognome',
-        #         'middle_name',
-        #         'matricola'
-        #     )
-        #
-        #     if len(teachers) == 0:
-        #         q['Teachers'] = []
-        #     else:
-        #         q['Teachers'] = teachers
+        for q in query:
+            name = Personale.objects.filter(matricola=q['matricola_resp_did']).values(
+                'nome',
+                'cognome',
+                'middle_name'
+            )
+            q['DirectorName'] = name[0]['cognome'] + " " + name[0]['nome'] + (" " + name[0]['middle_name'] if name[0]['middle_name'] is not None else "")
 
         return query
 
