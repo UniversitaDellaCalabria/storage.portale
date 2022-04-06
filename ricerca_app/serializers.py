@@ -307,9 +307,11 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
     def to_dict(query,
                 req_lang='en'):
 
-        # if query['DirectorName'] is not None:
-        #     teacher = StudyActivitiesSerializer.to_dict_teachers(
-        #         query['DirectorName'])
+        full_name = None
+        if query['DirectorName'] is not None:
+            full_name = query['DirectorName'][0]['cognome'] + " " + query['DirectorName'][0]['nome'] + \
+                        (" " + query['DirectorName'][0]['middle_name']
+                         if query['DirectorName'][0]['middle_name'] is not None else "")
 
         return {
             'StudyActivityID': query['af_id'],
@@ -331,7 +333,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityExtendedPartitionDes': query['fat_part_stu_des'],
             'StudyActivityCdSName': query['af_id__cds_id__nome_cds_it'] if req_lang == 'it' or query['af_id__cds_id__nome_cds_eng'] is None else query['af_id__cds_id__nome_cds_eng'],
             'StudyActivityTeacherID': encrypt(query['matricola_resp_did']) if query['matricola_resp_did'] else None,
-            'StudyActivityTeacherName': query['DirectorName'],
+            'StudyActivityTeacherName': full_name,
             'StudyPlanDes': query['pds_des'],
         }
 
