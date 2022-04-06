@@ -684,12 +684,16 @@ class ServiceDidatticaAttivitaFormativa:
 
 
         for q in query:
+
             name = Personale.objects.filter(matricola=q['matricola_resp_did']).values(
                 'nome',
                 'cognome',
                 'middle_name'
             )
-            q['DirectorName'] = name[0]['cognome'] + " " + name[0]['nome'] + (" " + name[0]['middle_name'] if name[0]['middle_name'] is not None else "")
+            if(len(name) != 0):
+                q['DirectorName'] = name
+            else:
+                q['DirectorName'] = None
 
         return query
 
