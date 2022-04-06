@@ -1171,3 +1171,23 @@ class ApiDoctoratesActivityDetail(ApiEndpointDetail):
         activity_id = self.kwargs['id']
 
         return ServiceDottorato.getDoctoratesActivity(activity_id)
+    
+    
+class ApiRefDoctoratesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista dei dottorati di riferimento'
+    serializer_class = RefDoctoratesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceDottorato.getRefDoctorates()
+    
+    
+class ApiRefStructuresList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle strutture di riferimento'
+    serializer_class = RefStructuresSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceDottorato.getRefStructures()

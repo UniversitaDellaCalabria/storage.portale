@@ -1975,6 +1975,30 @@ class ServiceDottorato:
         return query
 
 
+    @staticmethod
+    def getRefDoctorates():
+        query = DidatticaDottoratoAttivitaFormativa.objects.values(
+            'rif_dottorato'
+        ).distinct()
+        query = list(query)
+        for q in query:
+            if q['rif_dottorato'] == None:
+                query.remove(q)
+        return query
+
+
+    @staticmethod
+    def getRefStructures():
+        query = DidatticaDottoratoAttivitaFormativa.objects.values(
+            'struttura_proponente_origine'
+        ).distinct()
+        query = list(query)
+        for q in query:
+            if q['struttura_proponente_origine'] == None:
+                query.remove(q)
+        return query
+
+
 class ServiceDipartimento:
 
     @staticmethod

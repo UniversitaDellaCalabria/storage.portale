@@ -5418,3 +5418,61 @@ class ApiDoctoratesActivityDetailUnitTest(TestCase):
 
         res = req.get(url)
         assert res.json()['results']['ID'] == 1
+        
+        
+        
+class ApiRefDoctoratesListUnitTest(TestCase):
+
+    def test_apirefdoctorateslist(self):
+
+        req = Client()
+
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 1,
+            'nome_af': 'AAAA',
+            'struttura_proponente_origine': 'dimes',
+            'rif_dottorato': 'matematica'
+
+        })
+
+
+        url = reverse('ricerca:ref-doctorates')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+        
+        
+        
+class ApiRefStructuresListUnitTest(TestCase):
+
+    def test_apirefstructureslist(self):
+
+        req = Client()
+
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 1,
+            'nome_af': 'AAAA',
+            'struttura_proponente_origine': 'dimes',
+            'rif_dottorato': 'matematica'
+
+        })
+
+
+        url = reverse('ricerca:ref-structures')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1

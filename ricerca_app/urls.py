@@ -415,3 +415,15 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/doctorates-activities-list/<int:id>/'.format(base_url),
         api_views.ApiDoctoratesActivityDetail.as_view(),
         name='doctorates-activity-detail'),
+
+    urlpatterns += path('{}/ref-doctorates/'.format(base_url),
+                        api_views.ApiRefDoctoratesList.as_view(),
+                        name='ref-doctorates'),
+
+    urlpatterns += path('{}/ref-doctorates/'.format(base_url),
+                        api_views.ApiRefDoctoratesList.as_view(),
+                        name='ref-doctorates'),
+
+    urlpatterns += path('{}/ref-structures/'.format(base_url),
+                        api_views.ApiRefStructuresList.as_view(),
+                        name='ref-structures'),
