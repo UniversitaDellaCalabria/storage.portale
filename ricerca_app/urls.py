@@ -194,9 +194,9 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         api_views.ApiTeacherPublicationDetail.as_view(),
         name='publicationdetail'),
 
-    urlpatterns += path('{}/doctorateslist/'.format(base_url),
-                        api_views.ApiDoctoratesList.as_view(),
-                        name='doctorateslist'),
+    urlpatterns += path('{}/phdlist/'.format(base_url),
+                        api_views.ApiPhdList.as_view(),
+                        name='phdlist'),
 
     urlpatterns += path('{}/degreetypes/'.format(base_url),
                         api_views.ApiDegreeTypesList.as_view(),
@@ -407,22 +407,22 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                     api_views.ApiAster2List.as_view(),
                     name='aster2list'),
 
-    urlpatterns += path('{}/doctorates-activities-list/'.format(base_url),
-                        api_views.ApiDoctoratesActivitiesList.as_view(),
-                        name='doctorates-activities-list'),
+    urlpatterns += path('{}/phd-activities-list/'.format(base_url),
+                        api_views.ApiPhdActivitiesList.as_view(),
+                        name='phd-activities-list'),
 
     urlpatterns += path(
-        '{}/doctorates-activities-list/<int:id>/'.format(base_url),
-        api_views.ApiDoctoratesActivityDetail.as_view(),
-        name='doctorates-activity-detail'),
+        '{}/phd-activities-list/<int:id>/'.format(base_url),
+        api_views.ApiPhdActivityDetail.as_view(),
+        name='phd-activity-detail'),
 
-    urlpatterns += path('{}/ref-doctorates/'.format(base_url),
-                        api_views.ApiRefDoctoratesList.as_view(),
-                        name='ref-doctorates'),
+    urlpatterns += path('{}/ref-phd/'.format(base_url),
+                        api_views.ApiRefPhdList.as_view(),
+                        name='ref-phd'),
 
-    urlpatterns += path('{}/ref-doctorates/'.format(base_url),
-                        api_views.ApiRefDoctoratesList.as_view(),
-                        name='ref-doctorates'),
+    urlpatterns += path('{}/ref-phd/'.format(base_url),
+                        api_views.ApiRefPhdList.as_view(),
+                        name='ref-phd'),
 
     urlpatterns += path('{}/ref-structures/'.format(base_url),
                         api_views.ApiRefStructuresList.as_view(),

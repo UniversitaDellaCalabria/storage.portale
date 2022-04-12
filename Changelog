@@ -4,7 +4,7 @@
 	- Efficientamento query + controllo dei risultati (OK)
 	- Scrittura serializer custom (OK)
 	- Test OK (Coverage 99%)
-	
+
 - Endpoint '/api/ricerca/cdsinfo'
 	- Query (OK)
 	- Serializer (OK)
@@ -46,20 +46,20 @@
 	- Serializer (OK)
 	- Test OK (Coverage 99%)
 	- Pagination OK
-	
+
 - Endpoint '/api/ricerca/teacherresearchlines'
 	- Query (OK)
 	- Serializer (OK)
 	- Test OK (Coverage 99%)
 	- Pagination OK
 	- NOTA: necessario un piccolo ritocco nei valori di output (al posto di ERC1-ERC2/ASTER1-ASTER2 inserire valori di ERC0)
-	
+
 26/02/2021
 
 - Endpoint '/api/ricerca/teacherresearchlines'
 	- Cambiamento valori OK
 
-- Endpoint '/api/ricerca/doctorateslist'
+- Endpoint '/api/ricerca/phdlist'
 	- Query (OK)
 	- Serializer (OK)
 	- Test OK (Coverage 99%)

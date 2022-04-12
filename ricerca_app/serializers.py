@@ -864,7 +864,7 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
         return functions
 
 
-class DoctoratesSerializer(CreateUpdateAbstract):
+class PhdSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -879,13 +879,13 @@ class DoctoratesSerializer(CreateUpdateAbstract):
             'DepartmentID': query['dip_cod__dip_id'],
             'DepartmentCod': query['dip_cod__dip_cod'],
             'DepartmentName': query['dip_cod__dip_des_it'] if req_lang == "it" or query['dip_cod__dip_des_eng'] is None else query['dip_cod__dip_des_eng'],
-            'DoctorateCdsCOD': query['cds_cod'],
-            'DoctorateCdsName': query['cdsord_des'],
-            'DoctorateRegID': query['idesse3_ddr__regdid_id_esse3'],
-            'DoctorateRegCOD': query['idesse3_ddr__regdid_cod'],
-            'DoctorateCdSDuration': query['durata_anni'],
-            'DoctorateCdSECTS': query['valore_min'],
-            'DoctorateCdSAttendance': query['idesse3_ddr__frequenza_obbligatoria'],
+            'PhdCdsCOD': query['cds_cod'],
+            'PhdCdsName': query['cdsord_des'],
+            'PhdRegID': query['idesse3_ddr__regdid_id_esse3'],
+            'PhdRegCOD': query['idesse3_ddr__regdid_cod'],
+            'PhdCdSDuration': query['durata_anni'],
+            'PhdCdSECTS': query['valore_min'],
+            'PhdCdSAttendance': query['idesse3_ddr__frequenza_obbligatoria'],
             'CourseType': query['tipo_corso_cod'],
             'CourseName': query['tipo_corso_des'],
             'CycleNumber': query['idesse3_ddr__num_ciclo'],
@@ -2151,7 +2151,7 @@ class Asters2Serializer(CreateUpdateAbstract):
         return result
 
 
-class DoctoratesActivitiesSerializer(CreateUpdateAbstract):
+class PhdActivitiesSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -2164,11 +2164,11 @@ class DoctoratesActivitiesSerializer(CreateUpdateAbstract):
 
         main_teachers = None
         if query.get('MainTeachers') is not None:
-            main_teachers = DoctoratesActivitiesSerializer.to_dict_teachers(
+            main_teachers = PhdActivitiesSerializer.to_dict_teachers(
                 query['MainTeachers'])
         other_teachers = None
         if query.get('OtherTeachers') is not None:
-            other_teachers = DoctoratesActivitiesSerializer.to_dict_teachers(
+            other_teachers = PhdActivitiesSerializer.to_dict_teachers(
                 query['OtherTeachers'])
 
         return {
@@ -2178,7 +2178,7 @@ class DoctoratesActivitiesSerializer(CreateUpdateAbstract):
             'Hours': query['numero_ore'],
             'CFU': query['cfu'],
             'ActivityType': query['tipo_af'],
-            'ReferentDoctorate': query['rif_dottorato'],
+            'ReferentPhd': query['rif_dottorato'],
             'ReferentStructureId': query['id_struttura_proponente'],
             'ReferentStructureName': query['struttura_proponente_origine'],
             'ActivityContents': query['contenuti_af'],
@@ -2201,9 +2201,9 @@ class DoctoratesActivitiesSerializer(CreateUpdateAbstract):
                 'PersonName': full_name,
             })
         return result
-    
-    
-class RefDoctoratesSerializer(CreateUpdateAbstract):
+
+
+class RefPhdSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance
@@ -2215,7 +2215,7 @@ class RefDoctoratesSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
 
         return {
-            'ReferentDoctorate': query['rif_dottorato'],
+            'ReferentPhd': query['rif_dottorato'],
         }
 
 

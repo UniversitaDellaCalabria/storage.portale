@@ -1460,9 +1460,9 @@ class ApiTeacherInfoUnitTest(TestCase):
         assert res.json()['results']['TeacherFirstName'] == 'Lionel'
 
 
-class ApiDoctoratesListUnitTest(TestCase):
+class ApiPhdListUnitTest(TestCase):
 
-    def test_apidoctorateslistunittest(self):
+    def test_apiphdlistunittest(self):
         req = Client()
 
         dip = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
@@ -1494,7 +1494,7 @@ class ApiDoctoratesListUnitTest(TestCase):
             'num_ciclo': 10,
         })
 
-        url = reverse('ricerca:doctorateslist')
+        url = reverse('ricerca:phdlist')
 
         # check url
         res = req.get(url)
@@ -1503,15 +1503,15 @@ class ApiDoctoratesListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+        assert res.json()['results'][0]['PhdCdsCOD'] == '111'
 
         data = {'department': 1}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+        assert res.json()['results'][0]['PhdCdsCOD'] == '111'
 
         data = {'year': 2020}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+        assert res.json()['results'][0]['PhdCdsCOD'] == '111'
 
         data = {'yearTo': 2019, 'yearFrom': 2018}
         res = req.get(url, data=data)
@@ -1527,11 +1527,11 @@ class ApiDoctoratesListUnitTest(TestCase):
 
         data = {'regdidid': '111'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+        assert res.json()['results'][0]['PhdCdsCOD'] == '111'
 
         data = {'pdscod': 'GEN'}
         res = req.get(url, data=data)
-        assert res.json()['results'][0]['DoctorateCdsCOD'] == '111'
+        assert res.json()['results'][0]['PhdCdsCOD'] == '111'
 
         data = {'cycle': 0}
         res = req.get(url, data=data)
@@ -5320,9 +5320,9 @@ class ApiAster2ListUnitTest(TestCase):
 
 
 
-class ApiDoctoratesActivitiesListlUnitTest(TestCase):
+class ApiPhdActivitiesListlUnitTest(TestCase):
 
-    def test_apidoctoratesactivitieslist(self):
+    def test_apiphdactivitieslist(self):
 
         req = Client()
 
@@ -5356,7 +5356,7 @@ class ApiDoctoratesActivitiesListlUnitTest(TestCase):
 
 
 
-        url = reverse('ricerca:doctorates-activities-list')
+        url = reverse('ricerca:phd-activities-list')
 
         # check url
         res = req.get(url)
@@ -5376,14 +5376,14 @@ class ApiDoctoratesActivitiesListlUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'doctorate': 'umanistici'}
+        data = {'phd': 'umanistici'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
 
-class ApiDoctoratesActivityDetailUnitTest(TestCase):
+class ApiPhdActivityDetailUnitTest(TestCase):
 
-    def test_apidoctoratesactivitydetail(self):
+    def test_apiphdactivitydetail(self):
 
         req = Client()
 
@@ -5407,7 +5407,7 @@ class ApiDoctoratesActivityDetailUnitTest(TestCase):
 
 
 
-        url = reverse('ricerca:doctorates-activity-detail',kwargs={'id': 1})
+        url = reverse('ricerca:phd-activity-detail',kwargs={'id': 1})
 
         # check url
         res = req.get(url)
@@ -5418,12 +5418,12 @@ class ApiDoctoratesActivityDetailUnitTest(TestCase):
 
         res = req.get(url)
         assert res.json()['results']['ID'] == 1
-        
-        
-        
-class ApiRefDoctoratesListUnitTest(TestCase):
 
-    def test_apirefdoctorateslist(self):
+
+
+class ApiRefPhdListUnitTest(TestCase):
+
+    def test_apirefphdlist(self):
 
         req = Client()
 
@@ -5436,7 +5436,7 @@ class ApiRefDoctoratesListUnitTest(TestCase):
         })
 
 
-        url = reverse('ricerca:ref-doctorates')
+        url = reverse('ricerca:ref-phd')
 
         # check url
         res = req.get(url)
@@ -5447,9 +5447,9 @@ class ApiRefDoctoratesListUnitTest(TestCase):
 
         res = req.get(url)
         assert len(res.json()['results']) == 1
-        
-        
-        
+
+
+
 class ApiRefStructuresListUnitTest(TestCase):
 
     def test_apirefstructureslist(self):
