@@ -573,13 +573,13 @@ class ApiTeachingCoverageDetail(ApiTeacherDetail):
 # ----Dottorati----
 
 
-class ApiDoctoratesList(ApiEndpointList):
+class ApiPhdList(ApiEndpointList):
     description = 'La funzione restituisce una lista di dottorati'
-    serializer_class = DoctoratesSerializer
-    filter_backends = [ApiDoctoratesListFilter]
+    serializer_class = PhdSerializer
+    filter_backends = [ApiPhdListFilter]
 
     def get_queryset(self):
-        return ServiceDottorato.getDoctorates(self.request.query_params)
+        return ServiceDottorato.getPhd(self.request.query_params)
 
 # ---- Tipologie Lauree ----
 
@@ -1146,43 +1146,43 @@ class ApiAster2List(ApiEndpointList):
         return ServiceLaboratorio.getAster2List()
 
 
-class ApiDoctoratesActivitiesList(ApiEndpointList):
+class ApiPhdActivitiesList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle attività dei dottorati'
-    serializer_class = DoctoratesActivitiesSerializer
+    serializer_class = PhdActivitiesSerializer
     filter_backends = []
 
     def get_queryset(self):
 
         search = self.request.query_params.get('search')
         structure = self.request.query_params.get('structure')
-        doctorate = self.request.query_params.get('doctorate')
+        phd = self.request.query_params.get('phd')
 
 
-        return ServiceDottorato.getDoctoratesActivities(search, structure, doctorate)
+        return ServiceDottorato.getPhdActivities(search, structure, phd)
 
 
-class ApiDoctoratesActivityDetail(ApiEndpointDetail):
+class ApiPhdActivityDetail(ApiEndpointDetail):
     description = 'La funzione restituisce il dettaglio di una attività riferita ad un dottorato'
-    serializer_class = DoctoratesActivitiesSerializer
+    serializer_class = PhdActivitiesSerializer
     filter_backends = []
 
     def get_queryset(self):
 
         activity_id = self.kwargs['id']
 
-        return ServiceDottorato.getDoctoratesActivity(activity_id)
-    
-    
-class ApiRefDoctoratesList(ApiEndpointList):
+        return ServiceDottorato.getPhdActivity(activity_id)
+
+
+class ApiRefPhdList(ApiEndpointList):
     description = 'La funzione restituisce la lista dei dottorati di riferimento'
-    serializer_class = RefDoctoratesSerializer
+    serializer_class = RefPhdSerializer
     filter_backends = []
 
     def get_queryset(self):
 
-        return ServiceDottorato.getRefDoctorates()
-    
-    
+        return ServiceDottorato.getRefPhd()
+
+
 class ApiRefStructuresList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle strutture di riferimento'
     serializer_class = RefStructuresSerializer

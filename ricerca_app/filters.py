@@ -326,7 +326,7 @@ class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
                      ]
 
 
-class ApiDoctoratesListFilter(GenericApiFilter):
+class ApiPhdListFilter(GenericApiFilter):
     search_params = [
         {
             'name': 'regdid',

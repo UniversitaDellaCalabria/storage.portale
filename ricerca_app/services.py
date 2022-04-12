@@ -1824,7 +1824,7 @@ class ServiceDocente:
 
 class ServiceDottorato:
     @staticmethod
-    def getDoctorates(query_params):
+    def getPhd(query_params):
 
         params_to_query_field = {
             'year': 'idesse3_ddr__aa_regdid_id__exact',
@@ -1865,24 +1865,24 @@ class ServiceDottorato:
             'idesse3_ddr__regdid_id_esse3')
 
     @staticmethod
-    def getDoctoratesActivities(search=None, structure=None, doctorate=None):
+    def getPhdActivities(search=None, structure=None, phd=None):
 
         query_search = Q()
         query_structure = Q()
-        query_doctorate = Q()
+        query_phd = Q()
 
 
         if search is not None:
             query_search = Q(nome_af__icontains=search)
         if structure:
             query_structure = Q(struttura_proponente_origine__icontains=structure)
-        if doctorate:
-            query_doctorate = Q(rif_dottorato__icontains=doctorate)
+        if phd:
+            query_phd = Q(rif_dottorato__icontains=phd)
 
         query = DidatticaDottoratoAttivitaFormativa.objects.filter(
             query_search,
             query_structure,
-            query_doctorate,
+            query_phd,
         ).values(
             "id",
             "nome_af",
@@ -1926,7 +1926,7 @@ class ServiceDottorato:
         return query
 
     @staticmethod
-    def getDoctoratesActivity(activity_id):
+    def getPhdActivity(activity_id):
 
 
         query = DidatticaDottoratoAttivitaFormativa.objects.filter(
@@ -1976,7 +1976,7 @@ class ServiceDottorato:
 
 
     @staticmethod
-    def getRefDoctorates():
+    def getRefPhd():
         query = DidatticaDottoratoAttivitaFormativa.objects.values(
             'rif_dottorato'
         ).distinct()
