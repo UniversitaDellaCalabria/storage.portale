@@ -489,6 +489,7 @@ LABEL_MAPPING = {
         'FinalTest': "Final Test",
         'MainTeachers': 'Main Teachers',
         'OtherTeachers': 'Other Teachers',
+        'ErogationMode': 'Erogation Mode',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -896,6 +897,7 @@ LABEL_MAPPING = {
         'FinalTestMode': "Modalità Test Finale",
         'MainTeachers': 'Docenti Principali',
         'OtherTeachers': 'Altri Docenti',
-        'HighFormationErogationModeDescription': 'Modalità di erogazione'
+        'HighFormationErogationModeDescription': 'Modalità di erogazione',
+        'ErogationMode': 'Modalità Erogazione',
     }
 }

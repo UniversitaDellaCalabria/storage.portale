@@ -418,7 +418,7 @@ LABEL_MAPPING = {
         'MasterTitle': 'Master Title',
         'HighFormationTypeId': 'High Formation Type Id',
         'HighFormationErogationMode': 'High Formation Erogation Mode',
-        'HighFormationErogationModeDescription': 'High Formation Erogation Mode Description',
+        'HighFormationErogationModeDescription': 'Erogation mode',
         'HighFormationHours': 'Hours',
         'HighFormationMonths': 'Months',
         'HighFormationCourseStructure': 'Course Structure',
@@ -506,7 +506,7 @@ LABEL_MAPPING = {
         'StudyActivityPartitionDes': 'Study Activity Partition Description',
         'StudyActivityExtendedPartitionCod': 'Study Activity Extended Partition Code',
         'StudyActivityExtendedPartitionDes': 'Study Activity Extended Partition Description',
-        'HighFormationLanguage': 'High Formation Language',
+        'HighFormationLanguage': 'Language',
         'ProfileId': 'Profile',
         'ProfileDescription': 'Profile Description',
         'ProfileShortDescription': 'Profile Short Description',
@@ -526,6 +526,7 @@ LABEL_MAPPING = {
         'FinalTest': "Final Test",
         'MainTeachers': 'Main Teachers',
         'OtherTeachers': 'Other Teachers',
+        'ErogationMode': 'Erogation Mode',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -912,7 +913,7 @@ LABEL_MAPPING = {
         'StudyActivityPartitionDes': 'Descrizione Partizionamento',
         'StudyActivityExtendedPartitionCod': 'Codice Esteso Partizionamento',
         'StudyActivityExtendedPartitionDes': 'Descrizione Estesa Partizionamento',
-        'HighFormationLanguage': 'Alta Formazione Lingua',
+        'HighFormationLanguage': 'Lingua',
         'ProfileId': 'Profilo',
         'ProfileDescription': 'Descrizione Profilo',
         'ProfileShortDescription': 'Descrizione Breve Profilo',
@@ -933,5 +934,7 @@ LABEL_MAPPING = {
         'FinalTestMode': "Modalità Test Finale",
         'MainTeachers': 'Docenti Principali',
         'OtherTeachers': 'Altri Docenti',
+        'HighFormationErogationModeDescription': 'Modalità di erogazione',
+        'ErogationMode': 'Modalità Erogazione',
     }
 }

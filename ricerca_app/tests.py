@@ -236,6 +236,7 @@ class ApiCdSInfoUnitTest(TestCase):
             'stato_regdid_cod': 'A',
             'titolo_congiunto_cod': 'N',
             'cds': didatticaCds,
+            'modalita_erogazione': 'Convenzionale'
         })
         DidatticaTestiRegolamentoUnitTest.create_didatticaTestiRegolamento(**{
             'txt_id': 1,
