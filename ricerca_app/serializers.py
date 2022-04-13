@@ -40,6 +40,9 @@ class CdSSerializer(CreateUpdateAbstract):
         if query["OfficesData"] is not None:
             offices_data = CdSSerializer.to_dict_offices_data(
                 query["OfficesData"])
+        erogation_mode = None
+        if query['ErogationMode'] is not None:
+            erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'CdSId': query['cds_id'],
@@ -56,6 +59,7 @@ class CdSSerializer(CreateUpdateAbstract):
             'CourseClassName': query['cla_miur_des'],
             'CourseInterClassCod': query['intercla_miur_cod'],
             'CourseInterClassDes': query['intercla_miur_des'],
+            'ErogationMode': erogation_mode,
             'CdSLanguage': langs,
             'CdSDuration': query['durata_anni'],
             'CdSECTS': query['valore_min'],
