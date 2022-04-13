@@ -653,6 +653,10 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
+        data = {'teacher': 'Garofalo'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
         data = {'cds': 'Matematica'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
