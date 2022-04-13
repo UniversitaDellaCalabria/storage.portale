@@ -124,6 +124,16 @@ class ServiceDidatticaCds:
             'area_cds_en').distinct()
         items = items.order_by("nome_cds_it") if language == 'it' else items.order_by(
             F("nome_cds_eng").asc(nulls_last=True))
+        for i in items:
+            erogation_mode = DidatticaRegolamento.objects.filter(cds_id=i['cds_id'],
+                                                                 stato_regdid_cod__exact='A').values(
+            'modalita_erogazione'
+            )
+            if (len(erogation_mode) != 0):
+                i['ErogationMode'] = erogation_mode
+            else:
+                i['ErogationMode'] = None
+                
         items = list(items)
         for item in items:
             item['Languages'] = DidatticaCdsLingua.objects.filter(
@@ -1962,7 +1972,8 @@ class ServiceDottorato:
                 q['MainTeachers'] = main_teachers
 
             other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
-                id_didattica_dottorato_attivita_formativa=q['id']).values(
+                id_didattica_dottorato_attivita_formativa=q['id'],
+                cognome_nome_origine__isnull=False).values(
                 'matricola',
                 'cognome_nome_origine'
             )
