@@ -236,6 +236,7 @@ class ApiCdSInfoUnitTest(TestCase):
             'stato_regdid_cod': 'A',
             'titolo_congiunto_cod': 'N',
             'cds': didatticaCds,
+            'modalita_erogazione': 'Convenzionale'
         })
         DidatticaTestiRegolamentoUnitTest.create_didatticaTestiRegolamento(**{
             'txt_id': 1,
@@ -651,6 +652,10 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
         data = {'teaching': 'informatica'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
+
+        data = {'teacher': 'Garofalo'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
         data = {'cds': 'Matematica'}
         res = req.get(url, data=data)

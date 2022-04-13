@@ -178,8 +178,20 @@ class ApiCdSDetail(ApiEndpointDetail):
             'area_cds',
             'area_cds_en',
         ).distinct()
+
+        for r in res:
+            erogation_mode = DidatticaRegolamento.objects.filter(cds_id=r['cds_id'],
+                                                                 stato_regdid_cod__exact='A').values(
+            'modalita_erogazione'
+            )
+            if (len(erogation_mode) != 0):
+                r['ErogationMode'] = erogation_mode
+            else:
+                r['ErogationMode'] = None
+        
         res = list(res)
 
+                
         if len(res) == 0:
             return None
 
