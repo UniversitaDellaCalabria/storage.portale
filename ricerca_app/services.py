@@ -1875,11 +1875,12 @@ class ServiceDottorato:
             'idesse3_ddr__regdid_id_esse3')
 
     @staticmethod
-    def getPhdActivities(search=None, structure=None, phd=None):
+    def getPhdActivities(search=None, structure=None, phd=None, ssd=None):
 
         query_search = Q()
         query_structure = Q()
         query_phd = Q()
+        query_ssd = Q()
 
 
         if search is not None:
@@ -1888,11 +1889,13 @@ class ServiceDottorato:
             query_structure = Q(struttura_proponente_origine__icontains=structure)
         if phd:
             query_phd = Q(rif_dottorato__icontains=phd)
-
+        if ssd:
+            query_ssd = Q(ssd__icontains=ssd)
         query = DidatticaDottoratoAttivitaFormativa.objects.filter(
             query_search,
             query_structure,
             query_phd,
+            query_ssd,
         ).values(
             "id",
             "nome_af",
@@ -1997,6 +2000,16 @@ class ServiceDottorato:
                 query.remove(q)
         return query
 
+    @staticmethod
+    def getPhdSsdList():
+        query = DidatticaDottoratoAttivitaFormativa.objects.values(
+            'ssd'
+        ).distinct()
+        query = list(query)
+        for q in query:
+            if q['ssd'] == None:
+                query.remove(q)
+        return query
 
     @staticmethod
     def getRefStructures():

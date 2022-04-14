@@ -1168,9 +1168,10 @@ class ApiPhdActivitiesList(ApiEndpointList):
         search = self.request.query_params.get('search')
         structure = self.request.query_params.get('structure')
         phd = self.request.query_params.get('phd')
+        ssd = self.request.query_params.get('ssd')
 
 
-        return ServiceDottorato.getPhdActivities(search, structure, phd)
+        return ServiceDottorato.getPhdActivities(search, structure, phd, ssd)
 
 
 class ApiPhdActivityDetail(ApiEndpointDetail):
@@ -1203,3 +1204,13 @@ class ApiRefStructuresList(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceDottorato.getRefStructures()
+
+
+class ApiPhdSsdList(ApiEndpointList):
+    description = 'La funzione restituisce la lista deigli ssd dei dottorati'
+    serializer_class = PhdSsdListSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceDottorato.getPhdSsdList()

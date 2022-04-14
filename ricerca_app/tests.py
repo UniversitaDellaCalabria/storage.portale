@@ -5481,3 +5481,30 @@ class ApiRefStructuresListUnitTest(TestCase):
 
         res = req.get(url)
         assert len(res.json()['results']) == 1
+
+
+
+class ApiPhdSsdListUnitTest(TestCase):
+
+    def test_apiphdssdlist(self):
+
+        req = Client()
+
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 1,
+            'ssd': 'Convenzionale'
+
+        })
+
+
+        url = reverse('ricerca:phd-ssd-list')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
