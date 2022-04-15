@@ -1875,7 +1875,7 @@ class ServiceDottorato:
             'idesse3_ddr__regdid_id_esse3')
 
     @staticmethod
-    def getPhdActivities(search=None, structure=None, phd=None, ssd=None):
+    def getPhdActivities(search=None, structure=None, phd=None, ssd=None, teacher=None):
 
         query_search = Q()
         query_structure = Q()
@@ -1891,6 +1891,7 @@ class ServiceDottorato:
             query_phd = Q(rif_dottorato__icontains=phd)
         if ssd:
             query_ssd = Q(ssd__icontains=ssd)
+
         query = DidatticaDottoratoAttivitaFormativa.objects.filter(
             query_search,
             query_structure,
@@ -1935,6 +1936,18 @@ class ServiceDottorato:
                 q['OtherTeachers'] = []
             else:
                 q['OtherTeachers'] = other_teachers
+
+        if teacher:
+            res = []
+            for q in query:
+                for i in q['MainTeachers']:
+                    if i['cognome_nome_origine'] is not None and (i['cognome_nome_origine'].lower()).startswith(teacher.lower()) and q not in res:
+                        res.append(q)
+                        continue
+                for t in q['OtherTeachers']:
+                    if t['cognome_nome_origine'] is not None and (t['cognome_nome_origine'].lower()).startswith(teacher.lower()) and q not in res:
+                        res.append(q)
+            return res
 
         return query
 

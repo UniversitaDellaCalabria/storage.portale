@@ -5385,6 +5385,10 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
+        data = {'teacher': 'simone'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
 
 class ApiPhdActivityDetailUnitTest(TestCase):
 

@@ -1169,9 +1169,9 @@ class ApiPhdActivitiesList(ApiEndpointList):
         structure = self.request.query_params.get('structure')
         phd = self.request.query_params.get('phd')
         ssd = self.request.query_params.get('ssd')
+        teacher = self.request.query_params.get('teacher')
 
-
-        return ServiceDottorato.getPhdActivities(search, structure, phd, ssd)
+        return ServiceDottorato.getPhdActivities(search, structure, phd, ssd, teacher)
 
 
 class ApiPhdActivityDetail(ApiEndpointDetail):
