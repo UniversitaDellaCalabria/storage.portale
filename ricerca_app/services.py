@@ -133,7 +133,7 @@ class ServiceDidatticaCds:
                 i['ErogationMode'] = erogation_mode
             else:
                 i['ErogationMode'] = None
-                
+
         items = list(items)
         for item in items:
             item['Languages'] = DidatticaCdsLingua.objects.filter(
@@ -2095,7 +2095,7 @@ class ServicePersonale:
             query_structure = Q(cd_uo_aff_org__exact=structureid)
         if roles is not None:
             roles = roles.split(",")
-            query_roles = Q(cd_ruolo__in=roles)
+            query_roles = Q(cd_ruolo__in=roles) | Q(profilo__in=roles)
         if structuretree is not None:
             query_structuretree = ServicePersonale.getStructurePersonnelChild(
                 Q(), structuretree)
