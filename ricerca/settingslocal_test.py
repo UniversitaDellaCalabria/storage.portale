@@ -475,7 +475,7 @@ LABEL_MAPPING = {
         'IdAster2' : 'Aster 2 Id',
         'Aster1List': 'Aster1 List',
         'Aster2List': 'Aster2 List',
-        'HighFormationMasterYear': ' Academic Year',
+        'HighFormationMasterYear': ' Survey Year',
         'OtherData': 'Other Data',
         'OfficesData': 'Offices Data',
         'DirectorId': 'Director Id',
@@ -518,7 +518,7 @@ LABEL_MAPPING = {
         'ActivityType': "Acticity Type",
         'ReferentPhd': "Referent PhD",
         'ReferentStructureId': "Referent Structure Id",
-        'ReferentStructureName': "Referent Structure Name",
+        'ReferentStructureName': "University Activity",
         'ActivityContents': "Activity Contents",
         'Prerequisities': "Prerequisities",
         'MinStudents': "Min Students",
@@ -862,7 +862,7 @@ LABEL_MAPPING = {
         'SelectionType': 'Tipologia Selezione',
         'SelectionId': 'Id Modalita Selezione',
         'HighFormationMasterInternalCouncil': 'Consiglio Scientifico Interno',
-        'HighFormationMasterYear': ' Anno Accademico',
+        'HighFormationMasterYear': ' Anno del sondaggio',
         'PersonId': 'Matricola Persona',
         'PersonName': 'Nome Persona',
         'HighFormationMasterExternalCouncil': 'Consiglio Scientifico Esterno',
@@ -925,7 +925,7 @@ LABEL_MAPPING = {
         'ActivityType': "Tipologia Attività",
         'ReferentPhd': "Dottorato di Riferimento",
         'ReferentStructureId': "Id Struttura di Riferimento",
-        'ReferentStructureName': "Nome Struttura di Riferimento",
+        'ReferentStructureName': "Attività di ateneo",
         'ActivityContents': "Contenuti Attività",
         'Prerequisities': "Prerequisiti",
         'MinStudents': "Numero Minimo Studenti",
@@ -938,4 +938,3 @@ LABEL_MAPPING = {
         'ErogationMode': 'Modalità Erogazione',
     }
 }
-
