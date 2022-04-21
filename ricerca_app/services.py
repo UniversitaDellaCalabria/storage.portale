@@ -1974,9 +1974,10 @@ class ServiceDottorato:
             "verifica_finale",
             "modalita_verifica"
         )
-
+        query_filter_teachers = ~Q(cognome_nome_origine='....DOCENTE NON IN ELENCO')
         for q in query:
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
+                query_filter_teachers,
                 id_didattica_dottorato_attivita_formativa=q['id']).values(
                 'matricola',
                 'cognome_nome_origine'
