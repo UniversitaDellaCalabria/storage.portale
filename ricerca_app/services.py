@@ -822,7 +822,8 @@ class ServiceDidatticaAttivitaFormativa:
             'coper_id__personale_id__matricola',
             'coper_id__personale_id__nome',
             'coper_id__personale_id__cognome',
-            'coper_id__personale_id__middle_name'
+            'coper_id__personale_id__middle_name',
+            'coper_id__personale_id__flg_cessato'
         )
 
         query[0]['Modalities'] = DidatticaAttivitaFormativaModalita.objects.filter(af_id=af_id).values(
@@ -2101,6 +2102,14 @@ class ServicePersonale:
                 Q(), structuretree)
             query_structuretree |= Q(cd_uo_aff_org=structuretree)
 
+        # query_teacher = Q()
+        # if not_copertura:   # non è un docente ovvero non ha ha una copertura
+        #     query_teacher = Q(flg_cessato=0) | Q(dt_rap_fin__gte=datetime.datetime.today())
+
+
+        # date = datetime.date(datetime.date.today().year-1,10,1)
+        # print(date)
+
         query = Personale.objects.filter(
             query_search,
             query_structure,
@@ -2109,7 +2118,6 @@ class ServicePersonale:
             flg_cessato=0,
             cd_uo_aff_org__isnull=False,
             dt_rap_fin__gte=datetime.datetime.today())
-
 
         if structuretypes is not None:
             structuretypes = structuretypes.split(",")
