@@ -1148,7 +1148,8 @@ class ServiceDocente:
                 'personale_id__middle_name',
                 'personale_id__cognome',
                 'personale_id__ds_sede',
-                'personale_id__sede')
+                'personale_id__sede',
+                'personale_id__flg_cessato')
 
             if len(teachers) == 0:
                 q['Teachers'] = []
@@ -1164,7 +1165,8 @@ class ServiceDocente:
                 'personale_id__middle_name',
                 'personale_id__cognome',
                 'personale_id__ds_sede',
-                'personale_id__sede')
+                'personale_id__sede',
+                'personale_id__flg_cessato')
 
             if len(teachers) == 0:
                 q['Teachers'] = []
@@ -1190,7 +1192,8 @@ class ServiceDocente:
                     'personale_id__middle_name',
                     'personale_id__cognome',
                     'personale_id__ds_sede',
-                    'personale_id__sede')
+                    'personale_id__sede',
+                    'personale_id__flg_cessato')
 
                 q['Teachers'] = None
 
@@ -1209,7 +1212,8 @@ class ServiceDocente:
                     'personale_id__middle_name',
                     'personale_id__cognome',
                     'personale_id__ds_sede',
-                    'personale_id__sede')
+                    'personale_id__sede',
+                    'personale_id__flg_cessato')
 
                 q['Teachers'] = None
 

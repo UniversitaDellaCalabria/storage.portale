@@ -743,7 +743,7 @@ class AllResearchLinesSerializer(CreateUpdateAbstract):
                         (" " + q['personale_id__middle_name']
                          if q['personale_id__middle_name'] is not None else "")
             result.append({
-                'TeacherID': encrypt(q['personale_id__matricola']),
+                'TeacherID': encrypt(q['personale_id__matricola']) if not q['personale_id__flg_cessato'] else None,
                 'TeacherName': full_name,
                 'DepartmentName': q['personale_id__ds_sede'],
                 'DepartmentCod': q['personale_id__sede'],
