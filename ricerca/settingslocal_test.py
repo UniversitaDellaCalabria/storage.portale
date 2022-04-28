@@ -119,7 +119,6 @@ DATABASES = {
 
 # MAPPING LABEL
 
-
 LABEL_MAPPING = {
     'en': {
         'RegDidId': 'Teaching Regulation ID',
@@ -475,7 +474,7 @@ LABEL_MAPPING = {
         'IdAster2' : 'Aster 2 Id',
         'Aster1List': 'Aster1 List',
         'Aster2List': 'Aster2 List',
-        'HighFormationMasterYear': ' Survey Year',
+        'HighFormationMasterYear': ' Academic Year',
         'OtherData': 'Other Data',
         'OfficesData': 'Offices Data',
         'DirectorId': 'Director Id',
@@ -862,7 +861,7 @@ LABEL_MAPPING = {
         'SelectionType': 'Tipologia Selezione',
         'SelectionId': 'Id Modalita Selezione',
         'HighFormationMasterInternalCouncil': 'Consiglio Scientifico Interno',
-        'HighFormationMasterYear': ' Anno del sondaggio',
+        'HighFormationMasterYear': ' Anno Accademico',
         'PersonId': 'Matricola Persona',
         'PersonName': 'Nome Persona',
         'HighFormationMasterExternalCouncil': 'Consiglio Scientifico Esterno',
