@@ -3466,6 +3466,17 @@ class SpinoffStartupDatiBase(models.Model):
         db_table = 'SPINOFF_STARTUP_DATI_BASE'
 
 
+class SpinoffStartupDipartimento(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_spinoff_startup_dati_base = models.ForeignKey(SpinoffStartupDatiBase, models.DO_NOTHING, db_column='ID_SPINOFF_STARTUP_DATI_BASE')  # Field name made lowercase.
+    nome_origine_dipartimento = models.CharField(db_column='NOME_ORIGINE_DIPARTIMENTO', max_length=1000)  # Field name made lowercase.
+    id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.DO_NOTHING, db_column='ID_DIDATTICA_DIPARTIMENTO', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'SPINOFF_STARTUP_DIPARTIMENTO'
+
+
 class ProgettoAmbitoTerritoriale(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)

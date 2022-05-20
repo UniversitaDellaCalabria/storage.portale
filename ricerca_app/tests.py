@@ -27,7 +27,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
-    DidatticaDottoratoAttivitaFormativaDocenteUnitTest
+    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -4418,7 +4418,12 @@ class ApiCompaniesListUnitTest(TestCase):
         t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
             **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
 
-        SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
+        d1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_des_it': 'Informatica'
+        })
+
+        s1 = SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
             "id": 1,
             "piva": '1111sc',
             "nome_azienda": 'Revelis',
@@ -4431,6 +4436,13 @@ class ApiCompaniesListUnitTest(TestCase):
             "matricola_referente_unical": p,
             "is_spinoff": 1,
             "is_startup": 0,
+
+        })
+
+        SpinoffStartupDipartimentoUnitTest.create_spinoffStartupDipartimento(**{
+            'id_spinoff_startup_dati_base': s1,
+            'id_didattica_dipartimento': d1,
+
         })
 
         url = reverse('ricerca:companies')
@@ -4472,7 +4484,12 @@ class ApiCompanyDetailUnitTest(TestCase):
         t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
             **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
 
-        SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
+        d1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+            'dip_des_it': 'Informatica'
+        })
+
+        s1 = SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
             "id": 1,
             "piva": '1111sc',
             "nome_azienda": 'Revelis',
@@ -4485,6 +4502,12 @@ class ApiCompanyDetailUnitTest(TestCase):
             "matricola_referente_unical": p,
             "is_spinoff": 1,
             "is_startup": 0,
+        })
+
+        SpinoffStartupDipartimentoUnitTest.create_spinoffStartupDipartimento(**{
+            'id_spinoff_startup_dati_base': s1,
+            'id_didattica_dipartimento': d1,
+
         })
 
         url = reverse('ricerca:companydetail', kwargs={'companyid': '1'})

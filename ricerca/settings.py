@@ -490,6 +490,7 @@ LABEL_MAPPING = {
         'MainTeachers': 'Main Teachers',
         'OtherTeachers': 'Other Teachers',
         'ErogationMode': 'Erogation Mode',
+        'Departments': 'Departments'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -899,5 +900,7 @@ LABEL_MAPPING = {
         'OtherTeachers': 'Altri Docenti',
         'HighFormationErogationModeDescription': 'Modalità di erogazione',
         'ErogationMode': 'Modalità Erogazione',
+        'Departments': 'Dipartimenti'
+
     }
 }

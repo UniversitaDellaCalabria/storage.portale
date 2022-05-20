@@ -71,7 +71,8 @@ from .models import (
     DidatticaCoperturaDettaglioOre,
     DidatticaDottoratoAttivitaFormativa,
     DidatticaDottoratoAttivitaFormativaDocente,
-    DidatticaDottoratoAttivitaFormativaAltriDocenti)
+    DidatticaDottoratoAttivitaFormativaAltriDocenti,
+    SpinoffStartupDipartimento)
 
 
 # class ContextUnitTest(TestCase):
@@ -903,4 +904,15 @@ class DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest(TestCase):
             data[k] = v
 
         obj = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.create(**data)
+        return obj
+
+
+class SpinoffStartupDipartimentoUnitTest(TestCase):
+    @classmethod
+    def create_spinoffStartupDipartimento(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SpinoffStartupDipartimento.objects.create(**data)
         return obj

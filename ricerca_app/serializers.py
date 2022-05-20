@@ -1667,7 +1667,9 @@ class CompaniesSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-
+        if query.get('Departments') is not None:
+            departments = CompaniesSerializer.to_dict_departments(
+                query['Departments'], req_lang)
         return {
             'SpinoffId': query['id'],
             'SpinoffPIva': query['piva'],
@@ -1681,7 +1683,19 @@ class CompaniesSerializer(CreateUpdateAbstract):
             'TechAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
             'IsSpinoff': query['is_spinoff'],
             'IsStartup': query['is_startup'],
+            'Departments': departments,
         }
+
+    @staticmethod
+    def to_dict_departments(query, req_lang):
+        result = []
+        for q in query:
+            result.append({
+                'DepartmentCod': q['id_didattica_dipartimento__dip_cod'],
+                'DepartmentName': q['id_didattica_dipartimento__dip_des_it'] if req_lang == 'it' or q['id_didattica_dipartimento__dip_des_it'] is None else q['id_didattica_dipartimento__dip_des_eng'],
+                'DepartmentNameShort': q['id_didattica_dipartimento__dip_nome_breve'],
+            })
+        return result
 
 
 class TechAreasSerializer(CreateUpdateAbstract):
