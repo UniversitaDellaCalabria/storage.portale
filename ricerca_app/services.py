@@ -2583,8 +2583,12 @@ class ServiceLaboratorio:
 
         if search:
             for k in search.split(" "):
-                q_nome = Q(nome_laboratorio__icontains=k)
-                query_search &= q_nome
+                q_search = Q(nome_laboratorio__icontains=k)
+                if language == "it":
+                    q_search |= Q(finalita_ricerca_it__icontains=k) | Q(finalita_didattica_it__icontains=k) | Q(finalita_servizi_it__icontains=k)
+                else:
+                    q_search |= Q(finalita_ricerca_en__icontains=k) | Q(finalita_didattica_en__icontains=k) | Q(finalita_servizi_en__icontains=k)
+                query_search &= q_search
         if ambito:
             query_ambito = Q(ambito__exact=ambito)
         if dip:
