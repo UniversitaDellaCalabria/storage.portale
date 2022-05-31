@@ -2585,6 +2585,8 @@ class ApiLaboratoriesListUnitTest(TestCase):
         assert res.json()['results'][0]['LaboratoryId'] == 2
         assert res.json()['results'][0]['Dimension'] == '291'
 
+        data = {'search': 'Informatica', 'lang': 'it'}
+        res = req.get(url, data=data)
         data = {'search': 'Informatica'}
         res = req.get(url, data=data)
         assert res.json()['results'][0]['LaboratoryId'] == 1
