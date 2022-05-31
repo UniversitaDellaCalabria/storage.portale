@@ -2625,6 +2625,49 @@ class Personale(InsModAbstract):
                                    self.cognome, self.matricola)
 
 
+
+class PersonaleAttivoTuttiRuoli(models.Model):
+    id = models.BigAutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_ab = models.BigIntegerField(db_column='ID_AB', blank=True, null=True)  # Field name made lowercase.
+    matricola = models.CharField(db_column='MATRICOLA', max_length=6, blank=True, null=True)  # Field name made lowercase.
+    cod_fis = models.CharField(db_column='COD_FIS', max_length=16, blank=True, null=True)  # Field name made lowercase.
+    cd_ruolo = models.CharField(db_column='CD_RUOLO', max_length=4, blank=True, null=True)  # Field name made lowercase.
+    ds_ruolo = models.CharField(db_column='DS_RUOLO', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    ds_ruolo_breve = models.CharField(db_column='DS_RUOLO_BREVE', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    cd_tipo_ruolo = models.CharField(db_column='CD_TIPO_RUOLO', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    ds_tipo_ruolo = models.CharField(db_column='DS_TIPO_RUOLO', max_length=80, blank=True, null=True)  # Field name made lowercase.
+    cd_inquadr = models.CharField(db_column='CD_INQUADR', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    ds_inquadr = models.CharField(db_column='DS_INQUADR', max_length=80, blank=True, null=True)  # Field name made lowercase.
+    cd_uo_aff_org = models.CharField(db_column='CD_UO_AFF_ORG', max_length=6, blank=True, null=True)  # Field name made lowercase.
+    ds_aff_org = models.CharField(db_column='DS_AFF_ORG', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    ds_aff_org_breve = models.CharField(db_column='DS_AFF_ORG_BREVE', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    fl_tipo_rap = models.FloatField(db_column='FL_TIPO_RAP', blank=True, null=True)  # Field name made lowercase.
+    cd_ssd = models.CharField(db_column='CD_SSD', max_length=12, blank=True, null=True)  # Field name made lowercase.
+    ds_ssd = models.CharField(db_column='DS_SSD', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    ds_ssd_breve = models.CharField(db_column='DS_SSD_BREVE', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    area_ssd = models.CharField(db_column='AREA_SSD', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    ds_area_ssd = models.CharField(db_column='DS_AREA_SSD', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    cd_riferimento = models.CharField(db_column='CD_RIFERIMENTO', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    ds_riferimento = models.CharField(db_column='DS_RIFERIMENTO', max_length=120, blank=True, null=True)  # Field name made lowercase.
+    peso_inc = models.IntegerField(db_column='PESO_INC', blank=True, null=True)  # Field name made lowercase.
+    peso_ric = models.IntegerField(db_column='PESO_RIC', blank=True, null=True)  # Field name made lowercase.
+    sede = models.CharField(db_column='SEDE', max_length=6, blank=True, null=True)  # Field name made lowercase.
+    ds_sede = models.CharField(db_column='DS_SEDE', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    dt_rap_ini = models.DateTimeField(db_column='DT_RAP_INI', blank=True, null=True)  # Field name made lowercase.
+    cd_profilo = models.CharField(db_column='CD_PROFILO', max_length=11, blank=True, null=True)  # Field name made lowercase.
+    ds_profilo = models.CharField(db_column='DS_PROFILO', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    fl_docente = models.IntegerField(db_column='FL_DOCENTE', blank=True, null=True)  # Field name made lowercase.
+    cd_onorifico = models.CharField(db_column='CD_ONORIFICO', max_length=4, blank=True, null=True)  # Field name made lowercase.
+    ds_onorifico = models.CharField(db_column='DS_ONORIFICO', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    user_mod_id = models.CharField(db_column='USER_MOD_ID', max_length=32, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'PERSONALE_ATTIVO_TUTTI_RUOLI'
+
+
+
 class PersonaleUoTipoContatto(models.Model):
     # Field name made lowercase.
     cod_contatto = models.CharField(
@@ -2706,6 +2749,21 @@ class PersonaleContatti(models.Model):
         managed = True
         db_table = 'PERSONALE_CONTATTI'
         unique_together = (('id_ab', 'cd_tipo_cont', 'prg_priorita'),)
+
+
+class PersonalePrioritaRuolo(models.Model):
+    cd_ruolo = models.CharField(db_column='CD_RUOLO', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    ds_ruolo = models.CharField(db_column='DS_RUOLO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    ds_ruolo_breve = models.CharField(db_column='DS_RUOLO_BREVE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    cd_tipo_ruolo = models.IntegerField(db_column='CD_TIPO_RUOLO', blank=True, null=True)  # Field name made lowercase.
+    ds_tipo_ruolo = models.CharField(db_column='DS_TIPO_RUOLO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    cd_inquadr = models.CharField(db_column='CD_INQUADR', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    ds_inquadr = models.CharField(db_column='DS_INQUADR', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    priorita = models.IntegerField(db_column='PRIORITA', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'PERSONALE_PRIORITA_RUOLO'
 
 
 class PubblicazioneAutori(models.Model):

@@ -72,7 +72,9 @@ from .models import (
     DidatticaDottoratoAttivitaFormativa,
     DidatticaDottoratoAttivitaFormativaDocente,
     DidatticaDottoratoAttivitaFormativaAltriDocenti,
-    SpinoffStartupDipartimento)
+    SpinoffStartupDipartimento,
+    PersonaleAttivoTuttiRuoli,
+    PersonalePrioritaRuolo)
 
 
 # class ContextUnitTest(TestCase):
@@ -915,4 +917,26 @@ class SpinoffStartupDipartimentoUnitTest(TestCase):
             data[k] = v
 
         obj = SpinoffStartupDipartimento.objects.create(**data)
+        return obj
+
+
+class PersonaleAttivoTuttiRuoliUnitTest(TestCase):
+    @classmethod
+    def create_personaleAttivoTuttiRuoli(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = PersonaleAttivoTuttiRuoli.objects.create(**data)
+        return obj
+
+
+class PersonalePrioritaRuoloUnitTest(TestCase):
+    @classmethod
+    def create_personalePrioritaRuolo(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = PersonalePrioritaRuolo.objects.create(**data)
         return obj

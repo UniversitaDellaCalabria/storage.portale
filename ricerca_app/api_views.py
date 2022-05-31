@@ -637,11 +637,11 @@ class ApiAddressbookList(ApiEndpointList):
         phone = self.request.query_params.get('phone')
         structureid = self.request.query_params.get('structure')
         structuretypes = self.request.query_params.get('structuretypes')
-        roles = self.request.query_params.get('role')
+        role = self.request.query_params.get('role')
         structuretree = self.request.query_params.get('structuretree')
 
         return ServicePersonale.getAddressbook(
-            search, structureid, structuretypes, roles, structuretree, phone)
+            search, structureid, structuretypes, role, structuretree, phone)
 
 
 class ApiStructuresList(ApiEndpointList):
