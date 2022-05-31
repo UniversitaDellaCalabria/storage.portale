@@ -5397,7 +5397,7 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
             'id': 1,
             'nome_af': 'AAAA',
             'struttura_proponente_origine': 'dimes',
-            'rif_dottorato': 'matematica'
+            'rif_dottorato': 'matematica',
 
         })
 
@@ -5542,6 +5542,14 @@ class ApiRefStructuresListUnitTest(TestCase):
 
         })
 
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 2,
+            'nome_af': 'AAAA',
+            'struttura_proponente_origine': None,
+            'rif_dottorato': 'matematica'
+
+        })
+
 
         url = reverse('ricerca:ref-structures')
 
@@ -5566,6 +5574,12 @@ class ApiPhdSsdListUnitTest(TestCase):
         DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
             'id': 1,
             'ssd': 'Convenzionale'
+
+        })
+
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 2,
+            'ssd': None
 
         })
 
