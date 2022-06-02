@@ -1906,7 +1906,7 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
 
         })
         PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
-            'cd_ruolo': 'PO',
+            'cd_ruolo': 'AB',
             'ds_ruolo': 'Professore Ordinario',
             'priorita': 1
         })
@@ -4459,6 +4459,7 @@ class ApiCompaniesListUnitTest(TestCase):
 
         d1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
+            'dip_cod': 111,
             'dip_des_it': 'Informatica'
         })
 
@@ -4501,6 +4502,10 @@ class ApiCompaniesListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
         data = {'techarea': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'departments': 111}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 

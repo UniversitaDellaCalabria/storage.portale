@@ -2668,6 +2668,7 @@ class PersonaleAttivoTuttiRuoli(models.Model):
 
 
 
+
 class PersonaleUoTipoContatto(models.Model):
     # Field name made lowercase.
     cod_contatto = models.CharField(
@@ -2752,19 +2753,13 @@ class PersonaleContatti(models.Model):
 
 
 class PersonalePrioritaRuolo(models.Model):
-    cd_ruolo = models.CharField(db_column='CD_RUOLO', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    cd_ruolo = models.CharField(db_column='CD_RUOLO', primary_key=True, max_length=50)  # Field name made lowercase.
     ds_ruolo = models.CharField(db_column='DS_RUOLO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    ds_ruolo_breve = models.CharField(db_column='DS_RUOLO_BREVE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    cd_tipo_ruolo = models.IntegerField(db_column='CD_TIPO_RUOLO', blank=True, null=True)  # Field name made lowercase.
-    ds_tipo_ruolo = models.CharField(db_column='DS_TIPO_RUOLO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    cd_inquadr = models.CharField(db_column='CD_INQUADR', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    ds_inquadr = models.CharField(db_column='DS_INQUADR', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     priorita = models.IntegerField(db_column='PRIORITA', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
         db_table = 'PERSONALE_PRIORITA_RUOLO'
-
 
 class PubblicazioneAutori(models.Model):
     # Field name made lowercase.

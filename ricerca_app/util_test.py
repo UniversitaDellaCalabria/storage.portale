@@ -940,3 +940,4 @@ class PersonalePrioritaRuoloUnitTest(TestCase):
 
         obj = PersonalePrioritaRuolo.objects.create(**data)
         return obj
+

@@ -927,8 +927,9 @@ class ApiCompaniesList(ApiEndpointList):
         techarea = self.request.query_params.get('techarea')
         spinoff = self.request.query_params.get('spinoff')
         startup = self.request.query_params.get('startup')
+        departments = self.request.query_params.get('departments')
 
-        return ServiceCompany.getCompanies(search, techarea, spinoff, startup)
+        return ServiceCompany.getCompanies(search, techarea, spinoff, startup, departments)
 
 
 class ApiCompanyDetail(ApiEndpointDetail):

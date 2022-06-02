@@ -3085,7 +3085,7 @@ class ServiceBrevetto:
 class ServiceCompany:
 
     @staticmethod
-    def getCompanies(search, techarea, spinoff, startup):
+    def getCompanies(search, techarea, spinoff, startup, q_departments):
 
         query_search = Q()
         query_techarea = Q()
@@ -3128,7 +3128,6 @@ class ServiceCompany:
         ).distinct()
 
         for q in query:
-
             departments = SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base__exact=q['id']).values(
                 'id_didattica_dipartimento__dip_cod',
                 'id_didattica_dipartimento__dip_des_it',
@@ -3140,6 +3139,16 @@ class ServiceCompany:
                 q['Departments'] = []
             else:
                 q['Departments'] = departments
+
+        if q_departments:
+            dep = q_departments.split(',')
+            final_query = []
+            for q in query:
+                for d in q['Departments']:
+                    if d['id_didattica_dipartimento__dip_cod'] in dep:
+                        final_query.append(q)
+            return final_query
+
 
         return query
 
