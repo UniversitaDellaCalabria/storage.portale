@@ -590,6 +590,12 @@ class ApiCompaniesListFilter(GenericApiFilter):
                 'format': 'int32',
             },
         },
+        {
+            'name': 'departments',
+            'description': 'Lista di codici di dipartimento',
+            'required': False,
+            'type': 'string'
+        },
     ]
 
 

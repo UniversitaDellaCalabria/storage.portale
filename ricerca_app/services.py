@@ -2195,7 +2195,6 @@ class ServicePersonale:
             )
             from itertools import chain
             query = list(chain(*[query, query2]))
-        query = list(query)
         query.sort(key=lambda x: x.get('cognome'), reverse=False)
         contacts_to_take = [
             'Posta Elettronica',
@@ -2213,34 +2212,6 @@ class ServicePersonale:
 
         for q in query:
 
-            ruoli = PersonaleAttivoTuttiRuoli.objects.filter(matricola__exact=q['matricola']).extra(
-                select={
-                    'Matricola': 'PERSONALE_ATTIVO_TUTTI_RUOLI.MATRICOLA',
-                    'CdRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-                    'DsRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_RUOLO',
-                    'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA'},
-                tables=['PERSONALE_PRIORITA_RUOLO'],
-                where=[
-                    'PERSONALE_PRIORITA_RUOLO.CD_RUOLO=PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-                ])
-
-            ruoli = ruoli.values(
-                'Matricola',
-                'CdRuolo',
-                'DsRuolo',
-                'Priorita'
-            ).distinct().order_by('Priorita')
-
-            ruoli = list(ruoli)
-
-
-
-            if len(ruoli) == 0:
-                q["Roles"] = None
-            else:
-                q["Roles"] = ruoli
-
-
             if q['id_ab'] not in grouped:
                 grouped[q['id_ab']] = {
                     'id_ab': q['id_ab'],
@@ -2256,7 +2227,7 @@ class ServicePersonale:
                     'profilo': q['profilo'],
                     'ds_profilo': q['ds_profilo'],
                     'ds_profilo_breve': q['ds_profilo_breve'],
-                    'Roles': q['Roles'],
+                    'Roles': [],
                 }
                 for c in contacts_to_take:
                     grouped[q['id_ab']][c] = []
@@ -2268,6 +2239,30 @@ class ServicePersonale:
             if last_id == -1 or last_id != q['id_ab']:
                 last_id = q['id_ab']
                 final_query.append(grouped[q['id_ab']])
+
+        for q in final_query:
+
+            ruoli = PersonaleAttivoTuttiRuoli.objects.filter(matricola__exact=q['matricola']).extra(
+                select={
+                    'Matricola': 'PERSONALE_ATTIVO_TUTTI_RUOLI.MATRICOLA',
+                    'CdRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
+                    'DsRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_RUOLO',
+                    'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA'},
+                tables=['PERSONALE_PRIORITA_RUOLO'],
+                where=[
+                    'PERSONALE_PRIORITA_RUOLO.CD_RUOLO=PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
+                ]).values(
+                'Matricola',
+                'CdRuolo',
+                'DsRuolo',
+                'Priorita'
+            ).distinct().order_by('Priorita')
+
+
+            ruoli = list(ruoli)
+
+            q["Roles"] = ruoli
+
 
         if phone or role:
             filtered = []
