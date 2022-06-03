@@ -985,9 +985,8 @@ class AddressbookSerializer(CreateUpdateAbstract):
         roles = []
         for q in query:
             roles.append({
-                'Role': q['CdRuolo'],
-                'RoleDescription': q['DsRuolo'],
-                'Priority': q['Priorita'],
+                'Role': q['cd_ruolo'],
+                'RoleDescription': q['ds_ruolo'],
             })
         return roles
 

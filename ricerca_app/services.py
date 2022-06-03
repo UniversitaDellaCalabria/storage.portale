@@ -2240,26 +2240,16 @@ class ServicePersonale:
                 last_id = q['id_ab']
                 final_query.append(grouped[q['id_ab']])
 
-        ruoli = PersonaleAttivoTuttiRuoli.objects.all().extra(
-            select={
-                'Matricola': 'PERSONALE_ATTIVO_TUTTI_RUOLI.MATRICOLA',
-                'CdRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-                'DsRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_RUOLO',
-                'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA'},
-            tables=['PERSONALE_PRIORITA_RUOLO'],
-            where=[
-                'PERSONALE_PRIORITA_RUOLO.CD_RUOLO=PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-            ]).values(
-            'Matricola',
-            'CdRuolo',
-            'DsRuolo',
-            'Priorita'
-        ).distinct().order_by('Priorita')
+        ruoli = PersonaleAttivoTuttiRuoli.objects.values(
+            'matricola',
+            'cd_ruolo',
+            'ds_ruolo',
+        ).distinct()
 
         ruoli = list(ruoli)
 
         for q in final_query:
-            q['Roles'] = list(filter(lambda x: x['Matricola'] == q['matricola'], ruoli))
+            q['Roles'] = list(filter(lambda x: x['matricola'] == q['matricola'], ruoli))
 
 
         if phone or role:
