@@ -2259,12 +2259,7 @@ class ServicePersonale:
         ruoli = list(ruoli)
 
         for q in final_query:
-            ruoli_persona = []
-            for r in ruoli:
-                if r['Matricola'] == q['matricola']:
-                    ruoli_persona.append(r)
-
-            q["Roles"] = ruoli_persona
+            q['Roles'] = list(filter(lambda x: x['Matricola'] == q['matricola'], ruoli))
 
 
         if phone or role:
