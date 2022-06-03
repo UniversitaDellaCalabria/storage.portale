@@ -2264,7 +2264,7 @@ class ServicePersonale:
                     final_roles = []
                     if item['Roles'] and len(item['Roles']) != 0:
                         for r in item['Roles']:
-                            final_roles.append(r['CdRuolo'])
+                            final_roles.append(r['cd_ruolo'])
                     if (set(roles).intersection(set(final_roles))):
                         filtered1.append(item)
 
@@ -2291,7 +2291,7 @@ class ServicePersonale:
                     final_roles = []
                     if item['Roles'] and len(item['Roles']) != 0:
                         for r in item['Roles']:
-                            final_roles.append(r['CdRuolo'])
+                            final_roles.append(r['cd_ruolo'])
                     if (set(roles).intersection(set(final_roles))):
                         filtered.append(item)
                 return filtered
