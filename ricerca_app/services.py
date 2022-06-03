@@ -2240,28 +2240,31 @@ class ServicePersonale:
                 last_id = q['id_ab']
                 final_query.append(grouped[q['id_ab']])
 
+        ruoli = PersonaleAttivoTuttiRuoli.objects.all().extra(
+            select={
+                'Matricola': 'PERSONALE_ATTIVO_TUTTI_RUOLI.MATRICOLA',
+                'CdRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
+                'DsRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_RUOLO',
+                'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA'},
+            tables=['PERSONALE_PRIORITA_RUOLO'],
+            where=[
+                'PERSONALE_PRIORITA_RUOLO.CD_RUOLO=PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
+            ]).values(
+            'Matricola',
+            'CdRuolo',
+            'DsRuolo',
+            'Priorita'
+        ).distinct().order_by('Priorita')
+
+        ruoli = list(ruoli)
+
         for q in final_query:
+            ruoli_persona = []
+            for r in ruoli:
+                if r['Matricola'] == q['matricola']:
+                    ruoli_persona.append(r)
 
-            ruoli = PersonaleAttivoTuttiRuoli.objects.filter(matricola__exact=q['matricola']).extra(
-                select={
-                    'Matricola': 'PERSONALE_ATTIVO_TUTTI_RUOLI.MATRICOLA',
-                    'CdRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-                    'DsRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_RUOLO',
-                    'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA'},
-                tables=['PERSONALE_PRIORITA_RUOLO'],
-                where=[
-                    'PERSONALE_PRIORITA_RUOLO.CD_RUOLO=PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-                ]).values(
-                'Matricola',
-                'CdRuolo',
-                'DsRuolo',
-                'Priorita'
-            ).distinct().order_by('Priorita')
-
-
-            ruoli = list(ruoli)
-
-            q["Roles"] = ruoli
+            q["Roles"] = ruoli_persona
 
 
         if phone or role:
