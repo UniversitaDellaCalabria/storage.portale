@@ -2210,6 +2210,24 @@ class ServicePersonale:
         last_id = -1
         final_query = []
 
+
+
+        ruoli = PersonaleAttivoTuttiRuoli.objects.values_list(
+            'matricola',
+            'cd_ruolo',
+            'ds_ruolo',
+        ).distinct()
+
+        priorita_tmp = PersonalePrioritaRuolo.objects.values(
+            'cd_ruolo',
+            'priorita'
+        )
+
+        priorita = {}
+
+        for p in priorita_tmp:
+            priorita.update({p['cd_ruolo']: p['priorita']})
+
         for q in query:
 
             if q['id_ab'] not in grouped:
@@ -2240,16 +2258,21 @@ class ServicePersonale:
                 last_id = q['id_ab']
                 final_query.append(grouped[q['id_ab']])
 
-        ruoli = PersonaleAttivoTuttiRuoli.objects.values(
-            'matricola',
-            'cd_ruolo',
-            'ds_ruolo',
-        ).distinct()
 
-        ruoli = list(ruoli)
 
         for q in final_query:
-            q['Roles'] = list(filter(lambda x: x['matricola'] == q['matricola'], ruoli))
+            roles = []
+            for r in ruoli:
+                if r[0] == q['matricola']:
+                    roles.append({'matricola': r[0],
+                                  'cd_ruolo': r[1],
+                                  'ds_ruolo': r[2],
+                                  'priorita': priorita[r[1]],
+                                  })
+                roles.sort(key=lambda x:x['priorita'])
+
+
+            q['Roles'] = roles
 
 
         if phone or role:

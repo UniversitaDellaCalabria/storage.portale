@@ -987,6 +987,7 @@ class AddressbookSerializer(CreateUpdateAbstract):
             roles.append({
                 'Role': q['cd_ruolo'],
                 'RoleDescription': q['ds_ruolo'],
+                'Priority': q['priorita']
             })
         return roles
 
