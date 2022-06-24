@@ -1,0 +1,1 @@
+OFFICE_RESEARCHGROUPS = 'researchgroups'

@@ -2982,7 +2982,7 @@ class RicercaDocenteGruppo(InsModAbstract):
         db_table = 'RICERCA_DOCENTE_GRUPPO'
 
     def __str__(self):
-        return '{} [{}]'.format(self.docente,
+        return '{} [{}]'.format(self.personale,
                                 self.ricerca_gruppo.nome)
 
 

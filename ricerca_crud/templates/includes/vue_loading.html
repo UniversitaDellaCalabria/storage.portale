@@ -1,0 +1,20 @@
+{% load i18n %}
+
+<script>
+Vue.component('loading-icon', {
+    props: {
+        loader_source: {
+           type: String,
+           default: ''
+        },
+    },
+    template: `
+        <div>
+            <div class="progress progress-indeterminate my-3">
+              <span class="sr-only">{% trans "Loading data" %}</span>
+              <div class="progress-bar" role="progressbar"></div>
+            </div>
+        </div>
+    `
+});
+</script>

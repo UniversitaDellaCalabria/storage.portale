@@ -1,0 +1,47 @@
+{% load i18n %}
+{% load static %}
+
+
+<button class="btn btn-primary btn-block"
+        type="button"
+        data-toggle="modal"
+        data-target="#action">
+    <svg class="icon icon-xs icon-white">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+    </svg>
+    {% trans "Submit" %}
+</button>
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="action">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Confirm" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {% trans "Do you want to confirm the entered data?" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-success"
+                       type="submit"
+                       id="submitForm"
+                       value="{% trans 'Yes, proceed' %}">
+            </div>
+        </div>
+    </div>
+</div>

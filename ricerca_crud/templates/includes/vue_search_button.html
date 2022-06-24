@@ -1,0 +1,8 @@
+{% load i18n %}
+
+<button class="btn btn-primary"
+        type="button"
+        id="search-button"
+        @click="{{ id }}.search()">
+    {% trans "Search" %}
+</button>
