@@ -27,7 +27,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
-    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest
+    DidatticaDottoratoAttivitaFormativaDocenteUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -1889,27 +1889,6 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'uo': '1',
             'denominazione': 'Dipartimento di Matematica e Informatica',
         })
-        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
-            'matricola': '111114',
-            'cd_ruolo': 'PO',
-            'ds_ruolo': 'Professore Ordinario',
-
-        })
-        PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
-            'cd_ruolo': 'PO',
-            'ds_ruolo': 'Professore Ordinario',
-            'priorita': 1
-        })
-
-        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
-            'matricola': '111113',
-
-        })
-        PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
-            'cd_ruolo': 'AB',
-            'ds_ruolo': 'Professore Ordinario',
-            'priorita': 1
-        })
 
         url = reverse('ricerca:addressbooklist')
 
@@ -1920,7 +1899,8 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         # GET
         res = req.get(url)
         assert len(res.json()['results']) == 1
-        #assert res.json()['results'][0]['Roles'] == 'PO'
+        assert res.json()[
+            'results'][0]['Role'] == 'PO'
 
         data = {'structure': '99', 'lang': 'it'}
         res = req.get(url, data=data)
@@ -1940,16 +1920,11 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
 
         data = {'role': 'PO'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert res.json()['results'][0]['Name'] == 'Ibra Zlatan'
 
         data = {'phone': '999'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
-
-        data = {'role': 'PO', 'phone': '999'}
-        res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
-
 
         data = {'structuretree': '1'}
         res = req.get(url, data=data)
@@ -2244,18 +2219,6 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'decorrenza': '1900-01-01',
             'ds_funzione': 'Direttore',
             'matricola': '111112',
-        })
-
-        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
-            'matricola': '111114',
-            'cd_ruolo': 'AB',
-            'ds_ruolo': 'Professore Ordinario',
-
-        })
-        PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
-            'cd_ruolo': 'AB',
-            'ds_ruolo': 'Professore Ordinario',
-            'priorita': 1
         })
 
         url = reverse(
@@ -4457,13 +4420,7 @@ class ApiCompaniesListUnitTest(TestCase):
         t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
             **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
 
-        d1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
-            'dip_id': 1,
-            'dip_cod': 111,
-            'dip_des_it': 'Informatica'
-        })
-
-        s1 = SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
+        SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
             "id": 1,
             "piva": '1111sc',
             "nome_azienda": 'Revelis',
@@ -4476,13 +4433,6 @@ class ApiCompaniesListUnitTest(TestCase):
             "matricola_referente_unical": p,
             "is_spinoff": 1,
             "is_startup": 0,
-
-        })
-
-        SpinoffStartupDipartimentoUnitTest.create_spinoffStartupDipartimento(**{
-            'id_spinoff_startup_dati_base': s1,
-            'id_didattica_dipartimento': d1,
-
         })
 
         url = reverse('ricerca:companies')
@@ -4505,10 +4455,6 @@ class ApiCompaniesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
-        data = {'departments': 111}
-        res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
-
 
 class ApiCompanyDetailUnitTest(TestCase):
 
@@ -4528,12 +4474,7 @@ class ApiCompanyDetailUnitTest(TestCase):
         t1 = TipologiaAreaTecnologicaUnitTest.create_tipologiaAreaTecnologica(
             **{"id": 1, "descr_area_ita": "aaa", "descr_area_eng": "aaa", })
 
-        d1 = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
-            'dip_id': 1,
-            'dip_des_it': 'Informatica'
-        })
-
-        s1 = SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
+        SpinoffStartupDatiBaseUnitTest.create_spinoffStartupDatiBase(**{
             "id": 1,
             "piva": '1111sc',
             "nome_azienda": 'Revelis',
@@ -4546,12 +4487,6 @@ class ApiCompanyDetailUnitTest(TestCase):
             "matricola_referente_unical": p,
             "is_spinoff": 1,
             "is_startup": 0,
-        })
-
-        SpinoffStartupDipartimentoUnitTest.create_spinoffStartupDipartimento(**{
-            'id_spinoff_startup_dati_base': s1,
-            'id_didattica_dipartimento': d1,
-
         })
 
         url = reverse('ricerca:companydetail', kwargs={'companyid': '1'})
@@ -5402,7 +5337,7 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
             'id': 1,
             'nome_af': 'AAAA',
             'struttura_proponente_origine': 'dimes',
-            'rif_dottorato': 'matematica',
+            'rif_dottorato': 'matematica'
 
         })
 
@@ -5547,14 +5482,6 @@ class ApiRefStructuresListUnitTest(TestCase):
 
         })
 
-        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
-            'id': 2,
-            'nome_af': 'AAAA',
-            'struttura_proponente_origine': None,
-            'rif_dottorato': 'matematica'
-
-        })
-
 
         url = reverse('ricerca:ref-structures')
 
@@ -5579,12 +5506,6 @@ class ApiPhdSsdListUnitTest(TestCase):
         DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
             'id': 1,
             'ssd': 'Convenzionale'
-
-        })
-
-        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
-            'id': 2,
-            'ssd': None
 
         })
 
