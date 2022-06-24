@@ -920,7 +920,7 @@ class SpinoffStartupDipartimentoUnitTest(TestCase):
         return obj
 
 
-class PersonaleAttivoTuttiRuoliUnitTest(TestCase):
+class PersonaleAttivoTuttiRuoliUnitTest(TestCase): # pragma: no cover
     @classmethod
     def create_personaleAttivoTuttiRuoli(cls, **kwargs):
         data = {}
@@ -931,7 +931,7 @@ class PersonaleAttivoTuttiRuoliUnitTest(TestCase):
         return obj
 
 
-class PersonalePrioritaRuoloUnitTest(TestCase):
+class PersonalePrioritaRuoloUnitTest(TestCase): # pragma: no cover
     @classmethod
     def create_personalePrioritaRuolo(cls, **kwargs):
         data = {}

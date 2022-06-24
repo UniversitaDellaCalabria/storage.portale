@@ -18,7 +18,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     ProgettoTipologiaProgramma, ProgettoRicercatore, AltaFormazioneDatiBase, AltaFormazionePartner,AltaFormazioneTipoCorso, AltaFormazionePianoDidattico, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
-    DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente
+    DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
+    SpinoffStartupDipartimento
 from . serializers import StructuresSerializer
 
 
@@ -3004,7 +3005,7 @@ class ServiceBrevetto:
 class ServiceCompany:
 
     @staticmethod
-    def getCompanies(search, techarea, spinoff, startup):
+    def getCompanies(search, techarea, spinoff, startup, q_departments):
 
         query_search = Q()
         query_techarea = Q()
@@ -3046,6 +3047,29 @@ class ServiceCompany:
             "is_spinoff",
         ).distinct()
 
+        for q in query:
+            departments = SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base__exact=q['id']).values(
+                'id_didattica_dipartimento__dip_cod',
+                'id_didattica_dipartimento__dip_des_it',
+                'id_didattica_dipartimento__dip_des_eng',
+                'id_didattica_dipartimento__dip_nome_breve',
+            )
+
+            if len(departments) == 0:
+                q['Departments'] = []
+            else:
+                q['Departments'] = departments
+
+        if q_departments:
+            dep = q_departments.split(',')
+            final_query = []
+            for q in query:
+                for d in q['Departments']:
+                    if d['id_didattica_dipartimento__dip_cod'] in dep:
+                        final_query.append(q)
+            return final_query
+
+
         return query
 
     @staticmethod
@@ -3069,6 +3093,19 @@ class ServiceCompany:
             "is_startup",
             "is_spinoff",
         )
+        for q in query:
+
+            departments = SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base__exact=q['id']).values(
+                'id_didattica_dipartimento__dip_cod',
+                'id_didattica_dipartimento__dip_des_it',
+                'id_didattica_dipartimento__dip_des_eng',
+                'id_didattica_dipartimento__dip_nome_breve',
+            )
+
+            if len(departments) == 0:
+                q['Departments'] = []
+            else:
+                q['Departments'] = departments
 
         return query
 

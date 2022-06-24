@@ -388,7 +388,7 @@ class DidatticaAttivitaFormativa(InsModAbstract):
         managed = True
         db_table = 'DIDATTICA_ATTIVITA_FORMATIVA'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{}'.format(self.af_id)
 
     def checkIfMainCourse(self):
@@ -624,7 +624,7 @@ class DidatticaCds(InsModAbstract):
         managed = True
         db_table = 'DIDATTICA_CDS'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.cds_id, self.nome_cds_it)
 
 
@@ -696,7 +696,7 @@ class DidatticaCdsLingua(models.Model):
         managed = True
         db_table = 'DIDATTICA_CDS_LINGUA'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.lin_did_ord_id, self.lingua_des_it)
 
 
@@ -1037,7 +1037,7 @@ class DidatticaDipartimento(InsModAbstract):
         managed = True
         db_table = 'DIDATTICA_DIPARTIMENTO'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.dip_cod, self.dip_des_it)
 
 
@@ -1437,7 +1437,7 @@ class DidatticaRegolamento(InsModAbstract):
         managed = True
         db_table = 'DIDATTICA_REGOLAMENTO'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.regdid_id, self.aa_reg_did)
 
 
@@ -1561,7 +1561,7 @@ class DidatticaTestiRegolamento(InsModAbstract):
         managed = True
         db_table = 'DIDATTICA_TESTI_REGOLAMENTO'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.txt_id, self.tipo_testo_regdid_cod)
 
 
@@ -2620,7 +2620,7 @@ class Personale(InsModAbstract):
         managed = True
         db_table = 'PERSONALE'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {} [{}]'.format(self.nome,
                                    self.cognome, self.matricola)
 
@@ -2924,7 +2924,7 @@ class RicercaAster1(InsModAbstract):
         managed = True
         db_table = 'RICERCA_ASTER1'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{}'.format(self.descrizione)
 
 
@@ -2948,7 +2948,7 @@ class RicercaAster2(InsModAbstract):
         managed = True
         db_table = 'RICERCA_ASTER2'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.ricerca_aster1,
                               self.descrizione)
 
@@ -2981,7 +2981,7 @@ class RicercaDocenteGruppo(InsModAbstract):
         managed = True
         db_table = 'RICERCA_DOCENTE_GRUPPO'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} [{}]'.format(self.personale,
                                 self.ricerca_gruppo.nome)
 
@@ -3098,7 +3098,7 @@ class RicercaErc1(InsModAbstract):
         managed = True
         db_table = 'RICERCA_ERC1'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.cod_erc1,
                               self.descrizione)
 
@@ -3130,7 +3130,7 @@ class RicercaErc2(InsModAbstract):
         managed = True
         db_table = 'RICERCA_ERC2'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.cod_erc2,
                               self.descrizione)
 
@@ -3154,7 +3154,7 @@ class RicercaGruppo(InsModAbstract):
         managed = True
         db_table = 'RICERCA_GRUPPO'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{}'.format(self.nome)
 
 
@@ -3184,7 +3184,7 @@ class RicercaLineaApplicata(InsModAbstract):
         managed = True
         db_table = 'RICERCA_LINEA_APPLICATA'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.ricerca_aster2, self.descrizione)
 
 
@@ -3212,7 +3212,7 @@ class RicercaLineaBase(InsModAbstract):
         managed = True
         db_table = 'RICERCA_LINEA_BASE'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.ricerca_erc2, self.descrizione)
 
 
@@ -3259,7 +3259,7 @@ class TerritorioIt(models.Model):
         managed = True
         db_table = 'TERRITORIO_IT'
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return '{} {}'.format(self.cd_catasto, self.cd_istat)
 
 
