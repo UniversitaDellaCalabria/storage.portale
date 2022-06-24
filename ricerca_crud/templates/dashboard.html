@@ -1,0 +1,36 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<h3>{% trans "Dashboard" %}</h3>
+<div class="row mt-5">
+    <div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                        </svg>
+                        {% trans "Research groups" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Example text' %}
+                    </p>
+                    <a class="read-more" href="{% url 'ricerca_crud:crud_researchgroups' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+    </div>
+</div>
+{% endblock centered_container %}

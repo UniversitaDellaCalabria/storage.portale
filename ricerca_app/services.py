@@ -18,8 +18,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     ProgettoTipologiaProgramma, ProgettoRicercatore, AltaFormazioneDatiBase, AltaFormazionePartner,AltaFormazioneTipoCorso, AltaFormazionePianoDidattico, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
-    DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
-    SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo
+    DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente
 from . serializers import StructuresSerializer
 
 
@@ -2086,18 +2085,22 @@ class ServicePersonale:
             search=None,
             structureid=None,
             structuretypes=None,
-            role=None,
+            roles=None,
             structuretree=None,
             phone=None):
 
         query_search = Q()
         query_structure = Q()
+        query_roles = Q()
         query_structuretree = Q()
 
         if search is not None:
             query_search = Q(cognome__istartswith=search)
         if structureid is not None:
             query_structure = Q(cd_uo_aff_org__exact=structureid)
+        if roles is not None:
+            roles = roles.split(",")
+            query_roles = Q(cd_ruolo__in=roles) | Q(profilo__in=roles)
         if structuretree is not None:
             query_structuretree = ServicePersonale.getStructurePersonnelChild(
                 Q(), structuretree)
@@ -2114,6 +2117,7 @@ class ServicePersonale:
         query = Personale.objects.filter(
             query_search,
             query_structure,
+            query_roles,
             query_structuretree,
             flg_cessato=0,
             cd_uo_aff_org__isnull=False,
@@ -2147,6 +2151,8 @@ class ServicePersonale:
             "nome",
             "middle_name",
             "cognome",
+            "cd_ruolo",
+            "ds_ruolo_locale",
             "cd_uo_aff_org",
             "id_ab",
             "matricola",
@@ -2165,6 +2171,7 @@ class ServicePersonale:
         if structureid is None and structuretypes is None and structuretree is None:
             query2 = Personale.objects.filter(
                 query_search,
+                query_roles,
                 flg_cessato=0,
                 cd_uo_aff_org__isnull=True).annotate(
                 denominazione=Value(
@@ -2179,6 +2186,8 @@ class ServicePersonale:
                                 "nome",
                                 "middle_name",
                                 "cognome",
+                                "cd_ruolo",
+                                "ds_ruolo_locale",
                                 "cd_uo_aff_org",
                                 "id_ab",
                                 "matricola",
@@ -2210,32 +2219,15 @@ class ServicePersonale:
         last_id = -1
         final_query = []
 
-
-
-        ruoli = PersonaleAttivoTuttiRuoli.objects.values_list(
-            'matricola',
-            'cd_ruolo',
-            'ds_ruolo',
-        ).distinct()
-
-        priorita_tmp = PersonalePrioritaRuolo.objects.values(
-            'cd_ruolo',
-            'priorita'
-        )
-
-        priorita = {}
-
-        for p in priorita_tmp:
-            priorita.update({p['cd_ruolo']: p['priorita']})
-
         for q in query:
-
             if q['id_ab'] not in grouped:
                 grouped[q['id_ab']] = {
                     'id_ab': q['id_ab'],
                     'nome': q['nome'],
                     'middle_name': q['middle_name'],
                     'cognome': q['cognome'],
+                    'cd_ruolo': q['cd_ruolo'],
+                    'ds_ruolo_locale': q['ds_ruolo_locale'],
                     'cd_uo_aff_org': q['cd_uo_aff_org'],
                     'matricola': q['matricola'],
                     'Struttura': q['denominazione'] if 'denominazione' in q.keys() else None,
@@ -2244,8 +2236,7 @@ class ServicePersonale:
                     'fl_docente': q['fl_docente'],
                     'profilo': q['profilo'],
                     'ds_profilo': q['ds_profilo'],
-                    'ds_profilo_breve': q['ds_profilo_breve'],
-                    'Roles': [],
+                    'ds_profilo_breve': q['ds_profilo_breve']
                 }
                 for c in contacts_to_take:
                     grouped[q['id_ab']][c] = []
@@ -2258,66 +2249,13 @@ class ServicePersonale:
                 last_id = q['id_ab']
                 final_query.append(grouped[q['id_ab']])
 
-
-
-        for q in final_query:
-            roles = []
-            for r in ruoli:
-                if r[0] == q['matricola']:
-                    roles.append({'matricola': r[0],
-                                  'cd_ruolo': r[1],
-                                  'ds_ruolo': r[2],
-                                  'priorita': priorita[r[1]],
-                                  })
-                roles.sort(key=lambda x:x['priorita'])
-
-
-            q['Roles'] = roles
-
-
-        if phone or role:
+        if phone:
             filtered = []
-            if phone and role:
-                filtered1 = []
-                filtered2 = []
-                roles = []
-                for k in role.split(","):
-                    roles.append(k)
-                for item in final_query:
-                    final_roles = []
-                    if item['Roles'] and len(item['Roles']) != 0:
-                        for r in item['Roles']:
-                            final_roles.append(r['cd_ruolo'])
-                    if (set(roles).intersection(set(final_roles))):
-                        filtered1.append(item)
-
-                    numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
-                    if any(phone in string for string in numbers):
-                        filtered2.append(item)
-
-                filtered = [value for value in filtered1 if value in filtered2]
-
-                return filtered
-            if phone:
-                for item in final_query:
-                    numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
-                    if any(phone in string for string in numbers):
-                        filtered.append(item)
-                return filtered
-
-            if role:
-                roles = []
-                for k in role.split(","):
-                    roles.append(k)
-                filtered = []
-                for item in final_query:
-                    final_roles = []
-                    if item['Roles'] and len(item['Roles']) != 0:
-                        for r in item['Roles']:
-                            final_roles.append(r['cd_ruolo'])
-                    if (set(roles).intersection(set(final_roles))):
-                        filtered.append(item)
-                return filtered
+            for item in final_query:
+                numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
+                if any(phone in string for string in numbers):
+                    filtered.append(item)
+            return filtered
 
         return final_query
 
@@ -2485,31 +2423,6 @@ class ServicePersonale:
                 q["Functions"] = None
             else:
                 q["Functions"] = functions
-
-            ruoli = PersonaleAttivoTuttiRuoli.objects.filter(matricola__exact=q['matricola']).extra(
-                select={
-                    'Matricola': 'PERSONALE_ATTIVO_TUTTI_RUOLI.MATRICOLA',
-                    'CdRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-                    'DsRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_RUOLO',
-                    'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA'},
-                tables=['PERSONALE_PRIORITA_RUOLO'],
-                where=[
-                    'PERSONALE_PRIORITA_RUOLO.CD_RUOLO=PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-                ])
-            ruoli = ruoli.values(
-                'CdRuolo',
-                'DsRuolo',
-                'Priorita'
-            ).order_by('Priorita')
-
-            ruoli = list(ruoli)
-
-            if len(ruoli) == 0:
-                q["Roles"] = None
-            else:
-                q["Roles"] = ruoli
-
-
         return query
 
     @staticmethod
@@ -3091,7 +3004,7 @@ class ServiceBrevetto:
 class ServiceCompany:
 
     @staticmethod
-    def getCompanies(search, techarea, spinoff, startup, q_departments):
+    def getCompanies(search, techarea, spinoff, startup):
 
         query_search = Q()
         query_techarea = Q()
@@ -3133,29 +3046,6 @@ class ServiceCompany:
             "is_spinoff",
         ).distinct()
 
-        for q in query:
-            departments = SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base__exact=q['id']).values(
-                'id_didattica_dipartimento__dip_cod',
-                'id_didattica_dipartimento__dip_des_it',
-                'id_didattica_dipartimento__dip_des_eng',
-                'id_didattica_dipartimento__dip_nome_breve',
-            )
-
-            if len(departments) == 0:
-                q['Departments'] = []
-            else:
-                q['Departments'] = departments
-
-        if q_departments:
-            dep = q_departments.split(',')
-            final_query = []
-            for q in query:
-                for d in q['Departments']:
-                    if d['id_didattica_dipartimento__dip_cod'] in dep:
-                        final_query.append(q)
-            return final_query
-
-
         return query
 
     @staticmethod
@@ -3179,19 +3069,6 @@ class ServiceCompany:
             "is_startup",
             "is_spinoff",
         )
-        for q in query:
-
-            departments = SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base__exact=q['id']).values(
-                'id_didattica_dipartimento__dip_cod',
-                'id_didattica_dipartimento__dip_des_it',
-                'id_didattica_dipartimento__dip_des_eng',
-                'id_didattica_dipartimento__dip_nome_breve',
-            )
-
-            if len(departments) == 0:
-                q['Departments'] = []
-            else:
-                q['Departments'] = departments
 
         return query
 
