@@ -243,7 +243,8 @@ class ServiceDidatticaCds:
         if director:
             query_director = Q(matricola_direttore_scientifico__exact=director)
         if coursetype:
-            query_coursetype = Q(id_alta_formazione_tipo_corso=coursetype)
+            coursetypes = coursetype.split(",")
+            query_coursetype = Q(id_alta_formazione_tipo_corso__in=coursetypes)
         if erogation:
             query_erogation = Q(id_alta_formazione_mod_erogazione=erogation)
         if department:
@@ -501,7 +502,7 @@ class ServiceDidatticaCds:
         return query
 
     @staticmethod
-    def getCourseTypes():
+    def getHighFormationCourseTypes():
 
         query = AltaFormazioneTipoCorso.objects.values(
             'id',

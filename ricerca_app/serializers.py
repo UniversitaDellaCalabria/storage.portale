@@ -2073,7 +2073,7 @@ class ErogationModesSerializer(CreateUpdateAbstract):
         }
 
 
-class CourseTypesSerializer(CreateUpdateAbstract):
+class HighFormationCourseTypesSerializer(CreateUpdateAbstract):
 
     def to_representation(self, instance):
         query = instance

@@ -5224,7 +5224,7 @@ class ApiErogationModesListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
-class ApiCourseTypesListUnitTest(TestCase):
+class ApiHighFormationCourseTypesListUnitTest(TestCase):
 
     def test_apicoursetypeslist(self):
 
@@ -5235,7 +5235,7 @@ class ApiCourseTypesListUnitTest(TestCase):
             'tipo_corso_descr': 'AAAA'
         })
 
-        url = reverse('ricerca:course-types')
+        url = reverse('ricerca:high-formation-course-types')
 
         # check url
         res = req.get(url)

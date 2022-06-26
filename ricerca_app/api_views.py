@@ -188,10 +188,10 @@ class ApiCdSDetail(ApiEndpointDetail):
                 r['ErogationMode'] = erogation_mode
             else:
                 r['ErogationMode'] = None
-        
+
         res = list(res)
 
-                
+
         if len(res) == 0:
             return None
 
@@ -1107,14 +1107,14 @@ class ApiErogationModesList(ApiEndpointList):
         return ServiceDidatticaCds.getErogationModes()
 
 
-class ApiCourseTypesList(ApiEndpointList):
-    description = 'La funzione restituisce la lista dei tipi di corso'
-    serializer_class = CourseTypesSerializer
+class ApiHighFormationCourseTypesList(ApiEndpointList):
+    description = 'La funzione restituisce la lista dei tipi di corso dell\'alta formazione'
+    serializer_class = HighFormationCourseTypesSerializer
     filter_backends = []
 
     def get_queryset(self):
 
-        return ServiceDidatticaCds.getCourseTypes()
+        return ServiceDidatticaCds.getHighFormationCourseTypes()
 
 
 class ApiPersonIdSchema(AutoSchema):
