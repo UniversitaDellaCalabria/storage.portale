@@ -390,9 +390,9 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         name='erogation-modes'),
 
     urlpatterns += path(
-        '{}/course-types/'.format(base_url),
-        api_views.ApiCourseTypesList.as_view(),
-        name='course-types'),
+        '{}/high-formation-course-types/'.format(base_url),
+        api_views.ApiHighFormationCourseTypesList.as_view(),
+        name='high-formation-course-types'),
 
     urlpatterns += path(
         '{}/get-person-id/'.format(base_url),

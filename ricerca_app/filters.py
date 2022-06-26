@@ -655,10 +655,7 @@ class ApiHighFormationMastersListFilter(GenericApiFilter):
             'name': 'coursetype',
             'description': 'Tipo Corso',
             'required': False,
-            'schema': {
-                'type': 'integer',
-                'format': 'int32',
-            },
+            'type': 'string'
         },
         {
             'name': 'erogation',
