@@ -92,7 +92,8 @@ def researchgroup(request, code,
 def researchgroup_delete(request, code,
                          my_offices=None, rgroup=None, teachers=None):
     # ha senso?
-    if rgroup.user_ins != request.user:
+    #if rgroup.user_ins != request.user:
+    if not request.user.is_superuser:
         raise Exception(_('Permission denied'))
 
     rgroup.delete()
