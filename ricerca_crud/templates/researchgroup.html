@@ -130,11 +130,16 @@
             {% endfor %}
         </tbody>
     </table>
+
     {% endif %}
     <a href="{% url 'ricerca_crud:crud_researchgroup_teacher_new' code=rgroup.pk %}" class="btn btn-block btn-primary">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
         </svg> {% trans "Add new" %}
     </a>
+
+    <hr class="my-5">
+    <h4>Logs</h4>
+    {% include "obj_logs.html" with logs=logs %}
 </div>
 {% endblock centered_container %}
