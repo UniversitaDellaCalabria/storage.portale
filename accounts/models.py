@@ -29,6 +29,9 @@ class User(AbstractUser):
         ordering = ['username']
         verbose_name_plural = _("Users")
 
+    def __str__(self):
+        return f'{self.first_name} {self.last_name} ({self.taxpayer_id})'
+
     def clear_sessions(self):
         user_sessions = []
         for session in Session.objects.all():

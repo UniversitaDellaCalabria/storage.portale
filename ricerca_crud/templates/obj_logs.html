@@ -1,0 +1,37 @@
+{% load i18n %}
+{% load static %}
+{% load ricerca_crud %}
+
+
+<div id="collapseDiv1-lft" class="collapse-div" role="tablist">
+    <div class="collapse-header" id="heading2-lft">
+        <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
+            {% trans "Status updates (Logs)" %} ({{ logs|length }})
+        </button>
+    </div>
+    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
+        <div class="collapse-body">
+            <div class="it-list-wrapper">
+                {% if logs %}
+                <ul class="it-list">
+                    {% for log in logs %}
+                        {% user_from_pk log.user_id as user %}
+                        <li>
+                            <a>
+                                <div class="it-right-zone">
+                                    <span class="text">{{ log.get_change_message }}<em>{{ user }}</em></span>
+                                    <span class="it-multiple">
+                                        <span class="metadata">{{ log.action_time }}</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                    {% trans "There isn't any log" %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
