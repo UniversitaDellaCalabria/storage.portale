@@ -240,7 +240,7 @@ def researchgroup_teacher_edit(request, code, teacher_rgroup_id,
 
             log_msg = f'{_("Changed teacher")} {teacher.__str__()}' \
                       if teacher == new_teacher \
-                      else f'{teacher} {_("substituted by")} {new_teacher.__str__()}'
+                      else f'{teacher} {_("substituted with")} {new_teacher.__str__()}'
 
             log_action(user=request.user,
                        obj=rgroup,
