@@ -1,6 +1,7 @@
+from datetime import date
+
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOfficeEmployee)
@@ -50,7 +51,7 @@ def can_edit_researchgroup(func_to_decorate):
         for myoffice in original_kwargs['my_offices']:
             if myoffice.office.organizational_structure.unique_code not in departments:
                 departments.append(myoffice.office.organizational_structure.unique_code)
-        now = timezone.localtime().date()
+        now = date.today()
         for teacher in teachers:
             if teacher.personale.sede in departments and teacher.dt_inizio<=now and teacher.dt_fine>=now:
                 return func_to_decorate(*original_args, **original_kwargs)
