@@ -225,6 +225,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'ricerca_crud': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     }
 }
 
