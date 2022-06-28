@@ -145,7 +145,7 @@ msgstr ""
 #: ricerca_crud/templates/researchgroup_new.html:20
 #: ricerca_crud/templates/researchgroup_teacher.html:62
 msgid "Choosen teacher:"
-msgstr ""
+msgstr "Docente scelto"
 
 #: ricerca_crud/templates/dashboard.html:8 ricerca_crud/views.py:33
 #: ricerca_crud/views.py:45 ricerca_crud/views.py:109 ricerca_crud/views.py:179
