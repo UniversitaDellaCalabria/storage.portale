@@ -143,7 +143,7 @@ LANGUAGE_CODE = 'it-it'
 TIME_ZONE = 'Europe/Rome'
 USE_I18N = True
 USE_L10N = True
-USE_TZ = False
+USE_TZ = True
 
 
 # email notification on error 500
@@ -221,6 +221,11 @@ LOGGING = {
             'propagate': False,
         },
         'ricerca': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'ricerca_crud': {
             'handlers': ['console', 'mail_admins'],
             'level': 'DEBUG',
             'propagate': False,
