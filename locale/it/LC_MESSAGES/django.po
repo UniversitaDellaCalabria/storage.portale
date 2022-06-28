@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-29 01:07+0200\n"
+"POT-Creation-Date: 2022-06-29 01:22+0200\n"
 "PO-Revision-Date: 2022-06-29 01:18+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -256,8 +256,8 @@ msgid "Code"
 msgstr "Codice"
 
 #: ricerca_crud/templates/researchgroup.html:64
-msgid "Location"
-msgstr "Località"
+msgid "Structure"
+msgstr "Struttura"
 
 #: ricerca_crud/templates/researchgroup.html:65
 msgid "Start date"
@@ -340,3 +340,6 @@ msgstr "Permesso negato. Rimane solo un docente"
 #: ricerca_crud/views.py:295
 msgid "Teacher removed successfully"
 msgstr "Docente rimosso con successo"
+
+#~ msgid "Location"
+#~ msgstr "Località"
