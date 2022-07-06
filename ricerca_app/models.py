@@ -2988,8 +2988,6 @@ class RicercaDocenteGruppo(InsModAbstract):
 
 class RicercaDocenteLineaApplicata(InsModAbstract):
 
-    dt_ins = models.DateTimeField(db_column='DT_INS')
-
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)
 
     dt_inizio = models.DateField(db_column='DT_INIZIO', blank=True, null=True)
