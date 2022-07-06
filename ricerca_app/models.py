@@ -2960,13 +2960,13 @@ class RicercaDocenteGruppo(InsModAbstract):
     dt_fine = models.DateField(db_column='DT_FINE', blank=True, null=True)
     personale = models.ForeignKey(
         Personale,
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='PERSONALE_ID',
         blank=True,
         null=True)
     ricerca_gruppo = models.ForeignKey(
         'RicercaGruppo',
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='RICERCA_GRUPPO_ID')
     user_ins = models.ForeignKey(get_user_model(),
                                  related_name='user_ins_rdg',

@@ -287,7 +287,7 @@ def researchgroup_teacher_delete(request, code, teacher_rgroup_id,
     log_action(user=request.user,
                obj=rgroup,
                flag=CHANGE,
-               msg=f'{_("Deleted teacher")} {techer_rgroup.personale.__str__()}')
+               msg=f'{_("Deleted teacher")} {teacher_rgroup.personale.__str__()}')
 
     teacher_rgroup.delete()
     messages.add_message(request,
