@@ -1,0 +1,75 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+
+{% if choosen_teacher %}
+<a href="" class="btn btn-danger btn-xs"
+   data-toggle="modal"
+   data-target="#delete_teacher">
+    <svg class="icon icon-xs icon-white">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+    </svg> {% trans "Remove" %}
+</a>
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="delete_teacher">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Confirm" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {% trans "Do you want to delete choosen teacher?" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_base_researchline_teacher_delete' code=rline.pk teacher_rline_id=teacher_rline_id %}">
+                    {% trans 'Yes, proceed' %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+{% endif %}
+<h2>
+    {% if choosen_teacher %}{% trans "Edit teacher for" %}{% else %}{% trans "New teacher for" %}{% endif %} {{ rline.nome }}
+</h2>
+<div class="mt-5">
+    <form method="post">
+        {% include "blocks/crud_teacherslist.html" with uid="id_1" %}
+        <hr />
+        <span id="choosen_teacher_name">
+            {% if choosen_teacher %}
+            <div class="alert alert-success" role="alert">
+                {% trans 'Choosen teacher:' %} <b>{{ choosen_teacher }}</b>
+            </div>
+            {% else %}
+            <div class="alert alert-warning" role="alert">
+              {% trans "Choose a teacher to proceed" %}
+            </div>
+            {% endif %}
+        </span>
+        <hr />
+        {% include "form_template.html" with form=form %}
+        {% include "includes/form_submit.html" %}
+    </form>
+</div>
+{% endblock centered_container %}

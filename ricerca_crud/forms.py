@@ -34,6 +34,39 @@ class RicercaLineaApplicataForm(forms.ModelForm):
         fields = ['descrizione', 'descr_pubblicaz_prog_brevetto',
                   'anno', 'ricerca_aster2']
 
+
     class Media:
         js = ('js/textarea-autosize.js',)
+
+
+class RicercaLineaBaseForm(forms.ModelForm):
+    class Meta:
+        model = RicercaLineaBase
+        fields = ['descrizione', 'descr_pubblicaz_prog_brevetto', 'anno', 'ricerca_erc2']
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class RicercaDocenteLineaBaseForm(forms.ModelForm):
+    choosen_teacher = forms.CharField(label=_('Teacher'),
+                                      widget = forms.HiddenInput(),
+                                      required=True)
+    class Meta:
+        model = RicercaDocenteLineaBase
+        fields = ['dt_inizio', 'dt_fine']
+        widgets = {'dt_inizio': BootstrapItaliaDateWidget,
+                   'dt_fine': BootstrapItaliaDateWidget, }
+
+
+class RicercaDocenteLineaApplicataForm(forms.ModelForm):
+    choosen_teacher = forms.CharField(label=_('Teacher'),
+                                      widget = forms.HiddenInput(),
+                                      required=True)
+
+    class Meta:
+        model = RicercaDocenteLineaBase
+        fields = ['dt_inizio', 'dt_fine']
+        widgets = {'dt_inizio': BootstrapItaliaDateWidget,
+                   'dt_fine': BootstrapItaliaDateWidget, }
 
