@@ -27,7 +27,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
-    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest
+    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -5224,7 +5224,7 @@ class ApiErogationModesListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
-class ApiCourseTypesListUnitTest(TestCase):
+class ApiHighFormationCourseTypesListUnitTest(TestCase):
 
     def test_apicoursetypeslist(self):
 
@@ -5235,8 +5235,7 @@ class ApiCourseTypesListUnitTest(TestCase):
             'tipo_corso_descr': 'AAAA'
         })
 
-        url = reverse('ricerca:course-types')
-
+        url = reverse('ricerca:high-formation-course-types')
 
         # check url
         res = req.get(url)
@@ -5366,7 +5365,7 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
             'id': 1,
             'nome_af': 'AAAA',
             'struttura_proponente_origine': 'dimes',
-            'rif_dottorato': 'matematica',
+            'rif_dottorato': 'matematica'
 
         })
 
@@ -5511,14 +5510,6 @@ class ApiRefStructuresListUnitTest(TestCase):
 
         })
 
-        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
-            'id': 2,
-            'nome_af': 'AAAA',
-            'struttura_proponente_origine': None,
-            'rif_dottorato': 'matematica'
-
-        })
-
 
         url = reverse('ricerca:ref-structures')
 
@@ -5543,12 +5534,6 @@ class ApiPhdSsdListUnitTest(TestCase):
         DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
             'id': 1,
             'ssd': 'Convenzionale'
-
-        })
-
-        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
-            'id': 2,
-            'ssd': None
 
         })
 
