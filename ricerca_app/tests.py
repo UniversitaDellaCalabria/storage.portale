@@ -27,7 +27,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
-    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest
+    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -1889,27 +1889,6 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'uo': '1',
             'denominazione': 'Dipartimento di Matematica e Informatica',
         })
-        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
-            'matricola': '111114',
-            'cd_ruolo': 'PO',
-            'ds_ruolo': 'Professore Ordinario',
-
-        })
-        PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
-            'cd_ruolo': 'PO',
-            'ds_ruolo': 'Professore Ordinario',
-            'priorita': 1
-        })
-
-        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
-            'matricola': '111113',
-
-        })
-        PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
-            'cd_ruolo': 'AB',
-            'ds_ruolo': 'Professore Ordinario',
-            'priorita': 1
-        })
 
         url = reverse('ricerca:addressbooklist')
 
@@ -1920,7 +1899,8 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         # GET
         res = req.get(url)
         assert len(res.json()['results']) == 1
-        #assert res.json()['results'][0]['Roles'] == 'PO'
+        assert res.json()[
+            'results'][0]['Role'] == 'PO'
 
         data = {'structure': '99', 'lang': 'it'}
         res = req.get(url, data=data)
@@ -1940,16 +1920,11 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
 
         data = {'role': 'PO'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert res.json()['results'][0]['Name'] == 'Ibra Zlatan'
 
         data = {'phone': '999'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
-
-        data = {'role': 'PO', 'phone': '999'}
-        res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
-
 
         data = {'structuretree': '1'}
         res = req.get(url, data=data)
@@ -1958,7 +1933,6 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         data = {'structuretree': '2'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
-
 
 
 class ApiStructuresListUnitTest(TestCase):
