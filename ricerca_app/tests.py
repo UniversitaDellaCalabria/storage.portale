@@ -1889,27 +1889,6 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'uo': '1',
             'denominazione': 'Dipartimento di Matematica e Informatica',
         })
-        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
-            'matricola': '111114',
-            'cd_ruolo': 'PO',
-            'ds_ruolo': 'Professore Ordinario',
-
-        })
-        PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
-            'cd_ruolo': 'PO',
-            'ds_ruolo': 'Professore Ordinario',
-            'priorita': 1
-        })
-
-        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
-            'matricola': '111113',
-
-        })
-        PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
-            'cd_ruolo': 'AB',
-            'ds_ruolo': 'Professore Ordinario',
-            'priorita': 1
-        })
 
         url = reverse('ricerca:addressbooklist')
 
@@ -1920,7 +1899,8 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         # GET
         res = req.get(url)
         assert len(res.json()['results']) == 1
-        #assert res.json()['results'][0]['Roles'] == 'PO'
+        assert res.json()[
+            'results'][0]['Role'] == 'PO'
 
         data = {'structure': '99', 'lang': 'it'}
         res = req.get(url, data=data)
@@ -1940,16 +1920,11 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
 
         data = {'role': 'PO'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert res.json()['results'][0]['Name'] == 'Ibra Zlatan'
 
         data = {'phone': '999'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
-
-        data = {'role': 'PO', 'phone': '999'}
-        res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
-
 
         data = {'structuretree': '1'}
         res = req.get(url, data=data)
@@ -1958,7 +1933,6 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         data = {'structuretree': '2'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
-
 
 
 class ApiStructuresListUnitTest(TestCase):
@@ -5250,7 +5224,7 @@ class ApiErogationModesListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
-class ApiHighFormationCourseTypesListUnitTest(TestCase):
+class ApiCourseTypesListUnitTest(TestCase):
 
     def test_apicoursetypeslist(self):
 
@@ -5261,7 +5235,7 @@ class ApiHighFormationCourseTypesListUnitTest(TestCase):
             'tipo_corso_descr': 'AAAA'
         })
 
-        url = reverse('ricerca:high-formation-course-types')
+        url = reverse('ricerca:course-types')
 
         # check url
         res = req.get(url)
@@ -5391,7 +5365,7 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
             'id': 1,
             'nome_af': 'AAAA',
             'struttura_proponente_origine': 'dimes',
-            'rif_dottorato': 'matematica'
+            'rif_dottorato': 'matematica',
 
         })
 
@@ -5536,6 +5510,14 @@ class ApiRefStructuresListUnitTest(TestCase):
 
         })
 
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 2,
+            'nome_af': 'AAAA',
+            'struttura_proponente_origine': None,
+            'rif_dottorato': 'matematica'
+
+        })
+
 
         url = reverse('ricerca:ref-structures')
 
@@ -5560,6 +5542,12 @@ class ApiPhdSsdListUnitTest(TestCase):
         DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
             'id': 1,
             'ssd': 'Convenzionale'
+
+        })
+
+        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+            'id': 2,
+            'ssd': None
 
         })
 

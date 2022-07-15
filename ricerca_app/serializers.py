@@ -954,15 +954,11 @@ class AddressbookSerializer(CreateUpdateAbstract):
             (" " + query['middle_name']
              if query['middle_name'] is not None else "")
 
-        roles = None
-        if query["Roles"] is not None:
-            roles = AddressbookSerializer.to_dict_roles(
-                query["Roles"])
-
         return {
             'Name': full_name,
             'ID': encrypt(query['matricola']),
-            'Roles': roles,
+            'RoleDescription': query['ds_ruolo_locale'],
+            'Role': query['cd_ruolo'],
             'Structure': query['Struttura'],
             'StructureTypeName': query['TipologiaStrutturaNome'],
             'StructureTypeCOD': query['TipologiaStrutturaCod'],
@@ -979,18 +975,6 @@ class AddressbookSerializer(CreateUpdateAbstract):
             'ProfileDescription': query['ds_profilo'],
             'ProfileShortDescription': query['ds_profilo_breve'],
         }
-
-    @staticmethod
-    def to_dict_roles(query):
-        roles = []
-        for q in query:
-            roles.append({
-                'Role': q['cd_ruolo'],
-                'RoleDescription': q['ds_ruolo'],
-                'Priority': q['priorita']
-            })
-        return roles
-
 
 
 class PersonaleSerializer(CreateUpdateAbstract):
