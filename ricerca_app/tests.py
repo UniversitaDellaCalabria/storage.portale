@@ -5237,6 +5237,7 @@ class ApiHighFormationCourseTypesListUnitTest(TestCase):
 
         url = reverse('ricerca:high-formation-course-types')
 
+
         # check url
         res = req.get(url)
 
