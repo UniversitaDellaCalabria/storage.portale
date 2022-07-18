@@ -119,8 +119,13 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 'didatticacdslingua__lingua_des_eng'] is None else q['didatticacdslingua__lingua_des_eng'])
         video = None
         if query['URL_CDS_VIDEO'] is not None:
-            video = CdsInfoSerializer.to_dict_video(
+            video = CdsInfoSerializer.get_media_url(
                 query['URL_CDS_VIDEO'])
+
+        doc = None
+        if query['URL_CDS_DOC'] is not None:
+            doc = CdsInfoSerializer.get_media_url(
+                query['URL_CDS_DOC'])
 
         data = None
         if query["OtherData"] is not None:
@@ -158,7 +163,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
             'CdSIntro': query['INTRO_CDS_FMT'] if query['INTRO_CDS_FMT'] is not None else query['DESC_COR_BRE'],
-            'CdSDoc': f'{settings.CDS_BROCHURE_MEDIA_PATH}/{query["URL_CDS_DOC"]}',
+            'CdSDoc': doc,
             'CdsUrl': query['URL_CDS'],
             'CdSVideo': video,
             'CdSGoals': query['OBB_SPEC'],
@@ -175,7 +180,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
 
 
     @staticmethod
-    def to_dict_video(query):
+    def get_media_url(query):
         if 'https' in query or 'http' in query:
             return query
         else:
