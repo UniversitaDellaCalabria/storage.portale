@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-19 08:56+0200\n"
-"PO-Revision-Date: 2022-07-19 08:57+0200\n"
+"POT-Creation-Date: 2022-07-19 09:25+0200\n"
+"PO-Revision-Date: 2022-07-19 09:25+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -102,7 +102,7 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
-#: ricerca_crud/forms.py:21 ricerca_crud/forms.py:52 ricerca_crud/forms.py:63
+#: ricerca_crud/forms.py:21 ricerca_crud/forms.py:53 ricerca_crud/forms.py:64
 msgid "Teacher"
 msgstr "Docente"
 
@@ -188,7 +188,7 @@ msgstr "Data fine"
 #: ricerca_crud/templates/applied_researchline.html:84
 #: ricerca_crud/templates/base_researchline.html:84
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:161
-#: ricerca_crud/templates/blocks/crud_researchlines.html:125
+#: ricerca_crud/templates/blocks/crud_researchlines.html:157
 #: ricerca_crud/templates/researchgroup.html:84
 msgid "Edit"
 msgstr "Modifica"
@@ -234,14 +234,13 @@ msgstr "Seleziona un docente per proseguire"
 msgid "Add"
 msgstr "Aggiungi nuovo"
 
-#: ricerca_crud/templates/applied_researchlines.html:13
-#: ricerca_crud/templates/dashboard.html:69 ricerca_crud/views.py:316
-#: ricerca_crud/views.py:376 ricerca_crud/views.py:569
+#: ricerca_crud/templates/applied_researchlines.html:14
+#: ricerca_crud/views.py:316 ricerca_crud/views.py:376
+#: ricerca_crud/views.py:569
 msgid "Applied Research lines"
 msgstr "Linee di ricerca applicata"
 
-#: ricerca_crud/templates/base_researchlines.html:13
-#: ricerca_crud/templates/dashboard.html:44 ricerca_crud/views.py:305
+#: ricerca_crud/templates/base_researchlines.html:14 ricerca_crud/views.py:305
 #: ricerca_crud/views.py:447 ricerca_crud/views.py:521
 msgid "Base Research lines"
 msgstr "Linee di ricerca di base"
@@ -263,7 +262,7 @@ msgid "Choose an option"
 msgstr "Scegli un'opzione"
 
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:67
-#: ricerca_crud/templates/blocks/crud_researchlines.html:111
+#: ricerca_crud/templates/blocks/crud_researchlines.html:137
 msgid "Ref. ERC"
 msgstr "Rif. ERC"
 
@@ -272,12 +271,12 @@ msgid "Clear all"
 msgstr "Cancella tutto"
 
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:176
-#: ricerca_crud/templates/blocks/crud_researchlines.html:140
+#: ricerca_crud/templates/blocks/crud_researchlines.html:172
 #: ricerca_crud/templates/blocks/crud_teacherslist.html:137
 msgid "No items here"
 msgstr "Nessun elemento"
 
-#: ricerca_crud/templates/blocks/crud_researchlines.html:117
+#: ricerca_crud/templates/blocks/crud_researchlines.html:145
 msgid "Ref. ASTER"
 msgstr "Rif. ASTER"
 
@@ -313,15 +312,25 @@ msgid "Manage groups and their teachers"
 msgstr "Gestisci i gruppi e i loro docenti"
 
 #: ricerca_crud/templates/dashboard.html:25
-#: ricerca_crud/templates/dashboard.html:50
-#: ricerca_crud/templates/dashboard.html:75
 msgid "Manage"
 msgstr "Gestisci"
 
+#: ricerca_crud/templates/dashboard.html:44 ricerca_crud/views.py:654
+#: ricerca_crud/views.py:698
+msgid "Research lines"
+msgstr "Linee di ricerca"
+
 #: ricerca_crud/templates/dashboard.html:47
-#: ricerca_crud/templates/dashboard.html:72
 msgid "Manage lines and their teachers"
 msgstr "Gestisci le linee e i loro docenti"
+
+#: ricerca_crud/templates/dashboard.html:50
+msgid "Base research lines"
+msgstr "Linee di ricerca di base"
+
+#: ricerca_crud/templates/dashboard.html:57
+msgid "Applied research lines"
+msgstr "Linee di ricerca applicata"
 
 #: ricerca_crud/templates/includes/form_submit.html:12
 msgid "Submit"
@@ -456,7 +465,3 @@ msgstr "Linea di ricerca creata con successo"
 #: ricerca_crud/views.py:542 ricerca_crud/views.py:590
 msgid "Research line edited successfully"
 msgstr "Linea di ricerca modificata con successo"
-
-#: ricerca_crud/views.py:654 ricerca_crud/views.py:698
-msgid "Research lines"
-msgstr "Linee di ricerca"

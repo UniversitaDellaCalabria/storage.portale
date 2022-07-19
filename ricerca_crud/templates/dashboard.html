@@ -41,38 +41,20 @@
                         <svg class="icon">
                             <use href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg>
-                        {% trans "Base Research lines" %}
+                        {% trans "Research lines" %}
                     </h5>
                     <p class="card-text">
                         {% trans 'Manage lines and their teachers' %}
                     </p>
-                    <a class="read-more" href="{% url 'ricerca_crud:crud_base_researchlines' %}">
-                        <span class="text">{% trans "Manage" %}</span>
+                    <a class="read-more mb-4" href="{% url 'ricerca_crud:crud_base_researchlines' %}">
+                        <span class="text">{% trans "Base research lines" %}</span>
                         <svg class="icon">
                             <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
                         </svg>
                     </a>
-                </div>
-            </div>
-        </div>
-        <!--end card-->
-    </div>
-    <div class="col-12 col-lg-3">
-        <!--start card-->
-        <div class="card-wrapper card-space">
-            <div class="card card-bg">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <svg class="icon">
-                            <use href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                        </svg>
-                        {% trans "Applied Research lines" %}
-                    </h5>
-                    <p class="card-text">
-                        {% trans 'Manage lines and their teachers' %}
-                    </p>
+                    <br>
                     <a class="read-more" href="{% url 'ricerca_crud:crud_applied_researchlines' %}">
-                        <span class="text">{% trans "Manage" %}</span>
+                        <span class="text">{% trans "Applied research lines" %}</span>
                         <svg class="icon">
                             <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
                         </svg>
