@@ -1938,6 +1938,10 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
+        data = {'phone': '999', 'role': 'PO'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
         data = {'structuretree': '1'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1

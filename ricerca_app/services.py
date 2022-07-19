@@ -2211,7 +2211,7 @@ class ServicePersonale:
 
         if phone or role:
             filtered = []
-            if phone and role: # pragma: no cover
+            if phone and role:
                 filtered1 = []
                 filtered2 = []
                 roles = []
