@@ -25,7 +25,7 @@ class RicercaGruppoDocenteForm(forms.ModelForm):
         model = RicercaDocenteGruppo
         fields = ['dt_inizio', 'dt_fine']
         widgets = {'dt_inizio': BootstrapItaliaDateWidget,
-                   'dt_fine': BootstrapItaliaDateWidget, }
+                   'dt_fine': BootstrapItaliaDateWidget,}
 
 
 class RicercaLineaApplicataForm(forms.ModelForm):
@@ -33,7 +33,7 @@ class RicercaLineaApplicataForm(forms.ModelForm):
         model = RicercaLineaApplicata
         fields = ['descrizione', 'descr_pubblicaz_prog_brevetto',
                   'anno', 'ricerca_aster2']
-
+        widgets = {'descr_pubblicaz_prog_brevetto': forms.Textarea(attrs={'rows': 2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -43,6 +43,7 @@ class RicercaLineaBaseForm(forms.ModelForm):
     class Meta:
         model = RicercaLineaBase
         fields = ['descrizione', 'descr_pubblicaz_prog_brevetto', 'anno', 'ricerca_erc2']
+        widgets = {'descr_pubblicaz_prog_brevetto': forms.Textarea(attrs={'rows': 2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)

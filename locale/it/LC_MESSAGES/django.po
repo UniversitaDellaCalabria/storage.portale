@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-29 12:18+0200\n"
-"PO-Revision-Date: 2022-06-29 01:18+0200\n"
+"POT-Creation-Date: 2022-07-19 08:56+0200\n"
+"PO-Revision-Date: 2022-07-19 08:57+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 3.1.1\n"
 
 #: accounts/admin.py:20
 msgid "Anagrafica"
@@ -42,11 +42,15 @@ msgstr ""
 msgid "Altro"
 msgstr ""
 
-#: accounts/models.py:15 ricerca_crud/templates/researchgroup.html:62
+#: accounts/models.py:15 ricerca_crud/templates/applied_researchline.html:62
+#: ricerca_crud/templates/base_researchline.html:62
+#: ricerca_crud/templates/researchgroup.html:62
 msgid "Name"
 msgstr ""
 
-#: accounts/models.py:17 ricerca_crud/templates/researchgroup.html:61
+#: accounts/models.py:17 ricerca_crud/templates/applied_researchline.html:61
+#: ricerca_crud/templates/base_researchline.html:61
+#: ricerca_crud/templates/researchgroup.html:61
 msgid "Surname"
 msgstr ""
 
@@ -98,11 +102,152 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
-#: ricerca_crud/forms.py:21
+#: ricerca_crud/forms.py:21 ricerca_crud/forms.py:52 ricerca_crud/forms.py:63
 msgid "Teacher"
 msgstr "Docente"
 
+#: ricerca_crud/templates/applied_researchline.html:13
+#: ricerca_crud/templates/applied_researchline.html:93
+#: ricerca_crud/templates/applied_researchline_teacher.html:15
+#: ricerca_crud/templates/base_researchline.html:13
+#: ricerca_crud/templates/base_researchline.html:93
+#: ricerca_crud/templates/base_researchline_teacher.html:15
+#: ricerca_crud/templates/researchgroup.html:13
+#: ricerca_crud/templates/researchgroup.html:93
+#: ricerca_crud/templates/researchgroup_teacher.html:15
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: ricerca_crud/templates/applied_researchline.html:24
+#: ricerca_crud/templates/applied_researchline.html:106
+#: ricerca_crud/templates/applied_researchline_teacher.html:26
+#: ricerca_crud/templates/base_researchline.html:24
+#: ricerca_crud/templates/base_researchline.html:106
+#: ricerca_crud/templates/base_researchline_teacher.html:26
+#: ricerca_crud/templates/includes/form_submit.html:23
+#: ricerca_crud/templates/researchgroup.html:24
+#: ricerca_crud/templates/researchgroup.html:106
+#: ricerca_crud/templates/researchgroup_teacher.html:26
+msgid "Confirm"
+msgstr "Conferma"
+
+#: ricerca_crud/templates/applied_researchline.html:37
+#: ricerca_crud/templates/applied_researchline.html:119
+#: ricerca_crud/templates/applied_researchline_teacher.html:39
+#: ricerca_crud/templates/base_researchline.html:37
+#: ricerca_crud/templates/base_researchline.html:119
+#: ricerca_crud/templates/base_researchline_teacher.html:39
+#: ricerca_crud/templates/researchgroup.html:37
+#: ricerca_crud/templates/researchgroup.html:119
+#: ricerca_crud/templates/researchgroup_teacher.html:39
+msgid "Do you want to delete choosen teacher?"
+msgstr "Vuoi davvero eliminare il docente selezionato?"
+
+#: ricerca_crud/templates/applied_researchline.html:42
+#: ricerca_crud/templates/applied_researchline.html:124
+#: ricerca_crud/templates/applied_researchline_teacher.html:44
+#: ricerca_crud/templates/base_researchline.html:42
+#: ricerca_crud/templates/base_researchline.html:124
+#: ricerca_crud/templates/base_researchline_teacher.html:44
+#: ricerca_crud/templates/includes/form_submit.html:43
+#: ricerca_crud/templates/researchgroup.html:42
+#: ricerca_crud/templates/researchgroup.html:124
+#: ricerca_crud/templates/researchgroup_teacher.html:44
+msgid "Yes, proceed"
+msgstr "Si, procedi"
+
+#: ricerca_crud/templates/applied_researchline.html:56
+#: ricerca_crud/templates/base_researchline.html:56
+#: ricerca_crud/templates/researchgroup.html:56
+msgid "Teachers"
+msgstr "Docenti"
+
+#: ricerca_crud/templates/applied_researchline.html:63
+#: ricerca_crud/templates/base_researchline.html:63
+#: ricerca_crud/templates/researchgroup.html:63
+msgid "Code"
+msgstr "Codice"
+
+#: ricerca_crud/templates/applied_researchline.html:64
+#: ricerca_crud/templates/base_researchline.html:64
+msgid "Location"
+msgstr "Località"
+
+#: ricerca_crud/templates/applied_researchline.html:65
+#: ricerca_crud/templates/base_researchline.html:65
+#: ricerca_crud/templates/researchgroup.html:65
+msgid "Start date"
+msgstr "Data inizio"
+
+#: ricerca_crud/templates/applied_researchline.html:66
+#: ricerca_crud/templates/base_researchline.html:66
+#: ricerca_crud/templates/researchgroup.html:66
+msgid "End date"
+msgstr "Data fine"
+
+#: ricerca_crud/templates/applied_researchline.html:84
+#: ricerca_crud/templates/base_researchline.html:84
+#: ricerca_crud/templates/blocks/crud_researchgroups.html:161
+#: ricerca_crud/templates/blocks/crud_researchlines.html:125
+#: ricerca_crud/templates/researchgroup.html:84
+msgid "Edit"
+msgstr "Modifica"
+
+#: ricerca_crud/templates/applied_researchline.html:138
+#: ricerca_crud/templates/base_researchline.html:138
+#: ricerca_crud/templates/researchgroup.html:138
+#: ricerca_crud/templates/researchgroups.html:11
+msgid "Add new"
+msgstr "Aggiungi nuovo"
+
+#: ricerca_crud/templates/applied_researchline_teacher.html:53
+#: ricerca_crud/templates/base_researchline_teacher.html:53
+#: ricerca_crud/templates/researchgroup_teacher.html:53
+msgid "Edit teacher for"
+msgstr "Modifica docente per"
+
+#: ricerca_crud/templates/applied_researchline_teacher.html:53
+#: ricerca_crud/templates/base_researchline_teacher.html:53
+#: ricerca_crud/templates/researchgroup_teacher.html:53
+msgid "New teacher for"
+msgstr "Nuovo docente per"
+
+#: ricerca_crud/templates/applied_researchline_teacher.html:62
+#: ricerca_crud/templates/base_researchline_teacher.html:62
+#: ricerca_crud/templates/blocks/crud_teacherslist.html:219
+#: ricerca_crud/templates/researchgroup_new.html:20
+#: ricerca_crud/templates/researchgroup_teacher.html:62
+#: ricerca_crud/templates/researchline_new.html:20
+msgid "Choosen teacher:"
+msgstr "Docente scelto:"
+
+#: ricerca_crud/templates/applied_researchline_teacher.html:66
+#: ricerca_crud/templates/base_researchline_teacher.html:66
+#: ricerca_crud/templates/researchgroup_new.html:24
+#: ricerca_crud/templates/researchgroup_teacher.html:66
+#: ricerca_crud/templates/researchline_new.html:24
+msgid "Choose a teacher to proceed"
+msgstr "Seleziona un docente per proseguire"
+
+#: ricerca_crud/templates/applied_researchlines.html:11
+#: ricerca_crud/templates/base_researchlines.html:11
+msgid "Add"
+msgstr "Aggiungi nuovo"
+
+#: ricerca_crud/templates/applied_researchlines.html:13
+#: ricerca_crud/templates/dashboard.html:69 ricerca_crud/views.py:316
+#: ricerca_crud/views.py:376 ricerca_crud/views.py:569
+msgid "Applied Research lines"
+msgstr "Linee di ricerca applicata"
+
+#: ricerca_crud/templates/base_researchlines.html:13
+#: ricerca_crud/templates/dashboard.html:44 ricerca_crud/views.py:305
+#: ricerca_crud/views.py:447 ricerca_crud/views.py:521
+msgid "Base Research lines"
+msgstr "Linee di ricerca di base"
+
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:37
+#: ricerca_crud/templates/blocks/crud_researchlines.html:36
 #: ricerca_crud/templates/blocks/crud_teacherslist.html:33
 msgid "Department"
 msgstr "Dipartimento"
@@ -110,28 +255,31 @@ msgstr "Dipartimento"
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:41
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:45
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:72
+#: ricerca_crud/templates/blocks/crud_researchlines.html:40
+#: ricerca_crud/templates/blocks/crud_researchlines.html:44
 #: ricerca_crud/templates/blocks/crud_teacherslist.html:41
 #: ricerca_crud/templates/blocks/crud_teacherslist.html:68
 msgid "Choose an option"
 msgstr "Scegli un'opzione"
 
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:67
+#: ricerca_crud/templates/blocks/crud_researchlines.html:111
 msgid "Ref. ERC"
-msgstr ""
+msgstr "Rif. ERC"
 
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:75
 msgid "Clear all"
 msgstr "Cancella tutto"
 
-#: ricerca_crud/templates/blocks/crud_researchgroups.html:161
-#: ricerca_crud/templates/researchgroup.html:84
-msgid "Edit"
-msgstr "Modifica"
-
 #: ricerca_crud/templates/blocks/crud_researchgroups.html:176
+#: ricerca_crud/templates/blocks/crud_researchlines.html:140
 #: ricerca_crud/templates/blocks/crud_teacherslist.html:137
 msgid "No items here"
 msgstr "Nessun elemento"
+
+#: ricerca_crud/templates/blocks/crud_researchlines.html:117
+msgid "Ref. ASTER"
+msgstr "Rif. ASTER"
 
 #: ricerca_crud/templates/blocks/crud_teacherslist.html:60
 msgid "Role"
@@ -141,22 +289,22 @@ msgstr "Ruolo"
 msgid "Contract teacher"
 msgstr ""
 
-#: ricerca_crud/templates/blocks/crud_teacherslist.html:219
-#: ricerca_crud/templates/researchgroup_new.html:20
-#: ricerca_crud/templates/researchgroup_teacher.html:62
-msgid "Choosen teacher:"
-msgstr "Docente scelto"
-
 #: ricerca_crud/templates/dashboard.html:8 ricerca_crud/views.py:33
 #: ricerca_crud/views.py:45 ricerca_crud/views.py:109 ricerca_crud/views.py:179
-#: ricerca_crud/views.py:260
+#: ricerca_crud/views.py:260 ricerca_crud/views.py:304
+#: ricerca_crud/views.py:315 ricerca_crud/views.py:328
+#: ricerca_crud/views.py:375 ricerca_crud/views.py:446
+#: ricerca_crud/views.py:520 ricerca_crud/views.py:568
+#: ricerca_crud/views.py:653 ricerca_crud/views.py:697
+#: ricerca_crud/views.py:778 ricerca_crud/views.py:834
 msgid "Dashboard"
 msgstr ""
 
 #: ricerca_crud/templates/dashboard.html:19
 #: ricerca_crud/templates/researchgroups.html:14 ricerca_crud/views.py:34
 #: ricerca_crud/views.py:46 ricerca_crud/views.py:110 ricerca_crud/views.py:180
-#: ricerca_crud/views.py:261
+#: ricerca_crud/views.py:261 ricerca_crud/views.py:329
+#: ricerca_crud/views.py:779 ricerca_crud/views.py:835
 msgid "Research groups"
 msgstr "Gruppi di ricerca"
 
@@ -165,30 +313,23 @@ msgid "Manage groups and their teachers"
 msgstr "Gestisci i gruppi e i loro docenti"
 
 #: ricerca_crud/templates/dashboard.html:25
+#: ricerca_crud/templates/dashboard.html:50
+#: ricerca_crud/templates/dashboard.html:75
 msgid "Manage"
 msgstr "Gestisci"
+
+#: ricerca_crud/templates/dashboard.html:47
+#: ricerca_crud/templates/dashboard.html:72
+msgid "Manage lines and their teachers"
+msgstr "Gestisci le linee e i loro docenti"
 
 #: ricerca_crud/templates/includes/form_submit.html:12
 msgid "Submit"
 msgstr "Invia"
 
-#: ricerca_crud/templates/includes/form_submit.html:23
-#: ricerca_crud/templates/researchgroup.html:24
-#: ricerca_crud/templates/researchgroup.html:106
-#: ricerca_crud/templates/researchgroup_teacher.html:26
-msgid "Confirm"
-msgstr "Conferma"
-
 #: ricerca_crud/templates/includes/form_submit.html:36
 msgid "Do you want to confirm the entered data?"
 msgstr "Vuoi confermare i dati immessi?"
-
-#: ricerca_crud/templates/includes/form_submit.html:43
-#: ricerca_crud/templates/researchgroup.html:42
-#: ricerca_crud/templates/researchgroup.html:124
-#: ricerca_crud/templates/researchgroup_teacher.html:44
-msgid "Yes, proceed"
-msgstr "Si, procedi"
 
 #: ricerca_crud/templates/includes/vue_list.html:51
 msgid "results"
@@ -235,85 +376,47 @@ msgstr "Aggiornamenti di stato (log)"
 msgid "There isn't any log"
 msgstr "Nessun log presente"
 
-#: ricerca_crud/templates/researchgroup.html:13
-#: ricerca_crud/templates/researchgroup.html:93
-#: ricerca_crud/templates/researchgroup_teacher.html:15
-msgid "Remove"
-msgstr "Rimuovi"
-
-#: ricerca_crud/templates/researchgroup.html:37
-#: ricerca_crud/templates/researchgroup.html:119
-#: ricerca_crud/templates/researchgroup_teacher.html:39
-msgid "Do you want to delete choosen teacher?"
-msgstr "Vuoi davvero eliminare il docente selezionato?"
-
-#: ricerca_crud/templates/researchgroup.html:56
-msgid "Teachers"
-msgstr "Docenti"
-
-#: ricerca_crud/templates/researchgroup.html:63
-msgid "Code"
-msgstr "Codice"
-
 #: ricerca_crud/templates/researchgroup.html:64
 msgid "Structure"
 msgstr "Struttura"
-
-#: ricerca_crud/templates/researchgroup.html:65
-msgid "Start date"
-msgstr "Data inizio"
-
-#: ricerca_crud/templates/researchgroup.html:66
-msgid "End date"
-msgstr "Data fine"
-
-#: ricerca_crud/templates/researchgroup.html:138
-#: ricerca_crud/templates/researchgroups.html:11
-msgid "Add new"
-msgstr "Aggiungi nuovo"
 
 #: ricerca_crud/templates/researchgroup_new.html:8
 msgid "New research group"
 msgstr "Nuovo gruppo di ricerca"
 
 #: ricerca_crud/templates/researchgroup_new.html:13
+#: ricerca_crud/templates/researchline_new.html:13
 msgid "Choose one teacher"
 msgstr "Seleziona un docente"
 
-#: ricerca_crud/templates/researchgroup_new.html:24
-#: ricerca_crud/templates/researchgroup_teacher.html:66
-msgid "Choose a teacher to proceed"
-msgstr "Seleziona un docente per proseguire"
-
-#: ricerca_crud/templates/researchgroup_teacher.html:53
-msgid "Edit teacher for"
-msgstr "Modifica docente per"
-
-#: ricerca_crud/templates/researchgroup_teacher.html:53
-msgid "New teacher for"
-msgstr "Nuovo docente per"
+#: ricerca_crud/templates/researchline_new.html:8
+msgid "New research line"
+msgstr "Nuova linea di ricerca"
 
 #: ricerca_crud/templates/storage_crud_base.html:59
 msgid "Exit"
 msgstr "Esci"
 
-#: ricerca_crud/views.py:67
+#: ricerca_crud/views.py:67 ricerca_crud/views.py:350
 msgid "Research group edited successfully"
 msgstr "Gruppo di ricerca modificato con successo"
 
-#: ricerca_crud/views.py:97
+#: ricerca_crud/views.py:97 ricerca_crud/views.py:622 ricerca_crud/views.py:639
 msgid "Permission denied"
 msgstr "Permesso negato"
 
-#: ricerca_crud/views.py:102
+#: ricerca_crud/views.py:102 ricerca_crud/views.py:627
+#: ricerca_crud/views.py:644
 msgid "Research group removed successfully"
 msgstr "Gruppo di ricerca rimosso con successo"
 
-#: ricerca_crud/views.py:111
+#: ricerca_crud/views.py:111 ricerca_crud/views.py:377
+#: ricerca_crud/views.py:448
 msgid "New"
 msgstr "Nuovo"
 
-#: ricerca_crud/views.py:136
+#: ricerca_crud/views.py:136 ricerca_crud/views.py:402
+#: ricerca_crud/views.py:473
 msgid "Add a teacher belonging to your structure"
 msgstr "Aggiungi un docente afferente alla tua struttura"
 
@@ -321,25 +424,39 @@ msgstr "Aggiungi un docente afferente alla tua struttura"
 msgid "Research group created successfully"
 msgstr "Gruppo di ricerca creato con successo"
 
-#: ricerca_crud/views.py:182
+#: ricerca_crud/views.py:182 ricerca_crud/views.py:656
+#: ricerca_crud/views.py:700
 msgid "New teacher"
 msgstr "Nuovo docente"
 
-#: ricerca_crud/views.py:202
+#: ricerca_crud/views.py:202 ricerca_crud/views.py:676
+#: ricerca_crud/views.py:720
 msgid "Teacher added successfully"
 msgstr "Docente aggiunto con successo"
 
-#: ricerca_crud/views.py:252
+#: ricerca_crud/views.py:252 ricerca_crud/views.py:770
+#: ricerca_crud/views.py:826
 msgid "Teacher edited successfully"
 msgstr "Docente modificato con successo"
 
-#: ricerca_crud/views.py:285
+#: ricerca_crud/views.py:285 ricerca_crud/views.py:860
+#: ricerca_crud/views.py:885
 msgid "Permission denied. Only one teacher remains"
 msgstr "Permesso negato. Rimane solo un docente"
 
-#: ricerca_crud/views.py:295
+#: ricerca_crud/views.py:295 ricerca_crud/views.py:870
+#: ricerca_crud/views.py:895
 msgid "Teacher removed successfully"
 msgstr "Docente rimosso con successo"
 
-#~ msgid "Location"
-#~ msgstr "Località"
+#: ricerca_crud/views.py:424 ricerca_crud/views.py:495
+msgid "Research line created successfully"
+msgstr "Linea di ricerca creata con successo"
+
+#: ricerca_crud/views.py:542 ricerca_crud/views.py:590
+msgid "Research line edited successfully"
+msgstr "Linea di ricerca modificata con successo"
+
+#: ricerca_crud/views.py:654 ricerca_crud/views.py:698
+msgid "Research lines"
+msgstr "Linee di ricerca"

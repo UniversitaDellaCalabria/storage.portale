@@ -90,7 +90,6 @@ def can_edit_base_researchline(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
         rline = get_object_or_404(RicercaLineaBase, pk=original_kwargs['code'])
-        print(rline)
         teachers = RicercaDocenteLineaBase.objects.filter(ricerca_linea_base=rline)
         original_kwargs['rline'] = rline
         original_kwargs['teachers'] = teachers
