@@ -2419,6 +2419,31 @@ class ServicePersonale:
                 q["Functions"] = None
             else:
                 q["Functions"] = functions
+
+            ruoli = PersonaleAttivoTuttiRuoli.objects.filter(matricola__exact=q['matricola']).extra(
+                select={
+                    'Matricola': 'PERSONALE_ATTIVO_TUTTI_RUOLI.MATRICOLA',
+                    'CdRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
+                    'DsRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_RUOLO',
+                    'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA'},
+                tables=['PERSONALE_PRIORITA_RUOLO'],
+                where=[
+                    'PERSONALE_PRIORITA_RUOLO.CD_RUOLO=PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
+                ])
+            ruoli = ruoli.values(
+                'CdRuolo',
+                'DsRuolo',
+                'Priorita'
+            ).order_by('Priorita')
+
+            ruoli = list(ruoli)
+
+            if len(ruoli) == 0:
+                q["Roles"] = None
+            else:
+                q["Roles"] = ruoli
+
+
         return query
 
     @staticmethod
