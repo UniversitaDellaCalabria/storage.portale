@@ -1065,6 +1065,8 @@ class PersonaleSerializer(CreateUpdateAbstract):
                 'Role': q['CdRuolo'],
                 'RoleDescription': q['DsRuolo'],
                 'Priority': q['Priorita'],
+                'StructureCod': q['CodStruttura'],
+                'StructureName': q['Struttura'],
             })
         return roles
 

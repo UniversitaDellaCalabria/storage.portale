@@ -1910,7 +1910,6 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
 
         # GET
         res = req.get(url)
-        print(res.json())
         assert len(res.json()['results']) == 1
 
 
