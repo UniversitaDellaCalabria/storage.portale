@@ -2424,7 +2424,9 @@ class ServicePersonale:
                     'Matricola': 'PERSONALE_ATTIVO_TUTTI_RUOLI.MATRICOLA',
                     'CdRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
                     'DsRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_RUOLO',
-                    'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA'},
+                    'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA',
+                    'Struttura': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_AFF_ORG',
+                    'CodStruttura': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_UO_AFF_ORG'},
                 tables=['PERSONALE_PRIORITA_RUOLO'],
                 where=[
                     'PERSONALE_PRIORITA_RUOLO.CD_RUOLO=PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
@@ -2432,7 +2434,9 @@ class ServicePersonale:
             ruoli = ruoli.values(
                 'CdRuolo',
                 'DsRuolo',
-                'Priorita'
+                'Priorita',
+                'Struttura',
+                'CodStruttura'
             ).order_by('Priorita')
 
             ruoli = list(ruoli)
