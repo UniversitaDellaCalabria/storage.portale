@@ -1693,6 +1693,7 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'cd_uo_aff_org': u1,
             'ds_aff_org': 'Direzione'
         })
+
         PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
             'cd_ruolo': 'PO',
             'priorita': 1,
