@@ -70,13 +70,11 @@ def can_manage_researchlines(func_to_decorate):
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        if request.user.is_superuser:
-            return func_to_decorate(*original_args, **original_kwargs)
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
                                                                           office__name=OFFICE_RESEARCHLINES,
                                                                           office__is_active=True,
                                                                           office__organizational_structure__is_active=True)
-        if not my_offices:
+        if not my_offices and not request.user.is_superuser:
             raise Exception("Permission denied")
         original_kwargs['my_offices'] = my_offices
         return func_to_decorate(*original_args, **original_kwargs)
@@ -104,7 +102,7 @@ def can_edit_base_researchline(func_to_decorate):
         for myoffice in original_kwargs['my_offices']:
             if myoffice.office.organizational_structure.unique_code not in departments:
                 departments.append(myoffice.office.organizational_structure.unique_code)
-        now = timezone.localtime().date
+        now = date.today()
         for teacher in teachers:
             if teacher.personale.sede in departments and teacher.dt_inizio<=now and teacher.dt_fine>=now:
                 return func_to_decorate(*original_args, **original_kwargs)
@@ -133,7 +131,7 @@ def can_edit_applied_researchline(func_to_decorate):
         for myoffice in original_kwargs['my_offices']:
             if myoffice.office.organizational_structure.unique_code not in departments:
                 departments.append(myoffice.office.organizational_structure.unique_code)
-        now = timezone.localtime().date
+        now = date.today()
         for teacher in teachers:
             if teacher.personale.sede in departments and teacher.dt_inizio<=now and teacher.dt_fine>=now:
                 return func_to_decorate(*original_args, **original_kwargs)
