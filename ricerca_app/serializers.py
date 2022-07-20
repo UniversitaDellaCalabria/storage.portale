@@ -1024,8 +1024,6 @@ class PersonaleSerializer(CreateUpdateAbstract):
             'Name': full_name,
             'ID': encrypt(query['matricola']),
             'Roles': roles,
-            'StructureTypeName': query['TipologiaStrutturaNome'],
-            'StructureTypeCOD': query['TipologiaStrutturaCod'],
             'OfficeReference': query['Riferimento Ufficio'],
             'Email': query['Posta Elettronica'],
             'PEC': query['POSTA ELETTRONICA CERTIFICATA'],
