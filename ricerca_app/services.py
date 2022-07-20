@@ -2115,10 +2115,10 @@ class ServicePersonale:
             "nome",
             "middle_name",
             "cognome",
-            "cd_uo_aff_org",
-            'cd_uo_aff_org__denominazione',
-            'cd_uo_aff_org__cd_tipo_nodo',
-            'cd_uo_aff_org__ds_tipo_nodo',
+            # "cd_uo_aff_org",
+            # 'cd_uo_aff_org__denominazione',
+            # 'cd_uo_aff_org__cd_tipo_nodo',
+            # 'cd_uo_aff_org__ds_tipo_nodo',
             "id_ab",
             "matricola",
             'personalecontatti__cd_tipo_cont__descr_contatto',
@@ -2130,9 +2130,6 @@ class ServicePersonale:
             'ds_profilo_breve'
         ).order_by('cognome', 'nome')
 
-        if structuretypes is not None:
-            structuretypes = structuretypes.split(",")
-            query = query.filter(cd_uo_aff_org__cd_tipo_nodo__in=structuretypes)
 
         contacts_to_take = [
             'Posta Elettronica',
@@ -2174,11 +2171,11 @@ class ServicePersonale:
                     'nome': q['nome'],
                     'middle_name': q['middle_name'],
                     'cognome': q['cognome'],
-                    'cd_uo_aff_org': q['cd_uo_aff_org'],
+                    # 'cd_uo_aff_org': q['cd_uo_aff_org'],
                     'matricola': q['matricola'],
-                    'Struttura': q['cd_uo_aff_org__denominazione'],
-                    'TipologiaStrutturaCod': q['cd_uo_aff_org__cd_tipo_nodo'],
-                    'TipologiaStrutturaNome': q['cd_uo_aff_org__ds_tipo_nodo'],
+                    # 'Struttura': q['cd_uo_aff_org__denominazione'],
+                    # 'TipologiaStrutturaCod': q['cd_uo_aff_org__cd_tipo_nodo'],
+                    # 'TipologiaStrutturaNome': q['cd_uo_aff_org__ds_tipo_nodo'],
                     'fl_docente': q['fl_docente'],
                     'profilo': q['profilo'],
                     'ds_profilo': q['ds_profilo'],
@@ -2196,6 +2193,7 @@ class ServicePersonale:
             if last_id == -1 or last_id != q['id_ab']:
                 last_id = q['id_ab']
                 roles = []
+
                 for r in ruoli:
                     if r[0] == q['matricola']:
                         roles.append({'matricola': r[0],
@@ -2208,6 +2206,11 @@ class ServicePersonale:
                 roles.sort(key=lambda x: x['priorita'])
                 grouped[q['id_ab']]['Roles'] = roles
                 final_query.append(grouped[q['id_ab']])
+
+        if structuretypes is not None:
+            structuretypes = structuretypes.split(",")
+        # query = query.filter(cd_uo_aff_org__cd_tipo_nodo__in=structuretypes)
+
 
         if phone or role:
             filtered = []
