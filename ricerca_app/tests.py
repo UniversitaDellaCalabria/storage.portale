@@ -27,7 +27,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
-    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest
+    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -1679,10 +1679,23 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '2',
             'uo_padre': '1',
+            'cd_tipo_nodo': 'DRZ',
+            'ds_tipo_nodo': 'Direzione'
         })
         u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '3',
             'uo_padre': '2',
+        })
+        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
+            'matricola': '111114',
+            'cd_ruolo': 'PO',
+            'ds_ruolo': 'Professore Ordinario',
+            'cd_uo_aff_org': '2',
+            'ds_aff_org': 'Direzione'
+        })
+        PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
+            'cd_ruolo': 'PO',
+            'priorita': 1,
         })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
@@ -1775,14 +1788,13 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'id': 3,
             'nome': 'Zlatan',
             'cognome': 'Ibra',
-            'cd_ruolo': 'PO',
-            'ds_ruolo_locale': 'Professore Ordinario',
             'id_ab': 3,
             'matricola': '111114',
             'fl_docente': 1,
             'flg_cessato': 0,
-            'cd_uo_aff_org': None,
             'cod_fis': 'ZLT',
+            "cd_uo_aff_org": u2,
+            'dt_rap_fin': '2222-02-02'
         })
         DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
@@ -1898,9 +1910,9 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
 
         # GET
         res = req.get(url)
+        print(res.json())
         assert len(res.json()['results']) == 1
-        assert res.json()[
-            'results'][0]['Role'] == 'PO'
+
 
         data = {'structure': '99', 'lang': 'it'}
         res = req.get(url, data=data)
@@ -1926,13 +1938,17 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
+        data = {'phone': '999', 'role': 'PO'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
         data = {'structuretree': '1'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 0
+        assert len(res.json()['results']) == 1
 
         data = {'structuretree': '2'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 0
+        assert len(res.json()['results']) == 1
 
 
 class ApiStructuresListUnitTest(TestCase):
