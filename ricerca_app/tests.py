@@ -1690,7 +1690,7 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'matricola': '111114',
             'cd_ruolo': 'PO',
             'ds_ruolo': 'Professore Ordinario',
-            'cd_uo_aff_org': '2',
+            'cd_uo_aff_org': u1,
             'ds_aff_org': 'Direzione'
         })
         PersonalePrioritaRuoloUnitTest.create_personalePrioritaRuolo(**{
