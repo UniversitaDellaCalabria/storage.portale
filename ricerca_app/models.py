@@ -2638,7 +2638,7 @@ class PersonaleAttivoTuttiRuoli(models.Model):
     ds_tipo_ruolo = models.CharField(db_column='DS_TIPO_RUOLO', max_length=80, blank=True, null=True)  # Field name made lowercase.
     cd_inquadr = models.CharField(db_column='CD_INQUADR', max_length=50, blank=True, null=True)  # Field name made lowercase.
     ds_inquadr = models.CharField(db_column='DS_INQUADR', max_length=80, blank=True, null=True)  # Field name made lowercase.
-    cd_uo_aff_org = models.CharField(db_column='CD_UO_AFF_ORG', max_length=6, blank=True, null=True)  # Field name made lowercase.
+    cd_uo_aff_org = models.ForeignKey('UnitaOrganizzativa', models.DO_NOTHING, db_column='CD_UO_AFF_ORG', blank=True,null=True)  # Field name made lowercase.
     ds_aff_org = models.CharField(db_column='DS_AFF_ORG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     ds_aff_org_breve = models.CharField(db_column='DS_AFF_ORG_BREVE', max_length=50, blank=True, null=True)  # Field name made lowercase.
     fl_tipo_rap = models.FloatField(db_column='FL_TIPO_RAP', blank=True, null=True)  # Field name made lowercase.
