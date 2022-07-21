@@ -1938,7 +1938,23 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
+        data = {'phone': '999', 'role': 'PO', 'structuretypes': 'DRZ'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'role': 'PO', 'structuretypes': 'DRZ'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'phone': '999', 'structuretypes': 'DRZ'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
         data = {'phone': '999', 'role': 'PO'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'structuretypes': 'DRZ'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
