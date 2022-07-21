@@ -2164,6 +2164,7 @@ class ServicePersonale:
         for p in priorita_tmp:
             priorita.update({p['cd_ruolo']: p['priorita']})
 
+
         for q in query:
             if q['id_ab'] not in grouped:
                 grouped[q['id_ab']] = {
