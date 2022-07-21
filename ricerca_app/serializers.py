@@ -991,7 +991,8 @@ class AddressbookSerializer(CreateUpdateAbstract):
                 'RoleDescription': q['ds_ruolo'],
                 'Priority': q['priorita'],
                 'StructureCod': q['cd_uo_aff_org'],
-                'Structure': q['ds_aff_org']
+                'Structure': q['ds_aff_org'],
+                'StructureTypeCOD': q['cd_tipo_nodo']
             })
         return roles
 

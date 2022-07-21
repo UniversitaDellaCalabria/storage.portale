@@ -2150,7 +2150,8 @@ class ServicePersonale:
             'cd_ruolo',
             'ds_ruolo',
             'cd_uo_aff_org',
-            'ds_aff_org'
+            'ds_aff_org',
+            'cd_uo_aff_org__cd_tipo_nodo'
         ).distinct()
 
         priorita_tmp = PersonalePrioritaRuolo.objects.values(
@@ -2201,24 +2202,26 @@ class ServicePersonale:
                                       'priorita': priorita[r[1]],
                                       'cd_uo_aff_org': r[3],
                                       'ds_aff_org': r[4],
+                                      'cd_tipo_nodo': r[5]
                                       })
                 roles.sort(key=lambda x: x['priorita'])
                 grouped[q['id_ab']]['Roles'] = roles
                 final_query.append(grouped[q['id_ab']])
 
-        if structuretypes is not None:
-            structuretypes = structuretypes.split(",")
-        # query = query.filter(cd_uo_aff_org__cd_tipo_nodo__in=structuretypes)
 
-
-        if phone or role:
+        if phone or role or structuretypes:
             filtered = []
-            if phone and role:
+            if phone and role and structuretypes:
                 filtered1 = []
                 filtered2 = []
+                filtered3 = []
+
                 roles = []
                 for k in role.split(","):
                     roles.append(k)
+                s = []
+                for k in structuretypes.split(","):
+                    s.append(k)
                 for item in final_query:
                     final_roles = []
                     if item['Roles'] and len(item['Roles']) != 0:
@@ -2231,9 +2234,96 @@ class ServicePersonale:
                     if any(phone in string for string in numbers):
                         filtered2.append(item)
 
+                    final_structures = []
+                    if item['Roles'] and len(item['Roles']) != 0:
+                        for r in item['Roles']:
+                            final_structures.append(r['cd_tipo_nodo'])
+                    if (set(s).intersection(set(final_structures))):
+                        filtered3.append(item)
+
+
+                filtered = [value for value in filtered1 if value in filtered2 and filtered3]
+
+                return filtered
+
+            if phone and role :
+                filtered1 = []
+                filtered2 = []
+
+                roles = []
+                for k in role.split(","):
+                    roles.append(k)
+
+                for item in final_query:
+                    final_roles = []
+                    if item['Roles'] and len(item['Roles']) != 0:
+                        for r in item['Roles']:
+                            final_roles.append(r['cd_ruolo'])
+                    if (set(roles).intersection(set(final_roles))):
+                        filtered1.append(item)
+
+                    numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
+                    if any(phone in string for string in numbers):
+                        filtered2.append(item)
+
+
                 filtered = [value for value in filtered1 if value in filtered2]
 
                 return filtered
+            if phone and structuretypes:
+                filtered2 = []
+                filtered3 = []
+
+
+                s = []
+                for k in structuretypes.split(","):
+                    s.append(k)
+                for item in final_query:
+
+                    numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
+                    if any(phone in string for string in numbers):
+                        filtered2.append(item)
+
+                    final_structures = []
+                    if item['Roles'] and len(item['Roles']) != 0:
+                        for r in item['Roles']:
+                            final_structures.append(r['cd_tipo_nodo'])
+                    if (set(s).intersection(set(final_structures))):
+                        filtered3.append(item)
+
+                filtered = [value for value in filtered2 if value in filtered3]
+
+                return filtered
+
+            if role and structuretypes:
+                filtered1 = []
+                filtered3 = []
+
+                roles = []
+                for k in role.split(","):
+                    roles.append(k)
+                s = []
+                for k in structuretypes.split(","):
+                    s.append(k)
+                for item in final_query:
+                    final_roles = []
+                    if item['Roles'] and len(item['Roles']) != 0:
+                        for r in item['Roles']:
+                            final_roles.append(r['cd_ruolo'])
+                    if (set(roles).intersection(set(final_roles))):
+                        filtered1.append(item)
+
+                    final_structures = []
+                    if item['Roles'] and len(item['Roles']) != 0:
+                        for r in item['Roles']:
+                            final_structures.append(r['cd_tipo_nodo'])
+                    if (set(s).intersection(set(final_structures))):
+                        filtered3.append(item)
+
+                filtered = [value for value in filtered1 if value in filtered3]
+
+                return filtered
+
             if phone:
                 for item in final_query:
                     numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
@@ -2252,6 +2342,20 @@ class ServicePersonale:
                         for r in item['Roles']:
                             final_roles.append(r['cd_ruolo'])
                     if (set(roles).intersection(set(final_roles))):
+                        filtered.append(item)
+                return filtered
+
+            if structuretypes:
+                s = []
+                for k in structuretypes.split(","):
+                    s.append(k)
+                filtered = []
+                for item in final_query:
+                    final_structures = []
+                    if item['Roles'] and len(item['Roles']) != 0:
+                        for r in item['Roles']:
+                            final_structures.append(r['cd_tipo_nodo'])
+                    if (set(s).intersection(set(final_structures))):
                         filtered.append(item)
                 return filtered
 
