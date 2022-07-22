@@ -1016,7 +1016,7 @@ class PersonaleSerializer(CreateUpdateAbstract):
                 query["Functions"])
         roles = None
         if query["Roles"] is not None:
-            roles = PersonaleSerializer.to_dict_roles(
+            roles = AddressbookSerializer.to_dict_roles(
                 query["Roles"])
         return {
             'Name': full_name,
@@ -1050,20 +1050,6 @@ class PersonaleSerializer(CreateUpdateAbstract):
                 'StructureName': q['cd_csa__denominazione'],
             })
         return functions
-
-    @staticmethod
-    def to_dict_roles(query):
-        roles = []
-        for q in query:
-            roles.append({
-                'Role': q['cd_ruolo'],
-                'RoleDescription': q['ds_ruolo'],
-                'Priority': q['priorita'],
-                'StructureCod': q['cd_uo_aff_org'],
-                'Structure': q['ds_aff_org'],
-                'StructureTypeCOD': q['cd_tipo_nodo']
-            })
-        return roles
 
 
 class StructuresSerializer(CreateUpdateAbstract):

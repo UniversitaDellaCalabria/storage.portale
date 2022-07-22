@@ -2551,6 +2551,7 @@ class ServicePersonale:
         roles.sort(key=lambda x: x['priorita'])
 
 
+
         for q in query:
             for c in contacts_to_take:
                 q[c] = []
@@ -2562,6 +2563,11 @@ class ServicePersonale:
                 q["Functions"] = None
             else:
                 q["Functions"] = functions
+
+            if len(roles) == 0:
+                q["Roles"] = []
+            else:
+                q["Roles"] = roles
 
 
         return query
