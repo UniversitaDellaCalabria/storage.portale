@@ -2193,6 +2193,7 @@ class ServicePersonale:
 
             if last_id == -1 or last_id != q['id_ab']:
                 last_id = q['id_ab']
+
                 roles = []
 
                 for r in ruoli:
@@ -2515,6 +2516,41 @@ class ServicePersonale:
             'ds_profilo',
             'ds_profilo_breve'
         )
+
+        ruoli = PersonaleAttivoTuttiRuoli.objects.filter(matricola=personale_id).values_list(
+            'matricola',
+            'cd_ruolo',
+            'ds_ruolo',
+            'cd_uo_aff_org',
+            'ds_aff_org',
+            'cd_uo_aff_org__cd_tipo_nodo'
+        ).distinct()
+
+        priorita_tmp = PersonalePrioritaRuolo.objects.values(
+            'cd_ruolo',
+            'priorita'
+        )
+
+
+        priorita = {}
+
+        for p in priorita_tmp:
+            priorita.update({p['cd_ruolo']: p['priorita']})
+
+        roles = []
+
+        for r in ruoli:
+                roles.append({'matricola': r[0],
+                              'cd_ruolo': r[1],
+                              'ds_ruolo': r[2],
+                              'priorita': priorita[r[1]],
+                              'cd_uo_aff_org': r[3],
+                              'ds_aff_org': r[4],
+                              'cd_tipo_nodo': r[5]
+                              })
+        roles.sort(key=lambda x: x['priorita'])
+
+
         for q in query:
             for c in contacts_to_take:
                 q[c] = []
@@ -2526,33 +2562,6 @@ class ServicePersonale:
                 q["Functions"] = None
             else:
                 q["Functions"] = functions
-
-            ruoli = PersonaleAttivoTuttiRuoli.objects.filter(matricola__exact=q['matricola']).extra(
-                select={
-                    'Matricola': 'PERSONALE_ATTIVO_TUTTI_RUOLI.MATRICOLA',
-                    'CdRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-                    'DsRuolo': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_RUOLO',
-                    'Priorita': 'PERSONALE_PRIORITA_RUOLO.PRIORITA',
-                    'Struttura': 'PERSONALE_ATTIVO_TUTTI_RUOLI.DS_AFF_ORG',
-                    'CodStruttura': 'PERSONALE_ATTIVO_TUTTI_RUOLI.CD_UO_AFF_ORG'},
-                tables=['PERSONALE_PRIORITA_RUOLO'],
-                where=[
-                    'PERSONALE_PRIORITA_RUOLO.CD_RUOLO=PERSONALE_ATTIVO_TUTTI_RUOLI.CD_RUOLO',
-                ])
-            ruoli = ruoli.values(
-                'CdRuolo',
-                'DsRuolo',
-                'Priorita',
-                'Struttura',
-                'CodStruttura'
-            ).order_by('Priorita')
-
-            ruoli = list(ruoli)
-
-            if len(ruoli) == 0:
-                q["Roles"] = None
-            else:
-                q["Roles"] = ruoli
 
 
         return query

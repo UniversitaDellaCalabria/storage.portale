@@ -1056,11 +1056,12 @@ class PersonaleSerializer(CreateUpdateAbstract):
         roles = []
         for q in query:
             roles.append({
-                'Role': q['CdRuolo'],
-                'RoleDescription': q['DsRuolo'],
-                'Priority': q['Priorita'],
-                'StructureCod': q['CodStruttura'],
-                'StructureName': q['Struttura'],
+                'Role': q['cd_ruolo'],
+                'RoleDescription': q['ds_ruolo'],
+                'Priority': q['priorita'],
+                'StructureCod': q['cd_uo_aff_org'],
+                'Structure': q['ds_aff_org'],
+                'StructureTypeCOD': q['cd_tipo_nodo']
             })
         return roles
 
