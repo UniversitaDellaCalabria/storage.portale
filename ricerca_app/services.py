@@ -2229,6 +2229,7 @@ class ServicePersonale:
                     if item['Roles'] and len(item['Roles']) != 0:
                         for r in item['Roles']:
                             final_roles.append(r['cd_ruolo'])
+                    final_roles.append(item['profilo'])
                     if (set(roles).intersection(set(final_roles))):
                         filtered1.append(item)
 
@@ -2261,6 +2262,7 @@ class ServicePersonale:
                     if item['Roles'] and len(item['Roles']) != 0:
                         for r in item['Roles']:
                             final_roles.append(r['cd_ruolo'])
+                    final_roles.append(item['profilo'])
                     if (set(roles).intersection(set(final_roles))):
                         filtered1.append(item)
 
@@ -2312,6 +2314,7 @@ class ServicePersonale:
                     if item['Roles'] and len(item['Roles']) != 0:
                         for r in item['Roles']:
                             final_roles.append(r['cd_ruolo'])
+                    final_roles.append(item['profilo'])
                     if (set(roles).intersection(set(final_roles))):
                         filtered1.append(item)
 
@@ -2343,6 +2346,7 @@ class ServicePersonale:
                     if item['Roles'] and len(item['Roles']) != 0:
                         for r in item['Roles']:
                             final_roles.append(r['cd_ruolo'])
+                    final_roles.append(item['profilo'])
                     if (set(roles).intersection(set(final_roles))):
                         filtered.append(item)
                 return filtered
