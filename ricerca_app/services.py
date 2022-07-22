@@ -3517,12 +3517,14 @@ class ServiceStructure:
         child = UnitaOrganizzativa.objects.filter(
             uo_padre=structureid).values_list("uo", flat=True)
 
-        result = []
+        result = [structureid]
+
 
         for c in child:
 
             structures_tree = ServiceStructure.getStructureChilds(c)
             result.extend(structures_tree)
+
         result.extend(child)
 
         return result
