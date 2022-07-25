@@ -532,6 +532,7 @@ LABEL_MAPPING = {
         'Context': 'Context',
         'Priority': 'Priority',
         'ContextDescription': 'Context Description',
+        'OfficeBuilding': 'Office Building'
 
     },
     'it': {
@@ -947,6 +948,7 @@ LABEL_MAPPING = {
         'Context': 'Inquadramento',
         'Priority': 'Priorità',
         'ContextDescription': 'Descrizione Inquadramento',
+        'OfficeBuilding': 'Edificio'
     }
 }
 

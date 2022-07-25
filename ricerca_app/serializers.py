@@ -43,6 +43,7 @@ class CdSSerializer(CreateUpdateAbstract):
         erogation_mode = None
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
+
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'CdSId': query['cds_id'],
@@ -84,6 +85,7 @@ class CdSSerializer(CreateUpdateAbstract):
             })
         return data
 
+
     @staticmethod
     def to_dict_offices_data(query):
         data = []
@@ -91,13 +93,14 @@ class CdSSerializer(CreateUpdateAbstract):
             data.append({
                 'Order': q['ordine'],
                 'OfficeName': q['nome_ufficio'],
+                'OfficeBuilding': q['edificio'],
+                'Floor': q['piano'],
                 'OfficeDirector': encrypt(q['matricola_riferimento']),
                 'OfficeDirectorName': q['nome_origine_riferimento'],
                 'TelOffice': q['telefono'],
                 'Email': q['email'],
-                'Floor': q['piano'],
                 'Timetables': q['orari'],
-                'OnlineCounter': q['sportello_online']
+                'OnlineCounter': q['sportello_online'],
             })
         return data
 
