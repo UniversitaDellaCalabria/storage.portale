@@ -974,6 +974,8 @@ class DidatticaCopertura(InsModAbstract):
         db_column='COPER_PESO', blank=True, null=True)
     # Field name made lowercase.
     ore = models.PositiveIntegerField(db_column='ORE', blank=True, null=True)
+    stato_coper_cod = models.CharField(db_column='STATO_COPER_COD', max_length=10, blank=True,null=True)  # Field name made lowercase.
+    stato_coper_des = models.CharField(db_column='STATO_COPER_DES', max_length=100, blank=True,null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
