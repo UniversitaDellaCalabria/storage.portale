@@ -759,11 +759,6 @@ class ServiceDidatticaAttivitaFormativa:
             'didatticacopertura__coper_peso'
         )
 
-        query2 = DidatticaCopertura.objects.filter(~(Q(stato_coper_cod='R'))).values_list()
-
-        query = (set(query).intersection(set(query2)))
-
-
         id_master = None
         mutuata_da = None
         if not query: raise Http404
@@ -823,7 +818,7 @@ class ServiceDidatticaAttivitaFormativa:
         )
         query = list(query)
 
-        query[0]['Hours'] = DidatticaCoperturaDettaglioOre.objects.filter(coper_id__af_id=af_id).values(
+        query[0]['Hours'] = DidatticaCoperturaDettaglioOre.objects.filter(~Q(coper_id__stato_coper_cod='R'),coper_id__af_id=af_id).values(
             'tipo_att_did_cod',
             'ore',
             'coper_id__personale_id__matricola',
