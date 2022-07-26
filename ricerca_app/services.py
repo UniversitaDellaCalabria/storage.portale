@@ -2139,7 +2139,7 @@ class ServicePersonale:
         last_id = -1
         final_query = []
 
-        ruoli = PersonaleAttivoTuttiRuoli.objects.values_list(
+        ruoli = PersonaleAttivoTuttiRuoli.objects.values(
             'matricola',
             'cd_ruolo',
             'ds_ruolo',
@@ -2147,6 +2147,16 @@ class ServicePersonale:
             'ds_aff_org',
             'cd_uo_aff_org__cd_tipo_nodo'
         ).distinct()
+
+        ruoli_dict = {}
+        for r in ruoli:
+            if not ruoli_dict.get(r['matricola']):
+                ruoli_dict[r['matricola']] = []
+            ruoli_dict[r['matricola']].append([r['cd_ruolo'],
+                                               r['ds_ruolo'],
+                                               r['cd_uo_aff_org'],
+                                               r['ds_aff_org'],
+                                               r['cd_uo_aff_org__cd_tipo_nodo']])
 
         priorita_tmp = PersonalePrioritaRuolo.objects.values(
             'cd_ruolo',
@@ -2188,18 +2198,18 @@ class ServicePersonale:
             if last_id == -1 or last_id != q['id_ab']:
                 last_id = q['id_ab']
 
+                ruoli_dip = ruoli_dict.get(q['matricola']) or []
                 roles = []
+                for r in ruoli_dip:
+                    roles.append({'matricola': q['matricola'],
+                                  'cd_ruolo': r[0],
+                                  'ds_ruolo': r[1],
+                                  'priorita': priorita[r[0]],
+                                  'cd_uo_aff_org': r[2],
+                                  'ds_aff_org': r[3],
+                                  'cd_tipo_nodo': r[4]
+                                  })
 
-                for r in ruoli:
-                    if r[0] == q['matricola']:
-                        roles.append({'matricola': r[0],
-                                      'cd_ruolo': r[1],
-                                      'ds_ruolo': r[2],
-                                      'priorita': priorita[r[1]],
-                                      'cd_uo_aff_org': r[3],
-                                      'ds_aff_org': r[4],
-                                      'cd_tipo_nodo': r[5]
-                                      })
                 roles.sort(key=lambda x: x['priorita'])
                 grouped[q['id_ab']]['Roles'] = roles
                 final_query.append(grouped[q['id_ab']])
