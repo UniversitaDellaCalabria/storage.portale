@@ -2744,7 +2744,7 @@ class ServicePersonale:
         return query
 
     @staticmethod
-    def getStructurePersonnelChild(structures_tree, structureid=None):
+    def getStructurePersonnelChild(structures_tree, structureid=None): # pragma: no cover
         child_structures = UnitaOrganizzativa.objects.filter(
             uo_padre=structureid).values("uo")
 
