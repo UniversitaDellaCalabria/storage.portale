@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-19 09:25+0200\n"
-"PO-Revision-Date: 2022-07-19 09:25+0200\n"
+"POT-Creation-Date: 2022-07-27 09:15+0200\n"
+"PO-Revision-Date: 2022-07-27 09:16+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -102,7 +102,11 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
-#: ricerca_crud/forms.py:21 ricerca_crud/forms.py:53 ricerca_crud/forms.py:64
+#: ricerca_crud/forms.py:17 ricerca_crud/forms.py:19
+msgid "Start date is greater than end date"
+msgstr "La data di inizio è successiva alla data di fine"
+
+#: ricerca_crud/forms.py:33 ricerca_crud/forms.py:70 ricerca_crud/forms.py:86
 msgid "Teacher"
 msgstr "Docente"
 

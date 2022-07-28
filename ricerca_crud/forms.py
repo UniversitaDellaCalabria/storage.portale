@@ -7,6 +7,18 @@ from bootstrap_italia_template.widgets import BootstrapItaliaDateWidget
 from ricerca_app.models import *
 
 
+# common methods
+def _clean_teacher_dates(obj, cleaned_data):
+    dt_inizio = cleaned_data.get('dt_inizio')
+    dt_fine = cleaned_data.get('dt_fine')
+
+    if dt_inizio and dt_fine and dt_inizio > dt_fine:
+        obj.add_error('dt_inizio',
+                      _("Start date is greater than end date"))
+        obj.add_error('dt_fine',
+                      _("Start date is greater than end date"))
+# end common methods
+
 class RicercaGruppoForm(forms.ModelForm):
     class Meta:
         model = RicercaGruppo
@@ -21,6 +33,11 @@ class RicercaGruppoDocenteForm(forms.ModelForm):
     choosen_teacher = forms.CharField(label=_('Teacher'),
                                       widget = forms.HiddenInput(),
                                       required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
     class Meta:
         model = RicercaDocenteGruppo
         fields = ['dt_inizio', 'dt_fine']
@@ -53,6 +70,11 @@ class RicercaDocenteLineaBaseForm(forms.ModelForm):
     choosen_teacher = forms.CharField(label=_('Teacher'),
                                       widget = forms.HiddenInput(),
                                       required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
     class Meta:
         model = RicercaDocenteLineaBase
         fields = ['dt_inizio', 'dt_fine']
@@ -64,6 +86,10 @@ class RicercaDocenteLineaApplicataForm(forms.ModelForm):
     choosen_teacher = forms.CharField(label=_('Teacher'),
                                       widget = forms.HiddenInput(),
                                       required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
 
     class Meta:
         model = RicercaDocenteLineaBase
