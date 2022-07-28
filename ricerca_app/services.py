@@ -793,7 +793,11 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'ciclo_des',
             'regdid__regdid_id',
-            'didatticacopertura__coper_peso'
+            'didatticacopertura__coper_peso',
+            'cds__cds_cod',
+            'cds__cds_id',
+            'pds_cod',
+            'pds_des',
         )
 
         id_radice = query.first()['af_radice_id']
@@ -806,7 +810,11 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'ciclo_des',
             'regdid__regdid_id',
-            'didatticacopertura__coper_peso'
+            'didatticacopertura__coper_peso',
+            'cds__cds_cod',
+            'cds__cds_id',
+            'pds_cod',
+            'pds_des',
         )
         if len(activity_root) == 0:
             activity_root = None
