@@ -410,6 +410,8 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityCdSID': query['cds__cds_id'],
             'StudyActivityCdSCod': query['cds__cds_cod'],
             'StudyActivityRegDidId': query['regdid__regdid_id'],
+            'StudyActivityPdsCod': query['pds_cod'],
+            'StudyActivityPdsDes': query['pds_des'],
             'StudyActivityYear': query['anno_corso'],
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityECTS': query['peso'],
@@ -484,6 +486,11 @@ class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityRegDidId': query['regdid__regdid_id'],
+            'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityCdSCod': query['cds__cds_cod'],
+            'StudyActivityPdsCod': query['pds_cod'],
+            'StudyActivityPdsDes': query['pds_des'],
+
         }
 
 

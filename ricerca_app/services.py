@@ -741,6 +741,8 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'cds__cds_cod',
             'cds__cds_id',
+            'pds_cod',
+            'pds_des',
             'regdid__regdid_id',
             'anno_corso',
             'ciclo_des',
@@ -771,11 +773,16 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_id',
                 'af_gen_cod',
                 'des',
+                'cds__cds_cod',
+                'cds__cds_id',
+                'pds_cod',
+                'pds_des',
                 'af_gen_des_eng',
                 'ciclo_des',
                 'regdid__regdid_id',
                 'didatticacopertura__coper_peso'
             ).first()
+
 
         attivita_mutuate_da_questa = DidatticaAttivitaFormativa.objects.filter(
             af_master_id=af_id, mutuata_flg=1) .exclude(
@@ -820,15 +827,28 @@ class ServiceDidatticaAttivitaFormativa:
         )
         query = list(query)
 
-        query[0]['Hours'] = DidatticaCoperturaDettaglioOre.objects.filter(~Q(coper_id__stato_coper_cod='R'),coper_id__af_id=af_id).values(
+        filtered_hours = DidatticaCoperturaDettaglioOre.objects.filter(~Q(coper_id__stato_coper_cod='R'),coper_id__af_id=af_id).values(
             'tipo_att_did_cod',
             'ore',
             'coper_id__personale_id__matricola',
             'coper_id__personale_id__nome',
             'coper_id__personale_id__cognome',
             'coper_id__personale_id__middle_name',
-            'coper_id__personale_id__flg_cessato'
+            'coper_id__personale_id__flg_cessato',
+            'coper_id'
         )
+        filtered_hours = list(filtered_hours)
+
+        for hour in filtered_hours:
+            for hour2 in filtered_hours:
+                if hour['tipo_att_did_cod'] == hour2['tipo_att_did_cod'] and hour['coper_id__personale_id__matricola'] == hour2['coper_id__personale_id__matricola'] and hour['coper_id'] != hour2['coper_id']:
+                    hour['ore'] = hour['ore'] + hour2['ore']
+                    filtered_hours.remove(hour2)
+
+
+
+        query[0]['Hours'] = filtered_hours
+
 
         query[0]['Modalities'] = DidatticaAttivitaFormativaModalita.objects.filter(af_id=af_id).values(
             'mod_did_af_id',
