@@ -721,11 +721,13 @@ class ServiceDidatticaAttivitaFormativa:
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
             af_radice_id=af_id).exclude(
-            af_id=af_id).values(
+            af_id=af_id
+        ).values(
             'af_id',
             'af_gen_cod',
             'des',
             'af_gen_des_eng',
+            'fat_part_stu_cod',
             'ciclo_des',
             'matricola_resp_did')
 
@@ -867,6 +869,7 @@ class ServiceDidatticaAttivitaFormativa:
             'testo_af_eng')
 
         query[0]['MODULES'] = list()
+        allowed = []
         for i in range(len(list_submodules)):
             copertura = DidatticaCopertura.objects.filter(
                 af_id=list_submodules[i]['af_id'],
@@ -877,16 +880,62 @@ class ServiceDidatticaAttivitaFormativa:
                 'part_stu_des',
             ).first()
 
-            query[0]['MODULES'].append({
-                'StudyActivityID': list_submodules[i]['af_id'],
-                'StudyActivityCod': list_submodules[i]['af_gen_cod'],
-                'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i]['af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
-                'StudyActivitySemester': list_submodules[i]['ciclo_des'],
-                'StudyActivityPartitionCod': copertura['part_stu_cod'] if copertura else None,
-                'StudyActivityPartitionDescription': copertura['part_stu_des'] if copertura else None,
-                'StudyActivityExtendedPartitionCod': copertura['fat_part_stu_cod'] if copertura else None,
-                'StudyActivityExtendedPartitionDes': copertura['fat_part_stu_des'] if copertura else None,
-            })
+            groups = DidatticaAttivitaFormativa.objects.filter(af_pdr_id=list_submodules[i]['af_id'],fat_part_stu_cod='GRP').values(
+                'af_id',
+                'af_gen_cod',
+                'des',
+                'fat_part_stu_cod',
+                'fat_part_stu_des',
+                'part_stu_cod',
+                'part_stu_des',
+                'af_gen_des_eng',
+
+            )
+
+            groups_serialize = []
+            for j in range(len(groups)):
+
+                groups_serialize.append({
+                    'StudyActivityID': groups[j]['af_id'],
+                    'StudyActivityCod': groups[j]['af_gen_cod'],
+                    'StudyActivityName': groups[j]['des'] if language == 'it' or
+                        groups[j]['af_gen_des_eng'] is None else groups[j]['af_gen_des_eng'],
+                    'StudyActivityPartitionCod': groups[j]['part_stu_cod'],
+                    'StudyActivityPartitionDescription': groups[j]['part_stu_des'],
+                    'StudyActivityExtendedPartitionCod': groups[j]['fat_part_stu_cod'],
+                    'StudyActivityExtendedPartitionDes': groups[j]['fat_part_stu_des'],
+                })
+            groups = groups.values('af_id')
+            groups = list(groups)
+            for g in groups:
+                allowed.append(g['af_id'])
+
+            if list_submodules[i]['af_id'] not in allowed:
+                query[0]['MODULES'].append({
+                        'StudyActivityID': list_submodules[i]['af_id'],
+                        'StudyActivityCod': list_submodules[i]['af_gen_cod'],
+                        'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i]['af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
+                        'StudyActivitySemester': list_submodules[i]['ciclo_des'],
+                        'StudyActivityPartitionCod': copertura['part_stu_cod'] if copertura else None,
+                        'StudyActivityPartitionDescription': copertura['part_stu_des'] if copertura else None,
+                        'StudyActivityExtendedPartitionCod': copertura['fat_part_stu_cod'] if copertura else None,
+                        'StudyActivityExtendedPartitionDes': copertura['fat_part_stu_des'] if copertura else None,
+                        'StudyActivityGroups': groups_serialize
+
+                })
+            elif list_submodules[i]['af_id'] not in allowed and list_submodules[i]['fat_part_stu_cod'] == 'GRP':
+                query[0]['MODULES'].append({
+                    'StudyActivityID': list_submodules[i]['af_id'],
+                    'StudyActivityCod': list_submodules[i]['af_gen_cod'],
+                    'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i][
+                        'af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
+                    'StudyActivitySemester': list_submodules[i]['ciclo_des'],
+                    'StudyActivityPartitionCod': copertura['part_stu_cod'] if copertura else None,
+                    'StudyActivityPartitionDescription': copertura['part_stu_des'] if copertura else None,
+                    'StudyActivityExtendedPartitionCod': copertura['fat_part_stu_cod'] if copertura else None,
+                    'StudyActivityExtendedPartitionDes': copertura['fat_part_stu_des'] if copertura else None,
+                })
+
 
         query[0]['StudyActivityContent'] = None
         query[0]['StudyActivityProgram'] = None

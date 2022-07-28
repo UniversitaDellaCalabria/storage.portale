@@ -648,8 +648,8 @@ LABEL_MAPPING = {
         'Context': 'Context',
         'Priority': 'Priority',
         'ContextDescription': 'Context Description',
-        'OfficeBuilding': 'Office Building'
-
+        'OfficeBuilding': 'Office Building',
+        'StudyActivityGroups': 'Study Activity Groups'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -1064,7 +1064,8 @@ LABEL_MAPPING = {
         'Context': 'Inquadramento',
         'Priority': 'Priorità',
         'ContextDescription': 'Descrizione Inquadramento',
-        'OfficeBuilding': 'Edificio'
+        'OfficeBuilding': 'Edificio',
+        'StudyActivityGroups': 'Gruppi Attività'
     }
 }
 
