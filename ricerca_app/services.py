@@ -2692,7 +2692,7 @@ class ServicePersonale:
                 roles.append({'matricola': r[0],
                               'cd_ruolo': r[1],
                               'ds_ruolo': r[2],
-                              'priorita': priorita[r[1]],
+                              'priorita': priorita.get(r[1]) or 10,
                               'cd_uo_aff_org': r[3],
                               'ds_aff_org': r[4],
                               'cd_tipo_nodo': r[5]
