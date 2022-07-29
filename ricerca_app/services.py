@@ -721,11 +721,13 @@ class ServiceDidatticaAttivitaFormativa:
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
             af_radice_id=af_id).exclude(
-            af_id=af_id).values(
+            af_id=af_id
+        ).values(
             'af_id',
             'af_gen_cod',
             'des',
             'af_gen_des_eng',
+            'fat_part_stu_cod',
             'ciclo_des',
             'matricola_resp_did')
 
@@ -739,6 +741,8 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'cds__cds_cod',
             'cds__cds_id',
+            'pds_cod',
+            'pds_des',
             'regdid__regdid_id',
             'anno_corso',
             'ciclo_des',
@@ -769,11 +773,16 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_id',
                 'af_gen_cod',
                 'des',
+                'cds__cds_cod',
+                'cds__cds_id',
+                'pds_cod',
+                'pds_des',
                 'af_gen_des_eng',
                 'ciclo_des',
                 'regdid__regdid_id',
                 'didatticacopertura__coper_peso'
             ).first()
+
 
         attivita_mutuate_da_questa = DidatticaAttivitaFormativa.objects.filter(
             af_master_id=af_id, mutuata_flg=1) .exclude(
@@ -784,7 +793,11 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'ciclo_des',
             'regdid__regdid_id',
-            'didatticacopertura__coper_peso'
+            'didatticacopertura__coper_peso',
+            'cds__cds_cod',
+            'cds__cds_id',
+            'pds_cod',
+            'pds_des',
         )
 
         id_radice = query.first()['af_radice_id']
@@ -797,7 +810,11 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'ciclo_des',
             'regdid__regdid_id',
-            'didatticacopertura__coper_peso'
+            'didatticacopertura__coper_peso',
+            'cds__cds_cod',
+            'cds__cds_id',
+            'pds_cod',
+            'pds_des',
         )
         if len(activity_root) == 0:
             activity_root = None
@@ -818,15 +835,28 @@ class ServiceDidatticaAttivitaFormativa:
         )
         query = list(query)
 
-        query[0]['Hours'] = DidatticaCoperturaDettaglioOre.objects.filter(~Q(coper_id__stato_coper_cod='R'),coper_id__af_id=af_id).values(
+        filtered_hours = DidatticaCoperturaDettaglioOre.objects.filter(~Q(coper_id__stato_coper_cod='R'),coper_id__af_id=af_id).values(
             'tipo_att_did_cod',
             'ore',
             'coper_id__personale_id__matricola',
             'coper_id__personale_id__nome',
             'coper_id__personale_id__cognome',
             'coper_id__personale_id__middle_name',
-            'coper_id__personale_id__flg_cessato'
+            'coper_id__personale_id__flg_cessato',
+            'coper_id'
         )
+        filtered_hours = list(filtered_hours)
+
+        for hour in filtered_hours:
+            for hour2 in filtered_hours:
+                if hour['tipo_att_did_cod'] == hour2['tipo_att_did_cod'] and hour['coper_id__personale_id__matricola'] == hour2['coper_id__personale_id__matricola'] and hour['coper_id'] != hour2['coper_id']:
+                    hour['ore'] = hour['ore'] + hour2['ore']
+                    filtered_hours.remove(hour2)
+
+
+
+        query[0]['Hours'] = filtered_hours
+
 
         query[0]['Modalities'] = DidatticaAttivitaFormativaModalita.objects.filter(af_id=af_id).values(
             'mod_did_af_id',
@@ -867,6 +897,7 @@ class ServiceDidatticaAttivitaFormativa:
             'testo_af_eng')
 
         query[0]['MODULES'] = list()
+        allowed = []
         for i in range(len(list_submodules)):
             copertura = DidatticaCopertura.objects.filter(
                 af_id=list_submodules[i]['af_id'],
@@ -877,16 +908,62 @@ class ServiceDidatticaAttivitaFormativa:
                 'part_stu_des',
             ).first()
 
-            query[0]['MODULES'].append({
-                'StudyActivityID': list_submodules[i]['af_id'],
-                'StudyActivityCod': list_submodules[i]['af_gen_cod'],
-                'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i]['af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
-                'StudyActivitySemester': list_submodules[i]['ciclo_des'],
-                'StudyActivityPartitionCod': copertura['part_stu_cod'] if copertura else None,
-                'StudyActivityPartitionDescription': copertura['part_stu_des'] if copertura else None,
-                'StudyActivityExtendedPartitionCod': copertura['fat_part_stu_cod'] if copertura else None,
-                'StudyActivityExtendedPartitionDes': copertura['fat_part_stu_des'] if copertura else None,
-            })
+            groups = DidatticaAttivitaFormativa.objects.filter(af_pdr_id=list_submodules[i]['af_id'],fat_part_stu_cod='GRP').values(
+                'af_id',
+                'af_gen_cod',
+                'des',
+                'fat_part_stu_cod',
+                'fat_part_stu_des',
+                'part_stu_cod',
+                'part_stu_des',
+                'af_gen_des_eng',
+
+            )
+
+            groups_serialize = []
+            for j in range(len(groups)):
+
+                groups_serialize.append({
+                    'StudyActivityID': groups[j]['af_id'],
+                    'StudyActivityCod': groups[j]['af_gen_cod'],
+                    'StudyActivityName': groups[j]['des'] if language == 'it' or
+                        groups[j]['af_gen_des_eng'] is None else groups[j]['af_gen_des_eng'],
+                    'StudyActivityPartitionCod': groups[j]['part_stu_cod'],
+                    'StudyActivityPartitionDescription': groups[j]['part_stu_des'],
+                    'StudyActivityExtendedPartitionCod': groups[j]['fat_part_stu_cod'],
+                    'StudyActivityExtendedPartitionDes': groups[j]['fat_part_stu_des'],
+                })
+            groups = groups.values('af_id')
+            groups = list(groups)
+            for g in groups:
+                allowed.append(g['af_id'])
+
+            if list_submodules[i]['af_id'] not in allowed:
+                query[0]['MODULES'].append({
+                        'StudyActivityID': list_submodules[i]['af_id'],
+                        'StudyActivityCod': list_submodules[i]['af_gen_cod'],
+                        'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i]['af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
+                        'StudyActivitySemester': list_submodules[i]['ciclo_des'],
+                        'StudyActivityPartitionCod': copertura['part_stu_cod'] if copertura else None,
+                        'StudyActivityPartitionDescription': copertura['part_stu_des'] if copertura else None,
+                        'StudyActivityExtendedPartitionCod': copertura['fat_part_stu_cod'] if copertura else None,
+                        'StudyActivityExtendedPartitionDes': copertura['fat_part_stu_des'] if copertura else None,
+                        'StudyActivityGroups': groups_serialize
+
+                })
+            elif list_submodules[i]['af_id'] not in allowed and list_submodules[i]['fat_part_stu_cod'] == 'GRP':
+                query[0]['MODULES'].append({
+                    'StudyActivityID': list_submodules[i]['af_id'],
+                    'StudyActivityCod': list_submodules[i]['af_gen_cod'],
+                    'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i][
+                        'af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
+                    'StudyActivitySemester': list_submodules[i]['ciclo_des'],
+                    'StudyActivityPartitionCod': copertura['part_stu_cod'] if copertura else None,
+                    'StudyActivityPartitionDescription': copertura['part_stu_des'] if copertura else None,
+                    'StudyActivityExtendedPartitionCod': copertura['fat_part_stu_cod'] if copertura else None,
+                    'StudyActivityExtendedPartitionDes': copertura['fat_part_stu_des'] if copertura else None,
+                })
+
 
         query[0]['StudyActivityContent'] = None
         query[0]['StudyActivityProgram'] = None
@@ -2695,7 +2772,7 @@ class ServicePersonale:
         return query
 
     @staticmethod
-    def getStructurePersonnelChild(structures_tree, structureid=None):
+    def getStructurePersonnelChild(structures_tree, structureid=None): # pragma: no cover
         child_structures = UnitaOrganizzativa.objects.filter(
             uo_padre=structureid).values("uo")
 

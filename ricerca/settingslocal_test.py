@@ -532,7 +532,10 @@ LABEL_MAPPING = {
         'Context': 'Context',
         'Priority': 'Priority',
         'ContextDescription': 'Context Description',
-        'OfficeBuilding': 'Office Building'
+        'OfficeBuilding': 'Office Building',
+        'StudyActivityGroups': 'Study Activity Groups',
+        'StudyActivityPdsCod': 'Study Activity Pds Cod',
+        'StudyActivityPdsDes': 'Study Activity Pds Description',
 
     },
     'it': {
@@ -948,9 +951,14 @@ LABEL_MAPPING = {
         'Context': 'Inquadramento',
         'Priority': 'Priorità',
         'ContextDescription': 'Descrizione Inquadramento',
-        'OfficeBuilding': 'Edificio'
+        'OfficeBuilding': 'Edificio',
+        'StudyActivityGroups': 'Gruppi Attività',
+        'StudyActivityPdsCod': 'Codice Pds Attività',
+        'StudyActivityPdsDes': 'Descrizione Pds Attività',
+
     }
 }
+
 
 # DjangoSAML2 conf
 if 'djangosaml2'  in INSTALLED_APPS:

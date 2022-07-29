@@ -384,6 +384,14 @@ class DidatticaAttivitaFormativa(InsModAbstract):
     num_af_foglie = models.IntegerField(
         db_column='NUM_AF_FOGLIE', blank=True, null=True)
 
+    fat_part_stu_cod = models.CharField(db_column='FAT_PART_STU_COD', max_length=40, blank=True,null=True)  # Field name made lowercase.
+    fat_part_stu_des = models.CharField(db_column='FAT_PART_STU_DES', max_length=500, blank=True,null=True)  # Field name made lowercase.
+    af_pdr_id = models.IntegerField(db_column='AF_PDR_ID', blank=True, null=True)  # Field name made lowercase.
+    part_stu_cod = models.CharField(db_column='PART_STU_COD', max_length=100, blank=True,
+                                    null=True)  # Field name made lowercase.
+    part_stu_des = models.CharField(db_column='PART_STU_DES', max_length=500, blank=True,
+                                    null=True)  # Field name made lowercase.
+
     class Meta:
         managed = True
         db_table = 'DIDATTICA_ATTIVITA_FORMATIVA'
