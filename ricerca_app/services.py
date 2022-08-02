@@ -637,81 +637,89 @@ class ServiceDidatticaAttivitaFormativa:
         if academic_year:
             query_academic_year = Q(aa_off_id=academic_year)
         if course_year:
-            query_course_year = Q(af_id__anno_corso=course_year)
+            query_course_year = Q(anno_corso=course_year)
         if department:
-            query_department = Q(af_id__cds_id__dip_id__dip_cod=department)
+            query_department = Q(cds_id__dip_id__dip_cod=department)
         if cds:
             for k in cds.split(" "):
                 if language == "it":
-                    q = Q(af_id__cds_id__nome_cds_it__icontains=k)
+                    q = Q(cds_id__nome_cds_it__icontains=k)
                 else:
-                    q = Q(af_id__cds_id__nome_cds_eng__icontains=k)
+                    q = Q(cds_id__nome_cds_eng__icontains=k)
                 query_cds |= q
-        if teacher:
-            for k in teacher.split(" "):
-                q_teacher = Q(personale_id__cognome__istartswith=k)
-                query_teacher &= q_teacher
+        # serve un collegamento tra didatticaattivitàformativa e personale con il campo matricola_resp_did
+        # if teacher:
+        #     for k in teacher.split(" "):
+        #         q_teacher = Q(personale_id__cognome__istartswith=k)
+        #         query_teacher &= q_teacher
         if teaching:
             for k in teaching.split(" "):
                 if language == "it":
-                    q_teaching = Q(af_id__des__icontains=k)
+                    q_teaching = Q(des__icontains=k)
                 else:
-                    q_teaching = Q(af_id__af_gen_des_eng__icontains=k)
+                    q_teaching = Q(af_gen_des_eng__icontains=k)
                 query_teaching |= q_teaching
         if ssd:
             for k in ssd.split(" "):
                 q_ssd = Q(sett_cod__icontains=k)
                 query_ssd &= q_ssd
         if period:
-            query_period = Q(af_id__ciclo_des=period)
+            query_period = Q(ciclo_des=period)
+        
+        coperture = DidatticaCopertura.objects.values(
+            'af_id'
+        )
 
-        query = DidatticaCopertura.objects.filter(
-            query_department,
-            query_academic_year,
-            query_cds,
-            query_period,
-            query_ssd,
-            query_teaching,
-            query_teacher,
-            query_course_year
-        ).values(
+
+        query_coperture = Q(af_id__in=coperture) | Q(af_master_id__in=coperture)
+
+        query = DidatticaAttivitaFormativa.objects.filter(query_department,
+                                                          query_academic_year,
+                                                          query_cds,
+                                                          query_period,
+                                                          query_ssd,
+                                                          query_teaching,
+                                                          query_course_year,
+                                                          query_coperture,
+                                                          ).values(
             'af_id',
             'af_gen_cod',
-            'af_id__des',
-            'af_id__af_gen_des_eng',
+            'des',
+            'af_gen_des_eng',
             'sett_cod',
             'sett_des',
-            'af_id__ciclo_des',
+            'ciclo_des',
             'aa_off_id',
-            'af_id__regdid_id',
-            'af_id__cds_id',
-            'af_id__cds_id__cds_cod',
-            'af_id__cds_id__nome_cds_it',
-            'af_id__cds_id__nome_cds_eng',
-            'af_id__cds_id__dip_id__dip_cod',
-            'af_id__cds_id__dip_id__dip_des_it',
-            'af_id__cds_id__dip_id__dip_des_eng',
+            'regdid_id',
+            'cds_id',
+            'cds_id__cds_cod',
+            'cds_id__nome_cds_it',
+            'cds_id__nome_cds_eng',
+            'cds_id__dip_id__dip_cod',
+            'cds_id__dip_id__dip_des_it',
+            'cds_id__dip_id__dip_des_eng',
             'fat_part_stu_cod',
             'fat_part_stu_des',
             'part_stu_cod',
             'part_stu_des',
-            'af_id__anno_corso',
+            'anno_corso',
             'matricola_resp_did',
-            'pds_des'
-        ).distinct().order_by('af_id__des')
+            'pds_des',
+            'af_master_id'
+        ).distinct().order_by('des')
 
 
-        for q in query:
-
-            name = Personale.objects.filter(matricola=q['matricola_resp_did']).values(
-                'nome',
-                'cognome',
-                'middle_name'
-            )
-            if(len(name) != 0):
-                q['DirectorName'] = name
-            else:
-                q['DirectorName'] = None
+        # for q in query:
+        #
+        #     name = Personale.objects.filter(matricola=q['matricola_resp_did']).values(
+        #         'nome',
+        #         'cognome',
+        #         'middle_name'
+        #     )
+        #     if(len(name) != 0):
+        #         q['DirectorName'] = name
+        #     else:
+        #         q['DirectorName'] = None
 
         return query
 

@@ -324,33 +324,33 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
     def to_dict(query,
                 req_lang='en'):
 
-        full_name = None
-        if query['DirectorName'] is not None:
-            full_name = query['DirectorName'][0]['cognome'] + " " + query['DirectorName'][0]['nome'] + \
-                        (" " + query['DirectorName'][0]['middle_name']
-                         if query['DirectorName'][0]['middle_name'] is not None else "")
+        # full_name = None
+        # if query['DirectorName'] is not None:
+        #     full_name = query['DirectorName'][0]['cognome'] + " " + query['DirectorName'][0]['nome'] + \
+        #                 (" " + query['DirectorName'][0]['middle_name']
+        #                  if query['DirectorName'][0]['middle_name'] is not None else "")
 
         return {
             'StudyActivityID': query['af_id'],
             'StudyActivityCod': query['af_gen_cod'],
-            'StudyActivityName': query['af_id__des'] if req_lang == 'it' or query['af_id__af_gen_des_eng'] is None else query['af_id__af_gen_des_eng'],
-            'StudyActivityCdSID': query['af_id__cds_id'],
-            'StudyActivityCdSCod': query['af_id__cds_id__cds_cod'],
-            'StudyActivityRegDidId': query['af_id__regdid_id'],
-            'DepartmentName': query['af_id__cds_id__dip_id__dip_des_it'] if req_lang == 'it' or query['af_id__cds_id__dip_id__dip_des_eng'] is None else query['af_id__cds_id__dip_id__dip_des_eng'],
-            'DepartmentCod': query['af_id__cds_id__dip_id__dip_cod'],
-            'StudyActivityYear': query['af_id__anno_corso'],
+            'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
+            'StudyActivityCdSID': query['cds_id'],
+            'StudyActivityCdSCod': query['cds_id__cds_cod'],
+            'StudyActivityRegDidId': query['regdid_id'],
+            'DepartmentName': query['cds_id__dip_id__dip_des_it'] if req_lang == 'it' or query['cds_id__dip_id__dip_des_eng'] is None else query['cds_id__dip_id__dip_des_eng'],
+            'DepartmentCod': query['cds_id__dip_id__dip_cod'],
+            'StudyActivityYear': query['anno_corso'],
             'StudyActivityAcademicYear': query['aa_off_id'],
-            'StudyActivitySemester': query['af_id__ciclo_des'],
+            'StudyActivitySemester': query['ciclo_des'],
             'StudyActivitySSDCod': query['sett_cod'],
             'StudyActivitySSD': query['sett_des'],
             'StudyActivityPartitionCod': query['part_stu_cod'],
             'StudyActivityPartitionDes': query['part_stu_des'],
             'StudyActivityExtendedPartitionCod': query['fat_part_stu_cod'],
             'StudyActivityExtendedPartitionDes': query['fat_part_stu_des'],
-            'StudyActivityCdSName': query['af_id__cds_id__nome_cds_it'] if req_lang == 'it' or query['af_id__cds_id__nome_cds_eng'] is None else query['af_id__cds_id__nome_cds_eng'],
+            'StudyActivityCdSName': query['cds_id__nome_cds_it'] if req_lang == 'it' or query['cds_id__nome_cds_eng'] is None else query['cds_id__nome_cds_eng'],
             'StudyActivityTeacherID': encrypt(query['matricola_resp_did']) if query['matricola_resp_did'] else None,
-            'StudyActivityTeacherName': full_name,
+            # 'StudyActivityTeacherName': full_name,
             'StudyPlanDes': query['pds_des'],
         }
 
