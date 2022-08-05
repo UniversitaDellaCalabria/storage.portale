@@ -97,3 +97,23 @@ class RicercaDocenteLineaApplicataForm(forms.ModelForm):
         widgets = {'dt_inizio': BootstrapItaliaDateWidget,
                    'dt_fine': BootstrapItaliaDateWidget, }
 
+
+class DidatticaCdsAltriDatiForm(forms.ModelForm):
+    class Meta:
+        model = DidatticaCdsAltriDati
+        fields = ['cds', 'matricola_coordinatore', 'nome_origine_coordinatore', 'matricola_vice_coordinatore', 'nome_origine_vice_coordinatore', 'num_posti', 'modalita_iscrizione']
+        widgets = {'modalita_iscrizione': forms.Textarea(attrs={'rows': 2})}
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+
+class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
+    class Meta:
+        model = DidatticaCdsAltriDati
+        fields = ['cds', 'ordine', 'matricola_rifermento', 'nome_ufficio', 'nome_origine_riferimento', 'telefono', 'email', 'edificio', 'piano', 'orari', 'sportello_online']
+        widgets = {'orari': forms.Textarea(attrs={'rows': 2})}
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
