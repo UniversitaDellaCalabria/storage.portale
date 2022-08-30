@@ -736,6 +736,9 @@ class ServiceDidatticaAttivitaFormativa:
             'des',
             'af_gen_des_eng',
             'fat_part_stu_cod',
+            'part_stu_cod',
+            'part_stu_des',
+            'fat_part_stu_des',
             'ciclo_des',
             'matricola_resp_did')
 
@@ -768,8 +771,14 @@ class ServiceDidatticaAttivitaFormativa:
             'mutuata_flg',
             'af_master_id',
             'af_radice_id',
-            'didatticacopertura__coper_peso'
+            'af_pdr_id',
+            'didatticacopertura__coper_peso',
+            'part_stu_cod',
+            'fat_part_stu_cod',
+            'part_stu_des',
+            'fat_part_stu_des'
         )
+
 
         id_master = None
         mutuata_da = None
@@ -809,6 +818,8 @@ class ServiceDidatticaAttivitaFormativa:
         )
 
         id_radice = query.first()['af_radice_id']
+        # id_radice_modulo = query.first()['af_pdr_id']
+
         activity_root = DidatticaAttivitaFormativa.objects.filter(
             af_id=id_radice).exclude(
             af_id=af_id).values(
@@ -885,18 +896,18 @@ class ServiceDidatticaAttivitaFormativa:
         query[0]['ExtendedPartitionCod'] = None
         query[0]['ExtendedPartitionDescription'] = None
 
-        for q in copertura:
-            if q['personale__matricola'] == query[0]['matricola_resp_did']:
-                query[0]['StudyActivityTeacherID'] = q['personale__matricola']
-                if q['personale__cognome'] and q['personale__nome']:
-                    query[0]['StudyActivityTeacherName'] = f"{q['personale__cognome']} {q['personale__nome']}"
-                    if q['personale__middle_name']:
-                        query[0]['StudyActivityTeacherName'] = f"{query[0]['StudyActivityTeacherName']} {q['personale__middle_name']}"
-
-                query[0]['PartitionCod'] = q['part_stu_cod']
-                query[0]['PartitionDescription'] = q['part_stu_des']
-                query[0]['ExtendedPartitionCod'] = q['fat_part_stu_cod']
-                query[0]['ExtendedPartitionDescription'] = q['fat_part_stu_des']
+        # for q in copertura:
+        #     if q['personale__matricola'] == query[0]['matricola_resp_did']:
+        #         query[0]['StudyActivityTeacherID'] = q['personale__matricola']
+        #         if q['personale__cognome'] and q['personale__nome']:
+        #             query[0]['StudyActivityTeacherName'] = f"{q['personale__cognome']} {q['personale__nome']}"
+        #             if q['personale__middle_name']:
+        #                 query[0]['StudyActivityTeacherName'] = f"{query[0]['StudyActivityTeacherName']} {q['personale__middle_name']}"
+        #
+        #         query[0]['PartitionCod'] = q['part_stu_cod']
+        #         query[0]['PartitionDescription'] = q['part_stu_des']
+        #         query[0]['ExtendedPartitionCod'] = q['fat_part_stu_cod']
+        #         query[0]['ExtendedPartitionDescription'] = q['fat_part_stu_des']
 
         texts_af = DidatticaTestiAf.objects.filter(
             af_id=af_id).values(
@@ -952,10 +963,10 @@ class ServiceDidatticaAttivitaFormativa:
                         'StudyActivityCod': list_submodules[i]['af_gen_cod'],
                         'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i]['af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
                         'StudyActivitySemester': list_submodules[i]['ciclo_des'],
-                        'StudyActivityPartitionCod': copertura['part_stu_cod'] if copertura else None,
-                        'StudyActivityPartitionDescription': copertura['part_stu_des'] if copertura else None,
-                        'StudyActivityExtendedPartitionCod': copertura['fat_part_stu_cod'] if copertura else None,
-                        'StudyActivityExtendedPartitionDes': copertura['fat_part_stu_des'] if copertura else None,
+                        'StudyActivityPartitionCod': list_submodules[i]['part_stu_cod'],
+                        'StudyActivityPartitionDescription': list_submodules[i]['part_stu_des'],
+                        'StudyActivityExtendedPartitionCod': list_submodules[i]['fat_part_stu_cod'],
+                        'StudyActivityExtendedPartitionDes': list_submodules[i]['fat_part_stu_des'],
                         'StudyActivityGroups': groups_serialize
 
                 })
@@ -966,10 +977,10 @@ class ServiceDidatticaAttivitaFormativa:
                     'StudyActivityName': list_submodules[i]['des'] if language == 'it' or list_submodules[i][
                         'af_gen_des_eng'] is None else list_submodules[i]['af_gen_des_eng'],
                     'StudyActivitySemester': list_submodules[i]['ciclo_des'],
-                    'StudyActivityPartitionCod': copertura['part_stu_cod'] if copertura else None,
-                    'StudyActivityPartitionDescription': copertura['part_stu_des'] if copertura else None,
-                    'StudyActivityExtendedPartitionCod': copertura['fat_part_stu_cod'] if copertura else None,
-                    'StudyActivityExtendedPartitionDes': copertura['fat_part_stu_des'] if copertura else None,
+                    'StudyActivityPartitionCod': list_submodules[i]['part_stu_cod'],
+                    'StudyActivityPartitionDescription': list_submodules[i]['part_stu_des'],
+                    'StudyActivityExtendedPartitionCod': list_submodules[i]['fat_part_stu_cod'],
+                    'StudyActivityExtendedPartitionDes': list_submodules[i]['fat_part_stu_des'],
                 })
 
 
