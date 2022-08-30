@@ -816,9 +816,9 @@ class ServiceDidatticaAttivitaFormativa:
             'pds_cod',
             'pds_des',
         )
+        radice = query.first()
+        id_radice = radice['af_pdr_id'] or radice['af_radice_id']
 
-        id_radice = query.first()['af_radice_id']
-        # id_radice_modulo = query.first()['af_pdr_id']
 
         activity_root = DidatticaAttivitaFormativa.objects.filter(
             af_id=id_radice).exclude(
