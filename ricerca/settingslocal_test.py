@@ -536,6 +536,7 @@ LABEL_MAPPING = {
         'StudyActivityGroups': 'Study Activity Groups',
         'StudyActivityPdsCod': 'Study Activity Pds Cod',
         'StudyActivityPdsDes': 'Study Activity Pds Description',
+        'StudyActivityFather': 'Study Activity Father'
 
     },
     'it': {
@@ -955,6 +956,7 @@ LABEL_MAPPING = {
         'StudyActivityGroups': 'Gruppi Attività',
         'StudyActivityPdsCod': 'Codice Pds Attività',
         'StudyActivityPdsDes': 'Descrizione Pds Attività',
+        'StudyActivityFather': ' Attività Didattica Padre'
 
     }
 }

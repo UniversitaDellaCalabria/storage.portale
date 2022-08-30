@@ -817,7 +817,8 @@ class ServiceDidatticaAttivitaFormativa:
             'pds_des',
         )
         radice = query.first()
-        id_radice = radice['af_pdr_id'] or radice['af_radice_id']
+        id_radice_padre = radice['af_pdr_id']
+        id_radice = radice['af_radice_id']
 
 
         activity_root = DidatticaAttivitaFormativa.objects.filter(
@@ -839,6 +840,30 @@ class ServiceDidatticaAttivitaFormativa:
             activity_root = None
         else:
             activity_root = activity_root.first()
+
+        activity_father = None
+
+        if id_radice_padre and id_radice_padre != id_radice:
+
+            activity_father = DidatticaAttivitaFormativa.objects.filter(
+                af_id=id_radice_padre).exclude(
+                af_id=af_id).values(
+                'af_id',
+                'af_gen_cod',
+                'des',
+                'af_gen_des_eng',
+                'ciclo_des',
+                'regdid__regdid_id',
+                'didatticacopertura__coper_peso',
+                'cds__cds_cod',
+                'cds__cds_id',
+                'pds_cod',
+                'pds_des',
+            )
+            if len(activity_father) == 0:
+                activity_father = None
+            else:
+                activity_father = activity_father.first()
 
         copertura = DidatticaCopertura.objects.filter(
             af_id=af_id).values(
@@ -887,6 +912,8 @@ class ServiceDidatticaAttivitaFormativa:
         query[0]['ActivitiesBorrowedFromThis'] = attivita_mutuate_da_questa
 
         query[0]['ActivityRoot'] = activity_root
+
+        query[0]['ActivityFather'] = activity_father
 
         query[0]['StudyActivityTeacherID'] = None
         query[0]['StudyActivityTeacherName'] = None
