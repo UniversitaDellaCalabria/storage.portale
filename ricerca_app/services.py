@@ -843,7 +843,7 @@ class ServiceDidatticaAttivitaFormativa:
 
         activity_father = None
 
-        if id_radice_padre and id_radice_padre != id_radice:
+        if id_radice_padre and id_radice_padre != id_radice: # pragma: no cover
 
             activity_father = DidatticaAttivitaFormativa.objects.filter(
                 af_id=id_radice_padre).exclude(
