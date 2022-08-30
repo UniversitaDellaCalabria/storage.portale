@@ -897,12 +897,12 @@ def applied_researchline_teacher_delete(request, code, teacher_rline_id,
 
 
 
-@login_required
-@can_manage_cds
-def cds(request,
-                   my_offices=None):
-    breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                   '#': _('Cds')}
-    context = {'breadcrumbs': breadcrumbs,
-               'url': reverse('ricerca:cdslist')}
-    return render(request, 'cds.html', context)
+# @login_required
+# @can_manage_cds
+# def cds(request,
+#                    my_offices=None):
+#     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+#                    '#': _('Cds')}
+#     context = {'breadcrumbs': breadcrumbs,
+#                'url': reverse('ricerca:cdslist')}
+#     return render(request, 'cds.html', context)
