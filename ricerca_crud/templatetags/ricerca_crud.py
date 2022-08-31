@@ -12,7 +12,7 @@ register = template.Library()
 
 @register.simple_tag
 def settings_value(name, **kwargs):
-    value = getattr(settings, name, '')
+    value = getattr(settings, name, getattr(app_settings, name))
     if not value: return ''
     if isinstance(value, str) and kwargs: return value.format(**kwargs)
     return value

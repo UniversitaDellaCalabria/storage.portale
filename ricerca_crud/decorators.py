@@ -141,22 +141,22 @@ def can_edit_applied_researchline(func_to_decorate):
     return new_func
 
 
-# def can_manage_cds(func_to_decorate):
-#     """
-#     """
-#     def new_func(*original_args, **original_kwargs):
-#         request = original_args[0]
-#         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
-#                                                                           office__name=OFFICE_CDS,
-#                                                                           office__is_active=True,
-#                                                                           office__organizational_structure__is_active=True)
-#         if not my_offices and not request.user.is_superuser:
-#             raise Exception("Permission denied")
-#         original_kwargs['my_offices'] = my_offices
-#         return func_to_decorate(*original_args, **original_kwargs)
-#
-#     return new_func
-#
+def can_manage_cds(func_to_decorate):
+    """
+    """
+    def new_func(*original_args, **original_kwargs):
+        request = original_args[0]
+        my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                          office__name=OFFICE_CDS,
+                                                                          office__is_active=True,
+                                                                          office__organizational_structure__is_active=True)
+        if not my_offices and not request.user.is_superuser:
+            raise Exception("Permission denied")
+        original_kwargs['my_offices'] = my_offices
+        return func_to_decorate(*original_args, **original_kwargs)
+
+    return new_func
+
 #
 # def can_edit_cds(func_to_decorate):
 #     """

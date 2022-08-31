@@ -111,7 +111,7 @@ class RicercaDocenteLineaApplicataForm(forms.ModelForm):
 #
 # class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
 #     class Meta:
-#         model = DidatticaCdsAltriDati
+#         model = DidatticaCdsAltriDatiUfficio
 #         fields = ['cds', 'ordine', 'matricola_rifermento', 'nome_ufficio', 'nome_origine_riferimento', 'telefono', 'email', 'edificio', 'piano', 'orari', 'sportello_online']
 #         widgets = {'orari': forms.Textarea(attrs={'rows': 2})}
 #
