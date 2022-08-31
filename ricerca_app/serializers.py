@@ -324,11 +324,12 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
     def to_dict(query,
                 req_lang='en'):
 
-        # full_name = None
-        # if query['DirectorName'] is not None:
-        #     full_name = query['DirectorName'][0]['cognome'] + " " + query['DirectorName'][0]['nome'] + \
-        #                 (" " + query['DirectorName'][0]['middle_name']
-        #                  if query['DirectorName'][0]['middle_name'] is not None else "")
+        full_name = None
+
+        if query['matricola_resp_did__cognome'] is not None:
+            full_name = query['matricola_resp_did__cognome'] + " " + query['matricola_resp_did__nome'] + \
+                            (" " + query['matricola_resp_did__middle_name']
+                              if query['matricola_resp_did__middle_name'] is not None else "")
 
         return {
             'StudyActivityID': query['af_id'],
@@ -350,7 +351,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityExtendedPartitionDes': query['fat_part_stu_des'],
             'StudyActivityCdSName': query['cds_id__nome_cds_it'] if req_lang == 'it' or query['cds_id__nome_cds_eng'] is None else query['cds_id__nome_cds_eng'],
             'StudyActivityTeacherID': encrypt(query['matricola_resp_did']) if query['matricola_resp_did'] else None,
-            # 'StudyActivityTeacherName': full_name,
+            'StudyActivityTeacherName': full_name,
             'StudyPlanDes': query['pds_des'],
         }
 

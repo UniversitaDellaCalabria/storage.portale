@@ -502,6 +502,14 @@ class ApiStudyActivityInfoUnitTest(TestCase):
         regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
         pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
             **{'pds_regdid_id': 1, 'regdid': regdid, })
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
         course = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 1,
             'pds_regdid': pds,
@@ -510,7 +518,7 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
-            'matricola_resp_did': '111111',
+            'matricola_resp_did': p1,
             'mutuata_flg': 1,
             'af_master_id': 2,
         })
@@ -531,17 +539,10 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'testo_af_eng': 'Variables',
             'af': course,
         })
-        p = PersonaleUnitTest.create_personale(**{
-            'id': 1,
-            'nome': 'Franco',
-            'cognome': 'Garofalo',
-            'cd_ruolo': 'PO',
-            'id_ab': 1,
-            'matricola': '111111',
-        })
+
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course,
-            'personale': p,
+            'personale': p1,
         })
 
         url = reverse(
@@ -602,6 +603,14 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af_id': 1,
         })
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
 
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 1,
@@ -610,7 +619,7 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
-            'matricola_resp_did': '111111',
+            'matricola_resp_did': p1,
             'mutuata_flg': 1,
             'af_master_id': 2,
             'sett_cod': 'INF/01',
@@ -650,9 +659,9 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        # data = {'teacher': 'Garofalo'}
-        # res = req.get(url, data=data)
-        # assert len(res.json()['results']) == 1
+        data = {'teacher': 'Garofalo'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
 
         data = {'cds': 'Matematica'}
         res = req.get(url, data=data)
@@ -683,6 +692,14 @@ class ApiStudyActivityDetailUnitTest(TestCase):
         regdid = DidatticaRegolamentoUnitTest.create_didatticaRegolamento()
         pds = DidatticaPdsRegolamentoUnitTest.create_didatticaPdsRegolamento(
             **{'pds_regdid_id': 1, 'regdid': regdid, })
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
         course = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 1,
             'pds_regdid': pds,
@@ -691,7 +708,7 @@ class ApiStudyActivityDetailUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
-            'matricola_resp_did': '111111',
+            'matricola_resp_did': p1,
             'mutuata_flg': 1,
             'af_master_id': 2,
         })
@@ -712,18 +729,18 @@ class ApiStudyActivityDetailUnitTest(TestCase):
             'testo_af_eng': 'Variables',
             'af': course,
         })
-        p = PersonaleUnitTest.create_personale(**{
-            'id': 1,
-            'nome': 'Franco',
-            'cognome': 'Garofalo',
-            'cd_ruolo': 'PO',
-            'id_ab': 1,
-            'matricola': '111111',
-        })
+        # p1 = PersonaleUnitTest.create_personale(**{
+        #     'id': 1,
+        #     'nome': 'Franco',
+        #     'cognome': 'Garofalo',
+        #     'cd_ruolo': 'PO',
+        #     'id_ab': 1,
+        #     'matricola': '111111',
+        # })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'coper_id': 1,
             'af': course,
-            'personale': p,
+            'personale': p1,
         })
 
         DidatticaAttivitaFormativaModalitaUnitTest.create_didatticaAttivitaFormativaModalita(**{

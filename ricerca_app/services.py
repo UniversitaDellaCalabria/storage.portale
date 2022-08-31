@@ -648,10 +648,10 @@ class ServiceDidatticaAttivitaFormativa:
                     q = Q(cds_id__nome_cds_eng__icontains=k)
                 query_cds |= q
         # serve un collegamento tra didatticaattivitàformativa e personale con il campo matricola_resp_did
-        # if teacher:
-        #     for k in teacher.split(" "):
-        #         q_teacher = Q(personale_id__cognome__istartswith=k)
-        #         query_teacher &= q_teacher
+        if teacher:
+            for k in teacher.split(" "):
+                q_teacher = Q(matricola_resp_did__cognome__istartswith=k)
+                query_teacher &= q_teacher
         if teaching:
             for k in teaching.split(" "):
                 if language == "it":
@@ -681,6 +681,7 @@ class ServiceDidatticaAttivitaFormativa:
                                                           query_teaching,
                                                           query_course_year,
                                                           query_coperture,
+                                                          query_teacher,
                                                           ).values(
             'af_id',
             'af_gen_cod',
@@ -704,10 +705,12 @@ class ServiceDidatticaAttivitaFormativa:
             'part_stu_des',
             'anno_corso',
             'matricola_resp_did',
+            'matricola_resp_did__nome',
+            'matricola_resp_did__cognome',
+            'matricola_resp_did__middle_name',
             'pds_des',
             'af_master_id'
         ).distinct().order_by('des')
-
 
         # for q in query:
         #
