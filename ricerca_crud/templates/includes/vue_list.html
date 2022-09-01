@@ -28,7 +28,7 @@ function {{ id }}_encodeQueryData(data=[]) {
 
 function {{ id }}_get_param(name) {
     let url = "{{ url|safe }}";
-    let params = (new URL(window.location.host + url)).searchParams;
+    let params = (new URL(location.protocol + "//" + window.location.host + url)).searchParams;
     return params.get(name) || '';
 }
 </script>
