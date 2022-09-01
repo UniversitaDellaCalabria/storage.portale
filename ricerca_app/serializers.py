@@ -331,7 +331,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
                             (" " + query['matricola_resp_did__middle_name']
                               if query['matricola_resp_did__middle_name'] is not None else "")
         descrizione_gruppo = ''
-        if query['part_stu_des']:
+        if query['part_stu_des']: # pragma: no cover
             descrizione_gruppo = '(' + query['part_stu_des'] + ')'
 
         return {
@@ -413,7 +413,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             modalities = StudyActivityInfoSerializer.to_dict_modalities(
                 query['Modalities'])
         descrizione_gruppo = ''
-        if query['part_stu_des']:
+        if query['part_stu_des']: # pragma: no cover
             descrizione_gruppo = '(' +query['part_stu_des'] +')'
         return {
             'StudyActivityID': query['af_id'],
