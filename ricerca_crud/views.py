@@ -28,8 +28,7 @@ def home(request):
 
 @login_required
 @can_manage_researchgroups
-def researchgroups(request,
-                   my_offices=None):
+def researchgroups(request, my_offices=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    '#': _('Research groups')}
     context = {'breadcrumbs': breadcrumbs,
@@ -319,56 +318,6 @@ def applied_researchlines(request,
     return render(request, 'applied_researchlines.html', context)
 
 
-
-@login_required
-@can_manage_researchgroups
-@can_edit_researchgroup
-def researchgroup(request, code,
-                  my_offices=None, rgroup=None, teachers=None):
-    breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                   reverse('ricerca_crud:crud_researchgroups'): _('Research groups'),
-                   '#': rgroup.nome}
-    form = RicercaGruppoForm(instance=rgroup)
-    if request.POST:
-        form = RicercaGruppoForm(instance=rgroup, data=request.POST)
-        if form.is_valid():
-            rgroup.user_mod = request.user
-            rgroup.nome = form.cleaned_data['nome']
-            rgroup.descrizione = form.cleaned_data['descrizione']
-            rgroup.ricerca_erc1 = form.cleaned_data['ricerca_erc1']
-            rgroup.save()
-
-            changed_field_labels = _get_changed_field_labels_from_form(form,
-                                                                       form.changed_data)
-            log_action(user=request.user,
-                       obj=rgroup,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
-
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("Research group edited successfully"))
-
-            return redirect('ricerca_crud:crud_researchgroup_edit',
-                            code=code)
-
-        else:  # pragma: no cover
-            for k, v in form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields[k].label}</b>: {v}")
-
-    logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(rgroup).pk,
-                                   object_id=rgroup.pk)
-
-    return render(request,
-                  'researchgroup.html',
-                  {'breadcrumbs': breadcrumbs,
-                   'form': form,
-                   'logs': logs,
-                   'rgroup': rgroup,
-                   'teachers': teachers})
-
-
 @login_required
 @can_manage_researchlines
 def researchline_new_applied(request, my_offices=None):
@@ -515,8 +464,7 @@ def researchline_new_base(request, my_offices=None):
 @login_required
 @can_manage_researchlines
 @can_edit_base_researchline
-def base_researchline(request, code,
-                  my_offices=None, rline=None, teachers=None):
+def base_researchline(request, code, my_offices=None, rline=None, teachers=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_base_researchlines'): _('Base Research lines'),
                    '#': rline.descrizione}
@@ -899,8 +847,7 @@ def applied_researchline_teacher_delete(request, code, teacher_rline_id,
 
 @login_required
 @can_manage_cds
-def cds(request,
-                   my_offices=None):
+def cds(request, my_offices=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    '#': _('Cds')}
     context = {'breadcrumbs': breadcrumbs,
@@ -908,50 +855,18 @@ def cds(request,
     return render(request, 'cds.html', context)
 
 
-# @login_required
-# @can_manage_researchgroups
-# @can_edit_researchgroup
-# def researchgroup(request, code,
-#                   my_offices=None, rgroup=None, teachers=None):
-#     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-#                    reverse('ricerca_crud:crud_researchgroups'): _('Research groups'),
-#                    '#': rgroup.nome}
-#     form = RicercaGruppoForm(instance=rgroup)
-#     if request.POST:
-#         form = RicercaGruppoForm(instance=rgroup, data=request.POST)
-#         if form.is_valid():
-#             rgroup.user_mod = request.user
-#             rgroup.nome = form.cleaned_data['nome']
-#             rgroup.descrizione = form.cleaned_data['descrizione']
-#             rgroup.ricerca_erc1 = form.cleaned_data['ricerca_erc1']
-#             rgroup.save()
-#
-#             changed_field_labels = _get_changed_field_labels_from_form(form,
-#                                                                        form.changed_data)
-#             log_action(user=request.user,
-#                        obj=rgroup,
-#                        flag=CHANGE,
-#                        msg=[{'changed': {"fields": changed_field_labels}}])
-#
-#             messages.add_message(request,
-#                                  messages.SUCCESS,
-#                                  _("Research group edited successfully"))
-#
-#             return redirect('ricerca_crud:crud_researchgroup_edit',
-#                             code=code)
-#
-#         else:  # pragma: no cover
-#             for k, v in form.errors.items():
-#                 messages.add_message(request, messages.ERROR,
-#                                      f"<b>{form.fields[k].label}</b>: {v}")
-#
-#     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(rgroup).pk,
-#                                    object_id=rgroup.pk)
-#
-#     return render(request,
-#                   'researchgroup.html',
-#                   {'breadcrumbs': breadcrumbs,
-#                    'form': form,
-#                    'logs': logs,
-#                    'rgroup': rgroup,
-#                    'teachers': teachers})
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_detail(request, code,
+               my_offices=None, cds=None, other_data=None, office_data=None):
+    breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+                   reverse('ricerca_crud:crud_cds'): _('CdS'),
+                   '#': cds.nome_cds_it}
+
+    return render(request,
+                  'cds_detail.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'cds': cds,
+                   'other_data': other_data,
+                   'office_data': office_data})

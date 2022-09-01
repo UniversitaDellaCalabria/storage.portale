@@ -4,8 +4,6 @@
 {% load static %}
 {% load ricerca_crud %}
 
-
-
 {% block content %}
 
 {% block storage_block_top %}
@@ -17,12 +15,11 @@
                 <div class="card-wrapper card-space">
                     <div class="card card-bg no-after">
                         <div class="card-body">
-                            {% block filters_search %}
+
                             {% include "includes/vue_search_input.html" with id=id %}
-                            {% endblock filters_search %}
 
                             {% block filters_cdslist %}
-                            <div class="form-group mb-0">
+                            <div class="mb-0">
 
                                 <!-- type & Academic year & language -->
                                 <div class="row">
@@ -34,7 +31,7 @@
                                         :loader_source="loader_source_degreetypes">
                                     </loading-icon>
 
-                                    <div class="col-sm" v-else>
+                                    <div class="col-sm form-group mb-0" v-else>
                                         <div>
                                             <label for="{{ id }}_cds_type">
                                                 {% trans "Course type" %}
@@ -65,7 +62,7 @@
                                         :loader_source="loader_source_academicyears">
                                     </loading-icon>
 
-                                    <div class="col-sm" v-else>
+                                    <div class="col-sm form-group mb-0" v-else>
                                         <div>
                                             <label for="{{ id }}_academic_year_input">
                                                 {% trans "Year of registration" %}
@@ -91,7 +88,7 @@
                                     </div>
 
                                     {% block filters_language %}
-                                    <div class="col-sm">
+                                    <div class="col-sm form-group mb-0">
                                         <div>
                                             <label for="{{ id }}_cds_language_input">
                                                 {% trans "Course of study language" %}
@@ -124,7 +121,7 @@
                                         :loader_source="loader_source_departments">
                                     </loading-icon>
 
-                                    <div class="col-sm" v-else>
+                                    <div class="col-sm form-group mb-0" v-else>
                                         <div>
                                             <label for="{{ id }}_department_input">
                                                 {% trans "Department" %}
@@ -148,7 +145,7 @@
                                     {% endblock filters_department %}
 
                                     {% block filters_jointdegree %}
-                                    <div class="col-sm">
+                                    <div class="col-sm form-group mb-0">
                                         <div>
                                             <label for="{{ id }}_joint_degree_input">
                                                 {% trans "Joint degree" %}
@@ -194,15 +191,13 @@
                         <div class="card no-after" style="border-top:1px solid #b71918">
                             <div class="card-body p-3">
                                 <h5>
-                                    <a class="no-color"
-                                       :href="'//{{ host }}/{{ cms_path_prefix }}{{ base_prefix }}/{{ cds_prefix }}/' + item.RegDidId +'/'"
-                                       {% if request.get_host != host %}target="_blank"{% endif %}>
+                                    <a :href="item.CdSId+'/'" class="no-color">
                                         <b>[[ item.CdSName ]]</b>
                                     </a>
 
                                 </h5>
                                 <div class="row">
-                                    <div class="col-12 col-md-auto mr-md-4">
+                                    <div class="col-12 col-md-auto me-md-4">
 
                                         <b>
                                             [[ item.CourseTypeDescription ]]
@@ -228,7 +223,7 @@
                                             <b>[[ item.CdSDuration ]] {% trans "years" %}</b>
                                         </small>
                                     </div>
-                                    <div class="col-12 col-md-auto mr-md-4" v-if="item.CdSLanguage.length > 0">
+                                    <div class="col-12 col-md-auto me-md-4" v-if="item.CdSLanguage.length > 0">
                                         <small>
                                             [[ labels['CdSLanguage'] ]] >
                                             <b>[[ item.CdSLanguage.join(', ') ]] </b>
@@ -236,6 +231,7 @@
                                     </div>
 
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -305,11 +301,11 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
 {% get_current_language as LANGUAGE_CODE %}
 
-initial_academic_year: {{ id }}_get_param('academicyear')  || '{{ current_year }}',
-
 {% settings_value "ALLOWED_CDS_LANGUAGES" as allowed_languages %}
 {% settings_value "ALLOWED_CDS_JOINT_DEGREES" as allowed_joint_degrees %}
 {% settings_value "CURRENT_YEAR" as current_year %}
+
+initial_academic_year: {{ id }}_get_param('academicyear')  || '{{ current_year }}',
 
 selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
 selected_academic_year: this.getItemFromSession("{{ id }}", 'academicyear') || {{ id }}_get_param('academicyear'),
@@ -323,7 +319,6 @@ course_types: [],
 is_loading_degreetypes: true,
 is_loading_academicyears: true,
 is_loading_departments: true,
-
 
 loader_source_departments: '{% url 'ricerca:departmentslist' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 loader_source_degreetypes: '{% url 'ricerca:degreetypes' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
@@ -340,8 +335,6 @@ joint_degree_filter: {{ allowed_joint_degrees|safe }}
 // get them, else show all
 let params = new URLSearchParams(this.url.split('?')[1]);
 let get_coursetype = params.get("coursetype")
-let get_structuretype = params.get("structuretype")
-
 
 this.callDegreeTypes();
 this.callAcademicYears();
@@ -364,7 +357,6 @@ CallURL(url, initial=false) {
     this.loader_source = url
     if (!url.includes("academicyear") && this.initial_academic_year)
         url = url + '&academicyear=' + this.initial_academic_year
-
     axios
         .get(url)
         .then(response => {
@@ -404,4 +396,4 @@ callDepartments() {
         })
 },
 {% endblock extra_methods %}
-</script>
+

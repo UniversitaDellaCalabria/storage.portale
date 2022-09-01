@@ -28,7 +28,7 @@ function {{ id }}_encodeQueryData(data=[]) {
 
 function {{ id }}_get_param(name) {
     let url = "{{ url|safe }}";
-    let params = (new URL(url)).searchParams;
+    let params = (new URL(window.location.host + url)).searchParams;
     return params.get(name) || '';
 }
 </script>
@@ -106,7 +106,6 @@ var {{ id }} = new Vue({
         {% endblock extra_before_mount %}
     },
     mounted() {
-
         {% block extra_mounted %}
         {% endblock extra_mounted %}
 

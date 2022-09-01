@@ -157,38 +157,30 @@ def can_manage_cds(func_to_decorate):
 
     return new_func
 
-#
-# def can_edit_cds(func_to_decorate):
-#     """
-#     """
-#     def new_func(*original_args, **original_kwargs):
-#         request = original_args[0]
-#         cds = get_object_or_404(DidatticaCds, pk=original_kwargs['code'])
-#         teachers = DidatticaCdsAltriDati.objects.filter(cds_id=cds)
-#         offices = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=cds)
-#         original_kwargs['cds'] = cds
-#         original_kwargs['teachers'] = teachers
-#         original_kwargs['offices'] = offices
-#
-#
-#         if request.user.is_superuser:
-#             return func_to_decorate(*original_args, **original_kwargs)
-#
-#         # if request.user == rgroup.user_ins:
-#             # return func_to_decorate(*original_args, **original_kwargs)
-#
-#         departments = []
-#         for myoffice in original_kwargs['my_offices']:
-#             if myoffice.office.organizational_structure.unique_code not in departments:
-#                 departments.append(myoffice.office.organizational_structure.unique_code)
-#         now = date.today()
-#         for teacher in teachers:
-#             if teacher.personale.sede in departments:
-#                 if teacher.dt_inizio and teacher.dt_inizio>now:
-#                     continue
-#                 if teacher.dt_fine and teacher.dt_fine<now:
-#                     continue
-#                 return func_to_decorate(*original_args, **original_kwargs)
-#         raise Exception("Permission denied")
-#
-#     return new_func
+
+def can_edit_cds(func_to_decorate):
+    """
+    """
+    def new_func(*original_args, **original_kwargs):
+        request = original_args[0]
+        cds = get_object_or_404(DidatticaCds, pk=original_kwargs['code'])
+        other_data = DidatticaCdsAltriDati.objects.filter(cds_id=cds.pk)
+        office_data = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=cds.pk)
+        original_kwargs['cds'] = cds
+        original_kwargs['other_data'] = other_data
+        original_kwargs['office_data'] = office_data
+
+        if request.user.is_superuser:
+            return func_to_decorate(*original_args, **original_kwargs)
+
+        departments = []
+
+        for myoffice in original_kwargs['my_offices']:
+            if myoffice.office.organizational_structure.unique_code not in departments:
+                departments.append(myoffice.office.organizational_structure.unique_code)
+
+        if cds.dip.dip_cod in departments:
+            return func_to_decorate(*original_args, **original_kwargs)
+        raise Exception("Permission denied")
+
+    return new_func

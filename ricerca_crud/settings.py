@@ -1,3 +1,4 @@
+from datetime import date
 from django.utils.translation import gettext_lazy as _
 
 
@@ -11,6 +12,6 @@ ALLOWED_CDS_JOINT_DEGREES = [
     {'COD': 'S', 'name': _("Joint title")},
     {'COD': 'D', 'name': _("Double title")}
 ]
-CURRENT_YEAR = ""
+CURRENT_YEAR = date.today().year
 
 

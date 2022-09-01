@@ -12,9 +12,11 @@ register = template.Library()
 
 @register.simple_tag
 def settings_value(name, **kwargs):
-    value = getattr(settings, name, getattr(app_settings, name))
+    app_value = getattr(app_settings, name, None)
+    value = getattr(settings, name, app_value)
     if not value: return ''
-    if isinstance(value, str) and kwargs: return value.format(**kwargs)
+    if isinstance(value, str) and kwargs:
+        return value.format(**kwargs)
     return value
 
 
@@ -35,6 +37,4 @@ def user_from_pk(user_id):
         return False
     user_model = get_user_model()
     user = user_model.objects.get(pk=user_id)
-    if not user:
-        return False
-    return user
+    return user if user else False
