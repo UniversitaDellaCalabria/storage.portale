@@ -864,6 +864,53 @@ def cds_detail(request, code,
                    reverse('ricerca_crud:crud_cds'): _('CdS'),
                    '#': cds.nome_cds_it}
 
+
+    form = DidatticaCdsAltriDatiForm(instance=cds)
+    form1 = DidatticaCdsAltriDatiUfficioForm(instance=cds)
+    if request.POST:
+        form = DidatticaCdsAltriDatiForm(instance=cds, data=request.POST)
+        form1 = DidatticaCdsAltriDatiUfficioForm(intance=cds, data=request.POST)
+        if form.is_valid() and form1.is_valid():
+            cds.user_mod = request.user
+            cds.matricola_coordinatore = form.cleaned_data['matricola_coordinatore']
+            cds.matricola_vice_coordinatore = form.cleaned_data['matricola_vice_coordinatore']
+            cds.num_posti = form.cleaned_data['num_posti']
+            cds.modalita_iscrizione = form.cleaned_data['modalita_iscrizione']
+            cds.ordine = form1.cleaned_data['ordine']
+            cds.matricola_riferimento = form1.cleaned_data['matricola_riferimento']
+            cds.nome_ufficio = form1.cleaned_data['nome_ufficio']
+            cds.nome_origine_riferimento = form1.cleaned_data['nome_origine_riferimento']
+            cds.telefono = form1.cleaned_data['telefono']
+            cds.email = form1.cleaned_data['email']
+            cds.edificio = form1.cleaned_data['edificio']
+            cds.piano = form1.cleaned_data['piano']
+            cds.orari = form1.cleaned_data['orari']
+            cds.sportello_online = form1.cleaned_data['sportello_online']
+            cds.save()
+
+            changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                       form.changed_data)
+            log_action(user=request.user,
+                       obj=cds,
+                       flag=CHANGE,
+                       msg=[{'changed': {"fields": changed_field_labels}}])
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Cds edited successfully"))
+
+            return redirect('ricerca_crud:crud_researchgroup_edit',
+                            code=code)
+
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds).pk,
+                                   object_id=cds.pk)
+
+
     return render(request,
                   'cds_detail.html',
                   {'breadcrumbs': breadcrumbs,
