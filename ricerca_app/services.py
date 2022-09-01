@@ -151,6 +151,15 @@ class ServiceDidatticaCds:
                 'modalita_iscrizione'
             ).distinct()
 
+            # matricola = DidatticaCdsAltriDati.objects.filter(cds_id=item['cds_id']).values(
+            #     'matricola_coordinatore__nome',
+            #     'matricola_coordinatore__matricola',
+            # ).distinct()
+            #
+            # print(matricola)
+
+
+
             item['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=item['cds_id']).values(
                 'ordine',
                 'nome_ufficio',

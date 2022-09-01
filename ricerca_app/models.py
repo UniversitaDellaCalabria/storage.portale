@@ -409,9 +409,9 @@ class DidatticaCds(InsModAbstract):
 
 class DidatticaCdsAltriDati(models.Model):
     cds = models.OneToOneField(DidatticaCds, models.DO_NOTHING, db_column='CDS_ID', primary_key=True)  # Field name made lowercase.
-    matricola_coordinatore = models.ForeignKey('Personale', models.DO_NOTHING, related_name='coordinatore', db_column='MATRICOLA_COORDINATORE', blank=True, null=True)  # Field name made lowercase.
+    matricola_coordinatore = models.ForeignKey('Personale', models.DO_NOTHING, related_name='coordinatore', db_column='MATRICOLA_COORDINATORE', blank=True, null=True, to_field='matricola')  # Field name made lowercase.
     nome_origine_coordinatore = models.CharField(db_column='NOME_ORIGINE_COORDINATORE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    matricola_vice_coordinatore = models.ForeignKey('Personale', models.DO_NOTHING, related_name='vice_coordinatore', db_column='MATRICOLA_VICE_COORDINATORE', blank=True, null=True)  # Field name made lowercase.
+    matricola_vice_coordinatore = models.ForeignKey('Personale', models.DO_NOTHING, related_name='vice_coordinatore', db_column='MATRICOLA_VICE_COORDINATORE', blank=True, null=True, to_field='matricola')  # Field name made lowercase.
     nome_origine_vice_coordinatore = models.CharField(db_column='NOME_ORIGINE_VICE_COORDINATORE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     num_posti = models.IntegerField(db_column='NUM_POSTI', blank=True, null=True)  # Field name made lowercase.
     modalita_iscrizione = models.TextField(db_column='MODALITA_ISCRIZIONE', blank=True, null=True)  # Field name made lowercase.
