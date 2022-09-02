@@ -17,6 +17,7 @@
                 <th>{% trans "Deputy coordinator" %}</th>
                 <th>{% trans "Number of seats" %}</th>
                 <th>{% trans "Registration procedure" %}</th>
+                <th>{% trans "Actions" %}</th>
 
                 {% comment %}
                 <th></th>
@@ -25,17 +26,15 @@
         </thead>
         <tbody>
             {% for data in other_data %}
-            {{ data.nome_origine_vice_coordinatore }}
+
 
             <tr>
-                <td>{{ data.matricola_coordinatore.personale|default_if_none:"-" }}</td>
+                <td>{{ data.matricola_coordinatore|default_if_none:"-" }}</td>
                 <td>{{ data.matricola_vice_coordinatore.personale|default_if_none:"-" }}</td>
                 <td>{{ data.num_posti|default_if_none:"-" }}</td>
                 <td>{{ data.modalita_iscrizione|default_if_none:"-" }}</td>
-
-                {% comment %}
                 <td>
-                    <a href="{% url 'ricerca_crud:crud_researchgroup_teacher_edit' code=rgroup.pk teacher_rgroup_id=teacher.pk %}" class="d-flex btn btn-primary btn-xs">
+                    <a href="{% url 'ricerca_crud:crud_cds_other_data_edit' code=cds.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg> {% trans "Edit" %}
@@ -44,85 +43,12 @@
                 <td>
                     <a href="" class="btn btn-danger btn-xs d-flex"
                        data-toggle="modal"
-                       data-target="#delete_teacher_{{ teacher.pk }}">
+                       data-target="#delete_cds_{{ cds.pk  }}">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                         </svg> {% trans "Remove" %}
                     </a>
                 </td>
-                {% endcomment %}
-            </tr>
-
-            {% comment %}
-            <div class="modal fade"
-                 tabindex="-1"
-                 role="dialog"
-                 id="delete_teacher_{{ teacher.pk }}">
-                <div class="modal-dialog modal-dialog-centered"
-                     role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                {% trans "Confirm" %}
-                            </h5>
-                            <button class="close"
-                                    type="button"
-                                    data-dismiss="modal"
-                                    aria-label="Close">
-                               <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                               </svg>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                {% trans "Do you want to delete choosen teacher?" %}
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_researchgroup_teacher_delete' code=rgroup.pk teacher_rgroup_id=teacher.pk %}">
-                                {% trans 'Yes, proceed' %}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endcomment %}
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>{% trans "Order" %}</th>
-                <th>{% trans "Deputy coordinator" %}</th>
-                <th>{% trans "Office Name" %}</th>
-                <th>{% trans "Phone" %}</th>
-                <th>{% trans "Email" %}</th>
-                <th>{% trans "Building" %}</th>
-                <th>{% trans "Floor" %}</th>
-                <th>{% trans "Timetables" %}</th>
-                <th>{% trans "Online Counter" %}</th>
-
-                {% comment %}
-                <th></th>
-                {% endcomment %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for data in office_data %}
-                {{ data.matricola_riferimento.personale}}
-            <tr>
-                <td>{{ data.ordine|default_if_none:"-" }}</td>
-                <td>{{ data.matricola_riferimento.personale|default_if_none:"-" }}</td>
-                <td>{{ data.nome_ufficio|default_if_none:"-" }}</td>
-                <td>{{ data.telefono|default_if_none:"-" }}</td>
-                <td>{{ data.email|default_if_none:"-" }}</td>
-                <td>{{ data.edificio|default_if_none:"-" }}</td>
-                <td>{{ data.piano|default_if_none:"-" }}</td>
-                <td>{{ data.orari|default_if_none:"-" }}</td>
-                <td>{{ data.sportello_online|default_if_none:"-" }}</td>
 
                 {% comment %}
                 <td>
@@ -184,6 +110,117 @@
     </table>
     {% endif %}
 
+    <h4>{% trans "Office data" %}</h4>
+    {% if office_data %}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Order" %}</th>
+                <th>{% trans "Deputy coordinator" %}</th>
+                <th>{% trans "Office Name" %}</th>
+                <th>{% trans "Phone" %}</th>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Building" %}</th>
+                <th>{% trans "Floor" %}</th>
+                <th>{% trans "Timetables" %}</th>
+                <th>{% trans "Online Counter" %}</th>
+                <th>{% trans "Actions" %}</th>
+
+                {% comment %}
+                <th></th>
+                {% endcomment %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in office_data %}
+                {{ data.matricola_riferimento.personale}}
+                {{ data.orari }}
+            <tr>
+                <td>{{ data.ordine|default_if_none:"-" }}</td>
+                <td>{{ data.matricola_riferimento|default_if_none:"-" }}</td>
+                <td>{{ data.nome_ufficio|default_if_none:"-" }}</td>
+                <td>{{ data.telefono|default_if_none:"-" }}</td>
+                <td>{{ data.email|default_if_none:"-" }}</td>
+                <td>{{ data.edificio|default_if_none:"-" }}</td>
+                <td>{{ data.piano|default_if_none:"-" }}</td>
+                <td>{{ data.orari|default_if_none:"-" }}</td>
+                <td>{{ data.sportello_online|default_if_none:"-" }}</td>
+                <td>
+                    <a href="{% url 'ricerca_crud:cds_detail' code=cds.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                        </svg> {% trans "Edit" %}
+                    </a>
+                </td>
+                <td>
+                    <a href="" class="btn btn-danger btn-xs d-flex"
+                       data-toggle="modal"
+                       data-target="#delete_cds_{{ cds.pk }}">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                        </svg> {% trans "Remove" %}
+                    </a>
+                </td>
+
+                {% comment %}
+                <td>
+                    <a href="{% url 'ricerca_crud:crud_researchgroup_teacher_edit' code=rgroup.pk teacher_rgroup_id=teacher.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                        </svg> {% trans "Edit" %}
+                    </a>
+                </td>
+                <td>
+                    <a href="" class="btn btn-danger btn-xs d-flex"
+                       data-toggle="modal"
+                       data-target="#delete_teacher_{{ teacher.pk }}">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                        </svg> {% trans "Remove" %}
+                    </a>
+                </td>
+                {% endcomment %}
+            </tr>
+
+            {% comment %}
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="delete_teacher_{{ teacher.pk }}">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Confirm" %}
+                            </h5>
+                            <button class="close"
+                                    type="button"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                {% trans "Do you want to delete choosen teacher?" %}
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_researchgroup_teacher_delete' code=rgroup.pk teacher_rgroup_id=teacher.pk %}">
+                                {% trans 'Yes, proceed' %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endcomment %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 
     <hr class="my-5">
     <h4>Logs</h4>
