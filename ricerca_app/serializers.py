@@ -1,6 +1,12 @@
-from rest_framework import serializers
 from django.conf import settings
-from .utils import encrypt
+
+from rest_framework import serializers
+
+from . settings import ALLOWED_PROFILE_ID
+from . utils import encrypt
+
+
+ALLOWED_PROFILE_ID = getattr(settings, 'ALLOWED_PROFILE_ID', ALLOWED_PROFILE_ID)
 
 
 class CreateUpdateAbstract(serializers.Serializer):
@@ -1001,8 +1007,8 @@ class AddressbookSerializer(CreateUpdateAbstract):
             'CV': query['URL Sito WEB Curriculum Vitae'],
             'Teacher': query['fl_docente'],
             'ProfileId': query['profilo'],
-            'ProfileDescription': query['ds_profilo'],
-            'ProfileShortDescription': query['ds_profilo_breve'],
+            'ProfileDescription': query['ds_profilo'] if query['profilo'] in ALLOWED_PROFILE_ID else None,
+            'ProfileShortDescription': query['ds_profilo_breve'] if query['profilo'] in ALLOWED_PROFILE_ID else None,
         }
 
     @staticmethod
@@ -1041,6 +1047,7 @@ class PersonaleSerializer(CreateUpdateAbstract):
         if query["Roles"] is not None:
             roles = AddressbookSerializer.to_dict_roles(
                 query["Roles"])
+
         return {
             'Name': full_name,
             'ID': encrypt(query['matricola']),
@@ -1058,8 +1065,8 @@ class PersonaleSerializer(CreateUpdateAbstract):
             'TeacherCVFull': query['cv_full_it'] if req_lang == "it" or query['cv_full_eng'] is None else query['cv_full_eng'],
             'TeacherCVShort': query['cv_short_it'] if req_lang == "it" or query['cv_short_eng'] is None else query['cv_short_eng'],
             'ProfileId': query['profilo'],
-            'ProfileDescription': query['ds_profilo'],
-            'ProfileShortDescription':query['ds_profilo_breve'],
+            'ProfileDescription': query['ds_profilo'] if query['profilo'] in ALLOWED_PROFILE_ID else None,
+            'ProfileShortDescription':query['ds_profilo_breve'] if query['profilo'] in ALLOWED_PROFILE_ID else None,
         }
 
     @staticmethod
