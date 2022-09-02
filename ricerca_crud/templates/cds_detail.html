@@ -25,10 +25,10 @@
         </thead>
         <tbody>
             {% for data in other_data %}
-            {{ data.nome_origine_vice_coordinatore }}
+
 
             <tr>
-                <td>{{ data.matricola_coordinatore.personale|default_if_none:"-" }}</td>
+                <td>{{ data.matricola_coordinatore|default_if_none:"-" }}</td>
                 <td>{{ data.matricola_vice_coordinatore.personale|default_if_none:"-" }}</td>
                 <td>{{ data.num_posti|default_if_none:"-" }}</td>
                 <td>{{ data.modalita_iscrizione|default_if_none:"-" }}</td>
@@ -91,7 +91,10 @@
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
 
+    <h4>{% trans "Office data" %}</h4>
+    {% if office_data %}
     <table class="table table-striped table-hover">
         <thead>
             <tr>
@@ -113,9 +116,10 @@
         <tbody>
             {% for data in office_data %}
                 {{ data.matricola_riferimento.personale}}
+                {{ data.orari }}
             <tr>
                 <td>{{ data.ordine|default_if_none:"-" }}</td>
-                <td>{{ data.matricola_riferimento.personale|default_if_none:"-" }}</td>
+                <td>{{ data.matricola_riferimento|default_if_none:"-" }}</td>
                 <td>{{ data.nome_ufficio|default_if_none:"-" }}</td>
                 <td>{{ data.telefono|default_if_none:"-" }}</td>
                 <td>{{ data.email|default_if_none:"-" }}</td>
@@ -183,7 +187,6 @@
         </tbody>
     </table>
     {% endif %}
-
 
     <hr class="my-5">
     <h4>Logs</h4>
