@@ -164,11 +164,8 @@ def can_edit_cds(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
         cds = get_object_or_404(DidatticaCds, pk=original_kwargs['code'])
-        other_data = DidatticaCdsAltriDati.objects.filter(cds_id=cds.pk)
-        office_data = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=cds.pk)
         original_kwargs['cds'] = cds
-        original_kwargs['other_data'] = other_data
-        original_kwargs['office_data'] = office_data
+
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
@@ -184,3 +181,7 @@ def can_edit_cds(func_to_decorate):
         raise Exception("Permission denied")
 
     return new_func
+
+
+
+

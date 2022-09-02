@@ -33,3 +33,5 @@ urlpatterns += path('appliedresearchlines/<str:code>/teacher/<str:teacher_rline_
 
 urlpatterns += path('cds/', cds, name='crud_cds'),
 urlpatterns += path('cds/<str:code>/', cds_detail, name='cds_detail'),
+urlpatterns += path('cds/<str:code>/other-data-edit/<str:data_id>', cds_other_data_edit, name='crud_cds_other_data_edit'),
+

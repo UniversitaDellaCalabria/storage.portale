@@ -101,7 +101,7 @@ class RicercaDocenteLineaApplicataForm(forms.ModelForm):
 class DidatticaCdsAltriDatiForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDati
-        fields = ['cds', 'matricola_coordinatore', 'nome_origine_coordinatore', 'matricola_vice_coordinatore', 'nome_origine_vice_coordinatore', 'num_posti', 'modalita_iscrizione']
+        fields = ['num_posti', 'modalita_iscrizione']
         widgets = {'modalita_iscrizione': forms.Textarea(attrs={'rows': 2})}
 
     class Media:

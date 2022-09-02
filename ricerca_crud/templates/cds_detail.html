@@ -17,6 +17,7 @@
                 <th>{% trans "Deputy coordinator" %}</th>
                 <th>{% trans "Number of seats" %}</th>
                 <th>{% trans "Registration procedure" %}</th>
+                <th>{% trans "Actions" %}</th>
 
                 {% comment %}
                 <th></th>
@@ -32,6 +33,22 @@
                 <td>{{ data.matricola_vice_coordinatore.personale|default_if_none:"-" }}</td>
                 <td>{{ data.num_posti|default_if_none:"-" }}</td>
                 <td>{{ data.modalita_iscrizione|default_if_none:"-" }}</td>
+                <td>
+                    <a href="{% url 'ricerca_crud:crud_cds_other_data_edit' code=cds.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                        </svg> {% trans "Edit" %}
+                    </a>
+                </td>
+                <td>
+                    <a href="" class="btn btn-danger btn-xs d-flex"
+                       data-toggle="modal"
+                       data-target="#delete_cds_{{ cds.pk  }}">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                        </svg> {% trans "Remove" %}
+                    </a>
+                </td>
 
                 {% comment %}
                 <td>
@@ -107,6 +124,7 @@
                 <th>{% trans "Floor" %}</th>
                 <th>{% trans "Timetables" %}</th>
                 <th>{% trans "Online Counter" %}</th>
+                <th>{% trans "Actions" %}</th>
 
                 {% comment %}
                 <th></th>
@@ -127,6 +145,22 @@
                 <td>{{ data.piano|default_if_none:"-" }}</td>
                 <td>{{ data.orari|default_if_none:"-" }}</td>
                 <td>{{ data.sportello_online|default_if_none:"-" }}</td>
+                <td>
+                    <a href="{% url 'ricerca_crud:cds_detail' code=cds.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                        </svg> {% trans "Edit" %}
+                    </a>
+                </td>
+                <td>
+                    <a href="" class="btn btn-danger btn-xs d-flex"
+                       data-toggle="modal"
+                       data-target="#delete_cds_{{ cds.pk }}">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                        </svg> {% trans "Remove" %}
+                    </a>
+                </td>
 
                 {% comment %}
                 <td>
