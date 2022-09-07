@@ -868,55 +868,15 @@ def cds_detail(request, code,
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=cds.pk)
 
 
-    # form = DidatticaCdsAltriDatiForm(instance=cds)
-    # form1 = DidatticaCdsAltriDatiUfficioForm(instance=cds)
-    # if request.POST:
-    #     form = DidatticaCdsAltriDatiForm(instance=cds, data=request.POST)
-    #     form1 = DidatticaCdsAltriDatiUfficioForm(intance=cds, data=request.POST)
-    #     if form.is_valid() and form1.is_valid():
-    #         cds.user_mod = request.user
-    #         cds.matricola_coordinatore = form.cleaned_data['matricola_coordinatore']
-    #         cds.matricola_vice_coordinatore = form.cleaned_data['matricola_vice_coordinatore']
-    #         cds.num_posti = form.cleaned_data['num_posti']
-    #         cds.modalita_iscrizione = form.cleaned_data['modalita_iscrizione']
-    #         cds.ordine = form1.cleaned_data['ordine']
-    #         cds.matricola_riferimento = form1.cleaned_data['matricola_riferimento']
-    #         cds.nome_ufficio = form1.cleaned_data['nome_ufficio']
-    #         cds.nome_origine_riferimento = form1.cleaned_data['nome_origine_riferimento']
-    #         cds.telefono = form1.cleaned_data['telefono']
-    #         cds.email = form1.cleaned_data['email']
-    #         cds.edificio = form1.cleaned_data['edificio']
-    #         cds.piano = form1.cleaned_data['piano']
-    #         cds.orari = form1.cleaned_data['orari']
-    #         cds.sportello_online = form1.cleaned_data['sportello_online']
-    #         cds.save()
-    #
-    #         changed_field_labels = _get_changed_field_labels_from_form(form,
-    #                                                                    form.changed_data)
-    #         log_action(user=request.user,
-    #                    obj=cds,
-    #                    flag=CHANGE,
-    #                    msg=[{'changed': {"fields": changed_field_labels}}])
-    #
-    #         messages.add_message(request,
-    #                              messages.SUCCESS,
-    #                              _("Cds edited successfully"))
-    #
-    #         return redirect('ricerca_crud:crud_researchgroup_edit',
-    #                         code=code)
-    #
-    #     else:  # pragma: no cover
-    #         for k, v in form.errors.items():
-    #             messages.add_message(request, messages.ERROR,
-    #                                  f"<b>{form.fields[k].label}</b>: {v}")
-    #
-    # logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds).pk,
-    #                                object_id=cds.pk)
+
+    logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds).pk,
+                                   object_id=cds.pk)
 
 
     return render(request,
                   'cds_detail.html',
                   {'breadcrumbs': breadcrumbs,
+                   'logs': logs,
                    'cds': cds,
                    'other_data': other_data,
                    'office_data': office_data})
@@ -940,23 +900,22 @@ def cds_other_data_edit(request, code, data_id, cds=None,
 
     other_data = get_object_or_404(DidatticaCdsAltriDati,
                                        pk=data_id, cds=cds)
-
     form = DidatticaCdsAltriDatiForm(instance=other_data)
 
     if request.POST:
         form = DidatticaCdsAltriDatiForm(data=request.POST)
         if form.is_valid():
             other_data.user_mod = request.user
-            other_data.matricola_coordinatore = form.cleaned_data['matricola_coordinatore']
-            other_data.matricola_vice_coordinatore = form.cleaned_data['matricola_vice_coordinatore']
             other_data.num_posti = form.cleaned_data['num_posti']
             other_data.modalita_iscrizione = form.cleaned_data['modalita_iscrizione']
+            other_data.nome_origine_coordinatore = form.cleaned_data['nome_origine_coordinatore']
+            other_data.nome_origine_vice_coordinatore = form.cleaned_data['nome_origine_vice_coordinatore']
             other_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
             log_action(user=request.user,
-                       obj=data_id,
+                       obj=cds,
                        flag=CHANGE,
                        msg=[{'changed': {"fields": changed_field_labels}}])
 
@@ -973,13 +932,570 @@ def cds_other_data_edit(request, code, data_id, cds=None,
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
-    logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds).pk,
-                                   object_id=cds.pk)
-
     return render(request,
                   'cds_other_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
+                   'cds': cds,
+                   'data_id': data_id,
+                   'other_data': other_data})
+
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_other_data_coordinator(request, code, data_id,
+                               my_offices=None, cds=None):
+
+
+    other_data = get_object_or_404(DidatticaCdsAltriDati,
+                                       pk=data_id, cds=cds)
+
+    teacher = other_data.matricola_coordinatore
+    teacher_data = ()
+
+    if teacher:
+        teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
+        form = DidatticaCdsAltriDatiCoordinatorForm(initial={'choosen_teacher': teacher_data[0]})
+    else:
+        form = DidatticaCdsAltriDatiCoordinatorForm()
+
+    if request.POST:
+        form = DidatticaCdsAltriDatiCoordinatorForm(data=request.POST)
+        if form.is_valid():
+            teacher_code = decrypt(form.cleaned_data['choosen_teacher'])
+            new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+            other_data.matricola_coordinatore= new_teacher
+            other_data.nome_origine_coordinatore = new_teacher.__str__()
+            other_data.save()
+
+            if teacher and teacher == new_teacher:
+                log_msg = f'{_("Changed coordinator")} {teacher.__str__()}'
+            elif teacher and teacher!=new_teacher:
+                log_msg = f'{teacher} {_("substituted with")} {new_teacher.__str__()}'
+            else:
+                log_msg = f'{_("Changed coordinator")} {new_teacher.__str__()}'
+
+            log_action(user=request.user,
+                       obj=cds,
+                       flag=CHANGE,
+                       msg=log_msg)
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Coordinator edited successfully"))
+            return redirect('ricerca_crud:crud_cds_other_data_edit',
+                            code=code, data_id=data_id)
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+                   reverse('ricerca_crud:crud_cds'): _('Cds'),
+                   reverse('ricerca_crud:cds_detail', kwargs={'code': code}): cds.nome_cds_it,
+                   reverse('ricerca_crud:crud_cds_other_data_edit',
+                           kwargs={'code': code, 'data_id':data_id}): 'Modifica Dati',
+                   '#': 'Edit Coordinator'}
+
+    return render(request,
+                  'cds_other_data_teacher.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'cds': cds,
+                   'data_id':data_id,
+                   'choosen_teacher': teacher_data[1] if teacher_data else None,
+                   'url': reverse('ricerca:teacherslist')})
+
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_other_data_deputy_coordinator(request, code, data_id,
+                               my_offices=None, cds=None):
+
+
+    other_data = get_object_or_404(DidatticaCdsAltriDati,
+                                       pk=data_id, cds=cds)
+
+    teacher = other_data.matricola_vice_coordinatore
+    teacher_data = ()
+
+    if teacher:
+        teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
+        form = DidatticaCdsAltriDatiCoordinatorForm(initial={'choosen_teacher': teacher_data[0]})
+    else:
+        form = DidatticaCdsAltriDatiCoordinatorForm()
+
+    if request.POST:
+        form = DidatticaCdsAltriDatiCoordinatorForm(data=request.POST)
+        if form.is_valid():
+            teacher_code = decrypt(form.cleaned_data['choosen_teacher'])
+            new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+            other_data.matricola_vice_coordinatore= new_teacher
+            other_data.nome_origine_vice_coordinatore = new_teacher.__str__()
+            other_data.save()
+
+            if teacher and teacher == new_teacher:
+                log_msg = f'{_("Changed deputy coordinator")} {teacher.__str__()}'
+            elif teacher and teacher!=new_teacher:
+                log_msg = f'{teacher} {_("substituted with")} {new_teacher.__str__()}'
+            else:
+                log_msg = f'{_("Changed deputy coordinator")} {new_teacher.__str__()}'
+
+            log_action(user=request.user,
+                       obj=cds,
+                       flag=CHANGE,
+                       msg=log_msg)
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Deputy Coordinator edited successfully"))
+            return redirect('ricerca_crud:crud_cds_other_data_edit',
+                            code=code, data_id=data_id)
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+                   reverse('ricerca_crud:crud_cds'): _('Cds'),
+                   reverse('ricerca_crud:cds_detail', kwargs={'code': code}): cds.nome_cds_it,
+                   reverse('ricerca_crud:crud_cds_other_data_edit',
+                           kwargs={'code': code, 'data_id':data_id}): 'Modifica Dati',
+                   '#': 'Edit Coordinator'}
+
+    return render(request,
+                  'cds_other_data_teacher.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'cds': cds,
+                   'data_id':data_id,
+                   'choosen_teacher': teacher_data[1] if teacher_data else None,
+                   'url': reverse('ricerca:teacherslist')})
+
+
+
+
+# @login_required
+# @can_manage_cds
+# @can_edit_cds
+# def cds_other_data_teacher_edit(request, code, data_id, teacher_cds_id=None, deputy_teacher_cds_id=None,
+#                                my_offices=None, cds=None, teachers=None):
+#     if not teacher_cds_id and not deputy_teacher_cds_id:
+#         raise Exception(_('Matricole assenti'))
+#
+#     other_data = get_object_or_404(DidatticaCdsAltriDati,
+#                                        pk=data_id, cds=cds)
+#     if teacher_cds_id:
+#         matricola = teacher_cds_id
+#         teacher = other_data.matricola_coordinatore
+#     else:
+#         matricola = deputy_teacher_cds_id
+#         teacher = other_data.matricola_vice_coordinatore
+#     teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
+#     form = DidatticaCdsAltriDatiForm(instance=other_data,
+#                                     initial={'choosen_teacher': teacher_data[0]})
+#
+#     if request.POST:
+#         form = DidatticaCdsAltriDatiForm(data=request.POST)
+#         if form.is_valid():
+#             teacher_code = decrypt(form.cleaned_data['choosen_teacher'])
+#             new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+#             other_data.user_mod = request.user
+#             other_data.personale = new_teacher
+#             other_data.save()
+#
+#             log_msg = f'{_("Changed teacher")} {teacher.__str__()}' \
+#                       if teacher == new_teacher \
+#                       else f'{teacher} {_("substituted with")} {new_teacher.__str__()}'
+#
+#             log_action(user=request.user,
+#                        obj=cds,
+#                        flag=CHANGE,
+#                        msg=log_msg)
+#
+#             messages.add_message(request,
+#                                  messages.SUCCESS,
+#                                  _("Teacher edited successfully"))
+#             return redirect('ricerca_crud:crud_cds_other_data_teacher_edit',
+#                             code=code)
+#         else:  # pragma: no cover
+#             for k, v in form.errors.items():
+#                 messages.add_message(request, messages.ERROR,
+#                                      f"<b>{form.fields[k].label}</b>: {v}")
+#
+#     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+#                    reverse('ricerca_crud:crud_cds'): _('Cds'),
+#                    reverse('ricerca_crud:cds_detail', kwargs={'code': code}): cds.nome_cds_it,
+#                    reverse('ricerca_crud:crud_cds_other_data_edit',
+#                            kwargs={'code': code, 'data_id':data_id}): 'Dati Coordinatore',
+#                    '#': f'{teacher.cognome} {teacher.nome}'}
+#
+#     return render(request,
+#                   'cds_other_data_teacher.html',
+#                   {'breadcrumbs': breadcrumbs,
+#                    'form': form,
+#                    'cds': cds,
+#                    'data_id':data_id,
+#                    'teacher_cds_id': teacher_cds_id,
+#                    'choosen_teacher': teacher_data[1],
+#                    'url': reverse('ricerca:teacherslist')})
+
+
+
+# @login_required
+# @can_manage_cds
+# @can_edit_cds
+# def cds_other_data_teacher_new(request, code, data_id,
+#                                my_offices=None, cds=None, teachers=None):
+#
+#     other_data = get_object_or_404(DidatticaCdsAltriDati,
+#                                        pk=data_id, cds=cds)
+#
+#     form = DidatticaCdsAltriDatiForm(instance=other_data,)
+#
+#     if request.POST:
+#         form = DidatticaCdsAltriDatiForm(data=request.POST)
+#         if form.is_valid():
+#             teacher_code = decrypt(form.cleaned_data['choosen_teacher'])
+#             new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+#             other_data.user_mod = request.user
+#             other_data.personale = new_teacher
+#             other_data.save()
+#
+#
+#             log_action(user=request.user,
+#                        obj=cds,
+#                        flag=CHANGE,
+#                        msg=f'{_("Added teacher")} {new_teacher.__str__()}')
+#
+#             messages.add_message(request,
+#                                  messages.SUCCESS,
+#                                  _("Teacher added successfully"))
+#             return redirect('ricerca_crud:crud_cds_other_data_edit',
+#                             code=code)
+#         else:  # pragma: no cover
+#             for k, v in form.errors.items():
+#                 messages.add_message(request, messages.ERROR,
+#                                      f"<b>{form.fields[k].label}</b>: {v}")
+#
+#     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+#                    reverse('ricerca_crud:crud_cds'): _('Cds'),
+#                    reverse('ricerca_crud:cds_detail', kwargs={'code': code}): cds.nome_cds_it,
+#                    reverse('ricerca_crud:crud_cds_other_data_edit',
+#                            kwargs={'code': code, 'data_id':data_id}): 'Dati Coordinatore',
+#                    '#': _('New teacher')}
+#
+#
+#     return render(request,
+#                   'cds_other_data_teacher.html',
+#                   {'breadcrumbs': breadcrumbs,
+#                    'form': form,
+#                    'cds': cds,
+#                    'data_id':data_id,
+#                    'url': reverse('ricerca:teacherslist')})
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_other_data_coordinator_delete(request, code, data_id,
+                                 my_offices=None, cds=None):
+    other_data = get_object_or_404(DidatticaCdsAltriDati,
+                                   pk=data_id, cds=cds)
+
+    other_data.matricola_coordinatore.delete()
+
+    log_action(user=request.user,
+               obj=cds,
+               flag=CHANGE,
+               msg=f'{_("Deleted coordinator data")}')
+
+    messages.add_message(request,
+                         messages.SUCCESS,
+                         _("Coordinator data removed successfully"))
+    return redirect('ricerca_crud:cds_detail', code=code)
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_other_data_deputy_coordinator_delete(request, code, data_id,
+                                 my_offices=None, cds=None):
+    other_data = get_object_or_404(DidatticaCdsAltriDati,
+                                   pk=data_id, cds=cds)
+
+    other_data.matricola_vice_coordinatore.delete()
+
+    log_action(user=request.user,
+               obj=cds,
+               flag=CHANGE,
+               msg=f'{_("Deleted deputy coordinator data")}')
+
+    messages.add_message(request,
+                         messages.SUCCESS,
+                         _("Deputy coordinator data removed successfully"))
+    return redirect('ricerca_crud:cds_detail', code=code)
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_office_data_edit(request, code, data_id, cds=None,
+                               my_offices=None ):
+    # breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+    #                reverse('ricerca_crud:crud_cds'): _('CdS'),
+    #                '#': cds.nome_cds_it}
+    #
+
+    data_cds = get_object_or_404(DidatticaCdsAltriDati, pk=cds)
+
+    breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+                   reverse('ricerca_crud:crud_cds'): _('Cds'),
+                   reverse('ricerca_crud:crud_cds_office_data_edit', kwargs={'code': code,'data_id': data_id}): cds.nome_cds_it
+                   }
+
+    office_data = get_object_or_404(DidatticaCdsAltriDatiUfficio,
+                                       pk=data_id, cds=data_cds)
+
+    form = DidatticaCdsAltriDatiUfficioForm(instance=office_data)
+
+    if request.POST:
+        form = DidatticaCdsAltriDatiUfficioForm(data=request.POST)
+        if form.is_valid():
+            office_data.user_mod = request.user
+            office_data.ordine = form.cleaned_data['ordine']
+            office_data.nome_ufficio = form.cleaned_data['nome_ufficio']
+            office_data.nome_origine_riferimento = form.cleaned_data['nome_origine_riferimento']
+            office_data.telefono = form.cleaned_data['telefono']
+            office_data.email = form.cleaned_data['email']
+            office_data.edificio = form.cleaned_data['edificio']
+            office_data.piano = form.cleaned_data['piano']
+            office_data.orari = form.cleaned_data['orari']
+            office_data.sportello_online = form.cleaned_data['sportello_online']
+            office_data.save()
+
+            changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                       form.changed_data)
+            log_action(user=request.user,
+                       obj=cds,
+                       flag=CHANGE,
+                       msg=[{'changed': {"fields": changed_field_labels}}])
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Office data edited successfully"))
+
+            return redirect('ricerca_crud:cds_detail',
+                            code=code)
+
+
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds).pk,
+                                   object_id=cds.pk)
+
+    return render(request,
+                  'cds_office_data.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
                    'logs': logs,
                    'cds': cds,
-                   'other_data': other_data})
+                   'data_id': data_id,
+                   'office_data': office_data})
+
+
+
+# @login_required
+# @can_manage_cds
+# @can_edit_cds
+# def cds_office_data_teacher_edit(request, code, data_id, deputy_teacher_cds_id=None,
+#                                my_offices=None, cds=None, teachers=None):
+#     if not deputy_teacher_cds_id:
+#         raise Exception(_('Matricola assente'))
+#
+#     data_cds = get_object_or_404(DidatticaCdsAltriDati, pk=cds)
+#
+#     office_data = get_object_or_404(DidatticaCdsAltriDatiUfficio,
+#                                     pk=data_id, cds=data_cds)
+#
+#     matricola = deputy_teacher_cds_id
+#     teacher = office_data.matricola_riferimento
+#     teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
+#     form = DidatticaCdsAltriDatiUfficioForm(instance=office_data,
+#                                     initial={'choosen_teacher': teacher_data[0]})
+#
+#
+#     if request.POST:
+#         form = DidatticaCdsAltriDatiForm(data=request.POST)
+#         if form.is_valid():
+#             teacher_code = decrypt(form.cleaned_data['choosen_teacher'])
+#             new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+#             office_data.user_mod = request.user
+#             office_data.personale = new_teacher
+#             office_data.save()
+#
+#             log_msg = f'{_("Changed teacher")} {teacher.__str__()}' \
+#                       if teacher == new_teacher \
+#                       else f'{teacher} {_("substituted with")} {new_teacher.__str__()}'
+#
+#             log_action(user=request.user,
+#                        obj=cds,
+#                        flag=CHANGE,
+#                        msg=log_msg)
+#
+#             messages.add_message(request,
+#                                  messages.SUCCESS,
+#                                  _("Teacher edited successfully"))
+#             return redirect('ricerca_crud:crud_cds_other_data_teacher_edit',
+#                             code=code)
+#         else:  # pragma: no cover
+#             for k, v in form.errors.items():
+#                 messages.add_message(request, messages.ERROR,
+#                                      f"<b>{form.fields[k].label}</b>: {v}")
+#
+#     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+#                    reverse('ricerca_crud:crud_cds'): _('Cds'),
+#                    reverse('ricerca_crud:cds_detail', kwargs={'code': code}): cds.nome_cds_it,
+#                    reverse('ricerca_crud:crud_cds_office_data_edit',
+#                            kwargs={'code': code, 'data_id':data_id}): 'Dati Coordinatore',
+#                    '#': f'{teacher.cognome} {teacher.nome}'}
+#
+#     return render(request,
+#                   'cds_other_data_teacher.html',
+#                   {'breadcrumbs': breadcrumbs,
+#                    'form': form,
+#                    'cds': cds,
+#                    'data_id':data_id,
+#                    'deputy_teacher_cds_id': deputy_teacher_cds_id,
+#                    'choosen_teacher': teacher_data[1],
+#                    'url': reverse('ricerca:teacherslist')})
+
+#
+# @login_required
+# @can_manage_cds
+# @can_edit_cds
+# def cds_office_data_teacher_new(request, code, data_id,
+#                                my_offices=None, cds=None, teachers=None):
+#     data_cds = get_object_or_404(DidatticaCdsAltriDati, pk=cds)
+#
+#     office_data = get_object_or_404(DidatticaCdsAltriDatiUfficio,
+#                                     pk=data_id, cds=data_cds)
+#
+#     form = DidatticaCdsAltriDatiUfficioForm(instance=office_data)
+#
+#     if request.POST:
+#         form = DidatticaCdsAltriDatiForm(data=request.POST)
+#         if form.is_valid():
+#             teacher_code = decrypt(form.cleaned_data['choosen_teacher'])
+#             new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+#             office_data.user_mod = request.user
+#             office_data.personale = new_teacher
+#             office_data.save()
+#
+#
+#             log_action(user=request.user,
+#                        obj=cds,
+#                        flag=CHANGE,
+#                        msg=f'{_("Added teacher")} {new_teacher.__str__()}')
+#
+#             messages.add_message(request,
+#                                  messages.SUCCESS,
+#                                  _("Teacher added successfully"))
+#             return redirect('ricerca_crud:crud_cds_office_data_edit',
+#                             code=code)
+#         else:  # pragma: no cover
+#             for k, v in form.errors.items():
+#                 messages.add_message(request, messages.ERROR,
+#                                      f"<b>{form.fields[k].label}</b>: {v}")
+#
+#     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+#                    reverse('ricerca_crud:crud_cds'): _('Cds'),
+#                    reverse('ricerca_crud:cds_detail', kwargs={'code': code}): cds.nome_cds_it,
+#                    reverse('ricerca_crud:crud_cds_office_data_edit',
+#                            kwargs={'code': code, 'data_id':data_id}): 'Dati Coordinatore',
+#                    '#': _('New teacher')}
+#
+
+    return render(request,
+                  'cds_other_data_teacher.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'cds': cds,
+                   'data_id':data_id,
+                   'url': reverse('ricerca:teacherslist')})
+
+
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_office_data_coordinator(request, code, data_id,
+                               my_offices=None, cds=None):
+
+    data_cds = get_object_or_404(DidatticaCdsAltriDati, pk=cds)
+
+    office_data = get_object_or_404(DidatticaCdsAltriDatiUfficio,
+                                       pk=data_id, cds=data_cds)
+
+    teacher = office_data.matricola_riferimento
+    teacher_data = ()
+
+    if teacher:
+        teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
+        form = DidatticaCdsAltriDatiCoordinatorForm(initial={'choosen_teacher': teacher_data[0]})
+    else:
+        form = DidatticaCdsAltriDatiCoordinatorForm()
+
+    if request.POST:
+        form = DidatticaCdsAltriDatiCoordinatorForm(data=request.POST)
+        if form.is_valid():
+            teacher_code = decrypt(form.cleaned_data['choosen_teacher'])
+            new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+            office_data.matricola_riferimento= new_teacher
+            office_data.nome_origine_riferimento = new_teacher.__str__()
+            office_data.save()
+
+            if teacher and teacher == new_teacher:
+                log_msg = f'{_("Changed coordinator")} {teacher.__str__()}'
+            elif teacher and teacher!=new_teacher:
+                log_msg = f'{teacher} {_("substituted with")} {new_teacher.__str__()}'
+            else:
+                log_msg = f'{_("Changed coordinator")} {new_teacher.__str__()}'
+
+            log_action(user=request.user,
+                       obj=cds,
+                       flag=CHANGE,
+                       msg=log_msg)
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Coordinator edited successfully"))
+            return redirect('ricerca_crud:crud_cds_office_data_edit',
+                            code=code, data_id=data_id)
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+                   reverse('ricerca_crud:crud_cds'): _('Cds'),
+                   reverse('ricerca_crud:cds_detail', kwargs={'code': code}): cds.nome_cds_it,
+                   reverse('ricerca_crud:crud_cds_office_data_edit',
+                           kwargs={'code': code, 'data_id':data_id}): 'Modifica Dati',
+                   '#': 'Edit Coordinator'}
+
+    return render(request,
+                  'cds_other_data_teacher.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'cds': cds,
+                   'data_id':data_id,
+                   'choosen_teacher': teacher_data[1] if teacher_data else None,
+                   'url': reverse('ricerca:teacherslist')})
+

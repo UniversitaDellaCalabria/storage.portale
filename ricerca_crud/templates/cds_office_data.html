@@ -1,0 +1,68 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="delete_cds">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Confirm" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<h3>{{ cds.nome_cds_it }}</h3>
+{% if office_data %}
+<div class="mt-5">
+    <hr class="my-5">
+    <h4>{% trans "Deputy Coordinator" %}</h4>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Deputy coordinator" %}</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ office_data.matricola_riferimento|default_if_none:"-" }}</td>
+                <td>
+                    <a href="{% url 'ricerca_crud:crud_cds_office_data_coordinator' code=cds.pk data_id=data_id %}" class="d-flex btn btn-primary btn-xs">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                        </svg> {% trans "Edit" %}
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <form method="post">
+        {% include "form_template.html" with form=form %}
+        {% include "includes/form_submit.html" %}
+    </form>
+<hr class="my-5">
+    <h4>Logs</h4>
+    {% include "obj_logs.html" with logs=logs %}
+</div>
+{% endif %}
+{% endblock centered_container %}

@@ -14,7 +14,9 @@
         <thead>
             <tr>
                 <th>{% trans "Coordinator" %}</th>
+                <th>{% trans "Coordinator Text" %}</th>
                 <th>{% trans "Deputy coordinator" %}</th>
+                <th>{% trans "Deputy Coordinator Text" %}</th>
                 <th>{% trans "Number of seats" %}</th>
                 <th>{% trans "Registration procedure" %}</th>
                 <th>{% trans "Actions" %}</th>
@@ -30,7 +32,9 @@
 
             <tr>
                 <td>{{ data.matricola_coordinatore|default_if_none:"-" }}</td>
-                <td>{{ data.matricola_vice_coordinatore.personale|default_if_none:"-" }}</td>
+                <td>{{ data.nome_origine_coordinatore|default_if_none:"-" }}</td>
+                <td>{{ data.matricola_vice_coordinatore|default_if_none:"-" }}</td>
+                <td>{{ data.nome_origine_vice_coordinatore|default_if_none:"-" }}</td>
                 <td>{{ data.num_posti|default_if_none:"-" }}</td>
                 <td>{{ data.modalita_iscrizione|default_if_none:"-" }}</td>
                 <td>
@@ -38,15 +42,6 @@
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg> {% trans "Edit" %}
-                    </a>
-                </td>
-                <td>
-                    <a href="" class="btn btn-danger btn-xs d-flex"
-                       data-toggle="modal"
-                       data-target="#delete_cds_{{ cds.pk  }}">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                        </svg> {% trans "Remove" %}
                     </a>
                 </td>
 
@@ -134,7 +129,6 @@
         <tbody>
             {% for data in office_data %}
                 {{ data.matricola_riferimento.personale}}
-                {{ data.orari }}
             <tr>
                 <td>{{ data.ordine|default_if_none:"-" }}</td>
                 <td>{{ data.matricola_riferimento|default_if_none:"-" }}</td>
@@ -146,19 +140,10 @@
                 <td>{{ data.orari|default_if_none:"-" }}</td>
                 <td>{{ data.sportello_online|default_if_none:"-" }}</td>
                 <td>
-                    <a href="{% url 'ricerca_crud:cds_detail' code=cds.pk %}" class="d-flex btn btn-primary btn-xs">
+                    <a href="{% url 'ricerca_crud:crud_cds_office_data_edit' code=cds.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg> {% trans "Edit" %}
-                    </a>
-                </td>
-                <td>
-                    <a href="" class="btn btn-danger btn-xs d-flex"
-                       data-toggle="modal"
-                       data-target="#delete_cds_{{ cds.pk }}">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                        </svg> {% trans "Remove" %}
                     </a>
                 </td>
 

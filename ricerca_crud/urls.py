@@ -34,4 +34,14 @@ urlpatterns += path('appliedresearchlines/<str:code>/teacher/<str:teacher_rline_
 urlpatterns += path('cds/', cds, name='crud_cds'),
 urlpatterns += path('cds/<str:code>/', cds_detail, name='cds_detail'),
 urlpatterns += path('cds/<str:code>/other-data-edit/<str:data_id>', cds_other_data_edit, name='crud_cds_other_data_edit'),
+# urlpatterns += path('cds/<str:code>/other-data-edit/<str:data_id>/teacher/<str:teacher_cds_id>/', cds_other_data_teacher_edit, name='crud_cds_other_data_teacher_edit'),
+# urlpatterns += path('cds/<str:code>/other-data-edit/<str:data_id>/teacher/<str:deputy_teacher_cds_id>/', cds_other_data_teacher_edit, name='crud_cds_other_data_teacher_edit'),
+# urlpatterns += path('cds/<str:code>/other-data-edit/<str:data_id>/teacher/new', cds_other_data_teacher_new, name='crud_cds_other_data_teacher_new'),
+urlpatterns += path('cds/<str:code>/other-data-edit/<str:data_id>/coordinator/', cds_other_data_coordinator, name='crud_cds_other_data_coordinator'),
+urlpatterns += path('cds/<str:code>/other-data-edit/<str:data_id>/deputy-coordinator/', cds_other_data_deputy_coordinator, name='crud_cds_other_data_deputy_coordinator'),
+urlpatterns += path('cds/<str:code>/office-data-edit/<str:data_id>', cds_office_data_edit, name='crud_cds_office_data_edit'),
+urlpatterns += path('cds/<str:code>/office-data-edit/<str:data_id>/coordinator/', cds_office_data_coordinator, name='crud_cds_office_data_coordinator'),
+urlpatterns += path('cds/<str:code>/other-data-edit/<str:data_id>/coordinator/delete/', cds_other_data_coordinator_delete, name='crud_cds_other_data_coordinator_delete'),
+urlpatterns += path('cds/<str:code>/office-data-edit/<str:data_id>/deputy-coordinator/delete/', cds_other_data_deputy_coordinator_delete, name='crud_cds_other_data_deputy_coordinator_delete'),
+
 

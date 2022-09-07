@@ -101,18 +101,23 @@ class RicercaDocenteLineaApplicataForm(forms.ModelForm):
 class DidatticaCdsAltriDatiForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDati
-        fields = ['num_posti', 'modalita_iscrizione']
+        fields = ['num_posti', 'modalita_iscrizione', 'nome_origine_coordinatore', 'nome_origine_vice_coordinatore']
         widgets = {'modalita_iscrizione': forms.Textarea(attrs={'rows': 2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
 
 
+class DidatticaCdsAltriDatiCoordinatorForm(forms.Form):
+    choosen_teacher = forms.CharField(label=_('Teacher'),
+                                      widget = forms.HiddenInput(),
+                                      required=True)
+
 
 class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDatiUfficio
-        fields = ['cds', 'ordine', 'matricola_riferimento', 'nome_ufficio', 'nome_origine_riferimento', 'telefono', 'email', 'edificio', 'piano', 'orari', 'sportello_online']
+        fields = ['ordine', 'nome_ufficio', 'nome_origine_riferimento', 'telefono', 'email', 'edificio', 'piano', 'orari', 'sportello_online']
         widgets = {'orari': forms.Textarea(attrs={'rows': 2})}
 
     class Media:
