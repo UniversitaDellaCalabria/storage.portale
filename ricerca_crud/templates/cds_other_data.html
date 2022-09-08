@@ -5,54 +5,36 @@
 
 
 {% block centered_container %}
-
-<div class="modal fade"
-     tabindex="-1"
-     role="dialog"
-     id="delete_cds">
-    <div class="modal-dialog modal-dialog-centered"
-         role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {% trans "Confirm" %}
-                </h5>
-                <button class="close"
-                        type="button"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                   <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                   </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<hr />
-<h3>{{ cds.nome_cds_it }}</h3>
+<h3>{% trans "Edit other data for" %} {{ cds.nome_cds_it }}</h3>
 {% if other_data %}
 <div class="mt-5">
     <hr class="my-5">
-    <h4>{% trans "Coordinator and Deputy Coordinator" %}</h4>
+
+    <!-- coordinator -->
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>{% trans "Coordinator" %}</th>
-
+                <th>{% trans "Coordinator (find in database)" %}</th>
+                <th></th>
+                {% if other_data.matricola_coordinatore %}
+                <th></th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>{{ other_data.matricola_coordinatore|default_if_none:"-" }} </td>
                 <td>
-                    <a href="{% url 'ricerca_crud:crud_cds_other_data_coordinator' code=cds.pk data_id=data_id %}" class="d-flex btn btn-primary btn-xs">
+                    {{ other_data.matricola_coordinatore|default:"-" }}
+                </td>
+                <td>
+                    <a href="{% url 'ricerca_crud:crud_cds_other_data_coordinator' code=cds.pk data_id=other_data.pk %}" class="d-flex btn btn-primary btn-xs">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg> {% trans "Edit" %}
                     </a>
                 </td>
-                 <td>
+                {% if other_data.matricola_coordinatore %}
+                <td>
                     <a href="" class="btn btn-danger btn-xs d-flex"
                        data-toggle="modal"
                        data-target="#delete_coordinator">
@@ -60,60 +42,69 @@
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                         </svg> {% trans "Remove" %}
                     </a>
-                </td>
-            </tr>
-            <div class="modal fade"
-                 tabindex="-1"
-                 role="dialog"
-                 id="delete_coordinator">
-                <div class="modal-dialog modal-dialog-centered"
-                     role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                {% trans "Confirm" %}
-                            </h5>
-                            <button class="close"
-                                    type="button"
-                                    data-dismiss="modal"
-                                    aria-label="Close">
-                               <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                               </svg>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                {% trans "Do you want to delete choosen teacher?" %}
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_coordinator_delete' code=cds.pk data_id=data_id %}">
-                                {% trans 'Yes, proceed' %}
-                            </a>
+                    <div class="modal fade"
+                         tabindex="-1"
+                         role="dialog"
+                         id="delete_coordinator">
+                        <div class="modal-dialog modal-dialog-centered"
+                             role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        {% trans "Confirm" %}
+                                    </h5>
+                                    <button class="close"
+                                            type="button"
+                                            data-dismiss="modal"
+                                            aria-label="Close">
+                                       <svg class="icon">
+                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                       </svg>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        {% trans "Do you want to delete choosen teacher?" %}
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_coordinator_delete' code=cds.pk data_id=other_data.pk %}">
+                                        {% trans 'Yes, proceed' %}
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </td>
+                {% endif %}
+            </tr>
         </tbody>
     </table>
+
+    <!-- deputy coordinator -->
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>{% trans "Deputy coordinator" %}</th>
-
+                <th>{% trans "Deputy coordinator (find in database)" %}</th>
+                <th></th>
+                {% if other_data.matricola_vice_coordinatore %}
+                <th></th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>{{ other_data.matricola_vice_coordinatore|default_if_none:"-" }}</td>
                 <td>
-                    <a href="{% url 'ricerca_crud:crud_cds_other_data_deputy_coordinator' code=cds.pk data_id=data_id %}" class="d-flex btn btn-primary btn-xs">
+                    {{ other_data.matricola_vice_coordinatore|default:"-" }}
+                </td>
+                <td>
+                    <a href="{% url 'ricerca_crud:crud_cds_other_data_deputy_coordinator' code=cds.pk data_id=other_data.pk %}" class="d-flex btn btn-primary btn-xs">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg> {% trans "Edit" %}
                     </a>
                 </td>
+                {% if other_data.matricola_vice_coordinatore %}
                 <td>
                     <a href="" class="btn btn-danger btn-xs d-flex"
                        data-toggle="modal"
@@ -122,48 +113,52 @@
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                         </svg> {% trans "Remove" %}
                     </a>
-                </td>
-            </tr>
-        <div class="modal fade"
-                 tabindex="-1"
-                 role="dialog"
-                 id="delete_deputy_coordinator">
-                <div class="modal-dialog modal-dialog-centered"
-                     role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                {% trans "Confirm" %}
-                            </h5>
-                            <button class="close"
-                                    type="button"
-                                    data-dismiss="modal"
-                                    aria-label="Close">
-                               <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                               </svg>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                {% trans "Do you want to delete choosen teacher?" %}
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_deputy_coordinator_delete' code=cds.pk data_id=data_id %}">
-                                {% trans 'Yes, proceed' %}
-                            </a>
+                    <div class="modal fade"
+                         tabindex="-1"
+                         role="dialog"
+                         id="delete_deputy_coordinator">
+                        <div class="modal-dialog modal-dialog-centered"
+                             role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        {% trans "Confirm" %}
+                                    </h5>
+                                    <button class="close"
+                                            type="button"
+                                            data-dismiss="modal"
+                                            aria-label="Close">
+                                       <svg class="icon">
+                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                       </svg>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        {% trans "Do you want to delete choosen teacher?" %}
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_deputy_coordinator_delete' code=cds.pk data_id=other_data.pk %}">
+                                        {% trans 'Yes, proceed' %}
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </td>
+                {% endif %}
+            </tr>
         </tbody>
     </table>
+
+    <hr class="my-5">
 
     <form method="post">
         {% include "form_template.html" with form=form %}
         {% include "includes/form_submit.html" %}
     </form>
+
 </div>
 {% endif %}
 {% endblock centered_container %}

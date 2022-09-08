@@ -6,7 +6,7 @@
 
 {% block centered_container %}
 
-{% if choosen_teacher %}
+{% if choosen_person %}
 <a href="" class="btn btn-danger btn-xs"
    data-toggle="modal"
    data-target="#delete_teacher">
@@ -50,24 +50,24 @@
 <hr />
 {% endif %}
 <h2>
-    {% if choosen_teacher %}{% trans "Edit teacher for" %}{% else %}{% trans "New teacher for" %}{% endif %} {{ rline.nome }}
+    {% if choosen_person %}{% trans "Edit teacher for" %}{% else %}{% trans "New teacher for" %}{% endif %} {{ rline.nome }}
 </h2>
 <div class="mt-5">
+    {% include "blocks/crud_teacherslist.html" with uid="id_1" %}
+    <hr />
+    <span id="choosen_person_name">
+        {% if choosen_person %}
+        <div class="alert alert-success" role="alert">
+            {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
+        </div>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+          {% trans "Choose a person to proceed" %}
+        </div>
+        {% endif %}
+    </span>
+    <hr />
     <form method="post">
-        {% include "blocks/crud_teacherslist.html" with uid="id_1" %}
-        <hr />
-        <span id="choosen_teacher_name">
-            {% if choosen_teacher %}
-            <div class="alert alert-success" role="alert">
-                {% trans 'Choosen teacher:' %} <b>{{ choosen_teacher }}</b>
-            </div>
-            {% else %}
-            <div class="alert alert-warning" role="alert">
-              {% trans "Choose a teacher to proceed" %}
-            </div>
-            {% endif %}
-        </span>
-        <hr />
         {% include "form_template.html" with form=form %}
         {% include "includes/form_submit.html" %}
     </form>

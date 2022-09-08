@@ -102,7 +102,7 @@
                 <tbody>
                     <tr v-for="item in items.results">
                         <td>
-                            <a href="javascript:void(0)" @click="setTeacher([item.TeacherID, item.TeacherName])">
+                            <a href="javascript:void(0)" @click="setPerson([item.TeacherID, item.TeacherName])">
                                 [[ item.TeacherName ]]
                             </a>
                         </td>
@@ -214,9 +214,9 @@ callRoles() {
             this.is_loading_roles = false
         })
 },
-setTeacher(name){
-    document.getElementById("id_choosen_teacher").value = name[0];
-    document.getElementById("choosen_teacher_name").innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen teacher:' %} <b>"+name[1]+"</b></div>"
+setPerson(name){
+    document.getElementById("id_choosen_person").value = name[0];
+    document.getElementById("choosen_person_name").innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen person' %} <b>"+name[1]+"</b></div>"
 }
 {% endblock extra_methods %}
 </script>

@@ -423,7 +423,7 @@ class DidatticaCdsAltriDati(models.Model):
 
 class DidatticaCdsAltriDatiUfficio(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    cds = models.ForeignKey(DidatticaCdsAltriDati, models.DO_NOTHING, db_column='CDS_ID')  # Field name made lowercase.
+    cds = models.OneToOneField(DidatticaCds, models.DO_NOTHING, db_column='CDS_ID')  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
     nome_ufficio = models.CharField(db_column='NOME_UFFICIO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     matricola_riferimento = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_RIFERIMENTO', blank=True, null=True, to_field='matricola')  # Field name made lowercase.
@@ -437,9 +437,10 @@ class DidatticaCdsAltriDatiUfficio(models.Model):
 
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'DIDATTICA_CDS_ALTRI_DATI_UFFICIO'
-        unique_together = (('cds', 'ordine'),)
+        # unique_together = (('cds', 'ordine'),)
+
 
 class DidatticaCdsLingua(models.Model):
 

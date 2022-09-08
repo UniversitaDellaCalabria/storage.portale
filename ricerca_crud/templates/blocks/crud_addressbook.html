@@ -1,0 +1,394 @@
+{% extends "includes/vue_list.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load ricerca_crud %}
+
+{% block content %}
+
+{% block storage_block_top %}
+{% include "blocks/includes/vue_check.html" %}
+{% endblock storage_block_top %}
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-wrapper card-space">
+                    <div class="card card-bg no-after">
+                        <div class="card-body">
+
+                            {% include "includes/vue_search_input.html" with id=id %}
+
+                            <div class="form-group mb-0">
+
+                                <!-- Structure and Role -->
+                                <div class="row">
+
+                                    {% block filters %}
+
+                                    {% block structure_type_filter %}
+                                    <div class="col-sm form-group mb-0">
+
+                                        <loading-icon
+                                            v-if="is_loading_structure_type"
+                                            :loader_source="loader_source_structure_types">
+                                        </loading-icon>
+
+                                        <div v-else>
+                                            <label for="{{ id }}_structure_input">
+                                                {% trans "Structure type" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_structure_type_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_structure_type_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in structure_type_filter"
+                                                            :value="item.StructureTypeCOD"
+                                                            :selected="item.StructureTypeCOD == selected_structuretypes">
+                                                        [[ item.StructureTypeName ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock structure_type_filter %}
+
+                                    <div class="col-sm form-group mb-0" v-if="structure_id_filter.length">
+
+                                        <loading-icon
+                                            v-if="is_loading_structure_id"
+                                            :loader_source="loader_source_structures">
+                                        </loading-icon>
+
+                                        <div v-else>
+                                            <label for="{{ id }}_structure_input">
+                                                {% trans "Structure" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_structure_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_structure_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in structure_id_filter"
+                                                            :value="item.StructureCod"
+                                                            :selected="item.StructureCod == selected_structureid">
+                                                        [[ item.is_child ]][[ item.StructureName ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm form-group mb-0">
+
+                                        <loading-icon
+                                            v-if="is_loading_roles"
+                                            :loader_source="loader_source_roles">
+                                        </loading-icon>
+
+                                        <div v-else>
+                                            <label for="{{ id }}_role_input">
+                                                {% trans "Role" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_role_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_role_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in roles_filter"
+                                                            :value="item.Role"
+                                                            :selected="item.Role == selected_roles">
+                                                        [[ item.RoleDescription ]]
+                                                    </option>
+                                                    <option value="XPE" :selected="'XPE' == selected_roles">
+                                                        {% trans "Emeritus Professors" %}
+                                                    </option>
+                                                    <option value="XPO" :selected="'XPO' == selected_roles">
+                                                        {% trans "Honorary Professors" %}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% endblock filters %}
+                                </div>
+
+                                <!-- End Structure and Role -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+
+        <loading-icon
+            v-if="is_loading"
+            :loader_source="loader_source">
+        </loading-icon>
+
+        <div v-else>
+            <div class="row" >
+
+                <div class="col-12 col-md-6 mb-3" v-for="item in items.results">
+                    <div class="card-wrapper pb-0">
+                        <div class="card no-after" style="border:1px solid #b71918">
+                            <div class="card-body p-3">
+                                <div class="row">
+
+                                    <div class="col-12 align-left">
+                                        <small>
+                                            <a href="javascript:void(0)" @click="setPerson([item.ID, item.Name])">
+                                                <b>[[ item.Name ]]</b>
+                                            </a>
+
+                                            <br>
+                                            <ul class="mt-2 mb-1 pl-0" style="list-style: none">
+                                                <li v-for="role in item.Roles">
+                                                    <span v-if="role.StructureTypeCOD != '000'">
+                                                        [[ role.Structure ]]
+                                                        <br>
+                                                    </span>
+                                                    <span>[[ item.ProfileDescription ]]</span>
+                                                    <hr>
+                                                </li>
+                                            </ul>
+
+                                            <div v-for="office in item.OfficeReference">
+                                                <span>
+                                                    <svg class="icon icon-sm icon-muted me-2">
+                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-map-marker"></use>
+                                                    </svg>
+                                                    [[ office ]]
+                                                </span>
+                                                <br>
+                                            </div>
+                                            <div v-for="email in item.Email">
+                                                <span>
+                                                    <svg class="icon icon-sm icon-muted me-2">
+                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-mail"></use>
+                                                    </svg>
+                                                    <a :href="'mailto:'+email">[[ email ]]</a>
+                                                </span>
+                                                <br>
+                                            </div>
+                                            {% block pec %}
+                                            <div v-for="pec in item.PEC">
+                                                <span>
+                                                    <svg class="icon icon-sm icon-muted me-2">
+                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-mail"></use>
+                                                    </svg>
+                                                    <a href="mailto: [[ pec ]]">[[ pec ]]</a>
+                                                </span>
+                                                <br>
+                                            </div>
+                                            {% endblock pec %}
+                                            <div v-for="teloffice in item.TelOffice">
+                                                <span>
+                                                    <svg class="icon icon-sm icon-muted me-2">
+                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-telephone"></use>
+                                                    </svg> [[ teloffice ]]
+                                                </span>
+                                                <br>
+                                            </div>
+                                            <div v-for="telceloffice in item.TelCelOffice">
+                                                <span>
+                                                    <svg class="icon icon-sm icon-muted me-2">
+                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-telephone"></use>
+                                                    </svg> [[ telceloffice ]]
+                                                </span>
+                                                <br>
+                                            </div>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+    </div>
+
+{% block storage_block_bottom %}
+    <div v-else>
+        {% trans "No items here" %}
+    </div>
+
+</div>
+{% endblock storage_block_bottom %}
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+function {{ id }}_get_form_paramenters(keyword=null, value=null) {
+
+    let dict = {}
+
+    if (keyword)
+        dict[keyword] = value
+
+    // search
+    let search = document.getElementById('{{ id }}_search')
+    if (search && search.value) dict['search'] = search.value
+
+    // search
+    let phone = document.getElementById('{{ id }}_phone')
+    if (phone && phone.value) dict['phone'] = phone.value
+
+    // structure id
+    let structure_id = document.getElementById('{{ id }}_structure_input')
+    if (structure_id && structure_id.value) dict['structuretree'] = structure_id.value
+
+    {% block structure_filter_input %}
+    // structure type
+    let structure_type = document.getElementById('{{ id }}_structure_type_input')
+    if (structure_type && structure_type.value) dict['structuretypes'] = structure_type.value
+    {% endblock structure_filter_input %}
+
+    // role
+    let role = document.getElementById('{{ id }}_role_input')
+    if (role && role.value) dict['role'] = role.value
+
+    setItemInSession("{{ id }}", dict)
+
+    return dict
+}
+</script>
+{% endblock extra_scripts %}
+
+{% block extra_data %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+search_dict: {},
+
+selected_structureid: this.getItemFromSession("{{ id }}", 'structuretree'),
+selected_structuretypes: this.getItemFromSession("{{ id }}", 'structuretypes'),
+selected_roles: this.getItemFromSession("{{ id }}", 'role'),
+selected_search: this.getItemFromSession("{{ id }}", 'search'),
+selected_phone: this.getItemFromSession("{{ id }}", 'phone'),
+
+is_loading_structure_id: true,
+is_loading_structure_type: true,
+is_loading_roles: true,
+
+loader_source_structures: '{% url 'ricerca:structureslist' %}?lang={{ LANGUAGE_CODE }}&page_size=500',
+loader_source_structure_types: '{% url 'ricerca:structuretypes' %}?lang={{ LANGUAGE_CODE }}',
+loader_source_roles: '{% url 'ricerca:roleslist' %}?lang={{ LANGUAGE_CODE }}',
+
+roles_filter: [],
+structure_id_filter: [],
+structure_type_filter: [],
+
+structure_type_filter_string: '',
+structure_father_filter: '',
+{% endblock extra_data %}
+
+{% block extra_mounted %}
+
+    // if url if pre-filtered resize select field
+    // this allows to auto generate select options according to URL get filters!
+    let params = new URLSearchParams(this.url.split('?')[1]);
+
+    let get_roles = params.get("role")
+    if (get_roles != null){
+        let get_roles_list = get_roles.split(',')
+    }
+
+    if (params.get("father") != null)
+        this.structure_father_filter = params.get("father")
+
+    this.structure_type_filter_string = params.get("structuretypes")
+    let get_structure_types = params.get("structuretypes")
+
+    if (get_structure_types != null){
+        let get_structure_types_list = get_structure_types.split(',')
+    }
+
+    let get_structure_id = params.get("structure")
+    if (get_structure_id != null){
+        let get_structure_id_list = get_structure_id.split(',')
+    }
+
+    this.callRoles();
+    this.callStructures();
+    this.callStructureTypes();
+
+    // parameters dictionary with settings/URL filters
+    let params_dict = {}
+
+    this.initial_parameters = {{ id }}_encodeQueryData(params_dict)
+
+    let session_params = this.getItemsFromSession("{{ id }}")
+    for(const param in session_params){
+        params_dict[param] = session_params[param]
+    }
+    this.parameters = {{ id }}_encodeQueryData(params_dict)
+
+{% endblock extra_mounted %}
+
+{% block extra_methods %}
+
+{% block structure_call_method %}
+
+callStructures() {
+    let source = this.loader_source_structures + '&depth=1'
+    if (this.structure_type_filter_string)
+        source += '&type='+this.structure_type_filter_string
+
+    if(this.structure_father_filter)
+        source += '&father='+this.structure_father_filter
+
+    axios
+        .get(source)
+        .then(response => {
+            let structures_results = response.data.results;
+            structures_results.forEach((element) => {
+                this.structure_id_filter.push(element)
+                if(element.StructureChilds && element.StructureChilds.length > 0) {
+                    element.StructureChilds.forEach((child) => {
+                        child['is_child'] = "--  "
+                        this.structure_id_filter.push(child)
+                    })
+                }
+            });
+        })
+},
+callStructureTypes() {
+    axios
+        .get(this.loader_source_structure_types)
+        .then(response => {
+            this.structure_type_filter = response.data.results;
+            this.is_loading_structure_type = false
+        })
+},
+{% endblock structure_call_method %}
+
+callRoles() {
+    axios
+        .get(this.loader_source_roles)
+        .then(response => {
+            this.roles_filter = response.data.results;
+            this.is_loading_roles = false
+        })
+},
+setPerson(name){
+    document.getElementById("id_choosen_person").value = name[0];
+    document.getElementById("choosen_person_name").innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen person' %} <b>"+name[1]+"</b></div>"
+}
+{% endblock extra_methods %}
+</script>
+

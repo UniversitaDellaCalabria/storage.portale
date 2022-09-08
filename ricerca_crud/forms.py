@@ -30,7 +30,7 @@ class RicercaGruppoForm(forms.ModelForm):
 
 
 class RicercaGruppoDocenteForm(forms.ModelForm):
-    choosen_teacher = forms.CharField(label=_('Teacher'),
+    choosen_person = forms.CharField(label=_('Person'),
                                       widget = forms.HiddenInput(),
                                       required=True)
 
@@ -67,7 +67,7 @@ class RicercaLineaBaseForm(forms.ModelForm):
 
 
 class RicercaDocenteLineaBaseForm(forms.ModelForm):
-    choosen_teacher = forms.CharField(label=_('Teacher'),
+    choosen_person = forms.CharField(label=_('Teacher'),
                                       widget = forms.HiddenInput(),
                                       required=True)
 
@@ -83,7 +83,7 @@ class RicercaDocenteLineaBaseForm(forms.ModelForm):
 
 
 class RicercaDocenteLineaApplicataForm(forms.ModelForm):
-    choosen_teacher = forms.CharField(label=_('Teacher'),
+    choosen_person = forms.CharField(label=_('Person'),
                                       widget = forms.HiddenInput(),
                                       required=True)
 
@@ -101,7 +101,18 @@ class RicercaDocenteLineaApplicataForm(forms.ModelForm):
 class DidatticaCdsAltriDatiForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDati
-        fields = ['num_posti', 'modalita_iscrizione', 'nome_origine_coordinatore', 'nome_origine_vice_coordinatore']
+        fields = ['nome_origine_coordinatore', 'nome_origine_vice_coordinatore',
+                  'num_posti', 'modalita_iscrizione']
+        labels = {
+            "nome_origine_coordinatore": _("Coordinator name (plain text)"),
+            "nome_origine_vice_coordinatore": _("Deputy coordinator name (plain text)"),
+            "num_posti": _("Number of seats"),
+            "modalita_iscrizione": _("Registration procedure"),
+        }
+        help_texts = {
+            "nome_origine_coordinatore": _("Edit this field only if necessary"),
+            "nome_origine_vice_coordinatore": _("Edit this field only if necessary"),
+        }
         widgets = {'modalita_iscrizione': forms.Textarea(attrs={'rows': 2})}
 
     class Media:
@@ -109,7 +120,7 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
 
 
 class DidatticaCdsAltriDatiCoordinatorForm(forms.Form):
-    choosen_teacher = forms.CharField(label=_('Teacher'),
+    choosen_person = forms.CharField(label=_('Person'),
                                       widget = forms.HiddenInput(),
                                       required=True)
 
@@ -117,7 +128,15 @@ class DidatticaCdsAltriDatiCoordinatorForm(forms.Form):
 class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDatiUfficio
-        fields = ['ordine', 'nome_ufficio', 'nome_origine_riferimento', 'telefono', 'email', 'edificio', 'piano', 'orari', 'sportello_online']
+        fields = ['ordine', 'nome_ufficio', 'nome_origine_riferimento',
+                  'telefono', 'email', 'edificio', 'piano', 'orari',
+                  'sportello_online']
+        labels = {
+            "nome_origine_riferimento": _("Responsible name (plain text)"),
+        }
+        help_texts = {
+            "nome_origine_riferimento": _("Edit this field only if necessary"),
+        }
         widgets = {'orari': forms.Textarea(attrs={'rows': 2})}
 
     class Media:

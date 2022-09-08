@@ -6,10 +6,10 @@
 
 {% block centered_container %}
 <h2>
-    {% if choosen_person %}{% trans "Edit teacher for" %}{% else %}{% trans "New teacher for" %}{% endif %} {{ cds.nome_cds_it }}
+    {% if choosen_person %}{% trans "Edit responsible for" %}{% else %}{% trans "New responsible for" %}{% endif %} {{ cds.nome_cds_it }}
 </h2>
 <div class="mt-5">
-    {% include "blocks/crud_teacherslist.html" with uid="id_1" %}
+    {% include "blocks/crud_addressbook.html" with uid="id_1" %}
     <hr />
     <span id="choosen_person_name">
         {% if choosen_person %}

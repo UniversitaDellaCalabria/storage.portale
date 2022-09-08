@@ -6,206 +6,246 @@
 
 {% block centered_container %}
 <h3>{{ cds.nome_cds_it }}</h3>
-<div class="mt-5">
+<div class="mt-3">
+
+    <div class="row">
+        <div class="col-12 col-md-auto me-md-4">
+            {{ cds.tipo_corso_des }}
+        </div>
+
+    </div>
+
     <hr class="my-5">
     <h4>{% trans "Other data" %}</h4>
+
     {% if other_data %}
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>{% trans "Coordinator" %}</th>
-                <th>{% trans "Coordinator Text" %}</th>
-                <th>{% trans "Deputy coordinator" %}</th>
-                <th>{% trans "Deputy Coordinator Text" %}</th>
-                <th>{% trans "Number of seats" %}</th>
-                <th>{% trans "Registration procedure" %}</th>
-                <th>{% trans "Actions" %}</th>
-
-                {% comment %}
-                <th></th>
-                {% endcomment %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for data in other_data %}
-
-
-            <tr>
-                <td>{{ data.matricola_coordinatore|default_if_none:"-" }}</td>
-                <td>{{ data.nome_origine_coordinatore|default_if_none:"-" }}</td>
-                <td>{{ data.matricola_vice_coordinatore|default_if_none:"-" }}</td>
-                <td>{{ data.nome_origine_vice_coordinatore|default_if_none:"-" }}</td>
-                <td>{{ data.num_posti|default_if_none:"-" }}</td>
-                <td>{{ data.modalita_iscrizione|default_if_none:"-" }}</td>
-                <td>
-                    <a href="{% url 'ricerca_crud:crud_cds_other_data_edit' code=cds.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                        </svg> {% trans "Edit" %}
-                    </a>
-                </td>
-
-                {% comment %}
-                <td>
-                    <a href="{% url 'ricerca_crud:crud_researchgroup_teacher_edit' code=rgroup.pk teacher_rgroup_id=teacher.pk %}" class="d-flex btn btn-primary btn-xs">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                        </svg> {% trans "Edit" %}
-                    </a>
-                </td>
-                <td>
-                    <a href="" class="btn btn-danger btn-xs d-flex"
-                       data-toggle="modal"
-                       data-target="#delete_teacher_{{ teacher.pk }}">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                        </svg> {% trans "Remove" %}
-                    </a>
-                </td>
-                {% endcomment %}
-            </tr>
-
-            {% comment %}
-            <div class="modal fade"
-                 tabindex="-1"
-                 role="dialog"
-                 id="delete_teacher_{{ teacher.pk }}">
-                <div class="modal-dialog modal-dialog-centered"
-                     role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                {% trans "Confirm" %}
-                            </h5>
-                            <button class="close"
-                                    type="button"
-                                    data-dismiss="modal"
-                                    aria-label="Close">
-                               <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                               </svg>
-                            </button>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Coordinator" %}</th>
+                    <th>{% trans "Deputy Coordinator" %}</th>
+                    <th>{% trans "Number of seats" %}</th>
+                    <th>{% trans "Registration procedure" %}</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in other_data %}
+                <tr>
+                    <td>
+                        {{ data.nome_origine_coordinatore|default:"-" }}
+                        {% if data.matricola_coordinatore %}
+                            ({{ data.matricola_coordinatore.matricola|default:"-" }})
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ data.nome_origine_vice_coordinatore|default:"-" }}
+                        {% if data.matricola_vice_coordinatore %}
+                            ({{ data.matricola_vice_coordinatore.matricola|default:"-" }})
+                        {% endif %}
+                    </td>
+                    <td>{{ data.num_posti|default:"-" }}</td>
+                    <td>{{ data.modalita_iscrizione|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'ricerca_crud:crud_cds_other_data_edit' code=cds.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                            </svg> {% trans "Edit" %}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="" class="btn btn-danger btn-xs d-flex"
+                           data-toggle="modal"
+                           data-target="#delete_other_data_{{ data.pk }}">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                            </svg> {% trans "Remove" %}
+                        </a>
+                        <div class="modal fade"
+                             tabindex="-1"
+                             role="dialog"
+                             id="delete_other_data_{{ data.pk }}">
+                            <div class="modal-dialog modal-dialog-centered"
+                                 role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Confirm" %}
+                                        </h5>
+                                        <button class="close"
+                                                type="button"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                           <svg class="icon">
+                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                           </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {% trans "Do you want to delete data set?" %}
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_delete' code=cds.pk data_id=data.pk %}">
+                                            {% trans 'Yes, proceed' %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <p>
-                                {% trans "Do you want to delete choosen teacher?" %}
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_researchgroup_teacher_delete' code=rgroup.pk teacher_rgroup_id=teacher.pk %}">
-                                {% trans 'Yes, proceed' %}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endcomment %}
-            {% endfor %}
-        </tbody>
-    </table>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <a href="{% url 'ricerca_crud:crud_cds_other_data_new' code=cds.pk %}" class="text-center btn btn-block btn-success btn-xs">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+        </svg> {% trans "Add new" %}
+    </a>
     {% endif %}
+
+    <hr class="my-5">
 
     <h4>{% trans "Office data" %}</h4>
     {% if office_data %}
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>{% trans "Order" %}</th>
-                <th>{% trans "Deputy coordinator" %}</th>
-                <th>{% trans "Office Name" %}</th>
-                <th>{% trans "Phone" %}</th>
-                <th>{% trans "Email" %}</th>
-                <th>{% trans "Building" %}</th>
-                <th>{% trans "Floor" %}</th>
-                <th>{% trans "Timetables" %}</th>
-                <th>{% trans "Online Counter" %}</th>
-                <th>{% trans "Actions" %}</th>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Order" %}</th>
+                    <th>{% trans "Responsible" %}</th>
+                    <th>{% trans "Office" %}</th>
+                    <th>{% trans "Phone" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Building" %}</th>
+                    <th>{% trans "Floor" %}</th>
+                    <th>{% trans "Timetables" %}</th>
+                    <th>{% trans "Online Counter" %}</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in office_data %}
+                    {{ data.matricola_riferimento.personale}}
+                <tr>
+                    <td>{{ data.ordine|default:"-" }}</td>
+                    <td>
+                        {{ data.nome_origine_riferimento|default:"-" }}
+                        {% if data.matricola_riferimento %}
+                            ({{ data.matricola_riferimento.matricola|default:"-" }})
+                        {% endif %}
+                    </td>
+                    <td>{{ data.nome_ufficio|default:"-" }}</td>
+                    <td>{{ data.telefono|default:"-" }}</td>
+                    <td>{{ data.email|default:"-" }}</td>
+                    <td>{{ data.edificio|default:"-" }}</td>
+                    <td>{{ data.piano|default:"-" }}</td>
+                    <td>{{ data.orari|default:"-" }}</td>
+                    <td>{{ data.sportello_online|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'ricerca_crud:crud_cds_office_data_edit' code=cds.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                            </svg> {% trans "Edit" %}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="" class="btn btn-danger btn-xs d-flex"
+                           data-toggle="modal"
+                           data-target="#delete_office_data_{{ data.pk }}">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                            </svg> {% trans "Remove" %}
+                        </a>
+                        <div class="modal fade"
+                             tabindex="-1"
+                             role="dialog"
+                             id="delete_office_data_{{ data.pk }}">
+                            <div class="modal-dialog modal-dialog-centered"
+                                 role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Confirm" %}
+                                        </h5>
+                                        <button class="close"
+                                                type="button"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                           <svg class="icon">
+                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                           </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {% trans "Do you want to delete office data set?" %}
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_office_data_delete' code=cds.pk data_id=data.pk %}">
+                                            {% trans 'Yes, proceed' %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
 
                 {% comment %}
-                <th></th>
-                {% endcomment %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for data in office_data %}
-                {{ data.matricola_riferimento.personale}}
-            <tr>
-                <td>{{ data.ordine|default_if_none:"-" }}</td>
-                <td>{{ data.matricola_riferimento|default_if_none:"-" }}</td>
-                <td>{{ data.nome_ufficio|default_if_none:"-" }}</td>
-                <td>{{ data.telefono|default_if_none:"-" }}</td>
-                <td>{{ data.email|default_if_none:"-" }}</td>
-                <td>{{ data.edificio|default_if_none:"-" }}</td>
-                <td>{{ data.piano|default_if_none:"-" }}</td>
-                <td>{{ data.orari|default_if_none:"-" }}</td>
-                <td>{{ data.sportello_online|default_if_none:"-" }}</td>
-                <td>
-                    <a href="{% url 'ricerca_crud:crud_cds_office_data_edit' code=cds.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                        </svg> {% trans "Edit" %}
-                    </a>
-                </td>
-
-                {% comment %}
-                <td>
-                    <a href="{% url 'ricerca_crud:crud_researchgroup_teacher_edit' code=rgroup.pk teacher_rgroup_id=teacher.pk %}" class="d-flex btn btn-primary btn-xs">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                        </svg> {% trans "Edit" %}
-                    </a>
-                </td>
-                <td>
-                    <a href="" class="btn btn-danger btn-xs d-flex"
-                       data-toggle="modal"
-                       data-target="#delete_teacher_{{ teacher.pk }}">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                        </svg> {% trans "Remove" %}
-                    </a>
-                </td>
-                {% endcomment %}
-            </tr>
-
-            {% comment %}
-            <div class="modal fade"
-                 tabindex="-1"
-                 role="dialog"
-                 id="delete_teacher_{{ teacher.pk }}">
-                <div class="modal-dialog modal-dialog-centered"
-                     role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                {% trans "Confirm" %}
-                            </h5>
-                            <button class="close"
-                                    type="button"
-                                    data-dismiss="modal"
-                                    aria-label="Close">
-                               <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                               </svg>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                {% trans "Do you want to delete choosen teacher?" %}
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_researchgroup_teacher_delete' code=rgroup.pk teacher_rgroup_id=teacher.pk %}">
-                                {% trans 'Yes, proceed' %}
-                            </a>
+                <div class="modal fade"
+                     tabindex="-1"
+                     role="dialog"
+                     id="delete_teacher_{{ teacher.pk }}">
+                    <div class="modal-dialog modal-dialog-centered"
+                         role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    {% trans "Confirm" %}
+                                </h5>
+                                <button class="close"
+                                        type="button"
+                                        data-dismiss="modal"
+                                        aria-label="Close">
+                                   <svg class="icon">
+                                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                   </svg>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    {% trans "Do you want to delete choosen teacher?" %}
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_researchgroup_teacher_delete' code=rgroup.pk teacher_rgroup_id=teacher.pk %}">
+                                    {% trans 'Yes, proceed' %}
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            {% endcomment %}
-            {% endfor %}
-        </tbody>
-    </table>
+                {% endcomment %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% endif %}
+
+    <a href="{% url 'ricerca_crud:crud_cds_office_data_new' code=cds.pk %}" class="text-center btn btn-block btn-success btn-xs">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+        </svg> {% trans "Add new" %}
+    </a>
 
     <hr class="my-5">
     <h4>Logs</h4>

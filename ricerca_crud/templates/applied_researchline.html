@@ -75,8 +75,8 @@
                 <td>{{ teacher.personale.nome }}</td>
                 <td>{{ teacher.personale.matricola }}</td>
                 <td>{{ teacher.personale.ds_sede }}</td>
-                <td>{{ teacher.dt_inizio|default_if_none:"-" }}</td>
-                <td>{{ teacher.dt_fine|default_if_none:"-" }}</td>
+                <td>{{ teacher.dt_inizio|default:"-" }}</td>
+                <td>{{ teacher.dt_fine|default:"-" }}</td>
                 <td>
                     <a href="{% url 'ricerca_crud:crud_applied_researchline_teacher_edit' code=rline.pk teacher_rline_id=teacher.pk %}" class="d-flex btn btn-primary btn-xs">
                         <svg class="icon icon-xs icon-white">
