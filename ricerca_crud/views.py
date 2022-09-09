@@ -849,7 +849,7 @@ def applied_researchline_teacher_delete(request, code, teacher_rline_id,
 @can_manage_cds
 def cds(request, my_offices=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                   '#': _('Cds')}
+                   '#': _('CdS')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:cdslist')}
     return render(request, 'cds.html', context)
@@ -928,7 +928,7 @@ def cds_other_data_edit(request, code, data_id, cds=None,
 
     breadcrumbs = {
         reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-        reverse('ricerca_crud:crud_cds'): _('Cds'),
+        reverse('ricerca_crud:crud_cds'): _('CdS'),
         reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
         reverse('ricerca_crud:crud_cds_other_data_edit', kwargs={'code': code,'data_id': data_id}): _("Other data")
     }
@@ -993,7 +993,7 @@ def cds_other_data_coordinator(request, code, data_id,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                   reverse('ricerca_crud:crud_cds'): _('Cds'),
+                   reverse('ricerca_crud:crud_cds'): _('CdS'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
                    reverse('ricerca_crud:crud_cds_other_data_edit',
                            kwargs={'code': code, 'data_id':data_id}): _('Other data'),
@@ -1083,7 +1083,7 @@ def cds_other_data_deputy_coordinator(request, code, data_id,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                   reverse('ricerca_crud:crud_cds'): _('Cds'),
+                   reverse('ricerca_crud:crud_cds'): _('CdS'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
                    reverse('ricerca_crud:crud_cds_other_data_edit',
                            kwargs={'code': code, 'data_id':data_id}): _('Other data'),
@@ -1259,7 +1259,7 @@ def cds_office_data_edit(request, code, data_id, cds=None, my_offices=None):
                                    object_id=cds.pk)
 
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                   reverse('ricerca_crud:crud_cds'): _('Cds'),
+                   reverse('ricerca_crud:crud_cds'): _('CdS'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
                    '#': _('Office data')
                    }
@@ -1345,7 +1345,7 @@ def cds_office_data_responsible(request, code, data_id, my_offices=None, cds=Non
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                   reverse('ricerca_crud:crud_cds'): _('Cds'),
+                   reverse('ricerca_crud:crud_cds'): _('CdS'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
                    reverse('ricerca_crud:crud_cds_office_data_edit',
                            kwargs={'code': code, 'data_id':data_id}): _('Office data'),
