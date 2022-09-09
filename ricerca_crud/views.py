@@ -1092,23 +1092,23 @@ def cds_other_data_delete(request, code, data_id, my_offices=None, cds=None):
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_other_data_new(request, code, my_offices=None, cds=None):
-    other_data = DidatticaCdsAltriDati.objects.filter(cds=cds)
+def cds_other_data_new(request, regdid_id, my_offices=None, regdid=None):
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid_id)
 
     if other_data:
         raise Exception(_('Other data set already existent for this cds'))
 
-    DidatticaCdsAltriDati.objects.create(cds=cds)
+    DidatticaCdsAltriDati.objects.create(regdid_id=regdid)
 
     log_action(user=request.user,
-               obj=cds,
+               obj=regdid,
                flag=CHANGE,
                msg=f'{_("Created other data set")}')
 
     messages.add_message(request,
                          messages.SUCCESS,
                          _("Other data created successfully"))
-    return redirect('ricerca_crud:crud_cds_detail', code=code)
+    return redirect('ricerca_crud:crud_cds_detail', regdid_id=regdid_id)
 
 
 @login_required
