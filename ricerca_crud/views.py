@@ -1071,22 +1071,22 @@ def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_other_data_delete(request, code, data_id, my_offices=None, cds=None):
+def cds_other_data_delete(request, regdid_id, data_id, my_offices=None, regdid=None):
     other_data = get_object_or_404(DidatticaCdsAltriDati,
                                    pk=data_id,
-                                   cds=cds)
+                                   regdid_id=regdid_id)
 
     other_data.delete()
 
     log_action(user=request.user,
-               obj=cds,
+               obj=regdid,
                flag=CHANGE,
                msg=f'{_("Deleted other data")}')
 
     messages.add_message(request,
                          messages.SUCCESS,
                          _("Other data removed successfully"))
-    return redirect('ricerca_crud:crud_cds_detail', code=code)
+    return redirect('ricerca_crud:crud_cds_detail', regdid_id=regdid_id)
 
 
 @login_required
