@@ -48,33 +48,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm">
-
-                                        <loading-icon
-                                            v-if="is_loading_roles"
-                                            :loader_source="loader_source_roles">
-                                        </loading-icon>
-
-                                        <div v-else>
-                                            <label for="{{ id }}_role_input">
-                                                {% trans "Role" %}
-                                            </label>
-                                            <div class="w-20 mt-5">
-                                                <select title="Scegli una opzione"
-                                                        id="{{ id }}_role_input"
-                                                        name="{{ id }}_role_input"
-                                                        class="form-control"
-                                                        @change="{{ id }}.search()">
-                                                    <option value="">- {% trans 'Choose an option' %} -</option>
-                                                    <option v-for="item in roles_filter"
-                                                            :value="item.Role"
-                                                            :selected="item.Role == selected_role">
-                                                        [[ item.RoleDescription ]]
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -155,10 +128,6 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     let search = document.getElementById('{{ id }}_search')
     if (search && search.value) dict['search'] = search.value
 
-    // role
-    let role = document.getElementById('{{ id }}_role_input')
-    if (role && role.value) dict['role'] = role.value
-
     // department
     let department = document.getElementById('{{ id }}_department_input')
     if (department && department.value) dict['department'] = department.value
@@ -178,22 +147,16 @@ search_dict: {},
 departments: [],
 
 is_loading_departments: true,
-is_loading_roles: true,
 
 loader_source_departments: '{% url 'ricerca:departmentslist' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
-loader_source_roles: '{% url 'ricerca:roleslist' %}?lang={{ LANGUAGE_CODE }}',
 
-selected_role: this.getItemFromSession("{{ id }}", 'role'),
 selected_department_id: this.getItemFromSession("{{ id }}", 'department'),
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
 
 {% endblock extra_data %}
 
 {% block extra_mounted %}
-
     this.callDepartments();
-    this.callRoles();
-
     this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
 {% endblock extra_mounted %}
 
@@ -204,14 +167,6 @@ callDepartments() {
         .then(response => {
             this.departments_filter = response.data.results;
             this.is_loading_departments = false
-        })
-},
-callRoles() {
-    axios
-        .get(this.loader_source_roles)
-        .then(response => {
-            this.roles_filter = response.data.results;
-            this.is_loading_roles = false
         })
 },
 setPerson(name){
