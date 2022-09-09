@@ -5,12 +5,12 @@
 
 
 {% block centered_container %}
-<h3>{{ cds.nome_cds_it }}</h3>
+<h3>{{ regdid.cds.nome_cds_it }} - {{ regdid.aa_reg_did }}</h3>
 <div class="mt-3">
 
     <div class="row">
         <div class="col-12 col-md-auto me-md-4">
-            {{ cds.tipo_corso_des }}
+            {{ regdid.cds.tipo_corso_des }}
         </div>
 
     </div>
@@ -49,7 +49,7 @@
                     <td>{{ data.num_posti|default:"-" }}</td>
                     <td>{{ data.modalita_iscrizione|default:"-" }}</td>
                     <td>
-                        <a href="{% url 'ricerca_crud:crud_cds_other_data_edit' code=cds.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <a href="{% url 'ricerca_crud:crud_cds_other_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
                             <svg class="icon icon-xs icon-white">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                             </svg> {% trans "Edit" %}
@@ -89,7 +89,7 @@
                                         </p>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_delete' code=cds.pk data_id=data.pk %}">
+                                        <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_delete' regdid_id=regdid.pk data_id=data.pk %}">
                                             {% trans 'Yes, proceed' %}
                                         </a>
                                     </div>
@@ -103,7 +103,7 @@
         </table>
     </div>
     {% else %}
-    <a href="{% url 'ricerca_crud:crud_cds_other_data_new' code=cds.pk %}" class="text-center btn btn-block btn-success btn-xs">
+    <a href="{% url 'ricerca_crud:crud_cds_other_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
         </svg> {% trans "Add new" %}
@@ -150,7 +150,7 @@
                     <td>{{ data.orari|default:"-" }}</td>
                     <td>{{ data.sportello_online|default:"-" }}</td>
                     <td>
-                        <a href="{% url 'ricerca_crud:crud_cds_office_data_edit' code=cds.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <a href="{% url 'ricerca_crud:crud_cds_office_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
                             <svg class="icon icon-xs icon-white">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                             </svg> {% trans "Edit" %}
@@ -190,7 +190,7 @@
                                         </p>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_office_data_delete' code=cds.pk data_id=data.pk %}">
+                                        <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_office_data_delete' regdid_id=regdid.pk data_id=data.pk %}">
                                             {% trans 'Yes, proceed' %}
                                         </a>
                                     </div>
@@ -199,56 +199,23 @@
                         </div>
                     </td>
                 </tr>
-
-                {% comment %}
-                <div class="modal fade"
-                     tabindex="-1"
-                     role="dialog"
-                     id="delete_teacher_{{ teacher.pk }}">
-                    <div class="modal-dialog modal-dialog-centered"
-                         role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">
-                                    {% trans "Confirm" %}
-                                </h5>
-                                <button class="close"
-                                        type="button"
-                                        data-dismiss="modal"
-                                        aria-label="Close">
-                                   <svg class="icon">
-                                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                   </svg>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>
-                                    {% trans "Do you want to delete choosen teacher?" %}
-                                </p>
-                            </div>
-                            <div class="modal-footer">
-                                <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_researchgroup_teacher_delete' code=rgroup.pk teacher_rgroup_id=teacher.pk %}">
-                                    {% trans 'Yes, proceed' %}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endcomment %}
                 {% endfor %}
             </tbody>
         </table>
     </div>
     {% endif %}
 
-    <a href="{% url 'ricerca_crud:crud_cds_office_data_new' code=cds.pk %}" class="text-center btn btn-block btn-success btn-xs">
+    <a href="{% url 'ricerca_crud:crud_cds_office_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
         </svg> {% trans "Add new" %}
     </a>
 
     <hr class="my-5">
-    <h4>Logs</h4>
-    {% include "obj_logs.html" with logs=logs %}
+    <h4>Logs RegDID</h4>
+    {% include "obj_logs.html" with logs=logs_regdid id=regdid.pk %}
+    <hr>
+    <h4>Logs CDS</h4>
+    {% include "obj_logs.html" with logs=logs_cds id=regdid.cds.pk %}
 </div>
 {% endblock centered_container %}

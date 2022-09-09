@@ -5,7 +5,7 @@
 
 
 {% block centered_container %}
-<h3>{% trans "Edit other data for" %} {{ cds.nome_cds_it }}</h3>
+<h3>{% trans "Edit other data for" %} {{ regdid.cds.nome_cds_it }} - {{ regdid.aa_reg_did }}</h3>
 {% if other_data %}
 <div class="mt-5">
     <hr class="my-5">
@@ -27,7 +27,7 @@
                     {{ other_data.matricola_coordinatore|default:"-" }}
                 </td>
                 <td>
-                    <a href="{% url 'ricerca_crud:crud_cds_other_data_coordinator' code=cds.pk data_id=other_data.pk %}" class="d-flex btn btn-primary btn-xs">
+                    <a href="{% url 'ricerca_crud:crud_cds_other_data_coordinator' regdid_id=regdid.pk data_id=other_data.pk %}" class="d-flex btn btn-primary btn-xs">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg> {% trans "Edit" %}
@@ -68,7 +68,7 @@
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_coordinator_delete' code=cds.pk data_id=other_data.pk %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_coordinator_delete' regdid_id=regdid.pk data_id=other_data.pk %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
@@ -98,7 +98,7 @@
                     {{ other_data.matricola_vice_coordinatore|default:"-" }}
                 </td>
                 <td>
-                    <a href="{% url 'ricerca_crud:crud_cds_other_data_deputy_coordinator' code=cds.pk data_id=other_data.pk %}" class="d-flex btn btn-primary btn-xs">
+                    <a href="{% url 'ricerca_crud:crud_cds_other_data_deputy_coordinator' regdid_id=regdid.pk data_id=other_data.pk %}" class="d-flex btn btn-primary btn-xs">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg> {% trans "Edit" %}
@@ -139,7 +139,7 @@
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_deputy_coordinator_delete' code=cds.pk data_id=other_data.pk %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_cds_other_data_deputy_coordinator_delete' regdid_id=regdid.pk data_id=other_data.pk %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
