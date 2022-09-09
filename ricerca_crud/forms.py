@@ -110,8 +110,8 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
             "modalita_iscrizione": _("Registration procedure"),
         }
         help_texts = {
-            "nome_origine_coordinatore": _("Edit this field only if necessary"),
-            "nome_origine_vice_coordinatore": _("Edit this field only if necessary"),
+            "nome_origine_coordinatore": _("Change this field only if necessary or if the person you are looking for is not in the database"),
+            "nome_origine_vice_coordinatore": _("Change this field only if necessary or if the person you are looking for is not in the database"),
         }
         widgets = {'modalita_iscrizione': forms.Textarea(attrs={'rows': 2})}
 
@@ -135,7 +135,7 @@ class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
             "nome_origine_riferimento": _("Responsible name (plain text)"),
         }
         help_texts = {
-            "nome_origine_riferimento": _("Edit this field only if necessary"),
+            "nome_origine_riferimento": _("Change this field only if necessary or if the person you are looking for is not in the database"),
         }
         widgets = {'orari': forms.Textarea(attrs={'rows': 2})}
 
