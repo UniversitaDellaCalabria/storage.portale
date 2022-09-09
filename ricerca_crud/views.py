@@ -1246,11 +1246,7 @@ def cds_office_data_edit(request, code, data_id, cds=None, my_offices=None):
 @can_edit_cds
 def cds_office_data_new(request, code, my_offices=None, cds=None):
 
-    # la relazione a other data deve assolutamente cambiare
-    other_data = get_object_or_404(DidatticaCdsAltriDati, cds=cds)
-
-    DidatticaCdsAltriDatiUfficio.objects.create(cds=other_data,
-                                                ordine=10)
+    DidatticaCdsAltriDatiUfficio.objects.create(cds=cds, ordine=10)
 
     log_action(user=request.user,
                obj=cds,
