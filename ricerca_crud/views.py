@@ -295,7 +295,6 @@ def researchgroup_teacher_delete(request, code, teacher_rgroup_id,
     return redirect('ricerca_crud:crud_researchgroup_edit', code=code)
 
 
-
 @login_required
 @can_manage_researchlines
 def base_researchlines(request,
@@ -460,7 +459,6 @@ def researchline_new_base(request, my_offices=None):
                    'teacher_form': teacher_form})
 
 
-
 @login_required
 @can_manage_researchlines
 @can_edit_base_researchline
@@ -507,6 +505,7 @@ def base_researchline(request, code, my_offices=None, rline=None, teachers=None)
                    'logs': logs,
                    'rline': rline,
                    'teachers': teachers})
+
 
 @login_required
 @can_manage_researchlines
@@ -557,13 +556,11 @@ def applied_researchline(request, code,
                    'teachers': teachers})
 
 
-
-
 @login_required
 @can_manage_researchlines
 @can_edit_base_researchline
 def base_researchline_delete(request, code,
-                         my_offices=None, rline=None, teachers=None):
+                             my_offices=None, rline=None, teachers=None):
     # ha senso?
     #if rgroup.user_ins != request.user:
     if not request.user.is_superuser:
@@ -580,7 +577,7 @@ def base_researchline_delete(request, code,
 @can_manage_researchlines
 @can_edit_applied_researchline
 def applied_researchline_delete(request, code,
-                         my_offices=None, rline=None, teachers=None):
+                                my_offices=None, rline=None, teachers=None):
     # ha senso?
     #if rgroup.user_ins != request.user:
     if not request.user.is_superuser:
@@ -597,7 +594,7 @@ def applied_researchline_delete(request, code,
 @can_manage_researchlines
 @can_edit_base_researchline
 def base_researchline_teacher_new(request, code,
-                              my_offices=None, rline=None, teachers=None):
+                                  my_offices=None, rline=None, teachers=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_base_researchlines'): _('Research lines'),
                    reverse('ricerca_crud:crud_base_researchline_edit', kwargs={'code': code}): rline.descrizione,
@@ -641,7 +638,7 @@ def base_researchline_teacher_new(request, code,
 @can_manage_researchlines
 @can_edit_applied_researchline
 def applied_researchline_teacher_new(request, code,
-                              my_offices=None, rline=None, teachers=None):
+                                     my_offices=None, rline=None, teachers=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_applied_researchlines'): _('Research lines'),
                    reverse('ricerca_crud:crud_applied_researchline_edit', kwargs={'code': code}): rline.descrizione,
@@ -685,7 +682,7 @@ def applied_researchline_teacher_new(request, code,
 @can_manage_researchlines
 @can_edit_base_researchline
 def base_researchline_teacher_edit(request, code, teacher_rline_id,
-                               my_offices=None, rline=None, teachers=None):
+                                   my_offices=None, rline=None, teachers=None):
     teacher_rline = get_object_or_404(RicercaDocenteLineaBase,
                                        pk=teacher_rline_id)
     teacher = teacher_rline.personale
@@ -737,11 +734,12 @@ def base_researchline_teacher_edit(request, code, teacher_rline_id,
                    'choosen_person': teacher_data[1],
                    'url': reverse('ricerca:teacherslist')})
 
+
 @login_required
 @can_manage_researchlines
 @can_edit_applied_researchline
 def applied_researchline_teacher_edit(request, code, teacher_rline_id,
-                               my_offices=None, rline=None, teachers=None):
+                                      my_offices=None, rline=None, teachers=None):
     teacher_rline = get_object_or_404(RicercaDocenteLineaApplicata,
                                        pk=teacher_rline_id)
     teacher = teacher_rline.personale
@@ -794,12 +792,11 @@ def applied_researchline_teacher_edit(request, code, teacher_rline_id,
                    'url': reverse('ricerca:teacherslist')})
 
 
-
 @login_required
 @can_manage_researchlines
 @can_edit_base_researchline
 def base_researchline_teacher_delete(request, code, teacher_rline_id,
-                                 my_offices=None, rline=None, teachers=None):
+                                     my_offices=None, rline=None, teachers=None):
     teacher_rline = get_object_or_404(RicercaDocenteLineaBase,
                                        ricerca_linea_base=rline,
                                        pk=teacher_rline_id)
@@ -819,12 +816,11 @@ def base_researchline_teacher_delete(request, code, teacher_rline_id,
     return redirect('ricerca_crud:crud_base_researchline_edit', code=code)
 
 
-
 @login_required
 @can_manage_researchlines
 @can_edit_applied_researchline
 def applied_researchline_teacher_delete(request, code, teacher_rline_id,
-                                 my_offices=None, rline=None, teachers=None):
+                                        my_offices=None, rline=None, teachers=None):
     teacher_rline = get_object_or_404(RicercaDocenteLineaApplicata,
                                        ricerca_linea_applicata=rline,
                                        pk=teacher_rline_id)
@@ -844,7 +840,6 @@ def applied_researchline_teacher_delete(request, code, teacher_rline_id,
     return redirect('ricerca_crud:crud_applied_researchline_edit', code=code)
 
 
-
 @login_required
 @can_manage_cds
 def cds(request, my_offices=None):
@@ -858,8 +853,7 @@ def cds(request, my_offices=None):
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_detail(request, code,
-               my_offices=None, cds=None):
+def cds_detail(request, code, my_offices=None, cds=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_cds'): _('CdS'),
                    '#': cds.nome_cds_it}
@@ -884,8 +878,7 @@ def cds_detail(request, code,
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_other_data_edit(request, code, data_id, cds=None,
-                               my_offices=None ):
+def cds_other_data_edit(request, code, data_id, cds=None, my_offices=None):
 
     other_data = get_object_or_404(DidatticaCdsAltriDati,
                                        pk=data_id, cds=cds)
@@ -936,7 +929,6 @@ def cds_other_data_edit(request, code, data_id, cds=None,
                    'form': form,
                    'cds': cds,
                    'other_data': other_data})
-
 
 
 @login_required
@@ -1004,28 +996,6 @@ def cds_other_data_coordinator(request, code, data_id,
                    'data_id':data_id,
                    'choosen_person': teacher_data[1] if teacher_data else None,
                    'url': reverse('ricerca:teacherslist')})
-
-
-@login_required
-@can_manage_cds
-@can_edit_cds
-def cds_office_data_responsible_delete(request, code, data_id, my_offices=None, cds=None):
-    office_data = get_object_or_404(DidatticaCdsAltriDatiUfficio,
-                                    pk=data_id, cds=cds)
-    office_data.matricola_riferimento = None
-    office_data.save()
-
-    log_action(user=request.user,
-               obj=cds,
-               flag=CHANGE,
-               msg=f'{_("Deleted responsible data")}')
-
-    messages.add_message(request,
-                         messages.SUCCESS,
-                         _("Responsible data removed successfully"))
-    return redirect('ricerca_crud:crud_cds_office_data_edit',
-                    code=code,
-                    data_id=data_id)
 
 
 @login_required
@@ -1142,26 +1112,6 @@ def cds_other_data_new(request, code, my_offices=None, cds=None):
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_office_data_delete(request, code, data_id, my_offices=None, cds=None):
-    office_data = get_object_or_404(DidatticaCdsAltriDatiUfficio,
-                                    pk=data_id, cds=cds)
-
-    office_data.delete()
-
-    log_action(user=request.user,
-               obj=cds,
-               flag=CHANGE,
-               msg=f'{_("Deleted office data")}')
-
-    messages.add_message(request,
-                         messages.SUCCESS,
-                         _("Office data removed successfully"))
-    return redirect('ricerca_crud:crud_cds_detail', code=code)
-
-
-@login_required
-@can_manage_cds
-@can_edit_cds
 def cds_other_data_coordinator_delete(request, code, data_id,
                                  my_offices=None, cds=None):
     other_data = get_object_or_404(DidatticaCdsAltriDati,
@@ -1204,6 +1154,26 @@ def cds_other_data_deputy_coordinator_delete(request, code, data_id,
     return redirect('ricerca_crud:crud_cds_other_data_edit',
                     code=code,
                     data_id=data_id)
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_office_data_delete(request, code, data_id, my_offices=None, cds=None):
+    office_data = get_object_or_404(DidatticaCdsAltriDatiUfficio,
+                                    pk=data_id, cds=cds)
+
+    office_data.delete()
+
+    log_action(user=request.user,
+               obj=cds,
+               flag=CHANGE,
+               msg=f'{_("Deleted office data")}')
+
+    messages.add_message(request,
+                         messages.SUCCESS,
+                         _("Office data removed successfully"))
+    return redirect('ricerca_crud:crud_cds_detail', code=code)
 
 
 @login_required
@@ -1358,3 +1328,24 @@ def cds_office_data_responsible(request, code, data_id, my_offices=None, cds=Non
                    'choosen_person': person_data[1] if person_data else None,
                    'url': reverse('ricerca:addressbooklist')})
 
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_office_data_responsible_delete(request, code, data_id, my_offices=None, cds=None):
+    office_data = get_object_or_404(DidatticaCdsAltriDatiUfficio,
+                                    pk=data_id, cds=cds)
+    office_data.matricola_riferimento = None
+    office_data.save()
+
+    log_action(user=request.user,
+               obj=cds,
+               flag=CHANGE,
+               msg=f'{_("Deleted responsible data")}')
+
+    messages.add_message(request,
+                         messages.SUCCESS,
+                         _("Responsible data removed successfully"))
+    return redirect('ricerca_crud:crud_cds_office_data_edit',
+                    code=code,
+                    data_id=data_id)
