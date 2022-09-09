@@ -890,13 +890,6 @@ def cds_detail(request, code,
 @can_edit_cds
 def cds_other_data_edit(request, code, data_id, cds=None,
                                my_offices=None ):
-    breadcrumbs = {
-        reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-        reverse('ricerca_crud:crud_cds'): _('Cds'),
-        reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
-        reverse('ricerca_crud:crud_cds_other_data_edit', kwargs={'code': code,'data_id': data_id}): _("Other data")
-    }
-
 
     other_data = get_object_or_404(DidatticaCdsAltriDati,
                                        pk=data_id, cds=cds)
@@ -923,14 +916,22 @@ def cds_other_data_edit(request, code, data_id, cds=None,
                                  messages.SUCCESS,
                                  _("Other data edited successfully"))
 
-            return redirect('ricerca_crud:crud_cds_detail',
-                            code=code)
+            return redirect('ricerca_crud:crud_cds_other_data_edit',
+                            code=code,
+                            data_id=data_id)
 
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {
+        reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+        reverse('ricerca_crud:crud_cds'): _('Cds'),
+        reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
+        reverse('ricerca_crud:crud_cds_other_data_edit', kwargs={'code': code,'data_id': data_id}): _("Other data")
+    }
 
     return render(request,
                   'cds_other_data.html',
@@ -995,8 +996,8 @@ def cds_other_data_coordinator(request, code, data_id,
                    reverse('ricerca_crud:crud_cds'): _('Cds'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
                    reverse('ricerca_crud:crud_cds_other_data_edit',
-                           kwargs={'code': code, 'data_id':data_id}): 'Modifica Dati',
-                   '#': _('Edit Coordinator')}
+                           kwargs={'code': code, 'data_id':data_id}): _('Other data'),
+                   '#': _('Coordinator')}
 
     return render(request,
                   'cds_other_data_teacher.html',
@@ -1038,7 +1039,8 @@ def cds_other_data_deputy_coordinator(request, code, data_id,
 
 
     other_data = get_object_or_404(DidatticaCdsAltriDati,
-                                       pk=data_id, cds=cds)
+                                   pk=data_id,
+                                   cds=cds)
 
     teacher = other_data.matricola_vice_coordinatore
     teacher_data = ()
@@ -1084,8 +1086,8 @@ def cds_other_data_deputy_coordinator(request, code, data_id,
                    reverse('ricerca_crud:crud_cds'): _('Cds'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
                    reverse('ricerca_crud:crud_cds_other_data_edit',
-                           kwargs={'code': code, 'data_id':data_id}): 'Modifica Dati',
-                   '#': 'Edit Coordinator'}
+                           kwargs={'code': code, 'data_id':data_id}): _('Other data'),
+                   '#': _('Deputy coordinator')}
 
     return render(request,
                   'cds_other_data_teacher.html',
@@ -1102,7 +1104,8 @@ def cds_other_data_deputy_coordinator(request, code, data_id,
 @can_edit_cds
 def cds_other_data_delete(request, code, data_id, my_offices=None, cds=None):
     other_data = get_object_or_404(DidatticaCdsAltriDati,
-                                   pk=data_id, cds=cds)
+                                   pk=data_id,
+                                   cds=cds)
 
     other_data.delete()
 
@@ -1242,8 +1245,9 @@ def cds_office_data_edit(request, code, data_id, cds=None, my_offices=None):
                                  messages.SUCCESS,
                                  _("Office data edited successfully"))
 
-            return redirect('ricerca_crud:crud_cds_detail',
-                            code=code)
+            return redirect('ricerca_crud:crud_cds_office_data_edit',
+                            code=code,
+                            data_id=data_id)
 
 
         else:  # pragma: no cover
@@ -1257,7 +1261,7 @@ def cds_office_data_edit(request, code, data_id, cds=None, my_offices=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_cds'): _('Cds'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
-                   '#': _('Edit office data')
+                   '#': _('Office data')
                    }
 
     return render(request,
@@ -1344,8 +1348,8 @@ def cds_office_data_responsible(request, code, data_id, my_offices=None, cds=Non
                    reverse('ricerca_crud:crud_cds'): _('Cds'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'code': code}): cds.nome_cds_it,
                    reverse('ricerca_crud:crud_cds_office_data_edit',
-                           kwargs={'code': code, 'data_id':data_id}): 'Modifica Dati',
-                   '#': _('Edit Responsible')}
+                           kwargs={'code': code, 'data_id':data_id}): _('Office data'),
+                   '#': _('Responsible')}
 
     return render(request,
                   'cds_office_data_responsible.html',
