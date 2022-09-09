@@ -868,11 +868,8 @@ def cds_detail(request, code,
     other_data = DidatticaCdsAltriDati.objects.filter(cds_id=cds.pk)
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=cds.pk)
 
-
-
     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds).pk,
                                    object_id=cds.pk)
-
 
     return render(request,
                   'cds_detail.html',
@@ -882,7 +879,6 @@ def cds_detail(request, code,
                    'other_data': other_data,
                    'office_data': office_data,
                    'regolamento': regolamento})
-
 
 
 @login_required
@@ -896,7 +892,8 @@ def cds_other_data_edit(request, code, data_id, cds=None,
     form = DidatticaCdsAltriDatiForm(instance=other_data)
 
     if request.POST:
-        form = DidatticaCdsAltriDatiForm(data=request.POST)
+        form = DidatticaCdsAltriDatiForm(instance=other_data,
+                                         data=request.POST)
         if form.is_valid():
             other_data.user_mod = request.user
             other_data.num_posti = form.cleaned_data['num_posti']
@@ -1220,7 +1217,8 @@ def cds_office_data_edit(request, code, data_id, cds=None, my_offices=None):
     form = DidatticaCdsAltriDatiUfficioForm(instance=office_data)
 
     if request.POST:
-        form = DidatticaCdsAltriDatiUfficioForm(data=request.POST)
+        form = DidatticaCdsAltriDatiUfficioForm(instance=office_data,
+                                                data=request.POST)
         if form.is_valid():
             office_data.user_mod = request.user
             office_data.ordine = form.cleaned_data['ordine']
