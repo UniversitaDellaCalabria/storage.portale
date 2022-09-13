@@ -14,14 +14,14 @@
         <div class="mt-5">
             {% include "blocks/crud_teacherslist.html" with uid="id_1" url=teachers_api %}
             <hr />
-            <span id="choosen_teacher_name">
-                {% if choosen_teacher %}
+            <span id="choosen_person_name">
+                {% if choosen_person %}
                 <div class="alert alert-success" role="alert">
-                    {% trans 'Choosen teacher:' %} <b>{{ choosen_teacher }}</b>
+                    {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
                 </div>
                 {% else %}
                 <div class="alert alert-warning" role="alert">
-                  {% trans "Choose a teacher to proceed" %}
+                  {% trans "Choose a person to proceed" %}
                 </div>
                 {% endif %}
             </span>

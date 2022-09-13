@@ -49,7 +49,7 @@ class ApiCdSListUnitTest(TestCase):
             'cdsord': didatticaCds,
             'iso6392_cod': 'ita',
         })
-        DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+        r1 = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
             'regdid_id': 1,
             'stato_regdid_cod': 'A',
             'titolo_congiunto_cod': 'N',
@@ -63,7 +63,7 @@ class ApiCdSListUnitTest(TestCase):
         })
 
         DidatticaCdsAltriDatiUnitTest.create_didatticaCdsAltriDati(**{
-            'cds_id': 1,
+            'regdid_id': r1,
             'num_posti': 2
         })
 

@@ -142,7 +142,7 @@ class ServiceDidatticaCds:
                 "lingua_des_it",
                 "lingua_des_eng").distinct()
 
-            item['OtherData'] = DidatticaCdsAltriDati.objects.filter(cds_id=item['cds_id']).values(
+            item['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=item['didatticaregolamento__regdid_id']).values(
                 'matricola_coordinatore',
                 'nome_origine_coordinatore',
                 'matricola_vice_coordinatore',

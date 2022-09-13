@@ -30,7 +30,7 @@ class RicercaGruppoForm(forms.ModelForm):
 
 
 class RicercaGruppoDocenteForm(forms.ModelForm):
-    choosen_teacher = forms.CharField(label=_('Teacher'),
+    choosen_person = forms.CharField(label=_('Person'),
                                       widget = forms.HiddenInput(),
                                       required=True)
 
@@ -67,7 +67,7 @@ class RicercaLineaBaseForm(forms.ModelForm):
 
 
 class RicercaDocenteLineaBaseForm(forms.ModelForm):
-    choosen_teacher = forms.CharField(label=_('Teacher'),
+    choosen_person = forms.CharField(label=_('Teacher'),
                                       widget = forms.HiddenInput(),
                                       required=True)
 
@@ -83,7 +83,7 @@ class RicercaDocenteLineaBaseForm(forms.ModelForm):
 
 
 class RicercaDocenteLineaApplicataForm(forms.ModelForm):
-    choosen_teacher = forms.CharField(label=_('Teacher'),
+    choosen_person = forms.CharField(label=_('Person'),
                                       widget = forms.HiddenInput(),
                                       required=True)
 
@@ -101,18 +101,42 @@ class RicercaDocenteLineaApplicataForm(forms.ModelForm):
 class DidatticaCdsAltriDatiForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDati
-        fields = ['cds', 'matricola_coordinatore', 'nome_origine_coordinatore', 'matricola_vice_coordinatore', 'nome_origine_vice_coordinatore', 'num_posti', 'modalita_iscrizione']
+        fields = ['nome_origine_coordinatore', 'nome_origine_vice_coordinatore',
+                  'num_posti', 'modalita_iscrizione']
+        labels = {
+            "nome_origine_coordinatore": _("Coordinator name (plain text)"),
+            "nome_origine_vice_coordinatore": _("Deputy coordinator name (plain text)"),
+            "num_posti": _("Number of seats"),
+            "modalita_iscrizione": _("Registration procedure"),
+        }
+        help_texts = {
+            "nome_origine_coordinatore": _("Change this field only if necessary or if the person you are looking for is not in the database"),
+            "nome_origine_vice_coordinatore": _("Change this field only if necessary or if the person you are looking for is not in the database"),
+        }
         widgets = {'modalita_iscrizione': forms.Textarea(attrs={'rows': 2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
 
 
+class DidatticaCdsAltriDatiCoordinatorForm(forms.Form):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=True)
+
 
 class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDatiUfficio
-        fields = ['cds', 'ordine', 'matricola_riferimento', 'nome_ufficio', 'nome_origine_riferimento', 'telefono', 'email', 'edificio', 'piano', 'orari', 'sportello_online']
+        fields = ['ordine', 'nome_ufficio', 'nome_origine_riferimento',
+                  'telefono', 'email', 'edificio', 'piano', 'orari',
+                  'sportello_online']
+        labels = {
+            "nome_origine_riferimento": _("Responsible name (plain text)"),
+        }
+        help_texts = {
+            "nome_origine_riferimento": _("Change this field only if necessary or if the person you are looking for is not in the database"),
+        }
         widgets = {'orari': forms.Textarea(attrs={'rows': 2})}
 
     class Media:

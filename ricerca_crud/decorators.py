@@ -163,12 +163,13 @@ def can_edit_cds(func_to_decorate):
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        cds = get_object_or_404(DidatticaCds, pk=original_kwargs['code'])
-        other_data = DidatticaCdsAltriDati.objects.filter(cds_id=cds.pk)
-        office_data = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=cds.pk)
-        original_kwargs['cds'] = cds
-        original_kwargs['other_data'] = other_data
-        original_kwargs['office_data'] = office_data
+        regdid = DidatticaRegolamento.objects\
+                                     .filter(pk=original_kwargs['regdid_id'])\
+                                     .select_related('cds')\
+                                     .first()
+
+        original_kwargs['regdid'] = regdid
+
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
@@ -179,8 +180,12 @@ def can_edit_cds(func_to_decorate):
             if myoffice.office.organizational_structure.unique_code not in departments:
                 departments.append(myoffice.office.organizational_structure.unique_code)
 
-        if cds.dip.dip_cod in departments:
+        if regdid.cds.dip.dip_cod in departments:
             return func_to_decorate(*original_args, **original_kwargs)
         raise Exception("Permission denied")
 
     return new_func
+
+
+
+
