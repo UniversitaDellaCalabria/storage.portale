@@ -55,12 +55,10 @@ def can_edit_researchgroup(func_to_decorate):
                 departments.append(myoffice.office.organizational_structure.unique_code)
         now = date.today()
         for teacher in teachers:
-            if teacher.personale.sede in departments:
-                if teacher.dt_inizio and teacher.dt_inizio>now:
-                    continue
-                if teacher.dt_fine and teacher.dt_fine<now:
-                    continue
-                return func_to_decorate(*original_args, **original_kwargs)
+            if not teacher.personale.sede in departments: continue
+            if teacher.dt_inizio and teacher.dt_inizio>now: continue
+            if teacher.dt_fine and teacher.dt_fine<now: continue
+            return func_to_decorate(*original_args, **original_kwargs)
         raise Exception("Permission denied")
 
     return new_func
@@ -105,8 +103,10 @@ def can_edit_base_researchline(func_to_decorate):
                 departments.append(myoffice.office.organizational_structure.unique_code)
         now = date.today()
         for teacher in teachers:
-            if teacher.personale.sede in departments and teacher.dt_inizio<=now and teacher.dt_fine>=now:
-                return func_to_decorate(*original_args, **original_kwargs)
+            if not teacher.personale.sede in departments: continue
+            if teacher.dt_inizio and teacher.dt_inizio>now: continue
+            if teacher.dt_fine and teacher.dt_fine<now: continue
+            return func_to_decorate(*original_args, **original_kwargs)
         raise Exception("Permission denied")
 
     return new_func
@@ -134,8 +134,10 @@ def can_edit_applied_researchline(func_to_decorate):
                 departments.append(myoffice.office.organizational_structure.unique_code)
         now = date.today()
         for teacher in teachers:
-            if teacher.personale.sede in departments and teacher.dt_inizio<=now and teacher.dt_fine>=now:
-                return func_to_decorate(*original_args, **original_kwargs)
+            if not teacher.personale.sede in departments: continue
+            if teacher.dt_inizio and teacher.dt_inizio>now: continue
+            if teacher.dt_fine and teacher.dt_fine<now: continue
+            return func_to_decorate(*original_args, **original_kwargs)
         raise Exception("Permission denied")
 
     return new_func
