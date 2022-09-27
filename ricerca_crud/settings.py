@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 OFFICE_RESEARCHGROUPS = 'researchgroups'
 OFFICE_RESEARCHLINES = 'researchlines'
 OFFICE_CDS = 'cds'
+OFFICE_PATENTS = 'patents'
 
 ALLOWED_CDS_LANGUAGES = ['ita', 'eng']
 ALLOWED_CDS_JOINT_DEGREES = [
@@ -13,5 +14,7 @@ ALLOWED_CDS_JOINT_DEGREES = [
     {'COD': 'D', 'name': _("Double title")}
 ]
 CURRENT_YEAR = date.today().year
+
+CMS_STORAGE_ROOT_API = 'https://pp.storage.unical.it'
 
 

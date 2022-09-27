@@ -141,3 +141,38 @@ class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
 
     class Media:
         js = ('js/textarea-autosize.js',)
+
+
+class BrevettoDatiBaseForm(forms.ModelForm):
+    class Meta:
+        model = BrevettoDatiBase
+        fields = ['id_univoco', 'titolo', 'url_immagine', 'breve_descrizione', 'id_area_tecnologica', 'url_knowledge_share', 'applicazioni', 'vantaggi',\
+                  'trl_aggiornato', 'proprieta', 'id_status_legale', 'data_priorita', 'territorio', 'id_diritto_commerciale', 'id_disponibilita', 'area_ks', 'nome_file_logo']
+        widgets = {'breve_descrizione': forms.Textarea(attrs={'rows': 2}), 'applicazioni': forms.Textarea(attrs={'rows': 2}),\
+                   'vantaggi': forms.Textarea(attrs={'rows': 2}), 'data_priorita': BootstrapItaliaDateWidget }
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+
+class BrevettoInventoriForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = BrevettoInventori
+        fields = []
+        # labels = {
+        #     "cognomenome_origine": _("Inventor name (plain text)"),
+        # }
+        # help_texts = {
+        #     "cognomenome_origine": _(
+        #         "Change this field only if necessary or if the person you are looking for is not in the database"),
+        # }
+
