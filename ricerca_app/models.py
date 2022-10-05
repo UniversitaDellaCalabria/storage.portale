@@ -10,6 +10,14 @@
 # field names.
 from django.contrib.auth import get_user_model
 from django.db import models
+from .validators import *
+
+def patents_media_path(instance, filename): # pragma: no cover
+    return f'portale/brevetti/loghi/{filename}'
+
+
+def companies_media_path(instance, filename): # pragma: no cover
+    return f'portale/companies/loghi/{filename}'
 
 
 class InsModAbstract(models.Model):
@@ -3030,6 +3038,71 @@ class TerritorioIt(models.Model):
         return '{} {}'.format(self.cd_catasto, self.cd_istat)
 
 
+class BrevettoDirittiCommerciali(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    descr_diritto = models.CharField(
+        db_column='DESCR_DIRITTO', max_length=1000)
+
+    def __str__(self):
+        return self.descr_diritto
+
+    class Meta:
+        managed = True
+        db_table = 'BREVETTO_DIRITTI_COMMERCIALI'
+
+
+
+class BrevettoDisponibilita(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    descr_disponibilita = models.CharField(
+        db_column='DESCR_DISPONIBILITA', max_length=1000)
+
+    def __str__(self):
+        return self.descr_disponibilita
+
+    class Meta:
+        managed = True
+        db_table = 'BREVETTO_DISPONIBILITA'
+
+class TipologiaAreaTecnologica(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    descr_area_ita = models.CharField(
+        db_column='DESCR_AREA_ITA', max_length=1000)
+    descr_area_eng = models.CharField(
+        db_column='DESCR_AREA_ENG',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.descr_area_ita
+
+    class Meta:
+        managed = True
+        db_table = 'TIPOLOGIA_AREA_TECNOLOGICA'
+
+
+class BrevettoStatusLegale(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    descr_status = models.CharField(db_column='DESCR_STATUS', max_length=1000)
+
+
+    def __str__(self):
+        return self.descr_status
+
+    class Meta:
+        managed = True
+        db_table = 'BREVETTO_STATUS_LEGALE'
+
+
 class BrevettoDatiBase(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)
@@ -3054,7 +3127,7 @@ class BrevettoDatiBase(models.Model):
     breve_descrizione = models.TextField(
         db_column='BREVE_DESCRIZIONE', blank=True, null=True)
     id_area_tecnologica = models.ForeignKey(
-        'TipologiaAreaTecnologica',
+        TipologiaAreaTecnologica,
         models.DO_NOTHING,
         db_column='ID_AREA_TECNOLOGICA',
         blank=True,
@@ -3081,7 +3154,7 @@ class BrevettoDatiBase(models.Model):
         blank=True,
         null=True)
     id_status_legale = models.ForeignKey(
-        'BrevettoStatusLegale',
+        BrevettoStatusLegale,
         models.DO_NOTHING,
         db_column='ID_STATUS_LEGALE',
         blank=True,
@@ -3096,13 +3169,13 @@ class BrevettoDatiBase(models.Model):
         blank=True,
         null=True)
     id_diritto_commerciale = models.ForeignKey(
-        'BrevettoDirittiCommerciali',
+        BrevettoDirittiCommerciali,
         models.DO_NOTHING,
         db_column='ID_DIRITTO_COMMERCIALE',
         blank=True,
         null=True)  # Field name made lowercase.
     id_disponibilita = models.ForeignKey(
-        'BrevettoDisponibilita',
+        BrevettoDisponibilita,
         models.DO_NOTHING,
         db_column='ID_DISPONIBILITA',
         blank=True,
@@ -3113,7 +3186,10 @@ class BrevettoDatiBase(models.Model):
         max_length=2000,
         blank=True,
         null=True)
-    nome_file_logo = models.CharField(
+    nome_file_logo = models.FileField(
+        upload_to=patents_media_path,
+        validators=[validate_image_file_extension,
+                    validate_file_size],
         db_column='NOME_FILE_LOGO',
         max_length=1000,
         blank=True,
@@ -3124,42 +3200,18 @@ class BrevettoDatiBase(models.Model):
         db_table = 'BREVETTO_DATI_BASE'
 
 
-class BrevettoDirittiCommerciali(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    descr_diritto = models.CharField(
-        db_column='DESCR_DIRITTO', max_length=1000)
-
-    class Meta:
-        managed = True
-        db_table = 'BREVETTO_DIRITTI_COMMERCIALI'
-
-
-class BrevettoDisponibilita(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    descr_disponibilita = models.CharField(
-        db_column='DESCR_DISPONIBILITA', max_length=1000)
-
-    class Meta:
-        managed = True
-        db_table = 'BREVETTO_DISPONIBILITA'
-
-
 class BrevettoInventori(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)
     id_brevetto = models.ForeignKey(
         BrevettoDatiBase,
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_BREVETTO',
         blank=True,
         null=True)  # Field name made lowercase.
     matricola_inventore = models.ForeignKey(
         'Personale',
-        models.DO_NOTHING,
+        models.SET_NULL,
         db_column='MATRICOLA_INVENTORE',
         to_field='matricola',
         blank=True,
@@ -3175,40 +3227,15 @@ class BrevettoInventori(models.Model):
         db_table = 'BREVETTO_INVENTORI'
 
 
-class BrevettoStatusLegale(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    descr_status = models.CharField(db_column='DESCR_STATUS', max_length=1000)
-
-    class Meta:
-        managed = True
-        db_table = 'BREVETTO_STATUS_LEGALE'
-
-
-class TipologiaAreaTecnologica(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    descr_area_ita = models.CharField(
-        db_column='DESCR_AREA_ITA', max_length=1000)
-    descr_area_eng = models.CharField(
-        db_column='DESCR_AREA_ENG',
-        max_length=1000,
-        blank=True,
-        null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = True
-        db_table = 'TIPOLOGIA_AREA_TECNOLOGICA'
-
-
 class SpinoffStartupAreaInnovazioneS3Calabria(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)
     # Field name made lowercase.
     descr_area_s3 = models.CharField(
         db_column='DESCR_AREA_S3', max_length=1000)
+
+    def __str__(self):
+        return self.descr_area_s3
 
     class Meta:
         managed = True
@@ -3229,7 +3256,10 @@ class SpinoffStartupDatiBase(models.Model):
         max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
-    nome_file_logo = models.CharField(
+    nome_file_logo = models.FileField(
+        upload_to=companies_media_path,
+        validators=[validate_image_file_extension,
+                    validate_file_size],
         db_column='NOME_FILE_LOGO',
         max_length=1000,
         blank=True,
@@ -3250,12 +3280,7 @@ class SpinoffStartupDatiBase(models.Model):
         max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
-    matricola_referente_unical = models.ForeignKey(
-        Personale,
-        models.DO_NOTHING,
-        db_column='MATRICOLA_REFERENTE_UNICAL',
-        blank=True,
-        null=True)  # Field name made lowercase.
+    matricola_referente_unical = models.ForeignKey(Personale, models.DO_NOTHING, to_field='matricola', db_column='MATRICOLA_REFERENTE_UNICAL', blank=True, null=True)  # Field name made lowercase.
     # Field name made lowercase.
     ceo = models.CharField(
         db_column='CEO',
@@ -3288,9 +3313,9 @@ class SpinoffStartupDatiBase(models.Model):
 
 class SpinoffStartupDipartimento(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_spinoff_startup_dati_base = models.ForeignKey(SpinoffStartupDatiBase, models.DO_NOTHING, db_column='ID_SPINOFF_STARTUP_DATI_BASE')  # Field name made lowercase.
+    id_spinoff_startup_dati_base = models.ForeignKey(SpinoffStartupDatiBase, models.CASCADE, db_column='ID_SPINOFF_STARTUP_DATI_BASE')  # Field name made lowercase.
     nome_origine_dipartimento = models.CharField(db_column='NOME_ORIGINE_DIPARTIMENTO', max_length=1000)  # Field name made lowercase.
-    id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.DO_NOTHING, db_column='ID_DIDATTICA_DIPARTIMENTO', blank=True, null=True)  # Field name made lowercase.
+    id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.CASCADE, db_column='ID_DIDATTICA_DIPARTIMENTO', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True

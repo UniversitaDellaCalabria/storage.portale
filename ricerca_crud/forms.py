@@ -144,6 +144,7 @@ class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
 
 
 class BrevettoDatiBaseForm(forms.ModelForm):
+
     class Meta:
         model = BrevettoDatiBase
         fields = ['id_univoco', 'titolo', 'url_immagine', 'breve_descrizione', 'id_area_tecnologica', 'url_knowledge_share', 'applicazioni', 'vantaggi',\
@@ -159,7 +160,7 @@ class BrevettoDatiBaseForm(forms.ModelForm):
 class BrevettoInventoriForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
                                       widget = forms.HiddenInput(),
-                                      required=True)
+                                      required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -167,12 +168,71 @@ class BrevettoInventoriForm(forms.ModelForm):
 
     class Meta:
         model = BrevettoInventori
+        fields = ['cognomenome_origine']
+        labels = {
+            "cognomenome_origine": _("Inventor name (plain text)"),
+        }
+        help_texts = {
+            "cognomenome_origine": _(
+                "Change this field only if necessary or if the person you are looking for is not in the database"),
+        }
+
+
+
+class SpinoffStartupDatiBaseForm(forms.ModelForm):
+    choosen_department = forms.CharField(label=_('Department'),
+                                         widget=forms.HiddenInput(),
+                                         required=True)
+
+    class Meta:
+        model = SpinoffStartupDatiBase
+        fields = ['piva', 'nome_azienda', 'descrizione_ita', 'descrizione_eng', 'url_sito_web',\
+                   'ceo', 'id_area_tecnologica', 'id_area_innovazione_s3_calabria', 'is_startup', 'is_spinoff', 'nome_file_logo']
+        widgets = {'descrizione_ita': forms.Textarea(attrs={'rows': 2}), 'descrizione_eng': forms.Textarea(attrs={'rows': 2})}
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class SpinoffStartupDatiBaseReferentForm(forms.ModelForm):
+
+    class Meta:
+        model = SpinoffStartupDatiBase
+        fields = ['referente_unical']
+        labels = {
+            "referente_unical": _("Unical referent name (plain text)"),
+        }
+        help_texts = {
+            "referente_unical": _(
+                "Change this field only if necessary or if the person you are looking for is not in the database"),
+        }
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class SpinoffStartupDatiBaseReferentWithoutIDForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                     widget=forms.HiddenInput(),
+                                     required=True)
+    class Meta:
+        model = SpinoffStartupDatiBase
         fields = []
-        # labels = {
-        #     "cognomenome_origine": _("Inventor name (plain text)"),
-        # }
-        # help_texts = {
-        #     "cognomenome_origine": _(
-        #         "Change this field only if necessary or if the person you are looking for is not in the database"),
-        # }
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class SpinoffStartupDipartimentoForm(forms.ModelForm):
+    choosen_department = forms.CharField(label=_('Department'),
+                                     widget=forms.HiddenInput(),
+                                     required=True)
+
+    class Meta:
+        model = SpinoffStartupDipartimento
+        fields = []
+
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
 

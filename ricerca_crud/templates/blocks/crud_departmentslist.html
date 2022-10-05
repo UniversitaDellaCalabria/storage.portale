@@ -1,0 +1,111 @@
+{% extends "includes/vue_list.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load ricerca_crud %}
+
+{% block content %}
+
+{% block storage_block_top %}
+{% include "blocks/includes/vue_check.html" %}
+{% endblock storage_block_top %}
+        {% comment %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card-wrapper card-space">
+                    {% block search %}
+                    <div class="card card-bg no-after">
+                        <div class="card-body">
+                            {% include "includes/unical_storage_search_input.html" with id=id %}
+                        </div>
+                    </div>
+                    {% endblock search %}
+                </div>
+            </div>
+        </div>
+        {% endcomment %}
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+
+        <loading-icon
+            v-if="is_loading"
+            :loader_source="loader_source">
+        </loading-icon>
+
+        <div class="table-responsive" v-else>
+            <table class="table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">[[ labels.DepartmentName ]]</th>
+                        <th scope="col">[[ labels.DepartmentCod ]]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in items.results">
+                        <td>
+                            <a href="javascript:void(0)" @click="setDepartment([item.DepartmentID, item.DepartmentName])">
+                                [[ item.DepartmentName ]]
+                            </a>
+                        </td>
+                        <td>
+                            [[ item.DepartmentCod ]]
+                        </td>
+                        <td v-else>
+                            -
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+    </div>
+
+{% block storage_block_bottom %}
+    <div v-else>
+        {% trans "No items here" %}
+    </div>
+
+</div>
+{% endblock storage_block_bottom %}
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+function {{ id }}_get_form_paramenters(keyword=null, value=null) {
+
+    let dict = {}
+
+    if (keyword)
+        dict[keyword] = value
+
+    {% block structure_search_script %}
+    // search
+    let search = document.getElementById('{{ id }}_search')
+    if (search && search.value) dict['search'] = search.value
+    {% endblock structure_search_script %}
+
+    setItemInSession("{{ id }}", dict)
+
+    return dict
+}
+</script>
+{% endblock extra_scripts %}
+
+{% block extra_data %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+search_dict: {},
+
+selected_search: this.getItemFromSession("{{ id }}", 'search'),
+
+{% endblock extra_data %}
+{% block extra_methods %}
+setDepartment(name){
+    document.getElementById("id_choosen_department").value = name[0];
+    document.getElementById("choosen_department_name").innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen department' %} <b>"+name[1]+"</b></div>"
+}
+{% endblock extra_methods %}
+</script>

@@ -5,24 +5,24 @@
 
 
 {% block centered_container %}
-<h2>{% trans "New patent" %}</h2>
+<h2>{% trans "New Company" %}</h2>
 <div class="mt-5">
     <form method="post" enctype="multipart/form-data">
         {% include "form_template.html" with form=form %}
         <hr />
-        <h4>{% trans "Choose one inventor" %}</h4>
+        <h4>{% trans "Choose one department" %}</h4>
         <div class="mt-5">
             {% include "form_template.html" with form=inventor_form %}
-            {% include "blocks/crud_teacherslist.html" with uid="id_1" url=teachers_api %}
+            {% include "blocks/crud_departmentslist.html" with uid="id_1" url=departments_api %}
             <hr />
-            <span id="choosen_person_name">
-                {% if choosen_person %}
+            <span id="choosen_department_name">
+                {% if choosen_department %}
                 <div class="alert alert-success" role="alert">
-                    {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
+                    {% trans 'Choosen department' %} <b>{{ choosen_department }}</b>
                 </div>
                 {% else %}
                 <div class="alert alert-warning" role="alert">
-                  {% trans "Choose a person to proceed" %}
+                  {% trans "Choose a department to proceed" %}
                 </div>
                 {% endif %}
             </span>

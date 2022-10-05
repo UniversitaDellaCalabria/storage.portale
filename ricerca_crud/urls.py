@@ -50,12 +50,27 @@ urlpatterns += path('cds/<str:regdid_id>/office-data/<str:data_id>/delete/', cds
 urlpatterns += path('cds/<str:regdid_id>/office-data/<str:data_id>/responsible/', cds_office_data_responsible, name='crud_cds_office_data_responsible'),
 urlpatterns += path('cds/<str:regdid_id>/office-data/<str:data_id>/responsible/delete/', cds_office_data_responsible_delete, name='crud_cds_office_data_responsible_delete'),
 
-
+# patents
 urlpatterns += path('patents/', patents, name='crud_patents'),
 urlpatterns += path('patents/new/', patent_new, name='crud_patent_new'),
 urlpatterns += path('patents/<str:code>/', patent, name='crud_patent_edit'),
 urlpatterns += path('patents/<str:code>/inventor/<str:inventor_id>', patent_inventor, name='crud_patent_inventor'),
 urlpatterns += path('patents/<str:code>/inventor/new/', patent_inventor_new, name='crud_patent_inventor_new'),
 urlpatterns += path('patents/<str:code>/inventor/<str:inventor_id>/delete/', patent_inventor_delete, name='crud_patent_inventor_delete'),
-# urlpatterns += path('patents/<str:code>/delete/', patent_delete, name='crud_patent_delete'),
+urlpatterns += path('patents/<str:code>/delete/', patent_delete, name='crud_patent_delete'),
+
+
+# companies
+urlpatterns += path('companies/', companies, name='crud_companies'),
+urlpatterns += path('companies/new/', company_new, name='crud_company_new'),
+urlpatterns += path('companies/<str:code>/', company, name='crud_company_edit'),
+urlpatterns += path('companies/<str:code>/teacher-data/<str:data_id>/', company_unical_referent_data, name='crud_company_unical_referent_data'),
+urlpatterns += path('companies/<str:code>/teacher-data/<str:data_id>/unical-referent/', company_unical_referent_data_edit, name='crud_company_unical_referent_data_edit'),
+urlpatterns += path('companies/<str:code>/teacher-data/<str:data_id>/unical-referent/delete/', company_unical_referent_data_delete, name='crud_company_unical_referent_data_delete'),
+urlpatterns += path('companies/<str:code>/department-data/new/', company_unical_department_data_new, name='crud_company_unical_department_data_new'),
+urlpatterns += path('companies/<str:code>/department-data/<str:department_id>/', company_unical_department_data_edit, name='crud_company_unical_department_data_edit'),
+urlpatterns += path('companies/<str:code>/department-data/<str:department_id>/delete', company_unical_department_data_delete, name='crud_company_unical_department_data_delete'),
+urlpatterns += path('companies/<str:code>/delete/', company_delete, name='crud_company_delete'),
+
+
 
