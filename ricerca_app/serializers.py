@@ -1123,7 +1123,7 @@ class StructureTypesSerializer(CreateUpdateAbstract):
 
 class AddressbookStructuresSerializer(CreateUpdateAbstract):
 
-    def to_representation(self, instance):
+    def to_representation(self, instance): # pragma: no cover
         query = instance
         data = super().to_representation(instance)
         data.update(self.to_dict(query, str(self.context['language']).lower()))

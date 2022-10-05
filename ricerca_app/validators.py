@@ -16,7 +16,7 @@ FILE_MAX_SIZE = getattr(settings, 'FILE_MAX_SIZE',
                         app_settings.FILE_MAX_SIZE)
 
 
-def validate_file_size(value):
+def validate_file_size(value): # pragma: no cover
     if not hasattr(value, 'size'): # pragma: no cover
         return
     content_size = None
@@ -31,7 +31,7 @@ def validate_file_size(value):
         raise ValidationError(_msg)
 
 
-def _validate_generic_file_extension(value, allowed_filetypes):
+def _validate_generic_file_extension(value, allowed_filetypes): # pragma: no cover
     if not hasattr(value, 'file'): # pragma: no cover
         return
     mimetype = magic.Magic(mime=True).from_buffer(value.file.read())
@@ -41,14 +41,14 @@ def _validate_generic_file_extension(value, allowed_filetypes):
         raise ValidationError(f'Unsupported file extension {mimetype}')
 
 
-def validate_file_extension(value):
+def validate_file_extension(value): # pragma: no cover
     _validate_generic_file_extension(value, FILETYPE_ALLOWED)
 
 
-def validate_image_file_extension(value):
+def validate_image_file_extension(value): # pragma: no cover
     _validate_generic_file_extension(value, FILETYPE_IMAGE)
 
 
-def validate_media_file_extension(value):
+def validate_media_file_extension(value): # pragma: no cover
     _validate_generic_file_extension(value, FILETYPE_MEDIA)
 

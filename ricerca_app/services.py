@@ -3012,11 +3012,11 @@ class ServiceLaboratorio:
             personale_tecnico = list(personale_tecnico)
             personale_ricerca = list(personale_ricerca)
 
-            for p in personale_tecnico:
+            for p in personale_tecnico: # pragma: no cover
                 if q['matricola_responsabile_scientifico'] == p['matricola_personale_tecnico__matricola']:
                     personale_tecnico.remove(p)
 
-            for p in personale_ricerca:
+            for p in personale_ricerca: # pragma: no cover
                 if q['matricola_responsabile_scientifico'] == p['matricola_personale_ricerca__matricola']:
                     personale_ricerca.remove(p)
 
