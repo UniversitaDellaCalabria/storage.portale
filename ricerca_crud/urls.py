@@ -54,7 +54,8 @@ urlpatterns += path('cds/<str:regdid_id>/office-data/<str:data_id>/responsible/d
 urlpatterns += path('patents/', patents, name='crud_patents'),
 urlpatterns += path('patents/new/', patent_new, name='crud_patent_new'),
 urlpatterns += path('patents/<str:code>/', patent, name='crud_patent_edit'),
-urlpatterns += path('patents/<str:code>/inventor/<str:inventor_id>', patent_inventor, name='crud_patent_inventor'),
+urlpatterns += path('patents/<str:code>/inventor-data/<str:inventor_id>/', patent_inventor_data, name='crud_patent_inventor_data'),
+urlpatterns += path('patents/<str:code>/inventor-data/<str:inventor_id>/inventor/', patent_inventor_data_edit, name='crud_patent_inventor_data_edit'),
 urlpatterns += path('patents/<str:code>/inventor/new/', patent_inventor_new, name='crud_patent_inventor_new'),
 urlpatterns += path('patents/<str:code>/inventor/<str:inventor_id>/delete/', patent_inventor_delete, name='crud_patent_inventor_delete'),
 urlpatterns += path('patents/<str:code>/delete/', patent_delete, name='crud_patent_delete'),
@@ -71,6 +72,27 @@ urlpatterns += path('companies/<str:code>/department-data/new/', company_unical_
 urlpatterns += path('companies/<str:code>/department-data/<str:department_id>/', company_unical_department_data_edit, name='crud_company_unical_department_data_edit'),
 urlpatterns += path('companies/<str:code>/department-data/<str:department_id>/delete', company_unical_department_data_delete, name='crud_company_unical_department_data_delete'),
 urlpatterns += path('companies/<str:code>/delete/', company_delete, name='crud_company_delete'),
+
+
+# projects
+urlpatterns += path('projects/', projects, name='crud_projects'),
+urlpatterns += path('projects/new/', project_new, name='crud_project_new'),
+urlpatterns += path('projects/<str:code>/', project, name='crud_project_edit'),
+urlpatterns += path('projects/<str:code>/structure-data/<str:data_id>/', project_structure_data_edit, name='crud_project_structure_data_edit'),
+urlpatterns += path('projects/<str:code>/director-data/<str:director_id>/', project_director_data, name='crud_project_director_data'),
+urlpatterns += path('projects/<str:code>/director-data/<str:director_id>/director/', project_director_data_edit, name='crud_project_director_data_edit'),
+urlpatterns += path('projects/<str:code>/director/new/', project_director_new, name='crud_project_director_new'),
+urlpatterns += path('projects/<str:code>/director/<str:director_id>/delete/', project_director_delete, name='crud_project_director_delete'),
+urlpatterns += path('projects/<str:code>/researcher-data/<str:researcher_id>/', project_researcher_data, name='crud_project_researcher_data'),
+urlpatterns += path('projects/<str:code>/researcher-data/<str:researcher_id>/researcher/', project_researcher_data_edit, name='crud_project_researcher_data_edit'),
+urlpatterns += path('projects/<str:code>/researcher/new/', project_researcher_new, name='crud_project_researcher_new'),
+urlpatterns += path('projects/<str:code>/researcher/<str:researcher_id>/delete/', project_researcher_delete, name='crud_project_researcher_delete'),
+urlpatterns += path('projects/<str:code>/delete/', project_delete, name='crud_project_delete'),
+
+
+
+
+
 
 
 

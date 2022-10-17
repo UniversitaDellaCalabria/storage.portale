@@ -7,6 +7,8 @@ OFFICE_RESEARCHLINES = 'researchlines'
 OFFICE_CDS = 'cds'
 OFFICE_PATENTS = 'patents'
 OFFICE_COMPANIES = 'companies'
+OFFICE_PROJECTS = 'projects'
+
 
 ALLOWED_CDS_LANGUAGES = ['ita', 'eng']
 ALLOWED_CDS_JOINT_DEGREES = [

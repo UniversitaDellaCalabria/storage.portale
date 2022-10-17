@@ -6,26 +6,26 @@
 
 {% block centered_container %}
 <h2>
-    {% if choosen_person %}{% trans "Edit inventor for" %}{% else %}{% trans "New inventor for" %}{% endif %} {{ patent.titolo }}
+    {% if choosen_structure %}{% trans "Edit structure for" %}{% else %}{% trans "New structure for" %}{% endif %} {{ project.titolo }}
 </h2>
 <div class="mt-5">
-    {% include "blocks/crud_teacherslist.html" with uid="id_1" %}
+    {% include "blocks/crud_structureslist.html" with uid="id_1" %}
     <hr />
-    <span id="choosen_person_name">
-        {% if choosen_person %}
+    <span id="choosen_structure_name">
+        {% if choosen_structure %}
         <div class="alert alert-success" role="alert">
-            {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
+            {% trans 'Choosen structure' %} <b>{{ choosen_structure }}</b>
         </div>
         {% else %}
         <div class="alert alert-warning" role="alert">
-          {% trans "Choose a person to proceed" %}
+          {% trans "Choose a structure to proceed" %}
         </div>
         {% endif %}
     </span>
     <hr />
-</div>
     <form method="post">
         {% include "form_template.html" with form=form %}
         {% include "includes/form_submit.html" %}
     </form>
+</div>
 {% endblock centered_container %}

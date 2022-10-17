@@ -1344,6 +1344,70 @@ class DidatticaTestiRegolamento(InsModAbstract):
         return '{} {}'.format(self.txt_id, self.tipo_testo_regdid_cod)
 
 
+class DocenteMaterialeDidattico(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    matricola = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA')  # Field name made lowercase.
+    titolo = models.CharField(db_column='TITOLO', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    testo = models.TextField(db_column='TESTO')  # Field name made lowercase.
+    testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
+    url_testo = models.CharField(db_column='URL_TESTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    url_testo_en = models.CharField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
+    attivo = models.IntegerField(db_column='ATTIVO')  # Field name made lowercase.
+    dt_pubblicazione = models.DateField(db_column='DT_PUBBLICAZIONE')  # Field name made lowercase.
+    dt_inizio_validita = models.DateField(db_column='DT_INIZIO_VALIDITA')  # Field name made lowercase.
+    dt_fine_validita = models.DateField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DOCENTE_MATERIALE_DIDATTICO'
+
+
+class DocentePtaAltriDati(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    matricola = models.OneToOneField('Personale', models.DO_NOTHING, db_column='MATRICOLA')  # Field name made lowercase.
+    path_foto = models.CharField(db_column='PATH_FOTO', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    path_cv_ita = models.CharField(db_column='PATH_CV_ITA', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    path_cv_en = models.CharField(db_column='PATH_CV_EN', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    breve_bio = models.TextField(db_column='BREVE_BIO', blank=True, null=True)  # Field name made lowercase.
+    breve_bio_en = models.TextField(db_column='BREVE_BIO_EN', blank=True, null=True)  # Field name made lowercase.
+    orario_ricevimento = models.TextField(db_column='ORARIO_RICEVIMENTO', blank=True, null=True)  # Field name made lowercase.
+    orario_ricevimento_en = models.TextField(db_column='ORARIO_RICEVIMENTO_EN', blank=True, null=True)  # Field name made lowercase.
+    orcid = models.CharField(db_column='ORCID', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DOCENTE_PTA_ALTRI_DATI'
+
+
+class DocentePtaBacheca(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    matricola = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA')  # Field name made lowercase.
+    tipo_testo = models.CharField(db_column='TIPO_TESTO', max_length=100)  # Field name made lowercase.
+    tipo_testo_en = models.CharField(db_column='TIPO_TESTO_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    titolo = models.CharField(db_column='TITOLO', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    testo = models.TextField(db_column='TESTO')  # Field name made lowercase.
+    testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
+    url_testo = models.CharField(db_column='URL_TESTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    url_testo_en = models.CharField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
+    attivo = models.IntegerField(db_column='ATTIVO')  # Field name made lowercase.
+    dt_pubblicazione = models.DateField(db_column='DT_PUBBLICAZIONE')  # Field name made lowercase.
+    dt_inizio_validita = models.DateField(db_column='DT_INIZIO_VALIDITA')  # Field name made lowercase.
+    dt_fine_validita = models.DateField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DOCENTE_PTA_BACHECA'
+
+
+
+
 class UnitaOrganizzativa(models.Model):
     # Field name made lowercase.
     uo = models.CharField(db_column='UO', primary_key=True, max_length=40)
@@ -1443,6 +1507,9 @@ class UnitaOrganizzativa(models.Model):
     # Field name made lowercase.
     ds_mission = models.TextField(
         db_column='DS_MISSION', blank=True, null=True)
+
+    def __str__(self): # pragma: no cover
+        return '{}'.format(self.denominazione)
 
     class Meta:
         managed = True
@@ -3329,6 +3396,9 @@ class ProgettoAmbitoTerritoriale(models.Model):
     ambito_territoriale = models.CharField(
         db_column='AMBITO_TERRITORIALE', max_length=100)
 
+    def __str__(self):
+        return self.ambito_territoriale
+
     class Meta:
         managed = True
         db_table = 'PROGETTO_AMBITO_TERRITORIALE'
@@ -3361,6 +3431,7 @@ class ProgettoDatiBase(models.Model):
     uo = models.ForeignKey(
         'UnitaOrganizzativa',
         models.DO_NOTHING,
+        to_field='uo',
         db_column='UO',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -3389,6 +3460,8 @@ class ProgettoDatiBase(models.Model):
         max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
+    call = models.CharField(db_column='CALL', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+
 
     class Meta:
         managed = True
@@ -3396,9 +3469,9 @@ class ProgettoDatiBase(models.Model):
 
 class ProgettoRicercatore(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    matricola = models.ForeignKey(Personale, models.DO_NOTHING, db_column='MATRICOLA', blank=True, null=True)  # Field name made lowercase.
+    matricola = models.ForeignKey(Personale, models.CASCADE,to_field='matricola', db_column='MATRICOLA', blank=True, null=True)  # Field name made lowercase.
     nome_origine = models.CharField(db_column='NOME_ORIGINE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    id_progetto = models.ForeignKey(ProgettoDatiBase, models.DO_NOTHING, db_column='ID_PROGETTO')  # Field name made lowercase.
+    id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -3410,7 +3483,8 @@ class ProgettoResponsabileScientifico(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     matricola = models.ForeignKey(
         Personale,
-        models.DO_NOTHING,
+        models.CASCADE,
+        to_field='matricola',
         db_column='MATRICOLA',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -3420,7 +3494,7 @@ class ProgettoResponsabileScientifico(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     # Field name made lowercase.
-    id_progetto = models.IntegerField(db_column='ID_PROGETTO')
+    id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -3433,6 +3507,10 @@ class ProgettoTipologiaProgramma(models.Model):
     # Field name made lowercase.
     nome_programma = models.CharField(
         db_column='NOME_PROGRAMMA', max_length=1000)
+
+
+    def __str__(self):
+        return self.nome_programma
 
     class Meta:
         managed = True

@@ -7,13 +7,7 @@
 {% block content %}
 
 {% settings_value "CMS_STORAGE_ROOT_API" as api_root %}
-{##}
-{#{% get_allowed_website request.get_host as host %}#}
-{##}
-{#{% settings_value "CMS_PATH_PREFIX" as cms_path_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_ROOT_API" as api_root %}#}
-{#{% storage_settings_value "CMS_STORAGE_BASE_PATH" as base_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_SPINOFF_VIEW_PREFIX_PATH" as spinoff_prefix %}#}
+
 
 {% block storage_block_top %}
 {% include "blocks/includes/vue_check.html" %}

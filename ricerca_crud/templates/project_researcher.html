@@ -1,0 +1,31 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<h2>
+    {% if choosen_person %}{% trans "Edit researcher for" %}{% else %}{% trans "New researcher for" %}{% endif %} {{ project.titolo }}
+</h2>
+<div class="mt-5">
+    {% include "blocks/crud_teacherslist.html" with uid="id_1" %}
+    <hr />
+    <span id="choosen_person_name">
+        {% if choosen_person %}
+        <div class="alert alert-success" role="alert">
+            {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
+        </div>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+          {% trans "Choose a person to proceed" %}
+        </div>
+        {% endif %}
+    </span>
+    <hr />
+</div>
+    <form method="post">
+        {% include "form_template.html" with form=form %}
+        {% include "includes/form_submit.html" %}
+    </form>
+{% endblock centered_container %}

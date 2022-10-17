@@ -179,10 +179,25 @@ class BrevettoInventoriForm(forms.ModelForm):
 
 
 
+class BrevettoInventoriWithoutFieldsForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = BrevettoInventori
+        fields = []
+
+
+
 class SpinoffStartupDatiBaseForm(forms.ModelForm):
     choosen_department = forms.CharField(label=_('Department'),
                                          widget=forms.HiddenInput(),
-                                         required=True)
+                                         required=False)
 
     class Meta:
         model = SpinoffStartupDatiBase
@@ -236,3 +251,107 @@ class SpinoffStartupDipartimentoForm(forms.ModelForm):
     class Media:
         js = ('js/textarea-autosize.js',)
 
+
+
+class ProgettoDatiBaseForm(forms.ModelForm):
+    # choosen_department = forms.CharField(label=_('Department'),
+    #                                      widget=forms.HiddenInput(),
+    #                                      required=True)
+
+    class Meta:
+        model = ProgettoDatiBase
+        fields = ['titolo', 'anno_avvio', 'id_ambito_territoriale', 'id_tipologia_programma', 'id_area_tecnologica',\
+                   'descr_breve', 'url_immagine', 'abstract_ita', 'abstract_eng', 'url_sito_web', 'call', 'uo']
+        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'decr_breve': forms.Textarea(attrs={'rows': 2}), \
+                   'abstract_ita': forms.Textarea(attrs={'rows': 4}), 'abstract_eng': forms.Textarea(attrs={'rows': 4}), \
+                   'anno_avvio': BootstrapItaliaDateWidget, 'uo': forms.HiddenInput()}
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class ProgettoResponsabileScientificoForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                     widget=forms.HiddenInput(),
+                                     required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = ProgettoResponsabileScientifico
+        fields = ['nome_origine']
+        labels = {
+            "nome_origine": _("Director name (plain text)"),
+        }
+        help_texts = {
+            "nome_origine": _(
+                "Change this field only if necessary or if the person you are looking for is not in the database"),
+        }
+
+
+class ProgettoResponsabileScientificoWithoutFieldsForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = ProgettoResponsabileScientifico
+        fields = []
+
+
+
+class ProgettoRicercatoreForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = ProgettoResponsabileScientifico
+        fields = ['nome_origine']
+        labels = {
+            "nome_origine": _("Director name (plain text)"),
+        }
+        help_texts = {
+            "nome_origine": _(
+                "Change this field only if necessary or if the person you are looking for is not in the database"),
+        }
+
+
+class ProgettoRicercatoreWithoutFieldsForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = ProgettoResponsabileScientifico
+        fields = []
+
+
+
+class ProgettoDatiBaseFormWithoutFields(forms.ModelForm):
+    choosen_structure = forms.CharField(label=_('Structure'),
+                                         widget=forms.HiddenInput(),
+                                         required=True)
+
+    class Meta:
+        model = ProgettoDatiBase
+        fields = []
+
+
+
+    class Media:
+        js = ('js/textarea-autosize.js',)

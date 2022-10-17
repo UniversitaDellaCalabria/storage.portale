@@ -73,7 +73,7 @@
                         {% endif %}
                     </td>
                 <td>
-                    <a href="{% url 'ricerca_crud:crud_patent_inventor' code=patent.pk  inventor_id=inventor.pk %}" class="d-flex btn btn-primary btn-xs">
+                    <a href="{% url 'ricerca_crud:crud_patent_inventor_data' code=patent.pk  inventor_id=inventor.pk %}" class="d-flex btn btn-primary btn-xs">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg> {% trans "Edit" %}
