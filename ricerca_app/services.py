@@ -19,7 +19,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
-    SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo
+    SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico
 from . serializers import StructuresSerializer
 
 
@@ -1815,6 +1815,48 @@ class ServiceDocente:
             "cd_csa__uo",
             "cd_csa__denominazione")
 
+        materiale_didattico = DocenteMaterialeDidattico.objects.filter(matricola__exact=teacher).values(
+            'titolo',
+            'titolo_en',
+            'testo',
+            'testo_en',
+            'url_testo',
+            'url_testo_en',
+            'ordine',
+            'attivo',
+            'dt_pubblicazione',
+            'dt_inizio_validita',
+            'dt_fine_validita',
+        )
+
+        docente_pta_altri_dati = DocentePtaAltriDati.objects.filter(matricola__exact=teacher).values(
+            'path_foto',
+            'path_cv_ita',
+            'path_cv_en',
+            'breve_bio',
+            'breve_bio_en',
+            'orario_ricevimento',
+            'orario_ricevimento_en',
+            'orcid',
+
+        )
+
+        bacheca = DocentePtaBacheca.objects.filter(matricola__exact=teacher).values(
+            'tipo_testo',
+            'tipo_testo_en',
+            'titolo',
+            'titolo_en',
+            'testo',
+            'testo_en',
+            'url_testo',
+            'url_testo_en',
+            'ordine',
+            'attivo',
+            'dt_pubblicazione',
+            'dt_inizio_validita',
+            'dt_fine_validita',
+        )
+
         query = query.values(
             "id_ab",
             "matricola",
@@ -1862,8 +1904,23 @@ class ServiceDocente:
 
             if len(functions) == 0:
                 q["Functions"] = None
-            else:
+            else: # pragma: no cover
                 q["Functions"] = functions
+
+            if len(materiale_didattico) == 0:
+                q["Teaching Materials"] = None
+            else: # pragma: no cover
+                q["Teaching Materials"] = materiale_didattico
+
+            if len(docente_pta_altri_dati) == 0:
+                q["Teacher Other Data"] = None
+            else: # pragma: no cover
+                q["Teacher Other Data"] = docente_pta_altri_dati
+
+            if len(bacheca) == 0:
+                q["Board"] = None
+            else: # pragma: no cover
+                q["Board"] = bacheca
 
         return query
 
