@@ -24,3 +24,5 @@ markdown
 uritemplate
 pyyaml
 cryptography
+
+python-magic
