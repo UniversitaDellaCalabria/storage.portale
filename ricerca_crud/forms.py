@@ -355,3 +355,64 @@ class ProgettoDatiBaseFormWithoutFields(forms.ModelForm):
 
     class Media:
         js = ('js/textarea-autosize.js',)
+
+
+
+class DocentePtaAltriDatiForm(forms.ModelForm):
+    # choosen_department = forms.CharField(label=_('Department'),
+    #                                      widget=forms.HiddenInput(),
+    #                                      required=True)
+
+    class Meta:
+        model = DocentePtaAltriDati
+        fields = ['breve_bio','breve_bio_en', 'orario_ricevimento', 'orario_ricevimento_en', 'orcid', 'path_foto', 'path_cv_ita', 'path_cv_en', ]
+        widgets = {'breve_bio_en': forms.Textarea(attrs={'rows': 2}), 'breve_bio': forms.Textarea(attrs={'rows': 2}), \
+                   'orario_ricevimento': forms.Textarea(attrs={'rows': 4}), 'orario_ricevimento_en': forms.Textarea(attrs={'rows': 4})
+                   }
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class DocentePtaBachecaForm(forms.ModelForm):
+    # choosen_department = forms.CharField(label=_('Department'),
+    #                                      widget=forms.HiddenInput(),
+    #                                      required=True)
+
+    class Meta:
+        model = DocentePtaBacheca
+        fields = ['titolo', 'titolo_en', 'tipo_testo', 'tipo_testo_en',\
+                   'testo', 'testo_en', 'url_testo', 'url_testo_en', 'ordine', 'attivo', 'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita']
+        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'titolo_en': forms.Textarea(attrs={'rows': 2}), \
+                   'testo': forms.Textarea(attrs={'rows': 4}), 'testo_en': forms.Textarea(attrs={'rows': 4}), \
+                   'dt_pubblicazione': BootstrapItaliaDateWidget, 'dt_inizio_validita': BootstrapItaliaDateWidget, 'dt_fine_validita': BootstrapItaliaDateWidget}
+
+        help_texts = {
+            "attivo": _(
+                "Set 0 if is not active. 1 otherwise."),
+        }
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class DocenteMaterialeDidatticoForm(forms.ModelForm):
+    # choosen_department = forms.CharField(label=_('Department'),
+    #                                      widget=forms.HiddenInput(),
+    #                                      required=True)
+
+    class Meta:
+        model = DocenteMaterialeDidattico
+        fields = ['titolo', 'titolo_en', 'testo', 'testo_en',\
+                   'url_testo', 'url_testo_en', 'ordine', 'attivo', 'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita']
+        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'titolo_en': forms.Textarea(attrs={'rows': 2}), \
+                   'testo': forms.Textarea(attrs={'rows': 4}), 'testo_en': forms.Textarea(attrs={'rows': 4}), \
+                   'dt_pubblicazione': BootstrapItaliaDateWidget, 'dt_inizio_validita': BootstrapItaliaDateWidget, 'dt_fine_validita': BootstrapItaliaDateWidget}
+
+        help_texts = {
+            "attivo": _(
+                "Set 0 if is not active. 1 otherwise."),
+        }
+
+    class Media:
+        js = ('js/textarea-autosize.js',)

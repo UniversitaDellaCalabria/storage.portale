@@ -1131,6 +1131,9 @@ LABORATORIES_MEDIA_PATH = f'{MEDIA_URL}laboratori/loghi'
 COMPANIES_MEDIA_PATH = f'{MEDIA_URL}spinoff-startup/loghi'
 PATENTS_MEDIA_PATH = f'{MEDIA_URL}brevetti/loghi'
 CDS_BROCHURE_MEDIA_PATH = f'{MEDIA_URL}cds_media_brochure'
+TEACHER_PHOTO_MEDIA_PATH = f'{MEDIA_URL}docenti_pta/foto'
+TEACHER_CV_EN_MEDIA_PATH = f'{MEDIA_URL}docenti_pta/cv_en'
+TEACHER_CV_ITA_MEDIA_PATH = f'{MEDIA_URL}docenti_pta/cv_ita'
 
 ENCRYPTION_KEY = b'key'
 

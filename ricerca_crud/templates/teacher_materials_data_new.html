@@ -1,0 +1,15 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<h3>{% trans "New materials data set for" %} {{ teacher }}</h3>
+<div class="mt-5">
+    <form method="post">
+        {% include "form_template.html" with form=form %}
+        {% include "includes/form_submit.html" %}
+    </form>
+</div>
+{% endblock centered_container %}

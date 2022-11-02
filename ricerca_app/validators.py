@@ -12,6 +12,8 @@ FILETYPE_MEDIA = getattr(settings, 'FILETYPE_MEDIA',
                          app_settings.FILETYPE_MEDIA)
 FILETYPE_ALLOWED = getattr(settings, 'FILETYPE_ALLOWED',
                            app_settings.FILETYPE_ALLOWED)
+FILETYPE_PDF_ALLOWED = getattr(settings, 'FILETYPE_PDF',
+                           app_settings.FILETYPE_PDF)
 FILE_MAX_SIZE = getattr(settings, 'FILE_MAX_SIZE',
                         app_settings.FILE_MAX_SIZE)
 
@@ -41,8 +43,26 @@ def _validate_generic_file_extension(value, allowed_filetypes): # pragma: no cov
         raise ValidationError(f'Unsupported file extension {mimetype}')
 
 
+def orcid_validator(value):
+    if len(value) != 19:
+        raise ValidationError('Unsupported ORCID. Remember, ORCID is an https URI with a 16-digit number that is compatible as 0000-0001-2345-6789')
+    cont = 0
+    for v in value:
+        if not v.isdigit() and v!='X' and v!='-':
+            raise ValidationError('Unsupported ORCID. Remember, ORCID is an https URI with a 16-digit number that is compatible as 0000-0001-2345-6789')
+        if v == '-':
+            cont+=1
+    if cont != 3:
+        raise ValidationError('Unsupported ORCID. Remember, ORCID is an https URI with a 16-digit number that is compatible as 0000-0001-2345-6789')
+
+
+
 def validate_file_extension(value): # pragma: no cover
     _validate_generic_file_extension(value, FILETYPE_ALLOWED)
+
+
+def validate_pdf_file_extension(value): # pragma: no cover
+    _validate_generic_file_extension(value, FILETYPE_PDF_ALLOWED)
 
 
 def validate_image_file_extension(value): # pragma: no cover

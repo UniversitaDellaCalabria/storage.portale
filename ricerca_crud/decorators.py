@@ -7,6 +7,8 @@ from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOfficeEmployee)
 
 from ricerca_app.models import *
+from ricerca_app.utils import decrypt, encrypt
+
 
 from . settings import *
 
@@ -328,6 +330,57 @@ def can_edit_project(func_to_decorate):
             return func_to_decorate(*original_args, **original_kwargs)
         for researcher in researchers:
             if not researcher.personale.sede in departments: continue
+            return func_to_decorate(*original_args, **original_kwargs)
+        raise Exception("Permission denied")
+
+    return new_func
+
+
+
+def can_manage_teachers(func_to_decorate):
+    """
+    """
+    def new_func(*original_args, **original_kwargs):
+        request = original_args[0]
+        my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                          office__name=OFFICE_TEACHERS,
+                                                                          office__is_active=True,
+                                                                          office__organizational_structure__is_active=True)
+        if not my_offices and not request.user.is_superuser:
+            raise Exception("Permission denied")
+        original_kwargs['my_offices'] = my_offices
+        return func_to_decorate(*original_args, **original_kwargs)
+
+    return new_func
+
+
+def can_edit_teacher(func_to_decorate):
+    """
+    """
+    def new_func(*original_args, **original_kwargs):
+        request = original_args[0]
+        teacher_code = decrypt(original_kwargs['code'])
+        teacher = get_object_or_404(Personale, matricola=teacher_code)
+        materials = DocenteMaterialeDidattico.objects.filter(matricola=teacher)
+        other_data = DocentePtaAltriDati.objects.filter(matricola=teacher)
+        board = DocentePtaBacheca.objects.filter(matricola=teacher)
+        original_kwargs['teacher'] = teacher
+        original_kwargs['materials'] = materials
+        original_kwargs['other_data'] = other_data
+        original_kwargs['board'] = board
+
+
+        if request.user.is_superuser:
+            return func_to_decorate(*original_args, **original_kwargs)
+
+        # if request.user == rgroup.user_ins:
+            # return func_to_decorate(*original_args, **original_kwargs)
+
+        departments = []
+        for myoffice in original_kwargs['my_offices']:
+            if myoffice.office.organizational_structure.unique_code not in departments:
+                departments.append(myoffice.office.organizational_structure.unique_code)
+        if teacher.sede in departments:
             return func_to_decorate(*original_args, **original_kwargs)
         raise Exception("Permission denied")
 

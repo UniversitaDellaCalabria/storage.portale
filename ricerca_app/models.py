@@ -15,9 +15,17 @@ from .validators import *
 def patents_media_path(instance, filename): # pragma: no cover
     return f'portale/brevetti/loghi/{filename}'
 
-
 def companies_media_path(instance, filename): # pragma: no cover
     return f'portale/companies/loghi/{filename}'
+
+def teacher_photo_media_path(instance, filename): # pragma: no cover
+    return f'portale/docenti_pta/foto/{filename}'
+
+def teacher_cv_en_media_path(instance, filename): # pragma: no cover
+    return f'portale/docenti_pta/cv_ita/{filename}'
+
+def teacher_cv_ita_media_path(instance, filename): # pragma: no cover
+    return f'portale/docenti_pta/cv_en/{filename}'
 
 
 class InsModAbstract(models.Model):
@@ -1346,7 +1354,7 @@ class DidatticaTestiRegolamento(InsModAbstract):
 
 class DocenteMaterialeDidattico(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    matricola = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA')  # Field name made lowercase.
+    matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola')  # Field name made lowercase.
     titolo = models.CharField(db_column='TITOLO', max_length=200, blank=True, null=True)  # Field name made lowercase.
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
     testo = models.TextField(db_column='TESTO')  # Field name made lowercase.
@@ -1367,15 +1375,36 @@ class DocenteMaterialeDidattico(models.Model):
 
 class DocentePtaAltriDati(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    matricola = models.OneToOneField('Personale', models.DO_NOTHING, db_column='MATRICOLA')  # Field name made lowercase.
-    path_foto = models.CharField(db_column='PATH_FOTO', max_length=500, blank=True, null=True)  # Field name made lowercase.
-    path_cv_ita = models.CharField(db_column='PATH_CV_ITA', max_length=500, blank=True, null=True)  # Field name made lowercase.
-    path_cv_en = models.CharField(db_column='PATH_CV_EN', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    matricola = models.OneToOneField('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola')  # Field name made lowercase.
+    path_foto = models.FileField(
+        upload_to=teacher_photo_media_path,
+        validators=[validate_image_file_extension,
+                    validate_file_size],
+        db_column='PATH_FOTO',
+        max_length=1000,
+        blank=True,
+        null=True) # Field name made lowercase.
+    path_cv_ita = models.FileField(
+        upload_to=teacher_cv_ita_media_path,
+        validators=[validate_pdf_file_extension,
+                    validate_file_size],
+        db_column='PATH_CV_ITA',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
+    path_cv_en = models.FileField(
+        upload_to=teacher_cv_en_media_path,
+        validators=[validate_pdf_file_extension,
+                    validate_file_size],
+        db_column='PATH_CV_EN',
+        max_length=1000,
+        blank=True,
+        null=True)  # Field name made lowercase.
     breve_bio = models.TextField(db_column='BREVE_BIO', blank=True, null=True)  # Field name made lowercase.
     breve_bio_en = models.TextField(db_column='BREVE_BIO_EN', blank=True, null=True)  # Field name made lowercase.
     orario_ricevimento = models.TextField(db_column='ORARIO_RICEVIMENTO', blank=True, null=True)  # Field name made lowercase.
     orario_ricevimento_en = models.TextField(db_column='ORARIO_RICEVIMENTO_EN', blank=True, null=True)  # Field name made lowercase.
-    orcid = models.CharField(db_column='ORCID', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    orcid = models.CharField(validators=[orcid_validator], db_column='ORCID', max_length=100, blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -1385,7 +1414,7 @@ class DocentePtaAltriDati(models.Model):
 
 class DocentePtaBacheca(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    matricola = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA')  # Field name made lowercase.
+    matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola')  # Field name made lowercase.
     tipo_testo = models.CharField(db_column='TIPO_TESTO', max_length=100)  # Field name made lowercase.
     tipo_testo_en = models.CharField(db_column='TIPO_TESTO_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
     titolo = models.CharField(db_column='TITOLO', max_length=200, blank=True, null=True)  # Field name made lowercase.

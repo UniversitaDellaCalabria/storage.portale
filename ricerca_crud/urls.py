@@ -91,6 +91,26 @@ urlpatterns += path('projects/<str:code>/delete/', project_delete, name='crud_pr
 
 
 
+# teachers
+urlpatterns += path('teachers/', teachers, name='crud_teachers'),
+urlpatterns += path('teachers/<str:code>/', teacher_detail, name='crud_teacher_edit'),
+urlpatterns += path('teachers/<str:code>/other-data/new/', teacher_other_data_new, name='crud_teacher_other_data_new'),
+urlpatterns += path('teachers/<str:code>/other-data/<str:data_id>/', teacher_other_data_edit, name='crud_teacher_other_data_edit'),
+urlpatterns += path('teachers/<str:code>/other-data/<str:data_id>/delete/', teacher_other_data_delete, name='crud_teacher_other_data_delete'),
+urlpatterns += path('teachers/<str:code>/board-data/new/', teacher_board_data_new, name='crud_teacher_board_data_new'),
+urlpatterns += path('teachers/<str:code>/board-data/<str:data_id>/', teacher_board_data_edit, name='crud_teacher_board_data_edit'),
+urlpatterns += path('teachers/<str:code>/board-data/<str:data_id>/delete/', teacher_board_data_delete, name='crud_teacher_board_data_delete'),
+urlpatterns += path('teachers/<str:code>/teaching-material-data/new/', teacher_materials_data_new, name='crud_teacher_materials_data_new'),
+urlpatterns += path('teachers/<str:code>/teaching-material-data/<str:data_id>/', teacher_materials_data_edit, name='crud_teacher_materials_data_edit'),
+urlpatterns += path('teachers/<str:code>/teaching-material-data/<str:data_id>/delete/', teacher_materials_data_delete, name='crud_teacher_materials_data_delete'),
+
+
+
+
+
+
+
+
 
 
 
