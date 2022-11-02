@@ -43,6 +43,7 @@ def _validate_generic_file_extension(value, allowed_filetypes): # pragma: no cov
         raise ValidationError(f'Unsupported file extension {mimetype}')
 
 
+
 def orcid_validator(value): # pragma: no cover
     if len(value) != 19:
         raise ValidationError('Unsupported ORCID. Remember, ORCID is an https URI with a 16-digit number that is compatible as 0000-0001-2345-6789')
