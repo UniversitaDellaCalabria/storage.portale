@@ -905,7 +905,7 @@ class ServiceDidatticaAttivitaFormativa:
 
         for hour in filtered_hours:
             for hour2 in filtered_hours:
-                if hour['tipo_att_did_cod'] == hour2['tipo_att_did_cod'] and hour['coper_id__personale_id__matricola'] == hour2['coper_id__personale_id__matricola'] and hour['coper_id'] != hour2['coper_id']:
+                if hour['tipo_att_did_cod'] == hour2['tipo_att_did_cod'] and hour['coper_id__personale_id__matricola'] == hour2['coper_id__personale_id__matricola'] and hour['coper_id'] != hour2['coper_id']: #pragma: no cover
                     hour['ore'] = hour['ore'] + hour2['ore']
                     filtered_hours.remove(hour2)
 
@@ -1009,7 +1009,7 @@ class ServiceDidatticaAttivitaFormativa:
                         'StudyActivityGroups': groups_serialize
 
                 })
-            elif list_submodules[i]['af_id'] not in allowed and list_submodules[i]['fat_part_stu_cod'] == 'GRP':
+            elif list_submodules[i]['af_id'] not in allowed and list_submodules[i]['fat_part_stu_cod'] == 'GRP': # pragma: no cover
                 query[0]['MODULES'].append({
                     'StudyActivityID': list_submodules[i]['af_id'],
                     'StudyActivityCod': list_submodules[i]['af_gen_cod'],
