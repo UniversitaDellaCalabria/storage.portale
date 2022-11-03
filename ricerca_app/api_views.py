@@ -335,7 +335,7 @@ class ApiAllStudyActivitiesList(ApiEndpointList):
         teacher = self.request.query_params.get('teacher')
         course_year = self.request.query_params.get('course_year')
         cds_cod = self.request.query_params.get('cds_cod')
-        teacher_code = self.request.query_params.get('teacher_code')
+        teacher_code = decrypt(self.request.query_params.get('teacher_code'))
 
         return ServiceDidatticaAttivitaFormativa.getAllActivities(self.language, department, cds, academic_year, period, ssd, teacher, teaching, course_year, cds_cod, teacher_code)
 
