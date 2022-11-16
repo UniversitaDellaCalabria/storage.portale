@@ -212,11 +212,14 @@ def can_manage_patents(func_to_decorate):
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        patent = get_object_or_404(
-            BrevettoDatiBase, pk=original_kwargs['code'])
-        inventors = BrevettoInventori.objects.filter(id_brevetto=patent)
-        original_kwargs['patent'] = patent
-        original_kwargs['inventors'] = inventors
+
+        if original_kwargs.get('code'):
+            patent = get_object_or_404(
+                BrevettoDatiBase, pk=original_kwargs['code'])
+            inventors = BrevettoInventori.objects.filter(id_brevetto=patent)
+            original_kwargs['patent'] = patent
+            original_kwargs['inventors'] = inventors
+
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
                                                                           office__name=OFFICE_PATENTS,
                                                                           office__is_active=True,
@@ -234,11 +237,12 @@ def can_manage_companies(func_to_decorate):
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        company = get_object_or_404(
-            SpinoffStartupDatiBase, pk=original_kwargs['code'])
-        departments = SpinoffStartupDipartimento.objects.filter(
-            id_spinoff_startup_dati_base=company)
-        original_kwargs['company'] = company
+
+        if original_kwargs.get('code'):
+            company = get_object_or_404(
+                SpinoffStartupDatiBase, pk=original_kwargs['code'])
+            original_kwargs['company'] = company
+
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
                                                                           office__name=OFFICE_COMPANIES,
                                                                           office__is_active=True,

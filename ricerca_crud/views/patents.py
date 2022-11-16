@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 @can_manage_patents
-def patents(request, my_offices=None):
+def patents(request, my_offices=None, patent=None, inventors=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    '#': _('Patents')}
     context = {'breadcrumbs': breadcrumbs,
@@ -34,7 +34,7 @@ def patents(request, my_offices=None):
 
 @login_required
 @can_manage_patents
-def patent_new(request, my_offices=None):
+def patent_new(request, my_offices=None, patent=None, inventors=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_patents'): _('Patents'),
                    '#': _('New')}

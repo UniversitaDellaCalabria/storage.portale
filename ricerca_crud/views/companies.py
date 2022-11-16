@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 @can_manage_companies
-def companies(request, my_offices=None):
+def companies(request, my_offices=None, company=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    '#': _('Companies')}
     context = {'breadcrumbs': breadcrumbs,
@@ -34,7 +34,7 @@ def companies(request, my_offices=None):
 
 @login_required
 @can_manage_companies
-def company_new(request, my_offices=None):
+def company_new(request, my_offices=None, company=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_companies'): _('Companies'),
                    '#': _('New')}
@@ -56,16 +56,6 @@ def company_new(request, my_offices=None):
             department_code = department_form.cleaned_data['choosen_department']
             department = get_object_or_404(
                 DidatticaDipartimento, dip_id=department_code)
-
-            # # check if user can manage teacher structure
-            # if not request.user.is_superuser:
-            #     structure_afforg = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
-            #                                                                             office__name=OFFICE_COMPANIES,
-            #                                                                             office__is_active=True,
-            #                                                                             office__organizational_structure__is_active=True,
-            #                                                                             office__organizational_structure__unique_code=inventor.cd_uo_aff_org_id)
-            #     if not structure_afforg:
-            #         raise Exception(_("Add inventor belonging to your structure"))
 
             company = SpinoffStartupDatiBase.objects.create(
                 piva=form.cleaned_data['piva'],
