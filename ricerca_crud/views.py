@@ -1480,7 +1480,7 @@ def patent(request, code,
             patent.id_diritto_commerciale = form.cleaned_data['id_diritto_commerciale']
             patent.id_disponibilita = form.cleaned_data['id_disponibilita']
             patent.area_ks = form.cleaned_data['area_ks']
-            patent.nome_file_logo = form.cleaned_data['nome_file_logo']
+            patent.nome_file_logo = form.cleaned_data['nome_file_logo'] if form.cleaned_data.get('nome_file_logo') else None
             patent.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -1833,7 +1833,7 @@ def company(request, code,
             company.user_mod = request.user
             company.piva = form.cleaned_data['piva']
             company.nome_azienda = form.cleaned_data['nome_azienda']
-            company.nome_file_logo = form.cleaned_data['nome_file_logo']
+            company.nome_file_logo = form.cleaned_data['nome_file_logo'] if form.cleaned_data.get('nome_file_logo') else None
             company.descrizione_ita = form.cleaned_data['descrizione_ita']
             company.descrizione_eng = form.cleaned_data['descrizione_eng']
             company.url_sito_web = form.cleaned_data['url_sito_web']
@@ -2207,7 +2207,7 @@ def project_new(request, my_offices=None):
                                      uo=(request.POST['choosen_structure']))
 
     if request.POST:
-        form = ProgettoDatiBaseForm(data=request.POST, files=request.FILES)
+        form = ProgettoDatiBaseForm(data=request.POST)
         director_form = ProgettoResponsabileScientificoForm(data=request.POST)
         structure_form = ProgettoDatiBaseFormWithoutFields(data=request.POST)
 
@@ -2897,8 +2897,6 @@ def teacher_other_data_edit(request, code, data_id,
     if request.POST:
         form = DocentePtaAltriDatiForm(instance=other_data, data=request.POST, files=request.FILES)
         if form.is_valid():
-            print(request.FILES)
-            print(request.POST)
             current_foto = other_data.path_foto
             current_cv_ita = other_data.path_cv_ita
             current_cv_en = other_data.path_cv_en
@@ -2991,10 +2989,10 @@ def teacher_other_data_new(request, code, my_offices=None, teacher=None, materia
         if form.is_valid():
 
             other_data = DocentePtaAltriDati.objects.create(
-            path_foto = form.cleaned_data['path_foto'],
+            path_foto = form.cleaned_data['path_foto'] if form.cleaned_data.get('path_foto') else None,
             matricola = teacher,
-            path_cv_ita = form.cleaned_data['path_cv_ita'],
-            path_cv_en = form.cleaned_data['path_cv_en'],
+            path_cv_ita = form.cleaned_data['path_cv_ita'] if form.cleaned_data.get('path_cv_ita') else None,
+            path_cv_en = form.cleaned_data['path_cv_en'] if form.cleaned_data.get('path_cv_en') else None,
             breve_bio = form.cleaned_data['breve_bio'],
             breve_bio_en = form.cleaned_data['breve_bio_en'],
             orario_ricevimento = form.cleaned_data['orario_ricevimento'],
