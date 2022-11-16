@@ -1,20 +1,14 @@
 import logging
-import os
-import requests
 
-from django import forms
-from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import CharField, Q, Value, F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from organizational_area.models import OrganizationalStructure
 
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
@@ -46,7 +40,8 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                    '#': regdid.cds.nome_cds_it}
 
     other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid_id)
-    office_data = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=regdid.cds.pk)
+    office_data = DidatticaCdsAltriDatiUfficio.objects.filter(
+        cds_id=regdid.cds.pk)
 
     logs_regdid = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(regdid).pk,
                                           object_id=regdid.pk)
@@ -61,7 +56,7 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                    'logs_cds': logs_cds,
                    'other_data': other_data,
                    'office_data': office_data,
-                   'regdid': regdid,})
+                   'regdid': regdid, })
 
 
 @login_required
@@ -81,7 +76,8 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
             other_data.num_posti = form.cleaned_data['num_posti']
             other_data.modalita_iscrizione = form.cleaned_data['modalita_iscrizione']
             other_data.nome_origine_coordinatore = form.cleaned_data['nome_origine_coordinatore']
-            other_data.nome_origine_vice_coordinatore = form.cleaned_data['nome_origine_vice_coordinatore']
+            other_data.nome_origine_vice_coordinatore = form.cleaned_data[
+                'nome_origine_vice_coordinatore']
             other_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -99,7 +95,6 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
                             regdid_id=regdid_id,
                             data_id=data_id)
 
-
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -109,7 +104,7 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
         reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
         reverse('ricerca_crud:crud_cds'): _('CdS'),
         reverse('ricerca_crud:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
-        reverse('ricerca_crud:crud_cds_other_data_edit', kwargs={'regdid_id': regdid_id,'data_id': data_id}): _("Other data")
+        reverse('ricerca_crud:crud_cds_other_data_edit', kwargs={'regdid_id': regdid_id, 'data_id': data_id}): _("Other data")
     }
 
     return render(request,
@@ -126,16 +121,17 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
 def cds_other_data_coordinator(request, regdid_id, data_id,
                                my_offices=None, regdid=None):
 
-
     other_data = get_object_or_404(DidatticaCdsAltriDati,
-                                    pk=data_id, regdid_id=regdid_id)
+                                   pk=data_id, regdid_id=regdid_id)
 
     teacher = other_data.matricola_coordinatore
     teacher_data = ()
 
     if teacher:
-        teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
-        form = DidatticaCdsAltriDatiCoordinatorForm(initial={'choosen_person': teacher_data[0]})
+        teacher_data = (encrypt(teacher.matricola),
+                        f'{teacher.cognome} {teacher.nome}')
+        form = DidatticaCdsAltriDatiCoordinatorForm(
+            initial={'choosen_person': teacher_data[0]})
     else:
         form = DidatticaCdsAltriDatiCoordinatorForm()
 
@@ -144,13 +140,13 @@ def cds_other_data_coordinator(request, regdid_id, data_id,
         if form.is_valid():
             teacher_code = decrypt(form.cleaned_data['choosen_person'])
             new_teacher = get_object_or_404(Personale, matricola=teacher_code)
-            other_data.matricola_coordinatore= new_teacher
+            other_data.matricola_coordinatore = new_teacher
             other_data.nome_origine_coordinatore = f'{new_teacher.cognome} {new_teacher.nome}'
             other_data.save()
 
             if teacher and teacher == new_teacher:
                 log_msg = f'{_("Changed coordinator")} {teacher.__str__()}'
-            elif teacher and teacher!=new_teacher:
+            elif teacher and teacher != new_teacher:
                 log_msg = f'{teacher} {_("substituted with")} {new_teacher.__str__()}'
             else:
                 log_msg = f'{_("Changed coordinator")} {new_teacher.__str__()}'
@@ -174,7 +170,7 @@ def cds_other_data_coordinator(request, regdid_id, data_id,
                    reverse('ricerca_crud:crud_cds'): _('CdS'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
                    reverse('ricerca_crud:crud_cds_other_data_edit',
-                           kwargs={'regdid_id': regdid_id, 'data_id':data_id}): _('Other data'),
+                           kwargs={'regdid_id': regdid_id, 'data_id': data_id}): _('Other data'),
                    '#': _('Coordinator')}
 
     return render(request,
@@ -182,7 +178,7 @@ def cds_other_data_coordinator(request, regdid_id, data_id,
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'regdid': regdid,
-                   'data_id':data_id,
+                   'data_id': data_id,
                    'choosen_person': teacher_data[1] if teacher_data else None,
                    'url': reverse('ricerca:teacherslist')})
 
@@ -191,8 +187,7 @@ def cds_other_data_coordinator(request, regdid_id, data_id,
 @can_manage_cds
 @can_edit_cds
 def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
-                               my_offices=None, regdid=None):
-
+                                      my_offices=None, regdid=None):
 
     other_data = get_object_or_404(DidatticaCdsAltriDati,
                                    pk=data_id,
@@ -202,8 +197,10 @@ def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
     teacher_data = ()
 
     if teacher:
-        teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
-        form = DidatticaCdsAltriDatiCoordinatorForm(initial={'choosen_person': teacher_data[0]})
+        teacher_data = (encrypt(teacher.matricola),
+                        f'{teacher.cognome} {teacher.nome}')
+        form = DidatticaCdsAltriDatiCoordinatorForm(
+            initial={'choosen_person': teacher_data[0]})
     else:
         form = DidatticaCdsAltriDatiCoordinatorForm()
 
@@ -212,13 +209,13 @@ def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
         if form.is_valid():
             teacher_code = decrypt(form.cleaned_data['choosen_person'])
             new_teacher = get_object_or_404(Personale, matricola=teacher_code)
-            other_data.matricola_vice_coordinatore= new_teacher
+            other_data.matricola_vice_coordinatore = new_teacher
             other_data.nome_origine_vice_coordinatore = f'{new_teacher.cognome} {new_teacher.nome}'
             other_data.save()
 
             if teacher and teacher == new_teacher:
                 log_msg = f'{_("Changed deputy coordinator")} {teacher.__str__()}'
-            elif teacher and teacher!=new_teacher:
+            elif teacher and teacher != new_teacher:
                 log_msg = f'{teacher} {_("substituted with")} {new_teacher.__str__()}'
             else:
                 log_msg = f'{_("Changed deputy coordinator")} {new_teacher.__str__()}'
@@ -242,7 +239,7 @@ def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
                    reverse('ricerca_crud:crud_cds'): _('CdS'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
                    reverse('ricerca_crud:crud_cds_other_data_edit',
-                           kwargs={'regdid_id': regdid_id, 'data_id':data_id}): _('Other data'),
+                           kwargs={'regdid_id': regdid_id, 'data_id': data_id}): _('Other data'),
                    '#': _('Deputy coordinator')}
 
     return render(request,
@@ -250,7 +247,7 @@ def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'regdid': regdid,
-                   'data_id':data_id,
+                   'data_id': data_id,
                    'choosen_person': teacher_data[1] if teacher_data else None,
                    'url': reverse('ricerca:teacherslist')})
 
@@ -302,7 +299,7 @@ def cds_other_data_new(request, regdid_id, my_offices=None, regdid=None):
 @can_manage_cds
 @can_edit_cds
 def cds_other_data_coordinator_delete(request, regdid_id, data_id,
-                                 my_offices=None, regdid=None):
+                                      my_offices=None, regdid=None):
     other_data = get_object_or_404(DidatticaCdsAltriDati,
                                    pk=data_id, regdid_id=regdid_id)
     other_data.matricola_coordinatore = None
@@ -325,7 +322,7 @@ def cds_other_data_coordinator_delete(request, regdid_id, data_id,
 @can_manage_cds
 @can_edit_cds
 def cds_other_data_deputy_coordinator_delete(request, regdid_id, data_id,
-                                 my_offices=None, regdid=None):
+                                             my_offices=None, regdid=None):
     other_data = get_object_or_404(DidatticaCdsAltriDati,
                                    pk=data_id, regdid_id=regdid_id)
 
@@ -406,7 +403,6 @@ def cds_office_data_edit(request, regdid_id, data_id, regdid=None, my_offices=No
                             regdid_id=regdid_id,
                             data_id=data_id)
 
-
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -456,8 +452,10 @@ def cds_office_data_responsible(request, regdid_id, data_id, my_offices=None, re
     person_data = ()
 
     if person:
-        person_data = (encrypt(person.matricola), f'{person.cognome} {person.nome}')
-        form = DidatticaCdsAltriDatiCoordinatorForm(initial={'choosen_person': person_data[0]})
+        person_data = (encrypt(person.matricola),
+                       f'{person.cognome} {person.nome}')
+        form = DidatticaCdsAltriDatiCoordinatorForm(
+            initial={'choosen_person': person_data[0]})
     else:
         form = DidatticaCdsAltriDatiCoordinatorForm()
 
@@ -466,13 +464,13 @@ def cds_office_data_responsible(request, regdid_id, data_id, my_offices=None, re
         if form.is_valid():
             person_code = decrypt(form.cleaned_data['choosen_person'])
             new_person = get_object_or_404(Personale, matricola=person_code)
-            office_data.matricola_riferimento= new_person
+            office_data.matricola_riferimento = new_person
             office_data.nome_origine_riferimento = f'{new_person.cognome} {new_person.nome}'
             office_data.save()
 
             if person and person == new_person:
                 log_msg = f'{_("Changed responsible")} {person.__str__()}'
-            elif person and person!=new_person:
+            elif person and person != new_person:
                 log_msg = f'{person} {_("substituted with")} {new_person.__str__()}'
             else:
                 log_msg = f'{_("Changed coordinator")} {new_person.__str__()}'
@@ -496,7 +494,7 @@ def cds_office_data_responsible(request, regdid_id, data_id, my_offices=None, re
                    reverse('ricerca_crud:crud_cds'): _('CdS'),
                    reverse('ricerca_crud:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
                    reverse('ricerca_crud:crud_cds_office_data_edit',
-                           kwargs={'regdid_id': regdid_id, 'data_id':data_id}): _('Office data'),
+                           kwargs={'regdid_id': regdid_id, 'data_id': data_id}): _('Office data'),
                    '#': _('Responsible')}
 
     return render(request,
@@ -504,7 +502,7 @@ def cds_office_data_responsible(request, regdid_id, data_id, my_offices=None, re
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'regdid': regdid,
-                   'data_id':data_id,
+                   'data_id': data_id,
                    'choosen_person': person_data[1] if person_data else None,
                    'url': reverse('ricerca:addressbooklist')})
 

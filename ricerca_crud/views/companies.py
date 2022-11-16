@@ -1,20 +1,15 @@
 import logging
 import os
-import requests
 
-from django import forms
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import CharField, Q, Value, F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from organizational_area.models import OrganizationalStructure
 
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
@@ -50,15 +45,17 @@ def company_new(request, my_offices=None):
     department = None
     if request.POST.get('choosen_department', ''):
         department = get_object_or_404(DidatticaDipartimento,
-                                    dip_id=request.POST['choosen_department'])
+                                       dip_id=request.POST['choosen_department'])
 
     if request.POST:
-        form = SpinoffStartupDatiBaseForm(data=request.POST, files=request.FILES)
+        form = SpinoffStartupDatiBaseForm(
+            data=request.POST, files=request.FILES)
         department_form = SpinoffStartupDipartimentoForm(data=request.POST)
 
         if form.is_valid() and department_form.is_valid():
             department_code = department_form.cleaned_data['choosen_department']
-            department = get_object_or_404(DidatticaDipartimento, dip_id=department_code)
+            department = get_object_or_404(
+                DidatticaDipartimento, dip_id=department_code)
 
             # # check if user can manage teacher structure
             # if not request.user.is_superuser:
@@ -71,23 +68,23 @@ def company_new(request, my_offices=None):
             #         raise Exception(_("Add inventor belonging to your structure"))
 
             company = SpinoffStartupDatiBase.objects.create(
-                                                     piva = form.cleaned_data['piva'],
-                                                     nome_azienda = form.cleaned_data['nome_azienda'],
-                                                     descrizione_ita = form.cleaned_data['descrizione_ita'],
-                                                     descrizione_eng=form.cleaned_data['descrizione_eng'],
-                                                     url_sito_web=form.cleaned_data['url_sito_web'],
-                                                     ceo=form.cleaned_data['ceo'],
-                                                     id_area_tecnologica=form.cleaned_data['id_area_tecnologica'],
-                                                     id_area_innovazione_s3_calabria=form.cleaned_data['id_area_innovazione_s3_calabria'],
-                                                     is_startup=form.cleaned_data['is_startup'],
-                                                     is_spinoff=form.cleaned_data['is_spinoff'],
-                                                     nome_file_logo=form.cleaned_data['nome_file_logo']
-                                                     )
+                piva=form.cleaned_data['piva'],
+                nome_azienda=form.cleaned_data['nome_azienda'],
+                descrizione_ita=form.cleaned_data['descrizione_ita'],
+                descrizione_eng=form.cleaned_data['descrizione_eng'],
+                url_sito_web=form.cleaned_data['url_sito_web'],
+                ceo=form.cleaned_data['ceo'],
+                id_area_tecnologica=form.cleaned_data['id_area_tecnologica'],
+                id_area_innovazione_s3_calabria=form.cleaned_data['id_area_innovazione_s3_calabria'],
+                is_startup=form.cleaned_data['is_startup'],
+                is_spinoff=form.cleaned_data['is_spinoff'],
+                nome_file_logo=form.cleaned_data['nome_file_logo']
+            )
 
             if department:
-                SpinoffStartupDipartimento.objects.create(id_spinoff_startup_dati_base = company,
-                                             nome_origine_dipartimento = f'{department.dip_des_it}',
-                                             id_didattica_dipartimento = department)
+                SpinoffStartupDipartimento.objects.create(id_spinoff_startup_dati_base=company,
+                                                          nome_origine_dipartimento=f'{department.dip_des_it}',
+                                                          id_didattica_dipartimento=department)
 
             log_action(user=request.user,
                        obj=company,
@@ -114,7 +111,6 @@ def company_new(request, my_offices=None):
                    'department_form': department_form})
 
 
-
 @login_required
 @can_manage_companies
 def company(request, code, my_offices=None, company=None):
@@ -135,13 +131,15 @@ def company(request, code, my_offices=None, company=None):
             company.user_mod = request.user
             company.piva = form.cleaned_data['piva']
             company.nome_azienda = form.cleaned_data['nome_azienda']
-            company.nome_file_logo = form.cleaned_data['nome_file_logo'] if form.cleaned_data.get('nome_file_logo') else None
+            company.nome_file_logo = form.cleaned_data['nome_file_logo'] if form.cleaned_data.get(
+                'nome_file_logo') else None
             company.descrizione_ita = form.cleaned_data['descrizione_ita']
             company.descrizione_eng = form.cleaned_data['descrizione_eng']
             company.url_sito_web = form.cleaned_data['url_sito_web']
             company.ceo = form.cleaned_data['ceo']
             company.id_area_tecnologica = form.cleaned_data['id_area_tecnologica']
-            company.id_area_innovazione_s3_calabria = form.cleaned_data['id_area_innovazione_s3_calabria']
+            company.id_area_innovazione_s3_calabria = form.cleaned_data[
+                'id_area_innovazione_s3_calabria']
             company.is_startup = form.cleaned_data['is_startup']
             company.is_spinoff = form.cleaned_data['is_spinoff']
             company.save()
@@ -176,13 +174,12 @@ def company(request, code, my_offices=None, company=None):
                    'referent_data': referent_data})
 
 
-
 @login_required
 @can_manage_companies
 def company_unical_referent_data(request, code, data_id, company=None, my_offices=None):
 
     referent_data = get_object_or_404(SpinoffStartupDatiBase,
-                                    pk=data_id)
+                                      pk=data_id)
 
     form = SpinoffStartupDatiBaseReferentForm(instance=referent_data)
 
@@ -209,7 +206,6 @@ def company_unical_referent_data(request, code, data_id, company=None, my_office
                             code=code,
                             data_id=data_id)
 
-
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -217,7 +213,7 @@ def company_unical_referent_data(request, code, data_id, company=None, my_office
 
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_companies'): _('Companies'),
-                   reverse('ricerca_crud:crud_company_edit', kwargs={'code': code }): company.nome_azienda,
+                   reverse('ricerca_crud:crud_company_edit', kwargs={'code': code}): company.nome_azienda,
                    reverse('ricerca_crud:crud_company_unical_referent_data', kwargs={'code': code, 'data_id': data_id}): _('Unical Referent data')
                    }
 
@@ -233,15 +229,17 @@ def company_unical_referent_data(request, code, data_id, company=None, my_office
 @can_manage_companies
 def company_unical_referent_data_edit(request, code, data_id,
                                       my_offices=None, company=None):
-    unical_referent  = get_object_or_404(SpinoffStartupDatiBase,
+    unical_referent = get_object_or_404(SpinoffStartupDatiBase,
                                         pk=code)
 
     referent = unical_referent.matricola_referente_unical
     referent_data = ()
 
     if referent:
-        referent_data = (encrypt(referent.matricola), f'{referent.cognome} {referent.nome}')
-        form = SpinoffStartupDatiBaseReferentWithoutIDForm(initial={'choosen_person': referent_data[0]})
+        referent_data = (encrypt(referent.matricola),
+                         f'{referent.cognome} {referent.nome}')
+        form = SpinoffStartupDatiBaseReferentWithoutIDForm(
+            initial={'choosen_person': referent_data[0]})
     else:
         form = SpinoffStartupDatiBaseReferentWithoutIDForm()
 
@@ -249,7 +247,8 @@ def company_unical_referent_data_edit(request, code, data_id,
         form = SpinoffStartupDatiBaseReferentWithoutIDForm(data=request.POST)
         if form.is_valid():
             referent_code = decrypt(form.cleaned_data['choosen_person'])
-            new_referent = get_object_or_404(Personale, matricola=referent_code)
+            new_referent = get_object_or_404(
+                Personale, matricola=referent_code)
             unical_referent.matricola_referente_unical = new_referent
             unical_referent.save()
 
@@ -324,11 +323,12 @@ def company_unical_department_data_new(request, code,
         form = SpinoffStartupDipartimentoForm(data=request.POST)
         if form.is_valid():
             department_code = form.cleaned_data['choosen_department']
-            department = get_object_or_404(DidatticaDipartimento, dip_id=department_code)
+            department = get_object_or_404(
+                DidatticaDipartimento, dip_id=department_code)
             SpinoffStartupDipartimento.objects.create(
-                                                id_spinoff_startup_dati_base = company,
-                                                id_didattica_dipartimento = department,
-                                                    nome_origine_dipartimento=department.dip_des_it)
+                id_spinoff_startup_dati_base=company,
+                id_didattica_dipartimento=department,
+                nome_origine_dipartimento=department.dip_des_it)
 
             log_action(user=request.user,
                        obj=company,
@@ -365,19 +365,19 @@ def company_unical_department_data_edit(request, code, department_id,
 
     department_data = (department.dip_id, f'{department.dip_des_it}')
     form = SpinoffStartupDipartimentoForm(instance=department_company,
-                                            initial={'choosen_department': department_data[0]})
+                                          initial={'choosen_department': department_data[0]})
 
     if request.POST:
         form = SpinoffStartupDipartimentoForm(data=request.POST)
         if form.is_valid():
 
             department_code = form.cleaned_data['choosen_department']
-            new_department = get_object_or_404(DidatticaDipartimento, dip_id=department_code)
+            new_department = get_object_or_404(
+                DidatticaDipartimento, dip_id=department_code)
             department_company.user_mod = request.user
             department_company.id_didattica_dipartimento = new_department
             department_company.nome_origine_dipartimento = f'{new_department.dip_des_it}'
             department_company.save()
-
 
             log_msg = f'{_("Changed department")} {department.__str__()}' \
                       if department == new_department \
@@ -403,7 +403,6 @@ def company_unical_department_data_edit(request, code, department_id,
                    reverse('ricerca_crud:crud_company_edit', kwargs={'code': code}): company.nome_azienda,
                    '#': f'{department.dip_des_it}'}
 
-
     return render(request,
                   'companies/company_unical_department_data_edit.html',
                   {'breadcrumbs': breadcrumbs,
@@ -419,8 +418,8 @@ def company_unical_department_data_edit(request, code, department_id,
 def company_unical_department_data_delete(request, code, department_id,
                                           my_offices=None, company=None):
     department_company = get_object_or_404(SpinoffStartupDipartimento,
-                                       id_spinoff_startup_dati_base=company,
-                                       pk=department_id)
+                                           id_spinoff_startup_dati_base=company,
+                                           pk=department_id)
 
     if SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base=company).count() == 1:
         raise Exception(_("Permission denied. Only one department remains"))
@@ -441,7 +440,7 @@ def company_unical_department_data_delete(request, code, department_id,
 @can_manage_companies
 def company_delete(request, code, my_offices=None, company=None):
     # ha senso?
-    #if rgroup.user_ins != request.user:
+    # if rgroup.user_ins != request.user:
     if not request.user.is_superuser:
         raise Exception(_('Permission denied'))
     logo = company.nome_file_logo.path

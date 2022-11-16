@@ -1,20 +1,14 @@
 import logging
-import os
-import requests
 
-from django import forms
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import CharField, Q, Value, F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from organizational_area.models import OrganizationalStructure
 
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
@@ -29,7 +23,7 @@ logger = logging.getLogger(__name__)
 @login_required
 @can_manage_researchlines
 def base_researchlines(request,
-                   my_offices=None):
+                       my_offices=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    '#': _('Base Research lines')}
     context = {'breadcrumbs': breadcrumbs,
@@ -40,7 +34,7 @@ def base_researchlines(request,
 @login_required
 @can_manage_researchlines
 def applied_researchlines(request,
-                   my_offices=None):
+                          my_offices=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    '#': _('Applied Research lines')}
     context = {'breadcrumbs': breadcrumbs,
@@ -78,20 +72,22 @@ def researchline_new_applied(request, my_offices=None):
                                                                                         office__organizational_structure__is_active=True,
                                                                                         office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id)
                 if not structure_afforg:
-                    raise Exception(_("Add a teacher belonging to your structure"))
+                    raise Exception(
+                        _("Add a teacher belonging to your structure"))
 
             rline = RicercaLineaApplicata.objects.create(user_ins=request.user,
-                                                         descrizione = form.cleaned_data['descrizione'],
-                                                         descr_pubblicaz_prog_brevetto = form.cleaned_data['descr_pubblicaz_prog_brevetto'],
-                                                         anno = form.cleaned_data['anno'],
+                                                         descrizione=form.cleaned_data['descrizione'],
+                                                         descr_pubblicaz_prog_brevetto=form.cleaned_data[
+                                                             'descr_pubblicaz_prog_brevetto'],
+                                                         anno=form.cleaned_data['anno'],
                                                          ricerca_aster2=form.cleaned_data['ricerca_aster2']
 
                                                          )
             RicercaDocenteLineaApplicata.objects.create(user_ins=request.user,
-                                                ricerca_linea_applicata = rline,
-                                                dt_inizio = teacher_form.cleaned_data['dt_inizio'],
-                                                dt_fine = teacher_form.cleaned_data['dt_fine'],
-                                                personale = teacher)
+                                                        ricerca_linea_applicata=rline,
+                                                        dt_inizio=teacher_form.cleaned_data['dt_inizio'],
+                                                        dt_fine=teacher_form.cleaned_data['dt_fine'],
+                                                        personale=teacher)
 
             log_action(user=request.user,
                        obj=rline,
@@ -149,20 +145,22 @@ def researchline_new_base(request, my_offices=None):
                                                                                         office__organizational_structure__is_active=True,
                                                                                         office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id)
                 if not structure_afforg:
-                    raise Exception(_("Add a teacher belonging to your structure"))
+                    raise Exception(
+                        _("Add a teacher belonging to your structure"))
 
             rline = RicercaLineaBase.objects.create(user_ins=request.user,
-                                                         descrizione = form.cleaned_data['descrizione'],
-                                                         descr_pubblicaz_prog_brevetto = form.cleaned_data['descr_pubblicaz_prog_brevetto'],
-                                                         anno = form.cleaned_data['anno'],
-                                                         ricerca_erc2=form.cleaned_data['ricerca_erc2']
+                                                    descrizione=form.cleaned_data['descrizione'],
+                                                    descr_pubblicaz_prog_brevetto=form.cleaned_data[
+                                                        'descr_pubblicaz_prog_brevetto'],
+                                                    anno=form.cleaned_data['anno'],
+                                                    ricerca_erc2=form.cleaned_data['ricerca_erc2']
 
-                                                         )
+                                                    )
             RicercaDocenteLineaBase.objects.create(user_ins=request.user,
-                                                ricerca_linea_base = rline,
-                                                dt_inizio = teacher_form.cleaned_data['dt_inizio'],
-                                                dt_fine = teacher_form.cleaned_data['dt_fine'],
-                                                personale = teacher)
+                                                   ricerca_linea_base=rline,
+                                                   dt_inizio=teacher_form.cleaned_data['dt_inizio'],
+                                                   dt_fine=teacher_form.cleaned_data['dt_fine'],
+                                                   personale=teacher)
 
             log_action(user=request.user,
                        obj=rline,
@@ -242,7 +240,7 @@ def base_researchline(request, code, my_offices=None, rline=None, teachers=None)
 @can_manage_researchlines
 @can_edit_applied_researchline
 def applied_researchline(request, code,
-                  my_offices=None, rline=None, teachers=None):
+                         my_offices=None, rline=None, teachers=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_applied_researchlines'): _('Applied Research lines'),
                    '#': rline.descrizione}
@@ -293,7 +291,7 @@ def applied_researchline(request, code,
 def base_researchline_delete(request, code,
                              my_offices=None, rline=None, teachers=None):
     # ha senso?
-    #if rgroup.user_ins != request.user:
+    # if rgroup.user_ins != request.user:
     if not request.user.is_superuser:
         raise Exception(_('Permission denied'))
 
@@ -310,7 +308,7 @@ def base_researchline_delete(request, code,
 def applied_researchline_delete(request, code,
                                 my_offices=None, rline=None, teachers=None):
     # ha senso?
-    #if rgroup.user_ins != request.user:
+    # if rgroup.user_ins != request.user:
     if not request.user.is_superuser:
         raise Exception(_('Permission denied'))
 
@@ -337,10 +335,10 @@ def base_researchline_teacher_new(request, code,
             teacher_code = decrypt(form.cleaned_data['choosen_person'])
             teacher = get_object_or_404(Personale, matricola=teacher_code)
             RicercaDocenteLineaBase.objects.create(user_ins=request.user,
-                                                ricerca_linea_base = rline,
-                                                dt_inizio = form.cleaned_data['dt_inizio'],
-                                                dt_fine = form.cleaned_data['dt_fine'],
-                                                personale = teacher)
+                                                   ricerca_linea_base=rline,
+                                                   dt_inizio=form.cleaned_data['dt_inizio'],
+                                                   dt_fine=form.cleaned_data['dt_fine'],
+                                                   personale=teacher)
 
             log_action(user=request.user,
                        obj=rline,
@@ -381,10 +379,10 @@ def applied_researchline_teacher_new(request, code,
             teacher_code = decrypt(form.cleaned_data['choosen_person'])
             teacher = get_object_or_404(Personale, matricola=teacher_code)
             RicercaDocenteLineaApplicata.objects.create(user_ins=request.user,
-                                                ricerca_linea_applicata = rline,
-                                                dt_inizio = form.cleaned_data['dt_inizio'],
-                                                dt_fine = form.cleaned_data['dt_fine'],
-                                                personale = teacher)
+                                                        ricerca_linea_applicata=rline,
+                                                        dt_inizio=form.cleaned_data['dt_inizio'],
+                                                        dt_fine=form.cleaned_data['dt_fine'],
+                                                        personale=teacher)
 
             log_action(user=request.user,
                        obj=rline,
@@ -415,11 +413,12 @@ def applied_researchline_teacher_new(request, code,
 def base_researchline_teacher_edit(request, code, teacher_rline_id,
                                    my_offices=None, rline=None, teachers=None):
     teacher_rline = get_object_or_404(RicercaDocenteLineaBase,
-                                       pk=teacher_rline_id)
+                                      pk=teacher_rline_id)
     teacher = teacher_rline.personale
-    teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
+    teacher_data = (encrypt(teacher.matricola),
+                    f'{teacher.cognome} {teacher.nome}')
     form = RicercaDocenteLineaBaseForm(instance=teacher_rline,
-                                    initial={'choosen_person': teacher_data[0]})
+                                       initial={'choosen_person': teacher_data[0]})
 
     if request.POST:
         form = RicercaDocenteLineaBaseForm(data=request.POST)
@@ -472,11 +471,12 @@ def base_researchline_teacher_edit(request, code, teacher_rline_id,
 def applied_researchline_teacher_edit(request, code, teacher_rline_id,
                                       my_offices=None, rline=None, teachers=None):
     teacher_rline = get_object_or_404(RicercaDocenteLineaApplicata,
-                                       pk=teacher_rline_id)
+                                      pk=teacher_rline_id)
     teacher = teacher_rline.personale
-    teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
+    teacher_data = (encrypt(teacher.matricola),
+                    f'{teacher.cognome} {teacher.nome}')
     form = RicercaDocenteLineaApplicataForm(instance=teacher_rline,
-                                    initial={'choosen_person': teacher_data[0]})
+                                            initial={'choosen_person': teacher_data[0]})
 
     if request.POST:
         form = RicercaDocenteLineaApplicataForm(data=request.POST)
@@ -529,8 +529,8 @@ def applied_researchline_teacher_edit(request, code, teacher_rline_id,
 def base_researchline_teacher_delete(request, code, teacher_rline_id,
                                      my_offices=None, rline=None, teachers=None):
     teacher_rline = get_object_or_404(RicercaDocenteLineaBase,
-                                       ricerca_linea_base=rline,
-                                       pk=teacher_rline_id)
+                                      ricerca_linea_base=rline,
+                                      pk=teacher_rline_id)
 
     if RicercaDocenteLineaBase.objects.filter(ricerca_linea_base=rline).count() == 1:
         raise Exception(_("Permission denied. Only one teacher remains"))
@@ -553,8 +553,8 @@ def base_researchline_teacher_delete(request, code, teacher_rline_id,
 def applied_researchline_teacher_delete(request, code, teacher_rline_id,
                                         my_offices=None, rline=None, teachers=None):
     teacher_rline = get_object_or_404(RicercaDocenteLineaApplicata,
-                                       ricerca_linea_applicata=rline,
-                                       pk=teacher_rline_id)
+                                      ricerca_linea_applicata=rline,
+                                      pk=teacher_rline_id)
 
     if RicercaDocenteLineaApplicata.objects.filter(ricerca_linea_applicata=rline).count() == 1:
         raise Exception(_("Permission denied. Only one teacher remains"))

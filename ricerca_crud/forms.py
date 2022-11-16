@@ -1,10 +1,9 @@
 from django import forms
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from bootstrap_italia_template.widgets import BootstrapItaliaDateWidget
 
-from ricerca_app.models import *
+from ricerca_app.models import BrevettoDatiBase, BrevettoInventori, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio, DocenteMaterialeDidattico, DocentePtaAltriDati, DocentePtaBacheca, ProgettoDatiBase, ProgettoResponsabileScientifico, RicercaDocenteGruppo, RicercaDocenteLineaBase, RicercaGruppo, RicercaLineaApplicata, RicercaLineaBase, SpinoffStartupDatiBase, SpinoffStartupDipartimento
 
 
 # common methods
@@ -19,6 +18,7 @@ def _clean_teacher_dates(obj, cleaned_data):
                       _("Start date is greater than end date"))
 # end common methods
 
+
 class RicercaGruppoForm(forms.ModelForm):
     class Meta:
         model = RicercaGruppo
@@ -31,8 +31,8 @@ class RicercaGruppoForm(forms.ModelForm):
 
 class RicercaGruppoDocenteForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=True)
+                                     widget=forms.HiddenInput(),
+                                     required=True)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -42,7 +42,7 @@ class RicercaGruppoDocenteForm(forms.ModelForm):
         model = RicercaDocenteGruppo
         fields = ['dt_inizio', 'dt_fine']
         widgets = {'dt_inizio': BootstrapItaliaDateWidget,
-                   'dt_fine': BootstrapItaliaDateWidget,}
+                   'dt_fine': BootstrapItaliaDateWidget, }
 
 
 class RicercaLineaApplicataForm(forms.ModelForm):
@@ -50,7 +50,8 @@ class RicercaLineaApplicataForm(forms.ModelForm):
         model = RicercaLineaApplicata
         fields = ['descrizione', 'descr_pubblicaz_prog_brevetto',
                   'anno', 'ricerca_aster2']
-        widgets = {'descr_pubblicaz_prog_brevetto': forms.Textarea(attrs={'rows': 2})}
+        widgets = {'descr_pubblicaz_prog_brevetto': forms.Textarea(attrs={
+                                                                   'rows': 2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -59,8 +60,10 @@ class RicercaLineaApplicataForm(forms.ModelForm):
 class RicercaLineaBaseForm(forms.ModelForm):
     class Meta:
         model = RicercaLineaBase
-        fields = ['descrizione', 'descr_pubblicaz_prog_brevetto', 'anno', 'ricerca_erc2']
-        widgets = {'descr_pubblicaz_prog_brevetto': forms.Textarea(attrs={'rows': 2})}
+        fields = ['descrizione', 'descr_pubblicaz_prog_brevetto',
+                  'anno', 'ricerca_erc2']
+        widgets = {'descr_pubblicaz_prog_brevetto': forms.Textarea(attrs={
+                                                                   'rows': 2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -68,8 +71,8 @@ class RicercaLineaBaseForm(forms.ModelForm):
 
 class RicercaDocenteLineaBaseForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Teacher'),
-                                      widget = forms.HiddenInput(),
-                                      required=True)
+                                     widget=forms.HiddenInput(),
+                                     required=True)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -84,8 +87,8 @@ class RicercaDocenteLineaBaseForm(forms.ModelForm):
 
 class RicercaDocenteLineaApplicataForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=True)
+                                     widget=forms.HiddenInput(),
+                                     required=True)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -121,8 +124,8 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
 
 class DidatticaCdsAltriDatiCoordinatorForm(forms.Form):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=True)
+                                     widget=forms.HiddenInput(),
+                                     required=True)
 
 
 class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
@@ -147,20 +150,19 @@ class BrevettoDatiBaseForm(forms.ModelForm):
 
     class Meta:
         model = BrevettoDatiBase
-        fields = ['id_univoco', 'titolo', 'url_immagine', 'breve_descrizione', 'id_area_tecnologica', 'url_knowledge_share', 'applicazioni', 'vantaggi',\
+        fields = ['id_univoco', 'titolo', 'url_immagine', 'breve_descrizione', 'id_area_tecnologica', 'url_knowledge_share', 'applicazioni', 'vantaggi',
                   'trl_aggiornato', 'proprieta', 'id_status_legale', 'data_priorita', 'territorio', 'id_diritto_commerciale', 'id_disponibilita', 'area_ks', 'nome_file_logo']
-        widgets = {'breve_descrizione': forms.Textarea(attrs={'rows': 2}), 'applicazioni': forms.Textarea(attrs={'rows': 2}),\
-                   'vantaggi': forms.Textarea(attrs={'rows': 2}), 'data_priorita': BootstrapItaliaDateWidget }
+        widgets = {'breve_descrizione': forms.Textarea(attrs={'rows': 2}), 'applicazioni': forms.Textarea(attrs={'rows': 2}),
+                   'vantaggi': forms.Textarea(attrs={'rows': 2}), 'data_priorita': BootstrapItaliaDateWidget}
 
     class Media:
         js = ('js/textarea-autosize.js',)
 
 
-
 class BrevettoInventoriForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=False)
+                                     widget=forms.HiddenInput(),
+                                     required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -178,11 +180,10 @@ class BrevettoInventoriForm(forms.ModelForm):
         }
 
 
-
 class BrevettoInventoriWithoutFieldsForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=False)
+                                     widget=forms.HiddenInput(),
+                                     required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -193,7 +194,6 @@ class BrevettoInventoriWithoutFieldsForm(forms.ModelForm):
         fields = []
 
 
-
 class SpinoffStartupDatiBaseForm(forms.ModelForm):
     choosen_department = forms.CharField(label=_('Department'),
                                          widget=forms.HiddenInput(),
@@ -201,9 +201,10 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
 
     class Meta:
         model = SpinoffStartupDatiBase
-        fields = ['piva', 'nome_azienda', 'descrizione_ita', 'descrizione_eng', 'url_sito_web',\
-                   'ceo', 'id_area_tecnologica', 'id_area_innovazione_s3_calabria', 'is_startup', 'is_spinoff', 'nome_file_logo']
-        widgets = {'descrizione_ita': forms.Textarea(attrs={'rows': 2}), 'descrizione_eng': forms.Textarea(attrs={'rows': 2})}
+        fields = ['piva', 'nome_azienda', 'descrizione_ita', 'descrizione_eng', 'url_sito_web',
+                  'ceo', 'id_area_tecnologica', 'id_area_innovazione_s3_calabria', 'is_startup', 'is_spinoff', 'nome_file_logo']
+        widgets = {'descrizione_ita': forms.Textarea(
+            attrs={'rows': 2}), 'descrizione_eng': forms.Textarea(attrs={'rows': 2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -230,6 +231,7 @@ class SpinoffStartupDatiBaseReferentWithoutIDForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
                                      widget=forms.HiddenInput(),
                                      required=True)
+
     class Meta:
         model = SpinoffStartupDatiBase
         fields = []
@@ -240,17 +242,15 @@ class SpinoffStartupDatiBaseReferentWithoutIDForm(forms.ModelForm):
 
 class SpinoffStartupDipartimentoForm(forms.ModelForm):
     choosen_department = forms.CharField(label=_('Department'),
-                                     widget=forms.HiddenInput(),
-                                     required=True)
+                                         widget=forms.HiddenInput(),
+                                         required=True)
 
     class Meta:
         model = SpinoffStartupDipartimento
         fields = []
 
-
     class Media:
         js = ('js/textarea-autosize.js',)
-
 
 
 class ProgettoDatiBaseForm(forms.ModelForm):
@@ -260,10 +260,10 @@ class ProgettoDatiBaseForm(forms.ModelForm):
 
     class Meta:
         model = ProgettoDatiBase
-        fields = ['titolo', 'anno_avvio', 'id_ambito_territoriale', 'id_tipologia_programma', 'id_area_tecnologica',\
-                   'descr_breve', 'url_immagine', 'abstract_ita', 'abstract_eng', 'url_sito_web', 'call', 'uo']
-        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'decr_breve': forms.Textarea(attrs={'rows': 2}), \
-                   'abstract_ita': forms.Textarea(attrs={'rows': 4}), 'abstract_eng': forms.Textarea(attrs={'rows': 4}), \
+        fields = ['titolo', 'anno_avvio', 'id_ambito_territoriale', 'id_tipologia_programma', 'id_area_tecnologica',
+                  'descr_breve', 'url_immagine', 'abstract_ita', 'abstract_eng', 'url_sito_web', 'call', 'uo']
+        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'decr_breve': forms.Textarea(attrs={'rows': 2}),
+                   'abstract_ita': forms.Textarea(attrs={'rows': 4}), 'abstract_eng': forms.Textarea(attrs={'rows': 4}),
                    'anno_avvio': BootstrapItaliaDateWidget, 'uo': forms.HiddenInput()}
 
     class Media:
@@ -293,8 +293,8 @@ class ProgettoResponsabileScientificoForm(forms.ModelForm):
 
 class ProgettoResponsabileScientificoWithoutFieldsForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=False)
+                                     widget=forms.HiddenInput(),
+                                     required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -305,11 +305,10 @@ class ProgettoResponsabileScientificoWithoutFieldsForm(forms.ModelForm):
         fields = []
 
 
-
 class ProgettoRicercatoreForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=False)
+                                     widget=forms.HiddenInput(),
+                                     required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -329,8 +328,8 @@ class ProgettoRicercatoreForm(forms.ModelForm):
 
 class ProgettoRicercatoreWithoutFieldsForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=False)
+                                     widget=forms.HiddenInput(),
+                                     required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -341,21 +340,17 @@ class ProgettoRicercatoreWithoutFieldsForm(forms.ModelForm):
         fields = []
 
 
-
 class ProgettoDatiBaseFormWithoutFields(forms.ModelForm):
     choosen_structure = forms.CharField(label=_('Structure'),
-                                         widget=forms.HiddenInput(),
-                                         required=True)
+                                        widget=forms.HiddenInput(),
+                                        required=True)
 
     class Meta:
         model = ProgettoDatiBase
         fields = []
 
-
-
     class Media:
         js = ('js/textarea-autosize.js',)
-
 
 
 class DocentePtaAltriDatiForm(forms.ModelForm):
@@ -365,8 +360,9 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
 
     class Meta:
         model = DocentePtaAltriDati
-        fields = ['breve_bio','breve_bio_en', 'orario_ricevimento', 'orario_ricevimento_en', 'orcid', 'path_foto', 'path_cv_ita', 'path_cv_en', ]
-        widgets = {'breve_bio_en': forms.Textarea(attrs={'rows': 2}), 'breve_bio': forms.Textarea(attrs={'rows': 2}), \
+        fields = ['breve_bio', 'breve_bio_en', 'orario_ricevimento',
+                  'orario_ricevimento_en', 'orcid', 'path_foto', 'path_cv_ita', 'path_cv_en', ]
+        widgets = {'breve_bio_en': forms.Textarea(attrs={'rows': 2}), 'breve_bio': forms.Textarea(attrs={'rows': 2}),
                    'orario_ricevimento': forms.Textarea(attrs={'rows': 4}), 'orario_ricevimento_en': forms.Textarea(attrs={'rows': 4})
                    }
 
@@ -381,10 +377,10 @@ class DocentePtaBachecaForm(forms.ModelForm):
 
     class Meta:
         model = DocentePtaBacheca
-        fields = ['titolo', 'titolo_en', 'tipo_testo', 'tipo_testo_en',\
-                   'testo', 'testo_en', 'url_testo', 'url_testo_en', 'ordine', 'attivo', 'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita']
-        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'titolo_en': forms.Textarea(attrs={'rows': 2}), \
-                   'testo': forms.Textarea(attrs={'rows': 4}), 'testo_en': forms.Textarea(attrs={'rows': 4}), \
+        fields = ['titolo', 'titolo_en', 'tipo_testo', 'tipo_testo_en',
+                  'testo', 'testo_en', 'url_testo', 'url_testo_en', 'ordine', 'attivo', 'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita']
+        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'titolo_en': forms.Textarea(attrs={'rows': 2}),
+                   'testo': forms.Textarea(attrs={'rows': 4}), 'testo_en': forms.Textarea(attrs={'rows': 4}),
                    'dt_pubblicazione': BootstrapItaliaDateWidget, 'dt_inizio_validita': BootstrapItaliaDateWidget, 'dt_fine_validita': BootstrapItaliaDateWidget}
 
         help_texts = {
@@ -403,10 +399,10 @@ class DocenteMaterialeDidatticoForm(forms.ModelForm):
 
     class Meta:
         model = DocenteMaterialeDidattico
-        fields = ['titolo', 'titolo_en', 'testo', 'testo_en',\
-                   'url_testo', 'url_testo_en', 'ordine', 'attivo', 'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita']
-        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'titolo_en': forms.Textarea(attrs={'rows': 2}), \
-                   'testo': forms.Textarea(attrs={'rows': 4}), 'testo_en': forms.Textarea(attrs={'rows': 4}), \
+        fields = ['titolo', 'titolo_en', 'testo', 'testo_en',
+                  'url_testo', 'url_testo_en', 'ordine', 'attivo', 'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita']
+        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'titolo_en': forms.Textarea(attrs={'rows': 2}),
+                   'testo': forms.Textarea(attrs={'rows': 4}), 'testo_en': forms.Textarea(attrs={'rows': 4}),
                    'dt_pubblicazione': BootstrapItaliaDateWidget, 'dt_inizio_validita': BootstrapItaliaDateWidget, 'dt_fine_validita': BootstrapItaliaDateWidget}
 
         help_texts = {

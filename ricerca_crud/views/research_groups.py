@@ -1,20 +1,14 @@
 import logging
-import os
-import requests
 
-from django import forms
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import CharField, Q, Value, F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from organizational_area.models import OrganizationalStructure
 
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
@@ -91,7 +85,7 @@ def researchgroup(request, code,
 def researchgroup_delete(request, code,
                          my_offices=None, rgroup=None, teachers=None):
     # ha senso?
-    #if rgroup.user_ins != request.user:
+    # if rgroup.user_ins != request.user:
     if not request.user.is_superuser:
         raise Exception(_('Permission denied'))
 
@@ -132,17 +126,18 @@ def researchgroup_new(request, my_offices=None):
                                                                                         office__organizational_structure__is_active=True,
                                                                                         office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id)
                 if not structure_afforg:
-                    raise Exception(_("Add a teacher belonging to your structure"))
+                    raise Exception(
+                        _("Add a teacher belonging to your structure"))
 
             rgroup = RicercaGruppo.objects.create(user_ins=request.user,
-                                                  nome = form.cleaned_data['nome'],
-                                                  descrizione = form.cleaned_data['descrizione'],
-                                                  ricerca_erc1 = form.cleaned_data['ricerca_erc1'])
+                                                  nome=form.cleaned_data['nome'],
+                                                  descrizione=form.cleaned_data['descrizione'],
+                                                  ricerca_erc1=form.cleaned_data['ricerca_erc1'])
             RicercaDocenteGruppo.objects.create(user_ins=request.user,
-                                                ricerca_gruppo = rgroup,
-                                                dt_inizio = teacher_form.cleaned_data['dt_inizio'],
-                                                dt_fine = teacher_form.cleaned_data['dt_fine'],
-                                                personale = teacher)
+                                                ricerca_gruppo=rgroup,
+                                                dt_inizio=teacher_form.cleaned_data['dt_inizio'],
+                                                dt_fine=teacher_form.cleaned_data['dt_fine'],
+                                                personale=teacher)
 
             log_action(user=request.user,
                        obj=rgroup,
@@ -186,10 +181,10 @@ def researchgroup_teacher_new(request, code,
             teacher_code = decrypt(form.cleaned_data['choosen_person'])
             teacher = get_object_or_404(Personale, matricola=teacher_code)
             RicercaDocenteGruppo.objects.create(user_ins=request.user,
-                                                ricerca_gruppo = rgroup,
-                                                dt_inizio = form.cleaned_data['dt_inizio'],
-                                                dt_fine = form.cleaned_data['dt_fine'],
-                                                personale = teacher)
+                                                ricerca_gruppo=rgroup,
+                                                dt_inizio=form.cleaned_data['dt_inizio'],
+                                                dt_fine=form.cleaned_data['dt_fine'],
+                                                personale=teacher)
 
             log_action(user=request.user,
                        obj=rgroup,
@@ -222,7 +217,8 @@ def researchgroup_teacher_edit(request, code, teacher_rgroup_id,
     teacher_rgroup = get_object_or_404(RicercaDocenteGruppo,
                                        pk=teacher_rgroup_id)
     teacher = teacher_rgroup.personale
-    teacher_data = (encrypt(teacher.matricola), f'{teacher.cognome} {teacher.nome}')
+    teacher_data = (encrypt(teacher.matricola),
+                    f'{teacher.cognome} {teacher.nome}')
     form = RicercaGruppoDocenteForm(instance=teacher_rgroup,
                                     initial={'choosen_person': teacher_data[0]})
 

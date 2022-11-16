@@ -19,5 +19,3 @@ ALLOWED_CDS_JOINT_DEGREES = [
 CURRENT_YEAR = date.today().year
 
 CMS_STORAGE_ROOT_API = 'https://pp.storage.unical.it'
-
-

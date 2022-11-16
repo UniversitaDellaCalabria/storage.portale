@@ -1,20 +1,15 @@
 import logging
-import os
-import requests
 
-from django import forms
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import CharField, Q, Value, F
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from organizational_area.models import OrganizationalStructure
 
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
@@ -47,7 +42,6 @@ def project_new(request, my_offices=None):
     director_form = ProgettoResponsabileScientificoForm()
     structure_form = ProgettoDatiBaseFormWithoutFields()
 
-
     query_filter = Q()
 
     # already choosen before form fails
@@ -59,7 +53,7 @@ def project_new(request, my_offices=None):
 
     if request.POST.get('choosen_structure', ''):
         structure = get_object_or_404(UnitaOrganizzativa,
-                                     uo=(request.POST['choosen_structure']))
+                                      uo=(request.POST['choosen_structure']))
 
     if request.POST:
         form = ProgettoDatiBaseForm(data=request.POST)
@@ -67,17 +61,19 @@ def project_new(request, my_offices=None):
         structure_form = ProgettoDatiBaseFormWithoutFields(data=request.POST)
 
         if form.is_valid() and director_form.is_valid() and structure_form.is_valid():
-            director_code = decrypt(director_form.cleaned_data['choosen_person'])
+            director_code = decrypt(
+                director_form.cleaned_data['choosen_person'])
             director = get_object_or_404(Personale, matricola=director_code)
 
             structure_code = structure_form.cleaned_data['choosen_structure']
-            structure = get_object_or_404(UnitaOrganizzativa, uo=structure_code)
-
+            structure = get_object_or_404(
+                UnitaOrganizzativa, uo=structure_code)
 
             # check if user can manage teacher structure
             if not request.user.is_superuser:
 
-                query_filter = Q(office__organizational_structure__unique_code=director.cd_uo_aff_org_id)
+                query_filter = Q(
+                    office__organizational_structure__unique_code=director.cd_uo_aff_org_id)
 
                 structure_afforg = OrganizationalStructureOfficeEmployee.objects.filter(query_filter,
                                                                                         employee=request.user,
@@ -86,7 +82,8 @@ def project_new(request, my_offices=None):
                                                                                         office__organizational_structure__is_active=True
                                                                                         )
                 if not structure_afforg:
-                    raise Exception(_("Add director belonging to your structure"))
+                    raise Exception(
+                        _("Add director belonging to your structure"))
 
             project = ProgettoDatiBase.objects.create(
                 titolo=form.cleaned_data['titolo'],
@@ -104,19 +101,17 @@ def project_new(request, my_offices=None):
 
             if director:
                 ProgettoResponsabileScientifico.objects.create(id_progetto=project,
-                                                 nome_origine=f'{director.cognome} {director.nome}',
-                                                 matricola=director)
+                                                               nome_origine=f'{director.cognome} {director.nome}',
+                                                               matricola=director)
             else:
                 ProgettoResponsabileScientifico.objects.create(id_progetto=project,
-                                                 nome_origine=form.cleaned_data['nome_origine'])
-                director = ProgettoResponsabileScientifico.objects.values('nome_origine')
+                                                               nome_origine=form.cleaned_data['nome_origine'])
+                director = ProgettoResponsabileScientifico.objects.values(
+                    'nome_origine')
 
             if structure:
                 project.uo = structure
                 project.save()
-
-
-
 
             log_action(user=request.user,
                        obj=project,
@@ -140,7 +135,6 @@ def project_new(request, my_offices=None):
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{structure_form.fields[k].label}</b>: {v}")
 
-
     return render(request,
                   'projects/project_new.html',
                   {'breadcrumbs': breadcrumbs,
@@ -158,14 +152,14 @@ def project_new(request, my_offices=None):
 @can_manage_projects
 @can_edit_project
 def project(request, code,
-                  my_offices=None, project=None, researchers=None, scientific_director=None):
+            my_offices=None, project=None, researchers=None, scientific_director=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_projects'): _('Projects'),
                    '#': project.titolo}
     form = ProgettoDatiBaseForm(instance=project)
 
     structure_data = get_object_or_404(ProgettoDatiBase,
-                                   pk=code)
+                                       pk=code)
 
     if request.POST:
         form = ProgettoDatiBaseForm(instance=project, data=request.POST)
@@ -223,13 +217,13 @@ def project(request, code,
 def project_director_data(request, code, director_id, project=None, researchers=None, scientific_director=None, my_offices=None):
 
     director_data = get_object_or_404(ProgettoResponsabileScientifico,
-                                    pk=director_id, id_progetto=code)
+                                      pk=director_id, id_progetto=code)
 
     form = ProgettoResponsabileScientificoForm(instance=director_data)
 
     if request.POST:
         form = ProgettoResponsabileScientificoForm(instance=director_data,
-                                                data=request.POST)
+                                                   data=request.POST)
         if form.is_valid():
             director_data.user_mod = request.user
             director_data.nome_origine = form.cleaned_data['nome_origine']
@@ -250,7 +244,6 @@ def project_director_data(request, code, director_id, project=None, researchers=
                             code=code,
                             director_id=director_id)
 
-
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -258,7 +251,7 @@ def project_director_data(request, code, director_id, project=None, researchers=
 
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_projects'): _('Projects'),
-                   reverse('ricerca_crud:crud_project_edit', kwargs={'code': code }): project.titolo,
+                   reverse('ricerca_crud:crud_project_edit', kwargs={'code': code}): project.titolo,
                    reverse('ricerca_crud:crud_project_director_data_edit', kwargs={'code': code, 'director_id': director_id}): _('Project director data')
                    }
 
@@ -274,27 +267,27 @@ def project_director_data(request, code, director_id, project=None, researchers=
 @can_manage_projects
 @can_edit_project
 def project_structure_data_edit(request, code, data_id,
-                               my_offices=None, project=None, researchers=None, scientific_director=None):
+                                my_offices=None, project=None, researchers=None, scientific_director=None):
 
     structure_project = get_object_or_404(ProgettoDatiBase,
-                                       pk=data_id)
+                                          pk=data_id)
 
     structure = structure_project.uo
 
     structure_data = (structure.uo, f'{structure.denominazione}')
     form = ProgettoDatiBaseFormWithoutFields(instance=structure_project,
-                                            initial={'choosen_structure': structure_data[0]})
+                                             initial={'choosen_structure': structure_data[0]})
 
     if request.POST:
         form = ProgettoDatiBaseFormWithoutFields(data=request.POST)
         if form.is_valid():
 
             structure_code = form.cleaned_data['choosen_structure']
-            new_structure = get_object_or_404(UnitaOrganizzativa, uo=structure_code)
+            new_structure = get_object_or_404(
+                UnitaOrganizzativa, uo=structure_code)
             structure_project.user_mod = request.user
             structure_project.uo = new_structure
             structure_project.save()
-
 
             log_msg = f'{_("Changed structure")} {structure.__str__()}' \
                       if structure == new_structure \
@@ -320,7 +313,6 @@ def project_structure_data_edit(request, code, data_id,
                    reverse('ricerca_crud:crud_project_edit', kwargs={'code': code}): project.titolo,
                    '#': f'{structure.denominazione}'}
 
-
     return render(request,
                   'projects/project_structure_data_edit.html',
                   {'breadcrumbs': breadcrumbs,
@@ -336,31 +328,34 @@ def project_structure_data_edit(request, code, data_id,
 def project_director_data_edit(request, code, director_id, researchers=None, scientific_director=None,
                                my_offices=None, project=None):
 
-
     director_project = get_object_or_404(ProgettoResponsabileScientifico,
-                                    pk=director_id, id_progetto=code)
+                                         pk=director_id, id_progetto=code)
 
     director = director_project.matricola
     director_data = ()
 
     if director:
-        director_data = (encrypt(director.matricola), f'{director.cognome} {director.nome}')
-        form = ProgettoResponsabileScientificoWithoutFieldsForm(initial={'choosen_person': director_data[0]})
+        director_data = (encrypt(director.matricola),
+                         f'{director.cognome} {director.nome}')
+        form = ProgettoResponsabileScientificoWithoutFieldsForm(
+            initial={'choosen_person': director_data[0]})
     else:
         form = ProgettoResponsabileScientificoWithoutFieldsForm()
 
     if request.POST:
-        form = ProgettoResponsabileScientificoWithoutFieldsForm(data=request.POST)
+        form = ProgettoResponsabileScientificoWithoutFieldsForm(
+            data=request.POST)
         if form.is_valid():
             director_code = decrypt(form.cleaned_data['choosen_person'])
-            new_director = get_object_or_404(Personale, matricola=director_code)
+            new_director = get_object_or_404(
+                Personale, matricola=director_code)
             director_project.matricola = new_director
             director_project.nome_origine = f'{new_director.cognome} {new_director.nome}'
             director_project.save()
 
             if director and director == new_director:
                 log_msg = f'{_("Changed director")} {director.__str__()}'
-            elif director and director!=new_director:
+            elif director and director != new_director:
                 log_msg = f'{director} {_("substituted with")} {new_director.__str__()}'
             else:
                 log_msg = f'{_("Changed director")} {new_director.__str__()}'
@@ -390,18 +385,17 @@ def project_director_data_edit(request, code, director_id, researchers=None, sci
                    'form': form,
                    'project': project,
                    'director_id': director_id,
-                   'choosen_person': director_data[1] if director_data  else None,
+                   'choosen_person': director_data[1] if director_data else None,
                    'url': reverse('ricerca:teacherslist')})
-
 
 
 @login_required
 @can_manage_projects
 @can_edit_project
 def project_director_delete(request, code, director_id,
-                                 my_offices=None, project=None, researchers=None, scientific_director=None):
+                            my_offices=None, project=None, researchers=None, scientific_director=None):
     director_project = get_object_or_404(ProgettoResponsabileScientifico,
-                                        pk=director_id, id_progetto=code)
+                                         pk=director_id, id_progetto=code)
 
     if ProgettoResponsabileScientifico.objects.filter(id_progetto=code).count() == 1:
         raise Exception(_("Permission denied. Only one teacher remains"))
@@ -422,56 +416,57 @@ def project_director_delete(request, code, director_id,
 @can_manage_projects
 @can_edit_project
 def project_director_new(request, code, my_offices=None, project=None, researchers=None, scientific_director=None):
-        breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                       reverse('ricerca_crud:crud_projects'): _('Projects'),
-                       reverse('ricerca_crud:crud_project_edit', kwargs={'code': code}): project.titolo,
-                       '#': _('New director')}
-        form = ProgettoResponsabileScientificoForm()
-        if request.POST:
-            form = ProgettoResponsabileScientificoForm(data=request.POST)
-            if form.is_valid():
+    breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+                   reverse('ricerca_crud:crud_projects'): _('Projects'),
+                   reverse('ricerca_crud:crud_project_edit', kwargs={'code': code}): project.titolo,
+                   '#': _('New director')}
+    form = ProgettoResponsabileScientificoForm()
+    if request.POST:
+        form = ProgettoResponsabileScientificoForm(data=request.POST)
+        if form.is_valid():
 
-                p = ProgettoResponsabileScientifico.objects.create(
-                    id_progetto=project,
-                    nome_origine=form.cleaned_data['nome_origine']
-                )
-                director_code = decrypt(form.cleaned_data['choosen_person'])
-                if director_code:
-                    director = get_object_or_404(Personale, matricola=director_code)
-                    p.matricola = director
-                    p.nome_origine = f'{director.cognome} {director.nome}'
-                    p.save()
+            p = ProgettoResponsabileScientifico.objects.create(
+                id_progetto=project,
+                nome_origine=form.cleaned_data['nome_origine']
+            )
+            director_code = decrypt(form.cleaned_data['choosen_person'])
+            if director_code:
+                director = get_object_or_404(
+                    Personale, matricola=director_code)
+                p.matricola = director
+                p.nome_origine = f'{director.cognome} {director.nome}'
+                p.save()
 
-                log_action(user=request.user,
-                           obj=project,
-                           flag=CHANGE,
-                           msg=f'{_("Added director")} {p.__str__()}')
+            log_action(user=request.user,
+                       obj=project,
+                       flag=CHANGE,
+                       msg=f'{_("Added director")} {p.__str__()}')
 
-                messages.add_message(request,
-                                     messages.SUCCESS,
-                                     _("Director added successfully"))
-                return redirect('ricerca_crud:crud_project_edit',
-                                code=code)
-            else:  # pragma: no cover
-                for k, v in form.errors.items():
-                    messages.add_message(request, messages.ERROR,
-                                         f"<b>{form.fields[k].label}</b>: {v}")
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Director added successfully"))
+            return redirect('ricerca_crud:crud_project_edit',
+                            code=code)
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
 
-        return render(request,
-                      'projects/project_director.html',
-                      {'breadcrumbs': breadcrumbs,
-                       'form': form,
-                       'project': project,
-                       'url': reverse('ricerca:teacherslist')})
+    return render(request,
+                  'projects/project_director.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'project': project,
+                   'url': reverse('ricerca:teacherslist')})
 
 
 @login_required
 @can_manage_projects
 @can_edit_project
 def project_director_delete(request, code, director_id,
-                                 my_offices=None, project=None, researchers=None, scientific_director=None):
+                            my_offices=None, project=None, researchers=None, scientific_director=None):
     project_director = get_object_or_404(ProgettoResponsabileScientifico,
-                                        pk=director_id, id_progetto=code)
+                                         pk=director_id, id_progetto=code)
 
     if ProgettoResponsabileScientifico.objects.filter(id_progetto=code).count() == 1:
         raise Exception(_("Permission denied. Only one teacher remains"))
@@ -488,20 +483,19 @@ def project_director_delete(request, code, director_id,
     return redirect('ricerca_crud:crud_project_edit', code=code)
 
 
-
 @login_required
 @can_manage_projects
 @can_edit_project
 def project_researcher_data(request, code, researcher_id, researchers, scientific_director=None,
-                               my_offices=None, project=None):
+                            my_offices=None, project=None):
     researcher_data = get_object_or_404(ProgettoRicercatore,
-                                      pk=researcher_id, id_progetto=code)
+                                        pk=researcher_id, id_progetto=code)
 
     form = ProgettoRicercatoreForm(instance=researcher_data)
 
     if request.POST:
         form = ProgettoRicercatoreForm(instance=researcher_data,
-                                                   data=request.POST)
+                                       data=request.POST)
         if form.is_valid():
             researcher_data.user_mod = request.user
             researcher_data.nome_origine = form.cleaned_data['nome_origine']
@@ -521,7 +515,6 @@ def project_researcher_data(request, code, researcher_id, researchers, scientifi
             return redirect('ricerca_crud:crud_project_researcher_data',
                             code=code,
                             researcher_id=researcher_id)
-
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -543,23 +536,23 @@ def project_researcher_data(request, code, researcher_id, researchers, scientifi
                    'researcher_data': researcher_data})
 
 
-
 @login_required
 @can_manage_projects
 @can_edit_project
 def project_researcher_data_edit(request, code, researcher_id, researchers, scientific_director=None,
-                               my_offices=None, project=None):
-
+                                 my_offices=None, project=None):
 
     researcher_project = get_object_or_404(ProgettoRicercatore,
-                                    pk=researcher_id, id_progetto=code)
+                                           pk=researcher_id, id_progetto=code)
 
     researcher = researcher_project.matricola
     researcher_data = ()
 
     if researcher:
-        researcher_data = (encrypt(researcher.matricola), f'{researcher.cognome} {researcher.nome}')
-        form = ProgettoRicercatoreWithoutFieldsForm(initial={'choosen_person': researcher_data[0]})
+        researcher_data = (encrypt(researcher.matricola),
+                           f'{researcher.cognome} {researcher.nome}')
+        form = ProgettoRicercatoreWithoutFieldsForm(
+            initial={'choosen_person': researcher_data[0]})
     else:
         form = ProgettoRicercatoreWithoutFieldsForm()
 
@@ -567,14 +560,15 @@ def project_researcher_data_edit(request, code, researcher_id, researchers, scie
         form = ProgettoRicercatoreWithoutFieldsForm(data=request.POST)
         if form.is_valid():
             researcher_code = decrypt(form.cleaned_data['choosen_person'])
-            new_researcher = get_object_or_404(Personale, matricola=researcher_code)
+            new_researcher = get_object_or_404(
+                Personale, matricola=researcher_code)
             researcher_project.matricola = new_researcher
             researcher_project.nome_origine = f'{new_researcher.cognome} {new_researcher.nome}'
             researcher_project.save()
 
             if researcher and researcher == new_researcher:
                 log_msg = f'{_("Changed inventor")} {researcher.__str__()}'
-            elif researcher and researcher!=new_researcher:
+            elif researcher and researcher != new_researcher:
                 log_msg = f'{researcher} {_("substituted with")} {new_researcher.__str__()}'
             else:
                 log_msg = f'{_("Changed researcher")} {new_researcher.__str__()}'
@@ -604,67 +598,65 @@ def project_researcher_data_edit(request, code, researcher_id, researchers, scie
                    'form': form,
                    'project': project,
                    'researcher_id': researcher_id,
-                   'choosen_person': researcher_data[1] if researcher_data  else None,
+                   'choosen_person': researcher_data[1] if researcher_data else None,
                    'url': reverse('ricerca:teacherslist')})
-
-
 
 
 @login_required
 @can_manage_projects
 @can_edit_project
 def project_researcher_new(request, code, my_offices=None, project=None, researchers=None, scientific_director=None):
-        breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                       reverse('ricerca_crud:crud_projects'): _('Projects'),
-                       reverse('ricerca_crud:crud_project_edit', kwargs={'code': code}): project.titolo,
-                       '#': _('New researcher')}
-        form = ProgettoRicercatoreForm()
-        if request.POST:
-            form = ProgettoRicercatoreForm(data=request.POST)
-            if form.is_valid():
+    breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
+                   reverse('ricerca_crud:crud_projects'): _('Projects'),
+                   reverse('ricerca_crud:crud_project_edit', kwargs={'code': code}): project.titolo,
+                   '#': _('New researcher')}
+    form = ProgettoRicercatoreForm()
+    if request.POST:
+        form = ProgettoRicercatoreForm(data=request.POST)
+        if form.is_valid():
 
-                p = ProgettoRicercatore.objects.create(
-                    id_progetto=project,
-                    nome_origine=form.cleaned_data['nome_origine']
-                )
-                researcher_code = decrypt(form.cleaned_data['choosen_person'])
-                if researcher_code:
-                    researcher = get_object_or_404(Personale, matricola=researcher_code)
-                    p.matricola = researcher
-                    p.nome_origine = f'{researcher.cognome} {researcher.nome}'
-                    p.save()
+            p = ProgettoRicercatore.objects.create(
+                id_progetto=project,
+                nome_origine=form.cleaned_data['nome_origine']
+            )
+            researcher_code = decrypt(form.cleaned_data['choosen_person'])
+            if researcher_code:
+                researcher = get_object_or_404(
+                    Personale, matricola=researcher_code)
+                p.matricola = researcher
+                p.nome_origine = f'{researcher.cognome} {researcher.nome}'
+                p.save()
 
-                log_action(user=request.user,
-                           obj=project,
-                           flag=CHANGE,
-                           msg=f'{_("Added researcher")} {p.__str__()}')
+            log_action(user=request.user,
+                       obj=project,
+                       flag=CHANGE,
+                       msg=f'{_("Added researcher")} {p.__str__()}')
 
-                messages.add_message(request,
-                                     messages.SUCCESS,
-                                     _("Researcher added successfully"))
-                return redirect('ricerca_crud:crud_project_edit',
-                                code=code)
-            else:  # pragma: no cover
-                for k, v in form.errors.items():
-                    messages.add_message(request, messages.ERROR,
-                                         f"<b>{form.fields[k].label}</b>: {v}")
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Researcher added successfully"))
+            return redirect('ricerca_crud:crud_project_edit',
+                            code=code)
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
 
-        return render(request,
-                      'projects/project_researcher.html',
-                      {'breadcrumbs': breadcrumbs,
-                       'form': form,
-                       'project': project,
-                       'url': reverse('ricerca:teacherslist')})
-
+    return render(request,
+                  'projects/project_researcher.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'project': project,
+                   'url': reverse('ricerca:teacherslist')})
 
 
 @login_required
 @can_manage_projects
 @can_edit_project
 def project_researcher_delete(request, code, researcher_id,
-                                 my_offices=None, project=None, researchers=None, scientific_director=None):
+                              my_offices=None, project=None, researchers=None, scientific_director=None):
     researcher_project = get_object_or_404(ProgettoRicercatore,
-                                        pk=researcher_id, id_progetto=code)
+                                           pk=researcher_id, id_progetto=code)
 
     # if ProgettoRicercatore.objects.filter(id_progetto=code).count() == 1:
     #     raise Exception(_("Permission denied. Only one teacher remains"))
@@ -681,14 +673,13 @@ def project_researcher_delete(request, code, researcher_id,
     return redirect('ricerca_crud:crud_project_edit', code=code)
 
 
-
 @login_required
 @can_manage_projects
 @can_edit_project
 def project_delete(request, code,
-                         my_offices=None, project=None, researchers=None, scientific_director=None):
+                   my_offices=None, project=None, researchers=None, scientific_director=None):
     # ha senso?
-    #if rgroup.user_ins != request.user:
+    # if rgroup.user_ins != request.user:
     if not request.user.is_superuser:
         raise Exception(_('Permission denied'))
 
