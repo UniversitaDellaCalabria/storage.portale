@@ -293,11 +293,7 @@ def can_edit_project(func_to_decorate):
             if myoffice.office.organizational_structure.unique_code not in departments:
                 departments.append(
                     myoffice.office.organizational_structure.unique_code)
-        if scientific_director.personale.sede in departments:
-            return func_to_decorate(*original_args, **original_kwargs)
-        for researcher in researchers:
-            if not researcher.personale.sede in departments:
-                continue
+        if project.uo.uo in departments:
             return func_to_decorate(*original_args, **original_kwargs)
         raise Exception("Permission denied")
 
