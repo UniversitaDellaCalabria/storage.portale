@@ -10,7 +10,6 @@ OFFICE_COMPANIES = 'companies'
 OFFICE_PROJECTS = 'projects'
 OFFICE_TEACHERS = 'teachers'
 
-
 ALLOWED_CDS_LANGUAGES = ['ita', 'eng']
 ALLOWED_CDS_JOINT_DEGREES = [
     {'COD': 'N', 'name': _("No")},

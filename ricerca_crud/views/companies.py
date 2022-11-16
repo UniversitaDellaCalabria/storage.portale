@@ -117,19 +117,19 @@ def company_new(request, my_offices=None):
 
 @login_required
 @can_manage_companies
-@can_edit_company
-def company(request, code,
-                  my_offices=None, company=None, departments=None):
+def company(request, code, my_offices=None, company=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_companies'): _('Companies'),
                    '#': company.nome_azienda}
     form = SpinoffStartupDatiBaseForm(instance=company)
 
     referent_data = get_object_or_404(SpinoffStartupDatiBase,
-                                   pk=code)
+                                      pk=code)
 
     if request.POST:
-        form = SpinoffStartupDatiBaseForm(instance=company, data=request.POST, files=request.FILES)
+        form = SpinoffStartupDatiBaseForm(instance=company,
+                                          data=request.POST,
+                                          files=request.FILES)
 
         if form.is_valid():
             company.user_mod = request.user
@@ -173,15 +173,13 @@ def company(request, code,
                    'form': form,
                    'logs': logs,
                    'company': company,
-                   'referent_data': referent_data,
-                   'departments': departments})
+                   'referent_data': referent_data})
 
 
 
 @login_required
 @can_manage_companies
-@can_edit_company
-def  company_unical_referent_data(request, code, data_id, company=None, departments=None, my_offices=None):
+def company_unical_referent_data(request, code, data_id, company=None, my_offices=None):
 
     referent_data = get_object_or_404(SpinoffStartupDatiBase,
                                     pk=data_id)
@@ -190,7 +188,7 @@ def  company_unical_referent_data(request, code, data_id, company=None, departme
 
     if request.POST:
         form = SpinoffStartupDatiBaseReferentForm(instance=referent_data,
-                                                data=request.POST)
+                                                  data=request.POST)
         if form.is_valid():
             referent_data.user_mod = request.user
             referent_data.referente_unical = form.cleaned_data['referente_unical']
@@ -231,12 +229,10 @@ def  company_unical_referent_data(request, code, data_id, company=None, departme
                    'referent_data': referent_data})
 
 
-
 @login_required
 @can_manage_companies
-@can_edit_company
 def company_unical_referent_data_edit(request, code, data_id,
-                  my_offices=None, company=None, departments=None):
+                                      my_offices=None, company=None):
     unical_referent  = get_object_or_404(SpinoffStartupDatiBase,
                                         pk=code)
 
@@ -293,14 +289,12 @@ def company_unical_referent_data_edit(request, code, data_id,
                    'url': reverse('ricerca:teacherslist')})
 
 
-
 @login_required
 @can_manage_companies
-@can_edit_company
 def company_unical_referent_data_delete(request, code, data_id=None,
-                  my_offices=None, company=None, departments=None):
+                                        my_offices=None, company=None):
     company = get_object_or_404(SpinoffStartupDatiBase,
-                                   pk=code)
+                                pk=code)
 
     company.matricola_referente_unical = None
     company.save()
@@ -317,12 +311,10 @@ def company_unical_referent_data_delete(request, code, data_id=None,
                     code=code)
 
 
-
 @login_required
 @can_manage_companies
-@can_edit_company
 def company_unical_department_data_new(request, code,
-                              my_offices=None, company=None, departments=None):
+                                       my_offices=None, company=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_companies'): _('Companies'),
                    reverse('ricerca_crud:crud_company_edit', kwargs={'code': code}): company.nome_azienda,
@@ -361,15 +353,13 @@ def company_unical_department_data_new(request, code,
                    'url': reverse('ricerca:departmentslist')})
 
 
-
 @login_required
 @can_manage_companies
-@can_edit_company
 def company_unical_department_data_edit(request, code, department_id,
-                               my_offices=None, company=None, departments=None):
+                                        my_offices=None, company=None):
 
     department_company = get_object_or_404(SpinoffStartupDipartimento,
-                                       pk=department_id)
+                                           pk=department_id)
 
     department = department_company.id_didattica_dipartimento
 
@@ -424,12 +414,10 @@ def company_unical_department_data_edit(request, code, department_id,
                    'url': reverse('ricerca:departmentslist')})
 
 
-
 @login_required
 @can_manage_companies
-@can_edit_company
 def company_unical_department_data_delete(request, code, department_id,
-                                 my_offices=None, company=None, departments=None):
+                                          my_offices=None, company=None):
     department_company = get_object_or_404(SpinoffStartupDipartimento,
                                        id_spinoff_startup_dati_base=company,
                                        pk=department_id)
@@ -449,13 +437,9 @@ def company_unical_department_data_delete(request, code, department_id,
     return redirect('ricerca_crud:crud_company_edit', code=code)
 
 
-
-
 @login_required
 @can_manage_companies
-@can_edit_company
-def company_delete(request, code,
-                         my_offices=None, company=None, departments=None):
+def company_delete(request, code, my_offices=None, company=None):
     # ha senso?
     #if rgroup.user_ins != request.user:
     if not request.user.is_superuser:

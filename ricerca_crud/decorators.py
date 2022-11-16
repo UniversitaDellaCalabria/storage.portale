@@ -197,6 +197,10 @@ def can_manage_patents(func_to_decorate):
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
+        patent = get_object_or_404(BrevettoDatiBase, pk=original_kwargs['code'])
+        inventors = BrevettoInventori.objects.filter(id_brevetto=patent)
+        original_kwargs['patent'] = patent
+        original_kwargs['inventors'] = inventors
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
                                                                           office__name=OFFICE_PATENTS,
                                                                           office__is_active=True,
@@ -209,44 +213,14 @@ def can_manage_patents(func_to_decorate):
     return new_func
 
 
-def can_edit_patent(func_to_decorate):
-    """
-    """
-    def new_func(*original_args, **original_kwargs):
-        request = original_args[0]
-        patent = get_object_or_404(BrevettoDatiBase, pk=original_kwargs['code'])
-        inventors = BrevettoInventori.objects.filter(id_brevetto=patent)
-        original_kwargs['patent'] = patent
-        original_kwargs['inventors'] = inventors
-
-        if request.user.is_superuser:
-            return func_to_decorate(*original_args, **original_kwargs)
-
-        # if request.user == rgroup.user_ins:
-            # return func_to_decorate(*original_args, **original_kwargs)
-
-        departments = []
-        for myoffice in original_kwargs['my_offices']:
-            if myoffice.office.organizational_structure.unique_code not in departments:
-                departments.append(myoffice.office.organizational_structure.unique_code)
-        now = date.today()
-        for inventor in inventors:
-            if inventor.personale.sede in departments:
-                if inventor.dt_inizio and inventor.dt_inizio>now:
-                    continue
-                if inventor.dt_fine and inventor.dt_fine<now:
-                    continue
-                return func_to_decorate(*original_args, **original_kwargs)
-        raise Exception("Permission denied")
-
-    return new_func
-
-
 def can_manage_companies(func_to_decorate):
     """
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
+        company = get_object_or_404(SpinoffStartupDatiBase, pk=original_kwargs['code'])
+        departments = SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base=company)
+        original_kwargs['company'] = company
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
                                                                           office__name=OFFICE_COMPANIES,
                                                                           office__is_active=True,
@@ -255,33 +229,6 @@ def can_manage_companies(func_to_decorate):
             raise Exception("Permission denied")
         original_kwargs['my_offices'] = my_offices
         return func_to_decorate(*original_args, **original_kwargs)
-
-    return new_func
-
-
-def can_edit_company(func_to_decorate):
-    """
-    """
-    def new_func(*original_args, **original_kwargs):
-        request = original_args[0]
-        company = get_object_or_404(SpinoffStartupDatiBase, pk=original_kwargs['code'])
-        departments = SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base=company)
-        original_kwargs['company'] = company
-        original_kwargs['departments'] = departments
-
-        if request.user.is_superuser:
-            return func_to_decorate(*original_args, **original_kwargs)
-
-        # if request.user == rgroup.user_ins:
-            # return func_to_decorate(*original_args, **original_kwargs)
-
-        for myoffice in original_kwargs['my_offices']:
-            if myoffice.office.organizational_structure.unique_code not in departments:
-                departments.append(myoffice.office.organizational_structure.unique_code)
-
-        if company.matricola_referente_unical.ds_aff_org in departments:
-            return func_to_decorate(*original_args, **original_kwargs)
-        raise Exception("Permission denied")
 
     return new_func
 

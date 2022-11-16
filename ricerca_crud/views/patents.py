@@ -126,14 +126,11 @@ def patent_new(request, my_offices=None):
 
 @login_required
 @can_manage_patents
-@can_edit_patent
-def patent(request, code,
-                  my_offices=None, patent=None, inventors=None):
+def patent(request, code, my_offices=None, patent=None, inventors=None):
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_patents'): _('Patents'),
                    '#': patent.titolo}
     form = BrevettoDatiBaseForm(instance=patent)
-
 
     if request.POST:
         form = BrevettoDatiBaseForm(instance=patent, data=request.POST, files=request.FILES)
@@ -191,7 +188,6 @@ def patent(request, code,
 
 @login_required
 @can_manage_patents
-@can_edit_patent
 def patent_inventor_data(request, code, inventor_id, patent=None, inventors=None, my_offices=None):
 
     inventor_data = get_object_or_404(BrevettoInventori,
@@ -242,13 +238,10 @@ def patent_inventor_data(request, code, inventor_id, patent=None, inventors=None
                    'inventor_data': inventor_data})
 
 
-
 @login_required
 @can_manage_patents
-@can_edit_patent
-def patent_inventor_data_edit(request, code, inventor_id, inventors,
-                               my_offices=None, patent=None):
-
+def patent_inventor_data_edit(request, code, inventor_id, inventors=None,
+                              my_offices=None, patent=None):
 
     inventor_patent = get_object_or_404(BrevettoInventori,
                                     pk=inventor_id, id_brevetto=code)
@@ -309,7 +302,6 @@ def patent_inventor_data_edit(request, code, inventor_id, inventors,
 
 @login_required
 @can_manage_patents
-@can_edit_patent
 def patent_inventor_new(request, code, my_offices=None, patent=None, inventors=None):
         breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                        reverse('ricerca_crud:crud_patents'): _('Patents'),
@@ -356,9 +348,8 @@ def patent_inventor_new(request, code, my_offices=None, patent=None, inventors=N
 
 @login_required
 @can_manage_patents
-@can_edit_patent
 def patent_inventor_delete(request, code, inventor_id,
-                                 my_offices=None, patent=None, inventors=None):
+                           my_offices=None, patent=None, inventors=None):
     inventor_patent = get_object_or_404(BrevettoInventori,
                                         pk=inventor_id, id_brevetto=code)
 
@@ -380,9 +371,7 @@ def patent_inventor_delete(request, code, inventor_id,
 
 @login_required
 @can_manage_patents
-@can_edit_patent
-def patent_delete(request, code,
-                         my_offices=None, patent=None, inventors=None):
+def patent_delete(request, code, my_offices=None, patent=None, inventors=None):
     # ha senso?
     #if rgroup.user_ins != request.user:
     if not request.user.is_superuser:
