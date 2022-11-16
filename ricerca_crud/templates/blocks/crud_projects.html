@@ -13,10 +13,6 @@
 {% include "blocks/includes/vue_check.html" %}
 {% endblock storage_block_top %}
 
-
-<div id="{{ id }}">
-
-    <div if="(initial_items && initial_items.length) || parameters">
         <div class="row">
             <div class="col-12">
                 <div class="card-wrapper card-space">
@@ -27,139 +23,139 @@
 
                             {% include "includes/vue_search_input.html" with id=id %}
 
-                                <div class="form-group mb-0">
+                            <div class="form-group mb-0">
 
-                                    <!-- Year and TechArea -->
-                                    <div class="row">
-                                        <div class="col-sm form-group mb-0">
+                                <!-- Year and TechArea -->
+                                <div class="row">
+                                    <div class="col-sm form-group mb-0">
+                                        <div class="w-30 mt-5">
+                                            <label>
+                                                {% trans "Year" %}
+                                            </label>
                                             <div class="w-30 mt-5">
-                                                <label>
-                                                    {% trans "Year" %}
-                                                </label>
-                                                <div class="w-30 mt-5">
-                                                    <input type="number"
-                                                           id="{{ id }}_year_input"
-                                                           name="{{ id }}_year_input"
-                                                           v-on:keyup.enter="{{ id }}.search()"
-                                                           v-model="selected_year">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <loading-icon
-                                            v-if="is_loading_techareas"
-                                            :loader_source="loader_source_techareas">
-                                        </loading-icon>
-
-                                        <div class="col-sm form-group mb-0" v-else>
-                                            <div>
-                                                <label for="{{ id }}_techarea_input">
-                                                    {% trans "Tech Area" %}
-                                                </label>
-                                                <div class="w-30 mt-5">
-                                                    <select id="{{ id }}_techarea_input"
-                                                            title="{% trans 'Choose an option' %}"
-                                                            name="{{ id }}_techarea_input"
-                                                            class="form-control"
-                                                            @change="{{ id }}.search()">
-                                                        <option value="">- {% trans 'Choose an option' %} -</option>
-                                                        <option v-for="item in techareas"
-                                                                :value="item.TechAreaId"
-                                                                :selected="item.TechAreaId == selected_techarea">
-                                                            [[ item.TechAreaDescription ]]
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <loading-icon
-                                            v-if="is_loading_territorialscopes"
-                                            :loader_source="loader_source_territorialscopes">
-                                        </loading-icon>
-                                        <div class="col-sm form-group mb-0" v-else>
-                                            <div>
-                                                <label for="{{ id }}_territorialscope_input">
-                                                    {% trans "Territorial Scope" %}
-                                                </label>
-                                                <div class="w-30 mt-5">
-                                                    <select id="{{ id }}_territorialscope_input"
-                                                            title="{% trans 'Choose an option' %}"
-                                                            name="{{ id }}_territorialscope_input"
-                                                            class="form-control"
-                                                            @change="{{ id }}.search()">
-                                                        <option value="">- {% trans 'Choose an option' %} -</option>
-                                                        <option v-for="item in territorialscopes"
-                                                                :value="item.TerritorialScopeId"
-                                                                :selected="item.TerritorialScopeId == selected_territorialscope">
-                                                            [[ item.TerritorialScopeDescription ]]
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <!--END Year and TechArea -->
-
-                                    <!-- Program type and Territorial scope -->
-                                    <div class="row">
-
-                                        {% block filter_programtype %}
-                                        <loading-icon
-                                            v-if="is_loading_programtypes"
-                                            :loader_source="loader_source_programtypes">
-                                        </loading-icon>
-                                        <div class="col-sm form-group mb-0" v-else>
-                                            <div>
-                                                <label for="{{ id }}_programtype_input">
-                                                    {% trans "Program Type" %}
-                                                </label>
-                                                <div class="w-30 mt-5">
-                                                    <select id="{{ id }}_programtype_input"
-                                                            title="{% trans 'Choose an option' %}"
-                                                            name="{{ id }}_programtype_input"
-                                                            class="form-control"
-                                                            @change="{{ id }}.search()">
-                                                        <option value="">- {% trans 'Choose an option' %} -</option>
-                                                        <option v-for="item in programtypes"
-                                                                v-if="!excluded_programtypes.includes(String(item.TypeProgramId))"
-                                                                :value="item.TypeProgramId"
-                                                                :selected="item.TypeProgramId == selected_programtype">
-                                                            [[ item.TypeProgramDescription ]]
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% endblock filter_programtype %}
-
-                                        <loading-icon
-                                            v-if="is_loading_infrastructures"
-                                            :loader_source="loader_source_infrastructures">
-                                        </loading-icon>
-                                        <div class="col-sm form-group mb-0" v-else>
-                                            <div>
-                                                <label for="{{ id }}_infrastructure_input">
-                                                    {% trans "Structure" %}
-                                                </label>
-                                                <div class="w-30 mt-5">
-                                                    <select id="{{ id }}_infrastructure_input"
-                                                            title="{% trans 'Choose an option' %}"
-                                                            name="{{ id }}_infrastructure_input"
-                                                            class="form-control"
-                                                            @change="{{ id }}.search()">
-                                                        <option value="">- {% trans 'Choose an option' %} -</option>
-                                                        <option v-for="item in infrastructures"
-                                                                :value="item.InfrastructureId"
-                                                                :selected="item.InfrastructureId == selected_infrastructure">
-                                                            [[ item.InfrastructureDescription ]]
-                                                        </option>
-                                                    </select>
-                                                </div>
+                                                <input type="number"
+                                                       id="{{ id }}_year_input"
+                                                       name="{{ id }}_year_input"
+                                                       v-on:keyup.enter="{{ id }}.search()"
+                                                       v-model="selected_year">
                                             </div>
                                         </div>
                                     </div>
+
+                                    <loading-icon
+                                        v-if="is_loading_techareas"
+                                        :loader_source="loader_source_techareas">
+                                    </loading-icon>
+
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_techarea_input">
+                                                {% trans "Tech Area" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_techarea_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_techarea_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in techareas"
+                                                            :value="item.TechAreaId"
+                                                            :selected="item.TechAreaId == selected_techarea">
+                                                        [[ item.TechAreaDescription ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <loading-icon
+                                        v-if="is_loading_territorialscopes"
+                                        :loader_source="loader_source_territorialscopes">
+                                    </loading-icon>
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_territorialscope_input">
+                                                {% trans "Territorial Scope" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_territorialscope_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_territorialscope_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in territorialscopes"
+                                                            :value="item.TerritorialScopeId"
+                                                            :selected="item.TerritorialScopeId == selected_territorialscope">
+                                                        [[ item.TerritorialScopeDescription ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!--END Year and TechArea -->
+
+                                <!-- Program type and Territorial scope -->
+                                <div class="row">
+
+                                    {% block filter_programtype %}
+                                    <loading-icon
+                                        v-if="is_loading_programtypes"
+                                        :loader_source="loader_source_programtypes">
+                                    </loading-icon>
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_programtype_input">
+                                                {% trans "Program Type" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_programtype_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_programtype_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in programtypes"
+                                                            v-if="!excluded_programtypes.includes(String(item.TypeProgramId))"
+                                                            :value="item.TypeProgramId"
+                                                            :selected="item.TypeProgramId == selected_programtype">
+                                                        [[ item.TypeProgramDescription ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock filter_programtype %}
+
+                                    <loading-icon
+                                        v-if="is_loading_infrastructures"
+                                        :loader_source="loader_source_infrastructures">
+                                    </loading-icon>
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_infrastructure_input">
+                                                {% trans "Structure" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_infrastructure_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_infrastructure_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in infrastructures"
+                                                            :value="item.InfrastructureId"
+                                                            :selected="item.InfrastructureId == selected_infrastructure">
+                                                        [[ item.InfrastructureDescription ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                     <!-- END Program type and Territorial scope -->
                             </div>
@@ -234,10 +230,10 @@
                                             </div>
                                         </div>
                                         <a :href="item.ProjectId+'/'" class="btn btn-sm btn-primary float-right">
-                                                <svg class="icon icon-xs icon-white">
-                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                                </svg> {% trans "Edit" %}
-                                            </a>
+                                            <svg class="icon icon-xs icon-white">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                            </svg> {% trans "Edit" %}
+                                        </a>
                                     </div>
                                 </div>
                             </div>
