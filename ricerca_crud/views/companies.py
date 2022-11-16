@@ -34,7 +34,7 @@ def companies(request, my_offices=None):
                    '#': _('Companies')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:companies')}
-    return render(request, 'companies.html', context)
+    return render(request, 'companies/companies.html', context)
 
 
 @login_required
@@ -106,7 +106,7 @@ def company_new(request, my_offices=None):
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{department_form.fields[k].label}</b>: {v}")
     return render(request,
-                  'company_new.html',
+                  'companies/company_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'choosen_department': f'{department.dip_des_it}' if department else '',
                    'form': form,
@@ -168,7 +168,7 @@ def company(request, code,
     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(company).pk,
                                    object_id=company.pk)
     return render(request,
-                  'company.html',
+                  'companies/company.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'logs': logs,
@@ -224,7 +224,7 @@ def  company_unical_referent_data(request, code, data_id, company=None, departme
                    }
 
     return render(request,
-                  'company_unical_referent_data.html',
+                  'companies/company_unical_referent_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'company': company,
@@ -285,7 +285,7 @@ def company_unical_referent_data_edit(request, code, data_id,
                    '#': f'{company.referente_unical}'
                    }
     return render(request,
-                  'company_unical_referent_data_edit.html',
+                  'companies/company_unical_referent_data_edit.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'company': company,
@@ -354,7 +354,7 @@ def company_unical_department_data_new(request, code,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'company_unical_department_data_edit.html',
+                  'companies/company_unical_department_data_edit.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'company': company,
@@ -415,7 +415,7 @@ def company_unical_department_data_edit(request, code, department_id,
 
 
     return render(request,
-                  'company_unical_department_data_edit.html',
+                  'companies/company_unical_department_data_edit.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'company': company,

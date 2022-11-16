@@ -34,7 +34,7 @@ def teachers(request, my_offices=None):
                    '#': _('Teachers and PTA')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:teacherslist')}
-    return render(request, 'teachers.html', context)
+    return render(request, 'teachers/teachers.html', context)
 
 
 
@@ -55,7 +55,7 @@ def teacher_detail(request, code,
                                    object_id=teacher.pk)
 
     return render(request,
-                  'teacher_detail.html',
+                  'teachers/teacher_detail.html',
                   {'breadcrumbs': breadcrumbs,
                    'logs': logs,
                    'other_data': other_data,
@@ -142,7 +142,7 @@ def teacher_other_data_edit(request, code, data_id,
     }
 
     return render(request,
-                  'teacher_other_data.html',
+                  'teachers/teacher_other_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'teacher': teacher,
@@ -195,7 +195,7 @@ def teacher_other_data_new(request, code, my_offices=None, teacher=None, materia
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
     return render(request,
-                  'teacher_other_data_new.html',
+                  'teachers/teacher_other_data_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'teacher': teacher})
@@ -285,7 +285,7 @@ def teacher_board_data_edit(request, code, data_id,
     }
 
     return render(request,
-                  'teacher_board_data.html',
+                  'teachers/teacher_board_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'teacher': teacher,
@@ -342,7 +342,7 @@ def teacher_board_data_new(request, code, my_offices=None, teacher=None, materia
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
     return render(request,
-                  'teacher_board_data_new.html',
+                  'teachers/teacher_board_data_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'teacher': teacher
@@ -427,7 +427,7 @@ def teacher_materials_data_edit(request, code, data_id,
     }
 
     return render(request,
-                  'teacher_materials_data.html',
+                  'teachers/teacher_materials_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'teacher': teacher,
@@ -480,7 +480,7 @@ def teacher_materials_data_new(request, code, my_offices=None, teacher=None, mat
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
     return render(request,
-                  'teacher_materials_data_new.html',
+                  'teachers/teacher_materials_data_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'teacher': teacher

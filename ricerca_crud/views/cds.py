@@ -34,7 +34,7 @@ def cds(request, my_offices=None):
                    '#': _('CdS')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:cdslist')}
-    return render(request, 'cds.html', context)
+    return render(request, 'cds/cds.html', context)
 
 
 @login_required
@@ -55,7 +55,7 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                                        object_id=regdid.cds.pk)
 
     return render(request,
-                  'cds_detail.html',
+                  'cds/cds_detail.html',
                   {'breadcrumbs': breadcrumbs,
                    'logs_regdid': logs_regdid,
                    'logs_cds': logs_cds,
@@ -113,7 +113,7 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
     }
 
     return render(request,
-                  'cds_other_data.html',
+                  'cds/cds_other_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'regdid': regdid,
@@ -178,7 +178,7 @@ def cds_other_data_coordinator(request, regdid_id, data_id,
                    '#': _('Coordinator')}
 
     return render(request,
-                  'cds_other_data_teacher.html',
+                  'cds/cds_other_data_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'regdid': regdid,
@@ -246,7 +246,7 @@ def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
                    '#': _('Deputy coordinator')}
 
     return render(request,
-                  'cds_other_data_teacher.html',
+                  'cds/cds_other_data_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'regdid': regdid,
@@ -419,7 +419,7 @@ def cds_office_data_edit(request, regdid_id, data_id, regdid=None, my_offices=No
                    }
 
     return render(request,
-                  'cds_office_data.html',
+                  'cds/cds_office_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'regdid': regdid,
@@ -500,7 +500,7 @@ def cds_office_data_responsible(request, regdid_id, data_id, my_offices=None, re
                    '#': _('Responsible')}
 
     return render(request,
-                  'cds_office_data_responsible.html',
+                  'cds/cds_office_data_responsible.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'regdid': regdid,

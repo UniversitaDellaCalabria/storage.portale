@@ -5,13 +5,14 @@
 
 
 {% block centered_container %}
-<a href="{% url 'ricerca_crud:crud_company_new' %}" class="btn btn-success btn-xs">
+<a href="{% url 'ricerca_crud:crud_project_new' %}" class="btn btn-success btn-xs">
     <svg class="icon icon-xs icon-white">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
     </svg> {% trans "Add new" %}
 </a>
-<h3>{% trans "Companies" %}</h3>
+<hr />
+<h3>{% trans "Projects" %}</h3>
 <div class="mt-5">
-    {% include "blocks/crud_companies.html" with uid="id_1" %}
+    {% include "blocks/crud_projects.html" with uid="id_1" %}
 </div>
 {% endblock centered_container %}

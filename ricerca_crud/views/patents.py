@@ -34,7 +34,7 @@ def patents(request, my_offices=None):
                    '#': _('Patents')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:patents')}
-    return render(request, 'patents.html', context)
+    return render(request, 'patents/patents.html', context)
 
 
 @login_required
@@ -116,7 +116,7 @@ def patent_new(request, my_offices=None):
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{inventor_form.fields[k].label}</b>: {v}")
     return render(request,
-                  'patent_new.html',
+                  'patents/patent_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'choosen_person': f'{inventor.cognome} {inventor.nome}' if inventor else '',
                    'form': form,
@@ -181,7 +181,7 @@ def patent(request, code,
     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(patent).pk,
                                    object_id=patent.pk)
     return render(request,
-                  'patent.html',
+                  'patents/patent.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'logs': logs,
@@ -235,7 +235,7 @@ def patent_inventor_data(request, code, inventor_id, patent=None, inventors=None
                    }
 
     return render(request,
-                  'patent_inventor_data.html',
+                  'patents/patent_inventor_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'patent': patent,
@@ -298,7 +298,7 @@ def patent_inventor_data_edit(request, code, inventor_id, inventors,
                    reverse('ricerca_crud:crud_patent_edit', kwargs={'code': code}): patent.titolo,
                    '#': _('Inventor')}
     return render(request,
-                  'patent_inventor_data_edit.html',
+                  'patents/patent_inventor_data_edit.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'patent': patent,
@@ -347,7 +347,7 @@ def patent_inventor_new(request, code, my_offices=None, patent=None, inventors=N
                                          f"<b>{form.fields[k].label}</b>: {v}")
 
         return render(request,
-                      'patent_inventor_data_edit.html',
+                      'patents/patent_inventor_data_edit.html',
                       {'breadcrumbs': breadcrumbs,
                        'form': form,
                        'patent': patent,

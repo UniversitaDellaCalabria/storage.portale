@@ -34,7 +34,7 @@ def researchgroups(request, my_offices=None):
                    '#': _('Research groups')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:researchgroups')}
-    return render(request, 'researchgroups.html', context)
+    return render(request, 'research_groups/researchgroups.html', context)
 
 
 @login_required
@@ -77,7 +77,7 @@ def researchgroup(request, code,
     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(rgroup).pk,
                                    object_id=rgroup.pk)
     return render(request,
-                  'researchgroup.html',
+                  'research_groups/researchgroup.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'logs': logs,
@@ -162,7 +162,7 @@ def researchgroup_new(request, my_offices=None):
                                      f"<b>{teacher_form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'researchgroup_new.html',
+                  'research_groups/researchgroup_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'choosen_person': f'{teacher.cognome} {teacher.nome}' if teacher else '',
                    'form': form,
@@ -207,7 +207,7 @@ def researchgroup_teacher_new(request, code,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'researchgroup_teacher.html',
+                  'research_groups/researchgroup_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'rgroup': rgroup,
@@ -262,7 +262,7 @@ def researchgroup_teacher_edit(request, code, teacher_rgroup_id,
                    '#': f'{teacher.cognome} {teacher.nome}'}
 
     return render(request,
-                  'researchgroup_teacher.html',
+                  'research_groups/researchgroup_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'rgroup': rgroup,

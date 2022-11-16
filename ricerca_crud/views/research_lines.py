@@ -34,7 +34,7 @@ def base_researchlines(request,
                    '#': _('Base Research lines')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:allresearchlines')+'?exclude_applied=1'}
-    return render(request, 'base_researchlines.html', context)
+    return render(request, 'research_lines/base_researchlines.html', context)
 
 
 @login_required
@@ -45,7 +45,7 @@ def applied_researchlines(request,
                    '#': _('Applied Research lines')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:allresearchlines')+'?exclude_base=1'}
-    return render(request, 'applied_researchlines.html', context)
+    return render(request, 'research_lines/applied_researchlines.html', context)
 
 
 @login_required
@@ -111,7 +111,7 @@ def researchline_new_applied(request, my_offices=None):
                                      f"<b>{teacher_form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'researchline_new.html',
+                  'research_lines/researchline_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'choosen_person': f'{teacher.cognome} {teacher.nome}' if teacher else '',
                    'form': form,
@@ -182,7 +182,7 @@ def researchline_new_base(request, my_offices=None):
                                      f"<b>{teacher_form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'researchline_new.html',
+                  'research_lines/researchline_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'choosen_person': f'{teacher.cognome} {teacher.nome}' if teacher else '',
                    'form': form,
@@ -230,7 +230,7 @@ def base_researchline(request, code, my_offices=None, rline=None, teachers=None)
                                    object_id=rline.pk)
 
     return render(request,
-                  'base_researchline.html',
+                  'research_lines/base_researchline.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'logs': logs,
@@ -279,7 +279,7 @@ def applied_researchline(request, code,
                                    object_id=rline.pk)
 
     return render(request,
-                  'applied_researchline.html',
+                  'research_lines/applied_researchline.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'logs': logs,
@@ -358,7 +358,7 @@ def base_researchline_teacher_new(request, code,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'base_researchline_teacher.html',
+                  'research_lines/base_researchline_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'rgroup': rline,
@@ -402,7 +402,7 @@ def applied_researchline_teacher_new(request, code,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'base_researchline_teacher.html',
+                  'research_lines/base_researchline_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'rgroup': rline,
@@ -457,7 +457,7 @@ def base_researchline_teacher_edit(request, code, teacher_rline_id,
                    '#': f'{teacher.cognome} {teacher.nome}'}
 
     return render(request,
-                  'base_researchline_teacher.html',
+                  'research_lines/base_researchline_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'rline': rline,
@@ -514,7 +514,7 @@ def applied_researchline_teacher_edit(request, code, teacher_rline_id,
                    '#': f'{teacher.cognome} {teacher.nome}'}
 
     return render(request,
-                  'base_researchline_teacher.html',
+                  'research_lines/base_researchline_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'rline': rline,

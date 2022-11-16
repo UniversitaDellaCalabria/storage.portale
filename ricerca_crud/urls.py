@@ -2,13 +2,12 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import path, re_path
 
-from . crud_views import (cds, companies, patents, projects,
-                          research_groups, research_lines, teachers)
-from . views import home
+from . views import (cds, companies, generic, patents, projects,
+                     research_groups, research_lines, teachers)
 
 urlpatterns = []
 
-urlpatterns += path('', home, name='crud_dashboard'),
+urlpatterns += path('', generic.home, name='crud_dashboard'),
 
 # research groups
 urlpatterns += path('researchgroups/', research_groups.researchgroups, name='crud_researchgroups'),

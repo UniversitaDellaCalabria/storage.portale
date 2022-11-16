@@ -34,7 +34,7 @@ def projects(request, my_offices=None):
                    '#': _('Projects')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:projects')}
-    return render(request, 'projects.html', context)
+    return render(request, 'projects/projects.html', context)
 
 
 @login_required
@@ -142,7 +142,7 @@ def project_new(request, my_offices=None):
 
 
     return render(request,
-                  'project_new.html',
+                  'projects/project_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'choosen_person': f'{director.cognome} {director.nome}' if director else '',
                    'choosen_structure': f'{structure.denominazione}' if structure else '',
@@ -207,7 +207,7 @@ def project(request, code,
     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(project).pk,
                                    object_id=project.pk)
     return render(request,
-                  'project.html',
+                  'projects/project.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'logs': logs,
@@ -263,7 +263,7 @@ def project_director_data(request, code, director_id, project=None, researchers=
                    }
 
     return render(request,
-                  'project_director_data.html',
+                  'projects/project_director_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'project': project,
@@ -322,7 +322,7 @@ def project_structure_data_edit(request, code, data_id,
 
 
     return render(request,
-                  'project_structure_data_edit.html',
+                  'projects/project_structure_data_edit.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'project': project,
@@ -385,7 +385,7 @@ def project_director_data_edit(request, code, director_id, researchers=None, sci
                    reverse('ricerca_crud:crud_project_edit', kwargs={'code': code}): project.titolo,
                    '#': _('Scientific Director')}
     return render(request,
-                  'project_director_data_edit.html',
+                  'projects/project_director_data_edit.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'project': project,
@@ -458,7 +458,7 @@ def project_director_new(request, code, my_offices=None, project=None, researche
                                          f"<b>{form.fields[k].label}</b>: {v}")
 
         return render(request,
-                      'project_director.html',
+                      'projects/project_director.html',
                       {'breadcrumbs': breadcrumbs,
                        'form': form,
                        'project': project,
@@ -536,7 +536,7 @@ def project_researcher_data(request, code, researcher_id, researchers, scientifi
                    }
 
     return render(request,
-                  'project_researcher_data.html',
+                  'projects/project_researcher_data.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'project': project,
@@ -599,7 +599,7 @@ def project_researcher_data_edit(request, code, researcher_id, researchers, scie
                    reverse('ricerca_crud:crud_project_edit', kwargs={'code': code}): project.titolo,
                    '#': _('Researcher')}
     return render(request,
-                  'project_researcher.html',
+                  'projects/project_researcher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'project': project,
@@ -650,7 +650,7 @@ def project_researcher_new(request, code, my_offices=None, project=None, researc
                                          f"<b>{form.fields[k].label}</b>: {v}")
 
         return render(request,
-                      'project_researcher.html',
+                      'projects/project_researcher.html',
                       {'breadcrumbs': breadcrumbs,
                        'form': form,
                        'project': project,
