@@ -262,8 +262,10 @@ class ProgettoDatiBaseForm(forms.ModelForm):
         model = ProgettoDatiBase
         fields = ['titolo', 'anno_avvio', 'id_ambito_territoriale', 'id_tipologia_programma', 'id_area_tecnologica',
                   'descr_breve', 'url_immagine', 'abstract_ita', 'abstract_eng', 'url_sito_web', 'call', 'uo']
-        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'decr_breve': forms.Textarea(attrs={'rows': 2}),
-                   'abstract_ita': forms.Textarea(attrs={'rows': 4}), 'abstract_eng': forms.Textarea(attrs={'rows': 4}),
+        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
+                   'descr_breve': forms.Textarea(attrs={'rows': 2}),
+                   'abstract_ita': forms.Textarea(attrs={'rows': 2}),
+                   'abstract_eng': forms.Textarea(attrs={'rows': 2}),
                    'anno_avvio': BootstrapItaliaDateWidget, 'uo': forms.HiddenInput()}
 
     class Media:
@@ -363,7 +365,7 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
         fields = ['breve_bio', 'breve_bio_en', 'orario_ricevimento',
                   'orario_ricevimento_en', 'orcid', 'path_foto', 'path_cv_ita', 'path_cv_en', ]
         widgets = {'breve_bio_en': forms.Textarea(attrs={'rows': 2}), 'breve_bio': forms.Textarea(attrs={'rows': 2}),
-                   'orario_ricevimento': forms.Textarea(attrs={'rows': 4}), 'orario_ricevimento_en': forms.Textarea(attrs={'rows': 4})
+                   'orario_ricevimento': forms.Textarea(attrs={'rows': 2}), 'orario_ricevimento_en': forms.Textarea(attrs={'rows': 2})
                    }
 
     class Media:
@@ -380,7 +382,7 @@ class DocentePtaBachecaForm(forms.ModelForm):
         fields = ['titolo', 'titolo_en', 'tipo_testo', 'tipo_testo_en',
                   'testo', 'testo_en', 'url_testo', 'url_testo_en', 'ordine', 'attivo', 'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita']
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'titolo_en': forms.Textarea(attrs={'rows': 2}),
-                   'testo': forms.Textarea(attrs={'rows': 4}), 'testo_en': forms.Textarea(attrs={'rows': 4}),
+                   'testo': forms.Textarea(attrs={'rows': 2}), 'testo_en': forms.Textarea(attrs={'rows': 2}),
                    'dt_pubblicazione': BootstrapItaliaDateWidget, 'dt_inizio_validita': BootstrapItaliaDateWidget, 'dt_fine_validita': BootstrapItaliaDateWidget}
 
         help_texts = {
@@ -402,7 +404,7 @@ class DocenteMaterialeDidatticoForm(forms.ModelForm):
         fields = ['titolo', 'titolo_en', 'testo', 'testo_en',
                   'url_testo', 'url_testo_en', 'ordine', 'attivo', 'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita']
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}), 'titolo_en': forms.Textarea(attrs={'rows': 2}),
-                   'testo': forms.Textarea(attrs={'rows': 4}), 'testo_en': forms.Textarea(attrs={'rows': 4}),
+                   'testo': forms.Textarea(attrs={'rows': 2}), 'testo_en': forms.Textarea(attrs={'rows': 2}),
                    'dt_pubblicazione': BootstrapItaliaDateWidget, 'dt_inizio_validita': BootstrapItaliaDateWidget, 'dt_fine_validita': BootstrapItaliaDateWidget}
 
         help_texts = {
