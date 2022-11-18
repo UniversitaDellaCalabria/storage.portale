@@ -5412,7 +5412,7 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
 
         req = Client()
 
-        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+        a1 = DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
             'id': 1,
             'nome_af': 'AAAA',
             'struttura_proponente_origine': 'dimes',
@@ -5420,7 +5420,7 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
 
         })
 
-        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+        a2 = DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
             'id': 2,
             'nome_af': 'BBBB',
             'struttura_proponente_origine': 'aaaa',
@@ -5429,15 +5429,13 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
         })
 
         DidatticaDottoratoAttivitaFormativaDocenteUnitTest.create_didatticaDottoratoAttivitaFormativaDocente(**{
-            'id_didattica_dottorato_attivita_formativa': 1,
+            'id_didattica_dottorato_attivita_formativa': a1,
             'cognome_nome_origine': 'Simone',
-            'matricola': '111',
         })
 
         DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest.create_didatticaDottoratoAttivitaFormativaAltriDocenti(**{
-            'id_didattica_dottorato_attivita_formativa': 1,
+            'id_didattica_dottorato_attivita_formativa': a2,
             'cognome_nome_origine': 'Carmine',
-            'matricola': '2222',
         })
 
 
@@ -5484,22 +5482,38 @@ class ApiPhdActivityDetailUnitTest(TestCase):
 
         req = Client()
 
-        DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
+        a1 = DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
             'id': 1,
             'nome_af': 'AAAA',
 
         })
 
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Franco',
+            'cognome': 'Garofalo',
+            'cd_ruolo': 'PO',
+            'id_ab': 1,
+            'matricola': '111111',
+        })
+        p2 = PersonaleUnitTest.create_personale(**{
+            'id': 2,
+            'nome': 'Simone',
+            'cognome': 'Munggari',
+            'cd_ruolo': 'PO',
+            'id_ab': 2,
+            'matricola': '111112',
+        })
         DidatticaDottoratoAttivitaFormativaDocenteUnitTest.create_didatticaDottoratoAttivitaFormativaDocente(**{
-            'id_didattica_dottorato_attivita_formativa': 1,
-            'cognome_nome_origine': 'Simone',
-            'matricola': '111',
+            'id_didattica_dottorato_attivita_formativa': a1,
+            'cognome_nome_origine': 'Franco',
+            'matricola': p1,
         })
 
         DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest.create_didatticaDottoratoAttivitaFormativaAltriDocenti(**{
-            'id_didattica_dottorato_attivita_formativa': 1,
-            'cognome_nome_origine': 'Carmine',
-            'matricola': '2222',
+            'id_didattica_dottorato_attivita_formativa': a1,
+            'cognome_nome_origine': 'Simone',
+            'matricola': p2,
         })
 
 

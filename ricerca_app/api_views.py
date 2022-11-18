@@ -1208,7 +1208,7 @@ class ApiRefStructuresList(ApiEndpointList):
 
 
 class ApiPhdSsdList(ApiEndpointList):
-    description = 'La funzione restituisce la lista deigli ssd dei dottorati'
+    description = 'La funzione restituisce la lista degli ssd dei dottorati'
     serializer_class = PhdSsdListSerializer
     filter_backends = []
 

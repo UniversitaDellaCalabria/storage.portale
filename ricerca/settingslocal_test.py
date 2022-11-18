@@ -564,6 +564,11 @@ LABEL_MAPPING = {
         'TeacherBoard': 'Teacher Board',
         'TextType': 'Text Type',
         'TextTypeEn': 'Text Type Eng',
+        'ActivityStart': 'Activity Start',
+        'ActivityEnd': 'Activity End',
+        'ClassroomsTimetable': 'Classrooms Timetable',
+        'ShowTimetable': 'Show Timetable',
+        'Notes': 'Notes',
 
     },
     'it': {
@@ -1008,11 +1013,15 @@ LABEL_MAPPING = {
         'TeacherBoard': 'Bacheca Docente',
         'TextType': 'Tipo Testo',
         'TextTypeEn': 'Tipo Testo Eng',
+        'ActivityStart': 'Avvio Attività',
+        'ActivityEnd': 'Fine Attività',
+        'ClassroomsTimetable': 'Orario',
+        'ShowTimetable': 'Mostra Orario',
+        'Notes': 'Note',
 
 
     }
 }
-
 
 # DjangoSAML2 conf
 if 'djangosaml2'  in INSTALLED_APPS:

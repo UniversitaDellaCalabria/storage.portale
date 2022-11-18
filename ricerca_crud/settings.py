@@ -9,6 +9,8 @@ OFFICE_PATENTS = 'patents'
 OFFICE_COMPANIES = 'companies'
 OFFICE_PROJECTS = 'projects'
 OFFICE_TEACHERS = 'teachers'
+OFFICE_DOCTORATES = 'doctorates'
+
 
 
 ALLOWED_CDS_LANGUAGES = ['ita', 'eng']

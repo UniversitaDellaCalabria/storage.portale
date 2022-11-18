@@ -416,3 +416,105 @@ class DocenteMaterialeDidatticoForm(forms.ModelForm):
 
     class Media:
         js = ('js/textarea-autosize.js',)
+
+
+
+class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
+    # choosen_department = forms.CharField(label=_('Department'),
+    #                                      widget=forms.HiddenInput(),
+    #                                      required=True)
+
+    class Meta:
+        model = DidatticaDottoratoAttivitaFormativa
+        fields = ['nome_af', 'ssd', 'numero_ore', 'cfu',\
+                   'tipo_af', 'rif_dottorato', 'id_struttura_proponente', 'struttura_proponente_origine', 'contenuti_af', 'prerequisiti', 'num_min_studenti', \
+                  'num_max_studenti', 'verifica_finale', 'modalita_verifica', 'avvio', 'fine', 'orario_aule', 'note', 'visualizza_orario'
+                  ]
+        widgets = {'nome_af': forms.Textarea(attrs={'rows': 3}), 'rif_dottorato': forms.Textarea(attrs={'rows': 1}), \
+                   'avvio': forms.Textarea(attrs={'rows': 2}), 'fine': forms.Textarea(attrs={'rows': 2}), \
+                   'contenuti_af': forms.Textarea(attrs={'rows': 4}), 'prerequisiti': forms.Textarea(attrs={'rows': 2}), \
+                   'modalita_verifica': forms.Textarea(attrs={'rows': 3}), 'orario_aule': forms.Textarea(attrs={'rows': 4})}
+
+        help_texts = {
+            "verifica_finale": _(
+                "Set NO if is not expected. YES otherwise."),
+
+            "visualizza_orario": _(
+                "Set 0 if is not expected. 1 otherwise."),
+
+        }
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+
+class DidatticaDottoratoAttivitaFormativaDocenteForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = DidatticaDottoratoAttivitaFormativaDocente
+        fields = ['cognome_nome_origine']
+        labels = {
+            "cognome_nome_origine": _("Teacher name (plain text)"),
+        }
+        help_texts = {
+            "cognome_nome_origine": _(
+                "Change this field only if necessary or if the person you are looking for is not in the database"),
+        }
+
+
+class DidatticaDottoratoAttivitaFormativaDocenteWithoutFieldsForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = DidatticaDottoratoAttivitaFormativaDocente
+        fields = []
+
+
+
+class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = DidatticaDottoratoAttivitaFormativaAltriDocenti
+        fields = ['cognome_nome_origine']
+        labels = {
+            "cognome_nome_origine": _("Teacher name (plain text)"),
+        }
+        help_texts = {
+            "cognome_nome_origine": _(
+                "Change this field only if necessary or if the person you are looking for is not in the database"),
+        }
+
+
+class DidatticaDottoratoAttivitaFormativaAltriDocentiWithoutFieldsForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                      widget = forms.HiddenInput(),
+                                      required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _clean_teacher_dates(self, cleaned_data)
+
+    class Meta:
+        model = DidatticaDottoratoAttivitaFormativaAltriDocenti
+        fields = []

@@ -873,8 +873,8 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
 
 class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_didattica_dottorato_attivita_formativa = models.IntegerField(db_column='ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA', blank=True, null=True)  # Field name made lowercase.
-    matricola = models.CharField(db_column='MATRICOLA', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    id_didattica_dottorato_attivita_formativa = models.ForeignKey(DidatticaDottoratoAttivitaFormativa, models.CASCADE, db_column='ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA', blank=True, null=True)  # Field name made lowercase.
+    matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola', blank=True, null=True)  # Field name made lowercase.
     cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.IntegerField(blank=True, null=True)
@@ -886,8 +886,8 @@ class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
 
 class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_didattica_dottorato_attivita_formativa = models.IntegerField(db_column='ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA', blank=True, null=True)  # Field name made lowercase.
-    matricola = models.CharField(db_column='MATRICOLA', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    id_didattica_dottorato_attivita_formativa = models.ForeignKey(DidatticaDottoratoAttivitaFormativa, models.CASCADE, db_column='ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA', blank=True, null=True)  # Field name made lowercase.
+    matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola', blank=True, null=True)  # Field name made lowercase.
     cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.IntegerField(blank=True, null=True)

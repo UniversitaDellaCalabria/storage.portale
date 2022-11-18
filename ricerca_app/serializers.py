@@ -2316,6 +2316,11 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
             'MaxStudents': query['num_max_studenti'],
             'FinalTest': query['verifica_finale'],
             'FinalTestMode': query['modalita_verifica'],
+            'ActivityStart': query['avvio'],
+            'ActivityEnd': query['fine'],
+            'ClassroomsTimetable': query['orario_aule'],
+            'ShowTimetable': query['visualizza_orario'],
+            'Notes': query['note'],
             'MainTeachers': main_teachers,
             'OtherTeachers': other_teachers,
         }

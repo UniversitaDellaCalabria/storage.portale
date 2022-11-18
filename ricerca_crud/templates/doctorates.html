@@ -1,0 +1,17 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<a href="{% url 'ricerca_crud:crud_doctorate_new' %}" class="btn btn-success btn-xs">
+    <svg class="icon icon-xs icon-white">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+    </svg> {% trans "Add new" %}
+</a>
+<h3>{% trans "Doctorates" %}</h3>
+<div class="mt-5">
+    {% include "blocks/crud_doctorates.html" with uid="id_1" %}
+</div>
+{% endblock centered_container %}

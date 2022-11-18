@@ -2111,7 +2111,12 @@ class ServiceDottorato:
             "num_min_studenti",
             "num_max_studenti",
             "verifica_finale",
-            "modalita_verifica"
+            "modalita_verifica",
+            "avvio",
+            "fine",
+            "orario_aule",
+            "note",
+            "visualizza_orario"
         )
         for q in query:
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
@@ -2171,7 +2176,12 @@ class ServiceDottorato:
             "num_min_studenti",
             "num_max_studenti",
             "verifica_finale",
-            "modalita_verifica"
+            "modalita_verifica",
+            "avvio",
+            "fine",
+            "orario_aule",
+            "note",
+            "visualizza_orario"
         )
         query_filter_teachers = ~Q(cognome_nome_origine='....DOCENTE NON IN ELENCO')
         for q in query:

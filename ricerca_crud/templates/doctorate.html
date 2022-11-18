@@ -7,7 +7,7 @@
 {% block centered_container %}
 <a href="" class="btn btn-danger btn-xs"
    data-toggle="modal"
-   data-target="#delete_project">
+   data-target="#delete_doctorate">
     <svg class="icon icon-xs icon-white">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
     </svg> {% trans "Remove" %}
@@ -15,7 +15,7 @@
 <div class="modal fade"
      tabindex="-1"
      role="dialog"
-     id="delete_project">
+     id="delete_doctorate">
     <div class="modal-dialog modal-dialog-centered"
          role="document">
         <div class="modal-content">
@@ -34,11 +34,11 @@
             </div>
             <div class="modal-body">
                 <p>
-                    {% trans "Do you want to delete choosen project?" %}
+                    {% trans "Do you want to delete choosen doctorate activity?" %}
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_project_delete' code=project.pk %}">
+                <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_doctorate_delete' code=doctorate.pk %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -46,114 +46,43 @@
     </div>
 </div>
 <hr />
-<h3>{{ project.titolo }}</h3>
+<h3>{{ doctorate.nome_af }}</h3>
 <div class="mt-5">
-    <form method="post" enctype="multipart/form-data">
+    <form method="post">
         {% include "form_template.html" with form=form %}
         {% include "includes/form_submit.html" %}
     </form>
     <hr class="my-5">
-
-    <!-- deputy coordinator -->
+    <h4>{% trans "Main Teachers" %}</h4>
+    {% if teachers %}
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>{% trans "Referent Structure" %}</th>
-                <th></th>
-                {% if project.uo %}
-                <th></th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    {{ project.uo|default:"-" }}
-                </td>
-                <td>
-                    <a href="{% url 'ricerca_crud:crud_project_structure_data_edit' code=project.pk data_id=structure_data.pk %}" class="d-flex btn btn-primary btn-xs">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                        </svg> {% trans "Edit" %}
-                    </a>
-                </td>
-{#                {% if company.matricola_referente_unical %}#}
-{#                <td>#}
-{#                    <a href="" class="btn btn-danger btn-xs d-flex"#}
-{#                       data-toggle="modal"#}
-{#                       data-target="#delete_unical_referent">#}
-{#                        <svg class="icon icon-xs icon-white">#}
-{#                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>#}
-{#                        </svg> {% trans "Remove" %}#}
-{#                    </a>#}
-{#                    <div class="modal fade"#}
-{#                         tabindex="-1"#}
-{#                         role="dialog"#}
-{#                         id="delete_unical_referent">#}
-{#                        <div class="modal-dialog modal-dialog-centered"#}
-{#                             role="document">#}
-{#                            <div class="modal-content">#}
-{#                                <div class="modal-header">#}
-{#                                    <h5 class="modal-title">#}
-{#                                        {% trans "Confirm" %}#}
-{#                                    </h5>#}
-{#                                    <button class="close"#}
-{#                                            type="button"#}
-{#                                            data-dismiss="modal"#}
-{#                                            aria-label="Close">#}
-{#                                       <svg class="icon">#}
-{#                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>#}
-{#                                       </svg>#}
-{#                                    </button>#}
-{#                                </div>#}
-{#                                <div class="modal-body">#}
-{#                                    <p>#}
-{#                                        {% trans "Do you want to delete choosen teacher?" %}#}
-{#                                    </p>#}
-{#                                </div>#}
-{#                                <div class="modal-footer">#}
-{#                                    <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_company_unical_referent_data_delete' code=company.pk data_id=referent_data.pk %}">#}
-{#                                        {% trans 'Yes, proceed' %}#}
-{#                                    </a>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </td>#}
-{#                {% endif %}#}
-            </tr>
-        </tbody>
-    </table>
-    <h4>{% trans "Scientific Directors" %}</h4>
-    {% if scientific_director %}
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>{% trans "Scientific Directors" %}</th>
+                <th>{% trans "Main Teachers" %}</th>
                 <th></th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            {% for director in scientific_director %}
+            {% for teacher in teachers %}
             <tr>
                 <td>
-                        {{ director.nome_origine|default:"-" }}
-                        {% if director.matricola %}
-                            ({{ director.matricola.matricola|default:"-" }})
+                        {{ teacher.cognome_nome_origine|default:"-" }}
+                        {% if teacher.matricola %}
+                            ({{ teacher.matricola.matricola|default:"-" }})
                         {% endif %}
                     </td>
                 <td>
-                    <a href="{% url 'ricerca_crud:crud_project_director_data' code=project.pk  director_id=director.pk %}" class="d-flex btn btn-primary btn-xs">
+                    <a href="{% url 'ricerca_crud:crud_doctorate_main_teacher_data' code=doctorate.pk  teacher_id=teacher.pk %}" class="d-flex btn btn-primary btn-xs">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                         </svg> {% trans "Edit" %}
                     </a>
                 </td>
                 <td>
-                    <a href="" class="btn btn-danger btn-xs d-flex"
+                    <a class="btn btn-danger btn-xs d-flex"
                        data-toggle="modal"
-                       data-target="#delete_director_{{ director.pk }}">
+                       data-target="#delete_teacher_{{ teacher.pk }}">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                         </svg> {% trans "Remove" %}
@@ -163,7 +92,7 @@
              <div class="modal fade"
                  tabindex="-1"
                  role="dialog"
-                 id="delete_director_{{ director.pk }}">
+                 id="delete_teacher_{{ teacher.pk }}">
                 <div class="modal-dialog modal-dialog-centered"
                      role="document">
                     <div class="modal-content">
@@ -182,11 +111,11 @@
                         </div>
                         <div class="modal-body">
                             <p>
-                                {% trans "Do you want to delete choosen director?" %}
+                                {% trans "Do you want to delete choosen teacher?" %}
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_project_director_delete' code=project.pk director_id=director.pk %}">
+                            <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_doctorate_main_teacher_delete' code=doctorate.pk teacher_id=teacher.pk %}">
                                 {% trans 'Yes, proceed' %}
                             </a>
                         </div>
@@ -198,41 +127,41 @@
     </table>
 
     {% endif %}
-    <a href="{% url 'ricerca_crud:crud_project_director_new' code=project.pk %}" class="btn btn-block btn-primary">
+    <a href="{% url 'ricerca_crud:crud_doctorate_main_teacher_new' code=doctorate.pk %}" class="btn btn-block btn-primary">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
         </svg> {% trans "Add new" %}
     </a>
 
 
-    <h4>{% trans "Researchers" %}</h4>
-        {% if researchers %}
+    <h4>{% trans "Other Teachers" %}</h4>
+        {% if other_teachers %}
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th>{% trans "Researchers" %}</th>
+                    <th>{% trans "Other Teachers" %}</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                {% for researcher in researchers %}
+                {% for teacher in other_teachers %}
                 <tr>
                     <td>
-                            {{ researcher.nome_origine|default:"-" }}
-                            {% if researcher.matricola %}
-                                ({{ researcher.matricola.matricola|default:"-" }})
+                            {{ teacher.cognome_nome_origine|default:"-" }}
+                            {% if teacher.matricola %}
+                                ({{ teacher.matricola.matricola|default:"-" }})
                             {% endif %}
                         </td>
                     <td>
-                        <a href="{% url 'ricerca_crud:crud_project_researcher_data' code=project.pk  researcher_id=researcher.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <a class="d-flex btn btn-primary btn-xs">
                             <svg class="icon icon-xs icon-white">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                             </svg> {% trans "Edit" %}
                         </a>
                     </td>
                     <td>
-                        <a href="" class="btn btn-danger btn-xs d-flex"
+                        <a class="btn btn-danger btn-xs d-flex"
                            data-toggle="modal"
                            data-target="#delete_researcher_{{ researcher.pk }}">
                             <svg class="icon icon-xs icon-white">
@@ -267,7 +196,7 @@
                                 </p>
                             </div>
                             <div class="modal-footer">
-                                <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_project_researcher_delete' code=project.pk researcher_id=researcher.pk %}">
+                                <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_doctorate_other_teacher_delete' code=doctorate.pk teacher_id=teacher.pk %}">
                                     {% trans 'Yes, proceed' %}
                                 </a>
                             </div>
@@ -279,7 +208,7 @@
         </table>
 
         {% endif %}
-        <a href="{% url 'ricerca_crud:crud_project_researcher_new' code=project.pk %}" class="btn btn-block btn-primary">
+        <a href="{% url 'ricerca_crud:crud_doctorate_other_teacher_new' code=doctorate.pk %}" class="btn btn-block btn-primary">
             <svg class="icon icon-xs icon-white">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
             </svg> {% trans "Add new" %}

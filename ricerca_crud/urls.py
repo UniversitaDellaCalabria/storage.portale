@@ -105,6 +105,22 @@ urlpatterns += path('teachers/<str:code>/teaching-material-data/<str:data_id>/',
 urlpatterns += path('teachers/<str:code>/teaching-material-data/<str:data_id>/delete/', teacher_materials_data_delete, name='crud_teacher_materials_data_delete'),
 
 
+# doctorates
+urlpatterns += path('doctorates/', doctorates, name='crud_doctorates'),
+urlpatterns += path('doctorates/new/', doctorate_new, name='crud_doctorate_new'),
+urlpatterns += path('doctorates/<str:code>/', doctorate, name='crud_doctorate_edit'),
+urlpatterns += path('doctorates/<str:code>/main-teachers-data/<str:teacher_id>/', doctorate_main_teacher_data, name='crud_doctorate_main_teacher_data'),
+urlpatterns += path('doctorates/<str:code>/main-teachers-data/<str:teacher_id>/teacher/', doctorate_main_teacher_data_edit, name='crud_doctorate_main_teacher_data_edit'),
+urlpatterns += path('doctorates/<str:code>/main-teacher/new/', doctorate_main_teacher_new, name='crud_doctorate_main_teacher_new'),
+urlpatterns += path('doctorates/<str:code>/main-teacher/<str:teacher_id>/delete/', doctorate_main_teacher_delete, name='crud_doctorate_main_teacher_delete'),
+urlpatterns += path('doctorates/<str:code>/other-teachers-data/<str:teacher_id>/', doctorate_other_teacher_data, name='crud_doctorate_other_teacher_data'),
+urlpatterns += path('doctorates/<str:code>/other-teachers-data/<str:teacher_id>/teacher/', doctorate_other_teacher_data_edit, name='crud_doctorate_other_teacher_data_edit'),
+urlpatterns += path('doctorates/<str:code>/other-teacher/new/', doctorate_other_teacher_new, name='crud_doctorate_other_teacher_new'),
+urlpatterns += path('doctorates/<str:code>/other-teacher/<str:teacher_id>/delete/', doctorate_other_teacher_delete, name='crud_doctorate_other_teacher_delete'),
+urlpatterns += path('doctorates/<str:code>/delete/', doctorate_delete, name='crud_doctorate_delete'),
+
+
+
 
 
 
