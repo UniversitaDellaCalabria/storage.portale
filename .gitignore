@@ -21,3 +21,4 @@ tests/sp/metadata/*
 *.sqlite3
 ricerca/settingslocal.py
 .idea/*
+.media/*

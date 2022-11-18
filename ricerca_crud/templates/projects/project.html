@@ -48,7 +48,7 @@
 <hr />
 <h3>{{ project.titolo }}</h3>
 <div class="mt-5">
-    <form method="post" enctype="multipart/form-data">
+    <form method="post">
         {% include "form_template.html" with form=form %}
         {% include "includes/form_submit.html" %}
     </form>
@@ -198,7 +198,7 @@
     </table>
 
     {% endif %}
-    <a href="{% url 'ricerca_crud:crud_project_director_new' code=project.pk %}" class="btn btn-block btn-primary">
+    <a href="{% url 'ricerca_crud:crud_project_director_new' code=project.pk %}" class="btn btn-block btn-success">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
         </svg> {% trans "Add new" %}
@@ -279,7 +279,7 @@
         </table>
 
         {% endif %}
-        <a href="{% url 'ricerca_crud:crud_project_researcher_new' code=project.pk %}" class="btn btn-block btn-primary">
+        <a href="{% url 'ricerca_crud:crud_project_researcher_new' code=project.pk %}" class="btn btn-block btn-success">
             <svg class="icon icon-xs icon-white">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
             </svg> {% trans "Add new" %}

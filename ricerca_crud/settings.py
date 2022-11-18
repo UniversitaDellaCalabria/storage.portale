@@ -12,7 +12,6 @@ OFFICE_TEACHERS = 'teachers'
 OFFICE_DOCTORATES = 'doctorates'
 
 
-
 ALLOWED_CDS_LANGUAGES = ['ita', 'eng']
 ALLOWED_CDS_JOINT_DEGREES = [
     {'COD': 'N', 'name': _("No")},
@@ -22,5 +21,3 @@ ALLOWED_CDS_JOINT_DEGREES = [
 CURRENT_YEAR = date.today().year
 
 CMS_STORAGE_ROOT_API = 'https://pp.storage.unical.it'
-
-
