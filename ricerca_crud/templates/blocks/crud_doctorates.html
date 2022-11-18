@@ -10,18 +10,6 @@
 {% include "blocks/includes/vue_check.html" %}
 {% endblock storage_block_top %}
 
-{#{% get_allowed_website request.get_host as host %}#}
-{#{% settings_value "CMS_PATH_PREFIX" as cms_path_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_BASE_PATH" as base_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_PHD_ACTIVITIES_VIEW_PREFIX_PATH" as phd_activities_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_TEACHER_VIEW_PREFIX_PATH" as teachers_prefix %}#}
-{#{% storage_settings_value "CDS_EXCLUDE_YEAR" as cds_exclude_year %}#}
-
-
-<div id="{{ id }}">
-
-    <div v-if="(initial_items && initial_items.length) || parameters">
-
         <div class="row">
             <div class="col-12">
                 <div class="card-wrapper card-space">
@@ -174,8 +162,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
         <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
 
