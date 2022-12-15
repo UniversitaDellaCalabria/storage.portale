@@ -600,9 +600,7 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
             'nome_cds_eng': 'Math',
             'dip_id': 1,
         })
-        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
-            'af_id': 1,
-        })
+
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Franco',
@@ -610,6 +608,11 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
             'cd_ruolo': 'PO',
             'id_ab': 1,
             'matricola': '111111',
+        })
+
+        DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
+            'af_id': 1,
+            'personale_id': 1
         })
 
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
@@ -660,6 +663,14 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
         assert len(res.json()['results']) == 0
 
         data = {'teacher': 'Garofalo'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'cds_cod': 'aaa'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'teacher_code': encrypt('111111')}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 

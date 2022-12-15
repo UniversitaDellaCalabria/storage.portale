@@ -631,7 +631,7 @@ class ServiceDidatticaAttivitaFormativa:
             )
 
     @staticmethod
-    def getAllActivities(language, department, cds, academic_year, period, ssd, teacher, teaching, course_year):
+    def getAllActivities(language, department, cds, academic_year, period, ssd, teacher, teaching, course_year, cds_cod, teacher_code):
 
         query_department = Q()
         query_academic_year = Q()
@@ -641,6 +641,8 @@ class ServiceDidatticaAttivitaFormativa:
         query_period = Q()
         query_ssd = Q()
         query_course_year = Q()
+        query_cds_cod = Q()
+        query_teacher_code = Q()
 
 
         if academic_year:
@@ -674,8 +676,17 @@ class ServiceDidatticaAttivitaFormativa:
                 query_ssd &= q_ssd
         if period:
             query_period = Q(ciclo_des=period)
+
+        if cds_cod:
+            query_cds_cod = Q(cds_id__cds_cod__exact=cds_cod)
+
+        if teacher_code:
+            query_teacher_code = Q(personale_id__matricola__exact=teacher_code)
+
         
-        coperture = DidatticaCopertura.objects.values(
+        coperture = DidatticaCopertura.objects.filter(
+            query_teacher_code
+        ).values(
             'af_id'
         )
 
@@ -690,6 +701,7 @@ class ServiceDidatticaAttivitaFormativa:
                                                           query_course_year,
                                                           query_coperture,
                                                           query_teacher,
+                                                          query_cds_cod
                                                           ).values(
             'af_id',
             'af_gen_cod',
