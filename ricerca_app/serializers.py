@@ -2386,7 +2386,7 @@ class PhdSsdListSerializer(CreateUpdateAbstract):
 
 
 
-class PhdActivityTypeSerializer(CreateUpdateAbstract):
+class PhdActivityTypeSerializer(CreateUpdateAbstract): # pragma: no cover
 
     def to_representation(self, instance):
         query = instance

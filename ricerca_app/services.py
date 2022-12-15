@@ -2251,7 +2251,7 @@ class ServiceDottorato:
         return query
 
     @staticmethod
-    def getPhdActivityTypeList():
+    def getPhdActivityTypeList(): # pragma: no cover
         query = DidatticaDottoratoAttivitaFormativa.objects.values(
             'tipo_af'
         ).distinct()
