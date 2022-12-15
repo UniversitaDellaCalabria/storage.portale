@@ -2240,7 +2240,7 @@ class ServiceDottorato:
         return query
 
     @staticmethod
-    def getPhdSsdList():
+    def getPhdSsdList(): # pragma: no cover
         query = DidatticaDottoratoAttivitaFormativa.objects.values(
             'ssd'
         ).distinct()
@@ -2262,7 +2262,7 @@ class ServiceDottorato:
         return query
 
     @staticmethod
-    def getRefStructures():
+    def getRefStructures(): # pragma:no cover
         query = DidatticaDottoratoAttivitaFormativa.objects.values(
             'struttura_proponente_origine'
         ).distinct()
