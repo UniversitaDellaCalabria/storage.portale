@@ -1215,3 +1215,13 @@ class ApiPhdSsdList(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceDottorato.getPhdSsdList()
+
+
+class ApiPhdActivityTypeList(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle tipologie di dottorato'
+    serializer_class = PhdActivityTypeSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceDottorato.getPhdActivityTypeList()

@@ -1,15 +1,17 @@
 import logging
 
 from django.contrib import messages
-from django.contrib.admin.models import CHANGE, LogEntry
+from django.contrib.admin.models import CHANGE, LogEntry, ADDITION
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
 
-
+import requests
+from ricerca_app import *
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
@@ -85,7 +87,6 @@ def doctorate_new(request, my_offices=None):
                 tipo_af=form.cleaned_data['tipo_af'],
                 rif_dottorato=form.cleaned_data['rif_dottorato'],
                 id_struttura_proponente=form.cleaned_data['id_struttura_proponente'],
-                struttura_proponente_origine=form.cleaned_data['struttura_proponente_origine'],
                 contenuti_af=form.cleaned_data['contenuti_af'],
                 prerequisiti=form.cleaned_data['prerequisiti'],
                 num_min_studenti=form.cleaned_data['num_min_studenti'],
@@ -145,22 +146,24 @@ def doctorate(request, code,
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_doctorates'): _('Doctorates'),
                    '#': doctorate.nome_af}
-    form = DidatticaDottoratoAttivitaFormativaForm(instance=doctorate)
 
+    form = DidatticaDottoratoAttivitaFormativaForm(instance=doctorate)
 
     if request.POST:
         form = DidatticaDottoratoAttivitaFormativaForm(instance=doctorate, data=request.POST)
+        # updated_request = request.POST.copy()
+        # updated_request.update({'name': ssd_list})
+
 
         if form.is_valid():
             doctorate.user_mod = request.user
             doctorate.nome_af = form.cleaned_data['nome_af']
             doctorate.ssd = form.cleaned_data['ssd']
+            doctorate.tipo_af = form.cleaned_data['tipo_af']
             doctorate.numero_ore = form.cleaned_data['numero_ore']
             doctorate.cfu = form.cleaned_data['cfu']
-            doctorate.tipo_af = form.cleaned_data['tipo_af']
             doctorate.rif_dottorato = form.cleaned_data['rif_dottorato']
             doctorate.id_struttura_proponente = form.cleaned_data['id_struttura_proponente']
-            doctorate.struttura_proponente_origine = form.cleaned_data['struttura_proponente_origine']
             doctorate.contenuti_af = form.cleaned_data['contenuti_af']
             doctorate.prerequisiti = form.cleaned_data['prerequisiti']
             doctorate.num_min_studenti = form.cleaned_data['num_min_studenti']

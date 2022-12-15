@@ -679,7 +679,6 @@ class ServiceDidatticaAttivitaFormativa:
             'af_id'
         )
 
-
         query_coperture = Q(af_id__in=coperture) | Q(af_master_id__in=coperture)
 
         query = DidatticaAttivitaFormativa.objects.filter(query_department,
@@ -791,7 +790,11 @@ class ServiceDidatticaAttivitaFormativa:
             'fat_part_stu_des'
         )
 
-
+        # lingua = DidatticaTestiAf.objects.filter(tipo_testo_af_cod='LINGUA_INS',
+        #                                         af_id=af_id).values(
+        #     'testo_af_ita',
+        #     'testo_af_eng'
+        # )
         id_master = None
         mutuata_da = None
         if not query: raise Http404
@@ -902,6 +905,7 @@ class ServiceDidatticaAttivitaFormativa:
             'coper_id'
         )
         filtered_hours = list(filtered_hours)
+
 
         for hour in filtered_hours:
             for hour2 in filtered_hours:
@@ -2231,6 +2235,17 @@ class ServiceDottorato:
         query = list(query)
         for q in query:
             if q['ssd'] == None:
+                query.remove(q)
+        return query
+
+    @staticmethod
+    def getPhdActivityTypeList():
+        query = DidatticaDottoratoAttivitaFormativa.objects.values(
+            'tipo_af'
+        ).distinct()
+        query = list(query)
+        for q in query:
+            if q['tipo_af'] == None:
                 query.remove(q)
         return query
 

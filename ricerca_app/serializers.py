@@ -2383,3 +2383,20 @@ class PhdSsdListSerializer(CreateUpdateAbstract):
         return {
             'SSD': query['ssd'],
         }
+
+
+
+class PhdActivityTypeSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+            'ActivityType': query['tipo_af'],
+        }

@@ -1,8 +1,17 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
+from django.conf import settings
+
+
+from ricerca_crud.settings import CMS_STORAGE_ROOT_API
+
+import json
+import requests
 
 from bootstrap_italia_template.widgets import BootstrapItaliaDateWidget
 
+import ricerca_app.api_views
 from ricerca_app.models import (BrevettoDatiBase, BrevettoInventori,
                                 DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio,
                                 DocenteMaterialeDidattico, DocentePtaAltriDati,
@@ -16,6 +25,7 @@ from ricerca_app.models import (BrevettoDatiBase, BrevettoInventori,
                                 DidatticaDottoratoAttivitaFormativaAltriDocenti,
                                 DidatticaDottoratoAttivitaFormativaDocente)
 
+CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 # common methods
 def _clean_teacher_dates(obj, cleaned_data):
@@ -459,18 +469,81 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
     #                                      widget=forms.HiddenInput(),
     #                                      required=True)
 
+    def __init__(self, *args, **kwargs):
+        url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:phd-ssd-list")}?page_size=1000'
+        api = requests.get(url)
+        ssd = api.json()['results']
+        lista_ssd = []
+        lista_tipo_af = [('Dipartimentale','Dipartimentale'),('Attività di Ateneo', 'Attività di Ateneo')]
+        lista_rif_dott = []
+        query = DidatticaDottoratoAttivitaFormativa.objects.values('rif_dottorato').distinct()
+
+        for q in query:
+            lista_rif_dott.append((q['rif_dottorato'], q['rif_dottorato']))
+        for s in ssd:
+            lista_ssd.append((s['SSD'], s['SSD']))
+        super().__init__(*args, **kwargs)
+
+        self.fields['ssd'] = forms.ChoiceField(choices=lista_ssd)
+        self.fields['tipo_af'] = forms.ChoiceField(choices=lista_tipo_af)
+        self.fields['rif_dottorato'] = forms.ChoiceField(choices=lista_rif_dott)
+
+
     class Meta:
         model = DidatticaDottoratoAttivitaFormativa
-        fields = ['nome_af', 'ssd', 'numero_ore', 'cfu',\
-                   'tipo_af', 'rif_dottorato', 'id_struttura_proponente', 'struttura_proponente_origine', 'contenuti_af', 'prerequisiti', 'num_min_studenti', \
-                  'num_max_studenti', 'verifica_finale', 'modalita_verifica', 'avvio', 'fine', 'orario_aule', 'note', 'visualizza_orario'
-                  ]
+        fields = '__all__'
+        exclude = ['dt_mod', 'user_mod_id', 'struttura_proponente_origine']
+
+
+        labels = {
+            'nome_af': _('Nome Attività Formativa'),
+            'ssd': _('SSD'),
+            'cfu': _('CFU'),
+            'contenuti_af': _('Contenuti Alta Formazione'),
+            'rif_dottorato': _('Dottorato di Riferimento'),
+            'id_struttura_proponente': _('Struttura Centrale'),
+            'modalita_verifica': _('Modalità di Verifica'),
+            'avvio': _('Data Prevista di Inizio'),
+            'fine': _('Data Prevista di Fine'),
+            'orario_aule': _('Orario e Aule'),
+
+        }
+
+
         widgets = {'nome_af': forms.Textarea(attrs={'rows': 3}), 'rif_dottorato': forms.Textarea(attrs={'rows': 1}), \
                    'avvio': forms.Textarea(attrs={'rows': 2}), 'fine': forms.Textarea(attrs={'rows': 2}), \
                    'contenuti_af': forms.Textarea(attrs={'rows': 4}), 'prerequisiti': forms.Textarea(attrs={'rows': 2}), \
                    'modalita_verifica': forms.Textarea(attrs={'rows': 3}), 'orario_aule': forms.Textarea(attrs={'rows': 4})}
 
+
         help_texts = {
+            "nome_af": _(
+                "*Campo necessario"),
+
+            "ssd": _(
+                "*Campo necessario"),
+
+            "numero_ore": _(
+                "*Campo necessario"),
+
+            "cfu": _(
+                "*Campo necessario"),
+
+            "tipo_af": _(
+                "*Campo necessario"),
+
+            "rif_dottorato": _(
+                "*Campo necessario"),
+
+            "id_struttura_proponente": _(
+                "*Campo necessario"),
+
+            "contenuti_af": _(
+                "*Campo necessario"),
+
+            "modalita_verifica": _(
+                "*Campo necessario"),
+
             "verifica_finale": _(
                 "Set NO if is not expected. YES otherwise."),
 

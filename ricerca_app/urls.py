@@ -431,3 +431,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/phd-ssd-list/'.format(base_url),
                         api_views.ApiPhdSsdList.as_view(),
                         name='phd-ssd-list'),
+
+    urlpatterns += path('{}/phd-activity-type-list/'.format(base_url),
+                        api_views.ApiPhdActivityTypeList.as_view(),
+                        name='phd-activity-type-list'),

@@ -844,20 +844,20 @@ class DidatticaDipartimentoUrl(models.Model):
 
 class DidatticaDottoratoAttivitaFormativa(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    nome_af = models.CharField(db_column='NOME_AF', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    ssd = models.CharField(db_column='SSD', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    numero_ore = models.IntegerField(db_column='NUMERO_ORE', blank=True, null=True)  # Field name made lowercase.
-    cfu = models.IntegerField(db_column='CFU', blank=True, null=True)  # Field name made lowercase.
-    tipo_af = models.CharField(db_column='TIPO_AF', max_length=500, blank=True, null=True)  # Field name made lowercase.
-    rif_dottorato = models.CharField(db_column='RIF_DOTTORATO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    id_struttura_proponente = models.ForeignKey('UnitaOrganizzativa', models.DO_NOTHING, db_column='ID_STRUTTURA_PROPONENTE', blank=True, null=True)  # Field name made lowercase.
+    nome_af = models.CharField(db_column='NOME_AF', max_length=1000, blank=False, null=True)  # Field name made lowercase.
+    ssd = models.CharField(db_column='SSD', max_length=1000, blank=False, null=True)  # Field name made lowercase.
+    numero_ore = models.IntegerField(db_column='NUMERO_ORE', blank=False, null=True)  # Field name made lowercase.
+    cfu = models.IntegerField(db_column='CFU', blank=False, null=True)  # Field name made lowercase.
+    tipo_af = models.CharField(db_column='TIPO_AF', max_length=500, blank=False, null=True)  # Field name made lowercase.
+    rif_dottorato = models.CharField(db_column='RIF_DOTTORATO', max_length=1000, blank=False, null=True)  # Field name made lowercase.
+    id_struttura_proponente = models.ForeignKey('UnitaOrganizzativa', models.DO_NOTHING, db_column='ID_STRUTTURA_PROPONENTE', blank=False, null=True)  # Field name made lowercase.
     struttura_proponente_origine = models.TextField(db_column='STRUTTURA_PROPONENTE_ORIGINE', blank=True, null=True)  # Field name made lowercase.
-    contenuti_af = models.TextField(db_column='CONTENUTI_AF', blank=True, null=True)  # Field name made lowercase.
+    contenuti_af = models.TextField(db_column='CONTENUTI_AF', blank=False, null=True)  # Field name made lowercase.
     prerequisiti = models.TextField(db_column='PREREQUISITI', blank=True, null=True)  # Field name made lowercase.
     num_min_studenti = models.IntegerField(db_column='NUM_MIN_STUDENTI', blank=True, null=True)  # Field name made lowercase.
     num_max_studenti = models.IntegerField(db_column='NUM_MAX_STUDENTI', blank=True, null=True)  # Field name made lowercase.
     verifica_finale = models.CharField(db_column='VERIFICA_FINALE', max_length=2, blank=True, null=True)  # Field name made lowercase.
-    modalita_verifica = models.CharField(db_column='MODALITA_VERIFICA', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    modalita_verifica = models.CharField(db_column='MODALITA_VERIFICA', max_length=1000, blank=False, null=True)  # Field name made lowercase.
     avvio = models.TextField(db_column='AVVIO', blank=True, null=True)  # Field name made lowercase.
     fine = models.TextField(db_column='FINE', blank=True, null=True)  # Field name made lowercase.
     orario_aule = models.TextField(db_column='ORARIO_AULE', blank=True, null=True)  # Field name made lowercase.
