@@ -511,7 +511,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
 
 
         widgets = {'nome_af': forms.Textarea(attrs={'rows': 3}), 'rif_dottorato': forms.Textarea(attrs={'rows': 1}), \
-                   'avvio': forms.Textarea(attrs={'rows': 2}), 'fine': forms.Textarea(attrs={'rows': 2}), \
+                   'avvio': BootstrapItaliaDateWidget, 'fine': BootstrapItaliaDateWidget, \
                    'contenuti_af': forms.Textarea(attrs={'rows': 4}), 'prerequisiti': forms.Textarea(attrs={'rows': 2}), \
                    'modalita_verifica': forms.Textarea(attrs={'rows': 3}), 'orario_aule': forms.Textarea(attrs={'rows': 4})}
 

@@ -740,6 +740,7 @@ class ApiStudyActivityDetailUnitTest(TestCase):
             'testo_af_eng': 'Variables',
             'af': course,
         })
+
         # p1 = PersonaleUnitTest.create_personale(**{
         #     'id': 1,
         #     'nome': 'Franco',

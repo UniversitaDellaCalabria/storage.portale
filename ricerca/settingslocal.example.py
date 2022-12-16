@@ -682,6 +682,8 @@ LABEL_MAPPING = {
         'ClassroomsTimetable': 'Classrooms Timetable',
         'ShowTimetable': 'Show Timetable',
         'Notes': 'Notes',
+        'StudyActivityErogationLanguageIta': 'Study Activity Erogation Language Ita',
+        'StudyActivityErogationLanguageEng': 'Study Activity Erogation Language Eng',
 
     },
     'it': {
@@ -1131,6 +1133,9 @@ LABEL_MAPPING = {
         'ClassroomsTimetable': 'Orario',
         'ShowTimetable': 'Mostra Orario',
         'Notes': 'Note',
+        'StudyActivityErogationLanguageIta': 'Lingua Erogazione Italiano',
+        'StudyActivityErogationLanguageEng': 'Lingua Erogazione Inglese'
+
 
 
     }

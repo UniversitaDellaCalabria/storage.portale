@@ -802,11 +802,13 @@ class ServiceDidatticaAttivitaFormativa:
             'fat_part_stu_des'
         )
 
-        # lingua = DidatticaTestiAf.objects.filter(tipo_testo_af_cod='LINGUA_INS',
-        #                                         af_id=af_id).values(
-        #     'testo_af_ita',
-        #     'testo_af_eng'
-        # )
+        lingue = DidatticaTestiAf.objects.filter(tipo_testo_af_cod='LINGUA_INS',
+                                                af_id=af_id).values(
+            'testo_af_ita',
+            'testo_af_eng'
+        )
+
+
         id_master = None
         mutuata_da = None
         if not query: raise Http404
@@ -935,6 +937,15 @@ class ServiceDidatticaAttivitaFormativa:
             'mod_did_cod',
             'mod_did_des'
         )
+
+
+        query[0]['LANGUAGEIT'] = None
+        query[0]['LANGUAGEEN'] = None
+
+        for l in lingue:
+            query[0]['LANGUAGEIT'] = l['testo_af_ita']
+            query[0]['LANGUAGEEN'] = l['testo_af_eng']
+
 
         query[0]['BorrowedFrom'] = mutuata_da
         query[0]['ActivitiesBorrowedFromThis'] = attivita_mutuate_da_questa

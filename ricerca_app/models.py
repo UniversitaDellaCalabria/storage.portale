@@ -856,10 +856,10 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
     prerequisiti = models.TextField(db_column='PREREQUISITI', blank=True, null=True)  # Field name made lowercase.
     num_min_studenti = models.IntegerField(db_column='NUM_MIN_STUDENTI', blank=True, null=True)  # Field name made lowercase.
     num_max_studenti = models.IntegerField(db_column='NUM_MAX_STUDENTI', blank=True, null=True)  # Field name made lowercase.
-    verifica_finale = models.CharField(db_column='VERIFICA_FINALE', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    verifica_finale = models.IntegerField(db_column='VERIFICA_FINALE', blank=False, null=True)  # Field name made lowercase.
     modalita_verifica = models.CharField(db_column='MODALITA_VERIFICA', max_length=1000, blank=False, null=True)  # Field name made lowercase.
-    avvio = models.TextField(db_column='AVVIO', blank=True, null=True)  # Field name made lowercase.
-    fine = models.TextField(db_column='FINE', blank=True, null=True)  # Field name made lowercase.
+    avvio = models.DateTimeField(db_column='AVVIO', blank=False, null=True)  # Field name made lowercase.
+    fine = models.DateTimeField(db_column='FINE', blank=False, null=True)  # Field name made lowercase.
     orario_aule = models.TextField(db_column='ORARIO_AULE', blank=True, null=True)  # Field name made lowercase.
     note = models.TextField(db_column='NOTE', blank=True, null=True)  # Field name made lowercase.
     visualizza_orario = models.IntegerField(db_column='VISUALIZZA_ORARIO', blank=True,null=True)  # Field name made lowercase.

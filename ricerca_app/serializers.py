@@ -432,6 +432,8 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityPdsDes': query['pds_des'],
             'StudyActivityYear': query['anno_corso'],
             'StudyActivitySemester': query['ciclo_des'],
+            'StudyActivityErogationLanguageIta': query['LANGUAGEIT'],
+            'StudyActivityErogationLanguageEng': query['LANGUAGEEN'],
             'StudyActivityECTS': query['peso'],
             'StudyActivityHours': ore,
             'StudyActivityModalities': modalities,
