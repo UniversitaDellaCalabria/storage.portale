@@ -469,6 +469,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityBorrowedFrom': studyactivityborrowed,
             'StudyActivitiesBorrowedFromThis': studyactivitiesborrowedfromthis}
 
+
     @staticmethod
     def to_dict_hours(query):
         hours = []
