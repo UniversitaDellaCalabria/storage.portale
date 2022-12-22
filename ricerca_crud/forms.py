@@ -544,12 +544,6 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
             "modalita_verifica": _(
                 "*Campo necessario"),
 
-            "verifica_finale": _(
-                "Set NO if is not expected. YES otherwise."),
-
-            "visualizza_orario": _(
-                "Set 0 if is not expected. 1 otherwise."),
-
         }
 
     class Media:
