@@ -185,6 +185,14 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiTeacherDetail.as_view(),
                         name='teacherinfo'),
 
+    urlpatterns += path('{}/teachers/<str:teacherid>/materials/'.format(base_url),
+                        api_views.ApiTeacherMaterials.as_view(),
+                        name='teachermaterials'),
+
+    urlpatterns += path('{}/teachers/<str:teacherid>/news/'.format(base_url),
+                        api_views.ApiTeacherNews.as_view(),
+                        name='teachernews'),
+
     urlpatterns += path('{}/teachers/<str:teacherid>/publications/'.format(base_url),
                         api_views.ApiTeacherPublicationsList.as_view(),
                         name='publications'),

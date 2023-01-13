@@ -869,18 +869,6 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
         if query["Functions"] is not None:
             functions = TeacherInfoSerializer.to_dict_functions(
                 query["Functions"])
-        bacheca = None
-        if query["Board"] is not None:
-            bacheca = TeacherInfoSerializer.to_dict_board(
-                query["Board"])
-        teaching_materials = None
-        if query["Teaching Materials"] is not None:
-            teaching_materials = TeacherInfoSerializer.to_dict_teaching_materials(
-                query["Teaching Materials"])
-        teacher_other_data = None
-        if query["Teacher Other Data"] is not None:
-            teacher_other_data = TeacherInfoSerializer.to_dict_teacher_other_data(
-                query["Teacher Other Data"])
 
         return {
             'TeacherID': encrypt(query['matricola']),
@@ -894,6 +882,14 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherRoleDescription': query['ds_ruolo_locale'],
             'TeacherSSDCod': query['cd_ssd'],
             'TeacherSSDDescription': query['ds_ssd'],
+            'ORCID': query['ORCID'],
+            'PhotoPath': query['PHOTOPATH'],
+            'CVPathIta': query['PATHCVITA'],
+            'CVPathEn': query['PATHCVENG'],
+            'ShortBio': query['BREVEBIO'],
+            'ShortBioEn': query['BREVEBIOENG'],
+            'ReceptionHours': query['ORARIORICEVIMENTO'],
+            'ReceptionHoursEn': query['ORARIORICEVIMENTOEN'],
             'TeacherOffice': query['ds_aff_org'],
             'TeacherOfficeReference': query['Riferimento Ufficio'],
             'TeacherEmail': query['Posta Elettronica'],
@@ -909,9 +905,6 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'ProfileId': query['profilo'],
             'ProfileDescription': query['ds_profilo'],
             'ProfileShortDescription': query['ds_profilo_breve'],
-            'TeacherBoard': bacheca,
-            'TeachingMaterials': teaching_materials,
-            'TeacherOtherData': teacher_other_data,
         }
 
     @staticmethod
@@ -924,41 +917,6 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
                 'StructureName': q['cd_csa__denominazione'],
             })
         return functions
-
-    @staticmethod
-    def to_dict_teaching_materials(query): # pragma: no cover
-        teaching_materials = []
-        for q in query:
-            teaching_materials.append({
-                'Title': q['titolo'],
-                'TitleEn': q['titolo_en'],
-                'Text': q['testo'],
-                'TextEn': q['testo_en'],
-                'TextUrl': q['url_testo'],
-                'TextUrlEn': q['url_testo_en'],
-                'Order': q['ordine'],
-                'Active': q['attivo'],
-                'PublicationDate': q['dt_pubblicazione'],
-                'ValidityStartDate': q['dt_inizio_validita'],
-                'ValidityEndDate': q['dt_fine_validita'],
-            })
-        return teaching_materials
-
-    @staticmethod
-    def to_dict_teacher_other_data(query): # pragma: no cover
-        teacher_other_data = []
-        for q in query:
-            teacher_other_data.append({
-                'PhotoPath': q['path_foto'],
-                'CVPathIta': q['path_cv_ita'],
-                'CVPathEn': q['path_cv_en'],
-                'ShortBio': q['breve_bio'],
-                'ShortBioEn': q['breve_bio_en'],
-                'ReceptionHours': q['orario_ricevimento'],
-                'ReceptionHoursEn': q['orario_ricevimento_en'],
-                'ORCID': q['orcid'],
-            })
-        return teacher_other_data
 
     @staticmethod
     def to_dict_board(query): # pragma: no cover
@@ -981,6 +939,61 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             })
         return board
 
+
+class TeacherMaterialsSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+                'ID': query['id'],
+                'Title': query['titolo'],
+                'TitleEn': query['titolo_en'],
+                'Text': query['testo'],
+                'TextEn': query['testo_en'],
+                'TextUrl': query['url_testo'],
+                'TextUrlEn': query['url_testo_en'],
+                'Order': query['ordine'],
+                'Active': query['attivo'],
+                'PublicationDate': query['dt_pubblicazione'],
+                'ValidityStartDate': query['dt_inizio_validita'],
+                'ValidityEndDate': query['dt_fine_validita'],
+        }
+
+
+class TeacherNewsSerializer(CreateUpdateAbstract):
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+                'ID': query['id'],
+                'Title': query['titolo'],
+                'TitleEn': query['titolo_en'],
+                'TextType': query['tipo_testo'],
+                'TextTypeEn': query['tipo_testo_en'],
+                'Text': query['testo'],
+                'TextEn': query['testo_en'],
+                'TextUrl': query['url_testo'],
+                'TextUrlEn': query['url_testo_en'],
+                'Order': query['ordine'],
+                'Active': query['attivo'],
+                'PublicationDate': query['dt_pubblicazione'],
+                'ValidityStartDate': query['dt_inizio_validita'],
+                'ValidityEndDate': query['dt_fine_validita'],
+        }
 
 class PhdSerializer(CreateUpdateAbstract):
 

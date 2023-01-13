@@ -74,7 +74,10 @@ from .models import (
     DidatticaDottoratoAttivitaFormativaAltriDocenti,
     SpinoffStartupDipartimento,
     PersonaleAttivoTuttiRuoli,
-    PersonalePrioritaRuolo)
+    PersonalePrioritaRuolo,
+    DocentePtaBacheca,
+    DocentePtaAltriDati,
+    DocenteMaterialeDidattico)
 
 
 # class ContextUnitTest(TestCase):
@@ -941,3 +944,35 @@ class PersonalePrioritaRuoloUnitTest(TestCase): # pragma: no cover
         obj = PersonalePrioritaRuolo.objects.create(**data)
         return obj
 
+
+class DocentePtaBachecaUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_docentePtaBacheca(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DocentePtaBacheca.objects.create(**data)
+        return obj
+
+
+class DocentePtaMaterialeDidatticoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_docentePtaMaterialeDidattico(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DocenteMaterialeDidattico.objects.create(**data)
+        return obj
+
+
+class DocentePtaAltriDatiUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_docentePtaAltriDati(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DocentePtaAltriDati.objects.create(**data)
+        return obj

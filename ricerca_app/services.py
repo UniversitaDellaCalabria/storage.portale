@@ -1842,20 +1842,6 @@ class ServiceDocente:
             "cd_csa__uo",
             "cd_csa__denominazione")
 
-        materiale_didattico = DocenteMaterialeDidattico.objects.filter(matricola__exact=teacher).values(
-            'titolo',
-            'titolo_en',
-            'testo',
-            'testo_en',
-            'url_testo',
-            'url_testo_en',
-            'ordine',
-            'attivo',
-            'dt_pubblicazione',
-            'dt_inizio_validita',
-            'dt_fine_validita',
-        )
-
         docente_pta_altri_dati = DocentePtaAltriDati.objects.filter(matricola__exact=teacher).values(
             'path_foto',
             'path_cv_ita',
@@ -1864,24 +1850,7 @@ class ServiceDocente:
             'breve_bio_en',
             'orario_ricevimento',
             'orario_ricevimento_en',
-            'orcid',
-
-        )
-
-        bacheca = DocentePtaBacheca.objects.filter(matricola__exact=teacher).values(
-            'tipo_testo',
-            'tipo_testo_en',
-            'titolo',
-            'titolo_en',
-            'testo',
-            'testo_en',
-            'url_testo',
-            'url_testo_en',
-            'ordine',
-            'attivo',
-            'dt_pubblicazione',
-            'dt_inizio_validita',
-            'dt_fine_validita',
+            'orcid'
         )
 
         query = query.values(
@@ -1907,6 +1876,28 @@ class ServiceDocente:
             'ds_profilo_breve'
 
         )
+        query = list(query)
+        docente_pta_altri_dati = list(docente_pta_altri_dati)
+
+        query[0]['ORCID'] = None
+        query[0]['PHOTOPATH'] = None
+        query[0]['PATHCVITA'] = None
+        query[0]['PATHCVENG'] = None
+        query[0]['BREVEBIO'] = None
+        query[0]['BREVEBIOENG'] = None
+        query[0]['ORARIORICEVIMENTO'] = None
+        query[0]['ORARIORICEVIMENTOEN'] = None
+
+        query[0]['ORCID'] = docente_pta_altri_dati[0]['orcid']
+        query[0]['PHOTOPATH'] = docente_pta_altri_dati[0]['path_foto']
+        query[0]['PATHCVITA'] = docente_pta_altri_dati[0]['path_cv_ita']
+        query[0]['PATHCVENG'] = docente_pta_altri_dati[0]['path_cv_en']
+        query[0]['BREVEBIO'] = docente_pta_altri_dati[0]['breve_bio']
+        query[0]['BREVEBIOENG'] = docente_pta_altri_dati[0]['breve_bio_en']
+        query[0]['ORARIORICEVIMENTO'] = docente_pta_altri_dati[0]['orario_ricevimento']
+        query[0]['ORARIORICEVIMENTOEN'] = docente_pta_altri_dati[0]['orario_ricevimento_en']
+
+
         for q in query:
             for c in contacts_to_take:
                 q[c] = []
@@ -1934,22 +1925,52 @@ class ServiceDocente:
             else: # pragma: no cover
                 q["Functions"] = functions
 
-            if len(materiale_didattico) == 0:
-                q["Teaching Materials"] = None
-            else: # pragma: no cover
-                q["Teaching Materials"] = materiale_didattico
-
-            if len(docente_pta_altri_dati) == 0:
-                q["Teacher Other Data"] = None
-            else: # pragma: no cover
-                q["Teacher Other Data"] = docente_pta_altri_dati
-
-            if len(bacheca) == 0:
-                q["Board"] = None
-            else: # pragma: no cover
-                q["Board"] = bacheca
 
         return query
+
+    @staticmethod
+    def getDocenteMaterials(teacher):
+
+        query = DocenteMaterialeDidattico.objects.filter(matricola__exact=teacher).values(
+            'id',
+            'titolo',
+            'titolo_en',
+            'testo',
+            'testo_en',
+            'url_testo',
+            'url_testo_en',
+            'ordine',
+            'attivo',
+            'dt_pubblicazione',
+            'dt_inizio_validita',
+            'dt_fine_validita',
+        )
+
+        return query
+
+
+    @staticmethod
+    def getDocenteNews(teacher):
+
+        query = DocentePtaBacheca.objects.filter(matricola__exact=teacher).values(
+            'id',
+            'tipo_testo',
+            'tipo_testo_en',
+            'titolo',
+            'titolo_en',
+            'testo',
+            'testo_en',
+            'url_testo',
+            'url_testo_en',
+            'ordine',
+            'attivo',
+            'dt_pubblicazione',
+            'dt_inizio_validita',
+            'dt_fine_validita',
+        )
+
+        return query
+
 
     @staticmethod
     def getRoles():

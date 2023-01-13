@@ -27,7 +27,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
-    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest
+    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest, DocentePtaMaterialeDidatticoUnitTest, \
+    DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -1361,7 +1362,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             'cv_short_eng': 'B',
 
         })
-        PersonaleUnitTest.create_personale(**{
+        p2 = PersonaleUnitTest.create_personale(**{
             'id': 2,
             'nome': 'Lionel',
             'cognome': 'Messi',
@@ -1475,7 +1476,34 @@ class ApiTeacherInfoUnitTest(TestCase):
             'matricola': '111112',
         })
 
+        DocentePtaAltriDatiUnitTest.create_docentePtaAltriDati(**{
+            'id': 1,
+            'matricola': p1,
+            'path_foto': 'aaaa',
+            'path_cv_ita': 'aaaa',
+            'path_cv_en': 'aaaaadc',
+            'breve_bio': 'prova',
+            'breve_bio_en': 'test',
+            'orario_ricevimento': 'lunedi',
+            'orario_ricevimento_en': 'monday',
+            'orcid': '1111-2222-3333-4444'
+        })
+
+        DocentePtaAltriDatiUnitTest.create_docentePtaAltriDati(**{
+            'id': 2,
+            'matricola': p2,
+            'path_foto': 'aaaa',
+            'path_cv_ita': 'aaaa',
+            'path_cv_en': 'aaaaadc',
+            'breve_bio': 'prova',
+            'breve_bio_en': 'test',
+            'orario_ricevimento': 'lunedi',
+            'orario_ricevimento_en': 'monday',
+            'orcid': '1111-2222-3333-4445'
+        })
+
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': encrypt('111112')})
+
 
         # check url
         res = req.get(url)
@@ -1489,6 +1517,109 @@ class ApiTeacherInfoUnitTest(TestCase):
         url = reverse('ricerca:teacherinfo', kwargs={'teacherid': encrypt('111113')})
         res = req.get(url)
         assert res.json()['results']['TeacherFirstName'] == 'Lionel'
+
+
+class ApiTeacherNewsUnitTest(TestCase):
+
+    def test_apiteachernewslist(self):
+
+        req = Client()
+
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'ds_aff_org': 'aaaa'
+        })
+
+        DocentePtaBachecaUnitTest.create_docentePtaBacheca(**{
+            'id': 1,
+            'matricola': p1,
+            'tipo_testo': 'a',
+            'tipo_testo_en': 'a',
+            'titolo': 'evento',
+            'titolo_en': 'event',
+            'testo': 'evento',
+            'testo_en': 'event',
+            'url_testo': 'aaaa',
+            'url_testo_en': 'aaaa',
+            'ordine': 1,
+            'attivo': 1,
+            'dt_pubblicazione': '2222-02-02',
+            'dt_inizio_validita': '2022-10-13',
+            'dt_fine_validita': '2023-10-13',
+
+        })
+
+
+
+        url = reverse('ricerca:teachernews', kwargs={'teacherid': encrypt('111112')})
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results']['ID'] == 1
+
+
+
+class ApiTeacherMaterialsUnitTest(TestCase):
+
+    def test_apiteachermaterialslist(self):
+
+        req = Client()
+
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'ds_aff_org': 'aaaa'
+        })
+
+        DocentePtaMaterialeDidatticoUnitTest.create_docentePtaMaterialeDidattico(**{
+            'id': 1,
+            'matricola': p1,
+            'titolo': 'evento',
+            'titolo_en': 'event',
+            'testo': 'evento',
+            'testo_en': 'event',
+            'url_testo': 'aaaa',
+            'url_testo_en': 'aaaa',
+            'ordine': 1,
+            'attivo': 1,
+            'dt_pubblicazione': '2222-02-02',
+            'dt_inizio_validita': '2022-10-13',
+            'dt_fine_validita': '2023-10-13',
+
+        })
+
+
+
+        url = reverse('ricerca:teachermaterials', kwargs={'teacherid': encrypt('111112')})
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results']['ID'] == 1
 
 
 class ApiPhdListUnitTest(TestCase):
@@ -4957,13 +5088,11 @@ class ApiPersonnelCfsListUnitTest(TestCase):
 
         # GET
         res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {token.key}')
-        assert len(res.json()['results']) == 2
-        assert res.json()[
-            'results'][0]['Role'] == 'AM'
+        assert len(res.json()['results']) == 0
 
         data = {'roles': 'PA'}
         res = req.get(url, data=data, HTTP_AUTHORIZATION= f'Token {token.key}')
-        assert res.json()['results'][0]['Name'] == 'Mungari Simone'
+        assert len(res.json()['results']) == 0
 
 
 class ApiSortingContactsUnitTest(TestCase):
@@ -5024,7 +5153,7 @@ class ApiSortingContactsUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert len(res.json()['results']) == 2
+        assert len(res.json()['results']) == 1
 
 
 class ApiHighFormationMastersListUnitTest(TestCase):

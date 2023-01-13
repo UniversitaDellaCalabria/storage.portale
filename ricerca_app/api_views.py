@@ -575,6 +575,41 @@ class ApiTeacherDetail(ApiEndpointDetail):
         return ServiceDocente.getDocenteInfo(teacherid)
 
 
+class ApiTeacherMaterials(ApiEndpointDetail):
+    description = 'La funzione restituisce il materiale didattico di un docente'
+    serializer_class = TeacherMaterialsSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        teacherid = decrypt(self.kwargs['teacherid'])
+
+        return ServiceDocente.getDocenteMaterials(teacherid)
+
+
+class ApiTeacherMaterial(ApiEndpointDetail):
+    description = 'La funzione restituisce il materiale diddattico specifico di un docente'
+    serializer_class = TeacherMaterialsSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        teacherid = decrypt(self.kwargs['teacherid'])
+
+        return ServiceDocente.getDocenteMaterials(teacherid)
+
+
+class ApiTeacherNews(ApiEndpointDetail):
+    description = 'La funzione restituisce le news di un docente'
+    serializer_class = TeacherNewsSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        teacherid = decrypt(self.kwargs['teacherid'])
+
+        return ServiceDocente.getDocenteNews(teacherid)
+
 class TeachingCoveragesInfo(AutoSchema):
     def get_operation_id(self, path, method):
         return 'retrieveTeachingCoverageInfo'
