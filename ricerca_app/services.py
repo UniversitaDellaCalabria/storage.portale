@@ -1887,15 +1887,15 @@ class ServiceDocente:
         query[0]['BREVEBIOENG'] = None
         query[0]['ORARIORICEVIMENTO'] = None
         query[0]['ORARIORICEVIMENTOEN'] = None
-
-        query[0]['ORCID'] = docente_pta_altri_dati[0]['orcid']
-        query[0]['PHOTOPATH'] = docente_pta_altri_dati[0]['path_foto']
-        query[0]['PATHCVITA'] = docente_pta_altri_dati[0]['path_cv_ita']
-        query[0]['PATHCVENG'] = docente_pta_altri_dati[0]['path_cv_en']
-        query[0]['BREVEBIO'] = docente_pta_altri_dati[0]['breve_bio']
-        query[0]['BREVEBIOENG'] = docente_pta_altri_dati[0]['breve_bio_en']
-        query[0]['ORARIORICEVIMENTO'] = docente_pta_altri_dati[0]['orario_ricevimento']
-        query[0]['ORARIORICEVIMENTOEN'] = docente_pta_altri_dati[0]['orario_ricevimento_en']
+        if len(docente_pta_altri_dati) > 0:
+            query[0]['ORCID'] = docente_pta_altri_dati[0]['orcid']
+            query[0]['PHOTOPATH'] = docente_pta_altri_dati[0]['path_foto']
+            query[0]['PATHCVITA'] = docente_pta_altri_dati[0]['path_cv_ita']
+            query[0]['PATHCVENG'] = docente_pta_altri_dati[0]['path_cv_en']
+            query[0]['BREVEBIO'] = docente_pta_altri_dati[0]['breve_bio']
+            query[0]['BREVEBIOENG'] = docente_pta_altri_dati[0]['breve_bio_en']
+            query[0]['ORARIORICEVIMENTO'] = docente_pta_altri_dati[0]['orario_ricevimento']
+            query[0]['ORARIORICEVIMENTOEN'] = docente_pta_altri_dati[0]['orario_ricevimento_en']
 
 
         for q in query:
