@@ -3112,7 +3112,11 @@ class ServiceLaboratorio:
         for q in query:
             if q['dipartimento_riferimento'] is not None:
                 temp = q['dipartimento_riferimento'].rsplit(',',1)
-                q['dipartimento_riferimento'] = temp[0] + ', ' + temp[1]
+
+                if len(temp)>1:
+                    q['dipartimento_riferimento'] = temp[0] + ', ' + temp[1]
+                else:
+                    q['dipartimento_riferimento'] = temp[0]
 
         for q in query:
             personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
