@@ -1945,6 +1945,9 @@ class ServiceDocente:
             'dt_inizio_validita',
             'dt_fine_validita',
         )
+        for q in query:
+            q['DocenteRiferimentoId'] = None
+            q['DocenteRiferimentoId'] = teacher
 
         return query
 

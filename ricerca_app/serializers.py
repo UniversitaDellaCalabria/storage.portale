@@ -960,6 +960,7 @@ class TeacherMaterialsSerializer(CreateUpdateAbstract):
                 'TextUrlEn': query['url_testo_en'],
                 'Order': query['ordine'],
                 'Active': query['attivo'],
+                'TeacherID': encrypt(query['DocenteRiferimentoId']),
                 'PublicationDate': query['dt_pubblicazione'],
                 'ValidityStartDate': query['dt_inizio_validita'],
                 'ValidityEndDate': query['dt_fine_validita'],
