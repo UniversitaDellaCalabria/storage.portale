@@ -575,7 +575,7 @@ class ApiTeacherDetail(ApiEndpointDetail):
         return ServiceDocente.getDocenteInfo(teacherid)
 
 
-class ApiTeacherMaterials(ApiEndpointDetail):
+class ApiTeacherMaterials(ApiEndpointList):
     description = 'La funzione restituisce il materiale didattico di un docente'
     serializer_class = TeacherMaterialsSerializer
     filter_backends = []
@@ -599,7 +599,7 @@ class ApiTeacherMaterial(ApiEndpointDetail):
         return ServiceDocente.getDocenteMaterials(teacherid)
 
 
-class ApiTeacherNews(ApiEndpointDetail):
+class ApiTeacherNews(ApiEndpointList):
     description = 'La funzione restituisce le news di un docente'
     serializer_class = TeacherNewsSerializer
     filter_backends = []

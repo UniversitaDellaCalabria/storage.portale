@@ -1568,7 +1568,7 @@ class ApiTeacherNewsUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['results']['ID'] == 1
+        assert len(res.json()['results']) == 1
 
 
 
@@ -1619,7 +1619,7 @@ class ApiTeacherMaterialsUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['results']['ID'] == 1
+        assert len(res.json()['results']) == 1
 
 
 class ApiPhdListUnitTest(TestCase):
