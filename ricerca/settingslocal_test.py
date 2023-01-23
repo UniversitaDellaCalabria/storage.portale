@@ -540,8 +540,8 @@ LABEL_MAPPING = {
         'StudyActivityPdsCod': 'Study Activity Pds Cod',
         'StudyActivityPdsDes': 'Study Activity Pds Description',
         'StudyActivityFather': 'Study Activity Father',
-        'Title': 'Teaching Material Title',
-        'TitleEn': 'Teaching Material Title Eng',
+        'Title': 'Title',
+        'TitleEn': 'Title Eng',
         'Text': 'Teaching Material Text',
         'TextEn': 'Teaching Material Text Eng',
         'TextUrl': 'Teaching Material Text Url',
@@ -991,8 +991,8 @@ LABEL_MAPPING = {
         'StudyActivityPdsCod': 'Codice Pds Attività',
         'StudyActivityPdsDes': 'Descrizione Pds Attività',
         'StudyActivityFather': ' Attività Didattica Padre',
-        'Title': 'Titolo Materiale Didattico',
-        'TitleEn': 'Titolo Eng Materiale Didattico',
+        'Title': 'Titolo',
+        'TitleEn': 'Titolo Eng',
         'Text': 'Testo',
         'TextEn': 'Testo Eng',
         'TextUrl': 'Url Testo',
@@ -1023,9 +1023,10 @@ LABEL_MAPPING = {
         'StudyActivityErogationLanguageIta': 'Lingua Erogazione Italiano',
         'StudyActivityErogationLanguageEng': 'Lingua Erogazione Inglese'
 
-}
-}
 
+
+    }
+}
 # DjangoSAML2 conf
 if 'djangosaml2'  in INSTALLED_APPS:
     MIDDLEWARE.append('djangosaml2.middleware.SamlSessionMiddleware')
