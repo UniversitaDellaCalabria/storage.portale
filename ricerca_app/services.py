@@ -729,7 +729,8 @@ class ServiceDidatticaAttivitaFormativa:
             'matricola_resp_did__cognome',
             'matricola_resp_did__middle_name',
             'pds_des',
-            'af_master_id'
+            'af_master_id',
+            'af_radice_id',
         ).distinct().order_by('des')
 
         # for q in query:
