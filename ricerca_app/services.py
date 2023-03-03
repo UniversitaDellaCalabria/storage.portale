@@ -781,6 +781,23 @@ class ServiceDidatticaAttivitaFormativa:
                     q['anno_corso'] = None
 
 
+            if q['ciclo_des'] == None: # pragma: no cover
+                semestre = None
+                semestre = DidatticaCopertura.objects.filter(af_id__exact=q['af_id']).values(
+                    'ciclo_des'
+                )
+
+                semestre = list(semestre)
+
+                if len(semestre)>0:
+                    semestre = semestre[0]['ciclo_des']
+
+                if semestre:
+                    q['ciclo_des'] = semestre
+                else:
+                    q['ciclo_des'] = None
+
+
         # for q in query:
         #     padre = DidatticaAttivitaFormativa.objects.filter(af_id__exact=q['af_radice_id']).values(
         #     'des'
