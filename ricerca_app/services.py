@@ -748,13 +748,14 @@ class ServiceDidatticaAttivitaFormativa:
 
 
             if q['af_gen_cod'] == None: # pragma: no cover
+                codice = None
                 codice = DidatticaCopertura.objects.filter(af_id__exact=q['af_id']).values(
                     'af_gen_cod'
                 )
 
                 codice = list(codice)
-
-                codice = codice[0]['af_gen_cod']
+                if len(codice)>0:
+                    codice = codice[0]['af_gen_cod']
 
                 if codice:
                     q['af_gen_cod'] = codice
@@ -764,13 +765,15 @@ class ServiceDidatticaAttivitaFormativa:
 
 
             if q['anno_corso'] == None: # pragma: no cover
+                anno = None
                 anno = DidatticaCopertura.objects.filter(af_id__exact=q['af_id']).values(
                     'anno_corso'
                 )
 
                 anno = list(anno)
 
-                anno = anno[0]['anno_corso']
+                if len(anno)>0:
+                    anno = anno[0]['anno_corso']
 
                 if anno:
                     q['anno_corso'] = anno
