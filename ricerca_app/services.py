@@ -733,6 +733,61 @@ class ServiceDidatticaAttivitaFormativa:
             'af_radice_id',
         ).distinct().order_by('des')
 
+        lista_padri = {}
+        for i in query:
+            lista_padri[i['af_id']] = i['des']
+
+        for q in query:
+
+            padre = lista_padri[q['af_id']]
+
+            if padre:
+                q['Father'] = padre
+            else:
+                q['Father'] = None
+
+
+            if q['af_gen_cod'] == None: # pragma: no cover
+                codice = DidatticaCopertura.objects.filter(af_id__exact=q['af_id']).values(
+                    'af_gen_cod'
+                )
+
+                codice = list(codice)
+
+                codice = codice[0]['af_gen_cod']
+
+                if codice:
+                    q['af_gen_cod'] = codice
+                else:
+                    q['af_gen_cod'] = None
+
+
+
+            if q['anno_corso'] == None: # pragma: no cover
+                anno = DidatticaCopertura.objects.filter(af_id__exact=q['af_id']).values(
+                    'anno_corso'
+                )
+
+                anno = list(anno)
+
+                anno = anno[0]['anno_corso']
+
+                if anno:
+                    q['anno_corso'] = anno
+                else:
+                    q['anno_corso'] = None
+
+
+        # for q in query:
+        #     padre = DidatticaAttivitaFormativa.objects.filter(af_id__exact=q['af_radice_id']).values(
+        #     'des'
+        #     )
+        #
+        #     if padre:
+        #         q['Father'] = padre
+        #     else:
+        #         q['Father'] = None
+
         # for q in query:
         #
         #     name = Personale.objects.filter(matricola=q['matricola_resp_did']).values(
