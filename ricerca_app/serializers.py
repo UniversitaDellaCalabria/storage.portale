@@ -346,7 +346,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityName': query['des']+descrizione_gruppo if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
             'StudyActivityCdSID': query['cds_id'],
             'StudyActivityCdSCod': query['cds_id__cds_cod'],
-            'StudyActivityFatherCode': query['af_radice_id'],
+            'StudyActivityFatherCode': query['af_master_id'],
             'StudyActivityFatherName': query['Father'],
             'StudyActivityRegDidId': query['regdid_id'],
             'DepartmentName': query['cds_id__dip_id__dip_des_it'] if req_lang == 'it' or query['cds_id__dip_id__dip_des_eng'] is None else query['cds_id__dip_id__dip_des_eng'],
