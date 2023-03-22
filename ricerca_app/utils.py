@@ -45,25 +45,25 @@ def encode_labels(data, language=None):
             sett_label_mapping = SETTINGS_LABEL_MAPPING['it'] if language == "it" else SETTINGS_LABEL_MAPPING['en']
 
         for key in d.keys():
-            labels[key] = sett_label_mapping.get(key, label_mapping[key])
+            labels[key] = sett_label_mapping.get(key, loc_label_mapping[key])
             if isinstance(d[key], dict):
                 for k in d[key].keys():
                     if isinstance(d[key][k], dict):
                         labels[k] = {}
                         for k_temp, v_temp in d[key][k].items():
-                            labels[k][k_temp] = sett_label_mapping.get(k_temp, label_mapping[k_temp])
+                            labels[k][k_temp] = sett_label_mapping.get(k_temp, loc_label_mapping[k_temp])
                     elif isinstance(d[key][k], list):
                         for item in d[key][k]:
                             for k_temp, v_temp in item.items():
-                                labels[k_temp] = sett_label_mapping.get(k_temp, label_mapping[k_temp])
+                                labels[k_temp] = sett_label_mapping.get(k_temp, loc_label_mapping[k_temp])
                             break
                     else:
-                        labels[k] = sett_label_mapping.get(k, label_mapping[k])
+                        labels[k] = sett_label_mapping.get(k, loc_label_mapping[k])
             elif isinstance(d[key], list):
                 for instance in d[key]:
                     if isinstance(instance, dict):
                         for k_temp, v_temp in instance.items():
-                            labels[k_temp] = sett_label_mapping.get(k_temp, label_mapping[k_temp])
+                            labels[k_temp] = sett_label_mapping.get(k_temp, loc_label_mapping[k_temp])
                         break
 
     return labels
