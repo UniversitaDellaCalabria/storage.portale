@@ -338,7 +338,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
                               if query['matricola_resp_did__middle_name'] is not None else "")
         descrizione_gruppo = ''
         if query['part_stu_des']: # pragma: no cover
-            descrizione_gruppo = '(' + query['part_stu_des'] + ')'
+            descrizione_gruppo = ' (' + query['part_stu_des'] + ')'
 
         return {
             'StudyActivityID': query['af_id'],
@@ -346,6 +346,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityName': query['des']+descrizione_gruppo if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
             'StudyActivityCdSID': query['cds_id'],
             'StudyActivityCdSCod': query['cds_id__cds_cod'],
+            'StudyActivityLanguage': query['lista_lin_did_af'].replace(' ','').split(',') if query['lista_lin_did_af'] else [],
             'StudyActivityFatherCode': query['af_master_id'],
             'StudyActivityFatherName': query['Father'],
             'StudyActivityRegDidId': query['regdid_id'],
@@ -429,6 +430,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityName': query['des']+descrizione_gruppo if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
             'StudyActivityCdSID': query['cds__cds_id'],
             'StudyActivityCdSCod': query['cds__cds_cod'],
+            'StudyActivityLanguage': query['lista_lin_did_af'].replace(' ','').split(',') if query['lista_lin_did_af'] else [],
             'StudyActivityRegDidId': query['regdid__regdid_id'],
             'StudyActivityPdsCod': query['pds_cod'],
             'StudyActivityPdsDes': query['pds_des'],
