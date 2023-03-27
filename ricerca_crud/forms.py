@@ -185,6 +185,13 @@ class BrevettoDatiBaseForm(forms.ModelForm):
                    'vantaggi': forms.Textarea(attrs={'rows': 2}),
                    'data_priorita': BootstrapItaliaDateWidget,}
 
+    def __init__(self, *args, **kwargs):
+        super(BrevettoDatiBaseForm, self).__init__(*args, **kwargs)
+        _logo_field = self.instance.nome_file_logo
+        self.fields['nome_file_logo'].widget = RicercaCRUDClearableWidget(
+            {'upload_to': _logo_field.field.upload_to(self.instance, _logo_field.name)}
+        )
+
     class Media:
         js = ('js/textarea-autosize.js',)
 
