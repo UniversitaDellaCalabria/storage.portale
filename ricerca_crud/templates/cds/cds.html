@@ -5,8 +5,12 @@
 
 
 {% block centered_container %}
-<h3>{% trans "CDS" %}</h3>
-<div class="mt-5">
-    {% include "blocks/crud_cds.html" with uid="id_1" %}
+<h3 style="font-weight: lighter;" class="mb-4">{% trans "Study courses" %}</h3>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            {% include "blocks/crud_cds.html" with uid="id_1" %}
+        </div>
+    </div>
 </div>
 {% endblock centered_container %}

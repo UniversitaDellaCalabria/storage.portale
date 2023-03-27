@@ -291,14 +291,14 @@ def applied_researchline(request, code,
 def base_researchline_delete(request, code,
                              my_offices=None, rline=None, teachers=None):
     # ha senso?
-    # if rgroup.user_ins != request.user:
+    # if rline.user_ins != request.user:
     if not request.user.is_superuser:
         raise Exception(_('Permission denied'))
 
     rline.delete()
     messages.add_message(request,
                          messages.SUCCESS,
-                         _("Research group removed successfully"))
+                         _("Research line removed successfully"))
     return redirect('ricerca_crud:crud_base_researchlines')
 
 
@@ -308,14 +308,14 @@ def base_researchline_delete(request, code,
 def applied_researchline_delete(request, code,
                                 my_offices=None, rline=None, teachers=None):
     # ha senso?
-    # if rgroup.user_ins != request.user:
+    # if rline.user_ins != request.user:
     if not request.user.is_superuser:
         raise Exception(_('Permission denied'))
 
     rline.delete()
     messages.add_message(request,
                          messages.SUCCESS,
-                         _("Research group removed successfully"))
+                         _("Research line removed successfully"))
     return redirect('ricerca_crud:crud_applied_researchlines')
 
 
@@ -356,10 +356,10 @@ def base_researchline_teacher_new(request, code,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'research_lines/base_researchline_teacher.html',
+                  'research_lines/researchline_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
-                   'rgroup': rline,
+                   'rline': rline,
                    'url': reverse('ricerca:teacherslist')})
 
 
@@ -400,10 +400,10 @@ def applied_researchline_teacher_new(request, code,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'research_lines/base_researchline_teacher.html',
+                  'research_lines/researchline_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
-                   'rgroup': rline,
+                   'rline': rline,
                    'url': reverse('ricerca:teacherslist')})
 
 
@@ -451,12 +451,12 @@ def base_researchline_teacher_edit(request, code, teacher_rline_id,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                   reverse('ricerca_crud:crud_base_researchlines'): _('Research groups'),
+                   reverse('ricerca_crud:crud_base_researchlines'): _('Research lines'),
                    reverse('ricerca_crud:crud_base_researchline_edit', kwargs={'code': code}): rline.descrizione,
                    '#': f'{teacher.cognome} {teacher.nome}'}
 
     return render(request,
-                  'research_lines/base_researchline_teacher.html',
+                  'research_lines/researchline_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'rline': rline,
@@ -509,12 +509,12 @@ def applied_researchline_teacher_edit(request, code, teacher_rline_id,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
-                   reverse('ricerca_crud:crud_applied_researchlines'): _('Research groups'),
+                   reverse('ricerca_crud:crud_applied_researchlines'): _('Research lines'),
                    reverse('ricerca_crud:crud_applied_researchline_edit', kwargs={'code': code}): rline.descrizione,
                    '#': f'{teacher.cognome} {teacher.nome}'}
 
     return render(request,
-                  'research_lines/base_researchline_teacher.html',
+                  'research_lines/researchline_teacher.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'rline': rline,

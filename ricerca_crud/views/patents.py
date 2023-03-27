@@ -291,7 +291,9 @@ def patent_inventor_data_edit(request, code, inventor_id, inventors=None,
     breadcrumbs = {reverse('ricerca_crud:crud_dashboard'): _('Dashboard'),
                    reverse('ricerca_crud:crud_patents'): _('Patents'),
                    reverse('ricerca_crud:crud_patent_edit', kwargs={'code': code}): patent.titolo,
-                   '#': _('Inventor')}
+                   reverse('ricerca_crud:crud_patent_inventor_data_edit', kwargs={'code': code,
+                                                                                  'inventor_id': inventor_id}): _('Patent inventor data'),
+                   '#': _('Edit')}
     return render(request,
                   'patents/patent_inventor_data_edit.html',
                   {'breadcrumbs': breadcrumbs,

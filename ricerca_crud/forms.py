@@ -25,6 +25,9 @@ from ricerca_app.models import (BrevettoDatiBase, BrevettoInventori,
                                 DidatticaDottoratoAttivitaFormativaAltriDocenti,
                                 DidatticaDottoratoAttivitaFormativaDocente)
 
+from . widgets import RicercaCRUDClearableWidget
+
+
 CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 # common methods
@@ -180,7 +183,7 @@ class BrevettoDatiBaseForm(forms.ModelForm):
         widgets = {'breve_descrizione': forms.Textarea(attrs={'rows': 2}),
                    'applicazioni': forms.Textarea(attrs={'rows': 2}),
                    'vantaggi': forms.Textarea(attrs={'rows': 2}),
-                   'data_priorita': BootstrapItaliaDateWidget}
+                   'data_priorita': BootstrapItaliaDateWidget,}
 
     class Media:
         js = ('js/textarea-autosize.js',)
