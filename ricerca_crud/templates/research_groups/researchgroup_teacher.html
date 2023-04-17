@@ -47,29 +47,33 @@
         </div>
     </div>
 </div>
-<hr />
+<hr class="my-4"/>
 {% endif %}
-<h2>
+<h3 style="font-weight: lighter;" class="mb-4">
     {% if choosen_person %}{% trans "Edit teacher for" %}{% else %}{% trans "New teacher for" %}{% endif %} {{ rgroup.nome }}
-</h2>
-<div class="mt-5">
-    {% include "blocks/crud_teacherslist.html" with uid="id_1" %}
-    <hr />
-    <span id="choosen_person_name">
-        {% if choosen_person %}
-        <div class="alert alert-success" role="alert">
-            {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
+</h3>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            {% include "blocks/crud_teacherslist.html" with uid="id_1" %}
+            <hr />
+            <span id="choosen_person_name">
+                {% if choosen_person %}
+                <div class="alert alert-success" role="alert">
+                    {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
+                </div>
+                {% else %}
+                <div class="alert alert-warning" role="alert">
+                  {% trans "Choose a person to proceed" %}
+                </div>
+                {% endif %}
+            </span>
+            <hr />
+            <form method="post">
+                {% include "form_template.html" with form=form %}
+                {% include "includes/form_submit.html" %}
+            </form>
         </div>
-        {% else %}
-        <div class="alert alert-warning" role="alert">
-          {% trans "Choose a person to proceed" %}
-        </div>
-        {% endif %}
-    </span>
-    <hr />
-    <form method="post">
-        {% include "form_template.html" with form=form %}
-        {% include "includes/form_submit.html" %}
-    </form>
+    </div>
 </div>
 {% endblock centered_container %}

@@ -303,9 +303,8 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
 {% settings_value "ALLOWED_CDS_LANGUAGES" as allowed_languages %}
 {% settings_value "ALLOWED_CDS_JOINT_DEGREES" as allowed_joint_degrees %}
-{% settings_value "CURRENT_YEAR" as current_year %}
 
-initial_academic_year: {{ id }}_get_param('academicyear')  || '{{ current_year }}',
+initial_academic_year: {{ id }}_get_param('academicyear')  || '{% now "Y" %}',
 
 selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
 selected_academic_year: this.getItemFromSession("{{ id }}", 'academicyear') || {{ id }}_get_param('academicyear'),

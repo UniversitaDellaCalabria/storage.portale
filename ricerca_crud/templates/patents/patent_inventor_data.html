@@ -5,88 +5,88 @@
 
 
 {% block centered_container %}
-<h3>{% trans "Edit inventor data for" %} {{ patent.titolo }}</h3>
+<h3 style="font-weight: lighter;" class="mb-4">{% trans "Edit inventor data for" %} {{ patent.titolo }}</h3>
 {% if inventor_data %}
-<div class="mt-5">
-    <hr class="my-5">
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
 
-    <h4>{% trans "Patent Inventor" %}</h4>
-
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>{% trans "Person (find in database)" %}</th>
-                <th></th>
-                {% if inventor_data.matricola_inventore %}
-                <th></th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ inventor_data.matricola_inventore|default:"-" }}</td>
-                <td>
-                    <a href="{% url 'ricerca_crud:crud_patent_inventor_data_edit' code=patent.pk inventor_id=inventor_data.pk %}" class="d-flex btn btn-primary btn-xs">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                        </svg> {% trans "Edit" %}
-                    </a>
-                </td>
-                {% if inventor_data.matricola_inventore %}
-                <td>
-                    <a href="" class="btn btn-danger btn-xs d-flex"
-                       data-toggle="modal"
-                       data-target="#delete_inventor">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                        </svg> {% trans "Remove" %}
-                    </a>
-                    <div class="modal fade"
-                         tabindex="-1"
-                         role="dialog"
-                         id="delete_inventor">
-                        <div class="modal-dialog modal-dialog-centered"
-                             role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">
-                                        {% trans "Confirm" %}
-                                    </h5>
-                                    <button class="close"
-                                            type="button"
-                                            data-dismiss="modal"
-                                            aria-label="Close">
-                                       <svg class="icon">
-                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                       </svg>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>
-                                        {% trans "Do you want to delete choosen person?" %}
-                                    </p>
-                                </div>
-                                <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_patent_inventor_delete' code=patent.pk inventor_id=inventor_data.pk %}">
-                                        {% trans 'Yes, proceed' %}
-                                    </a>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>{% trans "Person (find in database)" %}</th>
+                        <th></th>
+                        {% if inventor_data.matricola_inventore %}
+                        <th></th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ inventor_data.matricola_inventore|default:"-" }}</td>
+                        <td>
+                            <a href="{% url 'ricerca_crud:crud_patent_inventor_data_edit' code=patent.pk inventor_id=inventor_data.pk %}" class="d-flex btn btn-primary btn-xs">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg> {% trans "Edit" %}
+                            </a>
+                        </td>
+                        {% if inventor_data.matricola_inventore %}
+                        <td>
+                            <a href="" class="btn btn-danger btn-xs d-flex"
+                               data-toggle="modal"
+                               data-target="#delete_inventor">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                </svg> {% trans "Remove" %}
+                            </a>
+                            <div class="modal fade"
+                                 tabindex="-1"
+                                 role="dialog"
+                                 id="delete_inventor">
+                                <div class="modal-dialog modal-dialog-centered"
+                                     role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                               <svg class="icon">
+                                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                               </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete choosen person?" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'ricerca_crud:crud_patent_inventor_delete' code=patent.pk inventor_id=inventor_data.pk %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </td>
-                {% endif %}
-            </tr>
-        </tbody>
-    </table>
+                        </td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
 
-    <hr class="my-5">
+            <hr class="my-5">
 
-    <form method="post">
-        {% include "form_template.html" with form=form %}
-        {% include "includes/form_submit.html" %}
-    </form>
-
+            <form method="post">
+                {% include "form_template.html" with form=form %}
+                {% include "includes/form_submit.html" %}
+            </form>
+        </div>
+    </div>
 </div>
 {% endif %}
 {% endblock centered_container %}
