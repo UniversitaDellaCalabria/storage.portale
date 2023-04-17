@@ -228,6 +228,128 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         return data
 
 
+
+
+class CdsWebsiteSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+
+        if query['ExStudents'] is not None:
+            ex_students = CdsWebsiteSerializer.to_dict_ex_students(
+                query['ExStudents'], req_lang)
+
+        if query['CdsLink'] is not None:
+            cds_link = CdsWebsiteSerializer.to_dict_links(
+                query['CdsLink'], req_lang)
+
+        if query['CdsSliders'] is not None:
+            cds_sliders = CdsWebsiteSerializer.to_dict_sliders(
+                query['CdsSliders'], req_lang)
+
+
+        return {
+            'CDSId': query['id'],
+            'CDSCOD': query['cds_cod'],
+            'CDSAcademicYear': query['aa'],
+            'CDSName': query['nome_corso_it'] if req_lang=='it' or query['nome_corso_en'] is None else query['nome_corso_en'],
+            'CDSCourseClassName': query['classe_laurea_it'] if req_lang=='it' or query['classe_laurea_en'] is None else query['classe_laurea_en'],
+            'CDSCourseInterClassDes': query['classe_laurea_interclasse_it'] if req_lang=='it' or query['classe_laurea_interclasse_en'] is None else query['classe_laurea_interclasse_en'],
+            'CDSLanguage': query['lingua_it'] if req_lang=='it' or query['lingua_en'] is None else query['lingua_en'],
+            'CDSDuration': query['durata_it'] if req_lang == 'it' or query['durata_en'] is None else query['durata_en'],
+            'CDSSeatsNumber': query['num_posti'],
+            'CDSVideo': query['link_video_cds_it'] if req_lang=='it' or query['link_video_cds_en'] is None else query['link_video_cds_en'],
+            'CDSIntro': query['descrizione_corso_it'] if req_lang == 'it' or query['descrizione_corso_en'] is None else query['descrizione_corso_en'],
+            'CDSAdmission': query['accesso_corso_it'] if req_lang == 'it' or query['accesso_corso_en'] is None else query['accesso_corso_en'],
+            'CDSGoals': query['obiettivi_corso_it'] if req_lang == 'it' or query['obiettivi_corso_en'] is None else query['obiettivi_corso_en'],
+            'CDSJobOpportunities': query['sbocchi_professionali_it'] if req_lang == 'it' or query['sbocchi_professionali_en'] is None else query['sbocchi_professionali_en'],
+            'CDSTaxes': query['tasse_contributi_esoneri_it'] if req_lang == 'it' or query['tasse_contributi_esoneri_en'] is None else query['tasse_contributi_esoneri_en'],
+            'CDSScholarships': query['borse_studio_it'] if req_lang == 'it' or query['borse_studio_en'] is None else query['borse_studio_en'],
+            'CDSConcessions': query['agevolazioni_it'] if req_lang == 'it' or query['agevolazioni_en'] is None else query['agevolazioni_en'],
+            'CDSShortDescription': query['corso_in_pillole_it'] if req_lang == 'it' or query['corso_in_pillole_en'] is None else query['corso_in_pillole_en'],
+            'CDSStudyPlan': query['cosa_si_studia_it'] if req_lang == 'it' or query['cosa_si_studia_en'] is None else query['cosa_si_studia_en'],
+            'CDSEnrollmentMode': query['come_iscriversi_it'] if req_lang == 'it' or query['come_iscriversi_en'] is None else query['come_iscriversi_en'],
+            'CDSUrl': query['sito_web_it'] if req_lang == 'it' or query['sito_web_en'] is None else query['sito_web_en'],
+            'CDSUrlStatus': query['sito_web_cds_status'],
+            'CDSExStudents': ex_students,
+            'CDSLinks': cds_link,
+            'CDSSliders': cds_sliders
+        }
+
+
+    # @staticmethod
+    # def get_media_url(query):
+    #     if 'https' in query or 'http' in query:
+    #         return query
+    #     else:
+    #         query = f'{settings.CDS_BROCHURE_MEDIA_PATH}/{query}'
+    #         return query
+    #
+
+
+    @staticmethod
+    def to_dict_ex_students(query, req_lang='en'):
+        ex_students = []
+        for q in query:
+            ex_students.append({
+                'StudentId': q['id'],
+                'StundentOrder': q['ordine'],
+                'StundentProfile': q['profilo_it'] if req_lang == 'it' or q['profilo_en'] is None else q['profilo_en'],
+                'StudentLink': q['link_it'] if req_lang == 'it' or q['link_en'] is None else q['link_en'],
+            })
+        return ex_students
+
+
+    @staticmethod
+    def to_dict_links(query, req_lang='en'):
+        links = []
+        for q in query:
+            links.append({
+                'LinkId': q['id'],
+                'LinkOrder': q['ordine'],
+                'LinkDescription': q['descrizione_link_it'] if req_lang == 'it' or q['descrizione_link_en'] is None else q['descrizione_link_en'],
+                'Link': q['link_it'] if req_lang == 'it' or q['link_en'] is None else q['link_en'],
+            })
+        return links
+
+
+    @staticmethod
+    def to_dict_sliders(query, req_lang='en'):
+        sliders = []
+        for q in query:
+            sliders.append({
+                'SliderId': q['id'],
+                'SliderOrder': q['ordine'],
+                'SliderDescription': q['slider_it'] if req_lang == 'it' or q['slider_en'] is None else q['slider_en'],
+            })
+        return sliders
+
+    # @staticmethod
+    # def to_dict_offices_data(query):
+    #     data = []
+    #     for q in query:
+    #         data.append({
+    #             'Order': q['ordine'],
+    #             'OfficeName': q['nome_ufficio'],
+    #             'OfficeDirector': encrypt(q['matricola_riferimento']),
+    #             'OfficeDirectorName': q['nome_origine_riferimento'],
+    #             'TelOffice': q['telefono'],
+    #             'Email': q['email'],
+    #             'Floor': q['piano'],
+    #             'Timetables': q['orari'],
+    #             'OnlineCounter': q['sportello_online']
+    #         })
+    #     return data
+
+
+
 class CdSStudyPlansSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
         query = instance
@@ -1994,7 +2116,7 @@ class PersonnelCfSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang='en'):
         full_name = query['cognome'] + " " + query['nome'] + \
                     (" " + query['middle_name']
-                     if query['middle_name'] is not None else "")
+                     if query['middle_name'] is not None else "") # pragma: no cover
         return {
             'Name': full_name,
             'CF': query['cod_fis'],

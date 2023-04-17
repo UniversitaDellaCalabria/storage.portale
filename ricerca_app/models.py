@@ -3711,3 +3711,148 @@ class DidatticaCdsAltriDati(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_ALTRI_DATI'
+
+
+
+
+class SitoWebCdsDatiBase(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    aa = models.PositiveIntegerField(db_column='AA', blank=True, null=True)  # Field name made lowercase.
+    cds_cod = models.CharField(db_column='CDS_COD', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    nome_corso_it = models.CharField(db_column='NOME_CORSO_IT', max_length=500)  # Field name made lowercase.
+    nome_corso_en = models.CharField(db_column='NOME_CORSO_EN', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    classe_laurea_it = models.CharField(db_column='CLASSE_LAUREA_IT', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    classe_laurea_en = models.CharField(db_column='CLASSE_LAUREA_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    classe_laurea_interclasse_it = models.CharField(db_column='CLASSE_LAUREA_INTERCLASSE_IT', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    classe_laurea_interclasse_en = models.CharField(db_column='CLASSE_LAUREA_INTERCLASSE_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    lingua_it = models.CharField(db_column='LINGUA_IT', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    lingua_en = models.CharField(db_column='LINGUA_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    durata_it = models.CharField(db_column='DURATA_IT', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    durata_en = models.CharField(db_column='DURATA_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    num_posti = models.IntegerField(db_column='NUM_POSTI', blank=True, null=True)  # Field name made lowercase.
+    link_video_cds_it = models.CharField(db_column='LINK_VIDEO_CDS_IT', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    link_video_cds_en = models.CharField(db_column='LINK_VIDEO_CDS_EN', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    descrizione_corso_it = models.TextField(db_column='DESCRIZIONE_CORSO_IT', blank=True, null=True)  # Field name made lowercase.
+    descrizione_corso_en = models.TextField(db_column='DESCRIZIONE_CORSO_EN', blank=True, null=True)  # Field name made lowercase.
+    accesso_corso_it = models.TextField(db_column='ACCESSO_CORSO_IT', blank=True, null=True)  # Field name made lowercase.
+    accesso_corso_en = models.TextField(db_column='ACCESSO_CORSO_EN', blank=True, null=True)  # Field name made lowercase.
+    obiettivi_corso_it = models.TextField(db_column='OBIETTIVI_CORSO_IT', blank=True, null=True)  # Field name made lowercase.
+    obiettivi_corso_en = models.TextField(db_column='OBIETTIVI_CORSO_EN', blank=True, null=True)  # Field name made lowercase.
+    sbocchi_professionali_it = models.TextField(db_column='SBOCCHI_PROFESSIONALI_IT', blank=True, null=True)  # Field name made lowercase.
+    sbocchi_professionali_en = models.TextField(db_column='SBOCCHI_PROFESSIONALI_EN', blank=True, null=True)  # Field name made lowercase.
+    tasse_contributi_esoneri_it = models.TextField(db_column='TASSE_CONTRIBUTI_ESONERI_IT', blank=True, null=True)  # Field name made lowercase.
+    tasse_contributi_esoneri_en = models.TextField(db_column='TASSE_CONTRIBUTI_ESONERI_EN', blank=True, null=True)  # Field name made lowercase.
+    borse_studio_it = models.TextField(db_column='BORSE_STUDIO_IT', blank=True, null=True)  # Field name made lowercase.
+    borse_studio_en = models.TextField(db_column='BORSE_STUDIO_EN', blank=True, null=True)  # Field name made lowercase.
+    agevolazioni_it = models.TextField(db_column='AGEVOLAZIONI_IT', blank=True, null=True)  # Field name made lowercase.
+    agevolazioni_en = models.TextField(db_column='AGEVOLAZIONI_EN', blank=True, null=True)  # Field name made lowercase.
+    corso_in_pillole_it = models.TextField(db_column='CORSO_IN_PILLOLE_IT', blank=True, null=True)  # Field name made lowercase.
+    corso_in_pillole_en = models.TextField(db_column='CORSO_IN_PILLOLE_EN', blank=True, null=True)  # Field name made lowercase.
+    cosa_si_studia_it = models.TextField(db_column='COSA_SI_STUDIA_IT', blank=True, null=True)  # Field name made lowercase.
+    cosa_si_studia_en = models.TextField(db_column='COSA_SI_STUDIA_EN', blank=True, null=True)  # Field name made lowercase.
+    come_iscriversi_it = models.TextField(db_column='COME_ISCRIVERSI_IT', blank=True, null=True)  # Field name made lowercase.
+    come_iscriversi_en = models.TextField(db_column='COME_ISCRIVERSI_EN', blank=True, null=True)  # Field name made lowercase.
+    sito_web_it = models.CharField(db_column='SITO_WEB_IT', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    sito_web_en = models.CharField(db_column='SITO_WEB_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    sito_web_cds_status = models.IntegerField(db_column='SITO_WEB_CDS_STATUS', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'SITO_WEB_CDS_DATI_BASE'
+
+
+class SitoWebCdsDatiExcelTmp(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome_corso_it = models.CharField(db_column='NOME_CORSO_IT', max_length=500)  # Field name made lowercase.
+    classe_laurea_it = models.CharField(db_column='CLASSE_LAUREA_IT', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    classe_laurea_interclasse = models.CharField(db_column='CLASSE_LAUREA_INTERCLASSE', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    lingua = models.CharField(db_column='LINGUA', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    durata = models.CharField(db_column='DURATA', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    num_posti = models.IntegerField(db_column='NUM_POSTI', blank=True, null=True)  # Field name made lowercase.
+    link_video_cds = models.CharField(db_column='LINK_VIDEO_CDS', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    slider_autopromo1 = models.TextField(db_column='SLIDER_AUTOPROMO1', blank=True, null=True)  # Field name made lowercase.
+    slider_autopromo2 = models.TextField(db_column='SLIDER_AUTOPROMO2', blank=True, null=True)  # Field name made lowercase.
+    slider_autopromo3 = models.TextField(db_column='SLIDER_AUTOPROMO3', blank=True, null=True)  # Field name made lowercase.
+    descrizione_corso = models.TextField(db_column='DESCRIZIONE_CORSO', blank=True, null=True)  # Field name made lowercase.
+    accesso_corso = models.TextField(db_column='ACCESSO_CORSO', blank=True, null=True)  # Field name made lowercase.
+    obiettivi_corso = models.TextField(db_column='OBIETTIVI_CORSO', blank=True, null=True)  # Field name made lowercase.
+    sbocchi_professionali = models.TextField(db_column='SBOCCHI_PROFESSIONALI', blank=True, null=True)  # Field name made lowercase.
+    tasse_contributi_esoneri = models.TextField(db_column='TASSE_CONTRIBUTI_ESONERI', blank=True, null=True)  # Field name made lowercase.
+    borse_studio = models.TextField(db_column='BORSE_STUDIO', blank=True, null=True)  # Field name made lowercase.
+    agevolazioni = models.TextField(db_column='AGEVOLAZIONI', blank=True, null=True)  # Field name made lowercase.
+    corso_in_pillole = models.TextField(db_column='CORSO_IN_PILLOLE', blank=True, null=True)  # Field name made lowercase.
+    cosa_si_studia = models.TextField(db_column='COSA_SI_STUDIA', blank=True, null=True)  # Field name made lowercase.
+    come_iscriversi = models.TextField(db_column='COME_ISCRIVERSI', blank=True, null=True)  # Field name made lowercase.
+    descrizione_file1 = models.TextField(db_column='DESCRIZIONE_FILE1', blank=True, null=True)  # Field name made lowercase.
+    link_file1 = models.TextField(db_column='LINK_FILE1', blank=True, null=True)  # Field name made lowercase.
+    descrizione_file2 = models.TextField(db_column='DESCRIZIONE_FILE2', blank=True, null=True)  # Field name made lowercase.
+    link_file2 = models.TextField(db_column='LINK_FILE2', blank=True, null=True)  # Field name made lowercase.
+    descrizione_file3 = models.TextField(db_column='DESCRIZIONE_FILE3', blank=True, null=True)  # Field name made lowercase.
+    link_file3 = models.TextField(db_column='LINK_FILE3', blank=True, null=True)  # Field name made lowercase.
+    descrizione_file4 = models.TextField(db_column='DESCRIZIONE_FILE4', blank=True, null=True)  # Field name made lowercase.
+    link_file4 = models.TextField(db_column='LINK_FILE4', blank=True, null=True)  # Field name made lowercase.
+    descrizione_file5 = models.TextField(db_column='DESCRIZIONE_FILE5', blank=True, null=True)  # Field name made lowercase.
+    link_file5 = models.TextField(db_column='LINK_FILE5', blank=True, null=True)  # Field name made lowercase.
+    descrizione_file6 = models.TextField(db_column='DESCRIZIONE_FILE6', blank=True, null=True)  # Field name made lowercase.
+    link_file6 = models.TextField(db_column='LINK_FILE6', blank=True, null=True)  # Field name made lowercase.
+    ex_studente_profilo_1 = models.TextField(db_column='EX_STUDENTE_PROFILO_1', blank=True, null=True)  # Field name made lowercase.
+    ex_studente_link_1 = models.TextField(db_column='EX_STUDENTE_LINK_1', blank=True, null=True)  # Field name made lowercase.
+    ex_studente_profilo_2 = models.TextField(db_column='EX_STUDENTE_PROFILO_2', blank=True, null=True)  # Field name made lowercase.
+    ex_studente_link_2 = models.TextField(db_column='EX_STUDENTE_LINK_2', blank=True, null=True)  # Field name made lowercase.
+    ex_studente_profilo_3 = models.TextField(db_column='EX_STUDENTE_PROFILO_3', blank=True, null=True)  # Field name made lowercase.
+    ex_studente_link_3 = models.TextField(db_column='EX_STUDENTE_LINK_3', blank=True, null=True)  # Field name made lowercase.
+    ex_studente_profilo_4 = models.TextField(db_column='EX_STUDENTE_PROFILO_4', blank=True, null=True)  # Field name made lowercase.
+    ex_studente_link_4 = models.TextField(db_column='EX_STUDENTE_LINK_4', blank=True, null=True)  # Field name made lowercase.
+    sito_web = models.CharField(db_column='SITO_WEB', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'SITO_WEB_CDS_DATI_EXCEL_TMP'
+
+
+class SitoWebCdsExStudenti(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    ordine = models.PositiveIntegerField(db_column='ORDINE', blank=True, null=True)  # Field name made lowercase.
+    profilo_it = models.TextField(db_column='PROFILO_IT')  # Field name made lowercase.
+    profilo_en = models.TextField(db_column='PROFILO_EN', blank=True, null=True)  # Field name made lowercase.
+    link_it = models.CharField(db_column='LINK_IT', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    link_en = models.CharField(db_column='LINK_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    id_sito_web_cds_dati_base = models.IntegerField(db_column='ID_SITO_WEB_CDS_DATI_BASE')  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'SITO_WEB_CDS_EX_STUDENTI'
+
+
+class SitoWebCdsLink(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    ordine = models.PositiveIntegerField(db_column='ORDINE', blank=True, null=True)  # Field name made lowercase.
+    descrizione_link_it = models.CharField(db_column='DESCRIZIONE_LINK_IT', max_length=2000)  # Field name made lowercase.
+    descrizione_link_en = models.CharField(db_column='DESCRIZIONE_LINK_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    link_it = models.CharField(db_column='LINK_IT', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    link_en = models.CharField(db_column='LINK_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    id_sito_web_cds_dati_base = models.IntegerField(db_column='ID_SITO_WEB_CDS_DATI_BASE')  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'SITO_WEB_CDS_LINK'
+
+
+class SitoWebCdsSlider(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    ordine = models.PositiveIntegerField(db_column='ORDINE', blank=True, null=True)  # Field name made lowercase.
+    slider_it = models.TextField(db_column='SLIDER_IT')  # Field name made lowercase.
+    slider_en = models.TextField(db_column='SLIDER_EN', blank=True, null=True)  # Field name made lowercase.
+    id_sito_web_cds_dati_base = models.IntegerField(db_column='ID_SITO_WEB_CDS_DATI_BASE')  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'SITO_WEB_CDS_SLIDER'

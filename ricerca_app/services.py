@@ -1,5 +1,6 @@
 import datetime
 import operator
+import re
 
 from django.db.models import CharField, Q, Value, F
 from django.http import Http404
@@ -19,7 +20,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
-    SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico
+    SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
+    SitoWebCdsExStudenti, SitoWebCdsDatiExcelTmp
 from . serializers import StructuresSerializer
 
 
@@ -519,6 +521,224 @@ class ServiceDidatticaCds:
         )
 
         return query
+
+    @staticmethod
+    def getCdsWebsites(search, academic_year, language):
+
+        query_search = Q()
+        query_year = Q()
+        query_language = Q()
+
+        if search:
+            for k in search.split(" "):
+                q_nome_corso_it = Q(nome_corso_it__icontains=k)
+                query_search &= q_nome_corso_it
+        if academic_year:
+            query_year = Q(aa=academic_year)
+        if language:
+            for k in language.split(" "):
+                q_language = Q(lingua_it__icontains=k) | Q(lingua_en__icontains=k)
+                query_language &= q_language
+
+
+        query = SitoWebCdsDatiBase.objects.filter(
+            query_search,
+            query_year,
+            query_language
+            ).values(
+            "id",
+            "cds_cod",
+            'aa',
+            "nome_corso_it",
+            "nome_corso_en",
+            "classe_laurea_it",
+            "classe_laurea_en",
+            "classe_laurea_interclasse_it",
+            "classe_laurea_interclasse_en",
+            "lingua_it",
+            "lingua_en",
+            "durata_it",
+            "durata_en",
+            "num_posti",
+            "link_video_cds_it",
+            "link_video_cds_en",
+            "descrizione_corso_it",
+            "descrizione_corso_en",
+            "accesso_corso_it",
+            "accesso_corso_en",
+            "obiettivi_corso_it",
+            "obiettivi_corso_en",
+            "sbocchi_professionali_it",
+            "sbocchi_professionali_en",
+            "tasse_contributi_esoneri_it",
+            "tasse_contributi_esoneri_en",
+            "borse_studio_it",
+            "borse_studio_en",
+            "agevolazioni_it",
+            "agevolazioni_en",
+            "corso_in_pillole_it",
+            "corso_in_pillole_en",
+            "cosa_si_studia_it",
+            "cosa_si_studia_en",
+            "come_iscriversi_it",
+            "come_iscriversi_en",
+            "sito_web_it",
+            "sito_web_en",
+            "sito_web_cds_status",
+        )
+
+        query = list(query)
+
+        for q in query:
+
+            language_it = q['lingua_it']
+            language_en = q['lingua_en']
+            pattern = r's:[0-9]+:\"([a-z]+)\"'
+            languages_it = re.findall(pattern, language_it)
+            languages_en = re.findall(pattern, language_en)
+
+            q['lingua_it'] = languages_it
+            q['lingua_en'] = languages_en
+
+            ex_studenti = SitoWebCdsExStudenti.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'profilo_it',
+                'profilo_en',
+                'link_it',
+                'link_en',
+            ).order_by('ordine')
+            if len(ex_studenti) > 0:
+                q['ExStudents'] = ex_studenti
+            else:
+                q['ExStudents'] = []
+            links = SitoWebCdsLink.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'descrizione_link_it',
+                'descrizione_link_en',
+                'link_it',
+                'link_en',
+            ).order_by('ordine')
+            if len(links) > 0:
+                q['CdsLink'] = links
+            else:
+                q['CdsLink'] = []
+
+            sliders = SitoWebCdsSlider.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'slider_it',
+                'slider_en',
+            ).order_by('ordine')
+            if len(sliders) > 0:
+                q['CdsSliders'] = sliders
+            else:
+                q['CdsSliders'] = []
+
+        return query
+
+    @staticmethod
+    def getCdsWebsite(cds_id):
+
+        query = SitoWebCdsDatiBase.objects.filter(id__exact=cds_id).values(
+            "id",
+            "cds_cod",
+            'aa',
+            "nome_corso_it",
+            "nome_corso_en",
+            "classe_laurea_it",
+            "classe_laurea_en",
+            "classe_laurea_interclasse_it",
+            "classe_laurea_interclasse_en",
+            "lingua_it",
+            "lingua_en",
+            "durata_it",
+            "durata_en",
+            "num_posti",
+            "link_video_cds_it",
+            "link_video_cds_en",
+            "descrizione_corso_it",
+            "descrizione_corso_en",
+            "accesso_corso_it",
+            "accesso_corso_en",
+            "obiettivi_corso_it",
+            "obiettivi_corso_en",
+            "sbocchi_professionali_it",
+            "sbocchi_professionali_en",
+            "tasse_contributi_esoneri_it",
+            "tasse_contributi_esoneri_en",
+            "borse_studio_it",
+            "borse_studio_en",
+            "agevolazioni_it",
+            "agevolazioni_en",
+            "corso_in_pillole_it",
+            "corso_in_pillole_en",
+            "cosa_si_studia_it",
+            "cosa_si_studia_en",
+            "come_iscriversi_it",
+            "come_iscriversi_en",
+            "sito_web_it",
+            "sito_web_en",
+            "sito_web_cds_status",
+        )
+
+        query = list(query)
+        for q in query:
+
+            language_it = q['lingua_it']
+            language_en = q['lingua_en']
+            pattern = r's:[0-9]+:\"([a-z]+)\"'
+            languages_it = re.findall(pattern, language_it)
+            languages_en = re.findall(pattern, language_en)
+
+            q['lingua_it'] = languages_it
+            q['lingua_en'] = languages_en
+
+            ex_studenti = SitoWebCdsExStudenti.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'profilo_it',
+                'profilo_en',
+                'link_it',
+                'link_en',
+            ).order_by('ordine')
+            if len(ex_studenti) > 0:
+                q['ExStudents'] = ex_studenti
+            else:
+                q['ExStudents'] = []
+            links = SitoWebCdsLink.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'descrizione_link_it',
+                'descrizione_link_en',
+                'link_it',
+                'link_en',
+            ).order_by('ordine')
+            if len(links) > 0:
+                q['CdsLink'] = links
+            else:
+                q['CdsLink'] = []
+
+            sliders = SitoWebCdsSlider.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'slider_it',
+                'slider_en',
+            ).order_by('ordine')
+            if len(sliders) > 0:
+                q['CdsSliders'] = sliders
+            else:
+                q['CdsSliders'] = []
+
+        return query
+
 
 
 class ServiceDidatticaAttivitaFormativa:

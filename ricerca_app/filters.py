@@ -755,3 +755,23 @@ class ApiAllActivitiesListFilter(GenericApiFilter):
             },
         },
     ]
+
+
+class ApiCdsWebsitesListFilter(GenericApiFilter):
+    search_params = [
+        {
+            'name': 'academic_year',
+            'description': 'Anno Accademico',
+            'required': False,
+            'schema': {
+                'type': 'integer',
+                'format': 'int32',
+            },
+        },
+        {
+            'name': 'language',
+            'description': 'Lingua Master',
+            'required': False,
+            'type': 'string'
+        }
+    ]
