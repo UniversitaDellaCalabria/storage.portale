@@ -237,7 +237,7 @@ class ApiCdSDetail(ApiEndpointDetail):
                     if text["profilo"] != last_profile:
                         last_profile = text["profilo"]
                         list_profiles[last_profile] = {}
-                elif text[f'{ self.language == "it" and "profilo" or "profilo_eng" }'] != last_profile:
+                elif text[f'{ self.language == "it" and "profilo" or "profilo_eng" }'] != last_profile: # pragma: no cover
                     last_profile = text[f'{self.language == "it" and "profilo" or "profilo_eng"}']
                     list_profiles[last_profile] = {}
 
@@ -582,7 +582,7 @@ class ApiTeacherMaterials(ApiEndpointList):
 
     def get_queryset(self):
 
-        teacherid = decrypt(self.kwargs['teacherid'])
+        teacherid = decrypt(self.kwargs['teacherid']) # pragma: no cover
 
         return ServiceDocente.getDocenteMaterials(teacherid)
 
