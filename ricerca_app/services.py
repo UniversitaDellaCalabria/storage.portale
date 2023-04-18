@@ -604,6 +604,7 @@ class ServiceDidatticaCds:
                 id_sito_web_cds_dati_base__exact=q['id']).values(
                 'id',
                 'ordine',
+                'nome',
                 'profilo_it',
                 'profilo_en',
                 'link_it',
@@ -701,6 +702,7 @@ class ServiceDidatticaCds:
             ex_studenti = SitoWebCdsExStudenti.objects.filter(
                 id_sito_web_cds_dati_base__exact=q['id']).values(
                 'id',
+                'nome',
                 'ordine',
                 'profilo_it',
                 'profilo_en',

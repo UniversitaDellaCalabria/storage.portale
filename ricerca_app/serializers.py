@@ -300,8 +300,9 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
         for q in query:
             ex_students.append({
                 'StudentId': q['id'],
-                'StundentOrder': q['ordine'],
-                'StundentProfile': q['profilo_it'] if req_lang == 'it' or q['profilo_en'] is None else q['profilo_en'],
+                'StudentName': q['nome'],
+                'StudentOrder': q['ordine'],
+                'StudentProfile': q['profilo_it'] if req_lang == 'it' or q['profilo_en'] is None else q['profilo_en'],
                 'StudentLink': q['link_it'] if req_lang == 'it' or q['link_en'] is None else q['link_en'],
             })
         return ex_students

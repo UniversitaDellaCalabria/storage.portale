@@ -3814,6 +3814,7 @@ class SitoWebCdsDatiExcelTmp(models.Model):
 
 class SitoWebCdsExStudenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='NOME', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     ordine = models.PositiveIntegerField(db_column='ORDINE', blank=True, null=True)  # Field name made lowercase.
     profilo_it = models.TextField(db_column='PROFILO_IT')  # Field name made lowercase.
     profilo_en = models.TextField(db_column='PROFILO_EN', blank=True, null=True)  # Field name made lowercase.
