@@ -583,7 +583,6 @@ class ApiTeacherMaterials(ApiEndpointList):
     def get_queryset(self):
         search = self.request.query_params.get('search')
         teacherid = decrypt(self.kwargs['teacherid'])
-
         return ServiceDocente.getDocenteMaterials(teacherid, search)
 
 
@@ -1299,3 +1298,36 @@ class ApiCdsWebsitesDegreeTypes(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceDidatticaCds.getCdsWebsitesDegreeTypes()
+
+
+class ApiCdsWebsiteList(ApiEndpointList):
+    description = 'Restituisce l’elenco dei siti dei corsi di studio'
+    serializer_class = CdsWebsiteSerializer
+    filter_backends = [ApiCdsWebsitesListFilter]
+
+    def get_queryset(self):
+        search = self.request.query_params.get('search')
+        academic_year = self.request.query_params.get('academic_year')
+        language = self.request.query_params.get('language')
+        course_class = self.request.query_params.get('course_class')
+        return ServiceDidatticaCds.getCdsWebsites(search, academic_year, language, course_class)
+
+
+class ApiCdsWebsiteDetail(ApiEndpointDetail):
+    description = 'Restituisce il dettaglio di siti un corso di studio'
+    serializer_class = CdsWebsiteSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        cds_id = str(self.kwargs['cdswebsiteid'])
+        return ServiceDidatticaCds.getCdsWebsite(cds_id)
+
+
+class ApiCdsWebsitesDegreeTypes(ApiEndpointList):
+    description = 'Restituisce l’elenco dei siti delle classi di laurea per i siti web dei cds'
+    serializer_class = CdsWebsitesDegreeTypesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDidatticaCds.getCdsWebsitesDegreeTypes()
+
