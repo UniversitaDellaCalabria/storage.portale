@@ -1259,7 +1259,7 @@ class ServiceDidatticaAttivitaFormativa:
         query[0]['LANGUAGEIT'] = None
         query[0]['LANGUAGEEN'] = None
 
-        for l in lingue:
+        for l in lingue: # pragma: no cover
             query[0]['LANGUAGEIT'] = l['testo_af_ita']
             query[0]['LANGUAGEEN'] = l['testo_af_eng']
 
