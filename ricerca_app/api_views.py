@@ -1275,9 +1275,10 @@ class ApiCdsWebsiteList(ApiEndpointList):
         search = self.request.query_params.get('search')
         academic_year = self.request.query_params.get('academic_year')
         language = self.request.query_params.get('language')
+        course_class = self.request.query_params.get('course_class')
 
 
-        return ServiceDidatticaCds.getCdsWebsites(search, academic_year, language)
+        return ServiceDidatticaCds.getCdsWebsites(search, academic_year, language, course_class)
 
 
 class ApiCdsWebsiteDetail(ApiEndpointDetail):
@@ -1290,3 +1291,13 @@ class ApiCdsWebsiteDetail(ApiEndpointDetail):
         cds_id = str(self.kwargs['cdswebsiteid'])
 
         return ServiceDidatticaCds.getCdsWebsite(cds_id)
+
+
+class ApiCdsWebsitesDegreeTypes(ApiEndpointList):
+    description = 'Restituisce l’elenco dei siti delle classi di laurea per i siti web dei cds'
+    serializer_class = CdsWebsitesDegreeTypesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        return ServiceDidatticaCds.getCdsWebsitesDegreeTypes()

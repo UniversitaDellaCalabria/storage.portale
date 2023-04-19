@@ -263,7 +263,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             'CDSCourseClassName': query['classe_laurea_it'] if req_lang=='it' or query['classe_laurea_en'] is None else query['classe_laurea_en'],
             'CDSCourseInterClassDes': query['classe_laurea_interclasse_it'] if req_lang=='it' or query['classe_laurea_interclasse_en'] is None else query['classe_laurea_interclasse_en'],
             'CDSLanguage': query['lingua_it'] if req_lang=='it' or query['lingua_en'] is None else query['lingua_en'],
-            'CDSDuration': query['durata_it'] if req_lang == 'it' or query['durata_en'] is None else query['durata_en'],
+            'CDSDuration': query['durata_it'][0] if req_lang == 'it' or query['durata_en'][0] is None else query['durata_en'][0],
             'CDSSeatsNumber': query['num_posti'],
             'CDSVideo': query['link_video_cds_it'] if req_lang=='it' or query['link_video_cds_en'] is None else query['link_video_cds_en'],
             'CDSIntro': query['descrizione_corso_it'] if req_lang == 'it' or query['descrizione_corso_en'] is None else query['descrizione_corso_en'],
@@ -349,6 +349,23 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
     #         })
     #     return data
 
+
+class CdsWebsitesDegreeTypesSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+
+
+        return {
+            'CDSCourseClassName': query['classe_laurea_it'] if req_lang=='it' or query['classe_laurea_en'] is None else query['classe_laurea_en'],
+        }
 
 
 class CdSStudyPlansSerializer(CreateUpdateAbstract):

@@ -1025,3 +1025,4 @@ class SitoWebCdsLinkUnitTest(TestCase): # pragma: no cover
 
         obj = SitoWebCdsLink.objects.create(**data)
         return obj
+

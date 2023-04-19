@@ -5877,3 +5877,26 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results']['CDSId'] == 1
 
+
+
+class ApiSitoWebCdsDegreeTypesUnitTest(TestCase):
+    def test_apisitiwebcdsdegreetypes(self):
+        req = Client()
+
+        SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
+            'classe_laurea_it': 'Laurea Triennale',
+        })
+
+
+
+        url = reverse('ricerca:cdswebsitesdegreetypes')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1

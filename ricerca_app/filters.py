@@ -773,5 +773,11 @@ class ApiCdsWebsitesListFilter(GenericApiFilter):
             'description': 'Lingua Master',
             'required': False,
             'type': 'string'
+        },
+        {
+            'name': 'course_class',
+            'description': 'Classe di laurea',
+            'required': False,
+            'type': 'string'
         }
     ]
