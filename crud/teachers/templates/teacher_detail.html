@@ -99,19 +99,19 @@
                         </tr>
                         <tr>
                             <td><b>{% trans "Short Bio (it)" %}</b></td>
-                            <td>{{ other_data.breve_bio|default:"-" }}</td>
+                            <td>{{ other_data.breve_bio|safe|default:"-" }}</td>
                         </tr>
                         <tr>
                             <td><b>{% trans "Short Bio (en)" %}</b></td>
-                            <td>{{ other_data.breve_bio_en|default:"-" }}</td>
+                            <td>{{ other_data.breve_bio_en|safe|default:"-" }}</td>
                         </tr>
                         <tr>
                             <td><b>{% trans "Reception Hours (it)" %}</b></td>
-                            <td>{{ other_data.orario_ricevimento|default:"-" }}</td>
+                            <td>{{ other_data.orario_ricevimento|safe|default:"-" }}</td>
                         </tr>
                         <tr>
                             <td><b>{% trans "Reception Hours (en)" %}</b></td>
-                            <td>{{ other_data.orario_ricevimento_en|default:"-" }}</td>
+                            <td>{{ other_data.orario_ricevimento_en|safe|default:"-" }}</td>
                         </tr>
                         <tr>
                             <td><b>{% trans "ORCID" %}</b></td>
