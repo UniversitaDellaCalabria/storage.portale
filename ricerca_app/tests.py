@@ -5763,7 +5763,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
     def test_apisitiwebcdslist(self):
         req = Client()
 
-        SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
+        s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
             'id': 1,
             'aa': '2022',
             'nome_corso_it': 'Informatica',
@@ -5782,7 +5782,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             'profilo_en': 'aaa',
             'link_it': 'aaa',
             'link_en': 'aaa',
-            'id_sito_web_cds_dati_base': 1,
+            'id_sito_web_cds_dati_base': s1,
         })
 
         SitoWebCdsLinkUnitTest.create_sitoWebCdsLink(**{
@@ -5800,7 +5800,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             'ordine': 1,
             'slider_it': 'aaa',
             'slider_en': 'aaa',
-            'id_sito_web_cds_dati_base': 1,
+            'id_sito_web_cds_dati_base': s1,
         })
 
         url = reverse('ricerca:cdswebsitelist')
@@ -5825,7 +5825,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
     def test_apisitowebcdsdetail(self):
         req = Client()
 
-        SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
+        s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
             'id': 1,
             'aa': '2022',
             'nome_corso_it': 'Informatica',
@@ -5844,7 +5844,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             'profilo_en': 'aaa',
             'link_it': 'aaa',
             'link_en': 'aaa',
-            'id_sito_web_cds_dati_base': 1,
+            'id_sito_web_cds_dati_base': s1,
         })
 
         SitoWebCdsLinkUnitTest.create_sitoWebCdsLink(**{
@@ -5862,7 +5862,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             'ordine': 1,
             'slider_it': 'aaa',
             'slider_en': 'aaa',
-            'id_sito_web_cds_dati_base': 1,
+            'id_sito_web_cds_dati_base': s1,
         })
 
         url = reverse('ricerca:cdswebsitedetail', kwargs={'cdswebsiteid': 1})

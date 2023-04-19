@@ -81,8 +81,7 @@ from .models import (
     SitoWebCdsDatiBase,
     SitoWebCdsSlider,
     SitoWebCdsLink,
-    SitoWebCdsExStudenti,
-    SitoWebCdsDatiExcelTmp)
+    SitoWebCdsExStudenti)
 
 
 # class ContextUnitTest(TestCase):

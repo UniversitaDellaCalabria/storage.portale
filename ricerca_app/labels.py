@@ -487,6 +487,7 @@ LABEL_MAPPING = {
         'SliderId': 'Slider Id',
         'SliderOrder': 'Slider Order',
         'SliderDescription': 'Slider Description',
+        'StudentPhoto': 'Student Photo'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -976,5 +977,6 @@ LABEL_MAPPING = {
         'SliderId': 'Id',
         'SliderOrder': 'Ordine',
         'SliderDescription': 'Descrizione',
+        'StudentPhoto': 'Foto Studente'
     }
 }

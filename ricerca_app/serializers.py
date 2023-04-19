@@ -265,6 +265,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             'CDSLanguage': query['lingua_it'] if req_lang=='it' or query['lingua_en'] is None else query['lingua_en'],
             'CDSDuration': query['durata_it'][0] if req_lang == 'it' or query['durata_en'][0] is None else query['durata_en'][0],
             'CDSSeatsNumber': query['num_posti'],
+            'RegDidId': query['id_didattica_regolamento'],
             'CDSVideo': query['link_video_cds_it'] if req_lang=='it' or query['link_video_cds_en'] is None else query['link_video_cds_en'],
             'CDSIntro': query['descrizione_corso_it'] if req_lang == 'it' or query['descrizione_corso_en'] is None else query['descrizione_corso_en'],
             'CDSAdmission': query['accesso_corso_it'] if req_lang == 'it' or query['accesso_corso_en'] is None else query['accesso_corso_en'],
@@ -304,6 +305,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
                 'StudentOrder': q['ordine'],
                 'StudentProfile': q['profilo_it'] if req_lang == 'it' or q['profilo_en'] is None else q['profilo_en'],
                 'StudentLink': q['link_it'] if req_lang == 'it' or q['link_en'] is None else q['link_en'],
+                'StudentPhoto': q['foto']
             })
         return ex_students
 

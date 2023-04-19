@@ -21,7 +21,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
-    SitoWebCdsExStudenti, SitoWebCdsDatiExcelTmp
+    SitoWebCdsExStudenti
 from . serializers import StructuresSerializer
 
 
@@ -590,6 +590,7 @@ class ServiceDidatticaCds:
             "sito_web_it",
             "sito_web_en",
             "sito_web_cds_status",
+            'id_didattica_regolamento'
         )
 
         query = list(query)
@@ -614,6 +615,7 @@ class ServiceDidatticaCds:
                 'profilo_en',
                 'link_it',
                 'link_en',
+                'foto'
             ).order_by('ordine')
             if len(ex_studenti) > 0:
                 q['ExStudents'] = ex_studenti
@@ -690,6 +692,8 @@ class ServiceDidatticaCds:
             "sito_web_it",
             "sito_web_en",
             "sito_web_cds_status",
+            'id_didattica_regolamento'
+
         )
 
         query = list(query)
@@ -713,6 +717,7 @@ class ServiceDidatticaCds:
                 'profilo_en',
                 'link_it',
                 'link_en',
+                'foto'
             ).order_by('ordine')
             if len(ex_studenti) > 0:
                 q['ExStudents'] = ex_studenti
