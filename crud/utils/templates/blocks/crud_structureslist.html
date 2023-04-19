@@ -1,0 +1,200 @@
+{% extends "includes/vue_list.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% block content %}
+
+{% block storage_block_top %}
+{% include "blocks/includes/vue_check.html" %}
+{% endblock storage_block_top %}
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-wrapper card-space">
+
+                    {% block search %}
+                    <div class="card card-bg no-after">
+                        <div class="card-body">
+                            {% include "includes/vue_search_input.html" with id=id %}
+
+                            {% block structure_type_filter %}
+                            <div class="form-group mb-0">
+                                <div class="row">
+                                    <div class="col-sm form-group mb-0">
+                                         <loading-icon
+                                                 v-if="is_loading_types"
+                                                 :loader_source="loader_source_types">
+                                         </loading-icon>
+
+                                         <div v-else>
+                                             <label for="{{ id }}_type_input">
+                                                 {% trans "Types" %}
+                                             </label>
+                                             <div class="w-30 mt-5">
+                                                 <select id="{{ id }}_type_input"
+                                                         title="{% trans 'Choose an option' %}"
+                                                         name="{{ id }}_type_input"
+                                                         class="form-control"
+                                                         @change="{{ id }}.search()">
+                                                     <option value="">- {% trans 'Choose an option' %} -</option>
+                                                     <option v-for="item in types_filter"
+                                                             :value="item.StructureTypeCOD"
+                                                             :selected="item.StructureTypeCOD == selected_types"
+                                                             v-if="allowed_types.length==0 || allowed_types.includes(item.StructureTypeCOD)">
+                                                         [[ item.StructureTypeName ]]
+                                                     </option>
+                                                 </select>
+                                             </div>
+                                         </div>
+                                     </div>
+                                </div>
+                            </div>
+                            {% endblock structure_type_filter %}
+
+                        </div>
+                    </div>
+                    {% endblock search %}
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+
+        <loading-icon
+            v-if="is_loading"
+            :loader_source="loader_source">
+        </loading-icon>
+
+        <div v-else>
+            <div class="row mb-3" v-for="item in items.results">
+                <div class="col-12">
+                    <!--start card-->
+                    <div class="card-wrapper pb-0">
+                        <div class="card no-after" style="border:1px solid #b71918">
+                            <div class="card-body p-3">
+                                <h5>
+                                    <a href="javascript:void(0)" @click="setStructure([item.StructureCod, item.StructureName])">
+                                        [[ item.StructureName ]]
+                                    </a>
+                                </h5>
+                                {% comment %}
+                                <div class="row">
+                                    <div class="col-12 col-md-auto">
+                                        <small>
+                                            [[ labels['StructureTypeName'] ]] >
+                                            <b>[[ item.StructureTypeName ]]</b>
+                                        </small>
+                                    </div>
+                                </div>
+                                {% endcomment %}
+{#                                <div class="col-12 col-md-auto text-end" v-if="item.StructureURL">#}
+{#                                    <small>#}
+{#                                        <a :href="[[ item.StructureURL ]]" target="_blank" rel="noopener noreferrer">#}
+{#                                            <b>{% trans "Website" %} >></b>#}
+{#                                        </a>#}
+{#                                    </small>#}
+{#                                </div>#}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end card-->
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id  }}"></list-panel>
+    </div>
+
+{% block storage_block_bottom %}
+    <div v-else>
+        {% trans "No items here" %}
+    </div>
+
+</div>
+{% endblock storage_block_bottom %}
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+function {{ id }}_get_form_paramenters(keyword=null, value=null) {
+
+    let dict = {}
+
+    if (keyword)
+        dict[keyword] = value
+
+    {% block structure_search_script %}
+    // search
+    let search = document.getElementById('{{ id }}_search')
+    if (search && search.value) dict['search'] = search.value
+    {% endblock structure_search_script %}
+
+    {% block structure_type_filter_script %}
+    //types
+    let type = document.getElementById('{{ id }}_type_input')
+    if (type && type.value) dict['type'] = type.value
+    {% endblock structure_type_filter_script %}
+
+    setItemInSession("{{ id }}", dict)
+
+    return dict
+}
+</script>
+{% endblock extra_scripts %}
+
+{% block extra_data %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+search_dict: {},
+selected_types: this.getItemFromSession("{{ id }}", 'type'),
+
+is_loading_types: true,
+
+loader_source_types: '{% url 'ricerca:structuretypes' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+
+
+selected_search: this.getItemFromSession("{{ id }}", 'search'),
+allowed_types: [],
+types_filter: [],
+
+{% endblock extra_data %}
+
+{% block extra_mounted %}
+
+    // if url if pre-filtered resize select field
+    // this allows to auto generate select options according to URL get filters!
+    let params = new URLSearchParams(this.url.split('?')[1]);
+
+    let get_types = params.get("type")
+    if (get_types != null){
+        let get_types_list = get_types.split(',')
+        this.allowed_types = get_types
+    }
+
+    this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
+    this.callTypes();
+
+{% endblock extra_mounted %}
+
+{% block extra_methods %}
+
+    callTypes() {
+    axios
+        .get(this.loader_source_types)
+        .then(response => {
+            this.types_filter = response.data.results;
+            this.is_loading_types = false
+        })
+    },
+    setStructure(name){
+    document.getElementById("id_choosen_structure").value = name[0];
+    let elements = document.getElementsByClassName("choosen_structure_name")
+    for(let i=0; i < elements.length; i++)
+        elements[i].innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen structure' %} <b>"+name[1]+"</b></div>"
+}
+{% endblock extra_methods %}
+</script>

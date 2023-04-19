@@ -1,0 +1,237 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+
+{% block centered_container %}
+
+{% settings_value "INSTALLED_APPS" as installed_apps %}
+
+<h3 style="font-weight: lighter;">{% trans "Dashboard" %}</h3>
+<div class="row mt-5">
+
+    {% if "crud.patents" in installed_apps %}
+    <div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Patents" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage patents' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_patents:crud_patents' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
+    </div>
+    {% endif %}
+
+    {% if "crud.cds" in installed_apps %}
+    <div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Study courses" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage cds and their teachers and offices' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_cds:crud_cds' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
+    </div>
+    {% endif %}
+
+    {% if "crud.teachers" in installed_apps %}
+    <div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Teachers" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage teachers and PTA' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_teachers:crud_teachers' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
+    </div>
+    {% endif %}
+
+    {% if "crud.research_groups" in installed_apps %}
+    <div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Research groups" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage groups and their teachers' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_research_groups:crud_researchgroups' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+    </div>
+    {% endif %}
+
+    {% if "crud.companies" in installed_apps %}
+    <div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Companies" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage companies' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_companies:crud_companies' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
+    </div>
+    {% endif %}
+
+    {% if "crud.research_lines" in installed_apps %}
+        <div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Research lines" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage lines and their teachers' %}
+                    </p>
+                    <a class="read-more mb-4" href="{% url 'crud_research_lines:crud_base_researchlines' %}">
+                        <span class="text">{% trans "Base research lines" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                    <br>
+                    <a class="read-more" href="{% url 'crud_research_lines:crud_applied_researchlines' %}">
+                        <span class="text">{% trans "Applied research lines" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
+    </div>
+    {% endif %}
+
+
+
+
+
+
+
+{% if "crud.projects" in installed_apps %}
+<div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Projects" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage projects' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_projects:crud_projects' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
+    </div>
+{% endif %}
+
+
+
+{% if "crud.phd" in installed_apps %}
+<div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "PhD activities" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage PhD activities' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_phd:crud_phd_list' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
+    </div>
+</div>
+{% endif %}
+{% endblock centered_container %}

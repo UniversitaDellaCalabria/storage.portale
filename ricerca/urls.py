@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf import settings
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
@@ -26,6 +27,8 @@ from rest_framework.renderers import JSONOpenAPIRenderer
 urlpatterns = [
     path(f'{settings.ADMIN_PATH}/', admin.site.urls),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 # API schemas
@@ -53,9 +56,33 @@ if 'ricerca_app' in settings.INSTALLED_APPS:
 if 'silk' in settings.INSTALLED_APPS:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
-if 'ricerca_crud' in settings.INSTALLED_APPS:
-    import ricerca_crud.urls
-    urlpatterns += path('', include((ricerca_crud.urls, 'ricerca_crud',))),
+if 'crud.utils' in settings.INSTALLED_APPS:
+    import crud.utils.urls
+    urlpatterns += path('', include((crud.utils.urls, 'crud_utils',))),
+if 'crud.cds' in settings.INSTALLED_APPS:
+    import crud.cds.urls
+    urlpatterns += path('', include((crud.cds.urls, 'crud_cds',))),
+if 'crud.companies' in settings.INSTALLED_APPS:
+    import crud.companies.urls
+    urlpatterns += path('', include((crud.companies.urls, 'crud_companies',))),
+if 'crud.patents' in settings.INSTALLED_APPS:
+    import crud.patents.urls
+    urlpatterns += path('', include((crud.patents.urls, 'crud_patents',))),
+if 'crud.phd' in settings.INSTALLED_APPS:
+    import crud.phd.urls
+    urlpatterns += path('', include((crud.phd.urls, 'crud_phd',))),
+if 'crud.projects' in settings.INSTALLED_APPS:
+    import crud.projects.urls
+    urlpatterns += path('', include((crud.projects.urls, 'crud_projects',))),
+if 'crud.research_groups' in settings.INSTALLED_APPS:
+    import crud.research_groups.urls
+    urlpatterns += path('', include((crud.research_groups.urls, 'crud_research_groups',))),
+if 'crud.research_lines' in settings.INSTALLED_APPS:
+    import crud.research_lines.urls
+    urlpatterns += path('', include((crud.research_lines.urls, 'crud_research_lines',))),
+if 'crud.teachers' in settings.INSTALLED_APPS:
+    import crud.teachers.urls
+    urlpatterns += path('', include((crud.teachers.urls, 'crud_teachers',))),
 
 if 'saml2_sp' in settings.INSTALLED_APPS:
     from djangosaml2 import views

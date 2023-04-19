@@ -581,10 +581,10 @@ class ApiTeacherMaterials(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
+        search = self.request.query_params.get('search')
         teacherid = decrypt(self.kwargs['teacherid'])
 
-        return ServiceDocente.getDocenteMaterials(teacherid)
+        return ServiceDocente.getDocenteMaterials(teacherid, search)
 
 
 class ApiTeacherMaterial(ApiEndpointDetail):
@@ -593,9 +593,7 @@ class ApiTeacherMaterial(ApiEndpointDetail):
     filter_backends = []
 
     def get_queryset(self):
-
         teacherid = decrypt(self.kwargs['teacherid'])
-
         return ServiceDocente.getDocenteMaterials(teacherid)
 
 
@@ -605,10 +603,10 @@ class ApiTeacherNews(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
+        search = self.request.query_params.get('search')
         teacherid = decrypt(self.kwargs['teacherid'])
 
-        return ServiceDocente.getDocenteNews(teacherid)
+        return ServiceDocente.getDocenteNews(teacherid, search)
 
 class TeachingCoveragesInfo(AutoSchema):
     def get_operation_id(self, path, method):

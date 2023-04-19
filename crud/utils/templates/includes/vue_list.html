@@ -1,0 +1,163 @@
+{% load i18n %}
+{% load crud_templatetags %}
+{% load static %}
+
+{% get_current_language as LANGUAGE_CODE %}
+{% random_id uid as id %}
+
+{% include "includes/vue_loading.html" %}
+
+{% block content %}
+{% endblock content %}
+
+{% block extra_scripts %}
+{% endblock extra_scripts %}
+
+{% block scripts %}
+<script src="{% static 'js/vue-utils.js' %}"></script>
+<script>
+function {{ id }}_encodeQueryData(data=[]) {
+    const ret = ["lang={{ LANGUAGE_CODE }}"];
+    for (let d in data)
+        ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+    let url = "{{ url|safe }}";
+    if (url.includes("?"))
+        return '&' + ret.join('&')
+    return '?' + ret.join('&');
+}
+
+function {{ id }}_get_param(name) {
+    let url = "{{ url|safe }}";
+    let params = (new URL(location.protocol + "//" + window.location.host + url)).searchParams;
+    return params.get(name) || '';
+}
+</script>
+
+<script>
+{% block component %}
+Vue.component('list-panel', {
+    props: {
+        data: Array,
+        id: String
+    },
+    template: `
+        <div class="card-wrapper card-space" v-if="data.count != 1">
+            <div class="card card-bg no-after">
+              <div class="card-body py-1">
+
+                <div class="row">
+                    <div class="col w-50">
+                        <span style="color:#050b12;">
+                            <b>[[ data.count || 0]] {% trans "results" %}</b>
+                            <span v-if="data.total_pages > 1">
+                                in <b>[[ data.total_pages || 0 ]] {% trans "pages" %}</b>
+                            </span>
+                        </span>
+                    </div>
+
+                    <div class="col w-50" v-if="data.total_pages > 1">
+                        <div class="float-right">
+                            <span>
+                                <a class="" style="cursor: pointer; color:#050b12;" v-if="data.page_number > 1" :onclick="[[ id ]] + '.CallURL(' + [[ id ]] + '.previous_page)'">
+                                    <span class="sr-only"> {% trans "page" %} </span> &lt; <small>{% trans "previous" %}</small>
+                                </a>
+                            </span>
+
+                            <span class="mr-2 ml-2" >[[ data.page_number ]] / <b>[[ data.total_pages ]]</b></span>
+                            <a class="" style="cursor: pointer; color:#050b12;" :onclick="[[ id ]] + '.CallURL(' + [[ id ]] + '.next_page)'" v-if="data.page_number < data.total_pages">
+                                <span class="sr-only"><small>{% trans "page" %} </span>{% trans "next" %} &gt;</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+              </div>
+            </div>
+        </div>
+    `
+});
+{% endblock component %}
+
+var {{ id }} = new Vue({
+    el: '[id="{{ id }}"]',
+    data() {
+        return {
+            parameters: {{ id }}_encodeQueryData(),
+            initial_parameters: '',
+            items: [],
+            initial_items: [],
+            labels: [],
+            url: '{{ url|safe }}',
+            next_page: "",
+            previous_page: "",
+            is_loading: true,
+            loader_source: '',
+
+            {% block extra_data %}
+            {% endblock extra_data %}
+        }
+    },
+    created() {
+        {% block extra_created %}
+        {% endblock extra_created %}
+    },
+    beforeMount() {
+        {% block extra_before_mount %}
+        {% endblock extra_before_mount %}
+    },
+    mounted() {
+        {% block extra_mounted %}
+        {% endblock extra_mounted %}
+
+        this.loader_source = this.url + this.parameters
+
+        {% block call_url %}
+        this.CallURL(this.url + this.parameters, true);
+        {% endblock call_url %}
+    },
+    methods: {
+        getItemsFromSession(id) {
+            let uid = window.location.href + "@" + id
+            return JSON.parse(sessionStorage.getItem(uid))
+        },
+        getItemFromSession(id, item) {
+            let uid = window.location.href + "@" + id;
+            if(sessionStorage.getItem(uid)){
+                return JSON.parse(sessionStorage.getItem(uid))[item]
+            }
+            return null
+        },
+
+        {% block method_search %}
+        search(keyword=null, value=null) {
+            if(this.initial_parameters)
+                this.parameters = this.initial_parameters + {{ id }}_encodeQueryData({{ id }}_get_form_paramenters(keyword, value)).replace('?','&');
+            else
+                this.parameters = {{ id }}_encodeQueryData({{ id }}_get_form_paramenters(keyword, value));
+            this.CallURL(this.url + this.parameters);
+        },
+        {% endblock method_search %}
+
+        {% block method_callurl %}
+        CallURL(url, initial=false) {
+            this.is_loading = true
+            this.loader_source = url
+            axios
+                .get(url)
+                .then(response => {
+                    if(initial) this.initial_items = response.data.results;
+                    this.items = response.data;
+                    this.next_page = response.data.next;
+                    this.previous_page = response.data.previous;
+                    this.labels = response.data.labels;
+                    this.is_loading = false;
+                })
+        },
+        {% endblock method_callurl %}
+
+        {% block extra_methods %}
+        {% endblock extra_methods %}
+    }
+})
+</script>
+{% endblock scripts %}
