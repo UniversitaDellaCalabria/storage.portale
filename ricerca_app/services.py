@@ -2256,7 +2256,9 @@ class ServiceDocente:
                     titolo__icontains=k) | Q(
                     titolo_en__icontains=k)
 
-        query = DocenteMaterialeDidattico.objects.filter(query_search, matricola__exact=teacher).values(
+        query = DocenteMaterialeDidattico.objects.filter(query_search,
+                                                         matricola__exact=teacher,
+                                                         attivo=True).values(
             'id',
             'titolo',
             'titolo_en',
@@ -2288,7 +2290,9 @@ class ServiceDocente:
                     titolo__icontains=k) | Q(
                     titolo_en__icontains=k)
 
-        query = DocentePtaBacheca.objects.filter(query_search, matricola__exact=teacher).values(
+        query = DocentePtaBacheca.objects.filter(query_search,
+                                                 matricola__exact=teacher,
+                                                 attivo=True).values(
             'id',
             'tipo_testo',
             'tipo_testo_en',
