@@ -12,6 +12,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from .validators import *
 
+
 def patents_media_path(instance, filename): # pragma: no cover
     return f'portale/brevetti/loghi/{filename}'
 
@@ -1367,7 +1368,7 @@ class DocenteMaterialeDidattico(models.Model):
     url_testo = models.CharField(db_column='URL_TESTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
     url_testo_en = models.CharField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
-    attivo = models.IntegerField(db_column='ATTIVO')  # Field name made lowercase.
+    attivo = models.BooleanField(db_column='ATTIVO')  # Field name made lowercase.
     dt_pubblicazione = models.DateField(db_column='DT_PUBBLICAZIONE')  # Field name made lowercase.
     dt_inizio_validita = models.DateField(db_column='DT_INIZIO_VALIDITA')  # Field name made lowercase.
     dt_fine_validita = models.DateField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
@@ -1429,7 +1430,7 @@ class DocentePtaBacheca(models.Model):
     url_testo = models.CharField(db_column='URL_TESTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
     url_testo_en = models.CharField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
-    attivo = models.IntegerField(db_column='ATTIVO')  # Field name made lowercase.
+    attivo = models.BooleanField(db_column='ATTIVO')  # Field name made lowercase.
     dt_pubblicazione = models.DateField(db_column='DT_PUBBLICAZIONE')  # Field name made lowercase.
     dt_inizio_validita = models.DateField(db_column='DT_INIZIO_VALIDITA')  # Field name made lowercase.
     dt_fine_validita = models.DateField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
@@ -1438,7 +1439,6 @@ class DocentePtaBacheca(models.Model):
     class Meta:
         managed = True
         db_table = 'DOCENTE_PTA_BACHECA'
-
 
 
 
@@ -3401,11 +3401,11 @@ class SpinoffStartupDatiBase(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     # Field name made lowercase.
-    is_startup = models.PositiveIntegerField(
-        db_column='IS_STARTUP', blank=True, null=True)
+    is_startup = models.BooleanField(
+        db_column='IS_STARTUP', default=False)
     # Field name made lowercase.
-    is_spinoff = models.PositiveIntegerField(
-        db_column='IS_SPINOFF', blank=True, null=True)
+    is_spinoff = models.BooleanField(
+        db_column='IS_SPINOFF', default=False)
 
     class Meta:
         managed = True

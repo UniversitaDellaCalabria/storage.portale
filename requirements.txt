@@ -26,3 +26,5 @@ pyyaml
 cryptography
 
 python-magic
+
+django-ckeditor

@@ -1,0 +1,183 @@
+{% extends "includes/vue_list.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% block content %}
+
+{% settings_value "CMS_STORAGE_ROOT_API" as api_root %}
+
+
+{% block storage_block_top %}
+{% include "blocks/includes/vue_check.html" %}
+{% endblock storage_block_top %}
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+
+        <loading-icon
+            v-if="is_loading"
+            :loader_source="loader_source">
+        </loading-icon>
+
+        <div v-else>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-wrapper card-space">
+                        <div class="card card-bg no-after">
+                            <div class="card-body">
+                                {% include "includes/vue_search_input.html" with id=id %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Type" %}</th>
+                            <th>{% trans "Title" %}</th>
+                            <th>{% trans "Publication" %}</th>
+                            <th>{% trans "Valid from" %}</th>
+                            <th>{% trans "Valid until" %}</th>
+                            <th>{% trans "Order" %}</th>
+                            <th>{% trans "Active" %}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in items.results">
+                            <td>[[ item.TextType ]]</td>
+                            <td>[[ item.Title ]]</td>
+                            <td>
+                                [[ new Date(item.PublicationDate).toLocaleString("{{ LANGUAGE_CODE }}",
+                                                                                    {day: '2-digit',
+                                                                                     month: '2-digit',
+                                                                                     year: 'numeric'})]]
+                            </td>
+                            <td>
+                                [[ new Date(item.ValidityStartDate).toLocaleString("{{ LANGUAGE_CODE }}",
+                                                                                    {day: '2-digit',
+                                                                                     month: '2-digit',
+                                                                                     year: 'numeric'})]]
+                            </td>
+                            <td>
+                                [[ new Date(item.ValidityEndDate).toLocaleString("{{ LANGUAGE_CODE }}",
+                                                                                    {day: '2-digit',
+                                                                                     month: '2-digit',
+                                                                                     year: 'numeric'})]]
+                            </td>
+                            <td>[[ item.Order ]]</td>
+                            <td>
+                                <svg class="icon icon-xs icon-success" v-if="item.Active">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                </svg>
+                                <svg class="icon icon-xs icon-danger" v-else>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                </svg>
+                            </td>
+                            <td>
+                                <a :href="'{% url 'crud_teachers:crud_teacher_edit' code=code %}board/' + item.ID + '/'" class="d-flex btn btn-primary btn-xs">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg> {% trans "Edit" %}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="" class="btn btn-danger btn-xs d-flex"
+                                   data-toggle="modal"
+                                   :data-target="'#delete_board_data_' + item.ID">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                    </svg> {% trans "Remove" %}
+                                </a>
+                                <div class="modal fade"
+                                     tabindex="-1"
+                                     role="dialog"
+                                     :id="'delete_board_data_' + item.ID">
+                                    <div class="modal-dialog modal-dialog-centered"
+                                         role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    {% trans "Confirm" %}
+                                                </h5>
+                                                <button class="close"
+                                                        type="button"
+                                                        data-dismiss="modal"
+                                                        aria-label="Close">
+                                                   <svg class="icon">
+                                                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                   </svg>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>
+                                                    {% trans "Do you want to delete board data set?" %}
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-success btn-sm" :href="'{% url 'crud_teachers:crud_teacher_edit' code=code %}board/' + item.ID +'/delete/'">
+                                                    {% trans 'Yes, proceed' %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+    </div>
+
+{% block storage_block_bottom %}
+    <div v-else>
+        {% trans "No items here" %}
+    </div>
+
+</div>
+{% endblock storage_block_bottom %}
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+function {{ id }}_get_form_paramenters(keyword=null, value=null) {
+    let dict = {}
+
+    if (keyword)
+        dict[keyword] = value
+
+    // search
+    let search = document.getElementById('{{ id }}_search')
+    if (search && search.value) dict['search'] = search.value
+
+    setItemInSession("{{ id }}", dict)
+
+    return dict
+}
+</script>
+{% endblock extra_scripts %}
+
+{% block extra_data %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+search_dict: {},
+
+selected_search: this.getItemFromSession("{{ id }}", 'search'),
+
+{% endblock extra_data %}
+
+{% block extra_mounted %}
+this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
+{% endblock extra_mounted %}
+
+</script>

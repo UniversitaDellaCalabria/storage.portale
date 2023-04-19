@@ -1,0 +1,236 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<div class="mb-4">
+    <h3 style="font-weight: lighter;">
+        {{ regdid.cds.nome_cds_it }} - {{ regdid.aa_reg_did }}
+    </h4>
+
+    <div class="row">
+        <div class="col-12 col-md-auto me-md-4">
+            {{ regdid.cds.tipo_corso_des }}
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            {% if other_data %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <div class="mb-3 text-right">
+                        <a href="{% url 'crud_cds:crud_cds_other_data_edit' regdid_id=regdid.pk data_id=other_data.pk %}" class="btn btn-primary btn-xs">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                            </svg> {% trans "Edit" %}
+                        </a>
+                        <a href="" class="btn btn-danger btn-xs"
+                           data-toggle="modal"
+                           data-target="#delete_other_data_{{ other_data.pk }}">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                            </svg> {% trans "Remove" %}
+                        </a>
+                        <div class="modal fade"
+                             tabindex="-1"
+                             role="dialog"
+                             id="delete_other_data_{{ other_data.pk }}">
+                            <div class="modal-dialog modal-dialog-centered"
+                                 role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Confirm" %}
+                                        </h5>
+                                        <button class="close"
+                                                type="button"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                           <svg class="icon">
+                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                           </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {% trans "Do you want to delete data set?" %}
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_other_data_delete' regdid_id=regdid.pk data_id=other_data.pk %}">
+                                            {% trans 'Yes, proceed' %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <tbody>
+                        <tr>
+                            <td><b>{% trans "Coordinator" %}</b></td>
+                            <td>
+                                {{ other_data.nome_origine_coordinatore|default:"-" }}
+                                {% if other_data.matricola_coordinatore %}
+                                    <br>
+                                    ({% trans "Link to" %}: {{ other_data.matricola_coordinatore|default:"-" }})
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>{% trans "Deputy Coordinator" %}</b></td>
+                            <td>
+                                {{ other_data.nome_origine_vice_coordinatore|default:"-" }}
+                                {% if other_data.matricola_vice_coordinatore %}
+                                    <br>
+                                    ({% trans "Link to" %}: {{ other_data.matricola_vice_coordinatore|default:"-" }})
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>{% trans "Number of seats" %}</b></td>
+                            <td>{{ other_data.num_posti|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>{% trans "Registration procedure" %}</b></td>
+                            <td>{{ other_data.modalita_iscrizione|default:"-" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <a href="{% url 'crud_cds:crud_cds_other_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+
+            <h4 style="font-weight: lighter;">
+                {% trans "Office data" %}
+            </h4>
+            {% if office_data %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Order" %}</th>
+                            <th>{% trans "Responsible" %}</th>
+                            <th>{% trans "Office" %}</th>
+                            <th>{% trans "Phone" %}</th>
+                            <th>{% trans "Email" %}</th>
+                            <th>{% trans "Building" %}</th>
+                            <th>{% trans "Floor" %}</th>
+                            <th>{% trans "Timetables" %}</th>
+                            <th>{% trans "Online Counter" %}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in office_data %}
+                        <tr>
+                            <td>{{ data.ordine|default:"-" }}</td>
+                            <td>
+                                {{ data.nome_origine_riferimento|default:"-" }}
+                                {% if data.matricola_riferimento %}
+                                    <br>
+                                    ({% trans "Link to" %}: {{ data.matricola_riferimento|default:"-" }})
+                                {% endif %}
+                            </td>
+                            <td>{{ data.nome_ufficio|default:"-" }}</td>
+                            <td>{{ data.telefono|default:"-" }}</td>
+                            <td>{{ data.email|default:"-" }}</td>
+                            <td>{{ data.edificio|default:"-" }}</td>
+                            <td>{{ data.piano|default:"-" }}</td>
+                            <td>{{ data.orari|default:"-" }}</td>
+                            <td>{{ data.sportello_online|default:"-" }}</td>
+                            <td>
+                                <a href="{% url 'crud_cds:crud_cds_office_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg> {% trans "Edit" %}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="" class="btn btn-danger btn-xs d-flex"
+                                   data-toggle="modal"
+                                   data-target="#delete_office_data_{{ data.pk }}">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                    </svg> {% trans "Remove" %}
+                                </a>
+                                <div class="modal fade"
+                                     tabindex="-1"
+                                     role="dialog"
+                                     id="delete_office_data_{{ data.pk }}">
+                                    <div class="modal-dialog modal-dialog-centered"
+                                         role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    {% trans "Confirm" %}
+                                                </h5>
+                                                <button class="close"
+                                                        type="button"
+                                                        data-dismiss="modal"
+                                                        aria-label="Close">
+                                                   <svg class="icon">
+                                                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                   </svg>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>
+                                                    {% trans "Do you want to delete office data set?" %}
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_office_data_delete' regdid_id=regdid.pk data_id=data.pk %}">
+                                                    {% trans 'Yes, proceed' %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            <a href="{% url 'crud_cds:crud_cds_office_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+
+            <h4 style="font-weight: lighter;">Logs RegDID</h4>
+            {% include "obj_logs.html" with logs=logs_regdid id=regdid.pk %}
+            <hr>
+            <h4 style="font-weight: lighter;">Logs CDS</h4>
+            {% include "obj_logs.html" with logs=logs_cds id=regdid.cds.pk %}
+        </div>
+    </div>
+</div>
+{% endblock centered_container %}

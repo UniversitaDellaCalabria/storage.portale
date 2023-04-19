@@ -921,7 +921,7 @@ class ServiceDidatticaAttivitaFormativa:
         if teacher_code:
             query_teacher_code = Q(personale_id__matricola__exact=teacher_code)
 
-        
+
         coperture = DidatticaCopertura.objects.filter(
             query_teacher_code
         ).values(
@@ -2246,9 +2246,17 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getDocenteMaterials(teacher):
+    def getDocenteMaterials(teacher, search=None):
 
-        query = DocenteMaterialeDidattico.objects.filter(matricola__exact=teacher).values(
+        query_search = Q()
+
+        if search:
+            for k in search.split(" "):
+                query_search = Q(
+                    titolo__icontains=k) | Q(
+                    titolo_en__icontains=k)
+
+        query = DocenteMaterialeDidattico.objects.filter(query_search, matricola__exact=teacher).values(
             'id',
             'titolo',
             'titolo_en',
@@ -2270,9 +2278,17 @@ class ServiceDocente:
 
 
     @staticmethod
-    def getDocenteNews(teacher):
+    def getDocenteNews(teacher, search=None):
 
-        query = DocentePtaBacheca.objects.filter(matricola__exact=teacher).values(
+        query_search = Q()
+
+        if search:
+            for k in search.split(" "):
+                query_search = Q(
+                    titolo__icontains=k) | Q(
+                    titolo_en__icontains=k)
+
+        query = DocentePtaBacheca.objects.filter(query_search, matricola__exact=teacher).values(
             'id',
             'tipo_testo',
             'tipo_testo_en',

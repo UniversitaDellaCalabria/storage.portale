@@ -72,12 +72,21 @@ INSTALLED_APPS = [
     #  'drf_spectacular',
     'corsheaders',
 
+    'ckeditor',
+
     # frontend apps
-    'sass_processor',
     'django_unical_bootstrap_italia',
     'bootstrap_italia_template',
     'organizational_area',
-    'ricerca_crud',
+    'crud.utils',
+    'crud.cds',
+    'crud.companies',
+    'crud.patents',
+    'crud.phd',
+    'crud.projects',
+    'crud.research_groups',
+    'crud.research_lines',
+    'crud.teachers',
 
     # SAML2
     # 'djangosaml2',
@@ -225,11 +234,51 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        'ricerca_crud': {
-            'handlers': ['console', 'mail_admins'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
+        # 'crud.utils': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
+        # 'crud.cds': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
+        # 'crud.companies': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
+        # 'crud.patents': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
+        # 'crud.phd': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
+        # 'crud.projects': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
+        # 'crud.research_groups': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
+        # 'crud.research_lines': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
+        # 'crud.teachers': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
     }
 }
 
@@ -277,3 +326,16 @@ else:
 
 LOGOUT_REDIRECT_URL=f'/'
 
+CKEDITOR_CONFIGS = {
+    'default': {
+        'height': 100,
+        'width': 'full',
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat']
+        ]
+    }
+}

@@ -1,0 +1,226 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<a href="" class="btn btn-danger btn-xs"
+   data-toggle="modal"
+   data-target="#delete_company">
+    <svg class="icon icon-xs icon-white">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+    </svg> {% trans "Remove" %}
+</a>
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="delete_company">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Confirm" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {% trans "Do you want to delete choosen company?" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success btn-sm" href="{% url 'crud_companies:crud_company_delete' code=company.pk %}">
+                    {% trans 'Yes, proceed' %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr class="my-4"/>
+<h3 style="font-weight: lighter;" class="mb-4">
+    {{ company.nome_azienda }}
+</h3>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% include "form_template.html" with form=form %}
+                {% include "includes/form_submit.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Unical Referent" %}</h4>
+
+            <!-- deputy coordinator -->
+            <table class="table table-striped table-hover">
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ company.referente_unical|default:"-" }}
+                            {% if company.matricola_referente_unical %}
+                                <br>
+                                ({% trans "Link to" %}: {{ company.matricola_referente_unical|default:"-" }})
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'crud_companies:crud_company_unical_referent_data' code=company.pk data_id=referent_data.pk %}" class="btn btn-primary btn-xs">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg> {% trans "Edit" %}
+                            </a>
+                        </td>
+
+                        {% comment %}
+                        {% if company.matricola_referente_unical %}
+                        <td>
+                            <a href="" class="btn btn-danger btn-xs"
+                               data-toggle="modal"
+                               data-target="#delete_unical_referent">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                </svg> {% trans "Remove" %}
+                            </a>
+                            <div class="modal fade"
+                                 tabindex="-1"
+                                 role="dialog"
+                                 id="delete_unical_referent">
+                                <div class="modal-dialog modal-dialog-centered"
+                                     role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                               <svg class="icon">
+                                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                               </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete choosen teacher?" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_companies:crud_company_unical_referent_data_delete' code=company.pk data_id=referent_data.pk %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        {% endif %}
+                        {% endcomment %}
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Departments" %}</h4>
+            {% if departments %}
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {% for department in departments %}
+                    <tr>
+                        <td>
+                                {{ department.nome_origine_dipartimento|default:"-" }}
+                            </td>
+                        <td>
+                            <a href="{% url 'crud_companies:crud_company_unical_department_data_edit' code=company.pk  department_id=department.pk %}" class="btn btn-primary btn-xs">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg> {% trans "Edit" %}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-danger btn-xs"
+                               data-toggle="modal"
+                               data-target="#delete_department_{{ department.pk }}">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                </svg> {% trans "Remove" %}
+                            </a>
+                        </td>
+                    </tr>
+                    <div class="modal fade"
+                         tabindex="-1"
+                         role="dialog"
+                         id="delete_department_{{ department.pk }}">
+                        <div class="modal-dialog modal-dialog-centered"
+                             role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        {% trans "Confirm" %}
+                                    </h5>
+                                    <button class="close"
+                                            type="button"
+                                            data-dismiss="modal"
+                                            aria-label="Close">
+                                       <svg class="icon">
+                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                       </svg>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        {% trans "Do you want to delete choosen department?" %}
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-success btn-sm" href="{% url 'crud_companies:crud_company_unical_department_data_delete' code=company.pk department_id=department.pk %}">
+                                        {% trans 'Yes, proceed' %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% endif %}
+            <a href="{% url 'crud_companies:crud_company_unical_department_data_new' code=company.pk %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">Logs</h4>
+            {% include "obj_logs.html" with logs=logs %}
+        </div>
+    </div>
+</div>
+{% endblock centered_container %}

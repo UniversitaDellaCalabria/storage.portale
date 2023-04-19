@@ -1,0 +1,63 @@
+{% extends "base-setup.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block header_wrapper %}
+{{ block.super }}
+{% if breadcrumbs %}
+<nav class="breadcrumb-container my-3" aria-label="breadcrumb" style="border-bottom: 1px solid #ccc">
+    <div class="container">
+        <div class="col-12">
+            <ol class="breadcrumb">
+
+            {% for k,v in breadcrumbs.items %}
+                {% if forloop.last and forloop.counter > 1 %}
+                <li class="breadcrumb-item active" aria-current="page">
+                    <a href="{{ k }}">{{ v|truncatechars:50 }}</a>
+                </li>
+                {% else %}
+                <li class="breadcrumb-item">
+                    <a href="{{ k }}">{{ v|truncatechars:50 }}</a>
+                    <span class="separator">/</span>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            </ol>
+        </div>
+
+    </div>
+
+</nav>
+{% endif %}
+{% endblock header_wrapper %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/crud.css' %}" type="text/css"/>
+<script src="{% static 'js/vue.2.6.14.js' %}"></script>
+<script src="{% static 'js/axios.0.27.2.js' %}"></script>
+<script src="{% static 'js/vue.options.js' %}"></script>
+{% endblock extra_head %}
+
+{% block menu_links %}
+{% include 'main_menu.html' %}
+{% endblock menu_links %}
+
+{% block header_center_search %}
+{% endblock header_center_search %}
+
+{% block header_slim_sub_menu %}
+{% endblock header_slim_sub_menu %}
+
+{% block header_slim_buttons %}
+<a href="{% url 'logout' %}">
+    <button class="btn btn-primary btn-sm btn-icon" type="button">
+        <svg class="icon icon-light icon-xs">
+          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+        </svg> <span>{% trans "Exit" %}</span>
+    </button>
+</a>
+{% endblock header_slim_buttons %}
