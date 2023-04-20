@@ -20,7 +20,8 @@ DEBUG = True
 # the path corresponding the admin backend, default if not defined: admin/
 ADMIN_PATH = 'admin_path'
 
-ALLOWED_HOSTS = ['*']
+DEFAULT_HOST =
+ALLOWED_HOSTS = [DEFAULT_HOST, '*']
 AUTH_USER_MODEL = 'accounts.User'
 
 DATA_DIR = os.path.join(BASE_DIR, "data")

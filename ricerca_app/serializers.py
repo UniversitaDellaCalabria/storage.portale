@@ -142,13 +142,17 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 'didatticacdslingua__lingua_des_eng'] is None else q['didatticacdslingua__lingua_des_eng'])
         video = None
         if query['URL_CDS_VIDEO'] is not None:
-            video = CdsInfoSerializer.get_media_url(
+            # video = CdsInfoSerializer.get_media_url(
+                # query['URL_CDS_VIDEO'])
+            video = build_media_path(
                 query['URL_CDS_VIDEO'])
 
         doc = None
         if query['URL_CDS_DOC'] is not None:
-            doc = CdsInfoSerializer.get_media_url(
-                query['URL_CDS_DOC'])
+            # doc = CdsInfoSerializer.get_media_url(
+                # query['URL_CDS_DOC'])
+            doc = build_media_path(
+                query['URL_CDS_DOC'], CDS_BROCHURE_MEDIA_PATH)
 
         data = None
         if query["OtherData"] is not None:
@@ -202,14 +206,14 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         }
 
 
-    @staticmethod
-    def get_media_url(query):
-        if 'https' in query or 'http' in query:
-            return query
-        else:
-            query = build_media_path(query, CDS_BROCHURE_MEDIA_PATH),
-            # query = f'{settings.CDS_BROCHURE_MEDIA_PATH}/{query}'
-            return query
+    # @staticmethod
+    # def get_media_url(query):
+        # if 'https' in query or 'http' in query:
+            # return query
+        # else:
+            # query = build_media_path(query, CDS_BROCHURE_MEDIA_PATH),
+            # #query = f'{settings.CDS_BROCHURE_MEDIA_PATH}/{query}'
+            # return query
 
     @staticmethod
     def to_dict_data(query):
@@ -298,16 +302,6 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             'CDSLinks': cds_link,
             'CDSSliders': cds_sliders
         }
-
-
-    # @staticmethod
-    # def get_media_url(query):
-    #     if 'https' in query or 'http' in query:
-    #         return query
-    #     else:
-    #         query = f'{settings.CDS_BROCHURE_MEDIA_PATH}/{query}'
-    #         return query
-    #
 
 
     @staticmethod

@@ -76,12 +76,12 @@ def is_path(value):
     return True
 
 
-def build_media_path(filename, path):
+def build_media_path(filename, path=None):
     if not filename: return ''
+    if 'http' in filename or 'https' in filename: return filename
     if not path: return filename
-    if is_path(filename): return f'{settings.MEDIA_URL}{filename}'
-    return f'{path}/{filename}'
-
+    if is_path(filename): return f'//{settings.DEFAULT_HOST}{settings.MEDIA_URL}{filename}'
+    return f'//{settings.DEFAULT_HOST}{path}/{filename}'
 
 # def encode_labels_detail(data, language):
 #     labels = {}
