@@ -1075,10 +1075,10 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
         board = []
         for q in query:
             board.append({
-                'Title': q['titolo'] if req_lang == "it" or query['titolo_en'] is None else query['titolo_en'],
-                'TextType': q['tipo_testo'] if req_lang == "it" or query['tipo_testo_en'] is None else query['tipo_testo_en'],
-                'Text': q['testo'] if req_lang == "it" or query['testo_en'] is None else query['testo_en'],
-                'TextUrl': q['url_testo'] if req_lang == "it" or query['url_testo_en'] is None else query['url_testo_en'],
+                'Title': q['titolo'] if req_lang == "it" or q['titolo_en'] is None else q['titolo_en'],
+                'TextType': q['tipo_testo'] if req_lang == "it" or q['tipo_testo_en'] is None else q['tipo_testo_en'],
+                'Text': q['testo'] if req_lang == "it" or q['testo_en'] is None else q['testo_en'],
+                'TextUrl': q['url_testo'] if req_lang == "it" or q['url_testo_en'] is None else q['url_testo_en'],
                 'Order': q['ordine'],
                 'Active': q['attivo'],
                 'PublicationDate': q['dt_pubblicazione'],
@@ -1103,7 +1103,7 @@ class TeacherMaterialsSerializer(CreateUpdateAbstract):
                 'ID': query['id'],
                 'Title': query['titolo'] if req_lang == "it" or query['titolo'] is None else query['titolo_en'],
                 'Text': query['testo'] if req_lang == "it" or query['testo'] is None else query['testo_en'],
-                'TextUrl': q['url_testo'] if req_lang == "it" or query['url_testo_en'] is None else query['url_testo_en'],
+                'TextUrl': query['url_testo'] if req_lang == "it" or query['url_testo_en'] is None else query['url_testo_en'],
                 'Order': query['ordine'],
                 'Active': query['attivo'],
                 'TeacherID': encrypt(query['DocenteRiferimentoId']),
@@ -1126,10 +1126,10 @@ class TeacherNewsSerializer(CreateUpdateAbstract):
 
         return {
                 'ID': query['id'],
-                'Title': q['titolo'] if req_lang == "it" or query['titolo_en'] is None else query['titolo_en'],
+                'Title': query['titolo'] if req_lang == "it" or query['titolo_en'] is None else query['titolo_en'],
                 'TextType': query['tipo_testo'] if req_lang == "it" or query['tipo_testo_en'] is None else query['tipo_testo_en'],
                 'Text': query['testo'] if req_lang == "it" or query['testo_en'] is None else query['testo_en'],
-                'TextUrl': q['url_testo'] if req_lang == "it" or query['url_testo_en'] is None else query['url_testo_en'],
+                'TextUrl': query['url_testo'] if req_lang == "it" or query['url_testo_en'] is None else query['url_testo_en'],
                 'Order': query['ordine'],
                 'Active': query['attivo'],
                 'PublicationDate': query['dt_pubblicazione'],
