@@ -17,7 +17,7 @@ def patents_media_path(instance, filename): # pragma: no cover
     return f'portale/brevetti/loghi/{filename}'
 
 def companies_media_path(instance, filename): # pragma: no cover
-    return f'portale/companies/loghi/{filename}'
+    return f'portale/spinoff-startup/loghi/{filename}'
 
 def teacher_photo_media_path(instance, filename): # pragma: no cover
     return f'portale/docenti_pta/foto/{filename}'
