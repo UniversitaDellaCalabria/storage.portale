@@ -6,7 +6,10 @@ from . settings import (ALLOWED_PROFILE_ID,
                         CDS_BROCHURE_MEDIA_PATH,
                         COMPANIES_MEDIA_PATH,
                         LABORATORIES_MEDIA_PATH,
-                        PATENTS_MEDIA_PATH)
+                        PATENTS_MEDIA_PATH,
+                        TEACHER_CV_EN_MEDIA_PATH,
+                        TEACHER_CV_IT_MEDIA_PATH,
+                        TEACHER_PHOTO_MEDIA_PATH)
 from . utils import build_media_path, encrypt, is_path
 
 
@@ -15,6 +18,9 @@ CDS_BROCHURE_MEDIA_PATH = getattr(settings, 'CDS_BROCHURE_MEDIA_PATH', CDS_BROCH
 COMPANIES_MEDIA_PATH = getattr(settings, 'COMPANIES_MEDIA_PATH', COMPANIES_MEDIA_PATH)
 LABORATORIES_MEDIA_PATH = getattr(settings, 'LABORATORIES_MEDIA_PATH', LABORATORIES_MEDIA_PATH)
 PATENTS_MEDIA_PATH = getattr(settings, 'PATENTS_MEDIA_PATH', PATENTS_MEDIA_PATH)
+TEACHER_CV_EN_MEDIA_PATH = getattr(settings, 'TEACHER_CV_EN_MEDIA_PATH', TEACHER_CV_EN_MEDIA_PATH)
+TEACHER_CV_IT_MEDIA_PATH = getattr(settings, 'TEACHER_CV_IT_MEDIA_PATH', TEACHER_CV_IT_MEDIA_PATH)
+TEACHER_PHOTO_MEDIA_PATH = getattr(settings, 'TEACHER_PHOTO_MEDIA_PATH', TEACHER_PHOTO_MEDIA_PATH)
 
 
 class CreateUpdateAbstract(serializers.Serializer):
@@ -1040,9 +1046,9 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherOffice': query['ds_aff_org'],
             'TeacherOfficeReference': query['Riferimento Ufficio'],
             'ORCID': query['ORCID'],
-            'PhotoPath': query['PHOTOPATH'],
-            'CVPathIta': query['PATHCVITA'],
-            'CVPathEn': query['PATHCVENG'],
+            'PhotoPath': build_media_path(query['PHOTOPATH'], TEACHER_PHOTO_MEDIA_PATH),
+            'CVPathIta': build_media_path(query['PATHCVITA'], TEACHER_CV_IT_MEDIA_PATH),
+            'CVPathEn': build_media_path(query['PATHCVENG'], TEACHER_CV_EN_MEDIA_PATH),
             'ShortBio': query['BREVEBIO'],
             'ShortBioEn': query['BREVEBIOENG'],
             'ReceptionHours': query['ORARIORICEVIMENTO'] if req_lang == "it" or query['ORARIORICEVIMENTO'] is None else query['ORARIORICEVIMENTOEN'],

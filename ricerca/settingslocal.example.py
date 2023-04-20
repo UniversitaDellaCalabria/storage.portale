@@ -288,7 +288,7 @@ PATENTS_MEDIA_PATH = f'{MEDIA_URL}portale/brevetti/loghi'
 CDS_BROCHURE_MEDIA_PATH = f'{MEDIA_URL}portale/cds_media_brochure'
 TEACHER_PHOTO_MEDIA_PATH = f'{MEDIA_URL}portale/docenti_pta/foto'
 TEACHER_CV_EN_MEDIA_PATH = f'{MEDIA_URL}portale/docenti_pta/cv_en'
-TEACHER_CV_ITA_MEDIA_PATH = f'{MEDIA_URL}portale/docenti_pta/cv_ita'
+TEACHER_CV_IT_MEDIA_PATH = f'{MEDIA_URL}portale/docenti_pta/cv_ita'
 
 ENCRYPTION_KEY = b'key'
 
