@@ -5,7 +5,8 @@ from rest_framework import serializers
 from . settings import (ALLOWED_PROFILE_ID,
                         CDS_BROCHURE_MEDIA_PATH,
                         COMPANIES_MEDIA_PATH,
-                        LABORATORIES_MEDIA_PATH)
+                        LABORATORIES_MEDIA_PATH,
+                        PATENTS_MEDIA_PATH)
 from . utils import build_media_path, encrypt, is_path
 
 
@@ -13,6 +14,7 @@ ALLOWED_PROFILE_ID = getattr(settings, 'ALLOWED_PROFILE_ID', ALLOWED_PROFILE_ID)
 CDS_BROCHURE_MEDIA_PATH = getattr(settings, 'CDS_BROCHURE_MEDIA_PATH', CDS_BROCHURE_MEDIA_PATH)
 COMPANIES_MEDIA_PATH = getattr(settings, 'COMPANIES_MEDIA_PATH', COMPANIES_MEDIA_PATH)
 LABORATORIES_MEDIA_PATH = getattr(settings, 'LABORATORIES_MEDIA_PATH', LABORATORIES_MEDIA_PATH)
+PATENTS_MEDIA_PATH = getattr(settings, 'PATENTS_MEDIA_PATH', PATENTS_MEDIA_PATH)
 
 
 class CreateUpdateAbstract(serializers.Serializer):
