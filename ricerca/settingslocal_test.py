@@ -13,6 +13,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '82^w&ie47r^!c8f6yeui@#6e*myi*o4sf3^u*o7+#3qk!tn^=s'
+DEFAULT_HOST = 'localhost'
 ALLOWED_HOSTS = ['*']
 ADMIN_PATH = 'test_admin'
 DATA_DIR = os.path.join(BASE_DIR, "data")
