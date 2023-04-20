@@ -69,6 +69,20 @@ def encode_labels(data, language=None):
     return labels
 
 
+def is_path(value):
+    if not value: return False
+    if type(value) is not str: return False
+    if "/" not in value: return False
+    return True
+
+
+def build_media_path(filename, path):
+    if not filename: return ''
+    if not path: return filename
+    if is_path(filename): return f'{settings.MEDIA_URL}{filename}'
+    return f'{path}/{filename}'
+
+
 # def encode_labels_detail(data, language):
 #     labels = {}
 #

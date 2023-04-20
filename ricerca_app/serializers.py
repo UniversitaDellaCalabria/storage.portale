@@ -2,11 +2,17 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from . settings import ALLOWED_PROFILE_ID
-from . utils import encrypt
+from . settings import (ALLOWED_PROFILE_ID,
+                        CDS_BROCHURE_MEDIA_PATH,
+                        COMPANIES_MEDIA_PATH,
+                        LABORATORIES_MEDIA_PATH)
+from . utils import build_media_path, encrypt, is_path
 
 
 ALLOWED_PROFILE_ID = getattr(settings, 'ALLOWED_PROFILE_ID', ALLOWED_PROFILE_ID)
+CDS_BROCHURE_MEDIA_PATH = getattr(settings, 'CDS_BROCHURE_MEDIA_PATH', CDS_BROCHURE_MEDIA_PATH)
+COMPANIES_MEDIA_PATH = getattr(settings, 'COMPANIES_MEDIA_PATH', COMPANIES_MEDIA_PATH)
+LABORATORIES_MEDIA_PATH = getattr(settings, 'LABORATORIES_MEDIA_PATH', LABORATORIES_MEDIA_PATH)
 
 
 class CreateUpdateAbstract(serializers.Serializer):
@@ -193,7 +199,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         if 'https' in query or 'http' in query:
             return query
         else:
-            query = f'{settings.CDS_BROCHURE_MEDIA_PATH}/{query}'
+            query = build_media_path(query, CDS_BROCHURE_MEDIA_PATH),
+            # query = f'{settings.CDS_BROCHURE_MEDIA_PATH}/{query}'
             return query
 
     @staticmethod
@@ -1486,7 +1493,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'ScientificDirectorName': query['responsabile_scientifico'],
             'LaboratoryName': query['nome_laboratorio'],
             'LaboratoryAcronym': query['acronimo'],
-            'LaboratoryLogo': f'{settings.LABORATORIES_MEDIA_PATH}/{query["nome_file_logo"]}' if query['nome_file_logo'] else '',
+            'LaboratoryLogo': build_media_path(query['nome_file_logo'], LABORATORIES_MEDIA_PATH),
             'LaboratoryEquipment': query['strumentazione_descrizione'],
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
             'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
@@ -1619,7 +1626,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             'LaboratoryId': query['id'],
             'LaboratoryName': query['nome_laboratorio'],
             'LaboratoryAcronym': query['acronimo'],
-            'LaboratoryLogo': f'{settings.LABORATORIES_MEDIA_PATH}/{query["nome_file_logo"]}' if query['nome_file_logo'] else '',
+            'LaboratoryLogo': build_media_path(query['nome_file_logo'], LABORATORIES_MEDIA_PATH),
             'Area': query['ambito'],
             'DepartmentName': query['dipartimento_riferimento'],
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
@@ -1917,7 +1924,7 @@ class PatentsSerializer(CreateUpdateAbstract):
             'PatentId': query['id'],
             'PatentUniqueId': query['id_univoco'],
             'PatentTitle': query['titolo'],
-            'PatentImage': f'{settings.PATENTS_MEDIA_PATH}/{query["nome_file_logo"]}' if query['nome_file_logo'] else '',
+            'PatentImage': build_media_path(query['nome_file_logo'], PATENTS_MEDIA_PATH),
             'PatentAbstract': query["breve_descrizione"],
             'PatentUrlKnowledgeShare': query["url_knowledge_share"],
             'PatentTechAreaId': query["id_area_tecnologica"],
@@ -1953,7 +1960,7 @@ class CompaniesSerializer(CreateUpdateAbstract):
             'SpinoffPIva': query['piva'],
             'SpinoffAgencyName': query['nome_azienda'],
             'SpinoffAgencyUrl': query['url_sito_web'],
-            'SpinoffImage': f'{settings.COMPANIES_MEDIA_PATH}/{query["nome_file_logo"]}' if query['nome_file_logo'] else '',
+            'SpinoffImage': build_media_path(query['nome_file_logo'], COMPANIES_MEDIA_PATH),
             'SpinoffDescription': query["descrizione_ita"]if req_lang == "it" or query["descrizione_eng"] is None else query['descrizione_eng'],
             'SpinoffUnicalReferent': query["referente_unical"],
             'SpinoffUnicalReferentId': encrypt(query['matricola_referente_unical']),

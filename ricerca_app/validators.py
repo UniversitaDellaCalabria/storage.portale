@@ -37,7 +37,6 @@ def _validate_generic_file_extension(value, allowed_filetypes): # pragma: no cov
     if not hasattr(value, 'file'): # pragma: no cover
         return
     mimetype = magic.Magic(mime=True).from_buffer(value.file.read())
-    print(value.__dict__, mimetype)
     value.file.seek(0)
     if mimetype not in allowed_filetypes:
         raise ValidationError(f'Unsupported file extension {mimetype}')

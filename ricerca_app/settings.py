@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 ALLOWED_PROFILE_ID = []
 
 # file validation
@@ -33,3 +36,11 @@ FILE_NAME_MAX_LEN = 128
 # 250MB - 214958080
 # 500MB - 429916160
 FILE_MAX_SIZE = 5242880
+
+LABORATORIES_MEDIA_PATH = f'{settings.MEDIA_URL}laboratori/loghi'
+COMPANIES_MEDIA_PATH = f'{settings.MEDIA_URL}spinoff-startup/loghi'
+PATENTS_MEDIA_PATH = f'{settings.MEDIA_URL}brevetti/loghi'
+CDS_BROCHURE_MEDIA_PATH = f'{settings.MEDIA_URL}cds_media_brochure'
+TEACHER_PHOTO_MEDIA_PATH = f'{MEDIA_URL}docenti_pta/foto'
+TEACHER_CV_EN_MEDIA_PATH = f'{MEDIA_URL}docenti_pta/cv_en'
+TEACHER_CV_ITA_MEDIA_PATH = f'{MEDIA_URL}docenti_pta/cv_ita'
