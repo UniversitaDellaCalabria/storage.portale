@@ -1071,7 +1071,7 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
         return functions
 
     @staticmethod
-    def to_dict_board(query): # pragma: no cover
+    def to_dict_board(query, req_lang='en'): # pragma: no cover
         board = []
         for q in query:
             board.append({
