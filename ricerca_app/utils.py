@@ -5,6 +5,8 @@ from cryptography.fernet import Fernet
 from django.conf import settings
 from django.http import Http404
 
+from PIL import Image
+
 from . labels import LABEL_MAPPING as LOCAL_LABEL_MAPPING
 
 SETTINGS_LABEL_MAPPING = getattr(settings, 'LABEL_MAPPING', None)
