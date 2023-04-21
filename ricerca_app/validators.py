@@ -78,7 +78,7 @@ def validate_media_file_extension(value): # pragma: no cover
     _validate_generic_file_extension(value, FILETYPE_MEDIA)
 
 
-def validate_image_size_ratio(value):
+def validate_image_size_ratio(value): # pragma: no cover
     if not hasattr(value, 'content_type'): # pragma: no cover
         return
 

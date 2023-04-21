@@ -99,24 +99,3 @@ def build_media_path(filename, path=None):
     if not path: return filename
     if is_path(filename): return f'//{settings.DEFAULT_HOST}{settings.MEDIA_URL}{filename}'
     return f'//{settings.DEFAULT_HOST}{path}/{filename}'
-
-# def encode_labels_detail(data, language):
-#     labels = {}
-#
-#     if len(data) > 0 and hasattr(settings, 'LABEL_MAPPING'):
-#         label_mapping = LABEL_MAPPING['it'] if language == "it" else LABEL_MAPPING['en']
-#         for key in data.keys():
-#             labels[key] = label_mapping[key]
-#             if isinstance(data[key], dict):
-#                 for k in data[key].keys():
-#                     labels[k] = {}
-#                     for k_temp, v_temp in data[key][k].items():
-#                         labels[k][k_temp] = label_mapping[k_temp]
-#                 break
-#             elif isinstance(data[key], list):
-#                 for instance in data[key]:
-#                     for k_temp, v_temp in instance.items():
-#                         labels[k_temp] = label_mapping[k_temp]
-#                     break
-#
-#     return labels
