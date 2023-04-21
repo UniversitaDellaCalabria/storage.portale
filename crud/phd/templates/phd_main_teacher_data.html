@@ -29,7 +29,7 @@
                         <td>
                             <a href="{% url 'crud_phd:crud_phd_main_teacher_data_edit' code=phd.pk teacher_id=teacher_data.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
                         </td>
@@ -39,7 +39,7 @@
                                data-toggle="modal"
                                data-target="#delete_teacher">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
                             <div class="modal fade"
@@ -58,7 +58,7 @@
                                                     data-dismiss="modal"
                                                     aria-label="Close">
                                                <svg class="icon">
-                                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                                </svg>
                                             </button>
                                         </div>

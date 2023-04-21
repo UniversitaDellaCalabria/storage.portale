@@ -3,15 +3,13 @@ mysqlclient
 # uwsgi
 
 # SASS dynamic compiler
-libsass
-django_sass_processor
 django-cors-headers
 django-filter
 
 # CRUD
 git+https://github.com/silentsokolov/django-admin-rangefilter.git
-design-django-theme
-django-unical-bootstrap-italia
+design-django-theme==1.6.4post4
+django-unical-bootstrap-italia==1.2.0
 git+https://github.com/UniversitaDellaCalabria/django-organizational-area.git
 pillow
 

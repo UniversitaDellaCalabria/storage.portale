@@ -26,14 +26,14 @@
                     <div class="mb-3 text-right">
                         <a href="{% url 'crud_cds:crud_cds_other_data_edit' regdid_id=regdid.pk data_id=other_data.pk %}" class="btn btn-primary btn-xs">
                             <svg class="icon icon-xs icon-white">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
                             </svg> {% trans "Edit" %}
                         </a>
                         <a href="" class="btn btn-danger btn-xs"
                            data-toggle="modal"
                            data-target="#delete_other_data_{{ other_data.pk }}">
                             <svg class="icon icon-xs icon-white">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-delete"></use>
                             </svg> {% trans "Remove" %}
                         </a>
                         <div class="modal fade"
@@ -52,7 +52,7 @@
                                                 data-dismiss="modal"
                                                 aria-label="Close">
                                            <svg class="icon">
-                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                            </svg>
                                         </button>
                                     </div>
@@ -105,7 +105,7 @@
             {% else %}
             <a href="{% url 'crud_cds:crud_cds_other_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
             {% endif %}
@@ -159,7 +159,7 @@
                             <td>
                                 <a href="{% url 'crud_cds:crud_cds_office_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
                                 </a>
                             </td>
@@ -168,7 +168,7 @@
                                    data-toggle="modal"
                                    data-target="#delete_office_data_{{ data.pk }}">
                                     <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-delete"></use>
                                     </svg> {% trans "Remove" %}
                                 </a>
                                 <div class="modal fade"
@@ -187,7 +187,7 @@
                                                         data-dismiss="modal"
                                                         aria-label="Close">
                                                    <svg class="icon">
-                                                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                                    </svg>
                                                 </button>
                                             </div>
@@ -214,7 +214,7 @@
 
             <a href="{% url 'crud_cds:crud_cds_office_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
         </div>

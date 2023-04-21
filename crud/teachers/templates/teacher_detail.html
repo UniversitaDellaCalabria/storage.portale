@@ -16,14 +16,14 @@
             <div class="text-right mb-3">
                 <a href="{% url 'crud_teachers:crud_teacher_other_data_edit' code=code data_id=other_data.pk %}" class="btn btn-primary btn-xs">
                     <svg class="icon icon-xs icon-white">
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
                     </svg> {% trans "Edit" %}
                 </a>
                 <a href="" class="btn btn-danger btn-xs"
                    data-toggle="modal"
                    data-target="#delete_other_data_{{ other_data.pk }}">
                     <svg class="icon icon-xs icon-white">
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-delete"></use>
                     </svg> {% trans "Remove" %}
                 </a>
             </div>
@@ -43,7 +43,7 @@
                                     data-dismiss="modal"
                                     aria-label="Close">
                                <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                </svg>
                             </button>
                         </div>
@@ -121,7 +121,7 @@
             {% else %}
             <a href="{% url 'crud_teachers:crud_teacher_other_data_new' code=code %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new data set" %}
             </a>
             {% endif %}
@@ -140,7 +140,7 @@
 
             <a href="{% url 'crud_teachers:crud_teacher_board_data_new' code=code %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
         </div>
@@ -158,7 +158,7 @@
 
             <a href="{% url 'crud_teachers:crud_teacher_materials_data_new' code=code %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
         </div>
