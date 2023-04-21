@@ -25,6 +25,16 @@ def decrypt(value):
         raise Http404
 
 
+def get_image_width_height(fopen):
+    mime = magic.Magic(mime=True)
+    fopen.seek(0)
+    mimetype = mime.from_buffer(fopen.read())
+    fopen.seek(0)
+    if mimetype in FILETYPE_IMAGE:
+        pil = Image.open(fopen)
+        return pil.size
+
+
 def encode_labels(data, language=None):
     labels = {}
     d = None
