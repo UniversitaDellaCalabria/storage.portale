@@ -8,7 +8,10 @@ from django.http import Http404
 from PIL import Image
 
 from . labels import LABEL_MAPPING as LOCAL_LABEL_MAPPING
+from . import settings as app_settings
 
+
+FILETYPE_IMAGE = getattr(settings, 'FILETYPE_IMAGE', app_settings.FILETYPE_IMAGE)
 SETTINGS_LABEL_MAPPING = getattr(settings, 'LABEL_MAPPING', None)
 
 
