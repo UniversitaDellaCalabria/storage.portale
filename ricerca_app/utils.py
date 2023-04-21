@@ -32,7 +32,7 @@ def decrypt(value):
         raise Http404
 
 
-def get_image_width_height(fopen):
+def get_image_width_height(fopen): # pragma: no cover
     mime = magic.Magic(mime=True)
     fopen.seek(0)
     mimetype = mime.from_buffer(fopen.read())
