@@ -1,15 +1,6 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField
-#   has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to
-#   allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or
-# field names.
 from django.contrib.auth import get_user_model
 from django.db import models
+
 from .validators import *
 
 
@@ -23,10 +14,10 @@ def teacher_photo_media_path(instance, filename): # pragma: no cover
     return f'portale/docenti_pta/foto/{filename}'
 
 def teacher_cv_en_media_path(instance, filename): # pragma: no cover
-    return f'portale/docenti_pta/cv_ita/{filename}'
+    return f'portale/docenti_pta/cv_en/{filename}'
 
 def teacher_cv_ita_media_path(instance, filename): # pragma: no cover
-    return f'portale/docenti_pta/cv_en/{filename}'
+    return f'portale/docenti_pta/cv_ita/{filename}'
 
 
 class InsModAbstract(models.Model):
@@ -1385,7 +1376,8 @@ class DocentePtaAltriDati(models.Model):
     path_foto = models.FileField(
         upload_to=teacher_photo_media_path,
         validators=[validate_image_file_extension,
-                    validate_file_size],
+                    validate_file_size,
+                    validate_image_size_ratio],
         db_column='PATH_FOTO',
         max_length=1000,
         blank=True,

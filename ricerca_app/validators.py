@@ -16,6 +16,10 @@ FILETYPE_PDF_ALLOWED = getattr(settings, 'FILETYPE_PDF',
                            app_settings.FILETYPE_PDF)
 FILE_MAX_SIZE = getattr(settings, 'FILE_MAX_SIZE',
                         app_settings.FILE_MAX_SIZE)
+FILETYPE_IMAGE_YX_RATIO_MIN = getattr(settings, 'FILETYPE_IMAGE_YX_RATIO_MIN',
+                                      app_settings.FILETYPE_IMAGE_YX_RATIO_MIN)
+FILETYPE_IMAGE_YX_RATIO_MAX = getattr(settings, 'FILETYPE_IMAGE_YX_RATIO_MAX',
+                                      app_settings.FILETYPE_IMAGE_YX_RATIO_MAX)
 
 
 def validate_file_size(value): # pragma: no cover
@@ -72,3 +76,20 @@ def validate_image_file_extension(value): # pragma: no cover
 def validate_media_file_extension(value): # pragma: no cover
     _validate_generic_file_extension(value, FILETYPE_MEDIA)
 
+
+def validate_image_size_ratio(value):
+    if not hasattr(value, 'content_type'): # pragma: no cover
+        return
+
+    mimetype = magic.Magic(mime=True).from_buffer(value.file.read())
+    value.file.seek(0)
+
+    if mimetype in FILETYPE_IMAGE:
+        w, y = get_image_width_height(value.file)
+        ratio = y / w
+        if ratio < FILETYPE_IMAGE_YX_RATIO_MIN or \
+           ratio > FILETYPE_IMAGE_YX_RATIO_MAX:
+            rratio = f'{ratio:.2f}'
+            raise ValidationError(f'Image have invalid y / w ratio {rratio}. \
+                                    Min {FILETYPE_IMAGE_YX_RATIO_MIN} - \
+                                    Max {FILETYPE_IMAGE_YX_RATIO_MAX}')
