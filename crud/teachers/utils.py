@@ -1,4 +1,6 @@
 from organizational_area.models import OrganizationalStructureOfficeEmployee
+
+from ricerca_app.models import Personale
 from ricerca_app.utils import decrypt
 
 from .. utils.settings import *
