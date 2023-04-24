@@ -7,6 +7,8 @@ from .. utils.settings import *
 
 
 def can_manage_teacher(user, teacher_code):
+    if not user or not user.is_authenticated: return False
+
     # se l'utente è un superuser
     if user.is_superuser:
         return True
