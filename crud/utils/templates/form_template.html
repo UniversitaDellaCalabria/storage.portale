@@ -2,6 +2,9 @@
 {% load crud_templatetags %}
 {% load static %}
 
+{% load crud_templatetags %}
+
+
 {% random_id uid as id %}
 
 <div id="{{ id }}">
@@ -76,5 +79,19 @@ var {{ id }} = new Vue({
         },
     }
 })
+</script>
+
+<!-- datetime picker -->
+<script>
+{% settings_value "JS_DEFAULT_DATETIME_FORMAT" as js_default_datetime_value %}
+{% settings_value "LANGUAGE_CODE" as language_code %}
+
+$(function () {
+    $('.ricerca-crud-datetimepicker').datetimepicker({
+        format:"{{ js_default_datetime_value }}",
+        showTodayButton:true,
+        locale: "{{ language_code }}"
+    });
+});
 </script>
 {{ form.media }}

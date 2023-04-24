@@ -1,0 +1,9 @@
+<div class="ricerca-crud-datetimepicker-wrapper">
+    <input type="{{ widget.type }}"
+           name="{{ widget.name }}"
+           class="form-control ricerca-crud-datetimepicker"
+           {% if widget.value != None %}
+           value="{{ widget.value|stringformat:'s' }}"
+           {% endif %}
+           {% include "django/forms/widgets/attrs.html" %}>
+</div>

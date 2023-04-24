@@ -141,11 +141,20 @@ DATABASES = {
 if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
     DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
-# needed for ldap admin forms
-DATETIME_INPUT_FORMATS = ['%Y-%m-%d %H:%M:%S',
-                          '%d/%m/%Y %H:%M:%S']
+# custom date/datetime format
+DEFAULT_DATE_FORMAT = '%d/%m/%Y'
+DEFAULT_TIME_FORMAT = '%H:%M'
+DEFAULT_DATETIME_FORMAT = f'{DEFAULT_DATE_FORMAT} {DEFAULT_TIME_FORMAT}'
 
-DATE_INPUT_FORMATS = ['%Y-%m-%d', '%d/%m/%Y']
+# override globals
+DATE_INPUT_FORMATS = [DEFAULT_DATE_FORMAT, '%Y-%m-%d']
+DATETIME_INPUT_FORMATS = [DEFAULT_DATETIME_FORMAT, f'%Y-%m-%d {DEFAULT_TIME_FORMAT}']
+
+# for javascript datepickers
+# BootstrapItalia datepicker
+JS_DEFAULT_DATE_FORMAT = "dd/MM/yyyy"
+# Cutstom datetimepicker
+JS_DEFAULT_DATETIME_FORMAT = 'DD/MM/YYYY HH:mm'
 
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 

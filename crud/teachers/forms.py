@@ -11,6 +11,7 @@ from ricerca_app.models import (DocenteMaterialeDidattico,
                                 DocentePtaBacheca)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
+from .. utils.widgets import RicercaCRUDDateTimeWidget
 
 
 CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
@@ -46,8 +47,10 @@ class DocentePtaBachecaForm(forms.ModelForm):
                    'testo': CKEditorWidget(),
                    'testo_en': CKEditorWidget(),
                    # 'dt_pubblicazione': BootstrapItaliaDateWidget,
-                   'dt_inizio_validita': BootstrapItaliaDateWidget,
-                   'dt_fine_validita': BootstrapItaliaDateWidget}
+                   # 'dt_inizio_validita': BootstrapItaliaDateWidget,
+                   'dt_inizio_validita': RicercaCRUDDateTimeWidget(),
+                   # 'dt_fine_validita': BootstrapItaliaDateWidget}
+                   'dt_fine_validita': RicercaCRUDDateTimeWidget}
 
     class Media:
         js = ('js/textarea-autosize.js',)
