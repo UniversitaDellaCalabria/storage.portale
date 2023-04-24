@@ -2264,7 +2264,7 @@ class ServiceDocente:
         if not can_manage_teacher(user, teacher):
             query_is_active = Q(attivo=True)
             query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
-            query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_inizio_validita__gt=datetime.datetime.now())
+            query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_fine_validita__gt=datetime.datetime.now())
 
         if search:
             for k in search.split(" "): # pragma: no cover
@@ -2308,7 +2308,7 @@ class ServiceDocente:
         if not can_manage_teacher(user, teacher):
             query_is_active = Q(attivo=True)
             query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
-            query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_inizio_validita__gt=datetime.datetime.now())
+            query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_fine_validita__gt=datetime.datetime.now())
 
         if search:
             for k in search.split(" "): # pragma: no cover
