@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 
@@ -104,7 +105,8 @@ def teacher_other_data_edit(request,
                                        files=request.FILES)
         if form.is_valid():
             form.save(commit=False)
-            other_data.user_mod = request.user
+            other_data.user_mod_id = request.user
+            other_data.dt_mod = timezone.localtime()
             other_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -163,6 +165,8 @@ def teacher_other_data_new(request, code, my_offices=None, teacher=None,
         if form.is_valid():
             data = form.save(commit=False)
             data.matricola = teacher
+            data.user_mod_id = request.user
+            data.dt_mod = datetime.datetime.now()
             data.save()
 
             log_action(user=request.user,
@@ -238,7 +242,8 @@ def teacher_board_data_edit(request, code, data_id,
         form = DocentePtaBachecaForm(instance=board, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            board.user_mod = request.user
+            board.user_mod_id = request.user
+            board.dt_mod = datetime.datetime.now()
             board.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -290,7 +295,10 @@ def teacher_board_data_new(request, code, my_offices=None, teacher=None,
 
         if form.is_valid():
             board = form.save(commit=False)
-            board.matricola=teacher
+            board.matricola = teacher
+            board.user_mod_id = request.user
+            board.dt_mod = datetime.datetime.now()
+            board.dt_pubblicazione = datetime.datetime.now()
             board.save()
 
             log_action(user=request.user,
@@ -365,7 +373,8 @@ def teacher_materials_data_edit(request, code, data_id,
                                              data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            material.user_mod = request.user
+            material.user_mod_id = request.user
+            material.dt_mod = datetime.datetime.now()
             material.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -418,6 +427,9 @@ def teacher_materials_data_new(request, code, my_offices=None, teacher=None,
         if form.is_valid():
             material = form.save(commit=False)
             material.matricola = teacher
+            material.user_mod_id = request.user
+            material.dt_mod = datetime.datetime.now()
+            material.dt_pubblicazione = datetime.datetime.now()
             material.save()
 
             log_action(user=request.user,

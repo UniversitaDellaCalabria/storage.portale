@@ -9,7 +9,7 @@
    data-toggle="modal"
    data-target="#delete_project">
     <svg class="icon icon-xs icon-white">
-        <use xlink:href="{% static 'svg/sprites.svg' %}#it-delete"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
     </svg> {% trans "Remove" %}
 </a>
 <div class="modal fade"
@@ -28,7 +28,7 @@
                         data-dismiss="modal"
                         aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -76,7 +76,7 @@
                         <td>
                             <a href="{% url 'crud_projects:crud_project_structure_data_edit' code=project.pk data_id=structure_data.pk %}" class="d-flex btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
                         </td>
@@ -86,7 +86,7 @@
         {#                       data-toggle="modal"#}
         {#                       data-target="#delete_unical_referent">#}
         {#                        <svg class="icon icon-xs icon-white">#}
-        {#                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-delete"></use>#}
+        {#                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>#}
         {#                        </svg> {% trans "Remove" %}#}
         {#                    </a>#}
         {#                    <div class="modal fade"#}
@@ -105,7 +105,7 @@
         {#                                            data-dismiss="modal"#}
         {#                                            aria-label="Close">#}
         {#                                       <svg class="icon">#}
-        {#                                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>#}
+        {#                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>#}
         {#                                       </svg>#}
         {#                                    </button>#}
         {#                                </div>#}
@@ -151,7 +151,7 @@
                         <td>
                             <a href="{% url 'crud_projects:crud_project_director_data' code=project.pk  director_id=director.pk %}" class="d-flex btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
                         </td>
@@ -160,7 +160,7 @@
                                data-toggle="modal"
                                data-target="#delete_director_{{ director.pk }}">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-delete"></use>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
                         </td>
@@ -181,7 +181,7 @@
                                             data-dismiss="modal"
                                             aria-label="Close">
                                        <svg class="icon">
-                                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                                        </svg>
                                     </button>
                                 </div>
@@ -205,7 +205,7 @@
             {% endif %}
             <a href="{% url 'crud_projects:crud_project_director_new' code=project.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
         </div>
@@ -232,7 +232,7 @@
                         <td>
                             <a href="{% url 'crud_projects:crud_project_researcher_data' code=project.pk  researcher_id=researcher.pk %}" class="d-flex btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
                         </td>
@@ -241,7 +241,7 @@
                                data-toggle="modal"
                                data-target="#delete_researcher_{{ researcher.pk }}">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-delete"></use>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
                         </td>
@@ -262,7 +262,7 @@
                                             data-dismiss="modal"
                                             aria-label="Close">
                                        <svg class="icon">
-                                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                                        </svg>
                                     </button>
                                 </div>
@@ -286,7 +286,7 @@
             {% endif %}
             <a href="{% url 'crud_projects:crud_project_researcher_new' code=project.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
         </div>

@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from django.contrib import messages
@@ -82,6 +83,8 @@ def phd_new(request, my_offices=None):
                     raise Exception(
                         _("Add a teacher belonging to your structure"))
 
+            phd.user_mod_id = request.user
+            phd.dt_mod = datetime.datetime.now()
             phd = form.save()
 
             new_teacher = DidatticaDottoratoAttivitaFormativaDocente.objects.create(id_didattica_dottorato_attivita_formativa=phd,
@@ -139,7 +142,8 @@ def phd(request, code, my_offices=None, phd=None,
 
         if form.is_valid():
             form.save(commit=False)
-            phd.user_mod = request.user
+            phd.user_mod_id = request.user
+            phd.dt_mod = datetime.datetime.now()
             phd.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -272,6 +276,8 @@ def phd_main_teacher_data_edit(request, code, teacher_id, teachers=None,
             teacher_phd.matricola = new_teacher
             if not teacher_phd.cognome_nome_origine:
                 teacher_phd.cognome_nome_origine = f'{new_teacher.cognome} {new_teacher.nome}'
+            teacher_phd.user_mod_id = request.user
+            teacher_phd.dt_mod = datetime.datetime.now()
             teacher_phd.save()
 
             if teacher and teacher == new_teacher:
@@ -328,6 +334,10 @@ def phd_main_teacher_new(request, code, my_offices=None,
                     id_didattica_dottorato_attivita_formativa=phd,
                     cognome_nome_origine=form.cleaned_data['cognome_nome_origine']
                 )
+
+                d.user_mod_id = request.user
+                d.dt_mod = datetime.datetime.now()
+
                 teacher_code = decrypt(form.cleaned_data['choosen_person'])
                 if teacher_code:
                     teacher = get_object_or_404(Personale, matricola=teacher_code)
@@ -491,6 +501,8 @@ def phd_other_teacher_data_edit(request, code, teacher_id, teachers,
             other_teacher_phd.matricola = new_teacher
             if not other_teacher_phd.cognome_nome_origine:
                 other_teacher_phd.cognome_nome_origine = f'{new_teacher.cognome} {new_teacher.nome}'
+            other_teacher_phd.user_mod_id = request.user
+            other_teacher_phd.dt_mod = datetime.datetime.now()
             other_teacher_phd.save()
 
             if teacher and teacher == new_teacher:
@@ -548,6 +560,10 @@ def phd_other_teacher_new(request, code, my_offices=None,
                     id_didattica_dottorato_attivita_formativa=phd,
                     cognome_nome_origine=form.cleaned_data['cognome_nome_origine']
                 )
+
+                p.user_mod_id = request.user
+                p.dt_mod = datetime.datetime.now()
+
                 teacher_code = decrypt(form.cleaned_data['choosen_person'])
                 if teacher_code:
                     teacher = get_object_or_404(Personale, matricola=teacher_code)

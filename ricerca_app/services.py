@@ -2,8 +2,11 @@ import datetime
 import operator
 import re
 
+from django.conf import settings
 from django.db.models import CharField, Q, Value, F
 from django.http import Http404
+
+from crud.teachers.utils import can_manage_teacher
 
 from functools import reduce
 
@@ -2251,9 +2254,17 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getDocenteMaterials(teacher, search=None):
+    def getDocenteMaterials(user, teacher, search=None):
 
         query_search = Q()
+        query_is_active = Q()
+        query_is_started = Q()
+        query_is_end = Q()
+
+        if not can_manage_teacher(user, teacher):
+            query_is_active = Q(attivo=True)
+            query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
+            query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_inizio_validita__gt=datetime.datetime.now())
 
         if search:
             for k in search.split(" "): # pragma: no cover
@@ -2262,8 +2273,10 @@ class ServiceDocente:
                     titolo_en__icontains=k)
 
         query = DocenteMaterialeDidattico.objects.filter(query_search,
-                                                         matricola__exact=teacher,
-                                                         attivo=True).values(
+                                                         query_is_active,
+                                                         query_is_started,
+                                                         query_is_end,
+                                                         matricola__exact=teacher).values(
             'id',
             'titolo',
             'titolo_en',
@@ -2285,9 +2298,17 @@ class ServiceDocente:
 
 
     @staticmethod
-    def getDocenteNews(teacher, search=None):
+    def getDocenteNews(user, teacher, search=None):
 
         query_search = Q()
+        query_is_active = Q()
+        query_is_started = Q()
+        query_is_end = Q()
+
+        if not can_manage_teacher(user, teacher):
+            query_is_active = Q(attivo=True)
+            query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
+            query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_inizio_validita__gt=datetime.datetime.now())
 
         if search:
             for k in search.split(" "): # pragma: no cover
@@ -2295,9 +2316,12 @@ class ServiceDocente:
                     titolo__icontains=k) | Q(
                     titolo_en__icontains=k)
 
+
         query = DocentePtaBacheca.objects.filter(query_search,
-                                                 matricola__exact=teacher,
-                                                 attivo=True).values(
+                                                 query_is_active,
+                                                 query_is_started,
+                                                 query_is_end,
+                                                 matricola__exact=teacher).values(
             'id',
             'tipo_testo',
             'tipo_testo_en',

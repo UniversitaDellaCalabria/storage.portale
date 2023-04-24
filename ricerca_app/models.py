@@ -856,7 +856,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
     note = models.TextField(db_column='NOTE', blank=True, null=True)  # Field name made lowercase.
     visualizza_orario = models.BooleanField(db_column='VISUALIZZA_ORARIO',default=False)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
-    user_mod_id = models.IntegerField(blank=True, null=True)
+    user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -869,7 +869,7 @@ class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
     matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola', blank=True, null=True)  # Field name made lowercase.
     cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
-    user_mod_id = models.IntegerField(blank=True, null=True)
+    user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -882,7 +882,7 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola', blank=True, null=True)  # Field name made lowercase.
     cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
-    user_mod_id = models.IntegerField(blank=True, null=True)
+    user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -1364,6 +1364,7 @@ class DocenteMaterialeDidattico(models.Model):
     dt_inizio_validita = models.DateField(db_column='DT_INIZIO_VALIDITA')  # Field name made lowercase.
     dt_fine_validita = models.DateField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -1404,6 +1405,7 @@ class DocentePtaAltriDati(models.Model):
     orario_ricevimento_en = models.TextField(db_column='ORARIO_RICEVIMENTO_EN', blank=True, null=True)  # Field name made lowercase.
     orcid = models.CharField(validators=[orcid_validator], db_column='ORCID', max_length=100, blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -1427,6 +1429,7 @@ class DocentePtaBacheca(models.Model):
     dt_inizio_validita = models.DateField(db_column='DT_INIZIO_VALIDITA')  # Field name made lowercase.
     dt_fine_validita = models.DateField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
     class Meta:
         managed = True

@@ -38,13 +38,14 @@ class DocentePtaBachecaForm(forms.ModelForm):
         model = DocentePtaBacheca
         fields = ['tipo_testo', 'tipo_testo_en','titolo', 'titolo_en',
                   'testo', 'testo_en', 'url_testo', 'url_testo_en',
-                  'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita',
+                  #'dt_pubblicazione',
+                  'dt_inizio_validita', 'dt_fine_validita',
                   'ordine', 'attivo']
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
                    'titolo_en': forms.Textarea(attrs={'rows': 2}),
                    'testo': CKEditorWidget(),
                    'testo_en': CKEditorWidget(),
-                   'dt_pubblicazione': BootstrapItaliaDateWidget,
+                   # 'dt_pubblicazione': BootstrapItaliaDateWidget,
                    'dt_inizio_validita': BootstrapItaliaDateWidget,
                    'dt_fine_validita': BootstrapItaliaDateWidget}
 
@@ -57,13 +58,14 @@ class DocenteMaterialeDidatticoForm(forms.ModelForm):
         model = DocenteMaterialeDidattico
         fields = ['titolo', 'titolo_en', 'testo', 'testo_en',
                   'url_testo', 'url_testo_en',
-                  'dt_pubblicazione', 'dt_inizio_validita', 'dt_fine_validita',
+                  # 'dt_pubblicazione',
+                  'dt_inizio_validita', 'dt_fine_validita',
                   'ordine', 'attivo',]
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
                    'titolo_en': forms.Textarea(attrs={'rows': 2}),
                    'testo': CKEditorWidget(),
                    'testo_en': CKEditorWidget(),
-                   'dt_pubblicazione': BootstrapItaliaDateWidget,
+                   # 'dt_pubblicazione': BootstrapItaliaDateWidget,
                    'dt_inizio_validita': BootstrapItaliaDateWidget,
                    'dt_fine_validita': BootstrapItaliaDateWidget}
 

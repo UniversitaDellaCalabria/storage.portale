@@ -17,7 +17,7 @@
         {% endif %}
         {% if not field.field.api %}
             {% if field.field.widget.input_type == 'select' %}
-                <select name="{{ field.name }}" class="form-control" id="id_{{ field.name }}">
+                <select name="{{ field.name }}" class="form-control" id="id_{{ field.name }}" {% if field.field.required %}required{% endif %}>
                     {% for choice in field.field.choices %}
                     <option value="{{ choice.0 }}" {% if field.value == choice.0 %}selected{% endif %}>
                         {{ choice.1 }}
