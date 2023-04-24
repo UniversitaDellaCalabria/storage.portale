@@ -1360,9 +1360,9 @@ class DocenteMaterialeDidattico(models.Model):
     url_testo_en = models.CharField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
     attivo = models.BooleanField(db_column='ATTIVO')  # Field name made lowercase.
-    dt_pubblicazione = models.DateField(db_column='DT_PUBBLICAZIONE')  # Field name made lowercase.
-    dt_inizio_validita = models.DateField(db_column='DT_INIZIO_VALIDITA')  # Field name made lowercase.
-    dt_fine_validita = models.DateField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
+    dt_pubblicazione = models.DateTimeField(db_column='DT_PUBBLICAZIONE', blank=True, null=True)  # Field name made lowercase.
+    dt_inizio_validita = models.DateTimeField(db_column='DT_INIZIO_VALIDITA', blank=True, null=True)  # Field name made lowercase.
+    dt_fine_validita = models.DateTimeField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
@@ -1425,9 +1425,9 @@ class DocentePtaBacheca(models.Model):
     url_testo_en = models.CharField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
     attivo = models.BooleanField(db_column='ATTIVO')  # Field name made lowercase.
-    dt_pubblicazione = models.DateField(db_column='DT_PUBBLICAZIONE')  # Field name made lowercase.
-    dt_inizio_validita = models.DateField(db_column='DT_INIZIO_VALIDITA')  # Field name made lowercase.
-    dt_fine_validita = models.DateField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
+    dt_pubblicazione = models.DateTimeField(db_column='DT_PUBBLICAZIONE', blank=True, null=True)  # Field name made lowercase.
+    dt_inizio_validita = models.DateTimeField(db_column='DT_INIZIO_VALIDITA', blank=True, null=True)  # Field name made lowercase.
+    dt_fine_validita = models.DateTimeField(db_column='DT_FINE_VALIDITA', blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 

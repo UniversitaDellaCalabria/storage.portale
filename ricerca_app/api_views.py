@@ -607,6 +607,7 @@ class ApiTeacherNews(ApiEndpointList):
 
         return ServiceDocente.getDocenteNews(self.request.user, teacherid, search)
 
+
 class TeachingCoveragesInfo(AutoSchema):
     def get_operation_id(self, path, method):
         return 'retrieveTeachingCoverageInfo'
