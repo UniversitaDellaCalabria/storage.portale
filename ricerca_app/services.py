@@ -704,6 +704,7 @@ class ServiceDidatticaCds:
             q['lingua_it'] = languages_it
             q['lingua_en'] = languages_en
 
+
             ex_studenti = SitoWebCdsExStudenti.objects.filter(
                 id_sito_web_cds_dati_base__exact=q['id']).values(
                 'id',
