@@ -5770,8 +5770,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             'nome_corso_en': 'Computer Science',
             'lingua_it': 'italiano',
             'lingua_en': "italian",
-            'durata_it': '50 ore',
-            'durata_en': '50 hours',
+            'durata': 50,
             'num_posti': 50
         })
 
@@ -5832,8 +5831,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             'nome_corso_en': 'Computer Science',
             'lingua_it': 'italiano',
             'lingua_en': "italian",
-            'durata_it': '50 ore',
-            'durata_en': '50 hours',
+            'durata': 50,
             'num_posti': 50
         })
 
