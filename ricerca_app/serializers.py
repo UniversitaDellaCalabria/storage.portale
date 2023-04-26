@@ -22,6 +22,15 @@ TEACHER_CV_EN_MEDIA_PATH = getattr(settings, 'TEACHER_CV_EN_MEDIA_PATH', TEACHER
 TEACHER_CV_IT_MEDIA_PATH = getattr(settings, 'TEACHER_CV_IT_MEDIA_PATH', TEACHER_CV_IT_MEDIA_PATH)
 TEACHER_PHOTO_MEDIA_PATH = getattr(settings, 'TEACHER_PHOTO_MEDIA_PATH', TEACHER_PHOTO_MEDIA_PATH)
 
+def _get_teacher_obj_publication_date(teacher_dict):
+    if not teacher_dict['dt_pubblicazione']: return None
+    if not teacher_dict['dt_inizio_validita']: return teacher_dict['dt_pubblicazione']
+    if not teacher_dict['dt_pubblicazione']: return teacher_dict['dt_inizio_validita']
+    if teacher_dict['dt_pubblicazione'] > teacher_dict['dt_inizio_validita']:
+        return teacher_dict['dt_pubblicazione']
+    return teacher_dict['dt_inizio_validita']
+
+
 
 class CreateUpdateAbstract(serializers.Serializer):
     def create(self, validated_data):
@@ -1106,10 +1115,7 @@ class TeacherMaterialsSerializer(CreateUpdateAbstract):
                 'TextUrl': query['url_testo'] if req_lang == "it" or query['url_testo_en'] is None else query['url_testo_en'],
                 'Order': query['ordine'],
                 'Active': query['attivo'],
-                'TeacherID': encrypt(query['DocenteRiferimentoId']),
-                'PublicationDate': query['dt_pubblicazione'],
-                'ValidityStartDate': query['dt_inizio_validita'],
-                'ValidityEndDate': query['dt_fine_validita'],
+                'PublicationDate': _get_teacher_obj_publication_date(query),
         }
 
 
@@ -1123,7 +1129,6 @@ class TeacherNewsSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
-
         return {
                 'ID': query['id'],
                 'Title': query['titolo'] if req_lang == "it" or query['titolo_en'] is None else query['titolo_en'],
@@ -1132,9 +1137,7 @@ class TeacherNewsSerializer(CreateUpdateAbstract):
                 'TextUrl': query['url_testo'] if req_lang == "it" or query['url_testo_en'] is None else query['url_testo_en'],
                 'Order': query['ordine'],
                 'Active': query['attivo'],
-                'PublicationDate': query['dt_pubblicazione'],
-                'ValidityStartDate': query['dt_inizio_validita'],
-                'ValidityEndDate': query['dt_fine_validita'],
+                'PublicationDate': _get_teacher_obj_publication_date(query),
         }
 
 class PhdSerializer(CreateUpdateAbstract):

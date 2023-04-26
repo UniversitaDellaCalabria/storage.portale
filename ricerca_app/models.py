@@ -1369,6 +1369,7 @@ class DocenteMaterialeDidattico(models.Model):
     class Meta:
         managed = True
         db_table = 'DOCENTE_MATERIALE_DIDATTICO'
+        ordering = ('ordine', '-dt_pubblicazione', '-dt_inizio_validita')
 
 
 class DocentePtaAltriDati(models.Model):
@@ -1434,7 +1435,7 @@ class DocentePtaBacheca(models.Model):
     class Meta:
         managed = True
         db_table = 'DOCENTE_PTA_BACHECA'
-
+        ordering = ('ordine', '-dt_pubblicazione', '-dt_inizio_validita')
 
 
 class UnitaOrganizzativa(models.Model):
