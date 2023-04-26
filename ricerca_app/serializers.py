@@ -282,7 +282,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             'CDSCourseClassName': query['classe_laurea_it'] if req_lang=='it' or query['classe_laurea_en'] is None else query['classe_laurea_en'],
             'CDSCourseInterClassDes': query['classe_laurea_interclasse_it'] if req_lang=='it' or query['classe_laurea_interclasse_en'] is None else query['classe_laurea_interclasse_en'],
             'CDSLanguage': query['lingua_it'] if req_lang=='it' or query['lingua_en'] is None else query['lingua_en'],
-            'CDSDuration': query['durata_it'][0] if req_lang == 'it' or query['durata_en'][0] is None else query['durata_en'][0],
+            'CDSDuration': query['durata'],
             'CDSSeatsNumber': query['num_posti'],
             'RegDidId': query['id_didattica_regolamento'],
             'CDSVideo': query['link_video_cds_it'] if req_lang=='it' or query['link_video_cds_en'] is None else query['link_video_cds_en'],

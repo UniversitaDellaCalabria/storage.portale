@@ -565,8 +565,7 @@ class ServiceDidatticaCds:
             "classe_laurea_interclasse_en",
             "lingua_it",
             "lingua_en",
-            "durata_it",
-            "durata_en",
+            "durata",
             "num_posti",
             "link_video_cds_it",
             "link_video_cds_en",
@@ -600,14 +599,12 @@ class ServiceDidatticaCds:
 
         for q in query:
 
-            language_it = q['lingua_it']
-            language_en = q['lingua_en']
-            pattern = r's:[0-9]+:\"([a-z]+)\"'
-            languages_it = re.findall(pattern, language_it)
-            languages_en = re.findall(pattern, language_en)
+            languages_it = q['lingua_it'].split(', ')
+            languages_en = q['lingua_en'].split(', ')
 
             q['lingua_it'] = languages_it
             q['lingua_en'] = languages_en
+
 
             ex_studenti = SitoWebCdsExStudenti.objects.filter(
                 id_sito_web_cds_dati_base__exact=q['id']).values(
@@ -667,8 +664,7 @@ class ServiceDidatticaCds:
             "classe_laurea_interclasse_en",
             "lingua_it",
             "lingua_en",
-            "durata_it",
-            "durata_en",
+            "durata",
             "num_posti",
             "link_video_cds_it",
             "link_video_cds_en",
@@ -702,11 +698,8 @@ class ServiceDidatticaCds:
         query = list(query)
         for q in query:
 
-            language_it = q['lingua_it']
-            language_en = q['lingua_en']
-            pattern = r's:[0-9]+:\"([a-z]+)\"'
-            languages_it = re.findall(pattern, language_it)
-            languages_en = re.findall(pattern, language_en)
+            languages_it = q['lingua_it'].split(', ')
+            languages_en = q['lingua_en'].split(', ')
 
             q['lingua_it'] = languages_it
             q['lingua_en'] = languages_en
