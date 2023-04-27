@@ -10,6 +10,7 @@ from ricerca_app.services import ServiceDocente
 from ricerca_app.utils import decrypt
 
 from .. utils.settings import *
+from .. utils.utils import custom_message
 
 
 def can_manage_teachers(func_to_decorate):
@@ -38,7 +39,7 @@ def can_manage_teachers(func_to_decorate):
             original_kwargs['my_teacher_profile'] = my_teacher_profile
             return func_to_decorate(*original_args, **original_kwargs)
         except:
-            raise Exception("Permission denied")
+            return custom_message(request, _("Permission denied"))
 
     return new_func
 
@@ -71,6 +72,6 @@ def can_edit_teacher(func_to_decorate):
                     myoffice.office.organizational_structure.unique_code)
         if teacher.sede in departments:
             return func_to_decorate(*original_args, **original_kwargs)
-        raise Exception("Permission denied")
+        return custom_message(request, _("Permission denied"))
 
     return new_func

@@ -1,9 +1,6 @@
 import logging
 import os
 
-from .. utils.forms import ChoosenPersonForm
-from .. utils.utils import log_action
-
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
@@ -16,6 +13,9 @@ from django.utils.translation import gettext_lazy as _
 
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
+
+from .. utils.forms import ChoosenPersonForm
+from .. utils.utils import custom_message, log_action
 
 from . decorators import *
 from . forms import *
@@ -353,7 +353,7 @@ def patent_inventor_delete(request, code, inventor_id,
                                         id_brevetto=code)
 
     if BrevettoInventori.objects.filter(id_brevetto=code).count() == 1:
-        raise Exception(_("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Permission denied. Only one teacher remains"))
 
     log_action(user=request.user,
                obj=patent,

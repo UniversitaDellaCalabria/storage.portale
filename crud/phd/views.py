@@ -16,7 +16,7 @@ from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
 from .. utils.forms import ChoosenPersonForm
-from .. utils.utils import log_action
+from .. utils.utils import custom_message, log_action
 
 from . decorators import *
 from . forms import *
@@ -392,7 +392,7 @@ def phd_main_teacher_delete(request, code, teacher_id,
     other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(id_didattica_dottorato_attivita_formativa=code)
 
     if main_teachers.count() == 1 and not other_teachers:
-        raise Exception(_("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Permission denied. Only one teacher remains"))
 
     log_action(user=request.user,
                obj=phd,
@@ -614,7 +614,7 @@ def phd_other_teacher_delete(request, code, teacher_id,
     other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(id_didattica_dottorato_attivita_formativa=code)
 
     if other_teachers.count() == 1 and not main_teachers:
-        raise Exception(_("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Permission denied. Only one teacher remains"))
 
     log_action(user=request.user,
                obj=phd,

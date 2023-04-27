@@ -10,6 +10,7 @@ from ricerca_app.services import ServiceDocente
 from ricerca_app.utils import decrypt
 
 from .. utils.settings import *
+from .. utils.utils import custom_message
 
 
 def can_manage_researchgroups(func_to_decorate):
@@ -26,7 +27,7 @@ def can_manage_researchgroups(func_to_decorate):
                                                                           office__is_active=True,
                                                                           office__organizational_structure__is_active=True)
         if not my_offices:
-            raise Exception("Permission denied")
+            return custom_message(request, _("Permission denied"))
         original_kwargs['my_offices'] = my_offices
         return func_to_decorate(*original_args, **original_kwargs)
 
@@ -60,6 +61,6 @@ def can_edit_researchgroup(func_to_decorate):
             if teacher.dt_fine and teacher.dt_fine < now:
                 continue
             return func_to_decorate(*original_args, **original_kwargs)
-        raise Exception("Permission denied")
+        return custom_message(request, _("Permission denied"))
 
     return new_func

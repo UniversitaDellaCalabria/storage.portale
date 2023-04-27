@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import render
 
 
 def log_action(user, obj, flag, msg):
@@ -21,3 +23,20 @@ def _clean_teacher_dates(obj, cleaned_data):
                       _("Start date is greater than end date"))
         obj.add_error('dt_fine',
                       _("Start date is greater than end date"))
+
+
+def base_context(context):
+    context['base_template'] = getattr(settings,
+                                       'DEFAULT_BASE_TEMPLATE',
+                                       '')
+    return context
+
+
+def custom_message(request, message="", status=None):
+    """ """
+    return render(
+        request,
+        "custom_message.html",
+        base_context({"avviso": message}),
+        status=status,
+    )
