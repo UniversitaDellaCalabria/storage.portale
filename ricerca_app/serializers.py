@@ -1269,9 +1269,8 @@ class PersonaleSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
-        full_name = query['cognome'] + " " + query['nome'] + \
-            (" " + query['middle_name']
-             if query['middle_name'] is not None else "")
+        middle_name = f" {query['middle_name']} " if query['middle_name'] else " "
+        full_name = f"{query['name']}{query['middle_name']}{query['cognome']}"
         functions = None
         if query["Functions"] is not None:
             functions = PersonaleSerializer.to_dict_functions(
