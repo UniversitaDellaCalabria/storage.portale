@@ -106,7 +106,7 @@ def teacher_other_data_edit(request,
         if form.is_valid():
             form.save(commit=False)
             other_data.user_mod_id = request.user
-            other_data.dt_mod = timezone.localtime()
+            other_data.dt_mod = datetime.datetime.now()
             other_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
