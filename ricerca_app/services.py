@@ -6,8 +6,6 @@ from django.conf import settings
 from django.db.models import CharField, Q, Value, F
 from django.http import Http404
 
-from crud.teachers.utils import can_manage_teacher
-
 from functools import reduce
 
 from .models import DidatticaCds, DidatticaAttivitaFormativa, \
@@ -2251,14 +2249,16 @@ class ServiceDocente:
     def getDocenteMaterials(user, teacher, search=None):
 
         query_search = Q()
-        query_is_active = Q()
-        query_is_started = Q()
-        query_is_end = Q()
+        query_is_active = Q(attivo=True)
+        query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
+        query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_fine_validita__gt=datetime.datetime.now())
 
-        if not can_manage_teacher(user, teacher):
-            query_is_active = Q(attivo=True)
-            query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
-            query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_fine_validita__gt=datetime.datetime.now())
+        if 'crud.teachers' in settings.INSTALLED_APPS:
+            from crud.teachers.utils import can_manage_teacher
+            if can_manage_teacher(user, teacher):
+                query_is_active = Q()
+                query_is_started = Q()
+                query_is_end = Q()
 
         if search:
             for k in search.split(" "): # pragma: no cover
@@ -2295,14 +2295,16 @@ class ServiceDocente:
     def getDocenteNews(user, teacher, search=None):
 
         query_search = Q()
-        query_is_active = Q()
-        query_is_started = Q()
-        query_is_end = Q()
+        query_is_active = Q(attivo=True)
+        query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
+        query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_fine_validita__gt=datetime.datetime.now())
 
-        if not can_manage_teacher(user, teacher):
-            query_is_active = Q(attivo=True)
-            query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
-            query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_fine_validita__gt=datetime.datetime.now())
+        if 'crud.teachers' in settings.INSTALLED_APPS:
+            from crud.teachers.utils import can_manage_teacher
+            if can_manage_teacher(user, teacher):
+                query_is_active = Q()
+                query_is_started = Q()
+                query_is_end = Q()
 
         if search:
             for k in search.split(" "): # pragma: no cover
