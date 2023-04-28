@@ -88,10 +88,11 @@ def project_new(request, my_offices=None):
 
             # responsabile del progetto
             p = ProgettoResponsabileScientifico.objects.create(id_progetto=project,
-                                                               nome_origine=director_form.cleaned_data['choosen_person'],
+                                                               nome_origine=director_form.cleaned_data['nome_origine'],
                                                                matricola=director)
-            if director and not director_form.cleaned_data['choosen_person']:
+            if director and not director_form.cleaned_data['nome_origine']:
                 p.nome_origine = f'{director.nome} {director.cognome}'
+                p.save()
 
             log_action(user=request.user,
                        obj=project,

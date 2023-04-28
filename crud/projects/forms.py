@@ -26,7 +26,6 @@ class ProgettoDatiBaseForm(forms.ModelForm):
                    'descr_breve': CKEditorWidget(),
                    'abstract_ita': CKEditorWidget(),
                    'abstract_eng': CKEditorWidget(),
-                   'anno_avvio': BootstrapItaliaDateWidget,
                    'uo': forms.HiddenInput()}
 
     class Media:

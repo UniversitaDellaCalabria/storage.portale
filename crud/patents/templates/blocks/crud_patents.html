@@ -84,7 +84,7 @@
                             <div class="card-body p-3">
                                 <div class="row">
                                     <div class="col-12 col-lg-2 mr-lg-3 mb-3 mb-lg-0" v-if="item.PatentImage">
-                                        <img :src="'{{ api_root }}'+item.PatentImage" class="w-100"/>
+                                        <img :src="item.PatentImage" class="w-100"/>
                                     </div>
                                     <div class="col">
                                         <h5><b>[[ item.PatentTitle ]]</b></h5>

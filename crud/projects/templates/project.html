@@ -145,7 +145,8 @@
                         <td>
                                 {{ director.nome_origine|default:"-" }}
                                 {% if director.matricola %}
-                                    ({{ director.matricola|default:"-" }})
+                                    <br>
+                                    ({% trans "Link to" %}: {{ director.matricola|default:"-" }})
                                 {% endif %}
                             </td>
                         <td>
