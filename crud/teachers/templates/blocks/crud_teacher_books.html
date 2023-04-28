@@ -40,8 +40,6 @@
                         <tr>
                             <th>{% trans "Title" %}</th>
                             <th>{% trans "Publication" %}</th>
-                            <th>{% trans "Valid from" %}</th>
-                            <th>{% trans "Valid until" %}</th>
                             <th>{% trans "Order" %}</th>
                             <th>{% trans "Active" %}</th>
                             <th></th>
@@ -53,22 +51,6 @@
                             <td>[[ item.Title ]]</td>
                             <td>
                                 [[ new Date(item.PublicationDate).toLocaleString("{{ LANGUAGE_CODE }}",
-                                                                                    {day: '2-digit',
-                                                                                     month: '2-digit',
-                                                                                     year: 'numeric',
-                                                                                     hour: 'numeric',
-                                                                                     minute: 'numeric'})]]
-                            </td>
-                            <td>
-                                [[ new Date(item.ValidityStartDate).toLocaleString("{{ LANGUAGE_CODE }}",
-                                                                                    {day: '2-digit',
-                                                                                     month: '2-digit',
-                                                                                     year: 'numeric',
-                                                                                     hour: 'numeric',
-                                                                                     minute: 'numeric'})]]
-                            </td>
-                            <td>
-                                [[ new Date(item.ValidityEndDate).toLocaleString("{{ LANGUAGE_CODE }}",
                                                                                     {day: '2-digit',
                                                                                      month: '2-digit',
                                                                                      year: 'numeric',
