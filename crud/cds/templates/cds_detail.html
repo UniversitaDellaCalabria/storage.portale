@@ -156,15 +156,13 @@
                             <td>{{ data.piano|default:"-" }}</td>
                             <td>{{ data.orari|default:"-" }}</td>
                             <td>{{ data.sportello_online|default:"-" }}</td>
-                            <td>
-                                <a href="{% url 'crud_cds:crud_cds_office_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="d-flex btn btn-primary btn-xs">
+                            <td class="text-right">
+                                <a href="{% url 'crud_cds:crud_cds_office_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
                                 </a>
-                            </td>
-                            <td>
-                                <a href="" class="btn btn-danger btn-xs d-flex"
+                                <a href="" class="btn btn-danger btn-xs"
                                    data-toggle="modal"
                                    data-target="#delete_office_data_{{ data.pk }}">
                                     <svg class="icon icon-xs icon-white">
@@ -172,38 +170,38 @@
                                     </svg> {% trans "Remove" %}
                                 </a>
                                 <div class="modal fade"
-                                     tabindex="-1"
-                                     role="dialog"
-                                     id="delete_office_data_{{ data.pk }}">
-                                    <div class="modal-dialog modal-dialog-centered"
-                                         role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    {% trans "Confirm" %}
-                                                </h5>
-                                                <button class="close"
-                                                        type="button"
-                                                        data-dismiss="modal"
-                                                        aria-label="Close">
-                                                   <svg class="icon">
-                                                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                   </svg>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-                                                    {% trans "Do you want to delete office data set?" %}
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_office_data_delete' regdid_id=regdid.pk data_id=data.pk %}">
-                                                    {% trans 'Yes, proceed' %}
-                                                </a>
-                                            </div>
+                                 tabindex="-1"
+                                 role="dialog"
+                                 id="delete_office_data_{{ data.pk }}">
+                                <div class="modal-dialog modal-dialog-centered text-left"
+                                     role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                               <svg class="icon">
+                                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                               </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete office data set?" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_office_data_delete' regdid_id=regdid.pk data_id=data.pk %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             </td>
                         </tr>
                         {% endfor %}

@@ -76,15 +76,13 @@
                                 ({% trans "Link to" %}: {{ inventor.matricola_inventore|default:"-" }})
                             {% endif %}
                         </td>
-                        <td>
-                            <a href="{% url 'crud_patents:crud_patent_inventor_data' code=patent.pk  inventor_id=inventor.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <td class="text-right">
+                            <a href="{% url 'crud_patents:crud_patent_inventor_data' code=patent.pk  inventor_id=inventor.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
-                        </td>
-                        <td>
-                            <a href="" class="btn btn-danger btn-xs d-flex"
+                            <a href="" class="btn btn-danger btn-xs"
                                data-toggle="modal"
                                data-target="#delete_inventor_{{ inventor.pk }}">
                                 <svg class="icon icon-xs icon-white">

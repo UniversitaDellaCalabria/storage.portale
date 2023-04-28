@@ -91,10 +91,6 @@ def phd_new(request, my_offices=None):
                                                                                     cognome_nome_origine=teacher_form.cleaned_data['cognome_nome_origine'],
                                                                                     matricola=teacher)
 
-            if teacher and not teacher_form.cleaned_data['cognome_nome_origine']:
-                new_teacher.cognome_nome_origine=f'{teacher.nome} {teacher.cognome}'
-                new_teacher.save()
-
             log_action(user=request.user,
                        obj=phd,
                        flag=ADDITION,
@@ -201,10 +197,6 @@ def phd_main_teacher_data(request, code, teacher_id, phd=None,
         if form.is_valid():
             teacher_data.user_mod = request.user
             teacher_data.cognome_nome_origine = form.cleaned_data['cognome_nome_origine']
-
-            if not form.cleaned_data['cognome_nome_origine'] and teacher_data.matricola:
-                teacher_data.cognome_nome_origine = f'{teacher_data.matricola.nome} {teacher_data.matricola.cognome}'
-
             teacher_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -274,8 +266,6 @@ def phd_main_teacher_data_edit(request, code, teacher_id, teachers=None,
             new_teacher = get_object_or_404(Personale,
                                             matricola=teacher_code)
             teacher_phd.matricola = new_teacher
-            if not teacher_phd.cognome_nome_origine:
-                teacher_phd.cognome_nome_origine = f'{new_teacher.cognome} {new_teacher.nome}'
             teacher_phd.user_mod_id = request.user
             teacher_phd.dt_mod = datetime.datetime.now()
             teacher_phd.save()
@@ -342,9 +332,6 @@ def phd_main_teacher_new(request, code, my_offices=None,
                 if teacher_code:
                     teacher = get_object_or_404(Personale, matricola=teacher_code)
                     d.matricola = teacher
-
-                    if not form.cleaned_data['cognome_nome_origine']:
-                        d.cognome_nome_origine =  f'{teacher.nome} {teacher.cognome}'
                     d.save()
 
                 log_action(user=request.user,
@@ -427,10 +414,6 @@ def phd_other_teacher_data(request, code, teacher_id, teachers=None,
         if form.is_valid():
             other_teacher_data.user_mod = request.user
             other_teacher_data.cognome_nome_origine = form.cleaned_data['cognome_nome_origine']
-
-            if not form.cleaned_data['cognome_nome_origine'] and other_teacher_data.matricola:
-                other_teacher_data.cognome_nome_origine = f'{other_teacher_data.matricola.nome} {other_teacher_data.matricola.cognome}'
-
             other_teacher_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -499,8 +482,6 @@ def phd_other_teacher_data_edit(request, code, teacher_id, teachers,
             new_teacher = get_object_or_404(Personale,
                                             matricola=teacher_code)
             other_teacher_phd.matricola = new_teacher
-            if not other_teacher_phd.cognome_nome_origine:
-                other_teacher_phd.cognome_nome_origine = f'{new_teacher.cognome} {new_teacher.nome}'
             other_teacher_phd.user_mod_id = request.user
             other_teacher_phd.dt_mod = datetime.datetime.now()
             other_teacher_phd.save()
@@ -568,8 +549,6 @@ def phd_other_teacher_new(request, code, my_offices=None,
                 if teacher_code:
                     teacher = get_object_or_404(Personale, matricola=teacher_code)
                     p.matricola = teacher
-                    if not form.cleaned_data['cognome_nome_origine']:
-                        p.cognome_nome_origine =  f'{teacher.nome} {teacher.cognome}'
                     p.save()
 
                 log_action(user=request.user,

@@ -18,24 +18,19 @@
                     <tr>
                         <th>{% trans "Link to teacher" %}</th>
                         <th></th>
-                        {% if inventor_data.matricola_inventore %}
-                        <th></th>
-                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>{{ inventor_data.matricola_inventore|default:"-" }}</td>
-                        <td>
-                            <a href="{% url 'crud_patents:crud_patent_inventor_data_edit' code=patent.pk inventor_id=inventor_data.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <td class="text-right">
+                            <a href="{% url 'crud_patents:crud_patent_inventor_data_edit' code=patent.pk inventor_id=inventor_data.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
-                        </td>
-                        {% if inventor_data.matricola_inventore %}
-                        <td>
-                            <a href="" class="btn btn-danger btn-xs d-flex"
+                            {% if inventor_data.matricola_inventore %}
+                            <a href="" class="btn btn-danger btn-xs"
                                data-toggle="modal"
                                data-target="#delete_inventor">
                                 <svg class="icon icon-xs icon-white">
@@ -75,8 +70,8 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                         </td>
-                        {% endif %}
                     </tr>
                 </tbody>
             </table>

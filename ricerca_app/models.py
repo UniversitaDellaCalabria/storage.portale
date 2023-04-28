@@ -867,7 +867,7 @@ class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_didattica_dottorato_attivita_formativa = models.ForeignKey(DidatticaDottoratoAttivitaFormativa, models.CASCADE, db_column='ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA', blank=True, null=True)  # Field name made lowercase.
     matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola', blank=True, null=True)  # Field name made lowercase.
-    cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
@@ -880,7 +880,7 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_didattica_dottorato_attivita_formativa = models.ForeignKey(DidatticaDottoratoAttivitaFormativa, models.CASCADE, db_column='ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA', blank=True, null=True)  # Field name made lowercase.
     matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola', blank=True, null=True)  # Field name made lowercase.
-    cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
@@ -3315,9 +3315,7 @@ class BrevettoInventori(models.Model):
         null=True)  # Field name made lowercase.
     cognomenome_origine = models.CharField(
         db_column='COGNOMENOME_ORIGINE',
-        max_length=200,
-        blank=True,
-        null=True)  # Field name made lowercase.
+        max_length=200)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -3374,10 +3372,13 @@ class SpinoffStartupDatiBase(models.Model):
         null=True)  # Field name made lowercase.
     referente_unical = models.CharField(
         db_column='REFERENTE_UNICAL',
-        max_length=1000,
+        max_length=1000)  # Field name made lowercase.
+    matricola_referente_unical = models.ForeignKey(Personale,
+        models.DO_NOTHING,
+        to_field='matricola',
+        db_column='MATRICOLA_REFERENTE_UNICAL',
         blank=True,
         null=True)  # Field name made lowercase.
-    matricola_referente_unical = models.ForeignKey(Personale, models.DO_NOTHING, to_field='matricola', db_column='MATRICOLA_REFERENTE_UNICAL', blank=True, null=True)  # Field name made lowercase.
     # Field name made lowercase.
     ceo = models.CharField(
         db_column='CEO',
@@ -3500,7 +3501,7 @@ class ProgettoDatiBase(models.Model):
 class ProgettoRicercatore(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     matricola = models.ForeignKey(Personale, models.CASCADE,to_field='matricola', db_column='MATRICOLA', blank=True, null=True)  # Field name made lowercase.
-    nome_origine = models.CharField(db_column='NOME_ORIGINE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    nome_origine = models.CharField(db_column='NOME_ORIGINE', max_length=1000)  # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 
     class Meta:
@@ -3520,9 +3521,7 @@ class ProgettoResponsabileScientifico(models.Model):
         null=True)  # Field name made lowercase.
     nome_origine = models.CharField(
         db_column='NOME_ORIGINE',
-        max_length=1000,
-        blank=True,
-        null=True)  # Field name made lowercase.
+        max_length=1000)  # Field name made lowercase.
     # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 

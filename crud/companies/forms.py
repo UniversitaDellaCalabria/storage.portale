@@ -41,6 +41,9 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
 
 
 class SpinoffStartupDatiBaseReferentForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                     widget=forms.HiddenInput(),
+                                     required=False)
 
     class Meta:
         model = SpinoffStartupDatiBase
@@ -48,19 +51,6 @@ class SpinoffStartupDatiBaseReferentForm(forms.ModelForm):
         labels = {
             "referente_unical": _("Label"),
         }
-
-
-class SpinoffStartupDatiBaseReferentWithoutIDForm(forms.ModelForm):
-    choosen_person = forms.CharField(label=_('Person'),
-                                     widget=forms.HiddenInput(),
-                                     required=True)
-
-    class Meta:
-        model = SpinoffStartupDatiBase
-        fields = []
-
-    class Media:
-        js = ('js/textarea-autosize.js',)
 
 
 class SpinoffStartupDipartimentoForm(forms.ModelForm):

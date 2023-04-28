@@ -16,6 +16,8 @@ from django.utils.translation import gettext_lazy as _
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
+from .. utils.forms import ChoosenPersonForm
+
 from . decorators import *
 from . forms import *
 
@@ -46,6 +48,7 @@ def company_new(request, my_offices=None, company=None):
     # e uno per l'inventore iniziale
     form = SpinoffStartupDatiBaseForm()
     department_form = SpinoffStartupDipartimentoForm()
+    referent_form = SpinoffStartupDatiBaseReferentForm()
 
     # se la validazione dovesse fallire ritroveremmo
     # comunque l'inventore scelto senza doverlo cercare
@@ -55,12 +58,21 @@ def company_new(request, my_offices=None, company=None):
         department = get_object_or_404(DidatticaDipartimento,
                                        dip_id=request.POST['choosen_department'])
 
+    referent = None
+    if request.POST.get('choosen_person', ''):
+        referent = get_object_or_404(Personale,
+                                     matricola=(decrypt(request.POST['choosen_person'])))
+
     if request.POST:
         form = SpinoffStartupDatiBaseForm(data=request.POST, files=request.FILES)
         department_form = SpinoffStartupDipartimentoForm(data=request.POST)
+        referent_form = SpinoffStartupDatiBaseReferentForm(data=request.POST)
 
-        if form.is_valid() and department_form.is_valid():
-            company = form.save()
+        if form.is_valid() and department_form.is_valid() and referent_form.is_valid():
+            company = form.save(commit=False)
+            company.referente_unical = referent_form.cleaned_data['referente_unical']
+            company.matricola_referente_unical = referent
+            company.save()
 
             # se viene scelto un dipartimento
             # questo viene associato all'impresa
@@ -96,7 +108,9 @@ def company_new(request, my_offices=None, company=None):
                    'choosen_department': f'{department.dip_des_it}' if department else '',
                    'form': form,
                    'departments_api': reverse('ricerca:departmentslist'),
-                   'department_form': department_form})
+                   'teachers_api': reverse('ricerca:teacherslist'),
+                   'department_form': department_form,
+                   'referent_form': referent_form})
 
 
 @login_required
@@ -174,10 +188,6 @@ def company_unical_referent_data(request, code, data_id, company=None, my_office
         if form.is_valid():
             referent_data.user_mod = request.user
             referent_data.referente_unical = form.cleaned_data['referente_unical']
-
-            if not referent_data.referente_unical and referent_data.matricola_referente_unical:
-                referent_data.referente_unical = f'{referent_data.matricola_referente_unical.nome} {referent_data.matricola_referente_unical.cognome}'
-
             referent_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -232,10 +242,10 @@ def company_unical_referent_data_edit(request, code, data_id,
         referent_data = f'{referent.nome} {referent.cognome}'
         initial={'choosen_person': encrypt(referent.matricola)}
 
-    form = SpinoffStartupDatiBaseReferentWithoutIDForm(initial=initial)
+    form = ChoosenPersonForm(initial=initial)
 
     if request.POST:
-        form = SpinoffStartupDatiBaseReferentWithoutIDForm(data=request.POST)
+        form = ChoosenPersonForm(data=request.POST)
         if form.is_valid():
             referent_code = decrypt(form.cleaned_data['choosen_person'])
             new_referent = get_object_or_404(Personale,
@@ -269,7 +279,7 @@ def company_unical_referent_data_edit(request, code, data_id,
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_companies:crud_companies'): _('Companies'),
                    reverse('crud_companies:crud_company_edit', kwargs={'code': code}): company.nome_azienda,
-                   reverse('crud_companies:crud_company_unical_referent_data_edit', kwargs={'code': code, 'data_id': data_id}): _('Unical Referent'),
+                   reverse('crud_companies:crud_company_unical_referent_data', kwargs={'code': code, 'data_id': data_id}): _('Unical Referent'),
                    '#': _('Edit')
                    }
 
@@ -454,15 +464,16 @@ def company_delete(request, code, my_offices=None, company=None):
         # raise Exception(_('Permission denied'))
 
     company = get_object_or_404(SpinoffStartupDatiBase, pk=code)
-    logo = company.nome_file_logo.path
+
+    try:
+        logo = company.nome_file_logo.path
+        os.remove(logo)
+    except:  # pragma: no cover
+        logger.warning(f'File not found')
 
     company.delete()
     messages.add_message(request,
                          messages.SUCCESS,
                          _("Company removed successfully"))
-    try:
-        os.remove(logo)
-    except Exception:  # pragma: no cover
-        logger.warning(f'File {logo} not found')
 
     return redirect('crud_companies:crud_companies')

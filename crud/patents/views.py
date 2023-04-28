@@ -71,12 +71,6 @@ def patent_new(request, my_offices=None, patent=None, inventors=None):
                                                             cognomenome_origine=inventor_form.cleaned_data['cognomenome_origine'],
                                                             matricola_inventore=inventor)
 
-            # se non viene inserita l'etichetta ma solo il link
-            # questa viene generata automaticamente
-            if inventor and not inventor_form.cleaned_data['cognomenome_origine']:
-                new_inventor.cognomenome_origine=f'{inventor.nome} {inventor.cognome}'
-                new_inventor.save()
-
             log_action(user=request.user,
                        obj=patent,
                        flag=ADDITION,
@@ -179,10 +173,6 @@ def patent_inventor_data(request, code, inventor_id, patent=None,
         if form.is_valid():
             inventor_data.user_mod = request.user
             inventor_data.cognomenome_origine = form.cleaned_data['cognomenome_origine']
-
-            if not form.cleaned_data['cognomenome_origine'] and inventor_data.matricola_inventore:
-                inventor_data.cognomenome_origine = f'{inventor_data.matricola_inventore.nome} {inventor_data.matricola_inventore.cognome}'
-
             inventor_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -246,8 +236,6 @@ def patent_inventor_data_edit(request, code, inventor_id, inventors=None,
             new_inventor = get_object_or_404(Personale,
                                              matricola=inventor_code)
             inventor_patent.matricola_inventore = new_inventor
-            if not inventor_patent.cognomenome_origine:
-                inventor_patent.cognomenome_origine = f'{new_inventor.nome} {new_inventor.cognome}'
             inventor_patent.save()
 
             if inventor and inventor == new_inventor:
@@ -308,9 +296,6 @@ def patent_inventor_new(request, code, my_offices=None, patent=None, inventors=N
                 inventor = get_object_or_404(Personale,
                                              matricola=inventor_code)
                 b.matricola_inventore = inventor
-
-                if not form.cleaned_data['cognomenome_origine']:
-                    b.cognomenome_origine = f'{inventor.nome} {inventor.cognome}'
                 b.save()
 
             log_action(user=request.user,
@@ -352,8 +337,8 @@ def patent_inventor_delete(request, code, inventor_id,
                                         pk=inventor_id,
                                         id_brevetto=code)
 
-    if BrevettoInventori.objects.filter(id_brevetto=code).count() == 1:
-        return custom_message(request, _("Permission denied. Only one teacher remains"))
+    # if BrevettoInventori.objects.filter(id_brevetto=code).count() == 1:
+        # return custom_message(request, _("Permission denied. Only one teacher remains"))
 
     log_action(user=request.user,
                obj=patent,
@@ -406,15 +391,16 @@ def patent_delete(request, code, my_offices=None, patent=None, inventors=None):
     #     raise Exception(_('Permission denied'))
 
     patent = get_object_or_404(BrevettoDatiBase, pk=code)
-    logo = patent.nome_file_logo.path
+
+    try:
+        logo = patent.nome_file_logo.path
+        os.remove(logo)
+    except:  # pragma: no cover
+        logger.warning(f'File not found')
 
     patent.delete()
     messages.add_message(request,
                          messages.SUCCESS,
                          _("Patent removed successfully"))
-    try:
-        os.remove(logo)
-    except Exception:  # pragma: no cover
-        logger.warning(f'File {logo} not found')
 
     return redirect('crud_patents:crud_patents')

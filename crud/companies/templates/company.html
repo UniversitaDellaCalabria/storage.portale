@@ -76,7 +76,7 @@
                                 ({% trans "Link to" %}: {{ company.matricola_referente_unical|default:"-" }})
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="text-right">
                             <a href="{% url 'crud_companies:crud_company_unical_referent_data' code=company.pk data_id=referent_data.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
@@ -151,14 +151,12 @@
                         <td>
                                 {{ department.nome_origine_dipartimento|default:"-" }}
                             </td>
-                        <td>
+                        <td class="text-right">
                             <a href="{% url 'crud_companies:crud_company_unical_department_data_edit' code=company.pk  department_id=department.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
-                        </td>
-                        <td>
                             <a href="" class="btn btn-danger btn-xs"
                                data-toggle="modal"
                                data-target="#delete_department_{{ department.pk }}">

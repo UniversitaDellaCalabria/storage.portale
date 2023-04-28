@@ -89,9 +89,7 @@
                                     <div class="col">
                                         <h5><b>[[ item.PatentTitle ]]</b></h5>
                                         <p>
-                                            <small>
-                                                [[ item.PatentAbstract ]]
-                                            </small>
+                                            <small v-html="item.PatentAbstract"></small>
                                         </p>
                                         <p v-if="item.PatentInventors.length">
                                             <small>

@@ -47,10 +47,6 @@ class BrevettoInventoriForm(forms.ModelForm):
                                      widget=forms.HiddenInput(),
                                      required=False)
 
-    def clean(self):
-        cleaned_data = super().clean()
-        _clean_teacher_dates(self, cleaned_data)
-
     class Meta:
         model = BrevettoInventori
         fields = ['cognomenome_origine']

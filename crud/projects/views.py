@@ -211,10 +211,6 @@ def project_director_data(request, code, director_id, project=None,
         if form.is_valid():
             director_data.user_mod = request.user
             director_data.nome_origine = form.cleaned_data['nome_origine']
-
-            if matricola and not form.cleaned_data['nome_origine']:
-                director_data.nome_origine = f'{matricola.nome} {matricola.cognome}'
-
             director_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -335,7 +331,6 @@ def project_director_data_edit(request, code, director_id, researchers=None, sci
             new_director = get_object_or_404(Personale,
                                              matricola=director_code)
             director_project.matricola = new_director
-            director_project.nome_origine = f'{new_director.nome} {new_director.cognome}'
             director_project.save()
 
             if director and director == new_director:
@@ -422,14 +417,12 @@ def project_director_new(request, code, my_offices=None, project=None,
             if director_code:
                 director = get_object_or_404(Personale, matricola=director_code)
                 p.matricola = director
-                if not form.cleaned_data['nome_origine']:
-                    p.nome_origine = f'{director.nome} {director.cognome}'
                 p.save()
 
             log_action(user=request.user,
                        obj=project,
                        flag=CHANGE,
-                       msg=f'{_("Added director")} {p.__str__()}')
+                       msg=f'{_("Added director")} {p}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -500,10 +493,6 @@ def project_researcher_data(request, code, researcher_id, researchers, scientifi
         if form.is_valid():
             researcher_data.user_mod = request.user
             researcher_data.nome_origine = form.cleaned_data['nome_origine']
-
-            if matricola and not form.cleaned_data['nome_origine']:
-                researcher_data.nome_origine = f'{matricola.nome} {matricola.cognome}'
-
             researcher_data.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -568,7 +557,6 @@ def project_researcher_data_edit(request, code, researcher_id, researchers, scie
             researcher_code = decrypt(form.cleaned_data['choosen_person'])
             new_researcher = get_object_or_404(Personale, matricola=researcher_code)
             researcher_project.matricola = new_researcher
-            researcher_project.nome_origine = f'{new_researcher.nome} {new_researcher.cognome}'
             researcher_project.save()
 
             if researcher and researcher == new_researcher:
@@ -632,10 +620,6 @@ def project_researcher_new(request, code, my_offices=None, project=None, researc
                 researcher = get_object_or_404(Personale,
                                                matricola=researcher_code)
                 p.matricola = researcher
-
-                if not form.cleaned_data['nome_origine']:
-                    p.nome_origine = f'{researcher.nome} {researcher.cognome}'
-
                 p.save()
 
             log_action(user=request.user,

@@ -474,7 +474,8 @@ def cds_office_data_new(request, regdid_id, my_offices=None, regdid=None):
     """
     aggiungi dati ufficio al corso di studio
     """
-    DidatticaCdsAltriDatiUfficio.objects.create(cds=regdid.cds, ordine=10)
+    new = DidatticaCdsAltriDatiUfficio.objects.create(cds=regdid.cds,
+                                                      ordine=10)
 
     log_action(user=request.user,
                obj=regdid.cds,
@@ -485,7 +486,9 @@ def cds_office_data_new(request, regdid_id, my_offices=None, regdid=None):
                          messages.SUCCESS,
                          _("Office data created successfully"))
 
-    return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
+    return redirect('crud_cds:crud_cds_office_data_edit',
+                    regdid_id=regdid_id,
+                    data_id=new.pk)
 
 
 @login_required
