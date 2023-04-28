@@ -2253,7 +2253,7 @@ class ServiceDocente:
         query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
         query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_fine_validita__gt=datetime.datetime.now())
 
-        if 'crud.teachers' in settings.INSTALLED_APPS:
+        if 'crud.teachers' in settings.INSTALLED_APPS: # pragma: no cover
             from crud.teachers.utils import can_manage_teacher
             if can_manage_teacher(user, teacher):
                 query_is_active = Q()
@@ -2299,7 +2299,7 @@ class ServiceDocente:
         query_is_started = Q(dt_inizio_validita__isnull=True)|Q(dt_inizio_validita__lte=datetime.datetime.now())
         query_is_end = Q(dt_fine_validita__isnull=True)|Q(dt_fine_validita__gt=datetime.datetime.now())
 
-        if 'crud.teachers' in settings.INSTALLED_APPS:
+        if 'crud.teachers' in settings.INSTALLED_APPS: # pragma: no cover
             from crud.teachers.utils import can_manage_teacher
             if can_manage_teacher(user, teacher):
                 query_is_active = Q()
