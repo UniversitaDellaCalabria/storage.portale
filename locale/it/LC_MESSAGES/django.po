@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-02 17:58+0200\n"
-"PO-Revision-Date: 2023-05-02 18:20+0200\n"
+"POT-Creation-Date: 2023-05-02 18:51+0200\n"
+"PO-Revision-Date: 2023-05-02 18:52+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -81,7 +81,7 @@ msgstr ""
 msgid "Permission denied"
 msgstr "Permesso negato"
 
-#: crud/cds/forms.py:16 crud/companies/forms.py:44 crud/patents/forms.py:57
+#: crud/cds/forms.py:16 crud/companies/forms.py:44 crud/patents/forms.py:76
 #: crud/phd/forms.py:24 crud/phd/forms.py:41 crud/projects/forms.py:36
 #: crud/projects/forms.py:53 crud/research_groups/forms.py:29
 #: crud/research_lines/forms.py:59 crud/utils/forms.py:6
@@ -196,7 +196,7 @@ msgstr "anni"
 msgid "No items here"
 msgstr "Nessun elemento"
 
-#: crud/cds/templates/cds.html:8 crud/utils/templates/dashboard.html:48
+#: crud/cds/templates/cds.html:8 crud/utils/templates/dashboard.html:74
 msgid "Study courses"
 msgstr "Corsi di studio"
 
@@ -213,9 +213,9 @@ msgstr "Corsi di studio"
 #: crud/patents/templates/patent.html:83
 #: crud/patents/templates/patent_inventor_data.html:35
 #: crud/patents/views.py:269 crud/phd/templates/blocks/crud_phd_list.html:222
-#: crud/phd/templates/phd.html:84 crud/phd/templates/phd.html:165
-#: crud/phd/templates/phd_main_teacher_data.html:33
-#: crud/phd/templates/phd_other_teacher_data.html:32
+#: crud/phd/templates/phd.html:84 crud/phd/templates/phd.html:163
+#: crud/phd/templates/phd_main_teacher_data.html:37
+#: crud/phd/templates/phd_other_teacher_data.html:38
 #: crud/projects/templates/blocks/crud_projects.html:234
 #: crud/projects/templates/project.html:80
 #: crud/projects/templates/project.html:156
@@ -243,10 +243,10 @@ msgstr "Modifica"
 #: crud/companies/templates/company_unical_referent_data.html:47
 #: crud/patents/templates/patent.html:13 crud/patents/templates/patent.html:90
 #: crud/patents/templates/patent_inventor_data.html:43
-#: crud/phd/templates/phd.html:13 crud/phd/templates/phd.html:93
-#: crud/phd/templates/phd.html:174
-#: crud/phd/templates/phd_main_teacher_data.html:43
-#: crud/phd/templates/phd_other_teacher_data.html:42
+#: crud/phd/templates/phd.html:13 crud/phd/templates/phd.html:91
+#: crud/phd/templates/phd.html:170
+#: crud/phd/templates/phd_main_teacher_data.html:45
+#: crud/phd/templates/phd_other_teacher_data.html:46
 #: crud/projects/templates/project.html:13
 #: crud/projects/templates/project.html:163
 #: crud/projects/templates/project.html:242
@@ -275,10 +275,10 @@ msgstr "Rimuovi"
 #: crud/companies/templates/company_unical_referent_data.html:58
 #: crud/patents/templates/patent.html:24 crud/patents/templates/patent.html:103
 #: crud/patents/templates/patent_inventor_data.html:54
-#: crud/phd/templates/phd.html:24 crud/phd/templates/phd.html:106
-#: crud/phd/templates/phd.html:187
-#: crud/phd/templates/phd_main_teacher_data.html:54
-#: crud/phd/templates/phd_other_teacher_data.html:53
+#: crud/phd/templates/phd.html:24 crud/phd/templates/phd.html:104
+#: crud/phd/templates/phd.html:183
+#: crud/phd/templates/phd_main_teacher_data.html:56
+#: crud/phd/templates/phd_other_teacher_data.html:57
 #: crud/projects/templates/project.html:24
 #: crud/projects/templates/project.html:176
 #: crud/projects/templates/project.html:255
@@ -313,10 +313,10 @@ msgstr "Vuoi davvero eliminare questo set di dati?"
 #: crud/companies/templates/company_unical_referent_data.html:76
 #: crud/patents/templates/patent.html:42 crud/patents/templates/patent.html:121
 #: crud/patents/templates/patent_inventor_data.html:72
-#: crud/phd/templates/phd.html:42 crud/phd/templates/phd.html:124
-#: crud/phd/templates/phd.html:205
-#: crud/phd/templates/phd_main_teacher_data.html:72
-#: crud/phd/templates/phd_other_teacher_data.html:71
+#: crud/phd/templates/phd.html:42 crud/phd/templates/phd.html:122
+#: crud/phd/templates/phd.html:201
+#: crud/phd/templates/phd_main_teacher_data.html:74
+#: crud/phd/templates/phd_other_teacher_data.html:75
 #: crud/projects/templates/project.html:42
 #: crud/projects/templates/project.html:194
 #: crud/projects/templates/project.html:273
@@ -359,8 +359,8 @@ msgstr "Vice-coordinatore"
 #: crud/companies/templates/companies.html:11
 #: crud/companies/templates/company.html:211
 #: crud/patents/templates/patent.html:135
-#: crud/patents/templates/patents.html:11 crud/phd/templates/phd.html:138
-#: crud/phd/templates/phd.html:219 crud/phd/templates/phd_list.html:11
+#: crud/patents/templates/patents.html:11 crud/phd/templates/phd.html:136
+#: crud/phd/templates/phd.html:215 crud/phd/templates/phd_list.html:11
 #: crud/projects/templates/project.html:208
 #: crud/projects/templates/project.html:287
 #: crud/projects/templates/projects.html:11
@@ -435,8 +435,8 @@ msgstr "Seleziona una persona da associare all'etichetta"
 #: crud/cds/templates/cds_office_data.html:72
 #: crud/companies/templates/company_unical_referent_data.html:71
 #: crud/patents/templates/patent_inventor_data.html:67
-#: crud/phd/templates/phd_main_teacher_data.html:67
-#: crud/phd/templates/phd_other_teacher_data.html:66
+#: crud/phd/templates/phd_main_teacher_data.html:69
+#: crud/phd/templates/phd_other_teacher_data.html:70
 #: crud/projects/templates/project_director_data.html:70
 #: crud/projects/templates/project_researcher_data.html:72
 msgid "Do you want to delete choosen person?"
@@ -458,12 +458,14 @@ msgstr "Modifica altri dati per"
 #: crud/cds/templates/cds_other_data.html:96
 #: crud/companies/templates/company_unical_referent_data.html:23
 #: crud/patents/templates/patent_inventor_data.html:24
+#: crud/phd/templates/phd_main_teacher_data.html:23
+#: crud/phd/templates/phd_other_teacher_data.html:24
 #: crud/projects/templates/project_director_data.html:22
 msgid "Select a teacher to link to the label"
 msgstr "Seleziona un docente da associare all'etichetta"
 
 #: crud/cds/templates/cds_other_data.html:75
-#: crud/cds/templates/cds_other_data.html:146 crud/phd/templates/phd.html:119
+#: crud/cds/templates/cds_other_data.html:146 crud/phd/templates/phd.html:117
 #: crud/research_groups/templates/researchgroup.html:37
 #: crud/research_groups/templates/researchgroup.html:127
 #: crud/research_groups/templates/researchgroup_teacher.html:39
@@ -576,7 +578,7 @@ msgstr "Dati ufficio creati con successo"
 msgid "Responsible data removed successfully"
 msgstr "Dati del responsabile eliminati con successo"
 
-#: crud/companies/forms.py:52 crud/patents/forms.py:65
+#: crud/companies/forms.py:52 crud/patents/forms.py:84
 #: crud/projects/forms.py:48 crud/projects/forms.py:65
 msgid "Label"
 msgstr "Etichetta"
@@ -615,7 +617,7 @@ msgstr ""
 #: crud/companies/views.py:214 crud/companies/views.py:280
 #: crud/companies/views.py:356 crud/companies/views.py:422
 #: crud/projects/views.py:294 crud/projects/views.py:519
-#: crud/projects/views.py:585 crud/utils/templates/dashboard.html:125
+#: crud/projects/views.py:585 crud/utils/templates/dashboard.html:151
 msgid "Companies"
 msgstr "Imprese"
 
@@ -721,9 +723,79 @@ msgstr "Dipartimento modificato con successo"
 msgid "Department removed successfully"
 msgstr "Dipartimento rimosso con successo"
 
-#: crud/companies/views.py:482
+#: crud/companies/views.py:483
 msgid "Company removed successfully"
 msgstr "Impresa rimossa con successo"
+
+#: crud/patents/forms.py:24
+msgid "Unique ID"
+msgstr "ID univoco"
+
+#: crud/patents/forms.py:25
+#: crud/teachers/templates/blocks/crud_teacher_books.html:41
+#: crud/teachers/templates/blocks/crud_teacher_news.html:41
+msgid "Title"
+msgstr "Titolo"
+
+#: crud/patents/forms.py:26
+msgid "Short description"
+msgstr "Breve descrizione"
+
+#: crud/patents/forms.py:27
+msgid "Tech area"
+msgstr "Area tecnologica"
+
+#: crud/patents/forms.py:28
+msgid "URL Knowledge Share"
+msgstr ""
+
+#: crud/patents/forms.py:29
+msgid "Applications"
+msgstr "Applicazioni"
+
+#: crud/patents/forms.py:30
+msgid "Advantages"
+msgstr "Vantaggi"
+
+#: crud/patents/forms.py:31
+msgid "Updated TRL"
+msgstr "TRL aggiornato"
+
+#: crud/patents/forms.py:32
+msgid "Property"
+msgstr "Proprietà"
+
+#: crud/patents/forms.py:33
+msgid "Legal status"
+msgstr "Status legale"
+
+#: crud/patents/forms.py:34
+msgid "Date"
+msgstr "Data"
+
+#: crud/patents/forms.py:35
+msgid "Territory"
+msgstr "Territorio"
+
+#: crud/patents/forms.py:36
+msgid "Commercial right"
+msgstr "Diritto commerciale"
+
+#: crud/patents/forms.py:37
+msgid "Availability"
+msgstr "Disponibilità"
+
+#: crud/patents/forms.py:38
+msgid "Area KS"
+msgstr ""
+
+#: crud/patents/forms.py:39
+msgid "Logo"
+msgstr ""
+
+#: crud/patents/forms.py:40
+msgid "Logo URL"
+msgstr ""
 
 #: crud/patents/templates/patent.html:37
 msgid "Do you want to delete choosen patent?"
@@ -760,7 +832,7 @@ msgstr "Seleziona un inventore"
 #: crud/patents/templates/patents.html:15 crud/patents/views.py:34
 #: crud/patents/views.py:92 crud/patents/views.py:145 crud/patents/views.py:199
 #: crud/patents/views.py:265 crud/patents/views.py:317
-#: crud/utils/templates/dashboard.html:22
+#: crud/utils/templates/dashboard.html:48
 msgid "Patents"
 msgstr "Brevetti"
 
@@ -800,49 +872,62 @@ msgstr "Inventore rimosso con successo"
 msgid "Inventor link removed successfully"
 msgstr "Link inventore rimosso con successo"
 
-#: crud/patents/views.py:404
+#: crud/patents/views.py:405
 msgid "Patent removed successfully"
 msgstr "Brevetto rimosso con successo"
 
-#: crud/phd/forms.py:89
-msgid "Nome Attività Formativa"
-msgstr ""
-
-#: crud/phd/forms.py:90 crud/phd/templates/blocks/crud_phd_list.html:142
+#: crud/phd/forms.py:78 crud/phd/templates/blocks/crud_phd_list.html:142
 msgid "SSD"
 msgstr ""
+
+#: crud/phd/forms.py:79
+#: crud/teachers/templates/blocks/crud_teacher_news.html:40
+msgid "Type"
+msgstr "Tipo"
+
+#: crud/phd/forms.py:80
+msgid "Reference"
+msgstr "Dottorato di riferimento"
+
+#: crud/phd/forms.py:89
+msgid "Denomination"
+msgstr "Denominazione"
 
 #: crud/phd/forms.py:91
 msgid "CFU"
 msgstr ""
 
 #: crud/phd/forms.py:92
-msgid "Contenuti Alta Formazione"
-msgstr ""
-
-#: crud/phd/forms.py:93
-msgid "Dottorato di Riferimento"
-msgstr ""
+msgid "Contents"
+msgstr "Contenuti"
 
 #: crud/phd/forms.py:94
-msgid "Struttura Centrale"
-msgstr "Struttura centrale"
+msgid "Central Structure"
+msgstr "Struttura di riferimento"
 
 #: crud/phd/forms.py:95
-msgid "Modalità di Verifica"
-msgstr ""
+msgid "Verification Mode"
+msgstr "Modalità di verifica"
 
 #: crud/phd/forms.py:96
-msgid "Data Prevista di Inizio"
-msgstr ""
+msgid "Expected Start Date"
+msgstr "Data prevista di inizio"
 
 #: crud/phd/forms.py:97
-msgid "Data Prevista di Fine"
-msgstr ""
+msgid "Expected End Date"
+msgstr "Data prevista di fine"
 
 #: crud/phd/forms.py:98
-msgid "Orario e Aule"
-msgstr ""
+msgid "Timetable and Classrooms"
+msgstr "Orario e aule"
+
+#: crud/phd/forms.py:99
+msgid "Maximum students number"
+msgstr "Numero massimo di studenti"
+
+#: crud/phd/forms.py:100
+msgid "Minimum students number"
+msgstr "Numero minimo di studenti"
 
 #: crud/phd/templates/blocks/crud_phd_list.html:50 crud/phd/views.py:297
 #: crud/phd/views.py:514 crud/research_lines/forms.py:43
@@ -867,11 +952,11 @@ msgstr "Vuoi davvero eliminare il docente selezionato?"
 msgid "Main Teachers"
 msgstr "Docenti principali"
 
-#: crud/phd/templates/phd.html:148
+#: crud/phd/templates/phd.html:146
 msgid "Other Teachers"
 msgstr "Altri docenti"
 
-#: crud/phd/templates/phd.html:200 crud/projects/templates/project.html:189
+#: crud/phd/templates/phd.html:196 crud/projects/templates/project.html:189
 #: crud/projects/templates/project.html:268
 #, fuzzy
 #| msgid "Do you want to delete choosen teacher?"
@@ -881,7 +966,7 @@ msgstr "Vuoi davvero eliminare il docente selezionato?"
 #: crud/phd/templates/phd_list.html:15 crud/phd/views.py:35
 #: crud/phd/views.py:113 crud/phd/views.py:168 crud/phd/views.py:224
 #: crud/phd/views.py:353 crud/phd/views.py:441 crud/phd/views.py:512
-#: crud/phd/views.py:570 crud/utils/templates/dashboard.html:218
+#: crud/phd/views.py:570 crud/utils/templates/dashboard.html:22
 msgid "PhD activities"
 msgstr "Attività dei Dottorati"
 
@@ -902,16 +987,11 @@ msgid "New teacher for"
 msgstr "Nuovo docente per"
 
 #: crud/phd/templates/phd_main_teacher_data.html:9
-#: crud/phd/templates/phd_other_teacher_data.html:8
+#: crud/phd/templates/phd_other_teacher_data.html:9
 #, fuzzy
 #| msgid "Edit other data for"
 msgid "Edit UNICAL teacher data for"
 msgstr "Modifica altri dati per"
-
-#: crud/phd/templates/phd_main_teacher_data.html:19
-#: crud/phd/templates/phd_other_teacher_data.html:18
-msgid "Person (find in database)"
-msgstr "Persona (nella base dati)"
 
 #: crud/phd/templates/phd_new.html:9
 msgid "New PhD activity"
@@ -922,12 +1002,6 @@ msgstr ""
 #: crud/research_lines/templates/researchline_new.html:16
 msgid "Choose one teacher"
 msgstr "Seleziona un docente"
-
-#: crud/phd/templates/phd_other_teacher_data.html:13
-#, fuzzy
-#| msgid "Contract teacher"
-msgid "PhD activity Teacher"
-msgstr "Professore a contratto"
 
 #: crud/phd/views.py:84 crud/research_groups/views.py:146
 #: crud/research_lines/views.py:84 crud/research_lines/views.py:164
@@ -1098,7 +1172,7 @@ msgstr "Nuova struttura per"
 #: crud/projects/views.py:120 crud/projects/views.py:179
 #: crud/projects/views.py:237 crud/projects/views.py:359
 #: crud/projects/views.py:438 crud/projects/views.py:641
-#: crud/utils/templates/dashboard.html:190
+#: crud/utils/templates/dashboard.html:210
 msgid "Projects"
 msgstr "Progetti"
 
@@ -1236,7 +1310,7 @@ msgstr "Cancella tutto"
 #: crud/teachers/views.py:63 crud/teachers/views.py:133
 #: crud/teachers/views.py:187 crud/teachers/views.py:270
 #: crud/teachers/views.py:319 crud/teachers/views.py:401
-#: crud/teachers/views.py:450 crud/utils/templates/dashboard.html:74
+#: crud/teachers/views.py:450 crud/utils/templates/dashboard.html:100
 msgid "Teachers"
 msgstr "Docenti"
 
@@ -1265,7 +1339,7 @@ msgstr "Nuovo gruppo di ricerca"
 #: crud/research_groups/templates/researchgroups.html:14
 #: crud/research_groups/views.py:32 crud/research_groups/views.py:77
 #: crud/research_groups/views.py:179 crud/research_groups/views.py:227
-#: crud/research_groups/views.py:287 crud/utils/templates/dashboard.html:100
+#: crud/research_groups/views.py:287 crud/utils/templates/dashboard.html:126
 msgid "Research groups"
 msgstr "Gruppi di ricerca"
 
@@ -1325,14 +1399,9 @@ msgstr "Linea di ricerca rimossa con successo"
 
 #: crud/research_lines/views.py:388 crud/research_lines/views.py:436
 #: crud/research_lines/views.py:495 crud/research_lines/views.py:556
-#: crud/utils/templates/dashboard.html:151
+#: crud/utils/templates/dashboard.html:177
 msgid "Research lines"
 msgstr "Linee di ricerca"
-
-#: crud/teachers/templates/blocks/crud_teacher_books.html:41
-#: crud/teachers/templates/blocks/crud_teacher_news.html:41
-msgid "Title"
-msgstr "Titolo"
 
 #: crud/teachers/templates/blocks/crud_teacher_books.html:42
 #: crud/teachers/templates/blocks/crud_teacher_news.html:42
@@ -1350,10 +1419,6 @@ msgstr "Attivo"
 #| msgid "Do you want to delete data set?"
 msgid "Do you want to delete board data set?"
 msgstr "Vuoi davvero eliminare questo set di dati?"
-
-#: crud/teachers/templates/blocks/crud_teacher_news.html:40
-msgid "Type"
-msgstr "Tipo"
 
 #: crud/teachers/templates/blocks/crud_teachers.html:84
 #: crud/utils/templates/blocks/crud_teacherslist.html:84
@@ -1571,54 +1636,54 @@ msgid "Torna alla Dashboard"
 msgstr "Pagina iniziale"
 
 #: crud/utils/templates/dashboard.html:25
-msgid "Manage patents"
-msgstr "Gestisci i brevetti"
+msgid "Manage PhD activities"
+msgstr "Gestisci gli insegnamenti dei dottorati"
 
 #: crud/utils/templates/dashboard.html:28
 #: crud/utils/templates/dashboard.html:54
 #: crud/utils/templates/dashboard.html:80
 #: crud/utils/templates/dashboard.html:106
-#: crud/utils/templates/dashboard.html:131
-#: crud/utils/templates/dashboard.html:196
-#: crud/utils/templates/dashboard.html:224
+#: crud/utils/templates/dashboard.html:132
+#: crud/utils/templates/dashboard.html:157
+#: crud/utils/templates/dashboard.html:216
 msgid "Manage"
 msgstr "Gestisci"
 
 #: crud/utils/templates/dashboard.html:51
+msgid "Manage patents"
+msgstr "Gestisci i brevetti"
+
+#: crud/utils/templates/dashboard.html:77
 msgid "Manage cds and their teachers and offices"
 msgstr "Gestisci i CDS, i docenti e gli uffici"
 
-#: crud/utils/templates/dashboard.html:77
+#: crud/utils/templates/dashboard.html:103
 msgid "Manage teachers and PTA"
 msgstr "Gestisci docenti e personale"
 
-#: crud/utils/templates/dashboard.html:103
+#: crud/utils/templates/dashboard.html:129
 msgid "Manage groups and their teachers"
 msgstr "Gestisci i gruppi e i loro docenti"
 
-#: crud/utils/templates/dashboard.html:128
+#: crud/utils/templates/dashboard.html:154
 msgid "Manage companies"
 msgstr "Gestisci le imprese"
 
-#: crud/utils/templates/dashboard.html:154
+#: crud/utils/templates/dashboard.html:180
 msgid "Manage lines and their teachers"
 msgstr "Gestisci le linee e i loro docenti"
 
-#: crud/utils/templates/dashboard.html:157
+#: crud/utils/templates/dashboard.html:183
 msgid "Base research lines"
 msgstr "Linee di ricerca di base"
 
-#: crud/utils/templates/dashboard.html:164
+#: crud/utils/templates/dashboard.html:190
 msgid "Applied research lines"
 msgstr "Linee di ricerca applicata"
 
-#: crud/utils/templates/dashboard.html:193
+#: crud/utils/templates/dashboard.html:213
 msgid "Manage projects"
 msgstr "Gestisti i progetti delle strutture"
-
-#: crud/utils/templates/dashboard.html:221
-msgid "Manage PhD activities"
-msgstr "Gestisci gli insegnamenti dei dottorati"
 
 #: crud/utils/templates/includes/form_submit.html:12
 msgid "Submit"
@@ -1712,6 +1777,17 @@ msgstr ""
 #: ricerca_app/templates_back/rest_framework/base.html:177
 msgid "response info"
 msgstr ""
+
+#~ msgid "Struttura Centrale"
+#~ msgstr "Struttura centrale"
+
+#~ msgid "Person (find in database)"
+#~ msgstr "Persona (nella base dati)"
+
+#, fuzzy
+#~| msgid "Contract teacher"
+#~ msgid "PhD activity Teacher"
+#~ msgstr "Professore a contratto"
 
 #~ msgid "Link the label to a person"
 #~ msgstr "Collega l'etichetta a una persona"

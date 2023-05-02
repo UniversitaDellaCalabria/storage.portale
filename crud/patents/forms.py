@@ -20,6 +20,25 @@ class BrevettoDatiBaseForm(forms.ModelForm):
 
     class Meta:
         model = BrevettoDatiBase
+        labels = {
+            'id_univoco': _('Unique ID'),
+            'titolo': _('Title'),
+            'breve_descrizione': _('Short description'),
+            'id_area_tecnologica': _('Tech area'),
+            'url_knowledge_share': _('URL Knowledge Share'),
+            'applicazioni': _('Applications'),
+            'vantaggi': _('Advantages'),
+            'trl_aggiornato': _('Updated TRL'),
+            'proprieta': _('Property'),
+            'id_status_legale': _('Legal status'),
+            'data_priorita': _('Date'),
+            'territorio': _('Territory'),
+            'id_diritto_commerciale': _('Commercial right'),
+            'id_disponibilita': _('Availability'),
+            'area_ks': _('Area KS'),
+            'nome_file_logo': _('Logo'),
+            'url_immagine': _('Logo URL')
+        }
         fields = ['id_univoco',
                   'titolo',
                   'breve_descrizione',

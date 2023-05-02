@@ -75,9 +75,9 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         for s in ssd:
             lista_ssd.append((s['SSD'], s['SSD']))
 
-        self.fields['ssd'] = forms.ChoiceField(choices=lista_ssd)
-        self.fields['tipo_af'] = forms.ChoiceField(choices=lista_tipo_af)
-        self.fields['rif_dottorato'] = forms.ChoiceField(choices=lista_rif_dott)
+        self.fields['ssd'] = forms.ChoiceField(label=_('SSD'), choices=lista_ssd)
+        self.fields['tipo_af'] = forms.ChoiceField(label=_('Type'), choices=lista_tipo_af)
+        self.fields['rif_dottorato'] = forms.ChoiceField(label=_('Reference'), choices=lista_rif_dott)
 
 
     class Meta:
@@ -86,21 +86,22 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         exclude = ['dt_mod', 'user_mod_id', 'struttura_proponente_origine']
 
         labels = {
-            'nome_af': _('Nome Attività Formativa'),
-            'ssd': _('SSD'),
+            'nome_af': _('Denomination'),
+            # 'ssd': _('SSD'),
             'cfu': _('CFU'),
-            'contenuti_af': _('Contenuti Alta Formazione'),
-            'rif_dottorato': _('Dottorato di Riferimento'),
-            'id_struttura_proponente': _('Struttura Centrale'),
-            'modalita_verifica': _('Modalità di Verifica'),
-            'avvio': _('Data Prevista di Inizio'),
-            'fine': _('Data Prevista di Fine'),
-            'orario_aule': _('Orario e Aule'),
-
+            'contenuti_af': _('Contents'),
+            # 'rif_dottorato': _('Reference'),
+            'id_struttura_proponente': _('Central Structure'),
+            'modalita_verifica': _('Verification Mode'),
+            'avvio': _('Expected Start Date'),
+            'fine': _('Expected End Date'),
+            'orario_aule': _('Timetable and Classrooms'),
+            'num_max_studenti': _('Maximum students number'),
+            'num_min_studenti': _('Minimum students number'),
         }
 
         widgets = {'nome_af': forms.Textarea(attrs={'rows': 1}),
-                   'rif_dottorato': forms.Textarea(attrs={'rows': 1}),
+                   # 'rif_dottorato': forms.Textarea(attrs={'rows': 1}),
                    'avvio': BootstrapItaliaDateWidget,
                    'fine': BootstrapItaliaDateWidget,
                    'contenuti_af': CKEditorWidget(),
