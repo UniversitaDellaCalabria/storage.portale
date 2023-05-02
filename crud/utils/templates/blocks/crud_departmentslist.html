@@ -105,7 +105,7 @@ selected_search: this.getItemFromSession("{{ id }}", 'search'),
 {% block extra_methods %}
 setDepartment(name){
     document.getElementById("id_choosen_department").value = name[0];
-    let elements = document.getElementByClassName("choosen_department_name")
+    let elements = document.getElementsByClassName("choosen_department_name")
     for(let i=0; i< elements.length; i++)
         elements[i].innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen department' %} <b>"+name[1]+"</b></div>"
 }

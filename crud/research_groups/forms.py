@@ -37,5 +37,8 @@ class RicercaGruppoDocenteForm(forms.ModelForm):
     class Meta:
         model = RicercaDocenteGruppo
         fields = ['dt_inizio', 'dt_fine']
+        labels = {'dt_inizio': _('Date start'),
+                  'dt_fine': _('Date end') }
+
         widgets = {'dt_inizio': BootstrapItaliaDateWidget,
                    'dt_fine': BootstrapItaliaDateWidget, }

@@ -242,10 +242,10 @@ def company_unical_referent_data_edit(request, code, data_id,
         referent_data = f'{referent.nome} {referent.cognome}'
         initial={'choosen_person': encrypt(referent.matricola)}
 
-    form = ChoosenPersonForm(initial=initial)
+    form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        form = ChoosenPersonForm(data=request.POST)
+        form = ChoosenPersonForm(data=request.POST, required=True)
         if form.is_valid():
             referent_code = decrypt(form.cleaned_data['choosen_person'])
             new_referent = get_object_or_404(Personale,
@@ -377,9 +377,14 @@ def company_unical_department_data_edit(request, code, department_id,
                                            id_spinoff_startup_dati_base=company)
 
     department = department_company.id_didattica_dipartimento
+    department_data = ''
+    initial = {}
+    if department:
+        department_data = department.dip_des_it
+        initial={'choosen_department': department.dip_id}
 
     form = SpinoffStartupDipartimentoForm(instance=department_company,
-                                          initial={'choosen_department': department.dip_id})
+                                          initial=initial)
 
     if request.POST:
         form = SpinoffStartupDipartimentoForm(instance=department_company,
@@ -424,7 +429,7 @@ def company_unical_department_data_edit(request, code, department_id,
                    'form': form,
                    'company': company,
                    'department_id': department_id,
-                   'choosen_department': department_data[1],
+                   'choosen_department': department_data,
                    'url': reverse('ricerca:departmentslist')})
 
 
@@ -464,12 +469,13 @@ def company_delete(request, code, my_offices=None, company=None):
         # raise Exception(_('Permission denied'))
 
     company = get_object_or_404(SpinoffStartupDatiBase, pk=code)
+    logo = company.nome_file_logo.path
 
-    try:
-        logo = company.nome_file_logo.path
-        os.remove(logo)
-    except:  # pragma: no cover
-        logger.warning(f'File not found')
+    if logo:
+        try:
+            os.remove(logo)
+        except:  # pragma: no cover
+            logger.warning(f'File {logo} not found')
 
     company.delete()
     messages.add_message(request,

@@ -77,15 +77,13 @@
                                     ({{ teacher.matricola.matricola|default:"-" }})
                                 {% endif %}
                             </td>
-                        <td>
-                            <a href="{% url 'crud_phd:crud_phd_main_teacher_data' code=phd.pk  teacher_id=teacher.pk %}" class="d-flex btn btn-primary btn-xs">
+                        <td class="text-right">
+                            <a href="{% url 'crud_phd:crud_phd_main_teacher_data' code=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
-                        </td>
-                        <td>
-                            <a class="btn btn-danger btn-xs d-flex"
+                            <a class="btn btn-danger btn-xs"
                                data-toggle="modal"
                                data-target="#delete_teacher_{{ teacher.pk }}">
                                 <svg class="icon icon-xs icon-white">
@@ -158,15 +156,13 @@
                                     ({{ teacher.matricola.matricola|default:"-" }})
                                 {% endif %}
                             </td>
-                        <td>
-                            <a class="d-flex btn btn-primary btn-xs">
+                        <td class="text-right">
+                            <a href="{% url 'crud_phd:crud_phd_other_teacher_data' code=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
-                        </td>
-                        <td>
-                            <a class="btn btn-danger btn-xs d-flex"
+                            <a class="btn btn-danger btn-xs"
                                data-toggle="modal"
                                data-target="#delete_researcher_{{ researcher.pk }}">
                                 <svg class="icon icon-xs icon-white">

@@ -322,10 +322,10 @@ def project_director_data_edit(request, code, director_id, researchers=None, sci
         director_data = f'{director.cognome} {director.nome}'
         initial={'choosen_person': encrypt(director.matricola)}
 
-    form = ChoosenPersonForm(initial=initial)
+    form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        form = ChoosenPersonForm(data=request.POST)
+        form = ChoosenPersonForm(data=request.POST, required=True)
         if form.is_valid():
             director_code = decrypt(form.cleaned_data['choosen_person'])
             new_director = get_object_or_404(Personale,
@@ -549,10 +549,10 @@ def project_researcher_data_edit(request, code, researcher_id, researchers, scie
         researcher_data = f'{researcher.cognome} {researcher.nome}'
         initial={'choosen_person': encrypt(researcher.matricola)}
 
-    form = ChoosenPersonForm(initial=initial)
+    form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        form = ChoosenPersonForm(data=request.POST)
+        form = ChoosenPersonForm(data=request.POST, required=True)
         if form.is_valid():
             researcher_code = decrypt(form.cleaned_data['choosen_person'])
             new_researcher = get_object_or_404(Personale, matricola=researcher_code)

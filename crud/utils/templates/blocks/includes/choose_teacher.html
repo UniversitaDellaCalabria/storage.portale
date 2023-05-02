@@ -1,0 +1,35 @@
+{% load i18n %}
+
+
+<span class="choosen_person_name">
+    {% if choosen_person %}
+    <div class="alert alert-success" role="alert">
+        {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
+    </div>
+    {% else %}
+    <div class="alert alert-warning" role="alert">
+        {% if required %}
+            {% trans "Choose a person to proceed" %}
+        {% else %}
+            {% trans "Select a person to link to the label" %}
+        {% endif %}
+    </div>
+    {% endif %}
+</span>
+{% include include_block|default:"blocks/crud_teacherslist.html" with uid=uid|default:"id_1" %}
+<hr />
+<span class="choosen_person_name">
+    {% if choosen_person %}
+    <div class="alert alert-success" role="alert">
+        {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
+    </div>
+    {% else %}
+    <div class="alert alert-warning" role="alert">
+        {% if required %}
+            {% trans "Choose a person to proceed" %}
+        {% else %}
+            {% trans "Select a person to link to the label" %}
+        {% endif %}
+    </div>
+    {% endif %}
+</span>

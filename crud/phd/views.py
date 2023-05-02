@@ -118,7 +118,7 @@ def phd_new(request, my_offices=None):
                   {'breadcrumbs': breadcrumbs,
                    'choosen_person': f'{teacher.nome} {teacher.cognome}' if teacher else '',
                    'form': form,
-                   'teachers_api': reverse('ricerca:teacherslist'),
+                   'url': reverse('ricerca:teacherslist'),
                    'teacher_form': teacher_form})
 
 
@@ -257,10 +257,10 @@ def phd_main_teacher_data_edit(request, code, teacher_id, teachers=None,
         teacher_data = f'{teacher.nome} {teacher.cognome}'
         initial={'choosen_person':  encrypt(teacher.matricola)}
 
-    form = ChoosenPersonForm(initial=initial)
+    form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        form = ChoosenPersonForm(data=request.POST)
+        form = ChoosenPersonForm(data=request.POST, required=True)
         if form.is_valid():
             teacher_code = decrypt(form.cleaned_data['choosen_person'])
             new_teacher = get_object_or_404(Personale,
@@ -473,10 +473,10 @@ def phd_other_teacher_data_edit(request, code, teacher_id, teachers,
         teacher_data = f'{teacher.nome} {teacher.cognome}'
         initial={'choosen_person':  encrypt(teacher.matricola)}
 
-    form = ChoosenPersonForm(initial=initial)
+    form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        form = ChoosenPersonForm(data=request.POST)
+        form = ChoosenPersonForm(data=request.POST, required=True)
         if form.is_valid():
             teacher_code = decrypt(form.cleaned_data['choosen_person'])
             new_teacher = get_object_or_404(Personale,
@@ -519,7 +519,7 @@ def phd_other_teacher_data_edit(request, code, teacher_id, teachers,
                    'form': form,
                    'phd': phd,
                    'teacher_id': teacher_id,
-                   'choosen_person': other_teacher_data[1] if other_teacher_data  else None,
+                   'choosen_person': teacher_data[1] if teacher_data  else None,
                    'url': reverse('ricerca:teacherslist')})
 
 

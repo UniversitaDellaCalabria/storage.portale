@@ -97,7 +97,7 @@ def patent_new(request, my_offices=None, patent=None, inventors=None):
                   {'breadcrumbs': breadcrumbs,
                    'choosen_person': f'{inventor.nome} {inventor.cognome}' if inventor else '',
                    'form': form,
-                   'teachers_api': reverse('ricerca:teacherslist'),
+                   'url': reverse('ricerca:teacherslist'),
                    'inventor_form': inventor_form})
 
 
@@ -227,10 +227,10 @@ def patent_inventor_data_edit(request, code, inventor_id, inventors=None,
         inventor_data = f'{inventor.nome} {inventor.cognome}'
         initial={'choosen_person':  encrypt(inventor.matricola)}
 
-    form = ChoosenPersonForm(initial=initial)
+    form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        form = ChoosenPersonForm(data=request.POST)
+        form = ChoosenPersonForm(data=request.POST, required=True)
         if form.is_valid():
             inventor_code = decrypt(form.cleaned_data['choosen_person'])
             new_inventor = get_object_or_404(Personale,
@@ -391,12 +391,13 @@ def patent_delete(request, code, my_offices=None, patent=None, inventors=None):
     #     raise Exception(_('Permission denied'))
 
     patent = get_object_or_404(BrevettoDatiBase, pk=code)
+    logo = patent.nome_file_logo.path
 
-    try:
-        logo = patent.nome_file_logo.path
-        os.remove(logo)
-    except:  # pragma: no cover
-        logger.warning(f'File not found')
+    if logo:
+        try:
+            os.remove(logo)
+        except:  # pragma: no cover
+            logger.warning(f'File {logo} not found')
 
     patent.delete()
     messages.add_message(request,

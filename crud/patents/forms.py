@@ -20,12 +20,23 @@ class BrevettoDatiBaseForm(forms.ModelForm):
 
     class Meta:
         model = BrevettoDatiBase
-        fields = ['id_univoco', 'titolo', 'url_immagine',
-                  'breve_descrizione', 'id_area_tecnologica',
-                  'url_knowledge_share', 'applicazioni', 'vantaggi',
-                  'trl_aggiornato', 'proprieta', 'id_status_legale',
-                  'data_priorita', 'territorio', 'id_diritto_commerciale',
-                  'id_disponibilita', 'area_ks', 'nome_file_logo']
+        fields = ['id_univoco',
+                  'titolo',
+                  'breve_descrizione',
+                  'id_area_tecnologica',
+                  'url_knowledge_share',
+                  'applicazioni',
+                  'vantaggi',
+                  'trl_aggiornato',
+                  'proprieta',
+                  'id_status_legale',
+                  'data_priorita',
+                  'territorio',
+                  'id_diritto_commerciale',
+                  'id_disponibilita',
+                  'area_ks',
+                  'nome_file_logo',
+                  'url_immagine']
         widgets = {'breve_descrizione': CKEditorWidget(),
                    'applicazioni': CKEditorWidget(),
                    'vantaggi': CKEditorWidget(),

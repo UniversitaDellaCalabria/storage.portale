@@ -16,30 +16,7 @@
                     {% trans "Choose one teacher" %}
                 </h4>
                 <div class="mt-5">
-                    <span class="choosen_person_name">
-                        {% if choosen_person_name %}
-                        <div class="alert alert-success" role="alert">
-                            {% trans 'Choosen person' %} <b>{{ choosen_person_name }}</b>
-                        </div>
-                        {% else %}
-                        <div class="alert alert-warning" role="alert">
-                          {% trans "Choose a person to proceed" %}
-                        </div>
-                        {% endif %}
-                    </span>
-                    {% include "blocks/crud_teacherslist.html" with uid="id_1" url=teachers_api %}
-                    <hr />
-                    <span class="choosen_person_name">
-                        {% if choosen_person_name %}
-                        <div class="alert alert-success" role="alert">
-                            {% trans 'Choosen person' %} <b>{{ choosen_person_name }}</b>
-                        </div>
-                        {% else %}
-                        <div class="alert alert-warning" role="alert">
-                          {% trans "Choose a person to proceed" %}
-                        </div>
-                        {% endif %}
-                    </span>
+                    {% include "blocks/includes/choose_teacher.html" with required=1 %}
                     <hr />
                     {% include "form_template.html" with form=teacher_form %}
                 </div>

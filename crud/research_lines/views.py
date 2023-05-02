@@ -121,7 +121,7 @@ def researchline_new_applied(request, my_offices=None):
                   {'breadcrumbs': breadcrumbs,
                    'choosen_person': f'{teacher.nome} {teacher.cognome}' if teacher else '',
                    'form': form,
-                   'teachers_api': reverse('ricerca:teacherslist'),
+                   'url': reverse('ricerca:teacherslist'),
                    'teacher_form': teacher_form})
 
 
@@ -197,7 +197,7 @@ def researchline_new_base(request, my_offices=None):
                   {'breadcrumbs': breadcrumbs,
                    'choosen_person': f'{teacher.nome} {teacher.cognome}' if teacher else '',
                    'form': form,
-                   'teachers_api': reverse('ricerca:teacherslist'),
+                   'url': reverse('ricerca:teacherslist'),
                    'teacher_form': teacher_form})
 
 

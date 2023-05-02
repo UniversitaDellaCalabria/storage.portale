@@ -182,9 +182,9 @@ def researchgroup_new(request, my_offices=None):
     return render(request,
                   'researchgroup_new.html',
                   {'breadcrumbs': breadcrumbs,
-                   'choosen_person_name': f'{teacher.nome} {teacher.cognome}' if teacher else '',
+                   'choosen_person': f'{teacher.nome} {teacher.cognome}' if teacher else '',
                    'form': form,
-                   'teachers_api': reverse('ricerca:teacherslist'),
+                   'url': reverse('ricerca:teacherslist'),
                    'teacher_form': teacher_form})
 
 
