@@ -524,11 +524,11 @@ class ServiceDidatticaCds:
         return query
 
     @staticmethod
-    def getCdsWebsites(search, academic_year, language, course_class):
+    def getCdsWebsites(search, academic_year, cdslanguage, course_class):
 
         query_search = Q()
         query_year = Q()
-        query_language = Q()
+        query_cdslanguage = Q()
         query_courseclass = Q()
 
 
@@ -539,17 +539,17 @@ class ServiceDidatticaCds:
                 query_search &= q_nome_corso_it
         if academic_year:
             query_year = Q(aa=academic_year)
-        if language:
-            for k in language.split(" "):
-                q_language = Q(lingua_it__icontains=k) | Q(lingua_en__icontains=k)
-                query_language &= q_language
+        if cdslanguage:
+            for k in cdslanguage.split(" "):
+                q_cdslanguage = Q(lingua_it__icontains=k) | Q(lingua_en__icontains=k)
+                query_cdslanguage &= q_cdslanguage
         if course_class:
             query_courseclass = Q(classe_laurea_it=course_class) | Q(classe_laurea_en=course_class)
 
         query = SitoWebCdsDatiBase.objects.filter(
             query_search,
             query_year,
-            query_language,
+            query_cdslanguage,
             query_courseclass
             ).values(
             "id",

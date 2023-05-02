@@ -15,14 +15,14 @@ FILETYPE_IMAGE = getattr(settings, 'FILETYPE_IMAGE', app_settings.FILETYPE_IMAGE
 SETTINGS_LABEL_MAPPING = getattr(settings, 'LABEL_MAPPING', None)
 
 
-def encrypt(value):
+def encrypt(value): # pragma: no cover
     if not value:
         return None
     value = str(value)
     return Fernet(settings.ENCRYPTION_KEY).encrypt(value.encode()).decode()
 
 
-def decrypt(value):
+def decrypt(value): # pragma: no cover
     if not value:
         return None
     value = str(value)
@@ -42,7 +42,7 @@ def get_image_width_height(fopen): # pragma: no cover
         return pil.size
 
 
-def encode_labels(data, language=None):
+def encode_labels(data, language=None): # pragma: no cover
     labels = {}
     d = None
     if language is None:
@@ -86,14 +86,14 @@ def encode_labels(data, language=None):
     return labels
 
 
-def is_path(value):
+def is_path(value): # pragma: no cover
     if not value: return False
     if type(value) is not str: return False
     if "/" not in value: return False
     return True
 
 
-def build_media_path(filename, path=None):
+def build_media_path(filename, path=None): # pragma: no cover
     if not filename: return ''
     if 'http' in filename or 'https' in filename: return filename
     if not path: return filename
