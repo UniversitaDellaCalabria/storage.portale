@@ -1270,9 +1270,9 @@ class ApiCdsWebsiteList(ApiEndpointList):
     def get_queryset(self):
         search = self.request.query_params.get('search')
         academic_year = self.request.query_params.get('academic_year')
-        language = self.request.query_params.get('language')
+        cdslanguage = self.request.query_params.get('cdslanguage')
         course_class = self.request.query_params.get('course_class')
-        return ServiceDidatticaCds.getCdsWebsites(search, academic_year, language, course_class)
+        return ServiceDidatticaCds.getCdsWebsites(search, academic_year, cdslanguage, course_class)
 
 
 class ApiCdsWebsiteDetail(ApiEndpointDetail):
