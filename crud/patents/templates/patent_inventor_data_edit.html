@@ -8,19 +8,17 @@
 <h3 style="font-weight: lighter;" class="mb-4">
     {% if choosen_person %}{% trans "Edit inventor for" %}{% else %}{% trans "New inventor for" %}{% endif %} {{ patent.titolo }}
 </h3>
-<form method="post">
-    <div class="card-wrapper card-space">
-        <div class="card card-bg no-after">
-            <div class="card-body">
 
-                {% include "form_template.html" with form=form %}
-
-                {% include "blocks/includes/choose_teacher.html" %}
-
-                {% include "includes/form_submit.html" %}
-
-            </div>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            {% include "blocks/includes/choose_teacher.html" %}
+            <form method="post">
+            {% include "form_template.html" with form=form %}
+            {% include "includes/form_submit.html" %}
+            </form>
         </div>
     </div>
-</form>
+</div>
+
 {% endblock centered_container %}

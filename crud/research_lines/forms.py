@@ -22,6 +22,12 @@ class RicercaLineaApplicataForm(forms.ModelForm):
         model = RicercaLineaApplicata
         fields = ['descrizione', 'descr_pubblicaz_prog_brevetto',
                   'anno', 'ricerca_aster2']
+        labels = {
+            'descrizione': _('Denomination'),
+            'descr_pubblicaz_prog_brevetto': _('Patent project description'),
+            'anno': _('Year'),
+            'ricerca_aster2': _('ASTER2'),
+        }
         widgets = {'descr_pubblicaz_prog_brevetto': CKEditorWidget()}
 
     class Media:
@@ -33,6 +39,12 @@ class RicercaLineaBaseForm(forms.ModelForm):
         model = RicercaLineaBase
         fields = ['descrizione', 'descr_pubblicaz_prog_brevetto',
                   'anno', 'ricerca_erc2']
+        labels = {
+            'descrizione': _('Denomination'),
+            'descr_pubblicaz_prog_brevetto': _('Patent project description'),
+            'anno': _('Year'),
+            'ricerca_erc2': _('ERC2'),
+        }
         widgets = {'descr_pubblicaz_prog_brevetto': CKEditorWidget()}
 
     class Media:
@@ -51,6 +63,10 @@ class RicercaDocenteLineaBaseForm(forms.ModelForm):
     class Meta:
         model = RicercaDocenteLineaBase
         fields = ['dt_inizio', 'dt_fine']
+        labels = {
+            'dt_inizio': _('From'),
+            'dt_fine': _('To'),
+        }
         widgets = {'dt_inizio': BootstrapItaliaDateWidget,
                    'dt_fine': BootstrapItaliaDateWidget, }
 
@@ -67,5 +83,9 @@ class RicercaDocenteLineaApplicataForm(forms.ModelForm):
     class Meta:
         model = RicercaDocenteLineaBase
         fields = ['dt_inizio', 'dt_fine']
+        labels = {
+            'dt_inizio': _('From'),
+            'dt_fine': _('To'),
+        }
         widgets = {'dt_inizio': BootstrapItaliaDateWidget,
                    'dt_fine': BootstrapItaliaDateWidget, }

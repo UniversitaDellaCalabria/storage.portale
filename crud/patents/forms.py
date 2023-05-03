@@ -21,7 +21,7 @@ class BrevettoDatiBaseForm(forms.ModelForm):
     class Meta:
         model = BrevettoDatiBase
         labels = {
-            'id_univoco': _('Unique ID'),
+            'id_univoco': _('Patent identifier'),
             'titolo': _('Title'),
             'breve_descrizione': _('Short description'),
             'id_area_tecnologica': _('Tech area'),

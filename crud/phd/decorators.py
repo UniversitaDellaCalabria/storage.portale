@@ -47,7 +47,6 @@ def can_edit_phd(func_to_decorate):
         original_kwargs['teachers'] = teachers
         original_kwargs['other_teachers'] = other_teachers
 
-
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
 
