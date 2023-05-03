@@ -19,6 +19,11 @@ class RicercaGruppoForm(forms.ModelForm):
     class Meta:
         model = RicercaGruppo
         fields = ['nome', 'descrizione', 'ricerca_erc1']
+        labels = {
+            'nome': _('Name'),
+            'description': _('Description'),
+            'ricerca_erc1': _('ERC1')
+        }
         widgets = {'descrizione': CKEditorWidget()}
 
     class Media:
@@ -37,8 +42,9 @@ class RicercaGruppoDocenteForm(forms.ModelForm):
     class Meta:
         model = RicercaDocenteGruppo
         fields = ['dt_inizio', 'dt_fine']
-        labels = {'dt_inizio': _('Date start'),
-                  'dt_fine': _('Date end') }
+        labels = {
+            'dt_inizio': _('From'),
+            'dt_fine': _('To') }
 
         widgets = {'dt_inizio': BootstrapItaliaDateWidget,
                    'dt_fine': BootstrapItaliaDateWidget, }

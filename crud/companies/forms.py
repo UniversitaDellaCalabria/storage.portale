@@ -26,6 +26,18 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
                   'ceo', 'id_area_tecnologica',
                   'id_area_innovazione_s3_calabria', 'is_startup',
                   'is_spinoff', 'nome_file_logo']
+        labels = {
+            'piva': _('VAT number'),
+            'nome_azienda': _('Name'),
+            'descrizione_ita': _('Description (it)'),
+            'descrizione_eng': _('Description (en)'),
+            'url_sito_web': _('URL'),
+            'id_area_tecnologica': _('Tech Area'),
+            'id_area_innovazione_s3_calabria': _('Calabria S3 Innovation'),
+            'is_startup': _('Startup'),
+            'is_spinoff': _('Spinoff'),
+            'nome_file_logo': _('Logo'),
+        }
         widgets = {'descrizione_ita': CKEditorWidget(),
                    'descrizione_eng': CKEditorWidget()}
 

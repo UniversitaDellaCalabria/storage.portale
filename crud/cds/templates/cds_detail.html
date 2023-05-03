@@ -125,16 +125,9 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>{% trans "Order" %}</th>
+                            <th>#</th>
                             <th>{% trans "Responsible" %}</th>
                             <th>{% trans "Office" %}</th>
-                            <th>{% trans "Phone" %}</th>
-                            <th>{% trans "Email" %}</th>
-                            <th>{% trans "Building" %}</th>
-                            <th>{% trans "Floor" %}</th>
-                            <th>{% trans "Timetables" %}</th>
-                            <th>{% trans "Online Counter" %}</th>
-                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -150,12 +143,6 @@
                                 {% endif %}
                             </td>
                             <td>{{ data.nome_ufficio|default:"-" }}</td>
-                            <td>{{ data.telefono|default:"-" }}</td>
-                            <td>{{ data.email|default:"-" }}</td>
-                            <td>{{ data.edificio|default:"-" }}</td>
-                            <td>{{ data.piano|default:"-" }}</td>
-                            <td>{{ data.orari|default:"-" }}</td>
-                            <td>{{ data.sportello_online|default:"-" }}</td>
                             <td class="text-right">
                                 <a href="{% url 'crud_cds:crud_cds_office_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-02 18:51+0200\n"
-"PO-Revision-Date: 2023-05-02 18:52+0200\n"
+"POT-Creation-Date: 2023-05-03 12:15+0200\n"
+"PO-Revision-Date: 2023-05-03 12:16+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -42,7 +42,9 @@ msgstr ""
 msgid "Altro"
 msgstr ""
 
-#: accounts/models.py:15 crud/research_groups/templates/researchgroup.html:70
+#: accounts/models.py:15 crud/companies/forms.py:31
+#: crud/research_groups/forms.py:23
+#: crud/research_groups/templates/researchgroup.html:70
 #: crud/research_lines/templates/applied_researchline.html:70
 #: crud/research_lines/templates/base_researchline.html:70
 msgid "Name"
@@ -81,9 +83,9 @@ msgstr ""
 msgid "Permission denied"
 msgstr "Permesso negato"
 
-#: crud/cds/forms.py:16 crud/companies/forms.py:44 crud/patents/forms.py:76
+#: crud/cds/forms.py:16 crud/companies/forms.py:56 crud/patents/forms.py:76
 #: crud/phd/forms.py:24 crud/phd/forms.py:41 crud/projects/forms.py:36
-#: crud/projects/forms.py:53 crud/research_groups/forms.py:29
+#: crud/projects/forms.py:53 crud/research_groups/forms.py:34
 #: crud/research_lines/forms.py:59 crud/utils/forms.py:6
 msgid "Person"
 msgstr "Persona"
@@ -159,7 +161,7 @@ msgid "Course of study language"
 msgstr "Lingua"
 
 #: crud/cds/templates/blocks/crud_cds.html:127 crud/companies/forms.py:18
-#: crud/companies/forms.py:57
+#: crud/companies/forms.py:69
 #: crud/research_groups/templates/blocks/crud_researchgroups.html:37
 #: crud/research_lines/templates/blocks/crud_researchlines.html:36
 #: crud/teachers/templates/blocks/crud_teachers.html:33
@@ -200,7 +202,7 @@ msgstr "Nessun elemento"
 msgid "Study courses"
 msgstr "Corsi di studio"
 
-#: crud/cds/templates/cds_detail.html:30 crud/cds/templates/cds_detail.html:163
+#: crud/cds/templates/cds_detail.html:30 crud/cds/templates/cds_detail.html:150
 #: crud/cds/templates/cds_office_data.html:38
 #: crud/cds/templates/cds_other_data.html:41
 #: crud/cds/templates/cds_other_data.html:112
@@ -234,7 +236,7 @@ msgstr "Corsi di studio"
 msgid "Edit"
 msgstr "Modifica"
 
-#: crud/cds/templates/cds_detail.html:37 crud/cds/templates/cds_detail.html:170
+#: crud/cds/templates/cds_detail.html:37 crud/cds/templates/cds_detail.html:157
 #: crud/cds/templates/cds_office_data.html:48
 #: crud/cds/templates/cds_other_data.html:51
 #: crud/cds/templates/cds_other_data.html:122
@@ -266,7 +268,7 @@ msgstr "Modifica"
 msgid "Remove"
 msgstr "Rimuovi"
 
-#: crud/cds/templates/cds_detail.html:48 crud/cds/templates/cds_detail.html:181
+#: crud/cds/templates/cds_detail.html:48 crud/cds/templates/cds_detail.html:168
 #: crud/cds/templates/cds_office_data.html:59
 #: crud/cds/templates/cds_other_data.html:62
 #: crud/cds/templates/cds_other_data.html:133
@@ -304,7 +306,7 @@ msgstr "Conferma"
 msgid "Do you want to delete data set?"
 msgstr "Vuoi davvero eliminare questo set di dati?"
 
-#: crud/cds/templates/cds_detail.html:66 crud/cds/templates/cds_detail.html:199
+#: crud/cds/templates/cds_detail.html:66 crud/cds/templates/cds_detail.html:186
 #: crud/cds/templates/cds_office_data.html:77
 #: crud/cds/templates/cds_other_data.html:80
 #: crud/cds/templates/cds_other_data.html:151
@@ -343,7 +345,7 @@ msgid "Coordinator"
 msgstr "Coordinatore"
 
 #: crud/cds/templates/cds_detail.html:80 crud/cds/templates/cds_detail.html:90
-#: crud/cds/templates/cds_detail.html:149
+#: crud/cds/templates/cds_detail.html:142
 #: crud/companies/templates/company.html:76
 #: crud/patents/templates/patent.html:76
 #: crud/projects/templates/project.html:149
@@ -355,7 +357,7 @@ msgid "Deputy Coordinator"
 msgstr "Vice-coordinatore"
 
 #: crud/cds/templates/cds_detail.html:109
-#: crud/cds/templates/cds_detail.html:216
+#: crud/cds/templates/cds_detail.html:203
 #: crud/companies/templates/companies.html:11
 #: crud/companies/templates/company.html:211
 #: crud/patents/templates/patent.html:135
@@ -368,8 +370,8 @@ msgstr "Vice-coordinatore"
 #: crud/research_groups/templates/researchgroups.html:11
 #: crud/research_lines/templates/applied_researchline.html:146
 #: crud/research_lines/templates/base_researchline.html:146
-#: crud/teachers/templates/teacher_detail.html:144
 #: crud/teachers/templates/teacher_detail.html:162
+#: crud/teachers/templates/teacher_detail.html:180
 msgid "Add new"
 msgstr "Aggiungi nuovo"
 
@@ -377,12 +379,6 @@ msgstr "Aggiungi nuovo"
 #: crud/cds/views.py:549
 msgid "Office data"
 msgstr "Dati ufficio"
-
-#: crud/cds/templates/cds_detail.html:128
-#: crud/teachers/templates/blocks/crud_teacher_books.html:43
-#: crud/teachers/templates/blocks/crud_teacher_news.html:43
-msgid "Order"
-msgstr "Ordinamento"
 
 #: crud/cds/templates/cds_detail.html:129
 #: crud/cds/templates/cds_office_data.html:24 crud/cds/views.py:550
@@ -393,31 +389,7 @@ msgstr "Responsabile"
 msgid "Office"
 msgstr "Ufficio"
 
-#: crud/cds/templates/cds_detail.html:131
-msgid "Phone"
-msgstr "Telefono"
-
-#: crud/cds/templates/cds_detail.html:132
-msgid "Email"
-msgstr ""
-
-#: crud/cds/templates/cds_detail.html:133
-msgid "Building"
-msgstr "Edificio"
-
-#: crud/cds/templates/cds_detail.html:134
-msgid "Floor"
-msgstr "Piano"
-
-#: crud/cds/templates/cds_detail.html:135
-msgid "Timetables"
-msgstr "Orario di ricevimento"
-
-#: crud/cds/templates/cds_detail.html:136
-msgid "Online Counter"
-msgstr "Sportello online"
-
-#: crud/cds/templates/cds_detail.html:194
+#: crud/cds/templates/cds_detail.html:181
 msgid "Do you want to delete office data set?"
 msgstr "Vuoi davvero eliminare questo set di dati ufficio?"
 
@@ -578,11 +550,23 @@ msgstr "Dati ufficio creati con successo"
 msgid "Responsible data removed successfully"
 msgstr "Dati del responsabile eliminati con successo"
 
-#: crud/companies/forms.py:52 crud/patents/forms.py:84
-#: crud/projects/forms.py:48 crud/projects/forms.py:65
-msgid "Label"
-msgstr "Etichetta"
+#: crud/companies/forms.py:30
+msgid "VAT number"
+msgstr "Partita IVA"
 
+#: crud/companies/forms.py:32
+msgid "Description (it)"
+msgstr "Descrizione (it)"
+
+#: crud/companies/forms.py:33
+msgid "Description (en)"
+msgstr "Descrizione (en)"
+
+#: crud/companies/forms.py:34
+msgid "URL"
+msgstr ""
+
+#: crud/companies/forms.py:35
 #: crud/companies/templates/blocks/crud_companies.html:30
 #: crud/companies/templates/blocks/crud_companies.html:151
 #: crud/patents/templates/blocks/crud_patents.html:45
@@ -590,6 +574,29 @@ msgstr "Etichetta"
 #: crud/projects/templates/blocks/crud_projects.html:220
 msgid "Tech Area"
 msgstr "Area tecnologica"
+
+#: crud/companies/forms.py:36
+msgid "Calabria S3 Innovation"
+msgstr "Innovazione S3 Calabria"
+
+#: crud/companies/forms.py:37
+#: crud/companies/templates/blocks/crud_companies.html:76
+#: crud/companies/templates/blocks/crud_companies.html:137
+msgid "Startup"
+msgstr ""
+
+#: crud/companies/forms.py:38
+msgid "Spinoff"
+msgstr ""
+
+#: crud/companies/forms.py:39 crud/patents/forms.py:39
+msgid "Logo"
+msgstr ""
+
+#: crud/companies/forms.py:64 crud/patents/forms.py:84
+#: crud/projects/forms.py:48 crud/projects/forms.py:65
+msgid "Label"
+msgstr "Etichetta"
 
 #: crud/companies/templates/blocks/crud_companies.html:52
 #: crud/companies/templates/blocks/crud_companies.html:131
@@ -605,11 +612,6 @@ msgstr ""
 #: crud/companies/templates/blocks/crud_companies.html:91
 #: crud/utils/settings.py:17
 msgid "No"
-msgstr ""
-
-#: crud/companies/templates/blocks/crud_companies.html:76
-#: crud/companies/templates/blocks/crud_companies.html:137
-msgid "Startup"
 msgstr ""
 
 #: crud/companies/templates/companies.html:15 crud/companies/views.py:35
@@ -787,10 +789,6 @@ msgstr "Disponibilità"
 
 #: crud/patents/forms.py:38
 msgid "Area KS"
-msgstr ""
-
-#: crud/patents/forms.py:39
-msgid "Logo"
 msgstr ""
 
 #: crud/patents/forms.py:40
@@ -1286,13 +1284,25 @@ msgstr "Docente rimosso con successo"
 msgid "Project removed successfully"
 msgstr "Docente rimosso con successo"
 
-#: crud/research_groups/forms.py:40
-msgid "Date start"
-msgstr "Data inizio"
+#: crud/research_groups/forms.py:24
+#, fuzzy
+#| msgid "Short description"
+msgid "Description"
+msgstr "Breve descrizione"
 
-#: crud/research_groups/forms.py:41
-msgid "Date end"
-msgstr "Data fine"
+#: crud/research_groups/forms.py:25
+msgid "ERC1"
+msgstr ""
+
+#: crud/research_groups/forms.py:46
+#: crud/research_groups/templates/researchgroup.html:73
+msgid "From"
+msgstr "Dal"
+
+#: crud/research_groups/forms.py:47
+#: crud/research_groups/templates/researchgroup.html:74
+msgid "To"
+msgstr "Al"
 
 #: crud/research_groups/templates/blocks/crud_researchgroups.html:67
 #: crud/research_lines/templates/blocks/crud_researchlines.html:137
@@ -1315,22 +1325,8 @@ msgid "Teachers"
 msgstr "Docenti"
 
 #: crud/research_groups/templates/researchgroup.html:71
-#: crud/research_lines/templates/applied_researchline.html:71
-#: crud/research_lines/templates/base_researchline.html:71
-msgid "Code"
-msgstr "Codice"
-
-#: crud/research_groups/templates/researchgroup.html:73
-#: crud/research_lines/templates/applied_researchline.html:73
-#: crud/research_lines/templates/base_researchline.html:73
-msgid "Start date"
-msgstr "Data inizio"
-
-#: crud/research_groups/templates/researchgroup.html:74
-#: crud/research_lines/templates/applied_researchline.html:74
-#: crud/research_lines/templates/base_researchline.html:74
-msgid "End date"
-msgstr "Data fine"
+msgid "Badge"
+msgstr "Matricola"
 
 #: crud/research_groups/templates/researchgroup_new.html:8
 msgid "New research group"
@@ -1355,10 +1351,25 @@ msgstr "Gruppo di ricerca rimosso con successo"
 msgid "Research group created successfully"
 msgstr "Gruppo di ricerca creato con successo"
 
+#: crud/research_lines/templates/applied_researchline.html:71
+#: crud/research_lines/templates/base_researchline.html:71
+msgid "Code"
+msgstr "Codice"
+
 #: crud/research_lines/templates/applied_researchline.html:72
 #: crud/research_lines/templates/base_researchline.html:72
 msgid "Location"
 msgstr "Sede"
+
+#: crud/research_lines/templates/applied_researchline.html:73
+#: crud/research_lines/templates/base_researchline.html:73
+msgid "Start date"
+msgstr "Data inizio"
+
+#: crud/research_lines/templates/applied_researchline.html:74
+#: crud/research_lines/templates/base_researchline.html:74
+msgid "End date"
+msgstr "Data fine"
 
 #: crud/research_lines/templates/applied_researchlines.html:11
 #: crud/research_lines/templates/base_researchlines.html:11
@@ -1403,10 +1414,83 @@ msgstr "Linea di ricerca rimossa con successo"
 msgid "Research lines"
 msgstr "Linee di ricerca"
 
+#: crud/teachers/forms.py:27
+msgid "Short Bio (it)"
+msgstr "Breve bio (it)"
+
+#: crud/teachers/forms.py:28
+msgid "Short Bio (en)"
+msgstr "Breve bio (en)"
+
+#: crud/teachers/forms.py:29
+msgid "Reception hours (it)"
+msgstr "Orario di ricevimento (it)"
+
+#: crud/teachers/forms.py:30
+msgid "Reception hours (en)"
+msgstr "Orario di ricevimento (en)"
+
+#: crud/teachers/forms.py:31
+msgid "Curriculum (it)"
+msgstr ""
+
+#: crud/teachers/forms.py:32
+msgid "Curriculum (en)"
+msgstr ""
+
+#: crud/teachers/forms.py:33 crud/teachers/templates/teacher_detail.html:66
+msgid "Photo"
+msgstr "Foto"
+
+#: crud/teachers/forms.py:55
+msgid "Type (it)"
+msgstr "Tipo (it)"
+
+#: crud/teachers/forms.py:56
+msgid "Type (en)"
+msgstr "Tipo (en)"
+
+#: crud/teachers/forms.py:57 crud/teachers/forms.py:89
+msgid "Title (it)"
+msgstr "Titolo (it)"
+
+#: crud/teachers/forms.py:58 crud/teachers/forms.py:90
+msgid "Title (en)"
+msgstr "Titolo (en)"
+
+#: crud/teachers/forms.py:59 crud/teachers/forms.py:91
+msgid "Text (it)"
+msgstr "Testo (it)"
+
+#: crud/teachers/forms.py:60 crud/teachers/forms.py:92
+msgid "Text (en)"
+msgstr "Testo (en)"
+
+#: crud/teachers/forms.py:61 crud/teachers/forms.py:93
+msgid "URL (it)"
+msgstr ""
+
+#: crud/teachers/forms.py:62 crud/teachers/forms.py:94
+msgid "URL (en)"
+msgstr ""
+
+#: crud/teachers/forms.py:63 crud/teachers/forms.py:95
+msgid "Valid from"
+msgstr "Valido dal"
+
+#: crud/teachers/forms.py:64 crud/teachers/forms.py:96
+msgid "Valid until"
+msgstr "Valido fino al"
+
 #: crud/teachers/templates/blocks/crud_teacher_books.html:42
 #: crud/teachers/templates/blocks/crud_teacher_news.html:42
 msgid "Publication"
 msgstr "Data pubblicazione"
+
+#: crud/teachers/templates/blocks/crud_teacher_books.html:43
+#: crud/teachers/templates/blocks/crud_teacher_news.html:43
+msgid "Order"
+msgstr "Ordinamento"
 
 #: crud/teachers/templates/blocks/crud_teacher_books.html:44
 #: crud/teachers/templates/blocks/crud_teacher_news.html:44
@@ -1435,47 +1519,34 @@ msgstr "Modifica altri dati per"
 msgid "New board data set for"
 msgstr ""
 
-#: crud/teachers/templates/teacher_detail.html:66
-msgid "Photo"
-msgstr "Foto"
-
-#: crud/teachers/templates/teacher_detail.html:76
-msgid "CV (it)"
+#: crud/teachers/templates/teacher_detail.html:77
+#: crud/teachers/templates/teacher_detail.html:92
+msgid "Curriculum"
 msgstr ""
 
-#: crud/teachers/templates/teacher_detail.html:88
-msgid "CV (en)"
-msgstr ""
+#: crud/teachers/templates/teacher_detail.html:107
+#: crud/teachers/templates/teacher_detail.html:114
+msgid "Short Bio"
+msgstr "Breve bio"
 
-#: crud/teachers/templates/teacher_detail.html:100
-msgid "Short Bio (it)"
-msgstr ""
+#: crud/teachers/templates/teacher_detail.html:121
+#: crud/teachers/templates/teacher_detail.html:128
+msgid "Reception Hours"
+msgstr "Orario di ricevimento"
 
-#: crud/teachers/templates/teacher_detail.html:104
-msgid "Short Bio (en)"
-msgstr ""
-
-#: crud/teachers/templates/teacher_detail.html:108
-msgid "Reception Hours (it)"
-msgstr ""
-
-#: crud/teachers/templates/teacher_detail.html:112
-msgid "Reception Hours (en)"
-msgstr ""
-
-#: crud/teachers/templates/teacher_detail.html:116
+#: crud/teachers/templates/teacher_detail.html:134
 msgid "ORCID"
 msgstr ""
 
-#: crud/teachers/templates/teacher_detail.html:125
+#: crud/teachers/templates/teacher_detail.html:143
 msgid "Add new data set"
 msgstr "Aggiungi nuovo set di dati"
 
-#: crud/teachers/templates/teacher_detail.html:136
+#: crud/teachers/templates/teacher_detail.html:154
 msgid "Board"
 msgstr "Bacheca"
 
-#: crud/teachers/templates/teacher_detail.html:154
+#: crud/teachers/templates/teacher_detail.html:172
 msgid "Teaching Materials"
 msgstr "Materiale didattico"
 
@@ -1778,6 +1849,27 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
+#~ msgid "Date start"
+#~ msgstr "Data inizio"
+
+#~ msgid "Date end"
+#~ msgstr "Data fine"
+
+#~ msgid "Phone"
+#~ msgstr "Telefono"
+
+#~ msgid "Building"
+#~ msgstr "Edificio"
+
+#~ msgid "Floor"
+#~ msgstr "Piano"
+
+#~ msgid "Timetables"
+#~ msgstr "Orario di ricevimento"
+
+#~ msgid "Online Counter"
+#~ msgstr "Sportello online"
+
 #~ msgid "Struttura Centrale"
 #~ msgstr "Struttura centrale"
 
@@ -1806,12 +1898,6 @@ msgstr ""
 
 #~ msgid "Deputy coordinator - Link to teacher"
 #~ msgstr "Vice-coordinatore - Link a docente"
-
-#~ msgid "Valid from"
-#~ msgstr "Valido dal"
-
-#~ msgid "Valid until"
-#~ msgstr "Valido fino al"
 
 #, fuzzy
 #~| msgid "Other data created successfully"

@@ -73,7 +73,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><b>{% trans "CV (it)" %}</b></td>
+                        <td>
+                            <b>{% trans "Curriculum" %}</b>
+                            <img src="{% static 'images/ita.jpg' %}" width="15" />
+                        </td>
                         <td>
                             {% if other_data.path_cv_ita %}
                             <a href="{% get_media_prefix %}{{ other_data.path_cv_ita }}" target="_blank">
@@ -85,7 +88,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><b>{% trans "CV (en)" %}</b></td>
+                        <td>
+                            <b>{% trans "Curriculum" %}</b>
+                            <img src="{% static 'images/eng.jpg' %}" width="15" />
+                        </td>
                         <td>
                             {% if other_data.path_cv_en %}
                             <a href="{% get_media_prefix %}{{ other_data.path_cv_en }}" target="_blank">
@@ -97,19 +103,31 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><b>{% trans "Short Bio (it)" %}</b></td>
+                        <td>
+                            <b>{% trans "Short Bio" %}</b>
+                            <img src="{% static 'images/ita.jpg' %}" width="15" />
+                        </td>
                         <td>{{ other_data.breve_bio|safe|default:"-" }}</td>
                     </tr>
                     <tr>
-                        <td><b>{% trans "Short Bio (en)" %}</b></td>
+                        <td>
+                            <b>{% trans "Short Bio" %}</b>
+                            <img src="{% static 'images/eng.jpg' %}" width="15" />
+                        </td>
                         <td>{{ other_data.breve_bio_en|safe|default:"-" }}</td>
                     </tr>
                     <tr>
-                        <td><b>{% trans "Reception Hours (it)" %}</b></td>
+                        <td>
+                            <b>{% trans "Reception Hours" %}</b>
+                            <img src="{% static 'images/ita.jpg' %}" width="20" />
+                        </td>
                         <td>{{ other_data.orario_ricevimento|safe|default:"-" }}</td>
                     </tr>
                     <tr>
-                        <td><b>{% trans "Reception Hours (en)" %}</b></td>
+                        <td>
+                            <b>{% trans "Reception Hours" %}</b>
+                            <img src="{% static 'images/eng.jpg' %}" width="20" />
+                        </td>
                         <td>{{ other_data.orario_ricevimento_en|safe|default:"-" }}</td>
                     </tr>
                     <tr>

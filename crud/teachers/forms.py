@@ -23,6 +23,15 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
         fields = ['breve_bio', 'breve_bio_en', 'orario_ricevimento',
                   'orario_ricevimento_en', 'orcid', 'path_foto',
                   'path_cv_ita', 'path_cv_en', ]
+        labels = {
+            'breve_bio': _('Short Bio (it)'),
+            'breve_bio_en': _('Short Bio (en)'),
+            'orario_ricevimento': _('Reception hours (it)'),
+            'orario_ricevimento_en': _('Reception hours (en)'),
+            'path_cv_ita': _('Curriculum (it)'),
+            'path_cv_en': _('Curriculum (en)'),
+            'path_foto': _('Photo'),
+        }
         widgets = {'breve_bio_en': CKEditorWidget(),
                    # 'breve_bio': forms.Textarea(attrs={'rows': 2}),
                    'breve_bio': CKEditorWidget(),
@@ -42,6 +51,18 @@ class DocentePtaBachecaForm(forms.ModelForm):
                   #'dt_pubblicazione',
                   'dt_inizio_validita', 'dt_fine_validita',
                   'ordine', 'attivo']
+        labels = {
+            'tipo_testo': _('Type (it)'),
+            'tipo_testo_en': _('Type (en)'),
+            'titolo': _('Title (it)'),
+            'titolo_en': _('Title (en)'),
+            'testo': _('Text (it)'),
+            'testo_en': _('Text (en)'),
+            'url_testo': _('URL (it)'),
+            'url_testo_en': _('URL (en)'),
+            'dt_inizio_validita': _('Valid from'),
+            'dt_fine_validita': _('Valid until'),
+        }
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
                    'titolo_en': forms.Textarea(attrs={'rows': 2}),
                    'testo': CKEditorWidget(),
@@ -64,6 +85,16 @@ class DocenteMaterialeDidatticoForm(forms.ModelForm):
                   # 'dt_pubblicazione',
                   'dt_inizio_validita', 'dt_fine_validita',
                   'ordine', 'attivo',]
+        labels = {
+            'titolo': _('Title (it)'),
+            'titolo_en': _('Title (en)'),
+            'testo': _('Text (it)'),
+            'testo_en': _('Text (en)'),
+            'url_testo': _('URL (it)'),
+            'url_testo_en': _('URL (en)'),
+            'dt_inizio_validita': _('Valid from'),
+            'dt_fine_validita': _('Valid until'),
+        }
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
                    'titolo_en': forms.Textarea(attrs={'rows': 2}),
                    'testo': CKEditorWidget(),

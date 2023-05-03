@@ -83,9 +83,10 @@ def phd_new(request, my_offices=None):
                     raise Exception(
                         _("Add a teacher belonging to your structure"))
 
+            phd = form.save(commit=False)
             phd.user_mod_id = request.user
             phd.dt_mod = datetime.datetime.now()
-            phd = form.save()
+            phd.save()
 
             new_teacher = DidatticaDottoratoAttivitaFormativaDocente.objects.create(id_didattica_dottorato_attivita_formativa=phd,
                                                                                     cognome_nome_origine=teacher_form.cleaned_data['cognome_nome_origine'],
