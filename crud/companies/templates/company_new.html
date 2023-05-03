@@ -46,7 +46,7 @@
                 <h4 style="font-weight: lighter;">{% trans "Choose one Unical referent" %}</h4>
                 <div class="mt-5">
                     {% include "form_template.html" with form=referent_form %}
-                    {% include "blocks/includes/choose_teacher.html" with uid="id_2" url=teachers_api %}
+                    {% include "blocks/includes/choose_teacher.html" with uid="id_2" url=teachers_api input_field="id_referente_unical" %}
                 </div>
                 {% include "includes/form_submit.html" %}
             </form>

@@ -25,7 +25,10 @@ class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
                   'telefono', 'email', 'edificio', 'piano', 'orari',
                   'sportello_online']
         labels = {
-            "nome_origine_riferimento": f'{_("Label")} {_("Responsible")}',
+            "nome_origine_riferimento": f'{_("Label")}',
+        }
+        help_texts = {
+            "nome_origine_riferimento": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
         }
         widgets = {'orari': CKEditorWidget()}
 
@@ -43,6 +46,10 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
             "nome_origine_vice_coordinatore": f'{_("Label")} {_("Deputy coordinator")}',
             "num_posti": _("Number of seats"),
             "modalita_iscrizione": _("Registration procedure"),
+        }
+        help_texts = {
+            "nome_origine_coordinatore": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
+            "nome_origine_vice_coordinatore": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
         }
         widgets = {'modalita_iscrizione': CKEditorWidget()}
 

@@ -170,6 +170,12 @@ callDepartments() {
         })
 },
 setPerson(name){
+    {% if input_field %}
+    let element = document.getElementById("{{ input_field }}");
+    if (typeof(element) != 'undefined' && element != null){
+        element.value = name[1];
+    }
+    {% endif %}
     document.getElementById("id_choosen_person").value = name[0];
     let elements = document.getElementsByClassName("choosen_person_name")
     for(let i=0; i < elements.length; i++)

@@ -83,3 +83,6 @@ class BrevettoInventoriForm(forms.ModelForm):
         labels = {
             "cognomenome_origine": _("Label"),
         }
+        help_texts = {
+            "cognomenome_origine": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
+        }

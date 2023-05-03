@@ -12,10 +12,10 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            {% include "blocks/includes/choose_teacher.html" %}
             <form method="post">
-            {% include "form_template.html" with form=form %}
-            {% include "includes/form_submit.html" %}
+                {% include "form_template.html" with form=form %}
+                {% include "blocks/includes/choose_teacher.html" with input_field="id_cognomenome_origine" %}
+                {% include "includes/form_submit.html" %}
             </form>
         </div>
     </div>

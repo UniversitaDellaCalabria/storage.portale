@@ -11,9 +11,9 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            {% include "blocks/includes/choose_teacher.html" %}
             <form method="post">
                 {% include "form_template.html" with form=form %}
+                {% include "blocks/includes/choose_teacher.html" %}
                 {% include "includes/form_submit.html" %}
             </form>
         </div>

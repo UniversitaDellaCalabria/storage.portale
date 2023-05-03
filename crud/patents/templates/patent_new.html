@@ -17,7 +17,7 @@
                 <h4 style="font-weight: lighter;">{% trans "Choose one inventor" %}</h4>
                 <div class="mt-5">
                     {% include "form_template.html" with form=inventor_form %}
-                    {% include "blocks/includes/choose_teacher.html" %}
+                    {% include "blocks/includes/choose_teacher.html" with input_field="id_cognomenome_origine" %}
                     {% include "includes/form_submit.html" %}
                 </div>
             </form>

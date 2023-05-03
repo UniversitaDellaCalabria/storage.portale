@@ -22,9 +22,6 @@
                         <tr>
                             <th>{% trans "Select a teacher to link to the label" %}</th>
                             <th></th>
-                            {% if teacher_data.matricola %}
-                            <th></th>
-                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -37,7 +34,7 @@
                                     </svg> {% trans "Edit" %}
                                 </a>
                                 {% if teacher_data.matricola %}
-                                <a href="" class="btn btn-danger btn-xs d-flex"
+                                <a href="" class="btn btn-danger btn-xs"
                                    data-toggle="modal"
                                    data-target="#delete_teacher">
                                     <svg class="icon icon-xs icon-white">
@@ -47,7 +44,7 @@
                                 <div class="modal fade"
                                      tabindex="-1"
                                      role="dialog"
-                                     id="delete_director">
+                                     id="delete_teacher">
                                     <div class="modal-dialog modal-dialog-centered"
                                          role="document">
                                         <div class="modal-content">
