@@ -43,8 +43,8 @@
                         </div>
                         {% endif %}
                     </span>
-                    <hr />
                 </div>
+                {% comment %}
                 <hr />
                 <h4 style="font-weight: lighter;">
                     {% trans "Choose one director" %}
@@ -53,6 +53,7 @@
                     {% include "form_template.html" with form=director_form %}
                     {% include "blocks/includes/choose_teacher.html" with url=teachers_api %}
                 </div>
+                {% endcomment %}
                 {% include "includes/form_submit.html" %}
             </form>
         </div>

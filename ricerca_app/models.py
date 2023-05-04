@@ -2497,8 +2497,8 @@ class Personale(InsModAbstract):
         db_table = 'PERSONALE'
 
     def __str__(self): # pragma: no cover
-        return '{} {} [{}]'.format(self.nome,
-                                   self.cognome, self.matricola)
+        return '{} {} [{}]'.format(self.cognome,
+                                   self.nome, self.matricola)
 
 
 
@@ -3504,6 +3504,9 @@ class ProgettoRicercatore(models.Model):
     nome_origine = models.CharField(db_column='NOME_ORIGINE', max_length=1000)  # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 
+    def __str__(self):
+        return nome_origine
+
     class Meta:
         managed = True
         db_table = 'PROGETTO_RICERCATORE'
@@ -3524,6 +3527,9 @@ class ProgettoResponsabileScientifico(models.Model):
         max_length=1000)  # Field name made lowercase.
     # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
+
+    def __str__(self):
+        return self.nome_origine
 
     class Meta:
         managed = True

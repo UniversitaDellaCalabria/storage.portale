@@ -1,11 +1,15 @@
 {% load i18n %}
+{% load crud_templatetags %}
 {% load static %}
+
+
+{% random_id uid as id %}
 
 
 <button class="btn btn-success btn-block"
         type="button"
         data-toggle="modal"
-        data-target="#action">
+        data-target="#{{ id }}_action">
     <svg class="icon icon-xs icon-white">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
     </svg>
@@ -14,7 +18,7 @@
 <div class="modal fade"
      tabindex="-1"
      role="dialog"
-     id="action">
+     id="{{ id }}_action">
     <div class="modal-dialog modal-dialog-centered"
          role="document">
         <div class="modal-content">
@@ -39,7 +43,7 @@
             <div class="modal-footer">
                 <input class="btn btn-success"
                        type="submit"
-                       id="submitForm"
+                       id="{{ id }}_submitForm"
                        value="{% trans 'Yes, proceed' %}">
             </div>
         </div>

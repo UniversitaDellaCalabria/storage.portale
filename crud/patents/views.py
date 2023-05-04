@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 @can_manage_patents
-def patents(request, my_offices=None, patent=None, inventors=None):
+def patents(request, patent=None, inventors=None):
     """
     lista dei brevetti
     """
@@ -39,7 +39,7 @@ def patents(request, my_offices=None, patent=None, inventors=None):
 
 @login_required
 @can_manage_patents
-def patent_new(request, my_offices=None, patent=None, inventors=None):
+def patent_new(request, patent=None, inventors=None):
     """
     nuovo brevetto
     """
@@ -103,7 +103,7 @@ def patent_new(request, my_offices=None, patent=None, inventors=None):
 
 @login_required
 @can_manage_patents
-def patent(request, code, my_offices=None, patent=None, inventors=None):
+def patent(request, code, patent=None, inventors=None):
     """
     modifica brevetto
     """
@@ -157,7 +157,7 @@ def patent(request, code, my_offices=None, patent=None, inventors=None):
 @login_required
 @can_manage_patents
 def patent_inventor_data(request, code, inventor_id, patent=None,
-                         inventors=None, my_offices=None):
+                         inventors=None):
     """
     dettaglio dati inventore
     """
@@ -212,7 +212,7 @@ def patent_inventor_data(request, code, inventor_id, patent=None,
 @login_required
 @can_manage_patents
 def patent_inventor_data_edit(request, code, inventor_id, inventors=None,
-                              my_offices=None, patent=None):
+                              patent=None):
     """
     modifica dati inventore
     """
@@ -279,7 +279,7 @@ def patent_inventor_data_edit(request, code, inventor_id, inventors=None,
 
 @login_required
 @can_manage_patents
-def patent_inventor_new(request, code, my_offices=None, patent=None, inventors=None):
+def patent_inventor_new(request, code, patent=None, inventors=None):
     """
     nuovo inventore
     """
@@ -329,7 +329,7 @@ def patent_inventor_new(request, code, my_offices=None, patent=None, inventors=N
 @login_required
 @can_manage_patents
 def patent_inventor_delete(request, code, inventor_id,
-                           my_offices=None, patent=None, inventors=None):
+                           patent=None, inventors=None):
     """
     elimina inventore
     """
@@ -355,7 +355,7 @@ def patent_inventor_delete(request, code, inventor_id,
 @login_required
 @can_manage_patents
 def patent_inventor_link_delete(request, code, inventor_id,
-                                my_offices=None, patent=None, inventors=None):
+                                patent=None, inventors=None):
     """
     rimuovi link inventore a Persona
     """
@@ -381,7 +381,7 @@ def patent_inventor_link_delete(request, code, inventor_id,
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 # @can_manage_patents
-def patent_delete(request, code, my_offices=None, patent=None, inventors=None):
+def patent_delete(request, code, patent=None, inventors=None):
     """
     rimuovi brevetto
     """
