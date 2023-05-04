@@ -3317,6 +3317,9 @@ class BrevettoInventori(models.Model):
         db_column='COGNOMENOME_ORIGINE',
         max_length=200)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.cognomenome_origine
+
     class Meta:
         managed = True
         db_table = 'BREVETTO_INVENTORI'

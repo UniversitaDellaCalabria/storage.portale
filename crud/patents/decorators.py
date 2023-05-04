@@ -22,9 +22,7 @@ def can_manage_patents(func_to_decorate):
         if original_kwargs.get('code'):
             patent = get_object_or_404(
                 BrevettoDatiBase, pk=original_kwargs['code'])
-            inventors = BrevettoInventori.objects.filter(id_brevetto=patent)
             original_kwargs['patent'] = patent
-            original_kwargs['inventors'] = inventors
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)

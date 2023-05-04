@@ -73,16 +73,9 @@ class BrevettoDatiBaseForm(forms.ModelForm):
 
 
 class BrevettoInventoriForm(forms.ModelForm):
-    choosen_person = forms.CharField(label=_('Person'),
-                                     widget=forms.HiddenInput(),
-                                     required=False)
-
     class Meta:
         model = BrevettoInventori
         fields = ['cognomenome_origine']
         labels = {
-            "cognomenome_origine": _("Label"),
-        }
-        help_texts = {
-            "cognomenome_origine": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
+            "cognomenome_origine": _("Name and Surname"),
         }

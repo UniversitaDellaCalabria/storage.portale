@@ -35,9 +35,6 @@ class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
         labels = {
             "cognome_nome_origine": f'{_("Label")}',
         }
-        help_texts = {
-            "cognome_nome_origine": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
-        }
 
 
 class DidatticaDottoratoAttivitaFormativaDocenteForm(forms.ModelForm):
@@ -54,9 +51,6 @@ class DidatticaDottoratoAttivitaFormativaDocenteForm(forms.ModelForm):
         fields = ['cognome_nome_origine']
         labels = {
             "cognome_nome_origine": f'{_("Label")}',
-        }
-        help_texts = {
-            "cognome_nome_origine": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
         }
 
 
