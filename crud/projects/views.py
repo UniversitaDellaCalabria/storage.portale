@@ -530,7 +530,7 @@ def project_structure_data_edit(request, code, data_id, project=None):
                    '#': _('Structure')}
 
     return render(request,
-                  'project_structure_data_edit.html',
+                  'project_structure.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'project': project,
