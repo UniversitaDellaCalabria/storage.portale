@@ -37,6 +37,7 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
             'is_startup': _('Startup'),
             'is_spinoff': _('Spinoff'),
             'nome_file_logo': _('Logo'),
+            'ceo': _('CEO'),
         }
         widgets = {'descrizione_ita': CKEditorWidget(),
                    'descrizione_eng': CKEditorWidget()}
@@ -53,15 +54,11 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
 
 
 class SpinoffStartupDatiBaseReferentForm(forms.ModelForm):
-    choosen_person = forms.CharField(label=_('Person'),
-                                     widget=forms.HiddenInput(),
-                                     required=False)
-
     class Meta:
         model = SpinoffStartupDatiBase
         fields = ['referente_unical']
         labels = {
-            "referente_unical": _("Label"),
+            "referente_unical": _("Name and Surname"),
         }
 
 

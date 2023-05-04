@@ -1,0 +1,43 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<h3 style="font-weight: lighter;" class="mb-4">
+    {% if choosen_person %}{% trans "Edit inventor for" %}{% else %}{% trans "New inventor for" %}{% endif %} {{ patent.titolo }}
+</h3>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-tab1-tab" data-toggle="tab" href="#nav-tab1" role="tab" aria-controls="nav-tab1" aria-selected="true">
+                        Docente interno
+                    </a>
+                    <a class="nav-item nav-link" id="nav-tab2-tab" data-toggle="tab" href="#nav-tab2" role="tab" aria-controls="nav-tab2" aria-selected="false">
+                        Docente esterno
+                    </a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane p-4 fade show active" id="nav-tab1" role="tabpanel" aria-labelledby="nav-tab1-tab">
+                    <form method="post">
+                        {% include "blocks/includes/choose_teacher.html" %}
+                        {% include "form_template.html" with form=internal_form %}
+                        {% include "includes/form_submit.html" %}
+                    </form>
+                </div>
+                <div class="tab-pane p-4 fade" id="nav-tab2" role="tabpanel" aria-labelledby="nav-tab2-tab">
+                    <form method="post">
+                        {% include "form_template.html" with form=external_form %}
+                        {% include "includes/form_submit.html" %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock centered_container %}

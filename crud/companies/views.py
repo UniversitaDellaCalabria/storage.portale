@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 @can_manage_companies
-def companies(request, my_offices=None, company=None):
+def companies(request, company=None):
     """
     lista delle imprese
     """
@@ -40,82 +40,7 @@ def companies(request, my_offices=None, company=None):
 
 @login_required
 @can_manage_companies
-def company_new(request, my_offices=None, company=None):
-    """
-    aggiungi nuova impresa
-    """
-    # due form, uno per i dati del brevetto
-    # e uno per l'inventore iniziale
-    form = SpinoffStartupDatiBaseForm()
-    department_form = SpinoffStartupDipartimentoForm()
-    referent_form = SpinoffStartupDatiBaseReferentForm()
-
-    # se la validazione dovesse fallire ritroveremmo
-    # comunque l'inventore scelto senza doverlo cercare
-    # nuovamente dall'elenco
-    department = None
-    if request.POST.get('choosen_department', ''):
-        department = get_object_or_404(DidatticaDipartimento,
-                                       dip_id=request.POST['choosen_department'])
-
-    referent = None
-    if request.POST.get('choosen_person', ''):
-        referent = get_object_or_404(Personale,
-                                     matricola=(decrypt(request.POST['choosen_person'])))
-
-    if request.POST:
-        form = SpinoffStartupDatiBaseForm(data=request.POST, files=request.FILES)
-        department_form = SpinoffStartupDipartimentoForm(data=request.POST)
-        referent_form = SpinoffStartupDatiBaseReferentForm(data=request.POST)
-
-        if form.is_valid() and department_form.is_valid() and referent_form.is_valid():
-            company = form.save(commit=False)
-            company.referente_unical = referent_form.cleaned_data['referente_unical']
-            company.matricola_referente_unical = referent
-            company.save()
-
-            # se viene scelto un dipartimento
-            # questo viene associato all'impresa
-            if department:
-                SpinoffStartupDipartimento.objects.create(id_spinoff_startup_dati_base=company,
-                                                          nome_origine_dipartimento=f'{department.dip_des_it}',
-                                                          id_didattica_dipartimento=department)
-
-            log_action(user=request.user,
-                       obj=company,
-                       flag=ADDITION,
-                       msg=[{'added': {}}])
-
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("Company created successfully"))
-            return redirect("crud_companies:crud_companies")
-        else:  # pragma: no cover
-            for k, v in form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields[k].label}</b>: {v}")
-            for k, v in department_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{department_form.fields[k].label}</b>: {v}")
-
-    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_companies:crud_companies'): _('Companies'),
-                   '#': _('New')}
-
-    return render(request,
-                  'company_new.html',
-                  {'breadcrumbs': breadcrumbs,
-                   'choosen_department': f'{department.dip_des_it}' if department else '',
-                   'form': form,
-                   'departments_api': reverse('ricerca:departmentslist'),
-                   'teachers_api': reverse('ricerca:teacherslist'),
-                   'department_form': department_form,
-                   'referent_form': referent_form})
-
-
-@login_required
-@can_manage_companies
-def company(request, code, my_offices=None, company=None):
+def company(request, code, company=None):
     """
     dettaglio impresa
     """
@@ -171,157 +96,212 @@ def company(request, code, my_offices=None, company=None):
                    'referent_data': referent_data})
 
 
-@login_required
-@can_manage_companies
-def company_unical_referent_data(request, code, data_id, company=None, my_offices=None):
-    """
-    dettaglio referente Unical dell'impresa
-    """
-    referent_data = get_object_or_404(SpinoffStartupDatiBase.objects.select_related('matricola_referente_unical'),
-                                      pk=data_id)
 
-    form = SpinoffStartupDatiBaseReferentForm(instance=referent_data)
 
-    if request.POST:
-        form = SpinoffStartupDatiBaseReferentForm(instance=referent_data,
-                                                  data=request.POST)
-        if form.is_valid():
-            referent_data.user_mod = request.user
-            referent_data.referente_unical = form.cleaned_data['referente_unical']
-            referent_data.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
-                                                                       form.changed_data)
-            log_action(user=request.user,
-                       obj=company,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
 
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("Office data edited successfully"))
 
-            return redirect('crud_companies:crud_company_unical_referent_data',
-                            code=code,
-                            data_id=data_id)
 
-        else:  # pragma: no cover
-            for k, v in form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields[k].label}</b>: {v}")
 
-    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_companies:crud_companies'): _('Companies'),
-                   reverse('crud_companies:crud_company_edit', kwargs={'code': code}): company.nome_azienda,
-                   reverse('crud_companies:crud_company_unical_referent_data', kwargs={'code': code, 'data_id': data_id}): _('Unical Referent')
-                   }
 
-    return render(request,
-                  'company_unical_referent_data.html',
-                  {'breadcrumbs': breadcrumbs,
-                   'form': form,
-                   'company': company,
-                   'referent_data': referent_data})
+
 
 
 @login_required
 @can_manage_companies
-def company_unical_referent_data_edit(request, code, data_id,
-                                      my_offices=None, company=None):
+def company_new(request, company=None):
     """
-    modifica dati referente unical
+    aggiungi nuova impresa
     """
-    unical_referent = get_object_or_404(SpinoffStartupDatiBase.objects.select_related('matricola_referente_unical'),
-                                        pk=code)
+    # due form, uno per i dati del brevetto
+    # e uno per l'inventore iniziale
+    form = SpinoffStartupDatiBaseForm()
+    department_form = SpinoffStartupDipartimentoForm()
+    external_form = SpinoffStartupDatiBaseReferentForm()
+    internal_form = ChoosenPersonForm(required=True)
 
-    referent = unical_referent.matricola_referente_unical
-    referent_data = ''
-    initial = {}
+    # se la validazione dovesse fallire ritroveremmo
+    # comunque l'inventore scelto senza doverlo cercare
+    # nuovamente dall'elenco
+    department = None
+    if request.POST.get('choosen_department', ''):
+        department = get_object_or_404(DidatticaDipartimento,
+                                       dip_id=request.POST['choosen_department'])
 
-    if referent:
-        referent_data = f'{referent.nome} {referent.cognome}'
-        initial={'choosen_person': encrypt(referent.matricola)}
-
-    form = ChoosenPersonForm(initial=initial, required=True)
+    referent = None
+    if request.POST.get('choosen_person', ''):
+        referent = get_object_or_404(Personale,
+                                     matricola=(decrypt(request.POST['choosen_person'])))
 
     if request.POST:
-        form = ChoosenPersonForm(data=request.POST, required=True)
-        if form.is_valid():
-            referent_code = decrypt(form.cleaned_data['choosen_person'])
-            new_referent = get_object_or_404(Personale,
-                                             matricola=referent_code)
-            unical_referent.matricola_referente_unical = new_referent
-            unical_referent.save()
+        form = SpinoffStartupDatiBaseForm(data=request.POST, files=request.FILES)
+        department_form = SpinoffStartupDipartimentoForm(data=request.POST)
 
-            if referent and referent == new_referent:
-                log_msg = f'{_("Changed referent")} {referent}'
-            elif referent and referent != new_referent:
-                log_msg = f'{referent} {_("substituted with")} {new_referent}'
+        if 'choosen_person' in request.POST:
+            referent_form = ChoosenPersonForm(data=request.POST, required=True)
+        else:
+            referent_form = BrevettoInventoriForm(data=request.POST)
+
+
+        if form.is_valid() and department_form.is_valid() and referent_form.is_valid():
+            company = form.save(commit=False)
+
+            if referent_form.cleaned_data.get('choosen_person'):
+                referente_unical=f'{referent.cognome} {referent.nome}'
             else:
-                log_msg = f'{_("Changed referent")} {new_referent}'
+                referente_unical=form.cleaned_data['referente_unical']
+
+            company.referente_unical = referente_unical
+            company.matricola_referente_unical = referent
+            company.save()
+
+            # se viene scelto un dipartimento
+            # questo viene associato all'impresa
+            if department:
+                SpinoffStartupDipartimento.objects.create(id_spinoff_startup_dati_base=company,
+                                                          nome_origine_dipartimento=f'{department.dip_des_it}',
+                                                          id_didattica_dipartimento=department)
 
             log_action(user=request.user,
                        obj=company,
-                       flag=CHANGE,
-                       msg=log_msg)
+                       flag=ADDITION,
+                       msg=[{'added': {}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("Unical referent edited successfully"))
-            return redirect('crud_companies:crud_company_unical_referent_data',
-                            code=code,
-                            data_id=data_id)
+                                 _("Company created successfully"))
+            return redirect("crud_companies:crud_companies")
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
+            for k, v in department_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{department_form.fields[k].label}</b>: {v}")
+            for k, v in referent_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{department_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_companies:crud_companies'): _('Companies'),
-                   reverse('crud_companies:crud_company_edit', kwargs={'code': code}): company.nome_azienda,
-                   reverse('crud_companies:crud_company_unical_referent_data', kwargs={'code': code, 'data_id': data_id}): _('Unical Referent'),
-                   '#': _('Edit')
-                   }
+                   '#': _('New')}
 
     return render(request,
-                  'company_unical_referent_data_edit.html',
+                  'company_new.html',
                   {'breadcrumbs': breadcrumbs,
+                   'choosen_department': f'{department.dip_des_it}' if department else '',
                    'form': form,
-                   'company': company,
-                   'choosen_person': referent_data,
+                   'departments_api': reverse('ricerca:departmentslist'),
+                   'teachers_api': reverse('ricerca:teacherslist'),
+                   'department_form': department_form,
+                   'external_form': external_form,
+                   'internal_form': internal_form,
                    'url': reverse('ricerca:teacherslist')})
 
 
+
+
+
 @login_required
 @can_manage_companies
-def company_unical_referent_data_delete(request, code, data_id=None,
-                                        my_offices=None, company=None):
+def company_unical_referent_edit(request, code, data_id, company=None):
     """
-    elimina referente unical
+    dettaglio referente Unical dell'impresa
     """
-    company = get_object_or_404(SpinoffStartupDatiBase,
-                                pk=code)
+    company_referent = get_object_or_404(SpinoffStartupDatiBase.objects.select_related('matricola_referente_unical'),
+                                         pk=data_id)
+    old_label = company_referent.referente_unical
+    referent = company_referent.matricola_referente_unical
+    initial = {}
+    referent_data = ''
+    if referent:
+        referent_data = f'{referent.cognome} {referent.nome}'
+        initial={'choosen_person': encrypt(referent.matricola)}
 
-    company.matricola_referente_unical = None
-    company.save()
+    external_form = SpinoffStartupDatiBaseReferentForm(instance=company_referent)
+    internal_form = ChoosenPersonForm(initial=initial, required=True)
 
-    log_action(user=request.user,
-               obj=company,
-               flag=CHANGE,
-               msg=f'{_("Deleted unical referent")}')
+    if request.POST:
+        if 'choosen_person' in request.POST:
+            form = ChoosenPersonForm(data=request.POST, required=True)
+        else:
+            form = SpinoffStartupDatiBaseReferentForm(instance=company_referent,
+                                                      data=request.POST)
 
-    messages.add_message(request,
-                         messages.SUCCESS,
-                         _("Unical referent removed successfully"))
-    return redirect('crud_companies:crud_company_unical_referent_data',
-                    code=code,
-                    data_id=data_id)
+        if form.is_valid():
+            if form.cleaned_data.get('choosen_person'):
+                referent_code = decrypt(form.cleaned_data['choosen_person'])
+                referent = get_object_or_404(Personale, matricola=referent_code)
+                company_referent.matricola_referente_unical = referent
+                company_referent.referente_unical = f'{referent.cognome} {referent.nome}'
+            else:
+                company_referent.matricola_referente_unical = None
+                company_referent.referente_unical = form.cleaned_data['referente_unical']
+
+            company_referent.save()
+
+            log_action(user=request.user,
+                       obj=company,
+                       flag=CHANGE,
+                       msg=f'Modificato referente {old_label} in {company_referent.referente_unical}')
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Company referent edited successfully"))
+
+            return redirect('crud_companies:crud_company_edit', code=code)
+
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_companies:crud_companies'): _('Companies'),
+                   reverse('crud_companies:crud_company_edit', kwargs={'code': code}): company.nome_azienda,
+                   reverse('crud_companies:crud_company_unical_referent_edit', kwargs={'code': code, 'data_id': data_id}): _('Unical Referent')
+                   }
+
+    return render(request,
+                  'company_unical_referent.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'company': company,
+                   'choosen_person': referent_data,
+                   'external_form': external_form,
+                   'internal_form': internal_form,
+                   'url': reverse('ricerca:teacherslist')})
+
+
+# @login_required
+# @can_manage_companies
+# def company_unical_referent_data_delete(request, code, data_id=None,
+                                        # company=None):
+    # """
+    # elimina referente unical
+    # """
+    # company = get_object_or_404(SpinoffStartupDatiBase,
+                                # pk=code)
+
+    # company.matricola_referente_unical = None
+    # company.save()
+
+    # log_action(user=request.user,
+               # obj=company,
+               # flag=CHANGE,
+               # msg=f'{_("Deleted unical referent")}')
+
+    # messages.add_message(request,
+                         # messages.SUCCESS,
+                         # _("Unical referent removed successfully"))
+    # return redirect('crud_companies:crud_company_unical_referent_edit',
+                    # code=code,
+                    # data_id=data_id)
 
 
 @login_required
 @can_manage_companies
 def company_unical_department_data_new(request, code,
-                                       my_offices=None, company=None):
+                                       company=None):
     """
     nuovo dipartimento per l'impresa
     """
@@ -340,7 +320,7 @@ def company_unical_department_data_new(request, code,
             log_action(user=request.user,
                        obj=company,
                        flag=CHANGE,
-                       msg=f'{_("Added department")} {department.dip_des_it}')
+                       msg=f'Aggiunto nuovo dipartimento {department.dip_des_it}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -358,7 +338,7 @@ def company_unical_department_data_new(request, code,
                    '#': _('New department')}
 
     return render(request,
-                  'company_unical_department_data_edit.html',
+                  'company_department.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'company': company,
@@ -368,15 +348,15 @@ def company_unical_department_data_new(request, code,
 @login_required
 @can_manage_companies
 def company_unical_department_data_edit(request, code, department_id,
-                                        my_offices=None, company=None):
+                                        company=None):
     """
     modifica dipartimento
     """
     department_company = get_object_or_404(SpinoffStartupDipartimento.objects.select_related('id_didattica_dipartimento'),
                                            pk=department_id,
                                            id_spinoff_startup_dati_base=company)
-
     department = department_company.id_didattica_dipartimento
+    old_label = department.dip_des_it
     department_data = ''
     initial = {}
     if department:
@@ -399,14 +379,10 @@ def company_unical_department_data_edit(request, code, department_id,
             department_company.nome_origine_dipartimento = f'{new_department.dip_des_it}'
             department_company.save()
 
-            log_msg = f'{_("Changed department")} {department}' \
-                      if department == new_department \
-                      else f'{department} {_("substituted with")} {new_department}'
-
             log_action(user=request.user,
                        obj=company,
                        flag=CHANGE,
-                       msg=log_msg)
+                       msg=f'Modificato dipartimento {old_label} in {new_department}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -424,7 +400,7 @@ def company_unical_department_data_edit(request, code, department_id,
                    '#': f'{department.dip_des_it}'}
 
     return render(request,
-                  'company_unical_department_data_edit.html',
+                  'company_department.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'company': company,
@@ -436,7 +412,7 @@ def company_unical_department_data_edit(request, code, department_id,
 @login_required
 @can_manage_companies
 def company_unical_department_data_delete(request, code, department_id,
-                                          my_offices=None, company=None):
+                                          company=None):
     """
     elimina dipartimento
     """
@@ -450,7 +426,7 @@ def company_unical_department_data_delete(request, code, department_id,
     log_action(user=request.user,
                obj=company,
                flag=CHANGE,
-               msg=f'{_("Deleted department")} {department_company.id_didattica_dipartimento}')
+               msg=f'Rimosso dipartimento {department_company.id_didattica_dipartimento}')
 
     department_company.delete()
     messages.add_message(request,
@@ -462,7 +438,7 @@ def company_unical_department_data_delete(request, code, department_id,
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 # @can_manage_companies
-def company_delete(request, code, my_offices=None, company=None):
+def company_delete(request, code, company=None):
     # ha senso?
     # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:

@@ -33,7 +33,6 @@ def can_manage_companies(func_to_decorate):
                                                                           office__organizational_structure__is_active=True)
         if not my_offices:
             return custom_message(request, _("Permission denied"))
-        original_kwargs['my_offices'] = my_offices
         return func_to_decorate(*original_args, **original_kwargs)
 
     return new_func
