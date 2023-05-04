@@ -44,25 +44,7 @@
                 </div>
                 <h4 style="font-weight: lighter;">{% trans "Choose one Unical referent" %}</h4>
                 <div class="mt-5">
-                    <nav>
-                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="nav-tab1-tab" data-toggle="tab" href="#nav-tab1" role="tab" aria-controls="nav-tab1" aria-selected="true">
-                                Docente interno
-                            </a>
-                            <a class="nav-item nav-link" id="nav-tab2-tab" data-toggle="tab" href="#nav-tab2" role="tab" aria-controls="nav-tab2" aria-selected="false">
-                                Docente esterno
-                            </a>
-                        </div>
-                    </nav>
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane p-4 fade show active" id="nav-tab1" role="tabpanel" aria-labelledby="nav-tab1-tab">
-                                {% include "blocks/includes/choose_teacher.html" %}
-                                {% include "form_template.html" with form=internal_form %}
-                        </div>
-                        <div class="tab-pane p-4 fade" id="nav-tab2" role="tabpanel" aria-labelledby="nav-tab2-tab">
-                                {% include "form_template.html" with form=external_form %}
-                        </div>
-                    </div>
+                    {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 %}
                 </div>
                 {% include "includes/form_submit.html" %}
             </form>

@@ -62,14 +62,7 @@ class SpinoffStartupDatiBaseReferentForm(forms.ModelForm):
         }
 
 
-class SpinoffStartupDipartimentoForm(forms.ModelForm):
+class SpinoffStartupDipartimentoForm(forms.Form):
     choosen_department = forms.CharField(label=_('Department'),
                                          widget=forms.HiddenInput(),
-                                         required=False)
-
-    class Meta:
-        model = SpinoffStartupDipartimento
-        fields = []
-
-    class Media:
-        js = ('js/textarea-autosize.js',)
+                                         required=True)

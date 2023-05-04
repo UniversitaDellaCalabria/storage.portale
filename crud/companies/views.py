@@ -363,12 +363,10 @@ def company_unical_department_data_edit(request, code, department_id,
         department_data = department.dip_des_it
         initial={'choosen_department': department.dip_id}
 
-    form = SpinoffStartupDipartimentoForm(instance=department_company,
-                                          initial=initial)
+    form = SpinoffStartupDipartimentoForm(initial=initial)
 
     if request.POST:
-        form = SpinoffStartupDipartimentoForm(instance=department_company,
-                                              data=request.POST)
+        form = SpinoffStartupDipartimentoForm(data=request.POST)
         if form.is_valid():
 
             department_code = form.cleaned_data['choosen_department']
