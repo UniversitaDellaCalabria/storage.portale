@@ -39,19 +39,11 @@ class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
 
 
 class DidatticaDottoratoAttivitaFormativaDocenteForm(forms.ModelForm):
-    choosen_person = forms.CharField(label=_('Person'),
-                                     widget=forms.HiddenInput(),
-                                     required=False)
-
-    def clean(self):
-        cleaned_data = super().clean()
-        _clean_teacher_dates(self, cleaned_data)
-
     class Meta:
         model = DidatticaDottoratoAttivitaFormativaDocente
         fields = ['cognome_nome_origine']
         labels = {
-            "cognome_nome_origine": f'{_("Label")}',
+            "cognome_nome_origine": _("Name and Surname"),
         }
 
 

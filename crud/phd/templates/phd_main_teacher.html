@@ -6,16 +6,12 @@
 
 {% block centered_container %}
 <h3 style="font-weight: lighter;" class="mb-4">
-    {% if choosen_person %}{% trans "Edit teacher for" %}{% else %}{% trans "New teacher for" %}{% endif %} {{ phd.nome_af }}
+    {% if choosen_person %}{% trans "Edit main teacher data for" %}{% else %}{% trans "New main teacher data for" %}{% endif %} {{ phd.nome_af }}
 </h3>
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <form method="post">
-                {% include "form_template.html" with form=form %}
-                {% include "blocks/includes/choose_teacher.html" %}
-                {% include "includes/form_submit.html" %}
-            </form>
+            {% include "blocks/includes/teacher_tabs.html" %}
         </div>
     </div>
 </div>

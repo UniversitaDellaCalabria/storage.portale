@@ -229,10 +229,11 @@ def company_unical_referent_edit(request, code, data_id, company=None):
 
             company_referent.save()
 
-            log_action(user=request.user,
-                       obj=company,
-                       flag=CHANGE,
-                       msg=f'Sostituito referente {old_label} con {company_referent.referente_unical}')
+            if old_label != company_referent.referente_unical:
+                log_action(user=request.user,
+                           obj=company,
+                           flag=CHANGE,
+                           msg=f'Sostituito referente {old_label} con {company_referent.referente_unical}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -366,10 +367,11 @@ def company_unical_department_data_edit(request, code, department_id,
             department_company.nome_origine_dipartimento = f'{new_department.dip_des_it}'
             department_company.save()
 
-            log_action(user=request.user,
-                       obj=company,
-                       flag=CHANGE,
-                       msg=f'Sostituito dipartimento {old_label} con {new_department}')
+            if old_label != new_department:
+                log_action(user=request.user,
+                           obj=company,
+                           flag=CHANGE,
+                           msg=f'Sostituito dipartimento {old_label} con {new_department}')
 
             messages.add_message(request,
                                  messages.SUCCESS,

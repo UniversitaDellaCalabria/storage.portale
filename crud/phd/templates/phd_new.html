@@ -11,16 +11,13 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <form method="post">
+            <form method="post" novalidate>
                 {% include "form_template.html" with form=form %}
                 <hr />
                 <h4 style="font-weight: lighter;">
                     {% trans "Choose one teacher" %}
                 </h4>
-                <div class="mt-5">
-                    {% include "form_template.html" with form=teacher_form %}
-                    {% include "blocks/includes/choose_teacher.html" %}
-                </div>
+                {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 %}
                 {% include "includes/form_submit.html" %}
             </form>
         </div>

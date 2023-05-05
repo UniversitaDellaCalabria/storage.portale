@@ -39,13 +39,7 @@ def can_edit_phd(func_to_decorate):
 
         phd = get_object_or_404(
             DidatticaDottoratoAttivitaFormativa, pk=original_kwargs['code'])
-        teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
-            id_didattica_dottorato_attivita_formativa=phd.id)
-        other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
-            id_didattica_dottorato_attivita_formativa=phd.id)
         original_kwargs['phd'] = phd
-        original_kwargs['teachers'] = teachers
-        original_kwargs['other_teachers'] = other_teachers
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)

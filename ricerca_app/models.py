@@ -884,6 +884,9 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
+    def __str__(self):
+        return self.cognome_nome_origine
+
     class Meta:
         managed = True
         db_table = 'DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA_DOCENTE'
@@ -3417,6 +3420,9 @@ class SpinoffStartupDipartimento(models.Model):
     id_spinoff_startup_dati_base = models.ForeignKey(SpinoffStartupDatiBase, models.CASCADE, db_column='ID_SPINOFF_STARTUP_DATI_BASE')  # Field name made lowercase.
     nome_origine_dipartimento = models.CharField(db_column='NOME_ORIGINE_DIPARTIMENTO', max_length=1000)  # Field name made lowercase.
     id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.CASCADE, db_column='ID_DIDATTICA_DIPARTIMENTO', blank=True, null=True)  # Field name made lowercase.
+
+    def __str__():
+        return self.nome_origine_dipartimento
 
     class Meta:
         managed = True

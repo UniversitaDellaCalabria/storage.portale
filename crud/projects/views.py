@@ -282,10 +282,11 @@ def project_director_edit(request, code, director_id, project=None):
 
             project_director.save()
 
-            log_action(user=request.user,
-                       obj=project,
-                       flag=CHANGE,
-                       msg=f'Sostituito direttore scientifico {old_label} con {project_director.nome_origine}')
+            if old_label != project_director.nome_origine:
+                log_action(user=request.user,
+                           obj=project,
+                           flag=CHANGE,
+                           msg=f'Sostituito direttore scientifico {old_label} con {project_director}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -436,10 +437,11 @@ def project_researcher_edit(request, code, researcher_id, project=None):
 
             project_researcher.save()
 
-            log_action(user=request.user,
-                       obj=project,
-                       flag=CHANGE,
-                       msg=f'Sostituito ricercatore {old_label} con {project_researcher.nome_origine}')
+            if old_label != project_director.nome_origine:
+                log_action(user=request.user,
+                           obj=project,
+                           flag=CHANGE,
+                           msg=f'Sostituito ricercatore {old_label} con {project_researcher}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -513,10 +515,11 @@ def project_structure_data_edit(request, code, data_id, project=None):
             structure_project.uo = new_structure
             structure_project.save()
 
-            log_action(user=request.user,
-                       obj=project,
-                       flag=CHANGE,
-                       msg=f'Sostituita struttura {structure} con {new_structure}')
+            if structure != new_structure:
+                log_action(user=request.user,
+                           obj=project,
+                           flag=CHANGE,
+                           msg=f'Sostituita struttura {structure} con {new_structure}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
