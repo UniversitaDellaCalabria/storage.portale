@@ -18,12 +18,14 @@ def can_manage_phd(func_to_decorate):
             return func_to_decorate(*original_args, **original_kwargs)
 
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
-                                                                          office__name=OFFICE_PHD,
                                                                           office__is_active=True,
+                                                                          office__organizational_structure__unique_code=STRUCTURE_PHD,
                                                                           office__organizational_structure__is_active=True)
         if not my_offices:
             return custom_message(request, _("Permission denied"))
+
         original_kwargs['my_offices'] = my_offices
+
         return func_to_decorate(*original_args, **original_kwargs)
 
     return new_func
@@ -48,19 +50,10 @@ def can_edit_phd(func_to_decorate):
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
 
-        departments = []
-        for myoffice in original_kwargs['my_offices']:
-            if myoffice.office.organizational_structure.unique_code not in departments:
-                departments.append(
-                    myoffice.office.organizational_structure.unique_code)
-        for teacher in teachers:
-            if not teacher.personale.sede in departments:
-                continue
-            return func_to_decorate(*original_args, **original_kwargs)
-        for teacher in other_teachers:
-            if not teacher.personale.sede in departments:
-                continue
-            return func_to_decorate(*original_args, **original_kwargs)
+        for office in original_kwargs['my_offices']:
+            if office.office.name == phd.rif_dottorato:
+                return func_to_decorate(*original_args, **original_kwargs)
+
         return custom_message(request, _("Permission denied"))
 
     return new_func
