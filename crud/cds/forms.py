@@ -21,37 +21,24 @@ class DidatticaCdsAltriDatiCoordinatorForm(forms.Form):
 class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDatiUfficio
-        fields = ['ordine', 'nome_ufficio', 'nome_origine_riferimento',
+        fields = ['ordine', 'nome_ufficio',
                   'telefono', 'email', 'edificio', 'piano', 'orari',
-                  'sportello_online']
+                  'sportello_online', 'nome_origine_riferimento',]
         labels = {
-            "nome_origine_riferimento": f'{_("Label")}',
-        }
-        help_texts = {
-            "nome_origine_riferimento": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
+            "nome_origine_riferimento": _("Responsible"),
         }
         widgets = {'orari': CKEditorWidget()}
-
-    class Media:
-        js = ('js/textarea-autosize.js',)
 
 
 class DidatticaCdsAltriDatiForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDati
-        fields = ['nome_origine_coordinatore', 'nome_origine_vice_coordinatore',
-                  'num_posti', 'modalita_iscrizione']
+        fields = ['num_posti', 'modalita_iscrizione',
+                  'nome_origine_coordinatore', 'nome_origine_vice_coordinatore',]
         labels = {
-            "nome_origine_coordinatore": f'{_("Label")} {_("Coordinator")}',
-            "nome_origine_vice_coordinatore": f'{_("Label")} {_("Deputy coordinator")}',
+            "nome_origine_coordinatore": _("Coordinator"),
+            "nome_origine_vice_coordinatore": _("Deputy coordinator"),
             "num_posti": _("Number of seats"),
             "modalita_iscrizione": _("Registration procedure"),
         }
-        help_texts = {
-            "nome_origine_coordinatore": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
-            "nome_origine_vice_coordinatore": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
-        }
         widgets = {'modalita_iscrizione': CKEditorWidget()}
-
-    class Media:
-        js = ('js/textarea-autosize.js',)

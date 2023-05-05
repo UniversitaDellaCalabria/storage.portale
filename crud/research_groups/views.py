@@ -211,7 +211,7 @@ def researchgroup_teacher_new(request, code,
             log_action(user=request.user,
                        obj=rgroup,
                        flag=CHANGE,
-                       msg=f'{_("Added teacher")} {teacher.__str__()}')
+                       msg=f'Aggiunto nuovo docente {teacher}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -264,14 +264,12 @@ def researchgroup_teacher_edit(request, code, teacher_rgroup_id,
             teacher_rgroup.personale = new_teacher
             teacher_rgroup.save()
 
-            log_msg = f'{_("Changed teacher")} {teacher.__str__()}' \
-                      if teacher == new_teacher \
-                      else f'{teacher} {_("substituted with")} {new_teacher}'
-
-            log_action(user=request.user,
-                       obj=rgroup,
-                       flag=CHANGE,
-                       msg=log_msg)
+            if teacher != new_teacher:
+                log_msg = f'Sotituito docente {teacher} con {new_teacher}'
+                log_action(user=request.user,
+                           obj=rgroup,
+                           flag=CHANGE,
+                           msg=log_msg)
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -317,7 +315,7 @@ def researchgroup_teacher_delete(request, code, teacher_rgroup_id,
     log_action(user=request.user,
                obj=rgroup,
                flag=CHANGE,
-               msg=f'{_("Deleted teacher")} {teacher_rgroup.personale}')
+               msg=f'Rimosso docencte {teacher_rgroup.personale}')
 
     teacher_rgroup.delete()
 

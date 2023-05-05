@@ -372,7 +372,7 @@ def base_researchline_teacher_new(request, code,
             log_action(user=request.user,
                        obj=rline,
                        flag=CHANGE,
-                       msg=f'{_("Added teacher")} {teacher.__str__()}')
+                       msg=f'Aggiunto nuovo docente {teacher}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -420,7 +420,7 @@ def applied_researchline_teacher_new(request, code,
             log_action(user=request.user,
                        obj=rline,
                        flag=CHANGE,
-                       msg=f'{_("Added teacher")} {teacher.__str__()}')
+                       msg=f'Aggiunto nuovo docente {teacher}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -472,14 +472,12 @@ def base_researchline_teacher_edit(request, code, teacher_rline_id,
             teacher_rline.personale = new_teacher
             teacher_rline.save()
 
-            log_msg = f'{_("Changed teacher")} {teacher.__str__()}' \
-                      if teacher == new_teacher \
-                      else f'{teacher} {_("substituted with")} {new_teacher}'
-
-            log_action(user=request.user,
-                       obj=rline,
-                       flag=CHANGE,
-                       msg=log_msg)
+            if teacher != new_teacher:
+                log_msg = f'Sotituito docente {teacher} con {new_teacher}'
+                log_action(user=request.user,
+                           obj=rgroup,
+                           flag=CHANGE,
+                           msg=log_msg)
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -533,14 +531,12 @@ def applied_researchline_teacher_edit(request, code, teacher_rline_id,
             teacher_rline.personale = new_teacher
             teacher_rline.save()
 
-            log_msg = f'{_("Changed teacher")} {teacher}' \
-                      if teacher == new_teacher \
-                      else f'{teacher} {_("substituted with")} {new_teacher}'
-
-            log_action(user=request.user,
-                       obj=rline,
-                       flag=CHANGE,
-                       msg=log_msg)
+            if teacher != new_teacher:
+                log_msg = f'Sotituito docente {teacher} con {new_teacher}'
+                log_action(user=request.user,
+                           obj=rgroup,
+                           flag=CHANGE,
+                           msg=log_msg)
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -586,7 +582,7 @@ def base_researchline_teacher_delete(request, code, teacher_rline_id,
     log_action(user=request.user,
                obj=rline,
                flag=CHANGE,
-               msg=f'{_("Deleted teacher")} {teacher_rline.personale}')
+               msg=f'Rimosso docente {teacher_rline.personale}')
 
     teacher_rline.delete()
 
@@ -615,7 +611,7 @@ def applied_researchline_teacher_delete(request, code, teacher_rline_id,
     log_action(user=request.user,
                obj=rline,
                flag=CHANGE,
-               msg=f'{_("Deleted teacher")} {teacher_rline.personale}')
+               msg=f'Rimosso docente {teacher_rline.personale}')
 
     teacher_rline.delete()
 

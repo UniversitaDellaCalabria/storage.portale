@@ -231,7 +231,7 @@ def patent_inventor_edit(request, code, inventor_id, patent=None):
             log_action(user=request.user,
                        obj=patent,
                        flag=CHANGE,
-                       msg=f'Modificato inventore {old_label} in {patent_inventor}')
+                       msg=f'Sostituito inventore {old_label} con {patent_inventor}')
 
             messages.add_message(request,
                                  messages.SUCCESS,

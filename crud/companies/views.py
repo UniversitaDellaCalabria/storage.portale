@@ -243,7 +243,7 @@ def company_unical_referent_edit(request, code, data_id, company=None):
             log_action(user=request.user,
                        obj=company,
                        flag=CHANGE,
-                       msg=f'Modificato referente {old_label} in {company_referent.referente_unical}')
+                       msg=f'Sostituito referente {old_label} con {company_referent.referente_unical}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -380,7 +380,7 @@ def company_unical_department_data_edit(request, code, department_id,
             log_action(user=request.user,
                        obj=company,
                        flag=CHANGE,
-                       msg=f'Modificato dipartimento {old_label} in {new_department}')
+                       msg=f'Sostituito dipartimento {old_label} con {new_department}')
 
             messages.add_message(request,
                                  messages.SUCCESS,

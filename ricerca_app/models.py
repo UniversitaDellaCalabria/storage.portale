@@ -3508,7 +3508,7 @@ class ProgettoRicercatore(models.Model):
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 
     def __str__(self):
-        return nome_origine
+        return self.nome_origine
 
     class Meta:
         managed = True

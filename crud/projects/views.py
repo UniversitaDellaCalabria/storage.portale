@@ -282,7 +282,7 @@ def project_director_edit(request, code, director_id, project=None):
             log_action(user=request.user,
                        obj=project,
                        flag=CHANGE,
-                       msg=f'Modificato direttore scientifico {old_label} in {project_director.nome_origine}')
+                       msg=f'Sostituito direttore scientifico {old_label} con {project_director.nome_origine}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -352,7 +352,7 @@ def project_researcher_new(request, code, project=None):
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 researcher_code = decrypt(form.cleaned_data['choosen_person'])
-                researcher = get_object_or_404(Personale, matricola=director_code)
+                researcher = get_object_or_404(Personale, matricola=researcher_code)
                 nome_origine=f'{researcher.cognome} {researcher.nome}'
             else:
                 researcher = None
@@ -434,7 +434,7 @@ def project_researcher_edit(request, code, researcher_id, project=None):
             log_action(user=request.user,
                        obj=project,
                        flag=CHANGE,
-                       msg=f'Modificato ricercatore {old_label} in {project_researcher.nome_origine}')
+                       msg=f'Sostituito ricercatore {old_label} con {project_researcher.nome_origine}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -478,7 +478,7 @@ def project_researcher_delete(request, code, researcher_id, project=None):
                flag=CHANGE,
                msg=f'Rimosso ricercatore {researcher}')
 
-    researcher_project.delete()
+    researcher.delete()
     messages.add_message(request,
                          messages.SUCCESS,
                          _("Researcher removed successfully"))
@@ -511,7 +511,7 @@ def project_structure_data_edit(request, code, data_id, project=None):
             log_action(user=request.user,
                        obj=project,
                        flag=CHANGE,
-                       msg=f'Modificata struttura {structure} in {new_structure}')
+                       msg=f'Sostituita struttura {structure} con {new_structure}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
