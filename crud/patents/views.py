@@ -147,11 +147,12 @@ def patent_inventor_new(request, code, patent=None):
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 inventor_code = decrypt(form.cleaned_data['choosen_person'])
-                inventor = get_object_or_404(Personale, matricola=inventor_code)
-                cognomenome_origine=f'{inventor.cognome} {inventor.nome}'
+                inventor = get_object_or_404(
+                    Personale, matricola=inventor_code)
+                cognomenome_origine = f'{inventor.cognome} {inventor.nome}'
             else:
                 inventor = None
-                cognomenome_origine=form.cleaned_data['cognomenome_origine']
+                cognomenome_origine = form.cleaned_data['cognomenome_origine']
 
             b = BrevettoInventori.objects.create(
                 id_brevetto=patent,
@@ -203,7 +204,7 @@ def patent_inventor_edit(request, code, inventor_id, patent=None):
     inventor_data = ''
     if inventor:
         inventor_data = f'{inventor.cognome} {inventor.nome}'
-        initial={'choosen_person': encrypt(inventor.matricola)}
+        initial = {'choosen_person': encrypt(inventor.matricola)}
 
     external_form = BrevettoInventoriForm(instance=patent_inventor)
     internal_form = ChoosenPersonForm(initial=initial, required=True)
@@ -218,13 +219,13 @@ def patent_inventor_edit(request, code, inventor_id, patent=None):
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 inventor_code = decrypt(form.cleaned_data['choosen_person'])
-                inventor = get_object_or_404(Personale, matricola=inventor_code)
+                inventor = get_object_or_404(
+                    Personale, matricola=inventor_code)
                 patent_inventor.matricola_inventore = inventor
-                patent_inventor.cognomenome_origine=f'{inventor.cognome} {inventor.nome}'
+                patent_inventor.cognomenome_origine = f'{inventor.cognome} {inventor.nome}'
             else:
                 patent_inventor.matricola_inventore = None
-                patent_inventor.cognomenome_origine=form.cleaned_data['cognomenome_origine']
-
+                patent_inventor.cognomenome_origine = form.cleaned_data['cognomenome_origine']
 
             patent_inventor.save()
 
@@ -271,7 +272,7 @@ def patent_inventor_delete(request, code, inventor_id, patent=None):
                                  id_brevetto=code)
 
     # if BrevettoInventori.objects.filter(id_brevetto=code).count() == 1:
-        # return custom_message(request, _("Permission denied. Only one teacher remains"))
+    # return custom_message(request, _("Permission denied. Only one teacher remains"))
 
     log_action(user=request.user,
                obj=patent,

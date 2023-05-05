@@ -4,12 +4,14 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
-from ricerca_app.models import (DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio)
+from ricerca_app.models import (
+    DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class DidatticaCdsAltriDatiCoordinatorForm(forms.Form):
@@ -23,7 +25,7 @@ class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
         model = DidatticaCdsAltriDatiUfficio
         fields = ['ordine', 'nome_ufficio',
                   'telefono', 'email', 'edificio', 'piano', 'orari',
-                  'sportello_online', 'nome_origine_riferimento',]
+                  'sportello_online', 'nome_origine_riferimento', ]
         labels = {
             "nome_origine_riferimento": _("Responsible"),
         }
@@ -34,7 +36,7 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDati
         fields = ['num_posti', 'modalita_iscrizione',
-                  'nome_origine_coordinatore', 'nome_origine_vice_coordinatore',]
+                  'nome_origine_coordinatore', 'nome_origine_vice_coordinatore', ]
         labels = {
             "nome_origine_coordinatore": _("Coordinator"),
             "nome_origine_vice_coordinatore": _("Deputy coordinator"),

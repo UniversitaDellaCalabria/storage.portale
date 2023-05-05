@@ -315,7 +315,7 @@ def base_researchline_delete(request, code,
     # ha senso?
     # if rline.user_ins != request.user:
     # if not request.user.is_superuser:
-        # raise Exception(_('Permission denied'))
+    # raise Exception(_('Permission denied'))
 
     rline = get_object_or_404(RicercaLineaBase, pk=code)
     rline.delete()
@@ -339,7 +339,7 @@ def applied_researchline_delete(request, code,
     # ha senso?
     # if rline.user_ins != request.user:
     # if not request.user.is_superuser:
-        # raise Exception(_('Permission denied'))
+    # raise Exception(_('Permission denied'))
 
     rline = get_object_or_404(RicercaLineaApplicata, pk=code)
     rline.delete()

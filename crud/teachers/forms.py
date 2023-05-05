@@ -14,7 +14,8 @@ from .. utils.settings import CMS_STORAGE_ROOT_API
 from .. utils.widgets import RicercaCRUDDateTimeWidget
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class DocentePtaAltriDatiForm(forms.ModelForm):
@@ -46,9 +47,9 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
 class DocentePtaBachecaForm(forms.ModelForm):
     class Meta:
         model = DocentePtaBacheca
-        fields = ['tipo_testo', 'tipo_testo_en','titolo', 'titolo_en',
+        fields = ['tipo_testo', 'tipo_testo_en', 'titolo', 'titolo_en',
                   'testo', 'testo_en', 'url_testo', 'url_testo_en',
-                  #'dt_pubblicazione',
+                  # 'dt_pubblicazione',
                   'dt_inizio_validita', 'dt_fine_validita',
                   'ordine', 'attivo']
         labels = {
@@ -84,7 +85,7 @@ class DocenteMaterialeDidatticoForm(forms.ModelForm):
                   'url_testo', 'url_testo_en',
                   # 'dt_pubblicazione',
                   'dt_inizio_validita', 'dt_fine_validita',
-                  'ordine', 'attivo',]
+                  'ordine', 'attivo', ]
         labels = {
             'titolo': _('Title (it)'),
             'titolo_en': _('Title (en)'),

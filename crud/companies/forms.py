@@ -4,14 +4,14 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
-from ricerca_app.models import (SpinoffStartupDatiBase,
-                                SpinoffStartupDipartimento)
+from ricerca_app.models import SpinoffStartupDatiBase
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 from .. utils.widgets import RicercaCRUDClearableWidget
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class SpinoffStartupDatiBaseForm(forms.ModelForm):
@@ -46,7 +46,8 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
         super(SpinoffStartupDatiBaseForm, self).__init__(*args, **kwargs)
         _logo_field = self.instance.nome_file_logo
         self.fields['nome_file_logo'].widget = RicercaCRUDClearableWidget(
-            {'upload_to': _logo_field.field.upload_to(self.instance, _logo_field.name)}
+            {'upload_to': _logo_field.field.upload_to(
+                self.instance, _logo_field.name)}
         )
 
     class Media:

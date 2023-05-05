@@ -1,13 +1,13 @@
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from ricerca_app.models import Personale
-from ricerca_app.utils import decrypt
 
 from .. utils.settings import *
 
 
 def can_manage_teacher(user, teacher_code):
-    if not user or not user.is_authenticated: return False
+    if not user or not user.is_authenticated:
+        return False
 
     # se l'utente è un superuser
     if user.is_superuser:
@@ -16,7 +16,8 @@ def can_manage_teacher(user, teacher_code):
     # se l'utente è il docente stesso
     my_profile = Personale.objects.filter(cod_fis=user.taxpayer_id).first()
     if my_profile:
-        my_teacher_profile = ServiceDocente.getDocenteInfo(my_profile.matricola)
+        my_teacher_profile = ServiceDocente.getDocenteInfo(
+            my_profile.matricola)
 
     # teacher_code = decrypt(original_kwargs['code'])
     teacher = Personale.objects.filter(matricola=teacher_code).first()

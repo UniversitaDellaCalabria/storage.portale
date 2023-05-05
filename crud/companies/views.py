@@ -48,7 +48,8 @@ def company(request, code, company=None):
 
     referent_data = get_object_or_404(SpinoffStartupDatiBase,
                                       pk=code)
-    departments = SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base=company)
+    departments = SpinoffStartupDipartimento.objects.filter(
+        id_spinoff_startup_dati_base=company)
 
     if request.POST:
         form = SpinoffStartupDatiBaseForm(instance=company,
@@ -96,17 +97,6 @@ def company(request, code, company=None):
                    'referent_data': referent_data})
 
 
-
-
-
-
-
-
-
-
-
-
-
 @login_required
 @can_manage_companies
 def company_new(request, company=None):
@@ -134,7 +124,8 @@ def company_new(request, company=None):
                                      matricola=(decrypt(request.POST['choosen_person'])))
 
     if request.POST:
-        form = SpinoffStartupDatiBaseForm(data=request.POST, files=request.FILES)
+        form = SpinoffStartupDatiBaseForm(
+            data=request.POST, files=request.FILES)
         department_form = SpinoffStartupDipartimentoForm(data=request.POST)
 
         if 'choosen_person' in request.POST:
@@ -142,14 +133,13 @@ def company_new(request, company=None):
         else:
             referent_form = BrevettoInventoriForm(data=request.POST)
 
-
         if form.is_valid() and department_form.is_valid() and referent_form.is_valid():
             company = form.save(commit=False)
 
             if referent_form.cleaned_data.get('choosen_person'):
-                referente_unical=f'{referent.cognome} {referent.nome}'
+                referente_unical = f'{referent.cognome} {referent.nome}'
             else:
-                referente_unical=form.cleaned_data['referente_unical']
+                referente_unical = form.cleaned_data['referente_unical']
 
             company.referente_unical = referente_unical
             company.matricola_referente_unical = referent
@@ -199,9 +189,6 @@ def company_new(request, company=None):
                    'url': reverse('ricerca:teacherslist')})
 
 
-
-
-
 @login_required
 @can_manage_companies
 def company_unical_referent_edit(request, code, data_id, company=None):
@@ -216,9 +203,10 @@ def company_unical_referent_edit(request, code, data_id, company=None):
     referent_data = ''
     if referent:
         referent_data = f'{referent.cognome} {referent.nome}'
-        initial={'choosen_person': encrypt(referent.matricola)}
+        initial = {'choosen_person': encrypt(referent.matricola)}
 
-    external_form = SpinoffStartupDatiBaseReferentForm(instance=company_referent)
+    external_form = SpinoffStartupDatiBaseReferentForm(
+        instance=company_referent)
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
@@ -231,7 +219,8 @@ def company_unical_referent_edit(request, code, data_id, company=None):
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 referent_code = decrypt(form.cleaned_data['choosen_person'])
-                referent = get_object_or_404(Personale, matricola=referent_code)
+                referent = get_object_or_404(
+                    Personale, matricola=referent_code)
                 company_referent.matricola_referente_unical = referent
                 company_referent.referente_unical = f'{referent.cognome} {referent.nome}'
             else:
@@ -275,27 +264,27 @@ def company_unical_referent_edit(request, code, data_id, company=None):
 # @login_required
 # @can_manage_companies
 # def company_unical_referent_data_delete(request, code, data_id=None,
-                                        # company=None):
+    # company=None):
     # """
     # elimina referente unical
     # """
     # company = get_object_or_404(SpinoffStartupDatiBase,
-                                # pk=code)
+    # pk=code)
 
     # company.matricola_referente_unical = None
     # company.save()
 
     # log_action(user=request.user,
-               # obj=company,
-               # flag=CHANGE,
-               # msg=f'{_("Deleted unical referent")}')
+    # obj=company,
+    # flag=CHANGE,
+    # msg=f'{_("Deleted unical referent")}')
 
     # messages.add_message(request,
-                         # messages.SUCCESS,
-                         # _("Unical referent removed successfully"))
+    # messages.SUCCESS,
+    # _("Unical referent removed successfully"))
     # return redirect('crud_companies:crud_company_unical_referent_edit',
-                    # code=code,
-                    # data_id=data_id)
+    # code=code,
+    # data_id=data_id)
 
 
 @login_required
@@ -361,7 +350,7 @@ def company_unical_department_data_edit(request, code, department_id,
     initial = {}
     if department:
         department_data = department.dip_des_it
-        initial={'choosen_department': department.dip_id}
+        initial = {'choosen_department': department.dip_id}
 
     form = SpinoffStartupDipartimentoForm(initial=initial)
 
@@ -419,7 +408,7 @@ def company_unical_department_data_delete(request, code, department_id,
                                            pk=department_id)
 
     # if SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base=company).count() == 1:
-        # raise Exception(_("Permission denied. Only one department remains"))
+    # raise Exception(_("Permission denied. Only one department remains"))
 
     log_action(user=request.user,
                obj=company,
@@ -440,7 +429,7 @@ def company_delete(request, code, company=None):
     # ha senso?
     # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:
-        # raise Exception(_('Permission denied'))
+    # raise Exception(_('Permission denied'))
 
     company = get_object_or_404(SpinoffStartupDatiBase, pk=code)
     logo = company.nome_file_logo.path

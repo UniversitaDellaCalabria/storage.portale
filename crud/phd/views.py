@@ -54,12 +54,12 @@ def phd_new(request, my_offices=None):
     teacher = None
     if request.POST.get('choosen_person', ''):
         teacher = get_object_or_404(Personale,
-                                     matricola=(decrypt(request.POST['choosen_person'])))
-
+                                    matricola=(decrypt(request.POST['choosen_person'])))
 
     if request.POST:
         form = DidatticaDottoratoAttivitaFormativaForm(data=request.POST)
-        teacher_form = DidatticaDottoratoAttivitaFormativaDocenteForm(data=request.POST)
+        teacher_form = DidatticaDottoratoAttivitaFormativaDocenteForm(
+            data=request.POST)
 
         if form.is_valid() and teacher_form.is_valid():
             teacher_code = decrypt(teacher_form.cleaned_data['choosen_person'])
@@ -68,11 +68,11 @@ def phd_new(request, my_offices=None):
                 teacher = get_object_or_404(Personale,
                                             matricola=teacher_code)
 
-
             # check if user can manage teacher structure
             if not request.user.is_superuser:
 
-                query_filter = Q(office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id)
+                query_filter = Q(
+                    office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id)
 
                 structure_afforg = OrganizationalStructureOfficeEmployee.objects.filter(query_filter,
                                                                                         employee=request.user,
@@ -89,7 +89,8 @@ def phd_new(request, my_offices=None):
             phd.save()
 
             new_teacher = DidatticaDottoratoAttivitaFormativaDocente.objects.create(id_didattica_dottorato_attivita_formativa=phd,
-                                                                                    cognome_nome_origine=teacher_form.cleaned_data['cognome_nome_origine'],
+                                                                                    cognome_nome_origine=teacher_form.cleaned_data[
+                                                                                        'cognome_nome_origine'],
                                                                                     matricola=teacher)
 
             log_action(user=request.user,
@@ -178,6 +179,7 @@ def phd(request, code, my_offices=None, phd=None,
                    'teachers': teachers,
                    'other_teachers': other_teachers})
 
+
 @login_required
 @can_manage_phd
 @can_edit_phd
@@ -190,7 +192,8 @@ def phd_main_teacher_data(request, code, teacher_id, phd=None,
                                      pk=teacher_id,
                                      id_didattica_dottorato_attivita_formativa=phd)
 
-    form = DidatticaDottoratoAttivitaFormativaDocenteForm(instance=teacher_data)
+    form = DidatticaDottoratoAttivitaFormativaDocenteForm(
+        instance=teacher_data)
 
     if request.POST:
         form = DidatticaDottoratoAttivitaFormativaDocenteForm(instance=teacher_data,
@@ -215,7 +218,6 @@ def phd_main_teacher_data(request, code, teacher_id, phd=None,
                             code=code,
                             teacher_id=teacher_id)
 
-
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -223,7 +225,7 @@ def phd_main_teacher_data(request, code, teacher_id, phd=None,
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_phd:crud_phd_list'): _('PhD activities'),
-                   reverse('crud_phd:crud_phd_edit', kwargs={'code': code }): phd.nome_af,
+                   reverse('crud_phd:crud_phd_edit', kwargs={'code': code}): phd.nome_af,
                    '#': _('PhD activity teacher data')
                    }
 
@@ -256,7 +258,7 @@ def phd_main_teacher_data_edit(request, code, teacher_id, teachers=None,
 
     if teacher:
         teacher_data = f'{teacher.nome} {teacher.cognome}'
-        initial={'choosen_person':  encrypt(teacher.matricola)}
+        initial = {'choosen_person':  encrypt(teacher.matricola)}
 
     form = ChoosenPersonForm(initial=initial, required=True)
 
@@ -273,7 +275,7 @@ def phd_main_teacher_data_edit(request, code, teacher_id, teachers=None,
 
             if teacher and teacher == new_teacher:
                 log_msg = f'{_("Changed teacher")} {teacher}'
-            elif teacher and teacher!=new_teacher:
+            elif teacher and teacher != new_teacher:
                 log_msg = f'{teacher} {_("substituted with")} {new_teacher}'
             else:
                 log_msg = f'{_("Changed teacher")} {new_teacher}'
@@ -313,54 +315,55 @@ def phd_main_teacher_data_edit(request, code, teacher_id, teachers=None,
 def phd_main_teacher_new(request, code, my_offices=None,
                          phd=None, teachers=None,
                          other_teachers=None):
-        """
-        nuovo docente principale
-        """
-        form = DidatticaDottoratoAttivitaFormativaDocenteForm()
-        if request.POST:
-            form = DidatticaDottoratoAttivitaFormativaDocenteForm(data=request.POST)
-            if form.is_valid():
+    """
+    nuovo docente principale
+    """
+    form = DidatticaDottoratoAttivitaFormativaDocenteForm()
+    if request.POST:
+        form = DidatticaDottoratoAttivitaFormativaDocenteForm(
+            data=request.POST)
+        if form.is_valid():
 
-                d = DidatticaDottoratoAttivitaFormativaDocente.objects.create(
-                    id_didattica_dottorato_attivita_formativa=phd,
-                    cognome_nome_origine=form.cleaned_data['cognome_nome_origine']
-                )
+            d = DidatticaDottoratoAttivitaFormativaDocente.objects.create(
+                id_didattica_dottorato_attivita_formativa=phd,
+                cognome_nome_origine=form.cleaned_data['cognome_nome_origine']
+            )
 
-                d.user_mod_id = request.user
-                d.dt_mod = datetime.datetime.now()
+            d.user_mod_id = request.user
+            d.dt_mod = datetime.datetime.now()
 
-                teacher_code = decrypt(form.cleaned_data['choosen_person'])
-                if teacher_code:
-                    teacher = get_object_or_404(Personale, matricola=teacher_code)
-                    d.matricola = teacher
-                    d.save()
+            teacher_code = decrypt(form.cleaned_data['choosen_person'])
+            if teacher_code:
+                teacher = get_object_or_404(Personale, matricola=teacher_code)
+                d.matricola = teacher
+                d.save()
 
-                log_action(user=request.user,
-                           obj=phd,
-                           flag=CHANGE,
-                           msg=f'{_("Added teacher")} {d}')
+            log_action(user=request.user,
+                       obj=phd,
+                       flag=CHANGE,
+                       msg=f'{_("Added teacher")} {d}')
 
-                messages.add_message(request,
-                                     messages.SUCCESS,
-                                     _("Teacher added successfully"))
-                return redirect('crud_phd:crud_phd_edit',
-                                code=code)
-            else:  # pragma: no cover
-                for k, v in form.errors.items():
-                    messages.add_message(request, messages.ERROR,
-                                         f"<b>{form.fields[k].label}</b>: {v}")
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Teacher added successfully"))
+            return redirect('crud_phd:crud_phd_edit',
+                            code=code)
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
 
-        breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                       reverse('crud_phd:crud_phd_list'): _('PhD activities'),
-                       reverse('crud_phd:crud_phd_edit', kwargs={'code': code}): phd.nome_af,
-                       '#': _('New teacher')}
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_phd:crud_phd_list'): _('PhD activities'),
+                   reverse('crud_phd:crud_phd_edit', kwargs={'code': code}): phd.nome_af,
+                   '#': _('New teacher')}
 
-        return render(request,
-                      'phd_main_teacher.html',
-                      {'breadcrumbs': breadcrumbs,
-                       'form': form,
-                       'phd': phd,
-                       'url': reverse('ricerca:teacherslist')})
+    return render(request,
+                  'phd_main_teacher.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'phd': phd,
+                   'url': reverse('ricerca:teacherslist')})
 
 
 @login_required
@@ -376,8 +379,10 @@ def phd_main_teacher_delete(request, code, teacher_id,
                                     pk=teacher_id,
                                     id_didattica_dottorato_attivita_formativa=phd)
 
-    main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(id_didattica_dottorato_attivita_formativa=code)
-    other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(id_didattica_dottorato_attivita_formativa=code)
+    main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
+        id_didattica_dottorato_attivita_formativa=code)
+    other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
+        id_didattica_dottorato_attivita_formativa=code)
 
     if main_teachers.count() == 1 and not other_teachers:
         return custom_message(request, _("Permission denied. Only one teacher remains"))
@@ -407,7 +412,8 @@ def phd_other_teacher_data(request, code, teacher_id, teachers=None,
                                            pk=teacher_id,
                                            id_didattica_dottorato_attivita_formativa=phd)
 
-    form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(instance=other_teacher_data)
+    form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(
+        instance=other_teacher_data)
 
     if request.POST:
         form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(instance=other_teacher_data,
@@ -431,7 +437,6 @@ def phd_other_teacher_data(request, code, teacher_id, teachers=None,
             return redirect('crud_phd:crud_phd_other_teacher_data',
                             code=code,
                             teacher_id=teacher_id)
-
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -472,7 +477,7 @@ def phd_other_teacher_data_edit(request, code, teacher_id, teachers,
 
     if teacher:
         teacher_data = f'{teacher.nome} {teacher.cognome}'
-        initial={'choosen_person':  encrypt(teacher.matricola)}
+        initial = {'choosen_person':  encrypt(teacher.matricola)}
 
     form = ChoosenPersonForm(initial=initial, required=True)
 
@@ -489,7 +494,7 @@ def phd_other_teacher_data_edit(request, code, teacher_id, teachers,
 
             if teacher and teacher == new_teacher:
                 log_msg = f'{_("Changed teacher")} {teacher}'
-            elif teacher and teacher!=new_teacher:
+            elif teacher and teacher != new_teacher:
                 log_msg = f'{teacher} {_("substituted with")} {new_teacher}'
             else:
                 log_msg = f'{_("Changed teacher")} {new_teacher}'
@@ -520,7 +525,7 @@ def phd_other_teacher_data_edit(request, code, teacher_id, teachers,
                    'form': form,
                    'phd': phd,
                    'teacher_id': teacher_id,
-                   'choosen_person': teacher_data[1] if teacher_data  else None,
+                   'choosen_person': teacher_data[1] if teacher_data else None,
                    'url': reverse('ricerca:teacherslist')})
 
 
@@ -530,54 +535,55 @@ def phd_other_teacher_data_edit(request, code, teacher_id, teachers,
 def phd_other_teacher_new(request, code, my_offices=None,
                           phd=None, teachers=None,
                           other_teachers=None):
-        """
-        nuovo altro docente
-        """
-        form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm()
-        if request.POST:
-            form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(data=request.POST)
-            if form.is_valid():
+    """
+    nuovo altro docente
+    """
+    form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm()
+    if request.POST:
+        form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(
+            data=request.POST)
+        if form.is_valid():
 
-                p = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.create(
-                    id_didattica_dottorato_attivita_formativa=phd,
-                    cognome_nome_origine=form.cleaned_data['cognome_nome_origine']
-                )
+            p = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.create(
+                id_didattica_dottorato_attivita_formativa=phd,
+                cognome_nome_origine=form.cleaned_data['cognome_nome_origine']
+            )
 
-                p.user_mod_id = request.user
-                p.dt_mod = datetime.datetime.now()
+            p.user_mod_id = request.user
+            p.dt_mod = datetime.datetime.now()
 
-                teacher_code = decrypt(form.cleaned_data['choosen_person'])
-                if teacher_code:
-                    teacher = get_object_or_404(Personale, matricola=teacher_code)
-                    p.matricola = teacher
-                    p.save()
+            teacher_code = decrypt(form.cleaned_data['choosen_person'])
+            if teacher_code:
+                teacher = get_object_or_404(Personale, matricola=teacher_code)
+                p.matricola = teacher
+                p.save()
 
-                log_action(user=request.user,
-                           obj=phd,
-                           flag=CHANGE,
-                           msg=f'{_("Added teacher")} {p}')
+            log_action(user=request.user,
+                       obj=phd,
+                       flag=CHANGE,
+                       msg=f'{_("Added teacher")} {p}')
 
-                messages.add_message(request,
-                                     messages.SUCCESS,
-                                     _("Teacher added successfully"))
-                return redirect('crud_phd:crud_phd_edit',
-                                code=code)
-            else:  # pragma: no cover
-                for k, v in form.errors.items():
-                    messages.add_message(request, messages.ERROR,
-                                         f"<b>{form.fields[k].label}</b>: {v}")
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Teacher added successfully"))
+            return redirect('crud_phd:crud_phd_edit',
+                            code=code)
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
 
-        breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                       reverse('crud_phd:crud_phd_list'): _('PhD activities'),
-                       reverse('crud_phd:crud_phd_edit', kwargs={'code': code}): phd.nome_af,
-                       '#': _('New teacher')}
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_phd:crud_phd_list'): _('PhD activities'),
+                   reverse('crud_phd:crud_phd_edit', kwargs={'code': code}): phd.nome_af,
+                   '#': _('New teacher')}
 
-        return render(request,
-                      'phd_other_teacher.html',
-                      {'breadcrumbs': breadcrumbs,
-                       'form': form,
-                       'phd': phd,
-                       'url': reverse('ricerca:teacherslist')})
+    return render(request,
+                  'phd_other_teacher.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'phd': phd,
+                   'url': reverse('ricerca:teacherslist')})
 
 
 @login_required
@@ -590,8 +596,10 @@ def phd_other_teacher_delete(request, code, teacher_id,
                                     pk=teacher_id,
                                     id_didattica_dottorato_attivita_formativa=phd)
 
-    main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(id_didattica_dottorato_attivita_formativa=code)
-    other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(id_didattica_dottorato_attivita_formativa=code)
+    main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
+        id_didattica_dottorato_attivita_formativa=code)
+    other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
+        id_didattica_dottorato_attivita_formativa=code)
 
     if other_teachers.count() == 1 and not main_teachers:
         return custom_message(request, _("Permission denied. Only one teacher remains"))
@@ -615,9 +623,9 @@ def phd_other_teacher_delete(request, code, teacher_id,
 def phd_delete(request, code, my_offices=None, phd=None,
                teachers=None, other_teachers=None):
     # ha senso?
-    #if rgroup.user_ins != request.user:
+    # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:
-        # raise Exception(_('Permission denied'))
+    # raise Exception(_('Permission denied'))
 
     phd.delete()
     messages.add_message(request,

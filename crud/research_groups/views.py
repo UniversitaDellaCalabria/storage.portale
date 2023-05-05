@@ -99,7 +99,7 @@ def researchgroup_delete(request, code,
     # ha senso?
     # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:
-        # raise Exception(_('Permission denied'))
+    # raise Exception(_('Permission denied'))
 
     rgroup = get_object_or_404(RicercaGruppo, pk=code)
     rgroup.delete()

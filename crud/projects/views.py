@@ -199,11 +199,12 @@ def project_director_new(request, code, project=None):
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 director_code = decrypt(form.cleaned_data['choosen_person'])
-                director = get_object_or_404(Personale, matricola=director_code)
-                nome_origine=f'{director.cognome} {director.nome}'
+                director = get_object_or_404(
+                    Personale, matricola=director_code)
+                nome_origine = f'{director.cognome} {director.nome}'
             else:
                 director = None
-                nome_origine=form.cleaned_data['nome_origine']
+                nome_origine = form.cleaned_data['nome_origine']
 
             p = ProgettoResponsabileScientifico.objects.create(
                 id_progetto=project,
@@ -212,9 +213,9 @@ def project_director_new(request, code, project=None):
             )
 
             log_action(user=request.user,
-                   obj=project,
-                   flag=CHANGE,
-                   msg=f'Aggiunto nuovo direttore scientifico {p}')
+                       obj=project,
+                       flag=CHANGE,
+                       msg=f'Aggiunto nuovo direttore scientifico {p}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -256,9 +257,10 @@ def project_director_edit(request, code, director_id, project=None):
     director_data = ''
     if director:
         director_data = f'{director.cognome} {director.nome}'
-        initial={'choosen_person': encrypt(director.matricola)}
+        initial = {'choosen_person': encrypt(director.matricola)}
 
-    external_form = ProgettoResponsabileScientificoForm(instance=project_director)
+    external_form = ProgettoResponsabileScientificoForm(
+        instance=project_director)
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
@@ -270,12 +272,13 @@ def project_director_edit(request, code, director_id, project=None):
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 director_code = decrypt(form.cleaned_data['choosen_person'])
-                director = get_object_or_404(Personale, matricola=director_code)
+                director = get_object_or_404(
+                    Personale, matricola=director_code)
                 project_director.matricola = director
-                project_director.nome_origine=f'{director.cognome} {director.nome}'
+                project_director.nome_origine = f'{director.cognome} {director.nome}'
             else:
                 project_director.matricola = None
-                project_director.nome_origine=form.cleaned_data['nome_origine']
+                project_director.nome_origine = form.cleaned_data['nome_origine']
 
             project_director.save()
 
@@ -352,11 +355,12 @@ def project_researcher_new(request, code, project=None):
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 researcher_code = decrypt(form.cleaned_data['choosen_person'])
-                researcher = get_object_or_404(Personale, matricola=researcher_code)
-                nome_origine=f'{researcher.cognome} {researcher.nome}'
+                researcher = get_object_or_404(
+                    Personale, matricola=researcher_code)
+                nome_origine = f'{researcher.cognome} {researcher.nome}'
             else:
                 researcher = None
-                nome_origine=form.cleaned_data['nome_origine']
+                nome_origine = form.cleaned_data['nome_origine']
 
             p = ProgettoRicercatore.objects.create(
                 id_progetto=project,
@@ -364,15 +368,15 @@ def project_researcher_new(request, code, project=None):
                 nome_origine=nome_origine
             )
             log_action(user=request.user,
-                   obj=project,
-                   flag=CHANGE,
-                   msg=f'Aggiunto nuovo ricercatore {p}')
+                       obj=project,
+                       flag=CHANGE,
+                       msg=f'Aggiunto nuovo ricercatore {p}')
 
             messages.add_message(request,
-                             messages.SUCCESS,
-                             _("Researcher added successfully"))
+                                 messages.SUCCESS,
+                                 _("Researcher added successfully"))
             return redirect('crud_projects:crud_project_edit',
-                        code=code)
+                            code=code)
         else:
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -408,7 +412,7 @@ def project_researcher_edit(request, code, researcher_id, project=None):
     researcher_data = ''
     if researcher:
         researcher_data = f'{researcher.cognome} {researcher.nome}'
-        initial={'choosen_person': encrypt(researcher.matricola)}
+        initial = {'choosen_person': encrypt(researcher.matricola)}
 
     external_form = ProgettoRicercatoreForm(instance=project_researcher)
     internal_form = ChoosenPersonForm(initial=initial, required=True)
@@ -422,12 +426,13 @@ def project_researcher_edit(request, code, researcher_id, project=None):
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 researcher_code = decrypt(form.cleaned_data['choosen_person'])
-                researcher = get_object_or_404(Personale, matricola=researcher_code)
+                researcher = get_object_or_404(
+                    Personale, matricola=researcher_code)
                 project_researcher.matricola = researcher
-                project_researcher.nome_origine=f'{researcher.cognome} {researcher.nome}'
+                project_researcher.nome_origine = f'{researcher.cognome} {researcher.nome}'
             else:
                 project_researcher.matricola = None
-                project_researcher.nome_origine=form.cleaned_data['nome_origine']
+                project_researcher.nome_origine = form.cleaned_data['nome_origine']
 
             project_researcher.save()
 

@@ -17,13 +17,14 @@ from .. utils.settings import CMS_STORAGE_ROOT_API
 from .. utils.utils import _clean_teacher_dates
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=False)
+                                     widget=forms.HiddenInput(),
+                                     required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -39,8 +40,8 @@ class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
 
 class DidatticaDottoratoAttivitaFormativaDocenteForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=False)
+                                     widget=forms.HiddenInput(),
+                                     required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -62,7 +63,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         api = requests.get(url)
         ssd = api.json()['results']
         lista_ssd = []
-        lista_tipo_af = [('Dipartimentale','Dipartimentale'),
+        lista_tipo_af = [('Dipartimentale', 'Dipartimentale'),
                          ('Attività di Ateneo', 'Attività di Ateneo')]
         lista_rif_dott = []
         query = DidatticaDottoratoAttivitaFormativa.objects\
@@ -75,10 +76,12 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         for s in ssd:
             lista_ssd.append((s['SSD'], s['SSD']))
 
-        self.fields['ssd'] = forms.ChoiceField(label=_('SSD'), choices=lista_ssd)
-        self.fields['tipo_af'] = forms.ChoiceField(label=_('Type'), choices=lista_tipo_af)
-        self.fields['rif_dottorato'] = forms.ChoiceField(label=_('Reference'), choices=lista_rif_dott)
-
+        self.fields['ssd'] = forms.ChoiceField(
+            label=_('SSD'), choices=lista_ssd)
+        self.fields['tipo_af'] = forms.ChoiceField(
+            label=_('Type'), choices=lista_tipo_af)
+        self.fields['rif_dottorato'] = forms.ChoiceField(
+            label=_('Reference'), choices=lista_rif_dott)
 
     class Meta:
         model = DidatticaDottoratoAttivitaFormativa

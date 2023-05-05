@@ -44,7 +44,8 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
     """
 
     # altri dati corso di studio
-    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid_id).first()
+    other_data = DidatticaCdsAltriDati.objects.filter(
+        regdid_id=regdid_id).first()
 
     # dati uffici corso di studio
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(
@@ -89,7 +90,7 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
             form.save(commit=False)
             other_data.user_mod = request.user
             if not form.cleaned_data['nome_origine_coordinatore'] and other_data.matricola_coordinatore:
-                 other_data.nome_origine_coordinatore = f'{other_data.matricola_coordinatore.nome} {other_data.matricola_coordinatore.cognome}'
+                other_data.nome_origine_coordinatore = f'{other_data.matricola_coordinatore.nome} {other_data.matricola_coordinatore.cognome}'
             if not form.cleaned_data['nome_origine_vice_coordinatore'] and other_data.matricola_vice_coordinatore:
                 other_data.nome_origine_vice_coordinatore = f'{other_data.matricola_vice_coordinatore.nome} {other_data.matricola_vice_coordinatore.cognome}'
 
@@ -147,7 +148,7 @@ def cds_other_data_coordinator(request, regdid_id, data_id,
 
     if teacher:
         teacher_data = f'{teacher.nome} {teacher.cognome}'
-        initial={'choosen_person': encrypt(teacher.matricola)}
+        initial = {'choosen_person': encrypt(teacher.matricola)}
 
     form = DidatticaCdsAltriDatiCoordinatorForm(initial=initial)
 
@@ -221,7 +222,7 @@ def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
 
     if teacher:
         teacher_data = f'{teacher.nome} {teacher.cognome}'
-        initial={'choosen_person': encrypt(teacher.matricola)}
+        initial = {'choosen_person': encrypt(teacher.matricola)}
 
     form = DidatticaCdsAltriDatiCoordinatorForm(initial=initial)
 
@@ -508,7 +509,7 @@ def cds_office_data_responsible(request, regdid_id, data_id, my_offices=None, re
     initial = {}
     if person:
         person_data = f'{person.nome} {person.cognome}'
-        initial={'choosen_person': encrypt(person.matricola)}
+        initial = {'choosen_person': encrypt(person.matricola)}
 
     form = DidatticaCdsAltriDatiCoordinatorForm(initial=initial)
 

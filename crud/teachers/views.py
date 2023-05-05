@@ -1,6 +1,5 @@
 import datetime
 import logging
-import os
 
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
@@ -13,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 from ricerca_app.models import *
-from ricerca_app.utils import decrypt, encrypt
+from ricerca_app.utils import encrypt
 
 from .. utils.utils import log_action
 

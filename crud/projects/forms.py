@@ -1,4 +1,3 @@
-from bootstrap_italia_template.widgets import BootstrapItaliaDateWidget
 
 from ckeditor.widgets import CKEditorWidget
 
@@ -6,13 +5,14 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
-from ricerca_app.models import (ProgettoDatiBase, ProgettoResponsabileScientifico)
+from ricerca_app.models import (
+    ProgettoDatiBase, ProgettoResponsabileScientifico)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
-from .. utils.utils import _clean_teacher_dates
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class ProgettoDatiBaseForm(forms.ModelForm):
