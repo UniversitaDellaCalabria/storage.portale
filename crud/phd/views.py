@@ -9,7 +9,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.db.models import Q
 
 from ricerca_app import *
 from ricerca_app.models import *
@@ -49,8 +48,6 @@ def phd_new(request, my_offices=None):
 
     external_form = DidatticaDottoratoAttivitaFormativaDocenteForm()
     internal_form = ChoosenPersonForm(required=True)
-
-    query_filter = Q()
 
     # already choosen before form fails
     teacher = None
