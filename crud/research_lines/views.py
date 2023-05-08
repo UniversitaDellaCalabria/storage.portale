@@ -218,10 +218,11 @@ def base_researchline(request, code, my_offices=None, rline=None, teachers=None)
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=rline,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=rline,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -273,10 +274,11 @@ def applied_researchline(request, code,
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=rline,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=rline,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,

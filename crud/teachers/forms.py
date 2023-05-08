@@ -11,6 +11,7 @@ from ricerca_app.models import (DocenteMaterialeDidattico,
                                 DocentePtaBacheca)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
+# from .. utils.widgets import RicercaCRUDClearableWidget
 from .. utils.widgets import RicercaCRUDDateTimeWidget
 
 
@@ -39,6 +40,24 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
                    'orario_ricevimento': CKEditorWidget(),
                    'orario_ricevimento_en': CKEditorWidget()
                    }
+
+        # def __init__(self, *args, **kwargs):
+            # super(BrevettoDatiBaseForm, self).__init__(*args, **kwargs)
+            # path_cv_ita = self.instance.path_cv_ita
+            # self.fields['path_cv_ita'].widget = RicercaCRUDClearableWidget(
+                # {'upload_to': path_cv_ita.field.upload_to(
+                    # self.instance, path_cv_ita.name)}
+            # )
+            # path_cv_en = self.instance.path_cv_en
+            # self.fields['path_cv_en'].widget = RicercaCRUDClearableWidget(
+                # {'upload_to': path_cv_en.field.upload_to(
+                    # self.instance, path_cv_en.name)}
+            # )
+            # path_cv_ita = self.instance.path_cv_ita
+            # self.fields['path_cv_ita'].widget = RicercaCRUDClearableWidget(
+                # {'upload_to': path_cv_ita.field.upload_to(
+                    # self.instance, path_cv_ita.name)}
+            # )
 
     class Media:
         js = ('js/textarea-autosize.js',)

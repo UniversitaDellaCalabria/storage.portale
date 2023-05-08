@@ -150,10 +150,11 @@ def phd(request, code, my_offices=None, phd=None):
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=phd,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=phd,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -405,7 +406,7 @@ def phd_other_teacher(request, code, teacher_id, my_offices=None, phd=None):
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            if old_label != activity_teacher.cognome_nome_origine:
+            if changed_field_labels and old_label != activity_teacher.cognome_nome_origine:
                 log_action(user=request.user,
                            obj=phd,
                            flag=CHANGE,

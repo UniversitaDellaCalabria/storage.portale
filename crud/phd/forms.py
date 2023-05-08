@@ -54,10 +54,12 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:phd-ssd-list")}?page_size=1000'
         api = requests.get(url)
         ssd = api.json()['results']
-        lista_ssd = []
-        lista_tipo_af = [('Dipartimentale', 'Dipartimentale'),
+        lista_ssd = [('', '-'),]
+        lista_tipo_af = [
+                         ('', '-'),
+                         ('Dipartimentale', 'Dipartimentale'),
                          ('Attività di Ateneo', 'Attività di Ateneo')]
-        lista_rif_dott = []
+        lista_rif_dott = [('', '-'),]
         query = DidatticaDottoratoAttivitaFormativa.objects\
                                                    .filter(rif_dottorato__isnull=False)\
                                                    .values('rif_dottorato')\

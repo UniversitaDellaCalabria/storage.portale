@@ -14,7 +14,7 @@
 <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane p-4 fade show active" id="nav-tab1" role="tabpanel" aria-labelledby="nav-tab1-tab">
         {% if not exclude_forms %}
-        <form method="post">
+        <form method="post" novalidate>
         {% endif %}
             {% include "blocks/includes/choose_teacher.html" %}
             {% include "form_template.html" with form=internal_form %}
@@ -25,7 +25,7 @@
     </div>
     <div class="tab-pane p-4 fade" id="nav-tab2" role="tabpanel" aria-labelledby="nav-tab2-tab">
         {% if not exclude_forms %}
-        <form method="post">
+        <form method="post" novalidate>
         {% endif %}
             {% include "form_template.html" with form=external_form %}
         {% if not exclude_forms %}

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-05 15:27+0200\n"
-"PO-Revision-Date: 2023-05-05 15:27+0200\n"
+"PO-Revision-Date: 2023-05-08 11:23+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -777,7 +777,7 @@ msgstr "Brevetti"
 
 #: crud/patents/views.py:62
 msgid "Patent created successfully"
-msgstr "Brevetto creati con successo"
+msgstr "Brevetto creato con successo"
 
 #: crud/patents/views.py:107
 msgid "Patent edited successfully"

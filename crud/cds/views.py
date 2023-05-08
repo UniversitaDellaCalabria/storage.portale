@@ -98,10 +98,11 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=regdid,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=regdid,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -438,10 +439,11 @@ def cds_office_data_edit(request, regdid_id, data_id, regdid=None, my_offices=No
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=regdid.cds,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=regdid.cds,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,

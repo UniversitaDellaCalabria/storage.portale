@@ -12,7 +12,7 @@
     <div class="card card-bg no-after">
         <div class="card-body">
             {% include "blocks/includes/choose_teacher.html" with include_block="blocks/crud_addressbook.html" %}
-            <form method="post">
+            <form method="post" novalidate>
                 {% include "form_template.html" with form=form %}
                 {% include "includes/form_submit.html" %}
             </form>

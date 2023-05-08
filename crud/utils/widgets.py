@@ -1,8 +1,9 @@
-from django.forms.widgets import ClearableFileInput, DateTimeInput
+# from django.forms.widgets import ClearableFileInput, DateTimeInput
+from django.forms.widgets import DateTimeInput
 
 
-class RicercaCRUDClearableWidget(ClearableFileInput):
-    template_name = 'widgets/ricerca_crud.clearable_field.html'
+# class RicercaCRUDClearableWidget(ClearableFileInput):
+    # template_name = 'widgets/ricerca_crud.clearable_field.html'
 
 
 class RicercaCRUDDateTimeWidget(DateTimeInput):

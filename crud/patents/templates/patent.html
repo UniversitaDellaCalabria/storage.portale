@@ -38,7 +38,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'crud_patents:crud_patent_delete' code=patent.pk %}">
+                <a class="btn btn-success btn-sm" href="{% url 'crud_patents:crud_patent_delete' code=patent.pk %}" target="_blank">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -52,7 +52,7 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" novalidate>
                 {% include "form_template.html" with form=form %}
                 {% include "includes/form_submit.html" %}
             </form>

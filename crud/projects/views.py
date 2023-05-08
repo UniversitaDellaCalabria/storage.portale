@@ -61,10 +61,11 @@ def project(request, code, project=None):
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=project,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=project,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,

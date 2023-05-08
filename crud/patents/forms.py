@@ -9,7 +9,7 @@ from django.conf import settings
 from ricerca_app.models import (BrevettoDatiBase, BrevettoInventori)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
-from .. utils.widgets import RicercaCRUDClearableWidget
+# from .. utils.widgets import RicercaCRUDClearableWidget
 
 
 CMS_STORAGE_ROOT_API = getattr(
@@ -61,13 +61,13 @@ class BrevettoDatiBaseForm(forms.ModelForm):
                    'vantaggi': CKEditorWidget(),
                    'data_priorita': BootstrapItaliaDateWidget, }
 
-    def __init__(self, *args, **kwargs):
-        super(BrevettoDatiBaseForm, self).__init__(*args, **kwargs)
-        _logo_field = self.instance.nome_file_logo
-        self.fields['nome_file_logo'].widget = RicercaCRUDClearableWidget(
-            {'upload_to': _logo_field.field.upload_to(
-                self.instance, _logo_field.name)}
-        )
+    # def __init__(self, *args, **kwargs):
+        # super(BrevettoDatiBaseForm, self).__init__(*args, **kwargs)
+        # _logo_field = self.instance.nome_file_logo
+        # self.fields['nome_file_logo'].widget = RicercaCRUDClearableWidget(
+            # {'upload_to': _logo_field.field.upload_to(
+                # self.instance, _logo_field.name)}
+        # )
 
     class Media:
         js = ('js/textarea-autosize.js',)
