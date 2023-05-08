@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-08 13:36+0200\n"
-"PO-Revision-Date: 2023-05-08 13:36+0200\n"
+"POT-Creation-Date: 2023-05-08 13:56+0200\n"
+"PO-Revision-Date: 2023-05-08 13:56+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -416,8 +416,8 @@ msgstr "Nuovo link docente per"
 #: crud/cds/views.py:31 crud/cds/views.py:60 crud/cds/views.py:121
 #: crud/cds/views.py:191 crud/cds/views.py:265 crud/cds/views.py:461
 #: crud/cds/views.py:550 crud/companies/views.py:34 crud/companies/views.py:87
-#: crud/companies/views.py:176 crud/companies/views.py:250
-#: crud/companies/views.py:326 crud/companies/views.py:387
+#: crud/companies/views.py:176 crud/companies/views.py:251
+#: crud/companies/views.py:327 crud/companies/views.py:388
 #: crud/patents/views.py:33 crud/patents/views.py:69 crud/patents/views.py:121
 #: crud/patents/views.py:179 crud/patents/views.py:250 crud/phd/views.py:34
 #: crud/phd/views.py:106 crud/phd/views.py:174 crud/phd/views.py:251
@@ -569,8 +569,8 @@ msgstr ""
 
 #: crud/companies/templates/companies.html:15 crud/companies/views.py:35
 #: crud/companies/views.py:88 crud/companies/views.py:177
-#: crud/companies/views.py:251 crud/companies/views.py:327
-#: crud/companies/views.py:388 crud/projects/views.py:537
+#: crud/companies/views.py:252 crud/companies/views.py:328
+#: crud/companies/views.py:389 crud/projects/views.py:537
 #: crud/utils/templates/dashboard.html:151
 msgid "Companies"
 msgstr "Imprese"
@@ -579,7 +579,7 @@ msgstr "Imprese"
 msgid "Do you want to delete choosen company?"
 msgstr "Vuoi davvero eliminare l'impresa selezionata?"
 
-#: crud/companies/templates/company.html:66 crud/companies/views.py:253
+#: crud/companies/templates/company.html:66 crud/companies/views.py:254
 msgid "Unical Referent"
 msgstr "Referente Unical"
 
@@ -655,27 +655,27 @@ msgstr "Impresa creata con successo"
 msgid "New"
 msgstr "Nuovo"
 
-#: crud/companies/views.py:241
+#: crud/companies/views.py:242
 msgid "Company referent edited successfully"
 msgstr "Referente dell'impresa modificato con successo"
 
-#: crud/companies/views.py:318
+#: crud/companies/views.py:319
 msgid "Department added successfully"
 msgstr "Dipartimento aggiunto con successo"
 
-#: crud/companies/views.py:329
+#: crud/companies/views.py:330
 msgid "New department"
 msgstr "Nuovo dipartimento"
 
-#: crud/companies/views.py:379
+#: crud/companies/views.py:380
 msgid "Department edited successfully"
 msgstr "Dipartimento modificato con successo"
 
-#: crud/companies/views.py:424
+#: crud/companies/views.py:425
 msgid "Department removed successfully"
 msgstr "Dipartimento rimosso con successo"
 
-#: crud/companies/views.py:449
+#: crud/companies/views.py:450
 msgid "Company removed successfully"
 msgstr "Impresa rimossa con successo"
 
@@ -1724,9 +1724,9 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
-#: ricerca_app/validators.py:103
-msgid "Enter a valid VAT Number"
-msgstr "Inserisci una Partita IVA valida"
+#: ricerca_app/validators.py:104
+msgid "Enter a valid VAT Number (only 11 numbers)"
+msgstr "Inserisci una Partita IVA valida (solo 11 numeri)"
 
 #~ msgid "Label"
 #~ msgstr "Etichetta"

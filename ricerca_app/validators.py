@@ -101,4 +101,4 @@ def validate_image_size_ratio(value): # pragma: no cover
 def validate_piva(value):
     if not value: return False
     if not re.match(r"^[0-9]{11}$", value):
-        raise ValidationError(_('Enter a valid VAT Number'))
+        raise ValidationError(_('Enter a valid VAT Number (only 11 numbers)'))
