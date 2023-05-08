@@ -171,7 +171,7 @@ def company_new(request, company=None):
                                      f"<b>{department_form.fields[k].label}</b>: {v}")
             for k, v in referent_form.errors.items():
                 messages.add_message(request, messages.ERROR,
-                                     f"<b>{department_form.fields[k].label}</b>: {v}")
+                                     f"<b>{referent_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_companies:crud_companies'): _('Companies'),
