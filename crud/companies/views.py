@@ -181,6 +181,7 @@ def company_new(request, company=None):
                   'company_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'choosen_department': f'{department.dip_des_it}' if department else '',
+                   'choosen_person': f'{referent.cognome} {referent.nome}' if referent else '',
                    'form': form,
                    'departments_api': reverse('ricerca:departmentslist'),
                    'teachers_api': reverse('ricerca:teacherslist'),
