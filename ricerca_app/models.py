@@ -3351,7 +3351,8 @@ class SpinoffStartupDatiBase(models.Model):
         db_column='PIVA',
         max_length=30,
         blank=True,
-        null=True)
+        null=True,
+        validators=[validate_piva,])
     nome_azienda = models.CharField(
         db_column='NOME_AZIENDA',
         max_length=1000,
