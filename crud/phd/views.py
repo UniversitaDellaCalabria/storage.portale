@@ -72,7 +72,7 @@ def phd_new(request, my_offices=None):
 
             # controllo che l'utente abbia il permesso
             # di agire nel dottorato di riferimento
-            allow_user = is_allowed(my_offices, form.cleaned_data['rif_dottorato'])
+            allow_user = is_allowed(request.user, my_offices, form.cleaned_data['rif_dottorato'])
             if not allow_user:
                 return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
@@ -139,7 +139,7 @@ def phd(request, code, my_offices=None, phd=None):
 
             # controllo che l'utente abbia il permesso
             # di agire nel dottorato di riferimento
-            allow_user = is_allowed(my_offices, form.cleaned_data['rif_dottorato'])
+            allow_user = is_allowed(request.user, my_offices, form.cleaned_data['rif_dottorato'])
             if not allow_user:
                 return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
