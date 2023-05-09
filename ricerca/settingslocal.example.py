@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     'crud.research_groups',
     'crud.research_lines',
     'crud.teachers',
+    'crud.cds_websites',
 
     # SAML2
     # 'djangosaml2',
@@ -285,6 +286,11 @@ LOGGING = {
             # 'propagate': False,
         # },
         # 'crud.teachers': {
+            # 'handlers': ['console', 'mail_admins'],
+            # 'level': 'DEBUG',
+            # 'propagate': False,
+        # },
+        # 'crud.cdswebsites': {
             # 'handlers': ['console', 'mail_admins'],
             # 'level': 'DEBUG',
             # 'propagate': False,
