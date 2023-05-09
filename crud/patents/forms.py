@@ -9,11 +9,11 @@ from django.conf import settings
 from ricerca_app.models import (BrevettoDatiBase, BrevettoInventori)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
-from .. utils.utils import _clean_teacher_dates
-from .. utils.widgets import RicercaCRUDClearableWidget
+# from .. utils.widgets import RicercaCRUDClearableWidget
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class BrevettoDatiBaseForm(forms.ModelForm):
@@ -59,30 +59,24 @@ class BrevettoDatiBaseForm(forms.ModelForm):
         widgets = {'breve_descrizione': CKEditorWidget(),
                    'applicazioni': CKEditorWidget(),
                    'vantaggi': CKEditorWidget(),
-                   'data_priorita': BootstrapItaliaDateWidget,}
+                   'data_priorita': BootstrapItaliaDateWidget, }
 
-    def __init__(self, *args, **kwargs):
-        super(BrevettoDatiBaseForm, self).__init__(*args, **kwargs)
-        _logo_field = self.instance.nome_file_logo
-        self.fields['nome_file_logo'].widget = RicercaCRUDClearableWidget(
-            {'upload_to': _logo_field.field.upload_to(self.instance, _logo_field.name)}
-        )
+    # def __init__(self, *args, **kwargs):
+        # super(BrevettoDatiBaseForm, self).__init__(*args, **kwargs)
+        # _logo_field = self.instance.nome_file_logo
+        # self.fields['nome_file_logo'].widget = RicercaCRUDClearableWidget(
+            # {'upload_to': _logo_field.field.upload_to(
+                # self.instance, _logo_field.name)}
+        # )
 
     class Media:
         js = ('js/textarea-autosize.js',)
 
 
 class BrevettoInventoriForm(forms.ModelForm):
-    choosen_person = forms.CharField(label=_('Person'),
-                                     widget=forms.HiddenInput(),
-                                     required=False)
-
     class Meta:
         model = BrevettoInventori
         fields = ['cognomenome_origine']
         labels = {
-            "cognomenome_origine": _("Label"),
-        }
-        help_texts = {
-            "cognomenome_origine": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
+            "cognomenome_origine": _("Name and Surname"),
         }

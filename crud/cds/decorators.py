@@ -1,13 +1,8 @@
-from datetime import date
 
-from django.conf import settings
-from django.shortcuts import get_object_or_404
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from ricerca_app.models import *
-from ricerca_app.services import ServiceDocente
-from ricerca_app.utils import decrypt
 
 from .. utils.settings import *
 from .. utils.utils import custom_message

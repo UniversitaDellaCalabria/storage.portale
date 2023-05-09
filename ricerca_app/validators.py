@@ -1,7 +1,9 @@
 import magic
+import re
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from . utils import get_image_width_height
 from . import settings as app_settings
@@ -94,3 +96,9 @@ def validate_image_size_ratio(value): # pragma: no cover
             raise ValidationError(f'Image have invalid y / w ratio {rratio}. \
                                     Min {FILETYPE_IMAGE_YX_RATIO_MIN} - \
                                     Max {FILETYPE_IMAGE_YX_RATIO_MAX}')
+
+
+def validate_piva(value):
+    if not value: return False
+    if not re.match(r"^[0-9]{11}$", value):
+        raise ValidationError(_('Enter a valid VAT Number (only 11 numbers)'))

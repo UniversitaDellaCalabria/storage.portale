@@ -1,6 +1,5 @@
 import datetime
 import logging
-import os
 
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
@@ -13,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 from ricerca_app.models import *
-from ricerca_app.utils import decrypt, encrypt
+from ricerca_app.utils import encrypt
 
 from .. utils.utils import log_action
 
@@ -111,10 +110,11 @@ def teacher_other_data_edit(request,
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=teacher,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=teacher,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -248,10 +248,11 @@ def teacher_board_data_edit(request, code, data_id,
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=teacher,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=teacher,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -379,10 +380,11 @@ def teacher_materials_data_edit(request, code, data_id,
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=teacher,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=teacher,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,

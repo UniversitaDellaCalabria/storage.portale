@@ -1,6 +1,4 @@
-from datetime import date
 
-from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
@@ -34,8 +32,10 @@ def can_manage_teachers(func_to_decorate):
 
         # ok se io sono un docente
         try:
-            my_profile = get_object_or_404(Personale, cod_fis=request.user.taxpayer_id)
-            my_teacher_profile = ServiceDocente.getDocenteInfo(my_profile.matricola)
+            my_profile = get_object_or_404(
+                Personale, cod_fis=request.user.taxpayer_id)
+            my_teacher_profile = ServiceDocente.getDocenteInfo(
+                my_profile.matricola)
             original_kwargs['my_teacher_profile'] = my_teacher_profile
             return func_to_decorate(*original_args, **original_kwargs)
         except:

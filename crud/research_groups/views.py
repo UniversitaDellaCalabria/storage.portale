@@ -53,10 +53,11 @@ def researchgroup(request, code,
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=rgroup,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=rgroup,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -99,7 +100,7 @@ def researchgroup_delete(request, code,
     # ha senso?
     # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:
-        # raise Exception(_('Permission denied'))
+    # raise Exception(_('Permission denied'))
 
     rgroup = get_object_or_404(RicercaGruppo, pk=code)
     rgroup.delete()
@@ -211,7 +212,7 @@ def researchgroup_teacher_new(request, code,
             log_action(user=request.user,
                        obj=rgroup,
                        flag=CHANGE,
-                       msg=f'{_("Added teacher")} {teacher.__str__()}')
+                       msg=f'Aggiunto nuovo docente {teacher}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -264,14 +265,12 @@ def researchgroup_teacher_edit(request, code, teacher_rgroup_id,
             teacher_rgroup.personale = new_teacher
             teacher_rgroup.save()
 
-            log_msg = f'{_("Changed teacher")} {teacher.__str__()}' \
-                      if teacher == new_teacher \
-                      else f'{teacher} {_("substituted with")} {new_teacher}'
-
-            log_action(user=request.user,
-                       obj=rgroup,
-                       flag=CHANGE,
-                       msg=log_msg)
+            if teacher != new_teacher:
+                log_msg = f'Sotituito docente {teacher} con {new_teacher}'
+                log_action(user=request.user,
+                           obj=rgroup,
+                           flag=CHANGE,
+                           msg=log_msg)
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -317,7 +316,7 @@ def researchgroup_teacher_delete(request, code, teacher_rgroup_id,
     log_action(user=request.user,
                obj=rgroup,
                flag=CHANGE,
-               msg=f'{_("Deleted teacher")} {teacher_rgroup.personale}')
+               msg=f'Rimosso docencte {teacher_rgroup.personale}')
 
     teacher_rgroup.delete()
 

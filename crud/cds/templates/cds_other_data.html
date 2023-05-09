@@ -9,14 +9,12 @@
      {% trans "Edit other data for" %} {{ regdid.cds.nome_cds_it }} - {{ regdid.aa_reg_did }}
 </h3>
 {% if other_data %}
-<form method="post">
+<form method="post" novalidate>
     <div class="card-wrapper card-space">
         <div class="card card-bg no-after">
             <div class="card-body">
 
                 {% include "form_template.html" with form=form %}
-
-                <hr class="my-5">
 
                 <!-- coordinator -->
                 <table class="table table-striped table-hover">
@@ -159,8 +157,6 @@
                         </tr>
                     </tbody>
                 </table>
-
-                <hr class="my-5">
 
                 {% include "includes/form_submit.html" %}
             </div>

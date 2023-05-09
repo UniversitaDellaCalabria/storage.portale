@@ -52,7 +52,7 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" novalidate>
                 {% include "form_template.html" with form=form %}
                 {% include "includes/form_submit.html" %}
             </form>
@@ -71,13 +71,12 @@
                     <tr>
                         <td>
                             {{ company.referente_unical|default:"-" }}
-                            {% if company.matricola_referente_unical %}
-                                <br>
-                                ({% trans "Link to" %}: {{ company.matricola_referente_unical|default:"-" }})
+                            {% if not company.matricola_referente_unical %}
+                                ({% trans "External" %})
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_companies:crud_company_unical_referent_data' code=company.pk data_id=referent_data.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_companies:crud_company_unical_referent_edit' code=company.pk data_id=referent_data.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}

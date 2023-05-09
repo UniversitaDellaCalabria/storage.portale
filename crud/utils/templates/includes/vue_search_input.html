@@ -24,11 +24,13 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("{{ id }}_search").addEventListener('keydown', function(event){
-    if(event.keyCode == 13) {
-          event.preventDefault();
-          return false;
-        }
-    });
+    let field = document.getElementById("{{ id }}_search");
+    if(field)
+        field.addEventListener('keydown', function(event){
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
 }, false);
 </script>

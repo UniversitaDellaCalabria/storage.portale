@@ -1,13 +1,9 @@
-from datetime import date
 
-from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from ricerca_app.models import *
-from ricerca_app.services import ServiceDocente
-from ricerca_app.utils import decrypt
 
 from .. utils.settings import *
 from .. utils.utils import custom_message
@@ -22,9 +18,7 @@ def can_manage_patents(func_to_decorate):
         if original_kwargs.get('code'):
             patent = get_object_or_404(
                 BrevettoDatiBase, pk=original_kwargs['code'])
-            inventors = BrevettoInventori.objects.filter(id_brevetto=patent)
             original_kwargs['patent'] = patent
-            original_kwargs['inventors'] = inventors
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
@@ -35,7 +29,6 @@ def can_manage_patents(func_to_decorate):
                                                                           office__organizational_structure__is_active=True)
         if not my_offices:
             return custom_message(request, _("Permission denied"))
-        original_kwargs['my_offices'] = my_offices
         return func_to_decorate(*original_args, **original_kwargs)
 
     return new_func

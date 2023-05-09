@@ -52,7 +52,7 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <form method="post">
+            <form method="post" novalidate>
                 {% include "form_template.html" with form=form %}
                 {% include "includes/form_submit.html" %}
             </form>
@@ -73,12 +73,12 @@
                     <tr>
                         <td>
                                 {{ teacher.cognome_nome_origine|default:"-" }}
-                                {% if teacher.matricola %}
-                                    ({{ teacher.matricola.matricola|default:"-" }})
+                                {% if not teacher.matricola %}
+                                    ({% trans "External" %})
                                 {% endif %}
                             </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_phd:crud_phd_main_teacher_data' code=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_phd:crud_phd_main_teacher' code=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -152,12 +152,12 @@
                     <tr>
                         <td>
                                 {{ teacher.cognome_nome_origine|default:"-" }}
-                                {% if teacher.matricola %}
-                                    ({{ teacher.matricola.matricola|default:"-" }})
+                                {% if not teacher.matricola %}
+                                    ({% trans "External" %})
                                 {% endif %}
                             </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_phd:crud_phd_other_teacher_data' code=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_phd:crud_phd_other_teacher' code=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}

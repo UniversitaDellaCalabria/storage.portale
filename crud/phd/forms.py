@@ -17,13 +17,14 @@ from .. utils.settings import CMS_STORAGE_ROOT_API
 from .. utils.utils import _clean_teacher_dates
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
     choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=False)
+                                     widget=forms.HiddenInput(),
+                                     required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -35,28 +36,14 @@ class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
         labels = {
             "cognome_nome_origine": f'{_("Label")}',
         }
-        help_texts = {
-            "cognome_nome_origine": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
-        }
 
 
 class DidatticaDottoratoAttivitaFormativaDocenteForm(forms.ModelForm):
-    choosen_person = forms.CharField(label=_('Person'),
-                                      widget = forms.HiddenInput(),
-                                      required=False)
-
-    def clean(self):
-        cleaned_data = super().clean()
-        _clean_teacher_dates(self, cleaned_data)
-
     class Meta:
         model = DidatticaDottoratoAttivitaFormativaDocente
         fields = ['cognome_nome_origine']
         labels = {
-            "cognome_nome_origine": f'{_("Label")}',
-        }
-        help_texts = {
-            "cognome_nome_origine": _("If it is an extension, select it directly from the list below. Otherwise, manually enter or edit the data"),
+            "cognome_nome_origine": _("Name and Surname"),
         }
 
 
@@ -67,10 +54,12 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:phd-ssd-list")}?page_size=1000'
         api = requests.get(url)
         ssd = api.json()['results']
-        lista_ssd = []
-        lista_tipo_af = [('Dipartimentale','Dipartimentale'),
+        lista_ssd = [('', '-'),]
+        lista_tipo_af = [
+                         ('', '-'),
+                         ('Dipartimentale', 'Dipartimentale'),
                          ('Attività di Ateneo', 'Attività di Ateneo')]
-        lista_rif_dott = []
+        lista_rif_dott = [('', '-'),]
         query = DidatticaDottoratoAttivitaFormativa.objects\
                                                    .filter(rif_dottorato__isnull=False)\
                                                    .values('rif_dottorato')\
@@ -81,10 +70,12 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         for s in ssd:
             lista_ssd.append((s['SSD'], s['SSD']))
 
-        self.fields['ssd'] = forms.ChoiceField(label=_('SSD'), choices=lista_ssd)
-        self.fields['tipo_af'] = forms.ChoiceField(label=_('Type'), choices=lista_tipo_af)
-        self.fields['rif_dottorato'] = forms.ChoiceField(label=_('Reference'), choices=lista_rif_dott)
-
+        self.fields['ssd'] = forms.ChoiceField(
+            label=_('SSD'), choices=lista_ssd)
+        self.fields['tipo_af'] = forms.ChoiceField(
+            label=_('Type'), choices=lista_tipo_af)
+        self.fields['rif_dottorato'] = forms.ChoiceField(
+            label=_('Reference'), choices=lista_rif_dott)
 
     class Meta:
         model = DidatticaDottoratoAttivitaFormativa

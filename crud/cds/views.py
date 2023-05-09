@@ -44,7 +44,8 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
     """
 
     # altri dati corso di studio
-    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid_id).first()
+    other_data = DidatticaCdsAltriDati.objects.filter(
+        regdid_id=regdid_id).first()
 
     # dati uffici corso di studio
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(
@@ -89,7 +90,7 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
             form.save(commit=False)
             other_data.user_mod = request.user
             if not form.cleaned_data['nome_origine_coordinatore'] and other_data.matricola_coordinatore:
-                 other_data.nome_origine_coordinatore = f'{other_data.matricola_coordinatore.nome} {other_data.matricola_coordinatore.cognome}'
+                other_data.nome_origine_coordinatore = f'{other_data.matricola_coordinatore.nome} {other_data.matricola_coordinatore.cognome}'
             if not form.cleaned_data['nome_origine_vice_coordinatore'] and other_data.matricola_vice_coordinatore:
                 other_data.nome_origine_vice_coordinatore = f'{other_data.matricola_vice_coordinatore.nome} {other_data.matricola_vice_coordinatore.cognome}'
 
@@ -97,10 +98,11 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=regdid,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=regdid,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -147,7 +149,7 @@ def cds_other_data_coordinator(request, regdid_id, data_id,
 
     if teacher:
         teacher_data = f'{teacher.nome} {teacher.cognome}'
-        initial={'choosen_person': encrypt(teacher.matricola)}
+        initial = {'choosen_person': encrypt(teacher.matricola)}
 
     form = DidatticaCdsAltriDatiCoordinatorForm(initial=initial)
 
@@ -164,16 +166,17 @@ def cds_other_data_coordinator(request, regdid_id, data_id,
             other_data.save()
 
             if teacher and teacher == new_teacher:
-                log_msg = f'{_("Changed coordinator")} {teacher}'
+                log_msg = ''
             elif teacher and teacher != new_teacher:
-                log_msg = f'{teacher} {_("substituted with")} {new_teacher}'
+                log_msg = f'Sostituito link coordinatore {teacher} con {new_teacher}'
             else:
-                log_msg = f'{_("Changed coordinator")} {new_teacher}'
+                log_msg = f'Aggiunto link coordinatore a {new_teacher}'
 
-            log_action(user=request.user,
-                       obj=regdid,
-                       flag=CHANGE,
-                       msg=log_msg)
+            if log_msg:
+                log_action(user=request.user,
+                           obj=regdid,
+                           flag=CHANGE,
+                           msg=log_msg)
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -220,7 +223,7 @@ def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
 
     if teacher:
         teacher_data = f'{teacher.nome} {teacher.cognome}'
-        initial={'choosen_person': encrypt(teacher.matricola)}
+        initial = {'choosen_person': encrypt(teacher.matricola)}
 
     form = DidatticaCdsAltriDatiCoordinatorForm(initial=initial)
 
@@ -237,16 +240,17 @@ def cds_other_data_deputy_coordinator(request, regdid_id, data_id,
             other_data.save()
 
             if teacher and teacher == new_teacher:
-                log_msg = f'{_("Changed deputy coordinator")} {teacher}'
+                log_msg = ''
             elif teacher and teacher != new_teacher:
-                log_msg = f'{teacher} {_("substituted with")} {new_teacher}'
+                log_msg = f'Sostituito link vice-coordinatore {teacher} con {new_teacher}'
             else:
-                log_msg = f'{_("Changed deputy coordinator")} {new_teacher}'
+                log_msg = f'Aggiunto link vice-coordinatore a {new_teacher}'
 
-            log_action(user=request.user,
-                       obj=regdid,
-                       flag=CHANGE,
-                       msg=log_msg)
+            if log_msg:
+                log_action(user=request.user,
+                           obj=regdid,
+                           flag=CHANGE,
+                           msg=log_msg)
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -291,7 +295,7 @@ def cds_other_data_delete(request, regdid_id, data_id, my_offices=None, regdid=N
     log_action(user=request.user,
                obj=regdid,
                flag=CHANGE,
-               msg=f'{_("Deleted other data")}')
+               msg='Set di dati eliminato')
 
     messages.add_message(request,
                          messages.SUCCESS,
@@ -316,7 +320,7 @@ def cds_other_data_new(request, regdid_id, my_offices=None, regdid=None):
     log_action(user=request.user,
                obj=regdid,
                flag=CHANGE,
-               msg=f'{_("Created other data set")}')
+               msg='Creato nuovo set di dati')
 
     messages.add_message(request,
                          messages.SUCCESS,
@@ -342,7 +346,7 @@ def cds_other_data_coordinator_delete(request, regdid_id, data_id,
     log_action(user=request.user,
                obj=regdid,
                flag=CHANGE,
-               msg=f'{_("Deleted coordinator data")}')
+               msg='Rimosso link a coordinatore')
 
     messages.add_message(request,
                          messages.SUCCESS,
@@ -370,7 +374,7 @@ def cds_other_data_deputy_coordinator_delete(request, regdid_id, data_id,
     log_action(user=request.user,
                obj=regdid,
                flag=CHANGE,
-               msg=f'{_("Deleted deputy coordinator data")}')
+               msg='Rimosso link a vice-coordinatore')
 
     messages.add_message(request,
                          messages.SUCCESS,
@@ -395,7 +399,7 @@ def cds_office_data_delete(request, regdid_id, data_id, my_offices=None, regdid=
     log_action(user=request.user,
                obj=regdid.cds,
                flag=CHANGE,
-               msg=f'{_("Deleted office data")}')
+               msg='Rimosso set dati ufficio')
 
     messages.add_message(request,
                          messages.SUCCESS,
@@ -435,10 +439,11 @@ def cds_office_data_edit(request, regdid_id, data_id, regdid=None, my_offices=No
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            log_action(user=request.user,
-                       obj=regdid.cds,
-                       flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=regdid.cds,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -480,7 +485,7 @@ def cds_office_data_new(request, regdid_id, my_offices=None, regdid=None):
     log_action(user=request.user,
                obj=regdid.cds,
                flag=CHANGE,
-               msg=f'{_("Created office data set")}')
+               msg='Aggiunto nuovo set dati ufficio')
 
     messages.add_message(request,
                          messages.SUCCESS,
@@ -506,7 +511,7 @@ def cds_office_data_responsible(request, regdid_id, data_id, my_offices=None, re
     initial = {}
     if person:
         person_data = f'{person.nome} {person.cognome}'
-        initial={'choosen_person': encrypt(person.matricola)}
+        initial = {'choosen_person': encrypt(person.matricola)}
 
     form = DidatticaCdsAltriDatiCoordinatorForm(initial=initial)
 
@@ -521,11 +526,11 @@ def cds_office_data_responsible(request, regdid_id, data_id, my_offices=None, re
             office_data.save()
 
             if person and person == new_person:
-                log_msg = f'{_("Changed responsible")} {person}'
+                log_msg = ''
             elif person and person != new_person:
-                log_msg = f'{person} {_("substituted with")} {new_person}'
+                log_msg = f'Sostituito link responsabile {person} con {new_person}'
             else:
-                log_msg = f'{_("Changed responsible")} {new_person}'
+                log_msg = f'Aggiunto link responsabile a {new_person}'
 
             log_action(user=request.user,
                        obj=regdid.cds,
@@ -574,7 +579,7 @@ def cds_office_data_responsible_delete(request, regdid_id, data_id, my_offices=N
     log_action(user=request.user,
                obj=regdid.cds,
                flag=CHANGE,
-               msg=f'{_("Deleted responsible data")}')
+               msg='Rimosso link a responsabile')
 
     messages.add_message(request,
                          messages.SUCCESS,

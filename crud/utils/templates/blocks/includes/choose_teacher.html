@@ -11,12 +11,12 @@
         {% if required %}
             {% trans "Choose a person to proceed" %}
         {% else %}
-            {% trans "Select a person to link to the label" %}
+            {% trans "Choose a person" %}
         {% endif %}
     </div>
     {% endif %}
 </span>
-{% include include_block|default:"blocks/crud_teacherslist.html" with uid=uid|default:"id_1" input_field=input_field|default:"" %}
+{% include include_block|default:"blocks/crud_teacherslist.html" with uid=uid|default:"id_1" %}
 <hr />
 <span class="choosen_person_name">
     {% if choosen_person %}
@@ -28,7 +28,7 @@
         {% if required %}
             {% trans "Choose a person to proceed" %}
         {% else %}
-            {% trans "Select a person to link to the label" %}
+            {% trans "Choose a person" %}
         {% endif %}
     </div>
     {% endif %}

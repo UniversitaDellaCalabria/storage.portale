@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from .validators import *
 
@@ -155,7 +156,7 @@ class DidatticaAttivitaFormativa(models.Model):
     matricola_resp_did = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA_RESP_DID', blank=True, null=True, to_field='matricola')  # Field name made lowercase.
     cod_fis_resp_did = models.CharField(db_column='COD_FIS_RESP_DID', max_length=16, blank=True, null=True)  # Field name made lowercase.
     ruolo_resp_did_cod = models.CharField(db_column='RUOLO_RESP_DID_COD', max_length=4, blank=True, null=True)  # Field name made lowercase.
-    url_sito_web = models.CharField(db_column='URL_SITO_WEB', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    url_sito_web = models.URLField(db_column='URL_SITO_WEB', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     lista_lin_did_af = models.CharField(db_column='LISTA_LIN_DID_AF', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     lista_mod_did_af = models.CharField(db_column='LISTA_MOD_DID_AF', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     lista_taf_set_cfu = models.CharField(db_column='LISTA_TAF_SET_CFU', max_length=2000, blank=True, null=True)  # Field name made lowercase.
@@ -350,12 +351,12 @@ class DidatticaCds(InsModAbstract):
     aa_dis_id = models.IntegerField(
         db_column='AA_DIS_ID', blank=True, null=True)
 
-    url = models.CharField(
+    url = models.URLField(
         db_column='URL',
         max_length=255,
         blank=True,
         null=True)
-    cds_url_info_web = models.CharField(
+    cds_url_info_web = models.URLField(
         db_column='CDS_URL_INFO_WEB',
         max_length=255,
         blank=True,
@@ -804,7 +805,7 @@ class DidatticaDipartimento(InsModAbstract):
 
     miur_dip_id = models.IntegerField(
         db_column='MIUR_DIP_ID', blank=True, null=True)
-    url_pubbl_off_f = models.CharField(
+    url_pubbl_off_f = models.URLField(
         db_column='URL_PUBBL_OFF_F',
         max_length=255,
         blank=True,
@@ -826,7 +827,7 @@ class DidatticaDipartimentoUrl(models.Model):
                                    db_column='DIP_COD',
                                    primary_key=True,
                                    to_field='dip_cod')  # Field name made lowercase.
-    dip_url = models.CharField(db_column='DIP_URL',
+    dip_url = models.URLField(db_column='DIP_URL',
                                max_length=4000)  # Field name made lowercase.
 
     class Meta:
@@ -883,6 +884,9 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     cognome_nome_origine = models.CharField(db_column='COGNOME_NOME_ORIGINE', max_length=200)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return self.cognome_nome_origine
 
     class Meta:
         managed = True
@@ -984,12 +988,12 @@ class DidatticaDottoratoCds(InsModAbstract):
     aa_dis_id = models.IntegerField(
         db_column='AA_DIS_ID', blank=True, null=True)
 
-    url = models.CharField(
+    url = models.URLField(
         db_column='URL',
         max_length=255,
         blank=True,
         null=True)
-    cds_url_info_web = models.CharField(
+    cds_url_info_web = models.URLField(
         db_column='CDS_URL_INFO_WEB',
         max_length=255,
         blank=True,
@@ -1312,7 +1316,7 @@ class DidatticaTestiRegolamento(InsModAbstract):
     clob_txt_eng = models.TextField(
         db_column='CLOB_TXT_ENG', blank=True, null=True)
 
-    testo_regdid_url = models.CharField(
+    testo_regdid_url = models.URLField(
         db_column='TESTO_REGDID_URL',
         max_length=1024,
         blank=True,
@@ -1356,8 +1360,8 @@ class DocenteMaterialeDidattico(models.Model):
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
     testo = models.TextField(db_column='TESTO')  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
-    url_testo = models.CharField(db_column='URL_TESTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
-    url_testo_en = models.CharField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    url_testo = models.URLField(db_column='URL_TESTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    url_testo_en = models.URLField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
     attivo = models.BooleanField(db_column='ATTIVO')  # Field name made lowercase.
     dt_pubblicazione = models.DateTimeField(db_column='DT_PUBBLICAZIONE', blank=True, null=True)  # Field name made lowercase.
@@ -1422,8 +1426,8 @@ class DocentePtaBacheca(models.Model):
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
     testo = models.TextField(db_column='TESTO')  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
-    url_testo = models.CharField(db_column='URL_TESTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
-    url_testo_en = models.CharField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    url_testo = models.URLField(db_column='URL_TESTO', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    url_testo_en = models.URLField(db_column='URL_TESTO_EN', max_length=400, blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
     attivo = models.BooleanField(db_column='ATTIVO')  # Field name made lowercase.
     dt_pubblicazione = models.DateTimeField(db_column='DT_PUBBLICAZIONE', blank=True, null=True)  # Field name made lowercase.
@@ -2432,7 +2436,7 @@ class Personale(InsModAbstract):
         blank=True,
         null=True)
 
-    urlcv = models.CharField(
+    urlcv = models.URLField(
         db_column='URLCV',
         max_length=255,
         blank=True,
@@ -2497,8 +2501,8 @@ class Personale(InsModAbstract):
         db_table = 'PERSONALE'
 
     def __str__(self): # pragma: no cover
-        return '{} {} [{}]'.format(self.nome,
-                                   self.cognome, self.matricola)
+        return '{} {} [{}]'.format(self.cognome,
+                                   self.nome, self.matricola)
 
 
 
@@ -2769,7 +2773,7 @@ class PubblicazioneDatiBase(models.Model):
     contributors = models.TextField(
         db_column='CONTRIBUTORS', blank=True, null=True)
     # Field name made lowercase.
-    url_pubblicazione = models.CharField(
+    url_pubblicazione = models.URLField(
         db_column='URL_PUBBLICAZIONE', max_length=500, blank=True,
         null=True)
 
@@ -3215,7 +3219,7 @@ class BrevettoDatiBase(models.Model):
         max_length=2000,
         blank=True,
         null=True)
-    url_immagine = models.CharField(
+    url_immagine = models.URLField(
         db_column='URL_IMMAGINE',
         max_length=2000,
         blank=True,
@@ -3229,7 +3233,7 @@ class BrevettoDatiBase(models.Model):
         db_column='ID_AREA_TECNOLOGICA',
         blank=True,
         null=True)  # Field name made lowercase.
-    url_knowledge_share = models.CharField(
+    url_knowledge_share = models.URLField(
         db_column='URL_KNOWLEDGE_SHARE',
         max_length=2000,
         blank=True,
@@ -3317,6 +3321,9 @@ class BrevettoInventori(models.Model):
         db_column='COGNOMENOME_ORIGINE',
         max_length=200)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.cognomenome_origine
+
     class Meta:
         managed = True
         db_table = 'BREVETTO_INVENTORI'
@@ -3345,7 +3352,8 @@ class SpinoffStartupDatiBase(models.Model):
         db_column='PIVA',
         max_length=30,
         blank=True,
-        null=True)
+        null=True,
+        validators=[validate_piva,])
     nome_azienda = models.CharField(
         db_column='NOME_AZIENDA',
         max_length=1000,
@@ -3365,7 +3373,7 @@ class SpinoffStartupDatiBase(models.Model):
     # Field name made lowercase.
     descrizione_eng = models.TextField(
         db_column='DESCRIZIONE_ENG', blank=True, null=True)
-    url_sito_web = models.CharField(
+    url_sito_web = models.URLField(
         db_column='URL_SITO_WEB',
         max_length=4000,
         blank=True,
@@ -3414,6 +3422,9 @@ class SpinoffStartupDipartimento(models.Model):
     id_spinoff_startup_dati_base = models.ForeignKey(SpinoffStartupDatiBase, models.CASCADE, db_column='ID_SPINOFF_STARTUP_DATI_BASE')  # Field name made lowercase.
     nome_origine_dipartimento = models.CharField(db_column='NOME_ORIGINE_DIPARTIMENTO', max_length=1000)  # Field name made lowercase.
     id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.CASCADE, db_column='ID_DIDATTICA_DIPARTIMENTO', blank=True, null=True)  # Field name made lowercase.
+
+    def __str__():
+        return self.nome_origine_dipartimento
 
     class Meta:
         managed = True
@@ -3475,7 +3486,7 @@ class ProgettoDatiBase(models.Model):
     # Field name made lowercase.
     descr_breve = models.TextField(
         db_column='DESCR_BREVE', blank=True, null=True)
-    url_immagine = models.CharField(
+    url_immagine = models.URLField(
         db_column='URL_IMMAGINE',
         max_length=1000,
         blank=True,
@@ -3486,7 +3497,7 @@ class ProgettoDatiBase(models.Model):
     # Field name made lowercase.
     abstract_eng = models.TextField(
         db_column='ABSTRACT_ENG', blank=True, null=True)
-    url_sito_web = models.CharField(
+    url_sito_web = models.URLField(
         db_column='URL_SITO_WEB',
         max_length=1000,
         blank=True,
@@ -3503,6 +3514,9 @@ class ProgettoRicercatore(models.Model):
     matricola = models.ForeignKey(Personale, models.CASCADE,to_field='matricola', db_column='MATRICOLA', blank=True, null=True)  # Field name made lowercase.
     nome_origine = models.CharField(db_column='NOME_ORIGINE', max_length=1000)  # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
+
+    def __str__(self):
+        return self.nome_origine
 
     class Meta:
         managed = True
@@ -3524,6 +3538,9 @@ class ProgettoResponsabileScientifico(models.Model):
         max_length=1000)  # Field name made lowercase.
     # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
+
+    def __str__(self):
+        return self.nome_origine
 
     class Meta:
         managed = True

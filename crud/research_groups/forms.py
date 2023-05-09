@@ -12,7 +12,8 @@ from .. utils.settings import CMS_STORAGE_ROOT_API
 from .. utils.utils import _clean_teacher_dates
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class RicercaGruppoForm(forms.ModelForm):
@@ -44,7 +45,7 @@ class RicercaGruppoDocenteForm(forms.ModelForm):
         fields = ['dt_inizio', 'dt_fine']
         labels = {
             'dt_inizio': _('From'),
-            'dt_fine': _('To') }
+            'dt_fine': _('To')}
 
         widgets = {'dt_inizio': BootstrapItaliaDateWidget,
                    'dt_fine': BootstrapItaliaDateWidget, }

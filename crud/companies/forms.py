@@ -4,14 +4,14 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
-from ricerca_app.models import (SpinoffStartupDatiBase,
-                                SpinoffStartupDipartimento)
+from ricerca_app.models import SpinoffStartupDatiBase
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
-from .. utils.widgets import RicercaCRUDClearableWidget
+# from .. utils.widgets import RicercaCRUDClearableWidget
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class SpinoffStartupDatiBaseForm(forms.ModelForm):
@@ -37,42 +37,33 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
             'is_startup': _('Startup'),
             'is_spinoff': _('Spinoff'),
             'nome_file_logo': _('Logo'),
+            'ceo': _('CEO'),
         }
         widgets = {'descrizione_ita': CKEditorWidget(),
                    'descrizione_eng': CKEditorWidget()}
 
-    def __init__(self, *args, **kwargs):
-        super(SpinoffStartupDatiBaseForm, self).__init__(*args, **kwargs)
-        _logo_field = self.instance.nome_file_logo
-        self.fields['nome_file_logo'].widget = RicercaCRUDClearableWidget(
-            {'upload_to': _logo_field.field.upload_to(self.instance, _logo_field.name)}
-        )
+    # def __init__(self, *args, **kwargs):
+        # super(SpinoffStartupDatiBaseForm, self).__init__(*args, **kwargs)
+        # _logo_field = self.instance.nome_file_logo
+        # self.fields['nome_file_logo'].widget = RicercaCRUDClearableWidget(
+            # {'upload_to': _logo_field.field.upload_to(
+              # self.instance, _logo_field.name)}
+        # )
 
     class Media:
         js = ('js/textarea-autosize.js',)
 
 
 class SpinoffStartupDatiBaseReferentForm(forms.ModelForm):
-    choosen_person = forms.CharField(label=_('Person'),
-                                     widget=forms.HiddenInput(),
-                                     required=False)
-
     class Meta:
         model = SpinoffStartupDatiBase
         fields = ['referente_unical']
         labels = {
-            "referente_unical": _("Label"),
+            "referente_unical": _("Name and Surname"),
         }
 
 
-class SpinoffStartupDipartimentoForm(forms.ModelForm):
+class SpinoffStartupDipartimentoForm(forms.Form):
     choosen_department = forms.CharField(label=_('Department'),
                                          widget=forms.HiddenInput(),
-                                         required=False)
-
-    class Meta:
-        model = SpinoffStartupDipartimento
-        fields = []
-
-    class Media:
-        js = ('js/textarea-autosize.js',)
+                                         required=True)

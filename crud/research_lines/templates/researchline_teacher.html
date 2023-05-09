@@ -57,7 +57,7 @@
         <div class="card-body">
             {% include "blocks/includes/choose_teacher.html" with required=1 %}
             <hr />
-            <form method="post">
+            <form method="post" novalidate>
                 {% include "form_template.html" with form=form %}
                 {% include "includes/form_submit.html" %}
             </form>

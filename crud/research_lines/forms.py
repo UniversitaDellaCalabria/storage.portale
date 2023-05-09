@@ -14,7 +14,8 @@ from .. utils.settings import CMS_STORAGE_ROOT_API
 from .. utils.utils import _clean_teacher_dates
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+CMS_STORAGE_ROOT_API = getattr(
+    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class RicercaLineaApplicataForm(forms.ModelForm):
