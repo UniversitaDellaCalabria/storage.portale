@@ -152,8 +152,8 @@
                     <tr>
                         <td>
                                 {{ teacher.cognome_nome_origine|default:"-" }}
-                                {% if teacher.matricola %}
-                                    ({{ teacher.matricola.matricola|default:"-" }})
+                                {% if not teacher.matricola %}
+                                    ({% trans "External" %})
                                 {% endif %}
                             </td>
                         <td class="text-right">
