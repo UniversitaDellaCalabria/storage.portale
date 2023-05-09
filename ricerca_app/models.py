@@ -3765,7 +3765,7 @@ class SitoWebCdsDatiBase(models.Model):
     come_iscriversi_en = models.TextField(db_column='COME_ISCRIVERSI_EN', blank=True, null=True)  # Field name made lowercase.
     sito_web_it = models.CharField(db_column='SITO_WEB_IT', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     sito_web_en = models.CharField(db_column='SITO_WEB_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
-    sito_web_cds_status = models.IntegerField(db_column='SITO_WEB_CDS_STATUS', blank=True, null=True)  # Field name made lowercase.
+    sito_web_cds_status = models.BooleanField(db_column='SITO_WEB_CDS_STATUS', default=False)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
