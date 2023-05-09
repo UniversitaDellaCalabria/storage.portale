@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ricerca_app', '0114_auto_20230428_1438'),
+        ('ricerca_app', '0115_alter_sitowebcdsdatibase_sito_web_cds_status'),
     ]
 
     operations = [
