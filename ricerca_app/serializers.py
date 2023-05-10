@@ -154,7 +154,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             # video = CdsInfoSerializer.get_media_url(
                 # query['URL_CDS_VIDEO'])
             video = build_media_path(
-                query['URL_CDS_VIDEO'])
+                query['URL_CDS_VIDEO'], CDS_BROCHURE_MEDIA_PATH)
 
         doc = None
         if query['URL_CDS_DOC'] is not None:
