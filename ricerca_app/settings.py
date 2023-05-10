@@ -40,10 +40,10 @@ FILE_MAX_SIZE = 5242880
 FILETYPE_IMAGE_YX_RATIO_MIN = 1
 FILETYPE_IMAGE_YX_RATIO_MAX = 1
 
-LABORATORIES_MEDIA_PATH = f'{settings.MEDIA_URL}laboratori/loghi'
+LABORATORIES_MEDIA_PATH = f'{settings.MEDIA_URL}portale/laboratori/loghi'
 # COMPANIES_MEDIA_PATH = f'{settings.MEDIA_URL}spinoff-startup/loghi'
 # PATENTS_MEDIA_PATH = f'{settings.MEDIA_URL}brevetti/loghi'
-CDS_BROCHURE_MEDIA_PATH = f'{settings.MEDIA_URL}cds_media_brochure'
+CDS_BROCHURE_MEDIA_PATH = f'{settings.MEDIA_URL}portale/cds_media_brochure'
 # TEACHER_PHOTO_MEDIA_PATH = f'{settings.MEDIA_URL}docenti_pta/foto'
 # TEACHER_CV_EN_MEDIA_PATH = f'{settings.MEDIA_URL}docenti_pta/cv_en'
 # TEACHER_CV_IT_MEDIA_PATH = f'{settings.MEDIA_URL}docenti_pta/cv_ita'
