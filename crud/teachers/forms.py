@@ -34,6 +34,9 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
             'path_cv_en': _('Curriculum (en)'),
             'path_foto': _('Photo'),
         }
+        help_texts = {
+            'path_foto': _('Please upload a square format photo'),
+        }
         widgets = {'breve_bio_en': CKEditorWidget(),
                    # 'breve_bio': forms.Textarea(attrs={'rows': 2}),
                    'breve_bio': CKEditorWidget(),

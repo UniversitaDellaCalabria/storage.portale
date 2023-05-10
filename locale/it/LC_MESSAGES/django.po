@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-10 14:25+0200\n"
-"PO-Revision-Date: 2023-05-10 14:26+0200\n"
+"POT-Creation-Date: 2023-05-10 15:45+0200\n"
+"PO-Revision-Date: 2023-05-10 15:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -789,10 +789,8 @@ msgid "Teacher edited successfully"
 msgstr "Docente modificato con successo"
 
 #: crud/cds_websites/views.py:212
-#, fuzzy
-#| msgid "PhD activities"
 msgid "PhD activity"
-msgstr "Attività dei Dottorati"
+msgstr "Attività del Dottorati"
 
 #: crud/cds_websites/views.py:214 crud/cds_websites/views.py:431
 #: crud/phd/templates/blocks/crud_phd_list.html:50
@@ -1611,43 +1609,47 @@ msgstr ""
 msgid "Photo"
 msgstr "Foto"
 
-#: crud/teachers/forms.py:75
+#: crud/teachers/forms.py:38
+msgid "Please upload a square format photo"
+msgstr "Per favore carica una foto di formato quadrato"
+
+#: crud/teachers/forms.py:78
 msgid "Type (it)"
 msgstr "Tipo (it)"
 
-#: crud/teachers/forms.py:76
+#: crud/teachers/forms.py:79
 msgid "Type (en)"
 msgstr "Tipo (en)"
 
-#: crud/teachers/forms.py:77 crud/teachers/forms.py:109
+#: crud/teachers/forms.py:80 crud/teachers/forms.py:112
 msgid "Title (it)"
 msgstr "Titolo (it)"
 
-#: crud/teachers/forms.py:78 crud/teachers/forms.py:110
+#: crud/teachers/forms.py:81 crud/teachers/forms.py:113
 msgid "Title (en)"
 msgstr "Titolo (en)"
 
-#: crud/teachers/forms.py:79 crud/teachers/forms.py:111
+#: crud/teachers/forms.py:82 crud/teachers/forms.py:114
 msgid "Text (it)"
 msgstr "Testo (it)"
 
-#: crud/teachers/forms.py:80 crud/teachers/forms.py:112
+#: crud/teachers/forms.py:83 crud/teachers/forms.py:115
 msgid "Text (en)"
 msgstr "Testo (en)"
 
-#: crud/teachers/forms.py:81 crud/teachers/forms.py:113
+#: crud/teachers/forms.py:84 crud/teachers/forms.py:116
 msgid "URL (it)"
 msgstr ""
 
-#: crud/teachers/forms.py:82 crud/teachers/forms.py:114
+#: crud/teachers/forms.py:85 crud/teachers/forms.py:117
 msgid "URL (en)"
 msgstr ""
 
-#: crud/teachers/forms.py:83 crud/teachers/forms.py:115
+#: crud/teachers/forms.py:86 crud/teachers/forms.py:118
 msgid "Valid from"
 msgstr "Valido dal"
 
-#: crud/teachers/forms.py:84 crud/teachers/forms.py:116
+#: crud/teachers/forms.py:87 crud/teachers/forms.py:119
 msgid "Valid until"
 msgstr "Valido fino al"
 
