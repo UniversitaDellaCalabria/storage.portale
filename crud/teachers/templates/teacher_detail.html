@@ -12,6 +12,11 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
+
+            <h4 style="font-weight: lighter;">
+                {% trans "Personal data" %}
+            </h4>
+
             {% if other_data %}
             <div class="text-right mb-3">
                 <a href="{% url 'crud_teachers:crud_teacher_other_data_edit' code=code data_id=other_data.pk %}" class="btn btn-primary btn-xs">
@@ -140,7 +145,7 @@
             <a href="{% url 'crud_teachers:crud_teacher_other_data_new' code=code %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Add new data set" %}
+                </svg> {% trans "Add" %}
             </a>
             {% endif %}
         </div>
