@@ -301,13 +301,13 @@ def patent_delete(request, code, patent=None):
     #     raise Exception(_('Permission denied'))
 
     patent = get_object_or_404(BrevettoDatiBase, pk=code)
-    logo = patent.nome_file_logo.path
+    logo = patent.nome_file_logo
 
-    if logo:
+    if logo and logo.path:
         try:
-            os.remove(logo)
+            os.remove(logo.path)
         except:  # pragma: no cover
-            logger.warning(f'File {logo} not found')
+            logger.warning(f'File {logo.path} not found')
 
     patent.delete()
     messages.add_message(request,
