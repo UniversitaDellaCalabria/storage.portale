@@ -4,23 +4,23 @@ from rest_framework import serializers
 
 from . settings import (ALLOWED_PROFILE_ID,
                         CDS_BROCHURE_MEDIA_PATH,
-                        COMPANIES_MEDIA_PATH,
-                        LABORATORIES_MEDIA_PATH,
-                        PATENTS_MEDIA_PATH,
-                        TEACHER_CV_EN_MEDIA_PATH,
-                        TEACHER_CV_IT_MEDIA_PATH,
-                        TEACHER_PHOTO_MEDIA_PATH)
+                        # COMPANIES_MEDIA_PATH,
+                        LABORATORIES_MEDIA_PATH,)
+                        # PATENTS_MEDIA_PATH,
+                        # TEACHER_CV_EN_MEDIA_PATH,
+                        # TEACHER_CV_IT_MEDIA_PATH,
+                        # TEACHER_PHOTO_MEDIA_PATH)
 from . utils import build_media_path, encrypt, is_path
 
 
 ALLOWED_PROFILE_ID = getattr(settings, 'ALLOWED_PROFILE_ID', ALLOWED_PROFILE_ID)
 CDS_BROCHURE_MEDIA_PATH = getattr(settings, 'CDS_BROCHURE_MEDIA_PATH', CDS_BROCHURE_MEDIA_PATH)
-COMPANIES_MEDIA_PATH = getattr(settings, 'COMPANIES_MEDIA_PATH', COMPANIES_MEDIA_PATH)
+# COMPANIES_MEDIA_PATH = getattr(settings, 'COMPANIES_MEDIA_PATH', COMPANIES_MEDIA_PATH)
 LABORATORIES_MEDIA_PATH = getattr(settings, 'LABORATORIES_MEDIA_PATH', LABORATORIES_MEDIA_PATH)
-PATENTS_MEDIA_PATH = getattr(settings, 'PATENTS_MEDIA_PATH', PATENTS_MEDIA_PATH)
-TEACHER_CV_EN_MEDIA_PATH = getattr(settings, 'TEACHER_CV_EN_MEDIA_PATH', TEACHER_CV_EN_MEDIA_PATH)
-TEACHER_CV_IT_MEDIA_PATH = getattr(settings, 'TEACHER_CV_IT_MEDIA_PATH', TEACHER_CV_IT_MEDIA_PATH)
-TEACHER_PHOTO_MEDIA_PATH = getattr(settings, 'TEACHER_PHOTO_MEDIA_PATH', TEACHER_PHOTO_MEDIA_PATH)
+# PATENTS_MEDIA_PATH = getattr(settings, 'PATENTS_MEDIA_PATH', PATENTS_MEDIA_PATH)
+# TEACHER_CV_EN_MEDIA_PATH = getattr(settings, 'TEACHER_CV_EN_MEDIA_PATH', TEACHER_CV_EN_MEDIA_PATH)
+# TEACHER_CV_IT_MEDIA_PATH = getattr(settings, 'TEACHER_CV_IT_MEDIA_PATH', TEACHER_CV_IT_MEDIA_PATH)
+# TEACHER_PHOTO_MEDIA_PATH = getattr(settings, 'TEACHER_PHOTO_MEDIA_PATH', TEACHER_PHOTO_MEDIA_PATH)
 
 def _get_teacher_obj_publication_date(teacher_dict):
     if not teacher_dict['dt_pubblicazione']: return None
@@ -916,9 +916,9 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
             'TeacherOffice': query['ds_aff_org'],
             'TeacherOfficeReference': query['Riferimento Ufficio'],
             'ORCID': query['ORCID'],
-            'PhotoPath': build_media_path(query['PHOTOPATH'], TEACHER_PHOTO_MEDIA_PATH),
-            'CVPathIta': build_media_path(query['PATHCVITA'], TEACHER_CV_IT_MEDIA_PATH),
-            'CVPathEn': build_media_path(query['PATHCVENG'], TEACHER_CV_EN_MEDIA_PATH),
+            'PhotoPath': build_media_path(query['PHOTOPATH']),
+            'CVPathIta': build_media_path(query['PATHCVITA']),
+            'CVPathEn': build_media_path(query['PATHCVENG']),
             'ShortBio': query['BREVEBIO'] if req_lang == "it" or query['BREVEBIOENG'] is None else query['BREVEBIOENG'],
             'ReceptionHours': query['ORARIORICEVIMENTO'] if req_lang == "it" or query['ORARIORICEVIMENTOEN'] is None else query['ORARIORICEVIMENTOEN'],
             'TeacherEmail': query['Posta Elettronica'],
@@ -1785,7 +1785,7 @@ class PatentsSerializer(CreateUpdateAbstract):
             'PatentId': query['id'],
             'PatentUniqueId': query['id_univoco'],
             'PatentTitle': query['titolo'],
-            'PatentImage': build_media_path(query['nome_file_logo'], PATENTS_MEDIA_PATH),
+            'PatentImage': build_media_path(query['nome_file_logo']),
             'PatentAbstract': query["breve_descrizione"],
             'PatentUrlKnowledgeShare': query["url_knowledge_share"],
             'PatentTechAreaId': query["id_area_tecnologica"],
@@ -1821,7 +1821,7 @@ class CompaniesSerializer(CreateUpdateAbstract):
             'SpinoffPIva': query['piva'],
             'SpinoffAgencyName': query['nome_azienda'],
             'SpinoffAgencyUrl': query['url_sito_web'],
-            'SpinoffImage': build_media_path(query['nome_file_logo'], COMPANIES_MEDIA_PATH),
+            'SpinoffImage': build_media_path(query['nome_file_logo']),
             'SpinoffDescription': query["descrizione_ita"]if req_lang == "it" or query["descrizione_eng"] is None else query['descrizione_eng'],
             'SpinoffUnicalReferent': query["referente_unical"],
             'SpinoffUnicalReferentId': encrypt(query['matricola_referente_unical']),
