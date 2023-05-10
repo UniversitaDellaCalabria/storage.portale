@@ -77,11 +77,7 @@ from .models import (
     PersonalePrioritaRuolo,
     DocentePtaBacheca,
     DocentePtaAltriDati,
-    DocenteMaterialeDidattico,
-    SitoWebCdsDatiBase,
-    SitoWebCdsSlider,
-    SitoWebCdsLink,
-    SitoWebCdsExStudenti)
+    DocenteMaterialeDidattico)
 
 
 # class ContextUnitTest(TestCase):
@@ -980,48 +976,3 @@ class DocentePtaAltriDatiUnitTest(TestCase): # pragma: no cover
 
         obj = DocentePtaAltriDati.objects.create(**data)
         return obj
-
-
-class SitoWebCdsDatiBaseUnitTest(TestCase): # pragma: no cover
-    @classmethod
-    def create_sitoWebCdsDatiBase(cls, **kwargs):
-        data = {}
-        for k, v in kwargs.items():
-            data[k] = v
-
-        obj = SitoWebCdsDatiBase.objects.create(**data)
-        return obj
-
-
-class SitoWebCdsExStudentiUnitTest(TestCase): # pragma: no cover
-    @classmethod
-    def create_sitoWebCdsExStudenti(cls, **kwargs):
-        data = {}
-        for k, v in kwargs.items():
-            data[k] = v
-
-        obj = SitoWebCdsExStudenti.objects.create(**data)
-        return obj
-
-
-class SitoWebCdsSliderUnitTest(TestCase): # pragma: no cover
-    @classmethod
-    def create_sitoWebCdsSlider(cls, **kwargs):
-        data = {}
-        for k, v in kwargs.items():
-            data[k] = v
-
-        obj = SitoWebCdsSlider.objects.create(**data)
-        return obj
-
-
-class SitoWebCdsLinkUnitTest(TestCase): # pragma: no cover
-    @classmethod
-    def create_sitoWebCdsLink(cls, **kwargs):
-        data = {}
-        for k, v in kwargs.items():
-            data[k] = v
-
-        obj = SitoWebCdsLink.objects.create(**data)
-        return obj
-
