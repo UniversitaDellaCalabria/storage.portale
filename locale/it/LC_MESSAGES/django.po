@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-10 15:45+0200\n"
-"PO-Revision-Date: 2023-05-10 15:45+0200\n"
+"POT-Creation-Date: 2023-05-11 08:55+0200\n"
+"PO-Revision-Date: 2023-05-11 08:55+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3\n"
 
 #: accounts/admin.py:20
 msgid "Anagrafica"
@@ -42,7 +42,7 @@ msgstr ""
 msgid "Altro"
 msgstr ""
 
-#: accounts/models.py:15 crud/companies/forms.py:31
+#: accounts/models.py:15 crud/companies/forms.py:41
 #: crud/research_groups/forms.py:24
 #: crud/research_groups/templates/researchgroup.html:70
 #: crud/research_lines/templates/applied_researchline.html:70
@@ -179,7 +179,7 @@ msgid "Course of study language"
 msgstr "Lingua"
 
 #: crud/cds/templates/blocks/crud_cds.html:127 crud/companies/forms.py:18
-#: crud/companies/forms.py:67
+#: crud/companies/forms.py:77
 #: crud/research_groups/templates/blocks/crud_researchgroups.html:37
 #: crud/research_lines/templates/blocks/crud_researchlines.html:36
 #: crud/teachers/templates/blocks/crud_teachers.html:33
@@ -591,11 +591,11 @@ msgstr ""
 msgid "Link video (en)"
 msgstr ""
 
-#: crud/cds_websites/forms.py:46 crud/companies/forms.py:32
+#: crud/cds_websites/forms.py:46 crud/companies/forms.py:42
 msgid "Description (it)"
 msgstr "Descrizione (it)"
 
-#: crud/cds_websites/forms.py:47 crud/companies/forms.py:33
+#: crud/cds_websites/forms.py:47 crud/companies/forms.py:43
 msgid "Description (en)"
 msgstr "Descrizione (en)"
 
@@ -826,15 +826,19 @@ msgstr "Permesso negato. Rimane solo un docente"
 msgid "Teacher removed successfully"
 msgstr "Docente rimosso con successo"
 
-#: crud/companies/forms.py:30
+#: crud/companies/forms.py:28
+msgid "At least one choice between spinoff and startup must be made"
+msgstr "Almeno una scelta tra spinoff e startup deve essere effettuata"
+
+#: crud/companies/forms.py:40
 msgid "VAT number"
 msgstr "Partita IVA"
 
-#: crud/companies/forms.py:34 crud/projects/forms.py:35
+#: crud/companies/forms.py:44 crud/projects/forms.py:35
 msgid "URL"
 msgstr ""
 
-#: crud/companies/forms.py:35
+#: crud/companies/forms.py:45
 #: crud/companies/templates/blocks/crud_companies.html:30
 #: crud/companies/templates/blocks/crud_companies.html:149
 #: crud/patents/templates/blocks/crud_patents.html:45 crud/projects/forms.py:30
@@ -843,29 +847,29 @@ msgstr ""
 msgid "Tech Area"
 msgstr "Area tecnologica"
 
-#: crud/companies/forms.py:36
+#: crud/companies/forms.py:46
 msgid "Calabria S3 Innovation"
 msgstr "Innovazione S3 Calabria"
 
-#: crud/companies/forms.py:37
+#: crud/companies/forms.py:47
 #: crud/companies/templates/blocks/crud_companies.html:76
 #: crud/companies/templates/blocks/crud_companies.html:137
 msgid "Startup"
 msgstr ""
 
-#: crud/companies/forms.py:38
+#: crud/companies/forms.py:48
 msgid "Spinoff"
 msgstr ""
 
-#: crud/companies/forms.py:39 crud/patents/forms.py:39
+#: crud/companies/forms.py:49 crud/patents/forms.py:39
 msgid "Logo"
 msgstr ""
 
-#: crud/companies/forms.py:40
+#: crud/companies/forms.py:50
 msgid "CEO"
 msgstr ""
 
-#: crud/companies/forms.py:62 crud/patents/forms.py:81 crud/phd/forms.py:46
+#: crud/companies/forms.py:72 crud/patents/forms.py:81 crud/phd/forms.py:46
 #: crud/projects/forms.py:54 crud/projects/forms.py:63
 msgid "Name and Surname"
 msgstr "Nome e Cognome"
@@ -2012,9 +2016,9 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
-#: ricerca_app/validators.py:104
-msgid "Enter a valid VAT Number (only 11 numbers)"
-msgstr "Inserisci una Partita IVA valida (solo 11 numeri)"
+#: ricerca_app/validators.py:106
+msgid "Enter a valid VAT Number"
+msgstr "Inserisci una Partita IVA valida"
 
 #~ msgid "Add new data set"
 #~ msgstr "Aggiungi nuovo set di dati"
