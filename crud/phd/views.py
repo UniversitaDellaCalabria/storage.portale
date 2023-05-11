@@ -57,10 +57,13 @@ def phd_new(request, my_offices=None):
 
     if request.POST:
 
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = DidatticaDottoratoAttivitaFormativaDocenteForm(data=request.POST)
+
         if 'choosen_person' in request.POST:
-            teacher_form = ChoosenPersonForm(data=request.POST, required=True)
+            teacher_form = internal_form
         else:
-            teacher_form = DidatticaDottoratoAttivitaFormativaDocenteForm(data=request.POST)
+            teacher_form = external_form
 
         form = DidatticaDottoratoAttivitaFormativaForm(data=request.POST)
 
@@ -208,11 +211,14 @@ def phd_main_teacher(request, code, teacher_id, phd=None, my_offices=None):
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
-        else:
-            form = DidatticaDottoratoAttivitaFormativaDocenteForm(instance=patent_inventor,
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = DidatticaDottoratoAttivitaFormativaDocenteForm(instance=patent_inventor,
                                                                   data=request.POST)
+
+        if 'choosen_person' in request.POST:
+            form = internal_form
+        else:
+            form = external_form
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
@@ -275,10 +281,13 @@ def phd_main_teacher_new(request, code, my_offices=None, phd=None):
     internal_form = ChoosenPersonForm(required=True)
 
     if request.POST:
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = DidatticaDottoratoAttivitaFormativaDocenteForm(data=request.POST)
+
         if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
+            form = internal_form
         else:
-            form = DidatticaDottoratoAttivitaFormativaDocenteForm(data=request.POST)
+            form = external_form
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
@@ -383,11 +392,14 @@ def phd_other_teacher(request, code, teacher_id, my_offices=None, phd=None):
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
-        else:
-            form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(instance=activity_teacher,
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(instance=activity_teacher,
                                          data=request.POST)
+
+        if 'choosen_person' in request.POST:
+            form = internal_form
+        else:
+            form = external_form
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
@@ -454,10 +466,13 @@ def phd_other_teacher_new(request, code, my_offices=None,
     internal_form = ChoosenPersonForm(required=True)
 
     if request.POST:
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(data=request.POST)
+
         if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
+            form = internal_form
         else:
-            form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(data=request.POST)
+            form = external_form
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):

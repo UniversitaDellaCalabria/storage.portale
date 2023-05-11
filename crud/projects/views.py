@@ -192,10 +192,13 @@ def project_director_new(request, code, project=None):
     internal_form = ChoosenPersonForm(required=True)
 
     if request.POST:
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = ProgettoResponsabileScientificoForm(data=request.POST)
+
         if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
+            form = internal_form
         else:
-            form = ProgettoResponsabileScientificoForm(data=request.POST)
+            form = external_form
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
@@ -265,11 +268,15 @@ def project_director_edit(request, code, director_id, project=None):
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
-        else:
-            form = ProgettoResponsabileScientificoForm(instance=project_director,
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = ProgettoResponsabileScientificoForm(instance=project_director,
                                                        data=request.POST)
+
+        if 'choosen_person' in request.POST:
+            form = internal_form
+        else:
+            form = external_form
+
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 director_code = decrypt(form.cleaned_data['choosen_person'])
@@ -349,10 +356,13 @@ def project_researcher_new(request, code, project=None):
     internal_form = ChoosenPersonForm(required=True)
 
     if request.POST:
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = ProgettoRicercatoreForm(data=request.POST)
+
         if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
+            form = internal_form
         else:
-            form = ProgettoRicercatoreForm(data=request.POST)
+            form = external_form
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
@@ -420,11 +430,15 @@ def project_researcher_edit(request, code, researcher_id, project=None):
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
-        else:
-            form = ProgettoRicercatoreForm(instance=project_researcher,
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = ProgettoRicercatoreForm(instance=project_researcher,
                                            data=request.POST)
+
+        if 'choosen_person' in request.POST:
+            form = internal_form
+        else:
+            form = external_form
+
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 researcher_code = decrypt(form.cleaned_data['choosen_person'])

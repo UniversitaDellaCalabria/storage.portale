@@ -114,6 +114,7 @@ def company_new(request, company=None):
     # se la validazione dovesse fallire ritroveremmo
     # comunque l'inventore scelto senza doverlo cercare
     # nuovamente dall'elenco
+
     department = None
     if request.POST.get('choosen_department', ''):
         department = get_object_or_404(DidatticaDipartimento,
@@ -129,10 +130,13 @@ def company_new(request, company=None):
             data=request.POST, files=request.FILES)
         department_form = SpinoffStartupDipartimentoForm(data=request.POST)
 
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = SpinoffStartupDatiBaseReferentForm(data=request.POST)
+
         if 'choosen_person' in request.POST:
-            referent_form = ChoosenPersonForm(data=request.POST, required=True)
+            referent_form = internal_form
         else:
-            referent_form = BrevettoInventoriForm(data=request.POST)
+            referent_form = external_form
 
         if form.is_valid() and department_form.is_valid() and referent_form.is_valid():
             company = form.save(commit=False)
@@ -176,7 +180,6 @@ def company_new(request, company=None):
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_companies:crud_companies'): _('Companies'),
                    '#': _('New')}
-
     return render(request,
                   'company_new.html',
                   {'breadcrumbs': breadcrumbs,
@@ -212,11 +215,14 @@ def company_unical_referent_edit(request, code, data_id, company=None):
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
-        else:
-            form = SpinoffStartupDatiBaseReferentForm(instance=company_referent,
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = SpinoffStartupDatiBaseReferentForm(instance=company_referent,
                                                       data=request.POST)
+
+        if 'choosen_person' in request.POST:
+            form = internal_form
+        else:
+            form = external_form
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):

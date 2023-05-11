@@ -140,10 +140,13 @@ def patent_inventor_new(request, code, patent=None):
     external_form = BrevettoInventoriForm()
     internal_form = ChoosenPersonForm(required=True)
     if request.POST:
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = BrevettoInventoriForm(data=request.POST)
+
         if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
+            form = internal_form
         else:
-            form = BrevettoInventoriForm(data=request.POST)
+            form = external_form
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
@@ -211,11 +214,14 @@ def patent_inventor_edit(request, code, inventor_id, patent=None):
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        if 'choosen_person' in request.POST:
-            form = ChoosenPersonForm(data=request.POST, required=True)
-        else:
-            form = BrevettoInventoriForm(instance=patent_inventor,
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = BrevettoInventoriForm(instance=patent_inventor,
                                          data=request.POST)
+
+        if 'choosen_person' in request.POST:
+            form = internal_form
+        else:
+            form = external_form
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
