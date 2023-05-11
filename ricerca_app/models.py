@@ -1422,7 +1422,7 @@ class DocentePtaBacheca(models.Model):
     matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola')  # Field name made lowercase.
     tipo_testo = models.CharField(db_column='TIPO_TESTO', max_length=100)  # Field name made lowercase.
     tipo_testo_en = models.CharField(db_column='TIPO_TESTO_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    titolo = models.CharField(db_column='TITOLO', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    titolo = models.CharField(db_column='TITOLO', max_length=200)  # Field name made lowercase.
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
     testo = models.TextField(db_column='TESTO')  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
