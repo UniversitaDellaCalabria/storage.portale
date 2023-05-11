@@ -3392,8 +3392,7 @@ class SpinoffStartupDatiBase(models.Model):
     id_area_tecnologica = models.ForeignKey(
         'TipologiaAreaTecnologica',
         models.DO_NOTHING,
-        db_column='ID_AREA_TECNOLOGICA',
-        blank=True)  # Field name made lowercase.
+        db_column='ID_AREA_TECNOLOGICA')  # Field name made lowercase.
     id_area_innovazione_s3_calabria = models.ForeignKey(
         SpinoffStartupAreaInnovazioneS3Calabria,
         models.DO_NOTHING,
