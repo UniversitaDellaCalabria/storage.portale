@@ -108,8 +108,7 @@ def company_new(request, company=None):
     # e uno per l'inventore iniziale
     form = SpinoffStartupDatiBaseForm()
     department_form = SpinoffStartupDipartimentoForm()
-    external_form = SpinoffStartupDatiBaseReferentForm()
-    internal_form = ChoosenPersonForm(required=True)
+    referent_form = ChoosenPersonForm(required=True)
 
     # se la validazione dovesse fallire ritroveremmo
     # comunque l'inventore scelto senza doverlo cercare
@@ -130,23 +129,12 @@ def company_new(request, company=None):
             data=request.POST, files=request.FILES)
         department_form = SpinoffStartupDipartimentoForm(data=request.POST)
 
-        internal_form = ChoosenPersonForm(data=request.POST, required=True)
-        external_form = SpinoffStartupDatiBaseReferentForm(data=request.POST)
-
-        if 'choosen_person' in request.POST:
-            referent_form = internal_form
-        else:
-            referent_form = external_form
+        referent_form = ChoosenPersonForm(data=request.POST, required=True)
 
         if form.is_valid() and department_form.is_valid() and referent_form.is_valid():
             company = form.save(commit=False)
 
-            if referent_form.cleaned_data.get('choosen_person'):
-                referente_unical = f'{referent.cognome} {referent.nome}'
-            else:
-                referente_unical = form.cleaned_data['referente_unical']
-
-            company.referente_unical = referente_unical
+            company.referente_unical = f'{referent.cognome} {referent.nome}'
             company.matricola_referente_unical = referent
             company.save()
 
@@ -189,8 +177,7 @@ def company_new(request, company=None):
                    'departments_api': reverse('ricerca:departmentslist'),
                    'teachers_api': reverse('ricerca:teacherslist'),
                    'department_form': department_form,
-                   'external_form': external_form,
-                   'internal_form': internal_form,
+                   'referent_form': referent_form,
                    'url': reverse('ricerca:teacherslist')})
 
 
@@ -210,31 +197,17 @@ def company_unical_referent_edit(request, code, data_id, company=None):
         referent_data = f'{referent.cognome} {referent.nome}'
         initial = {'choosen_person': encrypt(referent.matricola)}
 
-    external_form = SpinoffStartupDatiBaseReferentForm(
-        instance=company_referent)
-    internal_form = ChoosenPersonForm(initial=initial, required=True)
+    form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
-        internal_form = ChoosenPersonForm(data=request.POST, required=True)
-        external_form = SpinoffStartupDatiBaseReferentForm(instance=company_referent,
-                                                      data=request.POST)
-
-        if 'choosen_person' in request.POST:
-            form = internal_form
-        else:
-            form = external_form
+        form = ChoosenPersonForm(data=request.POST, required=True)
 
         if form.is_valid():
-            if form.cleaned_data.get('choosen_person'):
-                referent_code = decrypt(form.cleaned_data['choosen_person'])
-                referent = get_object_or_404(
-                    Personale, matricola=referent_code)
-                company_referent.matricola_referente_unical = referent
-                company_referent.referente_unical = f'{referent.cognome} {referent.nome}'
-            else:
-                company_referent.matricola_referente_unical = None
-                company_referent.referente_unical = form.cleaned_data['referente_unical']
-
+            referent_code = decrypt(form.cleaned_data['choosen_person'])
+            referent = get_object_or_404(
+                Personale, matricola=referent_code)
+            company_referent.matricola_referente_unical = referent
+            company_referent.referente_unical = f'{referent.cognome} {referent.nome}'
             company_referent.save()
 
             if old_label != company_referent.referente_unical:
@@ -265,8 +238,7 @@ def company_unical_referent_edit(request, code, data_id, company=None):
                   {'breadcrumbs': breadcrumbs,
                    'company': company,
                    'choosen_person': referent_data,
-                   'external_form': external_form,
-                   'internal_form': internal_form,
+                   'form': form,
                    'url': reverse('ricerca:teacherslist')})
 
 

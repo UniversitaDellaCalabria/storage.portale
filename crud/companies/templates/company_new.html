@@ -42,9 +42,13 @@
                     </span>
                     <hr />
                 </div>
-                <h4 style="font-weight: lighter;">{% trans "Choose one Unical referent" %}</h4>
+                <h4 style="font-weight: lighter;">
+                    {% trans "Choose one Unical referent" %}
+                </h4>
                 <div class="mt-5">
-                    {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 %}
+                    {% include "blocks/includes/choose_teacher.html" with required=1 %}
+                    <hr />
+                    {% include "form_template.html" with form=referent_form %}
                 </div>
                 {% include "includes/form_submit.html" %}
             </form>
