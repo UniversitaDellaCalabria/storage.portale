@@ -3351,14 +3351,11 @@ class SpinoffStartupDatiBase(models.Model):
     piva = models.CharField(
         db_column='PIVA',
         max_length=30,
-        blank=True,
-        null=True,
-        validators=[validate_piva,])
+        validators=[validate_piva,],
+        unique=True)
     nome_azienda = models.CharField(
         db_column='NOME_AZIENDA',
-        max_length=1000,
-        blank=True,
-        null=True)  # Field name made lowercase.
+        max_length=1000)  # Field name made lowercase.
     nome_file_logo = models.FileField(
         upload_to=companies_media_path,
         validators=[validate_image_file_extension,
@@ -3368,8 +3365,7 @@ class SpinoffStartupDatiBase(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     # Field name made lowercase.
-    descrizione_ita = models.TextField(
-        db_column='DESCRIZIONE_ITA', blank=True, null=True)
+    descrizione_ita = models.TextField(db_column='DESCRIZIONE_ITA')
     # Field name made lowercase.
     descrizione_eng = models.TextField(
         db_column='DESCRIZIONE_ENG', blank=True, null=True)
@@ -3397,8 +3393,7 @@ class SpinoffStartupDatiBase(models.Model):
         'TipologiaAreaTecnologica',
         models.DO_NOTHING,
         db_column='ID_AREA_TECNOLOGICA',
-        blank=True,
-        null=True)  # Field name made lowercase.
+        blank=True)  # Field name made lowercase.
     id_area_innovazione_s3_calabria = models.ForeignKey(
         SpinoffStartupAreaInnovazioneS3Calabria,
         models.DO_NOTHING,
