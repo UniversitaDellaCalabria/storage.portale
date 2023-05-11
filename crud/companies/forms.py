@@ -19,6 +19,16 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
                                          widget=forms.HiddenInput(),
                                          required=False)
 
+    def clean(self):
+        cleaned_data = super().clean()
+        is_spinoff = cleaned_data.get('is_spinoff', False)
+        is_startup = cleaned_data.get('is_startup', False)
+
+        if not is_spinoff and not is_startup:
+            msg = _("At least one choice between spinoff and startup must be made")
+            self.add_error('is_spinoff', msg)
+            self.add_error('is_startup', msg)
+
     class Meta:
         model = SpinoffStartupDatiBase
         fields = ['piva', 'nome_azienda', 'descrizione_ita',
