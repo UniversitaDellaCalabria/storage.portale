@@ -3243,10 +3243,7 @@ class BrevettoDatiBase(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     # Field name made lowercase.
-    proprieta = models.TextField(
-        db_column='PROPRIETA',
-        null=True,
-        blank=True)
+    proprieta = models.TextField(db_column='PROPRIETA')
     id_status_legale = models.ForeignKey(
         BrevettoStatusLegale,
         models.DO_NOTHING,
