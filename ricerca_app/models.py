@@ -3211,22 +3211,16 @@ class BrevettoDatiBase(models.Model):
     id_univoco = models.CharField(
         db_column='ID_UNIVOCO',
         max_length=500,
-        blank=True,
-        null=True)
+        unique=True)
     # Field name made lowercase.
-    titolo = models.CharField(
-        db_column='TITOLO',
-        max_length=2000,
-        blank=True,
-        null=True)
+    titolo = models.TextField(db_column='TITOLO')
     url_immagine = models.URLField(
         db_column='URL_IMMAGINE',
         max_length=2000,
         blank=True,
         null=True)  # Field name made lowercase.
     # Field name made lowercase.
-    breve_descrizione = models.TextField(
-        db_column='BREVE_DESCRIZIONE', blank=True, null=True)
+    breve_descrizione = models.TextField(db_column='BREVE_DESCRIZIONE')
     id_area_tecnologica = models.ForeignKey(
         TipologiaAreaTecnologica,
         models.DO_NOTHING,
@@ -3249,11 +3243,10 @@ class BrevettoDatiBase(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     # Field name made lowercase.
-    proprieta = models.CharField(
+    proprieta = models.TextField(
         db_column='PROPRIETA',
-        max_length=2000,
-        blank=True,
-        null=True)
+        null=True,
+        blank=True)
     id_status_legale = models.ForeignKey(
         BrevettoStatusLegale,
         models.DO_NOTHING,
