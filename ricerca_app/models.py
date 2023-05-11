@@ -3154,6 +3154,20 @@ class BrevettoDirittiCommerciali(models.Model):
         db_table = 'BREVETTO_DIRITTI_COMMERCIALI'
 
 
+class BrevettoTerritori(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    territorio = models.CharField(db_column='TERRITORIO', max_length=80)
+
+    def __str__(self):
+        return self.territorio
+
+    class Meta:
+        managed = True
+        db_table = 'BREVETTO_TERRITORI'
+
+
 
 class BrevettoDisponibilita(models.Model):
     # Field name made lowercase.
@@ -3254,9 +3268,10 @@ class BrevettoDatiBase(models.Model):
     data_priorita = models.DateField(
         db_column='DATA_PRIORITA', blank=True, null=True)
     # Field name made lowercase.
-    territorio = models.CharField(
+    territorio = models.ForeignKey(
+        BrevettoTerritori,
+        models.DO_NOTHING,
         db_column='TERRITORIO',
-        max_length=2000,
         blank=True,
         null=True)
     id_diritto_commerciale = models.ForeignKey(
