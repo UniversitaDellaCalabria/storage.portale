@@ -212,7 +212,7 @@ def phd_main_teacher(request, code, teacher_id, phd=None, my_offices=None):
 
     if request.POST:
         internal_form = ChoosenPersonForm(data=request.POST, required=True)
-        external_form = DidatticaDottoratoAttivitaFormativaDocenteForm(instance=patent_inventor,
+        external_form = DidatticaDottoratoAttivitaFormativaDocenteForm(instance=activity_teacher,
                                                                   data=request.POST)
 
         if 'choosen_person' in request.POST:
