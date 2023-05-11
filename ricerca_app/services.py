@@ -2461,6 +2461,7 @@ class ServiceDipartimento:
                                      .values("dip_id", "dip_cod",
                                              "dip_des_it", "dip_des_eng",
                                              "dip_nome_breve")
+        if not query: raise Http404
         dip_cod = query.first()['dip_cod']
         url = DidatticaDipartimentoUrl.objects\
                                           .filter(dip_cod=dip_cod)\
