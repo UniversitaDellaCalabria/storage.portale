@@ -2423,7 +2423,7 @@ class ServiceDottorato:
     def getRefStructures(): # pragma:no cover
         query = DidatticaDottoratoAttivitaFormativa.objects\
                                                    .filter(struttura_proponente_origine__isnull=False)\
-                                                   .orderby('struttura_proponente_origine')\
+                                                   .orde_rby('struttura_proponente_origine')\
                                                    .values('struttura_proponente_origine')\
                                                    .distinct()
         return list(query)
