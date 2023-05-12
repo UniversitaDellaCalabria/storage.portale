@@ -25,11 +25,11 @@ def can_manage_teacher(user, teacher_code):
     my_profile = Personale.objects.filter(cod_fis=user.taxpayer_id).first()
     my_teacher_profile = ServiceDocente.getDocenteInfo(my_profile.matricola)
 
-    if my_profile and teacher and my_teacher_profile[0]['matricola'] == teacher:
+    if my_profile and teacher and my_teacher_profile[0]['matricola'] == teacher.matricola:
         return True
 
     # se l'utente ha l'abilitazione nel dipartimento di afferenza del docente
-    my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+    my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=user,
                                                                       office__name=OFFICE_TEACHERS,
                                                                       office__is_active=True,
                                                                       office__organizational_structure__is_active=True)
