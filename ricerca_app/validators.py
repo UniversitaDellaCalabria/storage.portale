@@ -32,12 +32,12 @@ def validate_file_size(value): # pragma: no cover
     try:
         content_size = int(value.size)
     except ValueError: # pragma: no cover
-        _msg = "Can't detect file size: {}"
-        raise ValidationError(_msg.format(value.__dict__))
+        _msg = _("Can't detect file size")
+        raise ValidationError(f'{_msg}: {value.__dict__}')
     if content_size > FILE_MAX_SIZE:
         _max_size_mb = (FILE_MAX_SIZE / 1024) / 1024
-        _msg = f'File size exceed the maximum value ({_max_size_mb} MB)'
-        raise ValidationError(_msg)
+        _msg = _("File size exceed the maximum value")
+        raise ValidationError(f'{_msg} {_max_size_mb} MB')
 
 
 def _validate_generic_file_extension(value, allowed_filetypes): # pragma: no cover
@@ -46,22 +46,15 @@ def _validate_generic_file_extension(value, allowed_filetypes): # pragma: no cov
     mimetype = magic.Magic(mime=True).from_buffer(value.file.read())
     value.file.seek(0)
     if mimetype not in allowed_filetypes:
-        raise ValidationError(f'Unsupported file extension {mimetype}')
-
+        _msg = _('Unsupported file extension')
+        _msg2 = _('Allowed extensions')
+        raise ValidationError(f'{_msg}: {mimetype}. {_msg2} {allowed_filetypes}')
 
 
 def orcid_validator(value): # pragma: no cover
-    if len(value) != 19:
-        raise ValidationError('Unsupported ORCID. Remember, ORCID is an https URI with a 16-digit number that is compatible as 0000-0001-2345-6789')
-    cont = 0
-    for v in value:
-        if not v.isdigit() and v!='X' and v!='-':
-            raise ValidationError('Unsupported ORCID. Remember, ORCID is an https URI with a 16-digit number that is compatible as 0000-0001-2345-6789')
-        if v == '-':
-            cont+=1
-    if cont != 3:
-        raise ValidationError('Unsupported ORCID. Remember, ORCID is an https URI with a 16-digit number that is compatible as 0000-0001-2345-6789')
-
+    regex = "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$"
+    if not re.match(regex, value):
+        raise ValidationError(_('Invalid ORCID. Remember, ORCID is an https URI with a 16-digit number that is compatible as 0000-0001-2345-6789'))
 
 
 def validate_file_extension(value): # pragma: no cover

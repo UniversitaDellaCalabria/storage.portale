@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-12 12:36+0200\n"
-"PO-Revision-Date: 2023-05-12 12:37+0200\n"
+"POT-Creation-Date: 2023-05-12 13:07+0200\n"
+"PO-Revision-Date: 2023-05-12 13:08+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -83,7 +83,7 @@ msgstr ""
 msgid "Permission denied"
 msgstr "Permesso negato"
 
-#: crud/cds/forms.py:18 crud/phd/forms.py:24 crud/research_groups/forms.py:35
+#: crud/cds/forms.py:18 crud/research_groups/forms.py:35
 #: crud/research_lines/forms.py:76 crud/utils/forms.py:6
 msgid "Person"
 msgstr "Persona"
@@ -450,8 +450,8 @@ msgstr "Nuovo link docente per"
 #: crud/companies/views.py:366 crud/patents/views.py:33
 #: crud/patents/views.py:69 crud/patents/views.py:121 crud/patents/views.py:182
 #: crud/patents/views.py:256 crud/phd/views.py:34 crud/phd/views.py:116
-#: crud/phd/views.py:188 crud/phd/views.py:268 crud/phd/views.py:338
-#: crud/phd/views.py:451 crud/phd/views.py:523 crud/projects/views.py:36
+#: crud/phd/views.py:189 crud/phd/views.py:269 crud/phd/views.py:339
+#: crud/phd/views.py:452 crud/phd/views.py:524 crud/projects/views.py:36
 #: crud/projects/views.py:89 crud/projects/views.py:155
 #: crud/projects/views.py:242 crud/projects/views.py:317
 #: crud/projects/views.py:405 crud/projects/views.py:479
@@ -752,21 +752,21 @@ msgid "Cds websites"
 msgstr ""
 
 #: crud/cds_websites/views.py:128 crud/cds_websites/views.py:345
-#: crud/phd/views.py:257 crud/phd/views.py:440
+#: crud/phd/views.py:258 crud/phd/views.py:441
 msgid "Teacher data edited successfully"
 msgstr "Docente modificato con successo"
 
 #: crud/cds_websites/views.py:141 crud/cds_websites/views.py:270
 #: crud/cds_websites/views.py:358 crud/cds_websites/views.py:429
 #: crud/cds_websites/views.py:487 crud/phd/templates/phd_list.html:15
-#: crud/phd/views.py:35 crud/phd/views.py:117 crud/phd/views.py:189
-#: crud/phd/views.py:269 crud/phd/views.py:339 crud/phd/views.py:452
-#: crud/phd/views.py:524 crud/utils/templates/dashboard.html:22
+#: crud/phd/views.py:35 crud/phd/views.py:117 crud/phd/views.py:190
+#: crud/phd/views.py:270 crud/phd/views.py:340 crud/phd/views.py:453
+#: crud/phd/views.py:525 crud/utils/templates/dashboard.html:22
 msgid "PhD activities"
 msgstr "Attività dei Dottorati"
 
 #: crud/cds_websites/views.py:143 crud/cds_websites/views.py:360
-#: crud/phd/views.py:271 crud/phd/views.py:454
+#: crud/phd/views.py:272 crud/phd/views.py:455
 msgid "PhD activity teacher data"
 msgstr "Dati docente attività"
 
@@ -787,28 +787,28 @@ msgid "Teacher"
 msgstr "Docente"
 
 #: crud/cds_websites/views.py:261 crud/cds_websites/views.py:478
-#: crud/phd/views.py:330 crud/phd/views.py:515
+#: crud/phd/views.py:331 crud/phd/views.py:516
 #: crud/research_groups/views.py:219 crud/research_lines/views.py:381
 #: crud/research_lines/views.py:429
 msgid "Teacher added successfully"
 msgstr "Docente aggiunto con successo"
 
 #: crud/cds_websites/views.py:272 crud/cds_websites/views.py:489
-#: crud/phd/views.py:341 crud/phd/views.py:526
+#: crud/phd/views.py:342 crud/phd/views.py:527
 #: crud/research_groups/views.py:230 crud/research_lines/views.py:392
 #: crud/research_lines/views.py:440
 msgid "New teacher"
 msgstr "Nuovo docente"
 
 #: crud/cds_websites/views.py:299 crud/cds_websites/views.py:513
-#: crud/phd/views.py:369 crud/phd/views.py:553
+#: crud/phd/views.py:370 crud/phd/views.py:554
 #: crud/research_groups/views.py:314 crud/research_lines/views.py:582
 #: crud/research_lines/views.py:611
 msgid "Operation not permitted. At least one teacher must be present"
 msgstr "Operazione non consentita. Almeno un docente deve essere presente"
 
 #: crud/cds_websites/views.py:309 crud/cds_websites/views.py:523
-#: crud/phd/views.py:379 crud/phd/views.py:563
+#: crud/phd/views.py:380 crud/phd/views.py:564
 #: crud/research_groups/views.py:325 crud/research_lines/views.py:593
 #: crud/research_lines/views.py:622
 msgid "Teacher removed successfully"
@@ -857,8 +857,8 @@ msgstr ""
 msgid "CEO"
 msgstr ""
 
-#: crud/companies/forms.py:72 crud/patents/forms.py:81 crud/phd/forms.py:45
-#: crud/projects/forms.py:54 crud/projects/forms.py:63
+#: crud/companies/forms.py:72 crud/patents/forms.py:81 crud/phd/forms.py:34
+#: crud/phd/forms.py:43 crud/projects/forms.py:54 crud/projects/forms.py:63
 msgid "Name and Surname"
 msgstr "Nome e Cognome"
 
@@ -1114,57 +1114,57 @@ msgstr "Inventore rimosso con successo"
 msgid "Patent removed successfully"
 msgstr "Brevetto rimosso con successo"
 
-#: crud/phd/forms.py:81
+#: crud/phd/forms.py:79
 msgid "Central Structure"
 msgstr "Struttura di riferimento"
 
-#: crud/phd/forms.py:84 crud/phd/templates/blocks/crud_phd_list.html:142
+#: crud/phd/forms.py:82 crud/phd/templates/blocks/crud_phd_list.html:142
 msgid "SSD"
 msgstr ""
 
-#: crud/phd/forms.py:87
+#: crud/phd/forms.py:85
 #: crud/teachers/templates/blocks/crud_teacher_news.html:40
 msgid "Type"
 msgstr "Tipo"
 
-#: crud/phd/forms.py:90
+#: crud/phd/forms.py:88
 msgid "Reference"
 msgstr "Dottorato di riferimento"
 
-#: crud/phd/forms.py:100 crud/research_lines/forms.py:27
+#: crud/phd/forms.py:98 crud/research_lines/forms.py:27
 #: crud/research_lines/forms.py:44
 msgid "Denomination"
 msgstr "Denominazione"
 
-#: crud/phd/forms.py:102
+#: crud/phd/forms.py:100
 msgid "CFU"
 msgstr ""
 
-#: crud/phd/forms.py:103
+#: crud/phd/forms.py:101
 msgid "Contents"
 msgstr "Contenuti"
 
-#: crud/phd/forms.py:106
+#: crud/phd/forms.py:104
 msgid "Verification Mode"
 msgstr "Modalità di verifica"
 
-#: crud/phd/forms.py:107
+#: crud/phd/forms.py:105
 msgid "Expected Start Date"
 msgstr "Data prevista di inizio"
 
-#: crud/phd/forms.py:108
+#: crud/phd/forms.py:106
 msgid "Expected End Date"
 msgstr "Data prevista di fine"
 
-#: crud/phd/forms.py:109
+#: crud/phd/forms.py:107
 msgid "Timetable and Classrooms"
 msgstr "Orario e aule"
 
-#: crud/phd/forms.py:110
+#: crud/phd/forms.py:108
 msgid "Maximum students number"
 msgstr "Numero massimo di studenti"
 
-#: crud/phd/forms.py:111
+#: crud/phd/forms.py:109
 msgid "Minimum students number"
 msgstr "Numero minimo di studenti"
 
@@ -1219,9 +1219,10 @@ msgstr "Modifica dati per"
 msgid "New teacher data for"
 msgstr "Nuovi dati per"
 
-#: crud/phd/views.py:73
+#: crud/phd/views.py:73 crud/phd/views.py:157
 msgid "Reference PhD required if activity type is Departmental"
-msgstr "Dottorato di riferimento obbligatorio se l'attività è di tipo Dipartimentale"
+msgstr ""
+"Dottorato di riferimento obbligatorio se l'attività è di tipo Dipartimentale"
 
 #: crud/phd/views.py:87 crud/phd/views.py:154
 msgid "You are not authorized to post activities for this PhD"
@@ -1231,11 +1232,11 @@ msgstr "Non sei autorizzato ad inserire attività per questo dottorato"
 msgid "PhD activity created successfully"
 msgstr "Attività creata con successo"
 
-#: crud/phd/views.py:175
+#: crud/phd/views.py:176
 msgid "PhD activity edited successfully"
 msgstr "Attività modificata con successo"
 
-#: crud/phd/views.py:581
+#: crud/phd/views.py:582
 msgid "PhD activity removed successfully"
 msgstr "Attività del dottorato rimossa con successo"
 
@@ -1998,7 +1999,31 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
-#: ricerca_app/validators.py:106
+#: ricerca_app/validators.py:35
+msgid "Can't detect file size"
+msgstr "Impossibile determinare l'estensione del file"
+
+#: ricerca_app/validators.py:39
+msgid "File size exceed the maximum value"
+msgstr "La dimensione del file supera il valore ammesso"
+
+#: ricerca_app/validators.py:49
+msgid "Unsupported file extension"
+msgstr "Estensione non supportata"
+
+#: ricerca_app/validators.py:50
+msgid "Allowed extensions"
+msgstr "Estensioni ammesse"
+
+#: ricerca_app/validators.py:57
+msgid ""
+"Invalid ORCID. Remember, ORCID is an https URI with a 16-digit number that "
+"is compatible as 0000-0001-2345-6789"
+msgstr ""
+"Valore non valido. RIcorda, ORCID è un numero di 16 cifre compatibile con "
+"0000-0001-2345-6789"
+
+#: ricerca_app/validators.py:99
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
 
