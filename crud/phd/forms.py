@@ -24,7 +24,6 @@ CMS_STORAGE_ROOT_API = getattr(
     settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 STRUCTURES_FATHER = getattr(
     settings, 'STRUCTURES_FATHER', STRUCTURES_FATHER)
-    settings, 'STRUCTURES_FATHER', STRUCTURES_FATHER)
 
 
 class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
