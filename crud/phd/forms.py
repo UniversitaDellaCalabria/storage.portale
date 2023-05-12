@@ -1,7 +1,5 @@
 import requests
 
-from bootstrap_italia_template.widgets import BootstrapItaliaDateWidget
-
 from ckeditor.widgets import CKEditorWidget
 
 from django import forms
@@ -127,8 +125,6 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
 
         widgets = {'nome_af': forms.Textarea(attrs={'rows': 1}),
                    # 'rif_dottorato': forms.Textarea(attrs={'rows': 1}),
-                   'avvio': BootstrapItaliaDateWidget,
-                   'fine': BootstrapItaliaDateWidget,
                    'contenuti_af': CKEditorWidget(),
                    'prerequisiti': CKEditorWidget(),
                    'modalita_verifica': CKEditorWidget(),
