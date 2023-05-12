@@ -36,8 +36,8 @@ class BrevettoDatiBaseForm(forms.ModelForm):
             'id_diritto_commerciale': _('Commercial right'),
             'id_disponibilita': _('Availability'),
             'area_ks': _('Area KS'),
-            'nome_file_logo': _('Logo'),
-            'url_immagine': _('Logo URL')
+            'nome_file_logo': _('Logo')
+            # 'url_immagine': _('Logo URL')
         }
         fields = ['id_univoco',
                   'titolo',
@@ -54,8 +54,8 @@ class BrevettoDatiBaseForm(forms.ModelForm):
                   'id_diritto_commerciale',
                   'id_disponibilita',
                   'area_ks',
-                  'nome_file_logo',
-                  'url_immagine']
+                  'nome_file_logo',]
+                  # 'url_immagine']
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
                    'proprieta': forms.Textarea(attrs={'rows': 2}),
                    'breve_descrizione': CKEditorWidget(),
