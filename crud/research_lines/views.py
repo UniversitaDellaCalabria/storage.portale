@@ -579,7 +579,7 @@ def base_researchline_teacher_delete(request, code, teacher_rline_id,
 
     # una linea di ricerca deve avere almeno un docente
     if RicercaDocenteLineaBase.objects.filter(ricerca_linea_base=rline).count() == 1:
-        return custom_message(request, _("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Operation not permitted. At least one teacher must be present"))
 
     log_action(user=request.user,
                obj=rline,
@@ -608,7 +608,7 @@ def applied_researchline_teacher_delete(request, code, teacher_rline_id,
 
     # una linea di ricerca deve avere almeno un docente
     if RicercaDocenteLineaApplicata.objects.filter(ricerca_linea_applicata=rline).count() == 1:
-        return custom_message(request, _("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Operation not permitted. At least one teacher must be present"))
 
     log_action(user=request.user,
                obj=rline,

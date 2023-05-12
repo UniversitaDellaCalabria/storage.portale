@@ -311,7 +311,7 @@ def researchgroup_teacher_delete(request, code, teacher_rgroup_id,
 
     # un gruppo di ricerca deve avere almeno un docente
     if RicercaDocenteGruppo.objects.filter(ricerca_gruppo=rgroup).count() == 1:
-        return custom_message(request, _("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Operation not permitted. At least one teacher must be present"))
 
     log_action(user=request.user,
                obj=rgroup,

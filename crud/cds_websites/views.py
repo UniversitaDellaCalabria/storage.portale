@@ -296,7 +296,7 @@ def phd_main_teacher_delete(request, code, teacher_id,
     other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(id_didattica_dottorato_attivita_formativa=code)
 
     if main_teachers.count() == 1 and not other_teachers:
-        return custom_message(request, _("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Operation not permitted. At least one teacher must be present"))
 
     log_action(user=request.user,
                obj=phd,
@@ -510,7 +510,7 @@ def phd_other_teacher_delete(request, code, teacher_id,
     other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(id_didattica_dottorato_attivita_formativa=code)
 
     if other_teachers.count() == 1 and not main_teachers:
-        return custom_message(request, _("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Operation not permitted. At least one teacher must be present"))
 
     log_action(user=request.user,
                obj=phd,

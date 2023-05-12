@@ -70,8 +70,9 @@ def phd_new(request, my_offices=None):
         if form.is_valid() and teacher_form.is_valid():
 
             if form.cleaned_data['tipo_af'] == 'Dipartimentale' and not form.cleaned_data['rif_dottorato']:
+                message = _('Reference PhD required if activity type is Departmental')
                 messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields['tipo_af'].label}</b>: {_('Reference PhD required if activity type is Departmental')}")
+                                     f"<b>{form.fields['tipo_af'].label}</b>: {message}")
             else:
 
                 if teacher_form.cleaned_data.get('choosen_person'):
@@ -153,8 +154,9 @@ def phd(request, code, my_offices=None, phd=None):
                 return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
             if form.cleaned_data['tipo_af'] == 'Dipartimentale' and not form.cleaned_data['rif_dottorato']:
+                message = _('Reference PhD required if activity type is Departmental')
                 messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields['tipo_af'].label}</b>: {_('Reference PhD required if activity type is Departmental')}")
+                                     f"<b>{form.fields['tipo_af'].label}</b>: {message}")
             else:
                 form.save(commit=False)
                 phd.user_mod_id = request.user
@@ -365,7 +367,7 @@ def phd_main_teacher_delete(request, code, teacher_id, my_offices=None, phd=None
         id_didattica_dottorato_attivita_formativa=code)
 
     if main_teachers.count() == 1 and not other_teachers:
-        return custom_message(request, _("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Operation not permitted. At least one teacher must be present"))
 
     log_action(user=request.user,
                obj=phd,
@@ -549,7 +551,7 @@ def phd_other_teacher_delete(request, code, teacher_id,
         id_didattica_dottorato_attivita_formativa=code)
 
     if other_teachers.count() == 1 and not main_teachers:
-        return custom_message(request, _("Permission denied. Only one teacher remains"))
+        return custom_message(request, _("Operation not permitted. At least one teacher must be present"))
 
     log_action(user=request.user,
                obj=phd,
