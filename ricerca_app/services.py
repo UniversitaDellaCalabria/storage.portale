@@ -1898,6 +1898,9 @@ class ServiceDocente:
 
         query = (query1 | query2).distinct()
 
+        if not query:
+            raise Http404
+
         contacts_to_take = [
             'Posta Elettronica',
             'Fax',
