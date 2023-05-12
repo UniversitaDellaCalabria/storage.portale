@@ -13,12 +13,18 @@ from ricerca_app.models import (DidatticaDottoratoAttivitaFormativa,
                                 DidatticaDottoratoAttivitaFormativaAltriDocenti,
                                 DidatticaDottoratoAttivitaFormativaDocente)
 
-from .. utils.settings import CMS_STORAGE_ROOT_API
+from .. utils.settings import (ALLOWED_STRUCTURE_TYPES,
+                               CMS_STORAGE_ROOT_API,
+                               STRUCTURES_FATHER)
 from .. utils.utils import _clean_teacher_dates
 
 
+ALLOWED_STRUCTURE_TYPES = getattr(
+    settings, 'ALLOWED_STRUCTURE_TYPES', ALLOWED_STRUCTURE_TYPES)
 CMS_STORAGE_ROOT_API = getattr(
     settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+STRUCTURES_FATHER = getattr(
+    settings, 'STRUCTURES_FATHER', STRUCTURES_FATHER)
 
 
 class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
@@ -51,15 +57,27 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:phd-ssd-list")}?page_size=1000'
-        api = requests.get(url)
-        ssd = api.json()['results']
+        allowed_structures_types = ''
+        if ALLOWED_STRUCTURE_TYPES:
+            allowed_structures_types = ','.join(ALLOWED_STRUCTURE_TYPES)
+
+        ssd_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:phd-ssd-list")}?page_size=1000'
+        ssd_api = requests.get(ssd_url)
+        ssd = ssd_api.json()['results']
         lista_ssd = [('', '-'),]
+
+        structures_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:structureslist")}?page_size=1000&father={STRUCTURES_FATHER}&type={allowed_structures_types}'
+        structures_api = requests.get(structures_url)
+        structures = structures_api.json()['results']
+        lista_structures = [('', '-'),]
+
         lista_tipo_af = [
                          ('', '-'),
                          ('Dipartimentale', 'Dipartimentale'),
                          ('Attività di Ateneo', 'Attività di Ateneo')]
+
         lista_rif_dott = [('', '-'),]
+
         query = DidatticaDottoratoAttivitaFormativa.objects\
                                                    .filter(rif_dottorato__isnull=False)\
                                                    .values('rif_dottorato')\
@@ -69,13 +87,22 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
             lista_rif_dott.append((q['rif_dottorato'], q['rif_dottorato']))
         for s in ssd:
             lista_ssd.append((s['SSD'], s['SSD']))
+        for s in structures:
+            lista_structures.append((s['StructureCod'], s['StructureName']))
 
+        self.fields['id_struttura_proponente'] = forms.ChoiceField(
+            label=_('Central Structure'),
+            choices=lista_structures)
         self.fields['ssd'] = forms.ChoiceField(
-            label=_('SSD'), choices=lista_ssd)
+            label=_('SSD'),
+            choices=lista_ssd)
         self.fields['tipo_af'] = forms.ChoiceField(
-            label=_('Type'), choices=lista_tipo_af)
+            label=_('Type'),
+            choices=lista_tipo_af)
         self.fields['rif_dottorato'] = forms.ChoiceField(
-            label=_('Reference'), choices=lista_rif_dott)
+            label=_('Reference'),
+            choices=lista_rif_dott,
+            required=False)
 
     class Meta:
         model = DidatticaDottoratoAttivitaFormativa
@@ -88,7 +115,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
             'cfu': _('CFU'),
             'contenuti_af': _('Contents'),
             # 'rif_dottorato': _('Reference'),
-            'id_struttura_proponente': _('Central Structure'),
+            # 'id_struttura_proponente': _('Central Structure'),
             'modalita_verifica': _('Verification Mode'),
             'avvio': _('Expected Start Date'),
             'fine': _('Expected End Date'),

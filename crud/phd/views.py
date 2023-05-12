@@ -68,35 +68,41 @@ def phd_new(request, my_offices=None):
         form = DidatticaDottoratoAttivitaFormativaForm(data=request.POST)
 
         if form.is_valid() and teacher_form.is_valid():
-            if teacher_form.cleaned_data.get('choosen_person'):
-                cognome_nome_origine = f'{teacher.cognome} {teacher.nome}'
+
+            if form.cleaned_data['tipo_af'] == 'Dipartimentale' and not form.cleaned_data['rif_dottorato']:
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields['tipo_af'].label}</b>: {_('Reference PhD required if activity type is Departmental')}")
             else:
-                cognome_nome_origine = teacher_form.cleaned_data['cognome_nome_origine']
 
-            # controllo che l'utente abbia il permesso
-            # di agire nel dottorato di riferimento
-            allow_user = is_allowed(request.user, my_offices, form.cleaned_data['rif_dottorato'])
-            if not allow_user:
-                return custom_message(request, _("You are not authorized to post activities for this PhD"))
+                if teacher_form.cleaned_data.get('choosen_person'):
+                    cognome_nome_origine = f'{teacher.cognome} {teacher.nome}'
+                else:
+                    cognome_nome_origine = teacher_form.cleaned_data['cognome_nome_origine']
 
-            phd = form.save(commit=False)
-            phd.user_mod_id = request.user
-            phd.dt_mod = datetime.datetime.now()
-            phd.save()
+                # controllo che l'utente abbia il permesso
+                # di agire nel dottorato di riferimento
+                allow_user = is_allowed(request.user, my_offices, form.cleaned_data['rif_dottorato'])
+                if not allow_user:
+                    return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
-            new_teacher = DidatticaDottoratoAttivitaFormativaDocente.objects.create(id_didattica_dottorato_attivita_formativa=phd,
-                                                                                    cognome_nome_origine=cognome_nome_origine,
-                                                                                    matricola=teacher)
+                phd = form.save(commit=False)
+                phd.user_mod_id = request.user
+                phd.dt_mod = datetime.datetime.now()
+                phd.save()
 
-            log_action(user=request.user,
-                       obj=phd,
-                       flag=ADDITION,
-                       msg=[{'added': {}}])
+                new_teacher = DidatticaDottoratoAttivitaFormativaDocente.objects.create(id_didattica_dottorato_attivita_formativa=phd,
+                                                                                        cognome_nome_origine=cognome_nome_origine,
+                                                                                        matricola=teacher)
 
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("PhD activity created successfully"))
-            return redirect("crud_phd:crud_phd_list")
+                log_action(user=request.user,
+                           obj=phd,
+                           flag=ADDITION,
+                           msg=[{'added': {}}])
+
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     _("PhD activity created successfully"))
+                return redirect("crud_phd:crud_phd_list")
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
