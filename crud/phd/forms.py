@@ -27,14 +27,6 @@ STRUCTURES_FATHER = getattr(
 
 
 class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
-    choosen_person = forms.CharField(label=_('Person'),
-                                     widget=forms.HiddenInput(),
-                                     required=False)
-
-    def clean(self):
-        cleaned_data = super().clean()
-        _clean_teacher_dates(self, cleaned_data)
-
     class Meta:
         model = DidatticaDottoratoAttivitaFormativaAltriDocenti
         fields = ['cognome_nome_origine']
