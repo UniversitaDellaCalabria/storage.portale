@@ -573,6 +573,7 @@ def phd_delete(request, code, my_offices=None, phd=None,
     # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:
     # raise Exception(_('Permission denied'))
+    phd = get_object_or_404(DidatticaDottoratoAttivitaFormativa, pk=code)
     phd.delete()
     messages.add_message(request,
                          messages.SUCCESS,
