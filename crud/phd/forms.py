@@ -12,12 +12,19 @@ from ricerca_app.models import (DidatticaDottoratoAttivitaFormativa,
                                 DidatticaDottoratoAttivitaFormativaDocente,
                                 UnitaOrganizzativa)
 
-from .. utils.settings import CMS_STORAGE_ROOT_API
+from .. utils.settings import (ALLOWED_STRUCTURE_TYPES,
+                               CMS_STORAGE_ROOT_API,
+                               STRUCTURES_FATHER)
 from .. utils.utils import _clean_teacher_dates
 
 
+ALLOWED_STRUCTURE_TYPES = getattr(
+    settings, 'ALLOWED_STRUCTURE_TYPES', ALLOWED_STRUCTURE_TYPES)
 CMS_STORAGE_ROOT_API = getattr(
     settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+STRUCTURES_FATHER = getattr(
+    settings, 'STRUCTURES_FATHER', STRUCTURES_FATHER)
+    settings, 'STRUCTURES_FATHER', STRUCTURES_FATHER)
 
 
 class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
