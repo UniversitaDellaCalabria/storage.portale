@@ -33,10 +33,9 @@ def can_manage_teachers(func_to_decorate):
 
         # ok se io sono un docente
         try:
-            my_profile = get_object_or_404(
-                Personale, cod_fis=request.user.taxpayer_id)
-            my_teacher_profile = ServiceDocente.getDocenteInfo(
-                my_profile.matricola)
+            my_profile = get_object_or_404(Personale,
+                                           cod_fis=request.user.taxpayer_id)
+            my_teacher_profile = ServiceDocente.getDocenteInfo(my_profile.matricola)
             original_kwargs['my_teacher_profile'] = my_teacher_profile
             return func_to_decorate(*original_args, **original_kwargs)
         except:
@@ -63,7 +62,7 @@ def can_edit_teacher(func_to_decorate):
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
 
-        if original_kwargs['my_teacher_profile'] and original_kwargs['my_teacher_profile'][0]['matricola'] == teacher.matricola:
+        if original_kwargs['my_teacher_profile'][0]['matricola'] == teacher.matricola:
             return func_to_decorate(*original_args, **original_kwargs)
 
         departments = []
