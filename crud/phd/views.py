@@ -152,25 +152,29 @@ def phd(request, code, my_offices=None, phd=None):
             if not allow_user:
                 return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
-            form.save(commit=False)
-            phd.user_mod_id = request.user
-            phd.dt_mod = datetime.datetime.now()
-            phd.save()
+            if form.cleaned_data['tipo_af'] == 'Dipartimentale' and not form.cleaned_data['rif_dottorato']:
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields['tipo_af'].label}</b>: {_('Reference PhD required if activity type is Departmental')}")
+            else:
+                form.save(commit=False)
+                phd.user_mod_id = request.user
+                phd.dt_mod = datetime.datetime.now()
+                phd.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
-                                                                       form.changed_data)
-            if changed_field_labels:
-                log_action(user=request.user,
-                           obj=phd,
-                           flag=CHANGE,
-                           msg=[{'changed': {"fields": changed_field_labels}}])
+                changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                           form.changed_data)
+                if changed_field_labels:
+                    log_action(user=request.user,
+                               obj=phd,
+                               flag=CHANGE,
+                               msg=[{'changed': {"fields": changed_field_labels}}])
 
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("PhD activity edited successfully"))
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     _("PhD activity edited successfully"))
 
-            return redirect('crud_phd:crud_phd_edit',
-                            code=code)
+                return redirect('crud_phd:crud_phd_edit',
+                                code=code)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -569,7 +573,6 @@ def phd_delete(request, code, my_offices=None, phd=None,
     # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:
     # raise Exception(_('Permission denied'))
-
     phd.delete()
     messages.add_message(request,
                          messages.SUCCESS,

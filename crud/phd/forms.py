@@ -9,20 +9,15 @@ from django.conf import settings
 
 from ricerca_app.models import (DidatticaDottoratoAttivitaFormativa,
                                 DidatticaDottoratoAttivitaFormativaAltriDocenti,
-                                DidatticaDottoratoAttivitaFormativaDocente)
+                                DidatticaDottoratoAttivitaFormativaDocente,
+                                UnitaOrganizzativa)
 
-from .. utils.settings import (ALLOWED_STRUCTURE_TYPES,
-                               CMS_STORAGE_ROOT_API,
-                               STRUCTURES_FATHER)
+from .. utils.settings import CMS_STORAGE_ROOT_API
 from .. utils.utils import _clean_teacher_dates
 
 
-ALLOWED_STRUCTURE_TYPES = getattr(
-    settings, 'ALLOWED_STRUCTURE_TYPES', ALLOWED_STRUCTURE_TYPES)
 CMS_STORAGE_ROOT_API = getattr(
     settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
-STRUCTURES_FATHER = getattr(
-    settings, 'STRUCTURES_FATHER', STRUCTURES_FATHER)
 
 
 class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
@@ -55,19 +50,14 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        allowed_structures_types = ''
-        if ALLOWED_STRUCTURE_TYPES:
-            allowed_structures_types = ','.join(ALLOWED_STRUCTURE_TYPES)
 
         ssd_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:phd-ssd-list")}?page_size=1000'
         ssd_api = requests.get(ssd_url)
         ssd = ssd_api.json()['results']
         lista_ssd = [('Non classificabile', 'Non classificabile')]
 
-        structures_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:structureslist")}?page_size=1000&father={STRUCTURES_FATHER}&type={allowed_structures_types}'
-        structures_api = requests.get(structures_url)
-        structures = structures_api.json()['results']
-        lista_structures = [('', '-'),]
+        structures = UnitaOrganizzativa.objects.filter(uo_padre=STRUCTURES_FATHER,
+                                                       cd_tipo_nodo__in=ALLOWED_STRUCTURE_TYPES)
 
         lista_tipo_af = [
                          ('', '-'),
@@ -86,12 +76,10 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         for s in ssd:
             if s['SSD'] != 'Non classificabile':
                 lista_ssd.append((s['SSD'], s['SSD']))
-        for s in structures:
-            lista_structures.append((s['StructureCod'], s['StructureName']))
 
-        self.fields['id_struttura_proponente'] = forms.ChoiceField(
+        self.fields['id_struttura_proponente'] = forms.ModelChoiceField(
             label=_('Central Structure'),
-            choices=lista_structures)
+            queryset=structures)
         self.fields['ssd'] = forms.ChoiceField(
             label=_('SSD'),
             choices=lista_ssd)
