@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-12 13:07+0200\n"
-"PO-Revision-Date: 2023-05-12 13:08+0200\n"
+"PO-Revision-Date: 2023-05-12 16:12+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -778,7 +778,7 @@ msgstr "Docente modificato con successo"
 
 #: crud/cds_websites/views.py:212
 msgid "PhD activity"
-msgstr "Attività del Dottorati"
+msgstr "Attività del Dottorato"
 
 #: crud/cds_websites/views.py:214 crud/cds_websites/views.py:431
 #: crud/phd/templates/blocks/crud_phd_list.html:50
@@ -1203,7 +1203,7 @@ msgstr "Nuovo docente principale per"
 
 #: crud/phd/templates/phd_new.html:9
 msgid "New PhD activity"
-msgstr ""
+msgstr "Nuova attività di Dottorato"
 
 #: crud/phd/templates/phd_new.html:18
 #: crud/research_groups/templates/researchgroup_new.html:16
@@ -1845,7 +1845,7 @@ msgstr "Torna alla Dashboard"
 
 #: crud/utils/templates/dashboard.html:25
 msgid "Manage PhD activities"
-msgstr "Gestisci gli insegnamenti dei dottorati"
+msgstr "Gestisci le attività dei dottorati"
 
 #: crud/utils/templates/dashboard.html:28
 #: crud/utils/templates/dashboard.html:54
