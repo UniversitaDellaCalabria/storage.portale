@@ -19,8 +19,8 @@ def can_manage_teachers(func_to_decorate):
         request = original_args[0]
 
         # ok se superuser
-        # if request.user.is_superuser:
-            # return func_to_decorate(*original_args, **original_kwargs)
+        if request.user.is_superuser:
+            return func_to_decorate(*original_args, **original_kwargs)
 
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
                                                                           office__name=OFFICE_TEACHERS,
@@ -63,7 +63,7 @@ def can_edit_teacher(func_to_decorate):
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
 
-        if original_kwargs['my_teacher_profile'] and original_kwargs['my_teacher_profile']['matricola'] == teacher.matricola:
+        if original_kwargs['my_teacher_profile'] and original_kwargs['my_teacher_profile'][0]['matricola'] == teacher.matricola:
             return func_to_decorate(*original_args, **original_kwargs)
 
         departments = []
