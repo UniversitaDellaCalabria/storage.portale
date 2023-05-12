@@ -2394,48 +2394,39 @@ class ServiceDottorato:
 
     @staticmethod
     def getRefPhd():
-        query = DidatticaDottoratoAttivitaFormativa.objects.values(
-            'rif_dottorato'
-        ).distinct()
-        query = list(query)
-        for q in query:
-            if q['rif_dottorato'] == None:
-                query.remove(q)
-        return query
+        query = DidatticaDottoratoAttivitaFormativa.objects\
+                                                   .filter(rif_dottorato__isnull=False)\
+                                                   .order_by('rif_dottorato')\
+                                                   .values('rif_dottorato')\
+                                                   .distinct()
+        return list(query)
 
     @staticmethod
     def getPhdSsdList(): # pragma: no cover
         query = DidatticaDottoratoAttivitaFormativa.objects\
+                                                   .filter(ssd__isnull=False)\
                                                    .order_by('ssd')\
                                                    .values('ssd')\
                                                    .distinct()
-        query = list(query)
-        for q in query:
-            if q['ssd'] == None:
-                query.remove(q)
-        return query
+        return list(query)
 
     @staticmethod
     def getPhdActivityTypeList(): # pragma: no cover
-        query = DidatticaDottoratoAttivitaFormativa.objects.values(
-            'tipo_af'
-        ).distinct()
-        query = list(query)
-        for q in query:
-            if q['tipo_af'] == None:
-                query.remove(q)
-        return query
+        query = DidatticaDottoratoAttivitaFormativa.objects\
+                                                   .filter(tipo_af__isnull=False)\
+                                                   .order_by('tipo_af')\
+                                                   .values('tipo_af')\
+                                                   .distinct()
+        return list(query)
 
     @staticmethod
     def getRefStructures(): # pragma:no cover
-        query = DidatticaDottoratoAttivitaFormativa.objects.values(
-            'struttura_proponente_origine'
-        ).distinct()
-        query = list(query)
-        for q in query:
-            if q['struttura_proponente_origine'] == None:
-                query.remove(q)
-        return query
+        query = DidatticaDottoratoAttivitaFormativa.objects\
+                                                   .filter(struttura_proponente_origine__isnull=False)\
+                                                   .orderby('struttura_proponente_origine')\
+                                                   .values('struttura_proponente_origine')\
+                                                   .distinct()
+        return list(query)
 
 
 class ServiceDipartimento:
