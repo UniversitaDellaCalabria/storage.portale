@@ -1,4 +1,4 @@
-
+from django.utils.translation import gettext_lazy as _
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
