@@ -69,42 +69,36 @@ def phd_new(request, my_offices=None):
 
         if form.is_valid() and teacher_form.is_valid():
 
-            if form.cleaned_data['tipo_af'] == 'Dipartimentale' and not form.cleaned_data['rif_dottorato']:
-                message = _('Reference PhD required if activity type is Departmental')
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields['tipo_af'].label}</b>: {message}")
+            if teacher_form.cleaned_data.get('choosen_person'):
+                cognome_nome_origine = f'{teacher.cognome} {teacher.nome}'
             else:
+                cognome_nome_origine = teacher_form.cleaned_data['cognome_nome_origine']
 
-                if teacher_form.cleaned_data.get('choosen_person'):
-                    cognome_nome_origine = f'{teacher.cognome} {teacher.nome}'
-                else:
-                    cognome_nome_origine = teacher_form.cleaned_data['cognome_nome_origine']
+            # controllo che l'utente abbia il permesso
+            # di agire nel dottorato di riferimento
+            allow_user = is_allowed(request.user, my_offices, form.cleaned_data['rif_dottorato'])
+            if not allow_user:
+                return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
-                # controllo che l'utente abbia il permesso
-                # di agire nel dottorato di riferimento
-                allow_user = is_allowed(request.user, my_offices, form.cleaned_data['rif_dottorato'])
-                if not allow_user:
-                    return custom_message(request, _("You are not authorized to post activities for this PhD"))
+            phd = form.save(commit=False)
+            phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
+            phd.user_mod_id = request.user
+            phd.dt_mod = datetime.datetime.now()
+            phd.save()
 
-                phd = form.save(commit=False)
-                phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
-                phd.user_mod_id = request.user
-                phd.dt_mod = datetime.datetime.now()
-                phd.save()
+            new_teacher = DidatticaDottoratoAttivitaFormativaDocente.objects.create(id_didattica_dottorato_attivita_formativa=phd,
+                                                                                    cognome_nome_origine=cognome_nome_origine,
+                                                                                    matricola=teacher)
 
-                new_teacher = DidatticaDottoratoAttivitaFormativaDocente.objects.create(id_didattica_dottorato_attivita_formativa=phd,
-                                                                                        cognome_nome_origine=cognome_nome_origine,
-                                                                                        matricola=teacher)
+            log_action(user=request.user,
+                       obj=phd,
+                       flag=ADDITION,
+                       msg=[{'added': {}}])
 
-                log_action(user=request.user,
-                           obj=phd,
-                           flag=ADDITION,
-                           msg=[{'added': {}}])
-
-                messages.add_message(request,
-                                     messages.SUCCESS,
-                                     _("PhD activity created successfully"))
-                return redirect("crud_phd:crud_phd_list")
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("PhD activity created successfully"))
+            return redirect("crud_phd:crud_phd_list")
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -154,31 +148,26 @@ def phd(request, code, my_offices=None, phd=None):
             if not allow_user:
                 return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
-            if form.cleaned_data['tipo_af'] == 'Dipartimentale' and not form.cleaned_data['rif_dottorato']:
-                message = _('Reference PhD required if activity type is Departmental')
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields['tipo_af'].label}</b>: {message}")
-            else:
-                new_phd = form.save(commit=False)
-                new_phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
-                new_phd.user_mod_id = request.user
-                new_phd.dt_mod = datetime.datetime.now()
-                new_phd.save()
+            new_phd = form.save(commit=False)
+            new_phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
+            new_phd.user_mod_id = request.user
+            new_phd.dt_mod = datetime.datetime.now()
+            new_phd.save()
 
-                changed_field_labels = _get_changed_field_labels_from_form(form,
-                                                                           form.changed_data)
-                if changed_field_labels:
-                    log_action(user=request.user,
-                               obj=new_phd,
-                               flag=CHANGE,
-                               msg=[{'changed': {"fields": changed_field_labels}}])
+            changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                       form.changed_data)
+            if changed_field_labels:
+                log_action(user=request.user,
+                           obj=new_phd,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
 
-                messages.add_message(request,
-                                     messages.SUCCESS,
-                                     _("PhD activity edited successfully"))
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("PhD activity edited successfully"))
 
-                return redirect('crud_phd:crud_phd_edit',
-                                code=code)
+            return redirect('crud_phd:crud_phd_edit',
+                            code=code)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():

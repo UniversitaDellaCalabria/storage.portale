@@ -89,6 +89,15 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
             choices=lista_rif_dott,
             required=False)
 
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo_af = cleaned_data.get('tipo_af')
+        rif_dottorato = cleaned_data.get('rif_dottorato', False)
+
+        if tipo_af == 'Dipartimentale' and not rif_dottorato:
+            message = _('Reference PhD required if activity type is Departmental')
+            self.add_error('tipo_af', msg)
+
     class Meta:
         model = DidatticaDottoratoAttivitaFormativa
         fields = '__all__'
