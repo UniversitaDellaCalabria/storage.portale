@@ -6,6 +6,8 @@
 
 {% block content %}
 
+{% settings_value "ALLOWED_STRUCTURE_TYPES" as allowed_structure_types %}
+
 {% block storage_block_top %}
 {% include "blocks/includes/vue_check.html" %}
 {% endblock storage_block_top %}
@@ -42,7 +44,7 @@
                                                      <option v-for="item in types_filter"
                                                              :value="item.StructureTypeCOD"
                                                              :selected="item.StructureTypeCOD == selected_types"
-                                                             v-if="allowed_types.length==0 || allowed_types.includes(item.StructureTypeCOD)">
+                                                             v-if="allowed_structure_types.length==0 || allowed_structure_types.includes(item.StructureTypeCOD)">
                                                          [[ item.StructureTypeName ]]
                                                      </option>
                                                  </select>
@@ -70,7 +72,7 @@
         <div class="table-responsive" v-else>
             <table class="table table-sm table-hover table-striped">
                 <tbody>
-                    <tr v-for="item in items.results">
+                    <tr v-for="item in items.results" v-if="allowed_structure_types.length==0 || allowed_structure_types.includes(item.StructureTypeCOD)">
                         <td>
                             <a href="javascript:void(0)" @click="setStructure([item.StructureCod, item.StructureName])">
                                 [[ item.StructureName ]]
@@ -125,7 +127,9 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 {% block extra_data %}
 
 {% get_current_language as LANGUAGE_CODE %}
+{% settings_value "ALLOWED_STRUCTURE_TYPES" as allowed_structure_types %}
 
+allowed_structure_types: {{ allowed_structure_types|safe }},
 search_dict: {},
 selected_types: this.getItemFromSession("{{ id }}", 'type'),
 
@@ -133,9 +137,7 @@ is_loading_types: true,
 
 loader_source_types: '{% url 'ricerca:structuretypes' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 
-
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
-allowed_types: [],
 types_filter: [],
 
 {% endblock extra_data %}
