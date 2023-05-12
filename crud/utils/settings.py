@@ -22,4 +22,5 @@ ALLOWED_CDS_JOINT_DEGREES = [
     {'COD': 'D', 'name': _("Double title")}
 ]
 CMS_STORAGE_ROOT_API = 'https://pp.storage.unical.it'
+STRUCTURES_FATHER = ''
 ALLOWED_STRUCTURE_TYPES = []

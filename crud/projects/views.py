@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
@@ -14,12 +15,15 @@ from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
 from .. utils.forms import *
+from .. utils.settings import ALLOWED_STRUCTURE_TYPES
 from .. utils.utils import log_action
 
 from . decorators import *
 from . forms import *
 
 
+ALLOWED_STRUCTURE_TYPES = getattr(settings, "ALLOWED_STRUCTURE_TYPES", ALLOWED_STRUCTURE_TYPES)
+STRUCTURES_FATHER = getattr(settings, "STRUCTURES_FATHER", STRUCTURES_FATHER)
 logger = logging.getLogger(__name__)
 
 
@@ -152,12 +156,16 @@ def project_new(request):
                    reverse('crud_projects:crud_projects'): _('Projects'),
                    '#': _('New')}
 
+    allowed_structures_types = ''
+    if ALLOWED_STRUCTURE_TYPES:
+        allowed_structures_types = ','.join(ALLOWED_STRUCTURE_TYPES)
+
     return render(request,
                   'project_new.html',
                   {'breadcrumbs': breadcrumbs,
                    'choosen_structure': f'{structure.denominazione}' if structure else '',
                    'form': form,
-                   'structures_api': reverse('ricerca:structureslist'),
+                   'structures_api': f'{reverse("ricerca:structureslist")}?father={STRUCTURES_FATHER}&type={allowed_structures_types}',
                    'structure_form': structure_form,
                    })
 
@@ -552,10 +560,14 @@ def project_structure_data_edit(request, code, data_id, project=None):
                    reverse('crud_projects:crud_project_edit', kwargs={'code': code}): project.titolo,
                    '#': _('Structure')}
 
+    allowed_structures_types = ''
+    if ALLOWED_STRUCTURE_TYPES:
+        allowed_structures_types = ','.join(ALLOWED_STRUCTURE_TYPES)
+
     return render(request,
                   'project_structure.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'project': project,
                    'choosen_structure': structure.denominazione,
-                   'url': reverse('ricerca:structureslist')})
+                   'url': f'{reverse("ricerca:structureslist")}?father={STRUCTURES_FATHER}&type={allowed_structures_types}'})
