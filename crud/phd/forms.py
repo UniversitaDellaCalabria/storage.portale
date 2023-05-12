@@ -64,7 +64,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         ssd_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:phd-ssd-list")}?page_size=1000'
         ssd_api = requests.get(ssd_url)
         ssd = ssd_api.json()['results']
-        lista_ssd = [('', _('Not classifiable'))]
+        lista_ssd = [('Non classificabile', 'Non classificabile')]
 
         structures_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:structureslist")}?page_size=1000&father={STRUCTURES_FATHER}&type={allowed_structures_types}'
         structures_api = requests.get(structures_url)
