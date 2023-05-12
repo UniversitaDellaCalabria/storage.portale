@@ -1,6 +1,7 @@
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from ricerca_app.models import Personale
+from ricerca_app.services import ServiceDocente
 
 from .. utils.settings import *
 
