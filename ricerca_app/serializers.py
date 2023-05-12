@@ -978,8 +978,8 @@ class TeacherMaterialsSerializer(CreateUpdateAbstract):
 
         return {
                 'ID': query['id'],
-                'Title': query['titolo'] if req_lang == "it" or query['titolo'] is None else query['titolo_en'],
-                'Text': query['testo'] if req_lang == "it" or query['testo'] is None else query['testo_en'],
+                'Title': query['titolo'] if req_lang == "it" or query['titolo_en'] is None else query['titolo_en'],
+                'Text': query['testo'] if req_lang == "it" or query['testo_en'] is None else query['testo_en'],
                 'TextUrl': query['url_testo'] if req_lang == "it" or query['url_testo_en'] is None else query['url_testo_en'],
                 'Order': query['ordine'],
                 'Active': query['attivo'],
