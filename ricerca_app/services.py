@@ -2405,9 +2405,10 @@ class ServiceDottorato:
 
     @staticmethod
     def getPhdSsdList(): # pragma: no cover
-        query = DidatticaDottoratoAttivitaFormativa.objects.values(
-            'ssd'
-        ).distinct()
+        query = DidatticaDottoratoAttivitaFormativa.objects\
+                                                   .order_by('ssd')\
+                                                   .values('ssd')\
+                                                   .distinct()
         query = list(query)
         for q in query:
             if q['ssd'] == None:
