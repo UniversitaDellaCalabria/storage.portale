@@ -56,7 +56,9 @@ class BrevettoDatiBaseForm(forms.ModelForm):
                   'area_ks',
                   'nome_file_logo',
                   'url_immagine']
-        widgets = {'breve_descrizione': CKEditorWidget(),
+        widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
+                   'proprieta': forms.Textarea(attrs={'rows': 2}),
+                   'breve_descrizione': CKEditorWidget(),
                    'applicazioni': CKEditorWidget(),
                    'vantaggi': CKEditorWidget(),
                    'data_priorita': BootstrapItaliaDateWidget, }
