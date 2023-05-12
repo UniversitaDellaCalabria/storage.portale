@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
