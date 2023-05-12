@@ -87,6 +87,7 @@ def phd_new(request, my_offices=None):
                     return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
                 phd = form.save(commit=False)
+                phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
                 phd.user_mod_id = request.user
                 phd.dt_mod = datetime.datetime.now()
                 phd.save()
@@ -158,16 +159,17 @@ def phd(request, code, my_offices=None, phd=None):
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields['tipo_af'].label}</b>: {message}")
             else:
-                form.save(commit=False)
-                phd.user_mod_id = request.user
-                phd.dt_mod = datetime.datetime.now()
-                phd.save()
+                new_phd = form.save(commit=False)
+                new_phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
+                new_phd.user_mod_id = request.user
+                new_phd.dt_mod = datetime.datetime.now()
+                new_phd.save()
 
                 changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                            form.changed_data)
                 if changed_field_labels:
                     log_action(user=request.user,
-                               obj=phd,
+                               obj=new_phd,
                                flag=CHANGE,
                                msg=[{'changed': {"fields": changed_field_labels}}])
 
