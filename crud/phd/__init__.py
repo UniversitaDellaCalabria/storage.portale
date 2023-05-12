@@ -1,1 +1,1 @@
-default_app_config = 'crud.apps.CRUDPhdConfig'
+default_app_config = 'crud.phd.apps.CRUDPhdConfig'

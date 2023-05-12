@@ -1,1 +1,1 @@
-default_app_config = 'crud.apps.CRUDPatentsConfig'
+default_app_config = 'crud.patents.apps.CRUDPatentsConfig'

@@ -1,1 +1,1 @@
-default_app_config = 'crud.apps.CRUDTeachersConfig'
+default_app_config = 'crud.teachers.apps.CRUDTeachersConfig'

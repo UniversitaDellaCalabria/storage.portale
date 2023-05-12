@@ -1,1 +1,1 @@
-default_app_config = 'crud.apps.CRUDUtilsConfig'
+default_app_config = 'crud.utils.apps.CRUDUtilsConfig'

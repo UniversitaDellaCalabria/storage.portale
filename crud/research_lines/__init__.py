@@ -1,1 +1,1 @@
-default_app_config = 'crud.apps.CRUDResearchLinesConfig'
+default_app_config = 'crud.research_lines.apps.CRUDResearchLinesConfig'

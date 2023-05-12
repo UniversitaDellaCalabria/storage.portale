@@ -1,1 +1,1 @@
-default_app_config = 'crud.apps.CRUDProjectsConfig'
+default_app_config = 'crud.projects.apps.CRUDProjectsConfig'
