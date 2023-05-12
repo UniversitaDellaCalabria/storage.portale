@@ -31,7 +31,7 @@ class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
         model = DidatticaDottoratoAttivitaFormativaAltriDocenti
         fields = ['cognome_nome_origine']
         labels = {
-            "cognome_nome_origine": f'{_("Label")}',
+            "cognome_nome_origine": _("Name and Surname"),
         }
 
 
