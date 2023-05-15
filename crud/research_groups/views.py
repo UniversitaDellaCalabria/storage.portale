@@ -51,9 +51,10 @@ def researchgroup(request, code,
             rgroup.user_mod = request.user
             rgroup.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            if changed_field_labels:
+
                 log_action(user=request.user,
                            obj=rgroup,
                            flag=CHANGE,

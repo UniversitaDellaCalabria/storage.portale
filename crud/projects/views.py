@@ -63,9 +63,10 @@ def project(request, code, project=None):
             project.user_mod = request.user
             project.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            if changed_field_labels:
+
                 log_action(user=request.user,
                            obj=project,
                            flag=CHANGE,

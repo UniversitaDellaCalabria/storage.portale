@@ -216,9 +216,10 @@ def base_researchline(request, code, my_offices=None, rline=None, teachers=None)
             rline.user_mod = request.user
             rline.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            if changed_field_labels:
+
                 log_action(user=request.user,
                            obj=rline,
                            flag=CHANGE,
@@ -272,9 +273,10 @@ def applied_researchline(request, code,
             rline.user_mod = request.user
             rline.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            if changed_field_labels:
+
                 log_action(user=request.user,
                            obj=rline,
                            flag=CHANGE,

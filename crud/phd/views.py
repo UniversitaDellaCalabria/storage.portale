@@ -154,9 +154,9 @@ def phd(request, code, my_offices=None, phd=None):
             new_phd.dt_mod = datetime.datetime.now()
             new_phd.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
-                                                                       form.changed_data)
-            if changed_field_labels:
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                           form.changed_data)
                 log_action(user=request.user,
                            obj=new_phd,
                            flag=CHANGE,
@@ -419,9 +419,7 @@ def phd_other_teacher(request, code, teacher_id, my_offices=None, phd=None):
             activity_teacher.dt_mod = datetime.datetime.now()
             activity_teacher.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
-                                                                       form.changed_data)
-            if changed_field_labels and old_label != activity_teacher.cognome_nome_origine:
+            if form.changed_data and old_label != activity_teacher.cognome_nome_origine:
                 log_action(user=request.user,
                            obj=phd,
                            flag=CHANGE,

@@ -96,9 +96,9 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
 
             other_data.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            if changed_field_labels:
                 log_action(user=request.user,
                            obj=regdid,
                            flag=CHANGE,
@@ -437,9 +437,10 @@ def cds_office_data_edit(request, regdid_id, data_id, regdid=None, my_offices=No
 
             office_data.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            if changed_field_labels:
+
                 log_action(user=request.user,
                            obj=regdid.cds,
                            flag=CHANGE,

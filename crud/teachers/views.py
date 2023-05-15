@@ -108,9 +108,10 @@ def teacher_other_data_edit(request,
             other_data.dt_mod = datetime.datetime.now()
             other_data.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
-                                                                       form.changed_data)
-            if changed_field_labels:
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                           form.changed_data)
+
                 log_action(user=request.user,
                            obj=teacher,
                            flag=CHANGE,
@@ -246,9 +247,10 @@ def teacher_board_data_edit(request, code, data_id,
             board.dt_mod = datetime.datetime.now()
             board.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            if changed_field_labels:
+
                 log_action(user=request.user,
                            obj=teacher,
                            flag=CHANGE,
@@ -378,9 +380,10 @@ def teacher_materials_data_edit(request, code, data_id,
             material.dt_mod = datetime.datetime.now()
             material.save()
 
-            changed_field_labels = _get_changed_field_labels_from_form(form,
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-            if changed_field_labels:
+
                 log_action(user=request.user,
                            obj=teacher,
                            flag=CHANGE,
