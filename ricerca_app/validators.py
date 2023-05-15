@@ -74,8 +74,8 @@ def validate_media_file_extension(value): # pragma: no cover
 
 
 def validate_image_size_ratio(value): # pragma: no cover
-    if not hasattr(value, 'content_type'): # pragma: no cover
-        return
+    # if not hasattr(value, 'content_type'): # pragma: no cover
+        # return
 
     mimetype = magic.Magic(mime=True).from_buffer(value.file.read())
     value.file.seek(0)
@@ -86,9 +86,10 @@ def validate_image_size_ratio(value): # pragma: no cover
         if ratio < FILETYPE_IMAGE_YX_RATIO_MIN or \
            ratio > FILETYPE_IMAGE_YX_RATIO_MAX:
             rratio = f'{ratio:.2f}'
-            raise ValidationError(f'Image have invalid y / w ratio {rratio}. \
-                                    Min {FILETYPE_IMAGE_YX_RATIO_MIN} - \
-                                    Max {FILETYPE_IMAGE_YX_RATIO_MAX}')
+            _msg = _('Image have invalid y / w ratio')
+            raise ValidationError(f'{_msg}: {rratio} \
+                                    (Min {FILETYPE_IMAGE_YX_RATIO_MIN} - \
+                                    Max {FILETYPE_IMAGE_YX_RATIO_MAX})')
 
 
 def validate_piva(value):
