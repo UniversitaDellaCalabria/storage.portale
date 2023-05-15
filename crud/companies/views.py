@@ -55,7 +55,6 @@ def company(request, code, company=None):
         form = SpinoffStartupDatiBaseForm(instance=company,
                                           data=request.POST,
                                           files=request.FILES)
-
         if form.is_valid():
             form.save(commit=False)
             company.user_mod = request.user
