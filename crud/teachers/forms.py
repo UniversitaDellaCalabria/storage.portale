@@ -92,7 +92,7 @@ class DocentePtaBachecaForm(forms.ModelForm):
                    'testo_en': CKEditorWidget(),
                    # 'dt_pubblicazione': BootstrapItaliaDateWidget,
                    # 'dt_inizio_validita': BootstrapItaliaDateWidget,
-                   'dt_inizio_validita': RicercaCRUDDateTimeWidget(),
+                   'dt_inizio_validita': RicercaCRUDDateTimeWidget,
                    # 'dt_fine_validita': BootstrapItaliaDateWidget}
                    'dt_fine_validita': RicercaCRUDDateTimeWidget}
 
@@ -123,8 +123,8 @@ class DocenteMaterialeDidatticoForm(forms.ModelForm):
                    'testo': CKEditorWidget(),
                    'testo_en': CKEditorWidget(),
                    # 'dt_pubblicazione': BootstrapItaliaDateWidget,
-                   'dt_inizio_validita': BootstrapItaliaDateWidget,
-                   'dt_fine_validita': BootstrapItaliaDateWidget}
+                   'dt_inizio_validita': RicercaCRUDDateTimeWidget,
+                   'dt_fine_validita': RicercaCRUDDateTimeWidget}
 
     class Media:
         js = ('js/textarea-autosize.js',)
