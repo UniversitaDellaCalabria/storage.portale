@@ -22,11 +22,9 @@
             {% if field.field.widget.input_type == 'select' %}
                 <select name="{{ field.name }}" class="form-control" id="id_{{ field.name }}" {% if field.field.required %}required{% endif %}>
                     {% for choice in field.field.choices %}
-                        {% with field.value|slugify as value %}
-                        <option value="{{ choice.0|slugify }}" {% if value == choice.0|slugify %}selected{% endif %}>
+                        <option value="{{ choice.0 }}" {% if field.value|slugify == choice.0|slugify %}selected{% endif %}>
                             {{ choice.1 }}
                         </option>
-                        {% endwith %}
                     {% endfor %}
                 </select>
             {% else %}
