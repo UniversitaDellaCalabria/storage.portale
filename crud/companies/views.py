@@ -414,14 +414,6 @@ def company_delete(request, code, company=None):
     # raise Exception(_('Permission denied'))
 
     company = get_object_or_404(SpinoffStartupDatiBase, pk=code)
-    logo = company.nome_file_logo
-
-    if logo and logo.path:
-        try:
-            os.remove(logo.path)
-        except:  # pragma: no cover
-            logger.warning(f'File {logo.path} not found')
-
     company.delete()
     messages.add_message(request,
                          messages.SUCCESS,
