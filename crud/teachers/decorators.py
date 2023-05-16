@@ -62,9 +62,6 @@ def can_edit_teacher(func_to_decorate):
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
 
-        if original_kwargs['my_teacher_profile'][0]['matricola'] == teacher.matricola:
-            return func_to_decorate(*original_args, **original_kwargs)
-
         departments = []
         for myoffice in original_kwargs['my_offices']:
             if myoffice.office.organizational_structure.unique_code not in departments:
@@ -72,6 +69,10 @@ def can_edit_teacher(func_to_decorate):
                     myoffice.office.organizational_structure.unique_code)
         if teacher.sede in departments:
             return func_to_decorate(*original_args, **original_kwargs)
+
+        if original_kwargs['my_teacher_profile'][0]['matricola'] == teacher.matricola:
+            return func_to_decorate(*original_args, **original_kwargs)
+
         return custom_message(request, _("Permission denied"))
 
     return new_func
