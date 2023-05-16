@@ -1356,7 +1356,7 @@ class DidatticaTestiRegolamento(InsModAbstract):
 class DocenteMaterialeDidattico(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     matricola = models.ForeignKey('Personale', models.CASCADE, db_column='MATRICOLA', to_field='matricola')  # Field name made lowercase.
-    titolo = models.CharField(db_column='TITOLO', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    titolo = models.CharField(db_column='TITOLO', max_length=200)  # Field name made lowercase.
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
     testo = models.TextField(db_column='TESTO')  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
