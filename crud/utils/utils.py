@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def log_action(user, obj, flag, msg):
     logger.info(
-        f"[{timezone.localtime()}] {user} - {obj.__str__()} . {msg}"
+        f"[{timezone.now()}] {user} - {obj.__str__()} . {msg}"
     )
 
     LogEntry.objects.log_action(user_id=user.pk,
