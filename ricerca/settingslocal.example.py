@@ -245,51 +245,51 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        # 'crud.utils': {
-            # 'handlers': ['console', 'mail_admins'],
-            # 'level': 'DEBUG',
-            # 'propagate': False,
-        # },
-        # 'crud.cds': {
-            # 'handlers': ['console', 'mail_admins'],
-            # 'level': 'DEBUG',
-            # 'propagate': False,
-        # },
-        # 'crud.companies': {
-            # 'handlers': ['console', 'mail_admins'],
-            # 'level': 'DEBUG',
-            # 'propagate': False,
-        # },
-        # 'crud.patents': {
-            # 'handlers': ['console', 'mail_admins'],
-            # 'level': 'DEBUG',
-            # 'propagate': False,
-        # },
-        # 'crud.phd': {
-            # 'handlers': ['console', 'mail_admins'],
-            # 'level': 'DEBUG',
-            # 'propagate': False,
-        # },
-        # 'crud.projects': {
-            # 'handlers': ['console', 'mail_admins'],
-            # 'level': 'DEBUG',
-            # 'propagate': False,
-        # },
-        # 'crud.research_groups': {
-            # 'handlers': ['console', 'mail_admins'],
-            # 'level': 'DEBUG',
-            # 'propagate': False,
-        # },
-        # 'crud.research_lines': {
-            # 'handlers': ['console', 'mail_admins'],
-            # 'level': 'DEBUG',
-            # 'propagate': False,
-        # },
-        # 'crud.teachers': {
-            # 'handlers': ['console', 'mail_admins'],
-            # 'level': 'DEBUG',
-            # 'propagate': False,
-        # },
+        'crud.utils': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'crud.cds': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'crud.companies': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'crud.patents': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'crud.phd': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'crud.projects': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'crud.research_groups': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'crud.research_lines': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'crud.teachers': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
         # 'crud.cdswebsites': {
             # 'handlers': ['console', 'mail_admins'],
             # 'level': 'DEBUG',

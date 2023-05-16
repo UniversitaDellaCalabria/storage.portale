@@ -1,10 +1,20 @@
+import logging
+
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
+from django.utils import timezone
+
+
+logger = logging.getLogger(__name__)
 
 
 def log_action(user, obj, flag, msg):
+    logger.info(
+        f"[{timezone.localtime()}] {user} - {obj.__str__()} . {msg}"
+    )
+
     LogEntry.objects.log_action(user_id=user.pk,
                                 content_type_id=ContentType.objects.get_for_model(
                                     obj).pk,
