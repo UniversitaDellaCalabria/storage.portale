@@ -344,6 +344,7 @@ LOGOUT_REDIRECT_URL=f'/'
 
 CKEDITOR_CONFIGS = {
     'default': {
+        'forcePasteAsPlainText': True,
         'height': 100,
         'width': 'full',
         'toolbar': 'Custom',
