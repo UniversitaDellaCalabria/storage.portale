@@ -5814,6 +5814,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             'num_posti': 50
         })
 
+
         SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
             'id': 124,
             'ordine': 1,
