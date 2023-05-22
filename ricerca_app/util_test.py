@@ -81,7 +81,9 @@ from .models import (
     SitoWebCdsDatiBase,
     SitoWebCdsSlider,
     SitoWebCdsLink,
-    SitoWebCdsExStudenti)
+    SitoWebCdsExStudenti,
+    SitoWebCdsTopic,
+)
 
 
 # class ContextUnitTest(TestCase):
@@ -1023,5 +1025,16 @@ class SitoWebCdsLinkUnitTest(TestCase): # pragma: no cover
             data[k] = v
 
         obj = SitoWebCdsLink.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsTopicListUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsTopicList(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsTopic.objects.create(**data)
         return obj
 

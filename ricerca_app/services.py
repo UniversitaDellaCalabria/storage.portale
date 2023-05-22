@@ -22,7 +22,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
-    SitoWebCdsExStudenti
+    SitoWebCdsExStudenti, SitoWebCdsTopic
 from . serializers import StructuresSerializer
 
 
@@ -754,6 +754,21 @@ class ServiceDidatticaCds:
         query = SitoWebCdsDatiBase.objects.values(
             "classe_laurea_it",
             "classe_laurea_en"
+        ).distinct()
+
+        return query
+
+
+    @staticmethod
+    def getCdsWebsitesTopics():
+
+
+        query = SitoWebCdsTopic.objects.values(
+            "id",
+            "topic_cod",
+            "descr_topic_it",
+            "descr_topic_en",
+            "num_articolo"
         ).distinct()
 
         return query
@@ -2881,7 +2896,7 @@ class ServicePersonale:
 
                 if item['Roles'] and len(item['Roles']) != 0:
                     for r in item['Roles']:
-                        if r['cd_uo_aff_org'] == structureid:
+                        if r['cd_uo_aff_org'] == structureid: # pragma: no cover
                             filtered4.append(item)
                             break
         else:

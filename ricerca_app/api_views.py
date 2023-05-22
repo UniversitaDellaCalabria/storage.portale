@@ -1293,3 +1293,11 @@ class ApiCdsWebsitesDegreeTypes(ApiEndpointList):
     def get_queryset(self):
         return ServiceDidatticaCds.getCdsWebsitesDegreeTypes()
 
+
+class ApiCdsWebsitesTopicList(ApiEndpointList):
+    description = 'Restituisce l’elenco dei topic per i siti web dei cds'
+    serializer_class = CdsWebsitesTopicSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDidatticaCds.getCdsWebsitesTopics()

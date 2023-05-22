@@ -480,7 +480,11 @@ LABEL_MAPPING = {
         'SliderId': 'Slider Id',
         'SliderOrder': 'Slider Order',
         'SliderDescription': 'Slider Description',
-        'StudentPhoto': 'Student Photo'
+        'StudentPhoto': 'Student Photo',
+        'TopicId': 'Topic Id',
+        'TopicCod': 'Topic Cod',
+        'TopicDescription': 'Topic Description',
+        'ArticleNumber': 'Article Number'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -963,6 +967,10 @@ LABEL_MAPPING = {
         'SliderId': 'Id',
         'SliderOrder': 'Ordine',
         'SliderDescription': 'Descrizione',
-        'StudentPhoto': 'Foto Studente'
+        'StudentPhoto': 'Foto Studente',
+        'TopicId': 'Id Topic',
+        'TopicCod': 'Codice Topic',
+        'TopicDescription': 'Descrizione Topic',
+        'ArticleNumber': 'Numero Articolo'
     }
 }

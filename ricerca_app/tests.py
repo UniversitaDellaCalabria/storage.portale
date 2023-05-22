@@ -28,7 +28,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
     DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest, DocentePtaMaterialeDidatticoUnitTest, \
-    DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest
+    DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -5770,6 +5770,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             'nome_corso_en': 'Computer Science',
             'lingua_it': 'italiano',
             'lingua_en': "italian",
+            'classe_laurea_it': 'aaa',
             'durata': 50,
             'num_posti': 50
         })
@@ -5802,6 +5803,26 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             'id_sito_web_cds_dati_base': s1,
         })
 
+        s2 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
+            'id': 2,
+            'aa': '2022',
+            'nome_corso_it': 'Ingegneria',
+            'nome_corso_en': 'Computer Engineering',
+            'lingua_it': 'italiano',
+            'lingua_en': "italian",
+            'durata': 50,
+            'num_posti': 50
+        })
+
+        SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
+            'id': 124,
+            'ordine': 1,
+            'slider_it': 'aaa',
+            'slider_en': 'aaa',
+            'id_sito_web_cds_dati_base': s2,
+        })
+
+
         url = reverse('ricerca:cdswebsitelist')
 
         # check url
@@ -5812,11 +5833,12 @@ class ApiSitoWebCdsListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
-        data = {'search': 'Informatica', 'academic_year': 2022, 'language': 'italiano'}
+        data = {'search': 'Informatica', 'academic_year': 2022, 'cdslanguage': 'italiano', 'course_class': 'aaa'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
+
 
 
 class ApiSitoWebCdsDetailUnitTest(TestCase):
@@ -5834,6 +5856,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             'durata': 50,
             'num_posti': 50
         })
+
 
         SitoWebCdsExStudentiUnitTest.create_sitoWebCdsExStudenti(**{
             'id': 1,
@@ -5888,6 +5911,35 @@ class ApiSitoWebCdsDegreeTypesUnitTest(TestCase):
 
 
         url = reverse('ricerca:cdswebsitesdegreetypes')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+
+
+
+class ApiSitoWebCdsTopicListUnitTest(TestCase):
+    def test_apisitiwebcdstopics(self):
+        req = Client()
+
+        SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+            'id': 1,
+            'topic_cod': '1',
+            'descr_topic_it': 'prova',
+            'descr_topic_en': 'test',
+            'num_articolo': '12',
+        })
+
+
+
+        url = reverse('ricerca:cdswebsitestopiclist')
 
         # check url
         res = req.get(url)

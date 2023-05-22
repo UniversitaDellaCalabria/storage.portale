@@ -388,6 +388,28 @@ class CdsWebsitesDegreeTypesSerializer(CreateUpdateAbstract):
         }
 
 
+
+class CdsWebsitesTopicSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+
+
+        return {
+            'TopicId': query['id'],
+            'TopicCod': query['topic_cod'],
+            'TopicDescription': query['descr_topic_it'] if req_lang=='it' or query['descr_topic_en'] is None else query['descr_topic_en'],
+            'ArticleNumber': query['num_articolo']
+        }
+
+
 class CdSStudyPlansSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
         query = instance
