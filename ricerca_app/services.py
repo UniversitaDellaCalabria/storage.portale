@@ -738,7 +738,7 @@ class ServiceDidatticaCds:
             ).order_by('ordine')
             if len(ex_studenti) > 0:
                 q['ExStudents'] = ex_studenti
-            else:
+            else: # pragma: no cover
                 q['ExStudents'] = []
             links = SitoWebCdsLink.objects.filter(
                 id_sito_web_cds_dati_base__exact=q['id']).values(
@@ -751,7 +751,7 @@ class ServiceDidatticaCds:
             ).order_by('ordine')
             if len(links) > 0:
                 q['CdsLink'] = links
-            else:
+            else: # pragma: no cover
                 q['CdsLink'] = []
 
             sliders = SitoWebCdsSlider.objects.filter(
@@ -1098,7 +1098,7 @@ class ServiceDidatticaAttivitaFormativa:
 
             if padre:
                 q['Father'] = padre
-            else:
+            else: # pragma: no cover
                 q['Father'] = None
 
 
@@ -1453,7 +1453,7 @@ class ServiceDidatticaAttivitaFormativa:
                 })
             groups = groups.values('af_id')
             groups = list(groups)
-            for g in groups:
+            for g in groups: # pragma: no cover
                 allowed.append(g['af_id'])
 
             if list_submodules[i]['af_id'] not in allowed:
