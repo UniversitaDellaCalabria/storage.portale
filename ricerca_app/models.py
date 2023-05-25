@@ -3895,7 +3895,7 @@ class SitoWebCdsOggettiPortaleAltriDati(models.Model):
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
     stato = models.CharField(db_column='STATO', max_length=100)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
-    id_user_mod = models.ForeignKey(get_user_model(),on_delete=models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(),on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True

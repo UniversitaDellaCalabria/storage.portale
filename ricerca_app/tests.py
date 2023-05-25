@@ -5200,6 +5200,7 @@ class ApiHighFormationMastersListUnitTest(TestCase):
             'id_alta_formazione_tipo_corso': aftc,
             'id_alta_formazione_mod_erogazione': afme,
             'id_dipartiento_riferimento': dip,
+            'anno_rilevazione': 2021,
         })
 
         AltaFormazioneDatiBaseUnitTest.create_altaFormazioneDatiBase(**{
@@ -5286,6 +5287,14 @@ class ApiHighFormationMastersListUnitTest(TestCase):
         assert len(res.json()['results']) == 2
 
         data = {'department': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'director': '111112'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
+        data = {'year': 2021}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -5815,6 +5824,26 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             'num_posti': 50
         })
 
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'cds_id': 1,
+            'cds_cod': 'aaa',
+            'nome_cds_it': 'Matematica',
+            'nome_cds_eng': 'Math',
+        })
+
+        SitoWebCdsOggettiPortaleAltriDatiUnitTest.create_sitoWebCdsOggettiPortaleAltriDati(**{
+            'id': 1,
+            'cds_id': 1,
+            'aa_regdid_id': 2023,
+            'id_oggetto_portale': 1,
+            'id_classe_oggetto_portale': 'prova',
+            'titolo_it': 'prova',
+            'titolo_en': 'test',
+            'ordine': 1,
+            'stato': 'A',
+            'dt_mod': datetime.datetime.today()
+        })
+
 
         SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
             'id': 124,
@@ -5966,6 +5995,14 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'num_articolo': '12',
         })
 
+        t2 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+            'id': 2,
+            'topic_cod': '1',
+            'descr_topic_it': 'prova',
+            'descr_topic_en': 'test',
+            'num_articolo': '12',
+        })
+
         DidatticaCdsUnitTest.create_didatticaCds(**{
             'cds_id': 1,
             'cds_cod': 'aaa',
@@ -5987,10 +6024,34 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 
         })
 
+        a2 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
+            'id': 2,
+            'cds_id': 1,
+            'aa_regdid_id': 2023,
+            'numero': 11,
+            'titolo_it': 'Prova',
+            'contenuto_it': 'Contenuto',
+            'titolo_en': 'Test',
+            'contenuto_en': 'Content',
+            'stato': 'A',
+            'dt_mod': datetime.datetime.today()
+
+        })
+
         SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
             'id': 1,
             'id_sito_web_cds_topic': t1,
             'id_sito_web_cds_articoli_regolamento': a1,
+            'ordine': 0,
+            'cds_id': 1,
+            'topic_cod': 'PIANI',
+            'dt_mod': datetime.datetime.today()
+        })
+
+        SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 2,
+            'id_sito_web_cds_topic': t2,
+            'id_sito_web_cds_articoli_regolamento': a2,
             'ordine': 0,
             'cds_id': 1,
             'topic_cod': 'PIANI',

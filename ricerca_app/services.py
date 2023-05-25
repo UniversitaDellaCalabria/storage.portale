@@ -660,6 +660,7 @@ class ServiceDidatticaCds:
                 'ordine',
                 'stato'
             ).order_by('ordine')
+
             if len(objects) > 0:
                 q['CdsObjects'] = objects
             else:
