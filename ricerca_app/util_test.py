@@ -83,6 +83,11 @@ from .models import (
     SitoWebCdsLink,
     SitoWebCdsExStudenti,
     SitoWebCdsTopic,
+    SitoWebCdsTopicArticoliReg,
+    SitoWebCdsArticoliRegolamento,
+    SitoWebCdsArticoliRegAltriDati,
+    SitoWebCdsOggettiPortaleAltriDati,
+    SitoWebCdsTipologiaArticolo
 )
 
 
@@ -1038,3 +1043,46 @@ class SitoWebCdsTopicListUnitTest(TestCase): # pragma: no cover
         obj = SitoWebCdsTopic.objects.create(**data)
         return obj
 
+
+class SitoWebCdsTopicArticoliRegUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsTopicArticoliReg(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsTopicArticoliReg.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsOggettiPortaleAltriDatiUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsOggettiPortaleAltriDati(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsOggettiPortaleAltriDati.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsArticoliRegolamentoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsArticoliRegolamento(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsArticoliRegolamento.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsArticoliRegAltriDatiUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsArticoliRegAltriDati(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsArticoliRegAltriDati.objects.create(**data)
+        return obj

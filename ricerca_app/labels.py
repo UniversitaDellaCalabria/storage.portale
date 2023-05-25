@@ -484,7 +484,22 @@ LABEL_MAPPING = {
         'TopicId': 'Topic Id',
         'TopicCod': 'Topic Cod',
         'TopicDescription': 'Topic Description',
-        'ArticleNumber': 'Article Number'
+        'ArticleNumber': 'Article Number',
+        'ArticleId': 'Article Id',
+        'ArticleTitle': 'Article Title',
+        'ArticleDescription': 'Article Description',
+        'Articles': 'Articles',
+        'CdsArticles': 'Cds Articles',
+        'Id': 'Id',
+        'YearRegdidID':'Year Regdid ID',
+        'ObjectId': 'Object Id',
+        'ClassId': 'Class Id',
+        'ObjectTitle': 'Object Title',
+        'ObjectText': 'Object Text',
+        'ObjectOrder': 'Object Order',
+        'ObjectStatus': 'Object Status',
+        'CDSObjects': 'CDS Objects'
+
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -971,6 +986,21 @@ LABEL_MAPPING = {
         'TopicId': 'Id Topic',
         'TopicCod': 'Codice Topic',
         'TopicDescription': 'Descrizione Topic',
-        'ArticleNumber': 'Numero Articolo'
-    }
+        'ArticleNumber': 'Numero Articolo',
+        'ArticleId': 'Id Articolo',
+        'ArticleTitle': 'Titolo Articolo',
+        'ArticleDescription': 'Descrizione Articolo',
+        'Articles': 'Articoli',
+        'CdsArticles': 'Articoli Cds',
+        'Id': 'Id',
+        'YearRegdidID':'Anno Regolamento Didattico',
+        'ObjectId': 'Id Oggetto',
+        'ClassId': 'Id Classe Oggetto',
+        'ObjectTitle': 'Title',
+        'ObjectText': 'Text',
+        'ObjectOrder': 'Order',
+        'ObjectStatus': 'Status',
+        'CDSObjects': 'Oggetti CDS'
+
+}
 }

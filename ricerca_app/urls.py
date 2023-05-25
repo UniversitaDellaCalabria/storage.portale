@@ -127,6 +127,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiCdsWebsitesTopicList.as_view(),
                         name='cdswebsitestopiclist'),
 
+    urlpatterns += path('{}/cds-websites-topic-articles/'.format(base_url),
+                        api_views.ApiCdsWebsitesTopicArticlesList.as_view(),
+                        name='cdswebsitestopicarticleslist'),
+
+
     urlpatterns += path('{}/activities/'.format(base_url),
                         api_views.ApiAllStudyActivitiesList.as_view(),
                         name='activities'),

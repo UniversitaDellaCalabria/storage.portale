@@ -1301,3 +1301,18 @@ class ApiCdsWebsitesTopicList(ApiEndpointList):
 
     def get_queryset(self):
         return ServiceDidatticaCds.getCdsWebsitesTopics()
+
+
+
+
+class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
+    description = 'Restituisce l’elenco dei topic per i siti web dei cds'
+    serializer_class = CdsWebsitesTopicArticlesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+
+        cds_id = self.request.query_params.get('cds_id')
+        topic_id = self.request.query_params.get('topic_id')
+
+        return ServiceDidatticaCds.getCdsWebsitesTopicArticles(cds_id, topic_id)

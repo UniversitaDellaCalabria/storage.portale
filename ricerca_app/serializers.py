@@ -283,6 +283,11 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
                 query['CdsSliders'], req_lang)
 
 
+        if query['CdsObjects'] is not None:
+            cds_objects = CdsWebsiteSerializer.to_dict_objects(
+                query['CdsObjects'], req_lang)
+
+
         return {
             'CDSId': query['id'],
             'CDSCOD': query['cds_cod'],
@@ -309,7 +314,8 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             'CDSUrlStatus': query['sito_web_cds_status'],
             'CDSExStudents': ex_students,
             'CDSLinks': cds_link,
-            'CDSSliders': cds_sliders
+            'CDSSliders': cds_sliders,
+            'CDSObjects': cds_objects,
         }
 
 
@@ -351,6 +357,24 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
                 'SliderDescription': q['slider_it'] if req_lang == 'it' or q['slider_en'] is None else q['slider_en'],
             })
         return sliders
+
+
+    @staticmethod
+    def to_dict_objects(query, req_lang='en'):
+        objects = []
+        for q in query:
+            objects.append({
+                'Id': q['id'],
+                'CdsId': q['cds_id'],
+                'YearRegdidID': q['aa_regdid_id'],
+                'ObjectId': q['id_oggetto_portale'],
+                'ClassId': q['id_classe_oggetto_portale'],
+                'ObjectTitle': q['titolo_it']if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
+                'ObjectText': q['testo_it']if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'ObjectOrder': q['ordine'],
+                'ObjectStatus': q['stato'],
+            })
+        return objects
 
     # @staticmethod
     # def to_dict_offices_data(query):
@@ -408,6 +432,62 @@ class CdsWebsitesTopicSerializer(CreateUpdateAbstract):
             'TopicDescription': query['descr_topic_it'] if req_lang=='it' or query['descr_topic_en'] is None else query['descr_topic_en'],
             'ArticleNumber': query['num_articolo']
         }
+
+
+class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+
+        if query['Articles'] is not None:
+            articles = CdsWebsitesTopicArticlesSerializer.to_dict_articles(
+                query['Articles'], req_lang)
+
+
+        return {
+            'ID': query['id'],
+            'TopicId': query['id_sito_web_cds_topic__id'],
+            'TopicCod': query['id_sito_web_cds_topic__topic_cod'],
+            'TopicDescription': query['id_sito_web_cds_topic__descr_topic_it'] if req_lang=='it' or query['id_sito_web_cds_topic__descr_topic_en'] is None else query['id_sito_web_cds_topic__descr_topic_en'],
+            'CDSId': query['cds_id'],
+            'CdsArticles': articles
+        }
+
+
+    @staticmethod
+    def to_dict_articles(query, req_lang='en'):
+        articles = []
+
+        for q in query:
+            articles.append({
+                'ArticleId': q['id_sito_web_cds_articoli_regolamento'],
+                'ArticleTitle': q['id_sito_web_cds_articoli_regolamento__titolo_it'] if req_lang == 'it' or q['id_sito_web_cds_articoli_regolamento__titolo_en'] is None else q['id_sito_web_cds_articoli_regolamento__titolo_en'],
+                'ArticleDescription': q['id_sito_web_cds_articoli_regolamento__contenuto_it'] if req_lang == 'it' or q['id_sito_web_cds_articoli_regolamento__contenuto_en'] is None else q['id_sito_web_cds_articoli_regolamento__contenuto_en'],
+                'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q['OtherData'], req_lang),
+            })
+        return articles
+
+
+
+    @staticmethod
+    def to_dict_other_data(query, req_lang='en'):
+        other_data = []
+
+        for q in query:
+            other_data.append({
+                'Id': q['id'],
+                'Order': q['ordine'],
+                'Title': q['titolo_it'] if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
+                'Text': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+            })
+        return other_data
 
 
 class CdSStudyPlansSerializer(CreateUpdateAbstract):

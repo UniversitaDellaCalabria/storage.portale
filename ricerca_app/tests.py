@@ -28,7 +28,8 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
     DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest, DocentePtaMaterialeDidatticoUnitTest, \
-    DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest
+    DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest, \
+    SitoWebCdsArticoliRegAltriDatiUnitTest, SitoWebCdsOggettiPortaleAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -5951,3 +5952,81 @@ class ApiSitoWebCdsTopicListUnitTest(TestCase):
 
         res = req.get(url)
         assert len(res.json()['results']) == 1
+
+
+class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
+    def test_apisitiwebcdstopicarticles(self):
+        req = Client()
+
+        t1 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+            'id': 1,
+            'topic_cod': '1',
+            'descr_topic_it': 'prova',
+            'descr_topic_en': 'test',
+            'num_articolo': '12',
+        })
+
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'cds_id': 1,
+            'cds_cod': 'aaa',
+            'nome_cds_it': 'Matematica',
+            'nome_cds_eng': 'Math',
+        })
+
+        a1 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
+            'id': 1,
+            'cds_id': 1,
+            'aa_regdid_id': 2023,
+            'numero': 11,
+            'titolo_it': 'Prova',
+            'contenuto_it': 'Contenuto',
+            'titolo_en': 'Test',
+            'contenuto_en': 'Content',
+            'stato': 'A',
+            'dt_mod': datetime.datetime.today()
+
+        })
+
+        SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 1,
+            'id_sito_web_cds_topic': t1,
+            'id_sito_web_cds_articoli_regolamento': a1,
+            'ordine': 0,
+            'cds_id': 1,
+            'topic_cod': 'PIANI',
+            'dt_mod': datetime.datetime.today()
+        })
+
+        SitoWebCdsArticoliRegAltriDatiUnitTest.create_sitoWebCdsArticoliRegAltriDati(**{
+            'id': 1,
+            'id_sito_web_cds_articoli_regolamento': a1,
+            'ordine': 0,
+            'titolo_en': 'Title',
+            'titolo_it': 'Titolo',
+            'testo_en': 'Text',
+            'testo_it': 'Testo',
+            'stato': 'A',
+            'dt_mod': datetime.datetime.today()
+        })
+
+
+
+        url = reverse('ricerca:cdswebsitestopicarticleslist')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 0
+
+        data = {'cds_id': 1, 'topic_id': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
+
+

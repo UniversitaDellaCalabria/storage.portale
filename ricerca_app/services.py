@@ -22,7 +22,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
-    SitoWebCdsExStudenti, SitoWebCdsTopic
+    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsTipologiaArticolo
 from . serializers import StructuresSerializer
 
 
@@ -553,6 +553,7 @@ class ServiceDidatticaCds:
             query_courseclass
             ).values(
             "id",
+            'cds_id',
             "cds_cod",
             'aa',
             "nome_corso_it",
@@ -644,6 +645,25 @@ class ServiceDidatticaCds:
                 q['CdsSliders'] = sliders
             else:
                 q['CdsSliders'] = []
+
+            objects = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
+                cds_id__exact=q['cds_id']).values(
+                'id',
+                'aa_regdid_id',
+                'cds_id',
+                'id_oggetto_portale',
+                'id_classe_oggetto_portale',
+                'titolo_it',
+                'titolo_en',
+                'testo_it',
+                'testo_en',
+                'ordine',
+                'stato'
+            ).order_by('ordine')
+            if len(objects) > 0:
+                q['CdsObjects'] = objects
+            else:
+                q['CdsObjects'] = []
 
         return query
 
@@ -652,6 +672,7 @@ class ServiceDidatticaCds:
 
         query = SitoWebCdsDatiBase.objects.filter(id__exact=cds_id).values(
             "id",
+            'cds_id',
             "cds_cod",
             'aa',
             "nome_corso_it",
@@ -743,6 +764,25 @@ class ServiceDidatticaCds:
                 q['CdsSliders'] = sliders
             else:
                 q['CdsSliders'] = []
+
+            objects = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
+                cds_id__exact=q['cds_id']).values(
+                'id',
+                'cds_id',
+                'aa_regdid_id',
+                'id_oggetto_portale',
+                'id_classe_oggetto_portale',
+                'titolo_it',
+                'titolo_en',
+                'testo_it',
+                'testo_en',
+                'ordine',
+                'stato'
+            ).order_by('ordine')
+            if len(objects) > 0:
+                q['CdsObjects'] = objects
+            else:
+                q['CdsObjects'] = []
 
         return query
 
@@ -762,7 +802,6 @@ class ServiceDidatticaCds:
     @staticmethod
     def getCdsWebsitesTopics():
 
-
         query = SitoWebCdsTopic.objects.values(
             "id",
             "topic_cod",
@@ -772,6 +811,67 @@ class ServiceDidatticaCds:
         ).distinct()
 
         return query
+
+    @staticmethod
+    def getCdsWebsitesTopicArticles(cds_id, topic_id):
+
+        if cds_id and topic_id:
+            query_cdsid = Q(cds_id__exact=cds_id)
+            query_topicid = Q(id_sito_web_cds_topic__exact=topic_id)
+
+
+            query = SitoWebCdsTopicArticoliReg.objects.filter(
+                query_cdsid,
+                query_topicid
+            ).values(
+                "id",
+                "id_sito_web_cds_topic__id",
+                "id_sito_web_cds_topic__topic_cod",
+                "id_sito_web_cds_topic__descr_topic_it",
+                "id_sito_web_cds_topic__descr_topic_en",
+                "cds_id",
+            ).distinct()
+
+            query = list(query)
+
+            for q in query:
+                articles = SitoWebCdsTopicArticoliReg.objects.filter(
+                    id__exact=q['id']).values(
+                    'id_sito_web_cds_articoli_regolamento',
+                    'id_sito_web_cds_articoli_regolamento__titolo_it',
+                    'id_sito_web_cds_articoli_regolamento__contenuto_it',
+                    'id_sito_web_cds_articoli_regolamento__titolo_en',
+                    'id_sito_web_cds_articoli_regolamento__contenuto_en',
+                ).order_by('id_sito_web_cds_articoli_regolamento')
+
+                if len(articles) > 0:
+                    q['Articles'] = articles
+                else:
+                    q['Articles'] = []
+
+
+                for a in articles:
+                    other_data = SitoWebCdsArticoliRegAltriDati.objects.filter(
+                        id_sito_web_cds_articoli_regolamento__exact=a['id_sito_web_cds_articoli_regolamento']
+                    ).values(
+                        'id',
+                        'ordine',
+                        'titolo_en',
+                        'titolo_it',
+                        'testo_it',
+                        'testo_en',
+                        'stato'
+                    ).order_by('ordine')
+
+                    if len(other_data) > 0:
+                        a['OtherData'] = other_data
+                    else:
+                        a['OtherData'] = []
+
+            return query
+
+        else:
+            return {}
 
 
 class ServiceDidatticaAttivitaFormativa:
