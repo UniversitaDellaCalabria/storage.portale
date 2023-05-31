@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from .. utils.utils import log_action
 
@@ -44,9 +45,7 @@ def cds_website(request, code,
     modifica dati del sito web del corso di studio
     """
     form = SitoWebCdsDatiBaseForm(instance=cds_website)
-    print('casa')
     cds_data = get_object_or_404(SitoWebCdsDatiBase, pk=code)
-    print('casa')
 
     if request.POST:
         form = SitoWebCdsDatiBaseForm(instance=cds_website, data=request.POST)
@@ -92,3 +91,60 @@ def cds_website(request, code,
                    'ex_students': ex_students,
                    'sliders': sliders,
                    'links': links})
+
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_ex_students_data_edit(request, code, student_id, cds_website=None, my_offices=None):
+    """
+    docente principale dottorato
+    """
+    ex_student = get_object_or_404(SitoWebCdsExStudenti,
+                                         pk=student_id,
+                                         id_sito_web_cds_dati_base=cds_website)
+
+
+    if request.POST:
+        form = SitoWebCdsExStudentiForm(instance=ex_student, data=request.POST)
+
+        if form.is_valid():
+            ex_student.nome = form.cleaned_data['nome']
+
+            ex_student.user_mod = request.user
+            ex_student.dt_mod = datetime.datetime.now()
+            ex_student.save()
+
+            changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                       form.changed_data)
+            log_action(user=request.user,
+                       obj=cds_website,
+                       flag=CHANGE,
+                       msg=[{'changed': {"fields": changed_field_labels}}])
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Ex student edited successfully"))
+
+            return redirect('crud_cds_websites:crud_cds_website_edit',
+                            code=code)
+
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cdswebsites'): _('PhD activities'),
+                   reverse('crud_cds_websites:crud_cds_website_edit', kwargs={'code': code}): cds_website.nome_corso_it,
+                   '#': _('Cds website ex-student data')
+                   }
+
+    return render(request,
+                  'phd_main_teacher.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'choosen_person': teacher_data,
+                   'external_form': external_form,
+                   'internal_form': internal_form,
+                   'phd': phd,
+                   'url': reverse('ricerca:teacherslist')})

@@ -315,7 +315,6 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             'CDSExStudents': ex_students,
             'CDSLinks': cds_link,
             'CDSSliders': cds_sliders,
-            'CDSObjects': cds_objects,
         }
 
 
@@ -359,22 +358,6 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
         return sliders
 
 
-    @staticmethod
-    def to_dict_objects(query, req_lang='en'):
-        objects = []
-        for q in query:
-            objects.append({
-                'Id': q['id'],
-                'CdsId': q['cds_id'],
-                'YearRegdidID': q['aa_regdid_id'],
-                'ObjectId': q['id_oggetto_portale'],
-                'ClassId': q['id_classe_oggetto_portale'],
-                'ObjectTitle': q['titolo_it']if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
-                'ObjectText': q['testo_it']if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
-                'ObjectOrder': q['ordine'],
-                'ObjectStatus': q['stato'],
-            })
-        return objects
 
     # @staticmethod
     # def to_dict_offices_data(query):
@@ -471,6 +454,7 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'ArticleTitle': q['id_sito_web_cds_articoli_regolamento__titolo_it'] if req_lang == 'it' or q['id_sito_web_cds_articoli_regolamento__titolo_en'] is None else q['id_sito_web_cds_articoli_regolamento__titolo_en'],
                 'ArticleDescription': q['id_sito_web_cds_articoli_regolamento__contenuto_it'] if req_lang == 'it' or q['id_sito_web_cds_articoli_regolamento__contenuto_en'] is None else q['id_sito_web_cds_articoli_regolamento__contenuto_en'],
                 'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q['OtherData'], req_lang),
+                'ArticleObjects': CdsWebsitesTopicArticlesSerializer.to_dict_objects(q['ArticleObjects'], req_lang),
             })
         return articles
 
@@ -488,6 +472,22 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'Text': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
             })
         return other_data
+
+    @staticmethod
+    def to_dict_objects(query, req_lang='en'):
+        objects = []
+        for q in query:
+            objects.append({
+                'Id': q['id'],
+                'YearRegdidID': q['aa_regdid_id'],
+                'ObjectId': q['id_oggetto_portale'],
+                'ClassId': q['id_classe_oggetto_portale'],
+                'ObjectTitle': q['titolo_it'] if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
+                'ObjectText': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'ObjectOrder': q['ordine'],
+                'ObjectStatus': q['stato'],
+            })
+        return objects
 
 
 class CdSStudyPlansSerializer(CreateUpdateAbstract):

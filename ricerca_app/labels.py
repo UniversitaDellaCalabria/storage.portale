@@ -498,7 +498,7 @@ LABEL_MAPPING = {
         'ObjectText': 'Object Text',
         'ObjectOrder': 'Object Order',
         'ObjectStatus': 'Object Status',
-        'CDSObjects': 'CDS Objects'
+        'ArticleObjects': 'Article Objects'
 
     },
     'it': {
@@ -1000,7 +1000,7 @@ LABEL_MAPPING = {
         'ObjectText': 'Text',
         'ObjectOrder': 'Order',
         'ObjectStatus': 'Status',
-        'CDSObjects': 'Oggetti CDS'
+        'ArticleObjects': 'Oggetti Articoli'
 
 }
 }

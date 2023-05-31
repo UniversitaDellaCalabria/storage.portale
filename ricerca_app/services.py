@@ -646,25 +646,6 @@ class ServiceDidatticaCds:
             else:
                 q['CdsSliders'] = []
 
-            objects = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
-                cds_id__exact=q['cds_id']).values(
-                'id',
-                'aa_regdid_id',
-                'cds_id',
-                'id_oggetto_portale',
-                'id_classe_oggetto_portale',
-                'titolo_it',
-                'titolo_en',
-                'testo_it',
-                'testo_en',
-                'ordine',
-                'stato'
-            ).order_by('ordine')
-
-            if len(objects) > 0:
-                q['CdsObjects'] = objects
-            else:
-                q['CdsObjects'] = []
 
         return query
 
@@ -766,25 +747,6 @@ class ServiceDidatticaCds:
             else:
                 q['CdsSliders'] = []
 
-            objects = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
-                cds_id__exact=q['cds_id']).values(
-                'id',
-                'cds_id',
-                'aa_regdid_id',
-                'id_oggetto_portale',
-                'id_classe_oggetto_portale',
-                'titolo_it',
-                'titolo_en',
-                'testo_it',
-                'testo_en',
-                'ordine',
-                'stato'
-            ).order_by('ordine')
-            if len(objects) > 0:
-                q['CdsObjects'] = objects
-            else:
-                q['CdsObjects'] = []
-
         return query
 
 
@@ -868,6 +830,26 @@ class ServiceDidatticaCds:
                         a['OtherData'] = other_data
                     else:
                         a['OtherData'] = []
+
+                    objects = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
+                        id_sito_web_cds_articoli_regolamento__exact=a['id_sito_web_cds_articoli_regolamento']).values(
+                        'id',
+                        'aa_regdid_id',
+                        'id_sito_web_cds_articoli_regolamento',
+                        'id_oggetto_portale',
+                        'id_classe_oggetto_portale',
+                        'titolo_it',
+                        'titolo_en',
+                        'testo_it',
+                        'testo_en',
+                        'ordine',
+                        'stato'
+                    ).order_by('ordine')
+
+                    if len(objects) > 0:
+                        a['ArticleObjects'] = objects
+                    else:
+                        a['ArticleObjects'] = []
 
             return query
 
