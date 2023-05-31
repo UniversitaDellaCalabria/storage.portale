@@ -5831,19 +5831,6 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             'nome_cds_eng': 'Math',
         })
 
-        SitoWebCdsOggettiPortaleAltriDatiUnitTest.create_sitoWebCdsOggettiPortaleAltriDati(**{
-            'id': 1,
-            'cds_id': 1,
-            'aa_regdid_id': 2023,
-            'id_oggetto_portale': 1,
-            'id_classe_oggetto_portale': 'prova',
-            'titolo_it': 'prova',
-            'titolo_en': 'test',
-            'ordine': 1,
-            'stato': 'A',
-            'dt_mod': datetime.datetime.today()
-        })
-
 
         SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
             'id': 124,
@@ -6066,6 +6053,18 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'titolo_it': 'Titolo',
             'testo_en': 'Text',
             'testo_it': 'Testo',
+            'stato': 'A',
+            'dt_mod': datetime.datetime.today()
+        })
+        SitoWebCdsOggettiPortaleAltriDatiUnitTest.create_sitoWebCdsOggettiPortaleAltriDati(**{
+            'id': 1,
+            'id_sito_web_cds_articoli_regolamento': a1,
+            'aa_regdid_id': 2023,
+            'id_oggetto_portale': 1,
+            'id_classe_oggetto_portale': 'prova',
+            'titolo_it': 'prova',
+            'titolo_en': 'test',
+            'ordine': 1,
             'stato': 'A',
             'dt_mod': datetime.datetime.today()
         })

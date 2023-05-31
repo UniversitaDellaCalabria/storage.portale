@@ -283,10 +283,6 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
                 query['CdsSliders'], req_lang)
 
 
-        if query['CdsObjects'] is not None:
-            cds_objects = CdsWebsiteSerializer.to_dict_objects(
-                query['CdsObjects'], req_lang)
-
 
         return {
             'CDSId': query['id'],
