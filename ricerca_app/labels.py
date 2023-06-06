@@ -498,7 +498,12 @@ LABEL_MAPPING = {
         'ObjectText': 'Object Text',
         'ObjectOrder': 'Object Order',
         'ObjectStatus': 'Object Status',
-        'ArticleObjects': 'Article Objects'
+        'ArticleObjects': 'Article Objects',
+        'Visible': 'Visible',
+        'CdsObjects': 'Cds Objects',
+        'YearRegDidID': 'Year RegDidID',
+        'ClassObjectId': 'Class Object Id',
+        'TopicTitle': 'Topic Title'
 
     },
     'it': {
@@ -1000,7 +1005,11 @@ LABEL_MAPPING = {
         'ObjectText': 'Text',
         'ObjectOrder': 'Order',
         'ObjectStatus': 'Status',
-        'ArticleObjects': 'Oggetti Articoli'
-
+        'ArticleObjects': 'Oggetti Articoli',
+        'Visible': 'Visibile',
+        'CdsObjects': 'Oggetti Cds',
+        'YearRegDidID': 'Anno regolamento didattico',
+        'ClassObjectId': 'Id Classe Oggetto',
+        'TopicTitle': 'Titolo Topic'
 }
 }

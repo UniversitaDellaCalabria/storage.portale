@@ -22,7 +22,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
-    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsTipologiaArticolo
+    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsOggettiPortale
 from . serializers import StructuresSerializer
 
 
@@ -767,32 +767,34 @@ class ServiceDidatticaCds:
 
         query = SitoWebCdsTopic.objects.values(
             "id",
-            "topic_cod",
             "descr_topic_it",
             "descr_topic_en",
-            "num_articolo"
+            'visibile'
         ).distinct()
 
         return query
 
     @staticmethod
-    def getCdsWebsitesTopicArticles(cds_id, topic_id):
+    def getCdsWebsitesTopicArticles(cds_cod, topic_id):
 
-        if cds_id and topic_id:
-            query_cdsid = Q(cds_id__exact=cds_id)
+        if cds_cod and topic_id:
+            query_cdscod = Q(id_sito_web_cds_oggetti_portale__cds_id__cds_cod=cds_cod) | Q(id_sito_web_cds_articoli_regolamento__cds_id__cds_cod=cds_cod)
             query_topicid = Q(id_sito_web_cds_topic__exact=topic_id)
 
 
             query = SitoWebCdsTopicArticoliReg.objects.filter(
-                query_cdsid,
+                query_cdscod,
                 query_topicid
             ).values(
                 "id",
+                'titolo_it',
+                'titolo_en',
                 "id_sito_web_cds_topic__id",
-                "id_sito_web_cds_topic__topic_cod",
+                'id_sito_web_cds_oggetti_portale',
+                'id_sito_web_cds_articoli_regolamento',
                 "id_sito_web_cds_topic__descr_topic_it",
                 "id_sito_web_cds_topic__descr_topic_en",
-                "cds_id",
+                'visibile'
             ).distinct()
 
             query = list(query)
@@ -801,17 +803,22 @@ class ServiceDidatticaCds:
                 articles = SitoWebCdsTopicArticoliReg.objects.filter(
                     id__exact=q['id']).values(
                     'id_sito_web_cds_articoli_regolamento',
-                    'id_sito_web_cds_articoli_regolamento__titolo_it',
-                    'id_sito_web_cds_articoli_regolamento__contenuto_it',
-                    'id_sito_web_cds_articoli_regolamento__titolo_en',
-                    'id_sito_web_cds_articoli_regolamento__contenuto_en',
+                    'id_sito_web_cds_articoli_regolamento__titolo_articolo_it',
+                    'id_sito_web_cds_articoli_regolamento__testo_it',
+                    'id_sito_web_cds_articoli_regolamento__titolo_articolo_en',
+                    'id_sito_web_cds_articoli_regolamento__titolo_articolo_en',
+                    'id_sito_web_cds_articoli_regolamento__testo_en',
+                    'id_sito_web_cds_articoli_regolamento__numero',
+                    'id_sito_web_cds_articoli_regolamento__visibile',
+                    'id_sito_web_cds_articoli_regolamento__aa_regdid_id',
+                    'id_sito_web_cds_articoli_regolamento__cds_id',
+                    'id_sito_web_cds_articoli_regolamento__cds_id__cds_cod',
                 ).order_by('id_sito_web_cds_articoli_regolamento')
 
                 if len(articles) > 0:
                     q['Articles'] = articles
                 else:
                     q['Articles'] = []
-
 
                 for a in articles:
                     other_data = SitoWebCdsArticoliRegAltriDati.objects.filter(
@@ -823,7 +830,7 @@ class ServiceDidatticaCds:
                         'titolo_it',
                         'testo_it',
                         'testo_en',
-                        'stato'
+                        'visibile'
                     ).order_by('ordine')
 
                     if len(other_data) > 0:
@@ -831,25 +838,23 @@ class ServiceDidatticaCds:
                     else:
                         a['OtherData'] = []
 
-                    objects = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
-                        id_sito_web_cds_articoli_regolamento__exact=a['id_sito_web_cds_articoli_regolamento']).values(
-                        'id',
-                        'aa_regdid_id',
-                        'id_sito_web_cds_articoli_regolamento',
-                        'id_oggetto_portale',
-                        'id_classe_oggetto_portale',
-                        'titolo_it',
-                        'titolo_en',
-                        'testo_it',
-                        'testo_en',
-                        'ordine',
-                        'stato'
-                    ).order_by('ordine')
+                objects = SitoWebCdsOggettiPortale.objects.filter(
+                    id__exact=q['id_sito_web_cds_oggetti_portale']).values(
+                    'id',
+                    'cds_id',
+                    'cds_id__cds_cod',
+                    'aa_regdid_id',
+                    'id_oggetto_portale',
+                    'id_classe_oggetto_portale',
+                    'testo_it',
+                    'testo_en',
+                    'visibile'
+                ).order_by('id')
 
-                    if len(objects) > 0:
-                        a['ArticleObjects'] = objects
-                    else:
-                        a['ArticleObjects'] = []
+                if len(objects) > 0:
+                    q['CdsObjects'] = objects
+                else:
+                    q['CdsObjects'] = []
 
             return query
 

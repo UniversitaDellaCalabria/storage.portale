@@ -3871,29 +3871,45 @@ class SitoWebCdsSlider(models.Model):
         db_table = 'SITO_WEB_CDS_SLIDER'
 
 
-class SitoWebCdsTipologiaArticolo(models.Model):
+class SitoWebCdsOggettiPortale(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    cod_tipologia = models.CharField(db_column='COD_TIPOLOGIA', max_length=100)  # Field name made lowercase.
-    descr_tipologia = models.CharField(db_column='DESCR_TIPOLOGIA', max_length=2000)  # Field name made lowercase.
-    num_rif_articolo = models.PositiveIntegerField(db_column='NUM_RIF_ARTICOLO', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = True
-        db_table = 'SITO_WEB_CDS_TIPOLOGIA_ARTICOLO'
-
-
-class SitoWebCdsTopic(models.Model):
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    topic_cod = models.CharField(db_column='TOPIC_COD', max_length=100)  # Field name made lowercase.
-    descr_topic_it = models.CharField(db_column='DESCR_TOPIC_IT', max_length=2000)  # Field name made lowercase.
-    descr_topic_en = models.CharField(db_column='DESCR_TOPIC_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
-    num_articolo = models.TextField(db_column='NUM_ARTICOLO', blank=True, null=True)  # Field name made lowercase.
-    dt_mod = models.DateField(db_column='DT_MOD', null=True)  # Field name made lowercase.
+    cds = models.ForeignKey(DidatticaCds, models.DO_NOTHING, db_column='CDS_ID')  # Field name made lowercase.
+    aa_regdid_id = models.IntegerField(db_column='AA_REGDID_ID')  # Field name made lowercase.
+    id_oggetto_portale = models.IntegerField(db_column='ID_OGGETTO_PORTALE')  # Field name made lowercase.
+    id_classe_oggetto_portale = models.CharField(db_column='ID_CLASSE_OGGETTO_PORTALE',
+                                                 max_length=1000)  # Field name made lowercase.
+    id_sito_web_cds_topic = models.IntegerField(db_column='ID_SITO_WEB_CDS_TOPIC', blank=True,
+                                                null=True)  # Field name made lowercase.
+    testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
+    testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
+    visibile = models.IntegerField(db_column='VISIBILE')  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(),on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
-        db_table = 'SITO_WEB_CDS_TOPIC'
+        db_table = 'SITO_WEB_CDS_OGGETTI_PORTALE'
+
+
+class SitoWebCdsOggettiPortaleAltriDati(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_sito_web_cds_oggetti_portale = models.ForeignKey(SitoWebCdsOggettiPortale, models.DO_NOTHING,
+                                                        db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE')  # Field name made lowercase.
+    ordine = models.PositiveIntegerField(db_column='ORDINE')  # Field name made lowercase.
+    tipo_dato = models.CharField(db_column='TIPO_DATO', max_length=100)  # Field name made lowercase.
+    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True,
+                                 null=True)  # Field name made lowercase.
+    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000, blank=True,
+                                 null=True)  # Field name made lowercase.
+    testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
+    testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
+    visibile = models.IntegerField(db_column='VISIBILE')  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'SITO_WEB_CDS_OGGETTI_PORTALE_ALTRI_DATI'
 
 
 class SitoWebCdsArticoliRegolamento(models.Model):
@@ -3901,11 +3917,12 @@ class SitoWebCdsArticoliRegolamento(models.Model):
     cds = models.ForeignKey(DidatticaCds, models.DO_NOTHING, db_column='CDS_ID')  # Field name made lowercase.
     aa_regdid_id = models.IntegerField(db_column='AA_REGDID_ID')  # Field name made lowercase.
     numero = models.PositiveIntegerField(db_column='NUMERO', blank=True, null=True)  # Field name made lowercase.
-    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=2000)  # Field name made lowercase.
-    contenuto_it = models.TextField(db_column='CONTENUTO_IT')  # Field name made lowercase.
-    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
-    contenuto_en = models.TextField(db_column='CONTENUTO_EN', blank=True, null=True)  # Field name made lowercase.
-    stato = models.CharField(db_column='STATO', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    titolo_articolo_it = models.CharField(db_column='TITOLO_ARTICOLO_IT', max_length=2000)  # Field name made lowercase.
+    testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
+    titolo_articolo_en = models.CharField(db_column='TITOLO_ARTICOLO_EN', max_length=2000, blank=True,
+                                          null=True)  # Field name made lowercase.
+    testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
+    visibile = models.IntegerField(db_column='VISIBILE')  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(),on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
@@ -3915,14 +3932,17 @@ class SitoWebCdsArticoliRegolamento(models.Model):
 
 
 class SitoWebCdsArticoliRegAltriDati(models.Model):
+    visibile = models.IntegerField(db_column='VISIBILE')  # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_sito_web_cds_articoli_regolamento = models.ForeignKey(SitoWebCdsArticoliRegolamento, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO')  # Field name made lowercase.
+    id_sito_web_cds_articoli_regolamento = models.ForeignKey(SitoWebCdsArticoliRegolamento, models.DO_NOTHING,
+                                                             db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO')  # Field name made lowercase.
     ordine = models.PositiveIntegerField(db_column='ORDINE')  # Field name made lowercase.
-    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True,
+                                 null=True)  # Field name made lowercase.
+    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000, blank=True,
+                                 null=True)  # Field name made lowercase.
     testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
-    stato = models.CharField(db_column='STATO', max_length=100)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(),on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
@@ -3931,37 +3951,33 @@ class SitoWebCdsArticoliRegAltriDati(models.Model):
         db_table = 'SITO_WEB_CDS_ARTICOLI_REG_ALTRI_DATI'
 
 
+class SitoWebCdsTopic(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    descr_topic_it = models.CharField(db_column='DESCR_TOPIC_IT', max_length=2000)  # Field name made lowercase.
+    descr_topic_en = models.CharField(db_column='DESCR_TOPIC_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(),on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+    visibile = models.IntegerField(db_column='VISIBILE')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'SITO_WEB_CDS_TOPIC'
+
+
 class SitoWebCdsTopicArticoliReg(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000)  # Field name made lowercase.
+    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     id_sito_web_cds_topic = models.ForeignKey(SitoWebCdsTopic, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_TOPIC')  # Field name made lowercase.
-    id_sito_web_cds_articoli_regolamento = models.ForeignKey(SitoWebCdsArticoliRegolamento, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO')  # Field name made lowercase.
+    id_sito_web_cds_oggetti_portale = models.ForeignKey(SitoWebCdsOggettiPortale, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', blank=True, null=True)  # Field name made lowercase.
+    id_sito_web_cds_articoli_regolamento = models.ForeignKey(SitoWebCdsArticoliRegolamento, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO', blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
-    cds_id = models.IntegerField(db_column='CDS_ID', blank=True, null=True)  # Field name made lowercase.
-    topic_cod = models.CharField(db_column='TOPIC_COD', max_length=100, blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
-    id_user_mod = models.IntegerField(get_user_model(), db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+    visibile = models.IntegerField(db_column='VISIBILE')  # Field name made lowercase.
 
     class Meta:
         managed = True
         db_table = 'SITO_WEB_CDS_TOPIC_ARTICOLI_REG'
         unique_together = (('id_sito_web_cds_topic', 'id_sito_web_cds_articoli_regolamento'),)
 
-
-class SitoWebCdsOggettiPortaleAltriDati(models.Model):
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_sito_web_cds_articoli_regolamento = models.ForeignKey(SitoWebCdsArticoliRegolamento, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO')  # Field name made lowercase.
-    aa_regdid_id = models.IntegerField(db_column='AA_REGDID_ID')  # Field name made lowercase.
-    id_oggetto_portale = models.IntegerField(db_column='ID_OGGETTO_PORTALE')  # Field name made lowercase.
-    id_classe_oggetto_portale = models.CharField(db_column='ID_CLASSE_OGGETTO_PORTALE', max_length=1000)  # Field name made lowercase.
-    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
-    testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
-    ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
-    stato = models.CharField(db_column='STATO', max_length=100)  # Field name made lowercase.
-    dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
-    id_user_mod = models.ForeignKey(get_user_model(),on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = True
-        db_table = 'SITO_WEB_CDS_OGGETTI_PORTALE_ALTRI_DATI'

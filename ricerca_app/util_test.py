@@ -87,7 +87,7 @@ from .models import (
     SitoWebCdsArticoliRegolamento,
     SitoWebCdsArticoliRegAltriDati,
     SitoWebCdsOggettiPortaleAltriDati,
-    SitoWebCdsTipologiaArticolo
+    SitoWebCdsOggettiPortale,
 )
 
 
@@ -1052,6 +1052,16 @@ class SitoWebCdsTopicArticoliRegUnitTest(TestCase): # pragma: no cover
             data[k] = v
 
         obj = SitoWebCdsTopicArticoliReg.objects.create(**data)
+        return obj
+
+class SitoWebCdsOggettiPortaleUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsOggettiPortale(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsOggettiPortale.objects.create(**data)
         return obj
 
 

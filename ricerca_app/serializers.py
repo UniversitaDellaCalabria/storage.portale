@@ -407,9 +407,8 @@ class CdsWebsitesTopicSerializer(CreateUpdateAbstract):
 
         return {
             'TopicId': query['id'],
-            'TopicCod': query['topic_cod'],
             'TopicDescription': query['descr_topic_it'] if req_lang=='it' or query['descr_topic_en'] is None else query['descr_topic_en'],
-            'ArticleNumber': query['num_articolo']
+            'Visible': query['visibile']
         }
 
 
@@ -429,14 +428,19 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
             articles = CdsWebsitesTopicArticlesSerializer.to_dict_articles(
                 query['Articles'], req_lang)
 
+        if query['CdsObjects'] is not None:
+            objects = CdsWebsitesTopicArticlesSerializer.to_dict_objects(
+                query['CdsObjects'], req_lang)
+
 
         return {
             'ID': query['id'],
             'TopicId': query['id_sito_web_cds_topic__id'],
-            'TopicCod': query['id_sito_web_cds_topic__topic_cod'],
+            'TopicTitle': query['titolo_it'] if req_lang=='it' or query['titolo_en'] is None else query['titolo_en'],
             'TopicDescription': query['id_sito_web_cds_topic__descr_topic_it'] if req_lang=='it' or query['id_sito_web_cds_topic__descr_topic_en'] is None else query['id_sito_web_cds_topic__descr_topic_en'],
-            'CDSId': query['cds_id'],
-            'CdsArticles': articles
+            'Visible': query['visibile'],
+            'CdsArticles': articles,
+            'CdsObjects': objects
         }
 
 
@@ -447,10 +451,14 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
         for q in query:
             articles.append({
                 'ArticleId': q['id_sito_web_cds_articoli_regolamento'],
-                'ArticleTitle': q['id_sito_web_cds_articoli_regolamento__titolo_it'] if req_lang == 'it' or q['id_sito_web_cds_articoli_regolamento__titolo_en'] is None else q['id_sito_web_cds_articoli_regolamento__titolo_en'],
-                'ArticleDescription': q['id_sito_web_cds_articoli_regolamento__contenuto_it'] if req_lang == 'it' or q['id_sito_web_cds_articoli_regolamento__contenuto_en'] is None else q['id_sito_web_cds_articoli_regolamento__contenuto_en'],
+                'ArticleTitle': q['id_sito_web_cds_articoli_regolamento__titolo_articolo_it'] if req_lang == 'it' or q['id_sito_web_cds_articoli_regolamento__titolo_articolo_en'] is None else q['id_sito_web_cds_articoli_regolamento__titolo_articolo_en'],
+                'ArticleDescription': q['id_sito_web_cds_articoli_regolamento__testo_it'] if req_lang == 'it' or q['id_sito_web_cds_articoli_regolamento__testo_en'] is None else q['id_sito_web_cds_articoli_regolamento__testo_en'],
+                'ArticleNumber': q['id_sito_web_cds_articoli_regolamento__numero'],
+                'Visible': q['id_sito_web_cds_articoli_regolamento__visibile'],
+                'YearRegDidID': q['id_sito_web_cds_articoli_regolamento__aa_regdid_id'],
+                'CdSCod': q['id_sito_web_cds_articoli_regolamento__cds_id__cds_cod'],
                 'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q['OtherData'], req_lang),
-                'ArticleObjects': CdsWebsitesTopicArticlesSerializer.to_dict_objects(q['ArticleObjects'], req_lang),
+
             })
         return articles
 
@@ -466,6 +474,7 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'Order': q['ordine'],
                 'Title': q['titolo_it'] if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
                 'Text': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'Visible': q['visibile']
             })
         return other_data
 
@@ -475,13 +484,11 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
         for q in query:
             objects.append({
                 'Id': q['id'],
-                'YearRegdidID': q['aa_regdid_id'],
+                'CdSCod': q['cds_id__cds_cod'],
+                'YearRegDidID': q['aa_regdid_id'],
                 'ObjectId': q['id_oggetto_portale'],
-                'ClassId': q['id_classe_oggetto_portale'],
-                'ObjectTitle': q['titolo_it'] if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
+                'ClassObjectId': q['id_classe_oggetto_portale'],
                 'ObjectText': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
-                'ObjectOrder': q['ordine'],
-                'ObjectStatus': q['stato'],
             })
         return objects
 

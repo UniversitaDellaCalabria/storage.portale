@@ -1312,7 +1312,7 @@ class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
 
     def get_queryset(self):
 
-        cds_id = self.request.query_params.get('cds_id')
+        cds_cod = self.request.query_params.get('cds_cod')
         topic_id = self.request.query_params.get('topic_id')
 
-        return ServiceDidatticaCds.getCdsWebsitesTopicArticles(cds_id, topic_id)
+        return ServiceDidatticaCds.getCdsWebsitesTopicArticles(cds_cod, topic_id)
