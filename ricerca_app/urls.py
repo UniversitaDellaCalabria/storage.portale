@@ -115,7 +115,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiCdsWebsiteList.as_view(),
                         name='cdswebsitelist'),
 
-    urlpatterns += path('{}/cds-websites/<int:cdswebsiteid>/'.format(base_url),
+    urlpatterns += path('{}/cds-websites/<str:cdswebsitecod>/'.format(base_url),
                         api_views.ApiCdsWebsiteDetail.as_view(),
                         name='cdswebsitedetail'),
 

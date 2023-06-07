@@ -525,13 +525,10 @@ class ServiceDidatticaCds:
 
     @staticmethod
     def getCdsWebsites(search, academic_year, cdslanguage, course_class):
-
         query_search = Q()
         query_year = Q()
         query_cdslanguage = Q()
         query_courseclass = Q()
-
-
 
         if search:
             for k in search.split(" "):
@@ -650,9 +647,8 @@ class ServiceDidatticaCds:
         return query
 
     @staticmethod
-    def getCdsWebsite(cds_id):
-
-        query = SitoWebCdsDatiBase.objects.filter(id__exact=cds_id).values(
+    def getCdsWebsite(cds_cod):
+        query = SitoWebCdsDatiBase.objects.filter(cds_cod__exact=cds_cod).values(
             "id",
             'cds_id',
             "cds_cod",
@@ -693,7 +689,6 @@ class ServiceDidatticaCds:
             "sito_web_en",
             "sito_web_cds_status",
             'id_didattica_regolamento'
-
         )
 
         query = list(query)
@@ -752,8 +747,6 @@ class ServiceDidatticaCds:
 
     @staticmethod
     def getCdsWebsitesDegreeTypes():
-
-
         query = SitoWebCdsDatiBase.objects.values(
             "classe_laurea_it",
             "classe_laurea_en"

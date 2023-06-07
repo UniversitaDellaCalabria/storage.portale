@@ -260,9 +260,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
 
 class CdsWebsiteSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
-        query = instance
         data = super().to_representation(instance)
-        data.update(self.to_dict(query,
+        data.update(self.to_dict(instance,
                                  str(self.context['language']).lower()))
         return data
 

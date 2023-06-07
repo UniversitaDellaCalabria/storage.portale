@@ -65,7 +65,6 @@ class ApiEndpointDetail(ApiEndpointList):
                 'lang', 'null')).lower()
         if self.language == 'null':
             self.language = self.request.LANGUAGE_CODE
-
         queryset = self.get_queryset()
         if queryset is not None and len(queryset) > 0:
             serializer = self.get_serializer(queryset[0], many=False)
@@ -73,7 +72,6 @@ class ApiEndpointDetail(ApiEndpointList):
                 'results': serializer.data,
                 'labels': encode_labels(serializer.data, self.language)
             })
-
         return Response({
             'results': {},
             'labels': {}
@@ -1281,8 +1279,8 @@ class ApiCdsWebsiteDetail(ApiEndpointDetail):
     filter_backends = []
 
     def get_queryset(self):
-        cds_id = str(self.kwargs['cdswebsiteid'])
-        return ServiceDidatticaCds.getCdsWebsite(cds_id)
+        cds_cod = self.kwargs['cdswebsitecod']
+        return ServiceDidatticaCds.getCdsWebsite(cds_cod)
 
 
 class ApiCdsWebsitesDegreeTypes(ApiEndpointList):
