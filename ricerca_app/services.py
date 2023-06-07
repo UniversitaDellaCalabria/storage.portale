@@ -22,7 +22,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
-    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsOggettiPortale
+    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento
 from . serializers import StructuresSerializer
 
 
@@ -774,7 +774,6 @@ class ServiceDidatticaCds:
             query_cdscod = Q(id_sito_web_cds_oggetti_portale__cds_id__cds_cod=cds_cod) | Q(id_sito_web_cds_articoli_regolamento__cds_id__cds_cod=cds_cod)
             query_topicid = Q(id_sito_web_cds_topic__exact=topic_id)
 
-
             query = SitoWebCdsTopicArticoliReg.objects.filter(
                 query_cdscod,
                 query_topicid
@@ -794,45 +793,39 @@ class ServiceDidatticaCds:
             query = list(query)
 
             for q in query:
-                articles = SitoWebCdsTopicArticoliReg.objects.filter(
-                    id__exact=q['id']).values(
-                    'id_sito_web_cds_articoli_regolamento',
-                    'id_sito_web_cds_articoli_regolamento__titolo_articolo_it',
-                    'id_sito_web_cds_articoli_regolamento__testo_it',
-                    'id_sito_web_cds_articoli_regolamento__titolo_articolo_en',
-                    'id_sito_web_cds_articoli_regolamento__titolo_articolo_en',
-                    'id_sito_web_cds_articoli_regolamento__testo_en',
-                    'id_sito_web_cds_articoli_regolamento__numero',
-                    'id_sito_web_cds_articoli_regolamento__visibile',
-                    'id_sito_web_cds_articoli_regolamento__aa_regdid_id',
-                    'id_sito_web_cds_articoli_regolamento__cds_id',
-                    'id_sito_web_cds_articoli_regolamento__cds_id__cds_cod',
-                ).order_by('id_sito_web_cds_articoli_regolamento')
+                article = SitoWebCdsArticoliRegolamento.objects.filter(
+                    id__exact=q['id_sito_web_cds_articoli_regolamento']).values(
+                    'id',
+                    'titolo_articolo_it',
+                    'testo_it',
+                    'titolo_articolo_en',
+                    'titolo_articolo_en',
+                    'testo_en',
+                    'numero',
+                    'visibile',
+                    'aa_regdid_id',
+                    'cds_id',
+                    'cds_id__cds_cod',
+                ).first()
+                # .order_by('id_sito_web_cds_articoli_regolamento')
+                q['Articles'] = article
 
-                if len(articles) > 0:
-                    q['Articles'] = articles
-                else:
-                    q['Articles'] = []
-
-                for a in articles:
+                if article:
                     other_data = SitoWebCdsArticoliRegAltriDati.objects.filter(
-                        id_sito_web_cds_articoli_regolamento__exact=a['id_sito_web_cds_articoli_regolamento']
-                    ).values(
-                        'id',
-                        'ordine',
-                        'titolo_en',
-                        'titolo_it',
-                        'testo_it',
-                        'testo_en',
-                        'visibile'
-                    ).order_by('ordine')
+                            id_sito_web_cds_articoli_regolamento=article['id']
+                        ).values(
+                            'id',
+                            'ordine',
+                            'titolo_en',
+                            'titolo_it',
+                            'testo_it',
+                            'testo_en',
+                            'visibile'
+                        ).order_by('ordine')
 
-                    if len(other_data) > 0:
-                        a['OtherData'] = other_data
-                    else:
-                        a['OtherData'] = []
+                    article['OtherData'] = other_data if other_data else []
 
-                objects = SitoWebCdsOggettiPortale.objects.filter(
+                unicms_object = SitoWebCdsOggettiPortale.objects.filter(
                     id__exact=q['id_sito_web_cds_oggetti_portale']).values(
                     'id',
                     'cds_id',
@@ -843,12 +836,24 @@ class ServiceDidatticaCds:
                     'testo_it',
                     'testo_en',
                     'visibile'
-                ).order_by('id')
+                ).first()
 
-                if len(objects) > 0:
-                    q['CdsObjects'] = objects
-                else:
-                    q['CdsObjects'] = []
+                q['CdsObjects'] = unicms_object
+
+                if unicms_object:
+                    other_data = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
+                            id_sito_web_cds_oggetti_portale=unicms_object['id']
+                        ).values(
+                            'id',
+                            'ordine',
+                            'titolo_it',
+                            'titolo_en',
+                            'testo_it',
+                            'testo_en',
+                            'visibile'
+                        ).order_by('ordine')
+
+                    unicms_object['OtherData'] = other_data if other_data else []
 
             return query
 
