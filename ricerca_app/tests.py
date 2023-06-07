@@ -5866,6 +5866,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
 
         s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
             'id': 1,
+            'cds_cod': '1',
             'aa': '2022',
             'nome_corso_it': 'Informatica',
             'nome_corso_en': 'Computer Science',
@@ -5904,7 +5905,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             'id_sito_web_cds_dati_base': s1,
         })
 
-        url = reverse('ricerca:cdswebsitedetail', kwargs={'cdswebsiteid': 1})
+        url = reverse('ricerca:cdswebsitedetail', kwargs={'cdswebsitecod': '1'})
 
         # check url
         res = req.get(url)
