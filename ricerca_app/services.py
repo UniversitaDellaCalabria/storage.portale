@@ -787,8 +787,9 @@ class ServiceDidatticaCds:
                 'id_sito_web_cds_articoli_regolamento',
                 "id_sito_web_cds_topic__descr_topic_it",
                 "id_sito_web_cds_topic__descr_topic_en",
-                'visibile'
-            ).distinct()
+                'visibile',
+                'ordine'
+            ).distinct().order_by('ordine')
 
             query = list(query)
 
