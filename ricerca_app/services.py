@@ -769,10 +769,10 @@ class ServiceDidatticaCds:
 
     @staticmethod
     def getCdsWebsitesTopicArticles(cds_cod, topic_id):
-
         if cds_cod and topic_id:
+            topic_id_list = topic_id.split(",")
             query_cdscod = Q(id_sito_web_cds_oggetti_portale__cds_id__cds_cod=cds_cod) | Q(id_sito_web_cds_articoli_regolamento__cds_id__cds_cod=cds_cod)
-            query_topicid = Q(id_sito_web_cds_topic__exact=topic_id)
+            query_topicid = Q(id_sito_web_cds_topic__id__in=topic_id_list)
 
             query = SitoWebCdsTopicArticoliReg.objects.filter(
                 query_cdscod,
@@ -788,7 +788,7 @@ class ServiceDidatticaCds:
                 "id_sito_web_cds_topic__descr_topic_en",
                 'visibile',
                 'ordine'
-            ).distinct().order_by('ordine')
+            ).distinct().order_by('id_sito_web_cds_topic__id','ordine')
 
             query = list(query)
 
@@ -856,9 +856,7 @@ class ServiceDidatticaCds:
                     unicms_object['OtherData'] = other_data if other_data else []
 
             return query
-
-        else:
-            return {}
+        return {}
 
 
 class ServiceDidatticaAttivitaFormativa:
