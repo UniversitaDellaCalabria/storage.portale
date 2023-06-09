@@ -468,7 +468,6 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
         if q and getattr(settings, 'UNICMS_AUTH_TOKEN', '') and getattr(settings, 'UNICMS_PUBLICATION_API_URL', ''):
             head = {'Authorization': 'Token {}'.format(getattr(settings, 'UNICMS_AUTH_TOKEN'))}
             _unicms_object = requests.get(getattr(settings, 'UNICMS_PUBLICATION_API_URL').format(q['id_oggetto_portale']), headers=head)
-            print(_unicms_object)
             return {
                 'Id': q['id'],
                 'CdSCod': q['cds_id__cds_cod'],
