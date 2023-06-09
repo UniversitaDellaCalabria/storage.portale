@@ -356,3 +356,6 @@ CKEDITOR_CONFIGS = {
         ]
     }
 }
+
+UNICMS_AUTH_TOKEN = 'secret_token'
+UNICMS_PUBLICATION_API_URL = 'api_url'
