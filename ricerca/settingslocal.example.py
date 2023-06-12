@@ -358,4 +358,6 @@ CKEDITOR_CONFIGS = {
 }
 
 UNICMS_AUTH_TOKEN = 'secret_token'
+UNICMS_ROOT_URL = 'root_url'
 UNICMS_PUBLICATION_API_URL = 'api_url'
+UNICMS_WEBPATH_API_URL = 'api_url'
