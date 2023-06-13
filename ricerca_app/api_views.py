@@ -1301,8 +1301,6 @@ class ApiCdsWebsitesTopicList(ApiEndpointList):
         return ServiceDidatticaCds.getCdsWebsitesTopics()
 
 
-
-
 class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
     description = 'Restituisce l’elenco dei topic per i siti web dei cds'
     serializer_class = CdsWebsitesTopicArticlesSerializer

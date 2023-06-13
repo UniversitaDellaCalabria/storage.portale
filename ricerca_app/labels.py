@@ -503,8 +503,9 @@ LABEL_MAPPING = {
         'CdsObject': 'Cds Object',
         'YearRegDidID': 'Year RegDidID',
         'ClassObjectId': 'Class Object Id',
-        'TopicTitle': 'Topic Title'
-
+        'TopicTitle': 'Topic Title',
+        # 'Object': 'Object',
+        # 'id': 'id'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -1002,7 +1003,7 @@ LABEL_MAPPING = {
         'ObjectId': 'Id Oggetto',
         'ClassId': 'Id Classe Oggetto',
         'ObjectTitle': 'Title',
-        'ObjectText': 'Text',
+        'ObjectText': 'Testo',
         'ObjectOrder': 'Order',
         'ObjectStatus': 'Status',
         'ArticleObjects': 'Oggetti Articoli',
@@ -1010,6 +1011,8 @@ LABEL_MAPPING = {
         'CdsObject': 'Oggetto Cds',
         'YearRegDidID': 'Anno regolamento didattico',
         'ClassObjectId': 'Id Classe Oggetto',
-        'TopicTitle': 'Titolo Topic'
-}
+        'TopicTitle': 'Titolo Topic',
+        # 'Object': 'Oggetto',
+        # 'id': 'id'
+    }
 }

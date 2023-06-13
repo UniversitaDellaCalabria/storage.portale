@@ -465,15 +465,18 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict_objects(q, req_lang='en'):
-        if q and getattr(settings, 'UNICMS_AUTH_TOKEN', '') and getattr(settings, 'UNICMS_PUBLICATION_API_URL', ''):
+        if q and getattr(settings, 'UNICMS_AUTH_TOKEN', ''):
             head = {'Authorization': 'Token {}'.format(getattr(settings, 'UNICMS_AUTH_TOKEN'))}
-            _unicms_object = requests.get(getattr(settings, 'UNICMS_PUBLICATION_API_URL').format(q['id_oggetto_portale']), headers=head)
+            unicms_obj_api = getattr(settings, 'UNICMS_OBJECT_API', {})
+            api_url = unicms_obj_api.get(q['id_classe_oggetto_portale'], '')
+            unicms_object = requests.get(api_url.format(q['id_oggetto_portale']),
+                                         headers=head) if api_url else None
             return {
                 'Id': q['id'],
                 'CdSCod': q['cds_id__cds_cod'],
                 'YearRegDidID': q['aa_regdid_id'],
                 'ObjectId': q['id_oggetto_portale'],
-                'Object': json.loads(_unicms_object._content),
+                'Object': json.loads(unicms_object._content) if unicms_object else None,
                 'ClassObjectId': q['id_classe_oggetto_portale'],
                 'ObjectText': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
                 'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q.get('OtherData', []), req_lang),
