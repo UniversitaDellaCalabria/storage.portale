@@ -438,8 +438,8 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
 
         return {
             'ID': query['id'],
+            'Title': query['titolo_it'] if req_lang=='it' or query['titolo_en'] is None else query['titolo_en'],
             'TopicId': query['id_sito_web_cds_topic__id'],
-            'TopicTitle': query['titolo_it'] if req_lang=='it' or query['titolo_en'] is None else query['titolo_en'],
             'TopicDescription': query['id_sito_web_cds_topic__descr_topic_it'] if req_lang=='it' or query['id_sito_web_cds_topic__descr_topic_en'] is None else query['id_sito_web_cds_topic__descr_topic_en'],
             'Visible': query['visibile'],
             'Order': query['ordine'],
