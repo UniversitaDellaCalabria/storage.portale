@@ -26,3 +26,5 @@ cryptography
 python-magic
 
 django-ckeditor
+
+requests
