@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='didatticacdsaltridatiufficio',
             name='id',
-            field=models.AutoField(db_column='ID', default=1, primary_key=True, serialize=False),
+            field=models.AutoField(db_column='ID', primary_key=True, serialize=False),
             preserve_default=False,
         ),
         migrations.AlterField(
