@@ -97,7 +97,31 @@
                         </tr>
                         <tr>
                             <td><b>{% trans "Registration procedure" %}</b></td>
-                            <td>{{ other_data.modalita_iscrizione|safe|default:"-" }}</td>
+                            <td>{{ other_data.modalita_iscrizione|default:"-"|safe }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>{% trans "Study manifesto" %}</b></td>
+                            <td>
+                                {% if other_data.manifesto_studi %}
+                                <a href="{% get_media_prefix %}{{ other_data.manifesto_studi }}" target="_blank">
+                                    {% trans "Download" %}
+                                </a>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>{% trans "Didactic regulation" %}</b></td>
+                            <td>
+                                {% if other_data.regolamento_didattico %}
+                                <a href="{% get_media_prefix %}{{ other_data.regolamento_didattico }}" target="_blank">
+                                    {% trans "Download" %}
+                                </a>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
