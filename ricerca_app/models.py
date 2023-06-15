@@ -3981,3 +3981,335 @@ class SitoWebCdsTopicArticoliReg(models.Model):
         db_table = 'SITO_WEB_CDS_TOPIC_ARTICOLI_REG'
         unique_together = (('id_sito_web_cds_topic', 'id_sito_web_cds_articoli_regolamento'),)
 
+
+class DidatticaAmbiti(models.Model):
+    amb_id = models.IntegerField(db_column='AMB_ID', primary_key=True)  # Field name made lowercase.
+    des = models.CharField(db_column='DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    amb_sede_flg = models.IntegerField(db_column='AMB_SEDE_FLG', blank=True, null=True)  # Field name made lowercase.
+    sys_flg = models.IntegerField(db_column='SYS_FLG', blank=True, null=True)  # Field name made lowercase.
+    amb_aggr_flg = models.IntegerField(db_column='AMB_AGGR_FLG', blank=True, null=True)  # Field name made lowercase.
+    prg_ord_amb = models.IntegerField(db_column='PRG_ORD_AMB', blank=True, null=True)  # Field name made lowercase.
+    dt_ins = models.DateField(db_column='DT_INS', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_AMBITI'
+
+
+class DidatticaPianoRegolamento(models.Model):
+    regpiani_id = models.IntegerField(db_column='REGPIANI_ID', primary_key=True)  # Field name made lowercase.
+    regdid = models.ForeignKey('DidatticaRegolamento', models.DO_NOTHING, db_column='REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    attinenza_cod = models.CharField(db_column='ATTINENZA_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    cod = models.CharField(db_column='COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    aa_coorte_id = models.IntegerField(db_column='AA_COORTE_ID', blank=True, null=True)  # Field name made lowercase.
+    aa_regpiani_id = models.IntegerField(db_column='AA_REGPIANI_ID', blank=True, null=True)  # Field name made lowercase.
+    des = models.CharField(db_column='DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    def_flg = models.IntegerField(db_column='DEF_FLG', blank=True, null=True)  # Field name made lowercase.
+    stato_cod = models.CharField(db_column='STATO_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    stato_des = models.CharField(db_column='STATO_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    regpiani_pdr_id = models.IntegerField(db_column='REGPIANI_PDR_ID', blank=True, null=True)  # Field name made lowercase.
+    regpiani_pdr_cod = models.CharField(db_column='REGPIANI_PDR_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    regpiani_pdr_des = models.CharField(db_column='REGPIANI_PDR_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    regpiani_pdr_aa_coorte_id = models.IntegerField(db_column='REGPIANI_PDR_AA_COORTE_ID', blank=True, null=True)  # Field name made lowercase.
+    regpiani_pdr_aa_regpiani_id = models.IntegerField(db_column='REGPIANI_PDR_AA_REGPIANI_ID', blank=True, null=True)  # Field name made lowercase.
+    flg_exp_seg_stu = models.IntegerField(db_column='FLG_EXP_SEG_STU', blank=True, null=True)  # Field name made lowercase.
+    data_exp_seg_stu = models.DateField(db_column='DATA_EXP_SEG_STU', blank=True, null=True)  # Field name made lowercase.
+    nota = models.CharField(db_column='NOTA', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_PIANO_REGOLAMENTO'
+
+
+class DidatticaPianoSceltaAf(models.Model):
+    sce_af_id = models.IntegerField(db_column='SCE_AF_ID', primary_key=True)  # Field name made lowercase.
+    sce = models.ForeignKey('DidatticaPianoSceltaVincoli', models.DO_NOTHING, db_column='SCE_ID', blank=True, null=True)  # Field name made lowercase.
+    pds_regdid = models.ForeignKey(DidatticaPdsRegolamento, models.DO_NOTHING, db_column='PDS_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    pds_cod = models.CharField(db_column='PDS_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    pds_des = models.CharField(db_column='PDS_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sce_blk_id = models.IntegerField(db_column='SCE_BLK_ID', blank=True, null=True)  # Field name made lowercase.
+    min_unt_blk = models.DecimalField(db_column='MIN_UNT_BLK', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    max_unt_blk = models.DecimalField(db_column='MAX_UNT_BLK', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    lingua_id = models.IntegerField(db_column='LINGUA_ID', blank=True, null=True)  # Field name made lowercase.
+    blk_prg = models.IntegerField(db_column='BLK_PRG', blank=True, null=True)  # Field name made lowercase.
+    lingua_iso6392_cod = models.CharField(db_column='LINGUA_ISO6392_COD', max_length=3, blank=True, null=True)  # Field name made lowercase.
+    lingua_des = models.CharField(db_column='LINGUA_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    lingua_num = models.IntegerField(db_column='LINGUA_NUM', blank=True, null=True)  # Field name made lowercase.
+    af = models.ForeignKey(DidatticaAttivitaFormativa, models.DO_NOTHING, db_column='AF_ID', blank=True, null=True)  # Field name made lowercase.
+    regud_des_auto = models.CharField(db_column='REGUD_DES_AUTO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    regud_des_ute = models.CharField(db_column='REGUD_DES_UTE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    min_unt_af = models.DecimalField(db_column='MIN_UNT_AF', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    max_unt_af = models.DecimalField(db_column='MAX_UNT_AF', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    statutario_flg = models.IntegerField(db_column='STATUTARIO_FLG', blank=True, null=True)  # Field name made lowercase.
+    def_verifica_flg = models.IntegerField(db_column='DEF_VERIFICA_FLG', blank=True, null=True)  # Field name made lowercase.
+    contr_aa_off_flg = models.IntegerField(db_column='CONTR_AA_OFF_FLG', blank=True, null=True)  # Field name made lowercase.
+    regdid_af_id = models.IntegerField(db_column='REGDID_AF_ID', blank=True, null=True)  # Field name made lowercase.
+    pds_regdid_af_id = models.IntegerField(db_column='PDS_REGDID_AF_ID', blank=True, null=True)  # Field name made lowercase.
+    pds_af_cod = models.CharField(db_column='PDS_AF_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    pds_af_des = models.CharField(db_column='PDS_AF_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    comune_af_flg = models.IntegerField(db_column='COMUNE_AF_FLG', blank=True, null=True)  # Field name made lowercase.
+    attinenza_af_cod = models.CharField(db_column='ATTINENZA_AF_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    of_id = models.IntegerField(db_column='OF_ID', blank=True, null=True)  # Field name made lowercase.
+    cds_af_id = models.IntegerField(db_column='CDS_AF_ID', blank=True, null=True)  # Field name made lowercase.
+    cds_af_cod = models.CharField(db_column='CDS_AF_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    nome_af_cds = models.CharField(db_column='NOME_AF_CDS', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    cdsord_af_cod = models.CharField(db_column='CDSORD_AF_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    aa_off_id = models.IntegerField(db_column='AA_OFF_ID', blank=True, null=True)  # Field name made lowercase.
+    stato_of_cod = models.CharField(db_column='STATO_OF_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    tipo_comp_af_id = models.IntegerField(db_column='TIPO_COMP_AF_ID', blank=True, null=True)  # Field name made lowercase.
+    tipo_comp_af_cod = models.CharField(db_column='TIPO_COMP_AF_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    des_tipo_comp_af = models.CharField(db_column='DES_TIPO_COMP_AF', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    af_gen_id = models.IntegerField(db_column='AF_GEN_ID', blank=True, null=True)  # Field name made lowercase.
+    af_gen_cod = models.CharField(db_column='AF_GEN_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    af_gen_des = models.CharField(db_column='AF_GEN_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    anno_corso_af = models.IntegerField(db_column='ANNO_CORSO_AF', blank=True, null=True)  # Field name made lowercase.
+    lista_anni_corso_af = models.CharField(db_column='LISTA_ANNI_CORSO_AF', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    af_regdid_id = models.IntegerField(db_column='AF_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    sett_cod = models.CharField(db_column='SETT_COD', max_length=12, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_cod_af = models.CharField(db_column='TIPO_AF_COD_AF', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_des_af = models.CharField(db_column='TIPO_AF_DES_AF', max_length=80, blank=True, null=True)  # Field name made lowercase.
+    amb_id_af = models.ForeignKey(DidatticaAmbiti, models.DO_NOTHING, db_column='AMB_ID_AF', blank=True, null=True)  # Field name made lowercase.
+    ambito_des_af = models.CharField(db_column='AMBITO_DES_AF', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_intercla_cod_af = models.CharField(db_column='TIPO_AF_INTERCLA_COD_AF', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_intercla_des_af = models.CharField(db_column='TIPO_AF_INTERCLA_DES_AF', max_length=80, blank=True, null=True)  # Field name made lowercase.
+    amb_intercla_id_af = models.IntegerField(db_column='AMB_INTERCLA_ID_AF', blank=True, null=True)  # Field name made lowercase.
+    ambito_intercla_des_af = models.CharField(db_column='AMBITO_INTERCLA_DES_AF', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    peso = models.DecimalField(db_column='PESO', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    peso_foglie_non_log = models.DecimalField(db_column='PESO_FOGLIE_NON_LOG', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    num_max_reit = models.IntegerField(db_column='NUM_MAX_REIT', blank=True, null=True)  # Field name made lowercase.
+    non_erogabile_flg = models.IntegerField(db_column='NON_EROGABILE_FLG', blank=True, null=True)  # Field name made lowercase.
+    livello_af_cod = models.CharField(db_column='LIVELLO_AF_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    livello_af_des = models.CharField(db_column='LIVELLO_AF_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    tipo_esa_cod = models.CharField(db_column='TIPO_ESA_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    tipo_esa_des = models.CharField(db_column='TIPO_ESA_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    tipo_val_cod = models.CharField(db_column='TIPO_VAL_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    tipo_val_des = models.CharField(db_column='TIPO_VAL_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    af_pdr_id = models.IntegerField(db_column='AF_PDR_ID', blank=True, null=True)  # Field name made lowercase.
+    af_radice_id = models.IntegerField(db_column='AF_RADICE_ID', blank=True, null=True)  # Field name made lowercase.
+    num_liv_albero = models.IntegerField(db_column='NUM_LIV_ALBERO', blank=True, null=True)  # Field name made lowercase.
+    ciclo_id = models.IntegerField(db_column='CICLO_ID', blank=True, null=True)  # Field name made lowercase.
+    ciclo_des = models.CharField(db_column='CICLO_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    tipo_ciclo_cod = models.CharField(db_column='TIPO_CICLO_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    des_tipo_ciclo = models.CharField(db_column='DES_TIPO_CICLO', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    org_did_sua_cod = models.IntegerField(db_column='ORG_DID_SUA_COD', blank=True, null=True)  # Field name made lowercase.
+    sede_id = models.IntegerField(db_column='SEDE_ID', blank=True, null=True)  # Field name made lowercase.
+    sede_des = models.CharField(db_column='SEDE_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    tipo_rag_cod = models.CharField(db_column='TIPO_RAG_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    tipo_rag_des = models.CharField(db_column='TIPO_RAG_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    af_capogruppo_id = models.IntegerField(db_column='AF_CAPOGRUPPO_ID', blank=True, null=True)  # Field name made lowercase.
+    scelta_mod_flg = models.IntegerField(db_column='SCELTA_MOD_FLG', blank=True, null=True)  # Field name made lowercase.
+    num_regud = models.DecimalField(db_column='NUM_REGUD', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_PIANO_SCELTA_AF'
+
+
+class DidatticaPianoSceltaFilAnd(models.Model):
+    sce_fil_and_id = models.IntegerField(db_column='SCE_FIL_AND_ID', primary_key=True)  # Field name made lowercase.
+    sce = models.ForeignKey('DidatticaPianoSceltaVincoli', models.DO_NOTHING, db_column='SCE_ID', blank=True, null=True)  # Field name made lowercase.
+    sce_fil_or_id = models.IntegerField(db_column='SCE_FIL_OR_ID', blank=True, null=True)  # Field name made lowercase.
+    sce_fil_or_des = models.CharField(db_column='SCE_FIL_OR_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    tipo_filtro_cod = models.CharField(db_column='TIPO_FILTRO_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    tipo_filtro_des = models.CharField(db_column='TIPO_FILTRO_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    af_gen_id = models.IntegerField(db_column='AF_GEN_ID', blank=True, null=True)  # Field name made lowercase.
+    af_gen_cod = models.CharField(db_column='AF_GEN_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    af_gen_des = models.CharField(db_column='AF_GEN_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    dip_sce_fil_and_id = models.IntegerField(db_column='DIP_SCE_FIL_AND_ID', blank=True, null=True)  # Field name made lowercase.
+    dip_sce_fil_and_cod = models.CharField(db_column='DIP_SCE_FIL_AND_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    dip_sce_fil_and_des = models.CharField(db_column='DIP_SCE_FIL_AND_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    strac_sce_fil_and_id = models.IntegerField(db_column='STRAC_SCE_FIL_AND_ID', blank=True, null=True)  # Field name made lowercase.
+    strac_sce_fil_and_cod = models.CharField(db_column='STRAC_SCE_FIL_AND_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    strac_sce_fil_and_des = models.CharField(db_column='STRAC_SCE_FIL_AND_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    cds_sce_fil_and_id = models.IntegerField(db_column='CDS_SCE_FIL_AND_ID', blank=True, null=True)  # Field name made lowercase.
+    cds_sce_fil_and_cod = models.CharField(db_column='CDS_SCE_FIL_AND_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    cds_sce_fil_and_nome = models.CharField(db_column='CDS_SCE_FIL_AND_NOME', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    cfu = models.DecimalField(db_column='CFU', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_sce_fil_and_cod = models.CharField(db_column='TIPO_AF_SCE_FIL_AND_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_sce_fil_and_des = models.CharField(db_column='TIPO_AF_SCE_FIL_AND_DES', max_length=80, blank=True, null=True)  # Field name made lowercase.
+    sett_cod = models.CharField(db_column='SETT_COD', max_length=12, blank=True, null=True)  # Field name made lowercase.
+    tipo_corso_sce_fil_and_cod = models.CharField(db_column='TIPO_CORSO_SCE_FIL_AND_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    cla_miur_sce_fil_and_id = models.IntegerField(db_column='CLA_MIUR_SCE_FIL_AND_ID', blank=True, null=True)  # Field name made lowercase.
+    cla_miur_sce_fil_and_cod = models.CharField(db_column='CLA_MIUR_SCE_FIL_AND_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    cla_miur_sce_fil_and_des = models.CharField(db_column='CLA_MIUR_SCE_FIL_AND_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    rif_cod = models.CharField(db_column='RIF_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    sett_post_rif_flg = models.IntegerField(db_column='SETT_POST_RIF_FLG', blank=True, null=True)  # Field name made lowercase.
+    tipo_ins_cod = models.CharField(db_column='TIPO_INS_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    peso_sce_fil_and = models.IntegerField(db_column='PESO_SCE_FIL_AND', blank=True, null=True)  # Field name made lowercase.
+    not_flg = models.IntegerField(db_column='NOT_FLG', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_PIANO_SCELTA_FIL_AND'
+
+
+class DidatticaPianoSceltaSchePiano(models.Model):
+    sche_piano = models.OneToOneField('DidatticaPianoSche', models.DO_NOTHING, db_column='SCHE_PIANO_ID', primary_key=True)  # Field name made lowercase.
+    sche_statutario_flg = models.IntegerField(db_column='SCHE_STATUTARIO_FLG', blank=True, null=True)  # Field name made lowercase.
+    sche_pds_regdid_id = models.IntegerField(db_column='SCHE_PDS_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    sche_pds_cod = models.CharField(db_column='SCHE_PDS_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    sche_pds_des = models.CharField(db_column='SCHE_PDS_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sche_ori_id = models.IntegerField(db_column='SCHE_ORI_ID', blank=True, null=True)  # Field name made lowercase.
+    sche_cla_m_id = models.IntegerField(db_column='SCHE_CLA_M_ID', blank=True, null=True)  # Field name made lowercase.
+    sche_apt_id = models.IntegerField(db_column='SCHE_APT_ID', blank=True, null=True)  # Field name made lowercase.
+    sche_nota = models.CharField(db_column='SCHE_NOTA', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    data_ini_val = models.DateField(db_column='DATA_INI_VAL', blank=True, null=True)  # Field name made lowercase.
+    data_fine_val = models.DateField(db_column='DATA_FINE_VAL', blank=True, null=True)  # Field name made lowercase.
+    stato_piano_gen_cod = models.CharField(db_column='STATO_PIANO_GEN_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    contr_ac_piano_stu_cod = models.CharField(db_column='CONTR_AC_PIANO_STU_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    blocco_af_freq_piano_stu_flg = models.IntegerField(db_column='BLOCCO_AF_FREQ_PIANO_STU_FLG', blank=True, null=True)  # Field name made lowercase.
+    sce = models.ForeignKey('DidatticaPianoSceltaVincoli', models.DO_NOTHING, db_column='SCE_ID')  # Field name made lowercase.
+    ord_num = models.IntegerField(db_column='ORD_NUM', blank=True, null=True)  # Field name made lowercase.
+    apt_slot_id = models.IntegerField(db_column='APT_SLOT_ID', blank=True, null=True)  # Field name made lowercase.
+    apt_slot_cod = models.CharField(db_column='APT_SLOT_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    apt_slot_des = models.CharField(db_column='APT_SLOT_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    apt_slot_anno_corso = models.IntegerField(db_column='APT_SLOT_ANNO_CORSO', blank=True, null=True)  # Field name made lowercase.
+    apt_slot_ord_num = models.IntegerField(db_column='APT_SLOT_ORD_NUM', blank=True, null=True)  # Field name made lowercase.
+    sce_des = models.CharField(db_column='SCE_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    pds_regdid_id = models.IntegerField(db_column='PDS_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    pds_cod = models.CharField(db_column='PDS_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    pds_des = models.CharField(db_column='PDS_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    comune_flg = models.IntegerField(db_column='COMUNE_FLG', blank=True, null=True)  # Field name made lowercase.
+    anno_corso = models.IntegerField(db_column='ANNO_CORSO', blank=True, null=True)  # Field name made lowercase.
+    anno_corso_ant = models.IntegerField(db_column='ANNO_CORSO_ANT', blank=True, null=True)  # Field name made lowercase.
+    tipo_regsce_cod = models.CharField(db_column='TIPO_REGSCE_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    tipo_sce_cod = models.CharField(db_column='TIPO_SCE_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    tipo_sce_des = models.CharField(db_column='TIPO_SCE_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    tipo_regsce_des = models.CharField(db_column='TIPO_REGSCE_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    tipo_um_regsce_cod = models.CharField(db_column='TIPO_UM_REGSCE_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    opz_flg = models.IntegerField(db_column='OPZ_FLG', blank=True, null=True)  # Field name made lowercase.
+    min_unt = models.DecimalField(db_column='MIN_UNT', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    max_unt = models.DecimalField(db_column='MAX_UNT', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    livello = models.IntegerField(db_column='LIVELLO', blank=True, null=True)  # Field name made lowercase.
+    vin_id = models.IntegerField(db_column='VIN_ID', blank=True, null=True)  # Field name made lowercase.
+    vin_ord_num = models.IntegerField(db_column='VIN_ORD_NUM', blank=True, null=True)  # Field name made lowercase.
+    vin_sce_des = models.CharField(db_column='VIN_SCE_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    tipi_af_tipi_sce_id = models.IntegerField(db_column='TIPI_AF_TIPI_SCE_ID', blank=True, null=True)  # Field name made lowercase.
+    tipo_af_cod = models.CharField(db_column='TIPO_AF_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_des = models.CharField(db_column='TIPO_AF_DES', max_length=80, blank=True, null=True)  # Field name made lowercase.
+    amb = models.ForeignKey(DidatticaAmbiti, models.DO_NOTHING, db_column='AMB_ID', blank=True, null=True)  # Field name made lowercase.
+    ambito_des = models.CharField(db_column='AMBITO_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sovran_flg = models.IntegerField(db_column='SOVRAN_FLG', blank=True, null=True)  # Field name made lowercase.
+    sostegno_flg = models.IntegerField(db_column='SOSTEGNO_FLG', blank=True, null=True)  # Field name made lowercase.
+    peso_sce = models.IntegerField(db_column='PESO_SCE', blank=True, null=True)  # Field name made lowercase.
+    tesoretto_flg = models.IntegerField(db_column='TESORETTO_FLG', blank=True, null=True)  # Field name made lowercase.
+    assegnazione_posti_flg = models.IntegerField(db_column='ASSEGNAZIONE_POSTI_FLG', blank=True, null=True)  # Field name made lowercase.
+    delibera_flg = models.IntegerField(db_column='DELIBERA_FLG', blank=True, null=True)  # Field name made lowercase.
+    azzera_cfu_flg = models.IntegerField(db_column='AZZERA_CFU_FLG', blank=True, null=True)  # Field name made lowercase.
+    parametri_logistica_flg = models.IntegerField(db_column='PARAMETRI_LOGISTICA_FLG', blank=True, null=True)  # Field name made lowercase.
+    tag_regsce_cod = models.CharField(db_column='TAG_REGSCE_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    peso_af_sce = models.DecimalField(db_column='PESO_AF_SCE', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    peso_min_singola_af = models.DecimalField(db_column='PESO_MIN_SINGOLA_AF', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    peso_max_singola_af = models.DecimalField(db_column='PESO_MAX_SINGOLA_AF', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_af_sce = models.DecimalField(db_column='NUM_AF_SCE', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    peso_af_sce_stat = models.DecimalField(db_column='PESO_AF_SCE_STAT', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    peso_af_sce_def_verifica = models.DecimalField(db_column='PESO_AF_SCE_DEF_VERIFICA', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_blk = models.DecimalField(db_column='NUM_BLK', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_blk_stat = models.DecimalField(db_column='NUM_BLK_STAT', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_blk_def_verifica = models.DecimalField(db_column='NUM_BLK_DEF_VERIFICA', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_blk_contr_aa_off = models.DecimalField(db_column='NUM_BLK_CONTR_AA_OFF', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_blk_statutario_flg_div = models.DecimalField(db_column='NUM_BLK_STATUTARIO_FLG_DIV', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_blk_def_verifica_flg_div = models.DecimalField(db_column='NUM_BLK_DEF_VERIFICA_FLG_DIV', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_blk_contr_aa_off_flg_div = models.DecimalField(db_column='NUM_BLK_CONTR_AA_OFF_FLG_DIV', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    peso_blk = models.DecimalField(db_column='PESO_BLK', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    af_stessa_taf_flg = models.DecimalField(db_column='AF_STESSA_TAF_FLG', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    af_stessa_taf_intercla_flg = models.DecimalField(db_column='AF_STESSA_TAF_INTERCLA_FLG', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    af_stesso_ambito_flg = models.DecimalField(db_column='AF_STESSO_AMBITO_FLG', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    af_stesso_ambito_intercla_flg = models.DecimalField(db_column='AF_STESSO_AMBITO_INTERCLA_FLG', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    amb_id_af_regsce = models.DecimalField(db_column='AMB_ID_AF_REGSCE', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_cod_af_regsce = models.CharField(db_column='TIPO_AF_COD_AF_REGSCE', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    amb_intercla_id_af_regsce = models.DecimalField(db_column='AMB_INTERCLA_ID_AF_REGSCE', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_intercla_cod_af_regsce = models.CharField(db_column='TIPO_AF_INTERCLA_COD_AF_REGSCE', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    num_af_taf_d = models.DecimalField(db_column='NUM_AF_TAF_D', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_af_taf_intercla_d = models.DecimalField(db_column='NUM_AF_TAF_INTERCLA_D', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_af_taf_e_f_s = models.DecimalField(db_column='NUM_AF_TAF_E_F_S', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    num_af_taf_intercla_e_f_s = models.DecimalField(db_column='NUM_AF_TAF_INTERCLA_E_F_S', max_digits=38, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    sett_cod_af_regsce = models.CharField(db_column='SETT_COD_AF_REGSCE', max_length=12, blank=True, null=True)  # Field name made lowercase.
+    nota_pre = models.TextField(db_column='NOTA_PRE', blank=True, null=True)  # Field name made lowercase.
+    nota_pre_vis_web_flg = models.IntegerField(db_column='NOTA_PRE_VIS_WEB_FLG', blank=True, null=True)  # Field name made lowercase.
+    nota_post = models.TextField(db_column='NOTA_POST', blank=True, null=True)  # Field name made lowercase.
+    nota_post_vis_web_flg = models.IntegerField(db_column='NOTA_POST_VIS_WEB_FLG', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_PIANO_SCELTA_SCHE_PIANO'
+        unique_together = (('sche_piano', 'sce'),)
+
+
+class DidatticaPianoSceltaVincoli(models.Model):
+    sce_id = models.IntegerField(db_column='SCE_ID', primary_key=True)  # Field name made lowercase.
+    regpiani = models.ForeignKey(DidatticaPianoRegolamento, models.DO_NOTHING, db_column='REGPIANI_ID', blank=True, null=True)  # Field name made lowercase.
+    ord_num = models.IntegerField(db_column='ORD_NUM', blank=True, null=True)  # Field name made lowercase.
+    sce_des = models.CharField(db_column='SCE_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    pds_regdid = models.ForeignKey(DidatticaPdsRegolamento, models.DO_NOTHING, db_column='PDS_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    pds_cod = models.CharField(db_column='PDS_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    pds_des = models.CharField(db_column='PDS_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    comune_flg = models.IntegerField(db_column='COMUNE_FLG', blank=True, null=True)  # Field name made lowercase.
+    anno_corso = models.IntegerField(db_column='ANNO_CORSO', blank=True, null=True)  # Field name made lowercase.
+    anno_corso_ant = models.IntegerField(db_column='ANNO_CORSO_ANT', blank=True, null=True)  # Field name made lowercase.
+    tipo_regsce_cod = models.CharField(db_column='TIPO_REGSCE_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    tipo_sce_cod = models.CharField(db_column='TIPO_SCE_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    tipo_um_regsce_cod = models.CharField(db_column='TIPO_UM_REGSCE_COD', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    opz_flg = models.IntegerField(db_column='OPZ_FLG', blank=True, null=True)  # Field name made lowercase.
+    min_unt = models.DecimalField(db_column='MIN_UNT', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    max_unt = models.DecimalField(db_column='MAX_UNT', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    livello = models.IntegerField(db_column='LIVELLO', blank=True, null=True)  # Field name made lowercase.
+    vin = models.ForeignKey('self', models.DO_NOTHING, db_column='VIN_ID', blank=True, null=True)  # Field name made lowercase.
+    vin_ord_num = models.IntegerField(db_column='VIN_ORD_NUM', blank=True, null=True)  # Field name made lowercase.
+    vin_sce_des = models.CharField(db_column='VIN_SCE_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    tipi_af_tipi_sce_id = models.IntegerField(db_column='TIPI_AF_TIPI_SCE_ID', blank=True, null=True)  # Field name made lowercase.
+    tipo_af_cod = models.CharField(db_column='TIPO_AF_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    tipo_af_des = models.CharField(db_column='TIPO_AF_DES', max_length=80, blank=True, null=True)  # Field name made lowercase.
+    amb_id = models.IntegerField(db_column='AMB_ID', blank=True, null=True)  # Field name made lowercase.
+    ambito_des = models.CharField(db_column='AMBITO_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sovran_flg = models.IntegerField(db_column='SOVRAN_FLG', blank=True, null=True)  # Field name made lowercase.
+    sostegno_flg = models.IntegerField(db_column='SOSTEGNO_FLG', blank=True, null=True)  # Field name made lowercase.
+    peso_sce = models.IntegerField(db_column='PESO_SCE', blank=True, null=True)  # Field name made lowercase.
+    tesoretto_flg = models.IntegerField(db_column='TESORETTO_FLG', blank=True, null=True)  # Field name made lowercase.
+    assegnazione_posti_flg = models.IntegerField(db_column='ASSEGNAZIONE_POSTI_FLG', blank=True, null=True)  # Field name made lowercase.
+    delibera_flg = models.IntegerField(db_column='DELIBERA_FLG', blank=True, null=True)  # Field name made lowercase.
+    azzera_cfu_flg = models.IntegerField(db_column='AZZERA_CFU_FLG', blank=True, null=True)  # Field name made lowercase.
+    parametri_logistica_flg = models.IntegerField(db_column='PARAMETRI_LOGISTICA_FLG', blank=True, null=True)  # Field name made lowercase.
+    tag_regsce_cod = models.CharField(db_column='TAG_REGSCE_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    nota_pre = models.TextField(db_column='NOTA_PRE', blank=True, null=True)  # Field name made lowercase.
+    nota_pre_vis_web_flg = models.IntegerField(db_column='NOTA_PRE_VIS_WEB_FLG', blank=True, null=True)  # Field name made lowercase.
+    nota_post = models.TextField(db_column='NOTA_POST', blank=True, null=True)  # Field name made lowercase.
+    nota_post_vis_web_flg = models.IntegerField(db_column='NOTA_POST_VIS_WEB_FLG', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_PIANO_SCELTA_VINCOLI'
+
+
+class DidatticaPianoSche(models.Model):
+    sche_piano_id = models.IntegerField(db_column='SCHE_PIANO_ID', primary_key=True)  # Field name made lowercase.
+    regpiani = models.ForeignKey(DidatticaPianoRegolamento, models.DO_NOTHING, db_column='REGPIANI_ID')  # Field name made lowercase.
+    sche_piano_cod = models.CharField(db_column='SCHE_PIANO_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    sche_piano_des = models.CharField(db_column='SCHE_PIANO_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sche_piano_vis_web_flg = models.IntegerField(db_column='SCHE_PIANO_VIS_WEB_FLG', blank=True, null=True)  # Field name made lowercase.
+    pds_regdid = models.ForeignKey(DidatticaPdsRegolamento, models.DO_NOTHING, db_column='PDS_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    pds_cod = models.CharField(db_column='PDS_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    pds_des = models.CharField(db_column='PDS_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    comune_flg = models.IntegerField(db_column='COMUNE_FLG', blank=True, null=True)  # Field name made lowercase.
+    ori_id = models.IntegerField(db_column='ORI_ID', blank=True, null=True)  # Field name made lowercase.
+    ori_cod = models.CharField(db_column='ORI_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    ori_des = models.CharField(db_column='ORI_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    cla_m_id = models.IntegerField(db_column='CLA_M_ID', blank=True, null=True)  # Field name made lowercase.
+    cla_miur_cod = models.CharField(db_column='CLA_MIUR_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    cla_miur_des = models.CharField(db_column='CLA_MIUR_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    apt_id = models.IntegerField(db_column='APT_ID', blank=True, null=True)  # Field name made lowercase.
+    apt_cod = models.CharField(db_column='APT_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    apt_des = models.CharField(db_column='APT_DES', max_length=80, blank=True, null=True)  # Field name made lowercase.
+    data_ini_val = models.DateField(db_column='DATA_INI_VAL', blank=True, null=True)  # Field name made lowercase.
+    data_fine_val = models.DateField(db_column='DATA_FINE_VAL', blank=True, null=True)  # Field name made lowercase.
+    stato_piano_gen_cod = models.CharField(db_column='STATO_PIANO_GEN_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    stato_piano_gen_des = models.CharField(db_column='STATO_PIANO_GEN_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    contr_ac_piano_stu_cod = models.CharField(db_column='CONTR_AC_PIANO_STU_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    blocco_af_freq_piano_stu_flg = models.IntegerField(db_column='BLOCCO_AF_FREQ_PIANO_STU_FLG', blank=True, null=True)  # Field name made lowercase.
+    nota_sche_piano = models.CharField(db_column='NOTA_SCHE_PIANO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    sche_piano_des_txt_id = models.IntegerField(db_column='SCHE_PIANO_DES_TXT_ID', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_PIANO_SCHE'

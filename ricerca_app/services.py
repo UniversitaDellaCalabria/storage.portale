@@ -22,7 +22,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
-    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento
+    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
+    DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf
 from . serializers import StructuresSerializer
 
 
@@ -857,6 +858,31 @@ class ServiceDidatticaCds:
 
             return query
         return {}
+
+    @staticmethod
+    # def getCdsWebsitesStudyPlans():
+    #
+    #    query = DidatticaPianoRegolamento.object.values(
+    #        'regpiani_id',
+    #        'regdid_id',
+    #        'attinenza_cod',
+    #        'cod',
+    #        'aa_coorte_id',
+    #        'aa_regpiani_id',
+    #        'des',
+    #        'def_flg',
+    #        'stato_cod',
+    #        'stato_des',
+    #        'regpiani_pdr_id',
+    #        'regpiani_pdr_cod',
+    #        'regpiani_pdr_des',
+    #        'regpiani_pdr_aa_coorte_id'
+    #        'regpiani_pdr_aa_regpiani_id',
+    #        'flg_exp_seg_stu'
+    #    )
+    #
+    #    return query
+
 
 
 class ServiceDidatticaAttivitaFormativa:
