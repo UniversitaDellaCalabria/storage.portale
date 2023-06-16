@@ -151,7 +151,9 @@ class ServiceDidatticaCds:
                 'matricola_vice_coordinatore',
                 'nome_origine_vice_coordinatore',
                 'num_posti',
-                'modalita_iscrizione'
+                'modalita_iscrizione',
+                'manifesto_studi',
+                'regolamento_didattico'
             ).distinct()
 
             # matricola = DidatticaCdsAltriDati.objects.filter(cds_id=item['cds_id']).values(

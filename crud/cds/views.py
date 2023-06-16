@@ -85,7 +85,8 @@ def cds_other_data_edit(request, regdid_id, data_id, regdid=None, my_offices=Non
 
     if request.POST:
         form = DidatticaCdsAltriDatiForm(instance=other_data,
-                                         data=request.POST)
+                                         data=request.POST,
+                                         files=request.FILES)
         if form.is_valid():
             form.save(commit=False)
             other_data.user_mod = request.user
