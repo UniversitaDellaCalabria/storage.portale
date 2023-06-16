@@ -254,7 +254,9 @@ class ApiCdSDetail(ApiEndpointDetail):
             'matricola_vice_coordinatore',
             'nome_origine_vice_coordinatore',
             'num_posti',
-            'modalita_iscrizione'
+            'modalita_iscrizione',
+            'manifesto_studi',
+            'regolamento_didattico'
         ).distinct()
 
         res[0]['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=res[0]['cds_id']).values(

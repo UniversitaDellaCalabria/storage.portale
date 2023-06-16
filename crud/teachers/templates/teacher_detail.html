@@ -112,28 +112,28 @@
                             <b>{% trans "Short Bio" %}</b>
                             <img src="{% static 'images/ita.jpg' %}" width="15" />
                         </td>
-                        <td>{{ other_data.breve_bio|safe|default:"-" }}</td>
+                        <td>{{ other_data.breve_bio|default:"-"|safe }}</td>
                     </tr>
                     <tr>
                         <td>
                             <b>{% trans "Short Bio" %}</b>
                             <img src="{% static 'images/eng.jpg' %}" width="15" />
                         </td>
-                        <td>{{ other_data.breve_bio_en|safe|default:"-" }}</td>
+                        <td>{{ other_data.breve_bio_en|default:"-"|safe }}</td>
                     </tr>
                     <tr>
                         <td>
                             <b>{% trans "Reception Hours" %}</b>
                             <img src="{% static 'images/ita.jpg' %}" width="20" />
                         </td>
-                        <td>{{ other_data.orario_ricevimento|safe|default:"-" }}</td>
+                        <td>{{ other_data.orario_ricevimento|default:"-"|safe }}</td>
                     </tr>
                     <tr>
                         <td>
                             <b>{% trans "Reception Hours" %}</b>
                             <img src="{% static 'images/eng.jpg' %}" width="20" />
                         </td>
-                        <td>{{ other_data.orario_ricevimento_en|safe|default:"-" }}</td>
+                        <td>{{ other_data.orario_ricevimento_en|default:"-"|safe }}</td>
                     </tr>
                     <tr>
                         <td><b>{% trans "ORCID" %}</b></td>

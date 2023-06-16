@@ -83,7 +83,7 @@ def is_path(value): # pragma: no cover
 
 
 def build_media_path(filename, path=None): # pragma: no cover
-    if not filename: return ''
+    if not filename: return None
     if 'http' in filename or 'https' in filename: return filename
     if not path or is_path(filename):
         return f'//{settings.DEFAULT_HOST}{settings.MEDIA_URL}{filename}'

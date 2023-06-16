@@ -503,6 +503,8 @@ LABEL_MAPPING = {
         'CdsObject': 'Cds Object',
         'YearRegDidID': 'Year RegDidID',
         'ClassObjectId': 'Class Object Id',
+        'StudyManifesto': 'Study manifesto',
+        'DidacticRegulation': 'Didactic regulation',
         # 'TopicTitle': 'Topic Title',
         # 'Object': 'Object',
         # 'id': 'id'
@@ -1011,6 +1013,8 @@ LABEL_MAPPING = {
         'CdsObject': 'Oggetto Cds',
         'YearRegDidID': 'Anno regolamento didattico',
         'ClassObjectId': 'Id Classe Oggetto',
+        'StudyManifesto': 'Manifesto degli studi',
+        'DidacticRegulation': 'Regolamento didattico',
         # 'TopicTitle': 'Titolo Topic',
         # 'Object': 'Oggetto',
         # 'id': 'id'

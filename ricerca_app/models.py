@@ -20,6 +20,12 @@ def teacher_cv_en_media_path(instance, filename): # pragma: no cover
 def teacher_cv_ita_media_path(instance, filename): # pragma: no cover
     return f'portale/docenti_pta/cv_ita/{filename}'
 
+def cds_manifesto_media_path(instance, filename): # pragma: no cover
+    return f'portale/cds/manifesti/{instance.regdid_id.aa_reg_did}/{filename}'
+
+def cds_regolamento_media_path(instance, filename): # pragma: no cover
+    return f'portale/cds/regolamenti/{instance.regdid_id.aa_reg_did}/{filename}'
+
 
 class InsModAbstract(models.Model):
     dt_ins = models.DateTimeField(db_column='DT_INS', auto_now_add=True)
@@ -1385,7 +1391,7 @@ class DocentePtaAltriDati(models.Model):
                     validate_file_size,
                     validate_image_size_ratio],
         db_column='PATH_FOTO',
-        max_length=1000,
+        max_length=500,
         blank=True,
         null=True) # Field name made lowercase.
     path_cv_ita = models.FileField(
@@ -1393,7 +1399,7 @@ class DocentePtaAltriDati(models.Model):
         validators=[validate_pdf_file_extension,
                     validate_file_size],
         db_column='PATH_CV_ITA',
-        max_length=1000,
+        max_length=500,
         blank=True,
         null=True)  # Field name made lowercase.
     path_cv_en = models.FileField(
@@ -1401,7 +1407,7 @@ class DocentePtaAltriDati(models.Model):
         validators=[validate_pdf_file_extension,
                     validate_file_size],
         db_column='PATH_CV_EN',
-        max_length=1000,
+        max_length=500,
         blank=True,
         null=True)  # Field name made lowercase.
     breve_bio = models.TextField(db_column='BREVE_BIO', blank=True, null=True)  # Field name made lowercase.
@@ -3718,6 +3724,22 @@ class DidatticaCdsAltriDati(models.Model):
     nome_origine_vice_coordinatore = models.CharField(db_column='NOME_ORIGINE_VICE_COORDINATORE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     num_posti = models.IntegerField(db_column='NUM_POSTI', blank=True, null=True)  # Field name made lowercase.
     modalita_iscrizione = models.TextField(db_column='MODALITA_ISCRIZIONE', blank=True, null=True)  # Field name made lowercase.
+    manifesto_studi = models.FileField(
+        upload_to=cds_manifesto_media_path,
+        validators=[validate_pdf_file_extension,
+                    validate_file_size],
+        db_column='MANIFESTO_STUDI',
+        max_length=255,
+        blank=True,
+        null=True)
+    regolamento_didattico = models.FileField(
+        upload_to=cds_regolamento_media_path,
+        validators=[validate_pdf_file_extension,
+                    validate_file_size],
+        db_column='REGOLAMENTO_DIDATTICO',
+        max_length=255,
+        blank=True,
+        null=True)
 
     class Meta:
         managed = True
