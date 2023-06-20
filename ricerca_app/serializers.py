@@ -1795,6 +1795,7 @@ class PatentsSerializer(CreateUpdateAbstract):
             'PatentTechAreaId': query["id_area_tecnologica"],
             'PatentAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
             'PatentInventors': inventors,
+            'PatentIsActive': query['is_active']
         }
 
     @staticmethod

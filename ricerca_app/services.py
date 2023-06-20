@@ -3536,11 +3536,12 @@ class ServiceLaboratorio:
 class ServiceBrevetto:
 
     @staticmethod
-    def getPatents(search, techarea, structure):
+    def getPatents(search, techarea, structure, only_active=True):
 
         query_search = Q()
         query_techarea = Q()
         query_structure = Q()
+        query_is_active = Q(is_active=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -3555,7 +3556,8 @@ class ServiceBrevetto:
         query = BrevettoDatiBase.objects.filter(
             query_search,
             query_techarea,
-            query_structure).values(
+            query_structure,
+            query_is_active).values(
             "id",
             "id_univoco",
             "titolo",
@@ -3565,6 +3567,7 @@ class ServiceBrevetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         ).distinct()
 
         for q in query:
@@ -3585,7 +3588,8 @@ class ServiceBrevetto:
     def getPatentDetail(patentid):
 
         query = BrevettoDatiBase.objects.filter(
-            id=patentid).values(
+            id=patentid,
+            is_active=True).values(
             "id",
             "id_univoco",
             "titolo",
@@ -3595,6 +3599,7 @@ class ServiceBrevetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         )
 
         for q in query:

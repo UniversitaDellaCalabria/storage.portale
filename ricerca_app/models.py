@@ -3306,6 +3306,7 @@ class BrevettoDatiBase(models.Model):
         max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
+    is_active = models.BooleanField(default=True, db_column='ATTIVO')
 
     class Meta:
         managed = True

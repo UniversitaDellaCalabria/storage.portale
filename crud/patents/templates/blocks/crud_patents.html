@@ -87,7 +87,16 @@
                                         <img :src="item.PatentImage" class="w-100"/>
                                     </div>
                                     <div class="col">
-                                        <h5><b>[[ item.PatentTitle ]]</b></h5>
+                                        <span>
+                                            {% trans "Active"%}
+                                            <svg class="icon icon-xs icon-success" v-if="item.PatentIsActive">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                            </svg>
+                                            <svg class="icon icon-xs icon-danger" v-else>
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                            </svg>
+                                        </span>
+                                        <h5 class="mt-3"><b>[[ item.PatentTitle ]]</b></h5>
                                         <p>
                                             <small v-html="item.PatentAbstract"></small>
                                         </p>

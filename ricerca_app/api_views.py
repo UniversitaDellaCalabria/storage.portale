@@ -13,6 +13,10 @@ from .serializers import *
 from .services import *
 from .pagination import UnicalStorageApiPaginationList
 
+### useful for storage backend only ###
+from organizational_area.models import OrganizationalStructureOfficeEmployee
+from crud.utils.settings import *
+### end useful for storage backend only ###
 
 # permissions.IsAuthenticatedOrReadOnly
 # allow authenticated users to perform any request. Requests for
@@ -923,12 +927,25 @@ class ApiPatentsList(ApiEndpointList):
     filter_backends = [ApiPatentsListFilter]
 
     def get_queryset(self):
+        request = self.request
+        only_active = True
 
-        search = self.request.query_params.get('search')
-        techarea = self.request.query_params.get('techarea')
-        structure = self.request.query_params.get('structure')
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False
+        if request.user.is_authenticated:
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_PATENTS,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices: only_active = False
+        # end get active/all elements
 
-        return ServiceBrevetto.getPatents(search, techarea, structure)
+        search = request.query_params.get('search')
+        techarea = request.query_params.get('techarea')
+        structure = request.query_params.get('structure')
+
+        return ServiceBrevetto.getPatents(search, techarea, structure, only_active)
 
 
 class ApiPatentDetail(ApiEndpointDetail):
