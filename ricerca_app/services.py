@@ -3620,7 +3620,7 @@ class ServiceBrevetto:
 class ServiceCompany:
 
     @staticmethod
-    def getCompanies(search, techarea, spinoff, startup, q_departments, only_active):
+    def getCompanies(search, techarea, spinoff, startup, q_departments, only_active=True):
 
         query_search = Q()
         query_techarea = Q()
@@ -3751,7 +3751,8 @@ class ServiceProgetto:
             programtype,
             territorialscope,
             notprogramtype,
-            year):
+            year,
+            only_active=True):
 
         query_search = Q()
         query_techarea = Q()
@@ -3760,6 +3761,7 @@ class ServiceProgetto:
         query_territorialscope = Q()
         query_notprogramtype = Q()
         query_year = Q()
+        query_is_active = Q(is_active=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -3793,6 +3795,7 @@ class ServiceProgetto:
             query_notprogramtype,
             query_programtype,
             query_year,
+            query_is_active
         ).values(
             "id",
             "id_ambito_territoriale__id",
@@ -3810,7 +3813,9 @@ class ServiceProgetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         ).distinct().order_by(
+            'ordinamento',
             '-anno_avvio',
             'id_ambito_territoriale__ambito_territoriale')
 
@@ -3859,6 +3864,7 @@ class ServiceProgetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         ).distinct()
 
         for q in query:

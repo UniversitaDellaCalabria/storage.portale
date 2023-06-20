@@ -1027,14 +1027,27 @@ class ApiProjectsList(ApiEndpointList):
     filter_backends = [ApiProjectsListFilter, OrderingFilter]
 
     def get_queryset(self):
+        request = self.request
+        only_active = True
 
-        search = self.request.query_params.get('search')
-        techarea = self.request.query_params.get('techarea')
-        infrastructure = self.request.query_params.get('infrastructure')
-        programtype = self.request.query_params.get('programtype')
-        territorialscope = self.request.query_params.get('territorialscope')
-        notprogramtype = self.request.query_params.get('-programtype')
-        year =self.request.query_params.get('year')
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_PROJECTS,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices: only_active = False
+        # end get active/all elements
+
+        search = request.query_params.get('search')
+        techarea = request.query_params.get('techarea')
+        infrastructure = request.query_params.get('infrastructure')
+        programtype = request.query_params.get('programtype')
+        territorialscope = request.query_params.get('territorialscope')
+        notprogramtype = request.query_params.get('-programtype')
+        year =request.query_params.get('year')
 
         return ServiceProgetto.getProjects(search,
                                            techarea,
@@ -1042,7 +1055,8 @@ class ApiProjectsList(ApiEndpointList):
                                            programtype,
                                            territorialscope,
                                            notprogramtype,
-                                           year)
+                                           year,
+                                           only_active)
 
 
 class ApiProjectDetail(ApiEndpointDetail):

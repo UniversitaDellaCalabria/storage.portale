@@ -1888,6 +1888,7 @@ class ProjectSerializer(CreateUpdateAbstract):
             'ProjectImage': query['url_immagine'],
             'ScientificDirectors': responsabili,
             'Researchers': ricercatori,
+            'IsActive': query['is_active']
         }
 
     @staticmethod
