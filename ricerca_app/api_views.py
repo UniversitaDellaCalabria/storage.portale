@@ -932,8 +932,8 @@ class ApiPatentsList(ApiEndpointList):
 
         # get only active elements if public
         # get all elements if in CRUD backend
-        if request.user.is_superuser: only_active = False
-        if request.user.is_authenticated:
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
             my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
                                                                               office__name=OFFICE_PATENTS,
                                                                               office__is_active=True,
@@ -976,14 +976,27 @@ class ApiCompaniesList(ApiEndpointList):
     filter_backends = [ApiCompaniesListFilter]
 
     def get_queryset(self):
+        request = self.request
+        only_active = True
 
-        search = self.request.query_params.get('search')
-        techarea = self.request.query_params.get('techarea')
-        spinoff = self.request.query_params.get('spinoff')
-        startup = self.request.query_params.get('startup')
-        departments = self.request.query_params.get('departments')
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_COMPANIES,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices: only_active = False
+        # end get active/all elements
 
-        return ServiceCompany.getCompanies(search, techarea, spinoff, startup, departments)
+        search = request.query_params.get('search')
+        techarea = request.query_params.get('techarea')
+        spinoff = request.query_params.get('spinoff')
+        startup = request.query_params.get('startup')
+        departments = request.query_params.get('departments')
+
+        return ServiceCompany.getCompanies(search, techarea, spinoff, startup, departments, only_active)
 
 
 class ApiCompanyDetail(ApiEndpointDetail):

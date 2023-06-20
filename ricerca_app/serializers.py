@@ -1834,6 +1834,7 @@ class CompaniesSerializer(CreateUpdateAbstract):
             'TechAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
             'IsSpinoff': query['is_spinoff'],
             'IsStartup': query['is_startup'],
+            'IsActive': query['is_active']
         }
 
 

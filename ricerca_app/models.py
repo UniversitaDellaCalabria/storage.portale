@@ -3419,10 +3419,14 @@ class SpinoffStartupDatiBase(models.Model):
     # Field name made lowercase.
     is_spinoff = models.BooleanField(
         db_column='IS_SPINOFF', default=False)
+    is_active = models.BooleanField(default=True, db_column='ATTIVO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINAMENTO')
 
     class Meta:
         managed = True
         db_table = 'SPINOFF_STARTUP_DATI_BASE'
+        ordering = ["ordinamento"]
+
 
 
 class SpinoffStartupDipartimento(models.Model):

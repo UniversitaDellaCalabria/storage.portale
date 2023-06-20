@@ -122,6 +122,15 @@
                                         <img :src="item.SpinoffImage" class="w-100"/>
                                     </div>
                                     <div class="col">
+                                        <span>
+                                            {% trans "Active"%}
+                                            <svg class="icon icon-xs icon-success" v-if="item.IsActive">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                            </svg>
+                                            <svg class="icon icon-xs icon-danger" v-else>
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                            </svg>
+                                        </span>
                                         <h5>
                                             <b>[[ item.SpinoffAgencyName ]]</b>
                                         </h5>

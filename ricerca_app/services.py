@@ -3620,12 +3620,13 @@ class ServiceBrevetto:
 class ServiceCompany:
 
     @staticmethod
-    def getCompanies(search, techarea, spinoff, startup, q_departments):
+    def getCompanies(search, techarea, spinoff, startup, q_departments, only_active):
 
         query_search = Q()
         query_techarea = Q()
         query_spinoff = Q()
         query_startup = Q()
+        query_is_active = Q(is_active=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -3645,6 +3646,7 @@ class ServiceCompany:
             query_techarea,
             query_spinoff,
             query_startup,
+            query_is_active
         ).values(
             "id",
             "piva",
@@ -3660,6 +3662,7 @@ class ServiceCompany:
             "id_area_tecnologica__descr_area_eng",
             "is_startup",
             "is_spinoff",
+            "is_active"
         ).distinct()
 
         for q in query:
@@ -3691,7 +3694,8 @@ class ServiceCompany:
     def getCompanyDetail(companyid):
 
         query = SpinoffStartupDatiBase.objects.filter(
-            id=companyid
+            id=companyid,
+            is_active=True
         ).values(
             "id",
             "piva",
@@ -3707,6 +3711,7 @@ class ServiceCompany:
             "id_area_tecnologica__descr_area_eng",
             "is_startup",
             "is_spinoff",
+            "is_active"
         )
         for q in query:
 
