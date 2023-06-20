@@ -3307,10 +3307,12 @@ class BrevettoDatiBase(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     is_active = models.BooleanField(default=True, db_column='ATTIVO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINAMENTO')
 
     class Meta:
         managed = True
         db_table = 'BREVETTO_DATI_BASE'
+        ordering = ["ordinamento"]
 
 
 class BrevettoInventori(models.Model):
