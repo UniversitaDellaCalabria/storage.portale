@@ -3307,7 +3307,7 @@ class BrevettoDatiBase(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     is_active = models.BooleanField(default=True, db_column='ATTIVO')
-    ordinamento = models.IntegerField(default=10, db_column='ORDINAMENTO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINE')
 
     class Meta:
         managed = True
@@ -3420,7 +3420,7 @@ class SpinoffStartupDatiBase(models.Model):
     is_spinoff = models.BooleanField(
         db_column='IS_SPINOFF', default=False)
     is_active = models.BooleanField(default=True, db_column='ATTIVO')
-    ordinamento = models.IntegerField(default=10, db_column='ORDINAMENTO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINE')
 
     class Meta:
         managed = True
@@ -3516,7 +3516,7 @@ class ProgettoDatiBase(models.Model):
         null=True)  # Field name made lowercase.
     call = models.CharField(db_column='CALL', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     is_active = models.BooleanField(default=True, db_column='ATTIVO')
-    ordinamento = models.IntegerField(default=10, db_column='ORDINAMENTO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINE')
 
     class Meta:
         managed = True
