@@ -187,7 +187,16 @@
                                     </div>
                                     {% endcomment %}
                                     <div class="col">
-                                        <h5>
+                                        <span>
+                                            {% trans "Active"%}
+                                            <svg class="icon icon-xs icon-success" v-if="item.IsActive">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                            </svg>
+                                            <svg class="icon icon-xs icon-danger" v-else>
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                            </svg>
+                                        </span>
+                                        <h5 class="mt-3">
                                             <a class="no-color">
                                                 <b>[[ item.ProjectTitle ]]</b>
                                             </a>
