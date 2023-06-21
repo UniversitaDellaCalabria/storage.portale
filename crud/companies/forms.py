@@ -31,11 +31,11 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
 
     class Meta:
         model = SpinoffStartupDatiBase
-        fields = ['piva', 'nome_azienda', 'descrizione_ita',
+        fields = ['is_active', 'piva', 'nome_azienda', 'descrizione_ita',
                   'descrizione_eng', 'url_sito_web',
                   'ceo', 'id_area_tecnologica',
                   'id_area_innovazione_s3_calabria', 'is_startup',
-                  'is_spinoff', 'nome_file_logo']
+                  'is_spinoff', 'nome_file_logo', 'ordinamento']
         labels = {
             'piva': _('VAT number'),
             'nome_azienda': _('Name'),
@@ -48,6 +48,8 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
             'is_spinoff': _('Spinoff'),
             'nome_file_logo': _('Logo'),
             'ceo': _('CEO'),
+            'is_active': _('Active'),
+            'ordinamento': _('Ordering')
         }
         widgets = {'descrizione_ita': CKEditorWidget(),
                    'descrizione_eng': CKEditorWidget()}

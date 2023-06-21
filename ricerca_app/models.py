@@ -3306,10 +3306,13 @@ class BrevettoDatiBase(models.Model):
         max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
+    is_active = models.BooleanField(default=True, db_column='ATTIVO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINE')
 
     class Meta:
         managed = True
         db_table = 'BREVETTO_DATI_BASE'
+        ordering = ["ordinamento"]
 
 
 class BrevettoInventori(models.Model):
@@ -3416,10 +3419,13 @@ class SpinoffStartupDatiBase(models.Model):
     # Field name made lowercase.
     is_spinoff = models.BooleanField(
         db_column='IS_SPINOFF', default=False)
+    is_active = models.BooleanField(default=True, db_column='ATTIVO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINE')
 
     class Meta:
         managed = True
         db_table = 'SPINOFF_STARTUP_DATI_BASE'
+        ordering = ["ordinamento"]
 
 
 class SpinoffStartupDipartimento(models.Model):
@@ -3508,11 +3514,14 @@ class ProgettoDatiBase(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     call = models.CharField(db_column='CALL', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-
+    is_active = models.BooleanField(default=True, db_column='ATTIVO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINE')
 
     class Meta:
         managed = True
         db_table = 'PROGETTO_DATI_BASE'
+        ordering = ["ordinamento"]
+
 
 class ProgettoRicercatore(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.

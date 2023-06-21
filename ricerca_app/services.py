@@ -3872,11 +3872,12 @@ class ServiceLaboratorio:
 class ServiceBrevetto:
 
     @staticmethod
-    def getPatents(search, techarea, structure):
+    def getPatents(search, techarea, structure, only_active=True):
 
         query_search = Q()
         query_techarea = Q()
         query_structure = Q()
+        query_is_active = Q(is_active=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -3891,7 +3892,8 @@ class ServiceBrevetto:
         query = BrevettoDatiBase.objects.filter(
             query_search,
             query_techarea,
-            query_structure).values(
+            query_structure,
+            query_is_active).values(
             "id",
             "id_univoco",
             "titolo",
@@ -3901,6 +3903,7 @@ class ServiceBrevetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         ).distinct()
 
         for q in query:
@@ -3921,7 +3924,8 @@ class ServiceBrevetto:
     def getPatentDetail(patentid):
 
         query = BrevettoDatiBase.objects.filter(
-            id=patentid).values(
+            id=patentid,
+            is_active=True).values(
             "id",
             "id_univoco",
             "titolo",
@@ -3931,6 +3935,7 @@ class ServiceBrevetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         )
 
         for q in query:
@@ -3951,12 +3956,13 @@ class ServiceBrevetto:
 class ServiceCompany:
 
     @staticmethod
-    def getCompanies(search, techarea, spinoff, startup, q_departments):
+    def getCompanies(search, techarea, spinoff, startup, q_departments, only_active=True):
 
         query_search = Q()
         query_techarea = Q()
         query_spinoff = Q()
         query_startup = Q()
+        query_is_active = Q(is_active=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -3976,6 +3982,7 @@ class ServiceCompany:
             query_techarea,
             query_spinoff,
             query_startup,
+            query_is_active
         ).values(
             "id",
             "piva",
@@ -3991,6 +3998,7 @@ class ServiceCompany:
             "id_area_tecnologica__descr_area_eng",
             "is_startup",
             "is_spinoff",
+            "is_active"
         ).distinct()
 
         for q in query:
@@ -4022,7 +4030,8 @@ class ServiceCompany:
     def getCompanyDetail(companyid):
 
         query = SpinoffStartupDatiBase.objects.filter(
-            id=companyid
+            id=companyid,
+            is_active=True
         ).values(
             "id",
             "piva",
@@ -4038,6 +4047,7 @@ class ServiceCompany:
             "id_area_tecnologica__descr_area_eng",
             "is_startup",
             "is_spinoff",
+            "is_active"
         )
         for q in query:
 
@@ -4077,7 +4087,8 @@ class ServiceProgetto:
             programtype,
             territorialscope,
             notprogramtype,
-            year):
+            year,
+            only_active=True):
 
         query_search = Q()
         query_techarea = Q()
@@ -4086,6 +4097,7 @@ class ServiceProgetto:
         query_territorialscope = Q()
         query_notprogramtype = Q()
         query_year = Q()
+        query_is_active = Q(is_active=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -4119,6 +4131,7 @@ class ServiceProgetto:
             query_notprogramtype,
             query_programtype,
             query_year,
+            query_is_active
         ).values(
             "id",
             "id_ambito_territoriale__id",
@@ -4136,7 +4149,9 @@ class ServiceProgetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         ).distinct().order_by(
+            'ordinamento',
             '-anno_avvio',
             'id_ambito_territoriale__ambito_territoriale')
 
@@ -4167,7 +4182,8 @@ class ServiceProgetto:
     def getProjectDetail(projectid):
 
         query = ProgettoDatiBase.objects.filter(
-            id=projectid
+            id=projectid,
+            is_active=True
         ).values(
             "id",
             "id_ambito_territoriale__id",
@@ -4185,6 +4201,7 @@ class ServiceProgetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         ).distinct()
 
         for q in query:

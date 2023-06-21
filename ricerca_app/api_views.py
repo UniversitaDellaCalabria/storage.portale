@@ -13,13 +13,16 @@ from .serializers import *
 from .services import *
 from .pagination import UnicalStorageApiPaginationList
 
+### useful for storage backend only ###
+from organizational_area.models import OrganizationalStructureOfficeEmployee
+from crud.utils.settings import *
+### end useful for storage backend only ###
 
 # permissions.IsAuthenticatedOrReadOnly
 # allow authenticated users to perform any request. Requests for
 # unauthorised users will only be permitted if the request method is
 # one of the "safe" methods; GET, HEAD or OPTIONS
 from .utils import encode_labels, encrypt, decrypt
-
 
 
 class ApiEndpointList(generics.ListAPIView):
@@ -921,12 +924,25 @@ class ApiPatentsList(ApiEndpointList):
     filter_backends = [ApiPatentsListFilter]
 
     def get_queryset(self):
+        request = self.request
+        only_active = True
 
-        search = self.request.query_params.get('search')
-        techarea = self.request.query_params.get('techarea')
-        structure = self.request.query_params.get('structure')
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_PATENTS,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices: only_active = False
+        # end get active/all elements
 
-        return ServiceBrevetto.getPatents(search, techarea, structure)
+        search = request.query_params.get('search')
+        techarea = request.query_params.get('techarea')
+        structure = request.query_params.get('structure')
+
+        return ServiceBrevetto.getPatents(search, techarea, structure, only_active)
 
 
 class ApiPatentDetail(ApiEndpointDetail):
@@ -957,14 +973,27 @@ class ApiCompaniesList(ApiEndpointList):
     filter_backends = [ApiCompaniesListFilter]
 
     def get_queryset(self):
+        request = self.request
+        only_active = True
 
-        search = self.request.query_params.get('search')
-        techarea = self.request.query_params.get('techarea')
-        spinoff = self.request.query_params.get('spinoff')
-        startup = self.request.query_params.get('startup')
-        departments = self.request.query_params.get('departments')
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_COMPANIES,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices: only_active = False
+        # end get active/all elements
 
-        return ServiceCompany.getCompanies(search, techarea, spinoff, startup, departments)
+        search = request.query_params.get('search')
+        techarea = request.query_params.get('techarea')
+        spinoff = request.query_params.get('spinoff')
+        startup = request.query_params.get('startup')
+        departments = request.query_params.get('departments')
+
+        return ServiceCompany.getCompanies(search, techarea, spinoff, startup, departments, only_active)
 
 
 class ApiCompanyDetail(ApiEndpointDetail):
@@ -995,14 +1024,27 @@ class ApiProjectsList(ApiEndpointList):
     filter_backends = [ApiProjectsListFilter, OrderingFilter]
 
     def get_queryset(self):
+        request = self.request
+        only_active = True
 
-        search = self.request.query_params.get('search')
-        techarea = self.request.query_params.get('techarea')
-        infrastructure = self.request.query_params.get('infrastructure')
-        programtype = self.request.query_params.get('programtype')
-        territorialscope = self.request.query_params.get('territorialscope')
-        notprogramtype = self.request.query_params.get('-programtype')
-        year =self.request.query_params.get('year')
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_PROJECTS,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices: only_active = False
+        # end get active/all elements
+
+        search = request.query_params.get('search')
+        techarea = request.query_params.get('techarea')
+        infrastructure = request.query_params.get('infrastructure')
+        programtype = request.query_params.get('programtype')
+        territorialscope = request.query_params.get('territorialscope')
+        notprogramtype = request.query_params.get('-programtype')
+        year =request.query_params.get('year')
 
         return ServiceProgetto.getProjects(search,
                                            techarea,
@@ -1010,7 +1052,8 @@ class ApiProjectsList(ApiEndpointList):
                                            programtype,
                                            territorialscope,
                                            notprogramtype,
-                                           year)
+                                           year,
+                                           only_active)
 
 
 class ApiProjectDetail(ApiEndpointDetail):
