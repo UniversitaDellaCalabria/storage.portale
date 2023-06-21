@@ -38,7 +38,7 @@ class BrevettoDatiBaseForm(forms.ModelForm):
             'area_ks': _('Area KS'),
             'nome_file_logo': _('Logo'),
             'is_active': _('Active'),
-            'ordinament': _('Ordering')
+            'ordinamento': _('Ordering')
             # 'url_immagine': _('Logo URL')
         }
         fields = ['is_active',
