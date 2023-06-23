@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . views import cds, cds_detail, cds_office_data_delete, cds_office_data_edit, cds_office_data_new, cds_office_data_responsible, cds_office_data_responsible_delete, cds_other_data_coordinator, cds_other_data_coordinator_delete, cds_other_data_delete, cds_other_data_deputy_coordinator, cds_other_data_deputy_coordinator_delete, cds_other_data_edit, cds_other_data_new
+from . views import *
 
 
 urlpatterns = []
@@ -32,3 +32,7 @@ urlpatterns += path('cds/<str:regdid_id>/office-data/<str:data_id>/responsible/'
                     cds_office_data_responsible, name='crud_cds_office_data_responsible'),
 urlpatterns += path('cds/<str:regdid_id>/office-data/<str:data_id>/responsible/delete/',
                     cds_office_data_responsible_delete, name='crud_cds_office_data_responsible_delete'),
+urlpatterns += path('cds/<str:regdid_id>/teaching-system/',
+                    cds_teaching_system, name='cds_teaching_system'),
+urlpatterns += path('cds/<str:regdid_id>/teaching-system/delete/',
+                    cds_teaching_system_delete, name='cds_teaching_system_delete'),

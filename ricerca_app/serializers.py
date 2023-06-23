@@ -98,6 +98,7 @@ class CdSSerializer(CreateUpdateAbstract):
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
             'OtherData': data,
             'OfficesData': offices_data,
+            'TeachingSystem': build_media_path(query['ordinamento_didattico'])
         }
 
     @staticmethod
@@ -212,6 +213,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
             'OtherData': data,
             'OfficesData': offices_data,
+            'TeachingSystem': build_media_path(query['ordinamento_didattico'])
         }
 
 

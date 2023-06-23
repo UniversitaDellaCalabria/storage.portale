@@ -169,6 +169,7 @@ class Migration(migrations.Migration):
                 ('cdsord_cod', models.CharField(blank=True, db_column='CDSORD_COD', max_length=10, null=True)),
                 ('aa_ord_id', models.IntegerField(blank=True, db_column='AA_ORD_ID', null=True)),
                 ('stato_cdsord_cod', models.CharField(blank=True, db_column='STATO_CDSORD_COD', max_length=5, null=True)),
+                ('ordinamento_didattico', models.CharField(blank=False, db_column='ORDINAMENTO_DIDATTICO', max_length=255, null=True))
             ],
             options={
                 'db_table': 'DIDATTICA_CDS',

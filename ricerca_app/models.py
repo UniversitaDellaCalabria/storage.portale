@@ -26,6 +26,9 @@ def cds_manifesto_media_path(instance, filename): # pragma: no cover
 def cds_regolamento_media_path(instance, filename): # pragma: no cover
     return f'portale/cds/regolamenti/{instance.regdid_id.aa_reg_did}/{filename}'
 
+def cds_ordinamento_media_path(instance, filename): # pragma: no cover
+    return f'portale/cds/ordinamenti/{filename}'
+
 
 class InsModAbstract(models.Model):
     dt_ins = models.DateTimeField(db_column='DT_INS', auto_now_add=True)
@@ -412,7 +415,14 @@ class DidatticaCds(InsModAbstract):
         blank=True,
         null=True)
     area_cds_en = models.CharField(db_column='AREA_CDS_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-
+    ordinamento_didattico = models.FileField(
+        upload_to=cds_ordinamento_media_path,
+        validators=[validate_pdf_file_extension,
+                    validate_file_size],
+        db_column='ORDINAMENTO_DIDATTICO',
+        max_length=255,
+        blank=False,
+        null=True)
 
     class Meta:
         managed = True

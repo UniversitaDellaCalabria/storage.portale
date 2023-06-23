@@ -181,6 +181,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             'didatticaregolamento__stato_regdid_cod',
             'area_cds',
             'area_cds_en',
+            'ordinamento_didattico'
         ).distinct()
 
         for r in res:

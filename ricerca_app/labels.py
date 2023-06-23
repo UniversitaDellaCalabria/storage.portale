@@ -483,6 +483,7 @@ LABEL_MAPPING = {
         'StudentPhoto': 'Student Photo',
         'StudyManifesto': 'Study manifesto',
         'DidacticRegulation': 'Didactic regulation',
+        'TeachingSystem': 'Teaching system',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -968,5 +969,6 @@ LABEL_MAPPING = {
         'StudentPhoto': 'Foto Studente',
         'StudyManifesto': 'Manifesto degli studi',
         'DidacticRegulation': 'Regolamento didattico',
+        'TeachingSystem': 'Ordinamento didattico',
     }
 }
