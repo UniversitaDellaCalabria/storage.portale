@@ -50,6 +50,23 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
     # dati uffici corso di studio
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(
         cds_id=regdid.cds.pk)
+    
+    # dati gruppi cds
+    gruppi_cds_data = DidatticaCdsGruppi.objects.filter(
+        cds=regdid.cds.pk, visibile=True)
+
+    print(regdid.cds.pk)
+    print(gruppi_cds_data)
+    
+    # dizionario chiave-valore
+    gruppi = {}
+    
+    for gruppo in gruppi_cds_data:
+        gruppi_cds_componenti = DidatticaCdsGruppiComponenti.objects.filter(
+            cds_gruppi=gruppo, visibile=True)
+        gruppi[gruppo.pk] = gruppi_cds_componenti
+    
+
 
     logs_regdid = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(regdid).pk,
                                           object_id=regdid.pk)
@@ -68,7 +85,9 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                    'logs_cds': logs_cds,
                    'other_data': other_data,
                    'office_data': office_data,
-                   'regdid': regdid, })
+                   'regdid': regdid, 
+                   'gruppi_cds_data': gruppi_cds_data,
+                   'gruppi': gruppi})
 
 
 @login_required

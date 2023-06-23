@@ -15,6 +15,17 @@
             {{ regdid.cds.tipo_corso_des }}
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-12 col-md-auto me-md-4">
+            {% for data in gruppi_cds_data %}
+                {{ data.descr_breve_it }}
+            {% endfor %}
+        </div>
+    </div>
+
+        
+
 </div>
 
 <div class="card-wrapper card-space">
@@ -76,8 +87,8 @@
                             <td>
                                 {{ other_data.nome_origine_coordinatore|default:"-" }}
                                 {% if other_data.matricola_coordinatore %}
-                                    <br>
-                                    ({% trans "Link to" %}: {{ other_data.matricola_coordinatore|default:"-" }})
+                                <br>
+                                ({% trans "Link to" %}: {{ other_data.matricola_coordinatore|default:"-" }})
                                 {% endif %}
                             </td>
                         </tr>
@@ -86,11 +97,27 @@
                             <td>
                                 {{ other_data.nome_origine_vice_coordinatore|default:"-" }}
                                 {% if other_data.matricola_vice_coordinatore %}
-                                    <br>
-                                    ({% trans "Link to" %}: {{ other_data.matricola_vice_coordinatore|default:"-" }})
+                                <br>
+                                ({% trans "Link to" %}: {{ other_data.matricola_vice_coordinatore|default:"-" }})
                                 {% endif %}
                             </td>
                         </tr>
+
+                        {% for data in gruppi_cds_data %}
+                            <tr>
+                                <td><b>{{ data.descr_breve_it }}</b></td>
+                                <td>
+                                    sa</br>
+                                    {% for key, value in gruppi.items %}
+                                        {% for comp in value %}
+                                            {{comp.matricola}}
+                                            ciao<br />
+                                        {% endfor %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {{gruppi}}
                         <tr>
                             <td><b>{% trans "Number of seats" %}</b></td>
                             <td>{{ other_data.num_posti|default:"-" }}</td>
