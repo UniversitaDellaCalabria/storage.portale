@@ -252,6 +252,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 'OfficeDirectorName': q['nome_origine_riferimento'],
                 'TelOffice': q['telefono'],
                 'Email': q['email'],
+                'Building': q['edificio'],
                 'Floor': q['piano'],
                 'Timetables': q['orari'],
                 'OnlineCounter': q['sportello_online']
