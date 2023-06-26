@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-23 11:46+0200\n"
-"PO-Revision-Date: 2023-06-23 11:46+0200\n"
+"POT-Creation-Date: 2023-06-26 11:40+0200\n"
+"PO-Revision-Date: 2023-06-26 11:10+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -900,7 +900,7 @@ msgstr ""
 msgid "Spinoff"
 msgstr ""
 
-#: crud/companies/forms.py:50 crud/patents/forms.py:39
+#: crud/companies/forms.py:50 crud/patents/forms.py:41
 msgid "Logo"
 msgstr ""
 
@@ -910,7 +910,7 @@ msgstr ""
 
 #: crud/companies/forms.py:52
 #: crud/companies/templates/blocks/crud_companies.html:126
-#: crud/patents/forms.py:40 crud/patents/templates/blocks/crud_patents.html:91
+#: crud/patents/forms.py:42 crud/patents/templates/blocks/crud_patents.html:91
 #: crud/projects/forms.py:39
 #: crud/projects/templates/blocks/crud_projects.html:192
 #: crud/teachers/templates/blocks/crud_teacher_books.html:44
@@ -918,14 +918,14 @@ msgstr ""
 msgid "Active"
 msgstr "Attivo"
 
-#: crud/companies/forms.py:53 crud/patents/forms.py:41
+#: crud/companies/forms.py:53 crud/patents/forms.py:43
 #: crud/projects/forms.py:40
 #, fuzzy
 #| msgid "Order"
 msgid "Ordering"
 msgstr "Ordinamento"
 
-#: crud/companies/forms.py:67 crud/patents/forms.py:87 crud/phd/forms.py:34
+#: crud/companies/forms.py:67 crud/patents/forms.py:92 crud/phd/forms.py:34
 #: crud/phd/forms.py:43 crud/projects/forms.py:57 crud/projects/forms.py:66
 msgid "Name and Surname"
 msgstr "Nome e Cognome"
@@ -1085,34 +1085,42 @@ msgid "Advantages"
 msgstr "Vantaggi"
 
 #: crud/patents/forms.py:31
+msgid "Initial TRL"
+msgstr ""
+
+#: crud/patents/forms.py:32
 msgid "Updated TRL"
 msgstr "TRL aggiornato"
 
-#: crud/patents/forms.py:32
+#: crud/patents/forms.py:33
+msgid "Enhancement"
+msgstr "Valorizzazione"
+
+#: crud/patents/forms.py:34
 msgid "Property"
 msgstr "Proprietà"
 
-#: crud/patents/forms.py:33
+#: crud/patents/forms.py:35
 msgid "Legal status"
 msgstr "Status legale"
 
-#: crud/patents/forms.py:34
+#: crud/patents/forms.py:36
 msgid "Date"
 msgstr "Data"
 
-#: crud/patents/forms.py:35
+#: crud/patents/forms.py:37
 msgid "Territory"
 msgstr "Territorio"
 
-#: crud/patents/forms.py:36
+#: crud/patents/forms.py:38
 msgid "Commercial right"
 msgstr "Diritto commerciale"
 
-#: crud/patents/forms.py:37
+#: crud/patents/forms.py:39
 msgid "Availability"
 msgstr "Disponibilità"
 
-#: crud/patents/forms.py:38
+#: crud/patents/forms.py:40
 msgid "Area KS"
 msgstr ""
 
