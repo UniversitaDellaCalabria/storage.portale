@@ -35,7 +35,8 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
                   'descrizione_eng', 'url_sito_web',
                   'ceo', 'id_area_tecnologica',
                   'id_area_innovazione_s3_calabria', 'is_startup',
-                  'is_spinoff', 'nome_file_logo', 'ordinamento']
+                  'is_spinoff', 'nome_file_logo',
+                  'ordinamento']
         labels = {
             'piva': _('VAT number'),
             'nome_azienda': _('Name'),

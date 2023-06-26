@@ -25,6 +25,7 @@ from crud.utils.settings import *
 from .utils import encode_labels, encrypt, decrypt
 
 
+
 class ApiEndpointList(generics.ListAPIView):
     pagination_class = UnicalStorageApiPaginationList
     permission_classes = [permissions.AllowAny]
@@ -68,6 +69,7 @@ class ApiEndpointDetail(ApiEndpointList):
                 'lang', 'null')).lower()
         if self.language == 'null':
             self.language = self.request.LANGUAGE_CODE
+
         queryset = self.get_queryset()
         if queryset is not None and len(queryset) > 0:
             serializer = self.get_serializer(queryset[0], many=False)
@@ -75,6 +77,7 @@ class ApiEndpointDetail(ApiEndpointList):
                 'results': serializer.data,
                 'labels': encode_labels(serializer.data, self.language)
             })
+
         return Response({
             'results': {},
             'labels': {}
@@ -178,6 +181,7 @@ class ApiCdSDetail(ApiEndpointDetail):
             'didatticaregolamento__stato_regdid_cod',
             'area_cds',
             'area_cds_en',
+            'ordinamento_didattico'
         ).distinct()
 
         for r in res:

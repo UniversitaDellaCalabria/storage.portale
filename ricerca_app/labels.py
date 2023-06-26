@@ -255,6 +255,9 @@ LABEL_MAPPING = {
         'ScopeID': 'Scope ID',
         'ScopeDescription': 'Scope Description',
         'PatentId': 'Patent Id',
+        'PatentInitialTRL': 'Initial TRL',
+        'PatentUpdatedTRL': 'Updated TRL',
+        'PatentEnhancement': 'Enhancement',
         'PatentUniqueId': 'Patent Unique Id',
         'PatentTitle': 'Patent Title',
         'PatentImage': 'Patent Image',
@@ -368,6 +371,7 @@ LABEL_MAPPING = {
         'OfficeName': 'Office Name',
         'OfficeDirector': 'Office Director',
         'OfficeDirectorName': 'Office Director Name',
+        'Building': 'Building',
         'Floor': 'Floor',
         'Timetables': 'Timetables',
         'OnlineCounter': 'Online Counter',
@@ -505,9 +509,7 @@ LABEL_MAPPING = {
         'ClassObjectId': 'Class Object Id',
         'StudyManifesto': 'Study manifesto',
         'DidacticRegulation': 'Didactic regulation',
-        # 'TopicTitle': 'Topic Title',
-        # 'Object': 'Object',
-        # 'id': 'id'
+        'TeachingSystem': 'Teaching system',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -764,6 +766,9 @@ LABEL_MAPPING = {
         'ScopeID': 'ID Finalità',
         'ScopeDescription': 'Descrizione Finalità',
         'PatentId': 'Id Brevetto',
+        'PatentInitialTRL': 'Initial TRL',
+        'PatentUpdatedTRL': 'Updated TRL',
+        'PatentEnhancement': 'Valorizzazione',
         'PatentUniqueId': 'Id Univoco Brevetto',
         'PatentTitle': 'Titolo Brevetto',
         'PatentImage': 'Immagine Brevetto',
@@ -876,6 +881,7 @@ LABEL_MAPPING = {
         'OfficeName': 'Nome Ufficio',
         'OfficeDirector': 'Matricola Riferimento Ufficio',
         'OfficeDirectorName': 'Nome Riferimento Ufficio',
+        'Building': 'Edificio',
         'Floor': 'Piano',
         'Timetables': 'Orari',
         'OnlineCounter': 'Sportello Online',
@@ -1015,8 +1021,6 @@ LABEL_MAPPING = {
         'ClassObjectId': 'Id Classe Oggetto',
         'StudyManifesto': 'Manifesto degli studi',
         'DidacticRegulation': 'Regolamento didattico',
-        # 'TopicTitle': 'Titolo Topic',
-        # 'Object': 'Oggetto',
-        # 'id': 'id'
+        'TeachingSystem': 'Ordinamento didattico',
     }
 }

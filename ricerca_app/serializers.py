@@ -101,6 +101,7 @@ class CdSSerializer(CreateUpdateAbstract):
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
             'OtherData': data,
             'OfficesData': offices_data,
+            'TeachingSystem': build_media_path(query['ordinamento_didattico'])
         }
 
     @staticmethod
@@ -117,7 +118,6 @@ class CdSSerializer(CreateUpdateAbstract):
                     'DidacticRegulation': build_media_path(q['regolamento_didattico'])
                     }
         return {}
-
 
     @staticmethod
     def to_dict_offices_data(query):
@@ -216,6 +216,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
             'OtherData': data,
             'OfficesData': offices_data,
+            'TeachingSystem': build_media_path(query['ordinamento_didattico'])
         }
 
 
@@ -254,6 +255,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 'OfficeDirectorName': q['nome_origine_riferimento'],
                 'TelOffice': q['telefono'],
                 'Email': q['email'],
+                'Building': q['edificio'],
                 'Floor': q['piano'],
                 'Timetables': q['orari'],
                 'OnlineCounter': q['sportello_online']
@@ -2032,9 +2034,13 @@ class PatentsSerializer(CreateUpdateAbstract):
             'PatentImage': build_media_path(query['nome_file_logo']),
             'PatentAbstract': query["breve_descrizione"],
             'PatentUrlKnowledgeShare': query["url_knowledge_share"],
+            'PatentInizialTRL': query["trl_iniziale"],
+            'PatentUpdatedTRL': query["trl_aggiornato"],
+            'PatentEnhancement': query["valorizzazione"],
             'PatentTechAreaId': query["id_area_tecnologica"],
             'PatentAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
             'PatentInventors': inventors,
+            'PatentIsActive': query['is_active']
         }
 
     @staticmethod
@@ -2073,6 +2079,7 @@ class CompaniesSerializer(CreateUpdateAbstract):
             'TechAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
             'IsSpinoff': query['is_spinoff'],
             'IsStartup': query['is_startup'],
+            'IsActive': query['is_active']
         }
 
 
@@ -2126,6 +2133,7 @@ class ProjectSerializer(CreateUpdateAbstract):
             'ProjectImage': query['url_immagine'],
             'ScientificDirectors': responsabili,
             'Researchers': ricercatori,
+            'IsActive': query['is_active']
         }
 
     @staticmethod

@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from ricerca_app.models import (
-    DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio)
+    DidatticaCds, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 
@@ -38,7 +38,7 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
         fields = ['num_posti', 'modalita_iscrizione',
                   'nome_origine_coordinatore',
                   'nome_origine_vice_coordinatore',
-                  'manifesto_studi', 'regolamento_didattico' ]
+                  'manifesto_studi', 'regolamento_didattico']
         labels = {
             "nome_origine_coordinatore": _("Coordinator"),
             "nome_origine_vice_coordinatore": _("Deputy coordinator"),
@@ -48,3 +48,12 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
             "regolamento_didattico": _("Didactic regulation"),
         }
         widgets = {'modalita_iscrizione': CKEditorWidget()}
+
+
+class DidatticaCdsOrdinamentoForm(forms.ModelForm):
+    class Meta:
+        model = DidatticaCds
+        fields = ['ordinamento_didattico']
+        labels = {
+            "ordinamento_didattico": _("Teaching system"),
+        }

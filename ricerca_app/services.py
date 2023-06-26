@@ -125,7 +125,8 @@ class ServiceDidatticaCds:
             'didatticaregolamento__titolo_congiunto_cod',
             'didatticaregolamento__stato_regdid_cod',
             'area_cds',
-            'area_cds_en').distinct()
+            'area_cds_en',
+            'ordinamento_didattico').distinct()
         items = items.order_by("nome_cds_it") if language == 'it' else items.order_by(
             F("nome_cds_eng").asc(nulls_last=True))
         for i in items:
@@ -1084,7 +1085,7 @@ class ServiceDidatticaAttivitaFormativa:
 
             if padre:
                 q['Father'] = padre
-            else: # pragma: no cover
+            else:
                 q['Father'] = None
 
 
@@ -1439,7 +1440,7 @@ class ServiceDidatticaAttivitaFormativa:
                 })
             groups = groups.values('af_id')
             groups = list(groups)
-            for g in groups: # pragma: no cover
+            for g in groups:
                 allowed.append(g['af_id'])
 
             if list_submodules[i]['af_id'] not in allowed:
@@ -2983,7 +2984,7 @@ class ServicePersonale:
 
                 if item['Roles'] and len(item['Roles']) != 0:
                     for r in item['Roles']:
-                        if r['cd_uo_aff_org'] == structureid: # pragma: no cover
+                        if r['cd_uo_aff_org'] == structureid:
                             filtered4.append(item)
                             break
         else:
@@ -3899,6 +3900,9 @@ class ServiceBrevetto:
             "titolo",
             "nome_file_logo",
             "breve_descrizione",
+            "trl_iniziale",
+            "trl_aggiornato",
+            "valorizzazione",
             "url_knowledge_share",
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
@@ -3931,6 +3935,9 @@ class ServiceBrevetto:
             "titolo",
             "nome_file_logo",
             "breve_descrizione",
+            "trl_iniziale",
+            "trl_aggiornato",
+            "valorizzazione",
             "url_knowledge_share",
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",

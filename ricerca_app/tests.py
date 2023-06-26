@@ -5767,8 +5767,6 @@ class ApiPhdSsdListUnitTest(TestCase):
         assert len(res.json()['results']) == 1
 
 
-
-
 class ApiSitoWebCdsListUnitTest(TestCase):
     def test_apisitiwebcdslist(self):
         req = Client()
