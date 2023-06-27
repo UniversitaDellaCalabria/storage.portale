@@ -27,7 +27,7 @@ def cds_regolamento_media_path(instance, filename): # pragma: no cover
     return f'portale/cds/regolamenti/{instance.regdid_id.aa_reg_did}/{filename}'
 
 def cds_ordinamento_media_path(instance, filename): # pragma: no cover
-    return f'portale/cds/ordinamenti/{filename}'
+    return f'portale/cds/ordinamenti/{instance.regdid_id.aa_reg_did}/{filename}'
 
 
 class InsModAbstract(models.Model):
@@ -415,14 +415,6 @@ class DidatticaCds(InsModAbstract):
         blank=True,
         null=True)
     area_cds_en = models.CharField(db_column='AREA_CDS_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    ordinamento_didattico = models.FileField(
-        upload_to=cds_ordinamento_media_path,
-        validators=[validate_pdf_file_extension,
-                    validate_file_size],
-        db_column='ORDINAMENTO_DIDATTICO',
-        max_length=255,
-        blank=False,
-        null=True)
 
     class Meta:
         managed = True
@@ -1240,6 +1232,16 @@ class DidatticaRegolamento(InsModAbstract):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_REGOLAMENTO'
+
+    def get_ordinamento_didattico(self):
+        # se è stato caricato un ordinamento per quest'anno, lo restituisco
+        other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=self).first()
+        if other_data and other_data.ordinamento_didattico:
+            return (self.aa_reg_did, other_data.ordinamento_didattico)
+
+        prev_regdid = DidatticaRegolamento.objects.filter(cds=self.cds, aa_reg_did=self.aa_reg_did-1).first()
+        if not prev_regdid: return None
+        return prev_regdid.get_ordinamento_didattico()
 
     def __str__(self): # pragma: no cover
         return '{} {}'.format(self.regdid_id, self.aa_reg_did)
@@ -3766,6 +3768,14 @@ class DidatticaCdsAltriDati(models.Model):
         db_column='REGOLAMENTO_DIDATTICO',
         max_length=255,
         blank=True,
+        null=True)
+    ordinamento_didattico = models.FileField(
+        upload_to=cds_ordinamento_media_path,
+        validators=[validate_pdf_file_extension,
+                    validate_file_size],
+        db_column='ORDINAMENTO_DIDATTICO',
+        max_length=255,
+        blank=False,
         null=True)
 
     class Meta:

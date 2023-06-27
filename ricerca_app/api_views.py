@@ -181,7 +181,6 @@ class ApiCdSDetail(ApiEndpointDetail):
             'didatticaregolamento__stato_regdid_cod',
             'area_cds',
             'area_cds_en',
-            'ordinamento_didattico'
         ).distinct()
 
         for r in res:
@@ -263,7 +262,8 @@ class ApiCdSDetail(ApiEndpointDetail):
             'num_posti',
             'modalita_iscrizione',
             'manifesto_studi',
-            'regolamento_didattico'
+            'regolamento_didattico',
+            'ordinamento_didattico'
         ).distinct()
 
         res[0]['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=res[0]['cds_id']).values(

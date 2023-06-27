@@ -97,8 +97,7 @@ class CdSSerializer(CreateUpdateAbstract):
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
             'OtherData': data,
-            'OfficesData': offices_data,
-            'TeachingSystem': build_media_path(query['ordinamento_didattico'])
+            'OfficesData': offices_data
         }
 
     @staticmethod
@@ -112,7 +111,8 @@ class CdSSerializer(CreateUpdateAbstract):
                     'SeatsNumber': q['num_posti'],
                     'RegistrationMode': q['modalita_iscrizione'],
                     'StudyManifesto': build_media_path(q['manifesto_studi']),
-                    'DidacticRegulation': build_media_path(q['regolamento_didattico'])
+                    'DidacticRegulation': build_media_path(q['regolamento_didattico']),
+                    'TeachingSystem': build_media_path(q['ordinamento_didattico'])
                     }
         return {}
 
@@ -213,7 +213,6 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
             'OtherData': data,
             'OfficesData': offices_data,
-            'TeachingSystem': build_media_path(query['ordinamento_didattico'])
         }
 
 
@@ -237,7 +236,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                     'SeatsNumber': q['num_posti'],
                     'RegistrationMode': q['modalita_iscrizione'],
                     'StudyManifesto': build_media_path(q['manifesto_studi']),
-                    'DidacticRegulation': build_media_path(q['regolamento_didattico'])
+                    'DidacticRegulation': build_media_path(q['regolamento_didattico']),
+                    'TeachingSystem': build_media_path(q['ordinamento_didattico'])
                     }
         return {}
 

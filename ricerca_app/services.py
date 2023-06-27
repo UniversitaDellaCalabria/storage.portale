@@ -124,8 +124,7 @@ class ServiceDidatticaCds:
             'didatticaregolamento__titolo_congiunto_cod',
             'didatticaregolamento__stato_regdid_cod',
             'area_cds',
-            'area_cds_en',
-            'ordinamento_didattico').distinct()
+            'area_cds_en').distinct()
         items = items.order_by("nome_cds_it") if language == 'it' else items.order_by(
             F("nome_cds_eng").asc(nulls_last=True))
         for i in items:
@@ -153,7 +152,8 @@ class ServiceDidatticaCds:
                 'num_posti',
                 'modalita_iscrizione',
                 'manifesto_studi',
-                'regolamento_didattico'
+                'regolamento_didattico',
+                'ordinamento_didattico'
             ).distinct()
 
             # matricola = DidatticaCdsAltriDati.objects.filter(cds_id=item['cds_id']).values(
