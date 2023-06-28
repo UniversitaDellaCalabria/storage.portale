@@ -71,6 +71,7 @@ class ApiCdSListUnitTest(TestCase):
             'num_posti': 2
         })
 
+        r1.get_ordinamento_didattico()
 
         url = reverse('ricerca:cdslist')
 
@@ -5767,8 +5768,6 @@ class ApiPhdSsdListUnitTest(TestCase):
 
         res = req.get(url)
         assert len(res.json()['results']) == 1
-
-
 
 
 class ApiSitoWebCdsListUnitTest(TestCase):

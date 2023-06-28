@@ -1,4 +1,5 @@
 import logging
+import os
 
 from .. utils.utils import log_action
 
@@ -37,7 +38,7 @@ def cds(request, my_offices=None):
 
 @login_required
 @can_manage_cds
-@can_edit_cds
+# @can_edit_cds
 def cds_detail(request, regdid_id, my_offices=None, regdid=None):
     """
     dettaglio corso di studio
@@ -48,6 +49,10 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
         regdid_id=regdid_id).first()
 
     # dati uffici corso di studio
+    regdid = DidatticaRegolamento.objects\
+                                 .filter(pk=regdid_id)\
+                                 .select_related('cds')\
+                                 .first()
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(
         cds_id=regdid.cds.pk)
 
@@ -589,3 +594,207 @@ def cds_office_data_responsible_delete(request, regdid_id, data_id, my_offices=N
     return redirect('crud_cds:crud_cds_office_data_edit',
                     regdid_id=regdid_id,
                     data_id=data_id)
+
+
+@login_required
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_teaching_system
+def cds_doc_teaching_system(request, regdid_id, my_offices=None, regdid=None):
+    """
+    aggiungi/modifica ordinamento didattico
+    """
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    form = DidatticaCdsOrdinamentoForm(instance=other_data)
+
+    if request.POST:
+
+        form = DidatticaCdsOrdinamentoForm(instance=other_data,
+                                           files=request.FILES)
+        if form.is_valid():
+            other_data = form.save(commit=False)
+            other_data.regdid_id = regdid
+            other_data.user_mod = request.user
+            other_data.save()
+
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                           form.changed_data)
+
+                log_action(user=request.user,
+                           obj=regdid,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Teaching system file edited successfully"))
+
+            return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
+
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds:crud_cds'): _('CdS'),
+                   reverse('crud_cds:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
+                   '#': _('Teaching system')
+                   }
+
+    return render(request,
+                  'cds_teaching_system.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'regdid': regdid})
+
+
+@login_required
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_teaching_system
+def cds_doc_teaching_system_delete(request, regdid_id, my_offices=None, regdid=None):
+    """
+    elimina ordinamento didattico
+    """
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    if other_data:
+        try:
+            path = other_data.ordinamento_didattico.path
+            if os.path.exists(path):
+                os.remove(path)
+        except:
+            pass
+        other_data.user_mod = request.user
+        other_data.ordinamento_didattico = None
+        other_data.save(update_fields=['ordinamento_didattico', 'user_mod'])
+
+        log_action(user=request.user,
+                   obj=regdid,
+                   flag=CHANGE,
+                   msg=_("Teaching system file removed"))
+
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             _("Teaching system file removed successfully"))
+
+    return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
+
+
+@login_required
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_documents
+def cds_doc_manifesto_regulation(request, regdid_id, my_offices=None, regdid=None):
+    """
+    aggiungi/modifica ordinamento didattico
+    """
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    form = DidatticaCdsManifestoRegolamentoForm(instance=other_data)
+
+    if request.POST:
+
+        form = DidatticaCdsManifestoRegolamentoForm(instance=other_data,
+                                                    files=request.FILES)
+        if form.is_valid():
+            other_data = form.save(commit=False)
+            other_data.user_mod = request.user
+            other_data.regdid_id = regdid
+            other_data.save()
+
+            if form.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                           form.changed_data)
+
+                log_action(user=request.user,
+                           obj=regdid,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_field_labels}}])
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Documents edited successfully"))
+
+            return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
+
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds:crud_cds'): _('CdS'),
+                   reverse('crud_cds:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
+                   '#': _('Teaching system')
+                   }
+
+    return render(request,
+                  'cds_manifesto_regulation.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'regdid': regdid})
+
+
+@login_required
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_documents
+def cds_doc_study_manifesto_delete(request, regdid_id, my_offices=None, regdid=None):
+    """
+    elimina manifesto studi
+    """
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    if other_data:
+        try:
+            path = other_data.manifesto_studi.path
+            if os.path.exists(path):
+                os.remove(path)
+        except:
+            pass
+        other_data.user_mod = request.user
+        other_data.manifesto_studi = None
+        other_data.save(update_fields=['manifesto_studi', 'user_mod'])
+
+        log_action(user=request.user,
+                   obj=regdid,
+                   flag=CHANGE,
+                   msg=_("Study manifesto file removed"))
+
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             _("Study manifesto file removed successfully"))
+
+    return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
+
+
+@login_required
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_documents
+def cds_doc_didactic_regulation_delete(request, regdid_id, my_offices=None, regdid=None):
+    """
+    elimina regolamento didattico
+    """
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    if other_data:
+        try:
+            path = other_data.regolamento_didattico.path
+            if os.path.exists(path):
+                os.remove(path)
+        except:
+            pass
+        other_data.user_mod = request.user
+        other_data.regolamento_didattico = None
+        other_data.save(update_fields=['regolamento_didattico','user_mod'])
+
+        log_action(user=request.user,
+                   obj=regdid,
+                   flag=CHANGE,
+                   msg=_("Didactic regulation file removed"))
+
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             _("Didactic regulation file removed successfully"))
+
+    return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)

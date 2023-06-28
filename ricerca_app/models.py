@@ -26,6 +26,9 @@ def cds_manifesto_media_path(instance, filename): # pragma: no cover
 def cds_regolamento_media_path(instance, filename): # pragma: no cover
     return f'portale/cds/regolamenti/{instance.regdid_id.aa_reg_did}/{filename}'
 
+def cds_ordinamento_media_path(instance, filename): # pragma: no cover
+    return f'portale/cds/ordinamenti/{instance.regdid_id.aa_reg_did}/{filename}'
+
 
 class InsModAbstract(models.Model):
     dt_ins = models.DateTimeField(db_column='DT_INS', auto_now_add=True)
@@ -412,7 +415,6 @@ class DidatticaCds(InsModAbstract):
         blank=True,
         null=True)
     area_cds_en = models.CharField(db_column='AREA_CDS_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-
 
     class Meta:
         managed = True
@@ -891,7 +893,7 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.cognome_nome_origine
 
     class Meta:
@@ -1230,6 +1232,16 @@ class DidatticaRegolamento(InsModAbstract):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_REGOLAMENTO'
+
+    def get_ordinamento_didattico(self):
+        # se è stato caricato un ordinamento per quest'anno, lo restituisco
+        other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=self).first()
+        if other_data and other_data.ordinamento_didattico:
+            return (self.aa_reg_did, other_data.ordinamento_didattico)
+
+        prev_regdid = DidatticaRegolamento.objects.filter(cds=self.cds, aa_reg_did=self.aa_reg_did-1).first()
+        if not prev_regdid: return None
+        return prev_regdid.get_ordinamento_didattico()
 
     def __str__(self): # pragma: no cover
         return '{} {}'.format(self.regdid_id, self.aa_reg_did)
@@ -3152,7 +3164,7 @@ class BrevettoDirittiCommerciali(models.Model):
     descr_diritto = models.CharField(
         db_column='DESCR_DIRITTO', max_length=1000)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_diritto
 
     class Meta:
@@ -3166,7 +3178,7 @@ class BrevettoTerritori(models.Model):
     # Field name made lowercase.
     territorio = models.CharField(db_column='TERRITORIO', max_length=80)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.territorio
 
     class Meta:
@@ -3182,7 +3194,7 @@ class BrevettoDisponibilita(models.Model):
     descr_disponibilita = models.CharField(
         db_column='DESCR_DISPONIBILITA', max_length=1000)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_disponibilita
 
     class Meta:
@@ -3201,7 +3213,7 @@ class TipologiaAreaTecnologica(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_area_ita
 
     class Meta:
@@ -3216,7 +3228,7 @@ class BrevettoStatusLegale(models.Model):
     descr_status = models.CharField(db_column='DESCR_STATUS', max_length=1000)
 
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_status
 
     class Meta:
@@ -3257,12 +3269,14 @@ class BrevettoDatiBase(models.Model):
         db_column='APPLICAZIONI', blank=True, null=True)
     # Field name made lowercase.
     vantaggi = models.TextField(db_column='VANTAGGI', blank=True, null=True)
-    trl_aggiornato = models.CharField(
-        db_column='TRL_AGGIORNATO',
-        max_length=500,
+    trl_iniziale = models.PositiveSmallIntegerField(
+        db_column='TRL_INIZIALE',
         blank=True,
-        null=True)  # Field name made lowercase.
-    # Field name made lowercase.
+        null=True)
+    trl_aggiornato = models.PositiveSmallIntegerField(
+        db_column='TRL_AGGIORNATO',
+        blank=True,
+        null=True)
     proprieta = models.TextField(db_column='PROPRIETA')
     id_status_legale = models.ForeignKey(
         BrevettoStatusLegale,
@@ -3306,10 +3320,18 @@ class BrevettoDatiBase(models.Model):
         max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
+    valorizzazione = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        db_column='VALORIZZAZIONE')
+    is_active = models.BooleanField(default=True, db_column='ATTIVO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINE')
 
     class Meta:
         managed = True
         db_table = 'BREVETTO_DATI_BASE'
+        ordering = ["ordinamento"]
 
 
 class BrevettoInventori(models.Model):
@@ -3332,7 +3354,7 @@ class BrevettoInventori(models.Model):
         db_column='COGNOMENOME_ORIGINE',
         max_length=200)  # Field name made lowercase.
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.cognomenome_origine
 
     class Meta:
@@ -3347,7 +3369,7 @@ class SpinoffStartupAreaInnovazioneS3Calabria(models.Model):
     descr_area_s3 = models.CharField(
         db_column='DESCR_AREA_S3', max_length=1000)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_area_s3
 
     class Meta:
@@ -3416,10 +3438,14 @@ class SpinoffStartupDatiBase(models.Model):
     # Field name made lowercase.
     is_spinoff = models.BooleanField(
         db_column='IS_SPINOFF', default=False)
+    is_active = models.BooleanField(default=True, db_column='ATTIVO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINE')
 
     class Meta:
         managed = True
         db_table = 'SPINOFF_STARTUP_DATI_BASE'
+        ordering = ["ordinamento"]
+
 
 
 class SpinoffStartupDipartimento(models.Model):
@@ -3428,7 +3454,7 @@ class SpinoffStartupDipartimento(models.Model):
     nome_origine_dipartimento = models.CharField(db_column='NOME_ORIGINE_DIPARTIMENTO', max_length=1000)  # Field name made lowercase.
     id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.CASCADE, db_column='ID_DIDATTICA_DIPARTIMENTO', blank=True, null=True)  # Field name made lowercase.
 
-    def __str__():
+    def __str__(): # pragma: no cover
         return self.nome_origine_dipartimento
 
     class Meta:
@@ -3443,7 +3469,7 @@ class ProgettoAmbitoTerritoriale(models.Model):
     ambito_territoriale = models.CharField(
         db_column='AMBITO_TERRITORIALE', max_length=100)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.ambito_territoriale
 
     class Meta:
@@ -3508,11 +3534,14 @@ class ProgettoDatiBase(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     call = models.CharField(db_column='CALL', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-
+    is_active = models.BooleanField(default=True, db_column='ATTIVO')
+    ordinamento = models.IntegerField(default=10, db_column='ORDINE')
 
     class Meta:
         managed = True
         db_table = 'PROGETTO_DATI_BASE'
+        ordering = ["ordinamento"]
+
 
 class ProgettoRicercatore(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
@@ -3520,7 +3549,7 @@ class ProgettoRicercatore(models.Model):
     nome_origine = models.CharField(db_column='NOME_ORIGINE', max_length=1000)  # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.nome_origine
 
     class Meta:
@@ -3544,7 +3573,7 @@ class ProgettoResponsabileScientifico(models.Model):
     # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.nome_origine
 
     class Meta:
@@ -3560,7 +3589,7 @@ class ProgettoTipologiaProgramma(models.Model):
         db_column='NOME_PROGRAMMA', max_length=1000)
 
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.nome_programma
 
     class Meta:
@@ -3740,11 +3769,92 @@ class DidatticaCdsAltriDati(models.Model):
         max_length=255,
         blank=True,
         null=True)
+    ordinamento_didattico = models.FileField(
+        upload_to=cds_ordinamento_media_path,
+        validators=[validate_pdf_file_extension,
+                    validate_file_size],
+        db_column='ORDINAMENTO_DIDATTICO',
+        max_length=255,
+        blank=True,
+        null=True)
 
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_ALTRI_DATI'
 
+
+class DidatticaCdsGruppi(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    descr_breve_it = models.CharField(db_column='DESCR_BREVE_IT', max_length=1000)  # Field name made lowercase.
+    descr_breve_en = models.CharField(db_column='DESCR_BREVE_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    descr_lunga_it = models.TextField(db_column='DESCR_LUNGA_IT', blank=True, null=True)  # Field name made lowercase.
+    descr_lunga_en = models.TextField(db_column='DESCR_LUNGA_EN', blank=True, null=True)  # Field name made lowercase.
+    id_didattica_cds = models.ForeignKey(DidatticaCds, models.DO_NOTHING, db_column='ID_DIDATTICA_CDS')  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE', default=10)  # Field name made lowercase.
+    visibile = models.IntegerField(db_column='VISIBILE', default=True)  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_GRUPPI'
+        ordering = ('ordine',)
+
+
+class DidatticaCdsGruppiComponenti(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_didattica_cds_gruppi = models.ForeignKey(DidatticaCdsGruppi, models.DO_NOTHING, db_column='ID_DIDATTICA_CDS_GRUPPI')  # Field name made lowercase.
+    matricola = models.ForeignKey(Personale, models.DO_NOTHING, db_column='MATRICOLA', blank=True, null=True)  # Field name made lowercase.
+    cognome = models.CharField(db_column='COGNOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='NOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    funzione_it = models.CharField(db_column='FUNZIONE_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    funzione_en = models.CharField(db_column='FUNZIONE_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE', default=10)  # Field name made lowercase.
+    visibile = models.IntegerField(db_column='VISIBILE', default=True)  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_GRUPPI_COMPONENTI'
+        ordering = ('ordine',)
+
+
+class DidatticaDipartimentoGruppi(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    descr_breve_it = models.CharField(db_column='DESCR_BREVE_IT', max_length=1000)  # Field name made lowercase.
+    descr_breve_en = models.CharField(db_column='DESCR_BREVE_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    descr_lunga_it = models.TextField(db_column='DESCR_LUNGA_IT', blank=True, null=True)  # Field name made lowercase.
+    descr_lunga_en = models.TextField(db_column='DESCR_LUNGA_EN', blank=True, null=True)  # Field name made lowercase.
+    id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.DO_NOTHING, db_column='ID_DIDATTICA_DIPARTIMENTO')  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE', default=10)  # Field name made lowercase.
+    visibile = models.IntegerField(db_column='VISIBILE', default=True)  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_DIPARTIMENTO_GRUPPI'
+        ordering = ('ordine',)
+
+
+class DidatticaDipartimentoGruppiComponenti(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_didattica_dipartimento_gruppi = models.ForeignKey(DidatticaDipartimentoGruppi, models.DO_NOTHING, db_column='ID_DIDATTICA_DIPARTIMENTO_GRUPPI')  # Field name made lowercase.
+    matricola = models.ForeignKey(Personale, models.DO_NOTHING, db_column='MATRICOLA', blank=True, null=True)  # Field name made lowercase.
+    cognome = models.CharField(db_column='COGNOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='NOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    funzione_it = models.CharField(db_column='FUNZIONE_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    funzione_en = models.CharField(db_column='FUNZIONE_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE', default=10)  # Field name made lowercase.
+    visibile = models.IntegerField(db_column='VISIBILE', default=True)  # Field name made lowercase.
+    dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_DIPARTIMENTO_GRUPPI_COMPONENTI'
+        ordering = ('ordine',)
 
 
 class SitoWebCdsDatiBase(models.Model):

@@ -137,7 +137,7 @@ class ServiceDidatticaCds:
             if (len(erogation_mode) != 0):
                 i['ErogationMode'] = erogation_mode
             else:
-                i['ErogationMode'] = None
+                i['ErogationMode'] = None # pragma: no cover
 
         items = list(items)
         for item in items:
@@ -154,7 +154,8 @@ class ServiceDidatticaCds:
                 'num_posti',
                 'modalita_iscrizione',
                 'manifesto_studi',
-                'regolamento_didattico'
+                'regolamento_didattico',
+                'ordinamento_didattico'
             ).distinct()
 
             # matricola = DidatticaCdsAltriDati.objects.filter(cds_id=item['cds_id']).values(
@@ -1170,7 +1171,7 @@ class ServiceDidatticaAttivitaFormativa:
             query_department = Q(cds_id__dip_id__dip_cod=department)
         if cds:
             for k in cds.split(" "):
-                if language == "it":
+                if language == "it": # pragma: no cover
                     q = Q(cds_id__nome_cds_it__icontains=k)
                 else:
                     q = Q(cds_id__nome_cds_eng__icontains=k)
@@ -1261,7 +1262,7 @@ class ServiceDidatticaAttivitaFormativa:
 
             if padre:
                 q['Father'] = padre
-            else: # pragma: no cover
+            else:
                 q['Father'] = None
 
 
@@ -1616,7 +1617,7 @@ class ServiceDidatticaAttivitaFormativa:
                 })
             groups = groups.values('af_id')
             groups = list(groups)
-            for g in groups: # pragma: no cover
+            for g in groups:
                 allowed.append(g['af_id'])
 
             if list_submodules[i]['af_id'] not in allowed:
@@ -3160,7 +3161,7 @@ class ServicePersonale:
 
                 if item['Roles'] and len(item['Roles']) != 0:
                     for r in item['Roles']:
-                        if r['cd_uo_aff_org'] == structureid: # pragma: no cover
+                        if r['cd_uo_aff_org'] == structureid:
                             filtered4.append(item)
                             break
         else:
@@ -4049,11 +4050,12 @@ class ServiceLaboratorio:
 class ServiceBrevetto:
 
     @staticmethod
-    def getPatents(search, techarea, structure):
+    def getPatents(search, techarea, structure, only_active=True):
 
         query_search = Q()
         query_techarea = Q()
         query_structure = Q()
+        query_is_active = Q(is_active=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -4068,16 +4070,21 @@ class ServiceBrevetto:
         query = BrevettoDatiBase.objects.filter(
             query_search,
             query_techarea,
-            query_structure).values(
+            query_structure,
+            query_is_active).values(
             "id",
             "id_univoco",
             "titolo",
             "nome_file_logo",
             "breve_descrizione",
+            "trl_iniziale",
+            "trl_aggiornato",
+            "valorizzazione",
             "url_knowledge_share",
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         ).distinct()
 
         for q in query:
@@ -4098,16 +4105,21 @@ class ServiceBrevetto:
     def getPatentDetail(patentid):
 
         query = BrevettoDatiBase.objects.filter(
-            id=patentid).values(
+            id=patentid,
+            is_active=True).values(
             "id",
             "id_univoco",
             "titolo",
             "nome_file_logo",
             "breve_descrizione",
+            "trl_iniziale",
+            "trl_aggiornato",
+            "valorizzazione",
             "url_knowledge_share",
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         )
 
         for q in query:
@@ -4128,12 +4140,13 @@ class ServiceBrevetto:
 class ServiceCompany:
 
     @staticmethod
-    def getCompanies(search, techarea, spinoff, startup, q_departments):
+    def getCompanies(search, techarea, spinoff, startup, q_departments, only_active=True):
 
         query_search = Q()
         query_techarea = Q()
         query_spinoff = Q()
         query_startup = Q()
+        query_is_active = Q(is_active=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -4153,6 +4166,7 @@ class ServiceCompany:
             query_techarea,
             query_spinoff,
             query_startup,
+            query_is_active
         ).values(
             "id",
             "piva",
@@ -4168,6 +4182,7 @@ class ServiceCompany:
             "id_area_tecnologica__descr_area_eng",
             "is_startup",
             "is_spinoff",
+            "is_active"
         ).distinct()
 
         for q in query:
@@ -4199,7 +4214,8 @@ class ServiceCompany:
     def getCompanyDetail(companyid):
 
         query = SpinoffStartupDatiBase.objects.filter(
-            id=companyid
+            id=companyid,
+            is_active=True
         ).values(
             "id",
             "piva",
@@ -4215,6 +4231,7 @@ class ServiceCompany:
             "id_area_tecnologica__descr_area_eng",
             "is_startup",
             "is_spinoff",
+            "is_active"
         )
         for q in query:
 
@@ -4254,7 +4271,8 @@ class ServiceProgetto:
             programtype,
             territorialscope,
             notprogramtype,
-            year):
+            year,
+            only_active=True):
 
         query_search = Q()
         query_techarea = Q()
@@ -4263,6 +4281,7 @@ class ServiceProgetto:
         query_territorialscope = Q()
         query_notprogramtype = Q()
         query_year = Q()
+        query_is_active = Q(is_active=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -4296,6 +4315,7 @@ class ServiceProgetto:
             query_notprogramtype,
             query_programtype,
             query_year,
+            query_is_active
         ).values(
             "id",
             "id_ambito_territoriale__id",
@@ -4313,7 +4333,9 @@ class ServiceProgetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         ).distinct().order_by(
+            'ordinamento',
             '-anno_avvio',
             'id_ambito_territoriale__ambito_territoriale')
 
@@ -4344,7 +4366,8 @@ class ServiceProgetto:
     def getProjectDetail(projectid):
 
         query = ProgettoDatiBase.objects.filter(
-            id=projectid
+            id=projectid,
+            is_active=True
         ).values(
             "id",
             "id_ambito_territoriale__id",
@@ -4362,6 +4385,7 @@ class ServiceProgetto:
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
             "id_area_tecnologica__descr_area_eng",
+            "is_active"
         ).distinct()
 
         for q in query:

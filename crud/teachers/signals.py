@@ -1,3 +1,5 @@
+import os
+
 from django.db.models.signals import *
 from django.dispatch import receiver
 
@@ -39,7 +41,6 @@ def pre_save_image(sender, instance, *args, **kwargs):
         except:
             new = None
         if new != old:
-            import os
             if os.path.exists(old):
                 os.remove(old)
     except:
@@ -56,7 +57,6 @@ def pre_save_cvita(sender, instance, *args, **kwargs):
         except:
             new = None
         if new != old:
-            import os
             if os.path.exists(old):
                 os.remove(old)
     except:
@@ -73,7 +73,6 @@ def pre_save_cven(sender, instance, *args, **kwargs):
         except:
             new = None
         if new != old:
-            import os
             if os.path.exists(old):
                 os.remove(old)
     except:

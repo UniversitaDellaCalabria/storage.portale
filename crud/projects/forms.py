@@ -18,10 +18,11 @@ CMS_STORAGE_ROOT_API = getattr(
 class ProgettoDatiBaseForm(forms.ModelForm):
     class Meta:
         model = ProgettoDatiBase
-        fields = ['titolo', 'anno_avvio', 'id_ambito_territoriale',
+        fields = ['is_active', 'titolo', 'anno_avvio', 'id_ambito_territoriale',
                   'id_tipologia_programma', 'id_area_tecnologica',
                   'descr_breve', 'url_immagine', 'abstract_ita',
-                  'abstract_eng', 'url_sito_web', 'call', 'uo']
+                  'abstract_eng', 'url_sito_web', 'call', 'uo',
+                  'ordinamento']
         labels = {
             'titolo': _('Title'),
             'anno_avvio': _('Start year'),
@@ -35,6 +36,8 @@ class ProgettoDatiBaseForm(forms.ModelForm):
             'url_sito_web': _('URL'),
             'call': _('Call'),
             'uo': _('Organizational Unit'),
+            'is_active': _('Active'),
+            'ordinamento': _('Ordering')
         }
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
                    'descr_breve': CKEditorWidget(),

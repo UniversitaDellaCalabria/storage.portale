@@ -28,7 +28,9 @@ class BrevettoDatiBaseForm(forms.ModelForm):
             'url_knowledge_share': _('URL Knowledge Share'),
             'applicazioni': _('Applications'),
             'vantaggi': _('Advantages'),
+            'trl_initial': _('Initial TRL'),
             'trl_aggiornato': _('Updated TRL'),
+            'valorizzazione': _('Enhancement'),
             'proprieta': _('Property'),
             'id_status_legale': _('Legal status'),
             'data_priorita': _('Date'),
@@ -36,17 +38,22 @@ class BrevettoDatiBaseForm(forms.ModelForm):
             'id_diritto_commerciale': _('Commercial right'),
             'id_disponibilita': _('Availability'),
             'area_ks': _('Area KS'),
-            'nome_file_logo': _('Logo')
+            'nome_file_logo': _('Logo'),
+            'is_active': _('Active'),
+            'ordinamento': _('Ordering')
             # 'url_immagine': _('Logo URL')
         }
-        fields = ['id_univoco',
+        fields = ['is_active',
+                  'id_univoco',
                   'titolo',
                   'breve_descrizione',
                   'id_area_tecnologica',
                   'url_knowledge_share',
                   'applicazioni',
                   'vantaggi',
+                  'trl_iniziale',
                   'trl_aggiornato',
+                  'valorizzazione',
                   'proprieta',
                   'id_status_legale',
                   'data_priorita',
@@ -54,7 +61,8 @@ class BrevettoDatiBaseForm(forms.ModelForm):
                   'id_diritto_commerciale',
                   'id_disponibilita',
                   'area_ks',
-                  'nome_file_logo',]
+                  'nome_file_logo',
+                  'ordinamento']
                   # 'url_immagine']
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
                    'proprieta': forms.Textarea(attrs={'rows': 2}),
