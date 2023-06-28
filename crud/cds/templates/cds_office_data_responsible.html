@@ -6,7 +6,7 @@
 
 {% block centered_container %}
 <h3 style="font-weight: lighter;" class="mb-4">
-    {% if choosen_person %}{% trans "Edit responsible for" %}{% else %}{% trans "New responsible for" %}{% endif %} {{ regdid.cds.nome_cds_it }}
+    {% if choosen_person %}{% trans "Edit responsible for" %}{% else %}{% trans "New responsible for" %}{% endif %} {{ regdid.cds.nome_cds_it }} - {{ regdid.aa_reg_did }}
 </h2>
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">

@@ -102,30 +102,6 @@
                             <td><b>{% trans "Registration procedure" %}</b></td>
                             <td>{{ other_data.modalita_iscrizione|default:"-"|safe }}</td>
                         </tr>
-                        <tr>
-                            <td><b>{% trans "Study manifesto" %}</b></td>
-                            <td>
-                                {% if other_data.manifesto_studi %}
-                                <a href="{% get_media_prefix %}{{ other_data.manifesto_studi }}" target="_blank">
-                                    {% trans "Download" %}
-                                </a>
-                                {% else %}
-                                -
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><b>{% trans "Didactic regulation" %}</b></td>
-                            <td>
-                                {% if other_data.regolamento_didattico %}
-                                <a href="{% get_media_prefix %}{{ other_data.regolamento_didattico }}" target="_blank">
-                                    {% trans "Download" %}
-                                </a>
-                                {% else %}
-                                -
-                                {% endif %}
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -238,14 +214,15 @@
         <div class="card-body">
 
             <h4 style="font-weight: lighter;">
-                {% trans "Teaching system" %}
+                {% trans "Documents" %}
             </h4>
             <div class="table-responsive">
                 <table class="table table-striped table-hover">
                     <tr>
+                        <td>{% trans "Study manifesto" %}</td>
                         <td>
-                            {% if teaching_system %}
-                            <a href="{% get_media_prefix %}{{ teaching_system }}" target="_blank">
+                            {% if other_data.manifesto_studi %}
+                            <a href="{% get_media_prefix %}{{ other_data.manifesto_studi }}" target="_blank">
                                 {% trans "Download" %}
                             </a>
                             {% else %}
@@ -253,12 +230,12 @@
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_cds:cds_teaching_system' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_cds:cds_doc_manifesto_regulation' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
                             </a>
-                            {% if teaching_system %}
+                            {% if other_data.manifesto_studi %}
                             <a href="" class="btn btn-danger btn-xs"
                                data-toggle="modal"
                                data-target="#delete_teaching_system">
@@ -288,11 +265,135 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete teaching system file?" %}
+                                                {% trans "Do you want to delete this file?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_teaching_system_delete' regdid_id=regdid.pk %}">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_doc_study_manifesto_delete' regdid_id=regdid.pk %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Didactic regulation" %}</td>
+                        <td>
+                            {% if other_data.regolamento_didattico %}
+                            <a href="{% get_media_prefix %}{{ other_data.regolamento_didattico }}" target="_blank">
+                                {% trans "Download" %}
+                            </a>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            <a href="{% url 'crud_cds:cds_doc_manifesto_regulation' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg> {% trans "Edit" %}
+                            </a>
+                            {% if other_data.regolamento_didattico %}
+                            <a href="" class="btn btn-danger btn-xs"
+                               data-toggle="modal"
+                               data-target="#delete_teaching_system">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                </svg> {% trans "Remove" %}
+                            </a>
+                            <div class="modal fade"
+                             tabindex="-1"
+                             role="dialog"
+                             id="delete_teaching_system">
+                                <div class="modal-dialog modal-dialog-centered text-left"
+                                     role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                               <svg class="icon">
+                                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                               </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete this file?" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_doc_didactic_regulation_delete' regdid_id=regdid.pk %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Teaching system" %}</td>
+                        <td>
+                            {% with ord=regdid.get_ordinamento_didattico %}
+                            {% if ord %}
+                            <a href="{% get_media_prefix %}{{ ord.1 }}" target="_blank">
+                                {% trans "Download" %} {% if regdid.aa_reg_did != ord.0  %}(ver. {{ ord.0 }}){% endif %}
+                            </a>
+                            {% else %}
+                            -
+                            {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td class="text-right">
+                            <a href="{% url 'crud_cds:cds_doc_teaching_system' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg> {% trans "Edit" %}
+                            </a>
+                            {% if other_data.ordinamento_didattico %}
+                            <a href="" class="btn btn-danger btn-xs"
+                               data-toggle="modal"
+                               data-target="#delete_teaching_system">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                </svg> {% trans "Remove" %}
+                            </a>
+                            <div class="modal fade"
+                             tabindex="-1"
+                             role="dialog"
+                             id="delete_teaching_system">
+                                <div class="modal-dialog modal-dialog-centered text-left"
+                                     role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                               <svg class="icon">
+                                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                               </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete this file?" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_doc_teaching_system_delete' regdid_id=regdid.pk %}">
                                                 {% trans 'Yes, proceed' %}
                                             </a>
                                         </div>

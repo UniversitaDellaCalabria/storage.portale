@@ -22,4 +22,9 @@ class Migration(migrations.Migration):
             name='regolamento_didattico',
             field=models.FileField(blank=True, db_column='REGOLAMENTO_DIDATTICO', max_length=255, null=True, upload_to=ricerca_app.models.cds_regolamento_media_path, validators=[ricerca_app.validators.validate_pdf_file_extension, ricerca_app.validators.validate_file_size]),
         ),
+        migrations.AddField(
+            model_name='didatticacdsaltridati',
+            name='ordinamento_didattico',
+            field=models.FileField(blank=True, db_column='ORDINAMENTO_DIDATTICO', max_length=255, null=True, upload_to=ricerca_app.models.cds_ordinamento_media_path, validators=[ricerca_app.validators.validate_pdf_file_extension, ricerca_app.validators.validate_file_size]),
+        )
     ]

@@ -37,23 +37,34 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
         model = DidatticaCdsAltriDati
         fields = ['num_posti', 'modalita_iscrizione',
                   'nome_origine_coordinatore',
-                  'nome_origine_vice_coordinatore',
-                  'manifesto_studi', 'regolamento_didattico']
+                  'nome_origine_vice_coordinatore']
+                  # 'manifesto_studi', 'regolamento_didattico']
         labels = {
             "nome_origine_coordinatore": _("Coordinator"),
             "nome_origine_vice_coordinatore": _("Deputy coordinator"),
             "num_posti": _("Number of seats"),
             "modalita_iscrizione": _("Registration procedure"),
-            "manifesto_studi": _("Study manifesto"),
-            "regolamento_didattico": _("Didactic regulation"),
+            "visibile": _("Visibile"),
+            # "manifesto_studi": _("Study manifesto"),
+            # "regolamento_didattico": _("Didactic regulation"),
         }
         widgets = {'modalita_iscrizione': CKEditorWidget()}
 
 
 class DidatticaCdsOrdinamentoForm(forms.ModelForm):
     class Meta:
-        model = DidatticaCds
+        model = DidatticaCdsAltriDati
         fields = ['ordinamento_didattico']
         labels = {
             "ordinamento_didattico": _("Teaching system"),
+        }
+
+
+class DidatticaCdsManifestoRegolamentoForm(forms.ModelForm):
+    class Meta:
+        model = DidatticaCdsAltriDati
+        fields = ['manifesto_studi', 'regolamento_didattico']
+        labels = {
+            "manifesto_studi": _("Study manifesto"),
+            "regolamento_didattico": _("Didactic regulation"),
         }

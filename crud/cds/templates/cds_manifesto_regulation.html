@@ -6,15 +6,9 @@
 
 {% block centered_container %}
 <h3 style="font-weight: lighter;" class="mb-4">
-     {% trans "Upload" %} {% trans "Teaching system for" %} {{ regdid.cds.nome_cds_it }} - {{ regdid.aa_reg_did }}
+     {% trans "Upload" %} {% trans "Study manifesto and Didactic regulation for" %} {{ regdid.cds.nome_cds_it }} - {{ regdid.aa_reg_did }}
 </h3>
-{% with ord=regdid.get_ordinamento_didattico %}
-{% if ord and regdid.aa_reg_did != ord.0  %}
-    <h5 style="font-weight: lighter;" class="mb-4">
-        {% trans "Currently refers to that of the year" %} <a href="{% get_media_prefix %}{{ ord.1 }}" target="_blank"><b>{{ ord.0 }}</b></a>
-    </h5>
-{% endif %}
-{% endwith %}
+
 <form method="post" enctype="multipart/form-data" novalidate>
     <div class="card-wrapper card-space">
         <div class="card card-bg no-after">

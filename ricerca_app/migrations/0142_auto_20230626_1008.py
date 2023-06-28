@@ -13,11 +13,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='didatticacds',
-            name='ordinamento_didattico',
-            field=models.FileField(db_column='ORDINAMENTO_DIDATTICO', max_length=255, null=True, upload_to=ricerca_app.models.cds_ordinamento_media_path, validators=[ricerca_app.validators.validate_pdf_file_extension, ricerca_app.validators.validate_file_size]),
-        ),
-        migrations.AlterField(
             model_name='docenteptaaltridati',
             name='path_cv_en',
             field=models.FileField(blank=True, db_column='PATH_CV_EN', max_length=500, null=True, upload_to=ricerca_app.models.teacher_cv_en_media_path, validators=[ricerca_app.validators.validate_pdf_file_extension, ricerca_app.validators.validate_file_size]),

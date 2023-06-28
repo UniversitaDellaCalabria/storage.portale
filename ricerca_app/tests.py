@@ -69,6 +69,7 @@ class ApiCdSListUnitTest(TestCase):
             'num_posti': 2
         })
 
+        r1.get_ordinamento_didattico()
 
         url = reverse('ricerca:cdslist')
 
