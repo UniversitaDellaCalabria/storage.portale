@@ -3775,8 +3775,9 @@ class DidatticaCdsAltriDati(models.Model):
                     validate_file_size],
         db_column='ORDINAMENTO_DIDATTICO',
         max_length=255,
-        blank=False,
+        blank=True,
         null=True)
+    visibile = models.BooleanField(db_column='VISIBILE', default=False)
 
     class Meta:
         managed = True
