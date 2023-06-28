@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-28 08:51+0200\n"
-"PO-Revision-Date: 2023-06-28 08:51+0200\n"
+"POT-Creation-Date: 2023-06-28 09:13+0200\n"
+"PO-Revision-Date: 2023-06-28 09:13+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -73,6 +73,7 @@ msgid "Users"
 msgstr ""
 
 #: crud/cds/decorators.py:24 crud/cds/decorators.py:55
+#: crud/cds/decorators.py:81 crud/cds/decorators.py:108
 #: crud/cds_websites/decorators.py:30 crud/cds_websites/decorators.py:66
 #: crud/companies/decorators.py:32 crud/patents/decorators.py:32
 #: crud/phd/decorators.py:26 crud/phd/decorators.py:52
@@ -116,7 +117,7 @@ msgid "Visibile"
 msgstr ""
 
 #: crud/cds/forms.py:59 crud/cds/templates/cds_detail.html:358
-#: crud/cds/views.py:638 crud/cds/views.py:722
+#: crud/cds/views.py:639 crud/cds/views.py:725
 msgid "Teaching system"
 msgstr "Ordinamento didattico"
 
@@ -502,9 +503,13 @@ msgstr "Nuovo link docente per"
 msgid "Teaching system for"
 msgstr "Ordinamento didattico per"
 
+#: crud/cds/templates/cds_teaching_system.html:14
+msgid "Currently refers to that of the year"
+msgstr "Attualmente fa riferimento a quello dell'anno"
+
 #: crud/cds/views.py:32 crud/cds/views.py:61 crud/cds/views.py:123
 #: crud/cds/views.py:193 crud/cds/views.py:267 crud/cds/views.py:464
-#: crud/cds/views.py:553 crud/cds/views.py:635 crud/cds/views.py:719
+#: crud/cds/views.py:553 crud/cds/views.py:636 crud/cds/views.py:722
 #: crud/cds_websites/views.py:31 crud/cds_websites/views.py:81
 #: crud/cds_websites/views.py:140 crud/cds_websites/views.py:211
 #: crud/cds_websites/views.py:269 crud/cds_websites/views.py:357
@@ -537,7 +542,7 @@ msgstr "Pagina iniziale"
 
 #: crud/cds/views.py:33 crud/cds/views.py:62 crud/cds/views.py:124
 #: crud/cds/views.py:194 crud/cds/views.py:268 crud/cds/views.py:465
-#: crud/cds/views.py:554 crud/cds/views.py:636 crud/cds/views.py:720
+#: crud/cds/views.py:554 crud/cds/views.py:637 crud/cds/views.py:723
 msgid "CdS"
 msgstr ""
 
@@ -593,41 +598,41 @@ msgstr "Dati ufficio creati con successo"
 msgid "Responsible data removed successfully"
 msgstr "Dati del responsabile eliminati con successo"
 
-#: crud/cds/views.py:626
+#: crud/cds/views.py:627
 msgid "Teaching system file edited successfully"
 msgstr "File dell'ordinamento didattico modificato con successo"
 
-#: crud/cds/views.py:670
+#: crud/cds/views.py:672
 msgid "Teaching system file removed"
 msgstr "File dell'ordinamento didattico rimosso"
 
-#: crud/cds/views.py:674
+#: crud/cds/views.py:676
 msgid "Teaching system file removed successfully"
 msgstr "File dell'ordinamento didattico rimosso con successo"
 
-#: crud/cds/views.py:710
+#: crud/cds/views.py:713
 msgid "Documents edited successfully"
 msgstr "Documenti modificati con successo"
 
-#: crud/cds/views.py:754
+#: crud/cds/views.py:758
 #, fuzzy
 #| msgid "Study manifesto"
 msgid "Study manifesto file removed"
 msgstr "Manifesto degli studi"
 
-#: crud/cds/views.py:758
+#: crud/cds/views.py:762
 #, fuzzy
 #| msgid "Teaching system file removed successfully"
 msgid "Study manifesto file removed successfully"
 msgstr "File dell'ordinamento didattico rimosso con successo"
 
-#: crud/cds/views.py:785
+#: crud/cds/views.py:790
 #, fuzzy
 #| msgid "Didactic regulation"
 msgid "Didactic regulation file removed"
 msgstr "Regolamento didattico"
 
-#: crud/cds/views.py:789
+#: crud/cds/views.py:794
 #, fuzzy
 #| msgid "Teaching system file removed successfully"
 msgid "Didactic regulation file removed successfully"
@@ -995,7 +1000,7 @@ msgstr ""
 
 #: crud/companies/templates/blocks/crud_companies.html:67
 #: crud/companies/templates/blocks/crud_companies.html:91
-#: crud/utils/settings.py:20
+#: crud/utils/settings.py:22
 msgid "No"
 msgstr ""
 
@@ -1906,11 +1911,11 @@ msgstr "Nuovo elemento"
 msgid "Teachers materials data removed successfully"
 msgstr "Docente rimosso con successo"
 
-#: crud/utils/settings.py:21
+#: crud/utils/settings.py:23
 msgid "Joint title"
 msgstr "Titolo congiunto"
 
-#: crud/utils/settings.py:22
+#: crud/utils/settings.py:24
 msgid "Double title"
 msgstr "Doppio titolo"
 
