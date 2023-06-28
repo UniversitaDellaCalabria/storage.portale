@@ -38,7 +38,7 @@ def cds(request, my_offices=None):
 
 @login_required
 @can_manage_cds
-@can_edit_cds
+# @can_edit_cds
 def cds_detail(request, regdid_id, my_offices=None, regdid=None):
     """
     dettaglio corso di studio
@@ -593,9 +593,10 @@ def cds_office_data_responsible_delete(request, regdid_id, data_id, my_offices=N
 
 
 @login_required
-@can_manage_cds
-@can_edit_cds
-def cds_teaching_system(request, regdid_id, my_offices=None, regdid=None):
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_teaching_system
+def cds_doc_teaching_system(request, regdid_id, my_offices=None, regdid=None):
     """
     aggiungi/modifica ordinamento didattico
     """
@@ -646,9 +647,10 @@ def cds_teaching_system(request, regdid_id, my_offices=None, regdid=None):
 
 
 @login_required
-@can_manage_cds
-@can_edit_cds
-def cds_teaching_system_delete(request, regdid_id, my_offices=None, regdid=None):
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_teaching_system
+def cds_doc_teaching_system_delete(request, regdid_id, my_offices=None, regdid=None):
     """
     elimina ordinamento didattico
     """
@@ -677,9 +679,10 @@ def cds_teaching_system_delete(request, regdid_id, my_offices=None, regdid=None)
 
 
 @login_required
-@can_manage_cds
-@can_edit_cds
-def cds_manifesto_regulation(request, regdid_id, my_offices=None, regdid=None):
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_documents
+def cds_doc_manifesto_regulation(request, regdid_id, my_offices=None, regdid=None):
     """
     aggiungi/modifica ordinamento didattico
     """
@@ -730,9 +733,10 @@ def cds_manifesto_regulation(request, regdid_id, my_offices=None, regdid=None):
 
 
 @login_required
-@can_manage_cds
-@can_edit_cds
-def cds_study_manifesto_delete(request, regdid_id, my_offices=None, regdid=None):
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_documents
+def cds_doc_study_manifesto_delete(request, regdid_id, my_offices=None, regdid=None):
     """
     elimina manifesto studi
     """
@@ -761,9 +765,10 @@ def cds_study_manifesto_delete(request, regdid_id, my_offices=None, regdid=None)
 
 
 @login_required
-@can_manage_cds
-@can_edit_cds
-def cds_didactic_regulation_delete(request, regdid_id, my_offices=None, regdid=None):
+# @can_manage_cds
+# @can_edit_cds
+@can_manage_cds_documents
+def cds_doc_didactic_regulation_delete(request, regdid_id, my_offices=None, regdid=None):
     """
     elimina regolamento didattico
     """

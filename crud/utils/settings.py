@@ -10,6 +10,8 @@ OFFICE_RESEARCHGROUPS = getattr(
 OFFICE_RESEARCHLINES = getattr(
     settings, 'OFFICE_RESEARCHLINES', 'researchlines')
 OFFICE_CDS = getattr(settings, 'OFFICE_CDS', 'cds')
+OFFICE_CDS_DOCUMENTS = getattr(settings, 'OFFICE_CDS_DOCUMENTS', 'cds_documents')
+OFFICE_CDS_TEACHING_SYSTEM = getattr(settings, 'OFFICE_CDS_TEACHING_SYSTEM', 'cds_teaching_system')
 OFFICE_PATENTS = getattr(settings, 'OFFICE_PATENTS', 'patents')
 OFFICE_COMPANIES = getattr(settings, 'OFFICE_COMPANIES', 'companies')
 OFFICE_PROJECTS = getattr(settings, 'OFFICE_PROJECTS', 'projects')

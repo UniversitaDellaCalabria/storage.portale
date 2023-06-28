@@ -244,7 +244,7 @@
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_cds:cds_manifesto_regulation' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_cds:cds_doc_manifesto_regulation' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -283,7 +283,7 @@
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_study_manifesto_delete' regdid_id=regdid.pk %}">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_doc_study_manifesto_delete' regdid_id=regdid.pk %}">
                                                 {% trans 'Yes, proceed' %}
                                             </a>
                                         </div>
@@ -305,7 +305,7 @@
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_cds:cds_manifesto_regulation' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_cds:cds_doc_manifesto_regulation' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -344,7 +344,7 @@
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_didactic_regulation_delete' regdid_id=regdid.pk %}">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_doc_didactic_regulation_delete' regdid_id=regdid.pk %}">
                                                 {% trans 'Yes, proceed' %}
                                             </a>
                                         </div>
@@ -368,7 +368,7 @@
                             {% endwith %}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_cds:cds_teaching_system' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_cds:cds_doc_teaching_system' regdid_id=regdid.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -407,7 +407,7 @@
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_teaching_system_delete' regdid_id=regdid.pk %}">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_doc_teaching_system_delete' regdid_id=regdid.pk %}">
                                                 {% trans 'Yes, proceed' %}
                                             </a>
                                         </div>
