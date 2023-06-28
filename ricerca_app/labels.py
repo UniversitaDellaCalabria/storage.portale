@@ -553,7 +553,7 @@ LABEL_MAPPING = {
         'TypeUmRegsceCod': 'Choice UM Regulation Type COD',
         'VinSceDes': 'Constraint Description',
         'VinId': 'Constraint ID',
-        'ElectiveCourses': 'Elective Courses'
+        'ElectiveCourses': 'Elective Courses',
         'TeachingSystem': 'Teaching system',
         'TeachingSystemYear': 'Teaching system year',
     },
