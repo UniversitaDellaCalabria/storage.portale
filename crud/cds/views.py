@@ -49,6 +49,10 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
         regdid_id=regdid_id).first()
 
     # dati uffici corso di studio
+    regdid = DidatticaRegolamento.objects\
+                                 .filter(pk=regdid_id)\
+                                 .select_related('cds')\
+                                 .first()
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(
         cds_id=regdid.cds.pk)
 
