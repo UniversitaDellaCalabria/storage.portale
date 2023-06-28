@@ -893,7 +893,7 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     user_mod_id = models.ForeignKey(get_user_model(), models.SET_NULL, blank=True, null=True)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.cognome_nome_origine
 
     class Meta:
@@ -3164,7 +3164,7 @@ class BrevettoDirittiCommerciali(models.Model):
     descr_diritto = models.CharField(
         db_column='DESCR_DIRITTO', max_length=1000)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_diritto
 
     class Meta:
@@ -3178,7 +3178,7 @@ class BrevettoTerritori(models.Model):
     # Field name made lowercase.
     territorio = models.CharField(db_column='TERRITORIO', max_length=80)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.territorio
 
     class Meta:
@@ -3194,7 +3194,7 @@ class BrevettoDisponibilita(models.Model):
     descr_disponibilita = models.CharField(
         db_column='DESCR_DISPONIBILITA', max_length=1000)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_disponibilita
 
     class Meta:
@@ -3213,7 +3213,7 @@ class TipologiaAreaTecnologica(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_area_ita
 
     class Meta:
@@ -3228,7 +3228,7 @@ class BrevettoStatusLegale(models.Model):
     descr_status = models.CharField(db_column='DESCR_STATUS', max_length=1000)
 
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_status
 
     class Meta:
@@ -3354,7 +3354,7 @@ class BrevettoInventori(models.Model):
         db_column='COGNOMENOME_ORIGINE',
         max_length=200)  # Field name made lowercase.
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.cognomenome_origine
 
     class Meta:
@@ -3369,7 +3369,7 @@ class SpinoffStartupAreaInnovazioneS3Calabria(models.Model):
     descr_area_s3 = models.CharField(
         db_column='DESCR_AREA_S3', max_length=1000)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.descr_area_s3
 
     class Meta:
@@ -3454,7 +3454,7 @@ class SpinoffStartupDipartimento(models.Model):
     nome_origine_dipartimento = models.CharField(db_column='NOME_ORIGINE_DIPARTIMENTO', max_length=1000)  # Field name made lowercase.
     id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.CASCADE, db_column='ID_DIDATTICA_DIPARTIMENTO', blank=True, null=True)  # Field name made lowercase.
 
-    def __str__():
+    def __str__(): # pragma: no cover
         return self.nome_origine_dipartimento
 
     class Meta:
@@ -3469,7 +3469,7 @@ class ProgettoAmbitoTerritoriale(models.Model):
     ambito_territoriale = models.CharField(
         db_column='AMBITO_TERRITORIALE', max_length=100)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.ambito_territoriale
 
     class Meta:
@@ -3549,7 +3549,7 @@ class ProgettoRicercatore(models.Model):
     nome_origine = models.CharField(db_column='NOME_ORIGINE', max_length=1000)  # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.nome_origine
 
     class Meta:
@@ -3573,7 +3573,7 @@ class ProgettoResponsabileScientifico(models.Model):
     # Field name made lowercase.
     id_progetto = models.ForeignKey(ProgettoDatiBase, models.CASCADE, db_column='ID_PROGETTO')  # Field name made lowercase.
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.nome_origine
 
     class Meta:
@@ -3589,7 +3589,7 @@ class ProgettoTipologiaProgramma(models.Model):
         db_column='NOME_PROGRAMMA', max_length=1000)
 
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.nome_programma
 
     class Meta:

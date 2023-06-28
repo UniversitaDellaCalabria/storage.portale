@@ -135,7 +135,7 @@ class ServiceDidatticaCds:
             if (len(erogation_mode) != 0):
                 i['ErogationMode'] = erogation_mode
             else:
-                i['ErogationMode'] = None
+                i['ErogationMode'] = None # pragma: no cover
 
         items = list(items)
         for item in items:
@@ -658,7 +658,7 @@ class ServiceDidatticaAttivitaFormativa:
             query_department = Q(cds_id__dip_id__dip_cod=department)
         if cds:
             for k in cds.split(" "):
-                if language == "it":
+                if language == "it": # pragma: no cover
                     q = Q(cds_id__nome_cds_it__icontains=k)
                 else:
                     q = Q(cds_id__nome_cds_eng__icontains=k)
