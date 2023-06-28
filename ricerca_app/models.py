@@ -3777,7 +3777,6 @@ class DidatticaCdsAltriDati(models.Model):
         max_length=255,
         blank=True,
         null=True)
-    visibile = models.BooleanField(db_column='VISIBILE', default=False)
 
     class Meta:
         managed = True

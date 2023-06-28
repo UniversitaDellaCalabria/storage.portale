@@ -254,8 +254,7 @@ class ApiCdSDetail(ApiEndpointDetail):
                                                 ] = text['clob_txt_eng']
         res[0]['PROFILO'] = list_profiles
 
-        res[0]['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=cdsid_param,
-                                                                   visibile=True).values(
+        res[0]['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=cdsid_param).values(
             'matricola_coordinatore',
             'nome_origine_coordinatore',
             'matricola_vice_coordinatore',

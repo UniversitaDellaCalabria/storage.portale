@@ -75,20 +75,6 @@
                     </div>
                     <tbody>
                         <tr>
-                            <td><b>{% trans "Visibile" %}</b></td>
-                            <td>
-                                {% if other_data.visibile %}
-                                <svg class="icon icon-xs icon-success">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
-                                </svg>
-                                {% else %}
-                                <svg class="icon icon-xs icon-danger">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
-                                </svg>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
                             <td><b>{% trans "Coordinator" %}</b></td>
                             <td>
                                 {{ other_data.nome_origine_coordinatore|default:"-" }}
