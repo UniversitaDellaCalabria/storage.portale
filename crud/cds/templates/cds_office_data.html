@@ -6,7 +6,7 @@
 
 {% block centered_container %}
 <h3 style="font-weight: lighter;" class="mb-4">
-     {% trans "Edit office data for" %} {{ regdid.cds.nome_cds_it }}
+     {% trans "Edit office data for" %} {{ regdid.cds.nome_cds_it }} - {{ regdid.aa_reg_did }}
 </h3>
 {% if office_data %}
 <form method="post" novalidate>
