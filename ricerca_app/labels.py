@@ -488,6 +488,7 @@ LABEL_MAPPING = {
         'StudyManifesto': 'Study manifesto',
         'DidacticRegulation': 'Didactic regulation',
         'TeachingSystem': 'Teaching system',
+        'TeachingSystemYear': 'Teaching system year',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -978,5 +979,6 @@ LABEL_MAPPING = {
         'StudyManifesto': 'Manifesto degli studi',
         'DidacticRegulation': 'Regolamento didattico',
         'TeachingSystem': 'Ordinamento didattico',
+        'TeachingSystemYear': 'Anno ordinamento didattico',
     }
 }
