@@ -707,7 +707,7 @@ def cds_manifesto_regulation(request, regdid_id, my_offices=None, regdid=None):
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("Teaching system file edited successfully"))
+                                 _("Documents edited successfully"))
 
             return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
 
