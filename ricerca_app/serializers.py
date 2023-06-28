@@ -2,6 +2,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
+from . models import DidatticaRegolamento
 from . settings import (ALLOWED_PROFILE_ID,
                         CDS_BROCHURE_MEDIA_PATH,
                         # COMPANIES_MEDIA_PATH,
@@ -73,6 +74,9 @@ class CdSSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
+        regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
+        ordinamento_didattico = regdid.get_ordinamento_didattico()
+
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'CdSId': query['cds_id'],
@@ -96,6 +100,10 @@ class CdSSerializer(CreateUpdateAbstract):
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
+            'StudyManifesto': build_media_path(query["OtherData"][0]['manifesto_studi']) if query["OtherData"] else None,
+            'DidacticRegulation': build_media_path(query["OtherData"][0]['regolamento_didattico']) if query["OtherData"] else None,
+            'TeachingSystem': build_media_path(ordinamento_didattico[1]) if ordinamento_didattico else None,
+            'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
             'OfficesData': offices_data
         }
@@ -110,9 +118,6 @@ class CdSSerializer(CreateUpdateAbstract):
                     'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
                     'SeatsNumber': q['num_posti'],
                     'RegistrationMode': q['modalita_iscrizione'],
-                    'StudyManifesto': build_media_path(q['manifesto_studi']),
-                    'DidacticRegulation': build_media_path(q['regolamento_didattico']),
-                    'TeachingSystem': build_media_path(q['ordinamento_didattico'])
                     }
         return {}
 
@@ -177,6 +182,9 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
+        regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
+        ordinamento_didattico = regdid.get_ordinamento_didattico()
+
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
@@ -211,6 +219,10 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSFinalTestMode': query['PROVA_FINALE_2'],
             'CdSSatisfactionSurvey': query['codicione'],
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
+            'StudyManifesto': build_media_path(query["OtherData"][0]['manifesto_studi']) if query["OtherData"] else None,
+            'DidacticRegulation': build_media_path(query["OtherData"][0]['regolamento_didattico']) if query["OtherData"] else None,
+            'TeachingSystem': build_media_path(ordinamento_didattico[1]) if ordinamento_didattico else None,
+            'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
             'OfficesData': offices_data,
         }
@@ -235,9 +247,9 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                     'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
                     'SeatsNumber': q['num_posti'],
                     'RegistrationMode': q['modalita_iscrizione'],
-                    'StudyManifesto': build_media_path(q['manifesto_studi']),
-                    'DidacticRegulation': build_media_path(q['regolamento_didattico']),
-                    'TeachingSystem': build_media_path(q['ordinamento_didattico'])
+                    # 'StudyManifesto': build_media_path(q['manifesto_studi']),
+                    # 'DidacticRegulation': build_media_path(q['regolamento_didattico']),
+                    # 'TeachingSystem': build_media_path(q['ordinamento_didattico'])
                     }
         return {}
 
