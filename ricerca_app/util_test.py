@@ -88,6 +88,12 @@ from .models import (
     SitoWebCdsArticoliRegAltriDati,
     SitoWebCdsOggettiPortaleAltriDati,
     SitoWebCdsOggettiPortale,
+    DidatticaPianoRegolamento,
+    DidatticaPianoSche,
+    DidatticaPianoSceltaSchePiano,
+    DidatticaPianoSceltaVincoli,
+    DidatticaAmbiti,
+    DidatticaPianoSceltaAf,
 )
 
 
@@ -1095,4 +1101,72 @@ class SitoWebCdsArticoliRegAltriDatiUnitTest(TestCase): # pragma: no cover
             data[k] = v
 
         obj = SitoWebCdsArticoliRegAltriDati.objects.create(**data)
+        return obj
+
+
+class DidatticaPianoRegolamentoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoRegolamento(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoRegolamento.objects.create(**data)
+        return obj
+
+
+
+class DidatticaPianoScheUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoSche(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoSche.objects.create(**data)
+        return obj
+
+
+
+class DidatticaPianoSceltaSchePianoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoSceltaSchePiano(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoSceltaSchePiano.objects.create(**data)
+        return obj
+
+
+class DidatticaPianoSceltaVincoliUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoSceltaVincoli(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoSceltaVincoli.objects.create(**data)
+        return obj
+
+
+class DidatticaAmbitiUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaAmbiti(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaAmbiti.objects.create(**data)
+        return obj
+
+
+class DidatticaPianoSceltaAfUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoSceltaAf(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoSceltaAf.objects.create(**data)
         return obj

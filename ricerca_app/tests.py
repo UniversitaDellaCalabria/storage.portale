@@ -29,7 +29,9 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
     DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest, DocentePtaMaterialeDidatticoUnitTest, \
     DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest, \
-    SitoWebCdsArticoliRegAltriDatiUnitTest, SitoWebCdsOggettiPortaleAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest
+    SitoWebCdsArticoliRegAltriDatiUnitTest, SitoWebCdsOggettiPortaleAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
+    DidatticaPianoRegolamentoUnitTest, DidatticaPianoScheUnitTest, DidatticaPianoSceltaSchePianoUnitTest, DidatticaPianoSceltaVincoliUnitTest, DidatticaAmbitiUnitTest, \
+    DidatticaPianoSceltaAfUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -6112,4 +6114,169 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 
 
 
+class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
+    def test_apisitiwebcdsstudyplans(self):
+        req = Client()
+        cds1 = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'tipo_corso_cod': 'L',
+            'area_cds': 'scienze',
+            'cds_id': 1,
+            'cds_cod': '1'
+        })
 
+        r1 = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 1,
+            'stato_regdid_cod': 'A',
+            'titolo_congiunto_cod': 'N',
+            'cds_id': 1,
+            'aa_reg_did': 2022
+        })
+
+        dpr1 = DidatticaPianoRegolamentoUnitTest.create_didatticaPianoRegolamento(**{
+            'regpiani_id': 1,
+            'regdid_id': 1,
+            'aa_coorte_id': 2022,
+            'aa_regpiani_id': 2022,
+            'des': 'prova',
+            'def_flg': 1,
+            'stato_cod': 'A',
+            'stato_des': 'A',
+            'regpiani_pdr_id': 1,
+            'regpiani_pdr_cod': 'test',
+            'regpiani_pdr_des': 'test',
+            'flg_exp_seg_stu': 1,
+
+        })
+
+        dps1= DidatticaPianoScheUnitTest.create_didatticaPianoSche(**{
+            'sche_piano_id': 1,
+            'sche_piano_des': 'prova',
+            'sche_piano_cod': 'test',
+            'regpiani_id': 1,
+            'pds_cod': 'GEN',
+            'pds_des': 'Generico',
+            'comune_flg': 1,
+
+        })
+
+        dps2 = DidatticaPianoScheUnitTest.create_didatticaPianoSche(**{
+            'sche_piano_id': 2,
+            'sche_piano_des': 'prova',
+            'sche_piano_cod': 'test',
+            'regpiani_id': 1,
+            'pds_cod': 'GEN',
+            'pds_des': 'Generico',
+            'comune_flg': 1,
+
+        })
+
+        dps3 = DidatticaPianoScheUnitTest.create_didatticaPianoSche(**{
+            'sche_piano_id': 3,
+            'sche_piano_des': 'prova',
+            'sche_piano_cod': 'test',
+            'regpiani_id': 1,
+            'pds_cod': 'GEN',
+            'pds_des': 'Generico',
+            'comune_flg': 1,
+
+        })
+        dpsv1 = DidatticaPianoSceltaVincoliUnitTest.create_didatticaPianoSceltaVincoli(**{
+            'sce_id': 1,
+        })
+        dpsv2 = DidatticaPianoSceltaVincoliUnitTest.create_didatticaPianoSceltaVincoli(**{
+            'sce_id': 2,
+        })
+        dpsv3 = DidatticaPianoSceltaVincoliUnitTest.create_didatticaPianoSceltaVincoli(**{
+            'sce_id': 3,
+        })
+        dpssp1 = DidatticaPianoSceltaSchePianoUnitTest.create_didatticaPianoSceltaSchePiano(**{
+            'sce_id': 1,
+            'sche_piano_id': 1,
+            'tipo_sce_cod': 'O',
+            'apt_slot_ord_num': 5,
+        })
+
+        af1 = DidatticaPianoSceltaAfUnitTest.create_didatticaPianoSceltaAf(**{
+            'sce_id': 1,
+            'anno_corso_af': 2022,
+            'ciclo_des': 'Prova',
+            'af_gen_des': 'Prova',
+            'af_id': 1,
+            'tipo_af_des_af': 'Contenuto',
+            'ambito_des_af': 'Test',
+            'sett_cod': 'Content',
+            'peso': 6,
+
+        })
+
+        da1 = DidatticaAmbitiUnitTest.create_didatticaAmbiti(**{
+            'amb_id': 1
+        })
+
+        dpssp2 = DidatticaPianoSceltaSchePianoUnitTest.create_didatticaPianoSceltaSchePiano(**{
+            'sce_id': 2,
+            'sche_piano_id': 2,
+            'tipo_sce_cod': 'N',
+            'amb_id': 1,
+            'ambito_des': 'Prova',
+            'min_unt': 1,
+            'max_unt': 2,
+            'sce_des': 'Content',
+            'apt_slot_ord_num': 1,
+            'tipo_sce_cod': 'Pr',
+            'tipo_sce_des': 'Prova',
+            'tipo_regsce_cod': 'P',
+            'tipo_regsce_des': 'Prova',
+            'tipo_um_regsce_cod': 'P',
+            'vin_sce_des': 1,
+            'vin_id': 1,
+
+        })
+
+        dpssp3 = DidatticaPianoSceltaSchePianoUnitTest.create_didatticaPianoSceltaSchePiano(**{
+            'sce_id': 3,
+            'sche_piano_id': 3,
+            'tipo_sce_cod': 'N',
+            'ambito_des': 'Prova',
+            'min_unt': 1,
+            'max_unt': 2,
+            'sce_des': 'Content',
+            'apt_slot_ord_num': 1,
+            'tipo_sce_cod': 'Pr',
+            'tipo_sce_des': 'Prova',
+            'tipo_regsce_cod': 'P',
+            'tipo_regsce_des': 'Prova',
+            'tipo_um_regsce_cod': 'P',
+            'amb_id_af_regsce': 1
+
+        })
+
+        daf1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'amb_id': 1,
+            'af_gen_id': 1,
+            'af_gen_cod': 'AAA',
+            'des': 'Prova',
+            'af_gen_des_eng': 'Test',
+            'anno_corso': 1,
+            'sett_cod': 'Sem',
+            'sett_des': 'Semestere',
+            'peso': 6,
+
+        })
+
+
+        url = reverse('ricerca:cdswebsitestudyplanslist')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 0
+
+        data = {'cds_cod': '1', 'year': 2022}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1

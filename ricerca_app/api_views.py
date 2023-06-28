@@ -1306,7 +1306,7 @@ class ApiCdsWebsitesTopicList(ApiEndpointList):
 class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
     description = 'Restituisce l’elenco dei topic per i siti web dei cds'
     serializer_class = CdsWebsitesTopicArticlesSerializer
-    filter_backends = []
+    filter_backends = [ApiCdsWebsitesTopicArticlesListFilter]
 
     def get_queryset(self):
 
@@ -1317,10 +1317,15 @@ class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
 
 
 
-# class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
-#     description = 'Restituisce l’elenco dei piani di studio dei cds'
-#     filter_backends = []
-#
-#     def get_queryset(self):
-#
-#         return ServiceDidatticaCds.getCdsWebsitesStudyPlans()
+class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
+    description = 'Restituisce l’elenco dei piani di studio dei cds'
+    serializer_class = CdsWebsitesStudyPlansSerializer
+    filter_backends = [ApiCdsWebsitesStudyPlansListFilter]
+
+    def get_queryset(self):
+
+        cds_cod = self.request.query_params.get('cds_cod')
+        year = self.request.query_params.get('year')
+        regdid = self.request.query_params.get('regdid')
+
+        return ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year, regdid)

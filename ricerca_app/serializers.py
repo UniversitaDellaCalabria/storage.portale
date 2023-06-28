@@ -501,6 +501,135 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
             })
         return other_data
 
+class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        # study_activities = {}
+        # for k in query['StudyActivities']:
+        #     study_activities[k] = []
+        #     for q in query['StudyActivities'][k]:
+        #         study_activities[k].append(
+        #             StudyPlansActivitiesSerializer.to_dict(
+        #                 q, req_lang))
+        plan_tabs = None
+        if query['PlanTabs'] is not None:
+            plan_tabs = CdsWebsitesStudyPlansSerializer.to_dict_plan(
+                query['PlanTabs'], req_lang)
+
+        return {
+            'RegPlanId': query['regpiani_id'],
+            'RegDidId': query['regdid_id'],
+            'RelevanceCod': query['attinenza_cod'],
+            'YearCoorteId': query['aa_coorte_id'],
+            'YearRegPlanId': query['aa_regpiani_id'],
+            'RegPlanDes': query['des'],
+            'DefFlg': query['def_flg'],
+            'StatusCod': query['stato_cod'],
+            'StatusDes': query['stato_des'],
+            'RegPlansPdrId': query['regpiani_pdr_id'],
+            'RegPlansPdrCod': query['regpiani_pdr_cod'],
+            'RegPlansPdrDes': query['regpiani_pdr_des'],
+            'RegPlansPdrCoorteIdYear': query['regpiani_pdr_aa_coorte_id'],
+            'RegPlansPdrYear': query['regpiani_pdr_aa_regpiani_id'],
+            'FlgExpSegStu': query['flg_exp_seg_stu'],
+            'PlanTabs': plan_tabs
+
+        }
+
+    @staticmethod
+    def to_dict_plan(query, req_lang='en'):
+        plan_tabs = []
+        for q in query:
+            plan_tabs.append({
+                'PlanTabId': q['sche_piano_id'],
+                'PlanTabDes': q['sche_piano_des'],
+                'PlanTabCod': q['sche_piano_cod'],
+                'PdsCod': q['pds_cod'],
+                'PdsDes': q['pds_des'],
+                'CommonFlg': q['comune_flg'],
+                'AfRequired': CdsWebsitesStudyPlansSerializer.to_dict_af_required(q.get('AfRequired', []), req_lang),
+                'AfChoices': CdsWebsitesStudyPlansSerializer.to_dict_af_choices(q.get('AfChoices', []), req_lang),
+            })
+        return plan_tabs
+
+    @staticmethod
+    def to_dict_af_required(query, req_lang='en'):
+        af_required = []
+        for q in query:
+            af_required.append({
+                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso_af'],
+                'CycleDes': q['ciclo_des'],
+                'AfDescription': q['af_gen_des'],
+                'AfId': q['af_id'],
+                'AfType': q['tipo_af_des_af'],
+                'AfScope': q['ambito_des_af'],
+                'SettCod': q['sett_cod'],
+                'CreditValue': q['peso'],
+
+            })
+        return af_required
+
+    @staticmethod
+    def to_dict_af_choices(query, req_lang='en'):
+        af_choices = []
+        for q in query:
+            af_choices.append({
+                'ScopeId': q['amb_id'],
+                'SceId': q['sce_id'],
+                'SceDes': q['sce_des'],
+                'ScopeDes': q['ambito_des'],
+                'MinUnt': q['min_unt'],
+                'MaxUnt': q['max_unt'],
+                'TypeSceCod': q['tipo_sce_cod'],
+                'TypeSceDes': q['tipo_sce_des'],
+                'TypeRegSceCod': q['tipo_regsce_cod'],
+                'TypeRegsceDes': q['tipo_regsce_des'],
+                'TypeUmRegsceCod': q['tipo_um_regsce_cod'],
+                'VinSceDes': q['vin_sce_des'],
+                'VinId': q['vin_id'],
+                'ElectiveCourses': CdsWebsitesStudyPlansSerializer.to_dict_elective_courses(q.get('ElectiveCourses', []), req_lang) if q['amb_id'] is not None else CdsWebsitesStudyPlansSerializer.to_dict_elective_courses_v2(q.get('ElectiveCourses', []), req_lang),
+            })
+        return af_choices
+
+
+    @staticmethod
+    def to_dict_elective_courses(query, req_lang='en'):
+        elective_courses = []
+        for q in query:
+            elective_courses.append({
+                'AfId': q['af_gen_id'],
+                'AfCod': q['af_gen_cod'],
+                'AfDescription': q['des'] if req_lang == 'it' or q['af_gen_des_eng'] is None else q['af_gen_des_eng'],
+                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso'],
+                'SettCod': q['sett_cod'],
+                'SettDes': q['sett_des'],
+                'Peso': q['peso'],
+
+            })
+        return elective_courses
+
+    @staticmethod
+    def to_dict_elective_courses_v2(query, req_lang='en'):
+        elective_courses = []
+        for q in query:
+            elective_courses.append({
+                'SceId': q['sce_id'],
+                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso_af'],
+                'AfDescription': q['af_gen_des'],
+                'CycleDes': q['ciclo_des'],
+
+            })
+        return elective_courses
+
+
 
 class CdSStudyPlansSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):

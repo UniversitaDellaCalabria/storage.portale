@@ -862,28 +862,179 @@ class ServiceDidatticaCds:
         return {}
 
     @staticmethod
-    # def getCdsWebsitesStudyPlans():
-    #
-    #    query = DidatticaPianoRegolamento.object.values(
-    #        'regpiani_id',
-    #        'regdid_id',
-    #        'attinenza_cod',
-    #        'cod',
-    #        'aa_coorte_id',
-    #        'aa_regpiani_id',
-    #        'des',
-    #        'def_flg',
-    #        'stato_cod',
-    #        'stato_des',
-    #        'regpiani_pdr_id',
-    #        'regpiani_pdr_cod',
-    #        'regpiani_pdr_des',
-    #        'regpiani_pdr_aa_coorte_id'
-    #        'regpiani_pdr_aa_regpiani_id',
-    #        'flg_exp_seg_stu'
-    #    )
-    #
-    #    return query
+    def getCdsWebsitesStudyPlans(cds_cod, year, regdid):
+
+        if cds_cod and year or regdid:
+            query_cds = Q(regdid_id__cds_id__cds_cod__exact=cds_cod) if cds_cod else Q()
+            query_year = Q(regdid_id__aa_reg_did__exact=year) if year else Q()
+            query_regdid = Q(regdid_id__exact=regdid) if regdid else Q()
+
+            query = DidatticaPianoRegolamento.objects.filter(
+                query_cds,
+                query_regdid,
+                query_year
+               ).values(
+                   'regpiani_id',
+                   'regdid_id',
+                   'attinenza_cod',
+                   'cod',
+                   'aa_coorte_id',
+                   'aa_regpiani_id',
+                   'des',
+                   'def_flg',
+                   'stato_cod',
+                   'stato_des',
+                   'regpiani_pdr_id',
+                   'regpiani_pdr_cod',
+                   'regpiani_pdr_des',
+                   'regpiani_pdr_aa_coorte_id',
+                   'regpiani_pdr_aa_regpiani_id',
+                   'flg_exp_seg_stu'
+               ).distinct().order_by('regpiani_id')
+
+            for q in query:
+                schede = DidatticaPianoSche.objects.filter(
+                       regpiani_id__exact=q['regpiani_id']).values(
+                    'sche_piano_id',
+                    'sche_piano_des',
+                    'sche_piano_cod',
+                    'pds_cod',
+                    'pds_des',
+                    'comune_flg',
+
+                   )
+
+                q['PlanTabs'] = schede
+
+
+                for s in schede:
+                    obbl = DidatticaPianoSceltaSchePiano.objects.filter(
+                            sche_piano_id__exact=s['sche_piano_id'],
+                            tipo_sce_cod__exact='O'
+                        ).values_list(
+                            'sce_id',
+                            flat=True
+                        )
+
+
+                    af_obblig = DidatticaPianoSceltaAf.objects.filter(
+                        sce_id__in=obbl
+                    ).values(
+                        'anno_corso_af',
+                        'ciclo_des',
+                        'af_gen_des',
+                        'af_id',
+                        'tipo_af_des_af',
+                        'ambito_des_af',
+                        'sett_cod',
+                        'peso',
+                        'sce_id__sce_des',
+                        'sce_id'
+                    )
+
+
+                    s['AfRequired'] = af_obblig
+
+                    for obl in s['AfRequired']:
+                        anno = DidatticaPianoSceltaSchePiano.objects.filter(
+                            sce_id__exact=obl['sce_id'],
+                            tipo_sce_cod__exact='O'
+                        ).values(
+                            'apt_slot_ord_num'
+                        )
+
+                        anno = anno[0]['apt_slot_ord_num']
+
+                        obl['apt_slot_ord_num'] = anno
+
+
+
+                    scelte = DidatticaPianoSceltaSchePiano.objects.filter(
+                        ~Q(tipo_sce_cod__exact='O'),
+                        sche_piano_id__exact=s['sche_piano_id'],
+                    ).values_list(
+                        'sce_id',
+                        flat=True
+                    )
+
+
+                    verifica = Q(amb_id__isnull=False) | Q(amb_id_af_regsce__isnull=False) | Q(tipo_sce_cod='V')
+
+                    af_scelta = DidatticaPianoSceltaSchePiano.objects.filter(
+                        verifica,
+                        sce_id__in=scelte,
+                    ).values(
+                        'amb_id',
+                        'sce_id',
+                        'ambito_des',
+                        'min_unt',
+                        'max_unt',
+                        'sce_des',
+                        'amb_id_af_regsce',
+                        'apt_slot_ord_num',
+                        'tipo_sce_cod',
+                        'tipo_sce_des',
+                        'tipo_regsce_cod',
+                        'tipo_regsce_des',
+                        'tipo_um_regsce_cod',
+                        'vin_sce_des',
+                        'vin_id'
+                    )
+
+                    af_scelta = list(af_scelta)
+
+
+
+                    for a in af_scelta:
+
+
+                        if a['amb_id'] is not None:
+
+
+                            a['ElectiveCourses'] = DidatticaAttivitaFormativa.objects.filter(
+                                query_cds,
+                                query_regdid,
+                                query_year,
+                                Q(amb_id__exact=a['amb_id'])
+                            ).values(
+                                'af_gen_id',
+                                'af_gen_cod',
+                                'des',
+                                'af_gen_des_eng',
+                                'anno_corso',
+                                'sett_cod',
+                                'sett_des',
+                                'peso'
+                            )
+
+
+                            a['ElectiveCourses'] = list(a['ElectiveCourses'])
+
+                            for el in a['ElectiveCourses']:
+                                el['apt_slot_ord_num'] = a['apt_slot_ord_num']
+
+                        if a['amb_id_af_regsce'] is not None and a['amb_id'] is None:
+
+                            a['ElectiveCourses'] = DidatticaPianoSceltaAf.objects.filter(
+                                sce_id=a['sce_id']
+                            ).values(
+                                'sce_id',
+                                'anno_corso_af',
+                                'af_gen_des',
+                                'ciclo_des',
+                            )
+
+                            a['ElectiveCourses'] = list(a['ElectiveCourses'])
+
+                            for el in a['ElectiveCourses']:
+                                el['apt_slot_ord_num'] = a['apt_slot_ord_num']
+
+
+                    s['AfChoices'] = af_scelta
+
+            return query
+
+
 
 
 
