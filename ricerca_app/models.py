@@ -3785,19 +3785,6 @@ class DidatticaCdsAltriDati(models.Model):
 
 class DidatticaCdsGruppi(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    descr_breve_it = models.CharField(db_column='DESCR_BREVE_IT', max_length=1000, blank=False, null=False)  # Field name made lowercase.
-    descr_breve_en = models.CharField(db_column='DESCR_BREVE_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    descr_lunga_it = models.TextField(db_column='DESCR_LUNGA_IT', blank=True, null=True)  # Field name made lowercase.
-    descr_lunga_en = models.TextField(db_column='DESCR_LUNGA_EN', blank=True, null=True)  # Field name made lowercase.
-    cds = models.ForeignKey(DidatticaCds, models.CASCADE, db_column='ID_DIDATTICA_CDS', blank=False, null=False)  # Field name made lowercase.
-    ordine = models.IntegerField(db_column='ORDINE', null=False)  # Field name made lowercase.
-    visibile = models.BooleanField(db_column='VISIBILE', default=True, null=False)  # Field name made lowercase.
-    dt_mod = models.DateTimeField(db_column='DT_MOD', null=False)
-    user_mod_id = models.ForeignKey(get_user_model(), db_column='ID_USER_MOD', on_delete=models.DO_NOTHING, blank=False, null=False)
-
-
-class DidatticaCdsGruppi(models.Model):
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     descr_breve_it = models.CharField(db_column='DESCR_BREVE_IT', max_length=1000)  # Field name made lowercase.
     descr_breve_en = models.CharField(db_column='DESCR_BREVE_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     descr_lunga_it = models.TextField(db_column='DESCR_LUNGA_IT', blank=True, null=True)  # Field name made lowercase.
