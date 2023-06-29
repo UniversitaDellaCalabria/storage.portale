@@ -558,7 +558,6 @@ LABEL_MAPPING = {
         'ElectiveCourses': 'Elective Courses',
         'TeachingSystem': 'Teaching system',
         'TeachingSystemYear': 'Teaching system year',
->>>>>>> crud-cds-websites
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -1119,6 +1118,5 @@ LABEL_MAPPING = {
         'VinSceDes': 'Descrizione Vincolo',
         'VinId': 'ID Vincolo',
         'ElectiveCourses': 'Corsi a scelta'
->>>>>>> crud-cds-websites
     }
 }
