@@ -68,14 +68,14 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
     gruppi_cds = {}    
     for gruppo in gruppi_cds_data:
         gruppi_cds_componenti = DidatticaCdsGruppiComponenti.objects.filter(
-            cds_gruppi=gruppo, visibile=True)
+            id_didattica_cds_gruppi=gruppo, visibile=True)
         gruppi_cds[gruppo.pk] = gruppi_cds_componenti
     
 
     gruppi_dip = {}    
     for gruppo in gruppi_dip_data:
-        gruppi_dip_componenti = DidatticaCdsDipartimentoComponenti.objects.filter(
-            dipartimento_gruppi=gruppo, visibile=True)
+        gruppi_dip_componenti = DidatticaDipartimentoGruppiComponenti.objects.filter(
+            id_didattica_dipartimento_gruppi=gruppo, visibile=True)
         gruppi_dip[gruppo.pk] = gruppi_dip_componenti
 
 
