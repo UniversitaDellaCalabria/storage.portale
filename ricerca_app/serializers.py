@@ -250,14 +250,9 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                     'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
                     'SeatsNumber': q['num_posti'],
                     'RegistrationMode': q['modalita_iscrizione'],
-<<<<<<< HEAD
-                    'StudyManifesto': build_media_path(q['manifesto_studi']),
-                    'DidacticRegulation': build_media_path(q['regolamento_didattico'])
-=======
                     # 'StudyManifesto': build_media_path(q['manifesto_studi']),
                     # 'DidacticRegulation': build_media_path(q['regolamento_didattico']),
                     # 'TeachingSystem': build_media_path(q['ordinamento_didattico'])
->>>>>>> crud-cds-websites
                     }
         return {}
 
