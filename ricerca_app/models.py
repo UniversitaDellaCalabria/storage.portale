@@ -3794,7 +3794,6 @@ class DidatticaCdsGruppi(models.Model):
     visibile = models.BooleanField(db_column='VISIBILE', default=True, null=False)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', null=False)
     user_mod_id = models.ForeignKey(get_user_model(), db_column='ID_USER_MOD', on_delete=models.DO_NOTHING, blank=False, null=False)
-=======
 
 
 class DidatticaCdsGruppi(models.Model):
