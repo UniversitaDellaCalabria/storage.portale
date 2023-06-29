@@ -3771,6 +3771,7 @@ class DidatticaCdsGruppi(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_GRUPPI'
+        ordering = ['ordine']
         
 class DidatticaCdsGruppiComponenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
@@ -3788,6 +3789,7 @@ class DidatticaCdsGruppiComponenti(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_GRUPPI_COMPONENTI'
+        ordering = ['ordine']
 
 class DidatticaDipartimentoGruppi(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
@@ -3804,6 +3806,7 @@ class DidatticaDipartimentoGruppi(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_DIPARTIMENTO_GRUPPI'
+        ordering = ['ordine']
         
 class DidatticaCdsDipartimentoComponenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
@@ -3821,3 +3824,4 @@ class DidatticaCdsDipartimentoComponenti(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_DIPARTIMENTO_GRUPPI_COMPONENTI'
+        ordering = ['ordine']

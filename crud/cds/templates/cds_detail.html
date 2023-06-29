@@ -104,20 +104,37 @@
                         </tr>
 
                         {% for data in gruppi_cds_data %}
-                            <tr>
-                                <td><b>{{ data.descr_breve_it }}</b></td>
-                                <td>
-                                    sa</br>
-                                    {% for key, value in gruppi.items %}
-                                        {% for comp in value %}
-                                            {{comp.matricola}}
-                                            ciao<br />
-                                        {% endfor %}
-                                    {% endfor %}
-                                </td>
-                            </tr>
+                        <tr>
+                            <td><b>{{ data.descr_breve_it }}</b></td>
+                            <td>
+                                {% for key, value in gruppi_cds.items %}
+                                {% for comp in value %}
+                                {% if key == data.id  %}
+                                {{comp.matricola}}<br />
+                                {% endif %}
+                                {% endfor %}
+                                {% endfor %}
+                            </td>
+                        </tr>
                         {% endfor %}
-                        {{gruppi}}
+
+
+                        {% for data in gruppi_dip_data %}
+                        <tr>
+                            <td><b>{{ data.descr_breve_it }}</b></td>
+                            <td>
+                                {% for key, value in gruppi_dip.items %}
+                                {% for comp in value %}
+                                {% if key == data.id  %}
+                                {{comp.matricola}}<br />
+                                {% endif %}
+                                {% endfor %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+
                         <tr>
                             <td><b>{% trans "Number of seats" %}</b></td>
                             <td>{{ other_data.num_posti|default:"-" }}</td>
