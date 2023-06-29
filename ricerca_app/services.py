@@ -3853,7 +3853,8 @@ class ServiceProgetto:
     def getProjectDetail(projectid):
 
         query = ProgettoDatiBase.objects.filter(
-            id=projectid
+            id=projectid,
+            is_active=True
         ).values(
             "id",
             "id_ambito_territoriale__id",
