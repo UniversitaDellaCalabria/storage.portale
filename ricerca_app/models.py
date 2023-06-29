@@ -4458,4 +4458,3 @@ class DidatticaPianoSche(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_PIANO_SCHE'
->>>>>>> crud-cds-websites
