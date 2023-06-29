@@ -58,14 +58,11 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
     
     # dati gruppi cds
     gruppi_cds_data = DidatticaCdsGruppi.objects.filter(
-        cds=regdid.cds.pk, visibile=True)
+        id_didattica_cds=regdid.cds.pk, visibile=True)
     
-    print(regdid.cds.dip)
-    print(regdid.cds.dip.pk)
-
     # dati gruppi dipartimento
     gruppi_dip_data = DidatticaDipartimentoGruppi.objects.filter(
-        dipartimento=regdid.cds.dip.pk, visibile=True)
+        id_didattica_dipartimento=regdid.cds.dip.pk, visibile=True)
     
     # dizionario chiave-valore
     gruppi_cds = {}    
