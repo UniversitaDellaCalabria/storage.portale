@@ -10,7 +10,6 @@ from ricerca_app.models import (SitoWebCdsDatiBase,
                                 SitoWebCdsSlider)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
-from .. utils.widgets import RicercaCRUDClearableWidget
 
 
 CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)

@@ -7,9 +7,9 @@ urlpatterns = []
 
 urlpatterns += path('cds-websites/', cds_websites, name='crud_cdswebsites'),
 urlpatterns += path('cds-websites/<str:code>/', cds_website, name='crud_cds_website_edit'),
-# urlpatterns += path('cds/<str:regdid_id>/other-data/new/', cds_other_data_new, name='crud_cds_other_data_new'),
-# urlpatterns += path('cds/<str:regdid_id>/other-data/<str:data_id>/', cds_other_data_edit, name='crud_cds_other_data_edit'),
-# urlpatterns += path('cds/<str:regdid_id>/other-data/<str:data_id>/delete/', cds_other_data_delete, name='crud_cds_other_data_delete'),
+# urlpatterns += path('cds-websites/<str:code>/ex-student-data/new/', cds_websites_ex_student_data_new, name='crud_cds_websites_ex_student_data_new'),
+# urlpatterns += path('cds-websites/<str:code>/ex-student-data/<str:student_id>/', cds_websites_ex_students_data_edit, name='crud_cds_websites_ex_students_data_edit'),
+# urlpatterns += path('cds-websites/<str:code>/ex-student-data/<str:student_id>/delete/', cds_websites_ex_students_data_delete, name='crud_cds_websites_ex_students_data_delete'),
 # urlpatterns += path('cds/<str:regdid_id>/other-data/<str:data_id>/coordinator/', cds_other_data_coordinator, name='crud_cds_other_data_coordinator'),
 # urlpatterns += path('cds/<str:regdid_id>/other-data/<str:data_id>/coordinator/delete/', cds_other_data_coordinator_delete, name='crud_cds_other_data_coordinator_delete'),
 # urlpatterns += path('cds/<str:regdid_id>/other-data/<str:data_id>/deputy-coordinator/', cds_other_data_deputy_coordinator, name='crud_cds_other_data_deputy_coordinator'),

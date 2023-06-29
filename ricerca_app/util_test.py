@@ -77,7 +77,24 @@ from .models import (
     PersonalePrioritaRuolo,
     DocentePtaBacheca,
     DocentePtaAltriDati,
-    DocenteMaterialeDidattico)
+    DocenteMaterialeDidattico,
+    SitoWebCdsDatiBase,
+    SitoWebCdsSlider,
+    SitoWebCdsLink,
+    SitoWebCdsExStudenti,
+    SitoWebCdsTopic,
+    SitoWebCdsTopicArticoliReg,
+    SitoWebCdsArticoliRegolamento,
+    SitoWebCdsArticoliRegAltriDati,
+    SitoWebCdsOggettiPortaleAltriDati,
+    SitoWebCdsOggettiPortale,
+    DidatticaPianoRegolamento,
+    DidatticaPianoSche,
+    DidatticaPianoSceltaSchePiano,
+    DidatticaPianoSceltaVincoli,
+    DidatticaAmbiti,
+    DidatticaPianoSceltaAf,
+)
 
 
 # class ContextUnitTest(TestCase):
@@ -975,4 +992,181 @@ class DocentePtaAltriDatiUnitTest(TestCase): # pragma: no cover
             data[k] = v
 
         obj = DocentePtaAltriDati.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsDatiBaseUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsDatiBase(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsDatiBase.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsExStudentiUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsExStudenti(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsExStudenti.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsSliderUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsSlider(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsSlider.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsLinkUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsLink(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsLink.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsTopicListUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsTopicList(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsTopic.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsTopicArticoliRegUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsTopicArticoliReg(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsTopicArticoliReg.objects.create(**data)
+        return obj
+
+class SitoWebCdsOggettiPortaleUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsOggettiPortale(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsOggettiPortale.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsOggettiPortaleAltriDatiUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsOggettiPortaleAltriDati(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsOggettiPortaleAltriDati.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsArticoliRegolamentoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsArticoliRegolamento(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsArticoliRegolamento.objects.create(**data)
+        return obj
+
+
+class SitoWebCdsArticoliRegAltriDatiUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_sitoWebCdsArticoliRegAltriDati(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = SitoWebCdsArticoliRegAltriDati.objects.create(**data)
+        return obj
+
+
+class DidatticaPianoRegolamentoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoRegolamento(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoRegolamento.objects.create(**data)
+        return obj
+
+
+
+class DidatticaPianoScheUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoSche(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoSche.objects.create(**data)
+        return obj
+
+
+
+class DidatticaPianoSceltaSchePianoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoSceltaSchePiano(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoSceltaSchePiano.objects.create(**data)
+        return obj
+
+
+class DidatticaPianoSceltaVincoliUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoSceltaVincoli(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoSceltaVincoli.objects.create(**data)
+        return obj
+
+
+class DidatticaAmbitiUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaAmbiti(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaAmbiti.objects.create(**data)
+        return obj
+
+
+class DidatticaPianoSceltaAfUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaPianoSceltaAf(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaPianoSceltaAf.objects.create(**data)
         return obj

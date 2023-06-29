@@ -263,6 +263,8 @@ class ApiCdSDetail(ApiEndpointDetail):
             'modalita_iscrizione',
             'manifesto_studi',
             'regolamento_didattico'
+            'regolamento_didattico',
+            'ordinamento_didattico'
         ).distinct()
 
         res[0]['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=res[0]['cds_id']).values(
@@ -989,7 +991,6 @@ class ApiCompaniesList(ApiEndpointList):
                                                                               office__organizational_structure__is_active=True)
             if my_offices: only_active = False
         # end get active/all elements
-
         search = request.query_params.get('search')
         techarea = request.query_params.get('techarea')
         spinoff = request.query_params.get('spinoff')
@@ -1306,3 +1307,72 @@ class ApiPhdActivityTypeList(ApiEndpointList):
     def get_queryset(self):
 
         return ServiceDottorato.getPhdActivityTypeList()
+
+
+class ApiCdsWebsiteList(ApiEndpointList):
+    description = 'Restituisce l’elenco dei siti dei corsi di studio'
+    serializer_class = CdsWebsiteSerializer
+    filter_backends = [ApiCdsWebsitesListFilter]
+
+    def get_queryset(self):
+        search = self.request.query_params.get('search')
+        academic_year = self.request.query_params.get('academic_year')
+        cdslanguage = self.request.query_params.get('cdslanguage')
+        course_class = self.request.query_params.get('course_class')
+        return ServiceDidatticaCds.getCdsWebsites(search, academic_year, cdslanguage, course_class)
+
+
+class ApiCdsWebsiteDetail(ApiEndpointDetail):
+    description = 'Restituisce il dettaglio di siti un corso di studio'
+    serializer_class = CdsWebsiteSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        cds_cod = self.kwargs['cdswebsitecod']
+        return ServiceDidatticaCds.getCdsWebsite(cds_cod)
+
+
+class ApiCdsWebsitesDegreeTypes(ApiEndpointList):
+    description = 'Restituisce l’elenco dei siti delle classi di laurea per i siti web dei cds'
+    serializer_class = CdsWebsitesDegreeTypesSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDidatticaCds.getCdsWebsitesDegreeTypes()
+
+
+class ApiCdsWebsitesTopicList(ApiEndpointList):
+    description = 'Restituisce l’elenco dei topic per i siti web dei cds'
+    serializer_class = CdsWebsitesTopicSerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDidatticaCds.getCdsWebsitesTopics()
+
+
+class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
+    description = 'Restituisce l’elenco dei topic per i siti web dei cds'
+    serializer_class = CdsWebsitesTopicArticlesSerializer
+    filter_backends = [ApiCdsWebsitesTopicArticlesListFilter]
+
+    def get_queryset(self):
+
+        cds_cod = self.request.query_params.get('cds_cod')
+        topic_id = self.request.query_params.get('topic_id')
+
+        return ServiceDidatticaCds.getCdsWebsitesTopicArticles(cds_cod, topic_id)
+
+
+
+class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
+    description = 'Restituisce l’elenco dei piani di studio dei cds'
+    serializer_class = CdsWebsitesStudyPlansSerializer
+    filter_backends = [ApiCdsWebsitesStudyPlansListFilter]
+
+    def get_queryset(self):
+
+        cds_cod = self.request.query_params.get('cds_cod')
+        year = self.request.query_params.get('year')
+        regdid = self.request.query_params.get('regdid')
+
+        return ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year, regdid)

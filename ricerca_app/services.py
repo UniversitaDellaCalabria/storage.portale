@@ -21,7 +21,9 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     AltaFormazioneIncaricoDidattico, AltaFormazioneModalitaSelezione, AltaFormazioneModalitaErogazione, AltaFormazioneConsiglioScientificoInterno, AltaFormazioneConsiglioScientificoEsterno, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
-    SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico
+    SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
+    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
+    DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf
 from . serializers import StructuresSerializer
 
 
@@ -135,7 +137,7 @@ class ServiceDidatticaCds:
             if (len(erogation_mode) != 0):
                 i['ErogationMode'] = erogation_mode
             else:
-                i['ErogationMode'] = None
+                i['ErogationMode'] = None # pragma: no cover
 
         items = list(items)
         for item in items:
@@ -152,7 +154,8 @@ class ServiceDidatticaCds:
                 'num_posti',
                 'modalita_iscrizione',
                 'manifesto_studi',
-                'regolamento_didattico'
+                'regolamento_didattico',
+                'ordinamento_didattico'
             ).distinct()
 
             # matricola = DidatticaCdsAltriDati.objects.filter(cds_id=item['cds_id']).values(
@@ -524,6 +527,517 @@ class ServiceDidatticaCds:
 
         return query
 
+    @staticmethod
+    def getCdsWebsites(search, academic_year, cdslanguage, course_class):
+        query_search = Q()
+        query_year = Q()
+        query_cdslanguage = Q()
+        query_courseclass = Q()
+
+        if search:
+            for k in search.split(" "):
+                q_nome_corso_it = Q(nome_corso_it__icontains=k)
+                query_search &= q_nome_corso_it
+        if academic_year:
+            query_year = Q(aa=academic_year)
+        if cdslanguage:
+            for k in cdslanguage.split(" "):
+                q_cdslanguage = Q(lingua_it__icontains=k) | Q(lingua_en__icontains=k)
+                query_cdslanguage &= q_cdslanguage
+        if course_class:
+            query_courseclass = Q(classe_laurea_it=course_class) | Q(classe_laurea_en=course_class)
+
+        query = SitoWebCdsDatiBase.objects.filter(
+            query_search,
+            query_year,
+            query_cdslanguage,
+            query_courseclass
+            ).values(
+            "id",
+            'cds_id',
+            "cds_cod",
+            'aa',
+            "nome_corso_it",
+            "nome_corso_en",
+            "classe_laurea_it",
+            "classe_laurea_en",
+            "classe_laurea_interclasse_it",
+            "classe_laurea_interclasse_en",
+            "lingua_it",
+            "lingua_en",
+            "durata",
+            "num_posti",
+            "link_video_cds_it",
+            "link_video_cds_en",
+            "descrizione_corso_it",
+            "descrizione_corso_en",
+            "accesso_corso_it",
+            "accesso_corso_en",
+            "obiettivi_corso_it",
+            "obiettivi_corso_en",
+            "sbocchi_professionali_it",
+            "sbocchi_professionali_en",
+            "tasse_contributi_esoneri_it",
+            "tasse_contributi_esoneri_en",
+            "borse_studio_it",
+            "borse_studio_en",
+            "agevolazioni_it",
+            "agevolazioni_en",
+            "corso_in_pillole_it",
+            "corso_in_pillole_en",
+            "cosa_si_studia_it",
+            "cosa_si_studia_en",
+            "come_iscriversi_it",
+            "come_iscriversi_en",
+            "sito_web_it",
+            "sito_web_en",
+            "sito_web_cds_status",
+            'id_didattica_regolamento'
+        )
+
+        query = list(query)
+
+        for q in query:
+
+            languages_it = q['lingua_it'].split(', ')
+            languages_en = q['lingua_en'].split(', ')
+
+            q['lingua_it'] = languages_it
+            q['lingua_en'] = languages_en
+
+
+            ex_studenti = SitoWebCdsExStudenti.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'nome',
+                'profilo_it',
+                'profilo_en',
+                'link_it',
+                'link_en',
+                'foto'
+            ).order_by('ordine')
+            if len(ex_studenti) > 0:
+                q['ExStudents'] = ex_studenti
+            else:
+                q['ExStudents'] = []
+            links = SitoWebCdsLink.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'descrizione_link_it',
+                'descrizione_link_en',
+                'link_it',
+                'link_en',
+            ).order_by('ordine')
+            if len(links) > 0:
+                q['CdsLink'] = links
+            else:
+                q['CdsLink'] = []
+
+            sliders = SitoWebCdsSlider.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'slider_it',
+                'slider_en',
+            ).order_by('ordine')
+            if len(sliders) > 0:
+                q['CdsSliders'] = sliders
+            else:
+                q['CdsSliders'] = []
+
+
+        return query
+
+    @staticmethod
+    def getCdsWebsite(cds_cod):
+        query = SitoWebCdsDatiBase.objects.filter(cds_cod__exact=cds_cod).values(
+            "id",
+            'cds_id',
+            "cds_cod",
+            'aa',
+            "nome_corso_it",
+            "nome_corso_en",
+            "classe_laurea_it",
+            "classe_laurea_en",
+            "classe_laurea_interclasse_it",
+            "classe_laurea_interclasse_en",
+            "lingua_it",
+            "lingua_en",
+            "durata",
+            "num_posti",
+            "link_video_cds_it",
+            "link_video_cds_en",
+            "descrizione_corso_it",
+            "descrizione_corso_en",
+            "accesso_corso_it",
+            "accesso_corso_en",
+            "obiettivi_corso_it",
+            "obiettivi_corso_en",
+            "sbocchi_professionali_it",
+            "sbocchi_professionali_en",
+            "tasse_contributi_esoneri_it",
+            "tasse_contributi_esoneri_en",
+            "borse_studio_it",
+            "borse_studio_en",
+            "agevolazioni_it",
+            "agevolazioni_en",
+            "corso_in_pillole_it",
+            "corso_in_pillole_en",
+            "cosa_si_studia_it",
+            "cosa_si_studia_en",
+            "come_iscriversi_it",
+            "come_iscriversi_en",
+            "sito_web_it",
+            "sito_web_en",
+            "sito_web_cds_status",
+            'id_didattica_regolamento'
+        )
+
+        query = list(query)
+        for q in query:
+
+            languages_it = q['lingua_it'].split(', ')
+            languages_en = q['lingua_en'].split(', ')
+
+            q['lingua_it'] = languages_it
+            q['lingua_en'] = languages_en
+
+
+            ex_studenti = SitoWebCdsExStudenti.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'nome',
+                'ordine',
+                'profilo_it',
+                'profilo_en',
+                'link_it',
+                'link_en',
+                'foto'
+            ).order_by('ordine')
+            if len(ex_studenti) > 0:
+                q['ExStudents'] = ex_studenti
+            else: # pragma: no cover
+                q['ExStudents'] = []
+            links = SitoWebCdsLink.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'descrizione_link_it',
+                'descrizione_link_en',
+                'link_it',
+                'link_en',
+            ).order_by('ordine')
+            if len(links) > 0:
+                q['CdsLink'] = links
+            else: # pragma: no cover
+                q['CdsLink'] = []
+
+            sliders = SitoWebCdsSlider.objects.filter(
+                id_sito_web_cds_dati_base__exact=q['id']).values(
+                'id',
+                'ordine',
+                'slider_it',
+                'slider_en',
+            ).order_by('ordine')
+            if len(sliders) > 0:
+                q['CdsSliders'] = sliders
+            else:
+                q['CdsSliders'] = []
+
+        return query
+
+
+    @staticmethod
+    def getCdsWebsitesDegreeTypes():
+        query = SitoWebCdsDatiBase.objects.values(
+            "classe_laurea_it",
+            "classe_laurea_en"
+        ).distinct()
+
+        return query
+
+
+    @staticmethod
+    def getCdsWebsitesTopics():
+
+        query = SitoWebCdsTopic.objects.values(
+            "id",
+            "descr_topic_it",
+            "descr_topic_en",
+            'visibile'
+        ).distinct()
+
+        return query
+
+    @staticmethod
+    def getCdsWebsitesTopicArticles(cds_cod, topic_id):
+        if cds_cod and topic_id:
+            topic_id_list = topic_id.split(",")
+            query_cdscod = Q(id_sito_web_cds_oggetti_portale__cds_id__cds_cod=cds_cod) | Q(id_sito_web_cds_articoli_regolamento__cds_id__cds_cod=cds_cod)
+            query_topicid = Q(id_sito_web_cds_topic__id__in=topic_id_list)
+
+            query = SitoWebCdsTopicArticoliReg.objects.filter(
+                query_cdscod,
+                query_topicid
+            ).values(
+                "id",
+                'titolo_it',
+                'titolo_en',
+                "id_sito_web_cds_topic__id",
+                'id_sito_web_cds_oggetti_portale',
+                'id_sito_web_cds_articoli_regolamento',
+                "id_sito_web_cds_topic__descr_topic_it",
+                "id_sito_web_cds_topic__descr_topic_en",
+                'visibile',
+                'ordine'
+            ).distinct().order_by('id_sito_web_cds_topic__id','ordine')
+
+            query = list(query)
+
+            for q in query:
+                article = SitoWebCdsArticoliRegolamento.objects.filter(
+                    id__exact=q['id_sito_web_cds_articoli_regolamento']).values(
+                    'id',
+                    'titolo_articolo_it',
+                    'testo_it',
+                    'titolo_articolo_en',
+                    'titolo_articolo_en',
+                    'testo_en',
+                    'numero',
+                    'visibile',
+                    'aa_regdid_id',
+                    'cds_id',
+                    'cds_id__cds_cod',
+                ).first()
+                # .order_by('id_sito_web_cds_articoli_regolamento')
+                q['Articles'] = article
+
+                if article:
+                    other_data = SitoWebCdsArticoliRegAltriDati.objects.filter(
+                            id_sito_web_cds_articoli_regolamento=article['id']
+                        ).values(
+                            'id',
+                            'ordine',
+                            'titolo_en',
+                            'titolo_it',
+                            'testo_it',
+                            'testo_en',
+                            'visibile'
+                        ).order_by('ordine')
+
+                    article['OtherData'] = other_data if other_data else []
+
+                unicms_object = SitoWebCdsOggettiPortale.objects.filter(
+                    id__exact=q['id_sito_web_cds_oggetti_portale']).values(
+                    'id',
+                    'cds_id',
+                    'cds_id__cds_cod',
+                    'aa_regdid_id',
+                    'id_oggetto_portale',
+                    'id_classe_oggetto_portale',
+                    'testo_it',
+                    'testo_en',
+                    'visibile'
+                ).first()
+
+                q['CdsObjects'] = unicms_object
+
+                if unicms_object:
+                    other_data = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
+                            id_sito_web_cds_oggetti_portale=unicms_object['id']
+                        ).values(
+                            'id',
+                            'ordine',
+                            'titolo_it',
+                            'titolo_en',
+                            'testo_it',
+                            'testo_en',
+                            'visibile'
+                        ).order_by('ordine')
+
+                    unicms_object['OtherData'] = other_data if other_data else []
+
+            return query
+        return {}
+
+    @staticmethod
+    def getCdsWebsitesStudyPlans(cds_cod, year, regdid):
+
+        if cds_cod and year or regdid:
+            query_cds = Q(regdid_id__cds_id__cds_cod__exact=cds_cod) if cds_cod else Q()
+            query_year = Q(regdid_id__aa_reg_did__exact=year) if year else Q()
+            query_regdid = Q(regdid_id__exact=regdid) if regdid else Q()
+
+            query = DidatticaPianoRegolamento.objects.filter(
+                query_cds,
+                query_regdid,
+                query_year
+               ).values(
+                   'regpiani_id',
+                   'regdid_id',
+                   'attinenza_cod',
+                   'cod',
+                   'aa_coorte_id',
+                   'aa_regpiani_id',
+                   'des',
+                   'def_flg',
+                   'stato_cod',
+                   'stato_des',
+                   'regpiani_pdr_id',
+                   'regpiani_pdr_cod',
+                   'regpiani_pdr_des',
+                   'regpiani_pdr_aa_coorte_id',
+                   'regpiani_pdr_aa_regpiani_id',
+                   'flg_exp_seg_stu'
+               ).distinct().order_by('regpiani_id')
+
+            for q in query:
+                schede = DidatticaPianoSche.objects.filter(
+                       regpiani_id__exact=q['regpiani_id']).values(
+                    'sche_piano_id',
+                    'sche_piano_des',
+                    'sche_piano_cod',
+                    'pds_cod',
+                    'pds_des',
+                    'comune_flg',
+
+                   )
+
+                q['PlanTabs'] = schede
+
+
+                for s in schede:
+                    obbl = DidatticaPianoSceltaSchePiano.objects.filter(
+                            sche_piano_id__exact=s['sche_piano_id'],
+                            tipo_sce_cod__exact='O'
+                        ).values_list(
+                            'sce_id',
+                            flat=True
+                        )
+
+
+                    af_obblig = DidatticaPianoSceltaAf.objects.filter(
+                        sce_id__in=obbl
+                    ).values(
+                        'anno_corso_af',
+                        'ciclo_des',
+                        'af_gen_des',
+                        'af_id',
+                        'tipo_af_des_af',
+                        'ambito_des_af',
+                        'sett_cod',
+                        'peso',
+                        'sce_id__sce_des',
+                        'sce_id'
+                    )
+
+
+                    s['AfRequired'] = af_obblig
+
+                    for obl in s['AfRequired']:
+                        anno = DidatticaPianoSceltaSchePiano.objects.filter(
+                            sce_id__exact=obl['sce_id'],
+                            tipo_sce_cod__exact='O'
+                        ).values(
+                            'apt_slot_ord_num'
+                        )
+
+                        anno = anno[0]['apt_slot_ord_num']
+
+                        obl['apt_slot_ord_num'] = anno
+
+
+
+                    scelte = DidatticaPianoSceltaSchePiano.objects.filter(
+                        ~Q(tipo_sce_cod__exact='O'),
+                        sche_piano_id__exact=s['sche_piano_id'],
+                    ).values_list(
+                        'sce_id',
+                        flat=True
+                    )
+
+
+                    verifica = Q(amb_id__isnull=False) | Q(amb_id_af_regsce__isnull=False) | Q(tipo_sce_cod='V')
+
+                    af_scelta = DidatticaPianoSceltaSchePiano.objects.filter(
+                        verifica,
+                        sce_id__in=scelte,
+                    ).values(
+                        'amb_id',
+                        'sce_id',
+                        'ambito_des',
+                        'min_unt',
+                        'max_unt',
+                        'sce_des',
+                        'amb_id_af_regsce',
+                        'apt_slot_ord_num',
+                        'tipo_sce_cod',
+                        'tipo_sce_des',
+                        'tipo_regsce_cod',
+                        'tipo_regsce_des',
+                        'tipo_um_regsce_cod',
+                        'vin_sce_des',
+                        'vin_id'
+                    )
+
+                    af_scelta = list(af_scelta)
+
+
+
+                    for a in af_scelta:
+
+
+                        if a['amb_id'] is not None:
+
+
+                            a['ElectiveCourses'] = DidatticaAttivitaFormativa.objects.filter(
+                                query_cds,
+                                query_regdid,
+                                query_year,
+                                Q(amb_id__exact=a['amb_id'])
+                            ).values(
+                                'af_gen_id',
+                                'af_gen_cod',
+                                'des',
+                                'af_gen_des_eng',
+                                'anno_corso',
+                                'sett_cod',
+                                'sett_des',
+                                'peso'
+                            )
+
+
+                            a['ElectiveCourses'] = list(a['ElectiveCourses'])
+
+                            for el in a['ElectiveCourses']:
+                                el['apt_slot_ord_num'] = a['apt_slot_ord_num']
+
+                        if a['amb_id_af_regsce'] is not None and a['amb_id'] is None:
+
+                            a['ElectiveCourses'] = DidatticaPianoSceltaAf.objects.filter(
+                                sce_id=a['sce_id']
+                            ).values(
+                                'sce_id',
+                                'anno_corso_af',
+                                'af_gen_des',
+                                'ciclo_des',
+                            )
+
+                            a['ElectiveCourses'] = list(a['ElectiveCourses'])
+
+                            for el in a['ElectiveCourses']:
+                                el['apt_slot_ord_num'] = a['apt_slot_ord_num']
+
+
+                    s['AfChoices'] = af_scelta
+
+            return query
+
+
+
+
 
 class ServiceDidatticaAttivitaFormativa:
 
@@ -657,7 +1171,7 @@ class ServiceDidatticaAttivitaFormativa:
             query_department = Q(cds_id__dip_id__dip_cod=department)
         if cds:
             for k in cds.split(" "):
-                if language == "it":
+                if language == "it": # pragma: no cover
                     q = Q(cds_id__nome_cds_it__icontains=k)
                 else:
                     q = Q(cds_id__nome_cds_eng__icontains=k)
@@ -3563,6 +4077,9 @@ class ServiceBrevetto:
             "titolo",
             "nome_file_logo",
             "breve_descrizione",
+            "trl_iniziale",
+            "trl_aggiornato",
+            "valorizzazione",
             "url_knowledge_share",
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
@@ -3595,6 +4112,9 @@ class ServiceBrevetto:
             "titolo",
             "nome_file_logo",
             "breve_descrizione",
+            "trl_iniziale",
+            "trl_aggiornato",
+            "valorizzazione",
             "url_knowledge_share",
             "id_area_tecnologica",
             "id_area_tecnologica__descr_area_ita",
@@ -3846,7 +4366,8 @@ class ServiceProgetto:
     def getProjectDetail(projectid):
 
         query = ProgettoDatiBase.objects.filter(
-            id=projectid
+            id=projectid,
+            is_active=True
         ).values(
             "id",
             "id_ambito_territoriale__id",

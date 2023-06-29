@@ -781,3 +781,54 @@ class ApiCdsWebsitesListFilter(GenericApiFilter):
             'type': 'string'
         }
     ]
+
+
+
+class ApiCdsWebsitesStudyPlansListFilter(GenericApiFilter):
+    search_params = [
+        {
+            'name': 'year',
+            'description': 'Anno Accademico',
+            'required': False,
+            'schema': {
+                    'type': 'integer',
+                    'format': 'int32',
+            }
+        },
+        {
+            'name': 'cds_cod',
+            'description': 'Codice di un cds',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'regdid',
+            'description': 'Id regolamento didattico',
+            'required': False,
+            'schema': {
+                    'type': 'integer',
+                    'format': 'int32',
+            }
+        },
+    ]
+
+
+class ApiCdsWebsitesTopicArticlesListFilter(GenericApiFilter):
+    search_params = [
+
+        {
+            'name': 'cds_cod',
+            'description': 'Codice di un cds',
+            'required': False,
+            'type': 'string'
+        },
+        {
+            'name': 'topic_id',
+            'description': 'ID Topic',
+            'required': False,
+            'schema': {
+                    'type': 'integer',
+                    'format': 'int32',
+            }
+        },
+    ]

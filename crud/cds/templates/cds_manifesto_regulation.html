@@ -1,0 +1,22 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<h3 style="font-weight: lighter;" class="mb-4">
+     {% trans "Upload" %} {% trans "Study manifesto and Didactic regulation for" %} {{ regdid.cds.nome_cds_it }} - {{ regdid.aa_reg_did }}
+</h3>
+
+<form method="post" enctype="multipart/form-data" novalidate>
+    <div class="card-wrapper card-space">
+        <div class="card card-bg no-after">
+            <div class="card-body">
+                {% include "form_template.html" with form=form %}
+                {% include "includes/form_submit.html" %}
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock centered_container %}

@@ -1,7 +1,11 @@
+import json
+import requests
+
 from django.conf import settings
 
 from rest_framework import serializers
 
+from . models import DidatticaRegolamento
 from . settings import (ALLOWED_PROFILE_ID,
                         CDS_BROCHURE_MEDIA_PATH,
                         # COMPANIES_MEDIA_PATH,
@@ -73,6 +77,9 @@ class CdSSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
+        regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
+        ordinamento_didattico = regdid.get_ordinamento_didattico()
+
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'CdSId': query['cds_id'],
@@ -96,8 +103,12 @@ class CdSSerializer(CreateUpdateAbstract):
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
+            'StudyManifesto': build_media_path(query["OtherData"][0]['manifesto_studi']) if query["OtherData"] else None,
+            'DidacticRegulation': build_media_path(query["OtherData"][0]['regolamento_didattico']) if query["OtherData"] else None,
+            'TeachingSystem': build_media_path(ordinamento_didattico[1]) if ordinamento_didattico else None,
+            'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
-            'OfficesData': offices_data,
+            'OfficesData': offices_data
         }
 
     @staticmethod
@@ -110,8 +121,6 @@ class CdSSerializer(CreateUpdateAbstract):
                     'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
                     'SeatsNumber': q['num_posti'],
                     'RegistrationMode': q['modalita_iscrizione'],
-                    'StudyManifesto': build_media_path(q['manifesto_studi']),
-                    'DidacticRegulation': build_media_path(q['regolamento_didattico'])
                     }
         return {}
 
@@ -176,6 +185,9 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
+        regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
+        ordinamento_didattico = regdid.get_ordinamento_didattico()
+
         return {
             'RegDidId': query['didatticaregolamento__regdid_id'],
             'RegDidState': query['didatticaregolamento__stato_regdid_cod'],
@@ -210,6 +222,10 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSFinalTestMode': query['PROVA_FINALE_2'],
             'CdSSatisfactionSurvey': query['codicione'],
             'JointDegree': query['didatticaregolamento__titolo_congiunto_cod'],
+            'StudyManifesto': build_media_path(query["OtherData"][0]['manifesto_studi']) if query["OtherData"] else None,
+            'DidacticRegulation': build_media_path(query["OtherData"][0]['regolamento_didattico']) if query["OtherData"] else None,
+            'TeachingSystem': build_media_path(ordinamento_didattico[1]) if ordinamento_didattico else None,
+            'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
             'OfficesData': offices_data,
         }
@@ -234,8 +250,14 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                     'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
                     'SeatsNumber': q['num_posti'],
                     'RegistrationMode': q['modalita_iscrizione'],
+<<<<<<< HEAD
                     'StudyManifesto': build_media_path(q['manifesto_studi']),
                     'DidacticRegulation': build_media_path(q['regolamento_didattico'])
+=======
+                    # 'StudyManifesto': build_media_path(q['manifesto_studi']),
+                    # 'DidacticRegulation': build_media_path(q['regolamento_didattico']),
+                    # 'TeachingSystem': build_media_path(q['ordinamento_didattico'])
+>>>>>>> crud-cds-websites
                     }
         return {}
 
@@ -250,11 +272,380 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 'OfficeDirectorName': q['nome_origine_riferimento'],
                 'TelOffice': q['telefono'],
                 'Email': q['email'],
+                'Building': q['edificio'],
                 'Floor': q['piano'],
                 'Timetables': q['orari'],
                 'OnlineCounter': q['sportello_online']
             })
         return data
+
+
+
+
+class CdsWebsiteSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data.update(self.to_dict(instance,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+
+        if query['ExStudents'] is not None:
+            ex_students = CdsWebsiteSerializer.to_dict_ex_students(
+                query['ExStudents'], req_lang)
+
+        if query['CdsLink'] is not None:
+            cds_link = CdsWebsiteSerializer.to_dict_links(
+                query['CdsLink'], req_lang)
+
+        if query['CdsSliders'] is not None:
+            cds_sliders = CdsWebsiteSerializer.to_dict_sliders(
+                query['CdsSliders'], req_lang)
+
+
+
+        return {
+            'CDSId': query['id'],
+            'CDSCOD': query['cds_cod'],
+            'CDSAcademicYear': query['aa'],
+            'CDSName': query['nome_corso_it'] if req_lang=='it' or query['nome_corso_en'] is None else query['nome_corso_en'],
+            'CDSCourseClassName': query['classe_laurea_it'] if req_lang=='it' or query['classe_laurea_en'] is None else query['classe_laurea_en'],
+            'CDSCourseInterClassDes': query['classe_laurea_interclasse_it'] if req_lang=='it' or query['classe_laurea_interclasse_en'] is None else query['classe_laurea_interclasse_en'],
+            'CDSLanguage': query['lingua_it'] if req_lang=='it' or query['lingua_en'] is None else query['lingua_en'],
+            'CDSDuration': query['durata'],
+            'CDSSeatsNumber': query['num_posti'],
+            'RegDidId': query['id_didattica_regolamento'],
+            'CDSVideo': query['link_video_cds_it'] if req_lang=='it' or query['link_video_cds_en'] is None else query['link_video_cds_en'],
+            'CDSIntro': query['descrizione_corso_it'] if req_lang == 'it' or query['descrizione_corso_en'] is None else query['descrizione_corso_en'],
+            'CDSAdmission': query['accesso_corso_it'] if req_lang == 'it' or query['accesso_corso_en'] is None else query['accesso_corso_en'],
+            'CDSGoals': query['obiettivi_corso_it'] if req_lang == 'it' or query['obiettivi_corso_en'] is None else query['obiettivi_corso_en'],
+            'CDSJobOpportunities': query['sbocchi_professionali_it'] if req_lang == 'it' or query['sbocchi_professionali_en'] is None else query['sbocchi_professionali_en'],
+            'CDSTaxes': query['tasse_contributi_esoneri_it'] if req_lang == 'it' or query['tasse_contributi_esoneri_en'] is None else query['tasse_contributi_esoneri_en'],
+            'CDSScholarships': query['borse_studio_it'] if req_lang == 'it' or query['borse_studio_en'] is None else query['borse_studio_en'],
+            'CDSConcessions': query['agevolazioni_it'] if req_lang == 'it' or query['agevolazioni_en'] is None else query['agevolazioni_en'],
+            'CDSShortDescription': query['corso_in_pillole_it'] if req_lang == 'it' or query['corso_in_pillole_en'] is None else query['corso_in_pillole_en'],
+            'CDSStudyPlan': query['cosa_si_studia_it'] if req_lang == 'it' or query['cosa_si_studia_en'] is None else query['cosa_si_studia_en'],
+            'CDSEnrollmentMode': query['come_iscriversi_it'] if req_lang == 'it' or query['come_iscriversi_en'] is None else query['come_iscriversi_en'],
+            'CDSUrl': query['sito_web_it'] if req_lang == 'it' or query['sito_web_en'] is None else query['sito_web_en'],
+            'CDSUrlStatus': query['sito_web_cds_status'],
+            'CDSExStudents': ex_students,
+            'CDSLinks': cds_link,
+            'CDSSliders': cds_sliders,
+        }
+
+
+    @staticmethod
+    def to_dict_ex_students(query, req_lang='en'):
+        ex_students = []
+        for q in query:
+            ex_students.append({
+                'StudentId': q['id'],
+                'StudentName': q['nome'],
+                'StudentOrder': q['ordine'],
+                'StudentProfile': q['profilo_it'] if req_lang == 'it' or q['profilo_en'] is None else q['profilo_en'],
+                'StudentLink': q['link_it'] if req_lang == 'it' or q['link_en'] is None else q['link_en'],
+                'StudentPhoto': q['foto']
+            })
+        return ex_students
+
+
+    @staticmethod
+    def to_dict_links(query, req_lang='en'):
+        links = []
+        for q in query:
+            links.append({
+                'LinkId': q['id'],
+                'LinkOrder': q['ordine'],
+                'LinkDescription': q['descrizione_link_it'] if req_lang == 'it' or q['descrizione_link_en'] is None else q['descrizione_link_en'],
+                'Link': q['link_it'] if req_lang == 'it' or q['link_en'] is None else q['link_en'],
+            })
+        return links
+
+
+    @staticmethod
+    def to_dict_sliders(query, req_lang='en'):
+        sliders = []
+        for q in query:
+            sliders.append({
+                'SliderId': q['id'],
+                'SliderOrder': q['ordine'],
+                'SliderDescription': q['slider_it'] if req_lang == 'it' or q['slider_en'] is None else q['slider_en'],
+            })
+        return sliders
+
+
+
+    # @staticmethod
+    # def to_dict_offices_data(query):
+    #     data = []
+    #     for q in query:
+    #         data.append({
+    #             'Order': q['ordine'],
+    #             'OfficeName': q['nome_ufficio'],
+    #             'OfficeDirector': encrypt(q['matricola_riferimento']),
+    #             'OfficeDirectorName': q['nome_origine_riferimento'],
+    #             'TelOffice': q['telefono'],
+    #             'Email': q['email'],
+    #             'Floor': q['piano'],
+    #             'Timetables': q['orari'],
+    #             'OnlineCounter': q['sportello_online']
+    #         })
+    #     return data
+
+
+class CdsWebsitesDegreeTypesSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+
+
+        return {
+            'CDSCourseClassName': query['classe_laurea_it'] if req_lang=='it' or query['classe_laurea_en'] is None else query['classe_laurea_en'],
+        }
+
+
+
+class CdsWebsitesTopicSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+
+
+        return {
+            'TopicId': query['id'],
+            'TopicDescription': query['descr_topic_it'] if req_lang=='it' or query['descr_topic_en'] is None else query['descr_topic_en'],
+            'Visible': query['visibile']
+        }
+
+
+class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+
+        article = None
+        if query['Articles'] is not None:
+            article = CdsWebsitesTopicArticlesSerializer.to_dict_articles(
+                query['Articles'], req_lang)
+
+        unicms_object = None
+        if query['CdsObjects'] is not None:
+            unicms_object = CdsWebsitesTopicArticlesSerializer.to_dict_objects(
+                query['CdsObjects'], req_lang)
+
+        return {
+            'ID': query['id'],
+            'Title': query['titolo_it'] if req_lang=='it' or query['titolo_en'] is None else query['titolo_en'],
+            'TopicId': query['id_sito_web_cds_topic__id'],
+            'TopicDescription': query['id_sito_web_cds_topic__descr_topic_it'] if req_lang=='it' or query['id_sito_web_cds_topic__descr_topic_en'] is None else query['id_sito_web_cds_topic__descr_topic_en'],
+            'Visible': query['visibile'],
+            'Order': query['ordine'],
+            'CdsArticle': article,
+            'CdsObject': unicms_object
+        }
+
+
+    @staticmethod
+    def to_dict_articles(q, req_lang='en'):
+        if q:
+            return {
+                'ArticleId': q['id'],
+                'ArticleTitle': q['titolo_articolo_it'] if req_lang == 'it' or q['titolo_articolo_en'] is None else q['titolo_articolo_en'],
+                'ArticleDescription': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'ArticleNumber': q['numero'],
+                'Visible': q['visibile'],
+                'YearRegDidID': q['aa_regdid_id'],
+                'CdSCod': q['cds_id__cds_cod'],
+                'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q.get('OtherData', []), req_lang),
+            }
+
+
+    @staticmethod
+    def to_dict_objects(q, req_lang='en'):
+        if q and getattr(settings, 'UNICMS_AUTH_TOKEN', ''):
+            head = {'Authorization': 'Token {}'.format(getattr(settings, 'UNICMS_AUTH_TOKEN'))}
+            unicms_obj_api = getattr(settings, 'UNICMS_OBJECT_API', {})
+            api_url = unicms_obj_api.get(q['id_classe_oggetto_portale'], '')
+            unicms_object = requests.get(api_url.format(q['id_oggetto_portale']),
+                                         headers=head,
+                                         timeout=3) if api_url else None
+            return {
+                'Id': q['id'],
+                'CdSCod': q['cds_id__cds_cod'],
+                'YearRegDidID': q['aa_regdid_id'],
+                'ObjectId': q['id_oggetto_portale'],
+                'Object': json.loads(unicms_object._content) if unicms_object else None,
+                'ClassObjectId': q['id_classe_oggetto_portale'],
+                'ObjectText': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q.get('OtherData', []), req_lang),
+            }
+
+
+    @staticmethod
+    def to_dict_other_data(query, req_lang='en'):
+        other_data = []
+        for q in query:
+            other_data.append({
+                'Id': q['id'],
+                'Order': q['ordine'],
+                'Title': q['titolo_it'] if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
+                'Text': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'Visible': q['visibile']
+            })
+        return other_data
+
+class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        # study_activities = {}
+        # for k in query['StudyActivities']:
+        #     study_activities[k] = []
+        #     for q in query['StudyActivities'][k]:
+        #         study_activities[k].append(
+        #             StudyPlansActivitiesSerializer.to_dict(
+        #                 q, req_lang))
+        plan_tabs = None
+        if query['PlanTabs'] is not None:
+            plan_tabs = CdsWebsitesStudyPlansSerializer.to_dict_plan(
+                query['PlanTabs'], req_lang)
+
+        return {
+            'RegPlanId': query['regpiani_id'],
+            'RegDidId': query['regdid_id'],
+            'RelevanceCod': query['attinenza_cod'],
+            'YearCoorteId': query['aa_coorte_id'],
+            'YearRegPlanId': query['aa_regpiani_id'],
+            'RegPlanDes': query['des'],
+            'DefFlg': query['def_flg'],
+            'StatusCod': query['stato_cod'],
+            'StatusDes': query['stato_des'],
+            'RegPlansPdrId': query['regpiani_pdr_id'],
+            'RegPlansPdrCod': query['regpiani_pdr_cod'],
+            'RegPlansPdrDes': query['regpiani_pdr_des'],
+            'RegPlansPdrCoorteIdYear': query['regpiani_pdr_aa_coorte_id'],
+            'RegPlansPdrYear': query['regpiani_pdr_aa_regpiani_id'],
+            'FlgExpSegStu': query['flg_exp_seg_stu'],
+            'PlanTabs': plan_tabs
+
+        }
+
+    @staticmethod
+    def to_dict_plan(query, req_lang='en'):
+        plan_tabs = []
+        for q in query:
+            plan_tabs.append({
+                'PlanTabId': q['sche_piano_id'],
+                'PlanTabDes': q['sche_piano_des'],
+                'PlanTabCod': q['sche_piano_cod'],
+                'PdsCod': q['pds_cod'],
+                'PdsDes': q['pds_des'],
+                'CommonFlg': q['comune_flg'],
+                'AfRequired': CdsWebsitesStudyPlansSerializer.to_dict_af_required(q.get('AfRequired', []), req_lang),
+                'AfChoices': CdsWebsitesStudyPlansSerializer.to_dict_af_choices(q.get('AfChoices', []), req_lang),
+            })
+        return plan_tabs
+
+    @staticmethod
+    def to_dict_af_required(query, req_lang='en'):
+        af_required = []
+        for q in query:
+            af_required.append({
+                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso_af'],
+                'CycleDes': q['ciclo_des'],
+                'AfDescription': q['af_gen_des'],
+                'AfId': q['af_id'],
+                'AfType': q['tipo_af_des_af'],
+                'AfScope': q['ambito_des_af'],
+                'SettCod': q['sett_cod'],
+                'CreditValue': q['peso'],
+
+            })
+        return af_required
+
+    @staticmethod
+    def to_dict_af_choices(query, req_lang='en'):
+        af_choices = []
+        for q in query:
+            af_choices.append({
+                'ScopeId': q['amb_id'],
+                'SceId': q['sce_id'],
+                'SceDes': q['sce_des'],
+                'ScopeDes': q['ambito_des'],
+                'MinUnt': q['min_unt'],
+                'MaxUnt': q['max_unt'],
+                'TypeSceCod': q['tipo_sce_cod'],
+                'TypeSceDes': q['tipo_sce_des'],
+                'TypeRegSceCod': q['tipo_regsce_cod'],
+                'TypeRegsceDes': q['tipo_regsce_des'],
+                'TypeUmRegsceCod': q['tipo_um_regsce_cod'],
+                'VinSceDes': q['vin_sce_des'],
+                'VinId': q['vin_id'],
+                'ElectiveCourses': CdsWebsitesStudyPlansSerializer.to_dict_elective_courses(q.get('ElectiveCourses', []), req_lang) if q['amb_id'] is not None else CdsWebsitesStudyPlansSerializer.to_dict_elective_courses_v2(q.get('ElectiveCourses', []), req_lang),
+            })
+        return af_choices
+
+
+    @staticmethod
+    def to_dict_elective_courses(query, req_lang='en'):
+        elective_courses = []
+        for q in query:
+            elective_courses.append({
+                'AfId': q['af_gen_id'],
+                'AfCod': q['af_gen_cod'],
+                'AfDescription': q['des'] if req_lang == 'it' or q['af_gen_des_eng'] is None else q['af_gen_des_eng'],
+                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso'],
+                'SettCod': q['sett_cod'],
+                'SettDes': q['sett_des'],
+                'Peso': q['peso'],
+
+            })
+        return elective_courses
+
+    @staticmethod
+    def to_dict_elective_courses_v2(query, req_lang='en'):
+        elective_courses = []
+        for q in query:
+            elective_courses.append({
+                'SceId': q['sce_id'],
+                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso_af'],
+                'AfDescription': q['af_gen_des'],
+                'CycleDes': q['ciclo_des'],
+
+            })
+        return elective_courses
+
 
 
 class CdSStudyPlansSerializer(CreateUpdateAbstract):
@@ -1789,6 +2180,9 @@ class PatentsSerializer(CreateUpdateAbstract):
             'PatentImage': build_media_path(query['nome_file_logo']),
             'PatentAbstract': query["breve_descrizione"],
             'PatentUrlKnowledgeShare': query["url_knowledge_share"],
+            'PatentInizialTRL': query["trl_iniziale"],
+            'PatentUpdatedTRL': query["trl_aggiornato"],
+            'PatentEnhancement': query["valorizzazione"],
             'PatentTechAreaId': query["id_area_tecnologica"],
             'PatentAreaDescription': query["id_area_tecnologica__descr_area_ita"] if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None else query['id_area_tecnologica__descr_area_eng'],
             'PatentInventors': inventors,

@@ -28,7 +28,10 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
     DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest, DocentePtaMaterialeDidatticoUnitTest, \
-    DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest
+    DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest, \
+    SitoWebCdsArticoliRegAltriDatiUnitTest, SitoWebCdsOggettiPortaleAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
+    DidatticaPianoRegolamentoUnitTest, DidatticaPianoScheUnitTest, DidatticaPianoSceltaSchePianoUnitTest, DidatticaPianoSceltaVincoliUnitTest, DidatticaAmbitiUnitTest, \
+    DidatticaPianoSceltaAfUnitTest
 from .serializers import CreateUpdateAbstract
 
 
@@ -68,6 +71,7 @@ class ApiCdSListUnitTest(TestCase):
             'num_posti': 2
         })
 
+        r1.get_ordinamento_didattico()
 
         url = reverse('ricerca:cdslist')
 
@@ -5198,6 +5202,7 @@ class ApiHighFormationMastersListUnitTest(TestCase):
             'id_alta_formazione_tipo_corso': aftc,
             'id_alta_formazione_mod_erogazione': afme,
             'id_dipartiento_riferimento': dip,
+            'anno_rilevazione': 2021,
         })
 
         AltaFormazioneDatiBaseUnitTest.create_altaFormazioneDatiBase(**{
@@ -5284,6 +5289,14 @@ class ApiHighFormationMastersListUnitTest(TestCase):
         assert len(res.json()['results']) == 2
 
         data = {'department': '1111'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+        data = {'director': '111112'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 2
+
+        data = {'year': 2021}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
@@ -5753,4 +5766,515 @@ class ApiPhdSsdListUnitTest(TestCase):
         # GET
 
         res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+
+class ApiSitoWebCdsListUnitTest(TestCase):
+    def test_apisitiwebcdslist(self):
+        req = Client()
+
+        s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
+            'id': 1,
+            'aa': '2022',
+            'nome_corso_it': 'Informatica',
+            'nome_corso_en': 'Computer Science',
+            'lingua_it': 'italiano',
+            'lingua_en': "italian",
+            'classe_laurea_it': 'aaa',
+            'durata': 50,
+            'num_posti': 50
+        })
+
+        SitoWebCdsExStudentiUnitTest.create_sitoWebCdsExStudenti(**{
+            'id': 111,
+            'ordine': 1,
+            'profilo_it': 'aaa',
+            'profilo_en': 'aaa',
+            'link_it': 'aaa',
+            'link_en': 'aaa',
+            'id_sito_web_cds_dati_base': s1,
+        })
+
+        SitoWebCdsLinkUnitTest.create_sitoWebCdsLink(**{
+            'id': 111111,
+            'ordine': 1,
+            'descrizione_link_it': 'aaa',
+            'descrizione_link_en': 'aaa',
+            'link_it': 'aaa',
+            'link_en': 'aaa',
+            'id_sito_web_cds_dati_base': 1,
+        })
+
+        SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
+            'id': 123,
+            'ordine': 1,
+            'slider_it': 'aaa',
+            'slider_en': 'aaa',
+            'id_sito_web_cds_dati_base': s1,
+        })
+
+        s2 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
+            'id': 2,
+            'aa': '2022',
+            'nome_corso_it': 'Ingegneria',
+            'nome_corso_en': 'Computer Engineering',
+            'lingua_it': 'italiano',
+            'lingua_en': "italian",
+            'durata': 50,
+            'num_posti': 50
+        })
+
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'cds_id': 1,
+            'cds_cod': 'aaa',
+            'nome_cds_it': 'Matematica',
+            'nome_cds_eng': 'Math',
+        })
+
+
+        SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
+            'id': 124,
+            'ordine': 1,
+            'slider_it': 'aaa',
+            'slider_en': 'aaa',
+            'id_sito_web_cds_dati_base': s2,
+        })
+
+
+        url = reverse('ricerca:cdswebsitelist')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 2
+
+        data = {'search': 'Informatica', 'academic_year': 2022, 'cdslanguage': 'italiano', 'course_class': 'aaa'}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
+
+class ApiSitoWebCdsDetailUnitTest(TestCase):
+
+    def test_apisitowebcdsdetail(self):
+        req = Client()
+
+        s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
+            'id': 1,
+            'cds_cod': '1',
+            'aa': '2022',
+            'nome_corso_it': 'Informatica',
+            'nome_corso_en': 'Computer Science',
+            'lingua_it': 'italiano',
+            'lingua_en': "italian",
+            'durata': 50,
+            'num_posti': 50
+        })
+
+
+        SitoWebCdsExStudentiUnitTest.create_sitoWebCdsExStudenti(**{
+            'id': 1,
+            'ordine': 1,
+            'profilo_it': 'aaa',
+            'profilo_en': 'aaa',
+            'link_it': 'aaa',
+            'link_en': 'aaa',
+            'id_sito_web_cds_dati_base': s1,
+        })
+
+        SitoWebCdsLinkUnitTest.create_sitoWebCdsLink(**{
+            'id': 1,
+            'ordine': 1,
+            'descrizione_link_it': 'aaa',
+            'descrizione_link_en': 'aaa',
+            'link_it': 'aaa',
+            'link_en': 'aaa',
+            'id_sito_web_cds_dati_base': 1,
+        })
+
+        SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
+            'id': 1,
+            'ordine': 1,
+            'slider_it': 'aaa',
+            'slider_en': 'aaa',
+            'id_sito_web_cds_dati_base': s1,
+        })
+
+        url = reverse('ricerca:cdswebsitedetail', kwargs={'cdswebsitecod': '1'})
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert res.json()['results']['CDSId'] == 1
+
+
+
+class ApiSitoWebCdsDegreeTypesUnitTest(TestCase):
+    def test_apisitiwebcdsdegreetypes(self):
+        req = Client()
+
+        SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
+            'classe_laurea_it': 'Laurea Triennale',
+        })
+
+
+
+        url = reverse('ricerca:cdswebsitesdegreetypes')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+
+
+
+class ApiSitoWebCdsTopicListUnitTest(TestCase):
+    def test_apisitiwebcdstopics(self):
+        req = Client()
+
+
+        SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+            'id': 1,
+            'descr_topic_it': 'prova',
+            'descr_topic_en': 'test',
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today(),
+        })
+
+
+
+        url = reverse('ricerca:cdswebsitestopiclist')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 1
+
+
+class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
+    def test_apisitiwebcdstopicarticles(self):
+        req = Client()
+
+
+        t1 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+            'id': 1,
+            'descr_topic_it': 'prova',
+            'descr_topic_en': 'test',
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today(),
+
+        })
+
+        t2 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+            'id': 2,
+            'descr_topic_it': 'prova',
+            'descr_topic_en': 'test',
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+
+        })
+
+        DidatticaCdsUnitTest.create_didatticaCds(**{
+            'cds_id': 1,
+            'cds_cod': '1',
+            'nome_cds_it': 'Matematica',
+            'nome_cds_eng': 'Math',
+        })
+
+        a1 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
+            'id': 1,
+            'cds_id': 1,
+            'aa_regdid_id': 2023,
+            'numero': 11,
+            'titolo_articolo_it': 'Prova',
+            'testo_it': 'Contenuto',
+            'titolo_articolo_en': 'Test',
+            'testo_en': 'Content',
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+
+        })
+
+        a2 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
+            'id': 2,
+            'cds_id': 1,
+            'aa_regdid_id': 2023,
+            'numero': 11,
+            'titolo_articolo_it': 'Prova',
+            'testo_it': 'Contenuto',
+            'titolo_articolo_en': 'Test',
+            'testo_en': 'Content',
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+
+        })
+
+        o1 = SitoWebCdsOggettiPortaleUnitTest.create_sitoWebCdsOggettiPortale(**{
+            'id': 1,
+            'cds_id': 1,
+            'aa_regdid_id': 2023,
+            'id_oggetto_portale': 1,
+            'id_classe_oggetto_portale': 1,
+            'testo_it': 'prova',
+            'testo_en': 'test',
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+
+        })
+
+        SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 1,
+            'titolo_it': 'Prova',
+            'titolo_en': 'Test',
+            'id_sito_web_cds_topic': t1,
+            'id_sito_web_cds_articoli_regolamento': a1,
+            'id_sito_web_cds_oggetti_portale': o1,
+            'ordine': 0,
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today(),
+
+        })
+
+        SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 2,
+            'id_sito_web_cds_topic': t2,
+            'id_sito_web_cds_articoli_regolamento': a2,
+            'id_sito_web_cds_oggetti_portale': o1,
+            'ordine': 0,
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today(),
+
+        })
+
+        SitoWebCdsArticoliRegAltriDatiUnitTest.create_sitoWebCdsArticoliRegAltriDati(**{
+            'id': 1,
+            'id_sito_web_cds_articoli_regolamento': a1,
+            'ordine': 0,
+            'titolo_en': 'Title',
+            'titolo_it': 'Titolo',
+            'testo_en': 'Text',
+            'testo_it': 'Testo',
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today(),
+
+        })
+        SitoWebCdsOggettiPortaleAltriDatiUnitTest.create_sitoWebCdsOggettiPortaleAltriDati(**{
+            'id': 1,
+            'id_sito_web_cds_oggetti_portale': o1,
+            'titolo_it': 'prova',
+            'titolo_en': 'test',
+            'testo_it': 'prova',
+            'testo_en': 'test',
+            'ordine': 1,
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+
+        })
+
+
+
+        url = reverse('ricerca:cdswebsitestopicarticleslist')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 0
+
+        data = {'cds_cod': '1', 'topic_id': 1}
+        res = req.get(url, data=data)
+        assert len(res.json()['results']) == 1
+
+
+
+class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
+    def test_apisitiwebcdsstudyplans(self):
+        req = Client()
+        cds1 = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'tipo_corso_cod': 'L',
+            'area_cds': 'scienze',
+            'cds_id': 1,
+            'cds_cod': '1'
+        })
+
+        r1 = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(**{
+            'regdid_id': 1,
+            'stato_regdid_cod': 'A',
+            'titolo_congiunto_cod': 'N',
+            'cds_id': 1,
+            'aa_reg_did': 2022
+        })
+
+        dpr1 = DidatticaPianoRegolamentoUnitTest.create_didatticaPianoRegolamento(**{
+            'regpiani_id': 1,
+            'regdid_id': 1,
+            'aa_coorte_id': 2022,
+            'aa_regpiani_id': 2022,
+            'des': 'prova',
+            'def_flg': 1,
+            'stato_cod': 'A',
+            'stato_des': 'A',
+            'regpiani_pdr_id': 1,
+            'regpiani_pdr_cod': 'test',
+            'regpiani_pdr_des': 'test',
+            'flg_exp_seg_stu': 1,
+
+        })
+
+        dps1= DidatticaPianoScheUnitTest.create_didatticaPianoSche(**{
+            'sche_piano_id': 1,
+            'sche_piano_des': 'prova',
+            'sche_piano_cod': 'test',
+            'regpiani_id': 1,
+            'pds_cod': 'GEN',
+            'pds_des': 'Generico',
+            'comune_flg': 1,
+
+        })
+
+        dps2 = DidatticaPianoScheUnitTest.create_didatticaPianoSche(**{
+            'sche_piano_id': 2,
+            'sche_piano_des': 'prova',
+            'sche_piano_cod': 'test',
+            'regpiani_id': 1,
+            'pds_cod': 'GEN',
+            'pds_des': 'Generico',
+            'comune_flg': 1,
+
+        })
+
+        dps3 = DidatticaPianoScheUnitTest.create_didatticaPianoSche(**{
+            'sche_piano_id': 3,
+            'sche_piano_des': 'prova',
+            'sche_piano_cod': 'test',
+            'regpiani_id': 1,
+            'pds_cod': 'GEN',
+            'pds_des': 'Generico',
+            'comune_flg': 1,
+
+        })
+        dpsv1 = DidatticaPianoSceltaVincoliUnitTest.create_didatticaPianoSceltaVincoli(**{
+            'sce_id': 1,
+        })
+        dpsv2 = DidatticaPianoSceltaVincoliUnitTest.create_didatticaPianoSceltaVincoli(**{
+            'sce_id': 2,
+        })
+        dpsv3 = DidatticaPianoSceltaVincoliUnitTest.create_didatticaPianoSceltaVincoli(**{
+            'sce_id': 3,
+        })
+        dpssp1 = DidatticaPianoSceltaSchePianoUnitTest.create_didatticaPianoSceltaSchePiano(**{
+            'sce_id': 1,
+            'sche_piano_id': 1,
+            'tipo_sce_cod': 'O',
+            'apt_slot_ord_num': 5,
+        })
+
+        af1 = DidatticaPianoSceltaAfUnitTest.create_didatticaPianoSceltaAf(**{
+            'sce_id': 1,
+            'anno_corso_af': 2022,
+            'ciclo_des': 'Prova',
+            'af_gen_des': 'Prova',
+            'af_id': 1,
+            'tipo_af_des_af': 'Contenuto',
+            'ambito_des_af': 'Test',
+            'sett_cod': 'Content',
+            'peso': 6,
+
+        })
+
+        da1 = DidatticaAmbitiUnitTest.create_didatticaAmbiti(**{
+            'amb_id': 1
+        })
+
+        dpssp2 = DidatticaPianoSceltaSchePianoUnitTest.create_didatticaPianoSceltaSchePiano(**{
+            'sce_id': 2,
+            'sche_piano_id': 2,
+            'tipo_sce_cod': 'N',
+            'amb_id': 1,
+            'ambito_des': 'Prova',
+            'min_unt': 1,
+            'max_unt': 2,
+            'sce_des': 'Content',
+            'apt_slot_ord_num': 1,
+            'tipo_sce_cod': 'Pr',
+            'tipo_sce_des': 'Prova',
+            'tipo_regsce_cod': 'P',
+            'tipo_regsce_des': 'Prova',
+            'tipo_um_regsce_cod': 'P',
+            'vin_sce_des': 1,
+            'vin_id': 1,
+
+        })
+
+        dpssp3 = DidatticaPianoSceltaSchePianoUnitTest.create_didatticaPianoSceltaSchePiano(**{
+            'sce_id': 3,
+            'sche_piano_id': 3,
+            'tipo_sce_cod': 'N',
+            'ambito_des': 'Prova',
+            'min_unt': 1,
+            'max_unt': 2,
+            'sce_des': 'Content',
+            'apt_slot_ord_num': 1,
+            'tipo_sce_cod': 'Pr',
+            'tipo_sce_des': 'Prova',
+            'tipo_regsce_cod': 'P',
+            'tipo_regsce_des': 'Prova',
+            'tipo_um_regsce_cod': 'P',
+            'amb_id_af_regsce': 1
+
+        })
+
+        daf1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'amb_id': 1,
+            'af_gen_id': 1,
+            'af_gen_cod': 'AAA',
+            'des': 'Prova',
+            'af_gen_des_eng': 'Test',
+            'anno_corso': 1,
+            'sett_cod': 'Sem',
+            'sett_des': 'Semestere',
+            'peso': 6,
+
+        })
+
+
+        url = reverse('ricerca:cdswebsitestudyplanslist')
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()['results']) == 0
+
+        data = {'cds_cod': '1', 'year': 2022}
+        res = req.get(url, data=data)
         assert len(res.json()['results']) == 1

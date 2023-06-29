@@ -111,6 +111,31 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         api_views.ApiStudyActivityInfo.as_view(),
         name='studyactivityinfo'),
 
+    urlpatterns += path('{}/cds-websites/'.format(base_url),
+                        api_views.ApiCdsWebsiteList.as_view(),
+                        name='cdswebsitelist'),
+
+    urlpatterns += path('{}/cds-websites/<str:cdswebsitecod>/'.format(base_url),
+                        api_views.ApiCdsWebsiteDetail.as_view(),
+                        name='cdswebsitedetail'),
+
+    urlpatterns += path('{}/cds-websites-degreetypes/'.format(base_url),
+                        api_views.ApiCdsWebsitesDegreeTypes.as_view(),
+                        name='cdswebsitesdegreetypes'),
+
+    urlpatterns += path('{}/cds-websites-topic/'.format(base_url),
+                        api_views.ApiCdsWebsitesTopicList.as_view(),
+                        name='cdswebsitestopiclist'),
+
+    urlpatterns += path('{}/cds-websites-topic-articles/'.format(base_url),
+                        api_views.ApiCdsWebsitesTopicArticlesList.as_view(),
+                        name='cdswebsitestopicarticleslist'),
+
+    urlpatterns += path('{}/cds-websites-studyplans/'.format(base_url),
+                        api_views.ApiCdsWebsitesStudyPlansList.as_view(),
+                        name='cdswebsitestudyplanslist'),
+
+
     urlpatterns += path('{}/activities/'.format(base_url),
                         api_views.ApiAllStudyActivitiesList.as_view(),
                         name='activities'),
