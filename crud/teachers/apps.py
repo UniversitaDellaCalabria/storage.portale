@@ -6,4 +6,4 @@ class CRUDTeachersConfig(AppConfig):
 
     def ready(self):
         # Signals
-        import crud.teachers.signals
+        from . import signals

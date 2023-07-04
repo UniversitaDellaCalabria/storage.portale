@@ -10,7 +10,7 @@ from ricerca_app.models import DidatticaCdsAltriDati
 def pre_save_manifesto_studi(sender, instance, *args, **kwargs):
     """ instance old image file will delete from os """
     try:
-        old = instance.__class__.objects.get(id=instance.id).manifesto_studi.path
+        old = instance.__class__.objects.get(pk=instance.pk).manifesto_studi.path
         try:
             new = instance.manifesto_studi.path
         except:
@@ -25,7 +25,7 @@ def pre_save_manifesto_studi(sender, instance, *args, **kwargs):
 def pre_save_regolamento_didattico(sender, instance, *args, **kwargs):
     """ instance old image file will delete from os """
     try:
-        old = instance.__class__.objects.get(id=instance.id).regolamento_didattico.path
+        old = instance.__class__.objects.get(pk=instance.pk).regolamento_didattico.path
         try:
             new = instance.regolamento_didattico.path
         except:
@@ -40,7 +40,7 @@ def pre_save_regolamento_didattico(sender, instance, *args, **kwargs):
 def pre_save_ordinamento_didattico(sender, instance, *args, **kwargs):
     """ instance old image file will delete from os """
     try:
-        old = instance.__class__.objects.get(id=instance.id).ordinamento_didattico.path
+        old = instance.__class__.objects.get(pk=instance.pk).ordinamento_didattico.path
         try:
             new = instance.ordinamento_didattico.path
         except:
