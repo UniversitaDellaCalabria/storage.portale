@@ -567,24 +567,43 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'PdsCod': q['pds_cod'],
                 'PdsDes': q['pds_des'],
                 'CommonFlg': q['comune_flg'],
-                'AfRequired': CdsWebsitesStudyPlansSerializer.to_dict_af_required(q.get('AfRequired', []), req_lang),
-                'AfChoices': CdsWebsitesStudyPlansSerializer.to_dict_af_choices(q.get('AfChoices', []), req_lang),
+                'AfRequired': CdsWebsitesStudyPlansSerializer.to_dict_af(q.get('AfRequired', []), req_lang),
+                'AfChoices': CdsWebsitesStudyPlansSerializer.to_dict_af(q.get('AfChoices', []), req_lang),
             })
         return plan_tabs
+
+    @staticmethod
+    def to_dict_af(query, req_lang='en'):
+        af = []
+        for q in query:
+            af.append({
+                'SceId': q['sce_id'],
+                'SceDes': q['sce_des'],
+                'VinId': q['vin_id'],
+                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] else q['anno_corso'],
+                'Required':  CdsWebsitesStudyPlansSerializer.to_dict_af_required(q.get('Required', []), req_lang),
+                'Choices': CdsWebsitesStudyPlansSerializer.to_dict_af_choices(q.get('Choices', []), req_lang),
+                'FilAnd': CdsWebsitesStudyPlansSerializer.to_dict_af_fil_and(q.get('FilAnd', []), req_lang),
+
+            })
+        return af
 
     @staticmethod
     def to_dict_af_required(query, req_lang='en'):
         af_required = []
         for q in query:
             af_required.append({
-                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso_af'],
+                'ScopeId': q['amb_id_af'],
+                'SceId': q['sce_id'],
+                'SceDes': q['sce_id__sce_des'],
+                'ScopeDes': q['ambito_des_af'],
+                'SettCod': q['sett_cod'],
+                'CreditValue': q['peso'],
                 'CycleDes': q['ciclo_des'],
                 'AfDescription': q['af_gen_des'],
                 'AfId': q['af_id'],
                 'AfType': q['tipo_af_des_af'],
                 'AfScope': q['ambito_des_af'],
-                'SettCod': q['sett_cod'],
-                'CreditValue': q['peso'],
 
             })
         return af_required
@@ -594,53 +613,56 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
         af_choices = []
         for q in query:
             af_choices.append({
-                'ScopeId': q['amb_id'],
+                'ScopeId': q['amb_id_af'],
                 'SceId': q['sce_id'],
-                'SceDes': q['sce_des'],
-                'ScopeDes': q['ambito_des'],
-                'MinUnt': q['min_unt'],
-                'MaxUnt': q['max_unt'],
-                'TypeSceCod': q['tipo_sce_cod'],
-                'TypeSceDes': q['tipo_sce_des'],
-                'TypeRegSceCod': q['tipo_regsce_cod'],
-                'TypeRegsceDes': q['tipo_regsce_des'],
-                'TypeUmRegsceCod': q['tipo_um_regsce_cod'],
-                'VinSceDes': q['vin_sce_des'],
-                'VinId': q['vin_id'],
-                'ElectiveCourses': CdsWebsitesStudyPlansSerializer.to_dict_elective_courses(q.get('ElectiveCourses', []), req_lang) if q['amb_id'] is not None else CdsWebsitesStudyPlansSerializer.to_dict_elective_courses_v2(q.get('ElectiveCourses', []), req_lang),
+                'SceDes': q['sce_id__sce_des'],
+                'ScopeDes': q['ambito_des_af'],
+                'SettCod': q['sett_cod'],
+                'CreditValue': q['peso'],
+                'CycleDes': q['ciclo_des'],
+                'AfDescription': q['af_gen_des'],
+                'AfId': q['af_id'],
+                'AfType': q['tipo_af_des_af'],
+                'AfScope': q['ambito_des_af'],
+
             })
         return af_choices
 
-
     @staticmethod
-    def to_dict_elective_courses(query, req_lang='en'):
-        elective_courses = []
+    def to_dict_af_fil_and(query, req_lang='en'):
+        fil_and = []
         for q in query:
-            elective_courses.append({
-                'AfId': q['af_gen_id'],
-                'AfCod': q['af_gen_cod'],
-                'AfDescription': q['des'] if req_lang == 'it' or q['af_gen_des_eng'] is None else q['af_gen_des_eng'],
-                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso'],
-                'SettCod': q['sett_cod'],
-                'SettDes': q['sett_des'],
-                'Peso': q['peso'],
-
-            })
-        return elective_courses
-
-    @staticmethod
-    def to_dict_elective_courses_v2(query, req_lang='en'):
-        elective_courses = []
-        for q in query:
-            elective_courses.append({
+            fil_and.append({
+                'FilAndId': q['sce_fil_and_id'],
                 'SceId': q['sce_id'],
-                'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso_af'],
-                'AfDescription': q['af_gen_des'],
-                'CycleDes': q['ciclo_des'],
+                'FilOrId': q['sce_fil_or_id'],
+                'FilOrDes': q['sce_fil_or_des'],
+                'TipoFiltroCod': q['tipo_filtro_cod'],
+                'TipoFiltroDes': q['tipo_filtro_des'],
+                'CdsSceFilAndId': q['cds_sce_fil_and_id'],
+                'CdsSceFilAndCod': q['cds_sce_fil_and_cod'],
+                'CdsSceFilAndNome': q['cds_sce_fil_and_nome'],
+                'NotFlg': q['not_flg'],
 
             })
-        return elective_courses
+        return fil_and
 
+
+    # @staticmethod
+    # def to_dict_elective_courses(query, req_lang='en'):
+    #     elective_courses = []
+    #     for q in query:
+    #         elective_courses.append({
+    #             'AfId': q['af_gen_id'],
+    #             'AfCod': q['af_gen_cod'],
+    #             'AfDescription': q['des'] if req_lang == 'it' or q['af_gen_des_eng'] is None else q['af_gen_des_eng'],
+    #             'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso'],
+    #             'SettCod': q['sett_cod'],
+    #             'SettDes': q['sett_des'],
+    #             'Peso': q['peso'],
+    #
+    #         })
+    #     return elective_courses
 
 
 class CdSStudyPlansSerializer(CreateUpdateAbstract):

@@ -556,6 +556,10 @@ LABEL_MAPPING = {
         'ElectiveCourses': 'Elective Courses',
         'TeachingSystem': 'Teaching system',
         'TeachingSystemYear': 'Teaching system year',
+        'Required': 'Required',
+        'Choices': 'Choices',
+        'FilAnd': 'FilAnd',
+        'NotFlg': 'Not Flag'
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -1113,6 +1117,10 @@ LABEL_MAPPING = {
         'TypeUmRegsceCod': 'Regolamento UM Scelta COD',
         'VinSceDes': 'Descrizione Vincolo',
         'VinId': 'ID Vincolo',
-        'ElectiveCourses': 'Corsi a scelta'
+        'ElectiveCourses': 'Corsi a scelta',
+        'Required': 'Required',
+        'Choices': 'Choices',
+        'FilAnd': 'FilAnd',
+        'NotFlg': 'Not Flag'
     }
 }
