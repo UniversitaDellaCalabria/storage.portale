@@ -1,3 +1,7 @@
+import datetime
+
+from django.utils import timezone
+
 from rest_framework import generics, permissions, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.filters import OrderingFilter
@@ -6,12 +10,15 @@ from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.views import APIView
 
+from . filters import *
+from . models import DidatticaTestiRegolamento, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio
+from . pagination import UnicalStorageApiPaginationList
+from . serializers import *
+from . services import *
 
-from .filters import *
-from .models import DidatticaTestiRegolamento, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio
-from .serializers import *
-from .services import *
-from .pagination import UnicalStorageApiPaginationList
+# University Planner utils
+from . up.serializers import *
+from . up.services import *
 
 ### useful for storage backend only ###
 from organizational_area.models import OrganizationalStructureOfficeEmployee
@@ -22,8 +29,7 @@ from crud.utils.settings import *
 # allow authenticated users to perform any request. Requests for
 # unauthorised users will only be permitted if the request method is
 # one of the "safe" methods; GET, HEAD or OPTIONS
-from .utils import encode_labels, encrypt, decrypt
-
+from . utils import encode_labels, encrypt, decrypt
 
 
 class ApiEndpointList(generics.ListAPIView):
@@ -1376,3 +1382,22 @@ class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
         regdid = self.request.query_params.get('regdid')
 
         return ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year, regdid)
+
+
+class ApiCdsWebsiteTimetable(APIView):
+    allowed_methods = ('GET',)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.language = None
+
+    def get(self, obj, **kwargs):
+        cds_cod = self.kwargs['cdswebsitecod']
+        year = self.request.query_params.get('year', 1)
+        cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
+        if cds:
+            # impegni = getImpegni(self.request, cds[0]['aa'], cds_cod)
+            impegni = getImpegni(self.request, 2022, cds_cod)
+            impegni_json = impegniSerializer(impegni, int(year))
+            return Response(impegni_json)
+        return Response({})

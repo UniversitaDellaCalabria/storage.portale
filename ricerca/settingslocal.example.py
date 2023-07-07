@@ -364,3 +364,10 @@ UNICMS_WEBPATH_API_URL = UNICMS_ROOT_URL + '/api/webpaths/{}/?format=json'
 
 UNICMS_OBJECT_API = {'Publication': UNICMS_PUBLICATION_API_URL,
                      'WebPath': UNICMS_WEBPATH_API_URL}
+
+
+# University Planner
+KEY_API_UP =''
+UTENTE_API_UP =''
+PASSWORD_API_UP =''
+URL_UP_API = 'https://unical.prod.up.cineca.it/api/'
