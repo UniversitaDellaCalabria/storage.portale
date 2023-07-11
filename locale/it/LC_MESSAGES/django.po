@@ -99,7 +99,24 @@ msgstr "Responsabile"
 msgid "Coordinator"
 msgstr "Coordinatore"
 
-#: crud/cds/forms.py:44 crud/cds/templates/cds_other_data.html:94
+#: crud/cds/views.py:271
+msgid "Deputy coordinator"
+msgstr "Vice-coordinatore"
+
+#: crud/cds/forms.py:45 crud/cds/templates/cds_detail.html:95
+msgid "Number of seats"
+msgstr "Numero di posti"
+
+#: crud/cds/forms.py:46 crud/cds/templates/cds_detail.html:99
+msgid "Registration procedure"
+msgstr "Modalità di iscrizione"
+
+#: crud/cds/forms.py:47 crud/cds/templates/cds_detail.html:103
+msgid "Study manifesto"
+msgstr "Manifesto degli studi"
+
+#: crud/cds/forms.py:48 crud/cds/templates/cds_detail.html:115
+=======
 #: crud/cds/views.py:272
 msgid "Deputy coordinator"
 msgstr "Vice-coordinatore"

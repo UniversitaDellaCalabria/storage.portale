@@ -55,6 +55,29 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                                  .first()
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(
         cds_id=regdid.cds.pk)
+    
+    # dati gruppi cds
+    gruppi_cds_data = DidatticaCdsGruppi.objects.filter(
+        id_didattica_cds=regdid.cds.pk, visibile=True)
+    
+    # dati gruppi dipartimento
+    gruppi_dip_data = DidatticaDipartimentoGruppi.objects.filter(
+        id_didattica_dipartimento=regdid.cds.dip.pk, visibile=True)
+    
+    # dizionario chiave-valore
+    gruppi_cds = {}    
+    for gruppo in gruppi_cds_data:
+        gruppi_cds_componenti = DidatticaCdsGruppiComponenti.objects.filter(
+            id_didattica_cds_gruppi=gruppo, visibile=True)
+        gruppi_cds[gruppo.pk] = gruppi_cds_componenti
+    
+
+    gruppi_dip = {}    
+    for gruppo in gruppi_dip_data:
+        gruppi_dip_componenti = DidatticaDipartimentoGruppiComponenti.objects.filter(
+            id_didattica_dipartimento_gruppi=gruppo, visibile=True)
+        gruppi_dip[gruppo.pk] = gruppi_dip_componenti
+
 
     logs_regdid = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(regdid).pk,
                                           object_id=regdid.pk)
@@ -73,7 +96,11 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                    'logs_cds': logs_cds,
                    'other_data': other_data,
                    'office_data': office_data,
-                   'regdid': regdid, })
+                   'regdid': regdid, 
+                   'gruppi_cds_data': gruppi_cds_data,
+                   'gruppi_dip_data': gruppi_dip_data,
+                   'gruppi_cds': gruppi_cds,
+                   'gruppi_dip': gruppi_dip})
 
 
 @login_required

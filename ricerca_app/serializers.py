@@ -77,6 +77,16 @@ class CdSSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
+        cds_organizations_data = None
+        cds_organization_members = None
+        if query["CdsOrganizations"] is not None:
+            cds_organization_members = CdSSerializer.to_dict_cds_organization_members(
+                query["CdsOrganizationMembers"])
+            cds_organizations_data = CdSSerializer.to_dict_cds_organizations_data(
+                query["CdsOrganizations"], cds_organization_members)            
+
+
+
         regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
         ordinamento_didattico = regdid.get_ordinamento_didattico()
 
@@ -108,7 +118,8 @@ class CdSSerializer(CreateUpdateAbstract):
             'TeachingSystem': build_media_path(ordinamento_didattico[1]) if ordinamento_didattico else None,
             'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
-            'OfficesData': offices_data
+            'OfficesData': offices_data,
+            'CdsOrganizations': cds_organizations_data
         }
 
     @staticmethod
@@ -141,6 +152,36 @@ class CdSSerializer(CreateUpdateAbstract):
                 'OnlineCounter': q['sportello_online'],
             })
         return data
+
+    @staticmethod
+    def to_dict_cds_organizations_data(query, cds_organization_members):
+        data = []
+        for q in query:
+            data.append({
+                'Order': q['ordine'],
+                'id': q['id'],
+                'DescrBreveIt': q['descr_breve_it'],
+                'DescrBreveIt': q['descr_breve_en'],
+                'DescrLungaIt': q['descr_lunga_it'],
+                'DescrLungaEn': q['descr_lunga_en'],
+                'Members': cds_organization_members,
+            })
+        return data
+
+
+    @staticmethod
+    def to_dict_cds_organization_members(query):
+        data = []
+        for q in query:
+            data.append({
+                'Order': q['ordine'],
+                'id': q['id'],
+                'Matricola': q['matricola'],
+                'Cognome': q['cognome'],
+                'Nome': q['nome'],
+            })
+        return data
+    
 
 
 class CdsInfoSerializer(CreateUpdateAbstract):
@@ -185,6 +226,15 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
+        cds_organizations_data = None
+        cds_organization_members = None
+        
+        if query["CdsOrganizations"] is not None:
+            cds_organization_members = CdsInfoSerializer.to_dict_cds_organization_members(
+                query["CdsOrganizationMembers"])
+            cds_organizations_data = CdsInfoSerializer.to_dict_cds_organizations_data(
+                query["CdsOrganizations"], cds_organization_members)  
+
         regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
         ordinamento_didattico = regdid.get_ordinamento_didattico()
 
@@ -228,6 +278,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
             'OfficesData': offices_data,
+            'CdsOrganizations': cds_organizations_data
         }
 
 
@@ -271,6 +322,36 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 'Floor': q['piano'],
                 'Timetables': q['orari'],
                 'OnlineCounter': q['sportello_online']
+            })
+        return data
+
+
+    @staticmethod
+    def to_dict_cds_organizations_data(query, cds_organization_members):
+        data = []
+        for q in query:
+            data.append({
+                'Order': q['ordine'],
+                'id': q['id'],
+                'DescrBreveIt': q['descr_breve_it'],
+                'DescrBreveIt': q['descr_breve_en'],
+                'DescrLungaIt': q['descr_lunga_it'],
+                'DescrLungaEn': q['descr_lunga_en'],
+                'Members': cds_organization_members,
+            })
+        return data
+
+
+    @staticmethod
+    def to_dict_cds_organization_members(query):
+        data = []
+        for q in query:
+            data.append({
+                'Order': q['ordine'],
+                'id': q['id'],
+                'Matricola': q['matricola'],
+                'Cognome': q['cognome'],
+                'Nome': q['nome'],
             })
         return data
 

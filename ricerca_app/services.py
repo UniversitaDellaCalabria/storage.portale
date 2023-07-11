@@ -23,7 +23,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
     SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
-    DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf
+    DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
+    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti
 from . serializers import StructuresSerializer
 
 
@@ -179,6 +180,30 @@ class ServiceDidatticaCds:
                 'orari',
                 'sportello_online'
             ).distinct()
+
+            #DidatticaCdsGruppi.objects.filter(id_didattica_cds=item['cds_id']).values(
+            item['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=item['cds_id']).values( 
+                'ordine',
+                'id',
+                'descr_breve_it',
+                'descr_breve_en',
+                'descr_lunga_it',
+                'descr_lunga_en'
+            ).distinct()
+
+            #cdsOrg = list(item['CdsOrganizations'])
+            #for co in cdsOrg:
+
+
+            item['CdsOrganizationMembers'] = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=1).values( 
+                'ordine',
+                'id',
+                'matricola',
+                'cognome',
+                'nome'
+            ).distinct()
+            
+
         return items
 
     @staticmethod
@@ -909,7 +934,6 @@ class ServiceDidatticaCds:
 
 
                 for s in schede:
-
                     obbl = DidatticaPianoSceltaSchePiano.objects.filter(
                             sche_piano_id__exact=s['sche_piano_id'],
                             tipo_sce_cod__exact='O'

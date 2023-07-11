@@ -285,6 +285,25 @@ class ApiCdSDetail(ApiEndpointDetail):
             'sportello_online'
         ).distinct()
 
+
+        res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id']).values( 
+            'ordine',
+            'id',
+            'descr_breve_it',
+            'descr_breve_en',
+            'descr_lunga_it',
+            'descr_lunga_en'
+        ).distinct()
+        
+        res[0]['CdsOrganizationMembers'] = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=1).values( 
+            'ordine',
+            'id',
+            'matricola',
+            'cognome',
+            'nome'
+        ).distinct()
+        
+
         return res
 
 
