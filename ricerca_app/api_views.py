@@ -262,7 +262,6 @@ class ApiCdSDetail(ApiEndpointDetail):
             'num_posti',
             'modalita_iscrizione',
             'manifesto_studi',
-            'regolamento_didattico'
             'regolamento_didattico',
             'ordinamento_didattico'
         ).distinct()
@@ -279,6 +278,25 @@ class ApiCdSDetail(ApiEndpointDetail):
             'orari',
             'sportello_online'
         ).distinct()
+
+
+        res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id']).values( 
+            'ordine',
+            'id',
+            'descr_breve_it',
+            'descr_breve_en',
+            'descr_lunga_it',
+            'descr_lunga_en'
+        ).distinct()
+        
+        res[0]['CdsOrganizationMembers'] = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=1).values( 
+            'ordine',
+            'id',
+            'matricola',
+            'cognome',
+            'nome'
+        ).distinct()
+        
 
         return res
 
