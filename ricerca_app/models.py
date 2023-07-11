@@ -3798,7 +3798,7 @@ class DidatticaCdsGruppi(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_GRUPPI'
-        ordering = ['ordine']
+        ordering = ('ordine',)
 
 
 class DidatticaCdsGruppiComponenti(models.Model):
@@ -3817,7 +3817,7 @@ class DidatticaCdsGruppiComponenti(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_GRUPPI_COMPONENTI'
-        ordering = ['ordine']
+        ordering = ('ordine',)
 
 
 class DidatticaDipartimentoGruppi(models.Model):
@@ -3835,7 +3835,7 @@ class DidatticaDipartimentoGruppi(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_DIPARTIMENTO_GRUPPI'
-        ordering = ['ordine']
+        ordering = ('ordine',)
 
 
 class DidatticaDipartimentoGruppiComponenti(models.Model):

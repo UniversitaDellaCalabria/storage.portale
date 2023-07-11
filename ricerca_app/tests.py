@@ -4585,6 +4585,7 @@ class ApiPatentDetailUnitTest(TestCase):
             "matricola_inventore": p,
             "cognomenome_origine": "garofalo"
         })
+
         url = reverse('ricerca:patentdetail', kwargs={'patentid': '1'})
 
         # check url

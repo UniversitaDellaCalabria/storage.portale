@@ -79,8 +79,8 @@
                             <td>
                                 {{ other_data.nome_origine_coordinatore|default:"-" }}
                                 {% if other_data.matricola_coordinatore %}
-                                <br>
-                                ({% trans "Link to" %}: {{ other_data.matricola_coordinatore|default:"-" }})
+                                    <br>
+                                    ({% trans "Link to" %}: {{ other_data.matricola_coordinatore|default:"-" }})
                                 {% endif %}
                             </td>
                         </tr>
@@ -89,8 +89,8 @@
                             <td>
                                 {{ other_data.nome_origine_vice_coordinatore|default:"-" }}
                                 {% if other_data.matricola_vice_coordinatore %}
-                                <br>
-                                ({% trans "Link to" %}: {{ other_data.matricola_vice_coordinatore|default:"-" }})
+                                    <br>
+                                    ({% trans "Link to" %}: {{ other_data.matricola_vice_coordinatore|default:"-" }})
                                 {% endif %}
                             </td>
                         </tr>
@@ -101,7 +101,6 @@
                         <tr>
                             <td><b>{% trans "Registration procedure" %}</b></td>
                             <td>{{ other_data.modalita_iscrizione|default:"-"|safe }}</td>
-
                         </tr>
                     </tbody>
                 </table>
