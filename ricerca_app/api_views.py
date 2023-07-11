@@ -286,7 +286,7 @@ class ApiCdSDetail(ApiEndpointDetail):
         ).distinct()
 
 
-        res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id']).values( 
+        res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id']).values(
             'ordine',
             'id',
             'descr_breve_it',
@@ -294,15 +294,16 @@ class ApiCdSDetail(ApiEndpointDetail):
             'descr_lunga_it',
             'descr_lunga_en'
         ).distinct()
-        
-        res[0]['CdsOrganizationMembers'] = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=1).values( 
-            'ordine',
-            'id',
-            'matricola',
-            'cognome',
-            'nome'
-        ).distinct()
-        
+
+        for organization in res[0]['CdsOrganizations']:
+            members = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=organization['id']).values(
+                'ordine',
+                'id',
+                'matricola',
+                'cognome',
+                'nome'
+            ).distinct()
+            organization['members'] = members
 
         return res
 

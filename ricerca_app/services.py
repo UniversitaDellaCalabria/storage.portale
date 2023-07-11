@@ -182,7 +182,7 @@ class ServiceDidatticaCds:
             ).distinct()
 
             #DidatticaCdsGruppi.objects.filter(id_didattica_cds=item['cds_id']).values(
-            item['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=item['cds_id']).values( 
+            item['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=item['cds_id']).values(
                 'ordine',
                 'id',
                 'descr_breve_it',
@@ -194,15 +194,24 @@ class ServiceDidatticaCds:
             #cdsOrg = list(item['CdsOrganizations'])
             #for co in cdsOrg:
 
+            for organization in item['CdsOrganizations']:
+                members = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=organization['id']).values(
+                    'ordine',
+                    'id',
+                    'matricola',
+                    'cognome',
+                    'nome'
+                ).distinct()
+                organization['members'] = members
 
-            item['CdsOrganizationMembers'] = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=1).values( 
-                'ordine',
-                'id',
-                'matricola',
-                'cognome',
-                'nome'
-            ).distinct()
-            
+            # item['CdsOrganizationMembers'] = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=1).values(
+                # 'ordine',
+                # 'id',
+                # 'matricola',
+                # 'cognome',
+                # 'nome'
+            # ).distinct()
+
 
         return items
 

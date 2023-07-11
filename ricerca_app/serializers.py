@@ -80,10 +80,10 @@ class CdSSerializer(CreateUpdateAbstract):
         cds_organizations_data = None
         cds_organization_members = None
         if query["CdsOrganizations"] is not None:
-            cds_organization_members = CdSSerializer.to_dict_cds_organization_members(
-                query["CdsOrganizationMembers"])
+            # cds_organization_members = CdSSerializer.to_dict_cds_organization_members(
+                # query["CdsOrganizationMembers"])
             cds_organizations_data = CdSSerializer.to_dict_cds_organizations_data(
-                query["CdsOrganizations"], cds_organization_members)            
+                query["CdsOrganizations"])
 
 
 
@@ -154,17 +154,17 @@ class CdSSerializer(CreateUpdateAbstract):
         return data
 
     @staticmethod
-    def to_dict_cds_organizations_data(query, cds_organization_members):
+    def to_dict_cds_organizations_data(query):
         data = []
         for q in query:
             data.append({
                 'Order': q['ordine'],
                 'id': q['id'],
                 'DescrBreveIt': q['descr_breve_it'],
-                'DescrBreveIt': q['descr_breve_en'],
+                'DescrBreveEn': q['descr_breve_en'],
                 'DescrLungaIt': q['descr_lunga_it'],
                 'DescrLungaEn': q['descr_lunga_en'],
-                'Members': cds_organization_members,
+                'Members': CdSSerializer.to_dict_cds_organization_members(q['members']),
             })
         return data
 
@@ -181,7 +181,7 @@ class CdSSerializer(CreateUpdateAbstract):
                 'Nome': q['nome'],
             })
         return data
-    
+
 
 
 class CdsInfoSerializer(CreateUpdateAbstract):
@@ -228,12 +228,12 @@ class CdsInfoSerializer(CreateUpdateAbstract):
 
         cds_organizations_data = None
         cds_organization_members = None
-        
+
         if query["CdsOrganizations"] is not None:
-            cds_organization_members = CdsInfoSerializer.to_dict_cds_organization_members(
-                query["CdsOrganizationMembers"])
+            # cds_organization_members = CdsInfoSerializer.to_dict_cds_organization_members(
+                # query["CdsOrganizationMembers"])
             cds_organizations_data = CdsInfoSerializer.to_dict_cds_organizations_data(
-                query["CdsOrganizations"], cds_organization_members)  
+                query["CdsOrganizations"])
 
         regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
         ordinamento_didattico = regdid.get_ordinamento_didattico()
@@ -327,17 +327,17 @@ class CdsInfoSerializer(CreateUpdateAbstract):
 
 
     @staticmethod
-    def to_dict_cds_organizations_data(query, cds_organization_members):
+    def to_dict_cds_organizations_data(query):
         data = []
         for q in query:
             data.append({
                 'Order': q['ordine'],
                 'id': q['id'],
                 'DescrBreveIt': q['descr_breve_it'],
-                'DescrBreveIt': q['descr_breve_en'],
+                'DescrBreveEn': q['descr_breve_en'],
                 'DescrLungaIt': q['descr_lunga_it'],
                 'DescrLungaEn': q['descr_lunga_en'],
-                'Members': cds_organization_members,
+                'Members': CdsInfoSerializer.to_dict_cds_organization_members(q['members']),
             })
         return data
 
