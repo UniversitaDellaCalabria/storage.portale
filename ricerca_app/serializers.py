@@ -423,7 +423,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
                 'StudentOrder': q['ordine'],
                 'StudentProfile': q['profilo_it'] if req_lang == 'it' or q['profilo_en'] is None else q['profilo_en'],
                 'StudentLink': q['link_it'] if req_lang == 'it' or q['link_en'] is None else q['link_en'],
-                'StudentPhoto': q['foto']
+                'StudentPhoto': build_media_path(q['foto']) if q['foto'] else None
             })
         return ex_students
 

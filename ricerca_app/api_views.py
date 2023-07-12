@@ -286,7 +286,7 @@ class ApiCdSDetail(ApiEndpointDetail):
         ).distinct()
 
 
-        res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id']).values(
+        res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id']).values( 
             'ordine',
             'id',
             'descr_breve_it',
