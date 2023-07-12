@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='sitowebcdsarticoliregaltridati',
-            name='id_user_mod',
-            field=models.ForeignKey(blank=True, db_column='ID_USER_MOD', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL),
-        ),
+        # migrations.AlterField(
+            # model_name='sitowebcdsarticoliregaltridati',
+            # name='id_user_mod',
+            # field=models.ForeignKey(blank=True, db_column='ID_USER_MOD', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL),
+        # ),
         migrations.AlterField(
             model_name='sitowebcdsarticoliregolamento',
             name='id_user_mod',
@@ -28,11 +28,11 @@ class Migration(migrations.Migration):
             name='id_user_mod',
             field=models.ForeignKey(blank=True, db_column='ID_USER_MOD', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL),
         ),
-        migrations.AlterField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='id_user_mod',
-            field=models.IntegerField(blank=True, db_column='ID_USER_MOD', null=True),
-        ),
+        # migrations.AlterField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='id_user_mod',
+            # field=models.IntegerField(blank=True, db_column='ID_USER_MOD', null=True),
+        # ),
         migrations.AlterField(
             model_name='sitowebcdstopic',
             name='id_user_mod',

@@ -22,7 +22,9 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
-    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
+    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, \
+    SitoWebCdsTopicArticoliRegAltriDati, \
+    SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
     DidatticaCdsGruppi, DidatticaCdsGruppiComponenti
 from . serializers import StructuresSerializer
@@ -848,21 +850,6 @@ class ServiceDidatticaCds:
                 # .order_by('id_sito_web_cds_articoli_regolamento')
                 q['Articles'] = article
 
-                if article:
-                    other_data = SitoWebCdsArticoliRegAltriDati.objects.filter(
-                            id_sito_web_cds_articoli_regolamento=article['id']
-                        ).values(
-                            'id',
-                            'ordine',
-                            'titolo_en',
-                            'titolo_it',
-                            'testo_it',
-                            'testo_en',
-                            'visibile'
-                        ).order_by('ordine')
-
-                    article['OtherData'] = other_data if other_data else []
-
                 unicms_object = SitoWebCdsOggettiPortale.objects.filter(
                     id__exact=q['id_sito_web_cds_oggetti_portale']).values(
                     'id',
@@ -878,20 +865,19 @@ class ServiceDidatticaCds:
 
                 q['CdsObjects'] = unicms_object
 
-                if unicms_object:
-                    other_data = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
-                            id_sito_web_cds_oggetti_portale=unicms_object['id']
-                        ).values(
-                            'id',
-                            'ordine',
-                            'titolo_it',
-                            'titolo_en',
-                            'testo_it',
-                            'testo_en',
-                            'visibile'
-                        ).order_by('ordine')
+                other_data = SitoWebCdsTopicArticoliRegAltriDati.objects.filter(
+                        id_sito_web_cds_topic_articoli_reg=q['id']
+                    ).values(
+                        'id',
+                        'ordine',
+                        'titolo_en',
+                        'titolo_it',
+                        'testo_it',
+                        'testo_en',
+                        'visibile'
+                    ).order_by('ordine')
 
-                    unicms_object['OtherData'] = other_data if other_data else []
+                q['OtherData'] = other_data if other_data else []
 
             return query
         return {}

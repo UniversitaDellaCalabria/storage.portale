@@ -33,25 +33,25 @@ class Migration(migrations.Migration):
                 'managed': True,
             },
         ),
-        migrations.CreateModel(
-            name='SitoWebCdsArticoliRegAltriDati',
-            fields=[
-                ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
-                ('ordine', models.PositiveIntegerField(db_column='ORDINE')),
-                ('titolo_en', models.CharField(blank=True, db_column='TITOLO_EN', max_length=1000, null=True)),
-                ('titolo_it', models.CharField(blank=True, db_column='TITOLO_IT', max_length=1000, null=True)),
-                ('testo_it', models.TextField(db_column='TESTO_IT')),
-                ('testo_en', models.TextField(blank=True, db_column='TESTO_EN', null=True)),
-                ('stato', models.CharField(db_column='STATO', max_length=100)),
-                ('dt_mod', models.DateField(db_column='DT_MOD')),
-                ('id_sito_web_cds_articoli_regolamento', models.ForeignKey(db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsarticoliregolamento')),
-                ('id_user_mod', models.ForeignKey(blank=True, db_column='ID_USER_MOD', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'db_table': 'SITO_WEB_CDS_ARTICOLI_REG_ALTRI_DATI',
-                'managed': True,
-            },
-        ),
+        # migrations.CreateModel(
+            # name='SitoWebCdsArticoliRegAltriDati',
+            # fields=[
+                # ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
+                # ('ordine', models.PositiveIntegerField(db_column='ORDINE')),
+                # ('titolo_en', models.CharField(blank=True, db_column='TITOLO_EN', max_length=1000, null=True)),
+                # ('titolo_it', models.CharField(blank=True, db_column='TITOLO_IT', max_length=1000, null=True)),
+                # ('testo_it', models.TextField(db_column='TESTO_IT')),
+                # ('testo_en', models.TextField(blank=True, db_column='TESTO_EN', null=True)),
+                # ('stato', models.CharField(db_column='STATO', max_length=100)),
+                # ('dt_mod', models.DateField(db_column='DT_MOD')),
+                # ('id_sito_web_cds_articoli_regolamento', models.ForeignKey(db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsarticoliregolamento')),
+                # ('id_user_mod', models.ForeignKey(blank=True, db_column='ID_USER_MOD', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
+            # ],
+            # options={
+                # 'db_table': 'SITO_WEB_CDS_ARTICOLI_REG_ALTRI_DATI',
+                # 'managed': True,
+            # },
+        # ),
         migrations.CreateModel(
             name='SitoWebCdsTopicArticoliReg',
             fields=[
@@ -62,6 +62,7 @@ class Migration(migrations.Migration):
                 ('dt_mod', models.DateField(db_column='DT_MOD')),
                 ('id_user_mod', models.IntegerField(db_column='ID_USER_MOD')),
                 ('id_sito_web_cds_articoli_regolamento', models.ForeignKey(db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsarticoliregolamento')),
+                ('id_sito_web_cds_oggetti_portale', models.ForeignKey(blank=True, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsoggettiportale')),
                 ('id_sito_web_cds_topic', models.ForeignKey(db_column='ID_SITO_WEB_CDS_TOPIC', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdstopic')),
             ],
             options={

@@ -541,7 +541,8 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
             'Visible': query['visibile'],
             'Order': query['ordine'],
             'CdsArticle': article,
-            'CdsObject': unicms_object
+            'CdsObject': unicms_object,
+            'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(query.get('OtherData', []), req_lang),
         }
 
 
@@ -556,7 +557,6 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'Visible': q['visibile'],
                 'YearRegDidID': q['aa_regdid_id'],
                 'CdSCod': q['cds_id__cds_cod'],
-                'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q.get('OtherData', []), req_lang),
             }
 
 
@@ -577,7 +577,6 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'Object': json.loads(unicms_object._content) if unicms_object else None,
                 'ClassObjectId': q['id_classe_oggetto_portale'],
                 'ObjectText': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
-                'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q.get('OtherData', []), req_lang),
             }
 
 
