@@ -29,7 +29,9 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
     DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest, DocentePtaMaterialeDidatticoUnitTest, \
     DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest, \
-    SitoWebCdsArticoliRegAltriDatiUnitTest, SitoWebCdsOggettiPortaleAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
+    # SitoWebCdsArticoliRegAltriDatiUnitTest, SitoWebCdsOggettiPortaleAltriDatiUnitTest,
+    SitoWebCdsTopicArticoliRegAltriDatiUnitTest,
+    SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
     DidatticaPianoRegolamentoUnitTest, DidatticaPianoScheUnitTest, DidatticaPianoSceltaSchePianoUnitTest, DidatticaPianoSceltaVincoliUnitTest, DidatticaAmbitiUnitTest, \
     DidatticaPianoSceltaAfUnitTest
 from .serializers import CreateUpdateAbstract
@@ -6044,7 +6046,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 
         })
 
-        SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+        ar1 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
             'id': 1,
             'titolo_it': 'Prova',
             'titolo_en': 'Test',
@@ -6068,21 +6070,35 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 
         })
 
-        SitoWebCdsArticoliRegAltriDatiUnitTest.create_sitoWebCdsArticoliRegAltriDati(**{
-            'id': 1,
-            'id_sito_web_cds_articoli_regolamento': a1,
-            'ordine': 0,
-            'titolo_en': 'Title',
-            'titolo_it': 'Titolo',
-            'testo_en': 'Text',
-            'testo_it': 'Testo',
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today(),
+        # SitoWebCdsArticoliRegAltriDatiUnitTest.create_sitoWebCdsArticoliRegAltriDati(**{
+            # 'id': 1,
+            # 'id_sito_web_cds_articoli_regolamento': a1,
+            # 'ordine': 0,
+            # 'titolo_en': 'Title',
+            # 'titolo_it': 'Titolo',
+            # 'testo_en': 'Text',
+            # 'testo_it': 'Testo',
+            # 'visibile': 0,
+            # 'dt_mod': datetime.datetime.today(),
 
-        })
-        SitoWebCdsOggettiPortaleAltriDatiUnitTest.create_sitoWebCdsOggettiPortaleAltriDati(**{
+        # })
+        # SitoWebCdsOggettiPortaleAltriDatiUnitTest.create_sitoWebCdsOggettiPortaleAltriDati(**{
+            # 'id': 1,
+            # 'id_sito_web_cds_oggetti_portale': o1,
+            # 'titolo_it': 'prova',
+            # 'titolo_en': 'test',
+            # 'testo_it': 'prova',
+            # 'testo_en': 'test',
+            # 'ordine': 1,
+            # 'visibile': 1,
+            # 'dt_mod': datetime.datetime.today(),
+
+        # })
+
+
+        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
             'id': 1,
-            'id_sito_web_cds_oggetti_portale': o1,
+            'id_sito_web_cds_topic_articoli_reg': ar1,
             'titolo_it': 'prova',
             'titolo_en': 'test',
             'testo_it': 'prova',

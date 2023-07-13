@@ -36,10 +36,10 @@ class Migration(migrations.Migration):
         migrations.DeleteModel(
             name='SitoWebCdsTipologiaArticolo',
         ),
-        migrations.RemoveField(
-            model_name='sitowebcdsarticoliregaltridati',
-            name='stato',
-        ),
+        # migrations.RemoveField(
+            # model_name='sitowebcdsarticoliregaltridati',
+            # name='stato',
+        # ),
         migrations.RemoveField(
             model_name='sitowebcdsarticoliregolamento',
             name='contenuto_en',
@@ -60,26 +60,26 @@ class Migration(migrations.Migration):
             model_name='sitowebcdsarticoliregolamento',
             name='titolo_it',
         ),
-        migrations.RemoveField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='aa_regdid_id',
-        ),
-        migrations.RemoveField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='id_classe_oggetto_portale',
-        ),
-        migrations.RemoveField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='id_oggetto_portale',
-        ),
-        migrations.RemoveField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='id_sito_web_cds_articoli_regolamento',
-        ),
-        migrations.RemoveField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='stato',
-        ),
+        # migrations.RemoveField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='aa_regdid_id',
+        # ),
+        # migrations.RemoveField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='id_classe_oggetto_portale',
+        # ),
+        # migrations.RemoveField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='id_oggetto_portale',
+        # ),
+        # migrations.RemoveField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='id_sito_web_cds_articoli_regolamento',
+        # ),
+        # migrations.RemoveField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='stato',
+        # ),
         migrations.RemoveField(
             model_name='sitowebcdstopic',
             name='num_articolo',
@@ -96,12 +96,12 @@ class Migration(migrations.Migration):
             model_name='sitowebcdstopicarticolireg',
             name='topic_cod',
         ),
-        migrations.AddField(
-            model_name='sitowebcdsarticoliregaltridati',
-            name='visibile',
-            field=models.IntegerField(db_column='VISIBILE', default=0),
-            preserve_default=False,
-        ),
+        # migrations.AddField(
+            # model_name='sitowebcdsarticoliregaltridati',
+            # name='visibile',
+            # field=models.IntegerField(db_column='VISIBILE', default=0),
+            # preserve_default=False,
+        # ),
         migrations.AddField(
             model_name='sitowebcdsarticoliregolamento',
             name='testo_en',
@@ -130,18 +130,18 @@ class Migration(migrations.Migration):
             field=models.IntegerField(db_column='VISIBILE', default=0),
             preserve_default=False,
         ),
-        migrations.AddField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='tipo_dato',
-            field=models.CharField(db_column='TIPO_DATO', default='', max_length=100),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='visibile',
-            field=models.IntegerField(db_column='VISIBILE', default=0),
-            preserve_default=False,
-        ),
+        # migrations.AddField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='tipo_dato',
+            # field=models.CharField(db_column='TIPO_DATO', default='', max_length=100),
+            # preserve_default=False,
+        # ),
+        # migrations.AddField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='visibile',
+            # field=models.IntegerField(db_column='VISIBILE', default=0),
+            # preserve_default=False,
+        # ),
         migrations.AddField(
             model_name='sitowebcdstopic',
             name='visibile',
@@ -165,26 +165,26 @@ class Migration(migrations.Migration):
             field=models.IntegerField(db_column='VISIBILE', default=0),
             preserve_default=False,
         ),
-        migrations.AlterField(
-            model_name='sitowebcdsarticoliregaltridati',
-            name='id_user_mod',
-            field=models.ForeignKey(db_column='ID_USER_MOD', on_delete=django.db.models.deletion.DO_NOTHING, to='accounts.user'),
-        ),
+        # migrations.AlterField(
+            # model_name='sitowebcdsarticoliregaltridati',
+            # name='id_user_mod',
+            # field=models.ForeignKey(db_column='ID_USER_MOD', on_delete=django.db.models.deletion.DO_NOTHING, to='accounts.user'),
+        # ),
         migrations.AlterField(
             model_name='sitowebcdsarticoliregolamento',
             name='id_user_mod',
             field=models.ForeignKey(db_column='ID_USER_MOD', on_delete=django.db.models.deletion.DO_NOTHING, to='accounts.user'),
         ),
-        migrations.AlterField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='id_user_mod',
-            field=models.IntegerField(db_column='ID_USER_MOD'),
-        ),
-        migrations.AlterField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='ordine',
-            field=models.PositiveIntegerField(db_column='ORDINE'),
-        ),
+        # migrations.AlterField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='id_user_mod',
+            # field=models.IntegerField(db_column='ID_USER_MOD'),
+        # ),
+        # migrations.AlterField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='ordine',
+            # field=models.PositiveIntegerField(db_column='ORDINE'),
+        # ),
         migrations.AlterField(
             model_name='sitowebcdstopic',
             name='dt_mod',
@@ -205,15 +205,15 @@ class Migration(migrations.Migration):
             name='id_user_mod',
             field=models.IntegerField(db_column='ID_USER_MOD'),
         ),
-        migrations.AddField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='id_sito_web_cds_oggetti_portale',
-            field=models.ForeignKey(db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', default=0, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsoggettiportale'),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='sitowebcdstopicarticolireg',
-            name='id_sito_web_cds_oggetti_portale',
-            field=models.ForeignKey(blank=True, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsoggettiportale'),
-        ),
+        # migrations.AddField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='id_sito_web_cds_oggetti_portale',
+            # field=models.ForeignKey(db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', default=0, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsoggettiportale'),
+            # preserve_default=False,
+        # ),
+        # migrations.AddField(
+            # model_name='sitowebcdstopicarticolireg',
+            # name='id_sito_web_cds_oggetti_portale',
+            # field=models.ForeignKey(blank=True, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsoggettiportale'),
+        # ),
     ]
