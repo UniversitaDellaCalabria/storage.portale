@@ -6116,6 +6116,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
     def test_apisitiwebcdsstudyplans(self):
         req = Client()
+
         cds1 = DidatticaCdsUnitTest.create_didatticaCds(**{
             'tipo_corso_cod': 'L',
             'area_cds': 'scienze',
@@ -6208,6 +6209,32 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
 
         })
 
+        af2 = DidatticaPianoSceltaAfUnitTest.create_didatticaPianoSceltaAf(**{
+            'sce_id': 2,
+            'anno_corso_af': 2022,
+            'ciclo_des': 'Prova',
+            'af_gen_des': 'Prova',
+            'af_id': 1,
+            'tipo_af_des_af': 'Contenuto',
+            'ambito_des_af': 'Test',
+            'sett_cod': 'Content',
+            'peso': 6,
+
+        })
+
+        af3 = DidatticaPianoSceltaAfUnitTest.create_didatticaPianoSceltaAf(**{
+            'sce_id': 3,
+            'anno_corso_af': 2022,
+            'ciclo_des': 'Prova',
+            'af_gen_des': 'Prova',
+            'af_id': 2,
+            'tipo_af_des_af': 'Contenuto',
+            'ambito_des_af': 'Test',
+            'sett_cod': 'Content',
+            'peso': 6,
+
+        })
+
         da1 = DidatticaAmbitiUnitTest.create_didatticaAmbiti(**{
             'amb_id': 1
         })
@@ -6260,6 +6287,37 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             'sett_cod': 'Sem',
             'sett_des': 'Semestere',
             'peso': 6,
+            'fat_part_stu_cod': 'AA',
+
+        })
+
+        daf2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 2,
+            'amb_id': 2,
+            'af_gen_id': 2,
+            'af_gen_cod': 'AAA',
+            'des': 'Prova',
+            'af_gen_des_eng': 'Test',
+            'anno_corso': 1,
+            'sett_cod': 'Sem',
+            'sett_des': 'Semestere',
+            'peso': 6,
+            'fat_part_stu_cod': 'AA',
+
+        })
+
+        daf2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 3,
+            'amb_id': 3,
+            'af_gen_id': 3,
+            'af_gen_cod': 'AAA',
+            'des': 'Prova',
+            'af_gen_des_eng': 'Test',
+            'anno_corso': 1,
+            'sett_cod': 'Sem',
+            'sett_des': 'Semestere',
+            'peso': 6,
+            'fat_part_stu_cod': 'AA',
 
         })
 
@@ -6278,4 +6336,5 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
 
         data = {'cds_cod': '1', 'year': 2022}
         res = req.get(url, data=data)
+        print(res.json())
         assert len(res.json()['results']) == 1

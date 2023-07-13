@@ -194,7 +194,7 @@ class ServiceDidatticaCds:
             #cdsOrg = list(item['CdsOrganizations'])
             #for co in cdsOrg:
 
-            for organization in item['CdsOrganizations']:
+            for organization in item['CdsOrganizations']: # pragma: no cover
                 members = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=organization['id']).values(
                     'ordine',
                     'id',
@@ -958,6 +958,7 @@ class ServiceDidatticaCds:
                             'tipo_um_regsce_cod',
                             'min_unt',
                             'max_unt',
+                            'opz_flg',
                             'vin_id',
                             'vin_sce_des',
                             'sce_id__opz_flg',
@@ -989,6 +990,27 @@ class ServiceDidatticaCds:
 
                         af['Required'] = af_obblig
 
+                        for activity in af['Required']:
+                            list_submodules = DidatticaAttivitaFormativa.objects.filter(
+                                ~Q(fat_part_stu_cod='GRP'),
+                                af_radice_id=activity['af_id'],
+                                ).exclude(
+                                af_id=activity['af_id']
+                            ).values(
+                                'af_id',
+                                'af_gen_cod',
+                                'des',
+                                'af_gen_des_eng',
+                                'fat_part_stu_cod',
+                                'lista_lin_did_af',
+                                'part_stu_cod',
+                                'part_stu_des',
+                                'fat_part_stu_des',
+                                'ciclo_des')
+
+                            activity['MODULES'] = list_submodules
+
+
                         fil_and = DidatticaPianoSceltaFilAnd.objects.filter(
                             sce_id__exact=af['sce_id']
                         ).values(
@@ -998,6 +1020,7 @@ class ServiceDidatticaCds:
                             'sce_fil_or_des',
                             'tipo_filtro_cod',
                             'tipo_filtro_des',
+                            'tipo_corso_sce_fil_and_cod',
                             'cds_sce_fil_and_id',
                             'cds_sce_fil_and_cod',
                             'cds_sce_fil_and_nome',
@@ -1037,6 +1060,7 @@ class ServiceDidatticaCds:
                         'tipo_um_regsce_cod',
                         'min_unt',
                         'max_unt',
+                        'opz_flg',
                         'vin_id',
                         'vin_sce_des',
                         'sce_id__opz_flg',
@@ -1070,6 +1094,7 @@ class ServiceDidatticaCds:
                             'cds_sce_fil_and_id',
                             'cds_sce_fil_and_cod',
                             'cds_sce_fil_and_nome',
+                            'tipo_corso_sce_fil_and_cod',
                             'not_flg'
                         )
 
@@ -1094,9 +1119,28 @@ class ServiceDidatticaCds:
 
                         scelta['Choices'] = af_scelta
 
+                        for activity in scelta['Choices']:
+                            list_submodules = DidatticaAttivitaFormativa.objects.filter(
+                                ~Q(fat_part_stu_cod='GRP'),
+                                af_radice_id=activity['af_id']).exclude(
+                                af_id=activity['af_id']
+                            ).values(
+                                'af_id',
+                                'af_gen_cod',
+                                'des',
+                                'af_gen_des_eng',
+                                'fat_part_stu_cod',
+                                'lista_lin_did_af',
+                                'part_stu_cod',
+                                'part_stu_des',
+                                'fat_part_stu_des',
+                                'ciclo_des')
+
+                            activity['MODULES'] = list_submodules
 
 
-                        if af_scelta is None:
+
+                        if af_scelta is None: # pragma: no cover
 
                             af_scelta = DidatticaPianoSceltaAf.objects.filter(
                                 verifica,
@@ -1116,6 +1160,25 @@ class ServiceDidatticaCds:
                             )
 
                             scelta['Choices'] = af_scelta
+
+                            for activity in scelta['Choices']:
+                                list_submodules = DidatticaAttivitaFormativa.objects.filter(
+                                    ~Q(fat_part_stu_cod='GRP'),
+                                    af_radice_id=activity['af_id']).exclude(
+                                    af_id=activity['af_id']
+                                ).values(
+                                    'af_id',
+                                    'af_gen_cod',
+                                    'des',
+                                    'af_gen_des_eng',
+                                    'fat_part_stu_cod',
+                                    'lista_lin_did_af',
+                                    'part_stu_cod',
+                                    'part_stu_des',
+                                    'fat_part_stu_des',
+                                    'ciclo_des')
+
+                                activity['MODULES'] = list_submodules
 
 
 

@@ -662,6 +662,14 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'SceDes': q['sce_des'],
                 'VinId': q['vin_id'],
                 'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] else q['anno_corso'],
+                'RegSceCodType': q['tipo_regsce_cod'],
+                'SceCodType': q['tipo_sce_cod'],
+                'SceDesType':q['tipo_sce_des'],
+                'RegSceCodDes': q['tipo_regsce_des'],
+                'UmRegSceCodType': q['tipo_um_regsce_cod'],
+                'MinUnt': q['min_unt'],
+                'MaxUnt': q['max_unt'],
+                'OpzFlg': q['opz_flg'],
                 'Required':  CdsWebsitesStudyPlansSerializer.to_dict_af_required(q.get('Required', []), req_lang),
                 'Choices': CdsWebsitesStudyPlansSerializer.to_dict_af_choices(q.get('Choices', []), req_lang),
                 'FilAnd': CdsWebsitesStudyPlansSerializer.to_dict_af_fil_and(q.get('FilAnd', []), req_lang),
@@ -685,6 +693,7 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'AfId': q['af_id'],
                 'AfType': q['tipo_af_des_af'],
                 'AfScope': q['ambito_des_af'],
+                'AfSubModules': CdsWebsitesStudyPlansSerializer.to_dict_af_submodules(q.get('MODULES', []), req_lang),
 
             })
         return af_required
@@ -705,9 +714,25 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'AfId': q['af_id'],
                 'AfType': q['tipo_af_des_af'],
                 'AfScope': q['ambito_des_af'],
-
+                'AfSubModules': CdsWebsitesStudyPlansSerializer.to_dict_af_submodules(q.get('MODULES', []), req_lang),
             })
         return af_choices
+
+    @staticmethod
+    def to_dict_af_submodules(query, req_lang='en'):
+        af_submodules = []
+        for q in query:
+            af_submodules.append({
+                'StudyActivityID': q['af_id'],
+                'StudyActivityCod': q['af_gen_cod'],
+                'StudyActivityName': q['des'] if req_lang == 'it' or q['af_gen_des_eng'] is None else q['af_gen_des_eng'],
+                'StudyActivitySemester': q['ciclo_des'],
+                'StudyActivityPartitionCod': q['part_stu_cod'],
+                'StudyActivityPartitionDescription': q['part_stu_des'],
+                'StudyActivityExtendedPartitionCod': q['fat_part_stu_cod'],
+                'StudyActivityExtendedPartitionDes': q['fat_part_stu_des'],
+            })
+        return af_submodules
 
     @staticmethod
     def to_dict_af_fil_and(query, req_lang='en'):
@@ -720,6 +745,7 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'FilOrDes': q['sce_fil_or_des'],
                 'TipoFiltroCod': q['tipo_filtro_cod'],
                 'TipoFiltroDes': q['tipo_filtro_des'],
+                'CourseTypeSceFilAndCod': q['tipo_corso_sce_fil_and_cod'],
                 'CdsSceFilAndId': q['cds_sce_fil_and_id'],
                 'CdsSceFilAndCod': q['cds_sce_fil_and_cod'],
                 'CdsSceFilAndNome': q['cds_sce_fil_and_nome'],

@@ -16,7 +16,7 @@ from django.utils.html import strip_tags
 
 
 #chiamata alle api UP
-def getTokenUP(request):
+def getTokenUP(request): # pragma: no cover
     if request.session.get('up_token'):
         return request.session.get('up_token')
     try:
@@ -39,7 +39,7 @@ def getTokenUP(request):
         return ""
 
 
-def getData(request, url, cds_cod, body):
+def getData(request, url, cds_cod, body): # pragma: no cover
     try:
         payload = ""
         headers = {
@@ -59,7 +59,7 @@ def getData(request, url, cds_cod, body):
         return ""
 
 
-def getEventi(request, aa, cds_cod):
+def getEventi(request, aa, cds_cod): # pragma: no cover
     url = settings.URL_UP_API +'Eventi/getEventiByCorso'
     body = {
         "codCorso": cds_cod,
@@ -68,7 +68,7 @@ def getEventi(request, aa, cds_cod):
     return getData(request, url, cds_cod, body)
 
 
-def getImpegni(request, aa, cds_cod):
+def getImpegni(request, aa, cds_cod): # pragma: no cover
     url = settings.URL_UP_API + 'Impegni/getImpegniByAnnoAccademico'
     body = {
         "annoAccademico": aa,

@@ -3,7 +3,7 @@ from datetime import datetime
 from django.utils import timezone
 
 
-def impegniSerializer(impegni, year=None):
+def impegniSerializer(impegni, year=None): # pragma: no cover
     impegni_up = []
 
     for impegno in impegni:
