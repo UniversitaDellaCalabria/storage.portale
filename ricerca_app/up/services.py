@@ -26,7 +26,7 @@ def getTokenUP(request): # pragma: no cover
             "realm": settings.KEY_API_UP
         }
         url = settings.URL_UP_API +'utenti/login'
-        response = requests.post(url, data)
+        response = requests.post(url, data, timeout=5)
 
         if response.status_code == 200:
             data = response.json()
@@ -47,7 +47,7 @@ def getData(request, url, cds_cod, body): # pragma: no cover
             "Content-Type": "application/json",
         }
         payload= json.dumps(body)
-        response = requests.post(url, headers=headers, data=payload)
+        response = requests.post(url, headers=headers, data=payload, timeout=5)
         if response.status_code == 200:
             return response.json()
         else:
