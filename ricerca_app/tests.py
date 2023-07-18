@@ -6101,6 +6101,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'titolo_en': 'test',
             'testo_it': 'prova',
             'testo_en': 'test',
+            'id_sito_web_cds_tipo_dato': 1,
             'ordine': 1,
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
