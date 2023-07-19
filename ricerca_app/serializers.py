@@ -890,7 +890,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityCdSID': query['cds_id'],
             'StudyActivityCdSCod': query['cds_id__cds_cod'],
             'StudyActivityLanguage': query['lista_lin_did_af'].replace(' ','').split(',') if query['lista_lin_did_af'] else [],
-            'StudyActivityFatherCode': query['af_master_id'],
+            'StudyActivityFatherCode': query['af_radice_id'],
             'StudyActivityFatherName': query['Father'],
             'StudyActivityRegDidId': query['regdid_id'],
             'DepartmentName': query['cds_id__dip_id__dip_des_it'] if req_lang == 'it' or query['cds_id__dip_id__dip_des_eng'] is None else query['cds_id__dip_id__dip_des_eng'],
