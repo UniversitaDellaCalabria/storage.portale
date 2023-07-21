@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'SITO_WEB_CDS_TIPO_DATO',
-                'managed': False,
+                'managed': True,
             },
         ),
         migrations.AddField(

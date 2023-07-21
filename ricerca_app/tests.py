@@ -1,14 +1,14 @@
 import datetime
 
 from django.contrib.auth import get_user_model
-from rest_framework.authtoken.models import Token
 from django.test import TestCase, Client
 from django.urls import reverse
-from .utils import encrypt, decrypt
 
+from rest_framework.authtoken.models import Token
 
-
-from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, \
+from . models import SitoWebCdsTipoDato
+from . utils import encrypt, decrypt
+from . util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, \
     DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest, \
     DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest, \
     RicercaAster1UnitTest, RicercaAster2UnitTest, RicercaDocenteGruppoUnitTest, RicercaDocenteLineaApplicataUnitTest, \
@@ -32,7 +32,7 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     SitoWebCdsTopicArticoliRegAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
     DidatticaPianoRegolamentoUnitTest, DidatticaPianoScheUnitTest, DidatticaPianoSceltaSchePianoUnitTest, DidatticaPianoSceltaVincoliUnitTest, DidatticaAmbitiUnitTest, \
     DidatticaPianoSceltaAfUnitTest
-from .serializers import CreateUpdateAbstract
+from . serializers import CreateUpdateAbstract
 
 
 class ApiCdSListUnitTest(TestCase):
@@ -6093,6 +6093,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 
         # })
 
+        tipo_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
 
         SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
             'id': 1,
@@ -6101,7 +6102,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'titolo_en': 'test',
             'testo_it': 'prova',
             'testo_en': 'test',
-            'id_sito_web_cds_tipo_dato': 1,
+            'id_sito_web_cds_tipo_dato': tipo_dato,
             'ordine': 1,
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),

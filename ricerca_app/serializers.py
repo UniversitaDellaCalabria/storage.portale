@@ -589,6 +589,9 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'Order': q['ordine'],
                 'Title': q['titolo_it'] if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
                 'Text': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'Link': q['link'],
+                'TypeID': q['id_sito_web_cds_tipo_dato__pk'],
+                'Type': q['id_sito_web_cds_tipo_dato__descr_breve'],
                 'Visible': q['visibile']
             })
         return other_data

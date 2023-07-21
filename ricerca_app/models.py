@@ -4120,7 +4120,7 @@ class SitoWebCdsTipoDato(models.Model):
     descr_lunga = models.CharField(db_column='DESCR_LUNGA', max_length=2000, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'SITO_WEB_CDS_TIPO_DATO'
 
 

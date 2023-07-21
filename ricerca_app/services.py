@@ -874,6 +874,9 @@ class ServiceDidatticaCds:
                         'titolo_it',
                         'testo_it',
                         'testo_en',
+                        'link',
+                        'id_sito_web_cds_tipo_dato__pk',
+                        'id_sito_web_cds_tipo_dato__descr_breve',
                         'visibile'
                     ).order_by('ordine')
 
