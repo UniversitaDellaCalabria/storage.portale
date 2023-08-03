@@ -161,7 +161,7 @@ LABEL_MAPPING = {
         'StudyPlanDes': 'Study Plan Description',
         'FUNZIONI': 'Tasks',
         'COMPETENZE': 'Skills',
-        'SBOCCHI': 'Career Opportunities',
+        'SBOCCHI': 'Career opportunities',
         'StructureCod': 'Structure Cod',
         'StructureTypeName': 'Type',
         'StructureName': 'Name',
