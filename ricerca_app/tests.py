@@ -5446,7 +5446,7 @@ class ApiPersonIdUnitTest(TestCase):
     def test_apipersonid(self):
         req = Client()
 
-        PersonaleUnitTest.create_personale(**{
+        p = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
             'cognome': 'Mungari',
@@ -5482,6 +5482,25 @@ class ApiPersonIdUnitTest(TestCase):
 
         # POST
         res = req.post(url, {"id": "111112"}, HTTP_AUTHORIZATION=f'Token {token.key}')
+        assert res.status_code == 200
+
+        url = reverse('ricerca:get-decrypted-person-id')
+
+        # GET
+        res = req.get(url,HTTP_AUTHORIZATION= f'Token {token.key}')
+        assert res.status_code == 405
+
+        # POST
+        res = req.post(url,{"test":"test"}, HTTP_AUTHORIZATION=f'Token {token.key}')
+        assert res.status_code == 404
+
+        # POST
+        res = req.post(url,{"id":"99999"}, HTTP_AUTHORIZATION=f'Token {token.key}')
+        assert res.status_code == 404
+
+        # POST
+        m_test_encrypted = encrypt("111111")
+        res = req.post(url, {"id": m_test_encrypted}, HTTP_AUTHORIZATION=f'Token {token.key}')
         assert res.status_code == 200
 
 

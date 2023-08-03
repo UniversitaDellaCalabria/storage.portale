@@ -403,6 +403,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         name='high-formation-course-types'),
 
     urlpatterns += path(
+        '{}/get-decrypted-person-id/'.format(base_url),
+        api_views.ApiDecryptedPersonId.as_view(),
+        name='get-decrypted-person-id'),
+
+    urlpatterns += path(
         '{}/get-person-id/'.format(base_url),
         api_views.ApiPersonId.as_view(),
         name='get-person-id'),

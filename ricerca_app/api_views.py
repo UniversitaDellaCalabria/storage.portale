@@ -1221,6 +1221,29 @@ class ApiPersonId(APIView):
         return Response(encrypt(matricola))
 
 
+class ApiDecryptedPersonIdSchema(AutoSchema):
+    def get_operation_id(self, path, method):
+        return 'getDecryptedPersonId'
+
+
+class ApiDecryptedPersonId(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    description = 'La funzione restituisce la matricola in chiaro una persona'
+    schema = ApiDecryptedPersonIdSchema()
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        encrypted_matricola = data.get("id","")
+        if not encrypted_matricola:
+            return Response("Il dato non è stato inserito", status=status.HTTP_404_NOT_FOUND)
+        try:
+            m = decrypt(encrypted_matricola)
+            return Response(m)
+        except:
+            return Response("Non è stato possibile decriptare il dato", status=status.HTTP_404_NOT_FOUND)
+
+
 class ApiAster1List(ApiEndpointList):
     description = 'La funzione restituisce la lista degli aster1'
     serializer_class = Asters1Serializer
