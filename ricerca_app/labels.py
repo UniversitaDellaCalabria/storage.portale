@@ -462,7 +462,7 @@ LABEL_MAPPING = {
         'CDSJobOpportunities': 'Career opportunities',
         'CDSTaxes': 'Course Fees',
         'CDSScholarships': 'Scholarships',
-        'CDSConcessions': 'Course Concessions',
+        'CDSConcessions': 'Tax benefits',
         'CDSShortDescription': 'Course Short Description',
         'CDSStudyPlan': 'Course Study Plan',
         'CDSEnrollmentMode': 'Course Enrollment Mode',
