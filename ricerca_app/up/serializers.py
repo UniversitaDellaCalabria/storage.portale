@@ -21,7 +21,7 @@ def impegniSerializer(impegni, year=None): # pragma: no cover
 
         dettagliDidattici = impegno['evento']['dettagliDidattici']
 
-        cfu = dettagliDidattici[0]['cfu']
+        cfu = dettagliDidattici[0].get('cfu', None)
         insegnamento = dettagliDidattici[0]['nome']
         annoCorso  = dettagliDidattici[0]['annoCorso']
 
@@ -46,7 +46,18 @@ def impegniSerializer(impegni, year=None): # pragma: no cover
             "cfu": cfu,
             "docente": docente,
             "aula": aula,
-            "edificio": edificio
+            "edificio": edificio,
+            "codice": impegno['evento']['tipoEvento']['codice']
         }
         impegni_up.append(impegno_dict)
     return impegni_up
+
+import json
+def eventiSerializer(eventi, year=None): # pragma: no cover
+    eventi_up = []
+
+    for evento in eventi:
+        json_formatted_str = json.dumps(evento, indent=2)
+        print(json_formatted_str)
+        # if evento['tipoEvento']['codice'] == 'ES':
+            # print(json_formatted_str)

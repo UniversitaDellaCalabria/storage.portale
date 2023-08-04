@@ -74,5 +74,16 @@ def getImpegni(request, aa, cds_cod): # pragma: no cover
         "annoAccademico": aa,
         "codCorso": cds_cod,
         "stati": ["P"],
+        "codTipiEvento": ["AD"]
+    }
+    return getData(request, url, cds_cod, body)
+
+def getEsami(request, aa, cds_cod): # pragma: no cover
+    url = settings.URL_UP_API + 'Impegni/getImpegniByAnnoAccademico'
+    body = {
+        "annoAccademico": aa,
+        "codCorso": cds_cod,
+        "stati": ["P"],
+        "codTipiEvento": ["ES"]
     }
     return getData(request, url, cds_cod, body)

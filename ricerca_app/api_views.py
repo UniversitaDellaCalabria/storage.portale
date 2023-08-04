@@ -286,7 +286,7 @@ class ApiCdSDetail(ApiEndpointDetail):
         ).distinct()
 
 
-        res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id']).values( 
+        res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id']).values(
             'ordine',
             'id',
             'descr_breve_it',
@@ -1418,6 +1418,25 @@ class ApiCdsWebsiteTimetable(APIView):
         if cds:
             # impegni = getImpegni(self.request, cds[0]['aa'], cds_cod)
             impegni = getImpegni(self.request, 2022, cds_cod)
+            impegni_json = impegniSerializer(impegni, int(year))
+            return Response(impegni_json)
+        return Response({})
+
+
+class ApiCdsWebsiteExams(APIView):
+    allowed_methods = ('GET',)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.language = None
+
+    def get(self, obj, **kwargs):
+        cds_cod = self.kwargs['cdswebsitecod']
+        year = self.request.query_params.get('year', 1)
+        cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
+        if cds:
+            # impegni = getImpegni(self.request, cds[0]['aa'], cds_cod)
+            impegni = getEsami(self.request, 2022, cds_cod)
             impegni_json = impegniSerializer(impegni, int(year))
             return Response(impegni_json)
         return Response({})
