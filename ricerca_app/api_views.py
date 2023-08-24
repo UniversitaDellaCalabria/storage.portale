@@ -1409,34 +1409,24 @@ class ApiCdsWebsiteTimetable(APIView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.language = None
+        self.event_types = ['AD']
 
     def get(self, obj, **kwargs):
         cds_cod = self.kwargs['cdswebsitecod']
+        current_year = timezone.localtime(timezone.now().replace(tzinfo=timezone.utc)).year
+        academic_year = self.request.query_params.get('academic_year', current_year)
         year = self.request.query_params.get('year', 1)
         cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
         if cds:
-            # impegni = getImpegni(self.request, cds[0]['aa'], cds_cod)
-            impegni = getImpegni(self.request, 2022, cds_cod)
+            impegni = getImpegni(self.request, academic_year, cds_cod, self.event_types)
             impegni_json = impegniSerializer(impegni, int(year))
             return Response(impegni_json)
         return Response({})
 
 
-class ApiCdsWebsiteExams(APIView):
+class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable):
     allowed_methods = ('GET',)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.language = None
-
-    def get(self, obj, **kwargs):
-        cds_cod = self.kwargs['cdswebsitecod']
-        year = self.request.query_params.get('year', 1)
-        cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
-        if cds:
-            # impegni = getImpegni(self.request, cds[0]['aa'], cds_cod)
-            impegni = getEsami(self.request, 2022, cds_cod)
-            impegni_json = impegniSerializer(impegni, int(year))
-            return Response(impegni_json)
-        return Response({})
+        self.event_types = ['ES']
