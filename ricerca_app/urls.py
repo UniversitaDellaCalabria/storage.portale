@@ -139,6 +139,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiCdsWebsiteTimetable.as_view(),
                         name='cdswebsite-timetable'),
 
+    urlpatterns += path('{}/cds-websites/<str:cdswebsitecod>/exams/'.format(base_url),
+                        api_views.ApiCdsWebsiteExams.as_view(),
+                        name='cdswebsite-exams'),
+
 
     urlpatterns += path('{}/activities/'.format(base_url),
                         api_views.ApiAllStudyActivitiesList.as_view(),

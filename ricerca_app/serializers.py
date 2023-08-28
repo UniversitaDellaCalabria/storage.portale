@@ -635,8 +635,8 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
             'RegPlansPdrCoorteIdYear': query['regpiani_pdr_aa_coorte_id'],
             'RegPlansPdrYear': query['regpiani_pdr_aa_regpiani_id'],
             'FlgExpSegStu': query['flg_exp_seg_stu'],
-            'PlanTabs': plan_tabs
-
+            'CdSDuration': query['regdid__cds__durata_anni'],
+            'PlanTabs': plan_tabs,
         }
 
     @staticmethod
@@ -693,7 +693,7 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'CycleDes': q['ciclo_des'],
                 'AfDescription': q['af_gen_des'],
                 'AfId': q['af_id'],
-                'StudyActivityCod': q['af_id__af_gen_cod'],
+                'AfCod': q['af_gen_cod'],
                 'AfType': q['tipo_af_des_af'],
                 'AfScope': q['ambito_des_af'],
                 'AfSubModules': CdsWebsitesStudyPlansSerializer.to_dict_af_submodules(q.get('MODULES', []), req_lang),
@@ -715,7 +715,7 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'CycleDes': q['ciclo_des'],
                 'AfDescription': q['af_gen_des'],
                 'AfId': q['af_id'],
-                'StudyActivityCod': q['af_id__af_gen_cod'],
+                'AfCod': q['af_gen_cod'],
                 'AfType': q['tipo_af_des_af'],
                 'AfScope': q['ambito_des_af'],
                 'AfSubModules': CdsWebsitesStudyPlansSerializer.to_dict_af_submodules(q.get('MODULES', []), req_lang),
