@@ -1044,7 +1044,6 @@ class ApiTechAreasList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceCompany.getTechAreas()
 
 
@@ -1092,9 +1091,7 @@ class ApiProjectDetail(ApiEndpointDetail):
     filter_backends = []
 
     def get_queryset(self):
-
         projectid = self.kwargs['projectid']
-
         return ServiceProgetto.getProjectDetail(projectid)
 
 
@@ -1104,7 +1101,6 @@ class ApiStructureFunctionsList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServicePersonale.getStructureFunctions()
 
 
@@ -1114,7 +1110,6 @@ class ApiProjectsTerritorialScopesList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceProgetto.getTerritorialScopes()
 
 
@@ -1124,7 +1119,6 @@ class ApiProjectsProgramTypesList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceProgetto.getProgramTypes()
 
 
@@ -1134,7 +1128,6 @@ class ApiCdsAreasList(ApiEndpointListSupport):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceDidatticaCds.getCdsAreas()
 
 
@@ -1144,7 +1137,6 @@ class ApiProjectsInfrastructuresList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceProgetto.getProjectInfrastructures()
 
 
@@ -1156,9 +1148,7 @@ class ApiPersonnelCfList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         roles = self.request.query_params.get('roles')
-
         return ServicePersonale.getPersonnelCfs(roles)
 
 
@@ -1168,9 +1158,7 @@ class ApiSortingContacts(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         cdscod = self.kwargs['cdscod']
-
         return ServiceDidatticaCds.getContacts(cdscod)
 
 
@@ -1180,7 +1168,6 @@ class ApiHighFormationMastersList(ApiEndpointList):
     filter_backends = [ApiHighFormationMastersListFilter]
 
     def get_queryset(self):
-
         search = self.request.query_params.get('search')
         director = self.request.query_params.get('director')
         coursetype = self.request.query_params.get('coursetype')
@@ -1188,8 +1175,6 @@ class ApiHighFormationMastersList(ApiEndpointList):
         department = self.request.query_params.get('department')
         language = self.request.query_params.get('language')
         year = self.request.query_params.get('year')
-
-
         return ServiceDidatticaCds.getHighFormationMasters(search, director, coursetype, erogation, department, language, year)
 
 
@@ -1199,9 +1184,7 @@ class ApiHighFormationMastersDetail(ApiEndpointDetail):
     filter_backends = [ApiHighFormationMastersListFilter]
 
     def get_queryset(self):
-
         master_id = self.kwargs['id']
-
         return ServiceDidatticaCds.getHighFormationMaster(master_id)
 
 
@@ -1211,7 +1194,6 @@ class ApiErogationModesList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceDidatticaCds.getErogationModes()
 
 
@@ -1221,7 +1203,6 @@ class ApiHighFormationCourseTypesList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceDidatticaCds.getHighFormationCourseTypes()
 
 
@@ -1253,7 +1234,6 @@ class ApiAster1List(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceLaboratorio.getAster1List()
 
 
@@ -1263,7 +1243,6 @@ class ApiAster2List(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceLaboratorio.getAster2List()
 
 
@@ -1273,13 +1252,11 @@ class ApiPhdActivitiesList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         search = self.request.query_params.get('search')
         structure = self.request.query_params.get('structure')
         phd = self.request.query_params.get('phd')
         ssd = self.request.query_params.get('ssd')
         teacher = self.request.query_params.get('teacher')
-
         return ServiceDottorato.getPhdActivities(search, structure, phd, ssd, teacher)
 
 
@@ -1289,9 +1266,7 @@ class ApiPhdActivityDetail(ApiEndpointDetail):
     filter_backends = []
 
     def get_queryset(self):
-
         activity_id = self.kwargs['id']
-
         return ServiceDottorato.getPhdActivity(activity_id)
 
 
@@ -1301,7 +1276,6 @@ class ApiRefPhdList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceDottorato.getRefPhd()
 
 
@@ -1311,7 +1285,6 @@ class ApiRefStructuresList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceDottorato.getRefStructures()
 
 
@@ -1321,7 +1294,6 @@ class ApiPhdSsdList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceDottorato.getPhdSsdList()
 
 
@@ -1331,7 +1303,6 @@ class ApiPhdActivityTypeList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
         return ServiceDottorato.getPhdActivityTypeList()
 
 

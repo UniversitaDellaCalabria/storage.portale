@@ -897,7 +897,7 @@ class ServiceDidatticaCds:
                 query_cds,
                 query_regdid,
                 query_year
-               ).values(
+               ).select_related('regdid__cds').values(
                    'regpiani_id',
                    'regdid_id',
                    'attinenza_cod',
@@ -913,7 +913,8 @@ class ServiceDidatticaCds:
                    'regpiani_pdr_des',
                    'regpiani_pdr_aa_coorte_id',
                    'regpiani_pdr_aa_regpiani_id',
-                   'flg_exp_seg_stu'
+                   'flg_exp_seg_stu',
+                   'regdid__cds__durata_anni'
                ).distinct().order_by('regpiani_id')
 
             for q in query:
@@ -968,6 +969,7 @@ class ServiceDidatticaCds:
                             'ciclo_des',
                             'af_gen_des',
                             'af_id',
+                            'af_gen_cod',
                             'tipo_af_des_af',
                             'ambito_des_af',
                             'sett_cod',
@@ -1098,6 +1100,7 @@ class ServiceDidatticaCds:
                             'anno_corso_af',
                             'ciclo_des',
                             'af_gen_des',
+                            'af_gen_cod',
                             'af_id',
                             'tipo_af_des_af',
                             'ambito_des_af',
