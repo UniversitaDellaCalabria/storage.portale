@@ -968,6 +968,7 @@ class ServiceDidatticaCds:
                             'ciclo_des',
                             'af_gen_des',
                             'af_id',
+                            'af_id__af_gen_cod',
                             'tipo_af_des_af',
                             'ambito_des_af',
                             'sett_cod',
@@ -1099,6 +1100,7 @@ class ServiceDidatticaCds:
                             'ciclo_des',
                             'af_gen_des',
                             'af_id',
+                            'af_id__af_gen_cod',
                             'tipo_af_des_af',
                             'ambito_des_af',
                             'sett_cod',
@@ -1142,6 +1144,7 @@ class ServiceDidatticaCds:
                                 'ciclo_des',
                                 'af_gen_des',
                                 'af_id',
+                                'af_id__af_gen_cod',
                                 'tipo_af_des_af',
                                 'ambito_des_af',
                                 'sett_cod',
@@ -1171,8 +1174,6 @@ class ServiceDidatticaCds:
                                     'ciclo_des')
 
                                 activity['MODULES'] = list_submodules
-
-
 
 
 
