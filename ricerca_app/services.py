@@ -992,6 +992,7 @@ class ServiceDidatticaCds:
                                 'af_gen_cod',
                                 'des',
                                 'peso',
+                                'sett_cod',
                                 'af_gen_des_eng',
                                 'fat_part_stu_cod',
                                 'lista_lin_did_af',
