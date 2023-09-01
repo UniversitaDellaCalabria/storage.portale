@@ -731,6 +731,7 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'StudyActivityCod': q['af_gen_cod'],
                 'StudyActivityName': q['des'] if req_lang == 'it' or q['af_gen_des_eng'] is None else q['af_gen_des_eng'],
                 'StudyActivitySemester': q['ciclo_des'],
+                'StudyActivitySettCod': q['sett_cod'],
                 'StudyActivityCreditValue': q['peso'],
                 'StudyActivityPartitionCod': q['part_stu_cod'],
                 'StudyActivityPartitionDescription': q['part_stu_des'],
