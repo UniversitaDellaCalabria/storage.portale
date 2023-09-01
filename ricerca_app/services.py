@@ -983,7 +983,8 @@ class ServiceDidatticaCds:
 
                         for activity in af['Required']:
                             list_submodules = DidatticaAttivitaFormativa.objects.filter(
-                                ~Q(fat_part_stu_cod='GRP'),
+                                # ~Q(fat_part_stu_cod='GRP'),
+                                part_stu_cod__isnull=True,
                                 af_radice_id=activity['af_id'],
                                 ).exclude(
                                 af_id=activity['af_id']
@@ -1115,7 +1116,8 @@ class ServiceDidatticaCds:
 
                         for activity in scelta['Choices']:
                             list_submodules = DidatticaAttivitaFormativa.objects.filter(
-                                ~Q(fat_part_stu_cod='GRP'),
+                                # ~Q(fat_part_stu_cod='GRP'),
+                                part_stu_cod__isnull=True,
                                 af_radice_id=activity['af_id']).exclude(
                                 af_id=activity['af_id']
                             ).values(
@@ -1158,7 +1160,8 @@ class ServiceDidatticaCds:
 
                             for activity in scelta['Choices']:
                                 list_submodules = DidatticaAttivitaFormativa.objects.filter(
-                                    ~Q(fat_part_stu_cod='GRP'),
+                                    # ~Q(fat_part_stu_cod='GRP'),
+                                    part_stu_cod__isnull=True,
                                     af_radice_id=activity['af_id']).exclude(
                                     af_id=activity['af_id']
                                 ).values(
