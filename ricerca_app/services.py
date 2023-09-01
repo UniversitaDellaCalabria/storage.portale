@@ -1536,7 +1536,7 @@ class ServiceDidatticaAttivitaFormativa:
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
-            af_radice_id=af_id).exclude(
+            Q(af_radice_id=af_id) | Q(af_pdr_id=af_id)).exclude(
             af_id=af_id
         ).values(
             'af_id',
