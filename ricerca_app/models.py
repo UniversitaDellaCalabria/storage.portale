@@ -184,6 +184,7 @@ class DidatticaAttivitaFormativa(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_ATTIVITA_FORMATIVA'
+        ordering = ('ciclo_des',)
 
     def __str__(self): # pragma: no cover
         return '{}'.format(self.af_id)
@@ -4265,6 +4266,7 @@ class DidatticaPianoSceltaAf(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_PIANO_SCELTA_AF'
+        ordering = ('ciclo_des',)
 
 
 class DidatticaPianoSceltaFilAnd(models.Model):
