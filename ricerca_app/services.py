@@ -3184,6 +3184,7 @@ class ServicePersonale:
             phone=None):
 
         query_search = Q()
+        role = role.split(',') if role else []
 
         if search is not None:
             query_search = Q(cognome__istartswith=search)
@@ -3314,13 +3315,12 @@ class ServicePersonale:
 
         if role:
             roles = []
-            for k in role.split(","):
+            for k in role:
                 roles.append(k)
             for item in filtered:
                 final_roles = []
-                if item['Roles'] and len(item['Roles']) != 0:
-                    for r in item['Roles']:
-                        final_roles.append(r['cd_ruolo'])
+                for r in item['Roles']:
+                    final_roles.append(r['cd_ruolo'])
                 final_roles.append(item['profilo'])
                 if (set(roles).intersection(set(final_roles))):
                     filtered2.append(item)
@@ -3335,23 +3335,21 @@ class ServicePersonale:
                 s.append(k)
             for item in filtered2:
                 final_structures = []
-                if item['Roles'] and len(item['Roles']) != 0:
-                    for r in item['Roles']:
+                for r in item['Roles']:
+                    if not role or role and r['cd_ruolo'] in role:
                         final_structures.append(r['cd_tipo_nodo'])
                 if (set(s).intersection(set(final_structures))):
                     filtered3.append(item)
         else:
             filtered3 = filtered2
 
-
         filtered4 = []
         if structureid:
 
             for item in filtered3:
-
-                if item['Roles'] and len(item['Roles']) != 0:
-                    for r in item['Roles']:
-                        if r['cd_uo_aff_org'] == structureid:
+                for r in item['Roles']:
+                    if r['cd_uo_aff_org'] == structureid:
+                        if not role or role and r['cd_ruolo'] in role:
                             filtered4.append(item)
                             break
         else:
@@ -3365,8 +3363,9 @@ class ServicePersonale:
                 if item['Roles'] and len(item['Roles']) != 0:
                     for r in item['Roles']:
                         if r['cd_uo_aff_org'] in query_structuretree:
-                            filtered5.append(item)
-                            break
+                            if not role or role and r['cd_ruolo'] in role:
+                                filtered5.append(item)
+                                break
         else:
             filtered5 = filtered4
 
