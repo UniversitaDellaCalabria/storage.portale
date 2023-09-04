@@ -1062,6 +1062,7 @@ class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityRegDidId': query['regdid__regdid_id'],
             'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
             'StudyActivityCdSCod': query['cds__cds_cod'],
             'StudyActivityPdsCod': query['pds_cod'],
             'StudyActivityPdsDes': query['pds_des'],
