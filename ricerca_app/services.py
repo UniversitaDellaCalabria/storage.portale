@@ -985,7 +985,8 @@ class ServiceDidatticaCds:
                             list_submodules = DidatticaAttivitaFormativa.objects.filter(
                                 # ~Q(fat_part_stu_cod='GRP'),
                                 part_stu_cod__isnull=True,
-                                af_radice_id=activity['af_id'],
+                                # af_radice_id=activity['af_id'],
+                                af_pdr_id=activity['af_id'],
                                 ).exclude(
                                 af_id=activity['af_id']
                             ).values(
@@ -1118,7 +1119,9 @@ class ServiceDidatticaCds:
                             list_submodules = DidatticaAttivitaFormativa.objects.filter(
                                 # ~Q(fat_part_stu_cod='GRP'),
                                 part_stu_cod__isnull=True,
-                                af_radice_id=activity['af_id']).exclude(
+                                # af_radice_id=activity['af_id']
+                                af_pdr_id=activity['af_id']
+                            ).exclude(
                                 af_id=activity['af_id']
                             ).values(
                                 'af_id',
@@ -1162,7 +1165,9 @@ class ServiceDidatticaCds:
                                 list_submodules = DidatticaAttivitaFormativa.objects.filter(
                                     # ~Q(fat_part_stu_cod='GRP'),
                                     part_stu_cod__isnull=True,
-                                    af_radice_id=activity['af_id']).exclude(
+                                    # af_radice_id=activity['af_id']
+                                    af_pdr_id=activity['af_id']
+                                ).exclude(
                                     af_id=activity['af_id']
                                 ).values(
                                     'af_id',
@@ -1536,7 +1541,7 @@ class ServiceDidatticaAttivitaFormativa:
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
-            af_radice_id=af_id,
+            # af_radice_id=af_id,
             af_pdr_id=af_id).exclude(af_id=af_id).values(
             'af_id',
             'af_gen_cod',
