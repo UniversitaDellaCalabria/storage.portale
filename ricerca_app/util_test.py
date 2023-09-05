@@ -85,8 +85,9 @@ from .models import (
     SitoWebCdsTopic,
     SitoWebCdsTopicArticoliReg,
     SitoWebCdsArticoliRegolamento,
-    SitoWebCdsArticoliRegAltriDati,
-    SitoWebCdsOggettiPortaleAltriDati,
+    # SitoWebCdsArticoliRegAltriDati,
+    # SitoWebCdsOggettiPortaleAltriDati,
+    SitoWebCdsTopicArticoliRegAltriDati,
     SitoWebCdsOggettiPortale,
     DidatticaPianoRegolamento,
     DidatticaPianoSche,
@@ -1071,15 +1072,15 @@ class SitoWebCdsOggettiPortaleUnitTest(TestCase): # pragma: no cover
         return obj
 
 
-class SitoWebCdsOggettiPortaleAltriDatiUnitTest(TestCase): # pragma: no cover
-    @classmethod
-    def create_sitoWebCdsOggettiPortaleAltriDati(cls, **kwargs):
-        data = {}
-        for k, v in kwargs.items():
-            data[k] = v
+# class SitoWebCdsOggettiPortaleAltriDatiUnitTest(TestCase): # pragma: no cover
+    # @classmethod
+    # def create_sitoWebCdsOggettiPortaleAltriDati(cls, **kwargs):
+        # data = {}
+        # for k, v in kwargs.items():
+            # data[k] = v
 
-        obj = SitoWebCdsOggettiPortaleAltriDati.objects.create(**data)
-        return obj
+        # obj = SitoWebCdsOggettiPortaleAltriDati.objects.create(**data)
+        # return obj
 
 
 class SitoWebCdsArticoliRegolamentoUnitTest(TestCase): # pragma: no cover
@@ -1093,14 +1094,25 @@ class SitoWebCdsArticoliRegolamentoUnitTest(TestCase): # pragma: no cover
         return obj
 
 
-class SitoWebCdsArticoliRegAltriDatiUnitTest(TestCase): # pragma: no cover
+# class SitoWebCdsArticoliRegAltriDatiUnitTest(TestCase): # pragma: no cover
+    # @classmethod
+    # def create_sitoWebCdsArticoliRegAltriDati(cls, **kwargs):
+        # data = {}
+        # for k, v in kwargs.items():
+            # data[k] = v
+
+        # obj = SitoWebCdsArticoliRegAltriDati.objects.create(**data)
+        # return obj
+
+
+class SitoWebCdsTopicArticoliRegAltriDatiUnitTest(TestCase): # pragma: no cover
     @classmethod
-    def create_sitoWebCdsArticoliRegAltriDati(cls, **kwargs):
+    def create_sitoWebCdsTopicArticoliRegAltriDati(cls, **kwargs):
         data = {}
         for k, v in kwargs.items():
             data[k] = v
 
-        obj = SitoWebCdsArticoliRegAltriDati.objects.create(**data)
+        obj = SitoWebCdsTopicArticoliRegAltriDati.objects.create(**data)
         return obj
 
 

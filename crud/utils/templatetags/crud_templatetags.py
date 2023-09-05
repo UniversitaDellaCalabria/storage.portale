@@ -14,9 +14,7 @@ register = template.Library()
 def settings_value(name, **kwargs):
     app_value = getattr(app_settings, name, None)
     value = getattr(settings, name, app_value)
-    if not value:
-        return ''
-    if isinstance(value, str) and kwargs:
+    if value and isinstance(value, str) and kwargs:
         return value.format(**kwargs)
     return value
 

@@ -22,7 +22,9 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
-    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, SitoWebCdsArticoliRegAltriDati, SitoWebCdsOggettiPortaleAltriDati, SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
+    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, \
+    SitoWebCdsTopicArticoliRegAltriDati, \
+    SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
     DidatticaCdsGruppi, DidatticaCdsGruppiComponenti
 from . serializers import StructuresSerializer
@@ -194,7 +196,7 @@ class ServiceDidatticaCds:
             #cdsOrg = list(item['CdsOrganizations'])
             #for co in cdsOrg:
 
-            for organization in item['CdsOrganizations']:
+            for organization in item['CdsOrganizations']: # pragma: no cover
                 members = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=organization['id']).values(
                     'ordine',
                     'id',
@@ -848,21 +850,6 @@ class ServiceDidatticaCds:
                 # .order_by('id_sito_web_cds_articoli_regolamento')
                 q['Articles'] = article
 
-                if article:
-                    other_data = SitoWebCdsArticoliRegAltriDati.objects.filter(
-                            id_sito_web_cds_articoli_regolamento=article['id']
-                        ).values(
-                            'id',
-                            'ordine',
-                            'titolo_en',
-                            'titolo_it',
-                            'testo_it',
-                            'testo_en',
-                            'visibile'
-                        ).order_by('ordine')
-
-                    article['OtherData'] = other_data if other_data else []
-
                 unicms_object = SitoWebCdsOggettiPortale.objects.filter(
                     id__exact=q['id_sito_web_cds_oggetti_portale']).values(
                     'id',
@@ -878,20 +865,22 @@ class ServiceDidatticaCds:
 
                 q['CdsObjects'] = unicms_object
 
-                if unicms_object:
-                    other_data = SitoWebCdsOggettiPortaleAltriDati.objects.filter(
-                            id_sito_web_cds_oggetti_portale=unicms_object['id']
-                        ).values(
-                            'id',
-                            'ordine',
-                            'titolo_it',
-                            'titolo_en',
-                            'testo_it',
-                            'testo_en',
-                            'visibile'
-                        ).order_by('ordine')
+                other_data = SitoWebCdsTopicArticoliRegAltriDati.objects.filter(
+                        id_sito_web_cds_topic_articoli_reg=q['id']
+                    ).values(
+                        'id',
+                        'ordine',
+                        'titolo_en',
+                        'titolo_it',
+                        'testo_it',
+                        'testo_en',
+                        'link',
+                        'id_sito_web_cds_tipo_dato__pk',
+                        'id_sito_web_cds_tipo_dato__descr_breve',
+                        'visibile'
+                    ).order_by('ordine')
 
-                    unicms_object['OtherData'] = other_data if other_data else []
+                q['OtherData'] = other_data if other_data else []
 
             return query
         return {}
@@ -908,7 +897,7 @@ class ServiceDidatticaCds:
                 query_cds,
                 query_regdid,
                 query_year
-               ).values(
+               ).select_related('regdid__cds').values(
                    'regpiani_id',
                    'regdid_id',
                    'attinenza_cod',
@@ -924,7 +913,8 @@ class ServiceDidatticaCds:
                    'regpiani_pdr_des',
                    'regpiani_pdr_aa_coorte_id',
                    'regpiani_pdr_aa_regpiani_id',
-                   'flg_exp_seg_stu'
+                   'flg_exp_seg_stu',
+                   'regdid__cds__durata_anni'
                ).distinct().order_by('regpiani_id')
 
             for q in query:
@@ -958,6 +948,7 @@ class ServiceDidatticaCds:
                             'tipo_um_regsce_cod',
                             'min_unt',
                             'max_unt',
+                            'opz_flg',
                             'vin_id',
                             'vin_sce_des',
                             'sce_id__opz_flg',
@@ -978,6 +969,7 @@ class ServiceDidatticaCds:
                             'ciclo_des',
                             'af_gen_des',
                             'af_id',
+                            'af_gen_cod',
                             'tipo_af_des_af',
                             'ambito_des_af',
                             'sett_cod',
@@ -989,6 +981,31 @@ class ServiceDidatticaCds:
 
                         af['Required'] = af_obblig
 
+                        for activity in af['Required']:
+                            list_submodules = DidatticaAttivitaFormativa.objects.filter(
+                                # ~Q(fat_part_stu_cod='GRP'),
+                                part_stu_cod__isnull=True,
+                                # af_radice_id=activity['af_id'],
+                                af_pdr_id=activity['af_id'],
+                                ).exclude(
+                                af_id=activity['af_id']
+                            ).values(
+                                'af_id',
+                                'af_gen_cod',
+                                'des',
+                                'peso',
+                                'sett_cod',
+                                'af_gen_des_eng',
+                                'fat_part_stu_cod',
+                                'lista_lin_did_af',
+                                'part_stu_cod',
+                                'part_stu_des',
+                                'fat_part_stu_des',
+                                'ciclo_des')
+
+                            activity['MODULES'] = list_submodules
+
+
                         fil_and = DidatticaPianoSceltaFilAnd.objects.filter(
                             sce_id__exact=af['sce_id']
                         ).values(
@@ -998,6 +1015,7 @@ class ServiceDidatticaCds:
                             'sce_fil_or_des',
                             'tipo_filtro_cod',
                             'tipo_filtro_des',
+                            'tipo_corso_sce_fil_and_cod',
                             'cds_sce_fil_and_id',
                             'cds_sce_fil_and_cod',
                             'cds_sce_fil_and_nome',
@@ -1037,6 +1055,7 @@ class ServiceDidatticaCds:
                         'tipo_um_regsce_cod',
                         'min_unt',
                         'max_unt',
+                        'opz_flg',
                         'vin_id',
                         'vin_sce_des',
                         'sce_id__opz_flg',
@@ -1070,6 +1089,7 @@ class ServiceDidatticaCds:
                             'cds_sce_fil_and_id',
                             'cds_sce_fil_and_cod',
                             'cds_sce_fil_and_nome',
+                            'tipo_corso_sce_fil_and_cod',
                             'not_flg'
                         )
 
@@ -1083,6 +1103,7 @@ class ServiceDidatticaCds:
                             'anno_corso_af',
                             'ciclo_des',
                             'af_gen_des',
+                            'af_gen_cod',
                             'af_id',
                             'tipo_af_des_af',
                             'ambito_des_af',
@@ -1094,9 +1115,32 @@ class ServiceDidatticaCds:
 
                         scelta['Choices'] = af_scelta
 
+                        for activity in scelta['Choices']:
+                            list_submodules = DidatticaAttivitaFormativa.objects.filter(
+                                # ~Q(fat_part_stu_cod='GRP'),
+                                part_stu_cod__isnull=True,
+                                # af_radice_id=activity['af_id']
+                                af_pdr_id=activity['af_id']
+                            ).exclude(
+                                af_id=activity['af_id']
+                            ).values(
+                                'af_id',
+                                'af_gen_cod',
+                                'des',
+                                'af_gen_des_eng',
+                                'peso',
+                                'fat_part_stu_cod',
+                                'lista_lin_did_af',
+                                'part_stu_cod',
+                                'part_stu_des',
+                                'fat_part_stu_des',
+                                'ciclo_des')
+
+                            activity['MODULES'] = list_submodules
 
 
-                        if af_scelta is None:
+
+                        if af_scelta is None: # pragma: no cover
 
                             af_scelta = DidatticaPianoSceltaAf.objects.filter(
                                 verifica,
@@ -1116,6 +1160,29 @@ class ServiceDidatticaCds:
                             )
 
                             scelta['Choices'] = af_scelta
+
+                            for activity in scelta['Choices']:
+                                list_submodules = DidatticaAttivitaFormativa.objects.filter(
+                                    # ~Q(fat_part_stu_cod='GRP'),
+                                    part_stu_cod__isnull=True,
+                                    # af_radice_id=activity['af_id']
+                                    af_pdr_id=activity['af_id']
+                                ).exclude(
+                                    af_id=activity['af_id']
+                                ).values(
+                                    'af_id',
+                                    'af_gen_cod',
+                                    'des',
+                                    'peso',
+                                    'af_gen_des_eng',
+                                    'fat_part_stu_cod',
+                                    'lista_lin_did_af',
+                                    'part_stu_cod',
+                                    'part_stu_des',
+                                    'fat_part_stu_des',
+                                    'ciclo_des')
+
+                                activity['MODULES'] = list_submodules
 
 
 
@@ -1474,9 +1541,8 @@ class ServiceDidatticaAttivitaFormativa:
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
-            af_radice_id=af_id).exclude(
-            af_id=af_id
-        ).values(
+            # af_radice_id=af_id,
+            af_pdr_id=af_id).exclude(af_id=af_id).values(
             'af_id',
             'af_gen_cod',
             'des',
@@ -1497,6 +1563,8 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_cod',
             'des',
             'af_gen_des_eng',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng',
             'cds__cds_cod',
             'cds__cds_id',
             'lista_lin_did_af',
@@ -1544,6 +1612,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_id',
                 'af_gen_cod',
                 'des',
+                'cds__nome_cds_it',
+                'cds__nome_cds_eng',
                 'cds__cds_cod',
                 'cds__cds_id',
                 'pds_cod',
@@ -1565,6 +1635,8 @@ class ServiceDidatticaAttivitaFormativa:
             'ciclo_des',
             'regdid__regdid_id',
             'didatticacopertura__coper_peso',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng',
             'cds__cds_cod',
             'cds__cds_id',
             'pds_cod',
@@ -1585,6 +1657,8 @@ class ServiceDidatticaAttivitaFormativa:
             'ciclo_des',
             'regdid__regdid_id',
             'didatticacopertura__coper_peso',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng',
             'cds__cds_cod',
             'cds__cds_id',
             'pds_cod',
@@ -1609,6 +1683,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'ciclo_des',
                 'regdid__regdid_id',
                 'didatticacopertura__coper_peso',
+                'cds__nome_cds_it',
+                'cds__nome_cds_eng',
                 'cds__cds_cod',
                 'cds__cds_id',
                 'pds_cod',
@@ -3122,6 +3198,7 @@ class ServicePersonale:
             phone=None):
 
         query_search = Q()
+        role = role.split(',') if role else []
 
         if search is not None:
             query_search = Q(cognome__istartswith=search)
@@ -3252,13 +3329,12 @@ class ServicePersonale:
 
         if role:
             roles = []
-            for k in role.split(","):
+            for k in role:
                 roles.append(k)
             for item in filtered:
                 final_roles = []
-                if item['Roles'] and len(item['Roles']) != 0:
-                    for r in item['Roles']:
-                        final_roles.append(r['cd_ruolo'])
+                for r in item['Roles']:
+                    final_roles.append(r['cd_ruolo'])
                 final_roles.append(item['profilo'])
                 if (set(roles).intersection(set(final_roles))):
                     filtered2.append(item)
@@ -3273,23 +3349,21 @@ class ServicePersonale:
                 s.append(k)
             for item in filtered2:
                 final_structures = []
-                if item['Roles'] and len(item['Roles']) != 0:
-                    for r in item['Roles']:
+                for r in item['Roles']:
+                    if not role or role and r['cd_ruolo'] in role:
                         final_structures.append(r['cd_tipo_nodo'])
                 if (set(s).intersection(set(final_structures))):
                     filtered3.append(item)
         else:
             filtered3 = filtered2
 
-
         filtered4 = []
         if structureid:
 
             for item in filtered3:
-
-                if item['Roles'] and len(item['Roles']) != 0:
-                    for r in item['Roles']:
-                        if r['cd_uo_aff_org'] == structureid:
+                for r in item['Roles']:
+                    if r['cd_uo_aff_org'] == structureid:
+                        if not role or role and r['cd_ruolo'] in role:
                             filtered4.append(item)
                             break
         else:
@@ -3303,8 +3377,9 @@ class ServicePersonale:
                 if item['Roles'] and len(item['Roles']) != 0:
                     for r in item['Roles']:
                         if r['cd_uo_aff_org'] in query_structuretree:
-                            filtered5.append(item)
-                            break
+                            if not role or role and r['cd_ruolo'] in role:
+                                filtered5.append(item)
+                                break
         else:
             filtered5 = filtered4
 

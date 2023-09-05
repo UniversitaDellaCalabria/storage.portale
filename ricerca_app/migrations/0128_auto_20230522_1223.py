@@ -13,28 +13,28 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='SitoWebCdsOggettiPortaleAltriDati',
-            fields=[
-                ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
-                ('aa_regdid_id', models.IntegerField(db_column='AA_REGDID_ID')),
-                ('id_oggetto_portale', models.IntegerField(db_column='ID_OGGETTO_PORTALE')),
-                ('id_classe_oggetto_portale', models.CharField(db_column='ID_CLASSE_OGGETTO_PORTALE', max_length=1000)),
-                ('titolo_it', models.CharField(blank=True, db_column='TITOLO_IT', max_length=1000, null=True)),
-                ('titolo_en', models.CharField(blank=True, db_column='TITOLO_EN', max_length=1000, null=True)),
-                ('testo_it', models.TextField(db_column='TESTO_IT')),
-                ('testo_en', models.TextField(blank=True, db_column='TESTO_EN', null=True)),
-                ('ordine', models.IntegerField(db_column='ORDINE')),
-                ('stato', models.CharField(db_column='STATO', max_length=100)),
-                ('dt_mod', models.DateField(db_column='DT_MOD')),
-                ('cds', models.ForeignKey(db_column='CDS_ID', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.didatticacds')),
-                ('id_user_mod', models.ForeignKey(db_column='ID_USER_MOD', on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'db_table': 'SITO_WEB_CDS_OGGETTI_PORTALE_ALTRI_DATI',
-                'managed': True,
-            },
-        ),
+        # migrations.CreateModel(
+            # name='SitoWebCdsOggettiPortaleAltriDati',
+            # fields=[
+                # ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
+                # ('aa_regdid_id', models.IntegerField(db_column='AA_REGDID_ID')),
+                # ('id_oggetto_portale', models.IntegerField(db_column='ID_OGGETTO_PORTALE')),
+                # ('id_classe_oggetto_portale', models.CharField(db_column='ID_CLASSE_OGGETTO_PORTALE', max_length=1000)),
+                # ('titolo_it', models.CharField(blank=True, db_column='TITOLO_IT', max_length=1000, null=True)),
+                # ('titolo_en', models.CharField(blank=True, db_column='TITOLO_EN', max_length=1000, null=True)),
+                # ('testo_it', models.TextField(db_column='TESTO_IT')),
+                # ('testo_en', models.TextField(blank=True, db_column='TESTO_EN', null=True)),
+                # ('ordine', models.IntegerField(db_column='ORDINE')),
+                # ('stato', models.CharField(db_column='STATO', max_length=100)),
+                # ('dt_mod', models.DateField(db_column='DT_MOD')),
+                # ('cds', models.ForeignKey(db_column='CDS_ID', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.didatticacds')),
+                # ('id_user_mod', models.ForeignKey(db_column='ID_USER_MOD', on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
+            # ],
+            # options={
+                # 'db_table': 'SITO_WEB_CDS_OGGETTI_PORTALE_ALTRI_DATI',
+                # 'managed': True,
+            # },
+        # ),
         migrations.CreateModel(
             name='SitoWebCdsTopic',
             fields=[

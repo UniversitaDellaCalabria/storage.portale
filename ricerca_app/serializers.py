@@ -423,7 +423,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
                 'StudentOrder': q['ordine'],
                 'StudentProfile': q['profilo_it'] if req_lang == 'it' or q['profilo_en'] is None else q['profilo_en'],
                 'StudentLink': q['link_it'] if req_lang == 'it' or q['link_en'] is None else q['link_en'],
-                'StudentPhoto': q['foto']
+                'StudentPhoto': build_media_path(q['foto']) if q['foto'] else None
             })
         return ex_students
 
@@ -541,7 +541,8 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
             'Visible': query['visibile'],
             'Order': query['ordine'],
             'CdsArticle': article,
-            'CdsObject': unicms_object
+            'CdsObject': unicms_object,
+            'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(query.get('OtherData', []), req_lang),
         }
 
 
@@ -556,7 +557,6 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'Visible': q['visibile'],
                 'YearRegDidID': q['aa_regdid_id'],
                 'CdSCod': q['cds_id__cds_cod'],
-                'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q.get('OtherData', []), req_lang),
             }
 
 
@@ -568,7 +568,7 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
             api_url = unicms_obj_api.get(q['id_classe_oggetto_portale'], '')
             unicms_object = requests.get(api_url.format(q['id_oggetto_portale']),
                                          headers=head,
-                                         timeout=3) if api_url else None
+                                         timeout=5) if api_url else None
             return {
                 'Id': q['id'],
                 'CdSCod': q['cds_id__cds_cod'],
@@ -577,7 +577,6 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'Object': json.loads(unicms_object._content) if unicms_object else None,
                 'ClassObjectId': q['id_classe_oggetto_portale'],
                 'ObjectText': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
-                'OtherData': CdsWebsitesTopicArticlesSerializer.to_dict_other_data(q.get('OtherData', []), req_lang),
             }
 
 
@@ -590,6 +589,9 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'Order': q['ordine'],
                 'Title': q['titolo_it'] if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
                 'Text': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'Link': q['link'],
+                'TypeID': q['id_sito_web_cds_tipo_dato__pk'],
+                'Type': q['id_sito_web_cds_tipo_dato__descr_breve'],
                 'Visible': q['visibile']
             })
         return other_data
@@ -633,8 +635,8 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
             'RegPlansPdrCoorteIdYear': query['regpiani_pdr_aa_coorte_id'],
             'RegPlansPdrYear': query['regpiani_pdr_aa_regpiani_id'],
             'FlgExpSegStu': query['flg_exp_seg_stu'],
-            'PlanTabs': plan_tabs
-
+            'CdSDuration': query['regdid__cds__durata_anni'],
+            'PlanTabs': plan_tabs,
         }
 
     @staticmethod
@@ -662,6 +664,14 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'SceDes': q['sce_des'],
                 'VinId': q['vin_id'],
                 'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] else q['anno_corso'],
+                'RegSceCodType': q['tipo_regsce_cod'],
+                'SceCodType': q['tipo_sce_cod'],
+                'SceDesType':q['tipo_sce_des'],
+                'RegSceCodDes': q['tipo_regsce_des'],
+                'UmRegSceCodType': q['tipo_um_regsce_cod'],
+                'MinUnt': q['min_unt'],
+                'MaxUnt': q['max_unt'],
+                'OpzFlg': q['opz_flg'],
                 'Required':  CdsWebsitesStudyPlansSerializer.to_dict_af_required(q.get('Required', []), req_lang),
                 'Choices': CdsWebsitesStudyPlansSerializer.to_dict_af_choices(q.get('Choices', []), req_lang),
                 'FilAnd': CdsWebsitesStudyPlansSerializer.to_dict_af_fil_and(q.get('FilAnd', []), req_lang),
@@ -678,13 +688,15 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'SceId': q['sce_id'],
                 'SceDes': q['sce_id__sce_des'],
                 'ScopeDes': q['ambito_des_af'],
-                'SettCod': q['sett_cod'],
+                'SettCod': q.get('sett_cod', None),
                 'CreditValue': q['peso'],
                 'CycleDes': q['ciclo_des'],
                 'AfDescription': q['af_gen_des'],
                 'AfId': q['af_id'],
+                'AfCod': q['af_gen_cod'],
                 'AfType': q['tipo_af_des_af'],
                 'AfScope': q['ambito_des_af'],
+                'AfSubModules': CdsWebsitesStudyPlansSerializer.to_dict_af_submodules(q.get('MODULES', []), req_lang),
 
             })
         return af_required
@@ -698,16 +710,35 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'SceId': q['sce_id'],
                 'SceDes': q['sce_id__sce_des'],
                 'ScopeDes': q['ambito_des_af'],
-                'SettCod': q['sett_cod'],
+                'SettCod': q.get('sett_cod', None),
                 'CreditValue': q['peso'],
                 'CycleDes': q['ciclo_des'],
                 'AfDescription': q['af_gen_des'],
                 'AfId': q['af_id'],
+                'AfCod': q['af_gen_cod'],
                 'AfType': q['tipo_af_des_af'],
                 'AfScope': q['ambito_des_af'],
-
+                'AfSubModules': CdsWebsitesStudyPlansSerializer.to_dict_af_submodules(q.get('MODULES', []), req_lang),
             })
         return af_choices
+
+    @staticmethod
+    def to_dict_af_submodules(query, req_lang='en'):
+        af_submodules = []
+        for q in query:
+            af_submodules.append({
+                'StudyActivityID': q['af_id'],
+                'StudyActivityCod': q['af_gen_cod'],
+                'StudyActivityName': q['des'] if req_lang == 'it' or q['af_gen_des_eng'] is None else q['af_gen_des_eng'],
+                'StudyActivitySemester': q['ciclo_des'],
+                'StudyActivitySettCod': q.get('sett_cod', None),
+                'StudyActivityCreditValue': q['peso'],
+                'StudyActivityPartitionCod': q['part_stu_cod'],
+                'StudyActivityPartitionDescription': q['part_stu_des'],
+                'StudyActivityExtendedPartitionCod': q['fat_part_stu_cod'],
+                'StudyActivityExtendedPartitionDes': q['fat_part_stu_des'],
+            })
+        return af_submodules
 
     @staticmethod
     def to_dict_af_fil_and(query, req_lang='en'):
@@ -720,6 +751,7 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'FilOrDes': q['sce_fil_or_des'],
                 'TipoFiltroCod': q['tipo_filtro_cod'],
                 'TipoFiltroDes': q['tipo_filtro_des'],
+                'CourseTypeSceFilAndCod': q['tipo_corso_sce_fil_and_cod'],
                 'CdsSceFilAndId': q['cds_sce_fil_and_id'],
                 'CdsSceFilAndCod': q['cds_sce_fil_and_cod'],
                 'CdsSceFilAndNome': q['cds_sce_fil_and_nome'],
@@ -738,8 +770,8 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
     #             'AfCod': q['af_gen_cod'],
     #             'AfDescription': q['des'] if req_lang == 'it' or q['af_gen_des_eng'] is None else q['af_gen_des_eng'],
     #             'Year': q['apt_slot_ord_num'] if q['apt_slot_ord_num'] is not None else q['anno_corso'],
-    #             'SettCod': q['sett_cod'],
-    #             'SettDes': q['sett_des'],
+    #             'SettCod': q.get('sett_cod', None),
+    #             'SettDes': q.get('sett_des', None),
     #             'Peso': q['peso'],
     #
     #         })
@@ -865,7 +897,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityCdSID': query['cds_id'],
             'StudyActivityCdSCod': query['cds_id__cds_cod'],
             'StudyActivityLanguage': query['lista_lin_did_af'].replace(' ','').split(',') if query['lista_lin_did_af'] else [],
-            'StudyActivityFatherCode': query['af_master_id'],
+            'StudyActivityFatherCode': query['af_radice_id'],
             'StudyActivityFatherName': query['Father'],
             'StudyActivityRegDidId': query['regdid_id'],
             'DepartmentName': query['cds_id__dip_id__dip_des_it'] if req_lang == 'it' or query['cds_id__dip_id__dip_des_eng'] is None else query['cds_id__dip_id__dip_des_eng'],
@@ -873,8 +905,8 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             'StudyActivityYear': query['anno_corso'],
             'StudyActivityAcademicYear': query['aa_off_id'],
             'StudyActivitySemester': query['ciclo_des'],
-            'StudyActivitySSDCod': query['sett_cod'],
-            'StudyActivitySSD': query['sett_des'],
+            'StudyActivitySSDCod': query.get('sett_cod', None),
+            'StudyActivitySSD': query.get('sett_des', None),
             'StudyActivityPartitionCod': query['part_stu_cod'],
             'StudyActivityPartitionDes': query['part_stu_des'],
             'StudyActivityExtendedPartitionCod': query['fat_part_stu_cod'],
@@ -958,9 +990,8 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityECTS': query['peso'],
             'StudyActivityHours': ore,
             'StudyActivityModalities': modalities,
-            'StudyActivitySSDCod': query['sett_des'],
-            'StudyActivitySSD': query['sett_des'],
-            'StudyActivitySSDCod': query['sett_cod'],
+            'StudyActivitySSD': query.get('sett_des', None),
+            'StudyActivitySSDCod': query.get('sett_cod', None),
             'StudyActivityCompulsory': query['freq_obblig_flg'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
             'StudyActivityTeachingUnitTypeCod': query['tipo_af_cod'],
@@ -1030,6 +1061,7 @@ class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityRegDidId': query['regdid__regdid_id'],
             'StudyActivityCdSID': query['cds__cds_id'],
+            'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
             'StudyActivityCdSCod': query['cds__cds_cod'],
             'StudyActivityPdsCod': query['pds_cod'],
             'StudyActivityPdsDes': query['pds_des'],

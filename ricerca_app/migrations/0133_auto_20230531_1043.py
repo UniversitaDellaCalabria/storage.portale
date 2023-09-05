@@ -11,14 +11,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='cds',
-        ),
-        migrations.AddField(
-            model_name='sitowebcdsoggettiportalealtridati',
-            name='id_sito_web_cds_articoli_regolamento',
-            field=models.ForeignKey(db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO', default=1, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsarticoliregolamento'),
-            preserve_default=False,
-        ),
+        # migrations.RemoveField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='cds',
+        # ),
+        # migrations.AddField(
+            # model_name='sitowebcdsoggettiportalealtridati',
+            # name='id_sito_web_cds_articoli_regolamento',
+            # field=models.ForeignKey(db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO', default=1, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsarticoliregolamento'),
+            # preserve_default=False,
+        # ),
     ]

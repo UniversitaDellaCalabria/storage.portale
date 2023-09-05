@@ -1,14 +1,14 @@
 import datetime
 
 from django.contrib.auth import get_user_model
-from rest_framework.authtoken.models import Token
 from django.test import TestCase, Client
 from django.urls import reverse
-from .utils import encrypt, decrypt
 
+from rest_framework.authtoken.models import Token
 
-
-from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, \
+from . models import SitoWebCdsTipoDato
+from . utils import encrypt, decrypt
+from . util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, \
     DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest, \
     DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest, \
     RicercaAster1UnitTest, RicercaAster2UnitTest, RicercaDocenteGruppoUnitTest, RicercaDocenteLineaApplicataUnitTest, \
@@ -29,10 +29,10 @@ from .util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, Di
     DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
     DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest, DocentePtaMaterialeDidatticoUnitTest, \
     DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest, \
-    SitoWebCdsArticoliRegAltriDatiUnitTest, SitoWebCdsOggettiPortaleAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
+    SitoWebCdsTopicArticoliRegAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
     DidatticaPianoRegolamentoUnitTest, DidatticaPianoScheUnitTest, DidatticaPianoSceltaSchePianoUnitTest, DidatticaPianoSceltaVincoliUnitTest, DidatticaAmbitiUnitTest, \
     DidatticaPianoSceltaAfUnitTest
-from .serializers import CreateUpdateAbstract
+from . serializers import CreateUpdateAbstract
 
 
 class ApiCdSListUnitTest(TestCase):
@@ -6044,7 +6044,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 
         })
 
-        SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+        ar1 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
             'id': 1,
             'titolo_it': 'Prova',
             'titolo_en': 'Test',
@@ -6068,25 +6068,41 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 
         })
 
-        SitoWebCdsArticoliRegAltriDatiUnitTest.create_sitoWebCdsArticoliRegAltriDati(**{
-            'id': 1,
-            'id_sito_web_cds_articoli_regolamento': a1,
-            'ordine': 0,
-            'titolo_en': 'Title',
-            'titolo_it': 'Titolo',
-            'testo_en': 'Text',
-            'testo_it': 'Testo',
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today(),
+        # SitoWebCdsArticoliRegAltriDatiUnitTest.create_sitoWebCdsArticoliRegAltriDati(**{
+            # 'id': 1,
+            # 'id_sito_web_cds_articoli_regolamento': a1,
+            # 'ordine': 0,
+            # 'titolo_en': 'Title',
+            # 'titolo_it': 'Titolo',
+            # 'testo_en': 'Text',
+            # 'testo_it': 'Testo',
+            # 'visibile': 0,
+            # 'dt_mod': datetime.datetime.today(),
 
-        })
-        SitoWebCdsOggettiPortaleAltriDatiUnitTest.create_sitoWebCdsOggettiPortaleAltriDati(**{
+        # })
+        # SitoWebCdsOggettiPortaleAltriDatiUnitTest.create_sitoWebCdsOggettiPortaleAltriDati(**{
+            # 'id': 1,
+            # 'id_sito_web_cds_oggetti_portale': o1,
+            # 'titolo_it': 'prova',
+            # 'titolo_en': 'test',
+            # 'testo_it': 'prova',
+            # 'testo_en': 'test',
+            # 'ordine': 1,
+            # 'visibile': 1,
+            # 'dt_mod': datetime.datetime.today(),
+
+        # })
+
+        tipo_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
+
+        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
             'id': 1,
-            'id_sito_web_cds_oggetti_portale': o1,
+            'id_sito_web_cds_topic_articoli_reg': ar1,
             'titolo_it': 'prova',
             'titolo_en': 'test',
             'testo_it': 'prova',
             'testo_en': 'test',
+            'id_sito_web_cds_tipo_dato': tipo_dato,
             'ordine': 1,
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
@@ -6116,6 +6132,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
     def test_apisitiwebcdsstudyplans(self):
         req = Client()
+
         cds1 = DidatticaCdsUnitTest.create_didatticaCds(**{
             'tipo_corso_cod': 'L',
             'area_cds': 'scienze',
@@ -6208,6 +6225,32 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
 
         })
 
+        af2 = DidatticaPianoSceltaAfUnitTest.create_didatticaPianoSceltaAf(**{
+            'sce_id': 2,
+            'anno_corso_af': 2022,
+            'ciclo_des': 'Prova',
+            'af_gen_des': 'Prova',
+            'af_id': 1,
+            'tipo_af_des_af': 'Contenuto',
+            'ambito_des_af': 'Test',
+            'sett_cod': 'Content',
+            'peso': 6,
+
+        })
+
+        af3 = DidatticaPianoSceltaAfUnitTest.create_didatticaPianoSceltaAf(**{
+            'sce_id': 3,
+            'anno_corso_af': 2022,
+            'ciclo_des': 'Prova',
+            'af_gen_des': 'Prova',
+            'af_id': 2,
+            'tipo_af_des_af': 'Contenuto',
+            'ambito_des_af': 'Test',
+            'sett_cod': 'Content',
+            'peso': 6,
+
+        })
+
         da1 = DidatticaAmbitiUnitTest.create_didatticaAmbiti(**{
             'amb_id': 1
         })
@@ -6260,6 +6303,37 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             'sett_cod': 'Sem',
             'sett_des': 'Semestere',
             'peso': 6,
+            'fat_part_stu_cod': 'AA',
+
+        })
+
+        daf2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 2,
+            'amb_id': 2,
+            'af_gen_id': 2,
+            'af_gen_cod': 'AAA',
+            'des': 'Prova',
+            'af_gen_des_eng': 'Test',
+            'anno_corso': 1,
+            'sett_cod': 'Sem',
+            'sett_des': 'Semestere',
+            'peso': 6,
+            'fat_part_stu_cod': 'AA',
+
+        })
+
+        daf2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 3,
+            'amb_id': 3,
+            'af_gen_id': 3,
+            'af_gen_cod': 'AAA',
+            'des': 'Prova',
+            'af_gen_des_eng': 'Test',
+            'anno_corso': 1,
+            'sett_cod': 'Sem',
+            'sett_des': 'Semestere',
+            'peso': 6,
+            'fat_part_stu_cod': 'AA',
 
         })
 
@@ -6278,4 +6352,5 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
 
         data = {'cds_cod': '1', 'year': 2022}
         res = req.get(url, data=data)
+        print(res.json())
         assert len(res.json()['results']) == 1
