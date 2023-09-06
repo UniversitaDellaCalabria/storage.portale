@@ -202,7 +202,7 @@
             </div>
             {% endif %}
 
-            <a href="{% url 'crud_cds:crud_cds_office_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
+            <a href="{% url 'crud_cds:crud_cds_organizations_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

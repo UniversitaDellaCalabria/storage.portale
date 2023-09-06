@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from ricerca_app.models import (
-    DidatticaCds, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio)
+    DidatticaCds, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio, DidatticaCdsGruppi)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 
@@ -68,3 +68,14 @@ class DidatticaCdsManifestoRegolamentoForm(forms.ModelForm):
             "manifesto_studi": _("Study manifesto"),
             "regolamento_didattico": _("Didactic regulation"),
         }
+
+
+class DidatticaCdsGruppoForm(forms.ModelForm):
+    class Meta:
+        model = DidatticaCdsGruppi
+        fields = ['descr_breve_it', 'descr_breve_en', 'descr_lunga_it',
+                  'descr_lunga_en', 'ordine', 'visibile']
+        # labels = {
+            # "manifesto_studi": _("Study manifesto"),
+            # "regolamento_didattico": _("Didactic regulation"),
+        # }

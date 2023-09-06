@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 
@@ -55,30 +56,29 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                                  .first()
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(
         cds_id=regdid.cds.pk)
-    
+
     # dati gruppi cds
     gruppi_cds_data = DidatticaCdsGruppi.objects.filter(
-        id_didattica_cds=regdid.cds.pk, visibile=True)
-    
+        id_didattica_cds=regdid.cds.pk)
+
     # dati gruppi dipartimento
     gruppi_dip_data = DidatticaDipartimentoGruppi.objects.filter(
-        id_didattica_dipartimento=regdid.cds.dip.pk, visibile=True)
-    
+        id_didattica_dipartimento=regdid.cds.dip.pk)
+
     # dizionario chiave-valore
-    gruppi_cds = {}    
+    gruppi_cds = {}
     for gruppo in gruppi_cds_data:
         gruppi_cds_componenti = DidatticaCdsGruppiComponenti.objects.filter(
-            id_didattica_cds_gruppi=gruppo, visibile=True)
+            id_didattica_cds_gruppi=gruppo)
         gruppi_cds[gruppo.pk] = gruppi_cds_componenti
-    
 
-    gruppi_dip = {}    
+    gruppi_dip = {}
     for gruppo in gruppi_dip_data:
         gruppi_dip_componenti = DidatticaDipartimentoGruppiComponenti.objects.filter(
-            id_didattica_dipartimento_gruppi=gruppo, visibile=True)
+            id_didattica_dipartimento_gruppi=gruppo)
         gruppi_dip[gruppo.pk] = gruppi_dip_componenti
 
-
+    # logs
     logs_regdid = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(regdid).pk,
                                           object_id=regdid.pk)
 
@@ -96,7 +96,7 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                    'logs_cds': logs_cds,
                    'other_data': other_data,
                    'office_data': office_data,
-                   'regdid': regdid, 
+                   'regdid': regdid,
                    'gruppi_cds_data': gruppi_cds_data,
                    'gruppi_dip_data': gruppi_dip_data,
                    'gruppi_cds': gruppi_cds,
@@ -612,8 +612,8 @@ def cds_office_data_responsible_delete(request, regdid_id, data_id, my_offices=N
 
     log_action(user=request.user,
                obj=regdid.cds,
-               flag=CHANGE,
-               msg='Rimosso link a responsabile')
+               flag=ADDITION,
+               msg=_("New organization added successfully"))
 
     messages.add_message(request,
                          messages.SUCCESS,
@@ -825,3 +825,79 @@ def cds_doc_didactic_regulation_delete(request, regdid_id, my_offices=None, regd
                              _("Didactic regulation file removed successfully"))
 
     return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_organizations_new(request, regdid_id, my_offices=None, regdid=None):
+    """
+    aggiungi organizzazione cds
+    """
+    form = DidatticaCdsGruppoForm()
+
+    if request.POST:
+        form = DidatticaCdsGruppoForm(data=request.POST)
+        if form.is_valid():
+            cds_organization = form.save(commit=False)
+            cds_organization.id_didattica_cds = regdid.cds
+            cds_organization.id_user_mod = request.user
+            cds_organization.dt_mod = datetime.datetime.now()
+            cds_organization.save()
+
+            log_action(user=request.user,
+                       obj=regdid.cds,
+                       flag=ADDITION,
+                       msg=_("Nuova organizzazione creata con successo"))
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("CdS Organization successfully"))
+
+            return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    return render(request,
+                  'cds_organizations_new.html',
+                  {'form': form,})
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_organizations_edit(request, regdid_id, my_offices=None, regdid=None):
+    """
+    modifica organizzazione cds
+    """
+    form = DidatticaCdsGruppoForm()
+
+    if request.POST:
+        form = DidatticaCdsGruppoForm(data=request.POST)
+        if form.is_valid():
+            cds_organization = form.save(commit=False)
+            cds_organization.id_didattica_cds = regdid.cds
+            cds_organization.id_user_mod = request.user
+            cds_organization.dt_mod = datetime.datetime.now()
+            cds_organization.save()
+
+            log_action(user=request.user,
+                       obj=regdid.cds,
+                       flag=ADDITION,
+                       msg=_("Nuova organizzazione creata con successo"))
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("CdS Organization successfully"))
+
+            return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    return render(request,
+                  'cds_organizations_new.html',
+                  {'form': form,})

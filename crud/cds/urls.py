@@ -42,3 +42,9 @@ urlpatterns += path('cds/<str:regdid_id>/study-manifesto/delete/',
                     cds_doc_study_manifesto_delete, name='cds_doc_study_manifesto_delete'),
 urlpatterns += path('cds/<str:regdid_id>/didactic-regulation/delete/',
                     cds_doc_didactic_regulation_delete, name='cds_doc_didactic_regulation_delete'),
+
+# url organizations
+urlpatterns += path('cds/<str:regdid_id>/cds-organizations/new/',
+                    cds_organizations_new, name='crud_cds_organizations_new'),
+urlpatterns += path('cds/<str:regdid_id>/cds-organizations/<str:group_id>/',
+                    cds_organizations_edit, name='crud_cds_organizations_edit'),
