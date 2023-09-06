@@ -86,6 +86,9 @@ if 'crud.teachers' in settings.INSTALLED_APPS:
 if 'crud.cds_websites' in settings.INSTALLED_APPS:
     import crud.cds_websites.urls
     urlpatterns += path('', include((crud.cds_websites.urls, 'crud_cds_websites',))),
+if 'crud.laboratories' in settings.INSTALLED_APPS:
+    import crud.laboratories.urls
+    urlpatterns += path('', include((crud.laboratories.urls, 'crud_laboratories',))),
 
 if 'saml2_sp' in settings.INSTALLED_APPS:
     from djangosaml2 import views

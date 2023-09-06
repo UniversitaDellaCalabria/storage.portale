@@ -10,6 +10,7 @@ urlpatterns += path('projects/new/', project_new, name='crud_project_new'),
 urlpatterns += path('projects/<str:code>/', project, name='crud_project_edit'),
 urlpatterns += path('projects/<str:code>/structure-data/<str:data_id>/',
                     project_structure_data_edit, name='crud_project_structure_data_edit'),
+
 urlpatterns += path('projects/<str:code>/director-data/<str:director_id>/',
                     project_director_edit, name='crud_project_director_edit'),
 urlpatterns += path('projects/<str:code>/director/new/',
