@@ -16,5 +16,6 @@ class Migration(migrations.Migration):
             model_name='laboratoriodatibase',
             name='nome_file_logo',
             field=models.FileField(blank=True, db_column='NOME_FILE_LOGO', max_length=1000, null=True, upload_to=ricerca_app.models.patents_media_path, validators=[ricerca_app.validators.validate_image_file_extension, ricerca_app.validators.validate_file_size]),
+
         ),
     ]
