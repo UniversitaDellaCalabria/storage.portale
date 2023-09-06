@@ -8,6 +8,9 @@ from .validators import *
 def patents_media_path(instance, filename): # pragma: no cover
     return f'portale/brevetti/loghi/{filename}'
 
+def laboratories_media_path(instance, filename): # pragma: no cover
+    return f'portale/laboratori/loghi/{filename}'
+
 def companies_media_path(instance, filename): # pragma: no cover
     return f'portale/spinoff-startup/loghi/{filename}'
 
@@ -1888,7 +1891,10 @@ class LaboratorioDatiBase(models.Model):
         db_column='ID_INFRASTRUTTURA_RIFERIMENTO',
         blank=True,
         null=True)  # Field name made lowercase.
-    nome_file_logo = models.CharField(
+    nome_file_logo = models.FileField(
+        upload_to=laboratories_media_path,
+        validators=[validate_image_file_extension,
+                    validate_file_size],
         db_column='NOME_FILE_LOGO',
         max_length=1000,
         blank=True,

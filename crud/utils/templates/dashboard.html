@@ -252,5 +252,33 @@
     </div>
     {% endif %}
 
+
+    {% if "crud.laboratories" in installed_apps %}
+
+    <div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Laboratories" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage Laboratories' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_laboratories:crud_laboratories' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
+    </div>
+    {% endif %}
+
 </div>
 {% endblock centered_container %}
