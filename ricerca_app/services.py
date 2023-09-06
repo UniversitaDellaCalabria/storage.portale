@@ -985,7 +985,8 @@ class ServiceDidatticaCds:
                             list_submodules = DidatticaAttivitaFormativa.objects.filter(
                                 # ~Q(fat_part_stu_cod='GRP'),
                                 part_stu_cod__isnull=True,
-                                af_radice_id=activity['af_id'],
+                                # af_radice_id=activity['af_id'],
+                                af_pdr_id=activity['af_id'],
                                 ).exclude(
                                 af_id=activity['af_id']
                             ).values(
@@ -1118,7 +1119,9 @@ class ServiceDidatticaCds:
                             list_submodules = DidatticaAttivitaFormativa.objects.filter(
                                 # ~Q(fat_part_stu_cod='GRP'),
                                 part_stu_cod__isnull=True,
-                                af_radice_id=activity['af_id']).exclude(
+                                # af_radice_id=activity['af_id']
+                                af_pdr_id=activity['af_id']
+                            ).exclude(
                                 af_id=activity['af_id']
                             ).values(
                                 'af_id',
@@ -1162,7 +1165,9 @@ class ServiceDidatticaCds:
                                 list_submodules = DidatticaAttivitaFormativa.objects.filter(
                                     # ~Q(fat_part_stu_cod='GRP'),
                                     part_stu_cod__isnull=True,
-                                    af_radice_id=activity['af_id']).exclude(
+                                    # af_radice_id=activity['af_id']
+                                    af_pdr_id=activity['af_id']
+                                ).exclude(
                                     af_id=activity['af_id']
                                 ).values(
                                     'af_id',
@@ -1536,9 +1541,8 @@ class ServiceDidatticaAttivitaFormativa:
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
-            Q(af_radice_id=af_id) | Q(af_pdr_id=af_id)).exclude(
-            af_id=af_id
-        ).values(
+            # af_radice_id=af_id,
+            af_pdr_id=af_id).exclude(af_id=af_id).values(
             'af_id',
             'af_gen_cod',
             'des',
@@ -1559,6 +1563,8 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_cod',
             'des',
             'af_gen_des_eng',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng',
             'cds__cds_cod',
             'cds__cds_id',
             'lista_lin_did_af',
@@ -1606,6 +1612,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_id',
                 'af_gen_cod',
                 'des',
+                'cds__nome_cds_it',
+                'cds__nome_cds_eng',
                 'cds__cds_cod',
                 'cds__cds_id',
                 'pds_cod',
@@ -1627,6 +1635,8 @@ class ServiceDidatticaAttivitaFormativa:
             'ciclo_des',
             'regdid__regdid_id',
             'didatticacopertura__coper_peso',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng',
             'cds__cds_cod',
             'cds__cds_id',
             'pds_cod',
@@ -1647,6 +1657,8 @@ class ServiceDidatticaAttivitaFormativa:
             'ciclo_des',
             'regdid__regdid_id',
             'didatticacopertura__coper_peso',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng',
             'cds__cds_cod',
             'cds__cds_id',
             'pds_cod',
@@ -1671,6 +1683,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'ciclo_des',
                 'regdid__regdid_id',
                 'didatticacopertura__coper_peso',
+                'cds__nome_cds_it',
+                'cds__nome_cds_eng',
                 'cds__cds_cod',
                 'cds__cds_id',
                 'pds_cod',
