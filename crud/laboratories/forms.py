@@ -8,7 +8,7 @@ from django.conf import settings
 from django.urls import reverse
 
 
-from ricerca_app.models import LaboratorioDatiBase
+from ricerca_app.models import LaboratorioDatiBase, RicercaErc1
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 # from .. utils.widgets import RicercaCRUDClearableWidget
@@ -19,6 +19,9 @@ CMS_STORAGE_ROOT_API = getattr(
 
 
 class LaboratorioDatiBaseForm(forms.ModelForm):
+    choosen_department = forms.CharField(label=_('Department'),
+                                         widget=forms.HiddenInput(),
+                                         required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,7 +34,6 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
 
         lista_scelte_laboratorio_interdipartimentale = [('SI', 'SI'),
                                                         ('NO', 'NO')]
-
 
 
         for l in laboratory_areas:
@@ -57,6 +59,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                   'finalita_didattica_en', 'finalita_didattica_it',
                   'sede_dimensione', 'sede_note_descrittive',
                   'strumentazione_descrizione', 'strumentazione_valore',
+                  'id_infrastruttura_riferimento',
                   'sito_web', 'nome_file_logo']
         labels = {
             'nome_laboratorio': _('Name'),
@@ -77,6 +80,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             'sede_note_descrittive': _('Office Description Notes'),
             'strumentazione_descrizione': _('Instrumentation Description'),
             'strumentazione_valore': _('Instrumentation Value'),
+            'id_infrastruttura_riferimento': _("Reference Infrastrucure"),
             'sito_web': _('Website'),
             'nome_file_logo': _('Logo')
         }
@@ -136,7 +140,7 @@ class LaboratorioDatiBaseUnicalReferentChoosenPersonForm(forms.Form):
 #         }
 
 
-# class SpinoffStartupDipartimentoForm(forms.Form):
-#     choosen_department = forms.CharField(label=_('Department'),
-#                                          widget=forms.HiddenInput(),
-#                                          required=True)
+class LaboratorioDatiBaseDipartimentoForm(forms.Form):
+    choosen_department = forms.CharField(label=_('Department'),
+                                         widget=forms.HiddenInput(),
+                                         required=True)

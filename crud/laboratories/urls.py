@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . views import laboratories, laboratory, laboratory_new, laboratory_unical_referent_edit, laboratory_delete, laboratory_scientific_director_edit
+from . views import laboratories, laboratory, laboratory_new, laboratory_unical_referent_edit, laboratory_delete, laboratory_unical_department_data_edit
 
 urlpatterns = []
 
@@ -13,4 +13,5 @@ urlpatterns += path('laboratories/<str:code>/referent/<str:data_id>/', laborator
 #                     company_unical_department_data_delete, name='crud_company_unical_department_data_delete'),
 urlpatterns += path('laboratories/<str:code>/delete/',
                     laboratory_delete, name='crud_laboratory_delete'),
-urlpatterns += path('laboratories/<str:code>/scientific-director/<str:data_id>/', laboratory_scientific_director_edit, name='crud_laboratory_scientific_director_edit'),
+
+                    urlpatterns += path('laboratories/<str:code>/scientific-director/<str:data_id>/', laboratory_scientific_director_edit, name='crud_laboratory_scientific_director_edit'),

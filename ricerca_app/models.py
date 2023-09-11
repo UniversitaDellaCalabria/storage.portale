@@ -1736,6 +1736,22 @@ class LaboratorioAttrezzature(models.Model):
         db_table = 'LABORATORIO_ATTREZZATURE'
 
 
+class LaboratorioInfrastruttura(models.Model):
+    # Field name made lowercase.
+    id = models.BigAutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    descrizione = models.CharField(db_column='DESCRIZIONE', max_length=1000)
+
+
+    def __str__(self): # pragma: no cover
+        return self.descrizione
+
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_INFRASTRUTTURA'
+
+
+
 class LaboratorioDatiBase(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)
@@ -1886,7 +1902,7 @@ class LaboratorioDatiBase(models.Model):
         blank=True,
         null=True)
     id_infrastruttura_riferimento = models.ForeignKey(
-        'LaboratorioInfrastruttura',
+        LaboratorioInfrastruttura,
         models.DO_NOTHING,
         db_column='ID_INFRASTRUTTURA_RIFERIMENTO',
         blank=True,
@@ -1924,17 +1940,6 @@ class LaboratorioDatiErc1(models.Model):
     class Meta:
         managed = True
         db_table = 'LABORATORIO_DATI_ERC1'
-
-
-class LaboratorioInfrastruttura(models.Model):
-    # Field name made lowercase.
-    id = models.BigAutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    descrizione = models.CharField(db_column='DESCRIZIONE', max_length=1000)
-
-    class Meta:
-        managed = True
-        db_table = 'LABORATORIO_INFRASTRUTTURA'
 
 
 class LaboratorioTipologiaAttivita(models.Model):
