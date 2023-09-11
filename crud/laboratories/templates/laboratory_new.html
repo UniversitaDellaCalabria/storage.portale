@@ -46,11 +46,19 @@
                 <h4 style="font-weight: lighter;">
                     {% trans "Choose one Unical referent" %}
                 </h4>
-                <div class="mt-5">
-                    {% include "blocks/includes/choose_teacher.html" with required=1 %}
+                {% comment %} <div class="mt-5">
+                    {% include "blocks/crud_laboratories_teachers_tabs.html" with new_laboratory=1 required=1 person=choosen_unical_referent uid="id"|add:unical_referent_lable %}
                     <hr />
-                    {% include "form_template.html" with form=referent_form %}
+                </div> {% endcomment %}
+
+                <h4 style="font-weight: lighter;">
+                    {% trans "Choose one Scientific Director" %}
+                </h4>
+                <div class="mt-5">
+                    {% include "blocks/crud_laboratories_teachers_tabs.html" with new_laboratory=1 required=1 person_lable=scientific_director_lable person=choosen_scientific_director uid="id"|add:scientific_director_lable %}
+                    <hr />
                 </div>
+
 
                 {% include "includes/form_submit.html" %}
             </form>

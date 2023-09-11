@@ -49,6 +49,10 @@ def laboratory(request, code, laboratory=None):
 
     referent_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
+
+    scientific_director_data = get_object_or_404(LaboratorioDatiBase,
+                                      pk=code)
+
     # departments = SpinoffStartupDipartimento.objects.filter(
     #     id_spinoff_startup_dati_base=company)
 
@@ -96,6 +100,7 @@ def laboratory(request, code, laboratory=None):
                    'logs': logs,
                    'laboratory': laboratory,
                    'referent_data': referent_data,
+                   'scientific_director_data': scientific_director_data,
                    })
 
 
@@ -104,67 +109,81 @@ def laboratory(request, code, laboratory=None):
 def laboratory_new(request, laboratory=None):
     """
     aggiungi nuovo laboratorio
-
     """
-    # due form, uno per i dati del brevetto
-    # e uno per l'inventore iniziale
+
+    #new
     form = LaboratorioDatiBaseForm()
-    # department_form = SpinoffStartupDipartimentoForm()
-    referent_form = ChoosenPersonForm(required=True)
 
-    # se la validazione dovesse fallire ritroveremmo
-    # comunque l'inventore scelto senza doverlo cercare
-    # nuovamente dall'elenco
+    referent_internal_form = LaboratorioDatiBaseUnicalReferentChoosenPersonForm(required=True)
+    referent_external_form = LaboratorioDatiBaseReferentForm()
 
-    # department = None
-    # if request.POST.get('choosen_department', ''):
-    #     department = get_object_or_404(DidatticaDipartimento,
-    #                                    dip_id=request.POST['choosen_department'])
-    #
+    scientific_director_internal_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(required=True)
+    scientific_director_external_form = LaboratorioDatiBaseScientificDirectorForm()
+
     referent = None
-    if request.POST.get('choosen_person', ''):
+    scientific_director = None
+
+
+    if request.POST.get('choosen_unical_referent', ''):
         referent = get_object_or_404(Personale,
-                                     matricola=(decrypt(request.POST['choosen_person'])))
+                                    matricola=(decrypt(request.POST['choosen_unical_referent'])))
 
-    if request.POST:
-        form = LaboratorioDatiBaseForm(
-            data=request.POST, files=request.FILES)
-        # department_form = SpinoffStartupDipartimentoForm(data=request.POST)
-        #
-        referent_form = ChoosenPersonForm(data=request.POST, required=True)
+    if request.POST.get('choosen_scientific_director', ''):
+        scientific_director = get_object_or_404(Personale,
+                                    matricola=(decrypt(request.POST['choosen_scientific_director'])))
 
-        if form.is_valid() and referent_form.is_valid():
-            laboratory = form.save(commit=False)
-            laboratory.referente_compilazione = f'{referent.cognome} {referent.nome}'
-            laboratory.matricola_referente_compilazione = referent
-            laboratory.save()
+    # if request.POST:
+    #     form = LaboratorioDatiBaseForm(
+    #         data=request.POST, files=request.FILES)
+    #     # department_form = SpinoffStartupDipartimentoForm(data=request.POST)
+    #     #
+    #     referent_form = ChoosenPersonForm(data=request.POST, required=True)
+    #     if 'choosen_scientific_director' in request.POST:
+    #         scientific_director_form = internal_form
+    #     else:
+    #         form = external_form
+    #     scientific_director_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(data=request.POST, required=True)
+    #     scientific_director_external_form = LaboratorioDatiBaseScientificDirectorForm()
 
-            # se viene scelto un dipartimento
-            # questo viene associato all'impresa
-            # if department:
-            #     SpinoffStartupDipartimento.objects.create(id_spinoff_startup_dati_base=company,
-            #                                               nome_origine_dipartimento=f'{department.dip_des_it}',
-            #                                               id_didattica_dipartimento=department)
+    #     if form.is_valid() and referent_form.is_valid() and scientific_director_form.is_valid():
+    #         laboratory = form.save(commit=False)
+    #         #referente compilazione
+    #         laboratory.referente_compilazione = f'{referent.cognome} {referent.nome}'
+    #         laboratory.matricola_referente_compilazione = referent
+    #         #responsabile scientifico
+    #         laboratory.responsabile_scientifico = f'{scientific_director.cognome} {scientific_director.nome}'
+    #         laboratory.matricola_responsabile_scientifico = scientific_director           
+    #         laboratory.save()
 
-            log_action(user=request.user,
-                       obj=laboratory,
-                       flag=ADDITION,
-                       msg=[{'added': {}}])
+    #         # se viene scelto un dipartimento
+    #         # questo viene associato all'impresa
+    #         # if department:
+    #         #     SpinoffStartupDipartimento.objects.create(id_spinoff_startup_dati_base=company,
+    #         #                                               nome_origine_dipartimento=f'{department.dip_des_it}',
+    #         #                                               id_didattica_dipartimento=department)
 
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("Laboratory created successfully"))
-            return redirect("crud_laboratories:crud_laboratories")
-        else:  # pragma: no cover
-            for k, v in form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields[k].label}</b>: {v}")
-            # for k, v in department_form.errors.items():
-            #     messages.add_message(request, messages.ERROR,
-            #                          f"<b>{department_form.fields[k].label}</b>: {v}")
-            for k, v in referent_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{referent_form.fields[k].label}</b>: {v}")
+    #         log_action(user=request.user,
+    #                    obj=laboratory,
+    #                    flag=ADDITION,
+    #                    msg=[{'added': {}}])
+
+    #         messages.add_message(request,
+    #                              messages.SUCCESS,
+    #                              _("Laboratory created successfully"))
+    #         return redirect("crud_laboratories:crud_laboratories")
+    #     else:  # pragma: no cover
+    #         for k, v in form.errors.items():
+    #             messages.add_message(request, messages.ERROR,
+    #                                  f"<b>{form.fields[k].label}</b>: {v}")
+    #         # for k, v in department_form.errors.items():
+    #         #     messages.add_message(request, messages.ERROR,
+    #         #                          f"<b>{department_form.fields[k].label}</b>: {v}")
+    #         for k, v in referent_form.errors.items():
+    #             messages.add_message(request, messages.ERROR,
+    #                                  f"<b>{referent_form.fields[k].label}</b>: {v}")
+    #         for k, v in scientific_director_form.errors.items():
+    #             messages.add_message(request, messages.ERROR,
+    #                                  f"<b>{scientific_director_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
@@ -172,14 +191,17 @@ def laboratory_new(request, laboratory=None):
     return render(request,
                   'laboratory_new.html',
                   {'breadcrumbs': breadcrumbs,
-                   # 'choosen_department': f'{department.dip_des_it}' if department else '',
-                   'choosen_person': f'{referent.cognome} {referent.nome}' if referent else '',
-                   'form': form,
-                   # 'departments_api': reverse('ricerca:departmentslist'),
+                   'url': reverse('ricerca:teacherslist'),
                    'teachers_api': reverse('ricerca:teacherslist'),
-                   # 'department_form': department_form,
-                   'referent_form': referent_form,
-                   'url': reverse('ricerca:teacherslist')
+                   'form': form,
+                   'unical_referent_lable' : 'choosen_unical_referent',
+                   'scientific_director_lable' : 'choosen_scientific_director',
+                   'choosen_unical_referent': f'{referent.cognome} {referent.nome}' if referent else '',
+                   'choosen_scientific_director' : f'{scientific_director.cognome} {scientific_director.nome}' if scientific_director else '',
+                   'referent_internal_form': referent_internal_form,
+                   'referent_external_form': referent_external_form,
+                   'scientific_director_internal_form': scientific_director_internal_form,
+                   'scientific_director_external_form': scientific_director_external_form
                   })
 
 
@@ -367,3 +389,82 @@ def laboratory_delete(request, code, laboratory=None):
                          _("Laboratory removed successfully"))
 
     return redirect('crud_laboratories:crud_laboratories')
+
+
+
+
+@login_required
+@can_manage_laboratories
+def laboratory_scientific_director_edit(request, code, data_id, laboratory=None):
+    """
+    dettaglio responsabile scientifico del laboratorio
+    """
+    laboratory_scientific_director = get_object_or_404(LaboratorioDatiBase.objects.select_related('matricola_responsabile_scientifico'),
+                                         pk=data_id)
+    old_label = laboratory_scientific_director.responsabile_scientifico
+    scientific_director = laboratory_scientific_director.matricola_responsabile_scientifico
+    initial = {}
+    scientific_director_data = ''
+    if scientific_director:
+        scientific_director_data = f'{scientific_director.cognome} {scientific_director.nome}'
+        initial = {'choosen_scientific_director': encrypt(scientific_director.matricola)}
+
+    external_form = LaboratorioDatiBaseScientificDirectorForm(
+        instance=laboratory_scientific_director)
+    internal_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(initial=initial, required=True)
+
+    if request.POST:
+
+        internal_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(data=request.POST, required=True)
+        external_form = LaboratorioDatiBaseScientificDirectorForm(instance=laboratory_scientific_director,
+                                                            data=request.POST)
+
+        if 'choosen_scientific_director' in request.POST:
+            form = internal_form
+        else:
+            form = external_form
+
+        if form.is_valid():
+            if form.cleaned_data.get('choosen_scientific_director'):
+                scientific_director_code = decrypt(form.cleaned_data['choosen_scientific_director'])
+                scientific_director = get_object_or_404(
+                    Personale, matricola=scientific_director_code)
+                laboratory_scientific_director.matricola_responsabile_scientifico = scientific_director
+                laboratory_scientific_director.responsabile_scientifico = f'{scientific_director.cognome} {scientific_director.nome}'
+            else:
+                laboratory_scientific_director.matricola_responsabile_scientifico = None
+                laboratory_scientific_director.responsabile_scientifico = form.cleaned_data['responsabile_scientifico']
+
+            laboratory_scientific_director.save()
+
+            if old_label != laboratory_scientific_director.responsabile_scientifico:
+                log_action(user=request.user,
+                           obj=laboratory,
+                           flag=CHANGE,
+                           msg=f'Sostituito responsabile scientifico {old_label} con {laboratory_scientific_director.responsabile_scientifico}')
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Laboratory scientific director edited successfully"))
+
+            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+        else:  # pragma: no cover
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_scientific_director_edit', kwargs={'code': code, 'data_id': data_id}): _('Scientific Director')
+                   }
+
+    return render(request,
+                  'laboratory_scientific_director.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'laboratory': laboratory,
+                   'choosen_scientific_director': scientific_director_data,
+                   'external_form': external_form,
+                   'internal_form': internal_form,
+                   'url': reverse('ricerca:teacherslist')})

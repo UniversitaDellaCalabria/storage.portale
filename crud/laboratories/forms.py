@@ -96,6 +96,36 @@ class LaboratorioDatiBaseReferentForm(forms.ModelForm):
             "email_compilazione": _("Email")
         }
 
+class LaboratorioDatiBaseScientificDirectorForm(forms.ModelForm):
+    class Meta:
+        model = LaboratorioDatiBase
+        fields = ['responsabile_scientifico']
+        labels = {
+            "responsabile_scientifico": _("Name and Surname")
+        }
+
+class LaboratorioDatiBaseScientificDirectorChoosenPersonForm(forms.Form):
+    choosen_scientific_director = forms.CharField(label=_('Scientific Director'),
+                                     widget=forms.HiddenInput(),
+                                     required=False)
+
+    def __init__(self, *args, **kwargs):
+        required = kwargs.pop('required', False)
+        super(LaboratorioDatiBaseScientificDirectorChoosenPersonForm, self).__init__(*args, **kwargs)
+        if required:
+            self.fields['choosen_scientific_director'].required = True
+
+class LaboratorioDatiBaseUnicalReferentChoosenPersonForm(forms.Form):
+    choosen_unical_referent = forms.CharField(label=_('Unical Referent'),
+                                     widget=forms.HiddenInput(),
+                                     required=False)
+
+    def __init__(self, *args, **kwargs):
+        required = kwargs.pop('required', False)
+        super(LaboratorioDatiBaseUnicalReferentChoosenPersonForm, self).__init__(*args, **kwargs)
+        if required:
+            self.fields['choosen_unical_referent'].required = True
+
 
 # class LaboratorioDatiBaseReferentForm(forms.ModelForm):
 #     class Meta:
