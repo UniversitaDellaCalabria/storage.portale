@@ -49,8 +49,8 @@ def laboratory(request, code, laboratory=None):
 
     referent_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
-    # departments = SpinoffStartupDipartimento.objects.filter(
-    #     id_spinoff_startup_dati_base=company)
+    department_data = get_object_or_404(LaboratorioDatiBase,
+                                      pk=code)
 
     if request.POST:
         form = LaboratorioDatiBaseForm(instance=laboratory,
@@ -96,6 +96,7 @@ def laboratory(request, code, laboratory=None):
                    'logs': logs,
                    'laboratory': laboratory,
                    'referent_data': referent_data,
+                   'department_data': department_data,
                    })
 
 
@@ -109,18 +110,18 @@ def laboratory_new(request, laboratory=None):
     # due form, uno per i dati del brevetto
     # e uno per l'inventore iniziale
     form = LaboratorioDatiBaseForm()
-    # department_form = SpinoffStartupDipartimentoForm()
+    department_form = LaboratorioDatiBaseDipartimentoForm()
     referent_form = ChoosenPersonForm(required=True)
 
     # se la validazione dovesse fallire ritroveremmo
     # comunque l'inventore scelto senza doverlo cercare
     # nuovamente dall'elenco
 
-    # department = None
-    # if request.POST.get('choosen_department', ''):
-    #     department = get_object_or_404(DidatticaDipartimento,
-    #                                    dip_id=request.POST['choosen_department'])
-    #
+    department = None
+    if request.POST.get('choosen_department', ''):
+        department = get_object_or_404(DidatticaDipartimento,
+                                       dip_id=request.POST['choosen_department'])
+
     referent = None
     if request.POST.get('choosen_person', ''):
         referent = get_object_or_404(Personale,
@@ -129,22 +130,22 @@ def laboratory_new(request, laboratory=None):
     if request.POST:
         form = LaboratorioDatiBaseForm(
             data=request.POST, files=request.FILES)
-        # department_form = SpinoffStartupDipartimentoForm(data=request.POST)
-        #
+        department_form = LaboratorioDatiBaseDipartimentoForm(data=request.POST)
+
         referent_form = ChoosenPersonForm(data=request.POST, required=True)
 
-        if form.is_valid() and referent_form.is_valid():
+        if form.is_valid() and referent_form.is_valid() and department_form.is_valid():
             laboratory = form.save(commit=False)
             laboratory.referente_compilazione = f'{referent.cognome} {referent.nome}'
             laboratory.matricola_referente_compilazione = referent
-            laboratory.save()
 
             # se viene scelto un dipartimento
-            # questo viene associato all'impresa
-            # if department:
-            #     SpinoffStartupDipartimento.objects.create(id_spinoff_startup_dati_base=company,
-            #                                               nome_origine_dipartimento=f'{department.dip_des_it}',
-            #                                               id_didattica_dipartimento=department)
+            # questo viene associato al laboratorio
+            laboratory.dipartimento_riferimento = department.dip_des_it
+            laboratory.id_dipartimento_riferimento = department
+
+            laboratory.save()
+
 
             log_action(user=request.user,
                        obj=laboratory,
@@ -159,9 +160,9 @@ def laboratory_new(request, laboratory=None):
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
-            # for k, v in department_form.errors.items():
-            #     messages.add_message(request, messages.ERROR,
-            #                          f"<b>{department_form.fields[k].label}</b>: {v}")
+            for k, v in department_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{department_form.fields[k].label}</b>: {v}")
             for k, v in referent_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{referent_form.fields[k].label}</b>: {v}")
@@ -172,12 +173,12 @@ def laboratory_new(request, laboratory=None):
     return render(request,
                   'laboratory_new.html',
                   {'breadcrumbs': breadcrumbs,
-                   # 'choosen_department': f'{department.dip_des_it}' if department else '',
+                   'choosen_department': f'{department.dip_des_it}' if department else '',
                    'choosen_person': f'{referent.cognome} {referent.nome}' if referent else '',
                    'form': form,
-                   # 'departments_api': reverse('ricerca:departmentslist'),
+                   'departments_api': reverse('ricerca:departmentslist'),
                    'teachers_api': reverse('ricerca:teacherslist'),
-                   # 'department_form': department_form,
+                   'department_form': department_form,
                    'referent_form': referent_form,
                    'url': reverse('ricerca:teacherslist')
                   })
@@ -269,41 +270,50 @@ def laboratory_unical_department_data_edit(request, code, department_id,
     """
     modifica dipartimento
     """
-    department_laboratory = get_object_or_404(LaboratorioDatiBase.objects.select_related('id_didattica_dipartimento'),
-                                           pk=department_id,
-                                           id_spinoff_startup_dati_base=company)
-    department = department_company.id_didattica_dipartimento
-    old_label = department.dip_des_it
+    department_laboratory = get_object_or_404(LaboratorioDatiBase.objects.select_related('id_dipartimento_riferimento'),
+                                           pk=department_id)
+    department = department_laboratory.id_dipartimento_riferimento
+    if department:
+        old_label = department.dip_des_it
+    else:
+        old_label = ''
     department_data = ''
     initial = {}
     if department:
         department_data = department.dip_des_it
         initial = {'choosen_department': department.dip_id}
 
-    form = SpinoffStartupDipartimentoForm(initial=initial)
+    form = LaboratorioDatiBaseDipartimentoForm(initial=initial)
 
     if request.POST:
-        form = SpinoffStartupDipartimentoForm(data=request.POST)
+        form = LaboratorioDatiBaseDipartimentoForm(data=request.POST)
         if form.is_valid():
 
             department_code = form.cleaned_data['choosen_department']
             new_department = get_object_or_404(DidatticaDipartimento,
                                                dip_id=department_code)
-            department_company.user_mod = request.user
-            department_company.id_didattica_dipartimento = new_department
-            department_company.nome_origine_dipartimento = f'{new_department.dip_des_it}'
-            department_company.save()
+            department_laboratory.user_mod = request.user
+            department_laboratory.id_dipartimento_riferimento = new_department
+            department_laboratory.dipartimento_riferimento = f'{new_department.dip_des_it}'
+            department_laboratory.save()
+
+            if old_label == '':
+                log_action(user=request.user,
+                           obj=laboratory,
+                           flag=CHANGE,
+                           msg=f'Aggiunto dipartimento {new_department}')
 
             if old_label != new_department:
                 log_action(user=request.user,
-                           obj=company,
+                           obj=laboratory,
                            flag=CHANGE,
                            msg=f'Sostituito dipartimento {old_label} con {new_department}')
+
 
             messages.add_message(request,
                                  messages.SUCCESS,
                                  _("Department edited successfully"))
-            return redirect('crud_companies:crud_company_edit',
+            return redirect('crud_laboratories:crud_laboratory_edit',
                             code=code)
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -311,18 +321,19 @@ def laboratory_unical_department_data_edit(request, code, department_id,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_companies:crud_companies'): _('Companies'),
-                   reverse('crud_companies:crud_company_edit', kwargs={'code': code}): company.nome_azienda,
-                   '#': f'{department.dip_des_it}'}
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   '#': f'{laboratory.dipartimento_riferimento}'}
 
     return render(request,
-                  'company_department.html',
+                  'laboratory_department.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
-                   'company': company,
+                   'laboratory': laboratory,
                    'department_id': department_id,
                    'choosen_department': department_data,
                    'url': reverse('ricerca:departmentslist')})
+
 
 
 # @login_required

@@ -14,35 +14,34 @@
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% include "form_template.html" with form=form %}
                 <hr />
-
-{#                <h4 style="font-weight: lighter;">{% trans "Choose one department" %}</h4>#}
-{#                <div class="mt-5">#}
-{#                    <span class="choosen_department_name">#}
-{#                        {% if choosen_department %}#}
-{#                        <div class="alert alert-success" role="alert">#}
-{#                            {% trans 'Choosen department' %} <b>{{ choosen_department }}</b>#}
-{#                        </div>#}
-{#                        {% else %}#}
-{#                        <div class="alert alert-warning" role="alert">#}
-{#                            {% trans "Choose a department to proceed" %}#}
-{#                        </div>#}
-{#                        {% endif %}#}
-{#                    </span>#}
-{#                    {% include "blocks/crud_departmentslist.html" with uid="id_2" url=departments_api %}#}
-{#                    <hr />#}
-{#                    <span class="choosen_department_name">#}
-{#                        {% if choosen_department %}#}
-{#                        <div class="alert alert-success" role="alert">#}
-{#                            {% trans 'Choosen department' %} <b>{{ choosen_department }}</b>#}
-{#                        </div>#}
-{#                        {% else %}#}
-{#                        <div class="alert alert-warning" role="alert">#}
-{#                          {% trans "Choose a department to proceed" %}#}
-{#                        </div>#}
-{#                        {% endif %}#}
-{#                    </span>#}
-{#                    <hr />#}
-{#                </div>#}
+                <h4 style="font-weight: lighter;">{% trans "Choose one department" %}</h4>
+                <div class="mt-5">
+                    <span class="choosen_department_name">
+                        {% if choosen_department %}
+                        <div class="alert alert-success" role="alert">
+                            {% trans 'Choosen department' %} <b>{{ choosen_department }}</b>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            {% trans "Choose a department to proceed" %}
+                        </div>
+                        {% endif %}
+                    </span>
+                    {% include "blocks/crud_departmentslist.html" with uid="id_2" url=departments_api %}
+                    <hr />
+                    <span class="choosen_department_name">
+                        {% if choosen_department %}
+                        <div class="alert alert-success" role="alert">
+                            {% trans 'Choosen department' %} <b>{{ choosen_department }}</b>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning" role="alert">
+                          {% trans "Choose a department to proceed" %}
+                        </div>
+                        {% endif %}
+                    </span>
+                    <hr />
+                </div>
                 <h4 style="font-weight: lighter;">
                     {% trans "Choose one Unical referent" %}
                 </h4>
@@ -51,7 +50,6 @@
                     <hr />
                     {% include "form_template.html" with form=referent_form %}
                 </div>
-
                 {% include "includes/form_submit.html" %}
             </form>
         </div>
