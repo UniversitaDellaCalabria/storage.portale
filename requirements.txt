@@ -1,9 +1,8 @@
-django>=3.0.8,<4.0
+django>=3.2.20,<5.0
 # sudo apt-get install python3-dev default-libmysqlclient-dev build-essential pkg-config
 mysqlclient
 # uwsgi
 
-# SASS dynamic compiler
 django-cors-headers
 django-filter
 
@@ -15,8 +14,7 @@ git+https://github.com/UniversitaDellaCalabria/django-organizational-area.git
 pillow
 
 # Rest
-#djangorestframework
-git+https://github.com/peppelinux/django-rest-framework@agid_oas3
+git+https://github.com/UniversitaDellaCalabria/django-rest-framework.git@agid_oas3
 
 markdown
 # openAPI schema v3
