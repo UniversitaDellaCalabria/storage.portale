@@ -27,3 +27,5 @@ python-magic
 django-ckeditor
 
 requests
+
+inflection
