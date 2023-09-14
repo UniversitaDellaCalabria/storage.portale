@@ -16,7 +16,7 @@
     </div>
     {% endif %}
 </span>
-{% include include_block|default:"blocks/crud_laboratories_teachers_list.html" with person_lable=person_lable person=person uid=uid|add:person_lable|default:"id_1" %}
+{% include include_block|default:"blocks/crud_laboratories_teachers_list.html" with internal_form=internal_form external_form=external_form person_lable=person_lable person=person uid=uid|add:person_lable|default:"id_1" %}
 <hr />
 <span class="{{person_lable}}_name">
     {% if person %}

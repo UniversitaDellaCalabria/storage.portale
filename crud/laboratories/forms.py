@@ -91,7 +91,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         js = ('js/textarea-autosize.js',)
 
 
-class LaboratorioDatiBaseReferentForm(forms.ModelForm):
+class LaboratorioDatiBaseUnicalReferentForm(forms.ModelForm):
     class Meta:
         model = LaboratorioDatiBase
         fields = ['referente_compilazione', 'email_compilazione']

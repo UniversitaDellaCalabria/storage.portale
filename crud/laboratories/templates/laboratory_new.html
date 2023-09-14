@@ -42,22 +42,24 @@
                     </span>
                     <hr />
                 </div>
+                <div id="unical_referent">
                 <h4 style="font-weight: lighter;">
                     {% trans "Choose one Unical referent" %}
                 </h4>
-                {% comment %} <div class="mt-5">
-                    {% include "blocks/crud_laboratories_teachers_tabs.html" with new_laboratory=1 required=1 person=choosen_unical_referent uid="id"|add:unical_referent_lable %}
+                <div class="mt-5">
+                    {% include "blocks/crud_laboratories_teachers_tabs.html" with internal_form=unical_referent_internal_form external_form=unical_referent_external_form new_laboratory=1 required=1 person_lable=unical_referent_lable person=choosen_unical_referent uid="id_1" %}
                     <hr />
-                </div> {% endcomment %}
-
+                </div>
+                </div>
+                <div id="scientific_director">
                 <h4 style="font-weight: lighter;">
                     {% trans "Choose one Scientific Director" %}
                 </h4>
                 <div class="mt-5">
-                    {% include "blocks/crud_laboratories_teachers_tabs.html" with new_laboratory=1 required=1 person_lable=scientific_director_lable person=choosen_scientific_director uid="id"|add:scientific_director_lable %}
+                    {% include "blocks/crud_laboratories_teachers_tabs.html" with internal_form=scientific_director_internal_form external_form=scientific_director_external_form new_laboratory=1 required=1 person_lable=scientific_director_lable person=choosen_scientific_director uid="id_3" %}
                     <hr />
                 </div>
-
+                </div>
                 {% include "includes/form_submit.html" %}
             </form>
         </div>
