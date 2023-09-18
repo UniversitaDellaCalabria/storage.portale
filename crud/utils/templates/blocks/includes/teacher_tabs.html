@@ -1,34 +1,32 @@
 {% load i18n %}
-
-
 <nav>
-    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-item nav-link active" id="nav-tab1-tab" data-toggle="tab" href="#nav-tab1" role="tab" aria-controls="nav-tab1" aria-selected="true">
+    <div class="nav nav-tabs" id="{{person_label|default:"choosen_person"}}-nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="{{person_label|default:"choosen_person"}}-nav-tab1-tab" data-toggle="tab" href="#{{person_label|default:"choosen_person"}}-nav-tab1" role="tab" aria-controls="{{person_label|default:"choosen_person"}}-nav-tab1" aria-selected="true">
             Docente interno
         </a>
-        <a class="nav-item nav-link" id="nav-tab2-tab" data-toggle="tab" href="#nav-tab2" role="tab" aria-controls="nav-tab2" aria-selected="false">
+        <a onclick="{{person_label|default:"choosen_person"}}_unsetPerson()" class="nav-item nav-link" id="{{person_label|default:"choosen_person"}}-nav-tab2-tab" data-toggle="tab" href="#{{person_label|default:"choosen_person"}}-nav-tab2" role="tab" aria-controls="{{person_label|default:"choosen_person"}}-nav-tab2" aria-selected="false">
             Docente esterno
         </a>
     </div>
 </nav>
-<div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane p-4 fade show active" id="nav-tab1" role="tabpanel" aria-labelledby="nav-tab1-tab">
+<div class="tab-content" id="{{person_label|default:"choosen_person"}}-nav-tabContent">
+    <div class="tab-pane p-4 fade show active" id="{{person_label|default:"choosen_person"}}-nav-tab1" role="tabpanel" aria-labelledby="{{person_label|default:"choosen_person"}}-nav-tab1-tab">
         {% if not exclude_forms %}
         <form method="post" novalidate>
         {% endif %}
-            {% include "blocks/includes/choose_teacher.html" %}
+            {% include "blocks/includes/choose_teacher.html" with choosen_person=choosen_person person_label=person_label|default:"choosen_person" uid=uid|add:"_choices" %}
             {% include "form_template.html" with form=internal_form %}
-        {% if not exclude_forms %}
+        {% if not exclude_forms and not no_submit %}
             {% include "includes/form_submit.html" %}
         </form>
         {% endif %}
     </div>
-    <div class="tab-pane p-4 fade" id="nav-tab2" role="tabpanel" aria-labelledby="nav-tab2-tab">
+    <div class="tab-pane p-4 fade" id="{{person_label|default:"choosen_person"}}-nav-tab2" role="tabpanel" aria-labelledby="{{person_label|default:"choosen_person"}}-nav-tab2-tab">
         {% if not exclude_forms %}
         <form method="post" novalidate>
         {% endif %}
             {% include "form_template.html" with form=external_form %}
-        {% if not exclude_forms %}
+        {% if not exclude_forms and not no_submit %}
             {% include "includes/form_submit.html" %}
         </form>
         {% endif %}

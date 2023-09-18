@@ -1,7 +1,7 @@
 {% load i18n %}
 
 
-<span class="choosen_person_name">
+<span class="{{person_label|default:"choosen_person"}}_name">
     {% if choosen_person %}
     <div class="alert alert-success" role="alert">
         {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
@@ -16,9 +16,9 @@
     </div>
     {% endif %}
 </span>
-{% include include_block|default:"blocks/crud_teacherslist.html" with uid=uid|default:"id_1" %}
+{% include include_block|default:"blocks/crud_teacherslist.html" with internal_form=internal_form external_form=external_form person_label=person_label|default:"choosen_person" choosen_person=choosen_person uid=uid|add:"_list"|default:"id_1" %}
 <hr />
-<span class="choosen_person_name">
+<span class="{{person_label|default:"choosen_person"}}_name">
     {% if choosen_person %}
     <div class="alert alert-success" role="alert">
         {% trans 'Choosen person' %} <b>{{ choosen_person }}</b>
