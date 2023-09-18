@@ -130,6 +130,7 @@
                         <tr>
                             <th>#</th>
                             <th>{% trans "Organization" %}</th>
+                            <th>{% trans "Visible" %}</th>
                             <th>{% trans "Members" %}</th>
                             <th></th>
                         </tr>
@@ -140,16 +141,42 @@
                             <td>{{ data.ordine|default:"-" }}</td>
                             <td><b>{{ data.descr_breve_it }}</b></td>
                             <td>
-                                {% for key, value in gruppi_cds.items %}
-                                {% for comp in value %}
-                                {% if key == data.id  %}
-                                {{comp.matricola}} <br />
+                                {% if data.visibile %}
+                                <svg class="icon icon-sm icon-success">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                </svg>
+                                {% else %}
+                                <svg class="icon icon-sm icon-danger">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                </svg>
                                 {% endif %}
-                                {% endfor %}
-                                {% endfor %}
                             </td>
+                            <td>
+                                <ul style="list-style: none; padding-left: 0">
+                                    {% for key, value in gruppi_cds.items %}
+                                        {% for comp in value %}
+                                            {% if key == data.id  %}
+                                            <li>
+                                                {{ comp.nome }} {{ comp.cognome }}
+                                                {% if comp.visibile %}
+                                                <svg class="icon icon-xs icon-success">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                                </svg>
+                                                {% else %}
+                                                <svg class="icon icon-xs icon-danger">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                                </svg>
+                                                {% endif %}
+                                            </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+
+                            </td>
+
                             <td class="text-right">
-                                <a href="{% url 'crud_cds:crud_cds_office_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="btn btn-primary btn-xs">
+                                <a href="{% url 'crud_cds:crud_cds_organizations_edit' regdid_id=regdid.pk group_id=data.pk %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}

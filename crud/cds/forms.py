@@ -79,3 +79,12 @@ class DidatticaCdsGruppoForm(forms.ModelForm):
             # "manifesto_studi": _("Study manifesto"),
             # "regolamento_didattico": _("Didactic regulation"),
         # }
+        widgets = {'descr_breve_it': forms.Textarea(attrs={'rows': 2}),
+                   'descr_breve_en': forms.Textarea(attrs={'rows': 2}),
+                   'descr_lunga_it': forms.Textarea(attrs={'rows': 2}),
+                   'descr_lunga_en': forms.Textarea(attrs={'rows': 2})}
+
+
+
+    class Media:
+        js = ('js/textarea-autosize.js',)

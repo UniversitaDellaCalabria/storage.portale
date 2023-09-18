@@ -861,43 +861,53 @@ def cds_organizations_new(request, regdid_id, my_offices=None, regdid=None):
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'cds_organizations_new.html',
+                  'cds_organization.html',
                   {'form': form,})
 
 
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_organizations_edit(request, regdid_id, my_offices=None, regdid=None):
+def cds_organizations_edit(request, regdid_id, group_id, my_offices=None, regdid=None):
     """
     modifica organizzazione cds
     """
-    form = DidatticaCdsGruppoForm()
+    cds_organization = get_object_or_404(DidatticaCdsGruppi,
+                                         pk=group_id,
+                                         id_didattica_cds=regdid.cds)
+    form = DidatticaCdsGruppoForm(instance=cds_organization)
 
     if request.POST:
-        form = DidatticaCdsGruppoForm(data=request.POST)
+        form = DidatticaCdsGruppoForm(instance=cds_organization,
+                                      data=request.POST)
         if form.is_valid():
-            cds_organization = form.save(commit=False)
+            form.save(commit=False)
             cds_organization.id_didattica_cds = regdid.cds
             cds_organization.id_user_mod = request.user
             cds_organization.dt_mod = datetime.datetime.now()
             cds_organization.save()
 
+            changed_field_labels = _get_changed_field_labels_from_form(form,
+                                                                       form.changed_data)
+
             log_action(user=request.user,
                        obj=regdid.cds,
-                       flag=ADDITION,
-                       msg=_("Nuova organizzazione creata con successo"))
+                       flag=CHANGE,
+                       msg=[{'changed': {"fields": changed_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("CdS Organization successfully"))
+                                 _("CdS Organization successfully edited"))
 
-            return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
+            return redirect('crud_cds:crud_cds_organizations_edit',
+                            regdid_id=regdid_id,
+                            group_id=group_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'cds_organizations_new.html',
-                  {'form': form,})
+                  'cds_organization.html',
+                  {'form': form,
+                   'cds_organization': cds_organization})
