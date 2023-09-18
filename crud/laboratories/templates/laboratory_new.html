@@ -27,7 +27,7 @@
                         </div>
                         {% endif %}
                     </span>
-                    {% include "blocks/crud_departmentslist.html" with uid="id_2" url=departments_api %}
+                    {% include "blocks/crud_departmentslist.html" with uid="id_1" url=departments_api %}
                     <hr />
                     <span class="choosen_department_name">
                         {% if choosen_department %}
@@ -42,23 +42,21 @@
                     </span>
                     <hr />
                 </div>
-                <div id="unical_referent">
-                <h4 style="font-weight: lighter;">
-                    {% trans "Choose one Unical referent" %}
-                </h4>
+                <h4 style="font-weight: lighter;">{% trans "Choose one Unical referent" %}</h4>
                 <div class="mt-5">
-                    {% include "blocks/crud_laboratories_teachers_tabs.html" with internal_form=unical_referent_internal_form external_form=unical_referent_external_form new_laboratory=1 required=1 person_lable=unical_referent_lable person=choosen_unical_referent uid="id_1" %}
-                    <hr />
+                    <span class="choosen_unical_referent">
+                        {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 internal_form=unical_referent_internal_form external_form=unical_referent_external_form person_label=unical_referent_label choosen_person=choosen_unical_referent required=1 uid="id_"|add:unical_referent_label|add:"_tabs" %}
+                        <hr />
+                    </span>
                 </div>
-                </div>
-                <div id="scientific_director">
                 <h4 style="font-weight: lighter;">
                     {% trans "Choose one Scientific Director" %}
                 </h4>
                 <div class="mt-5">
-                    {% include "blocks/crud_laboratories_teachers_tabs.html" with internal_form=scientific_director_internal_form external_form=scientific_director_external_form new_laboratory=1 required=1 person_lable=scientific_director_lable person=choosen_scientific_director uid="id_3" %}
-                    <hr />
-                </div>
+                    <span class="choosen_scientific_director">
+                        {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 internal_form=scientific_director_internal_form external_form=scientific_director_external_form person_label=scientific_director_label choosen_person=choosen_scientific_director uid="id_"|add:scientific_director_label|add:"_tabs" %}
+                        <hr />
+                    </span>
                 </div>
                 {% include "includes/form_submit.html" %}
             </form>

@@ -6,14 +6,17 @@
 
 {% block centered_container %}
 <h3 style="font-weight: lighter;" class="mb-4">
-    {% if choosen_scientific_director %}{% trans "Edit scientific director for" %}{% else %}{% trans "New scientific director for" %}{% endif %} {{ laboratory.nome_laboratorio }}
+    {% if choosen_safety_responsible %}{% trans "Edit safety responsible for" %}{% else %}{% trans "New safety responsible for" %}{% endif %} {{ laboratory.nome_laboratorio }}
 </h3>
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            {% include "blocks/includes/teacher_tabs.html" with required=1 choosen_person=choosen_scientific_director person_label=scientific_director_label %}
+            {% include "blocks/includes/choose_teacher.html" %}
             <hr />
+            <form method="post" novalidate>
             {% include "form_template.html" with form=form %}
+            {% include "includes/form_submit.html" %}
+            </form> 
         </div>
     </div>
 </div>

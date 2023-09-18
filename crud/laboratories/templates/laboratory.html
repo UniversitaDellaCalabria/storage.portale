@@ -63,84 +63,6 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h4 style="font-weight: lighter;">{% trans "Unical Referent" %}</h4>
-
-            <!-- deputy coordinator -->
-            <table class="table table-striped table-hover">
-                <tbody>
-                    <tr>
-                        <td>
-                            {{ laboratory.referente_compilazione|default:"-" }}
-                            {% if not laboratory.matricola_referente_compilazione %}
-                                ({% trans "External" %})
-                            {% endif %}
-                        </td>
-                        <td class="text-right">
-                            <a href="{% url 'crud_laboratories:crud_laboratory_unical_referent_edit' code=laboratory.pk data_id=referent_data.pk %}" class="btn btn-primary btn-xs">
-                                <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                </svg> {% trans "Edit" %}
-                            </a>
-                        </td>
-
-                        {% comment %}
-                        {% if company.matricola_referente_unical %}
-                        <td>
-                            <a href="" class="btn btn-danger btn-xs"
-                               data-toggle="modal"
-                               data-target="#delete_unical_referent">
-                                <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                </svg> {% trans "Remove" %}
-                            </a>
-                            <div class="modal fade"
-                                 tabindex="-1"
-                                 role="dialog"
-                                 id="delete_unical_referent">
-                                <div class="modal-dialog modal-dialog-centered"
-                                     role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">
-                                                {% trans "Confirm" %}
-                                            </h5>
-                                            <button class="close"
-                                                    type="button"
-                                                    data-dismiss="modal"
-                                                    aria-label="Close">
-                                               <svg class="icon">
-                                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                               </svg>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>
-                                                {% trans "Do you want to delete chosen teacher?" %}
-                                            </p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_companies:crud_company_unical_referent_data_delete' code=company.pk data_id=referent_data.pk %}">
-                                                {% trans 'Yes, proceed' %}
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        {% endif %}
-                        {% endcomment %}
-
-
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="card-wrapper card-space">
-    <div class="card card-bg no-after">
-        <div class="card-body">
             <h4 style="font-weight: lighter;">{% trans "Department" %}</h4>
 
             <!-- department -->
@@ -164,78 +86,41 @@
     </div>
 </div>
 
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Unical Referent" %}</h4>
 
-{#<div class="card-wrapper card-space">#}
-{#    <div class="card card-bg no-after">#}
-{#        <div class="card-body">#}
-{#            <h4 style="font-weight: lighter;">{% trans "Departments" %}</h4>#}
-{#            {% if departments %}#}
-{#            <table class="table table-striped table-hover">#}
-{#                <tbody>#}
-{#                    {% for department in departments %}#}
-{#                    <tr>#}
-{#                        <td>#}
-{#                                {{ department.dipartimento_riferimento|default:"-" }}#}
-{#                            </td>#}
-{#                        <td class="text-right">#}
-{#                            <a href="{% url 'crud_laboratories:crud_laboratory_unical_department_data_edit' code=laboratory.pk  department_id=department.pk %}" class="btn btn-primary btn-xs">#}
-{#                                <svg class="icon icon-xs icon-white">#}
-{#                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>#}
-{#                                </svg> {% trans "Edit" %}#}
-{#                            </a>#}
-{##}
-{#                        </td>#}
-{#                    </tr>#}
-{#                    {% comment %}#}
-{#                    <div class="modal fade"#}
-{#                         tabindex="-1"#}
-{#                         role="dialog"#}
-{#                         id="delete_department_{{ department.pk }}">#}
-{#                        <div class="modal-dialog modal-dialog-centered"#}
-{#                             role="document">#}
-{#                            <div class="modal-content">#}
-{#                                <div class="modal-header">#}
-{#                                    <h5 class="modal-title">#}
-{#                                        {% trans "Confirm" %}#}
-{#                                    </h5>#}
-{#                                    <button class="close"#}
-{#                                            type="button"#}
-{#                                            data-dismiss="modal"#}
-{#                                            aria-label="Close">#}
-{#                                       <svg class="icon">#}
-{#                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>#}
-{#                                       </svg>#}
-{#                                    </button>#}
-{#                                </div>#}
-{#                                <div class="modal-body">#}
-{#                                    <p>#}
-{#                                        {% trans "Do you want to delete choosen department?" %}#}
-{#                                    </p>#}
-{#                                </div>#}
-{#                                <div class="modal-footer">#}
-{#                                    <a class="btn btn-success btn-sm" href="{% url 'crud_companies:crud_company_unical_department_data_delete' code=company.pk department_id=department.pk %}">#}
-{#                                        {% trans 'Yes, proceed' %}#}
-{#                                    </a>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    {% endcomment %}#}
-{#                    {% endfor %}#}
-{#                </tbody>#}
-{#            </table>#}
-{##}
-{#            {% endif %}#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
+            <!-- unical referent -->
+            <table class="table table-striped table-hover">
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ laboratory.referente_compilazione|default:"-" }}
+                            {% if not laboratory.matricola_referente_compilazione %}
+                                ({% trans "External" %})
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            <a href="{% url 'crud_laboratories:crud_laboratory_unical_referent_edit' code=laboratory.pk data_id=referent_data.pk %}" class="btn btn-primary btn-xs">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg> {% trans "Edit" %}
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
             <h4 style="font-weight: lighter;">{% trans "Scientific Director" %}</h4>
 
-            <!-- deputy coordinator -->
+            <!-- scientific director -->
             <table class="table table-striped table-hover">
                 <tbody>
                     <tr>
@@ -252,23 +137,51 @@
                                 </svg> {% trans "Edit" %}
                             </a>
                         </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-                        {% comment %}
-                        {% if laboratory.matricola_responsabile_scientifico %}
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Safety Responsible" %}</h4>
+
+            <!-- safety responsible -->
+            <table class="table table-striped table-hover">
+                <tbody>
+                    <tr>
                         <td>
+                            {{ laboratory.preposto_sicurezza|default:"-" }}
+                        </td>
+                        <td class="text-right">
+                            <a href="{% url 'crud_laboratories:crud_laboratory_safety_responsible_edit' code=laboratory.pk data_id=safety_responsible_data.pk %}" class="btn btn-primary btn-xs">
+                                {% if laboratory.matricola_preposto_sicurezza %}
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg> {% trans "Edit" %}
+                                {% else %}
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                                </svg> {% trans "Add new" %}
+                                {% endif %}
+                            </a>
+                            {% if laboratory.matricola_preposto_sicurezza %}
                             <a href="" class="btn btn-danger btn-xs"
-                               data-toggle="modal"
-                               data-target="#delete_unical_scientific_director">
+                                data-toggle="modal"
+                                data-target="#delete_safety_responsible">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
                             <div class="modal fade"
-                                 tabindex="-1"
-                                 role="dialog"
-                                 id="delete_unical_scientific_director">
+                                    tabindex="-1"
+                                    role="dialog"
+                                    id="delete_safety_responsible">
                                 <div class="modal-dialog modal-dialog-centered"
-                                     role="document">
+                                        role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title">
@@ -278,29 +191,26 @@
                                                     type="button"
                                                     data-dismiss="modal"
                                                     aria-label="Close">
-                                               <svg class="icon">
-                                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                               </svg>
+                                                <svg class="icon">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                </svg>
                                             </button>
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete chosen teacher?" %}
+                                                {% trans "Do you want to delete safety responsible?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_companies:crud_laboratory_scientific_director_data_delete' code=company.pk data_id=scientific_director_data.pk %}">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_safety_responsible_delete' code=laboratory.pk data_id=safety_responsible_data.pk %}">
                                                 {% trans 'Yes, proceed' %}
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                         </td>
-                        {% endif %}
-                        {% endcomment %}
-
-
                     </tr>
                 </tbody>
             </table>
