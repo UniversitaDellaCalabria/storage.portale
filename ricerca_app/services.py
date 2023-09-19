@@ -913,6 +913,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_gen_des_eng',
                 'ciclo_des',
                 'regdid__regdid_id',
+                'regdid__aa_reg_did',
+                'anno_corso',
                 'didatticacopertura__coper_peso'
             ).first()
 
@@ -926,6 +928,8 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'ciclo_des',
             'regdid__regdid_id',
+            'regdid__aa_reg_did',
+            'anno_corso',
             'didatticacopertura__coper_peso',
             'cds__cds_cod',
             'cds__cds_id',
@@ -972,6 +976,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_gen_des_eng',
                 'ciclo_des',
                 'regdid__regdid_id',
+                'regdid__aa_reg_did',
+                'anno_corso',
                 'didatticacopertura__coper_peso',
                 'cds__cds_cod',
                 'cds__cds_id',

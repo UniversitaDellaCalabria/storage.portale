@@ -418,6 +418,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'anno_corso': 1
         })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 2,
@@ -427,6 +428,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
             'af_radice_id': 2,
+            'anno_corso': 1
         })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 3,
@@ -436,6 +438,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
             'af_radice_id': 2,
+            'anno_corso': 1
         })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 4,
@@ -445,6 +448,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 4,
+            'anno_corso': 1
         })
 
         url = reverse(
@@ -519,6 +523,7 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'af_gen_des_eng': 'computer science',
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
+            'anno_corso': 2,
             'af_radice_id': 1,
             'matricola_resp_did': p1,
             'mutuata_flg': 1,
@@ -531,6 +536,7 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'af_gen_des_eng': 'computer science modulo 1',
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
+            'anno_corso': 1,
             'af_radice_id': 1,
             'mutuata_flg': 0,
             'af_master_id': 2,
@@ -623,6 +629,7 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
             'af_gen_des_eng': 'computer science',
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
+            'anno_corso': 1,
             'af_radice_id': 1,
             'matricola_resp_did': p1,
             'mutuata_flg': 1,
@@ -716,6 +723,7 @@ class ApiStudyActivityDetailUnitTest(TestCase):
         course = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 1,
             'pds_regdid': pds,
+            'anno_corso': 1,
             'des': 'informatica',
             'af_gen_des_eng': 'computer science',
             'ciclo_des': 'Primo semestre',
@@ -732,6 +740,7 @@ class ApiStudyActivityDetailUnitTest(TestCase):
             'af_gen_des_eng': 'computer science modulo 1',
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
+            'anno_corso': 2,
             'af_radice_id': 1,
             'mutuata_flg': 0,
             'af_master_id': 2,
@@ -1176,6 +1185,7 @@ class ApiTeachersListUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'anno_corso': 1,
         })
         course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 2,
@@ -1184,6 +1194,7 @@ class ApiTeachersListUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid2,
             'af_radice_id': 2,
+            'anno_corso': 2
         })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course1,
@@ -3965,6 +3976,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'anno_corso': 1
         })
         course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 2,
@@ -3973,6 +3985,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid2,
             'af_radice_id': 2,
+            'anno_corso': 1
         })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course1,
