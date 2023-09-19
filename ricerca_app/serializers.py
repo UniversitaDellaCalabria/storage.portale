@@ -559,7 +559,7 @@ class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityYear': query['anno_corso'],
-            'StudyActivityErogationYear': query['regdid__aa_reg_did'] + query['anno_corso'] -1,
+            'StudyActivityErogationYear': query['regdid__aa_reg_did'] + query['anno_corso'] -1 if query.get('anno_corso') else None,
             'StudyActivityRegDidId': query['regdid__regdid_id'],
             'StudyActivityCdSID': query['cds__cds_id'],
             'StudyActivityCdSCod': query['cds__cds_cod'],

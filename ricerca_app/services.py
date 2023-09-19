@@ -1097,7 +1097,6 @@ class ServiceDidatticaAttivitaFormativa:
                 'part_stu_cod',
                 'part_stu_des',
                 'af_gen_des_eng',
-
             )
 
             groups_serialize = []
