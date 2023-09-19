@@ -1834,62 +1834,73 @@ class ServiceDocente:
     def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo):
 
         if year:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_off_id=year)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False,
+                aa_off_id=year).select_related('personale', 'af')
         elif yearFrom and yearTo:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_off_id__gte=yearFrom,
-                didatticacopertura__aa_off_id__lte=yearTo)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False,
+                aa_off_id__gte=yearFrom,
+                aa_off_id__lte=yearTo).select_related('personale', 'af')
         elif yearFrom:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_off_id__gte=yearFrom)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False,
+                aa_off_id__gte=yearFrom).select_related('personale', 'af')
         elif yearTo:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_off_id__lte=yearTo)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False,
+                aa_off_id__lte=yearTo).select_related('personale', 'af')
         else:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False).select_related('personale', 'af')
+
+        single_id = []
+        to_exclude = []
+
+        for cop in query:
+            if cop.af_id not in single_id:
+                single_id.append(cop.af_id)
+            else:
+                to_exclude.append(cop.coper_id)
+        query = query.exclude(coper_id__in=to_exclude)
 
         return query.order_by(
-            'didatticacopertura__aa_off_id',
-            'didatticacopertura__anno_corso',
-            'didatticacopertura__af_gen_des',
-            'didatticacopertura__af_gen_des_eng') .values(
-            'didatticacopertura__af_id',
-            'didatticacopertura__af_gen_cod',
-            'didatticacopertura__af_gen_des',
-            'didatticacopertura__af_gen_des_eng',
-            'didatticacopertura__regdid_id',
-            'didatticacopertura__anno_corso',
-            'didatticacopertura__ciclo_des',
-            'didatticacopertura__peso',
-            'didatticacopertura__sett_des',
-            'didatticacopertura__af__freq_obblig_flg',
-            'didatticacopertura__cds_des',
-            'didatticacopertura__af__cds__nome_cds_eng',
-            'didatticacopertura__af__lista_lin_did_af',
-            'didatticacopertura__aa_off_id',
-            'didatticacopertura__cds_id',
-            'didatticacopertura__cds_cod',
-            'didatticacopertura__fat_part_stu_des',
-            'didatticacopertura__fat_part_stu_cod',
-            'didatticacopertura__part_stu_des',
-            'didatticacopertura__part_stu_cod',
-            'didatticacopertura__tipo_fat_stu_cod',
-            'didatticacopertura__part_ini',
-            'didatticacopertura__part_fine',
-            'didatticacopertura__coper_peso',
-            'didatticacopertura__ore'
-        ).order_by('-didatticacopertura__aa_off_id')
+            'aa_off_id',
+            'anno_corso',
+            'af_gen_des',
+            'af_gen_des_eng'
+            ).values(
+            'af_id',
+            'af_gen_cod',
+            'af_gen_des',
+            'af_gen_des_eng',
+            'regdid_id',
+            'anno_corso',
+            'ciclo_des',
+            'peso',
+            'sett_des',
+            'af__freq_obblig_flg',
+            'cds_des',
+            'af__cds__nome_cds_eng',
+            'af__lista_lin_did_af',
+            'aa_off_id',
+            'cds_id',
+            'cds_cod',
+            'fat_part_stu_des',
+            'fat_part_stu_cod',
+            'part_stu_des',
+            'part_stu_cod',
+            'tipo_fat_stu_cod',
+            'part_ini',
+            'part_fine',
+            'coper_peso',
+            'ore'
+        ).order_by('-aa_off_id')
 
     @staticmethod
     def getDocenteInfo(teacher):
