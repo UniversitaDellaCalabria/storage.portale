@@ -659,34 +659,26 @@ class ServiceDidatticaAttivitaFormativa:
         if department:
             query_department = Q(cds_id__dip_id__dip_cod=department)
         if cds:
-            for k in cds.split(" "):
-                if language == "it": # pragma: no cover
-                    q = Q(cds_id__nome_cds_it__icontains=k)
-                else:
-                    q = Q(cds_id__nome_cds_eng__icontains=k)
-                query_cds |= q
+            if language == "it": # pragma: no cover
+                query_cds = Q(cds_id__nome_cds_it__icontains=cds)
+            else:
+                query_cds = Q(cds_id__nome_cds_eng__icontains=cds)
         # serve un collegamento tra didatticaattivitàformativa e personale con il campo matricola_resp_did
         if teacher:
-            for k in teacher.split(" "):
-                q_teacher = Q(matricola_resp_did__cognome__istartswith=k)
-                query_teacher &= q_teacher
+            query_teacher = Q(matricola_resp_did__cognome__istartswith=teacher)
         if teaching:
-            for k in teaching.split(" "):
-                if language == "it":
-                    q_teaching = Q(des__icontains=k)
-                else:
-                    q_teaching = Q(af_gen_des_eng__icontains=k)
-                query_teaching |= q_teaching
+            if language == "it":
+                query_teaching = Q(des__icontains=teaching)
+            else:
+                query_teaching = Q(af_gen_des_eng__icontains=teaching)
         if ssd:
             for k in ssd.split(" "):
                 q_ssd = Q(sett_cod__icontains=k)
                 query_ssd &= q_ssd
         if period:
             query_period = Q(ciclo_des=period)
-
         if cds_cod:
             query_cds_cod = Q(cds_id__cds_cod__exact=cds_cod)
-
         if teacher_code:
             query_teacher_code = Q(personale_id__matricola__exact=teacher_code)
 
