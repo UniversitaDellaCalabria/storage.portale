@@ -54,7 +54,7 @@
                 </h4>
                 <div class="mt-5">
                     <span class="choosen_scientific_director">
-                        {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 internal_form=scientific_director_internal_form external_form=scientific_director_external_form person_label=scientific_director_label choosen_person=choosen_scientific_director uid="id_"|add:scientific_director_label|add:"_tabs" %}
+                        {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 internal_form=scientific_director_internal_form external_form=scientific_director_external_form person_label=scientific_director_label choosen_person=choosen_scientific_director required=1 uid="id_"|add:scientific_director_label|add:"_tabs" %}
                         <hr />
                     </span>
                 </div>

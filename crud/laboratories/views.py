@@ -60,6 +60,11 @@ def laboratory(request, code, laboratory=None):
     department_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
 
+    test = LaboratorioAltriDipartimenti.objects.all()    
+
+    extra_departments = LaboratorioAltriDipartimenti.objects.filter(
+            id_laboratorio_dati=code).all()
+
     if request.POST:
         form = LaboratorioDatiBaseForm(instance=laboratory,
                                           data=request.POST,
@@ -107,6 +112,7 @@ def laboratory(request, code, laboratory=None):
                    'department_data': department_data,
                    'scientific_director_data': scientific_director_data,
                    'safety_responsible_data' : safety_responsible_data,
+                   'extra_departments': extra_departments
                    })
 
 
@@ -276,7 +282,7 @@ def laboratory_unical_department_data_edit(request, code, department_id,
             if old_label == '':
                 log_action(user=request.user,
                            obj=laboratory,
-                           flag=CHANGE,
+                           flag=ADDITION,
                            msg=f'Aggiunto dipartimento {new_department}')
 
             if old_label != new_department:
@@ -468,11 +474,6 @@ def laboratory_scientific_director_edit(request, code, data_id, laboratory=None)
 
 @login_required
 @can_manage_laboratories
-def laboratory_safety_responsible_new(request, code, data_id, laboratory=None):
-    pass
-
-@login_required
-@can_manage_laboratories
 def laboratory_safety_responsible_edit(request, code, data_id, laboratory=None):
     """
     dettaglio responsabile scientifico del laboratorio
@@ -575,3 +576,67 @@ def laboratory_delete(request, code, laboratory=None):
 
     return redirect('crud_laboratories:crud_laboratories')
 
+
+@login_required
+@can_manage_laboratories
+def laboratory_extra_departments_new(request, code, laboratory=None):
+    department_form = LaboratorioAltriDipartimentiForm()
+    if request.POST:
+        department_form = LaboratorioAltriDipartimentiForm(data=request.POST)
+        if department_form.is_valid() and department_form.cleaned_data.get('choosen_department'):
+            
+            laboratory = get_object_or_404(LaboratorioDatiBase, pk=code)
+            department = get_object_or_404(DidatticaDipartimento, pk=department_form.cleaned_data['choosen_department'])
+
+            LaboratorioAltriDipartimenti.objects.create(
+                id_laboratorio_dati=laboratory,
+                id_dip=department,
+                descr_dip_lab=department.dip_nome_breve
+            )
+
+            log_action(user=request.user,
+            obj=laboratory,
+            flag=ADDITION,
+            msg=f'{_("Added extra department")}')
+
+            messages.add_message(request, messages.SUCCESS, _("Extra department added successfully"))
+            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+        else:  # pragma: no cover
+            for k, v in department_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{department_form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_extra_departments_new', kwargs={'code': code}): _('Extra Department')
+                   }
+    department_data = None
+    return render(request,
+                  'laboratory_department.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': department_form,
+                   'laboratory': laboratory,
+                   'choosen_department': department_data,
+                   'url': reverse('ricerca:departmentslist')})
+
+
+
+@login_required
+@can_manage_laboratories
+def laboratory_extra_departments_delete(request, code, data_id, laboratory=None):
+    """
+    elimina un dipartimento extra
+    """
+    extra_department_lab = get_object_or_404(LaboratorioAltriDipartimenti, pk=data_id)
+
+    extra_department_lab.delete()
+    
+    log_action(user=request.user,
+    obj=laboratory,
+    flag=CHANGE,
+    msg=f'{_("Deleted extra department")}')
+
+    messages.add_message(request, messages.SUCCESS, _("Extra department removed successfully"))
+    return redirect('crud_laboratories:crud_laboratory_edit', code=code)

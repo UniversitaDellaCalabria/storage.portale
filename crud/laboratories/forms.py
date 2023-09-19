@@ -144,3 +144,9 @@ class LaboratorioDatiBaseDipartimentoForm(forms.Form):
     choosen_department = forms.CharField(label=_('Department'),
                                          widget=forms.HiddenInput(),
                                          required=True)
+
+
+class LaboratorioAltriDipartimentiForm(forms.Form):
+    choosen_department = forms.CharField(label=_('Department'),
+                                         widget=forms.HiddenInput(),
+                                         required=True)
