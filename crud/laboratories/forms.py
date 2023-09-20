@@ -8,7 +8,7 @@ from django.conf import settings
 from django.urls import reverse
 
 
-from ricerca_app.models import LaboratorioDatiBase, RicercaErc1
+from ricerca_app.models import LaboratorioDatiBase, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 # from .. utils.widgets import RicercaCRUDClearableWidget
@@ -99,7 +99,7 @@ class LaboratorioDatiBaseUnicalReferentForm(forms.ModelForm):
             "referente_compilazione": _("Name and Surname"),
             "email_compilazione": _("Email")
         }
-
+        
 class LaboratorioDatiBaseScientificDirectorForm(forms.ModelForm):
     class Meta:
         model = LaboratorioDatiBase
@@ -150,3 +150,34 @@ class LaboratorioAltriDipartimentiForm(forms.Form):
     choosen_department = forms.CharField(label=_('Department'),
                                          widget=forms.HiddenInput(),
                                          required=True)
+
+class LaboratorioAttrezzatureForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = LaboratorioAttrezzature
+        fields = ['tipologia', 'descrizione', 'fondi', 'costo_unitario', 'quantita', 'tipo_rischi']
+        labels = {
+            'tipologia': _('Type'),
+            'descrizione': _('Description'),
+            'fondi': _('Funds'),
+            'costo_unitario': _('Unit Cost'),
+            'quantita': _('Quantity'),
+            'tipo_rischi': _('Type of Risks')
+        }
+    class Media:
+        js = ('js/textarea-autosize.js')
+
+class LaboratorioTipologiaRischio(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = LaboratorioTipologiaRischio
+        fields = ['tipologia_rischio']
+        labels = {
+            'tipologia_rischio': _('Type of Risks'),
+        }
+    class Media:
+        js = ('js/textarea-autosize.js')
