@@ -65,23 +65,39 @@ def laboratory(request, code, laboratory=None):
 
     equipement = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).all()
 
+    risk_type = LaboratorioTipologiaRischio.objects.filter(
+            id_laboratorio_dati=code).all()
+
+    risk_type_form = LaboratorioTipologiaRischioForm(instance=risk_type[0])
+
     if request.POST:
         form = LaboratorioDatiBaseForm(instance=laboratory,
                                           data=request.POST,
                                           files=request.FILES)
-        if form.is_valid():
+        risk_type_form = LaboratorioTipologiaRischioForm(instance=risk_type[0],
+                                                            data=request.POST)
+        if form.is_valid() and risk_type_form.is_valid():
             form.save(commit=False)
             laboratory.user_mod = request.user
             laboratory.save()
 
+            risk_type_form.save()
+
             if form.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
-
                 log_action(user=request.user,
                            obj=laboratory,
                            flag=CHANGE,
                            msg=[{'changed': {"fields": changed_field_labels}}])
+
+            if risk_type_form.changed_data:
+                changed_risk_type_form_field_labels = _get_changed_field_labels_from_form(risk_type_form,
+                                                                       risk_type_form.changed_data)
+                log_action(user=request.user,
+                           obj=laboratory,
+                           flag=CHANGE,
+                           msg=[{'changed': {"fields": changed_risk_type_form_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -114,6 +130,7 @@ def laboratory(request, code, laboratory=None):
                    'safety_responsible_data' : safety_responsible_data,
                    'extra_departments': extra_departments,
                    'laboratory_equipment': equipement,
+                   'risk_type_form' : risk_type_form,
                    })
 
 
@@ -127,6 +144,7 @@ def laboratory_new(request, laboratory=None):
     #new
     form = LaboratorioDatiBaseForm()
     department_form = LaboratorioDatiBaseDipartimentoForm()
+    risk_type_form = LaboratorioTipologiaRischioForm()
 
     unical_referent_internal_form = LaboratorioDatiBaseUnicalReferentChoosenPersonForm(required=True)
     unical_referent_external_form = LaboratorioDatiBaseUnicalReferentForm()
@@ -166,8 +184,9 @@ def laboratory_new(request, laboratory=None):
         else:
             scientific_director_form = LaboratorioDatiBaseScientificDirectorForm(data=request.POST)
 
+        risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
 
-        if form.is_valid() and unical_referent_form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid():
+        if form.is_valid() and unical_referent_form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid() and risk_type_form.is_valid():
             laboratory = form.save(commit=False)
 
             #unical referent
@@ -199,7 +218,9 @@ def laboratory_new(request, laboratory=None):
             laboratory.id_dipartimento_riferimento = department
 
             laboratory.save()
-
+            laboratory_risk_type = risk_type_form.save(commit=False)
+            laboratory_risk_type.id_laboratorio_dati = laboratory
+            laboratory_risk_type.save()
 
             log_action(user=request.user,
                        obj=laboratory,
@@ -223,6 +244,9 @@ def laboratory_new(request, laboratory=None):
             for k, v in scientific_director_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{scientific_director_form.fields[k].label}</b>: {v}")
+            for k, v in risk_type_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{risk_type_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
@@ -244,6 +268,7 @@ def laboratory_new(request, laboratory=None):
                     'unical_referent_external_form': unical_referent_external_form,
                     'scientific_director_internal_form': scientific_director_internal_form,
                     'scientific_director_external_form': scientific_director_external_form,
+                    'risk_type_form': risk_type_form,
                     })
 
 @login_required
@@ -656,14 +681,12 @@ def laboratory_equipment_new(request, code, laboratory=None):
         if equipment_form.is_valid():
 
             laboratory_equipment = equipment_form.save(commit=False)         
-            laboratory = get_object_or_404(LaboratorioDatiBase, pk=code)
             laboratory_equipment.id_laboratorio_dati = laboratory
-            
             laboratory_equipment.save()
 
             log_action(user=request.user,
             obj=laboratory,
-            flag=ADDITION,
+            flag=CHANGE,
             msg=f'{_("Added piece of equipment")}')
 
             messages.add_message(request, messages.SUCCESS, _("Piece of equipment added successfully"))

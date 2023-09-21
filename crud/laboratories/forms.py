@@ -166,12 +166,14 @@ class LaboratorioAttrezzatureForm(forms.ModelForm):
             'quantita': _('Quantity'),
             'tipo_rischi': _('Type of Risks')
         }
-    class Media:
-        js = ('js/textarea-autosize.js')
 
-class LaboratorioTipologiaRischio(forms.ModelForm):
+class LaboratorioTipologiaRischioForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['tipologia_rischio'] = forms.CharField(
+            label=_('Tipologia Rischio'),
+            required=True
+        )
 
     class Meta:
         model = LaboratorioTipologiaRischio
@@ -179,5 +181,3 @@ class LaboratorioTipologiaRischio(forms.ModelForm):
         labels = {
             'tipologia_rischio': _('Type of Risks'),
         }
-    class Media:
-        js = ('js/textarea-autosize.js')
