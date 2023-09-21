@@ -1659,7 +1659,7 @@ class LaboratorioAltriDipartimenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         'LaboratorioDatiBase',
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -1681,7 +1681,7 @@ class LaboratorioAttivita(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         'LaboratorioDatiBase',
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -1701,7 +1701,7 @@ class LaboratorioAttrezzature(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         'LaboratorioDatiBase',
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -1926,7 +1926,7 @@ class LaboratorioDatiErc1(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         LaboratorioDatiBase,
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -1958,7 +1958,7 @@ class LaboratorioPersonaleRicerca(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         LaboratorioDatiBase,
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -1985,7 +1985,7 @@ class LaboratorioPersonaleTecnico(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         LaboratorioDatiBase,
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -2022,7 +2022,7 @@ class LaboratorioServiziErogati(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         LaboratorioDatiBase,
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -2066,7 +2066,7 @@ class LaboratorioServiziOfferti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         LaboratorioDatiBase,
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -2088,7 +2088,7 @@ class LaboratorioTipologiaRischio(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         LaboratorioDatiBase,
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
@@ -2108,7 +2108,7 @@ class LaboratorioUbicazione(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_dati = models.ForeignKey(
         LaboratorioDatiBase,
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column='ID_LABORATORIO_DATI',
         blank=True,
         null=True)  # Field name made lowercase.
