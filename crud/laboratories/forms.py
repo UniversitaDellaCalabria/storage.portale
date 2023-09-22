@@ -198,4 +198,4 @@ class LaboratorioDatiErc1Form(forms.Form):
             choices=tuple_erc1,
             required=False,
             widget=forms.CheckboxSelectMultiple()
-        )   
+        )

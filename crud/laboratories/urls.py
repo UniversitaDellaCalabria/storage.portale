@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . views import laboratories, laboratory, laboratory_new, laboratory_unical_referent_edit, laboratory_delete, laboratory_unical_department_data_edit, laboratory_scientific_director_edit, laboratory_safety_responsible_edit, laboratory_safety_responsible_delete
-from . views import laboratory_extra_departments_new, laboratory_extra_departments_delete, laboratory_equipment_new, laboratory_equipment_delete, laboratory_equipment_edit
+from . views import laboratory_extra_departments_new, laboratory_extra_departments_delete, laboratory_equipment_new, laboratory_equipment_delete, laboratory_equipment_edit, crud_laboratory_researches_erc1_edit
 
 urlpatterns = []
 
@@ -21,3 +21,5 @@ urlpatterns += path('laboratories/<str:code>/extra-departments/<str:data_id>/del
 urlpatterns += path('laboratories/<str:code>/equipment/new/', laboratory_equipment_new, name='crud_laboratory_equipment_new'),
 urlpatterns += path('laboratories/<str:code>/equipment/<str:data_id>/', laboratory_equipment_edit, name='crud_laboratory_equipment_edit'),
 urlpatterns += path('laboratories/<str:code>/equipment/<str:data_id>/delete/', laboratory_equipment_delete, name='crud_laboratory_equipment_delete'),
+#LaboratorioDatiRicerca
+urlpatterns += path('laboratories/<str:code>/researches-erc1/', crud_laboratory_researches_erc1_edit, name='crud_laboratory_researches_erc1_edit'),

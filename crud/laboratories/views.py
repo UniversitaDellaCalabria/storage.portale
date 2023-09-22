@@ -70,11 +70,9 @@ def laboratory(request, code, laboratory=None):
 
     risk_type_form = LaboratorioTipologiaRischioForm(instance=risk_type[0])
     
-    ricerche_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).values_list('id_ricerca_erc1', flat=True)
-    
-    ricerche_erc1 = list(ricerche_erc1)
-    
-    ricerche_erc1_form = LaboratorioDatiErc1Form(data=ricerche_erc1)
+    researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).values("id",
+                                                                                          "id_ricerca_erc1",
+                                                                                          "id_ricerca_erc1__descrizione")
 
     if request.POST:
         form = LaboratorioDatiBaseForm(instance=laboratory,
@@ -137,7 +135,7 @@ def laboratory(request, code, laboratory=None):
                    'extra_departments': extra_departments,
                    'laboratory_equipment': equipement,
                    'risk_type_form': risk_type_form,
-                   'ricerche_erc1_form': ricerche_erc1_form,
+                   'researches_erc1': researches_erc1,
                    })
 
 
@@ -175,8 +173,6 @@ def laboratory_new(request, laboratory=None):
     if request.POST.get(SCIENTIFIC_DIRECTOR_ID, ''):
         scientific_director = get_object_or_404(Personale,
                                     matricola=(decrypt(request.POST[SCIENTIFIC_DIRECTOR_ID])))
-
-    ricerche_erc1_form = LaboratorioDatiErc1Form()
 
     if request.POST:
         form = LaboratorioDatiBaseForm(
@@ -233,15 +229,6 @@ def laboratory_new(request, laboratory=None):
             laboratory_risk_type = risk_type_form.save(commit=False)
             laboratory_risk_type.id_laboratorio_dati = laboratory
             laboratory_risk_type.save()
-            
-            #ricerce erc1
-            ricerche_erc1 = ricerche_erc1_form.cleaned_data['id_ricerche_erc1']
-            for id_ricerca in ricerche_erc1:
-                ricerca = get_object_or_404(RicercaErc1, pk=id_ricerca)
-                LaboratorioDatiErc1.objects.create(
-                    id_laboratorio_dati=laboratory,
-                    id_ricerca_erc1=ricerca
-                )
 
             log_action(user=request.user,
                        obj=laboratory,
@@ -290,7 +277,6 @@ def laboratory_new(request, laboratory=None):
                     'scientific_director_internal_form': scientific_director_internal_form,
                     'scientific_director_external_form': scientific_director_external_form,
                     'risk_type_form': risk_type_form,
-                    'ricerche_erc1_form': ricerche_erc1_form,
                     })
 
 @login_required
@@ -786,3 +772,60 @@ def laboratory_equipment_delete(request, code, data_id, laboratory=None):
 
     messages.add_message(request, messages.SUCCESS, _("Piece of equipment removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+
+@login_required
+@can_manage_laboratories
+def crud_laboratory_researches_erc1_edit(request, code, laboratory=None):
+    
+    #Previously selected researches (needed for request.post logic)
+    researches_erc1_old = LaboratorioDatiErc1.objects\
+                        .filter(id_laboratorio_dati=code)
+    
+    #Values passed to the template               
+    researches_erc1 = researches_erc1_old.values("id","id_ricerca_erc1","id_ricerca_erc1__descrizione")
+    
+    #Ids to initialize form's checkboxes (needed for request.post logic)
+    researches_erc1_ids = tuple(researches_erc1.values_list('id_ricerca_erc1', flat=True))
+                        
+    research_erc1_form = LaboratorioDatiErc1Form(initial={'id_ricerche_erc1': researches_erc1_ids})
+    
+    if request.POST:
+        research_erc1_form = LaboratorioDatiErc1Form(data=request.POST)
+        if research_erc1_form.is_valid():
+            researches_erc1_selected = research_erc1_form.cleaned_data.get('id_ricerche_erc1', [])
+            
+            researches_to_delete = []
+            for res in researches_erc1_ids:
+                if str(res) not in researches_erc1_selected:
+                    researches_to_delete.append(str(res))
+            
+            if len(researches_to_delete) > 0:
+                researches_erc1_old.filter(id_ricerca_erc1__in=researches_to_delete).delete()
+                           
+            for res in researches_erc1_selected:
+                if str(res) not in researches_erc1_ids:
+                    LaboratorioDatiErc1.objects.create(
+                        id_laboratorio_dati=laboratory,
+                        id_ricerca_erc1=get_object_or_404(RicercaErc1, pk=str(res))
+                    )
+            
+            log_action(user=request.user,
+            obj=laboratory,
+            flag=CHANGE,
+            msg=f'{_("Edited researches ERC1")}')
+
+            messages.add_message(request, messages.SUCCESS, _("Researches ERC1 edited successfully"))
+            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_researches_erc1_edit', kwargs={'code': code}): _('Researches ERC1')
+                   }
+    return render(request,
+                  'laboratory_research_erc1.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': research_erc1_form,
+                   'laboratory': laboratory,
+                })

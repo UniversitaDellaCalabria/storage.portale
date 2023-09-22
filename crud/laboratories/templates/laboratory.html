@@ -366,6 +366,31 @@
     </div>
 </div>
 
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Researches ERC1" %}</h4>
+            <!-- laboratory erc1 research -->
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {% for research_erc1 in researches_erc1 %}
+                    <tr>
+                        <td>
+                            {{ research_erc1.id_ricerca_erc1__descrizione|default:"-" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'crud_laboratories:crud_laboratory_researches_erc1_edit' code=laboratory.pk %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                </svg> {% trans "Edit" %}
+            </a>
+        </div>
+    </div>
+</div>
+
 
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
