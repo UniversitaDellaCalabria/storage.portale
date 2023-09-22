@@ -69,6 +69,12 @@ def laboratory(request, code, laboratory=None):
             id_laboratorio_dati=code).all()
 
     risk_type_form = LaboratorioTipologiaRischioForm(instance=risk_type[0])
+    
+    ricerche_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).values_list('id_ricerca_erc1', flat=True)
+    
+    ricerche_erc1 = list(ricerche_erc1)
+    
+    ricerche_erc1_form = LaboratorioDatiErc1Form(data=ricerche_erc1)
 
     if request.POST:
         form = LaboratorioDatiBaseForm(instance=laboratory,
@@ -130,7 +136,8 @@ def laboratory(request, code, laboratory=None):
                    'safety_responsible_data' : safety_responsible_data,
                    'extra_departments': extra_departments,
                    'laboratory_equipment': equipement,
-                   'risk_type_form' : risk_type_form,
+                   'risk_type_form': risk_type_form,
+                   'ricerche_erc1_form': ricerche_erc1_form,
                    })
 
 
@@ -169,6 +176,8 @@ def laboratory_new(request, laboratory=None):
         scientific_director = get_object_or_404(Personale,
                                     matricola=(decrypt(request.POST[SCIENTIFIC_DIRECTOR_ID])))
 
+    ricerche_erc1_form = LaboratorioDatiErc1Form()
+
     if request.POST:
         form = LaboratorioDatiBaseForm(
             data=request.POST, files=request.FILES)
@@ -185,8 +194,10 @@ def laboratory_new(request, laboratory=None):
             scientific_director_form = LaboratorioDatiBaseScientificDirectorForm(data=request.POST)
 
         risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
+        
+        ricerche_erc1_form = LaboratorioDatiErc1Form(data=request.POST)
 
-        if form.is_valid() and unical_referent_form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid() and risk_type_form.is_valid():
+        if form.is_valid() and unical_referent_form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid() and risk_type_form.is_valid() and ricerche_erc1_form.is_valid():
             laboratory = form.save(commit=False)
 
             #unical referent
@@ -217,10 +228,20 @@ def laboratory_new(request, laboratory=None):
             laboratory.dipartimento_riferimento = department.dip_des_it
             laboratory.id_dipartimento_riferimento = department
 
+            # tipologia rischio
             laboratory.save()
             laboratory_risk_type = risk_type_form.save(commit=False)
             laboratory_risk_type.id_laboratorio_dati = laboratory
             laboratory_risk_type.save()
+            
+            #ricerce erc1
+            ricerche_erc1 = ricerche_erc1_form.cleaned_data['id_ricerche_erc1']
+            for id_ricerca in ricerche_erc1:
+                ricerca = get_object_or_404(RicercaErc1, pk=id_ricerca)
+                LaboratorioDatiErc1.objects.create(
+                    id_laboratorio_dati=laboratory,
+                    id_ricerca_erc1=ricerca
+                )
 
             log_action(user=request.user,
                        obj=laboratory,
@@ -269,6 +290,7 @@ def laboratory_new(request, laboratory=None):
                     'scientific_director_internal_form': scientific_director_internal_form,
                     'scientific_director_external_form': scientific_director_external_form,
                     'risk_type_form': risk_type_form,
+                    'ricerche_erc1_form': ricerche_erc1_form,
                     })
 
 @login_required

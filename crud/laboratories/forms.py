@@ -8,7 +8,7 @@ from django.conf import settings
 from django.urls import reverse
 
 
-from ricerca_app.models import LaboratorioDatiBase, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio
+from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 # from .. utils.widgets import RicercaCRUDClearableWidget
@@ -34,7 +34,6 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
 
         lista_scelte_laboratorio_interdipartimentale = [('SI', 'SI'),
                                                         ('NO', 'NO')]
-
 
         for l in laboratory_areas:
             lista_areee.append((l['Area'], l['Area']))
@@ -181,3 +180,22 @@ class LaboratorioTipologiaRischioForm(forms.ModelForm):
         labels = {
             'tipologia_rischio': _('Type of Risks'),
         }
+
+class LaboratorioDatiErc1Form(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        lista_erc1 = []
+        ricerca_erc1 = RicercaErc1.objects.all()
+        for erc1 in ricerca_erc1:
+            kv = (erc1.id, erc1.descrizione)
+            lista_erc1.append(kv)
+        
+        tuple_erc1 = tuple(lista_erc1)
+        
+        self.fields['id_ricerche_erc1'] = forms.MultipleChoiceField(
+            label=_('Ricerche ERC1'),
+            choices=tuple_erc1,
+            required=False,
+            widget=forms.CheckboxSelectMultiple()
+        )   
