@@ -84,10 +84,19 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             'nome_file_logo': _('Logo')
         }
         widgets = {'descr_altre_strutture_riferimento_it': CKEditorWidget(),
-                   'descr_altre_strutture_riferimento_en': CKEditorWidget()}
+                   'descr_altre_strutture_riferimento_en': CKEditorWidget(),
+                   'finalita_ricerca_it': CKEditorWidget(),
+                   'finalita_ricerca_en': CKEditorWidget(),
+                   'finalita_servizi_it': CKEditorWidget(),
+                   'finalita_servizi_en': CKEditorWidget(),
+                   'finalita_didattica_it': CKEditorWidget(),
+                   'finalita_didattica_en': CKEditorWidget(),
+                   'strumentazione_descrizione': CKEditorWidget(),
+                   'sede_note_descrittive': CKEditorWidget(),
+                  }
 
     class Media:
-        js = ('js/textarea-autosize.js',)
+        js = ('js/textarea-autosize.js: CKEditorWidget(),',)
 
 
 class LaboratorioDatiBaseUnicalReferentForm(forms.ModelForm):
