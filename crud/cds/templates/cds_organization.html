@@ -19,6 +19,7 @@
     </div>
 </div>
 
+{% if cds_organization %}
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
@@ -54,7 +55,7 @@
                                 {% endif %}
                             </td>
                             <td class="text-right">
-                                <a href="#" class="btn btn-primary btn-xs">
+                                <a href="{% url 'crud_cds:cds_organizations_components_edit' regdid_id=regdid.pk group_id=cds_organization.pk component_id=component.pk %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
@@ -69,8 +70,14 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <a href="{% url 'crud_cds:cds_organizations_components_new' regdid_id=regdid.pk group_id=cds_organization.pk %}" class="text-center btn btn-block btn-success btn-xs">
+                    <svg class="icon icon-xs icon-white">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                    </svg> {% trans "Add new" %}
+                </a>
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock centered_container %}

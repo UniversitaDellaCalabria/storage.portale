@@ -17,6 +17,8 @@ from django.utils.translation import gettext_lazy as _
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
+from .. utils.forms import ChoosenPersonForm
+
 from . decorators import *
 from . forms import *
 
@@ -910,4 +912,169 @@ def cds_organizations_edit(request, regdid_id, group_id, my_offices=None, regdid
     return render(request,
                   'cds_organization.html',
                   {'form': form,
-                   'cds_organization': cds_organization})
+                   'cds_organization': cds_organization,
+                   'regdid': regdid})
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_organizations_components_new(request, regdid_id, group_id,
+                                     my_offices=None, regdid=None):
+    """
+    aggiungi nuovo componente al gruppo
+    """
+    cds_organization = get_object_or_404(DidatticaCdsGruppi,
+                                         pk=group_id,
+                                         id_didattica_cds=regdid.cds)
+
+    external_form = DidatticaCdsGruppoComponenteForm()
+    internal_form = ChoosenPersonForm(required=True)
+
+    if request.POST:
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = DidatticaCdsGruppoComponenteForm(data=request.POST)
+
+        if 'choosen_person' in request.POST:
+            form = internal_form
+        else:
+            form = external_form
+
+        if form.is_valid():
+            if form.cleaned_data.get('choosen_person'):
+                # matricola
+                component_code = decrypt(form.cleaned_data['choosen_person'])
+                matricola = get_object_or_404(
+                    Personale, matricola=component_code)
+                cognome = f'{component.cognome} {component.nome}'
+            else:
+                matricola = None
+                cognome = form.cleaned_data['cognome']
+
+            c = DidatticaCdsGruppiComponenti.objects.create(
+                id_didattica_cds_gruppi=cds_organization,
+                matricola=matricola,
+                cognome=cognome,
+                nome="",
+                funzione_it=form.cleaned_data.get('funzione_it'),
+                funzione_en=form.cleaned_data.get('funzione_en'),
+                ordine=form.cleaned_data.get('ordine'),
+                visibile=form.cleaned_data.get('visibile'),
+                dt_mod=datetime.datetime.now(),
+                id_user_mod=request.user
+            )
+
+            log_action(user=request.user,
+                       obj=regdid.cds,
+                       flag=CHANGE,
+                       msg=f'Aggiunto nuovo componente {c} al gruppo {cds_organization.pk}')
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Component added successfully"))
+            return redirect('crud_cds:crud_cds_organizations_edit',
+                            regdid_id=regdid_id,
+                            group_id=group_id)
+        else:
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds:crud_cds'): _('CdS'),
+                   reverse('crud_cds:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
+                   reverse('crud_cds:crud_cds_organizations_edit', kwargs={'regdid_id': regdid_id, 'group_id': group_id}): cds_organization.descr_breve_it,
+                   '#': _('New component')}
+
+    return render(request,
+                  'cds_organization_component.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'external_form': external_form,
+                   'internal_form': internal_form,
+                   'cds_organization': cds_organization,
+                   'url': reverse('ricerca:teacherslist')})
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_organizations_components_edit(request, regdid_id, group_id, component_id,
+                                     my_offices=None, regdid=None):
+    """
+    aggiungi nuovo componente al gruppo
+    """
+    cds_organization = get_object_or_404(DidatticaCdsGruppi,
+                                         pk=group_id,
+                                         id_didattica_cds=regdid.cds)
+
+    component = get_object_or_404(DidatticaCdsGruppiComponenti,
+                                  pk=component_id,
+                                  id_didattica_cds_gruppi=cds_organization)
+
+    component_data = ''
+    initial = {}
+
+    if component.matricola:
+        component_data = f'{component.matricola.cognome} {component.matricola.nome}'
+        initial = {'choosen_person': encrypt(component.matricola.matricola)}
+
+    external_form = DidatticaCdsGruppoComponenteForm(instance=component)
+    internal_form = ChoosenPersonForm(initial=initial, instance=component, required=True)
+
+    if request.POST:
+        internal_form = ChoosenPersonForm(instance=component, data=request.POST, required=True)
+        external_form = DidatticaCdsGruppoComponenteForm(instance=component, data=request.POST)
+
+        if 'choosen_person' in request.POST:
+            form = internal_form
+        else:
+            form = external_form
+
+        if form.is_valid():
+            if form.cleaned_data.get('choosen_person'):
+                # matricola
+                component_code = decrypt(form.cleaned_data['choosen_person'])
+                matricola = get_object_or_404(Personale,
+                                              matricola=component_code)
+                component.matricola = matricola
+                component.cognome = f'{matricola.cognome} {matricola.nome}'
+            else:
+                component.matricola = None
+                component.cognome = form.cleaned_data['cognome']
+
+            form.save(commit=False)
+            component.dt_mod=datetime.datetime.now()
+            component.id_user_mod=request.user
+
+            component.save()
+
+            log_action(user=request.user,
+                       obj=regdid.cds,
+                       flag=CHANGE,
+                       msg=f'Modificato componente {component} al gruppo {cds_organization.pk}')
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Component edited successfully"))
+            return redirect('crud_cds:crud_cds_organizations_edit',
+                            regdid_id=regdid_id,
+                            group_id=group_id)
+        else:
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds:crud_cds'): _('CdS'),
+                   reverse('crud_cds:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
+                   reverse('crud_cds:crud_cds_organizations_edit', kwargs={'regdid_id': regdid_id, 'group_id': group_id}): cds_organization.descr_breve_it,
+                   '#': _('Edit component')}
+
+    return render(request,
+                  'cds_organization_component.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'choosen_person': component_data,
+                   'external_form': external_form,
+                   'internal_form': internal_form,
+                   'cds_organization': cds_organization,
+                   'url': reverse('ricerca:teacherslist')})

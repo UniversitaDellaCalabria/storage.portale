@@ -5,7 +5,9 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from ricerca_app.models import (
-    DidatticaCds, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio, DidatticaCdsGruppi)
+    DidatticaCds, DidatticaCdsAltriDati,
+    DidatticaCdsAltriDatiUfficio, DidatticaCdsGruppi,
+    DidatticaCdsGruppiComponenti)
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 
@@ -88,3 +90,25 @@ class DidatticaCdsGruppoForm(forms.ModelForm):
 
     class Media:
         js = ('js/textarea-autosize.js',)
+
+
+class DidatticaCdsGruppoComponenteForm(forms.ModelForm):
+    class Meta:
+        model = DidatticaCdsGruppiComponenti
+        fields = ['cognome', 'funzione_it', 'funzione_en', 'ordine', 'visibile']
+
+
+class ChoosenPersonForm(forms.ModelForm):
+    choosen_person = forms.CharField(label=_('Person'),
+                                     widget=forms.HiddenInput(),
+                                     required=False)
+
+    def __init__(self, *args, **kwargs):
+        required = kwargs.pop('required', False)
+        super(ChoosenPersonForm, self).__init__(*args, **kwargs)
+        if required:
+            self.fields['choosen_person'].required = True
+
+    class Meta:
+        model = DidatticaCdsGruppiComponenti
+        fields = ['funzione_it', 'funzione_en', 'ordine', 'visibile']
