@@ -786,7 +786,8 @@ def crud_laboratory_researches_erc1_edit(request, code, laboratory=None):
     researches_erc1 = researches_erc1_old.values("id","id_ricerca_erc1","id_ricerca_erc1__descrizione")
     
     #Ids to initialize form's checkboxes (needed for request.post logic)
-    researches_erc1_ids = tuple(researches_erc1.values_list('id_ricerca_erc1', flat=True))
+    researches_erc1_ids = researches_erc1.values_list('id_ricerca_erc1', flat=True)
+    researches_erc1_ids = tuple(map(str, researches_erc1_ids))
                         
     research_erc1_form = LaboratorioDatiErc1Form(initial={'id_ricerche_erc1': researches_erc1_ids})
     
@@ -797,17 +798,17 @@ def crud_laboratory_researches_erc1_edit(request, code, laboratory=None):
             
             researches_to_delete = []
             for res in researches_erc1_ids:
-                if str(res) not in researches_erc1_selected:
-                    researches_to_delete.append(str(res))
+                if res not in researches_erc1_selected:
+                    researches_to_delete.append(res)
             
             if len(researches_to_delete) > 0:
                 researches_erc1_old.filter(id_ricerca_erc1__in=researches_to_delete).delete()
                            
             for res in researches_erc1_selected:
-                if str(res) not in researches_erc1_ids:
+                if res not in researches_erc1_ids:
                     LaboratorioDatiErc1.objects.create(
                         id_laboratorio_dati=laboratory,
-                        id_ricerca_erc1=get_object_or_404(RicercaErc1, pk=str(res))
+                        id_ricerca_erc1=get_object_or_404(RicercaErc1, pk=res)
                     )
             
             log_action(user=request.user,
