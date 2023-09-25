@@ -8,7 +8,7 @@ from django.conf import settings
 from django.urls import reverse
 
 
-from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio
+from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 # from .. utils.widgets import RicercaCRUDClearableWidget
@@ -208,3 +208,24 @@ class LaboratorioDatiErc1Form(forms.Form):
             required=False,
             widget=forms.CheckboxSelectMultiple()
         )
+
+class LaboratorioUbicazioneForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['sede_principale'] = forms.ChoiceField(
+            label=_('Main Location'),
+            choices=(('SI', 'SI'), ('NO', 'NO')),
+            required=True
+        )
+        
+    
+    class Meta:
+        model = LaboratorioUbicazione
+        fields = ['edificio', 'piano', 'sede_principale', 'note']
+        labels = {
+            'edificio': _('Building'),
+            'piano': _('Floor'),
+            'sede_principale': _('Main Location'),
+            'note': _('Notes'),
+        }

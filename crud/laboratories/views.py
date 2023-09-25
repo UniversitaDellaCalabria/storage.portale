@@ -73,6 +73,7 @@ def laboratory(request, code, laboratory=None):
     researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).values("id",
                                                                                           "id_ricerca_erc1",
                                                                                           "id_ricerca_erc1__descrizione")
+    locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).all()
 
     if request.POST:
         form = LaboratorioDatiBaseForm(instance=laboratory,
@@ -136,6 +137,7 @@ def laboratory(request, code, laboratory=None):
                    'laboratory_equipment': equipement,
                    'risk_type_form': risk_type_form,
                    'researches_erc1': researches_erc1,
+                   'locations': locations,
                    })
 
 
@@ -830,3 +832,89 @@ def crud_laboratory_researches_erc1_edit(request, code, laboratory=None):
                    'form': research_erc1_form,
                    'laboratory': laboratory,
                 })
+    
+    
+@login_required
+@can_manage_laboratories
+def crud_laboratory_locations_edit(request, data_id, code, laboratory=None):
+    location = get_object_or_404(LaboratorioUbicazione, pk=data_id)
+    location_form = LaboratorioUbicazioneForm(instance=location)
+    
+    if request.POST:
+        location_form = LaboratorioUbicazioneForm(instance=location, data=request.POST)
+        if location_form.is_valid():
+           
+            location_form.save()
+            
+            log_action(user=request.user,
+            obj=laboratory,
+            flag=CHANGE,
+            msg=f'{_("Edited laboratory location")}')
+
+            messages.add_message(request, messages.SUCCESS, _("Location edited successfully"))
+            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_locations_edit', kwargs={'code': code, 'data_id': data_id}): _('Location')
+                   }
+    return render(request,
+                  'laboratory_location.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': location_form,
+                   'laboratory': laboratory,
+                })
+    
+
+@login_required
+@can_manage_laboratories
+def crud_laboratory_locations_new(request, code, laboratory=None):
+    location_form = LaboratorioUbicazioneForm()
+    if request.POST:
+        location_form = LaboratorioUbicazioneForm(data=request.POST)
+        if location_form.is_valid():
+            location = location_form.save(commit=False)         
+            location.id_laboratorio_dati = laboratory
+            location.save()
+
+            log_action(user=request.user,
+            obj=laboratory,
+            flag=CHANGE,
+            msg=f'{_("Added laboratory location")}')
+
+            messages.add_message(request, messages.SUCCESS, _("Location added successfully"))
+            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+        else:  # pragma: no cover
+            for k, v in location_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{location_form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_locations_new', kwargs={'code': code}): _('Locations')
+                   }
+    return render(request,
+                  'laboratory_location.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': location_form,
+                   'laboratory': laboratory,
+                })
+
+@login_required
+@can_manage_laboratories
+def crud_laboratory_locations_delete(request, code, data_id, laboratory=None):
+    
+    location = get_object_or_404(LaboratorioUbicazione, pk=data_id)
+
+    location.delete()
+    
+    log_action(user=request.user,
+    obj=laboratory,
+    flag=CHANGE,
+    msg=f'{_("Deleted location")}')
+
+    messages.add_message(request, messages.SUCCESS, _("Location removed successfully"))
+    return redirect('crud_laboratories:crud_laboratory_edit', code=code)

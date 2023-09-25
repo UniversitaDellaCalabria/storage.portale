@@ -247,7 +247,7 @@
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_safety_responsible">
+                                    id="delete_extra_department">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -385,12 +385,84 @@
             <a href="{% url 'crud_laboratories:crud_laboratory_researches_erc1_edit' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                </svg> {% trans "Edit" %}
+                </svg> {% trans "Manage" %}
             </a>
         </div>
     </div>
 </div>
 
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Locations" %}</h4>
+
+            <!-- Locations -->
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {% for location in locations %}
+                    <tr>
+                        <td>
+                            {{ location.edificio|default:"-" }}
+                        </td>
+                        <td class="text-right">
+                            <a href="{% url 'crud_laboratories:crud_laboratory_locations_edit' code=laboratory.pk data_id=location.id %}" class="btn btn-primary btn-xs">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg> {% trans "Edit" %}
+                            </a>
+                            <a href="" class="btn btn-danger btn-xs"
+                                data-toggle="modal"
+                                data-target="#delete_location">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                </svg> {% trans "Remove" %}
+                            </a>
+                            <div class="modal fade"
+                                    tabindex="-1"
+                                    role="dialog"
+                                    id="delete_location">
+                                <div class="modal-dialog modal-dialog-centered"
+                                        role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <svg class="icon">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete this location" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_locations_delete' code=laboratory.pk data_id=location.id %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'crud_laboratories:crud_laboratory_locations_new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+        </div>
+    </div>
+</div>
 
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
