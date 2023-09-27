@@ -8,7 +8,7 @@ from django.conf import settings
 from django.urls import reverse
 
 
-from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione
+from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 # from .. utils.widgets import RicercaCRUDClearableWidget
@@ -139,15 +139,6 @@ class LaboratorioDatiBaseUnicalReferentChoosenPersonForm(forms.Form):
             self.fields['choosen_unical_referent'].required = True
 
 
-# class LaboratorioDatiBaseReferentForm(forms.ModelForm):
-#     class Meta:
-#         model = LaboratorioDatiBase
-#         fields = ['referente_compilazione']
-#         labels = {
-#             "referente_compilazione": _("Name and Surname")
-#         }
-
-
 class LaboratorioDatiBaseDipartimentoForm(forms.Form):
     choosen_department = forms.CharField(label=_('Department'),
                                          widget=forms.HiddenInput(),
@@ -229,3 +220,45 @@ class LaboratorioUbicazioneForm(forms.ModelForm):
             'sede_principale': _('Main Location'),
             'note': _('Notes'),
         }
+
+class LaboratorioPersonaleForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['laboratory_staff'] = forms.CharField(
+            required=True,
+            label=_("Name and Surname"))
+        
+class LaboratorioPersonaleTecnicoForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['ruolo'] = forms.CharField(
+            required=True,
+            label=_("Role"))
+        
+        self.fields['field_impegno'] = forms.FloatField(
+            required=True,
+            label=_("Commitment % ")
+        )
+        
+class LaboratorioAttivitaForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        activity_types_already_specified=kwargs.pop("activity_types_already_specified", ())
+        super().__init__(*args, **kwargs)
+        activity_types = LaboratorioTipologiaAttivita.objects.exclude(id__in=activity_types_already_specified).values_list("id", "descrizione")        
+        
+        self.fields['tipologia_attivita'] = forms.ChoiceField(
+            label=_('Activity Type'),
+            choices=activity_types,
+            required=True)
+        
+    class Meta:
+        model = LaboratorioDatiBase.tipologia_attivita.through
+        fields = ['descr_finalita_it',
+                  'descr_finalita_en']
+        labels = {
+            'descr_finalita_it': _('Purpouse (it)'),
+            'descr_finalita_en': _('Purpouse (en)'),
+        }
+        
+    field_order = ['tipologia_attivita', 'descr_finalita_it', 'descr_finalita_en']
+        

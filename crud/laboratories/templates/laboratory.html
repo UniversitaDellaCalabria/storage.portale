@@ -57,8 +57,6 @@
                 <hr />
                 {% include "form_template.html" with form=risk_type_form %}
                 <hr />
-                {% include "form_template.html" with form=ricerche_erc1_form %}
-                <hr />
                 {% include "includes/form_submit.html" %}
             </form>
         </div>
@@ -467,9 +465,159 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Research Staff" %}</h4>
+
+            <!-- Research Staff -->
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {% for researcher in researchers %}
+                    <tr>
+                        <td>
+                            {{ researcher.cognomenome_origine|default:"-" }}
+                        </td>
+                        <td class="text-right">
+                            <a href="" class="btn btn-danger btn-xs"
+                                data-toggle="modal"
+                                data-target="#delete_researcher">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                </svg> {% trans "Remove" %}
+                            </a>
+                            <div class="modal fade"
+                                    tabindex="-1"
+                                    role="dialog"
+                                    id="delete_researcher">
+                                <div class="modal-dialog modal-dialog-centered"
+                                        role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <svg class="icon">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete this researcher" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_research_staff_delete' code=laboratory.pk data_id=researcher.id %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'crud_laboratories:crud_laboratory_research_staff_new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Technical Staff" %}</h4>
+            <!-- Technical Staff -->
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {% for technician in technicians %}
+                    <tr>
+                        <td>
+                            {{ technician.cognomenome_origine|default:"-" }}
+                        </td>
+                        <td class="text-right">
+                            <a href="" class="btn btn-danger btn-xs"
+                                data-toggle="modal"
+                                data-target="#delete_technician">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                </svg> {% trans "Remove" %}
+                            </a>
+                            <div class="modal fade"
+                                    tabindex="-1"
+                                    role="dialog"
+                                    id="delete_technician">
+                                <div class="modal-dialog modal-dialog-centered"
+                                        role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <svg class="icon">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete this technician" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_technical_staff_delete' code=laboratory.pk data_id=technician.id %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'crud_laboratories:crud_laboratory_technical_staff_new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Activities" %}</h4>
+            <!-- Activities -->
+            <a href="{% url 'crud_laboratories:crud_laboratory_activities_edit' code=laboratory.pk %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                </svg> {% trans "Manage" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
             <h4 style="font-weight: lighter;">Logs</h4>
             {% include "obj_logs.html" with logs=logs %}
         </div>
     </div>
 </div>
+
 {% endblock centered_container %}
