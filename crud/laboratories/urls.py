@@ -2,7 +2,7 @@ from django.urls import path
 
 from . views import laboratories, laboratory, laboratory_new, laboratory_unical_referent_edit, laboratory_delete, laboratory_unical_department_data_edit, laboratory_scientific_director_edit, laboratory_safety_responsible_edit, laboratory_safety_responsible_delete
 from . views import laboratory_extra_departments_new, laboratory_extra_departments_delete, laboratory_equipment_new, laboratory_equipment_delete, laboratory_equipment_edit, laboratory_researches_erc1_edit, laboratory_locations_edit, laboratory_locations_new, laboratory_locations_delete
-from . views import laboratory_research_staff_new, laboratory_research_staff_delete, laboratory_technical_staff_new, laboratory_technical_staff_delete, laboratory_activities_edit
+from . views import laboratory_research_staff_new, laboratory_research_staff_delete, laboratory_technical_staff_new, laboratory_technical_staff_delete, laboratory_activities_new, laboratory_activities_edit, laboratory_activities_delete
 
 urlpatterns = []
 
@@ -35,4 +35,6 @@ urlpatterns += path('laboratories/<str:code>/research-staff/<str:data_id>/delete
 urlpatterns += path('laboratories/<str:code>/technical-staff/new/', laboratory_technical_staff_new, name='crud_laboratory_technical_staff_new'),
 urlpatterns += path('laboratories/<str:code>/technical-staff/<str:data_id>/delete/', laboratory_technical_staff_delete, name='crud_laboratory_technical_staff_delete'),
 #LaboratorioAttivita
-urlpatterns += path('laboratories/<str:code>/activities/', laboratory_activities_edit, name='crud_laboratory_activities_edit'),
+urlpatterns += path('laboratories/<str:code>/activities/new', laboratory_activities_new, name='crud_laboratory_activities_new'),
+urlpatterns += path('laboratories/<str:code>/activities/<str:data_id>/', laboratory_activities_edit, name='crud_laboratory_activities_edit'),
+urlpatterns += path('laboratories/<str:code>/activities/<str:data_id>/delete/', laboratory_activities_delete, name='crud_laboratory_activities_delete'),

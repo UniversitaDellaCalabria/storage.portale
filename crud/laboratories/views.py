@@ -79,6 +79,8 @@ def laboratory(request, code, laboratory=None):
     
     technicians = LaboratorioPersonaleTecnico.objects.filter(id_laboratorio_dati=code).values("id", "cognomenome_origine")
 
+    activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).values("id", "id_tipologia_attivita__descrizione")
+
     if request.POST:
         form = LaboratorioDatiBaseForm(instance=laboratory,
                                           data=request.POST,
@@ -144,6 +146,7 @@ def laboratory(request, code, laboratory=None):
                    'locations': locations,
                    'researchers': researchers,
                    'technicians': technicians,
+                   'activities': activities,
                    })
 
 
@@ -1076,7 +1079,7 @@ def laboratory_technical_staff_delete(request, code, data_id, laboratory=None):
 
 @login_required
 @can_manage_laboratories
-def laboratory_activities_edit(request, code, laboratory=None):
+def laboratory_activities_new(request, code, laboratory=None):
     
     activity_types_already_specified = LaboratorioAttivita\
         .objects\
@@ -1105,7 +1108,7 @@ def laboratory_activities_edit(request, code, laboratory=None):
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
-                   reverse('crud_laboratories:crud_laboratory_activities_edit', kwargs={'code': code}): _('Activities')
+                   reverse('crud_laboratories:crud_laboratory_activities_new', kwargs={'code': code}): _('Activities')
                    }
     return render(request,
                   'laboratory_activities.html',
@@ -1113,3 +1116,53 @@ def laboratory_activities_edit(request, code, laboratory=None):
                    'form': form,
                    'laboratory': laboratory,
                 })
+    
+
+@login_required
+@can_manage_laboratories
+def laboratory_activities_edit(request, code, data_id, laboratory=None):
+    activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
+    selected_activity = activity.id_tipologia_attivita.id
+    activity_form = LaboratorioAttivitaForm(instance=activity, initial={'tipologia_attivita': selected_activity})
+    
+    if request.POST:
+        activity_form = LaboratorioAttivitaForm(instance=activity, data=request.POST)
+        if activity_form.is_valid():
+            activity_type = get_object_or_404(LaboratorioTipologiaAttivita, pk=activity_form.cleaned_data["tipologia_attivita"])
+            activity = activity_form.save(commit=False)
+            activity.id_tipologia_attivita = activity_type
+            activity.save()
+            
+            log_action(user=request.user,
+            obj=laboratory,
+            flag=CHANGE,
+            msg=f'{_("Edited activity")}')
+
+            messages.add_message(request, messages.SUCCESS, _("Activity edited successfully"))
+            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_activities_edit', kwargs={'code': code, "data_id": data_id}): _('Activity')
+                   }
+    return render(request,
+                  'laboratory_activities.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': activity_form,
+                   'laboratory': laboratory,
+                })
+
+@login_required
+@can_manage_laboratories
+def laboratory_activities_delete(request, code, data_id, laboratory=None):
+    activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
+    activity.delete()
+    
+    log_action(user=request.user,
+    obj=laboratory,
+    flag=CHANGE,
+    msg=f'{_("Deleted activity")}')
+
+    messages.add_message(request, messages.SUCCESS, _("Activity removed successfully"))
+    return redirect('crud_laboratories:crud_laboratory_edit', code=code)

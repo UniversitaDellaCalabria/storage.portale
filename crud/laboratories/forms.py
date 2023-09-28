@@ -260,5 +260,8 @@ class LaboratorioAttivitaForm(forms.ModelForm):
             'descr_finalita_en': _('Purpouse (en)'),
         }
         
+        widgets = {'descr_finalita_it': CKEditorWidget(),
+                   'descr_finalita_en': CKEditorWidget()}
+        
     field_order = ['tipologia_attivita', 'descr_finalita_it', 'descr_finalita_en']
         
