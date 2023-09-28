@@ -4,7 +4,7 @@ import os
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
+from .. utils.decorators import check_if_superuser
 from .. utils.forms import ChoosenPersonForm
 from .. utils.utils import custom_message, log_action
 
@@ -295,7 +296,7 @@ def patent_inventor_delete(request, code, inventor_id, patent=None):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@check_if_superuser
 # @can_manage_patents
 def patent_delete(request, code, patent=None):
     """

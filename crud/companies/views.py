@@ -6,7 +6,7 @@ from .. utils.utils import log_action
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -16,6 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
+from .. utils.decorators import check_if_superuser
 from .. utils.forms import ChoosenPersonForm
 
 from . decorators import *
@@ -405,7 +406,7 @@ def company_unical_department_data_delete(request, code, department_id,
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@check_if_superuser
 # @can_manage_companies
 def company_delete(request, code, company=None):
     # ha senso?

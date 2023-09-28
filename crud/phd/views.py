@@ -4,7 +4,7 @@ import logging
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, LogEntry, ADDITION
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -14,6 +14,7 @@ from ricerca_app import *
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
+from .. utils.decorators import check_if_superuser
 from .. utils.forms import ChoosenPersonForm
 from .. utils.utils import custom_message, log_action
 
@@ -555,7 +556,7 @@ def phd_other_teacher_delete(request, code, teacher_id,
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@check_if_superuser
 # @can_manage_phd
 # @can_edit_phd
 def phd_delete(request, code, my_offices=None, phd=None,
