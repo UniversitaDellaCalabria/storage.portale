@@ -330,7 +330,6 @@ def base_researchline_delete(request, code,
 
 
 @login_required
-@can_manage_researchlines
 @user_passes_test(lambda u: u.is_superuser)
 # attualmente solo i superuser possono effetture l'operazione
 # @can_manage_researchlines
