@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='didatticacdsaltridati',
             name='matricola_coordinatore',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_COORDINATORE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='coordinatore', to='ricerca_app.personale', to_field='matricola'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_COORDINATORE', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='coordinatore', to='ricerca_app.personale', to_field='matricola'),
         ),
         migrations.AlterField(
             model_name='didatticacdsaltridati',
             name='matricola_vice_coordinatore',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_VICE_COORDINATORE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='vice_coordinatore', to='ricerca_app.personale', to_field='matricola'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_VICE_COORDINATORE', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='vice_coordinatore', to='ricerca_app.personale', to_field='matricola'),
         ),
     ]

@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(blank=True, db_column='FIRST_NAME', max_length=1020, null=True)),
                 ('last_name', models.CharField(blank=True, db_column='LAST_NAME', max_length=1020, null=True)),
                 ('id_ab', models.ForeignKey(blank=True, db_column='ID_AB', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale')),
-                ('item', models.ForeignKey(db_column='ITEM_ID', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.pubblicazionedatibase')),
+                ('item', models.ForeignKey(db_column='ITEM_ID', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.pubblicazionedatibase')),
             ],
             options={
                 'db_table': 'PUBBLICAZIONE_AUTORI',

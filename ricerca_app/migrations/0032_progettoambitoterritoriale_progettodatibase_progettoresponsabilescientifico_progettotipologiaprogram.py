@@ -58,9 +58,9 @@ class Migration(migrations.Migration):
                 ('abstract_ita', models.TextField(blank=True, db_column='ABSTRACT_ITA', null=True)),
                 ('abstract_eng', models.TextField(blank=True, db_column='ABSTRACT_ENG', null=True)),
                 ('url_sito_web', models.CharField(blank=True, db_column='URL_SITO_WEB', max_length=1000, null=True)),
-                ('id_ambito_territoriale', models.ForeignKey(blank=True, db_column='ID_AMBITO_TERRITORIALE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.progettoambitoterritoriale')),
-                ('id_area_tecnologica', models.ForeignKey(blank=True, db_column='ID_AREA_TECNOLOGICA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.tipologiaareatecnologica')),
-                ('id_tipologia_programma', models.ForeignKey(blank=True, db_column='ID_TIPOLOGIA_PROGRAMMA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.progettotipologiaprogramma')),
+                ('id_ambito_territoriale', models.ForeignKey(blank=True, db_column='ID_AMBITO_TERRITORIALE', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.progettoambitoterritoriale')),
+                ('id_area_tecnologica', models.ForeignKey(blank=True, db_column='ID_AREA_TECNOLOGICA', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.tipologiaareatecnologica')),
+                ('id_tipologia_programma', models.ForeignKey(blank=True, db_column='ID_TIPOLOGIA_PROGRAMMA', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.progettotipologiaprogramma')),
             ],
             options={
                 'db_table': 'PROGETTO_DATI_BASE',

@@ -94,21 +94,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='brevettodatibase',
             name='id_area_tecnologica',
-            field=models.ForeignKey(blank=True, db_column='ID_AREA_TECNOLOGICA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.tipologiaareatecnologica'),
+            field=models.ForeignKey(blank=True, db_column='ID_AREA_TECNOLOGICA', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.tipologiaareatecnologica'),
         ),
         migrations.AddField(
             model_name='brevettodatibase',
             name='id_diritto_commerciale',
-            field=models.ForeignKey(blank=True, db_column='ID_DIRITTO_COMMERCIALE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.brevettodiritticommerciali'),
+            field=models.ForeignKey(blank=True, db_column='ID_DIRITTO_COMMERCIALE', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.brevettodiritticommerciali'),
         ),
         migrations.AddField(
             model_name='brevettodatibase',
             name='id_disponibilita',
-            field=models.ForeignKey(blank=True, db_column='ID_DISPONIBILITA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.brevettodisponibilita'),
+            field=models.ForeignKey(blank=True, db_column='ID_DISPONIBILITA', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.brevettodisponibilita'),
         ),
         migrations.AddField(
             model_name='brevettodatibase',
             name='id_status_legale',
-            field=models.ForeignKey(blank=True, db_column='ID_STATUS_LEGALE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.brevettostatuslegale'),
+            field=models.ForeignKey(blank=True, db_column='ID_STATUS_LEGALE', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.brevettostatuslegale'),
         ),
     ]

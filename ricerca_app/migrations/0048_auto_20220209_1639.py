@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
                 ('cfu', models.IntegerField(blank=True, db_column='CFU', null=True)),
                 ('verifica_finale', models.IntegerField(blank=True, db_column='VERIFICA_FINALE', null=True)),
                 ('dt_mod', models.DateTimeField(blank=True, db_column='DT_MOD', null=True)),
-                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.altaformazionedatibase')),
+                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.altaformazionedatibase')),
             ],
             options={
                 'db_table': 'ALTA_FORMAZIONE_PIANO_DIDATTICO',
@@ -103,7 +103,7 @@ class Migration(migrations.Migration):
                 ('tipologia', models.CharField(blank=True, db_column='TIPOLOGIA', max_length=1000, null=True)),
                 ('sito_web', models.CharField(blank=True, db_column='SITO_WEB', max_length=2000, null=True)),
                 ('dt_mod', models.DateTimeField(blank=True, db_column='DT_MOD', null=True)),
-                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.altaformazionedatibase')),
+                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.altaformazionedatibase')),
             ],
             options={
                 'db_table': 'ALTA_FORMAZIONE_PARTNER',
@@ -116,7 +116,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('tipo_selezione', models.CharField(db_column='TIPO_SELEZIONE', max_length=100)),
                 ('dt_mod', models.DateTimeField(blank=True, db_column='DT_MOD', null=True)),
-                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.altaformazionedatibase')),
+                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.altaformazionedatibase')),
             ],
             options={
                 'db_table': 'ALTA_FORMAZIONE_MODALITA_SELEZIONE',
@@ -134,8 +134,8 @@ class Migration(migrations.Migration):
                 ('ente', models.TextField(blank=True, db_column='ENTE', null=True)),
                 ('tipologia', models.CharField(blank=True, db_column='TIPOLOGIA', max_length=1000, null=True)),
                 ('dt_mod', models.DateTimeField(blank=True, db_column='DT_MOD', null=True)),
-                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.altaformazionedatibase')),
-                ('id_alta_formazione_piano_didattico', models.ForeignKey(blank=True, db_column='ID_ALTA_FORMAZIONE_PIANO_DIDATTICO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.altaformazionepianodidattico')),
+                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.altaformazionedatibase')),
+                ('id_alta_formazione_piano_didattico', models.ForeignKey(blank=True, db_column='ID_ALTA_FORMAZIONE_PIANO_DIDATTICO', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.altaformazionepianodidattico')),
             ],
             options={
                 'db_table': 'ALTA_FORMAZIONE_INCARICO_DIDATTICO',
@@ -150,12 +150,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='altaformazionedatibase',
             name='id_alta_formazione_tipo_corso',
-            field=models.ForeignKey(blank=True, db_column='ID_ALTA_FORMAZIONE_TIPO_CORSO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.altaformazionetipocorso'),
+            field=models.ForeignKey(blank=True, db_column='ID_ALTA_FORMAZIONE_TIPO_CORSO', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.altaformazionetipocorso'),
         ),
         migrations.AddField(
             model_name='altaformazionedatibase',
             name='matricola_direttore_scientifico',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_DIRETTORE_SCIENTIFICO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_DIRETTORE_SCIENTIFICO', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale'),
         ),
         migrations.CreateModel(
             name='AltaFormazioneConsiglioScientificoInterno',
@@ -163,8 +163,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('nome_origine_cons', models.CharField(db_column='NOME_ORIGINE_CONS', max_length=1000)),
                 ('dt_mod', models.DateTimeField(blank=True, db_column='DT_MOD', null=True)),
-                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.altaformazionedatibase')),
-                ('matricola_cons', models.ForeignKey(blank=True, db_column='MATRICOLA_CONS', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale')),
+                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.altaformazionedatibase')),
+                ('matricola_cons', models.ForeignKey(blank=True, db_column='MATRICOLA_CONS', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale')),
             ],
             options={
                 'db_table': 'ALTA_FORMAZIONE_CONSIGLIO_SCIENTIFICO_INTERNO',
@@ -179,7 +179,7 @@ class Migration(migrations.Migration):
                 ('ruolo_cons', models.CharField(blank=True, db_column='RUOLO_CONS', max_length=1000, null=True)),
                 ('ente_cons', models.CharField(blank=True, db_column='ENTE_CONS', max_length=1000, null=True)),
                 ('dt_mod', models.DateTimeField(blank=True, db_column='DT_MOD', null=True)),
-                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.altaformazionedatibase')),
+                ('id_alta_formazione_dati_base', models.ForeignKey(db_column='ID_ALTA_FORMAZIONE_DATI_BASE', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.altaformazionedatibase')),
             ],
             options={
                 'db_table': 'ALTA_FORMAZIONE_CONSIGLIO_SCIENTIFICO_ESTERNO',

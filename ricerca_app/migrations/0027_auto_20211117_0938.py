@@ -29,6 +29,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='laboratorioattivita',
             name='id_tipologia_attivita',
-            field=models.ForeignKey(db_column='ID_TIPOLOGIA_ATTIVITA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriotipologiaattivita'),
+            field=models.ForeignKey(db_column='ID_TIPOLOGIA_ATTIVITA', null=True, on_delete=django.db.models.deletion.PROTECT, to='ricerca_app.laboratoriotipologiaattivita'),
         ),
     ]

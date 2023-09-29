@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                 ('piano', models.CharField(blank=True, db_column='PIANO', max_length=100, null=True)),
                 ('sede_principale', models.CharField(blank=True, db_column='SEDE_PRINCIPALE', max_length=10, null=True)),
                 ('note', models.TextField(blank=True, db_column='NOTE', null=True)),
-                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
+                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase')),
             ],
             options={
                 'db_table': 'LABORATORIO_UBICAZIONE',
@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('nome_servizio', models.TextField(blank=True, db_column='NOME_SERVIZIO', null=True)),
                 ('descrizione_servizio', models.TextField(blank=True, db_column='DESCRIZIONE_SERVIZIO', null=True)),
-                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
+                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase')),
             ],
             options={
                 'db_table': 'LABORATORIO_SERVIZI_OFFERTI',
@@ -90,7 +90,7 @@ class Migration(migrations.Migration):
                 ('durata_mesi', models.IntegerField(blank=True, null=True)),
                 ('importo_euro', models.FloatField(blank=True, null=True)),
                 ('strumentazione', models.TextField(blank=True, null=True)),
-                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
+                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase')),
             ],
             options={
                 'db_table': 'LABORATORIO_SERVIZI_EROGATI',
@@ -105,7 +105,7 @@ class Migration(migrations.Migration):
                 ('ruolo', models.CharField(blank=True, db_column='RUOLO', max_length=400, null=True)),
                 ('field_impegno', models.FloatField(blank=True, db_column='%IMPEGNO', null=True)),
                 ('cognomenome_origine', models.CharField(blank=True, db_column='COGNOMENOME_ORIGINE', max_length=200, null=True)),
-                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
+                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase')),
             ],
             options={
                 'db_table': 'LABORATORIO_PERSONALE_TECNICO',
@@ -118,7 +118,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('matricola_personale_ricerca', models.CharField(blank=True, db_column='MATRICOLA_PERSONALE_RICERCA', max_length=20, null=True)),
                 ('cognomenome_origine', models.CharField(blank=True, db_column='COGNOMENOME_ORIGINE', max_length=200, null=True)),
-                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
+                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase')),
             ],
             options={
                 'db_table': 'LABORATORIO_PERSONALE_RICERCA',
@@ -129,8 +129,8 @@ class Migration(migrations.Migration):
             name='LaboratorioDatiErc1',
             fields=[
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
-                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
-                ('id_ricerca_erc1', models.ForeignKey(blank=True, db_column='ID_RICERCA_ERC1', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.ricercaerc1')),
+                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase')),
+                ('id_ricerca_erc1', models.ForeignKey(blank=True, db_column='ID_RICERCA_ERC1', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.ricercaerc1')),
             ],
             options={
                 'db_table': 'LABORATORIO_DATI_ERC1',
@@ -147,7 +147,7 @@ class Migration(migrations.Migration):
                 ('costo_unitario', models.FloatField(blank=True, null=True)),
                 ('quantita', models.IntegerField(blank=True, null=True)),
                 ('tipo_rischi', models.CharField(blank=True, max_length=500, null=True)),
-                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
+                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase')),
             ],
             options={
                 'db_table': 'LABORATORIO_ATTREZZATURE',
@@ -159,7 +159,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('tipologia_attivita', models.CharField(blank=True, db_column='TIPOLOGIA_ATTIVITA', max_length=200, null=True)),
-                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.ricercadocentelineabase')),
+                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.ricercadocentelineabase')),
             ],
             options={
                 'db_table': 'LABORATORIO_ATTIVITA',

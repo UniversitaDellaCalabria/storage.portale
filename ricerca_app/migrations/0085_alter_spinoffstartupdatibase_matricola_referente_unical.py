@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='spinoffstartupdatibase',
             name='matricola_referente_unical',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_REFERENTE_UNICAL', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale', to_field='matricola'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_REFERENTE_UNICAL', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale', to_field='matricola'),
         ),
     ]
