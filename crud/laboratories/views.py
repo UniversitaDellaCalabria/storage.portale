@@ -20,7 +20,7 @@ from .. utils.forms import ChoosenPersonForm
 
 from . decorators import *
 from . forms import *
-from .settings import *
+from . settings import *
 
 
 logger = logging.getLogger(__name__)
@@ -45,41 +45,40 @@ def laboratory(request, code, laboratory=None):
     """
     dettaglio laboratorio
     """
+    #LaboratorioDatiBase
     form = LaboratorioDatiBaseForm(instance=laboratory)
-
-
     referent_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
-
     scientific_director_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
-
     safety_responsible_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
-
     department_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
-
+    #LaboratorioAltriDipartimenti
     extra_departments = LaboratorioAltriDipartimenti.objects.filter(
             id_laboratorio_dati=code).all()
-
+    #LaboratorioAttrezzature
     equipement = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).all()
-
+    #LaboratorioTipologiaRischio
     risk_type = LaboratorioTipologiaRischio.objects.filter(
             id_laboratorio_dati=code).all()
-
     risk_type_form = LaboratorioTipologiaRischioForm(instance=risk_type[0])
     
+    #LaboratorioDatiErc1
     researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).values("id",
                                                                                           "id_ricerca_erc1",
                                                                                           "id_ricerca_erc1__descrizione")
+    #LaboratorioUbicazione
     locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).all()
-    
+    #LaboratorioPersonaleRicerca
     researchers = LaboratorioPersonaleRicerca.objects.filter(id_laboratorio_dati=code).all()
-    
+    #LaboratorioPersonaleTecnico
     technicians = LaboratorioPersonaleTecnico.objects.filter(id_laboratorio_dati=code).values("id", "cognomenome_origine")
-
+    #LaboratorioAttivita
     activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).values("id", "id_tipologia_attivita__descrizione")
+    #LaboratorioServiziErogati
+    provided_services = LaboratorioServiziErogati.objects.filter(id_laboratorio_dati=code).values("id", "descrizione")
 
     if request.POST:
         form = LaboratorioDatiBaseForm(instance=laboratory,
@@ -147,6 +146,7 @@ def laboratory(request, code, laboratory=None):
                    'researchers': researchers,
                    'technicians': technicians,
                    'activities': activities,
+                   'provided_services': provided_services,
                    })
 
 
@@ -1100,9 +1100,9 @@ def laboratory_activities_new(request, code, laboratory=None):
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Edited activities")}')
+            msg=f'{_("Added activity")}')
 
-            messages.add_message(request, messages.SUCCESS, _("Activities edited successfully"))
+            messages.add_message(request, messages.SUCCESS, _("Activities added successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
@@ -1165,4 +1165,144 @@ def laboratory_activities_delete(request, code, data_id, laboratory=None):
     msg=f'{_("Deleted activity")}')
 
     messages.add_message(request, messages.SUCCESS, _("Activity removed successfully"))
+    return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+
+@login_required
+@can_manage_laboratories
+def laboratory_provided_services_new(request, code, laboratory=None):
+    form = LaboratorioServiziErogatiForm()
+    internal_form = ChoosenPersonForm(required=True)
+    external_form = LaboratorioServiziErogatiResponsabileForm()
+    manager = None
+    if request.POST:
+        
+        form = LaboratorioServiziErogatiForm(data=request.POST)
+        
+        if "choosen_person" in request.POST and request.POST["choosen_person"]:
+            person_form = ChoosenPersonForm(data=request.POST, required=True)
+        else:
+            person_form = LaboratorioServiziErogatiResponsabileForm(data=request.POST)
+            
+        if person_form.is_valid() and form.is_valid():
+            
+            provided_service = form.save(commit=False)
+            provided_service.id_laboratorio_dati = laboratory
+
+            if person_form.cleaned_data.get('choosen_person'):
+                manager_code = decrypt(person_form.cleaned_data['choosen_person'])
+                manager = get_object_or_404(Personale, matricola=manager_code)
+                provided_service.matricola_responsabile = manager_code
+                provided_service.responsabile_origine=f'{manager.cognome} {manager.nome}'
+            else:
+                provided_service.matricola_responsabile = None
+                provided_service.responsabile_origine = form.cleaned_data['laboratory_manager']
+
+            provided_service.save()
+            
+            log_action(user=request.user,
+            obj=laboratory,
+            flag=CHANGE,
+            msg=f'{_("Added provided service")}')
+
+            messages.add_message(request, messages.SUCCESS, _("Provided service added successfully"))
+            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_provided_services_new', kwargs={'code': code}): _('Provided Service')
+                   }
+    return render(request,
+                  'laboratory_provided_service.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'laboratory': laboratory,
+                   'choosen_person': manager,
+                   'internal_form': internal_form,
+                   'external_form': external_form,
+                   'url': reverse('ricerca:teacherslist')
+                   })
+    
+    
+@login_required
+@can_manage_laboratories
+def laboratory_provided_services_edit(request, code, data_id, laboratory=None):
+    provided_service = get_object_or_404(LaboratorioServiziErogati, pk=data_id)
+    manager = None
+    cpf_initial = {}
+    lpf_initial = {}
+    manager_origine = None
+    if(provided_service.matricola_responsabile):
+        manager = get_object_or_404(Personale, matricola=provided_service.matricola_responsabile)
+        cpf_initial["choosen_person"] = encrypt(provided_service.matricola_responsabile)
+        manager_origine = f'{manager.cognome} {manager.nome}'
+    else:
+        lpf_initial["laboratory_manager"] = provided_service.responsabile_origine
+        
+    internal_form = ChoosenPersonForm(initial=cpf_initial, required=False)
+    external_form = LaboratorioServiziErogatiResponsabileForm(initial=lpf_initial)
+    form = LaboratorioServiziErogatiForm(instance=provided_service)
+
+    if request.POST:
+        form = LaboratorioServiziErogatiForm(data=request.POST, instance=provided_service)
+        
+        if "choosen_person" in request.POST and request.POST["choosen_person"]:
+            person_form = ChoosenPersonForm(initial=cpf_initial, data=request.POST, required=False)
+        else:
+            person_form = LaboratorioServiziErogatiResponsabileForm(initial=lpf_initial, data=request.POST)
+            
+        if person_form.is_valid() and form.is_valid():
+            
+            provided_service = form.save(commit=False)
+            provided_service.id_laboratorio_dati = laboratory
+
+            if person_form.cleaned_data.get('choosen_person'):
+                manager_code = decrypt(person_form.cleaned_data['choosen_person'])
+                manager = get_object_or_404(Personale, matricola=manager_code)
+                provided_service.matricola_responsabile = manager_code
+                provided_service.responsabile_origine=f'{manager.cognome} {manager.nome}'
+            elif person_form.cleaned_data.get('laboratory_manager'):
+                provided_service.matricola_responsabile = None
+                provided_service.responsabile_origine = person_form.cleaned_data['laboratory_manager']
+
+            provided_service.save()
+            
+            log_action(user=request.user,
+            obj=laboratory,
+            flag=CHANGE,
+            msg=f'{_("Edited provided service")}')
+
+            messages.add_message(request, messages.SUCCESS, _("Provided service edited successfully"))
+            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_provided_services_edit', kwargs={'code': code, 'data_id': data_id}): _('Provided Service')
+                   }
+    return render(request,
+                  'laboratory_provided_service.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'laboratory': laboratory,
+                   'choosen_person': manager_origine,
+                   'internal_form': internal_form,
+                   'external_form': external_form,
+                   'provided_service': provided_service,
+                   'url': reverse('ricerca:teacherslist')
+                   })
+
+@login_required
+@can_manage_laboratories
+def laboratory_provided_services_delete(request, code, data_id, laboratory=None):
+    provided_service = get_object_or_404(LaboratorioServiziErogati, pk=data_id)
+    provided_service.delete()
+    
+    log_action(user=request.user,
+    obj=laboratory,
+    flag=CHANGE,
+    msg=f'{_("Deleted provided service")}')
+
+    messages.add_message(request, messages.SUCCESS, _("Provided service removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)

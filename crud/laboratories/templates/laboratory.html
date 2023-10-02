@@ -678,6 +678,78 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Provided Services" %}</h4>
+            <!-- Provided Services -->
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {% for provided_service in provided_services %}
+                    <tr>
+                        <td>
+                            {% trans provided_service.descrizione|default:"-" %}
+                        </td>
+                        <td class="text-right">
+                            <a href="{% url 'crud_laboratories:crud_laboratory_provided_services_edit' code=laboratory.pk data_id=provided_service.id %}" class="btn btn-primary btn-xs">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg> {% trans "Edit" %}
+                            </a>
+                            <a href="" class="btn btn-danger btn-xs"
+                                data-toggle="modal"
+                                data-target="#delete_provided_service">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                </svg> {% trans "Remove" %}
+                            </a>
+                            <div class="modal fade"
+                                    tabindex="-1"
+                                    role="dialog"
+                                    id="delete_provided_service">
+                                <div class="modal-dialog modal-dialog-centered"
+                                        role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <svg class="icon">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete this provided service" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_provided_services_delete' code=laboratory.pk data_id=provided_service.id %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'crud_laboratories:crud_laboratory_provided_services_new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
             <h4 style="font-weight: lighter;">Logs</h4>
             {% include "obj_logs.html" with logs=logs %}
         </div>

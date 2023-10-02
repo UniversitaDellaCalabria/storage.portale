@@ -136,11 +136,16 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     return dict
 };
 function {{person_label|default:"choosen_person"}}_unsetPerson() {
-    console.log("unset PERSON")
     document.getElementById('id_{{person_label|default:"choosen_person"}}').value = "";
     let elements = document.getElementsByClassName('{{person_label|default:"choosen_person"}}_name');
-    //for(let i=0; i < elements.length; i++)
-    //    elements[i].innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen person' %} <b>"+name+"</b></div>";
+    for(let i=0; i < elements.length; i++)
+        elements[i].innerHTML = `<div class="alert alert-warning" role="alert">
+            {% if required %}
+                {% trans "Choose a person to proceed" %}
+            {% else %}
+                {% trans "Choose a person" %}
+            {% endif %}
+        </div>`;
 };
 </script>
 {% endblock extra_scripts %}

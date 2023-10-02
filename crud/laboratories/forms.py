@@ -1,5 +1,7 @@
 import requests
 
+from datetime import date as dt
+
 from ckeditor.widgets import CKEditorWidget
 
 from django import forms
@@ -8,9 +10,10 @@ from django.conf import settings
 from django.urls import reverse
 
 
-from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita
+from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
+
 # from .. utils.widgets import RicercaCRUDClearableWidget
 
 
@@ -237,7 +240,8 @@ class LaboratorioPersonaleTecnicoForm(forms.Form):
         
         self.fields['field_impegno'] = forms.FloatField(
             required=True,
-            label=_("Commitment % ")
+            label=_("Commitment % "),
+            min_value=0
         )
         
 class LaboratorioAttivitaForm(forms.ModelForm):
@@ -265,3 +269,31 @@ class LaboratorioAttivitaForm(forms.ModelForm):
         
     field_order = ['tipologia_attivita', 'descr_finalita_it', 'descr_finalita_en']
         
+class LaboratorioServiziErogatiForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['anno'] = forms.IntegerField(
+            max_value=dt.today().year,
+            min_value=1901
+        )
+        self.fields['importo_euro'] = forms.FloatField(min_value=0)
+        self.fields['durata_mesi'] = forms.IntegerField(min_value=0)
+    
+    class Meta:
+        model = LaboratorioServiziErogati
+        exclude = ('id_laboratorio_dati', 'matricola_responsabile', 'responsabile_origine',)
+        labels = {
+            'descrizione': _('Description'),
+            'committenti': _('Client'),
+            'durata_mesi': _('Duration (Months)'),
+            'importo_euro': _('Monetary Amount (Euros)'),
+            'strumentazione': _('Equipment'),
+        }
+        widgets = {'strumentazione': CKEditorWidget()}
+        
+class LaboratorioServiziErogatiResponsabileForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['laboratory_manager'] = forms.CharField(
+            required=False,
+            label=_("Name and Surname"))
