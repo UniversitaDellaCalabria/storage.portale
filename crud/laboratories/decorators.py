@@ -34,12 +34,12 @@ def can_manage_laboratories(func_to_decorate):
 
     return new_func
 
-def can_edit_laboartories(func_to_decorate):
+def can_edit_laboratories(func_to_decorate):
     """
+    Verifica dipartimento e ufficio
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-
         laboratory = original_kwargs['laboratory']
 
         if request.user.is_superuser:
