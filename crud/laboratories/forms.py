@@ -289,7 +289,6 @@ class LaboratorioServiziErogatiForm(forms.ModelForm):
             'importo_euro': _('Monetary Amount (Euros)'),
             'strumentazione': _('Equipment'),
         }
-        widgets = {'strumentazione': CKEditorWidget()}
         
 class LaboratorioServiziErogatiResponsabileForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -297,3 +296,18 @@ class LaboratorioServiziErogatiResponsabileForm(forms.Form):
         self.fields['laboratory_manager'] = forms.CharField(
             required=False,
             label=_("Name and Surname"))
+        
+class LaboratorioServiziOffertiForm(forms.ModelForm):
+    class Meta:
+        model = LaboratorioServiziOfferti
+        fields = ['nome_servizio', 'descrizione_servizio']
+        label = {
+            "nome_servizio" : _("Name"),
+            "descrizione_servizio": _("Description"),
+        }
+        
+        
+        
+        
+        
+        

@@ -1,0 +1,14 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block centered_container %}
+<h3 style="font-weight: lighter;" class="mb-4">
+    {% if offered_service %}{% trans "Edit offered service for" %}{% else %}{% trans "New offered service piece for" %}{% endif %} {{ laboratory.nome_laboratorio }}</h3>
+<form method="post" novalidate>
+    {% include "form_template.html" with form=form %}
+    <hr />
+    {% include "includes/form_submit.html" %}
+</form>
+{% endblock centered_container %}

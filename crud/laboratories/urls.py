@@ -40,4 +40,7 @@ urlpatterns += path('laboratories/<str:code>/activities/<str:data_id>/delete/', 
 urlpatterns += path('laboratories/<str:code>/provided-services/new', laboratory_provided_services_new, name='crud_laboratory_provided_services_new'),
 urlpatterns += path('laboratories/<str:code>/provided-services/<str:data_id>/', laboratory_provided_services_edit, name='crud_laboratory_provided_services_edit'),
 urlpatterns += path('laboratories/<str:code>/provided-services/<str:data_id>/delete/', laboratory_provided_services_delete, name='crud_laboratory_provided_services_delete'),
-
+#LaboratorioServiziOfferti
+urlpatterns += path('laboratories/<str:code>/offered-services/new', laboratory_offered_services_new, name='crud_laboratory_offered_services_new'),
+urlpatterns += path('laboratories/<str:code>/offered-services/<str:data_id>/', laboratory_offered_services_edit, name='crud_laboratory_offered_services_edit'),
+urlpatterns += path('laboratories/<str:code>/offered-services/<str:data_id>/delete/', laboratory_offered_services_delete, name='crud_laboratory_offered_services_delete'),
