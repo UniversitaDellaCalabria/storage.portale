@@ -51,7 +51,7 @@ def laboratory(request, code, laboratory=None):
                                       pk=code)
     scientific_director_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
-    safety_responsible_data = get_object_or_404(LaboratorioDatiBase,
+    safety_manager_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
     department_data = get_object_or_404(LaboratorioDatiBase,
                                       pk=code)
@@ -79,7 +79,10 @@ def laboratory(request, code, laboratory=None):
     activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).values("id", "id_tipologia_attivita__descrizione")
     #LaboratorioServiziErogati
     provided_services = LaboratorioServiziErogati.objects.filter(id_laboratorio_dati=code).values("id", "descrizione")
+    #LaboratorioServiziOfferti
+    offered_services = LaboratorioServiziOfferti.objects.filter(id_laboratorio_dati=code).values("id", "nome_servizio")
 
+    
     if request.POST:
         form = LaboratorioDatiBaseForm(instance=laboratory,
                                           data=request.POST,
@@ -137,7 +140,7 @@ def laboratory(request, code, laboratory=None):
                    'referent_data': referent_data,
                    'department_data': department_data,
                    'scientific_director_data': scientific_director_data,
-                   'safety_responsible_data' : safety_responsible_data,
+                   'safety_manager_data' : safety_manager_data,
                    'extra_departments': extra_departments,
                    'laboratory_equipment': equipement,
                    'risk_type_form': risk_type_form,
@@ -147,6 +150,7 @@ def laboratory(request, code, laboratory=None):
                    'technicians': technicians,
                    'activities': activities,
                    'provided_services': provided_services,
+                   'offered_services': offered_services,
                    })
 
 
@@ -519,18 +523,18 @@ def laboratory_scientific_director_edit(request, code, data_id, laboratory=None)
 
 @login_required
 @can_manage_laboratories
-def laboratory_safety_responsible_edit(request, code, data_id, laboratory=None):
+def laboratory_safety_manager_edit(request, code, data_id, laboratory=None):
     """
     dettaglio responsabile scientifico del laboratorio
     """
-    laboratory_safety_responsible = get_object_or_404(LaboratorioDatiBase.objects.select_related('matricola_preposto_sicurezza'), pk=data_id)
-    old_label = laboratory_safety_responsible.preposto_sicurezza
-    safety_responsible = laboratory_safety_responsible.matricola_preposto_sicurezza
+    laboratory_safety_manager = get_object_or_404(LaboratorioDatiBase.objects.select_related('matricola_preposto_sicurezza'), pk=data_id)
+    old_label = laboratory_safety_manager.preposto_sicurezza
+    safety_manager = laboratory_safety_manager.matricola_preposto_sicurezza
     initial = {}
-    safety_responsible_data = ''
-    if safety_responsible:
-        safety_responsible_data = f'{safety_responsible.cognome} {safety_responsible.nome}'
-        initial = {'choosen_person': encrypt(safety_responsible.matricola)}
+    safety_manager_data = ''
+    if safety_manager:
+        safety_manager_data = f'{safety_manager.cognome} {safety_manager.nome}'
+        initial = {'choosen_person': encrypt(safety_manager.matricola)}
 
     form = ChoosenPersonForm(initial=initial, required=True)
 
@@ -540,26 +544,26 @@ def laboratory_safety_responsible_edit(request, code, data_id, laboratory=None):
 
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
-                safety_responsible_code = decrypt(form.cleaned_data['choosen_person'])
-                safety_responsible = get_object_or_404(
-                    Personale, matricola=safety_responsible_code)
-                laboratory_safety_responsible.matricola_preposto_sicurezza = safety_responsible
-                laboratory_safety_responsible.preposto_sicurezza = f'{safety_responsible.cognome} {safety_responsible.nome}'
+                safety_manager_code = decrypt(form.cleaned_data['choosen_person'])
+                safety_manager = get_object_or_404(
+                    Personale, matricola=safety_manager_code)
+                laboratory_safety_manager.matricola_preposto_sicurezza = safety_manager
+                laboratory_safety_manager.preposto_sicurezza = f'{safety_manager.cognome} {safety_manager.nome}'
             else:
-                laboratory_safety_responsible.matricola_preposto_sicurezza = None
-                laboratory_safety_responsible.preposto_sicurezza = form.cleaned_data['preposto_sicurezza']
+                laboratory_safety_manager.matricola_preposto_sicurezza = None
+                laboratory_safety_manager.preposto_sicurezza = form.cleaned_data['preposto_sicurezza']
 
-            laboratory_safety_responsible.save()
+            laboratory_safety_manager.save()
 
-            if old_label != laboratory_safety_responsible.preposto_sicurezza:
+            if old_label != laboratory_safety_manager.preposto_sicurezza:
                 log_action(user=request.user,
                            obj=laboratory,
                            flag=CHANGE,
-                           msg=f'Sostituito preposto sicurezza {old_label} con {laboratory_safety_responsible.preposto_sicurezza}')
+                           msg=f'Sostituito preposto sicurezza {old_label} con {laboratory_safety_manager.preposto_sicurezza}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("Laboratory safety responsible edited successfully"))
+                                 _("Laboratory safety manager edited successfully"))
 
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
 
@@ -571,20 +575,20 @@ def laboratory_safety_responsible_edit(request, code, data_id, laboratory=None):
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
-                   reverse('crud_laboratories:crud_laboratory_safety_responsible_edit', kwargs={'code': code, 'data_id': data_id}): _('Safety Responsible')
+                   reverse('crud_laboratories:crud_laboratory_safety_manager_edit', kwargs={'code': code, 'data_id': data_id}): _('Safety Manager')
                    }
 
     return render(request,
-                  'laboratory_safety_responsible.html',
+                  'laboratory_safety_manager.html',
                   {'breadcrumbs': breadcrumbs,
                    'laboratory': laboratory,
-                   'choosen_person': safety_responsible_data,
+                   'choosen_person': safety_manager_data,
                    'form': form,
                    'url': reverse('ricerca:teacherslist')})
 
 @login_required
 @can_manage_laboratories
-def laboratory_safety_responsible_delete(request, code, data_id, laboratory=None):
+def laboratory_safety_manager_delete(request, code, data_id, laboratory=None):
     """
     elimina preposto sicurezza
     """
@@ -598,9 +602,9 @@ def laboratory_safety_responsible_delete(request, code, data_id, laboratory=None
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted safety responsible")}')
+    msg=f'{_("Deleted safety manager")}')
 
-    messages.add_message(request, messages.SUCCESS, _("Safety responsible removed successfully"))
+    messages.add_message(request, messages.SUCCESS, _("Safety manager removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
 
 
@@ -1085,6 +1089,10 @@ def laboratory_activities_new(request, code, laboratory=None):
         .objects\
         .filter(id_laboratorio_dati=code)\
         .values_list("id_tipologia_attivita", flat=True)
+        
+    if activity_types_already_specified and len(activity_types_already_specified) >= 3:
+        messages.add_message(request, messages.ERROR, _("Activities list is full"))
+        return redirect('crud_laboratories:crud_laboratory_edit', code=code)
     
     form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified)
     
@@ -1255,8 +1263,7 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None):
         if person_form.is_valid() and form.is_valid():
             
             provided_service = form.save(commit=False)
-            provided_service.id_laboratorio_dati = laboratory
-
+            
             if person_form.cleaned_data.get('choosen_person'):
                 manager_code = decrypt(person_form.cleaned_data['choosen_person'])
                 manager = get_object_or_404(Personale, matricola=manager_code)
@@ -1305,4 +1312,84 @@ def laboratory_provided_services_delete(request, code, data_id, laboratory=None)
     msg=f'{_("Deleted provided service")}')
 
     messages.add_message(request, messages.SUCCESS, _("Provided service removed successfully"))
+    return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+
+@login_required
+@can_manage_laboratories
+def laboratory_offered_services_new(request, code, laboratory=None):
+    form = LaboratorioServiziOffertiForm()
+    if request.POST:
+        form = LaboratorioServiziOffertiForm(data=request.POST)
+        offered_service = form.save(commit=False)
+        offered_service.id_laboratorio_dati = laboratory
+        offered_service.save()
+        
+        log_action(user=request.user,
+        obj=laboratory,
+        flag=CHANGE,
+        msg=f'{_("Added offered service")}')
+
+        messages.add_message(request, messages.SUCCESS, _("Offered offered added successfully"))
+        return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_offered_services_new', kwargs={'code': code}): _('Offered Service')
+                   }
+    return render(request,
+                  'laboratory_offered_service.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'laboratory': laboratory,
+                   })
+    
+    
+@login_required
+@can_manage_laboratories
+def laboratory_offered_services_edit(request, code, data_id, laboratory=None):
+    offered_service = get_object_or_404(LaboratorioServiziOfferti, pk=data_id)
+    form = LaboratorioServiziOffertiForm(instance=offered_service)
+
+    if request.POST:
+        form = LaboratorioServiziOffertiForm(data=request.POST, instance=offered_service)
+    
+        if form.is_valid():
+            offered_service = form.save()
+            
+            log_action(user=request.user,
+            obj=laboratory,
+            flag=CHANGE,
+            msg=f'{_("Edited offered service")}')
+
+            messages.add_message(request, messages.SUCCESS, _("Offered service edited successfully"))
+            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+        
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+                   reverse('crud_laboratories:crud_laboratory_offered_services_edit', kwargs={'code': code, 'data_id': data_id}): _('Offered Service')
+                   }
+    return render(request,
+                  'laboratory_offered_service.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'laboratory': laboratory,
+                   'offered_service': offered_service,
+                   })
+
+@login_required
+@can_manage_laboratories
+def laboratory_offered_services_delete(request, code, data_id, laboratory=None):
+    offered_service = get_object_or_404(LaboratorioServiziOfferti, pk=data_id)
+    offered_service.delete()
+    
+    log_action(user=request.user,
+    obj=laboratory,
+    flag=CHANGE,
+    msg=f'{_("Deleted offered service")}')
+
+    messages.add_message(request, messages.SUCCESS, _("Offered service removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)

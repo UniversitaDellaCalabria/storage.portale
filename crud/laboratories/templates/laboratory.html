@@ -150,9 +150,9 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h4 style="font-weight: lighter;">{% trans "Safety Responsible" %}</h4>
+            <h4 style="font-weight: lighter;">{% trans "Safety Manager" %}</h4>
 
-            <!-- safety responsible -->
+            <!-- Safety Manager -->
             <table class="table table-striped table-hover">
                 <tbody>
                     <tr>
@@ -160,7 +160,7 @@
                             {{ laboratory.preposto_sicurezza|default:"-" }}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_laboratories:crud_laboratory_safety_responsible_edit' code=laboratory.pk data_id=safety_responsible_data.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_laboratories:crud_laboratory_safety_manager_edit' code=laboratory.pk data_id=safety_manager_data.pk %}" class="btn btn-primary btn-xs">
                                 {% if laboratory.matricola_preposto_sicurezza %}
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
@@ -174,7 +174,7 @@
                             {% if laboratory.matricola_preposto_sicurezza %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_safety_responsible">
+                                data-target="#delete_safety_manager">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
@@ -182,7 +182,7 @@
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_safety_responsible">
+                                    id="delete_safety_manager">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -201,11 +201,11 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete safety responsible?" %}
+                                                {% trans "Do you want to delete safety manager?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_safety_responsible_delete' code=laboratory.pk data_id=safety_responsible_data.pk %}">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_safety_manager_delete' code=laboratory.pk data_id=safety_manager_data.pk %}">
                                                 {% trans 'Yes, proceed' %}
                                             </a>
                                         </div>
@@ -264,7 +264,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete this department" %}
+                                                {% trans "Do you want to delete this department?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
@@ -341,7 +341,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete this piece of equipment" %}
+                                                {% trans "Do you want to delete this piece of equipment?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
@@ -439,7 +439,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete this location" %}
+                                                {% trans "Do you want to delete this location?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
@@ -507,7 +507,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete this researcher" %}
+                                                {% trans "Do you want to delete this researcher?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
@@ -574,7 +574,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete this technician" %}
+                                                {% trans "Do you want to delete this technician?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
@@ -646,7 +646,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete this activity" %}
+                                                {% trans "Do you want to delete this activity?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
@@ -722,7 +722,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete this provided service" %}
+                                                {% trans "Do you want to delete this provided service?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
@@ -794,7 +794,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {% trans "Do you want to delete this offered service" %}
+                                                {% trans "Do you want to delete this offered service?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
