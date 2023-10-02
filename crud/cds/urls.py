@@ -52,3 +52,5 @@ urlpatterns += path('cds/<str:regdid_id>/cds-organizations/<str:group_id>/compon
                     cds_organizations_components_new, name='cds_organizations_components_new'),
 urlpatterns += path('cds/<str:regdid_id>/cds-organizations/<str:group_id>/components/<str:component_id>/edit/',
                     cds_organizations_components_edit, name='cds_organizations_components_edit'),
+urlpatterns += path('cds/<str:regdid_id>/cds-organizations/<str:group_id>/components/<str:component_id>/delete/',
+                    cds_organizations_components_delete, name='cds_organizations_components_delete'),

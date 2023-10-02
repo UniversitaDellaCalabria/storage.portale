@@ -1078,3 +1078,38 @@ def cds_organizations_components_edit(request, regdid_id, group_id, component_id
                    'internal_form': internal_form,
                    'cds_organization': cds_organization,
                    'url': reverse('ricerca:teacherslist')})
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_organizations_components_delete(request, regdid_id, group_id, component_id,
+                                     my_offices=None, regdid=None):
+    """
+    elimina componente di un gruppo
+    """
+
+    cds_organization = get_object_or_404(DidatticaCdsGruppi,
+                                         pk=group_id,
+                                         id_didattica_cds=regdid.cds)
+
+    component = get_object_or_404(DidatticaCdsGruppiComponenti,
+                                  pk=component_id,
+                                  id_didattica_cds_gruppi=cds_organization)
+
+    component.delete()
+
+    log_action(user=request.user,
+               obj=regdid.cds,
+               flag=CHANGE,
+               msg=f'Eliminato componente {component} dal gruppo {cds_organization.pk}')
+
+
+    messages.add_message(request,
+                        messages.SUCCESS,
+                        _("Component deleted successfully"))
+    
+    return render(request,
+                'cds_organization.html',
+                {'cds_organization': cds_organization,
+                'regdid': regdid})

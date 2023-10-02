@@ -60,11 +60,53 @@
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
                                 </a>
-                                <a href="#" class="btn btn-danger btn-xs">
+                                
+                                <a href="" class="btn btn-danger btn-xs"
+                                   data-toggle="modal"
+                                   data-target="#delete_cds_organizations_components_{{ component.pk }}">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                     </svg> {% trans "Remove" %}
                                 </a>
+                                <div class="modal fade"
+                                     tabindex="-1"
+                                     role="dialog"
+                                     id="delete_cds_organizations_components_{{ component.pk }}">
+                                    <div class="modal-dialog modal-dialog-centered"
+                                         role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    {% trans "Confirm" %}
+                                                </h5>
+                                                <button class="close"
+                                                        type="button"
+                                                        data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <svg class="icon">
+                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>
+                                                    {% trans "Do you want to delete component?" %}
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-success btn-sm" href="{% url 'crud_cds:cds_organizations_components_delete' regdid_id=regdid.pk group_id=cds_organization.pk component_id=component.pk %}">
+                                                    {% trans 'Yes, proceed' %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
                             </td>
                         </tr>
                         {% endfor %}
