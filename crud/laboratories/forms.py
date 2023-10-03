@@ -33,21 +33,18 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         laboratory_areas_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:laboratoriesareas")}'
         laboratory_areas_api = requests.get(laboratory_areas_url)
         laboratory_areas = laboratory_areas_api.json()['results']
-        lista_areee = []
-
-        lista_scelte_laboratorio_interdipartimentale = [('SI', 'SI'),
-                                                        ('NO', 'NO')]
+        lista_aree = []
 
         for l in laboratory_areas:
-            lista_areee.append((l['Area'], l['Area']))
+            lista_aree.append((l['Area'], l['Area']))
 
         self.fields['ambito'] = forms.ChoiceField(
             label=_('Areas'),
-            choices=lista_areee
+            choices=lista_aree
         )
         self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
             label=_('Interdepartimental Laboratory'),
-            choices=lista_scelte_laboratorio_interdipartimentale
+            choices=(('SI', 'SI'),('NO', 'NO'))
         )
 
 
