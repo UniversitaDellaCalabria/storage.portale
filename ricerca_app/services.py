@@ -2646,7 +2646,7 @@ class ServicePersonale:
             for item in filtered2:
                 final_structures = []
                 for r in item['Roles']:
-                    if not role or role and r['cd_ruolo'] in role:
+                    if r['cd_ruolo'] in role or item['profilo'] in role or not role:
                         final_structures.append(r['cd_tipo_nodo'])
                 if (set(s).intersection(set(final_structures))):
                     filtered3.append(item)
@@ -2659,7 +2659,7 @@ class ServicePersonale:
             for item in filtered3:
                 for r in item['Roles']:
                     if r['cd_uo_aff_org'] == structureid:
-                        if not role or role and r['cd_ruolo'] in role:
+                        if r['cd_ruolo'] in role or item['profilo'] in role or not role:
                             filtered4.append(item)
                             break
         else:
@@ -2673,7 +2673,7 @@ class ServicePersonale:
                 if item['Roles'] and len(item['Roles']) != 0:
                     for r in item['Roles']:
                         if r['cd_uo_aff_org'] in query_structuretree:
-                            if not role or role and r['cd_ruolo'] in role:
+                            if r['cd_ruolo'] in role or item['profilo'] in role or not role:
                                 filtered5.append(item)
                                 break
         else:
