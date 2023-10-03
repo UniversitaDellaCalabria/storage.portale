@@ -59,7 +59,7 @@ def laboratory(request, code, laboratory=None):
     extra_departments = LaboratorioAltriDipartimenti.objects.filter(
             id_laboratorio_dati=code).all()
     #LaboratorioAttrezzature
-    equipement = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).all()
+    equipment = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).all()
     #LaboratorioTipologiaRischio
     risk_type = LaboratorioTipologiaRischio.objects.filter(
             id_laboratorio_dati=code).all()
@@ -142,7 +142,7 @@ def laboratory(request, code, laboratory=None):
                    'scientific_director_data': scientific_director_data,
                    'safety_manager_data' : safety_manager_data,
                    'extra_departments': extra_departments,
-                   'laboratory_equipment': equipement,
+                   'laboratory_equipment': equipment,
                    'risk_type_form': risk_type_form,
                    'researches_erc1': researches_erc1,
                    'locations': locations,
@@ -206,9 +206,7 @@ def laboratory_new(request, laboratory=None):
 
         risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
         
-        ricerche_erc1_form = LaboratorioDatiErc1Form(data=request.POST)
-
-        if form.is_valid() and unical_referent_form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid() and risk_type_form.is_valid() and ricerche_erc1_form.is_valid():
+        if form.is_valid() and unical_referent_form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid() and risk_type_form.is_valid():
             laboratory = form.save(commit=False)
 
             #unical referent
@@ -436,12 +434,14 @@ def laboratory_unical_referent_edit(request, code, data_id, laboratory=None):
                    }
 
     return render(request,
-                  'laboratory_unical_referent.html',
+                  'laboratory_choose_person.html',
                   {'breadcrumbs': breadcrumbs,
                    'laboratory': laboratory,
                    'choosen_person': referent_data,
                    'external_form': external_form,
                    'internal_form': internal_form,
+                   'item_label': _("Unical Referent"),
+                   'edit': 1,
                    'url': reverse('ricerca:teacherslist')})
 
 
@@ -513,12 +513,14 @@ def laboratory_scientific_director_edit(request, code, data_id, laboratory=None)
                    }
 
     return render(request,
-                  'laboratory_scientific_director.html',
+                  'laboratory_choose_person.html',
                   {'breadcrumbs': breadcrumbs,
                    'laboratory': laboratory,
                    'choosen_person': scientific_director_data,
                    'external_form': external_form,
                    'internal_form': internal_form,
+                   'item_label': _("Scientific Director"),
+                   'edit': 1,
                    'url': reverse('ricerca:teacherslist')})
 
 @login_required
@@ -726,10 +728,11 @@ def laboratory_equipment_new(request, code, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_equipment_new', kwargs={'code': code}): _('Equipment')
                    }
     return render(request,
-                  'laboratory_equipment.html',
+                  'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': equipment_form,
                    'laboratory': laboratory,
+                   'item_label': _("Equipment piece"),
                 })
 
 
@@ -765,10 +768,12 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_equipment_edit', kwargs={'code': code, 'data_id': data_id}): _('Equipment')
                    }
     return render(request,
-                  'laboratory_equipment.html',
+                  'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': equipment_form,
                    'laboratory': laboratory,
+                   'item_label': _("Equipment Piece"),
+                   'edit': 1,
                 })
 
 
@@ -840,10 +845,12 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_researches_erc1_edit', kwargs={'code': code}): _('Researches ERC1')
                    }
     return render(request,
-                  'laboratory_research_erc1.html',
+                  'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': research_erc1_form,
                    'laboratory': laboratory,
+                   'item_label': _("ERC 1 Researches"),
+                   'edit': 1,
                 })
     
     
@@ -873,9 +880,10 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_locations_edit', kwargs={'code': code, 'data_id': data_id}): _('Location')
                    }
     return render(request,
-                  'laboratory_location.html',
+                  'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': location_form,
+                   'item_label': _("location"),
                    'laboratory': laboratory,
                 })
     
@@ -910,10 +918,12 @@ def laboratory_locations_new(request, code, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_locations_new', kwargs={'code': code}): _('Locations')
                    }
     return render(request,
-                  'laboratory_location.html',
+                  'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': location_form,
                    'laboratory': laboratory,
+                   'item_label': _("location"),
+                   'edit': 1,
                 })
 
 @login_required
@@ -978,12 +988,13 @@ def laboratory_research_staff_new(request, code, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_research_staff_new', kwargs={'code': code}): _('Research Staff')
                    }
     return render(request,
-                  'laboratory_researcher.html',
+                  'laboratory_choose_person.html',
                   {'breadcrumbs': breadcrumbs,
                    'laboratory': laboratory,
                    'choosen_person': researcher,
                    'internal_form': internal_form,
                    'external_form': external_form,
+                   'item_label': _("Researcher"),
                    'url': reverse('ricerca:teacherslist')})
 
 @login_required
@@ -1097,7 +1108,7 @@ def laboratory_activities_new(request, code, laboratory=None):
     form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified)
     
     if request.POST:
-        form = LaboratorioAttivitaForm(data=request.POST)
+        form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, data=request.POST)
         if form.is_valid():
             activity_type=get_object_or_404(LaboratorioTipologiaAttivita, pk=form.cleaned_data["tipologia_attivita"])
             activity = form.save(commit=False)
@@ -1119,10 +1130,11 @@ def laboratory_activities_new(request, code, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_activities_new', kwargs={'code': code}): _('Activities')
                    }
     return render(request,
-                  'laboratory_activities.html',
+                  'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'laboratory': laboratory,
+                   'item_label': _("activity"),
                 })
     
 
@@ -1130,11 +1142,19 @@ def laboratory_activities_new(request, code, laboratory=None):
 @can_manage_laboratories
 def laboratory_activities_edit(request, code, data_id, laboratory=None):
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
-    selected_activity = activity.id_tipologia_attivita.id
-    activity_form = LaboratorioAttivitaForm(instance=activity, initial={'tipologia_attivita': selected_activity})
+    selected_activity_id = activity.id_tipologia_attivita.id
+    selected_activity_type = get_object_or_404(LaboratorioTipologiaAttivita, pk=selected_activity_id)
+    
+    activity_types_already_specified = LaboratorioAttivita\
+        .objects\
+        .filter(id_laboratorio_dati=code)\
+        .exclude(id_tipologia_attivita=selected_activity_type)\
+        .values_list("id_tipologia_attivita", flat=True)
+    
+    activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, instance=activity, initial={'tipologia_attivita': selected_activity_id})
     
     if request.POST:
-        activity_form = LaboratorioAttivitaForm(instance=activity, data=request.POST)
+        activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, instance=activity, data=request.POST)
         if activity_form.is_valid():
             activity_type = get_object_or_404(LaboratorioTipologiaAttivita, pk=activity_form.cleaned_data["tipologia_attivita"])
             activity = activity_form.save(commit=False)
@@ -1155,10 +1175,12 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_activities_edit', kwargs={'code': code, "data_id": data_id}): _('Activity')
                    }
     return render(request,
-                  'laboratory_activities.html',
+                  'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': activity_form,
                    'laboratory': laboratory,
+                   'item_label': _("activity"),
+                   'edit': 1,
                 })
 
 @login_required
@@ -1330,7 +1352,7 @@ def laboratory_offered_services_new(request, code, laboratory=None):
         flag=CHANGE,
         msg=f'{_("Added offered service")}')
 
-        messages.add_message(request, messages.SUCCESS, _("Offered offered added successfully"))
+        messages.add_message(request, messages.SUCCESS, _("Offered service added successfully"))
         return redirect('crud_laboratories:crud_laboratory_edit', code=code)
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
@@ -1339,9 +1361,10 @@ def laboratory_offered_services_new(request, code, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_offered_services_new', kwargs={'code': code}): _('Offered Service')
                    }
     return render(request,
-                  'laboratory_offered_service.html',
+                  'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
+                   'item_label': _("offered service"),
                    'laboratory': laboratory,
                    })
     
@@ -1373,11 +1396,13 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None):
                    reverse('crud_laboratories:crud_laboratory_offered_services_edit', kwargs={'code': code, 'data_id': data_id}): _('Offered Service')
                    }
     return render(request,
-                  'laboratory_offered_service.html',
+                  'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'form': form,
                    'laboratory': laboratory,
                    'offered_service': offered_service,
+                   'item_label': _("offered service"),
+                   'edit': True,
                    })
 
 @login_required

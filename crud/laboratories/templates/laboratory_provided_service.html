@@ -6,7 +6,7 @@
 
 {% block centered_container %}
 <h3 style="font-weight: lighter;" class="mb-4">
-    {% if provided_service %}{% trans "Edit provided service for" %}{% else %}{% trans "New provided service for" %}{% endif %} {{ laboratory.nome_laboratorio }}</h3>
+    {% if provided_service %}{% trans "Edit Provided Service for" %}{% else %}{% trans "New Provided Service for" %}{% endif %} {{ laboratory.nome_laboratorio }}</h3>
 <form method="post" novalidate>
     {% include "form_template.html" with form=form %}
     <hr />

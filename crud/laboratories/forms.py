@@ -173,7 +173,7 @@ class LaboratorioTipologiaRischioForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['tipologia_rischio'] = forms.CharField(
-            label=_('Tipologia Rischio'),
+            label=_('Risk Type'),
             required=True
         )
 
@@ -197,7 +197,7 @@ class LaboratorioDatiErc1Form(forms.Form):
         tuple_erc1 = tuple(lista_erc1)
         
         self.fields['id_ricerche_erc1'] = forms.MultipleChoiceField(
-            label=_('Ricerche ERC1'),
+            label=_('ERC1 Researches'),
             choices=tuple_erc1,
             required=False,
             widget=forms.CheckboxSelectMultiple()
