@@ -3046,7 +3046,8 @@ class ServicePersonale:
             else:
                 q["Roles"] = roles
 
-
+        if not query:
+            raise Http404
         return query
 
     @staticmethod
