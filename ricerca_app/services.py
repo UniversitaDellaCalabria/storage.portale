@@ -1694,7 +1694,10 @@ class ServiceDocente:
                       'middle_name') \
             .distinct()
 
-        if not regdid:
+        # se visualizzo i docenti di un corso (anche passato)
+        # mostro anche quelli che sono cessati
+        # altrimenti solo quelli attivi
+        if not regdid and not cds:
             query = query.filter(flg_cessato=0)
 
         if dip:
@@ -1906,7 +1909,8 @@ class ServiceDocente:
     def getDocenteInfo(teacher):
         query1 = Personale.objects.filter(
             didatticacopertura__af__isnull=False,
-            matricola__exact=teacher).distinct()
+            matricola__exact=teacher,
+            flg_cessato=0).distinct()
         query2 = Personale.objects.filter(
             fl_docente=1,
             flg_cessato=0,
