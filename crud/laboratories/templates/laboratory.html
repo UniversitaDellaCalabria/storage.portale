@@ -73,10 +73,10 @@
                 <tbody>
                     <tr>
                         <td>
-                            {{ department_data.dipartimento_riferimento|default:"-" }}
+                            {{ laboratory.dipartimento_riferimento|default:"-" }}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_laboratories:crud_laboratory_unical_department_data_edit' code=laboratory.pk department_id=department_data.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_laboratories:crud_laboratory_unical_department_edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -105,7 +105,7 @@
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_laboratories:crud_laboratory_unical_referent_edit' code=laboratory.pk data_id=referent_data.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_laboratories:crud_laboratory_unical_referent_edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -134,7 +134,7 @@
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_laboratories:crud_laboratory_scientific_director_edit' code=laboratory.pk data_id=scientific_director_data.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_laboratories:crud_laboratory_scientific_director_edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -160,8 +160,8 @@
                             {{ laboratory.preposto_sicurezza|default:"-" }}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'crud_laboratories:crud_laboratory_safety_manager_edit' code=laboratory.pk data_id=safety_manager_data.pk %}" class="btn btn-primary btn-xs">
-                                {% if laboratory.matricola_preposto_sicurezza %}
+                            <a href="{% url 'crud_laboratories:crud_laboratory_safety_manager_edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
+                                {% if laboratory.preposto_sicurezza %}
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -171,7 +171,7 @@
                                 </svg> {% trans "Add new" %}
                                 {% endif %}
                             </a>
-                            {% if laboratory.matricola_preposto_sicurezza %}
+                            {% if laboratory.preposto_sicurezza %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_safety_manager">
@@ -205,7 +205,7 @@
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_safety_manager_delete' code=laboratory.pk data_id=safety_manager_data.pk %}">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_safety_manager_delete' code=laboratory.pk %}">
                                                 {% trans 'Yes, proceed' %}
                                             </a>
                                         </div>

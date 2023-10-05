@@ -99,22 +99,28 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         js = ('js/textarea-autosize.js: CKEditorWidget(),',)
 
 
-class LaboratorioDatiBaseUnicalReferentForm(forms.ModelForm):
-    class Meta:
-        model = LaboratorioDatiBase
-        fields = ['referente_compilazione', 'email_compilazione']
-        labels = {
-            "referente_compilazione": _("Name and Surname"),
-            "email_compilazione": _("Email")
-        }
         
-class LaboratorioDatiBaseScientificDirectorForm(forms.ModelForm):
-    class Meta:
-        model = LaboratorioDatiBase
-        fields = ['responsabile_scientifico']
-        labels = {
-            "responsabile_scientifico": _("Name and Surname")
-        }
+class LaboratorioDatiBaseUnicalReferentForm(forms.Form):
+    referente_compilazione = forms.CharField(
+        label=_("Name and Surname"),
+        max_length=200,
+    )
+    email_compilazione = forms.CharField(
+        label=_("Email"),
+        max_length=200,
+    )
+
+class LaboratorioDatiBaseScientificDirectorForm(forms.Form):
+    responsabile_scientifico = forms.CharField(
+        label=_("Name and Surname"),
+        max_length=200,
+    )
+    
+class LaboratorioDatiBaseSafetyManagerForm(forms.Form):
+    preposto_sicurezza = forms.CharField(
+        label=_("Name and Surname"),
+        max_length=200,
+    )
 
 class LaboratorioDatiBaseScientificDirectorChoosenPersonForm(forms.Form):
     choosen_scientific_director = forms.CharField(label=_('Scientific Director'),
@@ -169,16 +175,16 @@ class LaboratorioAttrezzatureForm(forms.ModelForm):
 class LaboratorioTipologiaRischioForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['tipologia_rischio'] = forms.CharField(
+        self.fields['tipologia_rischio_origine'] = forms.CharField(
             label=_('Risk Type'),
             required=True
         )
 
     class Meta:
         model = LaboratorioTipologiaRischio
-        fields = ['tipologia_rischio']
+        fields = ['tipologia_rischio_origine']
         labels = {
-            'tipologia_rischio': _('Type of Risks'),
+            'tipologia_rischio_origine': _('Type of Risks'),
         }
 
 class LaboratorioDatiErc1Form(forms.Form):
@@ -302,6 +308,8 @@ class LaboratorioServiziOffertiForm(forms.ModelForm):
             "nome_servizio" : _("Name"),
             "descrizione_servizio": _("Description"),
         }
+        
+
         
         
         
