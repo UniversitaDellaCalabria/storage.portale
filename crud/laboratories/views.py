@@ -1003,7 +1003,7 @@ def laboratory_technical_staff_new(request, code, laboratory=None):
                 LaboratorioPersonaleTecnico.objects.create(
                     id_laboratorio_dati=laboratory,
                     matricola_personale_tecnico=None,
-                    cognomenome_origine=form.cleaned_data['laboratory_staff'],
+                    cognomenome_origine=person_form.cleaned_data.get('laboratory_staff'),
                     ruolo=technician_form.cleaned_data.get('ruolo'),
                     percentuale_impegno=technician_form.cleaned_data.get('percentuale_impegno'))
 
