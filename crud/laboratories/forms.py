@@ -170,6 +170,15 @@ class LaboratorioAltriDipartimentiForm(forms.Form):
 class LaboratorioAttrezzatureForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
+        self.fields["costo_unitario"] = forms.FloatField(
+            label=_('Unit Cost'),
+            min_value=0
+        )
+        self.fields["quantita"] = forms.IntegerField(
+            label=_('Quantity'),
+            min_value=1
+        )
 
     class Meta:
         model = LaboratorioAttrezzature
@@ -178,16 +187,7 @@ class LaboratorioAttrezzatureForm(forms.ModelForm):
             'tipologia': _('Type'),
             'descrizione': _('Description'),
             'fondi': _('Funds'),
-            'costo_unitario': _('Unit Cost'),
-            'quantita': _('Quantity'),
-            'tipo_rischi': _('Type of Risks')
-        }
-
-    class Meta:
-        model = LaboratorioTipologiaRischio
-        fields = ['tipologia_rischio_origine']
-        labels = {
-            'tipologia_rischio_origine': _('Type of Risks'),
+            'tipo_rischi': _('Type of Risks'),
         }
 
 class LaboratorioDatiErc1Form(forms.Form):
