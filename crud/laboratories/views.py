@@ -47,20 +47,16 @@ def laboratory(request, code, laboratory=None):
     """
     #LaboratorioDatiBase
     form = LaboratorioDatiBaseForm(instance=laboratory)
+    #LaboratorioTipologiaRischio
+    selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
+    selected_risks_ids = tuple(map(str, selected_risks_ids))
+    risk_type_form = LaboratorioTipologiaRischioForm(initial={"tipologie_rischio" : selected_risks_ids})
     #LaboratorioAltriDipartimenti
-    extra_departments = LaboratorioAltriDipartimenti.objects.filter(
-            id_laboratorio_dati=code).all()
+    extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).all()
     #LaboratorioAttrezzature
     equipment = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).all()
-    #LaboratorioTipologiaRischio
-    risk_type = LaboratorioTipologiaRischio.objects.filter(
-            id_laboratorio_dati=code).all()
-    risk_type_form = LaboratorioTipologiaRischioForm(instance=risk_type[0])
-    
     #LaboratorioDatiErc1
-    researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).values("id",
-                                                                                          "id_ricerca_erc1",
-                                                                                          "id_ricerca_erc1__descrizione")
+    researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).values("id", "id_ricerca_erc1", "id_ricerca_erc1__descrizione")
     #LaboratorioUbicazione
     locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).all()
     #LaboratorioPersonaleRicerca
@@ -76,17 +72,35 @@ def laboratory(request, code, laboratory=None):
 
     
     if request.POST:
-        form = LaboratorioDatiBaseForm(instance=laboratory,
-                                          data=request.POST,
-                                          files=request.FILES)
-        risk_type_form = LaboratorioTipologiaRischioForm(instance=risk_type[0],
-                                                            data=request.POST)
+        form = LaboratorioDatiBaseForm(instance=laboratory, data=request.POST, files=request.FILES)
+        risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
+        
         if form.is_valid() and risk_type_form.is_valid():
             form.save(commit=False)
             laboratory.user_mod = request.user
             laboratory.save()
 
-            risk_type_form.save()
+            #LaboratorioTipologiaRischio
+            new_selected_risks = risk_type_form.cleaned_data.get("tipologie_rischio", [])
+            
+            selected_risks_to_delete = LaboratorioTipologiaRischio.objects\
+                .filter(id_laboratorio_dati=code)\
+                .exclude(id_tipologia_rischio__in=new_selected_risks)\
+                .delete()
+            
+            current_risks = LaboratorioTipologiaRischio.objects\
+                .filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
+            current_risks = map(str, current_risks)
+                
+            #for all (new_selected_risks - current_risks) create
+            risk_types_id = list(set(new_selected_risks) - set(current_risks))
+            risk_types = TipologiaRischio.objects.filter(id__in=risk_types_id)
+            
+            for rt in risk_types:
+                LaboratorioTipologiaRischio.objects.create(
+                    id_laboratorio_dati=laboratory,
+                    id_tipologia_rischio=rt
+                )        
 
             if form.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -95,14 +109,6 @@ def laboratory(request, code, laboratory=None):
                            obj=laboratory,
                            flag=CHANGE,
                            msg=[{'changed': {"fields": changed_field_labels}}])
-
-            if risk_type_form.changed_data:
-                changed_risk_type_form_field_labels = _get_changed_field_labels_from_form(risk_type_form,
-                                                                       risk_type_form.changed_data)
-                log_action(user=request.user,
-                           obj=laboratory,
-                           flag=CHANGE,
-                           msg=[{'changed': {"fields": changed_risk_type_form_field_labels}}])
 
             messages.add_message(request,
                                  messages.SUCCESS,
@@ -145,10 +151,6 @@ def laboratory(request, code, laboratory=None):
 @login_required
 @can_manage_laboratories
 def laboratory_new(request, laboratory=None):
-    """
-    aggiungi nuovo laboratorio
-    """
-
     #new
     form = LaboratorioDatiBaseForm()
     department_form = LaboratorioDatiBaseDipartimentoForm()
@@ -168,15 +170,12 @@ def laboratory_new(request, laboratory=None):
     unical_referent = None
     scientific_director = None
 
-
     if request.POST.get(UNICAL_REFERENT_ID, ''):
-        unical_referent = get_object_or_404(Personale,
-                                    matricola=(decrypt(request.POST[UNICAL_REFERENT_ID])))
+        unical_referent = get_object_or_404(Personale, matricola=(decrypt(request.POST[UNICAL_REFERENT_ID])))
 
     if request.POST.get(SCIENTIFIC_DIRECTOR_ID, ''):
-        scientific_director = get_object_or_404(Personale,
-                                    matricola=(decrypt(request.POST[SCIENTIFIC_DIRECTOR_ID])))
-
+        scientific_director = get_object_or_404(Personale, matricola=(decrypt(request.POST[SCIENTIFIC_DIRECTOR_ID])))
+    
     if request.POST:
         form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES)
         department_form = LaboratorioDatiBaseDipartimentoForm(data=request.POST)
@@ -190,7 +189,7 @@ def laboratory_new(request, laboratory=None):
             scientific_director_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(data=request.POST, required=True) 
         else:
             scientific_director_form = LaboratorioDatiBaseScientificDirectorForm(data=request.POST)
-
+            
         risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
         
         if form.is_valid() and unical_referent_form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid() and risk_type_form.is_valid():
@@ -217,16 +216,21 @@ def laboratory_new(request, laboratory=None):
                 laboratory.matricola_responsabile_scientifico = None
                 laboratory.responsabile_scientifico = scientific_director_form.cleaned_data['responsabile_scientifico']
             
-            # se viene scelto un dipartimento
-            # questo viene associato al laboratorio
+            #department
             laboratory.dipartimento_riferimento = department.dip_des_it
             laboratory.id_dipartimento_riferimento = department
 
-            # tipologia rischio
             laboratory.save()
-            laboratory_risk_type = risk_type_form.save(commit=False)
-            laboratory_risk_type.id_laboratorio_dati = laboratory
-            laboratory_risk_type.save()
+            
+            #risk type
+            selected_risk_types_ids = risk_type_form.cleaned_data.get("tipologie_rischio", [])
+            risk_types = TipologiaRischio.objects.filter(id__in=selected_risk_types_ids)
+            
+            for rt in risk_types:
+                LaboratorioTipologiaRischio.objects.create(
+                    id_laboratorio_dati=laboratory,
+                    id_tipologia_rischio=rt
+                )        
 
             log_action(user=request.user,
                        obj=laboratory,
@@ -264,11 +268,11 @@ def laboratory_new(request, laboratory=None):
                     'form': form,
                     'departments_api': reverse('ricerca:departmentslist'),
                     'teachers_api': reverse('ricerca:teacherslist'),
-                    'unical_referent_label' : UNICAL_REFERENT_ID,
-                    'scientific_director_label' : SCIENTIFIC_DIRECTOR_ID,
                     'department_form': department_form,
+                    'unical_referent_label' : UNICAL_REFERENT_ID,
                     'unical_referent_internal_form': unical_referent_internal_form,
                     'unical_referent_external_form': unical_referent_external_form,
+                    'scientific_director_label' : SCIENTIFIC_DIRECTOR_ID,
                     'scientific_director_internal_form': scientific_director_internal_form,
                     'scientific_director_external_form': scientific_director_external_form,
                     'risk_type_form': risk_type_form,
@@ -362,7 +366,8 @@ def laboratory_unical_referent_edit(request, code, laboratory=None):
             else:
                 laboratory.matricola_referente_compilazione = None
                 laboratory.referente_compilazione = form.cleaned_data['referente_compilazione']
-                
+            
+            laboratory.user_mod = request.user
             laboratory.save()
 
             if old_label != laboratory.referente_compilazione:
@@ -439,6 +444,7 @@ def laboratory_scientific_director_edit(request, code, laboratory=None):
                 laboratory.matricola_responsabile_scientifico = None
                 laboratory.responsabile_scientifico = form.cleaned_data['responsabile_scientifico']
                 
+            laboratory.user_mod = request.user
             laboratory.save()
 
             if old_label != laboratory.responsabile_scientifico:
@@ -514,7 +520,8 @@ def laboratory_safety_manager_edit(request, code, laboratory=None):
             else:
                 laboratory.matricola_preposto_sicurezza = None
                 laboratory.preposto_sicurezza = form.cleaned_data['preposto_sicurezza']
-                
+            
+            laboratory.user_mod = request.user
             laboratory.save()
 
             if old_label != laboratory.referente_compilazione:
@@ -750,14 +757,11 @@ def laboratory_equipment_delete(request, code, data_id, laboratory=None):
 @can_manage_laboratories
 def laboratory_researches_erc1_edit(request, code, laboratory=None):
     
-    #Previously selected researches (needed for request.post logic)
-    researches_erc1_old = LaboratorioDatiErc1.objects\
-                        .filter(id_laboratorio_dati=code)
+    #Previously selected researches
+    researches_erc1_old = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code)
     
-    #Values passed to the template               
+    #Ids to initialize form's checkboxes
     researches_erc1 = researches_erc1_old.values("id","id_ricerca_erc1","id_ricerca_erc1__descrizione")
-    
-    #Ids to initialize form's checkboxes (needed for request.post logic)
     researches_erc1_ids = researches_erc1.values_list('id_ricerca_erc1', flat=True)
     researches_erc1_ids = tuple(map(str, researches_erc1_ids))
                         
@@ -766,22 +770,26 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None):
     if request.POST:
         research_erc1_form = LaboratorioDatiErc1Form(data=request.POST)
         if research_erc1_form.is_valid():
-            researches_erc1_selected = research_erc1_form.cleaned_data.get('id_ricerche_erc1', [])
             
-            researches_to_delete = []
-            for res in researches_erc1_ids:
-                if res not in researches_erc1_selected:
-                    researches_to_delete.append(res)
+            selected_erc1_res_ids = research_erc1_form.cleaned_data.get('id_ricerche_erc1', [])
+                        
+            LaboratorioDatiErc1.objects\
+                .filter(id_laboratorio_dati=code)\
+                .exclude(id_ricerca_erc1__in=selected_erc1_res_ids)\
+                .delete()
+                
+            current_erc1_res_ids = LaboratorioDatiErc1.objects\
+                .filter(id_laboratorio_dati=code).values_list("id_ricerca_erc1", flat=True)
+            current_erc1_res_ids = map(str, current_erc1_res_ids)
+                
+            current_erc1_res = list(set(selected_erc1_res_ids) - set(current_erc1_res_ids))
+            erc1_researches = RicercaErc1.objects.filter(id__in=current_erc1_res)
             
-            if len(researches_to_delete) > 0:
-                researches_erc1_old.filter(id_ricerca_erc1__in=researches_to_delete).delete()
-                           
-            for res in researches_erc1_selected:
-                if res not in researches_erc1_ids:
-                    LaboratorioDatiErc1.objects.create(
-                        id_laboratorio_dati=laboratory,
-                        id_ricerca_erc1=get_object_or_404(RicercaErc1, pk=res)
-                    )
+            for research in erc1_researches:
+                LaboratorioDatiErc1.objects.create(
+                    id_laboratorio_dati=laboratory,
+                    id_ricerca_erc1=research
+                )        
             
             log_action(user=request.user,
             obj=laboratory,
@@ -990,14 +998,14 @@ def laboratory_technical_staff_new(request, code, laboratory=None):
                     matricola_personale_tecnico=technician,
                     cognomenome_origine=f'{technician.cognome} {technician.nome}',
                     ruolo=technician_form.cleaned_data.get('ruolo'),
-                    field_impegno=technician_form.cleaned_data.get('field_impegno'))
+                    percentuale_impegno=technician_form.cleaned_data.get('percentuale_impegno'))
             else:
                 LaboratorioPersonaleTecnico.objects.create(
                     id_laboratorio_dati=laboratory,
                     matricola_personale_tecnico=None,
                     cognomenome_origine=form.cleaned_data['laboratory_staff'],
                     ruolo=technician_form.cleaned_data.get('ruolo'),
-                    field_impegno=technician_form.cleaned_data.get('field_impegno'))
+                    percentuale_impegno=technician_form.cleaned_data.get('percentuale_impegno'))
 
             log_action(user=request.user,
             obj=laboratory,

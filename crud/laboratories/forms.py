@@ -10,7 +10,7 @@ from django.conf import settings
 from django.urls import reverse
 
 
-from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti
+from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioTipologiaRischio, TipologiaRischio
 
 from .. utils.settings import CMS_STORAGE_ROOT_API
 
@@ -132,6 +132,17 @@ class LaboratorioDatiBaseScientificDirectorChoosenPersonForm(forms.Form):
         super(LaboratorioDatiBaseScientificDirectorChoosenPersonForm, self).__init__(*args, **kwargs)
         if required:
             self.fields['choosen_scientific_director'].required = True
+            
+class LaboratorioDatiBaseSafetyManagerChoosenPersonForm(forms.Form):
+    choosen_safety_manager = forms.CharField(label=_('Scientific Director'),
+                                     widget=forms.HiddenInput(),
+                                     required=False)
+
+    def __init__(self, *args, **kwargs):
+        required = kwargs.pop('required', False)
+        super(LaboratorioDatiBaseSafetyManagerChoosenPersonForm, self).__init__(*args, **kwargs)
+        if required:
+            self.fields['choosen_safety_manager'].required = True
 
 class LaboratorioDatiBaseUnicalReferentChoosenPersonForm(forms.Form):
     choosen_unical_referent = forms.CharField(label=_('Unical Referent'),
@@ -171,14 +182,6 @@ class LaboratorioAttrezzatureForm(forms.ModelForm):
             'quantita': _('Quantity'),
             'tipo_rischi': _('Type of Risks')
         }
-
-class LaboratorioTipologiaRischioForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['tipologia_rischio_origine'] = forms.CharField(
-            label=_('Risk Type'),
-            required=True
-        )
 
     class Meta:
         model = LaboratorioTipologiaRischio
@@ -241,9 +244,9 @@ class LaboratorioPersonaleTecnicoForm(forms.Form):
             required=True,
             label=_("Role"))
         
-        self.fields['field_impegno'] = forms.FloatField(
+        self.fields['percentuale_impegno'] = forms.FloatField(
             required=True,
-            label=_("Commitment % "),
+            label=_("Commitment %"),
             min_value=0
         )
         
@@ -310,9 +313,27 @@ class LaboratorioServiziOffertiForm(forms.ModelForm):
         }
         
 
+#ModelForm 
+class LaboratorioTipologiaRischioForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)    
         
+        available_risk_types = TipologiaRischio.objects.values("id", "descr_tipologia")
         
+        choices = []
+        for risk_type in available_risk_types:
+            choices.append((risk_type["id"], risk_type["descr_tipologia"]))
+             
         
-        
+        self.fields['tipologie_rischio'] = forms.MultipleChoiceField(
+            label=_('Risk Types'),
+            choices=tuple(choices),
+            widget=forms.CheckboxSelectMultiple(),
+            required=False)
+            
+    class Meta:
+        model = LaboratorioDatiBase.tipologia_rischio.through
+        exclude = ["id_tipologia_rischio", "id_laboratorio_dati", "tipologia_rischio_origine"]
+
         
         
