@@ -300,7 +300,7 @@ class LaboratorioServiziErogatiResponsabileForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['laboratory_manager'] = forms.CharField(
-            required=False,
+            required=True,
             label=_("Name and Surname"))
         
 class LaboratorioServiziOffertiForm(forms.ModelForm):
