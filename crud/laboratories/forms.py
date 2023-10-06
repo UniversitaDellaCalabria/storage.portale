@@ -43,7 +43,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             choices=lista_aree
         )
         self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
-            label=_('Interdepartimental Laboratory'),
+            label=_('Interdepartmental Laboratory'),
             choices=(('SI', 'SI'),('NO', 'NO'))
         )
 
@@ -64,7 +64,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             'nome_laboratorio': _('Name'),
             'acronimo': _('Acronym'),
             'logo_laboratorio': _('Link Laboratory Logo'),
-            'laboratorio_interdipartimentale': _('Interdepartmetal Laboratory'),
+            'laboratorio_interdipartimentale': _('Interdepartmental Laboratory'),
             'altre_strutture_riferimento': _('Other Structures'),
             'descr_altre_strutture_riferimento_it': _('Other Structures Description (it)'),
             'descr_altre_strutture_riferimento_en': _('Other Structures Description (en)'),
