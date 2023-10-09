@@ -1698,7 +1698,7 @@ class ServiceDocente:
         # mostro anche quelli che sono cessati
         # altrimenti solo quelli attivi
         if not regdid and not cds:
-            query = query.filter(flg_cessato=0)
+            query = query.filter(Q(flg_cessato=0) | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year))
 
         if dip:
             department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
@@ -1907,18 +1907,19 @@ class ServiceDocente:
 
     @staticmethod
     def getDocenteInfo(teacher):
-        query1 = Personale.objects.filter(
-            didatticacopertura__af__isnull=False,
-            matricola__exact=teacher,
-            flg_cessato=0).distinct()
-        query2 = Personale.objects.filter(
-            fl_docente=1,
-            flg_cessato=0,
-            matricola__exact=teacher).distinct()
+        query1 = Personale.objects\
+                          .filter(Q(flg_cessato=0) | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year),
+                                  didatticacopertura__af__isnull=False,
+                                  matricola__exact=teacher)\
+                          .distinct()
+        query2 = Personale.objects.filter(fl_docente=1,
+                                          flg_cessato=0,
+                                          matricola__exact=teacher)\
+                                  .distinct()
 
         query = (query1 | query2).distinct()
 
-        if not query:
+        if not query.exists():
             raise Http404
 
         contacts_to_take = [
