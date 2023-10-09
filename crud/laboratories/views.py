@@ -1,5 +1,6 @@
 import logging
 import os
+import datetime
 
 from .. utils.utils import log_action
 
@@ -220,6 +221,8 @@ def laboratory_new(request, laboratory=None):
             laboratory.dipartimento_riferimento = department.dip_des_it
             laboratory.id_dipartimento_riferimento = department
 
+
+            laboratory.dt_sottomissione = datetime.datetime.now()
             laboratory.save()
             
             #risk type
