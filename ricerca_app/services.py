@@ -896,7 +896,8 @@ class ServiceDidatticaCds:
             query = DidatticaPianoRegolamento.objects.filter(
                 query_cds,
                 query_regdid,
-                query_year
+                query_year,
+                stato_cod='A'
                ).select_related('regdid__cds').values(
                    'regpiani_id',
                    'regdid_id',
