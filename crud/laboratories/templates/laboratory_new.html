@@ -14,8 +14,13 @@
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% include "form_template.html" with form=form %}
                 <hr />
-                {% include "form_template.html" with form=risk_type_form %}
-                <hr />
+                <h4 style="font-weight: lighter;">{% trans "Choose one Unical referent" %}</h4>
+                <div class="mt-5">
+                    <span class="choosen_unical_referent">
+                        {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 internal_form=unical_referent_internal_form external_form=unical_referent_external_form person_label=unical_referent_label choosen_person=choosen_unical_referent required=1 uid="id_"|add:unical_referent_label|add:"_tabs" %}
+                        <hr />
+                    </span>
+                </div>
                 <h4 style="font-weight: lighter;">{% trans "Choose one department" %}</h4>
                 <div class="mt-5">
                     <span class="choosen_department_name">
@@ -29,7 +34,7 @@
                         </div>
                         {% endif %}
                     </span>
-                    {% include "blocks/crud_departmentslist.html" with uid="id_1" url=departments_api %}
+                    {% include "blocks/crud_departmentslist.html" with uid="department" url=departments_api %}
                     <hr />
                     <span class="choosen_department_name">
                         {% if choosen_department %}
@@ -44,13 +49,6 @@
                     </span>
                     <hr />
                 </div>
-                <h4 style="font-weight: lighter;">{% trans "Choose one Unical referent" %}</h4>
-                <div class="mt-5">
-                    <span class="choosen_unical_referent">
-                        {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 internal_form=unical_referent_internal_form external_form=unical_referent_external_form person_label=unical_referent_label choosen_person=choosen_unical_referent required=1 uid="id_"|add:unical_referent_label|add:"_tabs" %}
-                        <hr />
-                    </span>
-                </div>
                 <h4 style="font-weight: lighter;">
                     {% trans "Choose one Scientific Director" %}
                 </h4>
@@ -59,8 +57,14 @@
                         {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 internal_form=scientific_director_internal_form external_form=scientific_director_external_form person_label=scientific_director_label choosen_person=choosen_scientific_director required=1 uid="id_"|add:scientific_director_label|add:"_tabs" %}
                         <hr />
                     </span>
-                </div>
-                {% include "includes/form_submit.html" %}
+                <button class="btn btn-success btn-block"
+                        type="submit"
+                        id="lab_new_submitForm">
+                    <svg class="icon icon-xs icon-white">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                    </svg>
+                    {% trans "Save and Continue" %}
+                </button>
             </form>
         </div>
     </div>

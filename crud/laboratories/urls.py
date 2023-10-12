@@ -44,3 +44,6 @@ urlpatterns += path('laboratories/<str:code>/provided-services/<str:data_id>/del
 urlpatterns += path('laboratories/<str:code>/offered-services/new', laboratory_offered_services_new, name='crud_laboratory_offered_services_new'),
 urlpatterns += path('laboratories/<str:code>/offered-services/<str:data_id>/', laboratory_offered_services_edit, name='crud_laboratory_offered_services_edit'),
 urlpatterns += path('laboratories/<str:code>/offered-services/<str:data_id>/delete/', laboratory_offered_services_delete, name='crud_laboratory_offered_services_delete'),
+#utils
+urlpatterns += path('laboratories/<str:code>/request-approval/', laboratory_request_approval, name='crud_laboratory_request_approval'),
+urlpatterns += path('laboratories/<str:code>/approve/', laboratory_approve, name='crud_laboratory_approve'),

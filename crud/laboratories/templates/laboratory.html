@@ -45,7 +45,58 @@
         </div>
     </div>
 </div>
+
+<!-- APPROVA -->
+
+<a href="" class="btn btn-warning btn-xs mr-auto"
+   data-toggle="modal"
+   data-target="#ask_to_approve_laboratory">
+    <svg class="icon icon-xs icon-white">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
+    </svg> {% trans "Request for Approval" %}
+</a>
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="ask_to_approve_laboratory">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Confirm" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {% trans "Do you want to ask for approval for chosen laboratory, this laboratory won't be visible untill it has been approved" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_request_approval' code=laboratory.pk %}">
+                    {% trans 'Yes, proceed' %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--/APPROVA-->
+
+
+
 <hr class="my-4"/>
+<h4 style="font-weight: light;" class="mb-4">
+    {% trans "Laboratory Identification" %}
+</h4>
 <h3 style="font-weight: lighter;" class="mb-4">
     {{ laboratory.nome_laboratorio }}
 </h3>

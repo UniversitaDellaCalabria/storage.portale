@@ -40,12 +40,13 @@ def laboratories(request, laboratory=None):
     return render(request, 'laboratories.html', context)
 
 
+
 @login_required
 @can_manage_laboratories
 def laboratory(request, code, laboratory=None):
-    """
-    dettaglio laboratorio
-    """
+    
+    messages.add_message(request, messages.WARNING, _("Laboratory NOT active"))
+
     #LaboratorioDatiBase
     form = LaboratorioDatiBaseForm(instance=laboratory)
     #LaboratorioTipologiaRischio
@@ -146,8 +147,8 @@ def laboratory(request, code, laboratory=None):
                    'activities': activities,
                    'provided_services': provided_services,
                    'offered_services': offered_services,
-                   })
-
+                   })     
+        
 
 @login_required
 @can_manage_laboratories
@@ -223,6 +224,7 @@ def laboratory_new(request, laboratory=None):
 
 
             laboratory.dt_sottomissione = datetime.datetime.now()
+            laboratory.user_mod = request.user
             laboratory.save()
             
             #risk type
@@ -240,10 +242,8 @@ def laboratory_new(request, laboratory=None):
                        flag=ADDITION,
                        msg=[{'added': {}}])
 
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("Laboratory created successfully"))
-            return redirect("crud_laboratories:crud_laboratories")
+            messages.add_message(request, messages.SUCCESS, _("Laboratory anagraphic created successfully, please fill in the other fields"))
+            return redirect("crud_laboratories:crud_laboratories_edit", code=laboratory.pk)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -1380,4 +1380,52 @@ def laboratory_offered_services_delete(request, code, data_id, laboratory=None):
     msg=f'{_("Deleted offered service")}')
 
     messages.add_message(request, messages.SUCCESS, _("Offered service removed successfully"))
+    return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+
+@login_required
+@can_manage_laboratories
+def laboratory_request_approval(request, code, laboratory=None):
+    
+    # #LaboratorioTipologiaRischio
+    # selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioAltriDipartimenti
+    # extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioAttrezzature
+    # equipment = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioDatiErc1
+    # researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioUbicazione
+    # locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioPersonaleRicerca
+    # researchers = LaboratorioPersonaleRicerca.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioPersonaleTecnico
+    # technicians = LaboratorioPersonaleTecnico.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioAttivita
+    # activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioServiziErogati
+    # provided_services = LaboratorioServiziErogati.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioServiziOfferti
+    # offered_services = LaboratorioServiziOfferti.objects.filter(id_laboratorio_dati=code).exists()
+    
+    
+    
+    log_action(user=request.user,
+    obj=laboratory,
+    flag=CHANGE,
+    msg=f'{_("Requested approval")}')
+    
+    messages.add_message(request, messages.WARNING, _("Request for approval sent successfully"))
+    return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+@login_required
+@can_manage_laboratories
+def laboratory_approve(request, code, laboratory=None):
+    
+    log_action(user=request.user,
+    obj=laboratory,
+    flag=CHANGE,
+    msg=f'{_("Approved Laboratory")}')
+    
+    messages.add_message(request, messages.WARNING, _("Laboratory approved successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
