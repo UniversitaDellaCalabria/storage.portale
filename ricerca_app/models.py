@@ -1940,7 +1940,18 @@ class LaboratorioDatiBase(models.Model):
         max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
-
+    
+    visibile = models.BooleanField(db_column='VISIBILE',
+                                   default=False)  # Field name made lowercase.
+    
+    dt_mod = models.DateField(db_column='DT_MOD',
+                              blank=True, null=True) # Field name made lowercase.
+    
+    user_mod = models.ForeignKey(get_user_model(),
+                                 on_delete=models.SET_NULL,
+                                 db_column='USER_MOD',
+                                 blank=True, null=True) # Field name made lowercase.
+    
     tipologia_attivita = models.ManyToManyField(
         LaboratorioTipologiaAttivita, through="LaboratorioAttivita")
     
