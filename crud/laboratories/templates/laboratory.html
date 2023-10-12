@@ -112,7 +112,7 @@
                             <tr>
                                 <td>
                                     {% if laboratory.user_mod %}
-                                    {{ laboratory.user_mod|default:"-" }}
+                                    {{ laboratory.user_mod.first_name|default:"" }} {{laboratory.user_mod.last_name|default:"-" }}
                                     {% else %}
                                     {{ laboratory.referente_compilazione|default:"-" }}
                                     {% endif %}
