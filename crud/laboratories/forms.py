@@ -12,13 +12,8 @@ from django.urls import reverse
 
 from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioTipologiaRischio, TipologiaRischio
 
-from .. utils.settings import CMS_STORAGE_ROOT_API
-
 # from .. utils.widgets import RicercaCRUDClearableWidget
 
-
-CMS_STORAGE_ROOT_API = getattr(
-    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 
 
 class LaboratorioDatiBaseForm(forms.ModelForm):
@@ -28,20 +23,14 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-
-        laboratory_areas_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:laboratoriesareas")}'
-        laboratory_areas_api = requests.get(laboratory_areas_url)
-        laboratory_areas = laboratory_areas_api.json()['results']
-        lista_aree = []
-
-        for l in laboratory_areas:
-            lista_aree.append((l['Area'], l['Area']))
+        
+        choices = LaboratorioDatiBase.objects.all().values_list("ambito", flat=True).distinct().order_by("ambito")
+        choices = tuple(map(lambda ambito: (ambito, ambito), choices))
 
         self.fields['ambito'] = forms.ChoiceField(
             label=_('Areas'),
-            choices=lista_aree
-        )
+            choices = choices
+            )
         self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
             label=_('Interdepartmental Laboratory'),
             choices=(('SI', 'SI'),('NO', 'NO'))
