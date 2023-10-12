@@ -14,13 +14,13 @@
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% include "form_template.html" with form=form %}
                 <hr />
-                <h4 style="font-weight: lighter;">{% trans "Choose one Unical referent" %}</h4>
+                {% comment %} <h4 style="font-weight: lighter;">{% trans "Choose one Unical referent" %}</h4>
                 <div class="mt-5">
                     <span class="choosen_unical_referent">
                         {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 internal_form=unical_referent_internal_form external_form=unical_referent_external_form person_label=unical_referent_label choosen_person=choosen_unical_referent required=1 uid="id_"|add:unical_referent_label|add:"_tabs" %}
                         <hr />
                     </span>
-                </div>
+                </div> {% endcomment %}
                 <h4 style="font-weight: lighter;">{% trans "Choose one department" %}</h4>
                 <div class="mt-5">
                     <span class="choosen_department_name">
