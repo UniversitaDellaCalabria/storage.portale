@@ -74,34 +74,11 @@ def laboratory(request, code, laboratory=None, my_offices=None, validator_user=F
     
     if request.POST and (request.user.is_superuser or my_offices.exists()):
         form = LaboratorioDatiBaseForm(instance=laboratory, data=request.POST, files=request.FILES)
-        risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
-        
-        if form.is_valid() and risk_type_form.is_valid():
+                
+        if form.is_valid():
             form.save(commit=False)
             laboratory.user_mod = request.user
-            laboratory.save()
-
-            #LaboratorioTipologiaRischio
-            new_selected_risks = risk_type_form.cleaned_data.get("tipologie_rischio", [])
-            
-            selected_risks_to_delete = LaboratorioTipologiaRischio.objects\
-                .filter(id_laboratorio_dati=code)\
-                .exclude(id_tipologia_rischio__in=new_selected_risks)\
-                .delete()
-            
-            current_risks = LaboratorioTipologiaRischio.objects\
-                .filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
-            current_risks = map(str, current_risks)
-                
-            #for all (new_selected_risks - current_risks) create
-            risk_types_id = list(set(new_selected_risks) - set(current_risks))
-            risk_types = TipologiaRischio.objects.filter(id__in=risk_types_id)
-            
-            for rt in risk_types:
-                LaboratorioTipologiaRischio.objects.create(
-                    id_laboratorio_dati=laboratory,
-                    id_tipologia_rischio=rt
-                )        
+            laboratory.save()    
 
             if form.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -155,7 +132,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
     #new
     form = LaboratorioDatiBaseForm()
     department_form = LaboratorioDatiBaseDipartimentoForm()
-    risk_type_form = LaboratorioTipologiaRischioForm()
 
     # unical_referent_internal_form = LaboratorioDatiBaseUnicalReferentChoosenPersonForm(required=True)
     # unical_referent_external_form = LaboratorioDatiBaseUnicalReferentForm()
@@ -190,10 +166,8 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
             scientific_director_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(data=request.POST, required=True) 
         else:
             scientific_director_form = LaboratorioDatiBaseScientificDirectorForm(data=request.POST)
-            
-        risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
-        
-        if form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid() and risk_type_form.is_valid(): #and unical_referent_form.is_valid()
+                    
+        if form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid(): #and unical_referent_form.is_valid()
             laboratory = form.save(commit=False)
 
             #unical referent
@@ -227,16 +201,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
             laboratory.user_mod = request.user
             laboratory.save()
             
-            #risk type
-            selected_risk_types_ids = risk_type_form.cleaned_data.get("tipologie_rischio", [])
-            risk_types = TipologiaRischio.objects.filter(id__in=selected_risk_types_ids)
-            
-            for rt in risk_types:
-                LaboratorioTipologiaRischio.objects.create(
-                    id_laboratorio_dati=laboratory,
-                    id_tipologia_rischio=rt
-                )        
-
             log_action(user=request.user,
                        obj=laboratory,
                        flag=ADDITION,
@@ -257,9 +221,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
             for k, v in scientific_director_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{scientific_director_form.fields[k].label}</b>: {v}")
-            for k, v in risk_type_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{risk_type_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
@@ -278,7 +239,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
                     'scientific_director_label' : "choosen_scientific_director",
                     'scientific_director_internal_form': scientific_director_internal_form,
                     'scientific_director_external_form': scientific_director_external_form,
-                    'risk_type_form': risk_type_form,
                     })
 
 @login_required
@@ -1456,10 +1416,10 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
     # #LaboratorioServiziErogati
     # provided_services = LaboratorioServiziErogati.objects.filter(id_laboratorio_dati=code).exists()
     # #LaboratorioServiziOfferti
-    # offered_services = LaboratorioServiziOfferti.objects.filter(id_laboratorio_dati=code).exists()
+    # offered_services = Laboratonot (request.user.is_superuser or my_offices.exists()):rioServiziOfferti.objects.filter(id_laboratorio_dati=code).exists()
     
     
-    if (my_offices.exists() or request.user.is_superuser):
+    if not (request.user.is_superuser or my_offices.exists()):
         return custom_message(request, _("Permission denied"))
     
     log_action(user=request.user,
@@ -1475,7 +1435,7 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
 @can_edit_laboratories
 def laboratory_approve(request, code, laboratory=None, my_offices=None, validator_user=False):
     
-    if not user_validator:
+    if not (request.user.is_superuser or user_validator):
         return custom_message(request, _("Permission denied"))
     
     log_action(user=request.user,
@@ -1485,3 +1445,50 @@ def laboratory_approve(request, code, laboratory=None, my_offices=None, validato
     
     messages.add_message(request, messages.WARNING, _("Laboratory approved successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+
+@login_required
+@can_manage_laboratories
+@can_edit_laboratories
+def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, validator_user=False):
+    if not (request.user.is_superuser or my_offices.exists()):
+        return custom_message(request, _("Permission denied"))
+    
+    if request.POST:
+        risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
+        
+        if risk_type_form.is_valid():
+
+            #LaboratorioTipologiaRischio
+            new_selected_risks = risk_type_form.cleaned_data.get("tipologie_rischio", [])
+            
+            LaboratorioTipologiaRischio.objects\
+                .filter(id_laboratorio_dati=code)\
+                .exclude(id_tipologia_rischio__in=new_selected_risks)\
+                .delete()
+            
+            current_risks = LaboratorioTipologiaRischio.objects\
+                .filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
+            current_risks = map(str, current_risks)
+                
+            #for all (new_selected_risks - current_risks) create
+            risk_types_id = list(set(new_selected_risks) - set(current_risks))
+            risk_types = TipologiaRischio.objects.filter(id__in=risk_types_id)
+            
+            for rt in risk_types:
+                LaboratorioTipologiaRischio.objects.create(
+                    id_laboratorio_dati=laboratory,
+                    id_tipologia_rischio=rt
+                )
+            
+            log_action(user=request.user,
+            obj=laboratory,
+            flag=CHANGE,
+            msg=f'{_("Risk types updated")}')
+        
+            messages.add_message(request, messages.SUCCESS, _("Risk types updated successfully"))
+        else:  # pragma: no cover
+            for k, v in risk_type_form.errors.items():
+                messages.add_message(request, messages.ERROR, f"<b>{risk_type_form.fields[k].label}</b>: {v}")
+                
+        return redirect('crud_laboratories:crud_laboratory_edit', code=code)

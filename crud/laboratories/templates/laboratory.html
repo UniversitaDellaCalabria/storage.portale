@@ -121,8 +121,6 @@
                         </tbody>
                     </table>
                 <hr />
-                {% include "form_template.html" with form=risk_type_form %}
-                <hr />
                 {% include "includes/form_submit.html" %}
             </form>
         </div>
@@ -859,10 +857,25 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
+            <h4 style="font-weight: lighter;">{% trans "Risk Types" %}</h4>
+            <form method="post" action="{% url 'crud_laboratories:crud_laboratory_risk_types_edit' code=laboratory.pk %}" novalidate>
+                {% include "form_template.html" with form=risk_type_form %}
+                <hr />
+                {% include "includes/form_submit.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
             <h4 style="font-weight: lighter;">Logs</h4>
             {% include "obj_logs.html" with logs=logs %}
         </div>
     </div>
 </div>
+
+
 
 {% endblock centered_container %}
