@@ -5,13 +5,8 @@
 
 
 {% block centered_container %}
-<a href="" class="btn btn-danger btn-xs"
-   data-toggle="modal"
-   data-target="#delete_laboratory">
-    <svg class="icon icon-xs icon-white">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-    </svg> {% trans "Remove" %}
-</a>
+
+<!-- Remove Modal -->
 <div class="modal fade"
      tabindex="-1"
      role="dialog"
@@ -45,16 +40,9 @@
         </div>
     </div>
 </div>
+<!-- /Remove Modal -->
 
-<!-- APPROVA -->
-
-<a href="" class="btn btn-warning btn-xs mr-auto"
-   data-toggle="modal"
-   data-target="#ask_to_approve_laboratory">
-    <svg class="icon icon-xs icon-white">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
-    </svg> {% trans "Request for Approval" %}
-</a>
+<!-- Ask for Approval Modal -->
 <div class="modal fade"
      tabindex="-1"
      role="dialog"
@@ -77,7 +65,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                    {% trans "Do you want to ask for approval for chosen laboratory, this laboratory won't be visible untill it has been approved" %}
+                    {% trans "Do you want to ask for approval for chosen laboratory? This laboratory will be visible once it will get approved" %}
                 </p>
             </div>
             <div class="modal-footer">
@@ -88,10 +76,84 @@
         </div>
     </div>
 </div>
-<!--/APPROVA-->
+<!-- /Ask for Approval Modal -->
+
+<!-- Approve Modal -->
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="approve_laboratory">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Confirm" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {% trans "Do you want to approve this laboratory? Performing this action will make it visible" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_approve' code=laboratory.pk %}">
+                    {% trans 'Yes, proceed' %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Approve Modal -->
+
+<!-- Top Buttons -->
+<table class="table">
+    <tbody>
+        <tr>
+            <td class="text-left">
+                <a href="" class="btn btn-danger btn-xs"
+                data-toggle="modal"
+                data-target="#delete_laboratory">
+                    <svg class="icon icon-xs icon-white">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                    </svg> {% trans "Remove" %}
+                </a>
+            </td>
+            <td class="text-right">
+            {% if user_roles.superuser or user_roles.operator %}
+                <a href="" class="btn btn-warning btn-xs"
+                data-toggle="modal"
+                data-target="#ask_to_approve_laboratory">
+                 <svg class="icon icon-xs icon-white">
+                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
+                 </svg> {% trans "Request for Approval" %}
+             </a>
+            {% endif %}
+            {% if user_roles.superuser or user_roles.validator %}
+                <a href="" class="btn btn-success btn-xs"
+                data-toggle="modal"
+                data-target="#approve_laboratory">
+                 <svg class="icon icon-xs icon-white">
+                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                 </svg> {% trans "Approve" %}
+             </a>
+             {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- /Top Buttons -->
+
 
 <!-- Anagraphic -->
-<hr class="my-4"/>
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">

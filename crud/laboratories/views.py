@@ -24,6 +24,20 @@ from . forms import *
 
 logger = logging.getLogger(__name__)
 
+def __get_user_roles(user, my_offices, validator_user):
+    roles = {
+        "superuser": False,
+        "operator": False,
+        "validator": False
+    }
+    if user.is_superuser:
+        roles["superuser"] = True
+        return roles
+    if my_offices.exists():
+        roles["operator"] = True
+    if validator_user:
+        roles["validator"] = True
+    return roles
 
 @login_required
 @can_manage_laboratories
@@ -44,7 +58,8 @@ def laboratories(request, laboratory=None, my_offices=None, validator_user=False
 @can_edit_laboratories
 def laboratory(request, code, laboratory=None, my_offices=None, validator_user=False):
     
-    messages.add_message(request, messages.WARNING, _("Laboratory NOT active"))
+    if not laboratory.visibile:
+        messages.add_message(request, messages.WARNING, _("Laboratory NOT active"))
 
     #LaboratorioDatiBase
     form = LaboratorioDatiBaseForm(instance=laboratory)
@@ -123,6 +138,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, validator_user=F
                    'activities': activities,
                    'provided_services': provided_services,
                    'offered_services': offered_services,
+                   'user_roles' : __get_user_roles(request.user, my_offices, validator_user)
                    })     
         
 
