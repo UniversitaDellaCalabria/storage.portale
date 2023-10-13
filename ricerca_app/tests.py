@@ -1568,7 +1568,7 @@ class ApiTeacherNewsUnitTest(TestCase):
             'attivo': 1,
             'dt_pubblicazione': '2222-02-02',
             'dt_inizio_validita': '2022-10-13',
-            'dt_fine_validita': '2023-10-13',
+            'dt_fine_validita': '2053-10-13',
 
         })
 
@@ -1619,7 +1619,7 @@ class ApiTeacherMaterialsUnitTest(TestCase):
             'attivo': 1,
             'dt_pubblicazione': '2222-02-02',
             'dt_inizio_validita': '2022-10-13',
-            'dt_fine_validita': '2023-10-13',
+            'dt_fine_validita': '2053-10-13',
 
         })
 
@@ -1633,7 +1633,6 @@ class ApiTeacherMaterialsUnitTest(TestCase):
         assert res.status_code == 200
 
         # GET
-
         res = req.get(url)
         assert len(res.json()['results']) == 1
 
