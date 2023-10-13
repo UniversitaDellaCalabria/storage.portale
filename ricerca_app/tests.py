@@ -1012,14 +1012,16 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'id': 1,
             'ricerca_erc2': erc2,
             'descrizione': 'regressione lineare',
-            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020'
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
+            'visibile': 1
         })
 
         linea_base2 = RicercaLineaBaseUnitTest.create_ricercaLineaBase(**{
             'id': 7,
             'ricerca_erc2': erc2,
             'descrizione': 'regressione lineare',
-            'descr_pubblicaz_prog_brevetto': 'pubblicazione 20201'
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 20201',
+            'visibile': 1
         })
 
         RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
@@ -1052,13 +1054,15 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'id': 1,
             'ricerca_aster2': aster2,
             'descrizione': 'regressione lineare',
-            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020'
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
+            'visibile': 1
         })
         linea_applicata2 = RicercaLineaApplicataUnitTest.create_ricercaLineaApplicata(**{
             'id': 2,
             'ricerca_aster2': aster2,
             'descrizione': 'random forest',
-            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2019'
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2019',
+            'visibile': 1
         })
         RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
             'personale': doc1,
@@ -3642,7 +3646,7 @@ class ApiBaseResearchLineUnitTest(TestCase):
             'descrizione': 'regressione lineare',
             'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
             'anno': '2016',
-
+            'visibile': 1
         })
         RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
             'personale': doc1,
@@ -3722,7 +3726,8 @@ class ApiAppliedResearchLineUnitTest(TestCase):
             'ricerca_aster2': aster2,
             'descrizione': 'regressione lineare',
             'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
-            'anno': '2016'
+            'anno': '2016',
+            'visibile': 1
         })
 
         RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
@@ -3805,7 +3810,7 @@ class ApiAllResearchLinesUnitTest(TestCase):
             'descrizione': 'regressione lineare',
             'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
             'anno': '2016',
-
+            'visibile': 1
         })
 
         aster1 = RicercaAster1UnitTest.create_ricercaAster1(**{
@@ -3823,7 +3828,8 @@ class ApiAllResearchLinesUnitTest(TestCase):
             'ricerca_aster2': aster2,
             'descrizione': 'regressione lineare',
             'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
-            'anno': '2016'
+            'anno': '2016',
+            'visibile': 1
         })
         RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
             'personale': doc1,
