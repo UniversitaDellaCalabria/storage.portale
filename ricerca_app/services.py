@@ -1369,7 +1369,8 @@ class ServiceDocente:
                 'ricerca_erc2_id__ricerca_erc1_id__descrizione',
                 'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__erc0_cod',
                 'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description',
-                'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description_en'
+                'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description_en',
+                'visibile'
             ).distinct()
 
         if not exclude_applied:
@@ -1513,6 +1514,7 @@ class ServiceDocente:
             'anno',
             'ricerca_erc2_id__cod_erc2',
             'ricerca_erc2_id__descrizione',
+            'visibile'
         ).distinct()
 
         if teacher is not None or dip is not None:
@@ -1594,6 +1596,7 @@ class ServiceDocente:
             'anno',
             'ricerca_aster2_id__ricerca_aster1_id',
             'ricerca_aster2_id__descrizione',
+            'visibile'
         ).distinct()
 
         if teacher is not None or dip is not None:
