@@ -1280,10 +1280,11 @@ class ServiceDocente:
 
     @staticmethod
     def getResearchLines(teacher_id, only_active=True):
-        query_is_active = Q(visibile=True) if only_active else Q()
+        query_is_active_app = Q(ricercadocentelineaapplicata__ricerca_linea_applicata__visibile=True) if only_active else Q()
+        query_is_active_base = Q(ricercadocentelineabase__ricerca_linea_base__visibile=True) if only_active else Q()
 
         linea_applicata = Personale.objects.filter(
-            query_is_active,
+            query_is_active_app,
             matricola__exact=teacher_id,
             fl_docente=1,
             ricercadocentelineaapplicata__dt_fine__isnull=True) .order_by('ricercadocentelineaapplicata__ricerca_linea_applicata__id') .values(
@@ -1294,7 +1295,7 @@ class ServiceDocente:
             'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__description').distinct()
 
         linea_base = Personale.objects.filter(
-            query_is_active,
+            query_is_active_base,
             matricola__exact=teacher_id,
             fl_docente=1,
             ricercadocentelineabase__dt_fine__isnull=True) .order_by('ricercadocentelineabase__ricerca_linea_base__id') .values(
