@@ -35,6 +35,14 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             label=_('Interdepartmental Laboratory'),
             choices=(('SI', 'SI'),('NO', 'NO'))
         )
+        
+        self.order_fields(field_order=
+                          ( 'nome_laboratorio', 'acronimo', 'logo_laboratorio',
+                            'nome_file_logo', 'sede_dimensione', 'sede_note_descrittive',
+                            'strumentazione_descrizione', 'strumentazione_valore',
+                            'sito_web', 'id_infrastruttura_riferimento', 'altre_strutture_riferimento',
+                            'descr_altre_strutture_riferimento_it', 'descr_altre_strutture_riferimento_en',
+                            'ambito', 'laboratorio_interdipartimentale'))
 
 
     class Meta:
@@ -168,17 +176,11 @@ class LaboratorioDatiErc1Form(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        lista_erc1 = []
-        ricerca_erc1 = RicercaErc1.objects.all()
-        for erc1 in ricerca_erc1:
-            kv = (erc1.id, erc1.descrizione)
-            lista_erc1.append(kv)
-        
-        tuple_erc1 = tuple(lista_erc1)
+        choices = tuple(RicercaErc1.objects.all().values_list("id", "descrizione").distinct())
         
         self.fields['id_ricerche_erc1'] = forms.MultipleChoiceField(
             label=_('ERC1 Researches'),
-            choices=tuple_erc1,
+            choices=choices,
             required=False,
             widget=forms.CheckboxSelectMultiple()
         )
@@ -235,6 +237,7 @@ class LaboratorioAttivitaForm(forms.ModelForm):
             choices=activity_types,
             required=True)
         
+        self.order_fields(field_order=('tipologia_attivita', 'descr_finalita_it', 'descr_finalita_en'))
     class Meta:
         model = LaboratorioDatiBase.tipologia_attivita.through
         fields = ['descr_finalita_it',
@@ -246,9 +249,7 @@ class LaboratorioAttivitaForm(forms.ModelForm):
         
         widgets = {'descr_finalita_it': CKEditorWidget(),
                    'descr_finalita_en': CKEditorWidget()}
-        
-    field_order = ['tipologia_attivita', 'descr_finalita_it', 'descr_finalita_en']
-        
+                
 class LaboratorioServiziErogatiForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
