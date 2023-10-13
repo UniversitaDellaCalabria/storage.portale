@@ -467,6 +467,7 @@ class Migration(migrations.Migration):
                 ('ricerca_erc2', models.ForeignKey(db_column='RICERCA_ERC2_ID', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.ricercaerc2')),
                 ('user_ins', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_ins_rlb', to=settings.AUTH_USER_MODEL)),
                 ('user_mod', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_mod_rlb', to=settings.AUTH_USER_MODEL)),
+                ('visibile', models.BooleanField(db_column='VISIBILE', default=False)),
             ],
             options={
                 'db_table': 'RICERCA_LINEA_BASE',
@@ -485,6 +486,7 @@ class Migration(migrations.Migration):
                 ('ricerca_aster2', models.ForeignKey(db_column='RICERCA_ASTER2_ID', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.ricercaaster2')),
                 ('user_ins', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_ins_rla', to=settings.AUTH_USER_MODEL)),
                 ('user_mod', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_mod_rla', to=settings.AUTH_USER_MODEL)),
+                ('visibile', models.BooleanField(db_column='VISIBILE', default=False)),
             ],
             options={
                 'db_table': 'RICERCA_LINEA_APPLICATA',

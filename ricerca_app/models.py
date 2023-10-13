@@ -39,6 +39,13 @@ class InsModAbstract(models.Model):
         abstract = True
 
 
+class VisibileModAbstract(models.Model):
+    visibile = models.BooleanField(db_column='VISIBILE', default=False)
+
+    class Meta:
+        abstract = True
+
+
 class ComuniAll(models.Model):
 
     id_comune = models.IntegerField(db_column='ID_COMUNE', primary_key=True)
@@ -3052,7 +3059,7 @@ class RicercaGruppo(InsModAbstract):
         return '{}'.format(self.nome)
 
 
-class RicercaLineaApplicata(InsModAbstract):
+class RicercaLineaApplicata(InsModAbstract, VisibileModAbstract):
 
     descrizione = models.CharField(db_column='DESCRIZIONE', max_length=400)
     descr_pubblicaz_prog_brevetto = models.TextField(
@@ -3082,7 +3089,7 @@ class RicercaLineaApplicata(InsModAbstract):
         return '{} {}'.format(self.ricerca_aster2, self.descrizione)
 
 
-class RicercaLineaBase(InsModAbstract):
+class RicercaLineaBase(InsModAbstract, VisibileModAbstract):
 
     descrizione = models.CharField(db_column='DESCRIZIONE', max_length=400)
     descr_pubblicaz_prog_brevetto = models.TextField(
