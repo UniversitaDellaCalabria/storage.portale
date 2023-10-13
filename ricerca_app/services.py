@@ -1378,6 +1378,7 @@ class ServiceDocente:
                 query_search,
                 query_year,
                 query_asters,
+                query_is_active
             ).order_by('descrizione').values(
                 'id',
                 'descrizione',
