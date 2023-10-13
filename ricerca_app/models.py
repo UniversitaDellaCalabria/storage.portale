@@ -2922,7 +2922,7 @@ class RicercaDocenteLineaApplicata(InsModAbstract):
         db_table = 'RICERCA_DOCENTE_LINEA_APPLICATA'
 
 
-class RicercaDocenteLineaBase(InsModAbstract, VisibileModAbstract):
+class RicercaDocenteLineaBase(InsModAbstract):
 
     dt_inizio = models.DateField(db_column='DT_INIZIO', blank=True, null=True)
 

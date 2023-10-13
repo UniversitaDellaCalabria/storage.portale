@@ -1385,6 +1385,7 @@ class ServiceDocente:
                 'anno',
                 'ricerca_aster2_id__ricerca_aster1_id',
                 'ricerca_aster2_id__descrizione',
+                'visibile'
             ).distinct()
 
         if ercs and asters:
