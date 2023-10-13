@@ -723,7 +723,8 @@ class BaseResearchLinesSerializer(CreateUpdateAbstract):
             'RYear': query['anno'],
             'RLineErc2ID': query['ricerca_erc2_id__cod_erc2'],
             'RLineErc2Name': query['ricerca_erc2_id__descrizione'],
-            'Teachers': teachers
+            'Teachers': teachers,
+            'RLineVisibile': query['visibile']
         }
 
     @staticmethod
@@ -765,7 +766,8 @@ class AppliedResearchLinesSerializer(CreateUpdateAbstract):
             'RYear': query['anno'],
             'RLineAster2Id': query['ricerca_aster2_id__ricerca_aster1_id'],
             'RLineAster2Name': query['ricerca_aster2_id__descrizione'],
-            'Teachers': teachers
+            'Teachers': teachers,
+            'RLineVisibile': query['visibile']
         }
 
     @staticmethod
@@ -812,7 +814,8 @@ class AllResearchLinesSerializer(CreateUpdateAbstract):
                 'RLineERC1Name': query['ricerca_erc2_id__ricerca_erc1_id__descrizione'],
                 'RLineErc2ID': query['ricerca_erc2_id__cod_erc2'],
                 'RLineErc2Name': query['ricerca_erc2_id__descrizione'],
-                'Teachers': teachers
+                'Teachers': teachers,
+                'RLineVisibile': query['visibile']
             }
         else:
             return {
@@ -822,7 +825,8 @@ class AllResearchLinesSerializer(CreateUpdateAbstract):
                 'RYear': query['anno'],
                 'RLineAster2Id': query['ricerca_aster2_id__ricerca_aster1_id'],
                 'RLineAster2Name': query['ricerca_aster2_id__descrizione'],
-                'Teachers': teachers
+                'Teachers': teachers,
+                'RLineVisibile': query['visibile']
             }
 
     @staticmethod

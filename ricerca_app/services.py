@@ -1279,8 +1279,12 @@ class ServiceDocente:
             return query
 
     @staticmethod
-    def getResearchLines(teacher_id):
+    def getResearchLines(teacher_id, only_active=True):
+        query_is_active_app = Q(ricercadocentelineaapplicata__ricerca_linea_applicata__visibile=True) if only_active else Q()
+        query_is_active_base = Q(ricercadocentelineabase__ricerca_linea_base__visibile=True) if only_active else Q()
+
         linea_applicata = Personale.objects.filter(
+            query_is_active_app,
             matricola__exact=teacher_id,
             fl_docente=1,
             ricercadocentelineaapplicata__dt_fine__isnull=True) .order_by('ricercadocentelineaapplicata__ricerca_linea_applicata__id') .values(
@@ -1291,6 +1295,7 @@ class ServiceDocente:
             'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__description').distinct()
 
         linea_base = Personale.objects.filter(
+            query_is_active_base,
             matricola__exact=teacher_id,
             fl_docente=1,
             ricercadocentelineabase__dt_fine__isnull=True) .order_by('ricercadocentelineabase__ricerca_linea_base__id') .values(
@@ -1320,7 +1325,7 @@ class ServiceDocente:
         return linea_applicata
 
     @staticmethod
-    def getAllResearchLines(search, year, department, ercs, asters, exclude_base=False, exclude_applied=False):
+    def getAllResearchLines(search, year, department, ercs, asters, exclude_base=False, exclude_applied=False, only_active=True):
         if exclude_applied and exclude_base:
             return []
 
@@ -1328,7 +1333,7 @@ class ServiceDocente:
         query_year = Q()
         query_ercs = Q()
         query_asters = Q()
-
+        query_is_active = Q(visibile=True) if only_active else Q()
 
         if search:
             for k in search.split(" "):
@@ -1352,6 +1357,7 @@ class ServiceDocente:
                 query_search,
                 query_year,
                 query_ercs,
+                query_is_active
                 ).order_by('descrizione').values(
                 'id',
                 'descrizione',
@@ -1363,7 +1369,8 @@ class ServiceDocente:
                 'ricerca_erc2_id__ricerca_erc1_id__descrizione',
                 'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__erc0_cod',
                 'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description',
-                'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description_en'
+                'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description_en',
+                'visibile'
             ).distinct()
 
         if not exclude_applied:
@@ -1378,6 +1385,7 @@ class ServiceDocente:
                 'anno',
                 'ricerca_aster2_id__ricerca_aster1_id',
                 'ricerca_aster2_id__descrizione',
+                'visibile'
             ).distinct()
 
         if ercs and asters:
@@ -1484,10 +1492,11 @@ class ServiceDocente:
         return linee
 
     @staticmethod
-    def getBaseResearchLines(search, teacher, dip, year):
+    def getBaseResearchLines(search, teacher, dip, year, only_active=True):
 
         query_search = Q()
         query_year = Q()
+        query_is_active = Q(visibile=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -1498,13 +1507,15 @@ class ServiceDocente:
 
         query = RicercaLineaBase.objects.filter(
             query_search,
-            query_year).order_by('descrizione').values(
+            query_year,
+            query_is_active).order_by('descrizione').values(
             'id',
             'descrizione',
             'descr_pubblicaz_prog_brevetto',
             'anno',
             'ricerca_erc2_id__cod_erc2',
             'ricerca_erc2_id__descrizione',
+            'visibile'
         ).distinct()
 
         if teacher is not None or dip is not None:
@@ -1564,9 +1575,10 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getAppliedResearchLines(search, teacher, dip, year):
+    def getAppliedResearchLines(search, teacher, dip, year, only_active=True):
         query_search = Q()
         query_year = Q()
+        query_is_active = Q(visibile=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -1577,13 +1589,15 @@ class ServiceDocente:
 
         query = RicercaLineaApplicata.objects.filter(
             query_search,
-            query_year).order_by('descrizione').values(
+            query_year,
+            query_is_active).order_by('descrizione').values(
             'id',
             'descrizione',
             'descr_pubblicaz_prog_brevetto',
             'anno',
             'ricerca_aster2_id__ricerca_aster1_id',
             'ricerca_aster2_id__descrizione',
+            'visibile'
         ).distinct()
 
         if teacher is not None or dip is not None:

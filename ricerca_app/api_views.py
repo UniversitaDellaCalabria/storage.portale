@@ -332,17 +332,17 @@ class ApiAllStudyActivitiesList(ApiEndpointList):
     filter_backends = [ApiAllActivitiesListFilter]
 
     def get_queryset(self):
-
-        department = self.request.query_params.get('department')
-        cds = self.request.query_params.get('cds')
-        academic_year = self.request.query_params.get('academic_year')
-        period = self.request.query_params.get('period')
-        ssd = self.request.query_params.get('ssd')
-        teaching = self.request.query_params.get('teaching')
-        teacher = self.request.query_params.get('teacher')
-        course_year = self.request.query_params.get('course_year')
-        cds_cod = self.request.query_params.get('cds_cod')
-        teacher_code = decrypt(self.request.query_params.get('teacher_code'))
+        request = self.request
+        department = request.query_params.get('department')
+        cds = request.query_params.get('cds')
+        academic_year = request.query_params.get('academic_year')
+        period = request.query_params.get('period')
+        ssd = request.query_params.get('ssd')
+        teaching = request.query_params.get('teaching')
+        teacher = request.query_params.get('teacher')
+        course_year = request.query_params.get('course_year')
+        cds_cod = request.query_params.get('cds_cod')
+        teacher_code = decrypt(request.query_params.get('teacher_code'))
 
         return ServiceDidatticaAttivitaFormativa.getAllActivities(self.language, department, cds, academic_year, period, ssd, teacher, teaching, course_year, cds_cod, teacher_code)
 
@@ -418,11 +418,11 @@ class ApiResearchGroupsList(ApiEndpointList):
     filter_backends = [ApiResearchGroupsListFilter]
 
     def get_queryset(self):
-
-        search = self.request.query_params.get('search')
-        teacher = decrypt(self.request.query_params.get('teacher'))
-        department = self.request.query_params.get('department')
-        cod = self.request.query_params.get('coderc1')
+        request = self.request
+        search = request.query_params.get('search')
+        teacher = decrypt(request.query_params.get('teacher'))
+        department = request.query_params.get('department')
+        cod = request.query_params.get('coderc1')
 
         return ServiceDocente.getAllResearchGroups(search, teacher, department, cod)
 
@@ -437,7 +437,19 @@ class ApiTeacherResearchLinesList(ApiEndpointList):
     def get_queryset(self):
         teacherid = decrypt(self.kwargs['teacherid'])
 
-        return ServiceDocente.getResearchLines(teacherid)
+        only_active = True
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        request = self.request
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_RESEARCHLINES,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices.exists(): only_active = False
+
+        return ServiceDocente.getResearchLines(teacherid, only_active)
 
 
 class ApiBaseResearchLinesList(ApiEndpointList):
@@ -447,14 +459,25 @@ class ApiBaseResearchLinesList(ApiEndpointList):
     filter_backends = [ApiBaseResearchLinesListFilter]
 
     def get_queryset(self):
-
-        search = self.request.query_params.get('search')
+        request = self.request
+        search = request.query_params.get('search')
         teacher = decrypt(self.request.query_params.get('teacher'))
-        department = self.request.query_params.get('department')
-        year = self.request.query_params.get('year')
+        department = request.query_params.get('department')
+        year = request.query_params.get('year')
+
+        only_active = True
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_RESEARCHLINES,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices.exists(): only_active = False
 
         return ServiceDocente.getBaseResearchLines(
-            search, teacher, department, year)
+            search, teacher, department, year, only_active)
 
 
 class ApiAppliedResearchLinesList(ApiEndpointList):
@@ -464,13 +487,25 @@ class ApiAppliedResearchLinesList(ApiEndpointList):
     filter_backends = [ApiAppliedResearchLinesListFilter]
 
     def get_queryset(self):
-        search = self.request.query_params.get('search')
+        request = self.request
+        search = request.query_params.get('search')
         teacher = decrypt(self.request.query_params.get('teacher'))
-        department = self.request.query_params.get('department')
-        year = self.request.query_params.get('year')
+        department = request.query_params.get('department')
+        year = request.query_params.get('year')
+
+        only_active = True
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_RESEARCHLINES,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices.exists(): only_active = False
 
         return ServiceDocente.getAppliedResearchLines(
-            search, teacher, department, year)
+            search, teacher, department, year, only_active)
 
 
 class ApiAllResearchLinesList(ApiEndpointList):
@@ -480,18 +515,34 @@ class ApiAllResearchLinesList(ApiEndpointList):
     filter_backends = [ApiAllResearchLinesListFilter]
 
     def get_queryset(self):
+        request = self.request
+        search = request.query_params.get('search')
+        year = request.query_params.get('year')
+        department = request.query_params.get('department')
+        ercs = request.query_params.get('ercs')
+        asters = request.query_params.get('asters')
+        exclude_base = request.query_params.get('exclude_base')
+        exclude_applied = request.query_params.get('exclude_applied')
 
-        search = self.request.query_params.get('search')
-        year = self.request.query_params.get('year')
-        department = self.request.query_params.get('department')
-        ercs = self.request.query_params.get('ercs')
-        asters = self.request.query_params.get('asters')
-        exclude_base = self.request.query_params.get('exclude_base')
-        exclude_applied = self.request.query_params.get('exclude_applied')
+        only_active = True
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name=OFFICE_RESEARCHLINES,
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices.exists(): only_active = False
 
-
-
-        return ServiceDocente.getAllResearchLines(search, year, department, ercs, asters, exclude_base, exclude_applied)
+        return ServiceDocente.getAllResearchLines(search,
+                                                  year,
+                                                  department,
+                                                  ercs,
+                                                  asters,
+                                                  exclude_base,
+                                                  exclude_applied,
+                                                  only_active)
 
 # ----Docenti----
 
@@ -504,13 +555,13 @@ class ApiTeachersList(ApiEndpointList):
     filter_backends = [ApiTeachersListFilter]
 
     def get_queryset(self):
-
-        search = self.request.query_params.get('search')
-        regdidid = self.request.query_params.get('regdid')
-        department = self.request.query_params.get('department')
-        role = self.request.query_params.get('role')
-        cds = self.request.query_params.get('cds')
-        year = self.request.query_params.get('year')
+        request = self.request
+        search = request.query_params.get('search')
+        regdidid = request.query_params.get('regdid')
+        department = request.query_params.get('department')
+        role = request.query_params.get('role')
+        cds = request.query_params.get('cds')
+        year = request.query_params.get('year')
 
 
         return ServiceDocente.teachersList(
@@ -531,13 +582,13 @@ class ApiTeachingCoveragesList(ApiEndpointList):
     schema = TeachingCoveragesList()
 
     def get_queryset(self):
-
-        search = self.request.query_params.get('search')
-        regdidid = self.request.query_params.get('regdid')
-        department = self.request.query_params.get('department')
-        role = self.request.query_params.get('role')
-        cds = self.request.query_params.get('cds')
-        year = self.request.query_params.get('year')
+        request = self.request
+        search = request.query_params.get('search')
+        regdidid = request.query_params.get('regdid')
+        department = request.query_params.get('department')
+        role = request.query_params.get('role')
+        cds = request.query_params.get('cds')
+        year = request.query_params.get('year')
 
         return ServiceDocente.teachingCoveragesList(
             search, regdidid, department, role, cds, year)
@@ -551,10 +602,11 @@ class ApiTeacherStudyActivitiesList(ApiEndpointList):
     filter_backends = [ApiTeacherStudyActivitiesFilter]
 
     def get_queryset(self):
+        request = self.request
         teacherid = decrypt(self.kwargs['teacherid'])
-        year = self.request.query_params.get('year')
-        yearFrom = self.request.query_params.get('yearFrom')
-        yearTo = self.request.query_params.get('yearTo')
+        year = request.query_params.get('year')
+        yearFrom = request.query_params.get('yearFrom')
+        yearTo = request.query_params.get('yearTo')
 
         return ServiceDocente.getAttivitaFormativeByDocente(
             teacherid, year, yearFrom, yearTo)
@@ -588,9 +640,10 @@ class ApiTeacherMaterials(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-        search = self.request.query_params.get('search')
+        request = self.request
+        search = request.query_params.get('search')
         teacherid = decrypt(self.kwargs['teacherid'])
-        return ServiceDocente.getDocenteMaterials(self.request.user, teacherid, search)
+        return ServiceDocente.getDocenteMaterials(request.user, teacherid, search)
 
 
 class ApiTeacherMaterial(ApiEndpointDetail):
@@ -609,10 +662,11 @@ class ApiTeacherNews(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-        search = self.request.query_params.get('search')
+        request = self.request
+        search = request.query_params.get('search')
         teacherid = decrypt(self.kwargs['teacherid'])
 
-        return ServiceDocente.getDocenteNews(self.request.user, teacherid, search)
+        return ServiceDocente.getDocenteNews(request.user, teacherid, search)
 
 
 class TeachingCoveragesInfo(AutoSchema):
@@ -675,12 +729,13 @@ class ApiAddressbookList(ApiEndpointList):
     filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
-        search = self.request.query_params.get('search')
-        phone = self.request.query_params.get('phone')
-        structureid = self.request.query_params.get('structure')
-        structuretypes = self.request.query_params.get('structuretypes')
-        role = self.request.query_params.get('role')
-        structuretree = self.request.query_params.get('structuretree')
+        request = self.request
+        search = request.query_params.get('search')
+        phone = request.query_params.get('phone')
+        structureid = request.query_params.get('structure')
+        structuretypes = request.query_params.get('structuretypes')
+        role = request.query_params.get('role')
+        structuretree = request.query_params.get('structuretree')
 
         return ServicePersonale.getAddressbook(
             search, structureid, structuretypes, role, structuretree, phone)
@@ -692,10 +747,11 @@ class ApiStructuresList(ApiEndpointList):
     filter_backends = [ApiStructuresListFilter]
 
     def get_queryset(self):
-        search = self.request.query_params.get('search')
-        father = self.request.query_params.get('father')
-        depth = self.request.query_params.get('depth')
-        type = self.request.query_params.get('type')
+        request = self.request
+        search = request.query_params.get('search')
+        father = request.query_params.get('father')
+        depth = request.query_params.get('depth')
+        type = request.query_params.get('type')
         return ServicePersonale.getStructuresList(search, father, type, depth)
 
 
@@ -765,13 +821,14 @@ class ApiLaboratoriesList(ApiEndpointList):
     filter_backends = [ApiLaboratoriesListFilter]
 
     def get_queryset(self):
-        search = self.request.query_params.get('search')
-        area = self.request.query_params.get('area')
-        department = self.request.query_params.get('department')
-        erc1 = self.request.query_params.get('erc1')
-        teacher = decrypt(self.request.query_params.get('teacher'))
-        infrastructure = self.request.query_params.get('infrastructure')
-        scope = self.request.query_params.get('scope')
+        request = self.request
+        search = request.query_params.get('search')
+        area = request.query_params.get('area')
+        department = request.query_params.get('department')
+        erc1 = request.query_params.get('erc1')
+        teacher = decrypt(request.query_params.get('teacher'))
+        infrastructure = request.query_params.get('infrastructure')
+        scope = request.query_params.get('scope')
 
         return ServiceLaboratorio.getLaboratoriesList(
             self.language, search, area, department, erc1, teacher, infrastructure, scope)
@@ -823,11 +880,12 @@ class ApiPublicationsList(ApiEndpointList):
     filter_backends = [ApiPublicationsListFilter]
 
     def get_queryset(self):
+        request = self.request
         teacherid = decrypt(self.kwargs.get('teacherid')) if self.kwargs.get('teacherid') else ''
-        search = self.request.query_params.get('search')
-        year = self.request.query_params.get('year')
-        type = self.request.query_params.get('type')
-        structure = self.request.query_params.get('structure')
+        search = request.query_params.get('search')
+        year = request.query_params.get('year')
+        type = request.query_params.get('type')
+        structure = request.query_params.get('structure')
 
         return ServiceDocente.getPublicationsList(
             teacherid, search, year, type, structure)
@@ -895,10 +953,10 @@ class ApiAddressbookStructuresList(ApiEndpointList):
     filter_backends = [ApiStructuresListFilter]
 
     def get_queryset(self):
-
-        search = self.request.query_params.get('search')
-        father = self.request.query_params.get('father')
-        type = self.request.query_params.get('type')
+        request = self.request
+        search = request.query_params.get('search')
+        father = request.query_params.get('father')
+        type = request.query_params.get('type')
 
         return ServicePersonale.getAllStructuresList(search, father, type)
 
@@ -939,7 +997,7 @@ class ApiPatentsList(ApiEndpointList):
                                                                               office__name=OFFICE_PATENTS,
                                                                               office__is_active=True,
                                                                               office__organizational_structure__is_active=True)
-            if my_offices: only_active = False
+            if my_offices.exists(): only_active = False
         # end get active/all elements
 
         search = request.query_params.get('search')
@@ -988,7 +1046,7 @@ class ApiCompaniesList(ApiEndpointList):
                                                                               office__name=OFFICE_COMPANIES,
                                                                               office__is_active=True,
                                                                               office__organizational_structure__is_active=True)
-            if my_offices: only_active = False
+            if my_offices.exists(): only_active = False
         # end get active/all elements
 
         search = request.query_params.get('search')
@@ -1039,7 +1097,7 @@ class ApiProjectsList(ApiEndpointList):
                                                                               office__name=OFFICE_PROJECTS,
                                                                               office__is_active=True,
                                                                               office__organizational_structure__is_active=True)
-            if my_offices: only_active = False
+            if my_offices.exists(): only_active = False
         # end get active/all elements
 
         search = request.query_params.get('search')
@@ -1154,14 +1212,14 @@ class ApiHighFormationMastersList(ApiEndpointList):
     filter_backends = [ApiHighFormationMastersListFilter]
 
     def get_queryset(self):
-
-        search = self.request.query_params.get('search')
-        director = self.request.query_params.get('director')
-        coursetype = self.request.query_params.get('coursetype')
-        erogation = self.request.query_params.get('erogation')
-        department = self.request.query_params.get('department')
-        language = self.request.query_params.get('language')
-        year = self.request.query_params.get('year')
+        request = self.request
+        search = request.query_params.get('search')
+        director = request.query_params.get('director')
+        coursetype = request.query_params.get('coursetype')
+        erogation = request.query_params.get('erogation')
+        department = request.query_params.get('department')
+        language = request.query_params.get('language')
+        year = request.query_params.get('year')
 
 
         return ServiceDidatticaCds.getHighFormationMasters(search, director, coursetype, erogation, department, language, year)
@@ -1270,12 +1328,12 @@ class ApiPhdActivitiesList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-
-        search = self.request.query_params.get('search')
-        structure = self.request.query_params.get('structure')
-        phd = self.request.query_params.get('phd')
-        ssd = self.request.query_params.get('ssd')
-        teacher = self.request.query_params.get('teacher')
+        request = self.request
+        search = request.query_params.get('search')
+        structure = request.query_params.get('structure')
+        phd = request.query_params.get('phd')
+        ssd = request.query_params.get('ssd')
+        teacher = request.query_params.get('teacher')
 
         return ServiceDottorato.getPhdActivities(search, structure, phd, ssd, teacher)
 
