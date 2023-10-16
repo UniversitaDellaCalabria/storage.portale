@@ -1700,7 +1700,71 @@ class LaboratorioAttivita(models.Model):
     class Meta:
         managed = True
         db_table = 'LABORATORIO_ATTIVITA'
+        
+class LaboratorioAttrezzatureRischi(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)
+    id_laboratorio_attrezzature = models.ForeignKey(
+        'LaboratorioAttrezzature',
+        models.CASCADE,
+        db_column='ID_LABORATORIO_ATTREZZATURE',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    id_tipologia_rischio = models.ForeignKey(
+        'TipologiaRischio',
+        models.CASCADE,
+        db_column='ID_TIPOLOGIA_RISCHIO',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    
+    dt_mod = models.DateField(db_column='DT_MOD',
+                              blank=True, null=True) # Field name made lowercase.
+    
+    user_mod_id = models.ForeignKey(get_user_model(),
+                                 on_delete=models.SET_NULL,
+                                 db_column='user_mod_id',
+                                 blank=True, null=True)
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_ATTREZZATURE_RISCHI'
 
+class LaboratorioFondo(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)
+    nome_fondo = models.CharField(
+        db_column='NOME_FONDO',
+        max_length=500, 
+        blank=False,
+        null=False) # Field name made lowercase.
+    
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_FONDO'
+
+class LaboratorioAttrezzatureFondi(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)
+    id_laboratorio_attrezzature = models.ForeignKey(
+        'LaboratorioAttrezzature',
+        models.CASCADE,
+        db_column='ID_LABORATORIO_ATTREZZATURE',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    id_laboratorio_fondo = models.ForeignKey(
+        'LaboratorioFondo',
+        models.CASCADE,
+        db_column='ID_LABORATORIO_FONDO',
+        blank=True,
+        null=True)  # Field name made lowercase.
+    
+    dt_mod = models.DateField(db_column='DT_MOD',
+                              blank=True, null=True) # Field name made lowercase.
+    
+    user_mod_id = models.ForeignKey(get_user_model(),
+                                 on_delete=models.SET_NULL,
+                                 db_column='user_mod_id',
+                                 blank=True, null=True)
+    class Meta:
+        managed = True
+        db_table = 'LABORATORIO_ATTREZZATURE_FONDI'
+    
 
 class LaboratorioAttrezzature(models.Model):
     # Field name made lowercase.
@@ -1719,23 +1783,11 @@ class LaboratorioAttrezzature(models.Model):
         null=True)
     # Field name made lowercase.
     descrizione = models.TextField(
-        db_column='DESCRIZIONE', blank=False, null=True)
-    # Field name made lowercase.
-    fondi = models.CharField(
-        db_column='FONDI',
-        max_length=500,
-        blank=False,
-        null=True)
-    # Field name made lowercase.
+        db_column='DESCRIZIONE', blank=False, null=True) # Field name made lowercase.
     costo_unitario = models.FloatField(
-        db_column='COSTO_UNITARIO', blank=False, null=True)
-    # Field name made lowercase.
-    quantita = models.IntegerField(db_column='QUANTITA', blank=False, null=True)
-    tipo_rischi = models.CharField(
-        db_column='TIPO_RISCHI',
-        max_length=500,
-        blank=False,
-        null=True)  # Field name made lowercase.
+        db_column='COSTO_UNITARIO', blank=False, null=True) # Field name made lowercase.
+    quantita = models.IntegerField(
+        db_column='QUANTITA', blank=False, null=True) # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -1947,10 +1999,10 @@ class LaboratorioDatiBase(models.Model):
     dt_mod = models.DateField(db_column='DT_MOD',
                               blank=True, null=True) # Field name made lowercase.
     
-    user_mod = models.ForeignKey(get_user_model(),
+    user_mod_id = models.ForeignKey(get_user_model(),
                                  on_delete=models.SET_NULL,
-                                 db_column='USER_MOD',
-                                 blank=True, null=True) # Field name made lowercase.
+                                 db_column='user_mod_id',
+                                 blank=True, null=True)
     
     tipologia_attivita = models.ManyToManyField(
         LaboratorioTipologiaAttivita, through="LaboratorioAttivita")

@@ -10,7 +10,7 @@ from django.conf import settings
 from django.urls import reverse
 
 
-from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioTipologiaRischio, TipologiaRischio
+from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioTipologiaRischio, TipologiaRischio, LaboratorioAttrezzatureFondi, LaboratorioAttrezzatureRischi, LaboratorioFondo
 
 # from .. utils.widgets import RicercaCRUDClearableWidget
 
@@ -164,13 +164,32 @@ class LaboratorioAttrezzatureForm(forms.ModelForm):
 
     class Meta:
         model = LaboratorioAttrezzature
-        fields = ['tipologia', 'descrizione', 'fondi', 'costo_unitario', 'quantita', 'tipo_rischi']
+        fields = ['tipologia', 'descrizione', 'costo_unitario', 'quantita']
         labels = {
             'tipologia': _('Type'),
-            'descrizione': _('Description'),
-            'fondi': _('Funds'),
-            'tipo_rischi': _('Type of Risks'),
+            'descrizione': _('Description')
         }
+        
+class LaboratorioAttrezzatureFondiForm(forms.Form):
+    choices = tuple(LaboratorioFondo.objects.all().order_by('-nome_fondo').values_list('id', 'nome_fondo'))
+    
+    id_laboratorio_fondo = forms.MultipleChoiceField(
+            label=_('Funds'),
+            choices=choices,
+            required=False,
+            widget=forms.CheckboxSelectMultiple()
+        )
+        
+class LaboratorioAttrezzatureRischiForm(forms.Form):
+    choices = tuple(TipologiaRischio.objects.all().order_by('descr_tipologia').values_list('id', 'descr_tipologia'))
+    
+    id_tipologia_rischio = forms.MultipleChoiceField(
+            label=_('Risk Types'),
+            choices=choices,
+            required=False,
+            widget=forms.CheckboxSelectMultiple()
+        )
+
 
 class LaboratorioDatiErc1Form(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -293,7 +312,7 @@ class LaboratorioTipologiaRischioForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)    
         
-        available_risk_types = TipologiaRischio.objects.values("id", "descr_tipologia")
+        available_risk_types = TipologiaRischio.objects.all().order_by("descr_tipologia").values("id", "descr_tipologia")
         
         choices = []
         for risk_type in available_risk_types:

@@ -623,15 +623,26 @@
             </a>
             <!-- /Locations -->
             <hr />
-            <!-- /Equipment -->
+            <!-- Equipment -->
             <h4 style="font-weight: lighter;">{% trans "Laboratory Equipment" %}</h4>
             <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>{% trans "Type" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Unit Cost" %}</th>
+                        <th>{% trans "Quantity" %}</th>
+
+                    </tr>
+                </thead>
                 <tbody>
                     {% for equipment_piece in laboratory_equipment %}
                     <tr>
-                        <td>
-                            {{ equipment_piece.descrizione|default:"-" }}
-                        </td>
+                        <td>{{ equipment_piece.tipologia }}</td>
+                        <td>{{ equipment_piece.descrizione }}</td>
+                        <td>{{ equipment_piece.costo_unitario }}</td>
+                        <td>{{ equipment_piece.quantita }}</td>
+
                         <td class="text-right">
                             <a href="{% url 'crud_laboratories:crud_laboratory_equipment_edit' code=laboratory.pk data_id=equipment_piece.id %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">

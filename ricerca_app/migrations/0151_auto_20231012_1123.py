@@ -20,8 +20,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='laboratoriodatibase',
-            name='user_mod',
-            field=models.ForeignKey(blank=True, db_column='USER_MOD', null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            name='user_mod_id',
+            field=models.ForeignKey(blank=True, db_column='user_mod_id', null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='laboratoriodatibase',

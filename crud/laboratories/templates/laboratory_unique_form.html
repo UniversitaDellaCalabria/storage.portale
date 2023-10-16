@@ -10,7 +10,9 @@
         {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %} {{ laboratory.nome_laboratorio }}
     </h3>    
     <form method="post" novalidate>
+        {% for form in forms %}
         {% include "form_template.html" with form=form %}
+        {% endfor %}
         {% include "includes/form_submit.html" %}
     </form>
 </div>

@@ -143,10 +143,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('tipologia', models.CharField(blank=True, max_length=500, null=True)),
                 ('descrizione', models.TextField(blank=True, null=True)),
-                ('fondi', models.CharField(blank=True, max_length=500, null=True)),
                 ('costo_unitario', models.FloatField(blank=True, null=True)),
                 ('quantita', models.IntegerField(blank=True, null=True)),
-                ('tipo_rischi', models.CharField(blank=True, max_length=500, null=True)),
                 ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
             ],
             options={

@@ -39,6 +39,7 @@ def __get_user_roles(user, my_offices, validator_user):
         roles["validator"] = True
     return roles
 
+
 @login_required
 @can_manage_laboratories
 def laboratories(request, laboratory=None, my_offices=None, validator_user=False):
@@ -649,13 +650,35 @@ def laboratory_extra_departments_delete(request, code, data_id, laboratory=None,
 @can_edit_laboratories
 def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, validator_user=False):
     equipment_form = LaboratorioAttrezzatureForm()
+    equipment_funds_form = LaboratorioAttrezzatureFondiForm()
+    equipment_risks_form = LaboratorioAttrezzatureRischiForm()
     if request.POST and (request.user.is_superuser or my_offices.exists()):
         equipment_form = LaboratorioAttrezzatureForm(data=request.POST)
-        if equipment_form.is_valid():
+        equipment_funds_form = LaboratorioAttrezzatureFondiForm(data=request.POST)
+        equipment_risks_form = LaboratorioAttrezzatureRischiForm(data=request.POST)
+        
+        if equipment_form.is_valid() and equipment_funds_form.is_valid() and equipment_risks_form.is_valid():
 
-            laboratory_equipment = equipment_form.save(commit=False)         
+            laboratory_equipment = equipment_form.save(commit=False)
             laboratory_equipment.id_laboratorio_dati = laboratory
             laboratory_equipment.save()
+            
+            for fund_id in equipment_funds_form.cleaned_data.get('id_laboratorio_fondo', []):
+                LaboratorioAttrezzatureFondi.objects.create(
+                    id_laboratorio_attrezzature=laboratory_equipment,
+                    id_laboratorio_fondo=get_object_or_404(LaboratorioFondo, pk=fund_id),
+                    user_mod_id=request.user,
+                    dt_mod=datetime.datetime.now()
+                )
+            
+            for risk_id in equipment_risks_form.cleaned_data.get('id_tipologia_rischio', []):
+                LaboratorioAttrezzatureRischi.objects.create(
+                    id_laboratorio_attrezzature=laboratory_equipment,
+                    id_tipologia_rischio=get_object_or_404(TipologiaRischio, pk=risk_id),
+                    user_mod_id=request.user,
+                    dt_mod=datetime.datetime.now()
+                )
+            
 
             log_action(user=request.user,
             obj=laboratory,
@@ -669,6 +692,12 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, va
             for k, v in equipment_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{equipment_form.fields[k].label}</b>: {v}")
+            for k, v in equipment_funds_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{equipment_funds_form.fields[k].label}</b>: {v}")
+            for k, v in equipment_risks_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{equipment_risks_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
@@ -678,7 +707,7 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, va
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': equipment_form,
+                   'forms': (equipment_form, equipment_funds_form, equipment_risks_form,),
                    'laboratory': laboratory,
                    'item_label': _("Equipment piece"),
                 })
@@ -690,11 +719,73 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, va
 def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
     laboratory_equipment = get_object_or_404(LaboratorioAttrezzature, pk=data_id)
     equipment_form = LaboratorioAttrezzatureForm(instance=laboratory_equipment)
+    
+    selected_funds_ids = LaboratorioAttrezzatureFondi.objects.filter(id_laboratorio_attrezzature=laboratory_equipment.id).values_list("id_laboratorio_fondo", flat=True)
+    selected_funds_ids = tuple(map(str, selected_funds_ids))
+    equipment_funds_form = LaboratorioAttrezzatureFondiForm(initial={"id_laboratorio_fondo" : selected_funds_ids})
+    
+    selected_risks_ids = LaboratorioAttrezzatureRischi.objects.filter(id_laboratorio_attrezzature=laboratory_equipment.id).values_list("id_tipologia_rischio", flat=True)
+    selected_risks_ids = tuple(map(str, selected_risks_ids))
+    equipment_risks_form = LaboratorioAttrezzatureRischiForm(initial={"id_tipologia_rischio" : selected_risks_ids})
 
     if request.POST and (request.user.is_superuser or my_offices.exists()):
         equipment_form = LaboratorioAttrezzatureForm(instance=laboratory_equipment, data=request.POST)
-        if equipment_form.is_valid():
-            equipment_form.save()
+        equipment_funds_form = LaboratorioAttrezzatureFondiForm(data=request.POST)
+        equipment_risks_form = LaboratorioAttrezzatureRischiForm(data=request.POST)
+        
+        if equipment_form.is_valid() and equipment_funds_form.is_valid() and equipment_risks_form.is_valid():
+            
+            laboratory_equipment = equipment_form.save()
+            
+            #LaboratorioAttrezzatureFondi
+            new_selected_funds = equipment_funds_form.cleaned_data.get("id_laboratorio_fondo", [])
+            
+            LaboratorioAttrezzatureFondi.objects\
+                .filter(id_laboratorio_attrezzature=laboratory_equipment.id)\
+                .exclude(id_laboratorio_fondo__in=new_selected_funds)\
+                .delete()
+            
+            current_funds = LaboratorioAttrezzatureFondi.objects\
+                .filter(id_laboratorio_attrezzature=laboratory_equipment.id).values_list("id_laboratorio_fondo", flat=True)
+            current_funds = map(str, current_funds)
+                
+            #for all (new_selected_funds - current_funds) create
+            funds_id = list(set(new_selected_funds) - set(current_funds))
+            funds = LaboratorioFondo.objects.filter(id__in=funds_id)
+                     
+            for fund in funds:
+                LaboratorioAttrezzatureFondi.objects.create(
+                    id_laboratorio_attrezzature=laboratory_equipment,
+                    id_laboratorio_fondo=fund,
+                    user_mod_id=request.user,
+                    dt_mod=datetime.datetime.now()
+                )
+            
+            
+            #LaboratorioAttrezzatureRischi
+            new_selected_risks = equipment_risks_form.cleaned_data.get("id_tipologia_rischio", [])
+            
+            LaboratorioAttrezzatureRischi.objects\
+                .filter(id_laboratorio_attrezzature=laboratory_equipment.id)\
+                .exclude(id_tipologia_rischio__in=new_selected_risks)\
+                .delete()
+            
+            current_risks = LaboratorioAttrezzatureRischi.objects\
+                .filter(id_laboratorio_attrezzature=laboratory_equipment.id).values_list("id_tipologia_rischio", flat=True)
+            current_risks = map(str, current_risks)
+                
+            #for all (new_selected_risks - current_risks) create
+            risk_types_id = list(set(new_selected_risks) - set(current_risks))
+            risk_types = TipologiaRischio.objects.filter(id__in=risk_types_id)
+                     
+            for risk_type in risk_types:
+                LaboratorioAttrezzatureRischi.objects.create(
+                    id_laboratorio_attrezzature=laboratory_equipment,
+                    id_tipologia_rischio=risk_type,
+                    user_mod_id=request.user,
+                    dt_mod=datetime.datetime.now()
+                )
+            
 
             log_action(user=request.user,
             obj=laboratory,
@@ -708,6 +799,13 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
             for k, v in equipment_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{equipment_form.fields[k].label}</b>: {v}")
+            for k, v in equipment_funds_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                    f"<b>{equipment_funds_form.fields[k].label}</b>: {v}")
+            
+            for k, v in equipment_risks_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{equipment_risks_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
@@ -717,7 +815,7 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': equipment_form,
+                   'forms': (equipment_form, equipment_funds_form, equipment_risks_form,),
                    'laboratory': laboratory,
                    'item_label': _("Equipment Piece"),
                    'edit': 1,
@@ -800,7 +898,7 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': research_erc1_form,
+                   'forms': (research_erc1_form,),
                    'laboratory': laboratory,
                    'item_label': _("ERC 1 Researches"),
                    'edit': 1,
@@ -836,7 +934,7 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': location_form,
+                   'forms': (location_form,),
                    'item_label': _("location"),
                    'laboratory': laboratory,
                 })
@@ -875,7 +973,7 @@ def laboratory_locations_new(request, code, laboratory=None, my_offices=None, va
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': location_form,
+                   'forms': (location_form,),
                    'laboratory': laboratory,
                    'item_label': _("location"),
                    'edit': 1,
@@ -1103,7 +1201,7 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, v
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': form,
+                   'form': (form,),
                    'laboratory': laboratory,
                    'item_label': _("activity"),
                 })
@@ -1149,7 +1247,7 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': activity_form,
+                   'form': (activity_form,),
                    'laboratory': laboratory,
                    'item_label': _("activity"),
                    'edit': 1,
@@ -1346,7 +1444,7 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': form,
+                   'form': (form,),
                    'item_label': _("offered service"),
                    'laboratory': laboratory,
                    })
@@ -1382,7 +1480,7 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': form,
+                   'forms': (form,),
                    'laboratory': laboratory,
                    'offered_service': offered_service,
                    'item_label': _("offered service"),
