@@ -93,7 +93,8 @@ def laboratory(request, code, laboratory=None, my_offices=None, validator_user=F
                 
         if form.is_valid():
             form.save(commit=False)
-            laboratory.user_mod = request.user
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.save()    
 
             if form.changed_data:
@@ -214,8 +215,8 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
 
 
             laboratory.dt_sottomissione = datetime.datetime.now()
-            laboratory.dt_mod = datetime.datetime.now()
-            laboratory.user_mod = request.user
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.save()
             
             log_action(user=request.user,
@@ -274,9 +275,10 @@ def laboratory_unical_department_edit(request, code, laboratory=None, my_offices
 
             department_id = form.cleaned_data['choosen_department']
             department = get_object_or_404(DidatticaDipartimento, dip_id=department_id)
-            laboratory.user_mod = request.user
             laboratory.id_dipartimento_riferimento = department
             laboratory.dipartimento_riferimento = f'{department.dip_des_it}'
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.save()
 
             if old_label != department.dip_des_it:
@@ -349,7 +351,8 @@ def laboratory_unical_referent_edit(request, code, laboratory=None, my_offices=N
                 laboratory.matricola_referente_compilazione = None
                 laboratory.referente_compilazione = form.cleaned_data['referente_compilazione']
             
-            laboratory.user_mod = request.user
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.save()
 
             if old_label != laboratory.referente_compilazione:
@@ -427,7 +430,8 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
                 laboratory.matricola_responsabile_scientifico = None
                 laboratory.responsabile_scientifico = form.cleaned_data['responsabile_scientifico']
                 
-            laboratory.user_mod = request.user
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.save()
 
             if old_label != laboratory.responsabile_scientifico:
@@ -505,7 +509,8 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
                 laboratory.matricola_preposto_sicurezza = None
                 laboratory.preposto_sicurezza = form.cleaned_data['preposto_sicurezza']
             
-            laboratory.user_mod = request.user
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.save()
 
             if old_label != laboratory.referente_compilazione:
@@ -552,6 +557,8 @@ def laboratory_safety_manager_delete(request, code, laboratory=None, my_offices=
     
     laboratory.matricola_preposto_sicurezza = None
     laboratory.preposto_sicurezza = None
+    laboratory.user_mod_id = request.user
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.save()
 
     log_action(user=request.user,
@@ -594,6 +601,10 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
                     id_dip=department,
                     descr_dip_lab=department.dip_nome_breve
                 )
+                
+                laboratory.user_mod_id = request.user
+                laboratory.dt_mod=datetime.datetime.now()
+                laboratory.save()
 
                 log_action(user=request.user,
                 obj=laboratory,
@@ -635,6 +646,10 @@ def laboratory_extra_departments_delete(request, code, data_id, laboratory=None,
     extra_department_lab = get_object_or_404(LaboratorioAltriDipartimenti, pk=data_id)
 
     extra_department_lab.delete()
+    
+    laboratory.user_mod_id = request.user
+    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.save()
     
     log_action(user=request.user,
     obj=laboratory,
@@ -679,6 +694,9 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, va
                     dt_mod=datetime.datetime.now()
                 )
             
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
 
             log_action(user=request.user,
             obj=laboratory,
@@ -785,7 +803,10 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
                     user_mod_id=request.user,
                     dt_mod=datetime.datetime.now()
                 )
-            
+                
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
 
             log_action(user=request.user,
             obj=laboratory,
@@ -834,6 +855,10 @@ def laboratory_equipment_delete(request, code, data_id, laboratory=None, my_offi
 
     equipment_piece.delete()
     
+    laboratory.user_mod_id = request.user
+    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.save()
+    
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -880,7 +905,11 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
                 LaboratorioDatiErc1.objects.create(
                     id_laboratorio_dati=laboratory,
                     id_ricerca_erc1=research
-                )        
+                )
+                
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()        
             
             log_action(user=request.user,
             obj=laboratory,
@@ -918,6 +947,10 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
            
             location_form.save()
             
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
+            
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -951,6 +984,10 @@ def laboratory_locations_new(request, code, laboratory=None, my_offices=None, va
             location = location_form.save(commit=False)         
             location.id_laboratorio_dati = laboratory
             location.save()
+            
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
 
             log_action(user=request.user,
             obj=laboratory,
@@ -991,6 +1028,10 @@ def laboratory_locations_delete(request, code, data_id, laboratory=None, my_offi
 
     location.delete()
     
+    laboratory.user_mod_id = request.user
+    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.save()
+    
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -1027,6 +1068,10 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
                     id_laboratorio_dati=laboratory,
                     matricola_personale_ricerca=None,
                     cognomenome_origine=form.cleaned_data['laboratory_staff'])
+
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
 
             log_action(user=request.user,
             obj=laboratory,
@@ -1065,6 +1110,10 @@ def laboratory_research_staff_delete(request, code, data_id, laboratory=None, my
     
     researcher = get_object_or_404(LaboratorioPersonaleRicerca, pk=data_id)
     researcher.delete()
+    
+    laboratory.user_mod_id = request.user
+    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.save()
     
     log_action(user=request.user,
     obj=laboratory,
@@ -1111,6 +1160,10 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
                     ruolo=technician_form.cleaned_data.get('ruolo'),
                     percentuale_impegno=technician_form.cleaned_data.get('percentuale_impegno'))
 
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
+
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1152,6 +1205,10 @@ def laboratory_technical_staff_delete(request, code, data_id, laboratory=None, m
     technician = get_object_or_404(LaboratorioPersonaleTecnico, pk=data_id)
     technician.delete()
     
+    laboratory.user_mod_id = request.user
+    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.save()
+    
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -1184,6 +1241,10 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, v
             activity.id_laboratorio_dati=laboratory
             activity.id_tipologia_attivita=activity_type
             activity.save()
+            
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
             
             log_action(user=request.user,
             obj=laboratory,
@@ -1231,6 +1292,10 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
             activity.id_tipologia_attivita = activity_type
             activity.save()
             
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
+            
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1262,6 +1327,10 @@ def laboratory_activities_delete(request, code, data_id, laboratory=None, my_off
     
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
     activity.delete()
+    
+    laboratory.user_mod_id = request.user
+    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.save()
     
     log_action(user=request.user,
     obj=laboratory,
@@ -1304,6 +1373,10 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
                 provided_service.responsabile_origine = form.cleaned_data['laboratory_manager']
 
             provided_service.save()
+            
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
             
             log_action(user=request.user,
             obj=laboratory,
@@ -1373,6 +1446,10 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
 
             provided_service.save()
             
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
+            
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1408,6 +1485,10 @@ def laboratory_provided_services_delete(request, code, data_id, laboratory=None,
     provided_service = get_object_or_404(LaboratorioServiziErogati, pk=data_id)
     provided_service.delete()
     
+    laboratory.user_mod_id = request.user
+    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.save()
+    
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -1427,6 +1508,10 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
         offered_service = form.save(commit=False)
         offered_service.id_laboratorio_dati = laboratory
         offered_service.save()
+        
+        laboratory.user_mod_id = request.user
+        laboratory.dt_mod=datetime.datetime.now()
+        laboratory.save()
         
         log_action(user=request.user,
         obj=laboratory,
@@ -1463,6 +1548,10 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
         if form.is_valid():
             offered_service = form.save()
             
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
+            
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1497,67 +1586,16 @@ def laboratory_offered_services_delete(request, code, data_id, laboratory=None, 
     offered_service = get_object_or_404(LaboratorioServiziOfferti, pk=data_id)
     offered_service.delete()
     
+    laboratory.user_mod_id = request.user
+    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.save()
+    
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
     msg=f'{_("Deleted offered service")}')
 
     messages.add_message(request, messages.SUCCESS, _("Offered service removed successfully"))
-    return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-
-
-@login_required
-@can_manage_laboratories
-@can_edit_laboratories
-def laboratory_request_approval(request, code, laboratory=None, my_offices=None, validator_user=False):
-    
-    # #LaboratorioTipologiaRischio
-    # selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioAltriDipartimenti
-    # extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioAttrezzature
-    # equipment = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioDatiErc1
-    # researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioUbicazione
-    # locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioPersonaleRicerca
-    # researchers = LaboratorioPersonaleRicerca.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioPersonaleTecnico
-    # technicians = LaboratorioPersonaleTecnico.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioAttivita
-    # activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioServiziErogati
-    # provided_services = LaboratorioServiziErogati.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioServiziOfferti
-    # offered_services = Laboratonot (request.user.is_superuser or my_offices.exists()):rioServiziOfferti.objects.filter(id_laboratorio_dati=code).exists()
-    
-    
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
-    log_action(user=request.user,
-    obj=laboratory,
-    flag=CHANGE,
-    msg=f'{_("Requested approval")}')
-    
-    messages.add_message(request, messages.WARNING, _("Request for approval sent successfully"))
-    return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-
-@login_required
-@can_manage_laboratories
-@can_edit_laboratories
-def laboratory_approve(request, code, laboratory=None, my_offices=None, validator_user=False):
-    
-    if not (request.user.is_superuser or user_validator):
-        return custom_message(request, _("Permission denied"))
-    
-    log_action(user=request.user,
-    obj=laboratory,
-    flag=CHANGE,
-    msg=f'{_("Approved Laboratory")}')
-    
-    messages.add_message(request, messages.WARNING, _("Laboratory approved successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
 
 
@@ -1594,6 +1632,10 @@ def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, 
                     id_laboratorio_dati=laboratory,
                     id_tipologia_rischio=rt
                 )
+                
+            laboratory.user_mod_id = request.user
+            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.save()
             
             log_action(user=request.user,
             obj=laboratory,
@@ -1606,3 +1648,59 @@ def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, 
                 messages.add_message(request, messages.ERROR, f"<b>{risk_type_form.fields[k].label}</b>: {v}")
                 
         return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+
+@login_required
+@can_manage_laboratories
+@can_edit_laboratories
+def laboratory_request_approval(request, code, laboratory=None, my_offices=None, validator_user=False):
+    
+    # #LaboratorioTipologiaRischio
+    # selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioAltriDipartimenti
+    # extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioAttrezzature
+    # equipment = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioDatiErc1
+    # researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioUbicazione
+    # locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioPersonaleRicerca
+    # researchers = LaboratorioPersonaleRicerca.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioPersonaleTecnico
+    # technicians = LaboratorioPersonaleTecnico.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioAttivita
+    # activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioServiziErogati
+    # provided_services = LaboratorioServiziErogati.objects.filter(id_laboratorio_dati=code).exists()
+    # #LaboratorioServiziOfferti
+    # offered_services = Laboratonot (request.user.is_superuser or my_offices.exists()):rioServiziOfferti.objects.filter(id_laboratorio_dati=code).exists()
+    
+    
+    if not (request.user.is_superuser or my_offices.exists()):
+        return custom_message(request, _("Permission denied"))
+    
+    
+    log_action(user=request.user,
+    obj=laboratory,
+    flag=CHANGE,
+    msg=f'{_("Requested approval")}')
+    
+    messages.add_message(request, messages.WARNING, _("Request for approval sent successfully"))
+    return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+@login_required
+@can_manage_laboratories
+@can_edit_laboratories
+def laboratory_approve(request, code, laboratory=None, my_offices=None, validator_user=False):
+    
+    if not (request.user.is_superuser or user_validator):
+        return custom_message(request, _("Permission denied"))
+    
+    log_action(user=request.user,
+    obj=laboratory,
+    flag=CHANGE,
+    msg=f'{_("Approved Laboratory")}')
+    
+    messages.add_message(request, messages.WARNING, _("Laboratory approved successfully"))
+    return redirect('crud_laboratories:crud_laboratory_edit', code=code)
