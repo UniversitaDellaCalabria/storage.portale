@@ -1262,7 +1262,7 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, v
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': (form,),
+                   'forms': (form,),
                    'laboratory': laboratory,
                    'item_label': _("activity"),
                 })
@@ -1312,7 +1312,7 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': (activity_form,),
+                   'forms': (activity_form,),
                    'laboratory': laboratory,
                    'item_label': _("activity"),
                    'edit': 1,
@@ -1529,7 +1529,7 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'form': (form,),
+                   'forms': (form,),
                    'item_label': _("offered service"),
                    'laboratory': laboratory,
                    })
