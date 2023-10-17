@@ -28,18 +28,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='laboratorioattrezzature',
-            name='fondi',
-            field=models.CharField(blank=True, db_column='FONDI', max_length=500, null=True),
-        ),
-        migrations.AlterField(
-            model_name='laboratorioattrezzature',
             name='quantita',
             field=models.IntegerField(blank=True, db_column='QUANTITA', null=True),
-        ),
-        migrations.AlterField(
-            model_name='laboratorioattrezzature',
-            name='tipo_rischi',
-            field=models.CharField(blank=True, db_column='TIPO_RISCHI', max_length=500, null=True),
         ),
         migrations.AlterField(
             model_name='laboratorioattrezzature',

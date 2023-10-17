@@ -82,11 +82,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='laboratorioattrezzature',
-            name='fondi',
-            field=models.CharField(db_column='FONDI', max_length=500, null=True),
-        ),
-        migrations.AlterField(
-            model_name='laboratorioattrezzature',
             name='id_laboratorio_dati',
             field=models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase'),
         ),
@@ -94,11 +89,6 @@ class Migration(migrations.Migration):
             model_name='laboratorioattrezzature',
             name='quantita',
             field=models.IntegerField(db_column='QUANTITA', null=True),
-        ),
-        migrations.AlterField(
-            model_name='laboratorioattrezzature',
-            name='tipo_rischi',
-            field=models.CharField(db_column='TIPO_RISCHI', max_length=500, null=True),
         ),
         migrations.AlterField(
             model_name='laboratorioattrezzature',
