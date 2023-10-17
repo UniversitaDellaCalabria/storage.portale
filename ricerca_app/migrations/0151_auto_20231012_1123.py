@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='laboratoriodatibase',
             name='dt_mod',
-            field=models.DateField(blank=True, db_column='DT_MOD', null=True),
+            field=models.DateTimeField(blank=True, db_column='DT_MOD', null=True),
         ),
         migrations.AddField(
             model_name='laboratoriodatibase',

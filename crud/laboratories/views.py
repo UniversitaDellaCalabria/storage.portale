@@ -1,6 +1,7 @@
 import logging
 import os
-import datetime
+
+from datetime import datetime
 
 from .. utils.utils import log_action
 
@@ -94,7 +95,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, validator_user=F
         if form.is_valid():
             form.save(commit=False)
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()    
 
             if form.changed_data:
@@ -214,9 +215,9 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
             laboratory.id_dipartimento_riferimento = department
 
 
-            laboratory.dt_sottomissione = datetime.datetime.now()
+            laboratory.dt_sottomissione = datetime.now()
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
             
             log_action(user=request.user,
@@ -278,7 +279,7 @@ def laboratory_unical_department_edit(request, code, laboratory=None, my_offices
             laboratory.id_dipartimento_riferimento = department
             laboratory.dipartimento_riferimento = f'{department.dip_des_it}'
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
 
             if old_label != department.dip_des_it:
@@ -352,7 +353,7 @@ def laboratory_unical_referent_edit(request, code, laboratory=None, my_offices=N
                 laboratory.referente_compilazione = form.cleaned_data['referente_compilazione']
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
 
             if old_label != laboratory.referente_compilazione:
@@ -431,7 +432,7 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
                 laboratory.responsabile_scientifico = form.cleaned_data['responsabile_scientifico']
                 
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
 
             if old_label != laboratory.responsabile_scientifico:
@@ -510,7 +511,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
                 laboratory.preposto_sicurezza = form.cleaned_data['preposto_sicurezza']
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
 
             if old_label != laboratory.referente_compilazione:
@@ -558,7 +559,7 @@ def laboratory_safety_manager_delete(request, code, laboratory=None, my_offices=
     laboratory.matricola_preposto_sicurezza = None
     laboratory.preposto_sicurezza = None
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.dt_mod=datetime.now()
     laboratory.save()
 
     log_action(user=request.user,
@@ -603,7 +604,7 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
                 )
                 
                 laboratory.user_mod_id = request.user
-                laboratory.dt_mod=datetime.datetime.now()
+                laboratory.dt_mod=datetime.now()
                 laboratory.save()
 
                 log_action(user=request.user,
@@ -648,7 +649,7 @@ def laboratory_extra_departments_delete(request, code, data_id, laboratory=None,
     extra_department_lab.delete()
     
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.dt_mod=datetime.now()
     laboratory.save()
     
     log_action(user=request.user,
@@ -683,7 +684,7 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, va
                     id_laboratorio_attrezzature=laboratory_equipment,
                     id_laboratorio_fondo=get_object_or_404(LaboratorioFondo, pk=fund_id),
                     user_mod_id=request.user,
-                    dt_mod=datetime.datetime.now()
+                    dt_mod=datetime.now()
                 )
             
             for risk_id in equipment_risks_form.cleaned_data.get('id_tipologia_rischio', []):
@@ -691,11 +692,11 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, va
                     id_laboratorio_attrezzature=laboratory_equipment,
                     id_tipologia_rischio=get_object_or_404(TipologiaRischio, pk=risk_id),
                     user_mod_id=request.user,
-                    dt_mod=datetime.datetime.now()
+                    dt_mod=datetime.now()
                 )
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
 
             log_action(user=request.user,
@@ -776,7 +777,7 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
                     id_laboratorio_attrezzature=laboratory_equipment,
                     id_laboratorio_fondo=fund,
                     user_mod_id=request.user,
-                    dt_mod=datetime.datetime.now()
+                    dt_mod=datetime.now()
                 )
             
             
@@ -801,11 +802,11 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
                     id_laboratorio_attrezzature=laboratory_equipment,
                     id_tipologia_rischio=risk_type,
                     user_mod_id=request.user,
-                    dt_mod=datetime.datetime.now()
+                    dt_mod=datetime.now()
                 )
                 
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
 
             log_action(user=request.user,
@@ -856,7 +857,7 @@ def laboratory_equipment_delete(request, code, data_id, laboratory=None, my_offi
     equipment_piece.delete()
     
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.dt_mod=datetime.now()
     laboratory.save()
     
     log_action(user=request.user,
@@ -908,7 +909,7 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
                 )
                 
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()        
             
             log_action(user=request.user,
@@ -948,7 +949,7 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
             location_form.save()
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
             
             log_action(user=request.user,
@@ -986,7 +987,7 @@ def laboratory_locations_new(request, code, laboratory=None, my_offices=None, va
             location.save()
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
 
             log_action(user=request.user,
@@ -1029,7 +1030,7 @@ def laboratory_locations_delete(request, code, data_id, laboratory=None, my_offi
     location.delete()
     
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.dt_mod=datetime.now()
     laboratory.save()
     
     log_action(user=request.user,
@@ -1070,7 +1071,7 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
                     cognomenome_origine=form.cleaned_data['laboratory_staff'])
 
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
 
             log_action(user=request.user,
@@ -1112,7 +1113,7 @@ def laboratory_research_staff_delete(request, code, data_id, laboratory=None, my
     researcher.delete()
     
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.dt_mod=datetime.now()
     laboratory.save()
     
     log_action(user=request.user,
@@ -1161,7 +1162,7 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
                     percentuale_impegno=technician_form.cleaned_data.get('percentuale_impegno'))
 
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
 
             log_action(user=request.user,
@@ -1206,7 +1207,7 @@ def laboratory_technical_staff_delete(request, code, data_id, laboratory=None, m
     technician.delete()
     
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.dt_mod=datetime.now()
     laboratory.save()
     
     log_action(user=request.user,
@@ -1243,7 +1244,7 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, v
             activity.save()
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
             
             log_action(user=request.user,
@@ -1293,7 +1294,7 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
             activity.save()
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
             
             log_action(user=request.user,
@@ -1329,7 +1330,7 @@ def laboratory_activities_delete(request, code, data_id, laboratory=None, my_off
     activity.delete()
     
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.dt_mod=datetime.now()
     laboratory.save()
     
     log_action(user=request.user,
@@ -1375,7 +1376,7 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
             provided_service.save()
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
             
             log_action(user=request.user,
@@ -1447,7 +1448,7 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
             provided_service.save()
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
             
             log_action(user=request.user,
@@ -1486,7 +1487,7 @@ def laboratory_provided_services_delete(request, code, data_id, laboratory=None,
     provided_service.delete()
     
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.dt_mod=datetime.now()
     laboratory.save()
     
     log_action(user=request.user,
@@ -1510,7 +1511,7 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
         offered_service.save()
         
         laboratory.user_mod_id = request.user
-        laboratory.dt_mod=datetime.datetime.now()
+        laboratory.dt_mod=datetime.now()
         laboratory.save()
         
         log_action(user=request.user,
@@ -1549,7 +1550,7 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
             offered_service = form.save()
             
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
             
             log_action(user=request.user,
@@ -1587,7 +1588,7 @@ def laboratory_offered_services_delete(request, code, data_id, laboratory=None, 
     offered_service.delete()
     
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.datetime.now()
+    laboratory.dt_mod=datetime.now()
     laboratory.save()
     
     log_action(user=request.user,
@@ -1634,7 +1635,7 @@ def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, 
                 )
                 
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.datetime.now()
+            laboratory.dt_mod=datetime.now()
             laboratory.save()
             
             log_action(user=request.user,

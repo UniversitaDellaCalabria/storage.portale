@@ -1716,7 +1716,7 @@ class LaboratorioAttrezzatureRischi(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     
-    dt_mod = models.DateField(db_column='DT_MOD',
+    dt_mod = models.DateTimeField(db_column='DT_MOD',
                               blank=True, null=True) # Field name made lowercase.
     
     user_mod_id = models.ForeignKey(get_user_model(),
@@ -1754,7 +1754,7 @@ class LaboratorioAttrezzatureFondi(models.Model):
         blank=True,
         null=True)  # Field name made lowercase.
     
-    dt_mod = models.DateField(db_column='DT_MOD',
+    dt_mod = models.DateTimeField(db_column='DT_MOD',
                               blank=True, null=True) # Field name made lowercase.
     
     user_mod_id = models.ForeignKey(get_user_model(),
@@ -1996,7 +1996,7 @@ class LaboratorioDatiBase(models.Model):
     visibile = models.BooleanField(db_column='VISIBILE',
                                    default=False)  # Field name made lowercase.
     
-    dt_mod = models.DateField(db_column='DT_MOD',
+    dt_mod = models.DateTimeField(db_column='DT_MOD',
                               blank=True, null=True) # Field name made lowercase.
     
     user_mod_id = models.ForeignKey(get_user_model(),
