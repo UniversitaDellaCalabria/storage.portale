@@ -6,7 +6,7 @@
 
 {% block centered_container %}
 
-<!-- Remove Modal -->
+<!-- Laboratory Delete Modal -->
 <div class="modal fade"
      tabindex="-1"
      role="dialog"
@@ -40,7 +40,7 @@
         </div>
     </div>
 </div>
-<!-- /Remove Modal -->
+<!-- /Laboratory Delete Modal -->
 
 <!-- Ask for Approval Modal -->
 <div class="modal fade"
@@ -222,15 +222,16 @@
                         <td class="text-right">
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_extra_department">
+                                data-target="#delete_extra_department_{{extra_department.id}}">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
+                            <!-- Extra Department Delete Modal -->
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_extra_department">
+                                    id="delete_extra_department_{{extra_department.id}}">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -260,6 +261,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Extra Department Delete Modal -->
                         </td>
                     </tr>
                     {% endfor %}
@@ -302,15 +304,16 @@
                             </a>
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_activity">
+                                data-target="#delete_activity_{{activity.id}}">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
+                            <!-- Activity Delete Modal -->
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_activity">
+                                    id="delete_activity_{{activity.id}}">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -340,6 +343,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Activity Delete Modal -->
                         </td>
                     </tr>
                     {% endfor %}
@@ -421,15 +425,16 @@
                         <td class="text-right">
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_researcher">
+                                data-target="#delete_researcher_{{researcher.id}}">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
+                            <!-- Research Staff Delete Modal -->
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_researcher">
+                                    id="delete_researcher_{{researcher.id}}">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -438,13 +443,7 @@
                                                 {% trans "Confirm" %}
                                             </h5>
                                             <button class="close"
-                                            <div class="card-wrapper card-space">
-                                                <div class="card card-bg no-after">
-                                                    <div class="card-body">
-                                                        
-                                                    </div>
-                                                </div>
-                                            </div>     type="button"
+                                                    type="button"
                                                     data-dismiss="modal"
                                                     aria-label="Close">
                                                 <svg class="icon">
@@ -465,6 +464,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Research Staff Delete Modal -->
                         </td>
                     </tr>
                     {% endfor %}
@@ -490,15 +490,16 @@
                         <td class="text-right">
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_technician">
+                                data-target="#delete_technician_{{technician.id}}">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
+                            <!-- Technical Staff Delete Modal -->
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_technician">
+                                    id="delete_technician_{{technician.id}}">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -528,6 +529,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Technical Staff Delete Modal -->
                         </td>
                     </tr>
                     {% endfor %}
@@ -573,15 +575,16 @@
                             </a>
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_location">
+                                data-target="#delete_location_{{location.id}}">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
+                            <!-- Location Delete Modal -->
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_location">
+                                    id="delete_location_{{location.id}}">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -611,6 +614,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Location Delete Modal -->
                         </td>
                     </tr>
                     {% endfor %}
@@ -651,15 +655,16 @@
                             </a>
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_equipment">
+                                data-target="#delete_equipment_{{equipment_piece.id}}">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
+                            <!-- Modal Remove Equip -->
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_equipment">
+                                    id="delete_equipment_{{equipment_piece.id}}">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -689,6 +694,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Modal Remove Equip -->
                         </td>
                     </tr>
                     {% endfor %}
@@ -727,15 +733,16 @@
                             </a>
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_offered_service">
+                                data-target="#delete_offered_service_{{offered_service.id}}">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
+                            <!-- Offered Service Delete Modal -->
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_offered_service">
+                                    id="delete_offered_service_{{offered_service.id}}">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -765,6 +772,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Offered Service Delete Modal -->
                         </td>
                     </tr>
                     {% endfor %}
@@ -795,15 +803,16 @@
                             </a>
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_provided_service">
+                                data-target="#delete_provided_service_{{provided_service.id}}">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg> {% trans "Remove" %}
                             </a>
+                            <!-- Provided Service Delete Modal -->
                             <div class="modal fade"
                                     tabindex="-1"
                                     role="dialog"
-                                    id="delete_provided_service">
+                                    id="delete_provided_service_{{provided_service.id}}">
                                 <div class="modal-dialog modal-dialog-centered"
                                         role="document">
                                     <div class="modal-content">
@@ -833,6 +842,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Provided Service Delete Modal -->
                         </td>
                     </tr>
                     {% endfor %}
