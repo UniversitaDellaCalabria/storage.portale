@@ -13,7 +13,7 @@
         {% for form in forms %}
         {% include "form_template.html" with form=form %}
         {% endfor %}
-        {% include "includes/form_submit.html" %}
+        {% include "form_submit_warning.html" with active=laboratory.visibile %}
     </form>
 </div>
 {% endblock centered_container %}

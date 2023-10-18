@@ -38,7 +38,7 @@
             <hr />
             <form method="post" novalidate>
                 {% include "form_template.html" with form=form %}
-                {% include "includes/form_submit.html" %}
+                {% include "form_submit_warning.html" with active=laboratory.visibile %}
             </form>
         </div>
     </div>

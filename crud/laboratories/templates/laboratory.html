@@ -157,9 +157,21 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal;" class="mb-4">{% trans "Laboratory Anagraphic" %}</h3>
-            <hr />
-            <form method="post" enctype="multipart/form-data" novalidate>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td class="text-left">
+                            <h3 style="font-weight: normal;" class="mb-4">{% trans "Laboratory Anagraphic" %}</h3>
+                        </td>
+                        <td class="text-right">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="visibleCheckBox" disabled {% if laboratory.visibile %}checked{% endif %}>
+                                <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
+                            </div>
+                        </td>
+                    </tbody>
+                </table>
+                <form method="post" enctype="multipart/form-data" novalidate>
                 {% include "form_template.html" with form=form %}
                 <hr />
                 <h4 style="font-weight: lighter;">{% trans "Unical Referent" %}</h4>
@@ -177,7 +189,7 @@
                         </tbody>
                     </table>
                 <hr />
-                {% include "includes/form_submit.html" %}
+                {% include "form_submit_warning.html" with active=laboratory.visibile %}
             </form>
         </div>
     </div>
@@ -934,7 +946,7 @@
             <form method="post" action="{% url 'crud_laboratories:crud_laboratory_risk_types_edit' code=laboratory.pk %}" novalidate>
                 {% include "form_template.html" with form=risk_type_form %}
                 <hr />
-                {% include "includes/form_submit.html" %}
+                {% include "form_submit_warning.html" with active=laboratory.visibile %}
             </form>
         </div>
     </div>

@@ -17,7 +17,7 @@
         </span>
         {% include "form_template.html" with form=form %}
         <hr />
-        {% include "includes/form_submit.html" %}
+        {% include "form_submit_warning.html" with active=laboratory.visibile %}
     </div>
 </form>
 {% endblock centered_container %}

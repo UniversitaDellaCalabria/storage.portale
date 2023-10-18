@@ -1,0 +1,13 @@
+{% extends "includes/form_submit.html" %}
+
+{% load i18n %}
+{% load crud_templatetags %}
+{% load static %}
+
+{% block message %}
+{% if active %}
+{% trans "This action will make the laboratory NOT visible untill it has been approved again. Do you want to confirm the entered data?" %}
+{% else %}
+{% trans "Do you want to confirm the entered data?" %}
+{% endif %}
+{% endblock %}
