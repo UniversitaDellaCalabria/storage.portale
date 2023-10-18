@@ -81,17 +81,6 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         js = ('js/textarea-autosize.js: CKEditorWidget(),',)
 
 
-        
-class LaboratorioDatiBaseUnicalReferentForm(forms.Form):
-    referente_compilazione = forms.CharField(
-        label=_("Name and Surname"),
-        max_length=200,
-    )
-    email_compilazione = forms.CharField(
-        label=_("Email"),
-        max_length=200,
-    )
-
 class LaboratorioDatiBaseScientificDirectorForm(forms.Form):
     responsabile_scientifico = forms.CharField(
         label=_("Name and Surname"),
@@ -125,18 +114,6 @@ class LaboratorioDatiBaseSafetyManagerChoosenPersonForm(forms.Form):
         super(LaboratorioDatiBaseSafetyManagerChoosenPersonForm, self).__init__(*args, **kwargs)
         if required:
             self.fields['choosen_safety_manager'].required = True
-
-class LaboratorioDatiBaseUnicalReferentChoosenPersonForm(forms.Form):
-    choosen_unical_referent = forms.CharField(label=_('Unical Referent'),
-                                     widget=forms.HiddenInput(),
-                                     required=False)
-
-    def __init__(self, *args, **kwargs):
-        required = kwargs.pop('required', False)
-        super(LaboratorioDatiBaseUnicalReferentChoosenPersonForm, self).__init__(*args, **kwargs)
-        if required:
-            self.fields['choosen_unical_referent'].required = True
-
 
 class LaboratorioDatiBaseDipartimentoForm(forms.Form):
     choosen_department = forms.CharField(label=_('Department'),

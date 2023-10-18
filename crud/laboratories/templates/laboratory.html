@@ -174,21 +174,6 @@
                 <form method="post" enctype="multipart/form-data" novalidate>
                 {% include "form_template.html" with form=form %}
                 <hr />
-                <h4 style="font-weight: lighter;">{% trans "Unical Referent" %}</h4>
-                    <table class="table table-striped table-hover">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    {% if laboratory.user_mod_id %}
-                                    {{ laboratory.user_mod_id.first_name|default:"" }} {{laboratory.user_mod_id.last_name|default:"-" }}
-                                    {% else %}
-                                    {{ laboratory.referente_compilazione|default:"-" }}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                <hr />
                 {% include "form_submit_warning.html" with active=laboratory.visibile %}
             </form>
         </div>

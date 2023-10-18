@@ -155,9 +155,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
     form = LaboratorioDatiBaseForm()
     department_form = LaboratorioDatiBaseDipartimentoForm()
 
-    # unical_referent_internal_form = LaboratorioDatiBaseUnicalReferentChoosenPersonForm(required=True)
-    # unical_referent_external_form = LaboratorioDatiBaseUnicalReferentForm()
-
     scientific_director_internal_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(required=True)
     scientific_director_external_form = LaboratorioDatiBaseScientificDirectorForm()
 
@@ -165,12 +162,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
     if request.POST.get('choosen_department', ''):
         department = get_object_or_404(DidatticaDipartimento,
                                        dip_id=request.POST['choosen_department'])
-
-    unical_referent = None
     scientific_director = None
-
-    # if request.POST.get(UNICAL_REFERENT_ID, ''):
-    #     unical_referent = get_object_or_404(Personale, matricola=(decrypt(request.POST[UNICAL_REFERENT_ID])))
 
     if request.POST.get("choosen_scientific_director", ''):
         scientific_director = get_object_or_404(Personale, matricola=(decrypt(request.POST["choosen_scientific_director"])))
@@ -178,31 +170,15 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
     if request.POST and (request.user.is_superuser or my_offices.exists()):
         form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES)
         department_form = LaboratorioDatiBaseDipartimentoForm(data=request.POST)
-        
-        # if UNICAL_REFERENT_ID in request.POST and request.POST[UNICAL_REFERENT_ID]:
-        #     unical_referent_form = LaboratorioDatiBaseUnicalReferentChoosenPersonForm(data=request.POST, required=True) 
-        # else:
-        #     unical_referent_form = LaboratorioDatiBaseUnicalReferentForm(data=request.POST)
 
         if "choosen_scientific_director" in request.POST and request.POST["choosen_scientific_director"]:
             scientific_director_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(data=request.POST, required=True) 
         else:
             scientific_director_form = LaboratorioDatiBaseScientificDirectorForm(data=request.POST)
                     
-        if form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid(): #and unical_referent_form.is_valid()
+        if form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid():
             laboratory = form.save(commit=False)
 
-            #unical referent
-            # if unical_referent_form.cleaned_data.get(UNICAL_REFERENT_ID):
-            #     unical_referent_code = decrypt(unical_referent_form.cleaned_data[UNICAL_REFERENT_ID])
-            #     unical_referent = get_object_or_404(Personale, matricola=unical_referent_code)
-            #     laboratory.matricola_referente_compilazione = unical_referent
-            #     laboratory.referente_compilazione = f'{unical_referent.cognome} {unical_referent.nome}'
-            #     laboratory.email_compilazione = unical_referent.email
-            # else:
-            #     laboratory.matricola_referente_compilazione = None
-            #     laboratory.referente_compilazione = unical_referent_form.cleaned_data['referente_compilazione']
-            #     laboratory.email_compilazione = unical_referent_form.cleaned_data['email_compilazione']
             #scientific director
             if scientific_director_form.cleaned_data.get("choosen_scientific_director"):
                 scientific_director_code = decrypt(scientific_director_form.cleaned_data["choosen_scientific_director"])
@@ -246,9 +222,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
             for k, v in department_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{department_form.fields[k].label}</b>: {v}")
-            # for k, v in unical_referent_form.errors.items():
-            #     messages.add_message(request, messages.ERROR,
-            #                          f"<b>{unical_referent_form.fields[k].label}</b>: {v}")
             for k, v in scientific_director_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{scientific_director_form.fields[k].label}</b>: {v}")
@@ -264,9 +237,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
                     'departments_api': reverse('ricerca:departmentslist'),
                     'teachers_api': reverse('ricerca:teacherslist'),
                     'department_form': department_form,
-                    # 'unical_referent_label' : UNICAL_REFERENT_ID,
-                    # 'unical_referent_internal_form': unical_referent_internal_form,
-                    # 'unical_referent_external_form': unical_referent_external_form,
                     'scientific_director_label' : "choosen_scientific_director",
                     'scientific_director_internal_form': scientific_director_internal_form,
                     'scientific_director_external_form': scientific_director_external_form,
@@ -323,87 +293,6 @@ def laboratory_unical_department_edit(request, code, laboratory=None, my_offices
                    'laboratory': laboratory,
                    'choosen_department': old_label,
                    })
-
-@login_required
-@can_manage_laboratories
-@can_edit_laboratories
-def laboratory_unical_referent_edit(request, code, laboratory=None, my_offices=None, validator_user=False):
-    unical_referent = None
-    unical_referent_ecode = None
-    old_label = None
-    initial = {}
-    if laboratory.matricola_referente_compilazione:
-        unical_referent = laboratory.matricola_referente_compilazione
-        old_label = f'{unical_referent.cognome} {unical_referent.nome}'
-        unical_referent_ecode = encrypt(unical_referent.matricola)
-        initial = {'choosen_person': unical_referent_ecode}
-    
-    else:
-        old_label = laboratory.referente_compilazione
-        initial = {'referente_compilazione': old_label}
-
-    external_form = LaboratorioDatiBaseUnicalReferentForm(initial=initial)
-    internal_form = ChoosenPersonForm(initial=initial, required=True)
-
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
-        internal_form = ChoosenPersonForm(data=request.POST, required=True)
-        external_form = LaboratorioDatiBaseUnicalReferentForm(data=request.POST)
-
-        if 'choosen_person' in request.POST:
-            form = internal_form
-        else:
-            form = external_form
-
-        if form.is_valid():
-            
-            if form.cleaned_data.get('choosen_person'):
-                unical_referent = get_object_or_404(Personale, matricola=decrypt(form.cleaned_data['choosen_person']))
-                laboratory.matricola_referente_compilazione = unical_referent
-                laboratory.referente_compilazione = f'{unical_referent.cognome} {unical_referent.nome}'
-                laboratory.email_compilazione = unical_referent.email
-            else:
-                laboratory.matricola_referente_compilazione = None
-                laboratory.referente_compilazione = form.cleaned_data['referente_compilazione']
-            
-            laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
-            laboratory.visibile=False
-            laboratory.save()
-
-            if old_label != laboratory.referente_compilazione:
-                log_action(user=request.user,
-                           obj=laboratory,
-                           flag=CHANGE,
-                           msg=f'Sostituito referente unical {old_label} con {laboratory.referente_compilazione}')
-
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("Laboratory unical referent edited successfully"))
-
-            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-
-        else:  # pragma: no cover
-            for k, v in form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields[k].label}</b>: {v}")
-
-    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
-                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
-                   reverse('crud_laboratories:crud_laboratory_unical_referent_edit', kwargs={'code': code}): _('Unical Referent')
-                   }
-
-    return render(request,
-                  'laboratory_choose_person.html',
-                  {'breadcrumbs': breadcrumbs,
-                   'laboratory': laboratory,
-                   'choosen_person': old_label,
-                   'external_form': external_form,
-                   'internal_form': internal_form,
-                   'item_label': _("Unical Referent"),
-                   'edit': 1,
-                   'url': reverse('ricerca:teacherslist')})
-
 
 @login_required
 @can_manage_laboratories
