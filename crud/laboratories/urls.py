@@ -13,7 +13,7 @@ urlpatterns += path('laboratories/<str:code>/delete/', laboratory_delete, name='
 urlpatterns += path('laboratories/<str:code>/department/', laboratory_unical_department_edit, name='crud_laboratory_unical_department_edit'),
 urlpatterns += path('laboratories/<str:code>/scientific-director/', laboratory_scientific_director_edit, name='crud_laboratory_scientific_director_edit'),
 urlpatterns += path('laboratories/<str:code>/safety-manager/', laboratory_safety_manager_edit, name='crud_laboratory_safety_manager_edit'),
-urlpatterns += path('laboratories/<str:code>/safety-manager/delete/', laboratory_safety_manager_delete, name='crud_laboratory_safety_manager_delete'),
+#urlpatterns += path('laboratories/<str:code>/safety-manager/delete/', laboratory_safety_manager_delete, name='crud_laboratory_safety_manager_delete'),
 #LaboratorioAltriDipartimenti
 urlpatterns += path('laboratories/<str:code>/extra-departments/new/', laboratory_extra_departments_new, name='crud_laboratory_extra_departments_new'),
 urlpatterns += path('laboratories/<str:code>/extra-departments/<str:data_id>/delete/', laboratory_extra_departments_delete, name='crud_laboratory_extra_departments_delete'),

@@ -209,9 +209,17 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
                 scientific_director = get_object_or_404(Personale, matricola=scientific_director_code)
                 laboratory.matricola_responsabile_scientifico = scientific_director
                 laboratory.responsabile_scientifico = f'{scientific_director.cognome} {scientific_director.nome}'
+
+                laboratory.matricola_preposto_sicurezza = scientific_director
+                laboratory.preposto_sicurezza = f'{scientific_director.cognome} {scientific_director.nome}'
+                
             else:
                 laboratory.matricola_responsabile_scientifico = None
                 laboratory.responsabile_scientifico = scientific_director_form.cleaned_data['responsabile_scientifico']
+                
+                laboratory.matricola_preposto_sicurezza = None
+                laboratory.preposto_sicurezza = scientific_director_form.cleaned_data['responsabile_scientifico']
+            
             
             #department
             laboratory.dipartimento_riferimento = department.dip_des_it
@@ -474,7 +482,8 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
                    'internal_form': internal_form,
                    'item_label': _("Scientific Director"),
                    'edit': 1,
-                   'url': reverse('ricerca:teacherslist')})
+                   'url': reverse('ricerca:teacherslist'),
+                   'including': 'blocks/crud_teacherslist.html'})
 
 @login_required
 @can_manage_laboratories
@@ -554,7 +563,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
                    'internal_form': internal_form,
                    'item_label': _("Safety Manager"),
                    'edit': 1,
-                   'url': reverse('ricerca:teacherslist')})
+                   'url': reverse('ricerca:addressbooklist')})
     
 @login_required
 @can_manage_laboratories
@@ -642,7 +651,7 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
                    'form': department_form,
                    'laboratory': laboratory,
                    'choosen_department': department_data,
-                   'url': reverse('ricerca:departmentslist')})
+                   'url': reverse('ricerca:addressbooklist')})
 
 
 
@@ -1119,7 +1128,7 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'item_label': _("Researcher"),
-                   'url': reverse('ricerca:teacherslist')})
+                   'url': reverse('ricerca:addressbooklist')})
 
 @login_required
 @can_manage_laboratories
@@ -1215,7 +1224,7 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'form': technician_form,
-                   'url': reverse('ricerca:teacherslist')})
+                   'url': reverse('ricerca:addressbooklist')})
 
 @login_required
 @can_manage_laboratories
@@ -1500,7 +1509,7 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'provided_service': provided_service,
-                   'url': reverse('ricerca:teacherslist')
+                   'url': reverse('ricerca:addressbooklist')
                    })
 
 @login_required

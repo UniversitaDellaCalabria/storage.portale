@@ -885,58 +885,10 @@
                         </td>
                         <td class="text-right">
                             <a href="{% url 'crud_laboratories:crud_laboratory_safety_manager_edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
-                                {% if laboratory.preposto_sicurezza %}
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
-                                {% else %}
-                                <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                                </svg> {% trans "Add new" %}
-                                {% endif %}
                             </a>
-                            {% if laboratory.preposto_sicurezza %}
-                            <a href="" class="btn btn-danger btn-xs"
-                                data-toggle="modal"
-                                data-target="#delete_safety_manager">
-                                <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                </svg> {% trans "Remove" %}
-                            </a>
-                            <div class="modal fade"
-                                    tabindex="-1"
-                                    role="dialog"
-                                    id="delete_safety_manager">
-                                <div class="modal-dialog modal-dialog-centered"
-                                        role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">
-                                                {% trans "Confirm" %}
-                                            </h5>
-                                            <button class="close"
-                                                    type="button"
-                                                    data-dismiss="modal"
-                                                    aria-label="Close">
-                                                <svg class="icon">
-                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>
-                                                {% trans "Do you want to delete safety manager?" %}
-                                            </p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_safety_manager_delete' code=laboratory.pk %}">
-                                                {% trans 'Yes, proceed' %}
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
                         </td>
                     </tr>
                 </tbody>

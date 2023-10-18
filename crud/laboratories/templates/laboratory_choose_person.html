@@ -12,7 +12,7 @@
     <div class="card card-bg no-after">
         <div class="card-body">
             <form method="POST" novalidate>
-            {% include "blocks/includes/choose_person.html" with required=1 %}
+            {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 required=1 include_block=including|default:"blocks/crud_addressbook.html" %}
             <hr />
             {% include "form_template.html" with form=internal_form %}
             {% include "form_submit_warning.html" with active=laboratory.visibile %}
