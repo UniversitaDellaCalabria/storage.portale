@@ -33,12 +33,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='laboratorioattivita',
             name='descr_finalita_en',
-            field=models.TextField(blank=True, db_column='DESCR_FINALITA_EN', null=True),
+            field=models.TextField(blank=False, db_column='DESCR_FINALITA_EN', null=True),
         ),
         migrations.AddField(
             model_name='laboratorioattivita',
             name='descr_finalita_it',
-            field=models.TextField(blank=True, db_column='DESCR_FINALITA_IT', null=True),
+            field=models.TextField(blank=False, db_column='DESCR_FINALITA_IT', null=True),
         ),
         migrations.AddField(
             model_name='laboratoriodatibase',

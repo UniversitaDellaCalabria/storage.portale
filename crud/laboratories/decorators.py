@@ -30,20 +30,20 @@ def can_manage_laboratories(func_to_decorate):
                                                                           office__organizational_structure__is_active=True)
         
         my_offices = offices.filter(office__name=OFFICE_LABORATORIES)
-        user_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
+        is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
 
         
         original_kwargs['my_offices'] = my_offices
-        original_kwargs['user_validator'] = user_validator
+        original_kwargs['is_validator'] = is_validator
         
-        if not my_offices:
+        if not (my_offices.exists() or is_validator):
             return custom_message(request, _("Permission denied"))
         return func_to_decorate(*original_args, **original_kwargs)
 
     return new_func
 
 #Does not prevent POST from validator users
-def can_edit_laboratories(func_to_decorate):
+def can_view_laboratories(func_to_decorate):
     """
     Detail
     """
@@ -57,10 +57,10 @@ def can_edit_laboratories(func_to_decorate):
         my_offices = original_kwargs['my_offices'] 
         department_id = laboratory.id_dipartimento_riferimento
 
-        my_offices = my_offices.filter(office__organizational_structure__unique_code = department_id)
+        my_offices = my_offices.filter(office__organizational_structure__unique_code = department_id.dip_cod)
         original_kwargs['my_offices'] = my_offices
             
-        if original_kwargs['user_validator'] or my_offices.exists():
+        if original_kwargs['is_validator'] or my_offices.exists():
             return func_to_decorate(*original_args, **original_kwargs)
                
         
@@ -78,5 +78,21 @@ def check_if_superuser(func_to_decorate):
             return func_to_decorate(*original_args, **original_kwargs)
 
         return custom_message(request, _("Permission denied"))
+
+    return new_func
+
+def can_edit_laboratories(func_to_decorate):
+    """
+    Detail
+    """
+    def new_func(*original_args, **original_kwargs):
+        request = original_args[0]
+        laboratory = original_kwargs['laboratory']
+        my_offices = original_kwargs['my_offices']
+
+        if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+        
+        return func_to_decorate(*original_args, **original_kwargs)
 
     return new_func

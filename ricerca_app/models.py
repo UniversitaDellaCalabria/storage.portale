@@ -1692,10 +1692,10 @@ class LaboratorioAttivita(models.Model):
         null=True)  # Field name made lowercase.
 
     descr_finalita_it = models.TextField(
-        db_column='DESCR_FINALITA_IT', blank=True, null=True)
+        db_column='DESCR_FINALITA_IT', blank=False, null=True)
 
     descr_finalita_en = models.TextField(
-        db_column='DESCR_FINALITA_EN', blank=True, null=True)
+        db_column='DESCR_FINALITA_EN', blank=False, null=True)
 
     class Meta:
         managed = True

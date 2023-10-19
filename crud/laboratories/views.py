@@ -4,6 +4,8 @@ import os
 from datetime import datetime
 
 from .. utils.utils import log_action
+from .. utils.utils import custom_message
+from .. utils.forms import ChoosenPersonForm
 
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
@@ -15,11 +17,11 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
 
+from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
-from .. utils.forms import ChoosenPersonForm
 
 from . decorators import *
 from . forms import *
@@ -27,7 +29,7 @@ from . settings import *
 
 logger = logging.getLogger(__name__)
 
-def __get_user_roles(user, my_offices, validator_user):
+def __get_user_roles(user, my_offices, is_validator):
     roles = {
         "superuser": False,
         "operator": False,
@@ -38,14 +40,14 @@ def __get_user_roles(user, my_offices, validator_user):
         return roles
     if my_offices.exists():
         roles["operator"] = True
-    if validator_user:
+    if is_validator:
         roles["validator"] = True
     return roles
 
 
 @login_required
 @can_manage_laboratories
-def laboratories(request, laboratory=None, my_offices=None, validator_user=False):
+def laboratories(request, laboratory=None, my_offices=None, is_validator=False):
     """
     lista dei laboratori
     """
@@ -59,11 +61,11 @@ def laboratories(request, laboratory=None, my_offices=None, validator_user=False
 
 @login_required
 @can_manage_laboratories
-@can_edit_laboratories
-def laboratory(request, code, laboratory=None, my_offices=None, validator_user=False):
+@can_view_laboratories
+def laboratory(request, code, laboratory=None, my_offices=None, is_validator=False):
     
-    if not laboratory.visibile:
-        messages.add_message(request, messages.WARNING, _("Laboratory NOT active"))
+    if not laboratory.visibile and not request.POST:
+        messages.add_message(request, messages.WARNING, _("Laboratory NOT visible"))
 
     #LaboratorioDatiBase
     form = LaboratorioDatiBaseForm(instance=laboratory)
@@ -91,7 +93,10 @@ def laboratory(request, code, laboratory=None, my_offices=None, validator_user=F
     offered_services = LaboratorioServiziOfferti.objects.filter(id_laboratorio_dati=code).values("id", "nome_servizio")
 
     
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
+        if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+        
         form = LaboratorioDatiBaseForm(instance=laboratory, data=request.POST, files=request.FILES)
                 
         if form.is_valid():
@@ -144,14 +149,15 @@ def laboratory(request, code, laboratory=None, my_offices=None, validator_user=F
                    'activities': activities,
                    'provided_services': provided_services,
                    'offered_services': offered_services,
-                   'user_roles' : __get_user_roles(request.user, my_offices, validator_user)
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator)
                    })     
         
 
 @login_required
 @can_manage_laboratories
-def laboratory_new(request, laboratory=None, my_offices=None, validator_user=False):
-    #new
+@can_view_laboratories
+def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False):
+    
     form = LaboratorioDatiBaseForm()
     department_form = LaboratorioDatiBaseDipartimentoForm()
 
@@ -167,7 +173,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
     if request.POST.get("choosen_scientific_director", ''):
         scientific_director = get_object_or_404(Personale, matricola=(decrypt(request.POST["choosen_scientific_director"])))
     
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES)
         department_form = LaboratorioDatiBaseDipartimentoForm(data=request.POST)
 
@@ -244,15 +250,16 @@ def laboratory_new(request, laboratory=None, my_offices=None, validator_user=Fal
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_unical_department_edit(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_unical_department_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
     
     department = laboratory.id_dipartimento_riferimento
     old_label = department.dip_des_it
     
     form = LaboratorioDatiBaseDipartimentoForm(initial={'choosen_department': department.dip_id})
 
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         form = LaboratorioDatiBaseDipartimentoForm(data=request.POST)
         if form.is_valid():
 
@@ -296,8 +303,10 @@ def laboratory_unical_department_edit(request, code, laboratory=None, my_offices
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_scientific_director_edit(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_scientific_director_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
+    
     scientific_director = None
     scientific_director_ecode = None
     old_label = None
@@ -315,7 +324,7 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
     external_form = LaboratorioDatiBaseScientificDirectorForm(initial=initial)
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         internal_form = ChoosenPersonForm(data=request.POST, required=True)
         external_form = LaboratorioDatiBaseScientificDirectorForm(data=request.POST)
 
@@ -376,8 +385,9 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
     safety_manager = None
     safety_manager_ecode = None
     old_label = None
@@ -395,7 +405,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
     external_form = LaboratorioDatiBaseSafetyManagerForm(initial=initial)
     internal_form = ChoosenPersonForm(initial=initial, required=True)
 
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         internal_form = ChoosenPersonForm(data=request.POST, required=True)
         external_form = LaboratorioDatiBaseSafetyManagerForm(data=request.POST)
 
@@ -456,12 +466,9 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
     
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_safety_manager_delete(request, code, laboratory=None, my_offices=None, validator_user=False):
-
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_safety_manager_delete(request, code, laboratory=None, my_offices=None, is_validator=False):
     laboratory.matricola_preposto_sicurezza = None
     laboratory.preposto_sicurezza = None
     laboratory.user_mod_id = request.user
@@ -480,8 +487,7 @@ def laboratory_safety_manager_delete(request, code, laboratory=None, my_offices=
 
 @login_required
 @check_if_superuser
-@can_manage_laboratories
-def laboratory_delete(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_delete(request, code, laboratory=None, my_offices=None, is_validator=False):
     laboratory.delete()
     messages.add_message(request,
                          messages.SUCCESS,
@@ -492,10 +498,11 @@ def laboratory_delete(request, code, laboratory=None, my_offices=None, validator
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=None, is_validator=False):
     department_form = LaboratorioAltriDipartimentiForm()
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         department_form = LaboratorioAltriDipartimentiForm(data=request.POST)
         if department_form.is_valid() and department_form.cleaned_data.get('choosen_department'):
             
@@ -540,18 +547,15 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
                    'form': department_form,
                    'laboratory': laboratory,
                    'choosen_department': department_data,
-                   'url': reverse('ricerca:addressbooklist')})
+                   'url': reverse('ricerca:departmentslist')})
 
 
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_extra_departments_delete(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
-    
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_extra_departments_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     extra_department_lab = get_object_or_404(LaboratorioAltriDipartimenti, pk=data_id)
 
     extra_department_lab.delete()
@@ -572,12 +576,13 @@ def laboratory_extra_departments_delete(request, code, data_id, laboratory=None,
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, is_validator=False):
     equipment_form = LaboratorioAttrezzatureForm()
     equipment_funds_form = LaboratorioAttrezzatureFondiForm()
     equipment_risks_form = LaboratorioAttrezzatureRischiForm()
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         equipment_form = LaboratorioAttrezzatureForm(data=request.POST)
         equipment_funds_form = LaboratorioAttrezzatureFondiForm(data=request.POST)
         equipment_risks_form = LaboratorioAttrezzatureRischiForm(data=request.POST)
@@ -644,8 +649,8 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, va
 
 @login_required
 @can_manage_laboratories
-@can_edit_laboratories
-def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
+@can_view_laboratories
+def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     laboratory_equipment = get_object_or_404(LaboratorioAttrezzature, pk=data_id)
     equipment_form = LaboratorioAttrezzatureForm(instance=laboratory_equipment)
     
@@ -657,7 +662,10 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
     selected_risks_ids = tuple(map(str, selected_risks_ids))
     equipment_risks_form = LaboratorioAttrezzatureRischiForm(initial={"id_tipologia_rischio" : selected_risks_ids})
 
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
+        if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+        
         equipment_form = LaboratorioAttrezzatureForm(instance=laboratory_equipment, data=request.POST)
         equipment_funds_form = LaboratorioAttrezzatureFondiForm(data=request.POST)
         equipment_risks_form = LaboratorioAttrezzatureRischiForm(data=request.POST)
@@ -757,12 +765,9 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_equipment_delete(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
-    
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_equipment_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     equipment_piece = get_object_or_404(LaboratorioAttrezzature, pk=data_id)
 
     equipment_piece.delete()
@@ -783,8 +788,8 @@ def laboratory_equipment_delete(request, code, data_id, laboratory=None, my_offi
 
 @login_required
 @can_manage_laboratories
-@can_edit_laboratories
-def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=None, validator_user=False):
+@can_view_laboratories
+def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
     
     #Previously selected researches
     researches_erc1_old = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code)
@@ -796,7 +801,10 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
                         
     research_erc1_form = LaboratorioDatiErc1Form(initial={'id_ricerche_erc1': researches_erc1_ids})
     
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
+        if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+        
         research_erc1_form = LaboratorioDatiErc1Form(data=request.POST)
         if research_erc1_form.is_valid():
             
@@ -847,15 +855,19 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
                    'edit': 1,
                 })
     
-    
+
+# Can be viewed by validators but not modified
 @login_required
 @can_manage_laboratories
-@can_edit_laboratories
-def laboratory_locations_edit(request, data_id, code, laboratory=None, my_offices=None, validator_user=False):
+@can_view_laboratories
+def laboratory_locations_edit(request, data_id, code, laboratory=None, my_offices=None, is_validator=False):
     location = get_object_or_404(LaboratorioUbicazione, pk=data_id)
     location_form = LaboratorioUbicazioneForm(instance=location)
     
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
+        if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+        
         location_form = LaboratorioUbicazioneForm(instance=location, data=request.POST)
         if location_form.is_valid():
            
@@ -890,10 +902,11 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_locations_new(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_locations_new(request, code, laboratory=None, my_offices=None, is_validator=False):
     location_form = LaboratorioUbicazioneForm()
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         location_form = LaboratorioUbicazioneForm(data=request.POST)
         if location_form.is_valid():
             location = location_form.save(commit=False)         
@@ -934,12 +947,9 @@ def laboratory_locations_new(request, code, laboratory=None, my_offices=None, va
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_locations_delete(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
-    
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_locations_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     location = get_object_or_404(LaboratorioUbicazione, pk=data_id)
 
     location.delete()
@@ -960,13 +970,14 @@ def laboratory_locations_delete(request, code, data_id, laboratory=None, my_offi
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_research_staff_new(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_research_staff_new(request, code, laboratory=None, my_offices=None, is_validator=False):
     researcher = None
     internal_form = ChoosenPersonForm(required=True)
     external_form = LaboratorioPersonaleForm()
     
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         if "choosen_person" in request.POST and request.POST["choosen_person"]:
             form = ChoosenPersonForm(data=request.POST, required=True)
         else:
@@ -1021,11 +1032,9 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_research_staff_delete(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_research_staff_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     researcher = get_object_or_404(LaboratorioPersonaleRicerca, pk=data_id)
     researcher.delete()
     
@@ -1045,14 +1054,15 @@ def laboratory_research_staff_delete(request, code, data_id, laboratory=None, my
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=None, is_validator=False):
     technician = None
     internal_form = ChoosenPersonForm(required=True)
     external_form = LaboratorioPersonaleForm()
     technician_form = LaboratorioPersonaleTecnicoForm()
     
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         technician_form = LaboratorioPersonaleTecnicoForm(request.POST)
         
         if "choosen_person" in request.POST and request.POST["choosen_person"]:
@@ -1117,11 +1127,9 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_technical_staff_delete(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_technical_staff_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     technician = get_object_or_404(LaboratorioPersonaleTecnico, pk=data_id)
     technician.delete()
     
@@ -1140,8 +1148,9 @@ def laboratory_technical_staff_delete(request, code, data_id, laboratory=None, m
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_activities_new(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_activities_new(request, code, laboratory=None, my_offices=None, is_validator=False):
     
     activity_types_already_specified = LaboratorioAttivita\
         .objects\
@@ -1154,7 +1163,7 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, v
     
     form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified)
     
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, data=request.POST)
         if form.is_valid():
             activity_type=get_object_or_404(LaboratorioTipologiaAttivita, pk=form.cleaned_data["tipologia_attivita"])
@@ -1192,8 +1201,8 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, v
 
 @login_required
 @can_manage_laboratories
-@can_edit_laboratories
-def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
+@can_view_laboratories
+def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
     selected_activity_id = activity.id_tipologia_attivita.id
     selected_activity_type = get_object_or_404(LaboratorioTipologiaAttivita, pk=selected_activity_id)
@@ -1206,7 +1215,10 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
     
     activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, instance=activity, initial={'tipologia_attivita': selected_activity_id})
     
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
+        if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+        
         activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, instance=activity, data=request.POST)
         if activity_form.is_valid():
             activity_type = get_object_or_404(LaboratorioTipologiaAttivita, pk=activity_form.cleaned_data["tipologia_attivita"])
@@ -1243,11 +1255,9 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_activities_delete(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_activities_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
     activity.delete()
     
@@ -1267,13 +1277,14 @@ def laboratory_activities_delete(request, code, data_id, laboratory=None, my_off
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_provided_services_new(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_provided_services_new(request, code, laboratory=None, my_offices=None, is_validator=False):
     form = LaboratorioServiziErogatiForm()
     internal_form = ChoosenPersonForm(required=True)
     external_form = LaboratorioServiziErogatiResponsabileForm()
     manager = None
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         
         form = LaboratorioServiziErogatiForm(data=request.POST)
         
@@ -1330,8 +1341,8 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
     
 @login_required
 @can_manage_laboratories
-@can_edit_laboratories
-def laboratory_provided_services_edit(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
+@can_view_laboratories
+def laboratory_provided_services_edit(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     provided_service = get_object_or_404(LaboratorioServiziErogati, pk=data_id)
     manager = None
     cpf_initial = {}
@@ -1348,7 +1359,10 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
     external_form = LaboratorioServiziErogatiResponsabileForm(initial=lpf_initial)
     form = LaboratorioServiziErogatiForm(instance=provided_service)
 
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
+        if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+        
         form = LaboratorioServiziErogatiForm(data=request.POST, instance=provided_service)
         
         if "choosen_person" in request.POST and request.POST["choosen_person"]:
@@ -1403,11 +1417,9 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_provided_services_delete(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_provided_services_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     provided_service = get_object_or_404(LaboratorioServiziErogati, pk=data_id)
     provided_service.delete()
     
@@ -1427,10 +1439,11 @@ def laboratory_provided_services_delete(request, code, data_id, laboratory=None,
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_offered_services_new(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_offered_services_new(request, code, laboratory=None, my_offices=None, is_validator=False):
     form = LaboratorioServiziOffertiForm()
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
         form = LaboratorioServiziOffertiForm(data=request.POST)
         offered_service = form.save(commit=False)
         offered_service.id_laboratorio_dati = laboratory
@@ -1465,12 +1478,15 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
     
 @login_required
 @can_manage_laboratories
-@can_edit_laboratories
-def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
+@can_view_laboratories
+def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     offered_service = get_object_or_404(LaboratorioServiziOfferti, pk=data_id)
     form = LaboratorioServiziOffertiForm(instance=offered_service)
 
-    if request.POST and (request.user.is_superuser or my_offices.exists()):
+    if request.POST:
+        if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+        
         form = LaboratorioServiziOffertiForm(data=request.POST, instance=offered_service)
     
         if form.is_valid():
@@ -1507,11 +1523,9 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_offered_services_delete(request, code, data_id, laboratory=None, my_offices=None, validator_user=False):
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_offered_services_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     offered_service = get_object_or_404(LaboratorioServiziOfferti, pk=data_id)
     offered_service.delete()
     
@@ -1531,11 +1545,9 @@ def laboratory_offered_services_delete(request, code, data_id, laboratory=None, 
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, validator_user=False):
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
-    
+def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, is_validator=False):   
     if request.POST:
         risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
         
@@ -1583,23 +1595,32 @@ def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, 
 
 @login_required
 @can_manage_laboratories
+@can_view_laboratories
 @can_edit_laboratories
-def laboratory_request_approval(request, code, laboratory=None, my_offices=None, validator_user=False):
+def laboratory_request_approval(request, code, laboratory=None, my_offices=None, is_validator=False):
     
-    # #LaboratorioTipologiaRischio
-    # selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).exists()
+    if laboratory.visible:
+        return custom_message(request, _("Laboratory is already visible"))
+        
+    
     # #LaboratorioAltriDipartimenti
     # extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
+    
     # #LaboratorioAttrezzature
     # equipment = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).exists()
+   
     # #LaboratorioDatiErc1
     # researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).exists()
+    
     # #LaboratorioUbicazione
     # locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).exists()
+    
     # #LaboratorioPersonaleRicerca
     # researchers = LaboratorioPersonaleRicerca.objects.filter(id_laboratorio_dati=code).exists()
+    
     # #LaboratorioPersonaleTecnico
     # technicians = LaboratorioPersonaleTecnico.objects.filter(id_laboratorio_dati=code).exists()
+    
     # #LaboratorioAttivita
     # activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).exists()
     # #LaboratorioServiziErogati
@@ -1608,17 +1629,23 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
     # offered_services = Laboratonot (request.user.is_superuser or my_offices.exists()):rioServiziOfferti.objects.filter(id_laboratorio_dati=code).exists()
     
     
-    if not (request.user.is_superuser or my_offices.exists()):
-        return custom_message(request, _("Permission denied"))
+    
+    
+    validators = OrganizationalStructureOfficeEmployee.objects.filter(office__is_active=True,
+                                                                    office__name=OFFICE_LABORATORY_VALIDATORS,
+                                                                    office__organizational_structure__is_active=True)\
+                                                               .values_list('employee_id__email', flat=True)
+                                                
+    validators = (list(set(validators)))
+    lab_url = request.build_absolute_uri(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': laboratory.id}))
     
     send_mail(
         TO_VALIDATORS_EMAIL_SUBJECT,
-        f"{TO_VALIDATORS_EMAIL_MESSAGE} {laboratory.nome_laboratorio}",
+        f"{TO_VALIDATORS_EMAIL_MESSAGE} {laboratory.nome_laboratorio} {lab_url}",
         TO_VALIDATORS_EMAIL_FROM,
-        [],
+        validators,
         fail_silently=True,
     )
-    
     
     log_action(user=request.user,
     obj=laboratory,
@@ -1630,11 +1657,13 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
 
 @login_required
 @can_manage_laboratories
-@can_edit_laboratories
-def laboratory_approve(request, code, laboratory=None, my_offices=None, validator_user=False):
+@can_view_laboratories
+def laboratory_approve(request, code, laboratory=None, my_offices=None, is_validator=False):
     
-    if not (request.user.is_superuser or user_validator):
+    if not (request.user.is_superuser or is_validator):
         return custom_message(request, _("Permission denied"))
+    if laboratory.visible:
+        return custom_message(request, _("Laboratory is already visible"))
     
     laboratory.visibile = True
     laboratory.save()
