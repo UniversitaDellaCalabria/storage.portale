@@ -1599,7 +1599,7 @@ def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, 
 @can_edit_laboratories
 def laboratory_request_approval(request, code, laboratory=None, my_offices=None, is_validator=False):
     
-    if laboratory.visible:
+    if laboratory.visibile:
         return custom_message(request, _("Laboratory is already visible"))
         
     
@@ -1662,7 +1662,7 @@ def laboratory_approve(request, code, laboratory=None, my_offices=None, is_valid
     
     if not (request.user.is_superuser or is_validator):
         return custom_message(request, _("Permission denied"))
-    if laboratory.visible:
+    if laboratory.visibile:
         return custom_message(request, _("Laboratory is already visible"))
     
     laboratory.visibile = True
