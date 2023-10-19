@@ -2137,7 +2137,7 @@ class LaboratorioServiziErogati(models.Model):
         db_column='IMPORTO_EURO', blank=False, null=True)
     # Field name made lowercase.
     strumentazione = models.TextField(
-        db_column='STRUMENTAZIONE', blank=True, null=True)
+        db_column='STRUMENTAZIONE', blank=False, null=True)
 
     class Meta:
         managed = True

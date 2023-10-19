@@ -59,27 +59,27 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='laboratorioservizierogati',
             name='anno',
-            field=models.IntegerField(blank=True, db_column='ANNO', null=True),
+            field=models.IntegerField(blank=False, db_column='ANNO', null=True),
         ),
         migrations.AlterField(
             model_name='laboratorioservizierogati',
             name='committenti',
-            field=models.CharField(blank=True, db_column='COMMITTENTI', max_length=500, null=True),
+            field=models.CharField(blank=False, db_column='COMMITTENTI', max_length=500, null=True),
         ),
         migrations.AlterField(
             model_name='laboratorioservizierogati',
             name='descrizione',
-            field=models.TextField(blank=True, db_column='DESCRIZIONE', null=True),
+            field=models.TextField(blank=False, db_column='DESCRIZIONE', null=True),
         ),
         migrations.AlterField(
             model_name='laboratorioservizierogati',
             name='durata_mesi',
-            field=models.IntegerField(blank=True, db_column='DURATA_MESI', null=True),
+            field=models.IntegerField(blank=False, db_column='DURATA_MESI', null=True),
         ),
         migrations.AlterField(
             model_name='laboratorioservizierogati',
             name='importo_euro',
-            field=models.FloatField(blank=True, db_column='IMPORTO_EURO', null=True),
+            field=models.FloatField(blank=False, db_column='IMPORTO_EURO', null=True),
         ),
         migrations.AlterField(
             model_name='laboratorioservizierogati',
@@ -94,7 +94,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='laboratorioservizierogati',
             name='strumentazione',
-            field=models.TextField(blank=True, db_column='STRUMENTAZIONE', null=True),
+            field=models.TextField(blank=False, db_column='STRUMENTAZIONE', null=True),
         ),
         migrations.CreateModel(
             name='LaboratorioTipologiaRischio',
