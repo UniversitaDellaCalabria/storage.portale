@@ -224,7 +224,7 @@
                         <td>
                             {{ extra_department.descr_dip_lab|default:"-" }}
                         </td>
-                        {% if user_roles.superuser or user_roles.opeartor %}
+                        {% if user_roles.superuser or user_roles.operator %}
                         <td class="text-right">
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
@@ -317,7 +317,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
-                            {% if user_roles.superuser or user_roles.opeartor %}
+                            {% if user_roles.superuser or user_roles.operator %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_activity_{{activity.id}}">
@@ -367,7 +367,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if user_roles.superuser or user_roles.opeartor %}
+            {% if user_roles.superuser or user_roles.operator %}
             {% if activities|length < 3 %}
             <a href="{% url 'crud_laboratories:crud_laboratory_activities_new' code=laboratory.pk %}" class="btn btn-block btn-success">
             {% else %}
@@ -452,7 +452,7 @@
                         <td>
                             {{ researcher.cognomenome_origine|default:"-" }}
                         </td>
-                        {% if user_roles.superuser or user_roles.opeartor %}
+                        {% if user_roles.superuser or user_roles.operator %}
                         <td class="text-right">
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
@@ -503,7 +503,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if user_roles.superuser or user_roles.opeartor %}
+            {% if user_roles.superuser or user_roles.operator %}
             <a href="{% url 'crud_laboratories:crud_laboratory_research_staff_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
@@ -522,7 +522,7 @@
                         <td>
                             {{ technician.cognomenome_origine|default:"-" }}
                         </td>
-                        {% if user_roles.superuser or user_roles.opeartor %}
+                        {% if user_roles.superuser or user_roles.operator %}
                         <td class="text-right">
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
@@ -573,7 +573,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if user_roles.superuser or user_roles.opeartor %}
+            {% if user_roles.superuser or user_roles.operator %}
             <a href="{% url 'crud_laboratories:crud_laboratory_technical_staff_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
@@ -618,7 +618,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
-                            {% if user_roles.superuser or user_roles.opeartor %}
+                            {% if user_roles.superuser or user_roles.operator %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_location_{{location.id}}">
@@ -668,7 +668,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if user_roles.superuser or user_roles.opeartor %}
+            {% if user_roles.superuser or user_roles.operator %}
             <a href="{% url 'crud_laboratories:crud_laboratory_locations_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
@@ -708,7 +708,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
-                            {% if user_roles.superuser or user_roles.opeartor %}
+                            {% if user_roles.superuser or user_roles.operator %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_equipment_{{equipment_piece.id}}">
@@ -758,7 +758,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if user_roles.superuser or user_roles.opeartor %}
+            {% if user_roles.superuser or user_roles.operator %}
             <a href="{% url 'crud_laboratories:crud_laboratory_equipment_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
@@ -796,7 +796,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
-                            {% if user_roles.superuser or user_roles.opeartor %}
+                            {% if user_roles.superuser or user_roles.operator %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_offered_service_{{offered_service.id}}">
@@ -846,7 +846,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if user_roles.superuser or user_roles.opeartor %}
+            {% if user_roles.superuser or user_roles.operator %}
             <a href="{% url 'crud_laboratories:crud_laboratory_offered_services_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
@@ -876,7 +876,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
-                            {% if user_roles.superuser or user_roles.opeartor %}
+                            {% if user_roles.superuser or user_roles.operator %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_provided_service_{{provided_service.id}}">
@@ -926,7 +926,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if user_roles.superuser or user_roles.opeartor %}
+            {% if user_roles.superuser or user_roles.operator %}
             <a href="{% url 'crud_laboratories:crud_laboratory_provided_services_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
