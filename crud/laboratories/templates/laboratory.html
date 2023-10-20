@@ -129,7 +129,7 @@
                 </a>
             </td>
             <td class="text-right">
-            {% if user_roles.superuser or user_roles.operator %}
+            {% if user_roles.superuser or user_roles.operator and not laboratory.visibile %}
                 <a href="" class="btn btn-warning btn-xs"
                 data-toggle="modal"
                 data-target="#ask_to_approve_laboratory">
@@ -138,7 +138,7 @@
                  </svg> {% trans "Request for Approval" %}
              </a>
             {% endif %}
-            {% if user_roles.superuser or user_roles.validator %}
+            {% if user_roles.superuser or user_roles.validator and not laboratory.visibile %}
                 <a href="" class="btn btn-success btn-xs"
                 data-toggle="modal"
                 data-target="#approve_laboratory">
