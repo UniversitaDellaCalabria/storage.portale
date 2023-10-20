@@ -18,6 +18,9 @@
         </span>
     </div>
     <hr />
+    {% if user_roles.superuser or user_roles.operator %}
     {% include "form_submit_warning.html" with active=laboratory.visibile %}
+    {% endif %}
+
 </form>
 {% endblock centered_container %}

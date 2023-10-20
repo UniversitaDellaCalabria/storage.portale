@@ -299,6 +299,7 @@ def laboratory_unical_department_edit(request, code, laboratory=None, my_offices
                    'form': form,
                    'laboratory': laboratory,
                    'choosen_department': old_label,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    })
 
 @login_required
@@ -380,6 +381,7 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
                    'internal_form': internal_form,
                    'item_label': _("Scientific Director"),
                    'edit': 1,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    'url': reverse('ricerca:teacherslist'),
                    'including': 'blocks/crud_teacherslist.html'})
 
@@ -462,6 +464,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
                    'internal_form': internal_form,
                    'item_label': _("Safety Manager"),
                    'edit': 1,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')})
     
 @login_required
@@ -547,6 +550,7 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
                    'form': department_form,
                    'laboratory': laboratory,
                    'choosen_department': department_data,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    'url': reverse('ricerca:departmentslist')})
 
 
@@ -644,6 +648,7 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, is
                    'forms': (equipment_form, equipment_funds_form, equipment_risks_form,),
                    'laboratory': laboratory,
                    'item_label': _("Equipment piece"),
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
 
 
@@ -760,6 +765,7 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
                    'laboratory': laboratory,
                    'item_label': _("Equipment Piece"),
                    'edit': 1,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
 
 
@@ -853,6 +859,7 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
                    'laboratory': laboratory,
                    'item_label': _("ERC 1 Researches"),
                    'edit': 1,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
     
 
@@ -897,6 +904,7 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
                    'forms': (location_form,),
                    'item_label': _("location"),
                    'laboratory': laboratory,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
     
 
@@ -943,6 +951,7 @@ def laboratory_locations_new(request, code, laboratory=None, my_offices=None, is
                    'laboratory': laboratory,
                    'item_label': _("location"),
                    'edit': 1,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
 
 @login_required
@@ -1028,6 +1037,7 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'item_label': _("Researcher"),
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')})
 
 @login_required
@@ -1123,6 +1133,7 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'form': technician_form,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')})
 
 @login_required
@@ -1196,6 +1207,7 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, i
                    'forms': (form,),
                    'laboratory': laboratory,
                    'item_label': _("activity"),
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
     
 
@@ -1251,6 +1263,7 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
                    'laboratory': laboratory,
                    'item_label': _("activity"),
                    'edit': 1,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
 
 @login_required
@@ -1335,6 +1348,7 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
                    'choosen_person': manager,
                    'internal_form': internal_form,
                    'external_form': external_form,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    'url': reverse('ricerca:teacherslist')
                    })
     
@@ -1473,6 +1487,7 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
                    'forms': (form,),
                    'item_label': _("offered service"),
                    'laboratory': laboratory,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    })
     
     
@@ -1518,7 +1533,8 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
                    'laboratory': laboratory,
                    'offered_service': offered_service,
                    'item_label': _("offered service"),
-                   'edit': True,
+                   'edit': 1,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    })
 
 @login_required

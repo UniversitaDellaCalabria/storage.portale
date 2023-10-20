@@ -13,7 +13,9 @@
         {% for form in forms %}
         {% include "form_template.html" with form=form %}
         {% endfor %}
+        {% if user_roles.superuser or user_roles.operator %}
         {% include "form_submit_warning.html" with active=laboratory.visibile %}
+        {% endif %}
     </form>
 </div>
 {% endblock centered_container %}
