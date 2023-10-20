@@ -37,7 +37,9 @@
             </div>
             <div class="modal-body">
                 <p>
+                    {% block message %}
                     {% trans "Do you want to confirm the entered data?" %}
+                    {% endblock %}
                 </p>
             </div>
             <div class="modal-footer">

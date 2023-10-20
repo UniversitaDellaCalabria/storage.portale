@@ -1,0 +1,21 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<div>
+    <h3 style="font-weight: lighter;" class="mb-4">
+        {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %} {{ laboratory.nome_laboratorio }}
+    </h3>    
+    <form method="post" novalidate>
+        {% for form in forms %}
+        {% include "form_template.html" with form=form %}
+        {% endfor %}
+        {% if user_roles.superuser or user_roles.operator %}
+        {% include "form_submit_warning.html" with active=laboratory.visibile %}
+        {% endif %}
+    </form>
+</div>
+{% endblock centered_container %}

@@ -1,0 +1,25 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<h3 style="font-weight: lighter;" class="mb-4">
+    {% trans "New Technical Staff Member for" %} {{ laboratory.nome_laboratorio }}
+</h3>
+<form method="post" novalidate>
+    <h4 style="font-weight: lighter;">{% trans "Choose one technician" %}</h4>
+    <div class="mt-5">
+        <span class="choosen_person">
+            {% include "blocks/includes/teacher_tabs.html" with required=1 exclude_forms=1 include_block="blocks/crud_addressbook.html" %}
+            <hr />
+        </span>
+        {% include "form_template.html" with form=form %}
+        <hr />
+        {% if user_roles.superuser or user_roles.operator %}
+        {% include "form_submit_warning.html" with active=laboratory.visibile %}
+        {% endif %}
+    </div>
+</form>
+{% endblock centered_container %}

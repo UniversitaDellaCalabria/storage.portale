@@ -1,0 +1,26 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<h3 style="font-weight: lighter;" class="mb-4">
+    {% if provided_service %}{% trans "Edit Provided Service for" %}{% else %}{% trans "New Provided Service for" %}{% endif %} {{ laboratory.nome_laboratorio }}</h3>
+<form method="post" novalidate>
+    {% include "form_template.html" with form=form %}
+    <hr />
+    <h4 style="font-weight: lighter;">{% trans "Choose one manager" %}</h4>
+    <div class="mt-5">
+        <span class="choosen_person">
+            {% include "blocks/includes/teacher_tabs.html" with required=1 exclude_forms=1 %}
+            <hr />
+        </span>
+    </div>
+    <hr />
+    {% if user_roles.superuser or user_roles.operator %}
+    {% include "form_submit_warning.html" with active=laboratory.visibile %}
+    {% endif %}
+
+</form>
+{% endblock centered_container %}
