@@ -224,6 +224,7 @@
                         <td>
                             {{ extra_department.descr_dip_lab|default:"-" }}
                         </td>
+                        {% if user_roles.superuser or user_roles.opeartor %}
                         <td class="text-right">
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
@@ -269,19 +270,22 @@
                             </div>
                             <!-- /Extra Department Delete Modal -->
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            {% if laboratory.laboratorio_interdipartimentale == 'SI' %}
-            <a href="{% url 'crud_laboratories:crud_laboratory_extra_departments_new' code=laboratory.pk %}" class="btn btn-block btn-success">
-            {% else %}
-            <a href="" class="btn btn-block btn-success disabled">
+            {% if user_roles.superuser or user_roles.operator %}
+                {% if laboratory.laboratorio_interdipartimentale == 'SI' %}
+                <a href="{% url 'crud_laboratories:crud_laboratory_extra_departments_new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                {% else %}
+                <a href="" class="btn btn-block btn-success disabled">
+                {% endif %}
+                    <svg class="icon icon-xs icon-white">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                    </svg> {% trans "Add new" %}
+                </a>
             {% endif %}
-                <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Add new" %}
-            </a>
             <!-- /Extra departments -->
         </div>
     </div>
@@ -313,6 +317,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
+                            {% if user_roles.superuser or user_roles.opeartor %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_activity_{{activity.id}}">
@@ -356,11 +361,13 @@
                                 </div>
                             </div>
                             <!-- /Activity Delete Modal -->
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% if user_roles.superuser or user_roles.opeartor %}
             {% if activities|length < 3 %}
             <a href="{% url 'crud_laboratories:crud_laboratory_activities_new' code=laboratory.pk %}" class="btn btn-block btn-success">
             {% else %}
@@ -370,6 +377,7 @@
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
+            {% endif %}
             <!-- /Activities -->
             <hr />
             <!-- Researches ERC1 -->
@@ -444,6 +452,7 @@
                         <td>
                             {{ researcher.cognomenome_origine|default:"-" }}
                         </td>
+                        {% if user_roles.superuser or user_roles.opeartor %}
                         <td class="text-right">
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
@@ -489,15 +498,18 @@
                             </div>
                             <!-- /Research Staff Delete Modal -->
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% if user_roles.superuser or user_roles.opeartor %}
             <a href="{% url 'crud_laboratories:crud_laboratory_research_staff_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
+            {% endif %}
             <!-- /Research Staff -->
             <hr />
             
@@ -510,6 +522,7 @@
                         <td>
                             {{ technician.cognomenome_origine|default:"-" }}
                         </td>
+                        {% if user_roles.superuser or user_roles.opeartor %}
                         <td class="text-right">
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
@@ -555,15 +568,18 @@
                             </div>
                             <!-- /Technical Staff Delete Modal -->
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% if user_roles.superuser or user_roles.opeartor %}
             <a href="{% url 'crud_laboratories:crud_laboratory_technical_staff_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
+            {% endif %}
             <!-- /Technical Staff -->
         </div>
     </div>
@@ -602,6 +618,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
+                            {% if user_roles.superuser or user_roles.opeartor %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_location_{{location.id}}">
@@ -645,16 +662,19 @@
                                 </div>
                             </div>
                             <!-- /Location Delete Modal -->
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% if user_roles.superuser or user_roles.opeartor %}
             <a href="{% url 'crud_laboratories:crud_laboratory_locations_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
+            {% endif %}
             <!-- /Locations -->
             <hr />
             <!-- Equipment -->
@@ -688,6 +708,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
+                            {% if user_roles.superuser or user_roles.opeartor %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_equipment_{{equipment_piece.id}}">
@@ -731,16 +752,19 @@
                                 </div>
                             </div>
                             <!-- /Modal Remove Equip -->
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% if user_roles.superuser or user_roles.opeartor %}
             <a href="{% url 'crud_laboratories:crud_laboratory_equipment_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
+            {% endif %}
             <!-- /Equipment -->
         </div>
     </div>
@@ -772,6 +796,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
+                            {% if user_roles.superuser or user_roles.opeartor %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_offered_service_{{offered_service.id}}">
@@ -814,17 +839,20 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                             <!-- /Offered Service Delete Modal -->
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% if user_roles.superuser or user_roles.opeartor %}
             <a href="{% url 'crud_laboratories:crud_laboratory_offered_services_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
+            {% endif %}
             <!-- /Offered Services -->
             <hr />
             <h4 style="font-weight: lighter;">{% trans "Provided Services - (Activities on behalf of Others)" %}</h4>
@@ -848,6 +876,7 @@
                                 {% trans "View" %}
                                 {% endif %}
                             </a>
+                            {% if user_roles.superuser or user_roles.opeartor %}
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#delete_provided_service_{{provided_service.id}}">
@@ -891,16 +920,19 @@
                                 </div>
                             </div>
                             <!-- /Provided Service Delete Modal -->
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% if user_roles.superuser or user_roles.opeartor %}
             <a href="{% url 'crud_laboratories:crud_laboratory_provided_services_new' code=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
             </a>
+            {% endif %}
             <!-- /Provided Services -->
         </div>
     </div>
