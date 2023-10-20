@@ -647,7 +647,7 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, is
                   {'breadcrumbs': breadcrumbs,
                    'forms': (equipment_form, equipment_funds_form, equipment_risks_form,),
                    'laboratory': laboratory,
-                   'item_label': _("Equipment piece"),
+                   'item_label': _("Equipment Piece"),
                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
 
@@ -902,7 +902,7 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'forms': (location_form,),
-                   'item_label': _("location"),
+                   'item_label': _("Location"),
                    'laboratory': laboratory,
                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
@@ -949,7 +949,7 @@ def laboratory_locations_new(request, code, laboratory=None, my_offices=None, is
                   {'breadcrumbs': breadcrumbs,
                    'forms': (location_form,),
                    'laboratory': laboratory,
-                   'item_label': _("location"),
+                   'item_label': _("Location"),
                    'edit': 1,
                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
@@ -1036,7 +1036,7 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
                    'choosen_person': researcher,
                    'internal_form': internal_form,
                    'external_form': external_form,
-                   'item_label': _("Researcher"),
+                   'item_label': _("Research Staff Member"),
                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')})
 
@@ -1206,7 +1206,7 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, i
                   {'breadcrumbs': breadcrumbs,
                    'forms': (form,),
                    'laboratory': laboratory,
-                   'item_label': _("activity"),
+                   'item_label': _("Activity"),
                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
     
@@ -1261,7 +1261,7 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
                   {'breadcrumbs': breadcrumbs,
                    'forms': (activity_form,),
                    'laboratory': laboratory,
-                   'item_label': _("activity"),
+                   'item_label': _("Activity"),
                    'edit': 1,
                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                 })
@@ -1485,7 +1485,7 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'forms': (form,),
-                   'item_label': _("offered service"),
+                   'item_label': _("Offered Service"),
                    'laboratory': laboratory,
                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    })
@@ -1532,7 +1532,7 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
                    'forms': (form,),
                    'laboratory': laboratory,
                    'offered_service': offered_service,
-                   'item_label': _("offered service"),
+                   'item_label': _("Offered Service"),
                    'edit': 1,
                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    })
