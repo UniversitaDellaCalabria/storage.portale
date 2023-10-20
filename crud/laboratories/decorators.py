@@ -87,10 +87,14 @@ def can_edit_laboratories(func_to_decorate):
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
+        
+        if request.user.is_superuser:
+            return func_to_decorate(*original_args, **original_kwargs)
+        
         laboratory = original_kwargs['laboratory']
         my_offices = original_kwargs['my_offices']
 
-        if not (request.user.is_superuser or my_offices.exists()):
+        if not my_offices.exists():
             return custom_message(request, _("Permission denied"))
         
         return func_to_decorate(*original_args, **original_kwargs)

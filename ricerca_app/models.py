@@ -1856,7 +1856,7 @@ class LaboratorioDatiBase(models.Model):
     nome_laboratorio = models.CharField(
         db_column='NOME_LABORATORIO',
         max_length=400,
-        blank=True,
+        blank=False,
         null=True)  # Field name made lowercase.
     # Field name made lowercase.
     acronimo = models.CharField(

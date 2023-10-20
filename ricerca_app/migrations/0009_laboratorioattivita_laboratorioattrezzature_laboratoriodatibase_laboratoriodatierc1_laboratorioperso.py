@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('referente_compilazione', models.CharField(blank=True, db_column='REFERENTE_COMPILAZIONE', max_length=200, null=True)),
                 ('matricola_referente_compilazione', models.CharField(blank=True, db_column='MATRICOLA_REFERENTE_COMPILAZIONE', max_length=20, null=True)),
                 ('email_compilazione', models.CharField(blank=True, db_column='EMAIL_COMPILAZIONE', max_length=200, null=True)),
-                ('nome_laboratorio', models.CharField(blank=True, db_column='NOME_LABORATORIO', max_length=400, null=True)),
+                ('nome_laboratorio', models.CharField(blank=False, db_column='NOME_LABORATORIO', max_length=400, null=True)),
                 ('acronimo', models.CharField(blank=True, db_column='ACRONIMO', max_length=100, null=True)),
                 ('logo_laboratorio', models.CharField(blank=True, db_column='LOGO_LABORATORIO', max_length=400, null=True)),
                 ('dipartimento_riferimento', models.CharField(blank=True, db_column='DIPARTIMENTO_RIFERIMENTO', max_length=400, null=True)),

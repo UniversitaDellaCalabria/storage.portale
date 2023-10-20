@@ -155,7 +155,6 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
 
 @login_required
 @can_manage_laboratories
-@can_view_laboratories
 def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False):
     
     form = LaboratorioDatiBaseForm()
@@ -1617,34 +1616,35 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
     
     if laboratory.visibile:
         return custom_message(request, _("Laboratory is already visible"))
+    
+    #LaboratorioDatiBase
+    if not (laboratory.preposto_sicurezza or laboratory.matricola_preposto_sicurezza):
+        messages.add_message(request, messages.ERROR, _("Laboratory must have a Safety Manager"))
+        return redirect('crud_laboratories:crud_laboratory_edit', code=code)    
+    
+    #LaboratorioAltriDipartimenti
+    extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
+    if extra_departments and laboratory.laboratorio_interdipartimentale == "NO":
+        messages.add_message(request, messages.ERROR, _("Extra Departments specified for NON Interdepartmental Laboratory"))
+        return redirect('crud_laboratories:crud_laboratory_edit', code=code)
         
+    #LaboratorioDatiErc1
+    researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).exists()
+    if not researches_erc1:
+        messages.add_message(request, messages.ERROR, _("Laboratory must have at least one ERC 1 Research"))
+        return redirect('crud_laboratories:crud_laboratory_edit', code=code)
     
-    # #LaboratorioAltriDipartimenti
-    # extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
+    #LaboratorioUbicazione
+    locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).exists()
+    if not locations:
+        messages.add_message(request, messages.ERROR, _("Laboratory must have at least one Location"))
+        return redirect('crud_laboratories:crud_laboratory_edit', code=code)
     
-    # #LaboratorioAttrezzature
-    # equipment = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code).exists()
-   
-    # #LaboratorioDatiErc1
-    # researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).exists()
-    
-    # #LaboratorioUbicazione
-    # locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).exists()
-    
-    # #LaboratorioPersonaleRicerca
-    # researchers = LaboratorioPersonaleRicerca.objects.filter(id_laboratorio_dati=code).exists()
-    
-    # #LaboratorioPersonaleTecnico
-    # technicians = LaboratorioPersonaleTecnico.objects.filter(id_laboratorio_dati=code).exists()
-    
-    # #LaboratorioAttivita
-    # activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioServiziErogati
-    # provided_services = LaboratorioServiziErogati.objects.filter(id_laboratorio_dati=code).exists()
-    # #LaboratorioServiziOfferti
-    # offered_services = Laboratonot (request.user.is_superuser or my_offices.exists()):rioServiziOfferti.objects.filter(id_laboratorio_dati=code).exists()
-    
-    
+    #LaboratorioAttivita
+    activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).exists()
+    if not activities:
+        messages.add_message(request, messages.ERROR, _("Laboratory must have at least one Activity"))
+        return redirect('crud_laboratories:crud_laboratory_edit', code=code)    
     
     
     validators = OrganizationalStructureOfficeEmployee.objects.filter(office__is_active=True,

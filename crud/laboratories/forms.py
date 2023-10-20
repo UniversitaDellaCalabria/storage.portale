@@ -33,7 +33,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             )
         self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
             label=_('Interdepartmental Laboratory'),
-            choices=(('SI', 'SI'),('NO', 'NO'))
+            choices=(('SI', 'SI'),('NO', 'NO')),
         )
         
         self.order_fields(field_order=
@@ -43,6 +43,10 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                             'sito_web', 'id_infrastruttura_riferimento', 'altre_strutture_riferimento',
                             'descr_altre_strutture_riferimento_it', 'descr_altre_strutture_riferimento_en',
                             'ambito', 'laboratorio_interdipartimentale'))
+        
+        
+    def clean(self):
+        pass
 
 
     class Meta:
