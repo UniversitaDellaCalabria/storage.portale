@@ -157,6 +157,9 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
 @can_manage_laboratories
 def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False):
     
+    if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+    
     form = LaboratorioDatiBaseForm()
     department_form = LaboratorioDatiBaseDipartimentoForm()
 

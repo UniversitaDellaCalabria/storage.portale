@@ -1556,7 +1556,7 @@ class ApiTeacherNewsUnitTest(TestCase):
             'attivo': 1,
             'dt_pubblicazione': '2222-02-02',
             'dt_inizio_validita': '2022-10-13',
-            'dt_fine_validita': '2023-10-13',
+            'dt_fine_validita': '2099-10-13',
 
         })
 
@@ -1607,7 +1607,7 @@ class ApiTeacherMaterialsUnitTest(TestCase):
             'attivo': 1,
             'dt_pubblicazione': '2222-02-02',
             'dt_inizio_validita': '2022-10-13',
-            'dt_fine_validita': '2023-10-13',
+            'dt_fine_validita': '2099-10-13',
 
         })
 
