@@ -736,6 +736,23 @@ class ApiStudyActivityDetailUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'af_pdr_id': 1,
+            'fat_part_stu_cod': 'GRP',
+            'fat_part_stu_des': 'des',
+            'mutuata_flg': 0,
+            'af_master_id': 2,
+        })
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
+            'af_id': 3,
+            'pds_regdid': pds,
+            'des': 'informatica modulo 2',
+            'af_gen_des_eng': 'computer science modulo 1',
+            'ciclo_des': 'Secondo semestre',
+            'regdid': regdid,
+            'af_radice_id': 1,
+            'af_pdr_id': 2,
+            'fat_part_stu_cod': 'GRP',
+            'fat_part_stu_des': 'des',
             'mutuata_flg': 0,
             'af_master_id': 2,
         })
@@ -1191,6 +1208,7 @@ class ApiTeachersListUnitTest(TestCase):
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course1,
             'personale': doc1,
+            'aa_off_id': '2015',
         })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course2,
@@ -1225,7 +1243,7 @@ class ApiTeachersListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
-        data = {'department': 1, 'role': 'PA', 'lang': 'en'}
+        data = {'department': 1, 'role': 'PA', 'lang': 'en', 'year': '2015'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
