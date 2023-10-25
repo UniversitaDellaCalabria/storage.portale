@@ -9,7 +9,7 @@ urlpatterns += path('laboratories/', laboratories, name='crud_laboratories'),
 urlpatterns += path('laboratories/new/', laboratory_new, name='crud_laboratory_new'),
 urlpatterns += path('laboratories/<str:code>/', laboratory, name='crud_laboratory_edit'),
 urlpatterns += path('laboratories/<str:code>/delete/', laboratory_delete, name='crud_laboratory_delete'),
-urlpatterns += path('laboratories/<str:code>/department/', laboratory_unical_department_edit, name='crud_laboratory_unical_department_edit'),
+# urlpatterns += path('laboratories/<str:code>/department/', laboratory_unical_department_edit, name='crud_laboratory_unical_department_edit'),
 urlpatterns += path('laboratories/<str:code>/scientific-director/', laboratory_scientific_director_edit, name='crud_laboratory_scientific_director_edit'),
 urlpatterns += path('laboratories/<str:code>/safety-manager/', laboratory_safety_manager_edit, name='crud_laboratory_safety_manager_edit'),
 #LaboratorioAltriDipartimenti

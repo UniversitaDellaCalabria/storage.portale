@@ -108,7 +108,8 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
                 
         if form.is_valid():
             form.save(commit=False)
-            related_department = get_object_or_404(DidatticaDipartimento, pk=form.cleaned_data.get('choosen_department_id'))
+            related_department_id = form.cleaned_data.get('choosen_department_id')[0]
+            related_department = get_object_or_404(DidatticaDipartimento, pk=related_department_id)
             laboratory.id_dipartimento_riferimento = related_department
             laboratory.dipartimento_riferimento = related_department.dip_des_it
             laboratory.user_mod_id = request.user
@@ -258,59 +259,59 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                     'scientific_director_external_form': scientific_director_external_form,
                     })
 
-@login_required
-@can_manage_laboratories
-@can_view_laboratories
-@can_edit_laboratories
-def laboratory_unical_department_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
+# @login_required
+# @can_manage_laboratories
+# @can_view_laboratories
+# @can_edit_laboratories
+# def laboratory_unical_department_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
     
-    department = laboratory.id_dipartimento_riferimento
-    old_label = department.dip_des_it
+#     department = laboratory.id_dipartimento_riferimento
+#     old_label = department.dip_des_it
     
-    form = LaboratorioDatiBaseDipartimentoForm(initial={'choosen_department': department.dip_id})
+#     form = LaboratorioDatiBaseDipartimentoForm(initial={'choosen_department': department.dip_id})
 
-    if request.POST:
-        form = LaboratorioDatiBaseDipartimentoForm(data=request.POST)
-        if form.is_valid():
+#     if request.POST:
+#         form = LaboratorioDatiBaseDipartimentoForm(data=request.POST)
+#         if form.is_valid():
 
-            department_id = form.cleaned_data['choosen_department']
-            department = get_object_or_404(DidatticaDipartimento, dip_id=department_id)
-            laboratory.id_dipartimento_riferimento = department
-            laboratory.dipartimento_riferimento = f'{department.dip_des_it}'
-            laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
-            laboratory.visibile=False
-            laboratory.save()
+#             department_id = form.cleaned_data['choosen_department']
+#             department = get_object_or_404(DidatticaDipartimento, dip_id=department_id)
+#             laboratory.id_dipartimento_riferimento = department
+#             laboratory.dipartimento_riferimento = f'{department.dip_des_it}'
+#             laboratory.user_mod_id = request.user
+#             laboratory.dt_mod=datetime.now()
+#             laboratory.visibile=False
+#             laboratory.save()
 
-            if old_label != department.dip_des_it:
-                log_action(user=request.user,
-                           obj=laboratory,
-                           flag=CHANGE,
-                           msg=f'Sostituito dipartimento {old_label} con {department.dip_des_it}')
+#             if old_label != department.dip_des_it:
+#                 log_action(user=request.user,
+#                            obj=laboratory,
+#                            flag=CHANGE,
+#                            msg=f'Sostituito dipartimento {old_label} con {department.dip_des_it}')
 
 
-            messages.add_message(request, messages.SUCCESS, _("Department edited successfully"))
-            return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+#             messages.add_message(request, messages.SUCCESS, _("Department edited successfully"))
+#             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
         
-        else:  # pragma: no cover
-            for k, v in form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{form.fields[k].label}</b>: {v}")
+#         else:  # pragma: no cover
+#             for k, v in form.errors.items():
+#                 messages.add_message(request, messages.ERROR,
+#                                      f"<b>{form.fields[k].label}</b>: {v}")
 
-    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
-                   reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
-                   '#': f'{laboratory.dipartimento_riferimento}'}
+#     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+#                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
+#                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
+#                    '#': f'{laboratory.dipartimento_riferimento}'}
 
-    return render(request,
-                  'laboratory_department.html',
-                  {'breadcrumbs': breadcrumbs,
-                   'url': reverse('ricerca:departmentslist'),
-                   'form': form,
-                   'laboratory': laboratory,
-                   'choosen_department': old_label,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
-                   })
+#     return render(request,
+#                   'laboratory_department.html',
+#                   {'breadcrumbs': breadcrumbs,
+#                    'url': reverse('ricerca:departmentslist'),
+#                    'form': form,
+#                    'laboratory': laboratory,
+#                    'choosen_department': old_label,
+#                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+#                    })
 
 @login_required
 @can_manage_laboratories
@@ -527,7 +528,7 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
                 LaboratorioAltriDipartimenti.objects.create(
                     id_laboratorio_dati=laboratory,
                     id_dip=department,
-                    descr_dip_lab=department.dip_nome_breve
+                    descr_dip_lab=department.dip_des_it
                 )
                 
                 laboratory.user_mod_id = request.user
