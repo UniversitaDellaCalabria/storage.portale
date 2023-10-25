@@ -188,33 +188,6 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal;">{% trans "Departments" %}</h3>
-            <hr />
-            <!-- Department -->
-            <h4 style="font-weight: lighter;">{% trans "Related Department" %}</h4>
-            <table class="table table-striped table-hover">
-                <tbody>
-                    <tr>
-                        <td>
-                            {{ laboratory.dipartimento_riferimento|default:"-" }}
-                        </td>
-                        <td class="text-right">
-                            <a href="{% url 'crud_laboratories:crud_laboratory_unical_department_edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
-                                <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                </svg>
-                                {% if user_roles.superuser or user_roles.operator %}
-                                {% trans "Edit" %}
-                                {% else %}
-                                {% trans "View" %}
-                                {% endif %}
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- /Department -->
-            <hr />
             <!-- Extra departments -->
             <h4 style="font-weight: lighter;">{% trans "Extra Departments" %}</h4>
             <table class="table table-striped table-hover">

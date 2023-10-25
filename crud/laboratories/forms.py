@@ -10,26 +10,37 @@ from django.conf import settings
 from django.urls import reverse
 
 
-from ricerca_app.models import LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioTipologiaRischio, TipologiaRischio, LaboratorioAttrezzatureFondi, LaboratorioAttrezzatureRischi, LaboratorioFondo
+from ricerca_app.models import DidatticaDipartimento, LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioTipologiaRischio, TipologiaRischio, LaboratorioAttrezzatureFondi, LaboratorioAttrezzatureRischi, LaboratorioFondo
 
 # from .. utils.widgets import RicercaCRUDClearableWidget
 
 
 
-class LaboratorioDatiBaseForm(forms.ModelForm):
-    choosen_department = forms.CharField(label=_('Department'),
-                                         widget=forms.HiddenInput(),
-                                         required=False)
-
+class LaboratorioDatiBaseForm(forms.ModelForm):   
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        operator_departments_codes = kwargs.pop('allowed_department_codes', [])
         
-        choices = LaboratorioDatiBase.objects.all().values_list("ambito", flat=True).distinct().order_by("ambito")
-        choices = tuple(map(lambda ambito: (ambito, ambito), choices))
+        super().__init__(*args, **kwargs)
+                
+        if operator_departments_codes:
+            department_choices = DidatticaDipartimento.objects.filter(dip_cod__in=operator_departments_codes)\
+                                                .values_list('dip_id', 'dip_des_it')
+        else:
+            department_choices = DidatticaDipartimento.objects.all()\
+                                                .values_list('dip_id', 'dip_des_it')
+           
+        self.fields["choosen_department_id"] = forms.MultipleChoiceField(label=_('Related Department'),
+                                            choices=tuple(department_choices),
+                                            required=True
+                                            )
+        
+        
+        scope_choices = LaboratorioDatiBase.objects.all().values_list("ambito", flat=True).distinct().order_by("ambito")
+        scope_choices = tuple(map(lambda ambito: (ambito, ambito), scope_choices))
 
         self.fields['ambito'] = forms.ChoiceField(
             label=_('Areas'),
-            choices = choices
+            choices = scope_choices
             )
         self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
             label=_('Interdepartmental Laboratory'),
@@ -42,13 +53,8 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                             'strumentazione_descrizione', 'strumentazione_valore',
                             'sito_web', 'id_infrastruttura_riferimento', 'altre_strutture_riferimento',
                             'descr_altre_strutture_riferimento_it', 'descr_altre_strutture_riferimento_en',
-                            'ambito', 'laboratorio_interdipartimentale'))
+                            'ambito', 'laboratorio_interdipartimentale', 'choosen_department_id'))
         
-        
-    def clean(self):
-        pass
-
-
     class Meta:
         model = LaboratorioDatiBase
         fields = ['nome_laboratorio', 'acronimo', 'logo_laboratorio', 'laboratorio_interdipartimentale',

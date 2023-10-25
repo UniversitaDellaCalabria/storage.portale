@@ -68,7 +68,14 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
         messages.add_message(request, messages.WARNING, _("Laboratory NOT visible"))
 
     #LaboratorioDatiBase
-    form = LaboratorioDatiBaseForm(instance=laboratory)
+    user_lab_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                    office__is_active=True,
+                                                                    office__organizational_structure__is_active=True,
+                                                                    office__name=OFFICE_LABORATORIES)
+
+    allowed_related_departments_codes = [] if (not user_lab_offices.exists()) else user_lab_offices.values_list("office_id__organizational_structure_id__unique_code", flat=True)
+    initial = {"choosen_department_id": laboratory.id_dipartimento_riferimento.dip_id}
+    form = LaboratorioDatiBaseForm(initial=initial, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
     #LaboratorioTipologiaRischio
     selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
@@ -97,14 +104,17 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
         if not (request.user.is_superuser or my_offices.exists()):
             return custom_message(request, _("Permission denied"))
         
-        form = LaboratorioDatiBaseForm(instance=laboratory, data=request.POST, files=request.FILES)
+        form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES, allowed_department_codes=allowed_related_departments_codes)
                 
         if form.is_valid():
             form.save(commit=False)
+            related_department = get_object_or_404(DidatticaDipartimento, pk=form.cleaned_data.get('choosen_department_id'))
+            laboratory.id_dipartimento_riferimento = related_department
+            laboratory.dipartimento_riferimento = related_department.dip_des_it
             laboratory.user_mod_id = request.user
             laboratory.dt_mod=datetime.now()
             laboratory.visibile=False
-            laboratory.save()    
+            laboratory.save()
 
             if form.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(form,
@@ -159,9 +169,12 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
     
     if not (request.user.is_superuser or my_offices.exists()):
             return custom_message(request, _("Permission denied"))
+            operator_departments_codes = operator_departments_codes.values("office_id__organizational_structure_id__unique_code", flat=True) 
+
     
-    form = LaboratorioDatiBaseForm()
-    department_form = LaboratorioDatiBaseDipartimentoForm()
+    allowed_related_departments_codes = [] if (not my_offices or not my_offices.exists()) else my_offices.values_list("office_id__organizational_structure_id__unique_code", flat=True)
+    
+    form = LaboratorioDatiBaseForm(allowed_department_codes=allowed_related_departments_codes)
 
     scientific_director_internal_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(required=True)
     scientific_director_external_form = LaboratorioDatiBaseScientificDirectorForm()
@@ -176,15 +189,14 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
         scientific_director = get_object_or_404(Personale, matricola=(decrypt(request.POST["choosen_scientific_director"])))
     
     if request.POST:
-        form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES)
-        department_form = LaboratorioDatiBaseDipartimentoForm(data=request.POST)
-
+        form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES, allowed_department_codes=allowed_related_departments_codes)
+        
         if "choosen_scientific_director" in request.POST and request.POST["choosen_scientific_director"]:
             scientific_director_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(data=request.POST, required=True) 
         else:
             scientific_director_form = LaboratorioDatiBaseScientificDirectorForm(data=request.POST)
                     
-        if form.is_valid() and department_form.is_valid() and scientific_director_form.is_valid():
+        if form.is_valid() and scientific_director_form.is_valid():
             laboratory = form.save(commit=False)
 
             #scientific director
@@ -206,9 +218,9 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
             
             
             #department
-            laboratory.dipartimento_riferimento = department.dip_des_it
-            laboratory.id_dipartimento_riferimento = department
-
+            related_department = get_object_or_404(DidatticaDipartimento, pk=form.cleaned_data.get('choosen_department_id')[0])
+            laboratory.id_dipartimento_riferimento = related_department
+            laboratory.dipartimento_riferimento = related_department.dip_des_it
 
             laboratory.dt_sottomissione = datetime.now()
             laboratory.user_mod_id = request.user
@@ -227,9 +239,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
-            for k, v in department_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{department_form.fields[k].label}</b>: {v}")
             for k, v in scientific_director_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{scientific_director_form.fields[k].label}</b>: {v}")
@@ -244,7 +253,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                     'form': form,
                     'departments_api': reverse('ricerca:departmentslist'),
                     'teachers_api': reverse('ricerca:teacherslist'),
-                    'department_form': department_form,
                     'scientific_director_label' : "choosen_scientific_director",
                     'scientific_director_internal_form': scientific_director_internal_form,
                     'scientific_director_external_form': scientific_director_external_form,
