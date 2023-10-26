@@ -11,13 +11,14 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <form method="POST" novalidate>
-            {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 required=1 include_block=including|default:"blocks/crud_addressbook.html" %}
-            <hr />
-            {% include "form_template.html" with form=internal_form %}
-            {% if user_roles.superuser or user_roles.operator %}
-            {% include "form_submit_warning.html" with active=laboratory.visibile %}
-            {% endif %}
+            <form method="post" novalidate>
+                <span class="choosen_person">
+                    {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 required=1 include_block=including|default:"blocks/crud_addressbook.html" %}
+                    <hr />
+                </span>
+                {% if user_roles.superuser or user_roles.operator %}
+                {% include "form_submit_warning.html" with active=laboratory.visibile %}
+                {% endif %}
             </form>
         </div>
     </div>

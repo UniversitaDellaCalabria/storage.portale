@@ -147,7 +147,7 @@
 
                                     <div class="col-12 align-left">
                                         <small>
-                                            <a href="javascript:void(0)" @click="setPerson(item.ID, item.Name)">
+                                            <a href="javascript:void(0)" @click="{{person_label|default:"choosen_person"}}_setPerson(item.ID, item.Name)">
                                                 <b>[[ item.Name ]]</b>
                                             </a>
 
@@ -265,7 +265,19 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     setItemInSession("{{ id }}", dict)
 
     return dict
-}
+};
+function {{person_label|default:"choosen_person"}}_unsetPerson() {
+    document.getElementById('id_{{person_label|default:"choosen_person"}}').value = "";
+    let elements = document.getElementsByClassName('{{person_label|default:"choosen_person"}}_name');
+    for(let i=0; i < elements.length; i++)
+        elements[i].innerHTML = `<div class="alert alert-warning" role="alert">
+            {% if required %}
+                {% trans "Choose a person to proceed" %}
+            {% else %}
+                {% trans "Choose a person" %}
+            {% endif %}
+        </div>`;
+};
 </script>
 {% endblock extra_scripts %}
 
@@ -386,11 +398,11 @@ callRoles() {
             this.is_loading_roles = false
         })
 },
-setPerson(id, name){
-    document.getElementById("id_choosen_person").value = id;
-    let elements = document.getElementsByClassName("choosen_person_name")
+{{person_label|default:"choosen_person"}}_setPerson(id, name) {
+    document.getElementById('id_{{person_label|default:"choosen_person"}}').value = id;
+    let elements = document.getElementsByClassName('{{person_label|default:"choosen_person"}}_name');
     for(let i=0; i < elements.length; i++)
-        elements[i].innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen person' %} <b>"+name+"</b></div>"
+        elements[i].innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen person' %} <b>"+name+"</b></div>";
 }
 {% endblock extra_methods %}
 </script>

@@ -213,11 +213,9 @@ class LaboratorioUbicazioneForm(forms.ModelForm):
         }
 
 class LaboratorioPersonaleForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['laboratory_staff'] = forms.CharField(
-            required=True,
-            label=_("Name and Surname"))
+    laboratory_staff = forms.CharField(
+        label=_("Name and Surname"),
+        max_length=200)
         
 class LaboratorioPersonaleTecnicoForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -229,7 +227,8 @@ class LaboratorioPersonaleTecnicoForm(forms.Form):
         self.fields['percentuale_impegno'] = forms.FloatField(
             required=True,
             label=_("Commitment %"),
-            min_value=0
+            min_value=0,
+            max_value=100
         )
         
 class LaboratorioAttivitaForm(forms.ModelForm):

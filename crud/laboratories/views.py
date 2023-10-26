@@ -404,10 +404,12 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
     safety_manager = None
     safety_manager_ecode = None
     old_label = None
+    choosen_person = None
     initial = {}
     if laboratory.matricola_preposto_sicurezza:
         safety_manager = laboratory.matricola_preposto_sicurezza
         old_label = f'{safety_manager.cognome} {safety_manager.nome}'
+        choosen_person = old_label
         safety_manager_ecode = encrypt(safety_manager.matricola)
         initial = {'choosen_person': safety_manager_ecode}
     
@@ -422,7 +424,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
         internal_form = ChoosenPersonForm(data=request.POST, required=True)
         external_form = LaboratorioDatiBaseSafetyManagerForm(data=request.POST)
 
-        if 'choosen_person' in request.POST:
+        if 'choosen_person' in request.POST and request.POST["choosen_person"]:
             form = internal_form
         else:
             form = external_form
@@ -459,6 +461,8 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
+            external_form = LaboratorioDatiBaseSafetyManagerForm(initial=initial)
+            internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
@@ -470,7 +474,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
                   'laboratory_choose_person.html',
                   {'breadcrumbs': breadcrumbs,
                    'laboratory': laboratory,
-                   'choosen_person': old_label,
+                   'choosen_person': choosen_person,
                    'external_form': external_form,
                    'internal_form': internal_form,
                    'item_label': _("Safety Manager"),
@@ -999,10 +1003,12 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
     external_form = LaboratorioPersonaleForm()
     
     if request.POST:
-        if "choosen_person" in request.POST and request.POST["choosen_person"]:
-            form = ChoosenPersonForm(data=request.POST, required=True)
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = LaboratorioPersonaleForm(data=request.POST)
+        if "choosen_person" in request.POST and request.POST['choosen_person']:
+            form = internal_form
         else:
-            form = LaboratorioPersonaleForm(data=request.POST)
+            form = external_form
             
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
