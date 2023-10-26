@@ -501,6 +501,7 @@ def laboratory_safety_manager_delete(request, code, laboratory=None, my_offices=
 
 @login_required
 @check_if_superuser
+@can_manage_laboratories
 def laboratory_delete(request, code, laboratory=None, my_offices=None, is_validator=False):
     laboratory.delete()
     messages.add_message(request,
