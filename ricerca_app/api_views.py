@@ -11,7 +11,8 @@ from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.views import APIView
 
 from . filters import *
-from . models import DidatticaTestiRegolamento, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio
+from . models import (DidatticaTestiRegolamento, DidatticaCdsAltriDati,
+                      DidatticaCdsAltriDatiUfficio, DidatticaCdsPeriodi)
 from . pagination import UnicalStorageApiPaginationList
 from . serializers import *
 from . services import *
@@ -285,6 +286,14 @@ class ApiCdSDetail(ApiEndpointDetail):
             'sportello_online'
         ).distinct()
 
+        res[0]['CdsPeriods'] = DidatticaCdsPeriodi.objects.filter(cds_cod=res[0]['cds_cod'],
+                                                                  aa_id=res[0]['didatticaregolamento__aa_reg_did']).values(
+            'ciclo_des',
+            'tipo_ciclo_des',
+            'tipo_ciclo_des_eng',
+            'data_inizio',
+            'data_fine'
+        )
 
         res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id']).values(
             'ordine',
