@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-27 09:20+0200\n"
-"PO-Revision-Date: 2023-10-27 09:27+0200\n"
+"PO-Revision-Date: 2023-10-27 09:40+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -2846,22 +2846,16 @@ msgid "Manage projects"
 msgstr "Gestisti i progetti delle strutture"
 
 #: crud/utils/templates/dashboard.html:236
-#, fuzzy
-#| msgid "Study courses"
 msgid "Study course websites"
-msgstr "Corsi di studio"
+msgstr "Siti dei Corsi di Studio"
 
 #: crud/utils/templates/dashboard.html:239
-#, fuzzy
-#| msgid "Study courses"
 msgid "Manage Study course websites"
-msgstr "Corsi di studio"
+msgstr "Gestisci i Siti dei Corsi di studio"
 
 #: crud/utils/templates/dashboard.html:267
-#, fuzzy
-#| msgid "Manage companies"
 msgid "Manage Laboratories"
-msgstr "Gestisci le imprese"
+msgstr "Gestisci i Laboratori"
 
 #: crud/utils/templates/includes/form_submit.html:16
 msgid "Submit"
