@@ -429,6 +429,27 @@ class DidatticaCds(InsModAbstract):
 
 
 
+class DidatticaCdsPeriodi(models.Model):
+    ciclo_id = models.IntegerField(db_column='CICLO_ID', primary_key=True)  # Field name made lowercase.
+    aa_id = models.IntegerField(db_column='AA_ID')  # Field name made lowercase.
+    cds_id = models.IntegerField(db_column='CDS_ID')  # Field name made lowercase.
+    cds_cod = models.CharField(db_column='CDS_COD', max_length=10)  # Field name made lowercase.
+    rag_tipi_ciclo_cod = models.CharField(db_column='RAG_TIPI_CICLO_COD', max_length=5)  # Field name made lowercase.
+    rag_tipi_ciclo_des = models.CharField(db_column='RAG_TIPI_CICLO_DES', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    tipo_ciclo_cod = models.CharField(db_column='TIPO_CICLO_COD', max_length=5)  # Field name made lowercase.
+    tipo_ciclo_des = models.CharField(db_column='TIPO_CICLO_DES', max_length=40)  # Field name made lowercase.
+    tipo_ciclo_des_eng = models.CharField(db_column='TIPO_CICLO_DES_ENG', max_length=4000, blank=True, null=True)  # Field name made lowercase.
+    org_did_sua_cod = models.IntegerField(db_column='ORG_DID_SUA_COD', blank=True, null=True)  # Field name made lowercase.
+    ciclo_des = models.CharField(db_column='CICLO_DES', max_length=40)  # Field name made lowercase.
+    data_inizio = models.DateField(db_column='DATA_INIZIO')  # Field name made lowercase.
+    data_fine = models.DateField(db_column='DATA_FINE')  # Field name made lowercase.
+    durata = models.DecimalField(db_column='DURATA', max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    csa_cod = models.CharField(db_column='CSA_COD', max_length=2, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_PERIODI'
+
 
 class DidatticaCdsAltriDatiUfficio(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
@@ -1700,7 +1721,7 @@ class LaboratorioAttivita(models.Model):
     class Meta:
         managed = True
         db_table = 'LABORATORIO_ATTIVITA'
-        
+
 class LaboratorioAttrezzatureRischi(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     id_laboratorio_attrezzature = models.ForeignKey(
@@ -1715,10 +1736,10 @@ class LaboratorioAttrezzatureRischi(models.Model):
         db_column='ID_TIPOLOGIA_RISCHIO',
         blank=True,
         null=True)  # Field name made lowercase.
-    
+
     dt_mod = models.DateTimeField(db_column='DT_MOD',
                               blank=True, null=True) # Field name made lowercase.
-    
+
     user_mod_id = models.ForeignKey(get_user_model(),
                                  on_delete=models.SET_NULL,
                                  db_column='user_mod_id',
@@ -1731,10 +1752,10 @@ class LaboratorioFondo(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     nome_fondo = models.CharField(
         db_column='NOME_FONDO',
-        max_length=500, 
+        max_length=500,
         blank=False,
         null=False) # Field name made lowercase.
-    
+
     class Meta:
         managed = True
         db_table = 'LABORATORIO_FONDO'
@@ -1753,10 +1774,10 @@ class LaboratorioAttrezzatureFondi(models.Model):
         db_column='ID_LABORATORIO_FONDO',
         blank=True,
         null=True)  # Field name made lowercase.
-    
+
     dt_mod = models.DateTimeField(db_column='DT_MOD',
                               blank=True, null=True) # Field name made lowercase.
-    
+
     user_mod_id = models.ForeignKey(get_user_model(),
                                  on_delete=models.SET_NULL,
                                  db_column='user_mod_id',
@@ -1764,7 +1785,7 @@ class LaboratorioAttrezzatureFondi(models.Model):
     class Meta:
         managed = True
         db_table = 'LABORATORIO_ATTREZZATURE_FONDI'
-    
+
 
 class LaboratorioAttrezzature(models.Model):
     # Field name made lowercase.
@@ -1818,13 +1839,13 @@ class LaboratorioTipologiaAttivita(models.Model):
     class Meta:
         managed = True
         db_table = 'LABORATORIO_TIPOLOGIA_ATTIVITA'
-        
+
 class TipologiaRischio(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)
     # Field name made lowercase.
     descr_tipologia = models.CharField(db_column='DESCR_TIPOLOGIA', max_length=1000)
-    
+
     class Meta:
         managed = True
         db_table = 'TIPOLOGIA_RISCHIO'
@@ -1992,21 +2013,21 @@ class LaboratorioDatiBase(models.Model):
         max_length=1000,
         blank=True,
         null=True)  # Field name made lowercase.
-    
+
     visibile = models.BooleanField(db_column='VISIBILE',
                                    default=False)  # Field name made lowercase.
-    
+
     dt_mod = models.DateTimeField(db_column='DT_MOD',
                               blank=True, null=True) # Field name made lowercase.
-    
+
     user_mod_id = models.ForeignKey(get_user_model(),
                                  on_delete=models.SET_NULL,
                                  db_column='user_mod_id',
                                  blank=True, null=True)
-    
+
     tipologia_attivita = models.ManyToManyField(
         LaboratorioTipologiaAttivita, through="LaboratorioAttivita")
-    
+
     tipologia_rischio = models.ManyToManyField(
         TipologiaRischio, through="LaboratorioTipologiaRischio")
 
