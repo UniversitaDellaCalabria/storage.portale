@@ -461,6 +461,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
+                
             external_form = LaboratorioDatiBaseSafetyManagerForm(initial=initial)
             internal_form = ChoosenPersonForm(initial=initial, required=True)
 
@@ -497,7 +498,7 @@ def laboratory_safety_manager_delete(request, code, laboratory=None, my_offices=
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted safety manager")}')
+    msg=_("Deleted safety manager"))
 
     messages.add_message(request, messages.SUCCESS, _("Safety manager removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -544,7 +545,7 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
                 log_action(user=request.user,
                 obj=laboratory,
                 flag=ADDITION,
-                msg=f'{_("Added extra department")}')
+                msg=_("Added extra department"))
 
                 messages.add_message(request, messages.SUCCESS, _("Extra department added successfully"))
                 return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -588,7 +589,7 @@ def laboratory_extra_departments_delete(request, code, data_id, laboratory=None,
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted extra department")}')
+    msg=_("Deleted extra department"))
 
     messages.add_message(request, messages.SUCCESS, _("Extra department removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -637,7 +638,7 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, is
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Added piece of equipment")}')
+            msg=_("Added piece of equipment"))
 
             messages.add_message(request, messages.SUCCESS, _("Piece of equipment added successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -752,7 +753,7 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Edited piece of equipment")}')
+            msg=_("Edited piece of equipment"))
 
             messages.add_message(request, messages.SUCCESS, _("Piece of equipment edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -802,7 +803,7 @@ def laboratory_equipment_delete(request, code, data_id, laboratory=None, my_offi
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted piece of equipment")}')
+    msg=_("Deleted piece of equipment"))
 
     messages.add_message(request, messages.SUCCESS, _("Piece of equipment removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -858,7 +859,7 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Edited researches ERC1")}')
+            msg=_("Edited researches ERC1"))
 
             messages.add_message(request, messages.SUCCESS, _("Researches ERC1 edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -904,11 +905,16 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Edited laboratory location")}')
+            msg=_("Edited laboratory location"))
 
             messages.add_message(request, messages.SUCCESS, _("Location edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-    
+        
+        else:  # pragma: no cover
+            for k, v in location_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{location_form.fields[k].label}</b>: {v}")
+                    
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -945,7 +951,7 @@ def laboratory_locations_new(request, code, laboratory=None, my_offices=None, is
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Added laboratory location")}')
+            msg=_("Added laboratory location"))
 
             messages.add_message(request, messages.SUCCESS, _("Location added successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -987,7 +993,7 @@ def laboratory_locations_delete(request, code, data_id, laboratory=None, my_offi
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted location")}')
+    msg=_("Deleted location"))
 
     messages.add_message(request, messages.SUCCESS, _("Location removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1032,7 +1038,7 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Added laboratory researcher")}')
+            msg=_("Added laboratory researcher"))
 
             messages.add_message(request, messages.SUCCESS, _("Researcher added successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1074,7 +1080,7 @@ def laboratory_research_staff_delete(request, code, data_id, laboratory=None, my
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted researcher")}')
+    msg=_("Deleted researcher"))
 
     messages.add_message(request, messages.SUCCESS, _("Researcher removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1125,7 +1131,7 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Added laboratory technician")}')
+            msg=_("Added laboratory technician"))
 
             messages.add_message(request, messages.SUCCESS, _("technician added successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1170,7 +1176,7 @@ def laboratory_technical_staff_delete(request, code, data_id, laboratory=None, m
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted technician")}')
+    msg=_("Deleted technician"))
 
     messages.add_message(request, messages.SUCCESS, _("Technician removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1209,11 +1215,16 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, i
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Added activity")}')
+            msg=_("Added activity"))
 
             messages.add_message(request, messages.SUCCESS, _("Activities added successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-    
+        
+        else:  # pragma: no cover
+            for k, v in activity_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{activity_form.fields[k].label}</b>: {v}")
+                    
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -1264,10 +1275,15 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Edited activity")}')
+            msg=_("Edited activity"))
 
             messages.add_message(request, messages.SUCCESS, _("Activity edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+        
+        else:  # pragma: no cover
+            for k, v in activity_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{activity_form.fields[k].label}</b>: {v}")
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
@@ -1300,7 +1316,7 @@ def laboratory_activities_delete(request, code, data_id, laboratory=None, my_off
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted activity")}')
+    msg=_("Deleted activity"))
 
     messages.add_message(request, messages.SUCCESS, _("Activity removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1348,10 +1364,18 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Added provided service")}')
+            msg=_("Added provided service"))
 
             messages.add_message(request, messages.SUCCESS, _("Provided service added successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+        
+        else:  # pragma: no cover
+            for k, v in person_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{person_form.fields[k].label}</b>: {v}")
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
@@ -1380,10 +1404,12 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
     cpf_initial = {}
     lpf_initial = {}
     manager_origine = None
+    choosen_person = None
     if(provided_service.matricola_responsabile):
         manager = get_object_or_404(Personale, matricola=provided_service.matricola_responsabile)
         cpf_initial["choosen_person"] = encrypt(provided_service.matricola_responsabile)
         manager_origine = f'{manager.cognome} {manager.nome}'
+        choosen_person = manager_origine
     else:
         lpf_initial["laboratory_manager"] = provided_service.responsabile_origine
         
@@ -1425,11 +1451,22 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Edited provided service")}')
-
+            msg=_("Edited provided service"))
+            
             messages.add_message(request, messages.SUCCESS, _("Provided service edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-    
+        
+        else:  # pragma: no cover
+            for k, v in person_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{person_form.fields[k].label}</b>: {v}")
+            for k, v in form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{form.fields[k].label}</b>: {v}")
+                
+            internal_form = ChoosenPersonForm(initial=cpf_initial, required=False)
+            external_form = LaboratorioServiziErogatiResponsabileForm(initial=lpf_initial)
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -1444,6 +1481,7 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'provided_service': provided_service,
+                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')
                    })
 
@@ -1463,7 +1501,7 @@ def laboratory_provided_services_delete(request, code, data_id, laboratory=None,
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted provided service")}')
+    msg=_("Deleted provided service"))
 
     messages.add_message(request, messages.SUCCESS, _("Provided service removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1489,7 +1527,7 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
         log_action(user=request.user,
         obj=laboratory,
         flag=CHANGE,
-        msg=f'{_("Added offered service")}')
+        msg=_("Added offered service"))
 
         messages.add_message(request, messages.SUCCESS, _("Offered service added successfully"))
         return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1533,7 +1571,7 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Edited offered service")}')
+            msg=_("Edited offered service"))
 
             messages.add_message(request, messages.SUCCESS, _("Offered service edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1571,7 +1609,7 @@ def laboratory_offered_services_delete(request, code, data_id, laboratory=None, 
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Deleted offered service")}')
+    msg=_("Deleted offered service"))
 
     messages.add_message(request, messages.SUCCESS, _("Offered service removed successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1617,7 +1655,7 @@ def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, 
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=f'{_("Risk types updated")}')
+            msg=_("Risk types updated"))
         
             messages.add_message(request, messages.SUCCESS, _("Risk types updated successfully"))
         else:  # pragma: no cover
@@ -1685,7 +1723,7 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Requested approval")}')
+    msg=_("Requested approval"))
     
     messages.add_message(request, messages.SUCCESS, _("Request for approval sent successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
@@ -1706,7 +1744,7 @@ def laboratory_approve(request, code, laboratory=None, my_offices=None, is_valid
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
-    msg=f'{_("Approved Laboratory")}')
+    msg=_("Approved Laboratory"))
     
     messages.add_message(request, messages.SUCCESS, _("Laboratory approved successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)

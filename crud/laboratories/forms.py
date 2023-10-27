@@ -261,10 +261,11 @@ class LaboratorioServiziErogatiForm(forms.ModelForm):
         self.fields['anno'] = forms.IntegerField(
             max_value=dt.today().year,
             min_value=1901,
-            required=True
+            required=True,
+            label=_('Year')
         )
-        self.fields['importo_euro'] = forms.FloatField(min_value=0, required=True)
-        self.fields['durata_mesi'] = forms.IntegerField(min_value=0, required=True)
+        self.fields['importo_euro'] = forms.FloatField(min_value=0, required=True, label=_('Monetary Amount (Euros)'))
+        self.fields['durata_mesi'] = forms.IntegerField(min_value=0, required=True, label=_('Duration (Months)'))
     
     class Meta:
         model = LaboratorioServiziErogati
