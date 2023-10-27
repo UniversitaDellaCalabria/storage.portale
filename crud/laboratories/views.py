@@ -1352,7 +1352,7 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
                 provided_service.responsabile_origine=f'{manager.cognome} {manager.nome}'
             else:
                 provided_service.matricola_responsabile = None
-                provided_service.responsabile_origine = form.cleaned_data['laboratory_manager']
+                provided_service.responsabile_origine = person_form.cleaned_data['laboratory_manager']
 
             provided_service.save()
             
