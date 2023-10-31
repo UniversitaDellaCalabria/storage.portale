@@ -184,7 +184,8 @@ class ServiceDidatticaCds:
             ).distinct()
 
             #DidatticaCdsGruppi.objects.filter(id_didattica_cds=item['cds_id']).values(
-            item['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=item['cds_id']).values(
+            item['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=item['cds_id'],
+                                                                         visibile=True).values(
                 'ordine',
                 'id',
                 'descr_breve_it',
@@ -197,7 +198,8 @@ class ServiceDidatticaCds:
             #for co in cdsOrg:
 
             for organization in item['CdsOrganizations']: # pragma: no cover
-                members = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=organization['id']).values(
+                members = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=organization['id'],
+                                                                      visibile=True).values(
                     'ordine',
                     'id',
                     'matricola',
