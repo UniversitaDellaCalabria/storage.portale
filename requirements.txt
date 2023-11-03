@@ -10,7 +10,7 @@ git+https://github.com/silentsokolov/django-admin-rangefilter.git
 design-django-theme==1.6.4post4
 django-unical-bootstrap-italia==1.2.0
 git+https://github.com/UniversitaDellaCalabria/django-organizational-area.git
-pillow
+pillow>=10.0.1
 
 # Rest
 git+https://github.com/UniversitaDellaCalabria/django-rest-framework.git@agid_oas3
