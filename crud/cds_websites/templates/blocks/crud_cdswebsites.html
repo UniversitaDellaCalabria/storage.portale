@@ -126,6 +126,11 @@
                                         </small>
                                     </div>
                                 </div>
+                                <a :href="item.CDSId+'/'" class="btn btn-sm btn-primary float-right">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg> {% trans "Edit" %}
+                                </a>
                             </div>
                         </div>
                     </div>

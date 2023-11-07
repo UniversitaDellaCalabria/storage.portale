@@ -1,0 +1,82 @@
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% block cds_page %}
+
+{% with page_name=page_name|default:"Page" topic_obj_arts=topic_obj_arts|default:None %}
+
+<div id="collapseDiv_{{page_name}}_{{topic_obj_arts.topic.id}}" class="collapse-div collapse-left-icon">
+    <div class="collapse-header" id="heading_{{page_name}}_{{topic_obj_arts.topic.id}}">
+        <button data-toggle="collapse" data-target="#collapse_{{page_name}}_{{topic_obj_arts.topic.id}}" aria-expanded="false" aria-controls="collapse_{{page_name}}_{{topic_obj_arts.topic.id}}">
+            <h4 style="font-weight: lighter;" class="pb-2">
+                {{ topic_obj_arts.topic.descr_topic_it }}
+            </h4>
+        </button>
+    </div>
+    <div id="collapse_{{page_name}}_{{topic_obj_arts.topic.id}}" class="collapse" role="region" aria-labelledby="heading_{{page_name}}_{{topic_obj_arts.topic.id}}">
+        <div class="collapse-body">
+            <!-- Reg Articles -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="col-7">{% trans "Articles" %}</th>
+                        <th class="col-2 text-center">{% trans "Order" %}</th>
+                        <th class="col-2 text-center">{% trans "Visible" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for regart in topic_obj_arts.regarts %}
+                        <td class="col-7">
+                            {{ regart.0.titolo_it }}
+                        </td>
+                        <td class="col-2 text-center">
+                            {{ regart.0.ordine }}
+                        </td>
+                        <td class="col-2 text-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="visibleCheckBox" disabled {% if regart.1.visibile %}checked{% endif %}>
+                                <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- /Reg Articles -->
+            <hr />
+            <!-- Objects -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="col-7">{% trans "Objects" %}</th>
+                        <th class="col-2 text-center">{% trans "Order" %}</th>
+                        <th class="col-2 text-center">{% trans "Visible" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in topic_obj_arts.objects %}
+                        <td class="col-7">
+                            {{ object.0.titolo_it }}
+                        </td>
+                        <td class="col-2 text-center">
+                            {{ object.0.ordine }}
+                        </td>
+                        <td class="col-2 text-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="visibleCheckBox" disabled {% if object.1.visibile %}checked{% endif %}>
+                                <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- /Objects -->
+        </div>
+    </div>
+</div>
+
+{% endwith %}
+
+{% endblock %}

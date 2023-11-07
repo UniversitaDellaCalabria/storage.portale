@@ -98,28 +98,3 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
     class Media:
         js = ('js/textarea-autosize.js',)
 
-
-# class SpinoffStartupDatiBaseReferentForm(forms.ModelForm):
-#     choosen_person = forms.CharField(label=_('Person'),
-#                                      widget=forms.HiddenInput(),
-#                                      required=False)
-#
-#     class Meta:
-#         model = SpinoffStartupDatiBase
-#         fields = ['referente_unical']
-#         labels = {
-#             "referente_unical": _("Label"),
-#         }
-#
-#
-# class SpinoffStartupDipartimentoForm(forms.ModelForm):
-#     choosen_department = forms.CharField(label=_('Department'),
-#                                          widget=forms.HiddenInput(),
-#                                          required=False)
-#
-#     class Meta:
-#         model = SpinoffStartupDipartimento
-#         fields = []
-#
-#     class Media:
-#         js = ('js/textarea-autosize.js',)
