@@ -42,16 +42,11 @@ def cds_websites(request, my_offices=None):
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_website(request, code, cds=None, my_offices=None):
+def cds_websites_edit(request, code, cds=None, my_offices=None):
     """
     modifica dati del sito web del corso di studio
     """
-    #OGGETTI -> CDS
-    #REGOLAMENTO -> CDS
-    #ALTRI_DATI -> REG
-    #REG : REGOLAMENTO <> TOPIC <> OGGETTI
-    
-    
+
     topics = SitoWebCdsTopic.objects.all()
     
     cds_topic_ogg_art = SitoWebCdsTopicArticoliReg.objects\
@@ -67,46 +62,22 @@ def cds_website(request, code, cds=None, my_offices=None):
     for topic in topics:
         t_id = topic.id
         cds_topic_ogg_art_current = cds_topic_ogg_art.filter(id_sito_web_cds_topic=t_id).order_by("ordine")
-        topic_objs = [obj for obj in map(lambda toa: (toa, toa.id_sito_web_cds_oggetti_portale), cds_topic_ogg_art_current) if obj[1] is not None]
-        topic_areg = [art for art in map(lambda toa: (toa, toa.id_sito_web_cds_articoli_regolamento), cds_topic_ogg_art_current) if art[1] is not None]
         if t_id in CMS_STORAGE_CDS_WEBSITES_PAGE_TOPICS['iscriversi']:
-            topic_enroll[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
+            topic_enroll[t_id] = cds_topic_ogg_art_current
         elif t_id in CMS_STORAGE_CDS_WEBSITES_PAGE_TOPICS['studiare']:
-            topic_study[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
+            topic_study[t_id] = cds_topic_ogg_art_current
         elif t_id in CMS_STORAGE_CDS_WEBSITES_PAGE_TOPICS['opportunità']:
-            topic_opportunities[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
+            topic_opportunities[t_id] = cds_topic_ogg_art_current
         elif t_id in CMS_STORAGE_CDS_WEBSITES_PAGE_TOPICS['organizzazione']:
-            topic_organization[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
+            topic_organization[t_id] = cds_topic_ogg_art_current
         else:
-            topic_notshown[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
-            
-
+            topic_notshown[t_id] = cds_topic_ogg_art_current
     
     if request.POST:
         pass
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites:crud_cdswebsites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
                    '#': cds.nome_cds_it }
 
     return render(request, 'cds_website.html',
@@ -120,3 +91,146 @@ def cds_website(request, code, cds=None, my_offices=None):
                     'topics_list': topics,
                     'breadcrumbs': breadcrumbs,
                    })
+
+#Common
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_tregart_edit(request, code, tregart_id, cds=None, my_offices=None):
+    
+    tregart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=tregart_id)
+    print("Editing", tregart.titolo_it)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_websites_edit', kwargs={'code': code}): cds.nome_cds_it,
+                   '#': tregart.titolo_it }
+    
+    return render(request, 'unique_form.html',
+                  { 
+                   'breadcrumbs': breadcrumbs,
+                    'cds': cds,
+                    'item_label': _('Regulament Article Settings'),
+                    'edit': 1,
+                  })
+    
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_tregart_delete(request, code, tregart_id, cds=None, my_offices=None):
+    
+    print("Deleting %d", data_id)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_websites_edit', kwargs={'code': code}): cds.nome_cds_it,
+                   '#': _("New Object") }
+    
+    return render(request, 'unique_form.html',
+                  { 
+                   'breadcrumbs': breadcrumbs,
+                    'cds': cds,
+                  })
+
+#Reg Articles
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_tregart_extra_new(request, code, tregart_id, cds=None, my_offices=None):
+    
+    cds_topic_ogg_art = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=tregart_id)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_websites_edit', kwargs={'code': code}): cds.nome_cds_it,
+                   '#': _("New Extra for Regulament Article") + f" {cds_topic_ogg_art.titolo_it}"  }
+    
+    return render(request, 'unique_form.html',
+                  { 
+                   'breadcrumbs': breadcrumbs,
+                    'cds': cds,
+                    'item_label': _('Regulament Article Extras'),
+                  })
+    
+    
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_tregart_extra_edit(request, code, tregart_id, data_id, cds=None, my_offices=None):
+    
+    print("Editing %", data_id)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_websites_edit', kwargs={'code': code}): cds.nome_cds_it,
+                   '#': _("New Object") }
+    
+    return render(request, 'unique_form.html',
+                  { 
+                   'breadcrumbs': breadcrumbs,
+                    'cds': cds,
+                    'item_label': _('Regulament Article Attribute'),
+                    'edit': 1,
+                  })
+    
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_tregart_extra_delete(request, code, tregart_id, data_id, cds=None, my_offices=None):
+    
+    print("Deleting %d", data_id)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_websites_edit', kwargs={'code': code}): cds.nome_cds_it,
+                   '#': _("New Object") }
+    
+    return render(request, 'unique_form.html',
+                  { 
+                   'breadcrumbs': breadcrumbs,
+                    'cds': cds,
+                  })    
+    
+    
+    
+#Objects
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_objects_new(request, code, cds=None, my_offices=None):
+    
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_websites_edit', kwargs={'code': code}): cds.nome_cds_it,
+                   '#': _("New") }
+    
+    return render(request, 'unique_form.html',
+                  { 
+                   'breadcrumbs': breadcrumbs,
+                    'cds': cds,
+                    'item_label': _('Object'),
+                  })
+    
+    
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_objects_edit(request, code, tregart_id, cds=None, my_offices=None):
+    
+    obj = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_websites_edit', kwargs={'code': code}): cds.nome_cds_it,
+                   '#': obj.testo_it }
+    
+    return render(request, 'unique_form.html',
+                  { 
+                   'breadcrumbs': breadcrumbs,
+                    'cds': cds,
+                    'item_label': _('Object'),
+                    'edit': 1,
+                  })
+    

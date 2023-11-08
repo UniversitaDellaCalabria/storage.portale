@@ -21,7 +21,7 @@ def can_manage_cds_website(func_to_decorate):
         request = original_args[0]
         
         if original_kwargs.get('code'):
-            cds = get_object_or_404(DidatticaCds, pk=original_kwargs.get('code'))
+            cds = get_object_or_404(DidatticaCds, cds_cod=original_kwargs.get('code'))
             original_kwargs["cds"] = cds
         
         if request.user.is_superuser:
