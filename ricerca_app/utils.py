@@ -19,7 +19,9 @@ def encrypt(value): # pragma: no cover
     if not value:
         return None
     value = str(value)
-    return Fernet(settings.ENCRYPTION_KEY).encrypt(value.encode()).decode()
+    iv = b'\xbd\xc0,\x16\x87\xd7G\xb5\xe5\xcc\xdb\xf9\x07\xaf\xa0\xfa'
+    return Fernet(settings.ENCRYPTION_KEY)._encrypt_from_parts(value.encode(), 0, iv).decode()
+    # return Fernet(settings.ENCRYPTION_KEY).encrypt(value.encode()).decode()
 
 
 def decrypt(value): # pragma: no cover
