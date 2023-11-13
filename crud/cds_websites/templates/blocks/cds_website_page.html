@@ -4,142 +4,146 @@
 
 {% block cds_page %}
 
-{% with page_name=page_name|default:"Page" topic_id=topic_id|default:0 topic_obj_arts=topic_obj_arts|default:None cds=cds|default:None %}
+{% with page_name=page_name|default:"Page" topic_obj_regarts=topic_obj_regarts|default:None cds=cds|default:None %}
 
-<div id="collapseDiv_{{page_name}}_{{topic_id}}" class="collapse-div collapse-left-icon">
-    <div class="collapse-header" id="heading_{{page_name}}_{{topic_id}}">
-        <button data-toggle="collapse" data-target="#collapse_{{page_name}}_{{topic_id}}" aria-expanded="false" aria-controls="collapse_{{page_name}}_{{topic_id}}">
+<div id="collapseDiv_{{page_name}}_{{topic_obj_regarts.topic.id}}" class="collapse-div collapse-left-icon">
+    <div class="collapse-header" id="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+        <button data-toggle="collapse" data-target="#collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}" aria-expanded="false" aria-controls="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}">
             <h4 style="font-weight: lighter;" class="pb-2">
-                {{ topic_obj_arts.0.id_sito_web_cds_topic.descr_topic_it }}
+                {{ topic_obj_regarts.topic.descr_topic_it }}
             </h4>
         </button>
     </div>
-    <div id="collapse_{{page_name}}_{{topic_id}}" class="collapse" role="region" aria-labelledby="heading_{{page_name}}_{{topic_id}}">
+    <div id="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}" class="collapse" role="region" aria-labelledby="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
         <div class="collapse-body">
-            {% for toa in topic_obj_arts %}
-                {% if toa.id_sito_web_cds_articoli_regolamento %}
-                    <!-- Reg Articles -->
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="col-7">{% trans "Articles" %}</th>
-                                <th class="col-2 text-center">{% trans "Order" %}</th>
-                                <th class="col-2 text-center">{% trans "Visible" %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="col-7">
-                                    {{ toa.titolo_it }}
-                                </td>
-                                <td class="col-2 text-center">
-                                    {{ toa.ordine }}
-                                </td>
-                                <td class="col-2 text-center">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="visibleCheckBox" disabled {% if toa.visibile %}checked{% endif %}>
-                                        <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
+            <!-- Reg Articles -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="col-7">{% trans "Articles" %}</th>
+                        <th class="col-2 text-center">{% trans "Order" %}</th>
+                            <th class="col-2 text-center">{% trans "Visible" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for regart in topic_obj_regarts.regarts %}
+                    <tr>
+                        <td class="col-7">
+                            {{ regart.titolo_it }}
+                        </td>
+                        <td class="col-2 text-center">
+                            {{ regart.ordine }}
+                        </td>
+                        <td class="col-2 text-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="visibleCheckBox" disabled {% if regart.visibile %}checked{% endif %}>
+                                <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
+                            </div>
+                        </td>
+                        <td class="col-3 text-right">
+                            <a href="{% url 'crud_cds_websites:crud_cds_websites_regart_edit' code=cds_website.id data_id=regart.id %}" class="btn btn-primary btn-xs">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                </svg>
+                                {% trans "Manage" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'crud_cds_websites:crud_cds_websites_regart_new' code=cds_website.id %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+            <!-- /Reg Articles -->
+            <hr />
+            <!-- Objects -->
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th class="col-7">{% trans "Objects" %}</th>
+                        <th class="col-2 text-center">{% trans "Order" %}</th>
+                        <th class="col-2 text-center">{% trans "Visible" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in topic_obj_regarts.objects %}
+                        <!-- Object Delete Modal -->
+                        <div class="modal fade"
+                            tabindex="-1"
+                            role="dialog"
+                            id="delete_object_{{object.id}}">
+                            <div class="modal-dialog modal-dialog-centered"
+                                    role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Confirm" %}
+                                        </h5>
+                                        <button class="close"
+                                                type="button"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                            <svg class="icon">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                            </svg>
+                                        </button>
                                     </div>
-                                </td>
-                                <td class="col-3 text-right">
-                                    <a href="{% url 'crud_cds_websites:crud_cds_websites_tregart_edit' code=cds.cds_cod tregart_id=toa.id %}" class="btn btn-primary btn-xs">
-                                        <svg class="icon icon-xs icon-white">
-                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                        </svg>
-                                        {% trans "Manage" %}
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <!-- /Reg Articles -->
-                    <hr />
-                {% else %}
-                    <!-- Objects -->
-                    <table class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th class="col-7">{% trans "Objects" %}</th>
-                                <th class="col-2 text-center">{% trans "Order" %}</th>
-                                <th class="col-2 text-center">{% trans "Visible" %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Object Delete Modal -->
-                            <div class="modal fade"
-                                tabindex="-1"
-                                role="dialog"
-                                id="delete_object_{{toa.id}}">
-                                <div class="modal-dialog modal-dialog-centered"
-                                        role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">
-                                                {% trans "Confirm" %}
-                                            </h5>
-                                            <button class="close"
-                                                    type="button"
-                                                    data-dismiss="modal"
-                                                    aria-label="Close">
-                                                <svg class="icon">
-                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>
-                                                {% trans "Do you want to delete this object?" %}
-                                            </p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites:crud_cds_websites_tregart_delete' code=cds.cds_cod tregart_id=toa %}">
-                                                {% trans 'Yes, proceed' %}
-                                            </a>
-                                        </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {% trans "Do you want to delete this object?" %}
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites:crud_cds_websites_item_delete' code=cds_website.id data_id=object.id %}">
+                                            {% trans 'Yes, proceed' %}
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                            <!-- /Object Delete Modal -->
-                            <tr>
-                                <td class="col-7">
-                                    {{ toa.titolo_it }}
-                                </td>
-                                <td class="col-2 text-center">
-                                    {{ toa.ordine }}
-                                </td>
-                                <td class="col-2 text-center">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="visibleCheckBox" disabled {% if toa.visibile %}checked{% endif %}>
-                                        <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
-                                    </div>
-                                </td>
-                                <td class="col-3 text-right">
-                                    <a href="{% url 'crud_cds_websites:crud_cds_websites_objects_edit' code=cds.cds_cod data_id=toa.id_sito_web_cds_oggetti_portale.id tregart_id=toa.id %}" class="btn btn-primary btn-xs">
-                                        <svg class="icon icon-xs icon-white">
-                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                        </svg>
-                                        {% trans "Edit" %}
-                                    </a>
-                                    <a href="" class="btn btn-danger btn-xs"
-                                        data-toggle="modal"
-                                        data-target="#delete_object_{{toa.id}}">
-                                        <svg class="icon icon-xs icon-white">
-                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                        </svg>
-                                        {% trans "Remove" %}
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <a href="{% url 'crud_cds_websites:crud_cds_websites_objects_new' code=cds.cds_cod %}" class="btn btn-block btn-success">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                        </svg> {% trans "Add new" %}
-                    </a>
-                    <!-- /Objects -->
-                {% endif %}
-            {% endfor %}
+                        </div>
+                        <!-- /Object Delete Modal -->
+                        <tr>
+                            <td class="col-7">
+                                {{ object.titolo_it }}
+                            </td>
+                            <td class="col-2 text-center">
+                                {{ object.ordine }}
+                            </td>
+                            <td class="col-2 text-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="visibleCheckBox" disabled {% if object.visibile %}checked{% endif %}>
+                                    <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
+                                </div>
+                            </td>
+                            <td class="col-3 text-right">
+                                <a href="{% url 'crud_cds_websites:crud_cds_websites_object_edit' code=cds_website.id data_id=object.id %}" class="btn btn-primary btn-xs">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg>
+                                    {% trans "Edit" %}
+                                </a>
+                                <a href="" class="btn btn-danger btn-xs"
+                                    data-toggle="modal"
+                                    data-target="#delete_object_{{object.id}}">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                    </svg>
+                                    {% trans "Remove" %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'crud_cds_websites:crud_cds_websites_object_new' code=cds_website.id %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+            <!-- /Objects -->
         </div>
     </div>
 </div>

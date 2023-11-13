@@ -2,17 +2,16 @@ from ckeditor.widgets import CKEditorWidget
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django.conf import settings
 
-from ricerca_app.models import (SitoWebCdsDatiBase,
-                                SitoWebCdsExStudenti,
-                                SitoWebCdsLink,
-                                SitoWebCdsSlider)
+import requests
 
-from .. utils.settings import CMS_STORAGE_ROOT_API
+from ricerca_app.models import *
 
 
-CMS_STORAGE_ROOT_API = getattr(settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
+UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
+UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 
 
 class SitoWebCdsDatiBaseForm(forms.ModelForm):
@@ -98,3 +97,85 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
     class Media:
         js = ('js/textarea-autosize.js',)
 
+
+class SitoWebCdsTopicArticoliItemForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+            super(SitoWebCdsTopicArticoliItemForm, self).__init__(*args, **kwargs)
+    
+    visibile = forms.BooleanField(
+        required=True,
+        label=_("Visible"),
+    )
+    ordine = forms.IntegerField(
+        required=True,
+        max_value=100,
+        min_value=1,
+        label=_("Order"),
+    )
+    
+    class Meta:
+        model = SitoWebCdsTopicArticoliReg
+        exclude = ['dt_mod', 'id_user_mod', 'id_sito_web_cds_topic', 'id_sito_web_cds_oggetti_portale', 'id_sito_web_cds_articoli_regolamento']
+        labels = {
+            "titolo_it": _("Title (IT)"),
+            "titolo_en": _("Title (EN)"),
+            "ordine": _("Order")
+        }
+   
+class SitoWebCdsArticoliRegolamentoForm(SitoWebCdsTopicArticoliItemForm):
+    def __init__(self, *args, **kwargs):
+        cds_id = kwargs.pop("cds_id", None)
+        
+        super(SitoWebCdsArticoliRegolamentoForm, self).__init__(*args, **kwargs)
+        
+        if not self.instance.pk:
+            choices=tuple(SitoWebCdsArticoliRegolamento.objects.filter(cds_id=cds_id).values_list("id", "titolo_articolo_it"))
+        else:
+            choices=((self.instance.id_sito_web_cds_articoli_regolamento.id, self.instance.id_sito_web_cds_articoli_regolamento.titolo_articolo_it),)
+        
+        self.fields["id_sito_web_cds_articoli_regolamento"] = forms.ChoiceField(
+            choices=choices,
+            label=_("Articolo Regolamento"),
+        )
+     
+class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
+    
+    # headers = {
+    #     "Authorization": f"Token {UNICMS_AUTH_TOKEN}",
+    # }
+    # UNICMS_PUB_API = UNICMS_OBJECT_API["Publication"]
+    # UNICMS_WPT_API = UNICMS_OBJECT_API["WebPath"]
+    
+    # publications = requests.get(f"{UNICMS_PUB_API}", headers=headers)
+    # webpaths = requests.get(f"{UNICMS_WPT_API}", headers=headers)
+    
+    # if publications and publications.status_code == 200:    
+    #     publications = publications.json()["results"]
+        
+    # if webpaths and webpaths["ResponseCode"] == 200:    
+    #     webpaths = webpaths.json()["results"]
+    
+    # publications = tuple(map(lambda pub: (pub["id"], pub["title"]), publications))
+    # webpaths = tuple(map(lambda wp: (wp["id"], wp["title"]), webpaths))
+
+    
+    
+    id_classe_oggetto_portale = forms.ChoiceField(
+        required=True,
+        choices=(("WebPath", _("WebPath")),("Publication", _("Publication"))),
+        label=_("Object Class"),
+    )
+    aa_regdid_id = forms.IntegerField(
+        required=True,
+        min_value=1901,
+        max_value=timezone.now().year,
+        label=_("Didactic Regulation Year"),
+    )
+    id_oggetto_portale = forms.IntegerField(
+        required=True,
+        min_value=0,
+    )
+    class Meta:
+        model = SitoWebCdsOggettiPortale
+        exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'visibile']

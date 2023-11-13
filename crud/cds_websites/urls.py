@@ -5,14 +5,16 @@ from . views import *
 urlpatterns = []
 
 urlpatterns += path('cds-websites/', cds_websites, name='crud_cds_websites'),
-urlpatterns += path('cds-websites/<str:code>/', cds_websites_edit, name='crud_cds_websites_edit'),
-urlpatterns += path('cds-websites/<str:code>/reg-arts-objects/<str:tregart_id>/', cds_websites_tregart_edit, name='crud_cds_websites_tregart_edit'),
-urlpatterns += path('cds-websites/<str:code>/reg-arts-objects/<str:tregart_id>/delete/', cds_websites_tregart_delete, name='crud_cds_websites_tregart_delete'),
+urlpatterns += path('cds-websites/<str:code>/topics/', cds_websites_topics_edit, name='crud_cds_websites_topics_edit'),
+#Common
+urlpatterns += path('cds-websites/<str:code>/topics/items/<str:data_id>/delete/', cds_websites_item_delete, name='crud_cds_websites_item_delete'),
 #Reg Artciles
-urlpatterns += path('cds-websites/<str:code>/reg-arts-objects/<str:tregart_id>/extra/new/', cds_websites_tregart_extra_new, name='crud_cds_websites_tregart_extra_new'),
-urlpatterns += path('cds-websites/<str:code>/reg-arts-objects/<str:tregart_id>/extra/<str:data_id>/', cds_websites_tregart_extra_edit, name='crud_cds_websites_tregart_extra_edit'),
-urlpatterns += path('cds-websites/<str:code>/reg-arts-objects/<str:tregart_id>/extra/<str:data_id>/delete/', cds_websites_tregart_extra_delete, name='crud_cds_websites_tregart_extra_delete'),
+urlpatterns += path('cds-websites/<str:code>/topics/items/regulament-articles/new', cds_websites_regart_new, name='crud_cds_websites_regart_new'),
+urlpatterns += path('cds-websites/<str:code>/topics/items/<str:data_id>/regulament-articles/', cds_websites_regart_edit, name='crud_cds_websites_regart_edit'),
+urlpatterns += path('cds-websites/<str:code>/topics/items/<str:data_id>/regulament-articles/extra/new', cds_websites_regart_extra_new, name='crud_cds_websites_regart_extra_new'),
+urlpatterns += path('cds-websites/<str:code>/topics/items/<str:data_id>/regulament-articles/extra/<str:extra_id>/', cds_websites_regart_extra_edit, name='crud_cds_websites_regart_extra_edit'),
+urlpatterns += path('cds-websites/<str:code>/topics/items/<str:data_id>/regulament-articles/extra/<str:extra_id>/delete/', cds_websites_regart_extra_delete, name='crud_cds_websites_regart_extra_delete'),
 #Objects
-urlpatterns += path('cds-websites/<str:code>/reg-arts-objects/objects/new/', cds_websites_objects_new, name='crud_cds_websites_objects_new'),
-urlpatterns += path('cds-websites/<str:code>/reg-arts-objects/<str:tregart_id>/objects/<str:data_id>/', cds_websites_objects_edit, name='crud_cds_websites_objects_edit'),
+urlpatterns += path('cds-websites/<str:code>/topics/items/objects/new/', cds_websites_object_new, name='crud_cds_websites_object_new'),
+urlpatterns += path('cds-websites/<str:code>/topics/items/<str:data_id>/object/', cds_websites_object_edit, name='crud_cds_websites_object_edit'),
 
