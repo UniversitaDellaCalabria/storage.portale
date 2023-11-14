@@ -133,7 +133,7 @@ class SitoWebCdsArticoliRegolamentoForm(SitoWebCdsTopicArticoliItemForm):
         
         super(SitoWebCdsArticoliRegolamentoForm, self).__init__(*args, **kwargs)
         if not self.instance.pk:
-            already_chosen = SitoWebCdsTopicArticoliReg.objects.filter(id_sito_web_cds_articoli_regolamento__cds_id=cds_id).values_list("id", flat=True)
+            already_chosen = SitoWebCdsTopicArticoliReg.objects.filter(id_sito_web_cds_articoli_regolamento__cds_id=cds_id).values_list("id_sito_web_cds_articoli_regolamento", flat=True)
             choices=tuple(SitoWebCdsArticoliRegolamento.objects.filter(cds_id=cds_id).exclude(id__in=already_chosen).values_list("id", "titolo_articolo_it"))
         else:
             choices=((self.instance.id_sito_web_cds_articoli_regolamento.id, self.instance.id_sito_web_cds_articoli_regolamento.titolo_articolo_it),)
