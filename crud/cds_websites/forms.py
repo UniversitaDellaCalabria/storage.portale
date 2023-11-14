@@ -125,6 +125,7 @@ class SitoWebCdsTopicArticoliItemForm(forms.ModelForm):
             "titolo_en": _("Title (EN)"),
             "ordine": _("Order"),
             "visibile": _("Visible"),
+            "id_sito_web_cds_articoli_regolamento": _("Regulament Article"),
         }
    
 class SitoWebCdsArticoliRegolamentoForm(SitoWebCdsTopicArticoliItemForm):
@@ -143,8 +144,6 @@ class SitoWebCdsArticoliRegolamentoForm(SitoWebCdsTopicArticoliItemForm):
             label=_("Articolo Regolamento"),
         )
         
-        class Meta(SitoWebCdsTopicArticoliItemForm.Meta):
-            pass
      
 class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
        
@@ -167,3 +166,44 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
     class Meta:
         model = SitoWebCdsOggettiPortale
         exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'visibile']
+        
+        
+class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SitoWebCdsTopicArticoliRegAltriDatiForm, self).__init__(*args, **kwargs)
+        if self.initial:
+            self.initial["visibile"] = bool(self.initial.get("visibile", None))
+            
+    
+    visibile = forms.BooleanField(
+        label=_("Visible"),
+        required=False,
+    )
+    ordine = forms.IntegerField(
+        required=True,
+        max_value=100,
+        min_value=1,
+        label=_("Order"),
+    )
+    id_sito_web_cds_tipo_dato = forms.ChoiceField(
+        required=True,
+        choices=tuple(SitoWebCdsTipoDato.objects.all().values_list("id", "descr_breve")),
+        label=_("Type"),
+    )
+    link = forms.URLField(
+        label=_("Link"),
+    )
+    
+    class Meta:
+        model = SitoWebCdsTopicArticoliRegAltriDati
+        exclude = ['dt_mod', 'id_user_mod', 'id_sito_web_cds_topic_articoli_reg', 'id_sito_web_cds_tipo_dato']
+        labels = {
+            "titolo_it": _("Title (IT)"),
+            "titolo_en": _("Title (EN)"),
+            "ordine": _("Order"),
+            "visibile": _("Visible"),
+            "testo_it": _("Text (IT)"),
+            "testo_en": _("Text (EN)"),
+            "id_sito_web_cds_tipo_dato": _("Type"),
+            "link": _("Link"),
+        }

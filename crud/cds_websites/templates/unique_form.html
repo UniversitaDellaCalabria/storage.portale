@@ -7,7 +7,7 @@
 {% block centered_container %}
 <div>
     <h3 style="font-weight: lighter;" class="mb-4">
-        {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %} {{ cds.nome_cds_it }}
+        {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %} {{ cds_website.nome_corso_it }}
     </h3>
     {% block before_forms%}
     {% endblock %}

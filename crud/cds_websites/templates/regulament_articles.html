@@ -72,6 +72,14 @@
                                         </svg>
                                         {% trans "Edit" %}
                                     </a>
+                                    <a href="" class="btn btn-danger btn-xs"
+                                        data-toggle="modal"
+                                        data-target="#delete_extra_{{extra.id}}">
+                                        <svg class="icon icon-xs icon-white">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                        </svg>
+                                        {% trans "Remove" %}
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
