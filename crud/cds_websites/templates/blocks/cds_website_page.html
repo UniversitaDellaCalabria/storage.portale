@@ -41,7 +41,7 @@
                             </div>
                         </td>
                         <td class="col-3 text-right">
-                            <a href="{% url 'crud_cds_websites:crud_cds_websites_regart_edit' code=cds_website.id data_id=regart.id %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_cds_websites:crud_cds_websites_regart_edit' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=regart.id %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg>
@@ -52,7 +52,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url 'crud_cds_websites:crud_cds_websites_regart_new' code=cds_website.id %}" class="btn btn-block btn-success">
+            <a href="{% url 'crud_cds_websites:crud_cds_websites_regart_new' code=cds_website.id topic_id=topic_obj_regarts.topic.id %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
@@ -97,7 +97,7 @@
                                         </p>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites:crud_cds_websites_item_delete' code=cds_website.id data_id=object.id %}">
+                                        <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites:crud_cds_websites_item_delete' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=object.id %}">
                                             {% trans 'Yes, proceed' %}
                                         </a>
                                     </div>
@@ -119,7 +119,7 @@
                                 </div>
                             </td>
                             <td class="col-3 text-right">
-                                <a href="{% url 'crud_cds_websites:crud_cds_websites_object_edit' code=cds_website.id data_id=object.id %}" class="btn btn-primary btn-xs">
+                                <a href="{% url 'crud_cds_websites:crud_cds_websites_object_edit' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=object.id %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg>
@@ -138,7 +138,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url 'crud_cds_websites:crud_cds_websites_object_new' code=cds_website.id %}" class="btn btn-block btn-success">
+            <a href="{% url 'crud_cds_websites:crud_cds_websites_object_new' code=cds_website.id topic_id=topic_obj_regarts.topic.id %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

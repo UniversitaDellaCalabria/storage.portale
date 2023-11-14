@@ -101,11 +101,14 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
 class SitoWebCdsTopicArticoliItemForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
-            super(SitoWebCdsTopicArticoliItemForm, self).__init__(*args, **kwargs)
+        super(SitoWebCdsTopicArticoliItemForm, self).__init__(*args, **kwargs)
+        if self.initial:
+            self.initial["visibile"] = bool(self.initial.get("visibile", None))
+            
     
     visibile = forms.BooleanField(
-        required=True,
         label=_("Visible"),
+        required=False,
     )
     ordine = forms.IntegerField(
         required=True,
@@ -120,7 +123,8 @@ class SitoWebCdsTopicArticoliItemForm(forms.ModelForm):
         labels = {
             "titolo_it": _("Title (IT)"),
             "titolo_en": _("Title (EN)"),
-            "ordine": _("Order")
+            "ordine": _("Order"),
+            "visibile": _("Visible"),
         }
    
 class SitoWebCdsArticoliRegolamentoForm(SitoWebCdsTopicArticoliItemForm):
@@ -128,9 +132,9 @@ class SitoWebCdsArticoliRegolamentoForm(SitoWebCdsTopicArticoliItemForm):
         cds_id = kwargs.pop("cds_id", None)
         
         super(SitoWebCdsArticoliRegolamentoForm, self).__init__(*args, **kwargs)
-        
         if not self.instance.pk:
-            choices=tuple(SitoWebCdsArticoliRegolamento.objects.filter(cds_id=cds_id).values_list("id", "titolo_articolo_it"))
+            already_chosen = SitoWebCdsTopicArticoliReg.objects.filter(id_sito_web_cds_articoli_regolamento__cds_id=cds_id).values_list("id", flat=True)
+            choices=tuple(SitoWebCdsArticoliRegolamento.objects.filter(cds_id=cds_id).exclude(id__in=already_chosen).values_list("id", "titolo_articolo_it"))
         else:
             choices=((self.instance.id_sito_web_cds_articoli_regolamento.id, self.instance.id_sito_web_cds_articoli_regolamento.titolo_articolo_it),)
         
@@ -138,28 +142,12 @@ class SitoWebCdsArticoliRegolamentoForm(SitoWebCdsTopicArticoliItemForm):
             choices=choices,
             label=_("Articolo Regolamento"),
         )
+        
+        class Meta(SitoWebCdsTopicArticoliItemForm.Meta):
+            pass
      
 class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
-    
-    # headers = {
-    #     "Authorization": f"Token {UNICMS_AUTH_TOKEN}",
-    # }
-    # UNICMS_PUB_API = UNICMS_OBJECT_API["Publication"]
-    # UNICMS_WPT_API = UNICMS_OBJECT_API["WebPath"]
-    
-    # publications = requests.get(f"{UNICMS_PUB_API}", headers=headers)
-    # webpaths = requests.get(f"{UNICMS_WPT_API}", headers=headers)
-    
-    # if publications and publications.status_code == 200:    
-    #     publications = publications.json()["results"]
-        
-    # if webpaths and webpaths["ResponseCode"] == 200:    
-    #     webpaths = webpaths.json()["results"]
-    
-    # publications = tuple(map(lambda pub: (pub["id"], pub["title"]), publications))
-    # webpaths = tuple(map(lambda wp: (wp["id"], wp["title"]), webpaths))
-
-    
+       
     
     id_classe_oggetto_portale = forms.ChoiceField(
         required=True,

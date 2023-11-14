@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-from django.utils import timezone
+from django.utils.timezone import *
 
 
 from ricerca_app.models import *
@@ -123,10 +123,16 @@ def cds_websites_topics_edit(request, code, cds_website=None, my_offices=None):
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_item_delete(request, code, data_id, cds_website=None, my_offices=None):
-    
+def cds_websites_item_delete(request, code, topic_id, data_id, cds_website=None, my_offices=None):
     print("Deleting %d", data_id)
-    
+    regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
+    if regart.id_sito_web_cds_articoli_regolamento is not None:
+        #delete extras
+        extras = SitoWebCdsTopicArticoliRegAltriDati.objects.filter(id_sito_web_cds_topic_articoli_reg=regart.id)
+        print(extras)
+        #extras.delete()
+        #regart.delete()
+        
     return redirect('crud_cds_websites:crud_cds_websites_topics_edit', code=code)
 
 
@@ -134,42 +140,46 @@ def cds_websites_item_delete(request, code, data_id, cds_website=None, my_office
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_regart_new(request, code, cds_website=None, my_offices=None):
+def cds_websites_regart_new(request, code, topic_id, cds_website=None, my_offices=None):
                 
     art_reg_form = SitoWebCdsArticoliRegolamentoForm(data=request.POST if request.POST else None, cds_id=cds_website.cds_id)
     
     if request.POST:
+        if art_reg_form.is_valid():
         
-        art_reg = art_reg_form.save(commit=False)
-        art_reg.user_mod_id = request.user
-        art_reg.dt_mod = now()
-        art_reg.save()
-    
-        log_action(user=request.user,
-                        obj=cds_website,
-                        flag=CHANGE,
-                        msg=_("Added Regulament Article"))
+            art_reg = art_reg_form.save(commit=False)
+            art_reg.id_sito_web_cds_topic = get_object_or_404(SitoWebCdsTopic, pk=topic_id)
+            art_reg.id_sito_web_cds_articoli_regolamento = get_object_or_404(SitoWebCdsArticoliRegolamento, pk=art_reg_form.data.get("id_sito_web_cds_articoli_regolamento", None))
+            art_reg.dt_mod = now()
+            art_reg.id_user_mod=request.user
+            art_reg.save()
+        
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Added Regulament Article"))
 
-        messages.add_message(request,
-                                messages.SUCCESS,
-                                _("Regulament Article edited successfully"))
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Regulament Article added successfully"))
 
-        return redirect('crud_cds_websites:crud_cds_websites_regart_edit', code=code, data_id=art_reg.id)
+            return redirect('crud_cds_websites:crud_cds_websites_regart_edit', code=code, topic_id=topic_id, data_id=art_reg.id)
 
-    else:  # pragma: no cover
-        for k, v in art_reg_form.errors.items():
-            messages.add_message(request, messages.ERROR,
-                                    f"<b>{art_reg_form.fields[k].label}</b>: {v}")
+        else:  # pragma: no cover
+            for k, v in art_reg_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{art_reg_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
                    reverse('crud_cds_websites:crud_cds_websites_topics_edit', kwargs={'code': code}): cds_website.cds.nome_cds_it,
-                   '#': _("Add Regulament Article") }
+                   '#': _("Add") }
     
     return render(request, 'unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
+                    'topic_id' : topic_id,
                     'forms': [art_reg_form,],
                     'item_label': _('Item'),
                   })
@@ -178,11 +188,36 @@ def cds_websites_regart_new(request, code, cds_website=None, my_offices=None):
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_regart_edit(request, code, data_id, cds_website=None, my_offices=None):
+def cds_websites_regart_edit(request, code, topic_id, data_id, cds_website=None, my_offices=None):
     
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
     regart_attributes = SitoWebCdsTopicArticoliRegAltriDati.objects.filter(id_sito_web_cds_topic_articoli_reg=data_id)
     art_reg_form = SitoWebCdsArticoliRegolamentoForm(data=request.POST if request.POST else None, instance=regart)        
+        
+    if request.POST:
+        if art_reg_form.is_valid():
+        
+            art_reg = art_reg_form.save(commit=False)
+            art_reg.dt_mod = now()
+            art_reg.id_user_mod=request.user
+            art_reg.save()
+        
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Edited Regulament Article"))
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Regulament Article edited successfully"))
+
+            return redirect('crud_cds_websites:crud_cds_websites_topics_edit', code=code)
+
+        else:  # pragma: no cover
+            for k, v in art_reg_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{art_reg_form.fields[k].label}</b>: {v}")
+        
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
@@ -197,13 +232,14 @@ def cds_websites_regart_edit(request, code, data_id, cds_website=None, my_office
                     'regart': regart,
                     'regart_attributes': regart_attributes,
                     'item_label': _('Item'),
+                    'topic_id': topic_id,
                     'edit': 1,
                   })
 
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_regart_extra_new(request, code, data_id, cds_website=None, my_offices=None):
+def cds_websites_regart_extra_new(request, code, topic_id, data_id, cds_website=None, my_offices=None):
     
     cds_topic_ogg_art = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
     
@@ -216,6 +252,7 @@ def cds_websites_regart_extra_new(request, code, data_id, cds_website=None, my_o
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
+                    'topic_id': topic_id,
                     'item_label': _('Regulament Article Extras'),
                   })
     
@@ -223,7 +260,7 @@ def cds_websites_regart_extra_new(request, code, data_id, cds_website=None, my_o
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_regart_extra_edit(request, code, data_id, extra_id, cds_website=None, my_offices=None):
+def cds_websites_regart_extra_edit(request, code, topic_id, data_id, extra_id, cds_website=None, my_offices=None):
     
     print("Editing %", data_id)
     
@@ -236,6 +273,7 @@ def cds_websites_regart_extra_edit(request, code, data_id, extra_id, cds_website
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
+                    'topic_id': topic_id,
                     'item_label': _('Regulament Article Attribute'),
                     'edit': 1,
                   })
@@ -244,7 +282,7 @@ def cds_websites_regart_extra_edit(request, code, data_id, extra_id, cds_website
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_regart_extra_delete(request, code, data_id, extra_id, cds_website=None, my_offices=None):
+def cds_websites_regart_extra_delete(request, code, topic_id, data_id, extra_id, cds_website=None, my_offices=None):
     
     print("Deleting %d", data_id)
     
@@ -265,7 +303,7 @@ def cds_websites_regart_extra_delete(request, code, data_id, extra_id, cds_websi
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_object_edit(request, code, data_id, cds_website=None, my_offices=None):
+def cds_websites_object_edit(request, code, topic_id, data_id, cds_website=None, my_offices=None):
     
     tregart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
     
@@ -277,12 +315,12 @@ def cds_websites_object_edit(request, code, data_id, cds_website=None, my_office
         if art_reg_form.is_valid() and item_form.is_valid():
             
             art_reg = art_reg_form.save(commit=False)
-            art_reg.user_mod_id = request.user
+            art_reg.id_user_mod = request.user
             art_reg.dt_mod = now()
             art_reg.save()
             
             item_form.save(commit=False)
-            item_form.user_mod_id = request.user
+            item_form.id_user_mod = request.user
             item_form.dt_mod = now()
             item_form.save()
 
@@ -323,7 +361,7 @@ def cds_websites_object_edit(request, code, data_id, cds_website=None, my_office
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_object_new(request, code, cds_website=None, my_offices=None):
+def cds_websites_object_new(request, code, topic_id, cds_website=None, my_offices=None):
         
     art_reg_form = SitoWebCdsTopicArticoliItemForm(data=request.POST if request.POST else None)
 
@@ -333,13 +371,13 @@ def cds_websites_object_new(request, code, cds_website=None, my_offices=None):
         if art_reg_form.is_valid() and item_form.is_valid():
             
             art_reg = art_reg_form.save(commit=False)
-            art_reg.user_mod_id = request.user
+            art_reg.id_user_mod = request.user
             art_reg.dt_mod = now()
             art_reg.save()
             
             item_form.save(commit=False)
             item_form.id_sito_web_cds_oggetti_portale = art_reg
-            item_form.user_mod_id = request.user
+            item_form.id_user_mod = request.user
             item_form.dt_mod = now()
             item_form.save()
 
