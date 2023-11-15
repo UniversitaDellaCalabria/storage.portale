@@ -5,6 +5,8 @@ from . views import *
 urlpatterns = []
 
 urlpatterns += path('cds-websites/', cds_websites, name='crud_cds_websites'),
+urlpatterns += path('cds-websites/<str:code>/', cds_website, name='crud_cds_website'),
+urlpatterns += path('cds-websites/<str:code>/base/', cds_websites_base_edit, name='crud_cds_website_base_edit'),
 urlpatterns += path('cds-websites/<str:code>/topics/', cds_websites_topics_edit, name='crud_cds_websites_topics_edit'),
 #Common
 urlpatterns += path('cds-websites/<str:code>/topics/<str:topic_id>/items/<str:data_id>/delete/', cds_websites_item_delete, name='crud_cds_websites_item_delete'),

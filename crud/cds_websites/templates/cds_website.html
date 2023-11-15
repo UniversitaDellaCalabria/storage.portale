@@ -3,112 +3,64 @@
 {% load i18n %}
 {% load static %}
 
-{% block centered_container %}
-
 {% get_current_language as LANGUAGE_CODE %}
 
-<!-- Top Buttons -->
-<table class="table">
-    <tbody>
-        <tr>
-            <td class="text-left">
-                <a href="" class="btn btn-danger btn-xs"
-                data-toggle="modal"
-                data-target="#delete_laboratory">
-                    <svg class="icon icon-xs icon-white">
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                    </svg>
-                    {% trans "Remove" %}
-                </a>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<!-- /Top Buttons -->
+{% block centered_container %}
 
+<h3 style="font-weight: lighter;">
+    {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
+    {{ cds_website.nome_corso_it }}
+    {% else %}
+    {{ cds_website.nome_corso_en }}
+    {% endif %}    
+</h3>
 
-
-<div class="card-wrapper card-space">
-    <div class="card card-bg no-after">
-        <div class="card-body">
-            <h3 style="font-weight: normal;" class="mb-4 pb-4">
-                {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
-                    {{ cds_website.nome_corso_it }}
-                {% else %}
-                    {{ cds_website.nome_corso_en }}
-                {% endif %}
-            </h3>
-            <!-- Enroll -->
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        <h3 style="font-weight: normal" class="mb-4">{% trans "Enroll" %}</h3>
-                        {% for topic_id, tor in topic_enroll.items %}
-                            {% include "blocks/cds_website_page.html" with page_name="Enroll" topic_obj_regarts=tor %}
-                        {% endfor %}
-                    </div>
+<div class="row mt-5">
+    <div class="col col-lg">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-big card-bg no-after">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Base Info" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage Study Course Website Base Info' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_website_base_edit' code=cds_website.id %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
                 </div>
             </div>
-            <!-- /Enroll -->
-            <!-- Study -->
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        <h3 style="font-weight: normal" class="mb-4">{% trans "Study" %}</h3>
-                        {% for topic_id, tor in topic_study.items %}
-                            {% include "blocks/cds_website_page.html" with page_name="Study" topic_obj_regarts=tor %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <!-- /Study -->
-            <!-- Opportunities -->
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        <h3 style="font-weight: normal" class="mb-4">{% trans "Opportunities" %}</h3>
-                        {% for topic_id, tor in topic_opportunities.items %}
-                            {% include "blocks/cds_website_page.html" with page_name="Opportunities" topic_obj_regarts=tor %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <!-- /Opportunities -->
-            <!-- Organization -->
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        <h3 style="font-weight: normal" class="mb-4">{% trans "Organization" %}</h3>
-                        {% for topic_id, tor in topic_organization.items %}
-                            {% include "blocks/cds_website_page.html" with page_name="Organization" topic_obj_regarts=tor %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <!-- /Organization -->
-            <!-- Not Shown Topics -->
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        <h3 style="font-weight: normal" class="mb-4">{% trans "Not Shown Topics" %}</h3>
-                        {% for topic_id, tor in topic_notshown.items %}
-                            {% include "blocks/cds_website_page.html" with page_name="NotShownTopics" topic_obj_regarts=tor %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <!-- /Not Shown Topics -->
         </div>
+        <!--end card-->
+    </div>
+    <div class="col col-lg">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg card-big no-after">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Topics" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage Study Course Website Topics' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_websites_topics_edit' code=cds_website.id %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
     </div>
 </div>
 
-
-<div class="card-wrapper card-space">
-    <div class="card card-bg no-after">
-        <div class="card-body">
-            <h4 style="font-weight: lighter;">Logs</h4>
-            {% include "obj_logs.html" with logs=logs %}
-        </div>
-    </div>
-</div>
 {% endblock centered_container %}
