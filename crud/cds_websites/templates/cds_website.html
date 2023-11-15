@@ -5,6 +5,7 @@
 
 {% block centered_container %}
 
+{% get_current_language as LANGUAGE_CODE %}
 
 <!-- Top Buttons -->
 <table class="table">
@@ -31,7 +32,11 @@
     <div class="card card-bg no-after">
         <div class="card-body">
             <h3 style="font-weight: normal;" class="mb-4 pb-4">
-                {{ cds.nome_cds_it }}
+                {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
+                    {{ cds_website.nome_corso_it }}
+                {% else %}
+                    {{ cds_website.nome_corso_en }}
+                {% endif %}
             </h3>
             <!-- Enroll -->
             <div class="card-wrapper card-space">

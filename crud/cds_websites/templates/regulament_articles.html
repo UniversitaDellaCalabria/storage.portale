@@ -54,7 +54,11 @@
                             <!-- /Extra Delete Modal -->
                             <tr>
                                 <td class="col-7">
-                                    {{ extra.testo_it }}
+                                    {% if LANGUAGE_CODE == "it" or not extra.testo_en %}
+                                        {{ extra.testo_it }}
+                                    {% else %}
+                                        {{ extra.testo_en }}
+                                    {% endif %}
                                 </td>
                                 <td class="col-2 text-center">
                                     {{ extra.ordine }}

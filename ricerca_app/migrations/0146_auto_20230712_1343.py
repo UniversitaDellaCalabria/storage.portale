@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 ('testo_en', models.TextField(blank=True, db_column='TESTO_EN', null=True)),
                 ('visibile', models.IntegerField(db_column='VISIBILE')),
                 ('dt_mod', models.DateField(db_column='DT_MOD')),
-                ('id_sito_web_cds_topic_articoli_reg', models.ForeignKey(db_column='ID_SITO_WEB_CDS_TOPIC_ARTICOLI_REG', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdstopicarticolireg')),
+                ('id_sito_web_cds_topic_articoli_reg', models.ForeignKey(db_column='ID_SITO_WEB_CDS_TOPIC_ARTICOLI_REG', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.sitowebcdstopicarticolireg')),
                 ('id_user_mod', models.ForeignKey(blank=True, db_column='ID_USER_MOD', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
             ],
             options={

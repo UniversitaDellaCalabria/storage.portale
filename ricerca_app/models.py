@@ -4223,7 +4223,7 @@ class SitoWebCdsTopicArticoliReg(models.Model):
     titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000)  # Field name made lowercase.
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     id_sito_web_cds_topic = models.ForeignKey(SitoWebCdsTopic, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_TOPIC')  # Field name made lowercase.
-    id_sito_web_cds_oggetti_portale = models.ForeignKey(SitoWebCdsOggettiPortale, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', blank=True, null=True)  # Field name made lowercase.
+    id_sito_web_cds_oggetti_portale = models.ForeignKey(SitoWebCdsOggettiPortale, models.CASCADE, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', blank=True, null=True)  # Field name made lowercase.
     id_sito_web_cds_articoli_regolamento = models.ForeignKey(SitoWebCdsArticoliRegolamento, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO', blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
@@ -4248,7 +4248,7 @@ class SitoWebCdsTipoDato(models.Model):
 
 class SitoWebCdsTopicArticoliRegAltriDati(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_sito_web_cds_topic_articoli_reg = models.ForeignKey(SitoWebCdsTopicArticoliReg, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_TOPIC_ARTICOLI_REG')  # Field name made lowercase.
+    id_sito_web_cds_topic_articoli_reg = models.ForeignKey(SitoWebCdsTopicArticoliReg, models.CASCADE, db_column='ID_SITO_WEB_CDS_TOPIC_ARTICOLI_REG')  # Field name made lowercase.
     ordine = models.PositiveIntegerField(db_column='ORDINE')  # Field name made lowercase.
     id_sito_web_cds_tipo_dato = models.ForeignKey(SitoWebCdsTipoDato, models.PROTECT, db_column='ID_SITO_WEB_CDS_TIPO_DATO')  # Field name made lowercase.
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
