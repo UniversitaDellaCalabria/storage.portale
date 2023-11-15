@@ -5934,7 +5934,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert res.json()['results']['CDSId'] == 1
+        assert res.json()['results']['Id'] == 1
 
 
 
