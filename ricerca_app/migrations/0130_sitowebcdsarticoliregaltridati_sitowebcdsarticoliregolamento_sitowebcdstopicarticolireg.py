@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
                 ('dt_mod', models.DateField(db_column='DT_MOD')),
                 ('id_user_mod', models.IntegerField(db_column='ID_USER_MOD')),
                 ('id_sito_web_cds_articoli_regolamento', models.ForeignKey(db_column='ID_SITO_WEB_CDS_ARTICOLI_REGOLAMENTO', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsarticoliregolamento')),
-                ('id_sito_web_cds_oggetti_portale', models.ForeignKey(blank=True, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsoggettiportale')),
+                ('id_sito_web_cds_oggetti_portale', models.ForeignKey(blank=True, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.sitowebcdsoggettiportale')),
                 ('id_sito_web_cds_topic', models.ForeignKey(db_column='ID_SITO_WEB_CDS_TOPIC', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdstopic')),
             ],
             options={

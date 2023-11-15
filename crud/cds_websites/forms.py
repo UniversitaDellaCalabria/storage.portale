@@ -105,7 +105,6 @@ class SitoWebCdsTopicArticoliItemForm(forms.ModelForm):
         if self.initial:
             self.initial["visibile"] = bool(self.initial.get("visibile", None))
             
-    
     visibile = forms.BooleanField(
         label=_("Visible"),
         required=False,
@@ -146,7 +145,6 @@ class SitoWebCdsArticoliRegolamentoForm(SitoWebCdsTopicArticoliItemForm):
         
      
 class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
-       
     
     id_classe_oggetto_portale = forms.ChoiceField(
         required=True,
@@ -157,16 +155,25 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
         required=True,
         min_value=1901,
         max_value=timezone.now().year,
-        label=_("Didactic Regulation Year"),
+        label=_("Didactic Regulation Academic Year"),
     )
     id_oggetto_portale = forms.IntegerField(
         required=True,
         min_value=0,
+        label=_("Object Id"),
     )
     class Meta:
         model = SitoWebCdsOggettiPortale
         exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'visibile']
-        
+        labels = {
+            "titolo_it": _("Title (IT)"),
+            "titolo_en": _("Title (EN)"),
+            "testo_it": _("Text (IT)"),
+            "testo_en": _("Text (EN)"),
+            "id_oggetto_portale": _("Object Id"),
+            "aa_regdid_id": _("Didactic Regulation Academic Year"),
+            "id_classe_oggetto_portale": _("Object Class"),
+        }
         
 class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -192,6 +199,7 @@ class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
     )
     link = forms.URLField(
         label=_("Link"),
+        required=False,
     )
     
     class Meta:

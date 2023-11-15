@@ -10,7 +10,11 @@
     <div class="collapse-header" id="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
         <button data-toggle="collapse" data-target="#collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}" aria-expanded="false" aria-controls="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}">
             <h4 style="font-weight: lighter;" class="pb-2">
+                {% if LANGUAGE_CODE == "it" or not topic_obj_regarts.topic.descr_topic_en %}
                 {{ topic_obj_regarts.topic.descr_topic_it }}
+                {% else %}
+                {{ topic_obj_regarts.topic.descr_topic_en }}
+                {% endif %}
             </h4>
         </button>
     </div>
@@ -64,7 +68,11 @@
                     <!-- /Regart Remove Modal -->
                     <tr>
                         <td class="col-7">
+                            {% if LANGUAGE_CODE == "it" or not regart.titolo_en %}
                             {{ regart.titolo_it }}
+                            {% else %}
+                            {{ regart.titolo_en }}
+                            {% endif %}
                         </td>
                         <td class="col-2 text-center">
                             {{ regart.ordine }}
@@ -150,7 +158,11 @@
                         <!-- /Object Delete Modal -->
                         <tr>
                             <td class="col-7">
+                                {% if LANGUAGE_CODE == "it" or not object.titolo_en %}
                                 {{ object.titolo_it }}
+                                {% else %}
+                                {{ object.titolo_en }}
+                                {% endif %}
                             </td>
                             <td class="col-2 text-center">
                                 {{ object.ordine }}

@@ -94,10 +94,6 @@ def cds_websites_topics_edit(request, code, cds_website=None, my_offices=None):
                 "objects" : topic_objs,
                 "regarts" : topic_areg 
             }
-            
-    
-    if request.POST:
-        pass
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
@@ -125,16 +121,11 @@ def cds_websites_topics_edit(request, code, cds_website=None, my_offices=None):
 @can_manage_cds_website
 @can_edit_cds_website
 def cds_websites_item_delete(request, code, topic_id, data_id, cds_website=None, my_offices=None):
-    print(f"Deleting {data_id}")
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
     if regart.id_sito_web_cds_articoli_regolamento is not None:
-        #delete extras
-        extras = SitoWebCdsTopicArticoliRegAltriDati.objects.filter(id_sito_web_cds_topic_articoli_reg=regart.id)
-        print(extras)
-        #extras.delete()
-        #regart.delete()
+        regart.delete()
     elif regart.id_sito_web_cds_oggetti_portale is not None:
-        pass
+        regart.id_sito_web_cds_oggetti_portale.delete()
         
     return redirect('crud_cds_websites:crud_cds_websites_topics_edit', code=code)
 
@@ -375,20 +366,20 @@ def cds_websites_object_edit(request, code, topic_id, data_id, cds_website=None,
     
     art_reg_form = SitoWebCdsTopicArticoliItemForm(data=request.POST if request.POST else None, instance=tregart)
 
-    item_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None, instance=tregart.id_sito_web_cds_oggetti_portale)
+    object_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None, instance=tregart.id_sito_web_cds_oggetti_portale)
     
     if request.POST:
-        if art_reg_form.is_valid() and item_form.is_valid():
+        if art_reg_form.is_valid() and object_form.is_valid():
             
             art_reg = art_reg_form.save(commit=False)
             art_reg.id_user_mod = request.user
             art_reg.dt_mod = now()
             art_reg.save()
             
-            item_form.save(commit=False)
-            item_form.id_user_mod = request.user
-            item_form.dt_mod = now()
-            item_form.save()
+            _object = object_form.save(commit=False)
+            _object.id_user_mod = request.user
+            _object.dt_mod = now()
+            _object.save()
 
             log_action(user=request.user,
                         obj=cds_website,
@@ -405,20 +396,20 @@ def cds_websites_object_edit(request, code, topic_id, data_id, cds_website=None,
             for k, v in art_reg_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{art_reg_form.fields[k].label}</b>: {v}")
-            for k, v in item_form.errors.items():
+            for k, v in object_form.errors.items():
                 messages.add_message(request, messages.ERROR,
-                                     f"<b>{item_form.fields[k].label}</b>: {v}")
+                                     f"<b>{object_form.fields[k].label}</b>: {v}")
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
-                   reverse('crud_cds_websites:crud_cds_websites_topics_edit', kwargs={'code': code}):cds_website.cds.nome_cds_it,
+                   reverse('crud_cds_websites:crud_cds_websites_topics_edit', kwargs={'code': code}): cds_website.cds.nome_cds_it,
                    '#': tregart.titolo_it }
     
     return render(request, 'unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
-                    'forms': [art_reg_form, item_form,],
+                    'forms': [art_reg_form, object_form,],
                     'item_label': _('Item'),
                     'edit': 1,
                   })
@@ -431,21 +422,24 @@ def cds_websites_object_new(request, code, topic_id, cds_website=None, my_office
         
     art_reg_form = SitoWebCdsTopicArticoliItemForm(data=request.POST if request.POST else None)
 
-    item_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None)
+    object_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None)
     
     if request.POST:
-        if art_reg_form.is_valid() and item_form.is_valid():
+        if art_reg_form.is_valid() and object_form.is_valid():
+            
+            _object = object_form.save(commit=False)
+            _object.id_sito_web_cds_topic = topic_id
+            _object.cds = cds_website.cds 
+            _object.id_user_mod = request.user
+            _object.dt_mod = now()
+            _object.save()
             
             art_reg = art_reg_form.save(commit=False)
+            art_reg.id_sito_web_cds_oggetti_portale = _object
+            art_reg.id_sito_web_cds_topic = get_object_or_404(SitoWebCdsTopic, pk=topic_id)
             art_reg.id_user_mod = request.user
             art_reg.dt_mod = now()
             art_reg.save()
-            
-            item_form.save(commit=False)
-            item_form.id_sito_web_cds_oggetti_portale = art_reg
-            item_form.id_user_mod = request.user
-            item_form.dt_mod = now()
-            item_form.save()
 
             log_action(user=request.user,
                         obj=cds_website,
@@ -462,20 +456,20 @@ def cds_websites_object_new(request, code, topic_id, cds_website=None, my_office
             for k, v in art_reg_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{art_reg_form.fields[k].label}</b>: {v}")
-            for k, v in item_form.errors.items():
+            for k, v in object_form.errors.items():
                 messages.add_message(request, messages.ERROR,
-                                     f"<b>{item_form.fields[k].label}</b>: {v}")
+                                     f"<b>{object_form.fields[k].label}</b>: {v}")
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
-                   reverse('crud_cds_websites:crud_cds_websites_topics_edit', kwargs={'code': code}):cds_website.cds.nome_cds_it,
+                   reverse('crud_cds_websites:crud_cds_websites_topics_edit', kwargs={'code': code}): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en,
                    '#': _("New Object") }
     
     return render(request, 'unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
-                    'forms': [art_reg_form, item_form,],
+                    'forms': [art_reg_form, object_form,],
                     'item_label': _('Item'),
                     'edit': 1,
                   })
