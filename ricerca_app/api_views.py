@@ -1401,6 +1401,14 @@ class ApiCdsWebsiteTimetable(APIView):
         cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
         date_month = self.request.query_params.get('date_month')
         date_year = self.request.query_params.get('date_year')
+
+        search_teaching = self.request.query_params.get('search_teaching')
+        search_teacher = self.request.query_params.get('search_teacher')
+        search_location = self.request.query_params.get('search_location')
+
+        search = {'search_teaching': search_teaching,
+                  'search_teacher': search_teacher,
+                  'search_location': search_location}
         if cds:
             impegni = getImpegni(request=self.request,
                                  aa=academic_year,
@@ -1409,7 +1417,9 @@ class ApiCdsWebsiteTimetable(APIView):
                                  date_year=date_year,
                                  cds_cod=cds_cod,
                                  types=self.event_types)
-            impegni_json = impegniSerializer(impegni, int(year))
+            impegni_json = impegniSerializer(impegni,
+                                             int(year),
+                                             search)
             return Response(impegni_json)
         return Response({})
 
