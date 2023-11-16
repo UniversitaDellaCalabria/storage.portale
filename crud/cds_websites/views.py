@@ -55,13 +55,172 @@ def cds_website(request, code, cds_website=None, my_offices=None):
         'cds_website': cds_website,
     })
     
-    
+#Dati Base
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
 def cds_websites_base_edit(request, code, cds_website=None, my_offices=None):
-    pass
+    base_form = SitoWebCdsDatiBaseForm(data=request.POST if request.POST else None)
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
+                   '#': _("Base Info") }
+    
+    logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds_website).pk,
+                                   object_id=cds_website.pk)
+    
+    return render(request, 'base_form.html',
+                  { 
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'logs' : logs,
+                    'forms': [base_form,],
+                    'item_label': _('Item'),
+                  })
 
+#Sliders
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_sliders(request, code, cds_website=None, my_offices=None):
+    
+    sliders = SitoWebCdsSlider.objects.filter(id_sito_web_cds_dati_base=code).order_by("ordine")
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
+                   '#': _("Sliders") }
+    
+    logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds_website).pk,
+                                   object_id=cds_website.pk)
+
+    return render(request, 'cds_website_sliders.html',
+                  { 
+                    'cds_website' : cds_website,
+                    'sliders': sliders,
+                    'breadcrumbs': breadcrumbs,
+                    'logs' : logs,
+                   })
+
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_sliders_new(request, code, cds_website=None, my_offices=None):
+    slider_form = SitoWebCdsSliderForm(data=request.POST if request.POST else None)        
+        
+    if request.POST:
+        if slider_form.is_valid():
+        
+            slider = slider_form.save(commit=False)
+            slider.dt_mod = now()
+            slider.id_user_mod=request.user.id
+            slider.id_sito_web_cds_dati_base = cds_website
+            slider.save()
+        
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Added Slider"))
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Slider added successfully"))
+
+            return redirect('crud_cds_websites:crud_cds_websites_sliders', code=code)
+
+        else:  # pragma: no cover
+            for k, v in slider_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{slider_form.fields[k].label}</b>: {v}")
+        
+        
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
+                   reverse('crud_cds_websites:crud_cds_websites_sliders', kwargs={'code': code}): _("Sliders"),
+                   '#': _("New"), }
+
+    
+    return render(request, 'unique_form.html',
+                  { 
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'forms': [slider_form,],
+                    'item_label': _('Scrollable Text'),
+                  })
+    
+    
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_sliders_edit(request, code, data_id, cds_website=None, my_offices=None):
+    slider = get_object_or_404(SitoWebCdsSlider, pk=data_id)
+    slider_form = SitoWebCdsSliderForm(data=request.POST if request.POST else None, instance=slider)        
+        
+    if request.POST:
+        if slider_form.is_valid():
+        
+            slider = slider_form.save(commit=False)
+            slider.dt_mod = now()
+            slider.id_user_mod=request.user.id
+            slider.save()
+        
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Edited Slider"))
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Slider edited successfully"))
+
+            return redirect('crud_cds_websites:crud_cds_websites_sliders', code=code)
+
+        else:  # pragma: no cover
+            for k, v in slider_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{slider_form.fields[k].label}</b>: {v}")
+        
+        
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
+                   reverse('crud_cds_websites:crud_cds_websites_sliders', kwargs={'code': code}): _("Sliders"),
+                   '#': _("Edit"), }
+
+    
+    return render(request, 'unique_form.html',
+                  { 
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'forms': [slider_form,],
+                    'item_label': _('Scrollable Text'),
+                    'edit': 1,
+                  })
+    
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_sliders_delete(request, code, data_id, cds_website=None, my_offices=None):
+    
+    slider = get_object_or_404(SitoWebCdsSlider, pk=data_id)
+    slider.delete()
+        
+    log_action( user=request.user,
+                obj=cds_website,
+                flag=CHANGE,
+                msg=_("Deleted Slider"))
+
+    messages.add_message(   request,
+                            messages.SUCCESS,
+                            _("Slider deleted successfully"))
+
+    return redirect('crud_cds_websites:crud_cds_websites_sliders', code=code)
+
+
+#Topics
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website

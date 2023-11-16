@@ -2,7 +2,7 @@ from ckeditor.widgets import CKEditorWidget
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
+from django.utils.timezone import *
 from django.conf import settings
 
 import requests
@@ -18,11 +18,17 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
     # choosen_department = forms.CharField(label=_('Department'),
     #                                      widget=forms.HiddenInput(),
     #                                      required=False)
+    
+    aa = forms.IntegerField(
+        required=True,
+        min_value=1901,
+        max_value=now().year,
+        label=_("Academic year"),
+    )
 
     class Meta:
         model = SitoWebCdsDatiBase
-        fields = '__all__'
-        exclude = ['dt_mod', 'id_user_mod']
+        exclude = ['dt_mod', 'id_user_mod', 'id_didattica_regolamento', 'cds_cod', 'cds']
 
 
         labels = {
@@ -65,6 +71,7 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
             'sbocchi_professionali_it': _('Job opportunities (it)'),
             'sbocchi_professionali_en': _('Job opportunituies (en)')
         }
+        
         widgets = {'descrizione_corso_it': CKEditorWidget(),
                    'descrizione_corso_en': CKEditorWidget(),
                    'accesso_corso_it': CKEditorWidget(),
@@ -79,24 +86,34 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
                    'borse_studio_en': CKEditorWidget(),
                    'agevolazioni_it': CKEditorWidget(),
                    'agevolazioni_en': CKEditorWidget(),
-                   'corse_in_pillole_it': CKEditorWidget(),
-                   'corse_in_pillole_en': CKEditorWidget(),
+                   'corso_in_pillole_it': CKEditorWidget(),
+                   'corso_in_pillole_en': CKEditorWidget(),
                    'cosa_si_studia_it': CKEditorWidget(),
                    'cosa_si_studia_en': CKEditorWidget(),
                    'come_iscriversi_it': CKEditorWidget(),
                    'come_iscriversi_en': CKEditorWidget(),
                    }
 
-    # def __init__(self, *args, **kwargs):
-    #     super(SitoWebCdsDatiBaseForm, self).__init__(*args, **kwargs)
-    #     _logo_field = self.instance.nome_file_logo
-    #     self.fields['nome_file_logo'].widget = RicercaCRUDClearableWidget(
-    #         {'upload_to': _logo_field.field.upload_to(self.instance, _logo_field.name)}
-    #     )
-
     class Media:
         js = ('js/textarea-autosize.js',)
 
+class SitoWebCdsSliderForm(forms.ModelForm):
+    
+    ordine = forms.IntegerField(
+        required=True,
+        min_value=0,
+        max_value=100,
+        label=_("Order"),
+    )
+    
+    class Meta:
+        model = SitoWebCdsSlider
+        exclude = ['id_sito_web_cds_dati_base', 'id_user_mod', 'dt_mod',]
+        labels = {
+            'slider_it': _("Scrollable Text (it)"),
+            'slider_en': _("Scrollable Text (en)"),
+            'ordine': _("Order"),
+        }
 
 class SitoWebCdsTopicArticoliItemForm(forms.ModelForm):
     
@@ -120,8 +137,8 @@ class SitoWebCdsTopicArticoliItemForm(forms.ModelForm):
         model = SitoWebCdsTopicArticoliReg
         exclude = ['dt_mod', 'id_user_mod', 'id_sito_web_cds_topic', 'id_sito_web_cds_oggetti_portale', 'id_sito_web_cds_articoli_regolamento']
         labels = {
-            "titolo_it": _("Title (IT)"),
-            "titolo_en": _("Title (EN)"),
+            "titolo_it": _("Title (it)"),
+            "titolo_en": _("Title (en)"),
             "ordine": _("Order"),
             "visibile": _("Visible"),
             "id_sito_web_cds_articoli_regolamento": _("Regulament Article"),
@@ -154,7 +171,7 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
     aa_regdid_id = forms.IntegerField(
         required=True,
         min_value=1901,
-        max_value=timezone.now().year,
+        max_value= now().year,
         label=_("Didactic Regulation Academic Year"),
     )
     id_oggetto_portale = forms.IntegerField(
@@ -166,10 +183,10 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
         model = SitoWebCdsOggettiPortale
         exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'visibile']
         labels = {
-            "titolo_it": _("Title (IT)"),
-            "titolo_en": _("Title (EN)"),
-            "testo_it": _("Text (IT)"),
-            "testo_en": _("Text (EN)"),
+            "titolo_it": _("Title (it)"),
+            "titolo_en": _("Title (en)"),
+            "testo_it": _("Text (it)"),
+            "testo_en": _("Text (en)"),
             "id_oggetto_portale": _("Object Id"),
             "aa_regdid_id": _("Didactic Regulation Academic Year"),
             "id_classe_oggetto_portale": _("Object Class"),
@@ -206,12 +223,12 @@ class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
         model = SitoWebCdsTopicArticoliRegAltriDati
         exclude = ['dt_mod', 'id_user_mod', 'id_sito_web_cds_topic_articoli_reg', 'id_sito_web_cds_tipo_dato']
         labels = {
-            "titolo_it": _("Title (IT)"),
-            "titolo_en": _("Title (EN)"),
+            "titolo_it": _("Title (it)"),
+            "titolo_en": _("Title (en)"),
             "ordine": _("Order"),
             "visibile": _("Visible"),
-            "testo_it": _("Text (IT)"),
-            "testo_en": _("Text (EN)"),
+            "testo_it": _("Text (it)"),
+            "testo_en": _("Text (en)"),
             "id_sito_web_cds_tipo_dato": _("Type"),
             "link": _("Link"),
         }

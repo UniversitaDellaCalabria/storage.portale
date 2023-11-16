@@ -8,16 +8,18 @@
 
 {% block centered_container %}
 <div>
+    {% block title %}
     <h3 style="font-weight: lighter;" class="mb-4">
         {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %} 
             {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}{{ cds_website.nome_corso_it }}{% else %} {{ cds_website.nome_corso_en }} {% endif %}
     </h3>
+    {% endblock %}
     {% block before_forms%}
     {% endblock %}
     <form method="post" novalidate>
         {% block forms %}
             <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
+                <div class="card card-bg no-after pt-4">
                     <div class="card-body">
                         {% for form in forms %}
                             {% include "form_template.html" with form=form %}
@@ -31,8 +33,8 @@
                 </div>
             </div>
         {% endblock %}
-        {% block after_forms%}
-        {% endblock %}
     </form>
+    {% block after_forms%}
+    {% endblock %}
 </div>
 {% endblock centered_container %}

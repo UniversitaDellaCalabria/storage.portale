@@ -59,7 +59,28 @@
             </div>
         </div>
         <!--end card-->
-
+    </div>
+    <div class="col col-lg">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg card-big no-after">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Sliders" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage Study Course Website Sliders' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_websites_sliders' code=cds_website.id %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
     </div>
 </div>
 
