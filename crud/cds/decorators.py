@@ -45,7 +45,12 @@ def can_edit_cds(func_to_decorate):
 
         departments = []
 
-        for myoffice in original_kwargs['my_offices']:
+        my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                          office__name=OFFICE_CDS,
+                                                                          office__is_active=True,
+                                                                          office__organizational_structure__is_active=True)
+        # for myoffice in original_kwargs['my_offices']:
+        for myoffice in my_offices:
             if myoffice.office.organizational_structure.unique_code not in departments:
                 departments.append(
                     myoffice.office.organizational_structure.unique_code)
