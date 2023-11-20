@@ -5,9 +5,9 @@ name: storage.portale
 
 on:
   push:
-    branches: [ master, dev, crud, crud-cds-websites ]
+    branches: [ master, dev, crud, crud-cds-websites, crud-ciambrini ]
   pull_request:
-    branches: [ master, dev, crud, crud-cds-websites ]
+    branches: [ master, dev, crud, crud-cds-websites, crud-ciambrini ]
 
 jobs:
   build:
