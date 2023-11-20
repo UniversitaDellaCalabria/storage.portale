@@ -841,7 +841,7 @@ def cds_group_new(request, regdid_id, my_offices=None, regdid=None):
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("CdS Group successfully"))
+                                 _("CdS Group successfully added"))
 
             return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
         else:  # pragma: no cover
