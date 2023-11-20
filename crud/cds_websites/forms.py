@@ -97,6 +97,21 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
     class Media:
         js = ('js/textarea-autosize.js',)
 
+class SitoWebCdsExStudentiForm(forms.ModelForm):
+    
+    class Meta:
+        model = SitoWebCdsExStudenti
+        exclude = ['id_sito_web_cds_dati_base', 'id_user_mod', 'dt_mod',]
+        labels = {
+            'ordine': _("Order"),
+            'foto': _("Picture"),
+            'profilo_it': _("Profile (it)"),
+            'profilo_en': _("Profile (en)"),
+            'link_it': _("Link (it)"),
+            'link_en': _("Link (en)"),
+        }
+
+
 class SitoWebCdsSliderForm(forms.ModelForm):
     
     ordine = forms.IntegerField(
@@ -115,10 +130,10 @@ class SitoWebCdsSliderForm(forms.ModelForm):
             'ordine': _("Order"),
         }
 
-class SitoWebCdsTopicArticoliItemForm(forms.ModelForm):
+class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
-        super(SitoWebCdsTopicArticoliItemForm, self).__init__(*args, **kwargs)
+        super(SitoWebCdsTopicArticoliRegForm, self).__init__(*args, **kwargs)
         if self.initial:
             self.initial["visibile"] = bool(self.initial.get("visibile", None))
             
@@ -139,49 +154,78 @@ class SitoWebCdsTopicArticoliItemForm(forms.ModelForm):
         labels = {
             "titolo_it": _("Title (it)"),
             "titolo_en": _("Title (en)"),
+            "testo_it": _("Text (it)"),
+            "testo_en": _("Text (en)"),
             "ordine": _("Order"),
             "visibile": _("Visible"),
             "id_sito_web_cds_articoli_regolamento": _("Regulament Article"),
+            "id_sito_web_cds_oggetti_portale": _("Portal Object"),
         }
    
-class SitoWebCdsArticoliRegolamentoForm(SitoWebCdsTopicArticoliItemForm):
+class SitoWebCdsArticoliRegolamentoItemForm(SitoWebCdsTopicArticoliRegForm):
     def __init__(self, *args, **kwargs):
         cds_id = kwargs.pop("cds_id", None)
         
-        super(SitoWebCdsArticoliRegolamentoForm, self).__init__(*args, **kwargs)
+        super(SitoWebCdsArticoliRegolamentoItemForm, self).__init__(*args, **kwargs)
         if not self.instance.pk:
-            already_chosen = SitoWebCdsTopicArticoliReg.objects.filter(id_sito_web_cds_articoli_regolamento__cds_id=cds_id).values_list("id_sito_web_cds_articoli_regolamento", flat=True)
-            choices=tuple(SitoWebCdsArticoliRegolamento.objects.filter(cds_id=cds_id).exclude(id__in=already_chosen).values_list("id", "titolo_articolo_it"))
+            choices = SitoWebCdsArticoliRegolamento.objects.filter(cds_id=cds_id).values_list("id", "aa_regdid_id", "titolo_articolo_it").order_by("aa_regdid_id", "titolo_articolo_it")
+            choices = map(lambda reg: (reg[0], f"{reg[1]} - {reg[2]}"), choices)
+            choices = tuple(choices)
         else:
-            choices=((self.instance.id_sito_web_cds_articoli_regolamento.id, self.instance.id_sito_web_cds_articoli_regolamento.titolo_articolo_it),)
+            choices=((self.instance.id_sito_web_cds_articoli_regolamento.id, f"{self.instance.id_sito_web_cds_articoli_regolamento.aa_regdid_id} - {self.instance.id_sito_web_cds_articoli_regolamento.titolo_articolo_it}"),)
         
         self.fields["id_sito_web_cds_articoli_regolamento"] = forms.ChoiceField(
             choices=choices,
             label=_("Articolo Regolamento"),
         )
+
+class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
+    def __init__(self, *args, **kwargs):
+        cds_id = kwargs.pop("cds_id", None)
+        
+        super(SitoWebCdsOggettiItemForm, self).__init__(*args, **kwargs)
+        if not self.instance.pk:
+            choices = SitoWebCdsOggettiPortale.objects.filter(cds_id=cds_id).values_list("id", "aa_regdid_id", "testo_it").order_by("aa_regdid_id", "testo_it")
+            choices = map(lambda reg: (reg[0], f"{reg[1]} - {reg[2]}"), choices)
+            choices = tuple(choices)
+        else:
+            choices=((self.instance.id_sito_web_cds_oggetti_portale.id, f"{self.instance.id_sito_web_cds_oggetti_portale.aa_regdid_id} - {self.instance.id_sito_web_cds_oggetti_portale.titolo_articolo_it}"),)
+        
+        self.fields["id_sito_web_cds_oggetti_portale"] = forms.ChoiceField(
+            choices=choices,
+            label=_("Portal Objects"),
+        )
         
      
 class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SitoWebCdsOggettiPortaleForm, self).__init__(*args, **kwargs)
+        if self.initial:
+            self.initial["visibile"] = bool(self.initial.get("visibile", None))
     
     id_classe_oggetto_portale = forms.ChoiceField(
         required=True,
         choices=(("WebPath", _("WebPath")),("Publication", _("Publication"))),
-        label=_("Object Class"),
+        label=_("Object class"),
     )
     aa_regdid_id = forms.IntegerField(
         required=True,
         min_value=1901,
         max_value= now().year,
-        label=_("Didactic Regulation Academic Year"),
+        label=_("Academic year"),
     )
     id_oggetto_portale = forms.IntegerField(
         required=True,
         min_value=0,
-        label=_("Object Id"),
+        label=_("Object id"),
+    )
+    visibile = forms.BooleanField(
+        label=_("Visible"),
+        required=False,
     )
     class Meta:
         model = SitoWebCdsOggettiPortale
-        exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'visibile']
+        exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine',]
         labels = {
             "titolo_it": _("Title (it)"),
             "titolo_en": _("Title (en)"),
@@ -190,6 +234,7 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
             "id_oggetto_portale": _("Object Id"),
             "aa_regdid_id": _("Didactic Regulation Academic Year"),
             "id_classe_oggetto_portale": _("Object Class"),
+            "visibile": _("Visible"),
         }
         
 class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):

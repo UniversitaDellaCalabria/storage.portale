@@ -7,7 +7,7 @@
 
 {% get_current_language as LANGUAGE_CODE %}
 
-<!-- Top Buttons -->
+{% comment %} <!-- Top Buttons -->
 <table class="table">
     <tbody>
         <tr>
@@ -24,20 +24,29 @@
         </tr>
     </tbody>
 </table>
-<!-- /Top Buttons -->
+<!-- /Top Buttons --> {% endcomment %}
 
 
-
+<h3 style="font-weight: normal;" class="mb-4 pb-4">
+    {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
+        {{ cds_website.nome_corso_it }}
+    {% else %}
+        {{ cds_website.nome_corso_en }}
+    {% endif %}
+</h3>
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal;" class="mb-4 pb-4">
-                {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
-                    {{ cds_website.nome_corso_it }}
-                {% else %}
-                    {{ cds_website.nome_corso_en }}
-                {% endif %}
-            </h3>
+            <h3 style="font-weight: normal" class="pb-2">{% trans "Publications and WebPaths" %}</h3>
+            {% include "blocks/cds_website_topics_objects.html" with objects_list=objects_list cds_website=cds_website %}
+        </div>
+    </div>
+</div>
+    
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h3 style="font-weight: normal" class="pb-2">{% trans "Topics" %}</h3>
             <!-- Enroll -->
             <div class="card-wrapper card-space">
                 <div class="card card-bg no-after">

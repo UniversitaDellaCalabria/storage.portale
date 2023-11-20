@@ -21,17 +21,17 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th class="col-7">{% trans "Scrollable Text" %}</th>
+                        <th class="col-7">{% trans "Ex Students" %}</th>
                         <th class="col-2 text-center">{% trans "Order" %}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for slider in sliders %}
-                        <!-- Slider Delete Modal -->
+                    {% for exstudent in exstudents %}
+                        <!-- Ex Students Delete Modal -->
                         <div class="modal fade"
                         tabindex="-1"
                         role="dialog"
-                        id="delete_slider_{{slider.id}}">
+                        id="delete_exstudent_{{exstudent.id}}">
                         <div class="modal-dialog modal-dialog-centered"
                                 role="document">
                             <div class="modal-content">
@@ -50,29 +50,28 @@
                                 </div>
                                 <div class="modal-body">
                                     <p>
-                                        {% trans "Do you want to remove this scrollable text?" %}
+                                        {% trans "Do you want to remove this ex student?" %}
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites:crud_cds_websites_sliders_delete' code=cds_website.id data_id=slider.id %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites:crud_cds_websites_exstudents_delete' code=cds_website.id data_id=exstudent.id %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- /Slider Delete Modal -->
+                    <!-- /Ex Students Delete Modal -->
                     <tr>
                         <td class="col-7">
                             <p class="text">
-                                {{ slider.slider_it }}
-                            </p>
+                            {{ exstudent.nome }}
                         </td>
                         <td class="col-2 text-center">
-                            {{ slider.ordine }}
+                            {{ exstudent.ordine }}
                         </td>
                         <td class="col-3 text-right">
-                            <a href="{% url 'crud_cds_websites:crud_cds_websites_sliders_edit' code=cds_website.id data_id=slider.id %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'crud_cds_websites:crud_cds_websites_exstudents_edit' code=cds_website.id data_id=exstudent.id %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg>
@@ -80,7 +79,7 @@
                             </a>
                             <a href="" class="btn btn-danger btn-xs"
                                 data-toggle="modal"
-                                data-target="#delete_slider_{{slider.id}}">
+                                data-target="#delete_exstudent_{{exstudent.id}}">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                 </svg>
@@ -91,7 +90,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url 'crud_cds_websites:crud_cds_websites_sliders_new' code=cds_website.id %}" class="btn btn-block btn-success">
+            <a href="{% url 'crud_cds_websites:crud_cds_websites_exstudents_new' code=cds_website.id %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

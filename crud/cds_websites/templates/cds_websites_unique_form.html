@@ -16,7 +16,8 @@
     {% endblock %}
     {% block before_forms%}
     {% endblock %}
-    <form method="post" novalidate>
+    {% comment %} enctype="multipart/form-data" ? {% endcomment %}
+    <form method="post" enctype="multipart/form-data" novalidate>
         {% block forms %}
             <div class="card-wrapper card-space">
                 <div class="card card-bg no-after pt-4">

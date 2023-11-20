@@ -16,8 +16,8 @@
 </h3>
 
 <div class="row mt-5">
+    <!-- Dati Base -->
     <div class="col col-lg">
-        <!--start card-->
         <div class="card-wrapper card-space">
             <div class="card card-big card-bg no-after">
                 <div class="card-body">
@@ -25,7 +25,7 @@
                         {% trans "Base Info" %}
                     </h5>
                     <p class="card-text">
-                        {% trans 'Manage Study Course Website Base Info' %}
+                        {% trans 'Manage Information' %}
                     </p>
                     <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_website_base_edit' code=cds_website.id %}">
                         <span class="text">{% trans "Manage" %}</span>
@@ -36,10 +36,10 @@
                 </div>
             </div>
         </div>
-        <!--end card-->
     </div>
+    <!-- /Dati Base -->
+    <!-- Topics -->
     <div class="col col-lg">
-        <!--start card-->
         <div class="card-wrapper card-space">
             <div class="card card-bg card-big no-after">
                 <div class="card-body">
@@ -47,7 +47,7 @@
                         {% trans "Topics" %}
                     </h5>
                     <p class="card-text">
-                        {% trans 'Manage Study Course Website Topics' %}
+                        {% trans 'Manage Topics' %}
                     </p>
                     <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_websites_topics_edit' code=cds_website.id %}">
                         <span class="text">{% trans "Manage" %}</span>
@@ -58,10 +58,10 @@
                 </div>
             </div>
         </div>
-        <!--end card-->
     </div>
+    <!-- /Topics -->
+    <!-- Sliders -->
     <div class="col col-lg">
-        <!--start card-->
         <div class="card-wrapper card-space">
             <div class="card card-bg card-big no-after">
                 <div class="card-body">
@@ -69,7 +69,7 @@
                         {% trans "Sliders" %}
                     </h5>
                     <p class="card-text">
-                        {% trans 'Manage Study Course Website Sliders' %}
+                        {% trans 'Manage Sliders' %}
                     </p>
                     <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_websites_sliders' code=cds_website.id %}">
                         <span class="text">{% trans "Manage" %}</span>
@@ -80,8 +80,30 @@
                 </div>
             </div>
         </div>
-        <!--end card-->
     </div>
+    <!-- /Sliders -->
+    <!-- Ex Students -->
+    <div class="col col-lg">
+        <div class="card-wrapper card-space">
+            <div class="card card-bg card-big no-after">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Ex Students" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage Ex Students' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_websites_exstudents' code=cds_website.id %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Ex Students -->
 </div>
 
 {% endblock centered_container %}
