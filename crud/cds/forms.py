@@ -9,6 +9,7 @@ from ricerca_app.models import (
     DidatticaCdsAltriDatiUfficio, DidatticaCdsGruppi,
     DidatticaCdsGruppiComponenti)
 
+from .. utils.forms import ChoosenPersonForm
 from .. utils.settings import CMS_STORAGE_ROOT_API
 
 
@@ -75,8 +76,8 @@ class DidatticaCdsManifestoRegolamentoForm(forms.ModelForm):
 class DidatticaCdsGruppoForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsGruppi
-        fields = ['descr_breve_it', 'descr_breve_en', 'descr_lunga_it',
-                  'descr_lunga_en', 'ordine', 'visibile']
+        fields = ['visibile', 'descr_breve_it', 'descr_breve_en', 'descr_lunga_it',
+                  'descr_lunga_en', 'ordine']
         # labels = {
             # "manifesto_studi": _("Study manifesto"),
             # "regolamento_didattico": _("Didactic regulation"),
@@ -95,20 +96,12 @@ class DidatticaCdsGruppoForm(forms.ModelForm):
 class DidatticaCdsGruppoComponenteForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsGruppiComponenti
-        fields = ['cognome', 'funzione_it', 'funzione_en', 'ordine', 'visibile']
+        fields = ['visibile', 'nome', 'cognome', 'funzione_it',
+                  'funzione_en', 'ordine']
 
 
-class ChoosenPersonForm(forms.ModelForm):
-    choosen_person = forms.CharField(label=_('Person'),
-                                     widget=forms.HiddenInput(),
-                                     required=False)
-
-    def __init__(self, *args, **kwargs):
-        required = kwargs.pop('required', False)
-        super(ChoosenPersonForm, self).__init__(*args, **kwargs)
-        if required:
-            self.fields['choosen_person'].required = True
+class ChoosenPersonForm(ChoosenPersonForm, forms.ModelForm):
 
     class Meta:
         model = DidatticaCdsGruppiComponenti
-        fields = ['funzione_it', 'funzione_en', 'ordine', 'visibile']
+        fields = ['visibile', 'funzione_it', 'funzione_en', 'ordine']

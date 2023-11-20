@@ -60,25 +60,12 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
         cds_id=regdid.cds.pk)
 
     # dati gruppi cds
-    gruppi_cds_data = DidatticaCdsGruppi.objects.filter(
+    cds_groups = DidatticaCdsGruppi.objects.filter(
         id_didattica_cds=regdid.cds.pk)
 
     # dati gruppi dipartimento
-    gruppi_dip_data = DidatticaDipartimentoGruppi.objects.filter(
-        id_didattica_dipartimento=regdid.cds.dip.pk)
-
-    # dizionario chiave-valore
-    gruppi_cds = {}
-    for gruppo in gruppi_cds_data:
-        gruppi_cds_componenti = DidatticaCdsGruppiComponenti.objects.filter(
-            id_didattica_cds_gruppi=gruppo)
-        gruppi_cds[gruppo.pk] = gruppi_cds_componenti
-
-    gruppi_dip = {}
-    for gruppo in gruppi_dip_data:
-        gruppi_dip_componenti = DidatticaDipartimentoGruppiComponenti.objects.filter(
-            id_didattica_dipartimento_gruppi=gruppo)
-        gruppi_dip[gruppo.pk] = gruppi_dip_componenti
+    # department_groups = DidatticaDipartimentoGruppi.objects.filter(
+        # id_didattica_dipartimento=regdid.cds.dip.pk)
 
     # logs
     logs_regdid = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(regdid).pk,
@@ -99,10 +86,10 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                    'other_data': other_data,
                    'office_data': office_data,
                    'regdid': regdid,
-                   'gruppi_cds_data': gruppi_cds_data,
-                   'gruppi_dip_data': gruppi_dip_data,
-                   'gruppi_cds': gruppi_cds,
-                   'gruppi_dip': gruppi_dip})
+                   'cds_groups': cds_groups,})
+                   # 'department_groups': department_groups,})
+                   # 'gruppi_cds': gruppi_cds,
+                   # 'gruppi_dip': gruppi_dip})
 
 
 @login_required
@@ -614,7 +601,7 @@ def cds_office_data_responsible_delete(request, regdid_id, data_id, my_offices=N
 
     log_action(user=request.user,
                obj=regdid.cds,
-               flag=ADDITION,
+               flag=CHANGE,
                msg=_("New organization added successfully"))
 
     messages.add_message(request,
@@ -832,29 +819,29 @@ def cds_doc_didactic_regulation_delete(request, regdid_id, my_offices=None, regd
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_organizations_new(request, regdid_id, my_offices=None, regdid=None):
+def cds_group_new(request, regdid_id, my_offices=None, regdid=None):
     """
-    aggiungi organizzazione cds
+    aggiungi gruppo cds
     """
     form = DidatticaCdsGruppoForm()
 
     if request.POST:
         form = DidatticaCdsGruppoForm(data=request.POST)
         if form.is_valid():
-            cds_organization = form.save(commit=False)
-            cds_organization.id_didattica_cds = regdid.cds
-            cds_organization.id_user_mod = request.user
-            cds_organization.dt_mod = datetime.datetime.now()
-            cds_organization.save()
+            group = form.save(commit=False)
+            group.id_didattica_cds = regdid.cds
+            group.id_user_mod = request.user
+            group.dt_mod = datetime.datetime.now()
+            group.save()
 
             log_action(user=request.user,
                        obj=regdid.cds,
-                       flag=ADDITION,
-                       msg=_("Nuova organizzazione creata con successo"))
+                       flag=CHANGE,
+                       msg=_("Nuovo gruppo creato con successo"))
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("CdS Organization successfully"))
+                                 _("CdS Group successfully"))
 
             return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
         else:  # pragma: no cover
@@ -863,31 +850,31 @@ def cds_organizations_new(request, regdid_id, my_offices=None, regdid=None):
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
     return render(request,
-                  'cds_organization.html',
+                  'cds_group.html',
                   {'form': form,})
 
 
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_organizations_edit(request, regdid_id, group_id, my_offices=None, regdid=None):
+def cds_group(request, regdid_id, group_id, my_offices=None, regdid=None):
     """
-    modifica organizzazione cds
+    modifica gruppo cds
     """
-    cds_organization = get_object_or_404(DidatticaCdsGruppi,
-                                         pk=group_id,
-                                         id_didattica_cds=regdid.cds)
-    form = DidatticaCdsGruppoForm(instance=cds_organization)
+    group = get_object_or_404(DidatticaCdsGruppi,
+                              pk=group_id,
+                              id_didattica_cds=regdid.cds)
+    form = DidatticaCdsGruppoForm(instance=group)
 
     if request.POST:
-        form = DidatticaCdsGruppoForm(instance=cds_organization,
+        form = DidatticaCdsGruppoForm(instance=group,
                                       data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            cds_organization.id_didattica_cds = regdid.cds
-            cds_organization.id_user_mod = request.user
-            cds_organization.dt_mod = datetime.datetime.now()
-            cds_organization.save()
+            group.id_didattica_cds = regdid.cds
+            group.id_user_mod = request.user
+            group.dt_mod = datetime.datetime.now()
+            group.save()
 
             changed_field_labels = _get_changed_field_labels_from_form(form,
                                                                        form.changed_data)
@@ -895,13 +882,14 @@ def cds_organizations_edit(request, regdid_id, group_id, my_offices=None, regdid
             log_action(user=request.user,
                        obj=regdid.cds,
                        flag=CHANGE,
-                       msg=[{'changed': {"fields": changed_field_labels}}])
+                       # msg=[{'changed': {"fields": changed_field_labels}}])
+                       msg=f'Modificato {changed_field_labels} al gruppo {group}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("CdS Organization successfully edited"))
+                                 _("Group successfully edited"))
 
-            return redirect('crud_cds:crud_cds_organizations_edit',
+            return redirect('crud_cds:crud_cds_group',
                             regdid_id=regdid_id,
                             group_id=group_id)
         else:  # pragma: no cover
@@ -909,24 +897,30 @@ def cds_organizations_edit(request, regdid_id, group_id, my_offices=None, regdid
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
 
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds:crud_cds'): _('CdS'),
+                   reverse('crud_cds:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
+                   '#': group.descr_breve_it}
+
     return render(request,
-                  'cds_organization.html',
-                  {'form': form,
-                   'cds_organization': cds_organization,
+                  'cds_group.html',
+                  {'breadcrumbs': breadcrumbs,
+                   'form': form,
+                   'group': group,
                    'regdid': regdid})
 
 
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_organizations_components_new(request, regdid_id, group_id,
+def cds_group_members_new(request, regdid_id, group_id,
                                      my_offices=None, regdid=None):
     """
     aggiungi nuovo componente al gruppo
     """
-    cds_organization = get_object_or_404(DidatticaCdsGruppi,
-                                         pk=group_id,
-                                         id_didattica_cds=regdid.cds)
+    group = get_object_or_404(DidatticaCdsGruppi,
+                              pk=group_id,
+                              id_didattica_cds=regdid.cds)
 
     external_form = DidatticaCdsGruppoComponenteForm()
     internal_form = ChoosenPersonForm(required=True)
@@ -943,19 +937,21 @@ def cds_organizations_components_new(request, regdid_id, group_id,
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 # matricola
-                component_code = decrypt(form.cleaned_data['choosen_person'])
+                member_code = decrypt(form.cleaned_data['choosen_person'])
                 matricola = get_object_or_404(
-                    Personale, matricola=component_code)
-                cognome = f'{component.cognome} {component.nome}'
+                    Personale, matricola=member_code)
+                nome = matricola.nome
+                cognome = matricola.cognome
             else:
                 matricola = None
+                nome = form.cleaned_data['nome']
                 cognome = form.cleaned_data['cognome']
 
             c = DidatticaCdsGruppiComponenti.objects.create(
-                id_didattica_cds_gruppi=cds_organization,
+                id_didattica_cds_gruppi=group,
                 matricola=matricola,
                 cognome=cognome,
-                nome="",
+                nome=nome,
                 funzione_it=form.cleaned_data.get('funzione_it'),
                 funzione_en=form.cleaned_data.get('funzione_en'),
                 ordine=form.cleaned_data.get('ordine'),
@@ -967,12 +963,12 @@ def cds_organizations_components_new(request, regdid_id, group_id,
             log_action(user=request.user,
                        obj=regdid.cds,
                        flag=CHANGE,
-                       msg=f'Aggiunto nuovo componente {c} al gruppo {cds_organization.pk}')
+                       msg=f'Aggiunto nuovo componente {c} al gruppo {group}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("Component added successfully"))
-            return redirect('crud_cds:crud_cds_organizations_edit',
+                                 _("Member added successfully"))
+            return redirect('crud_cds:crud_cds_group',
                             regdid_id=regdid_id,
                             group_id=group_id)
         else:
@@ -983,47 +979,47 @@ def cds_organizations_components_new(request, regdid_id, group_id,
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds:crud_cds'): _('CdS'),
                    reverse('crud_cds:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
-                   reverse('crud_cds:crud_cds_organizations_edit', kwargs={'regdid_id': regdid_id, 'group_id': group_id}): cds_organization.descr_breve_it,
-                   '#': _('New component')}
+                   reverse('crud_cds:crud_cds_group', kwargs={'regdid_id': regdid_id, 'group_id': group_id}): group.descr_breve_it,
+                   '#': _('New member')}
 
     return render(request,
-                  'cds_organization_component.html',
+                  'cds_group_member.html',
                   {'breadcrumbs': breadcrumbs,
                    'external_form': external_form,
                    'internal_form': internal_form,
-                   'cds_organization': cds_organization,
+                   'group': group,
                    'url': reverse('ricerca:teacherslist')})
 
 
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_organizations_components_edit(request, regdid_id, group_id, component_id,
-                                     my_offices=None, regdid=None):
+def cds_group_member_edit(request, regdid_id, group_id, member_id,
+                          my_offices=None, regdid=None):
     """
     aggiungi nuovo componente al gruppo
     """
-    cds_organization = get_object_or_404(DidatticaCdsGruppi,
-                                         pk=group_id,
-                                         id_didattica_cds=regdid.cds)
+    group = get_object_or_404(DidatticaCdsGruppi,
+                              pk=group_id,
+                              id_didattica_cds=regdid.cds)
 
-    component = get_object_or_404(DidatticaCdsGruppiComponenti,
-                                  pk=component_id,
-                                  id_didattica_cds_gruppi=cds_organization)
+    member = get_object_or_404(DidatticaCdsGruppiComponenti,
+                               pk=member_id,
+                               id_didattica_cds_gruppi=group)
 
-    component_data = ''
+    member_data = ''
     initial = {}
 
-    if component.matricola:
-        component_data = f'{component.matricola.cognome} {component.matricola.nome}'
-        initial = {'choosen_person': encrypt(component.matricola.matricola)}
+    if member.matricola:
+        member_data = f'{member.matricola.cognome} {member.matricola.nome}'
+        initial = {'choosen_person': encrypt(member.matricola.matricola)}
 
-    external_form = DidatticaCdsGruppoComponenteForm(instance=component)
-    internal_form = ChoosenPersonForm(initial=initial, instance=component, required=True)
+    external_form = DidatticaCdsGruppoComponenteForm(instance=member)
+    internal_form = ChoosenPersonForm(initial=initial, instance=member, required=True)
 
     if request.POST:
-        internal_form = ChoosenPersonForm(instance=component, data=request.POST, required=True)
-        external_form = DidatticaCdsGruppoComponenteForm(instance=component, data=request.POST)
+        internal_form = ChoosenPersonForm(instance=member, data=request.POST, required=True)
+        external_form = DidatticaCdsGruppoComponenteForm(instance=member, data=request.POST)
 
         if 'choosen_person' in request.POST:
             form = internal_form
@@ -1033,30 +1029,32 @@ def cds_organizations_components_edit(request, regdid_id, group_id, component_id
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 # matricola
-                component_code = decrypt(form.cleaned_data['choosen_person'])
+                member_code = decrypt(form.cleaned_data['choosen_person'])
                 matricola = get_object_or_404(Personale,
-                                              matricola=component_code)
-                component.matricola = matricola
-                component.cognome = f'{matricola.cognome} {matricola.nome}'
+                                              matricola=member_code)
+                member.matricola = matricola
+                member.nome = matricola.nome
+                member.cognome = matricola.cognome
             else:
-                component.matricola = None
-                component.cognome = form.cleaned_data['cognome']
+                member.matricola = None
+                member.nome = form.cleaned_data['nome']
+                member.cognome = form.cleaned_data['cognome']
 
             form.save(commit=False)
-            component.dt_mod=datetime.datetime.now()
-            component.id_user_mod=request.user
+            member.dt_mod=datetime.datetime.now()
+            member.id_user_mod=request.user
 
-            component.save()
+            member.save()
 
             log_action(user=request.user,
                        obj=regdid.cds,
                        flag=CHANGE,
-                       msg=f'Modificato componente {component} al gruppo {cds_organization.pk}')
+                       msg=f'Modificato componente {member} al gruppo {group}')
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("Component edited successfully"))
-            return redirect('crud_cds:crud_cds_organizations_edit',
+                                 _("Member edited successfully"))
+            return redirect('crud_cds:crud_cds_group',
                             regdid_id=regdid_id,
                             group_id=group_id)
         else:
@@ -1067,49 +1065,77 @@ def cds_organizations_components_edit(request, regdid_id, group_id, component_id
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds:crud_cds'): _('CdS'),
                    reverse('crud_cds:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
-                   reverse('crud_cds:crud_cds_organizations_edit', kwargs={'regdid_id': regdid_id, 'group_id': group_id}): cds_organization.descr_breve_it,
-                   '#': _('Edit component')}
+                   reverse('crud_cds:crud_cds_group', kwargs={'regdid_id': regdid_id, 'group_id': group_id}): group.descr_breve_it,
+                   '#': _('Edit member')}
 
     return render(request,
-                  'cds_organization_component.html',
+                  'cds_group_member.html',
                   {'breadcrumbs': breadcrumbs,
-                   'choosen_person': component_data,
+                   'choosen_person': member_data,
                    'external_form': external_form,
                    'internal_form': internal_form,
-                   'cds_organization': cds_organization,
+                   'group': group,
                    'url': reverse('ricerca:teacherslist')})
 
 
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_organizations_components_delete(request, regdid_id, group_id, component_id,
-                                     my_offices=None, regdid=None):
+def cds_group_delete(request, regdid_id, group_id,
+                             my_offices=None, regdid=None):
     """
-    elimina componente di un gruppo
+    elimina gruppo
     """
 
-    cds_organization = get_object_or_404(DidatticaCdsGruppi,
-                                         pk=group_id,
-                                         id_didattica_cds=regdid.cds)
+    group = get_object_or_404(DidatticaCdsGruppi,
+                              pk=group_id,
+                              id_didattica_cds=regdid.cds)
 
-    component = get_object_or_404(DidatticaCdsGruppiComponenti,
-                                  pk=component_id,
-                                  id_didattica_cds_gruppi=cds_organization)
-
-    component.delete()
+    group_name = group.descr_breve_it
+    group.delete()
 
     log_action(user=request.user,
                obj=regdid.cds,
                flag=CHANGE,
-               msg=f'Eliminato componente {component} dal gruppo {cds_organization.pk}')
+               msg=f'Eliminato gruppo {group_name}')
+
+    messages.add_message(request,
+                        messages.SUCCESS,
+                        _("Group deleted successfully"))
+
+    return redirect('crud_cds:crud_cds_detail',
+                    regdid_id=regdid_id)
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_group_member_delete(request, regdid_id, group_id, member_id,
+                            my_offices=None, regdid=None):
+    """
+    elimina componente di un gruppo
+    """
+
+    group = get_object_or_404(DidatticaCdsGruppi,
+                              pk=group_id,
+                              id_didattica_cds=regdid.cds)
+
+    member = get_object_or_404(DidatticaCdsGruppiComponenti,
+                               pk=member_id,
+                               id_didattica_cds_gruppi=group)
+    member_name = f'{member.cognome} {member.nome}'
+    member.delete()
+
+    log_action(user=request.user,
+               obj=regdid.cds,
+               flag=CHANGE,
+               msg=f'Eliminato componente {member_name} dal gruppo {group}')
 
 
     messages.add_message(request,
                         messages.SUCCESS,
-                        _("Component deleted successfully"))
-    
-    return render(request,
-                'cds_organization.html',
-                {'cds_organization': cds_organization,
-                'regdid': regdid})
+                        _("Member deleted successfully"))
+
+    return redirect('crud_cds:crud_cds_group',
+                    regdid_id=regdid_id,
+                    group_id=group.pk)
