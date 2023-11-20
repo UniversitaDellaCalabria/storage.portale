@@ -11,6 +11,9 @@ def patents_media_path(instance, filename): # pragma: no cover
 def laboratories_media_path(instance, filename): # pragma: no cover
     return f'portale/laboratori/loghi/{filename}'
 
+def cds_websites_exstudents_media_path(instance, filename): # pragma: no cover
+    return f'portale/sito_web_cds/ex_studenti/{filename}'
+
 def companies_media_path(instance, filename): # pragma: no cover
     return f'portale/spinoff-startup/loghi/{filename}'
 
@@ -4080,7 +4083,6 @@ class SitoWebCdsDatiExcelTmpOld(models.Model):
 class SitoWebCdsExStudenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     nome = models.CharField(db_column='NOME', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    foto = models.CharField(db_column='FOTO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     ordine = models.PositiveIntegerField(db_column='ORDINE', blank=True, null=True)  # Field name made lowercase.
     profilo_it = models.TextField(db_column='PROFILO_IT', blank=True, null=True)  # Field name made lowercase.
     profilo_en = models.TextField(db_column='PROFILO_EN', blank=True, null=True)  # Field name made lowercase.
@@ -4089,6 +4091,14 @@ class SitoWebCdsExStudenti(models.Model):
     id_sito_web_cds_dati_base = models.ForeignKey(SitoWebCdsDatiBase, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_DATI_BASE', to_field='id')  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+    foto = models.FileField(
+        upload_to=cds_websites_exstudents_media_path,
+        validators=[validate_image_file_extension, validate_file_size],
+        db_column='FOTO',
+        max_length=1000,
+        blank=True,
+        null=True) # Field name made lowercase.
+        
 
     class Meta:
         managed = True

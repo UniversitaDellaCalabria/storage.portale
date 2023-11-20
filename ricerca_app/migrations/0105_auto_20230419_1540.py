@@ -2,6 +2,8 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
+import ricerca_app.models
+import ricerca_app.validators
 
 
 class Migration(migrations.Migration):
@@ -56,7 +58,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sitowebcdsexstudenti',
             name='foto',
-            field=models.CharField(blank=True, db_column='FOTO', max_length=1000, null=True),
+            field=models.FileField(blank=True, db_column='FOTO', max_length=1000, null=True, upload_to=ricerca_app.models.cds_websites_exstudents_media_path, validators=[ricerca_app.validators.validate_image_file_extension, ricerca_app.validators.validate_file_size]),
         ),
         migrations.AlterField(
             model_name='sitowebcdsexstudenti',

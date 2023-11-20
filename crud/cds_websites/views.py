@@ -249,12 +249,14 @@ def cds_websites_exstudents(request, code, cds_website=None, my_offices=None):
 @can_manage_cds_website
 @can_edit_cds_website
 def cds_websites_exstudents_new(request, code, cds_website=None, my_offices=None):
-    exstudent_form = SitoWebCdsExStudentiForm(data=request.POST if request.POST else None)        
+    exstudent_form = SitoWebCdsExStudentiForm(data=request.POST if request.POST else None,
+                                              files=request.FILES if request.FILES else None)
         
     if request.POST:
         if exstudent_form.is_valid():
         
             exstudent = exstudent_form.save(commit=False)
+            exstudent.id_sito_web_cds_dati_base = cds_website
             exstudent.dt_mod = now()
             exstudent.id_user_mod=request.user.id
             exstudent.save()
@@ -297,7 +299,9 @@ def cds_websites_exstudents_new(request, code, cds_website=None, my_offices=None
 @can_edit_cds_website
 def cds_websites_exstudents_edit(request, code, data_id, cds_website=None, my_offices=None):
     exstudent = get_object_or_404(SitoWebCdsExStudenti, pk=data_id)
-    exstudent_form = SitoWebCdsExStudentiForm(data=request.POST if request.POST else None, instance=exstudent)        
+    exstudent_form = SitoWebCdsExStudentiForm(data=request.POST if request.POST else None,
+                                              files=request.FILES if request.FILES else None,
+                                              instance=exstudent)        
         
     if request.POST:
         if exstudent_form.is_valid():
@@ -757,7 +761,7 @@ def cds_websites_object_new(request, code, cds_website=None, my_offices=None):
         if  object_form.is_valid():
             
             _object = object_form.save(commit=False)
-            _object.id_sito_web_cds_topic = topic_id
+            _object.id_sito_web_cds_topic = topic_id #TODO
             _object.cds = cds_website.cds 
             _object.id_user_mod = request.user
             _object.dt_mod = now()
