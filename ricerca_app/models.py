@@ -8,6 +8,9 @@ from .validators import *
 def patents_media_path(instance, filename): # pragma: no cover
     return f'portale/brevetti/loghi/{filename}'
 
+def laboratories_media_path(instance, filename): # pragma: no cover
+    return f'portale/laboratori/loghi/{filename}'
+
 def companies_media_path(instance, filename): # pragma: no cover
     return f'portale/spinoff-startup/loghi/{filename}'
 
@@ -102,6 +105,15 @@ class ComuniAll(models.Model):
     class Meta:
         managed = True
         db_table = 'COMUNI_ALL'
+
+
+class DidatticaSsd(models.Model):
+    ssd_id = models.CharField(db_column='SSD_ID', primary_key=True, max_length=100)  # Field name made lowercase.
+    ssd_des = models.CharField(db_column='SSD_DES', max_length=2000)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_SSD'
 
 
 class DidatticaAttivitaFormativa(models.Model):
