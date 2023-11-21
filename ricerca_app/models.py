@@ -4024,7 +4024,7 @@ class SitoWebCdsDatiBase(models.Model):
     sito_web_en = models.CharField(db_column='SITO_WEB_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     sito_web_cds_status = models.BooleanField(db_column='SITO_WEB_CDS_STATUS', default=False)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
-    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -4090,7 +4090,7 @@ class SitoWebCdsExStudenti(models.Model):
     link_en = models.CharField(db_column='LINK_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     id_sito_web_cds_dati_base = models.ForeignKey(SitoWebCdsDatiBase, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_DATI_BASE', to_field='id')  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
-    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
     foto = models.FileField(
         upload_to=cds_websites_exstudents_media_path,
         validators=[validate_image_file_extension, validate_file_size],
@@ -4114,7 +4114,7 @@ class SitoWebCdsLink(models.Model):
     link_en = models.CharField(db_column='LINK_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     id_sito_web_cds_dati_base = models.IntegerField(db_column='ID_SITO_WEB_CDS_DATI_BASE')  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
-    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -4128,7 +4128,7 @@ class SitoWebCdsSlider(models.Model):
     slider_it = models.TextField(db_column='SLIDER_IT', blank=True, null=True)  # Field name made lowercase.
     slider_en = models.TextField(db_column='SLIDER_EN', blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
-    id_user_mod = models.IntegerField(db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True

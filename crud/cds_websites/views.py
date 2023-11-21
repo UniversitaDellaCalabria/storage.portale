@@ -60,7 +60,7 @@ def cds_website(request, code, cds_website=None, my_offices=None):
 @can_manage_cds_website
 @can_edit_cds_website
 def cds_websites_base_edit(request, code, cds_website=None, my_offices=None):
-    base_form = SitoWebCdsDatiBaseForm(data=request.POST if request.POST else None)
+    base_form = SitoWebCdsDatiBaseForm(data=request.POST if request.POST else None, instance=cds_website)
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
@@ -115,7 +115,7 @@ def cds_websites_sliders_new(request, code, cds_website=None, my_offices=None):
         
             slider = slider_form.save(commit=False)
             slider.dt_mod = now()
-            slider.id_user_mod=request.user.id
+            slider.id_user_mod=request.user
             slider.id_sito_web_cds_dati_base = cds_website
             slider.save()
         
@@ -164,7 +164,7 @@ def cds_websites_sliders_edit(request, code, data_id, cds_website=None, my_offic
         
             slider = slider_form.save(commit=False)
             slider.dt_mod = now()
-            slider.id_user_mod=request.user.id
+            slider.id_user_mod=request.user
             slider.save()
         
             log_action(user=request.user,
@@ -258,7 +258,7 @@ def cds_websites_exstudents_new(request, code, cds_website=None, my_offices=None
             exstudent = exstudent_form.save(commit=False)
             exstudent.id_sito_web_cds_dati_base = cds_website
             exstudent.dt_mod = now()
-            exstudent.id_user_mod=request.user.id
+            exstudent.id_user_mod=request.user
             exstudent.save()
         
             log_action(user=request.user,
@@ -308,7 +308,7 @@ def cds_websites_exstudents_edit(request, code, data_id, cds_website=None, my_of
         
             exstudent = exstudent_form.save(commit=False)
             exstudent.dt_mod = now()
-            exstudent.id_user_mod=request.user.id
+            exstudent.id_user_mod=request.user
             exstudent.save()
         
             log_action(user=request.user,
@@ -362,6 +362,148 @@ def cds_websites_exstudents_delete(request, code, data_id, cds_website=None, my_
                             _("Ex Student deleted successfully"))
 
     return redirect('crud_cds_websites:crud_cds_websites_exstudents', code=code)
+
+
+#Links
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_links(request, code, cds_website=None, my_offices=None):
+    
+    links = SitoWebCdsLink.objects.filter(id_sito_web_cds_dati_base=code).order_by("ordine")
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
+                   '#': _("Links") }
+    
+    logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds_website).pk,
+                                   object_id=cds_website.pk)
+
+    return render(request, 'cds_website_links.html',
+                  { 
+                    'cds_website' : cds_website,
+                    'links': links,
+                    'breadcrumbs': breadcrumbs,
+                    'logs' : logs,
+                   })
+
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_links_new(request, code, cds_website=None, my_offices=None):
+    link_form = SitoWebCdsLinkForm(data=request.POST if request.POST else None)
+        
+    if request.POST:
+        if link_form.is_valid():
+        
+            link = link_form.save(commit=False)
+            link.id_sito_web_cds_dati_base = cds_website
+            link.dt_mod = now()
+            link.id_user_mod=request.user
+            link.save()
+        
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Added Link"))
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Link added successfully"))
+
+            return redirect('crud_cds_websites:crud_cds_websites_links', code=code)
+
+        else:  # pragma: no cover
+            for k, v in link_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{link_form.fields[k].label}</b>: {v}")
+        
+        
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
+                   reverse('crud_cds_websites:crud_cds_websites_links', kwargs={'code': code}): _("Links"),
+                   '#': _("New"), }
+
+    
+    return render(request, 'cds_websites_unique_form.html',
+                  { 
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'forms': [link_form,],
+                    'item_label': _('Link'),
+                  })
+    
+    
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_links_edit(request, code, data_id, cds_website=None, my_offices=None):
+    link = get_object_or_404(SitoWebCdsLink, pk=data_id)
+    link_form = SitoWebCdsLinkForm(data=request.POST if request.POST else None, instance=link)        
+        
+    if request.POST:
+        if link_form.is_valid():
+        
+            link = link_form.save(commit=False)
+            link.dt_mod = now()
+            link.id_user_mod=request.user
+            link.save()
+        
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Edited Link"))
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Link edited successfully"))
+
+            return redirect('crud_cds_websites:crud_cds_websites_links', code=code)
+
+        else:  # pragma: no cover
+            for k, v in link_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{link_form.fields[k].label}</b>: {v}")
+        
+        
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
+                   reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
+                   reverse('crud_cds_websites:crud_cds_websites_links', kwargs={'code': code}): _("Links"),
+                   '#': link.descrizione_link_it, }
+
+    
+    return render(request, 'cds_websites_unique_form.html',
+                  { 
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'forms': [link_form,],
+                    'item_label': _('Link'),
+                    'edit': 1,
+                  })
+    
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_links_delete(request, code, data_id, cds_website=None, my_offices=None):
+    
+    link = get_object_or_404(SitoWebCdsLink, pk=data_id)
+    link.delete()
+        
+    log_action( user=request.user,
+                obj=cds_website,
+                flag=CHANGE,
+                msg=_("Deleted Link"))
+
+    messages.add_message(   request,
+                            messages.SUCCESS,
+                            _("Link deleted successfully"))
+
+    return redirect('crud_cds_websites:crud_cds_websites_links', code=code)
+
 
 
 #Topics
