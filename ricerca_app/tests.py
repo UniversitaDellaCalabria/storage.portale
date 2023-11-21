@@ -1714,6 +1714,11 @@ class ApiPhdListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
 
+        url = reverse('ricerca:phd-cycles')
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
+
 
 class ApiDegreeTypesListUnitTest(TestCase):
 

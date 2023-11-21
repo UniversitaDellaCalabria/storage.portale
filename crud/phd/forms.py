@@ -15,9 +15,12 @@ from .. utils.settings import (ALLOWED_STRUCTURE_TYPES,
                                STRUCTURES_FATHER)
 from .. utils.utils import _clean_teacher_dates
 
+from . settings import PHD_CYCLES
+
 
 ALLOWED_STRUCTURE_TYPES = getattr(
     settings, 'ALLOWED_STRUCTURE_TYPES', ALLOWED_STRUCTURE_TYPES)
+PHD_CYCLES = getattr(settings, 'PHD_CYCLES', PHD_CYCLES)
 STRUCTURES_FATHER = getattr(
     settings, 'STRUCTURES_FATHER', STRUCTURES_FATHER)
 
@@ -68,7 +71,6 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         for q in query:
             lista_rif_dott.append((q['rif_dottorato'], q['rif_dottorato']))
 
-
         self.fields['id_struttura_proponente'] = forms.ModelChoiceField(
             label=_('Central Structure'),
             queryset=structures)
@@ -82,6 +84,9 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
             label=_('Reference'),
             choices=lista_rif_dott,
             required=False)
+        self.fields['ciclo'] = forms.ChoiceField(
+            label=_('Cycle'),
+            choices=PHD_CYCLES)
 
     def clean(self):
         cleaned_data = super().clean()

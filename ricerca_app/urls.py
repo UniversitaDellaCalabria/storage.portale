@@ -206,6 +206,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiPhdList.as_view(),
                         name='phdlist'),
 
+    urlpatterns += path('{}/phd-cycles/'.format(base_url),
+                        api_views.ApiPhdCycles.as_view(),
+                        name='phd-cycles'),
+
     urlpatterns += path('{}/degreetypes/'.format(base_url),
                         api_views.ApiDegreeTypesList.as_view(),
                         name='degreetypes'),

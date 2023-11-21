@@ -15,6 +15,7 @@ from .pagination import UnicalStorageApiPaginationList
 
 ### useful for storage backend only ###
 from organizational_area.models import OrganizationalStructureOfficeEmployee
+from crud.phd.settings import PHD_CYCLES
 from crud.utils.settings import *
 ### end useful for storage backend only ###
 
@@ -1322,6 +1323,14 @@ class ApiAster2List(ApiEndpointList):
         return ServiceLaboratorio.getAster2List()
 
 
+class ApiPhdCycles(APIView):
+    def get(self, request):
+        result = {}
+        for cycle in PHD_CYCLES:
+            result[cycle[0]] = cycle[1]
+        return Response(result)
+
+
 class ApiPhdActivitiesList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle attività dei dottorati'
     serializer_class = PhdActivitiesSerializer
@@ -1332,10 +1341,11 @@ class ApiPhdActivitiesList(ApiEndpointList):
         search = request.query_params.get('search')
         structure = request.query_params.get('structure')
         phd = request.query_params.get('phd')
+        cycle = request.query_params.get('cycle')
         ssd = request.query_params.get('ssd')
         teacher = request.query_params.get('teacher')
 
-        return ServiceDottorato.getPhdActivities(search, structure, phd, ssd, teacher)
+        return ServiceDottorato.getPhdActivities(search, structure, phd, ssd, teacher, cycle)
 
 
 class ApiPhdActivityDetail(ApiEndpointDetail):

@@ -5,6 +5,8 @@ from django.conf import settings
 
 from rest_framework import serializers
 
+from crud.phd.settings import PHD_CYCLES
+
 from . models import DidatticaRegolamento
 from . settings import (ALLOWED_PROFILE_ID,
                         CDS_BROCHURE_MEDIA_PATH,
@@ -25,6 +27,9 @@ LABORATORIES_MEDIA_PATH = getattr(settings, 'LABORATORIES_MEDIA_PATH', LABORATOR
 # TEACHER_CV_EN_MEDIA_PATH = getattr(settings, 'TEACHER_CV_EN_MEDIA_PATH', TEACHER_CV_EN_MEDIA_PATH)
 # TEACHER_CV_IT_MEDIA_PATH = getattr(settings, 'TEACHER_CV_IT_MEDIA_PATH', TEACHER_CV_IT_MEDIA_PATH)
 # TEACHER_PHOTO_MEDIA_PATH = getattr(settings, 'TEACHER_PHOTO_MEDIA_PATH', TEACHER_PHOTO_MEDIA_PATH)
+
+PHD_CYCLES = getattr(settings, 'PHD_CYCLES', PHD_CYCLES)
+
 
 def _get_teacher_obj_publication_date(teacher_dict):
     if not teacher_dict['dt_pubblicazione']: return None
@@ -2350,6 +2355,11 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
+        cycle_des = ''
+        for cycle in PHD_CYCLES:
+            if cycle[0] == query['ciclo']:
+                cycle_des = cycle[1]
+                break
 
         main_teachers = None
         if query.get('MainTeachers') is not None:
@@ -2368,6 +2378,7 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
             'CFU': query['cfu'],
             'ActivityType': query['tipo_af'],
             'ReferentPhd': query['rif_dottorato'],
+            'Cycle': cycle_des,
             'ReferentStructureId': query['id_struttura_proponente'],
             'ReferentStructureName': query['struttura_proponente_origine'],
             'ActivityContents': query['contenuti_af'],

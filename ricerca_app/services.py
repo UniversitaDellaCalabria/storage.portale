@@ -2290,12 +2290,13 @@ class ServiceDottorato:
             'idesse3_ddr__regdid_id_esse3')
 
     @staticmethod
-    def getPhdActivities(search=None, structure=None, phd=None, ssd=None, teacher=None):
+    def getPhdActivities(search=None, structure=None, phd=None, ssd=None, teacher=None, cycle=None):
 
         query_search = Q()
         query_structure = Q()
         query_phd = Q()
         query_ssd = Q()
+        query_cycle = Q()
 
 
         if search is not None:
@@ -2306,12 +2307,15 @@ class ServiceDottorato:
             query_phd = Q(rif_dottorato__icontains=phd)
         if ssd:
             query_ssd = Q(ssd__icontains=ssd)
+        if cycle:
+            query_cycle = Q(ciclo=cycle)
 
         query = DidatticaDottoratoAttivitaFormativa.objects.filter(
             query_search,
             query_structure,
             query_phd,
             query_ssd,
+            query_cycle,
         ).values(
             "id",
             "nome_af",
@@ -2320,6 +2324,7 @@ class ServiceDottorato:
             "cfu",
             "tipo_af",
             "rif_dottorato",
+            "ciclo",
             "id_struttura_proponente",
             "struttura_proponente_origine",
             "contenuti_af",
@@ -2385,6 +2390,7 @@ class ServiceDottorato:
             "cfu",
             "tipo_af",
             "rif_dottorato",
+            "ciclo",
             "id_struttura_proponente",
             "struttura_proponente_origine",
             "contenuti_af",
