@@ -60,6 +60,8 @@ class Migration(migrations.Migration):
                 ('id_oggetto_portale', models.IntegerField(db_column='ID_OGGETTO_PORTALE')),
                 ('id_classe_oggetto_portale', models.CharField(db_column='ID_CLASSE_OGGETTO_PORTALE', max_length=1000)),
                 ('id_sito_web_cds_topic', models.IntegerField(blank=True, db_column='ID_SITO_WEB_CDS_TOPIC', null=True)),
+                ('titolo_it', models.TextField(blank=True, db_column='TITOLO_IT', null=True)),
+                ('titolo_en', models.TextField(blank=True, db_column='TITOLO_EN', null=True)),
                 ('testo_it', models.TextField(db_column='TESTO_IT')),
                 ('testo_en', models.TextField(blank=True, db_column='TESTO_EN', null=True)),
                 ('visibile', models.IntegerField(db_column='VISIBILE')),
