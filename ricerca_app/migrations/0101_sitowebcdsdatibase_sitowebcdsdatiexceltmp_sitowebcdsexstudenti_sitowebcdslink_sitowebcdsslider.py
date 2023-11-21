@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
                 ('descrizione_link_en', models.CharField(blank=True, db_column='DESCRIZIONE_LINK_EN', max_length=2000, null=True)),
                 ('link_it', models.CharField(blank=True, db_column='LINK_IT', max_length=2000, null=True)),
                 ('link_en', models.CharField(blank=True, db_column='LINK_EN', max_length=2000, null=True)),
-                ('id_sito_web_cds_dati_base', models.IntegerField(db_column='ID_SITO_WEB_CDS_DATI_BASE')),
+                ('id_sito_web_cds_dati_base', models.ForeignKey(db_column='ID_SITO_WEB_CDS_DATI_BASE', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.sitowebcdsdatibase')),
                 ('dt_mod', models.DateField(blank=True, db_column='DT_MOD', null=True)),
                 ('id_user_mod', models.ForeignKey(blank=True, db_column='ID_USER_MOD', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
             ],

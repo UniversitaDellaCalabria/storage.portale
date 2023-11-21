@@ -4088,7 +4088,7 @@ class SitoWebCdsExStudenti(models.Model):
     profilo_en = models.TextField(db_column='PROFILO_EN', blank=True, null=True)  # Field name made lowercase.
     link_it = models.CharField(db_column='LINK_IT', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     link_en = models.CharField(db_column='LINK_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
-    id_sito_web_cds_dati_base = models.ForeignKey(SitoWebCdsDatiBase, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_DATI_BASE', to_field='id')  # Field name made lowercase.
+    id_sito_web_cds_dati_base = models.ForeignKey(SitoWebCdsDatiBase, models.CASCADE, db_column='ID_SITO_WEB_CDS_DATI_BASE', to_field='id')  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
     foto = models.FileField(
@@ -4112,7 +4112,7 @@ class SitoWebCdsLink(models.Model):
     descrizione_link_en = models.CharField(db_column='DESCRIZIONE_LINK_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     link_it = models.CharField(db_column='LINK_IT', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     link_en = models.CharField(db_column='LINK_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
-    id_sito_web_cds_dati_base = models.IntegerField(db_column='ID_SITO_WEB_CDS_DATI_BASE')  # Field name made lowercase.
+    id_sito_web_cds_dati_base = models.ForeignKey(SitoWebCdsDatiBase, models.CASCADE, db_column='ID_SITO_WEB_CDS_DATI_BASE', to_field='id') # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
@@ -4123,7 +4123,7 @@ class SitoWebCdsLink(models.Model):
 
 class SitoWebCdsSlider(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_sito_web_cds_dati_base = models.ForeignKey(SitoWebCdsDatiBase, models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_DATI_BASE', blank=True, null=True, to_field='id')  # Field name made lowercase.
+    id_sito_web_cds_dati_base = models.ForeignKey(SitoWebCdsDatiBase, models.CASCADE, db_column='ID_SITO_WEB_CDS_DATI_BASE', blank=True, null=True, to_field='id')  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE', blank=True, null=True)  # Field name made lowercase.
     slider_it = models.TextField(db_column='SLIDER_IT', blank=True, null=True)  # Field name made lowercase.
     slider_en = models.TextField(db_column='SLIDER_EN', blank=True, null=True)  # Field name made lowercase.

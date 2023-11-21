@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sitowebcdsexstudenti',
             name='id_sito_web_cds_dati_base',
-            field=models.ForeignKey(db_column='ID_SITO_WEB_CDS_DATI_BASE', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsdatibase'),
+            field=models.ForeignKey(db_column='ID_SITO_WEB_CDS_DATI_BASE', on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.sitowebcdsdatibase'),
         ),
         migrations.AlterField(
             model_name='sitowebcdsexstudenti',
@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sitowebcdsslider',
             name='id_sito_web_cds_dati_base',
-            field=models.ForeignKey(blank=True, db_column='ID_SITO_WEB_CDS_DATI_BASE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.sitowebcdsdatibase'),
+            field=models.ForeignKey(blank=True, db_column='ID_SITO_WEB_CDS_DATI_BASE', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.sitowebcdsdatibase'),
         ),
         migrations.AlterField(
             model_name='sitowebcdsslider',
