@@ -62,6 +62,30 @@ def cds_website(request, code, cds_website=None, my_offices=None):
 def cds_websites_base_edit(request, code, cds_website=None, my_offices=None):
     base_form = SitoWebCdsDatiBaseForm(data=request.POST if request.POST else None, instance=cds_website)
     
+    if request.POST:
+        if base_form.is_valid():
+        
+            base = base_form.save(commit=False)
+            base.dt_mod = now()
+            base.id_user_mod=request.user
+            base.save()
+        
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Edit Information"))
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Information edited successfully"))
+
+            return redirect('crud_cds_websites:crud_cds_websites_topics', code=code)
+
+        else:  # pragma: no cover
+            for k, v in base_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{base_form.fields[k].label}</b>: {v}")
+    
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
                    reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
