@@ -18,79 +18,82 @@
                     {{ cds_website.nome_corso_en }}
                 {% endif %}
             </h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th class="col-7">{% trans "Scrollable Text" %}</th>
-                        <th class="col-2 text-center">{% trans "Order" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for slider in sliders %}
-                        <!-- Slider Delete Modal -->
-                        <div class="modal fade"
-                        tabindex="-1"
-                        role="dialog"
-                        id="delete_slider_{{slider.id}}">
-                        <div class="modal-dialog modal-dialog-centered"
-                                role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">
-                                        {% trans "Confirm" %}
-                                    </h5>
-                                    <button class="close"
-                                            type="button"
-                                            data-dismiss="modal"
-                                            aria-label="Close">
-                                        <svg class="icon">
-                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>
-                                        {% trans "Do you want to remove this scrollable text?" %}
-                                    </p>
-                                </div>
-                                <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites:crud_cds_websites_sliders_delete' code=cds_website.id data_id=slider.id %}">
-                                        {% trans 'Yes, proceed' %}
-                                    </a>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Scrollable Text" %}</th>
+                            <th>{% trans "Order" %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slider in sliders %}
+                            <!-- Slider Delete Modal -->
+                            <div class="modal fade"
+                            tabindex="-1"
+                            role="dialog"
+                            id="delete_slider_{{slider.id}}">
+                            <div class="modal-dialog modal-dialog-centered"
+                                    role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Confirm" %}
+                                        </h5>
+                                        <button class="close"
+                                                type="button"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                            <svg class="icon">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {% trans "Do you want to remove this scrollable text?" %}
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites:crud_cds_websites_sliders_delete' code=cds_website.id data_id=slider.id %}">
+                                            {% trans 'Yes, proceed' %}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- /Slider Delete Modal -->
-                    <tr>
-                        <td class="col-7">
-                            <p class="text">
-                                {{ slider.slider_it }}
-                            </p>
-                        </td>
-                        <td class="col-2 text-center">
-                            {{ slider.ordine }}
-                        </td>
-                        <td class="col-3 text-right">
-                            <a href="{% url 'crud_cds_websites:crud_cds_websites_sliders_edit' code=cds_website.id data_id=slider.id %}" class="btn btn-primary btn-xs">
-                                <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                </svg>
-                                {% trans "Edit" %}
-                            </a>
-                            <a href="" class="btn btn-danger btn-xs"
-                                data-toggle="modal"
-                                data-target="#delete_slider_{{slider.id}}">
-                                <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                </svg>
-                                {% trans "Remove" %}
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        <!-- /Slider Delete Modal -->
+                        <tr>
+                            <td>
+                                <p class="text">
+                                    {{ slider.slider_it }}
+                                </p>
+                            </td>
+                            <td>
+                                {{ slider.ordine }}
+                            </td>
+                            <td>
+                                <a href="{% url 'crud_cds_websites:crud_cds_websites_sliders_edit' code=cds_website.id data_id=slider.id %}" class="btn btn-primary btn-xs">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg>
+                                    {% trans "Edit" %}
+                                </a>
+                                <a href="" class="btn btn-danger btn-xs"
+                                    data-toggle="modal"
+                                    data-target="#delete_slider_{{slider.id}}">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                    </svg>
+                                    {% trans "Remove" %}
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             <a href="{% url 'crud_cds_websites:crud_cds_websites_sliders_new' code=cds_website.id %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
