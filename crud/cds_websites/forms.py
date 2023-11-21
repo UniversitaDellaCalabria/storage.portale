@@ -15,10 +15,16 @@ UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 
 
 class SitoWebCdsDatiBaseForm(forms.ModelForm):
-    # choosen_department = forms.CharField(label=_('Department'),
-    #                                      widget=forms.HiddenInput(),
-    #                                      required=False)
-    
+
+    def __init__(self, *args, **kwargs):
+        super(SitoWebCdsDatiBaseForm, self).__init__(*args, **kwargs)
+        if self.initial:
+            self.initial["sito_web_cds_status"] = bool(self.initial.get("sito_web_cds_status", None))
+                
+    sito_web_cds_status = forms.BooleanField(
+        label=_("Status"),
+        required=False,
+    )
     aa = forms.IntegerField(
         required=True,
         min_value=1901,
@@ -112,22 +118,35 @@ class SitoWebCdsExStudentiForm(forms.ModelForm):
         }
 
 
-class SitoWebCdsSliderForm(forms.ModelForm):
-    
+class SitoWebCdsForm(forms.ModelForm):
     ordine = forms.IntegerField(
         required=True,
         min_value=0,
         max_value=100,
         label=_("Order"),
     )
-    
     class Meta:
-        model = SitoWebCdsSlider
         exclude = ['id_sito_web_cds_dati_base', 'id_user_mod', 'dt_mod',]
+
+class SitoWebCdsSliderForm(SitoWebCdsForm):
+       
+    class Meta(SitoWebCdsForm.Meta):
+        model = SitoWebCdsSlider
         labels = {
             'slider_it': _("Scrollable Text (it)"),
             'slider_en': _("Scrollable Text (en)"),
             'ordine': _("Order"),
+        }
+        
+class SitoWebCdsLinkForm(SitoWebCdsForm):
+    class Meta(SitoWebCdsForm.Meta):
+        model = SitoWebCdsLink
+        labels = {
+            'ordine': _("Order"),
+            'descrizione_link_it': _("Link Description (it)"),
+            'descrizione_link_en': _("Link Description (en)"),
+            'link_it': _("Link (it)"),
+            'link_en': _("Link (en)"),
         }
 
 class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):

@@ -18,6 +18,11 @@ urlpatterns += path('cds-websites/<str:code>/ex-students/', cds_websites_exstude
 urlpatterns += path('cds-websites/<str:code>/ex-students/new/', cds_websites_exstudents_new, name='crud_cds_websites_exstudents_new'),
 urlpatterns += path('cds-websites/<str:code>/ex-students/<str:data_id>/', cds_websites_exstudents_edit, name='crud_cds_websites_exstudents_edit'),
 urlpatterns += path('cds-websites/<str:code>/ex-students/<str:data_id>/delete/', cds_websites_exstudents_delete, name='crud_cds_websites_exstudents_delete'),
+#Links
+urlpatterns += path('cds-websites/<str:code>/links/', cds_websites_links, name='crud_cds_websites_links'),
+urlpatterns += path('cds-websites/<str:code>/links/new/', cds_websites_links_new, name='crud_cds_websites_links_new'),
+urlpatterns += path('cds-websites/<str:code>/links/<str:data_id>/', cds_websites_links_edit, name='crud_cds_websites_links_edit'),
+urlpatterns += path('cds-websites/<str:code>/links/<str:data_id>/delete/', cds_websites_links_delete, name='crud_cds_websites_links_delete'),
 #Topics
 urlpatterns += path('cds-websites/<str:code>/topics/', cds_websites_topics_edit, name='crud_cds_websites_topics_edit'),
 #Common
