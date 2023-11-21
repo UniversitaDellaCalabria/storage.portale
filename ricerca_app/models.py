@@ -870,6 +870,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
     cfu = models.IntegerField(db_column='CFU', blank=False, null=True)  # Field name made lowercase.
     tipo_af = models.CharField(db_column='TIPO_AF', max_length=500)  # Field name made lowercase.
     rif_dottorato = models.CharField(db_column='RIF_DOTTORATO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    ciclo = models.IntegerField(db_column='CICLO', blank=False)  # Field name made lowercase.
     id_struttura_proponente = models.ForeignKey('UnitaOrganizzativa', models.DO_NOTHING, db_column='ID_STRUTTURA_PROPONENTE', blank=True, null=True)  # Field name made lowercase.
     struttura_proponente_origine = models.CharField(db_column='STRUTTURA_PROPONENTE_ORIGINE', max_length=255, blank=True, null=True)  # Field name made lowercase.
     contenuti_af = models.TextField(db_column='CONTENUTI_AF', blank=False, null=True)  # Field name made lowercase.
