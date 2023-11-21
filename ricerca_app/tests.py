@@ -5821,7 +5821,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             'descrizione_link_en': 'aaa',
             'link_it': 'aaa',
             'link_en': 'aaa',
-            'id_sito_web_cds_dati_base': 1,
+            'id_sito_web_cds_dati_base': s1,
         })
 
         SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
@@ -5913,7 +5913,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             'descrizione_link_en': 'aaa',
             'link_it': 'aaa',
             'link_en': 'aaa',
-            'id_sito_web_cds_dati_base': 1,
+            'id_sito_web_cds_dati_base': s1,
         })
 
         SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
