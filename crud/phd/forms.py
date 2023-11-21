@@ -1,5 +1,3 @@
-import requests
-
 from ckeditor.widgets import CKEditorWidget
 
 from django import forms
@@ -10,18 +8,16 @@ from django.conf import settings
 from ricerca_app.models import (DidatticaDottoratoAttivitaFormativa,
                                 DidatticaDottoratoAttivitaFormativaAltriDocenti,
                                 DidatticaDottoratoAttivitaFormativaDocente,
+                                DidatticaSsd,
                                 UnitaOrganizzativa)
 
 from .. utils.settings import (ALLOWED_STRUCTURE_TYPES,
-                               CMS_STORAGE_ROOT_API,
                                STRUCTURES_FATHER)
 from .. utils.utils import _clean_teacher_dates
 
 
 ALLOWED_STRUCTURE_TYPES = getattr(
     settings, 'ALLOWED_STRUCTURE_TYPES', ALLOWED_STRUCTURE_TYPES)
-CMS_STORAGE_ROOT_API = getattr(
-    settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 STRUCTURES_FATHER = getattr(
     settings, 'STRUCTURES_FATHER', STRUCTURES_FATHER)
 
@@ -48,11 +44,11 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
-        ssd_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:phd-ssd-list")}?page_size=1000'
-        ssd_api = requests.get(ssd_url)
-        ssd = ssd_api.json()['results']
         lista_ssd = [('Non classificabile', 'Non classificabile')]
+        ssd_list = DidatticaSsd.objects.all()
+        for ssd in ssd_list:
+            lista_ssd.append((f'{ssd.ssd_id} {ssd.ssd_des}',
+                              f'{ssd.ssd_id} {ssd.ssd_des}'))
 
         structures = UnitaOrganizzativa.objects.filter(uo_padre=STRUCTURES_FATHER,
                                                        cd_tipo_nodo__in=ALLOWED_STRUCTURE_TYPES)
@@ -71,9 +67,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
 
         for q in query:
             lista_rif_dott.append((q['rif_dottorato'], q['rif_dottorato']))
-        for s in ssd:
-            if s['SSD'] != 'Non classificabile':
-                lista_ssd.append((s['SSD'], s['SSD']))
+
 
         self.fields['id_struttura_proponente'] = forms.ModelChoiceField(
             label=_('Central Structure'),
