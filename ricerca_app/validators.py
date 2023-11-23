@@ -52,7 +52,7 @@ def _validate_generic_file_extension(value, allowed_filetypes): # pragma: no cov
 
 
 def orcid_validator(value): # pragma: no cover
-    regex = "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$"
+    regex = "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9|X]$"
     if not re.match(regex, value):
         raise ValidationError(_('Invalid ORCID. Remember, ORCID is an https URI with a 16-digit number that is compatible as 0000-0001-2345-6789'))
 

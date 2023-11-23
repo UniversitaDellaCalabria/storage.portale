@@ -602,7 +602,7 @@ def cds_office_data_responsible_delete(request, regdid_id, data_id, my_offices=N
     log_action(user=request.user,
                obj=regdid.cds,
                flag=CHANGE,
-               msg=_("New organization added successfully"))
+               msg='Rimosso link a responsabile')
 
     messages.add_message(request,
                          messages.SUCCESS,
@@ -630,7 +630,7 @@ def cds_doc_teaching_system(request, regdid_id, my_offices=None, regdid=None):
         if form.is_valid():
             other_data = form.save(commit=False)
             other_data.regdid_id = regdid
-            other_data.user_mod = request.user
+            # other_data.user_mod = request.user
             other_data.save()
 
             if form.changed_data:
@@ -682,9 +682,10 @@ def cds_doc_teaching_system_delete(request, regdid_id, my_offices=None, regdid=N
                 os.remove(path)
         except:
             pass
-        other_data.user_mod = request.user
+        # other_data.user_mod = request.user
         other_data.ordinamento_didattico = None
-        other_data.save(update_fields=['ordinamento_didattico', 'user_mod'])
+        other_data.save()
+        # other_data.save(update_fields=['ordinamento_didattico','user_mod'])
 
         log_action(user=request.user,
                    obj=regdid,
@@ -715,7 +716,7 @@ def cds_doc_manifesto_regulation(request, regdid_id, my_offices=None, regdid=Non
                                                     files=request.FILES)
         if form.is_valid():
             other_data = form.save(commit=False)
-            other_data.user_mod = request.user
+            # other_data.user_mod = request.user
             other_data.regdid_id = regdid
             other_data.save()
 
@@ -768,9 +769,10 @@ def cds_doc_study_manifesto_delete(request, regdid_id, my_offices=None, regdid=N
                 os.remove(path)
         except:
             pass
-        other_data.user_mod = request.user
+        # other_data.user_mod = request.user
         other_data.manifesto_studi = None
-        other_data.save(update_fields=['manifesto_studi', 'user_mod'])
+        other_data.save()
+        # other_data.save(update_fields=['manifesto_studi','user_mod'])
 
         log_action(user=request.user,
                    obj=regdid,
@@ -800,9 +802,11 @@ def cds_doc_didactic_regulation_delete(request, regdid_id, my_offices=None, regd
                 os.remove(path)
         except:
             pass
-        other_data.user_mod = request.user
+
+        # other_data.user_mod = request.user
         other_data.regolamento_didattico = None
-        other_data.save(update_fields=['regolamento_didattico','user_mod'])
+        # other_data.save(update_fields=['regolamento_didattico','user_mod'])
+        other_data.save()
 
         log_action(user=request.user,
                    obj=regdid,

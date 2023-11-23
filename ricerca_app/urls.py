@@ -239,6 +239,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiPhdList.as_view(),
                         name='phdlist'),
 
+    urlpatterns += path('{}/phd-cycles/'.format(base_url),
+                        api_views.ApiPhdCycles.as_view(),
+                        name='phd-cycles'),
+
     urlpatterns += path('{}/degreetypes/'.format(base_url),
                         api_views.ApiDegreeTypesList.as_view(),
                         name='degreetypes'),
@@ -434,6 +438,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
         '{}/high-formation-course-types/'.format(base_url),
         api_views.ApiHighFormationCourseTypesList.as_view(),
         name='high-formation-course-types'),
+
+    urlpatterns += path(
+        '{}/get-decrypted-person-id/'.format(base_url),
+        api_views.ApiDecryptedPersonId.as_view(),
+        name='get-decrypted-person-id'),
 
     urlpatterns += path(
         '{}/get-person-id/'.format(base_url),

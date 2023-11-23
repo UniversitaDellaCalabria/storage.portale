@@ -14,26 +14,26 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='laboratoriodatibase',
             name='matricola_preposto_sicurezza',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PREPOSTO_SICUREZZA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='matricola_preposto_sicurezza_personale', to='ricerca_app.personale', to_field='matricola'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PREPOSTO_SICUREZZA', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='matricola_preposto_sicurezza_personale', to='ricerca_app.personale', to_field='matricola'),
         ),
         migrations.AlterField(
             model_name='laboratoriodatibase',
             name='matricola_referente_compilazione',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_REFERENTE_COMPILAZIONE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='matricola_referente_compilazione_personale', to='ricerca_app.personale', to_field='matricola'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_REFERENTE_COMPILAZIONE', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='matricola_referente_compilazione_personale', to='ricerca_app.personale', to_field='matricola'),
         ),
         migrations.AlterField(
             model_name='laboratoriodatibase',
             name='matricola_responsabile_scientifico',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_RESPONSABILE_SCIENTIFICO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='matricola_responsabile_scientifico_personale', to='ricerca_app.personale', to_field='matricola'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_RESPONSABILE_SCIENTIFICO', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='matricola_responsabile_scientifico_personale', to='ricerca_app.personale', to_field='matricola'),
         ),
         migrations.AlterField(
             model_name='laboratoriopersonalericerca',
             name='matricola_personale_ricerca',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PERSONALE_RICERCA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale', to_field='matricola'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PERSONALE_RICERCA', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale', to_field='matricola'),
         ),
         migrations.AlterField(
             model_name='laboratoriopersonaletecnico',
             name='matricola_personale_tecnico',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PERSONALE_TECNICO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale', to_field='matricola'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PERSONALE_TECNICO', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale', to_field='matricola'),
         ),
     ]

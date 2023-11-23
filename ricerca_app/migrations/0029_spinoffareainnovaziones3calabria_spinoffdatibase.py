@@ -36,9 +36,9 @@ class Migration(migrations.Migration):
                 ('ceo', models.CharField(blank=True, db_column='CEO', max_length=1000, null=True)),
                 ('is_startup', models.PositiveIntegerField(blank=True, db_column='IS_STARTUP', null=True)),
                 ('is_spinoff', models.PositiveIntegerField(blank=True, db_column='IS_SPINOFF', null=True)),
-                ('id_area_innovazione_s3_calabria', models.ForeignKey(blank=True, db_column='ID_AREA_INNOVAZIONE_S3_CALABRIA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.spinoffareainnovaziones3calabria')),
-                ('id_area_tecnologica', models.ForeignKey(blank=True, db_column='ID_AREA_TECNOLOGICA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.tipologiaareatecnologica')),
-                ('matricola_referente_unical', models.ForeignKey(blank=True, db_column='MATRICOLA_REFERENTE_UNICAL', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale')),
+                ('id_area_innovazione_s3_calabria', models.ForeignKey(blank=True, db_column='ID_AREA_INNOVAZIONE_S3_CALABRIA', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.spinoffareainnovaziones3calabria')),
+                ('id_area_tecnologica', models.ForeignKey(blank=True, db_column='ID_AREA_TECNOLOGICA', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.tipologiaareatecnologica')),
+                ('matricola_referente_unical', models.ForeignKey(blank=True, db_column='MATRICOLA_REFERENTE_UNICAL', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale')),
             ],
             options={
                 'db_table': 'SPINOFF_DATI_BASE',

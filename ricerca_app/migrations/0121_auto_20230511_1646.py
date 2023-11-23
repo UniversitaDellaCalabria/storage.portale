@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='brevettodatibase',
             name='territorio',
-            field=models.ForeignKey(blank=True, db_column='TERRITORIO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.brevettoterritori'),
+            field=models.ForeignKey(blank=True, db_column='TERRITORIO', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.brevettoterritori'),
         ),
     ]

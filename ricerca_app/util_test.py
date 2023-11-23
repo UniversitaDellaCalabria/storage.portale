@@ -225,6 +225,7 @@ class DidatticaAttivitaFormativaUnitTest(TestCase):
     def create_didatticaAttivitaFormativa(cls, **kwargs):
         data = {
             'af_id': '1',
+            'anno_corso': 1
         }
         for k, v in kwargs.items():
             data[k] = v

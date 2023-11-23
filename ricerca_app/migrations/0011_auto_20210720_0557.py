@@ -19,11 +19,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='laboratoriopersonalericerca',
             name='matricola_personale_ricerca',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PERSONALE_RICERCA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PERSONALE_RICERCA', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale'),
         ),
         migrations.AlterField(
             model_name='laboratoriopersonaletecnico',
             name='matricola_personale_tecnico',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PERSONALE_TECNICO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_PERSONALE_TECNICO', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale'),
         ),
     ]

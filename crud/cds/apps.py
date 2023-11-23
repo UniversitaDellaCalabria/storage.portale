@@ -7,4 +7,4 @@ class CRUDCdsConfig(AppConfig):
 
     def ready(self):
         # Signals
-        import crud.cds.signals
+        from . import signals

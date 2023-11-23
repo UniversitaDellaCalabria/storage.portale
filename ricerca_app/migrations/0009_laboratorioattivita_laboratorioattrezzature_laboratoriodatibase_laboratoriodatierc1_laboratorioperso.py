@@ -130,7 +130,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
-                ('id_ricerca_erc1', models.ForeignKey(blank=True, db_column='ID_RICERCA_ERC1', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.ricercaerc1')),
+                ('id_ricerca_erc1', models.ForeignKey(blank=True, db_column='ID_RICERCA_ERC1', null=True, on_delete=django.db.models.deletion.PROTECT, to='ricerca_app.ricercaerc1')),
             ],
             options={
                 'db_table': 'LABORATORIO_DATI_ERC1',

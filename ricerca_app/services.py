@@ -1410,6 +1410,7 @@ class ServiceDidatticaAttivitaFormativa:
                     'cds__cds_id',
                     'cds__cds_cod',
                     'regdid__regdid_id',
+                    'regdid__aa_reg_did',
                     'anno_corso',
                     'ciclo_des',
                     'peso',
@@ -1443,6 +1444,7 @@ class ServiceDidatticaAttivitaFormativa:
                 'cds__cds_cod',
                 'cds__cds_id',
                 'regdid__regdid_id',
+                'regdid__aa_reg_did',
                 'anno_corso',
                 'ciclo_des',
                 'peso',
@@ -1479,24 +1481,18 @@ class ServiceDidatticaAttivitaFormativa:
         if department:
             query_department = Q(cds_id__dip_id__dip_cod=department)
         if cds:
-            for k in cds.split(" "):
-                if language == "it": # pragma: no cover
-                    q = Q(cds_id__nome_cds_it__icontains=k)
-                else:
-                    q = Q(cds_id__nome_cds_eng__icontains=k)
-                query_cds |= q
+            if language == "it": # pragma: no cover
+                query_cds = Q(cds_id__nome_cds_it__icontains=cds)
+            else:
+                query_cds = Q(cds_id__nome_cds_eng__icontains=cds)
         # serve un collegamento tra didatticaattivitàformativa e personale con il campo matricola_resp_did
         if teacher:
-            for k in teacher.split(" "):
-                q_teacher = Q(matricola_resp_did__cognome__istartswith=k)
-                query_teacher &= q_teacher
+            query_teacher = Q(matricola_resp_did__cognome__istartswith=teacher)
         if teaching:
-            for k in teaching.split(" "):
-                if language == "it":
-                    q_teaching = Q(des__icontains=k)
-                else:
-                    q_teaching = Q(af_gen_des_eng__icontains=k)
-                query_teaching |= q_teaching
+            if language == "it":
+                query_teaching = Q(des__icontains=teaching)
+            else:
+                query_teaching = Q(af_gen_des_eng__icontains=teaching)
         if ssd:
             for k in ssd.split(" "):
                 q_ssd = Q(sett_cod__icontains=k)
@@ -1655,8 +1651,9 @@ class ServiceDidatticaAttivitaFormativa:
     @staticmethod
     def getAttivitaFormativaWithSubModules(af_id, language):
         list_submodules = DidatticaAttivitaFormativa.objects.filter(
-            # af_radice_id=af_id,
-            af_pdr_id=af_id).exclude(af_id=af_id).values(
+            Q(af_radice_id=af_id) | Q(af_pdr_id=af_id)).exclude(
+            af_id=af_id
+        ).values(
             'af_id',
             'af_gen_cod',
             'des',
@@ -1677,14 +1674,13 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_cod',
             'des',
             'af_gen_des_eng',
-            'cds__nome_cds_it',
-            'cds__nome_cds_eng',
             'cds__cds_cod',
             'cds__cds_id',
             'lista_lin_did_af',
             'pds_cod',
             'pds_des',
             'regdid__regdid_id',
+            'regdid__aa_reg_did',
             'anno_corso',
             'ciclo_des',
             'peso',
@@ -1726,8 +1722,6 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_id',
                 'af_gen_cod',
                 'des',
-                'cds__nome_cds_it',
-                'cds__nome_cds_eng',
                 'cds__cds_cod',
                 'cds__cds_id',
                 'pds_cod',
@@ -1735,6 +1729,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_gen_des_eng',
                 'ciclo_des',
                 'regdid__regdid_id',
+                'regdid__aa_reg_did',
+                'anno_corso',
                 'didatticacopertura__coper_peso'
             ).first()
 
@@ -1748,9 +1744,9 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'ciclo_des',
             'regdid__regdid_id',
+            'regdid__aa_reg_did',
+            'anno_corso',
             'didatticacopertura__coper_peso',
-            'cds__nome_cds_it',
-            'cds__nome_cds_eng',
             'cds__cds_cod',
             'cds__cds_id',
             'pds_cod',
@@ -1770,9 +1766,9 @@ class ServiceDidatticaAttivitaFormativa:
             'af_gen_des_eng',
             'ciclo_des',
             'regdid__regdid_id',
+            'regdid__aa_reg_did',
+            'anno_corso',
             'didatticacopertura__coper_peso',
-            'cds__nome_cds_it',
-            'cds__nome_cds_eng',
             'cds__cds_cod',
             'cds__cds_id',
             'pds_cod',
@@ -1796,9 +1792,9 @@ class ServiceDidatticaAttivitaFormativa:
                 'af_gen_des_eng',
                 'ciclo_des',
                 'regdid__regdid_id',
+                'regdid__aa_reg_did',
+                'anno_corso',
                 'didatticacopertura__coper_peso',
-                'cds__nome_cds_it',
-                'cds__nome_cds_eng',
                 'cds__cds_cod',
                 'cds__cds_id',
                 'pds_cod',
@@ -1916,8 +1912,7 @@ class ServiceDidatticaAttivitaFormativa:
                 'fat_part_stu_des',
                 'part_stu_cod',
                 'part_stu_des',
-                'af_gen_des_eng',
-
+                'af_gen_des_eng'
             )
 
             groups_serialize = []
@@ -2108,8 +2103,12 @@ class ServiceDocente:
             return query
 
     @staticmethod
-    def getResearchLines(teacher_id):
+    def getResearchLines(teacher_id, only_active=True):
+        query_is_active_app = Q(ricercadocentelineaapplicata__ricerca_linea_applicata__visibile=True) if only_active else Q()
+        query_is_active_base = Q(ricercadocentelineabase__ricerca_linea_base__visibile=True) if only_active else Q()
+
         linea_applicata = Personale.objects.filter(
+            query_is_active_app,
             matricola__exact=teacher_id,
             fl_docente=1,
             ricercadocentelineaapplicata__dt_fine__isnull=True) .order_by('ricercadocentelineaapplicata__ricerca_linea_applicata__id') .values(
@@ -2120,6 +2119,7 @@ class ServiceDocente:
             'ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__description').distinct()
 
         linea_base = Personale.objects.filter(
+            query_is_active_base,
             matricola__exact=teacher_id,
             fl_docente=1,
             ricercadocentelineabase__dt_fine__isnull=True) .order_by('ricercadocentelineabase__ricerca_linea_base__id') .values(
@@ -2149,7 +2149,7 @@ class ServiceDocente:
         return linea_applicata
 
     @staticmethod
-    def getAllResearchLines(search, year, department, ercs, asters, exclude_base=False, exclude_applied=False):
+    def getAllResearchLines(search, year, department, ercs, asters, exclude_base=False, exclude_applied=False, only_active=True):
         if exclude_applied and exclude_base:
             return []
 
@@ -2157,7 +2157,7 @@ class ServiceDocente:
         query_year = Q()
         query_ercs = Q()
         query_asters = Q()
-
+        query_is_active = Q(visibile=True) if only_active else Q()
 
         if search:
             for k in search.split(" "):
@@ -2181,6 +2181,7 @@ class ServiceDocente:
                 query_search,
                 query_year,
                 query_ercs,
+                query_is_active
                 ).order_by('descrizione').values(
                 'id',
                 'descrizione',
@@ -2192,7 +2193,8 @@ class ServiceDocente:
                 'ricerca_erc2_id__ricerca_erc1_id__descrizione',
                 'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__erc0_cod',
                 'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description',
-                'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description_en'
+                'ricerca_erc2_id__ricerca_erc1_id__ricerca_erc0_cod__description_en',
+                'visibile'
             ).distinct()
 
         if not exclude_applied:
@@ -2200,6 +2202,7 @@ class ServiceDocente:
                 query_search,
                 query_year,
                 query_asters,
+                query_is_active
             ).order_by('descrizione').values(
                 'id',
                 'descrizione',
@@ -2207,6 +2210,7 @@ class ServiceDocente:
                 'anno',
                 'ricerca_aster2_id__ricerca_aster1_id',
                 'ricerca_aster2_id__descrizione',
+                'visibile'
             ).distinct()
 
         if ercs and asters:
@@ -2313,10 +2317,11 @@ class ServiceDocente:
         return linee
 
     @staticmethod
-    def getBaseResearchLines(search, teacher, dip, year):
+    def getBaseResearchLines(search, teacher, dip, year, only_active=True):
 
         query_search = Q()
         query_year = Q()
+        query_is_active = Q(visibile=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -2327,13 +2332,15 @@ class ServiceDocente:
 
         query = RicercaLineaBase.objects.filter(
             query_search,
-            query_year).order_by('descrizione').values(
+            query_year,
+            query_is_active).order_by('descrizione').values(
             'id',
             'descrizione',
             'descr_pubblicaz_prog_brevetto',
             'anno',
             'ricerca_erc2_id__cod_erc2',
             'ricerca_erc2_id__descrizione',
+            'visibile'
         ).distinct()
 
         if teacher is not None or dip is not None:
@@ -2393,9 +2400,10 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getAppliedResearchLines(search, teacher, dip, year):
+    def getAppliedResearchLines(search, teacher, dip, year, only_active=True):
         query_search = Q()
         query_year = Q()
+        query_is_active = Q(visibile=True) if only_active else Q()
 
         if search is not None:
             for k in search.split(" "):
@@ -2406,13 +2414,15 @@ class ServiceDocente:
 
         query = RicercaLineaApplicata.objects.filter(
             query_search,
-            query_year).order_by('descrizione').values(
+            query_year,
+            query_is_active).order_by('descrizione').values(
             'id',
             'descrizione',
             'descr_pubblicaz_prog_brevetto',
             'anno',
             'ricerca_aster2_id__ricerca_aster1_id',
             'ricerca_aster2_id__descrizione',
+            'visibile'
         ).distinct()
 
         if teacher is not None or dip is not None:
@@ -2523,8 +2533,11 @@ class ServiceDocente:
                       'middle_name') \
             .distinct()
 
-        if not regdid:
-            query = query.filter(flg_cessato=0)
+        # se visualizzo i docenti di un corso (anche passato)
+        # mostro anche quelli che sono cessati
+        # altrimenti solo quelli attivi
+        if not regdid and not cds:
+            query = query.filter(Q(flg_cessato=0) | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year))
 
         if dip:
             department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
@@ -2663,76 +2676,89 @@ class ServiceDocente:
     def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo):
 
         if year:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_off_id=year)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False,
+                aa_off_id=year).select_related('personale', 'af')
         elif yearFrom and yearTo:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_off_id__gte=yearFrom,
-                didatticacopertura__aa_off_id__lte=yearTo)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False,
+                aa_off_id__gte=yearFrom,
+                aa_off_id__lte=yearTo).select_related('personale', 'af')
         elif yearFrom:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_off_id__gte=yearFrom)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False,
+                aa_off_id__gte=yearFrom).select_related('personale', 'af')
         elif yearTo:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False,
-                didatticacopertura__aa_off_id__lte=yearTo)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False,
+                aa_off_id__lte=yearTo).select_related('personale', 'af')
         else:
-            query = Personale.objects.filter(
-                matricola__exact=teacher,
-                didatticacopertura__af__isnull=False)
+            query = DidatticaCopertura.objects.filter(
+                personale__matricola__exact=teacher,
+                af__isnull=False).select_related('personale', 'af')
+
+        single_id = []
+        to_exclude = []
+
+        for cop in query:
+            if cop.af_id not in single_id:
+                single_id.append(cop.af_id)
+            else:
+                to_exclude.append(cop.coper_id)
+        query = query.exclude(coper_id__in=to_exclude)
 
         return query.order_by(
-            'didatticacopertura__aa_off_id',
-            'didatticacopertura__anno_corso',
-            'didatticacopertura__af_gen_des',
-            'didatticacopertura__af_gen_des_eng') .values(
-            'didatticacopertura__af_id',
-            'didatticacopertura__af_gen_cod',
-            'didatticacopertura__af_gen_des',
-            'didatticacopertura__af_gen_des_eng',
-            'didatticacopertura__regdid_id',
-            'didatticacopertura__anno_corso',
-            'didatticacopertura__ciclo_des',
-            'didatticacopertura__peso',
-            'didatticacopertura__sett_des',
-            'didatticacopertura__af__freq_obblig_flg',
-            'didatticacopertura__cds_des',
-            'didatticacopertura__af__cds__nome_cds_eng',
-            'didatticacopertura__af__lista_lin_did_af',
-            'didatticacopertura__aa_off_id',
-            'didatticacopertura__cds_id',
-            'didatticacopertura__cds_cod',
-            'didatticacopertura__fat_part_stu_des',
-            'didatticacopertura__fat_part_stu_cod',
-            'didatticacopertura__part_stu_des',
-            'didatticacopertura__part_stu_cod',
-            'didatticacopertura__tipo_fat_stu_cod',
-            'didatticacopertura__part_ini',
-            'didatticacopertura__part_fine',
-            'didatticacopertura__coper_peso',
-            'didatticacopertura__ore'
-        ).order_by('-didatticacopertura__aa_off_id')
+            'aa_off_id',
+            'anno_corso',
+            'af_gen_des',
+            'af_gen_des_eng'
+            ).values(
+            'af_id',
+            'af_gen_cod',
+            'af_gen_des',
+            'af_gen_des_eng',
+            'regdid_id',
+            'anno_corso',
+            'ciclo_des',
+            'peso',
+            'sett_des',
+            'af__freq_obblig_flg',
+            'cds_des',
+            'af__cds__nome_cds_eng',
+            'af__lista_lin_did_af',
+            'aa_off_id',
+            'cds_id',
+            'cds_cod',
+            'fat_part_stu_des',
+            'fat_part_stu_cod',
+            'part_stu_des',
+            'part_stu_cod',
+            'tipo_fat_stu_cod',
+            'part_ini',
+            'part_fine',
+            'coper_peso',
+            'ore'
+        ).order_by('-aa_off_id')
 
     @staticmethod
     def getDocenteInfo(teacher):
-        query1 = Personale.objects.filter(
-            didatticacopertura__af__isnull=False,
-            matricola__exact=teacher).distinct()
-        query2 = Personale.objects.filter(
-            fl_docente=1,
-            flg_cessato=0,
-            matricola__exact=teacher).distinct()
+        query1 = Personale.objects\
+                          .filter(Q(flg_cessato=0) | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year),
+                                  didatticacopertura__af__isnull=False,
+                                  matricola__exact=teacher)\
+                          .distinct()
+        query2 = Personale.objects.filter(fl_docente=1,
+                                          flg_cessato=0,
+                                          matricola__exact=teacher)\
+                                  .distinct()
 
         query = (query1 | query2).distinct()
 
-        if not query:
+        if not query.exists():
             raise Http404
 
         contacts_to_take = [
@@ -3088,12 +3114,13 @@ class ServiceDottorato:
             'idesse3_ddr__regdid_id_esse3')
 
     @staticmethod
-    def getPhdActivities(search=None, structure=None, phd=None, ssd=None, teacher=None):
+    def getPhdActivities(search=None, structure=None, phd=None, ssd=None, teacher=None, cycle=None):
 
         query_search = Q()
         query_structure = Q()
         query_phd = Q()
         query_ssd = Q()
+        query_cycle = Q()
 
 
         if search is not None:
@@ -3104,12 +3131,15 @@ class ServiceDottorato:
             query_phd = Q(rif_dottorato__icontains=phd)
         if ssd:
             query_ssd = Q(ssd__icontains=ssd)
+        if cycle:
+            query_cycle = Q(ciclo=cycle)
 
         query = DidatticaDottoratoAttivitaFormativa.objects.filter(
             query_search,
             query_structure,
             query_phd,
             query_ssd,
+            query_cycle,
         ).values(
             "id",
             "nome_af",
@@ -3118,6 +3148,7 @@ class ServiceDottorato:
             "cfu",
             "tipo_af",
             "rif_dottorato",
+            "ciclo",
             "id_struttura_proponente",
             "struttura_proponente_origine",
             "contenuti_af",
@@ -3183,6 +3214,7 @@ class ServiceDottorato:
             "cfu",
             "tipo_af",
             "rif_dottorato",
+            "ciclo",
             "id_struttura_proponente",
             "struttura_proponente_origine",
             "contenuti_af",
@@ -3464,7 +3496,7 @@ class ServicePersonale:
             for item in filtered2:
                 final_structures = []
                 for r in item['Roles']:
-                    if not role or role and r['cd_ruolo'] in role:
+                    if r['cd_ruolo'] in role or item['profilo'] in role or not role:
                         final_structures.append(r['cd_tipo_nodo'])
                 if (set(s).intersection(set(final_structures))):
                     filtered3.append(item)
@@ -3477,7 +3509,7 @@ class ServicePersonale:
             for item in filtered3:
                 for r in item['Roles']:
                     if r['cd_uo_aff_org'] == structureid:
-                        if not role or role and r['cd_ruolo'] in role:
+                        if r['cd_ruolo'] in role or item['profilo'] in role or not role:
                             filtered4.append(item)
                             break
         else:
@@ -3491,7 +3523,7 @@ class ServicePersonale:
                 if item['Roles'] and len(item['Roles']) != 0:
                     for r in item['Roles']:
                         if r['cd_uo_aff_org'] in query_structuretree:
-                            if not role or role and r['cd_ruolo'] in role:
+                            if r['cd_ruolo'] in role or item['profilo'] in role or not role:
                                 filtered5.append(item)
                                 break
         else:
@@ -3860,7 +3892,8 @@ class ServicePersonale:
             else:
                 q["Roles"] = roles
 
-
+        if not query:
+            raise Http404
         return query
 
     @staticmethod

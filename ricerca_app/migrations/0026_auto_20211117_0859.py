@@ -29,6 +29,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='laboratoriodatibase',
             name='id_infrastruttura_riferimento',
-            field=models.ForeignKey(blank=True, db_column='ID_INFRASTRUTTURA_RIFERIMENTO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratorioinfrastruttura'),
+            field=models.ForeignKey(blank=True, db_column='ID_INFRASTRUTTURA_RIFERIMENTO', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.laboratorioinfrastruttura'),
         ),
     ]
