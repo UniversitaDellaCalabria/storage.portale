@@ -17,6 +17,7 @@
     </div>
 </div>
 
+<!-- Informazioni sul corso -->
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
@@ -115,198 +116,9 @@
         </div>
     </div>
 </div>
+<!-- END informazioni sul corso -->
 
-
-<div class="card-wrapper card-space">
-    <div class="card card-bg no-after">
-        <div class="card-body">
-            <h4 style="font-weight: lighter;">
-                {% trans "Cds Organizations" %}
-            </h4>
-            {% if gruppi_cds_data %}
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>{% trans "Organization" %}</th>
-                            <th>{% trans "Members" %}</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for data in gruppi_cds_data %}
-                        <tr>
-                            <td>{{ data.ordine|default:"-" }}</td>
-                            <td><b>{{ data.descr_breve_it }}</b></td>
-                            <td>
-                                {% for key, value in gruppi_cds.items %}
-                                {% for comp in value %}
-                                {% if key == data.id  %}
-                                {{comp.matricola}} <br />
-                                {% endif %}
-                                {% endfor %}
-                                {% endfor %}
-                            </td>
-                            <td class="text-right">
-                                <a href="{% url 'crud_cds:crud_cds_office_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="btn btn-primary btn-xs">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                    </svg> {% trans "Edit" %}
-                                </a>
-                                <a href="" class="btn btn-danger btn-xs"
-                                   data-toggle="modal"
-                                   data-target="#delete_office_data_{{ data.pk }}">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                    </svg> {% trans "Remove" %}
-                                </a>
-                                <div class="modal fade"
-                                     tabindex="-1"
-                                     role="dialog"
-                                     id="delete_office_data_{{ data.pk }}">
-                                    <div class="modal-dialog modal-dialog-centered text-left"
-                                         role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    {% trans "Confirm" %}
-                                                </h5>
-                                                <button class="close"
-                                                        type="button"
-                                                        data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <svg class="icon">
-                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-                                                    {% trans "Do you want to delete office data set?" %}
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_office_data_delete' regdid_id=regdid.pk data_id=data.pk %}">
-                                                    {% trans 'Yes, proceed' %}
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% endif %}
-
-            <a href="{% url 'crud_cds:crud_cds_office_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
-                <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Add new" %}
-            </a>
-        </div>
-    </div>
-</div>
-
-
-<div class="card-wrapper card-space">
-    <div class="card card-bg no-after">
-        <div class="card-body">
-            <h4 style="font-weight: lighter;">
-                {% trans "Department Organizations" %}
-            </h4>
-            {% if gruppi_dip_data %}
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>{% trans "Organization" %}</th>
-                            <th>{% trans "Members" %}</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for data in gruppi_dip_data %}
-                        <tr>
-                            <td>{{ data.ordine|default:"-" }}</td>
-                            <td><b>{{ data.descr_breve_it }}</b></td>
-                            <td>
-                                {% for key, value in gruppi_dip.items %}
-                                {% for comp in value %}
-                                {% if key == data.id  %}
-                                {{comp.matricola}} <br />
-                                {% endif %}
-                                {% endfor %}
-                                {% endfor %}
-                            </td>
-                            <td class="text-right">
-                                <a href="{% url 'crud_cds:crud_cds_office_data_edit' regdid_id=regdid.pk data_id=data.pk %}" class="btn btn-primary btn-xs">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                    </svg> {% trans "Edit" %}
-                                </a>
-                                <a href="" class="btn btn-danger btn-xs"
-                                   data-toggle="modal"
-                                   data-target="#delete_office_data_{{ data.pk }}">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                    </svg> {% trans "Remove" %}
-                                </a>
-                                <div class="modal fade"
-                                     tabindex="-1"
-                                     role="dialog"
-                                     id="delete_office_data_{{ data.pk }}">
-                                    <div class="modal-dialog modal-dialog-centered text-left"
-                                         role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    {% trans "Confirm" %}
-                                                </h5>
-                                                <button class="close"
-                                                        type="button"
-                                                        data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <svg class="icon">
-                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-                                                    {% trans "Do you want to delete office data set?" %}
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_office_data_delete' regdid_id=regdid.pk data_id=data.pk %}">
-                                                    {% trans 'Yes, proceed' %}
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% endif %}
-
-            <a href="{% url 'crud_cds:crud_cds_office_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
-                <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Add new" %}
-            </a>
-        </div>
-    </div>
-</div>
-
-
+<!-- Dati ufficio -->
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
@@ -399,7 +211,149 @@
         </div>
     </div>
 </div>
+<!-- END dati ufficio -->
 
+<!-- Gruppi CDS -->
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">
+                {% trans "Cds groups" %}
+            </h4>
+            {% if cds_groups %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Visible" %}</th>
+                            <th>{% trans "Members" %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group in cds_groups %}
+                        <tr>
+                            <td>{{ group.ordine|default:"-" }}</td>
+                            <td><b>{{ group.descr_breve_it }}</b></td>
+                            <td>
+                                {% if group.visibile %}
+                                <svg class="icon icon-sm icon-success">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                </svg>
+                                {% else %}
+                                <svg class="icon icon-sm icon-danger">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                </svg>
+                                {% endif %}
+                            </td>
+                            <td>{{ group.didatticacdsgruppicomponenti_set.count }}</td>
+                            <td class="text-right">
+                                <a href="{% url 'crud_cds:crud_cds_group' regdid_id=regdid.pk group_id=group.pk %}" class="btn btn-primary btn-xs">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg> {% trans "Edit" %}
+                                </a>
+                                <a href="" class="btn btn-danger btn-xs"
+                                   data-toggle="modal"
+                                   data-target="#delete_group_{{ group.pk }}">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                    </svg> {% trans "Remove" %}
+                                </a>
+                                <div class="modal fade"
+                                     tabindex="-1"
+                                     role="dialog"
+                                     id="delete_group_{{ group.pk }}">
+                                    <div class="modal-dialog modal-dialog-centered text-left"
+                                         role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    {% trans "Confirm" %}
+                                                </h5>
+                                                <button class="close"
+                                                        type="button"
+                                                        data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <svg class="icon">
+                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>
+                                                    {% trans "Do you want to delete this group?" %}
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_group_delete' regdid_id=regdid.pk group_id=group.pk %}">
+                                                    {% trans 'Yes, proceed' %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            <a href="{% url 'crud_cds:crud_cds_group_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+        </div>
+    </div>
+</div>
+<!-- END gruppi CDS -->
+
+{% comment %}
+<!-- Gruppi dipartimento -->
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">
+                {% trans "Department groups" %}
+            </h4>
+            {% if department_groups %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Members" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group in department_groups %}
+                        <tr>
+                            <td>{{ group.ordine|default:"-" }}</td>
+                            <td>
+                                <b>{{ group.descr_breve_it }}</b>
+                            </td>
+                            <td>
+                                {{ group.didatticadipartimentogruppicomponenti_set.count }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- END gruppi dipartimento -->
+{% endcomment %}
+
+<!-- Documenti -->
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
@@ -599,7 +553,9 @@
         </div>
     </div>
 </div>
+<!-- END documenti -->
 
+<!-- Log -->
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
@@ -612,4 +568,5 @@
         </div>
     </div>
 </div>
+<!-- END log -->
 {% endblock centered_container %}

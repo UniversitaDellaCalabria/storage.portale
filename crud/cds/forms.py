@@ -5,8 +5,11 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from ricerca_app.models import (
-    DidatticaCds, DidatticaCdsAltriDati, DidatticaCdsAltriDatiUfficio)
+    DidatticaCds, DidatticaCdsAltriDati,
+    DidatticaCdsAltriDatiUfficio, DidatticaCdsGruppi,
+    DidatticaCdsGruppiComponenti)
 
+from .. utils.forms import ChoosenPersonForm
 from .. utils.settings import CMS_STORAGE_ROOT_API
 
 
@@ -68,3 +71,37 @@ class DidatticaCdsManifestoRegolamentoForm(forms.ModelForm):
             "manifesto_studi": _("Study manifesto"),
             "regolamento_didattico": _("Didactic regulation"),
         }
+
+
+class DidatticaCdsGruppoForm(forms.ModelForm):
+    class Meta:
+        model = DidatticaCdsGruppi
+        fields = ['visibile', 'descr_breve_it', 'descr_breve_en', 'descr_lunga_it',
+                  'descr_lunga_en', 'ordine']
+        # labels = {
+            # "manifesto_studi": _("Study manifesto"),
+            # "regolamento_didattico": _("Didactic regulation"),
+        # }
+        widgets = {'descr_breve_it': forms.Textarea(attrs={'rows': 2}),
+                   'descr_breve_en': forms.Textarea(attrs={'rows': 2}),
+                   'descr_lunga_it': forms.Textarea(attrs={'rows': 2}),
+                   'descr_lunga_en': forms.Textarea(attrs={'rows': 2})}
+
+
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class DidatticaCdsGruppoComponenteForm(forms.ModelForm):
+    class Meta:
+        model = DidatticaCdsGruppiComponenti
+        fields = ['visibile', 'nome', 'cognome', 'funzione_it',
+                  'funzione_en', 'ordine']
+
+
+class ChoosenPersonForm(ChoosenPersonForm, forms.ModelForm):
+
+    class Meta:
+        model = DidatticaCdsGruppiComponenti
+        fields = ['visibile', 'funzione_it', 'funzione_en', 'ordine']

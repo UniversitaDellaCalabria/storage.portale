@@ -157,166 +157,25 @@ class ApiCdSDetail(ApiEndpointDetail):
     filter_backends = []
 
     def get_queryset(self):
-        cdsid_param = self.kwargs['regdidid']
-        res = DidatticaCds.objects.filter(
-            didatticaregolamento__regdid_id=cdsid_param)
-        langs = res.prefetch_related('didatticacdslingua')
 
-        res = res.values(
-            'didatticaregolamento__regdid_id',
-            'didatticaregolamento__aa_reg_did',
-            'didatticaregolamento__frequenza_obbligatoria',
-            'dip__dip_id',
-            'dip__dip_cod',
-            'dip__dip_des_it',
-            'dip__dip_des_eng',
-            'cds_id',
-            'cds_cod',
-            'cdsord_id',
-            'nome_cds_it',
-            'nome_cds_eng',
-            'tipo_corso_cod',
-            'tipo_corso_des',
-            'cla_miur_cod',
-            'cla_miur_des',
-            'intercla_miur_cod',
-            'intercla_miur_des',
-            'durata_anni',
-            'valore_min',
-            'codicione',
-            'didatticaregolamento__titolo_congiunto_cod',
-            'didatticaregolamento__stato_regdid_cod',
-            'area_cds',
-            'area_cds_en',
-        ).distinct()
+        request = self.request
+        only_active = True
 
-        for r in res:
-            erogation_mode = DidatticaRegolamento.objects.filter(cds_id=r['cds_id'],
-                                                                 stato_regdid_cod__exact='A').values(
-            'modalita_erogazione'
-            )
-            if (len(erogation_mode) != 0):
-                r['ErogationMode'] = erogation_mode
-            else:
-                r['ErogationMode'] = None
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        if request.user.is_authenticated: # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
+                                                                              office__name__in=[OFFICE_CDS,OFFICE_CDS_DOCUMENTS,
+                                                                                                OFFICE_CDS_TEACHING_SYSTEM],
+                                                                              office__is_active=True,
+                                                                              office__organizational_structure__is_active=True)
+            if my_offices: only_active = False
 
-        res = list(res)
-
-
-        if len(res) == 0:
-            return None
-
-        texts = DidatticaTestiRegolamento.objects.filter(
-            regdid=cdsid_param).values(
-            'regdid__regdid_id',
-            'clob_txt_ita',
-            'clob_txt_eng',
-            'testo_regdid_url',
-            'tipo_testo_regdid_cod',
-            'profilo',
-            'profilo_eng')
-
-        list_profiles = {}
-        last_profile = ""
-
-        res[0]['Languages'] = langs.values(
-            "didatticacdslingua__lingua_des_it",
-            "didatticacdslingua__lingua_des_eng").distinct()
-
-        res[0]['URL_CDS_DOC'] = None
-        res[0]['URL_CDS'] = None
-        res[0]['INTRO_CDS_FMT'] = None
-        res[0]['URL_CDS_VIDEO'] = None
-        res[0]['DESC_COR_BRE'] = None
-        res[0]['OBB_SPEC'] = None
-        res[0]['REQ_ACC'] = None
-        res[0]['REQ_ACC_2'] = None
-        res[0]['PROFILO'] = None
-        res[0]['PROVA_FINALE'] = None
-        res[0]['PROVA_FINALE_2'] = None
-
-        for text in texts:
-            if text['tipo_testo_regdid_cod'] != 'FUNZIONI' and text['tipo_testo_regdid_cod'] != 'COMPETENZE' and text['tipo_testo_regdid_cod'] != 'SBOCCHI':
-                if (text['clob_txt_eng'] is None and self.language !=
-                        "it") or self.language == 'it':
-                    res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_ita']
-                else:
-                    res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_eng']
-            else:
-                if (self.language !=
-                        "it" and text["profilo_eng"] is None) or self.language == 'it':
-                    if text["profilo"] != last_profile:
-                        last_profile = text["profilo"]
-                        list_profiles[last_profile] = {}
-                elif text[f'{ self.language == "it" and "profilo" or "profilo_eng" }'] != last_profile: # pragma: no cover
-                    last_profile = text[f'{self.language == "it" and "profilo" or "profilo_eng"}']
-                    list_profiles[last_profile] = {}
-
-                if (text["clob_txt_eng"] is None and self.language !=
-                        "it") or self.language == 'it':
-                    list_profiles[last_profile][text['tipo_testo_regdid_cod']
-                                                ] = text["clob_txt_ita"]
-                else:
-                    list_profiles[last_profile][text['tipo_testo_regdid_cod']
-                                                ] = text['clob_txt_eng']
-        res[0]['PROFILO'] = list_profiles
-
-        res[0]['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=cdsid_param).values(
-            'matricola_coordinatore',
-            'nome_origine_coordinatore',
-            'matricola_vice_coordinatore',
-            'nome_origine_vice_coordinatore',
-            'num_posti',
-            'modalita_iscrizione',
-            'manifesto_studi',
-            'regolamento_didattico',
-            'ordinamento_didattico'
-        ).distinct()
-
-        res[0]['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=res[0]['cds_id']).values(
-            'ordine',
-            'nome_ufficio',
-            'matricola_riferimento',
-            'nome_origine_riferimento',
-            'telefono',
-            'email',
-            'edificio',
-            'piano',
-            'orari',
-            'sportello_online'
-        ).distinct()
-
-        res[0]['CdsPeriods'] = DidatticaCdsPeriodi.objects.filter(cds_cod=res[0]['cds_cod'],
-                                                                  aa_id=res[0]['didatticaregolamento__aa_reg_did']).values(
-            'ciclo_des',
-            'tipo_ciclo_des',
-            'tipo_ciclo_des_eng',
-            'data_inizio',
-            'data_fine'
-        )
-
-        res[0]['CdsOrganizations'] = DidatticaCdsGruppi.objects.filter(id_didattica_cds=res[0]['cds_id'],
-                                                                       visibile=True).values(
-            'ordine',
-            'id',
-            'descr_breve_it',
-            'descr_breve_en',
-            'descr_lunga_it',
-            'descr_lunga_en'
-        ).distinct()
-
-        for organization in res[0]['CdsOrganizations']:
-            members = DidatticaCdsGruppiComponenti.objects.filter(id_didattica_cds_gruppi=organization['id'],
-                                                                  visibile=True).values(
-                'ordine',
-                'id',
-                'matricola',
-                'cognome',
-                'nome'
-            ).distinct()
-            organization['members'] = members
-
-        return res
+        return ServiceDidatticaCds.cds(
+            self.language,
+            self.kwargs['regdidid'],
+            only_active)
 
 
 class ApiCdSStudyPlansList(ApiEndpointList):

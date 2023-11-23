@@ -77,15 +77,6 @@ class CdSSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
-        cds_organizations_data = None
-        cds_organization_members = None
-        if query["CdsOrganizations"] is not None:
-            # cds_organization_members = CdSSerializer.to_dict_cds_organization_members(
-                # query["CdsOrganizationMembers"])
-            cds_organizations_data = CdSSerializer.to_dict_cds_organizations_data(
-                query["CdsOrganizations"])
-
-
         regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
         ordinamento_didattico = regdid.get_ordinamento_didattico()
 
@@ -118,7 +109,6 @@ class CdSSerializer(CreateUpdateAbstract):
             'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
             'OfficesData': offices_data,
-            'CdsOrganizations': cds_organizations_data
         }
 
     @staticmethod
@@ -151,36 +141,6 @@ class CdSSerializer(CreateUpdateAbstract):
                 'OnlineCounter': q['sportello_online'],
             })
         return data
-
-    @staticmethod
-    def to_dict_cds_organizations_data(query):
-        data = []
-        for q in query:
-            data.append({
-                'Order': q['ordine'],
-                'id': q['id'],
-                'DescrBreveIt': q['descr_breve_it'],
-                'DescrBreveEn': q['descr_breve_en'],
-                'DescrLungaIt': q['descr_lunga_it'],
-                'DescrLungaEn': q['descr_lunga_en'],
-                'Members': CdSSerializer.to_dict_cds_organization_members(q['members']),
-            })
-        return data
-
-
-    @staticmethod
-    def to_dict_cds_organization_members(query):
-        data = []
-        for q in query:
-            data.append({
-                'Order': q['ordine'],
-                'id': q['id'],
-                'Matricola': q['matricola'],
-                'Cognome': q['cognome'],
-                'Nome': q['nome'],
-            })
-        return data
-
 
 
 class CdsInfoSerializer(CreateUpdateAbstract):
@@ -225,19 +185,10 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
-        cds_organizations_data = None
-        cds_organization_members = None
-
-        if query["CdsOrganizations"] is not None:
-            # cds_organization_members = CdsInfoSerializer.to_dict_cds_organization_members(
-                # query["CdsOrganizationMembers"])
-            cds_organizations_data = CdsInfoSerializer.to_dict_cds_organizations_data(
-                query["CdsOrganizations"])
-
-        cds_periods_data = None
-        if query["CdsPeriods"] is not None:
-            cds_periods_data = CdsInfoSerializer.to_dict_cds_periods_data(
-                query["CdsPeriods"], req_lang)
+        cds_groups_data = None
+        if query["CdsGroups"] is not None:
+            cds_groups_data = CdsInfoSerializer.to_dict_cds_groups_data(
+                query["CdsGroups"])
 
         regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
         ordinamento_didattico = regdid.get_ordinamento_didattico()
@@ -282,10 +233,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
             'OfficesData': offices_data,
-            'CdsOrganizations': cds_organizations_data,
-            'CdsPeriods': cds_periods_data
+            'CdsGroups': cds_groups_data
         }
-
 
     # @staticmethod
     # def get_media_url(query):
@@ -331,45 +280,28 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         return data
 
     @staticmethod
-    def to_dict_cds_organizations_data(query):
+    def to_dict_cds_groups_data(query, req_lang='en'):
         data = []
         for q in query:
             data.append({
                 'Order': q['ordine'],
-                'id': q['id'],
-                'DescrBreveIt': q['descr_breve_it'],
-                'DescrBreveEn': q['descr_breve_en'],
-                'DescrLungaIt': q['descr_lunga_it'],
-                'DescrLungaEn': q['descr_lunga_en'],
-                'Members': CdsInfoSerializer.to_dict_cds_organization_members(q['members']),
+                'ShortDesc': q['descr_breve_it'] if req_lang == 'it' or q['descr_breve_en'] is None else q['descr_breve_en'],
+                'DescrLungaIt': q['descr_lunga_it'] if req_lang == 'it' or q['descr_lunga_en'] is None else q['descr_lunga_en'],
+                'Members': CdsInfoSerializer.to_dict_cds_group_members(q['members']),
             })
         return data
 
     @staticmethod
-    def to_dict_cds_periods_data(query, req_lang='en'):
-        data = []
-        for q in query:
-            data.append({
-                'Description': q['tipo_ciclo_des'] if req_lang == 'it' or q['tipo_ciclo_des_eng'] is None else q['tipo_ciclo_des_eng'],
-                'Start': q['data_inizio'],
-                'End': q['data_fine'],
-            })
-        return data
-
-    @staticmethod
-    def to_dict_cds_organization_members(query):
+    def to_dict_cds_group_members(query):
         data = []
         for q in query:
             data.append({
                 'Order': q['ordine'],
-                'id': q['id'],
                 'Matricola': q['matricola'],
                 'Cognome': q['cognome'],
                 'Nome': q['nome'],
             })
         return data
-
-
 
 
 class CdsWebsiteSerializer(CreateUpdateAbstract):
@@ -398,8 +330,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
 
 
         return {
-            'Id': query['id'],
-            'CDSId': query['cds_id'],
+            'CDSId': query['id'],
             'CDSCOD': query['cds_cod'],
             'CDSAcademicYear': query['aa'],
             'CDSName': query['nome_corso_it'] if req_lang=='it' or query['nome_corso_en'] is None else query['nome_corso_en'],

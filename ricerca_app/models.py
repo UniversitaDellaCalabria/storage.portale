@@ -3916,7 +3916,7 @@ class DidatticaCdsGruppi(models.Model):
     descr_lunga_en = models.TextField(db_column='DESCR_LUNGA_EN', blank=True, null=True)  # Field name made lowercase.
     id_didattica_cds = models.ForeignKey(DidatticaCds, models.DO_NOTHING, db_column='ID_DIDATTICA_CDS')  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE', default=10)  # Field name made lowercase.
-    visibile = models.IntegerField(db_column='VISIBILE', default=True)  # Field name made lowercase.
+    visibile = models.BooleanField(db_column='VISIBILE', default=True)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
 
@@ -3925,17 +3925,20 @@ class DidatticaCdsGruppi(models.Model):
         db_table = 'DIDATTICA_CDS_GRUPPI'
         ordering = ('ordine',)
 
+    def __str__(self): # pragma: no cover
+        return self.descr_breve_it
+
 
 class DidatticaCdsGruppiComponenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_didattica_cds_gruppi = models.ForeignKey(DidatticaCdsGruppi, models.DO_NOTHING, db_column='ID_DIDATTICA_CDS_GRUPPI')  # Field name made lowercase.
+    id_didattica_cds_gruppi = models.ForeignKey(DidatticaCdsGruppi, models.CASCADE, db_column='ID_DIDATTICA_CDS_GRUPPI')  # Field name made lowercase.
     matricola = models.ForeignKey(Personale, models.DO_NOTHING, db_column='MATRICOLA', blank=True, null=True, to_field='matricola')  # Field name made lowercase.
     cognome = models.CharField(db_column='COGNOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     nome = models.CharField(db_column='NOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     funzione_it = models.CharField(db_column='FUNZIONE_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     funzione_en = models.CharField(db_column='FUNZIONE_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE', default=10)  # Field name made lowercase.
-    visibile = models.IntegerField(db_column='VISIBILE', default=True)  # Field name made lowercase.
+    visibile = models.BooleanField(db_column='VISIBILE', default=True)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
 
@@ -3943,6 +3946,9 @@ class DidatticaCdsGruppiComponenti(models.Model):
         managed = True
         db_table = 'DIDATTICA_CDS_GRUPPI_COMPONENTI'
         ordering = ('ordine',)
+
+    def __str__(self): # pragma: no cover
+        return f'{self.id_didattica_cds_gruppi} - {self.cognome} {self.nome}'
 
 
 class DidatticaDipartimentoGruppi(models.Model):
@@ -3953,7 +3959,7 @@ class DidatticaDipartimentoGruppi(models.Model):
     descr_lunga_en = models.TextField(db_column='DESCR_LUNGA_EN', blank=True, null=True)  # Field name made lowercase.
     id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.DO_NOTHING, db_column='ID_DIDATTICA_DIPARTIMENTO')  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE', default=10)  # Field name made lowercase.
-    visibile = models.IntegerField(db_column='VISIBILE', default=True)  # Field name made lowercase.
+    visibile = models.BooleanField(db_column='VISIBILE', default=True)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
 
@@ -3965,14 +3971,14 @@ class DidatticaDipartimentoGruppi(models.Model):
 
 class DidatticaDipartimentoGruppiComponenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_didattica_dipartimento_gruppi = models.ForeignKey(DidatticaDipartimentoGruppi, models.DO_NOTHING, db_column='ID_DIDATTICA_DIPARTIMENTO_GRUPPI')  # Field name made lowercase.
+    id_didattica_dipartimento_gruppi = models.ForeignKey(DidatticaDipartimentoGruppi, models.CASCADE, db_column='ID_DIDATTICA_DIPARTIMENTO_GRUPPI')  # Field name made lowercase.
     matricola = models.ForeignKey('Personale', models.DO_NOTHING, db_column='MATRICOLA', blank=True, null=True, to_field='matricola' )  # Field name made lowercase.
     cognome = models.CharField(db_column='COGNOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     nome = models.CharField(db_column='NOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     funzione_it = models.CharField(db_column='FUNZIONE_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     funzione_en = models.CharField(db_column='FUNZIONE_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE', default=10)  # Field name made lowercase.
-    visibile = models.IntegerField(db_column='VISIBILE', default=True)  # Field name made lowercase.
+    visibile = models.BooleanField(db_column='VISIBILE', default=True)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
 
