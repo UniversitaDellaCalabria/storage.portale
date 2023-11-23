@@ -14,11 +14,11 @@ git+https://github.com/UniversitaDellaCalabria/django-organizational-area.git
 pillow
 
 # Rest
+# openAPI schema v3
 #djangorestframework
-git+https://github.com/peppelinux/django-rest-framework@agid_oas3
+git+https://github.com/UniversitaDellaCalabria/django-rest-framework.git@agid_oas3
 
 markdown
-# openAPI schema v3
 uritemplate
 pyyaml
 cryptography
