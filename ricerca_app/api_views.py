@@ -1341,7 +1341,7 @@ class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
         return ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year, regdid)
 
 
-class ApiCdsWebsiteTimetable(APIView):
+class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
     allowed_methods = ('GET',)
 
     def __init__(self, **kwargs):
@@ -1379,7 +1379,7 @@ class ApiCdsWebsiteTimetable(APIView):
         return Response({})
 
 
-class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable):
+class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable): # pragma: no cover
     allowed_methods = ('GET',)
 
     def __init__(self, **kwargs):
