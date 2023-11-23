@@ -543,14 +543,14 @@ class ApiTeacherMaterials(ApiEndpointList):
         return ServiceDocente.getDocenteMaterials(request.user, teacherid, search)
 
 
-class ApiTeacherMaterial(ApiEndpointDetail):
-    description = 'La funzione restituisce il materiale diddattico specifico di un docente'
-    serializer_class = TeacherMaterialsSerializer
-    filter_backends = []
+# class ApiTeacherMaterial(ApiEndpointDetail):
+    # description = 'La funzione restituisce il materiale diddattico specifico di un docente'
+    # serializer_class = TeacherMaterialsSerializer
+    # filter_backends = []
 
-    def get_queryset(self):
-        teacherid = decrypt(self.kwargs['teacherid'])
-        return ServiceDocente.getDocenteMaterials(teacherid)
+    # def get_queryset(self):
+        # teacherid = decrypt(self.kwargs['teacherid'])
+        # return ServiceDocente.getDocenteMaterials(teacherid)
 
 
 class ApiTeacherNews(ApiEndpointList):

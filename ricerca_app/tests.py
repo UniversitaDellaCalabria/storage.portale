@@ -1644,13 +1644,10 @@ class ApiTeacherMaterialsUnitTest(TestCase):
 
         })
 
-
-
         url = reverse('ricerca:teachermaterials', kwargs={'teacherid': encrypt('111112')})
 
         # check url
         res = req.get(url)
-
         assert res.status_code == 200
 
         # GET
