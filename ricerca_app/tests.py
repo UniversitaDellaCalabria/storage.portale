@@ -5970,13 +5970,11 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
 
         # check url
         res = req.get(url)
-
         assert res.status_code == 200
 
         # GET
-
         res = req.get(url)
-        assert res.json()['results']['Id'] == 1
+        assert res.json()['results']['CDSCOD'] == '1'
 
 
 
@@ -6412,5 +6410,4 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
 
         data = {'cds_cod': '1', 'year': 2022}
         res = req.get(url, data=data)
-        print(res.json())
         assert len(res.json()['results']) == 1

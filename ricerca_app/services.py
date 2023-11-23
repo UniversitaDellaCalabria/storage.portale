@@ -1724,6 +1724,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'des',
                 'cds__cds_cod',
                 'cds__cds_id',
+                'cds__nome_cds_it',
+                'cds__nome_cds_eng',
                 'pds_cod',
                 'pds_des',
                 'af_gen_des_eng',
@@ -1749,6 +1751,8 @@ class ServiceDidatticaAttivitaFormativa:
             'didatticacopertura__coper_peso',
             'cds__cds_cod',
             'cds__cds_id',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng',
             'pds_cod',
             'pds_des',
         )
@@ -1771,6 +1775,8 @@ class ServiceDidatticaAttivitaFormativa:
             'didatticacopertura__coper_peso',
             'cds__cds_cod',
             'cds__cds_id',
+            'cds__nome_cds_it',
+            'cds__nome_cds_eng',
             'pds_cod',
             'pds_des',
         )
@@ -1797,6 +1803,8 @@ class ServiceDidatticaAttivitaFormativa:
                 'didatticacopertura__coper_peso',
                 'cds__cds_cod',
                 'cds__cds_id',
+                'cds__nome_cds_it',
+                'cds__nome_cds_eng',
                 'pds_cod',
                 'pds_des',
             )
