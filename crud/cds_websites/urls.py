@@ -5,8 +5,8 @@ from . views import *
 urlpatterns = []
 
 urlpatterns += path('cds-websites/', cds_websites, name='crud_cds_websites'),
-#Dati Base
 urlpatterns += path('cds-websites/<str:code>/', cds_website, name='crud_cds_website'),
+#Dati Base
 urlpatterns += path('cds-websites/<str:code>/base/', cds_websites_base_edit, name='crud_cds_website_base_edit'),
 #Sliders
 urlpatterns += path('cds-websites/<str:code>/sliders/', cds_websites_sliders, name='crud_cds_websites_sliders'),

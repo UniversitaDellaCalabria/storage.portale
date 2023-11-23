@@ -73,13 +73,13 @@ def cds_websites_base_edit(request, code, cds_website=None, my_offices=None):
             log_action(user=request.user,
                             obj=cds_website,
                             flag=CHANGE,
-                            msg=_("Edit Information"))
+                            msg=_("Edit Base Information"))
 
             messages.add_message(request,
                                     messages.SUCCESS,
-                                    _("Information edited successfully"))
+                                    _("Base Information edited successfully"))
 
-            return redirect('crud_cds_websites:crud_cds_websites_topics', code=code)
+            return redirect('crud_cds_websites:crud_cds_website_base_edit', code=code)
 
         else:  # pragma: no cover
             for k, v in base_form.errors.items():
@@ -906,7 +906,7 @@ def cds_websites_object_edit(request, code, data_id, cds_website=None, my_office
                    reverse('crud_cds_websites:crud_cds_websites_topics_edit', kwargs={'code': code}): _("Topics"),
                    '#': _("Edit Object") }
     
-    return render(request, 'cds_websites_unique_form.html',
+    return render(request, 'object_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
@@ -961,7 +961,6 @@ def cds_websites_object_new(request, code, cds_website=None, my_offices=None):
                     'breadcrumbs': breadcrumbs,
                     'forms': [object_form,],
                     'item_label': _('Object'),
-                    'edit': 1,
                   })
     
 @login_required

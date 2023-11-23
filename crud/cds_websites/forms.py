@@ -255,6 +255,9 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
             "id_classe_oggetto_portale": _("Object Class"),
             "visibile": _("Visible"),
         }
+    class Media:
+        js = ('js/textarea-autosize.js',)
+        
         
 class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

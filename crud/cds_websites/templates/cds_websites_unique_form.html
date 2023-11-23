@@ -15,7 +15,7 @@
     </h3>
     {% endblock %}
     {% block before_forms%}
-    {% endblock %}
+    {% endblock before_forms %}
     <form method="post" enctype="multipart/form-data" novalidate>
         {% block forms %}
             <div class="card-wrapper card-space">
@@ -24,17 +24,22 @@
                         {% for form in forms %}
                             {% include "form_template.html" with form=form %}
                         {% endfor %}
+
                         {% block before_submit %}
-                        {% endblock %}
-                        {% include "includes/form_submit.html" %}
+                        {% endblock before_submit %}
+
+                        {% block submit %}
+                            {% include "includes/form_submit.html" %}
+                        {% endblock submit %}
+
                         {% block after_submit%}
-                        {% endblock %}
+                        {% endblock after_submit %}
                     </div>
                 </div>
             </div>
-        {% endblock %}
+        {% endblock forms %}
     </form>
     {% block after_forms%}
-    {% endblock %}
+    {% endblock after_forms %}
 </div>
 {% endblock centered_container %}
