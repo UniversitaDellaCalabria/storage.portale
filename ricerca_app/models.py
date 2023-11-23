@@ -4146,7 +4146,7 @@ class SitoWebCdsOggettiPortale(models.Model):
                                                 null=True)  # Field name made lowercase.
     titolo_it = models.TextField(db_column='TITOLO_IT', blank=True, null=True)  # Field name made lowercase.
     titolo_en = models.TextField(db_column='TITOLO_EN', blank=True, null=True)  # Field name made lowercase.
-    testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
+    testo_it = models.TextField(db_column='TESTO_IT', blank=True, null=True)  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
     visibile = models.IntegerField(db_column='VISIBILE')  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.

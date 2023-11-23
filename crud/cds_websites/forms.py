@@ -203,12 +203,10 @@ class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
         cds_id = kwargs.pop("cds_id", None)
         
         super(SitoWebCdsOggettiItemForm, self).__init__(*args, **kwargs)
-        if not self.instance.pk:
-            choices = SitoWebCdsOggettiPortale.objects.filter(cds_id=cds_id).values_list("id", "aa_regdid_id", "testo_it").order_by("aa_regdid_id", "testo_it")
-            choices = map(lambda reg: (reg[0], f"{reg[1]} - {reg[2]}"), choices)
-            choices = tuple(choices)
-        else:
-            choices=((self.instance.id_sito_web_cds_oggetti_portale.id, f"{self.instance.id_sito_web_cds_oggetti_portale.aa_regdid_id} - {self.instance.id_sito_web_cds_oggetti_portale.titolo_articolo_it}"),)
+        
+        choices = SitoWebCdsOggettiPortale.objects.filter(cds_id=cds_id).values_list("id", "aa_regdid_id", "titolo_it", "testo_it").order_by("aa_regdid_id", "titolo_it", "testo_it")
+        choices = map(lambda reg: (reg[0], f"{reg[1]} - {reg[2] if reg[2] else ''} - {reg[3] if reg[3] else ''}"), choices)
+        choices = tuple(choices)
         
         self.fields["id_sito_web_cds_oggetti_portale"] = forms.ChoiceField(
             choices=choices,
@@ -221,6 +219,14 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
         super(SitoWebCdsOggettiPortaleForm, self).__init__(*args, **kwargs)
         if self.initial:
             self.initial["visibile"] = bool(self.initial.get("visibile", None))
+            
+    def clean(self):
+        super(SitoWebCdsOggettiPortaleForm, self).clean()
+        titolo_it = self.cleaned_data.get("titolo_it")
+        testo_it = self.cleaned_data.get("testo_it")
+        if not titolo_it and not testo_it:
+            raise forms.ValidationError(_("At least one between Title (it) and Text(it) must be provided"))
+        return self.cleaned_data
     
     id_classe_oggetto_portale = forms.ChoiceField(
         required=True,

@@ -893,12 +893,12 @@ def cds_websites_object_edit(request, code, data_id, cds_website=None, my_office
             return redirect('crud_cds_websites:crud_cds_websites_topics_edit', code=code)
 
         else:  # pragma: no cover
-            for k, v in art_reg_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{art_reg_form.fields[k].label}</b>: {v}")
             for k, v in object_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{object_form.fields[k].label}</b>: {v}")
+                if k == '__all__':
+                    messages.add_message(request, messages.ERROR, f"{v}")
+                else:
+                    messages.add_message(request, messages.ERROR,
+                                     f"<b>{object_form.fields[k].label}</b>: {v}")                    
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
@@ -927,7 +927,6 @@ def cds_websites_object_new(request, code, cds_website=None, my_offices=None):
         if  object_form.is_valid():
             
             _object = object_form.save(commit=False)
-            _object.id_sito_web_cds_topic = topic_id #TODO
             _object.cds = cds_website.cds 
             _object.id_user_mod = request.user
             _object.dt_mod = now()
@@ -946,8 +945,11 @@ def cds_websites_object_new(request, code, cds_website=None, my_offices=None):
 
         else:  # pragma: no cover
             for k, v in object_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                     f"<b>{object_form.fields[k].label}</b>: {v}")
+                if k == '__all__':
+                    messages.add_message(request, messages.ERROR, f"{v}")
+                else:
+                    messages.add_message(request, messages.ERROR,
+                                     f"<b>{object_form.fields[k].label}</b>: {v}")  
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
@@ -1037,7 +1039,10 @@ def cds_websites_object_add(request, code, topic_id, cds_website=None, my_office
 def cds_websites_object_item_edit(request, code, topic_id, data_id, cds_website=None, my_offices=None):
     
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
-    art_reg_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, instance=regart, cds_id=cds_website.cds_id)        
+    initial = {
+        "id_sito_web_cds_oggetti_portale": regart.id_sito_web_cds_oggetti_portale.id,
+    }
+    art_reg_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, instance=regart, cds_id=cds_website.cds_id, initial=initial)        
         
     if request.POST:
         if art_reg_form.is_valid():
