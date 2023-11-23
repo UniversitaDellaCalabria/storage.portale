@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('descr_dip_lab', models.CharField(blank=True, max_length=400, null=True)),
                 ('id_dip', models.ForeignKey(blank=True, db_column='id_dip', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.didatticadipartimento')),
-                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.laboratoriodatibase')),
+                ('id_laboratorio_dati', models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase')),
             ],
             options={
                 'db_table': 'LABORATORIO_ALTRI_DIPARTIMENTI',

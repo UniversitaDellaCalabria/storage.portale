@@ -1,0 +1,1 @@
+PHD_CYCLES = [(38, 'XXXVIII'), (39, 'XXXIX')]

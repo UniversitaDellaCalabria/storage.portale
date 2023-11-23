@@ -19,8 +19,8 @@ class Migration(migrations.Migration):
                 ('nome_origine_vice_coordinatore', models.CharField(blank=True, db_column='NOME_ORIGINE_VICE_COORDINATORE', max_length=1000, null=True)),
                 ('num_posti', models.IntegerField(blank=True, db_column='NUM_POSTI', null=True)),
                 ('modalita_iscrizione', models.TextField(blank=True, db_column='MODALITA_ISCRIZIONE', null=True)),
-                ('matricola_coordinatore', models.ForeignKey(blank=True, db_column='MATRICOLA_COORDINATORE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='coordinatore', to='ricerca_app.personale')),
-                ('matricola_vice_coordinatore', models.ForeignKey(blank=True, db_column='MATRICOLA_VICE_COORDINATORE', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='vice_coordinatore', to='ricerca_app.personale')),
+                ('matricola_coordinatore', models.ForeignKey(blank=True, db_column='MATRICOLA_COORDINATORE', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='coordinatore', to='ricerca_app.personale')),
+                ('matricola_vice_coordinatore', models.ForeignKey(blank=True, db_column='MATRICOLA_VICE_COORDINATORE', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='vice_coordinatore', to='ricerca_app.personale')),
             ],
             options={
                 'db_table': 'DIDATTICA_CDS_ALTRI_DATI',
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 ('piano', models.CharField(blank=True, db_column='PIANO', max_length=1000, null=True)),
                 ('orari', models.CharField(blank=True, db_column='ORARI', max_length=1000, null=True)),
                 ('sportello_online', models.CharField(blank=True, db_column='SPORTELLO_ONLINE', max_length=2000, null=True)),
-                ('matricola_riferimento', models.ForeignKey(blank=True, db_column='MATRICOLA_RIFERIMENTO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale')),
+                ('matricola_riferimento', models.ForeignKey(blank=True, db_column='MATRICOLA_RIFERIMENTO', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale')),
             ],
             options={
                 'db_table': 'DIDATTICA_CDS_ALTRI_DATI_UFFICIO',

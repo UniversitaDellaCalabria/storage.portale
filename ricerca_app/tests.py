@@ -421,6 +421,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'anno_corso': 1
         })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 2,
@@ -430,6 +431,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
             'af_radice_id': 2,
+            'anno_corso': 1
         })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 3,
@@ -439,6 +441,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
             'af_radice_id': 2,
+            'anno_corso': 1
         })
         DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 4,
@@ -448,6 +451,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 4,
+            'anno_corso': 1
         })
 
         url = reverse(
@@ -522,6 +526,7 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'af_gen_des_eng': 'computer science',
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
+            'anno_corso': 2,
             'af_radice_id': 1,
             'matricola_resp_did': p1,
             'mutuata_flg': 1,
@@ -534,6 +539,7 @@ class ApiStudyActivityInfoUnitTest(TestCase):
             'af_gen_des_eng': 'computer science modulo 1',
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
+            'anno_corso': 1,
             'af_radice_id': 1,
             'mutuata_flg': 0,
             'af_master_id': 2,
@@ -626,6 +632,7 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
             'af_gen_des_eng': 'computer science',
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
+            'anno_corso': 1,
             'af_radice_id': 1,
             'matricola_resp_did': p1,
             'mutuata_flg': 1,
@@ -719,6 +726,7 @@ class ApiStudyActivityDetailUnitTest(TestCase):
         course = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 1,
             'pds_regdid': pds,
+            'anno_corso': 1,
             'des': 'informatica',
             'af_gen_des_eng': 'computer science',
             'ciclo_des': 'Primo semestre',
@@ -735,6 +743,7 @@ class ApiStudyActivityDetailUnitTest(TestCase):
             'af_gen_des_eng': 'computer science modulo 1',
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid,
+            'anno_corso': 2,
             'af_radice_id': 1,
             'af_pdr_id': 1,
             'fat_part_stu_cod': 'GRP',
@@ -1023,14 +1032,16 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'id': 1,
             'ricerca_erc2': erc2,
             'descrizione': 'regressione lineare',
-            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020'
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
+            'visibile': 1
         })
 
         linea_base2 = RicercaLineaBaseUnitTest.create_ricercaLineaBase(**{
             'id': 7,
             'ricerca_erc2': erc2,
             'descrizione': 'regressione lineare',
-            'descr_pubblicaz_prog_brevetto': 'pubblicazione 20201'
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 20201',
+            'visibile': 1
         })
 
         RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
@@ -1063,13 +1074,15 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
             'id': 1,
             'ricerca_aster2': aster2,
             'descrizione': 'regressione lineare',
-            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020'
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
+            'visibile': 1
         })
         linea_applicata2 = RicercaLineaApplicataUnitTest.create_ricercaLineaApplicata(**{
             'id': 2,
             'ricerca_aster2': aster2,
             'descrizione': 'random forest',
-            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2019'
+            'descr_pubblicaz_prog_brevetto': 'pubblicazione 2019',
+            'visibile': 1
         })
         RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
             'personale': doc1,
@@ -1196,6 +1209,7 @@ class ApiTeachersListUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'anno_corso': 1,
         })
         course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 2,
@@ -1204,6 +1218,7 @@ class ApiTeachersListUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid2,
             'af_radice_id': 2,
+            'anno_corso': 2
         })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course1,
@@ -1639,7 +1654,6 @@ class ApiTeacherMaterialsUnitTest(TestCase):
         assert res.status_code == 200
 
         # GET
-
         res = req.get(url)
         assert len(res.json()['results']) == 1
 
@@ -1720,6 +1734,11 @@ class ApiPhdListUnitTest(TestCase):
         data = {'cycle': 0}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 0
+
+        url = reverse('ricerca:phd-cycles')
+        # check url
+        res = req.get(url)
+        assert res.status_code == 200
 
 
 class ApiDegreeTypesListUnitTest(TestCase):
@@ -3652,7 +3671,7 @@ class ApiBaseResearchLineUnitTest(TestCase):
             'descrizione': 'regressione lineare',
             'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
             'anno': '2016',
-
+            'visibile': 1
         })
         RicercaDocenteLineaBaseUnitTest.create_ricercaDocenteLineaBase(**{
             'personale': doc1,
@@ -3732,7 +3751,8 @@ class ApiAppliedResearchLineUnitTest(TestCase):
             'ricerca_aster2': aster2,
             'descrizione': 'regressione lineare',
             'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
-            'anno': '2016'
+            'anno': '2016',
+            'visibile': 1
         })
 
         RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
@@ -3815,7 +3835,7 @@ class ApiAllResearchLinesUnitTest(TestCase):
             'descrizione': 'regressione lineare',
             'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
             'anno': '2016',
-
+            'visibile': 1
         })
 
         aster1 = RicercaAster1UnitTest.create_ricercaAster1(**{
@@ -3833,7 +3853,8 @@ class ApiAllResearchLinesUnitTest(TestCase):
             'ricerca_aster2': aster2,
             'descrizione': 'regressione lineare',
             'descr_pubblicaz_prog_brevetto': 'pubblicazione 2020',
-            'anno': '2016'
+            'anno': '2016',
+            'visibile': 1
         })
         RicercaDocenteLineaApplicataUnitTest.create_ricercaDocenteLineaApplicata(**{
             'personale': doc1,
@@ -3986,6 +4007,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'ciclo_des': 'Primo semestre',
             'regdid': regdid,
             'af_radice_id': 1,
+            'anno_corso': 1
         })
         course2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(**{
             'af_id': 2,
@@ -3994,6 +4016,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
             'ciclo_des': 'Secondo semestre',
             'regdid': regdid2,
             'af_radice_id': 2,
+            'anno_corso': 1
         })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course1,
@@ -5476,7 +5499,7 @@ class ApiPersonIdUnitTest(TestCase):
     def test_apipersonid(self):
         req = Client()
 
-        PersonaleUnitTest.create_personale(**{
+        p = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
             'cognome': 'Mungari',
@@ -5512,6 +5535,25 @@ class ApiPersonIdUnitTest(TestCase):
 
         # POST
         res = req.post(url, {"id": "111112"}, HTTP_AUTHORIZATION=f'Token {token.key}')
+        assert res.status_code == 200
+
+        url = reverse('ricerca:get-decrypted-person-id')
+
+        # GET
+        res = req.get(url,HTTP_AUTHORIZATION= f'Token {token.key}')
+        assert res.status_code == 405
+
+        # POST
+        res = req.post(url,{"test":"test"}, HTTP_AUTHORIZATION=f'Token {token.key}')
+        assert res.status_code == 404
+
+        # POST
+        res = req.post(url,{"id":"99999"}, HTTP_AUTHORIZATION=f'Token {token.key}')
+        assert res.status_code == 404
+
+        # POST
+        m_test_encrypted = encrypt("111111")
+        res = req.post(url, {"id": m_test_encrypted}, HTTP_AUTHORIZATION=f'Token {token.key}')
         assert res.status_code == 200
 
 

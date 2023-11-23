@@ -5,6 +5,8 @@ from django.conf import settings
 
 from rest_framework import serializers
 
+from crud.phd.settings import PHD_CYCLES
+
 from . models import DidatticaRegolamento
 from . settings import (ALLOWED_PROFILE_ID,
                         CDS_BROCHURE_MEDIA_PATH,
@@ -25,6 +27,9 @@ LABORATORIES_MEDIA_PATH = getattr(settings, 'LABORATORIES_MEDIA_PATH', LABORATOR
 # TEACHER_CV_EN_MEDIA_PATH = getattr(settings, 'TEACHER_CV_EN_MEDIA_PATH', TEACHER_CV_EN_MEDIA_PATH)
 # TEACHER_CV_IT_MEDIA_PATH = getattr(settings, 'TEACHER_CV_IT_MEDIA_PATH', TEACHER_CV_IT_MEDIA_PATH)
 # TEACHER_PHOTO_MEDIA_PATH = getattr(settings, 'TEACHER_PHOTO_MEDIA_PATH', TEACHER_PHOTO_MEDIA_PATH)
+
+PHD_CYCLES = getattr(settings, 'PHD_CYCLES', PHD_CYCLES)
+
 
 def _get_teacher_obj_publication_date(teacher_dict):
     if not teacher_dict['dt_pubblicazione']: return None
@@ -77,15 +82,6 @@ class CdSSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
-        cds_organizations_data = None
-        cds_organization_members = None
-        if query["CdsOrganizations"] is not None:
-            # cds_organization_members = CdSSerializer.to_dict_cds_organization_members(
-                # query["CdsOrganizationMembers"])
-            cds_organizations_data = CdSSerializer.to_dict_cds_organizations_data(
-                query["CdsOrganizations"])
-
-
         regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
         ordinamento_didattico = regdid.get_ordinamento_didattico()
 
@@ -117,8 +113,7 @@ class CdSSerializer(CreateUpdateAbstract):
             'TeachingSystem': build_media_path(ordinamento_didattico[1]) if ordinamento_didattico else None,
             'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
-            'OfficesData': offices_data,
-            'CdsOrganizations': cds_organizations_data
+            'OfficesData': offices_data
         }
 
     @staticmethod
@@ -151,36 +146,6 @@ class CdSSerializer(CreateUpdateAbstract):
                 'OnlineCounter': q['sportello_online'],
             })
         return data
-
-    @staticmethod
-    def to_dict_cds_organizations_data(query):
-        data = []
-        for q in query:
-            data.append({
-                'Order': q['ordine'],
-                'id': q['id'],
-                'DescrBreveIt': q['descr_breve_it'],
-                'DescrBreveEn': q['descr_breve_en'],
-                'DescrLungaIt': q['descr_lunga_it'],
-                'DescrLungaEn': q['descr_lunga_en'],
-                'Members': CdSSerializer.to_dict_cds_organization_members(q['members']),
-            })
-        return data
-
-
-    @staticmethod
-    def to_dict_cds_organization_members(query):
-        data = []
-        for q in query:
-            data.append({
-                'Order': q['ordine'],
-                'id': q['id'],
-                'Matricola': q['matricola'],
-                'Cognome': q['cognome'],
-                'Nome': q['nome'],
-            })
-        return data
-
 
 
 class CdsInfoSerializer(CreateUpdateAbstract):
@@ -225,19 +190,10 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
 
-        cds_organizations_data = None
-        cds_organization_members = None
-
-        if query["CdsOrganizations"] is not None:
-            # cds_organization_members = CdsInfoSerializer.to_dict_cds_organization_members(
-                # query["CdsOrganizationMembers"])
-            cds_organizations_data = CdsInfoSerializer.to_dict_cds_organizations_data(
-                query["CdsOrganizations"])
-
-        cds_periods_data = None
-        if query["CdsPeriods"] is not None:
-            cds_periods_data = CdsInfoSerializer.to_dict_cds_periods_data(
-                query["CdsPeriods"], req_lang)
+        cds_groups_data = None
+        if query["CdsGroups"] is not None:
+            cds_groups_data = CdsInfoSerializer.to_dict_cds_groups_data(
+                query["CdsGroups"])
 
         regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
         ordinamento_didattico = regdid.get_ordinamento_didattico()
@@ -282,10 +238,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
             'OfficesData': offices_data,
-            'CdsOrganizations': cds_organizations_data,
-            'CdsPeriods': cds_periods_data
+            'CdsGroups': cds_groups_data
         }
-
 
     # @staticmethod
     # def get_media_url(query):
@@ -331,45 +285,28 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         return data
 
     @staticmethod
-    def to_dict_cds_organizations_data(query):
+    def to_dict_cds_groups_data(query, req_lang='en'):
         data = []
         for q in query:
             data.append({
                 'Order': q['ordine'],
-                'id': q['id'],
-                'DescrBreveIt': q['descr_breve_it'],
-                'DescrBreveEn': q['descr_breve_en'],
-                'DescrLungaIt': q['descr_lunga_it'],
-                'DescrLungaEn': q['descr_lunga_en'],
-                'Members': CdsInfoSerializer.to_dict_cds_organization_members(q['members']),
+                'ShortDesc': q['descr_breve_it'] if req_lang == 'it' or q['descr_breve_en'] is None else q['descr_breve_en'],
+                'DescrLungaIt': q['descr_lunga_it'] if req_lang == 'it' or q['descr_lunga_en'] is None else q['descr_lunga_en'],
+                'Members': CdsInfoSerializer.to_dict_cds_group_members(q['members']),
             })
         return data
 
     @staticmethod
-    def to_dict_cds_periods_data(query, req_lang='en'):
-        data = []
-        for q in query:
-            data.append({
-                'Description': q['tipo_ciclo_des'] if req_lang == 'it' or q['tipo_ciclo_des_eng'] is None else q['tipo_ciclo_des_eng'],
-                'Start': q['data_inizio'],
-                'End': q['data_fine'],
-            })
-        return data
-
-    @staticmethod
-    def to_dict_cds_organization_members(query):
+    def to_dict_cds_group_members(query):
         data = []
         for q in query:
             data.append({
                 'Order': q['ordine'],
-                'id': q['id'],
                 'Matricola': q['matricola'],
                 'Cognome': q['cognome'],
                 'Nome': q['nome'],
             })
         return data
-
-
 
 
 class CdsWebsiteSerializer(CreateUpdateAbstract):
@@ -398,8 +335,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
 
 
         return {
-            'Id': query['id'],
-            'CDSId': query['cds_id'],
+            'CDSId': query['id'],
             'CDSCOD': query['cds_cod'],
             'CDSAcademicYear': query['aa'],
             'CDSName': query['nome_corso_it'] if req_lang=='it' or query['nome_corso_en'] is None else query['nome_corso_en'],
@@ -999,7 +935,8 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
             'StudyActivityRegDidId': query['regdid__regdid_id'],
             'StudyActivityPdsCod': query['pds_cod'],
             'StudyActivityPdsDes': query['pds_des'],
-            'StudyActivityYear': query['anno_corso'],
+            'StudyActivityErogationYear': query['regdid__aa_reg_did'] + query['anno_corso'] -1 if query['anno_corso'] else studyactivityroot.get('StudyActivityErogationYear', None),
+            'StudyActivityYear': query['anno_corso'] or studyactivityroot.get('StudyActivityYear', None),
             'StudyActivitySemester': query['ciclo_des'],
             'StudyActivityErogationLanguage': query['LANGUAGEIT'] if req_lang == 'it' or query['LANGUAGEEN'] is None else query['LANGUAGEEN'],
             'StudyActivityECTS': query['peso'],
@@ -1074,6 +1011,8 @@ class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
             'StudyActivityID': query.get('af_id'),
             'StudyActivityName': query['des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
             'StudyActivitySemester': query['ciclo_des'],
+            'StudyActivityYear': query['anno_corso'],
+            'StudyActivityErogationYear': query['regdid__aa_reg_did'] + query['anno_corso'] -1 if query.get('anno_corso') else None,
             'StudyActivityRegDidId': query['regdid__regdid_id'],
             'StudyActivityCdSID': query['cds__cds_id'],
             'StudyActivityCdSName': query['cds__nome_cds_it'] if req_lang == 'it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
@@ -1238,7 +1177,8 @@ class BaseResearchLinesSerializer(CreateUpdateAbstract):
             'RYear': query['anno'],
             'RLineErc2ID': query['ricerca_erc2_id__cod_erc2'],
             'RLineErc2Name': query['ricerca_erc2_id__descrizione'],
-            'Teachers': teachers
+            'Teachers': teachers,
+            'RLineVisibile': query['visibile']
         }
 
     @staticmethod
@@ -1280,7 +1220,8 @@ class AppliedResearchLinesSerializer(CreateUpdateAbstract):
             'RYear': query['anno'],
             'RLineAster2Id': query['ricerca_aster2_id__ricerca_aster1_id'],
             'RLineAster2Name': query['ricerca_aster2_id__descrizione'],
-            'Teachers': teachers
+            'Teachers': teachers,
+            'RLineVisibile': query['visibile']
         }
 
     @staticmethod
@@ -1327,7 +1268,8 @@ class AllResearchLinesSerializer(CreateUpdateAbstract):
                 'RLineERC1Name': query['ricerca_erc2_id__ricerca_erc1_id__descrizione'],
                 'RLineErc2ID': query['ricerca_erc2_id__cod_erc2'],
                 'RLineErc2Name': query['ricerca_erc2_id__descrizione'],
-                'Teachers': teachers
+                'Teachers': teachers,
+                'RLineVisibile': query['visibile']
             }
         else:
             return {
@@ -1337,7 +1279,8 @@ class AllResearchLinesSerializer(CreateUpdateAbstract):
                 'RYear': query['anno'],
                 'RLineAster2Id': query['ricerca_aster2_id__ricerca_aster1_id'],
                 'RLineAster2Name': query['ricerca_aster2_id__descrizione'],
-                'Teachers': teachers
+                'Teachers': teachers,
+                'RLineVisibile': query['visibile']
             }
 
     @staticmethod
@@ -1398,28 +1341,28 @@ class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang='en'):
         return {
-            'StudyActivityID': query['didatticacopertura__af_id'],
-            'StudyActivityCod': query['didatticacopertura__af_gen_cod'],
-            'StudyActivityName': query['didatticacopertura__af_gen_des'] if req_lang == 'it' or query['didatticacopertura__af_gen_des_eng'] is None else query['didatticacopertura__af_gen_des_eng'],
-            'StudyActivityCdSID': query['didatticacopertura__cds_id'],
-            'StudyActivityCdSCod': query['didatticacopertura__cds_cod'],
-            'StudyActivityRegDidId': query['didatticacopertura__regdid_id'],
-            'StudyActivityCdSName': query['didatticacopertura__cds_des'] if req_lang == 'it' or query[
-                'didatticacopertura__af__cds__nome_cds_eng'] is None else query['didatticacopertura__af__cds__nome_cds_eng'],
-            'StudyActivityAA': query['didatticacopertura__aa_off_id'],
-            'StudyActivityYear': query['didatticacopertura__anno_corso'],
-            'StudyActivitySemester': query['didatticacopertura__ciclo_des'],
-            'StudyActivityECTS': query['didatticacopertura__peso'],
-            'StudyActivityLanguage': query['didatticacopertura__af__lista_lin_did_af'],
-            'StudyActivitySSD': query['didatticacopertura__sett_des'],
-            'StudyActivityCompulsory': query['didatticacopertura__af__freq_obblig_flg'],
-            'StudyActivityPartitionCod': query['didatticacopertura__fat_part_stu_cod'],
-            'StudyActivityPartitionDescription': query['didatticacopertura__fat_part_stu_des'],
-            'SingleStudyActivityPartitionCod': query['didatticacopertura__part_stu_cod'],
-            'SingleStudyActivityPartitionDescription': query['didatticacopertura__part_stu_des'],
-            'StudyActivityPartitionType': query['didatticacopertura__tipo_fat_stu_cod'],
-            'StudyActivityPartitionStart': query['didatticacopertura__part_ini'],
-            'StudyActivityPartitionEnd': query['didatticacopertura__part_fine'],
+            'StudyActivityID': query['af_id'],
+            'StudyActivityCod': query['af_gen_cod'],
+            'StudyActivityName': query['af_gen_des'] if req_lang == 'it' or query['af_gen_des_eng'] is None else query['af_gen_des_eng'],
+            'StudyActivityCdSID': query['cds_id'],
+            'StudyActivityCdSCod': query['cds_cod'],
+            'StudyActivityRegDidId': query['regdid_id'],
+            'StudyActivityCdSName': query['cds_des'] if req_lang == 'it' or query[
+                'af__cds__nome_cds_eng'] is None else query['af__cds__nome_cds_eng'],
+            'StudyActivityAA': query['aa_off_id'],
+            'StudyActivityYear': query['anno_corso'],
+            'StudyActivitySemester': query['ciclo_des'],
+            'StudyActivityECTS': query['peso'],
+            'StudyActivityLanguage': query['af__lista_lin_did_af'],
+            'StudyActivitySSD': query['sett_des'],
+            'StudyActivityCompulsory': query['af__freq_obblig_flg'],
+            'StudyActivityPartitionCod': query['fat_part_stu_cod'],
+            'StudyActivityPartitionDescription': query['fat_part_stu_des'],
+            'SingleStudyActivityPartitionCod': query['part_stu_cod'],
+            'SingleStudyActivityPartitionDescription': query['part_stu_des'],
+            'StudyActivityPartitionType': query['tipo_fat_stu_cod'],
+            'StudyActivityPartitionStart': query['part_ini'],
+            'StudyActivityPartitionEnd': query['part_fine'],
         }
 
 
@@ -2861,6 +2804,11 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang='en'):
+        cycle_des = ''
+        for cycle in PHD_CYCLES:
+            if cycle[0] == query['ciclo']:
+                cycle_des = cycle[1]
+                break
 
         main_teachers = None
         if query.get('MainTeachers') is not None:
@@ -2879,6 +2827,7 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
             'CFU': query['cfu'],
             'ActivityType': query['tipo_af'],
             'ReferentPhd': query['rif_dottorato'],
+            'Cycle': cycle_des,
             'ReferentStructureId': query['id_struttura_proponente'],
             'ReferentStructureName': query['struttura_proponente_origine'],
             'ActivityContents': query['contenuti_af'],

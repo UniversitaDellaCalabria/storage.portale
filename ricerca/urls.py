@@ -53,7 +53,7 @@ if 'ricerca_app' in settings.INSTALLED_APPS:
     urlpatterns += path('', include((ricerca_app.urls, 'ricerca',))),
 
 if 'silk' in settings.INSTALLED_APPS:
-    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+    urlpatterns += re_path(r'^silk/', include('silk.urls', namespace='silk'))
 
 if 'crud.utils' in settings.INSTALLED_APPS:
     import crud.utils.urls
