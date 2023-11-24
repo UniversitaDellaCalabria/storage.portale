@@ -12,7 +12,6 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 from django.utils.timezone import *
-from django.http import Http404
 
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
