@@ -547,8 +547,8 @@ def cds_websites_topics_edit(request, code, cds_website=None, my_offices=None):
         .filter(Q(id_sito_web_cds_oggetti_portale__cds_id=cds_website.cds_id) | Q(id_sito_web_cds_articoli_regolamento__cds_id=cds_website.cds_id))
     
     topics_per_page_response = get_topics_per_page()
-    topics_per_page_response_status_code = topics_per_page_response[0]
-    topics_per_page = topics_per_page_response[1]
+    topics_per_page_response_status_code = topics_per_page_response["status_code"]
+    topics_per_page = topics_per_page_response["content"]
     if topics_per_page_response_status_code != 200:
          messages.add_message(  request,
                                 messages.WARNING,
@@ -874,6 +874,8 @@ def cds_websites_object_edit(request, code, data_id, cds_website=None, my_office
     _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
     object_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None, instance=_object)
     
+    object_preview = get_object_preview(_object.id_oggetto_portale, _object.id_classe_oggetto_portale)
+    
     if request.POST:
         if object_form.is_valid():
             
@@ -911,6 +913,7 @@ def cds_websites_object_edit(request, code, data_id, cds_website=None, my_office
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
+                    'object_preview': object_preview,
                     'forms': [object_form,],
                     'item_label': _('Object'),
                     'edit': 1,

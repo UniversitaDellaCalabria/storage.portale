@@ -31,3 +31,7 @@ ALLOWED_STRUCTURE_TYPES = []
 
 UNICMS_AUTH_TOKEN = getattr(settings, "UNICMS_AUTH_TOKEN", "")
 UNICMS_TOPIC_API_URL = getattr(settings, "UNICMS_TOPIC_API_URL", "")
+UNICMS_ROOT_URL = getattr(settings, "UNICMS_ROOT_URL", "")
+UNICMS_PUBLICATION_API_URL = getattr(settings, "UNICMS_PUBLICATION_API_URL", "")
+UNICMS_WEBPATH_API_URL = getattr(settings, "UNICMS_WEBPATH_API_URL", "")
+UNICMS_OBJECT_API = getattr(settings, "UNICMS_OBJECT_API", {})

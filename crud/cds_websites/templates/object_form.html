@@ -6,3 +6,28 @@
 {% block submit %}
     {% include "object_form_submit_warning.html" %}
 {% endblock %}
+
+{% block after_forms%}
+    {% if edit %}
+    <div class="card-wrapper card-space">
+        <div class="card card-bg no-after">
+            <div class="card-body">
+                <h3 style="font-weight: normal" class="mb-4">{% trans "Object Preview" %}</h3>
+                {% if object_preview.status_code == 200 %}
+                    {% autoescape off %}
+                        {% if object_preview.object_class == "Publication" %}
+                            {{ object_preview.content }}
+                        {% else %}
+                            <a href={{ object_preview.content }} target="_blank">
+                                {{ object_preview.name }}
+                            </a>
+                        {% endif %}
+                    {% endautoescape %}
+                {% else %}
+                    {{ object_preview.status_code }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock after_forms %}
