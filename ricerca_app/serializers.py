@@ -335,7 +335,8 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
 
 
         return {
-            'CDSId': query['id'],
+            'Id': query['id'],
+            'CDSId': query['cds_id'],
             'CDSCOD': query['cds_cod'],
             'CDSAcademicYear': query['aa'],
             'CDSName': query['nome_corso_it'] if req_lang=='it' or query['nome_corso_en'] is None else query['nome_corso_en'],
