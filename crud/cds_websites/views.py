@@ -722,7 +722,7 @@ def cds_websites_regart_item_edit(request, code, topic_id, data_id, cds_website=
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
                    reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    reverse('crud_cds_websites:crud_cds_websites_topics_edit', kwargs={'code': code}): _("Topics"),
-                   '#': regart.titolo_it if (request.LANGUAGE_CODE == 'it' or not regart.titolo_en) else regart.titolo_en, }
+                   '#': regart.titolo_it }
 
     
     return render(request, 'regulament_articles.html',
@@ -1077,10 +1077,10 @@ def cds_websites_object_item_edit(request, code, topic_id, data_id, cds_website=
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
                    reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    reverse('crud_cds_websites:crud_cds_websites_topics_edit', kwargs={'code': code}): _("Topics"),
-                   '#': regart.titolo_it if (request.LANGUAGE_CODE == 'it' or not regart.titolo_en) else regart.titolo_en, }
+                   '#': regart.titolo_it }
 
     
-    return render(request, 'regulament_articles.html',
+    return render(request, 'cds_websites_unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
