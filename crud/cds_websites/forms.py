@@ -225,7 +225,8 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
         titolo_it = self.cleaned_data.get("titolo_it")
         testo_it = self.cleaned_data.get("testo_it")
         if not titolo_it and not testo_it:
-            raise forms.ValidationError(_("At least one between Title (it) and Text(it) must be provided"))
+            raise forms.ValidationError(_("At least one must be provided between:") +
+                                        f" {self.fields['titolo_it'].label} or {self.fields['testo_it'].label}")
         return self.cleaned_data
     
     id_classe_oggetto_portale = forms.ChoiceField(
