@@ -4,7 +4,7 @@
 
 {% block cds_page %}
 
-{% with page_name=page_name|default:"Page" topic_obj_regarts=topic_obj_regarts|default:None cds=cds|default:None %}
+{% with page_name=page_name|cut:" "|default:"Page" topic_obj_regarts=topic_obj_regarts|default:None cds=cds|default:None %}
 
 <div id="collapseDiv_{{page_name}}_{{topic_obj_regarts.topic.id}}" class="collapse-div collapse-left-icon">
     <div class="collapse-header" id="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">

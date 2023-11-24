@@ -29,4 +29,5 @@ CMS_STORAGE_ROOT_API = 'https://pp.storage.unical.it'
 STRUCTURES_FATHER = ''
 ALLOWED_STRUCTURE_TYPES = []
 
-
+UNICMS_AUTH_TOKEN = getattr(settings, "UNICMS_AUTH_TOKEN", "")
+UNICMS_TOPIC_API_URL = getattr(settings, "UNICMS_TOPIC_API_URL", "")

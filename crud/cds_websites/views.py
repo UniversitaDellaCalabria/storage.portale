@@ -12,14 +12,14 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 from django.utils.timezone import *
-
+from django.http import Http404
 
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
 from . decorators import *
 from . forms import *
-from . settings import *
+from . utils import *
 
 
 logger = logging.getLogger(__name__)
@@ -547,47 +547,53 @@ def cds_websites_topics_edit(request, code, cds_website=None, my_offices=None):
         .select_related("id_sito_web_cds_oggetti_portale", "id_sito_web_cds_topic")\
         .filter(Q(id_sito_web_cds_oggetti_portale__cds_id=cds_website.cds_id) | Q(id_sito_web_cds_articoli_regolamento__cds_id=cds_website.cds_id))
     
-    topic_enroll = {}
-    topic_study = {}
-    topic_opportunities = {}
-    topic_organization = {}
-    topic_notshown = {}
+    topics_per_page_response = get_topics_per_page()
+    topics_per_page_response_status_code = topics_per_page_response[0]
+    topics_per_page = topics_per_page_response[1]
+    if topics_per_page_response_status_code != 200:
+         messages.add_message(  request,
+                                messages.WARNING,
+                                _("Unable to determine which topics are shown on the Portal nor the page they're appearing on"))
+         
+    '''
+    pages = {
+        "page_name": {
+            topic_id: {
+                "topic" : topic,
+                "objects" : topic_objs,
+                "regarts" : topic_areg 
+            },
+        },
+    }
+    '''
+    pages = {}
+    for key in topics_per_page.keys():
+        pages[key.capitalize()] = {}
+    pages["Non mostrati"] = {}
         
     for topic in topics:
         t_id = topic.id
         cds_topic_ogg_art_current = cds_topic_ogg_art.filter(id_sito_web_cds_topic=t_id).order_by("ordine")
         topic_objs = cds_topic_ogg_art_current.filter(id_sito_web_cds_oggetti_portale__isnull=False)
         topic_areg = cds_topic_ogg_art_current.filter(id_sito_web_cds_articoli_regolamento__isnull=False)
-        if t_id in CMS_STORAGE_CDS_WEBSITES_PAGE_TOPICS['iscriversi']:
-            topic_enroll[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
-        elif t_id in CMS_STORAGE_CDS_WEBSITES_PAGE_TOPICS['studiare']:
-            topic_study[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
-        elif t_id in CMS_STORAGE_CDS_WEBSITES_PAGE_TOPICS['opportunità']:
-            topic_opportunities[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
-        elif t_id in CMS_STORAGE_CDS_WEBSITES_PAGE_TOPICS['organizzazione']:
-            topic_organization[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
-        else:
-            topic_notshown[t_id] = {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg 
-            }
+        
+        is_shown_topic = False
+        for k,v in topics_per_page.items():
+            if t_id in v:
+                pages[k.capitalize()][str(t_id)] = {
+                    "topic" : topic,
+                    "objects" : topic_objs,
+                    "regarts" : topic_areg 
+                }
+                is_shown_topic = True
+                break
+        
+        if not is_shown_topic:
+            pages["Non mostrati"][str(t_id)] = {
+                    "topic" : topic,
+                    "objects" : topic_objs,
+                    "regarts" : topic_areg 
+                }
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Cds websites'),
@@ -601,11 +607,7 @@ def cds_websites_topics_edit(request, code, cds_website=None, my_offices=None):
     return render(request, 'cds_website_topics.html',
                   { 
                     'cds_website' : cds_website,
-                    'topic_enroll': topic_enroll,
-                    'topic_study': topic_study,
-                    'topic_opportunities': topic_opportunities,
-                    'topic_organization': topic_organization,
-                    'topic_notshown': topic_notshown,
+                    'pages': pages,
                     'topics_list': topics,
                     'objects_list': objects_list,
                     'breadcrumbs': breadcrumbs,
