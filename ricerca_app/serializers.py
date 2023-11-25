@@ -1178,7 +1178,6 @@ class PersonaleSerializer(CreateUpdateAbstract):
         if query["Roles"] is not None:
             roles = AddressbookSerializer.to_dict_roles(
                 query["Roles"])
-
         return {
             'Name': full_name,
             'ID': encrypt(query['matricola']),
@@ -1191,7 +1190,7 @@ class PersonaleSerializer(CreateUpdateAbstract):
             'Fax': query['Fax'],
             'WebSite': query['URL Sito WEB'],
             'CV': query['URL Sito WEB Curriculum Vitae'],
-            'Teacher': query['fl_docente'],
+            'Teacher': query['fl_docente'] or query['cop_teacher'],
             'PersonFunctions': functions,
             'TeacherCVFull': query['cv_full_it'] if req_lang == "it" or not query['cv_full_eng'] else query['cv_full_eng'],
             'TeacherCVShort': query['cv_short_it'] if req_lang == "it" or not query['cv_short_eng'] else query['cv_short_eng'],
