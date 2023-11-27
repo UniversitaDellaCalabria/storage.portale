@@ -1587,7 +1587,7 @@ class AddressbookSerializer(CreateUpdateAbstract):
             'Fax': query['Fax'],
             'WebSite': query['URL Sito WEB'],
             'CV': query['URL Sito WEB Curriculum Vitae'],
-            'Teacher': query['fl_docente'],
+            'Teacher': query['fl_docente'] or query['cop_teacher'],
             'ProfileId': query['profilo'],
             'ProfileDescription': query['ds_profilo'] if query['profilo'] in ALLOWED_PROFILE_ID else None,
             'ProfileShortDescription': query['ds_profilo_breve'] if query['profilo'] in ALLOWED_PROFILE_ID else None,

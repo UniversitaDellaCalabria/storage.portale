@@ -3871,14 +3871,14 @@ class ServicePersonale:
         roles = []
 
         for r in ruoli:
-                roles.append({'matricola': r[0],
-                              'cd_ruolo': r[1],
-                              'ds_ruolo': r[2],
-                              'priorita': priorita.get(r[1]) or 10,
-                              'cd_uo_aff_org': r[3],
-                              'ds_aff_org': r[4],
-                              'cd_tipo_nodo': r[5]
-                              })
+            roles.append({'matricola': r[0],
+                          'cd_ruolo': r[1],
+                          'ds_ruolo': r[2],
+                          'priorita': priorita.get(r[1]) or 10,
+                          'cd_uo_aff_org': r[3],
+                          'ds_aff_org': r[4],
+                          'cd_tipo_nodo': r[5]
+                          })
         roles.sort(key=lambda x: x['priorita'])
 
 
@@ -3899,6 +3899,16 @@ class ServicePersonale:
                 q["Roles"] = []
             else:
                 q["Roles"] = roles
+
+            q["cop_teacher"] = False
+            if not q["fl_docente"]:
+                query_teacher = Personale.objects\
+                                         .filter(didatticacopertura__aa_off_id=datetime.datetime.now().year,
+                                                 didatticacopertura__af__isnull=False,
+                                                 matricola__exact=personale_id)\
+                                         .exists()
+                if query_teacher:
+                    q["cop_teacher"] = True
 
         if not query:
             raise Http404
