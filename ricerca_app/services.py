@@ -26,7 +26,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     SitoWebCdsTopicArticoliRegAltriDati, \
     SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
-    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento
+    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi
 from . serializers import StructuresSerializer
 
 
@@ -316,6 +316,15 @@ class ServiceDidatticaCds:
             'descr_lunga_it',
             'descr_lunga_en'
         ).distinct()
+
+        res[0]['CdsPeriods'] = DidatticaCdsPeriodi.objects.filter(cds_cod=res[0]['cds_cod'],
+                                                                  aa_id=res[0]['didatticaregolamento__aa_reg_did']).values(
+            'ciclo_des',
+            'tipo_ciclo_des',
+            'tipo_ciclo_des_eng',
+            'data_inizio',
+            'data_fine'
+        )
 
         for group in res[0]['CdsGroups']:
             members = DidatticaCdsGruppiComponenti.objects.filter(query_visibile,

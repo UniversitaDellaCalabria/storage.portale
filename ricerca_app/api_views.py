@@ -11,8 +11,6 @@ from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.views import APIView
 
 from . filters import *
-from . models import (DidatticaTestiRegolamento, DidatticaCdsAltriDati,
-                      DidatticaCdsAltriDatiUfficio, DidatticaCdsPeriodi)
 from . pagination import UnicalStorageApiPaginationList
 from . serializers import *
 from . services import *

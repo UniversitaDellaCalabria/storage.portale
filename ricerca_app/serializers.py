@@ -195,6 +195,11 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             cds_groups_data = CdsInfoSerializer.to_dict_cds_groups_data(
                 query["CdsGroups"])
 
+        cds_periods_data = None
+        if query["CdsPeriods"] is not None:
+            cds_periods_data = CdsInfoSerializer.to_dict_cds_periods_data(
+                query["CdsPeriods"], req_lang)
+
         regdid = DidatticaRegolamento.objects.filter(pk=query['didatticaregolamento__regdid_id']).first()
         ordinamento_didattico = regdid.get_ordinamento_didattico()
 
@@ -238,7 +243,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
             'OtherData': data,
             'OfficesData': offices_data,
-            'CdsGroups': cds_groups_data
+            'CdsGroups': cds_groups_data,
+            'CdsPeriods': cds_periods_data
         }
 
     # @staticmethod
@@ -305,6 +311,17 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 'Matricola': q['matricola'],
                 'Cognome': q['cognome'],
                 'Nome': q['nome'],
+            })
+        return data
+
+    @staticmethod
+    def to_dict_cds_periods_data(query, req_lang='en'):
+        data = []
+        for q in query:
+            data.append({
+                'Description': q['tipo_ciclo_des'] if req_lang == 'it' or q['tipo_ciclo_des_eng'] is None else q['tipo_ciclo_des_eng'],
+                'Start': q['data_inizio'],
+                'End': q['data_fine'],
             })
         return data
 
