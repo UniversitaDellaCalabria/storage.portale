@@ -297,7 +297,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             data.append({
                 'Order': q['ordine'],
                 'ShortDesc': q['descr_breve_it'] if req_lang == 'it' or q['descr_breve_en'] is None else q['descr_breve_en'],
-                'DescrLungaIt': q['descr_lunga_it'] if req_lang == 'it' or q['descr_lunga_en'] is None else q['descr_lunga_en'],
+                'LongDesc': q['descr_lunga_it'] if req_lang == 'it' or q['descr_lunga_en'] is None else q['descr_lunga_en'],
                 'Members': CdsInfoSerializer.to_dict_cds_group_members(q['members']),
             })
         return data
