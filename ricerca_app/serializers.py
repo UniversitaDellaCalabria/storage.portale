@@ -308,7 +308,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         for q in query:
             data.append({
                 'Order': q['ordine'],
-                'ID': q['matricola'],
+                'ID': encrypt(q['matricola']),
                 'Surname': q['cognome'],
                 'Name': q['nome'],
                 'Function': q['funzione_it'] if req_lang == 'it' or q['funzione_en'] is None else q['funzione_en'],

@@ -3949,7 +3949,7 @@ class DidatticaCdsGruppi(models.Model):
 class DidatticaCdsGruppiComponenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_didattica_cds_gruppi = models.ForeignKey(DidatticaCdsGruppi, models.CASCADE, db_column='ID_DIDATTICA_CDS_GRUPPI')  # Field name made lowercase.
-    matricola = models.ForeignKey(Personale, models.SET_NULL, db_column='MATRICOLA', blank=True, null=True)  # Field name made lowercase.
+    matricola = models.ForeignKey(Personale, models.SET_NULL, db_column='MATRICOLA', to_field='matricola', blank=True, null=True)  # Field name made lowercase.
     cognome = models.CharField(db_column='COGNOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     nome = models.CharField(db_column='NOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     funzione_it = models.CharField(db_column='FUNZIONE_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
@@ -3989,7 +3989,7 @@ class DidatticaDipartimentoGruppi(models.Model):
 class DidatticaDipartimentoGruppiComponenti(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_didattica_dipartimento_gruppi = models.ForeignKey(DidatticaDipartimentoGruppi, models.CASCADE, db_column='ID_DIDATTICA_DIPARTIMENTO_GRUPPI')  # Field name made lowercase.
-    matricola = models.ForeignKey(Personale, models.SET_NULL, db_column='MATRICOLA', blank=True, null=True)  # Field name made lowercase.
+    matricola = models.ForeignKey(Personale, models.SET_NULL, db_column='MATRICOLA', blank=True, null=True, to_field='matricola')  # Field name made lowercase.
     cognome = models.CharField(db_column='COGNOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     nome = models.CharField(db_column='NOME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     funzione_it = models.CharField(db_column='FUNZIONE_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
@@ -4121,7 +4121,7 @@ class SitoWebCdsExStudenti(models.Model):
         max_length=1000,
         blank=True,
         null=True) # Field name made lowercase.
-        
+
 
     class Meta:
         managed = True

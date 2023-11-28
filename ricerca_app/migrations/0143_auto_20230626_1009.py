@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 ('dt_mod', models.DateField(db_column='DT_MOD')),
                 ('id_didattica_cds_gruppi', models.ForeignKey(db_column='ID_DIDATTICA_CDS_GRUPPI', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.didatticacdsgruppi')),
                 ('id_user_mod', models.ForeignKey(db_column='ID_USER_MOD', on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
-                ('matricola', models.ForeignKey(blank=True, db_column='MATRICOLA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale')),
+                ('matricola', models.ForeignKey(blank=True, db_column='MATRICOLA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale', to_field='matricola')),
             ],
             options={
                 'db_table': 'DIDATTICA_CDS_GRUPPI_COMPONENTI',
@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
                 ('dt_mod', models.DateField(db_column='DT_MOD')),
                 ('id_didattica_dipartimento_gruppi', models.ForeignKey(db_column='ID_DIDATTICA_DIPARTIMENTO_GRUPPI', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.didatticadipartimentogruppi')),
                 ('id_user_mod', models.ForeignKey(db_column='ID_USER_MOD', on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
-                ('matricola', models.ForeignKey(blank=True, db_column='MATRICOLA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale')),
+                ('matricola', models.ForeignKey(blank=True, db_column='MATRICOLA', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale', to_field='matricola')),
             ],
             options={
                 'db_table': 'DIDATTICA_DIPARTIMENTO_GRUPPI_COMPONENTI',
