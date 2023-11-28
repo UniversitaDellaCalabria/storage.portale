@@ -74,7 +74,7 @@
                 <tbody>
                     <tr v-for="item in items.results">
                         <td>
-                            <a href="javascript:void(0)" @click="{{person_label|default:"choosen_person"}}_setPerson(item.TeacherID, item.TeacherName)">
+                            <a href="javascript:void(0)" @click="{{person_label|default:'choosen_person'}}_setPerson(item.TeacherID, item.TeacherName)">
                                 [[ item.TeacherName ]]
                             </a>
                         </td>

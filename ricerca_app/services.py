@@ -2556,9 +2556,9 @@ class ServiceDocente:
         # mostro anche quelli che sono cessati
         # altrimenti solo quelli attivi
         if not regdid and not cds:
-            query = query.filter(Q(flg_cessato=0) |
-                                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
-                                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1))
+            query = query.filter(Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
+                                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
+                                 flg_cessato=0)
 
         if dip:
             department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
@@ -2768,15 +2768,15 @@ class ServiceDocente:
     @staticmethod
     def getDocenteInfo(teacher):
         query1 = Personale.objects\
-                          .filter(Q(flg_cessato=0) |
-                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
+                          .filter(Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
                                   Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
+                                  flg_cessato=0,
                                   didatticacopertura__af__isnull=False,
-                                  matricola__exact=teacher)\
+                                  matricola=teacher)\
                           .distinct()
         query2 = Personale.objects.filter(fl_docente=1,
                                           flg_cessato=0,
-                                          matricola__exact=teacher)\
+                                          matricola=teacher)\
                                   .distinct()
 
         query = (query1 | query2).distinct()
@@ -3783,21 +3783,23 @@ class ServicePersonale:
 
     @staticmethod
     def getPersonale(personale_id):
-        query = Personale.objects.filter(matricola__exact=personale_id)
+        query = Personale.objects.filter(matricola__exact=personale_id,
+                                         flg_cessato=0)
+
+        if not query:
+            raise Http404
+
         if query.values('cd_uo_aff_org').first()['cd_uo_aff_org'] is None:
-            query = query.filter(
-                flg_cessato=0,
-            ).annotate(
-                Struttura=Value(
-                    None,
-                    output_field=CharField())).annotate(
+            query = query.annotate(
+                        Struttura=Value(
+                            None,
+                            output_field=CharField()))\
+                        .annotate(
                 TipologiaStrutturaCod=Value(None, output_field=CharField())).annotate(
                 TipologiaStrutturaNome=Value(None, output_field=CharField())).annotate(
                 CodStruttura=Value(None, output_field=CharField()))
         else:
-            query = query.filter(
-                flg_cessato=0,
-            ).extra(
+            query = query.extra(
                 select={
                     'Struttura': 'UNITA_ORGANIZZATIVA.DENOMINAZIONE',
                     'CodStruttura': 'UNITA_ORGANIZZATIVA.UO',
@@ -3807,6 +3809,7 @@ class ServicePersonale:
                 where=[
                     'UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG',
                 ])
+
         contacts_to_take = [
             'Posta Elettronica',
             'Fax',
@@ -3876,7 +3879,6 @@ class ServicePersonale:
             'cd_ruolo',
             'priorita'
         )
-
 
         priorita = {}
 

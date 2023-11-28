@@ -12,7 +12,7 @@
     <div class="card card-bg no-after">
         <div class="card-body">
 
-            {% include "blocks/includes/teacher_tabs.html" %}
+            {% include "blocks/includes/teacher_tabs.html" with required=1 exclude_forms=1 include_block="blocks/crud_addressbook.html" %}
         </div>
     </div>
 </div>

@@ -1079,7 +1079,7 @@ def cds_group_member_edit(request, regdid_id, group_id, member_id,
                    'external_form': external_form,
                    'internal_form': internal_form,
                    'group': group,
-                   'url': reverse('ricerca:teacherslist')})
+                   'url': reverse('ricerca:addressbooklist')})
 
 
 @login_required

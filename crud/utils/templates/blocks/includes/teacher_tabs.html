@@ -1,16 +1,16 @@
 {% load i18n %}
 <nav>
-    <div class="nav nav-tabs" id="{{person_label|default:"choosen_person"}}-nav-tab" role="tablist">
-        <a class="nav-item nav-link {% if not choosen_person %}active{% endif %}" onclick="{{person_label|default:"choosen_person"}}_unsetPerson()" id="{{person_label|default:"choosen_person"}}-nav-tab2-tab" data-toggle="tab" href="#{{person_label|default:"choosen_person"}}-nav-tab2" role="tab" aria-controls="{{person_label|default:"choosen_person"}}-nav-tab2" aria-selected="{% if not choosen_person %}true{% else %}false{% endif %}">
-            Docente esterno
+    <div class="nav nav-tabs" id="{{person_label|default:'choosen_person'}}-nav-tab" role="tablist">
+        <a class="nav-item nav-link {% if not choosen_person %}active{% endif %}" onclick="{{person_label|default:'choosen_person'}}_unsetPerson()" id="{{person_label|default:"choosen_person"}}-nav-tab2-tab" data-toggle="tab" href="#{{person_label|default:"choosen_person"}}-nav-tab2" role="tab" aria-controls="{{person_label|default:"choosen_person"}}-nav-tab2" aria-selected="{% if not choosen_person %}true{% else %}false{% endif %}">
+            Persona esterna
         </a>
-        <a class="nav-item nav-link {% if choosen_person %}active{% endif %}" id="{{person_label|default:"choosen_person"}}-nav-tab1-tab" data-toggle="tab" href="#{{person_label|default:"choosen_person"}}-nav-tab1" role="tab" aria-controls="{{person_label|default:"choosen_person"}}-nav-tab1" aria-selected="{% if choosen_person %}true{% else %}false{% endif %}">
-            Docente interno
+        <a class="nav-item nav-link {% if choosen_person %}active{% endif %}" id="{{person_label|default:'choosen_person'}}-nav-tab1-tab" data-toggle="tab" href="#{{person_label|default:"choosen_person"}}-nav-tab1" role="tab" aria-controls="{{person_label|default:"choosen_person"}}-nav-tab1" aria-selected="{% if choosen_person %}true{% else %}false{% endif %}">
+            Persona interna
         </a>
     </div>
 </nav>
-<div class="tab-content" id="{{person_label|default:"choosen_person"}}-nav-tabContent">
-    <div class="tab-pane p-4 fade {% if not choosen_person %}show active{% endif %}" id="{{person_label|default:"choosen_person"}}-nav-tab2" role="tabpanel" aria-labelledby="{{person_label|default:"choosen_person"}}-nav-tab2-tab">
+<div class="tab-content" id="{{person_label|default:'choosen_person'}}-nav-tabContent">
+    <div class="tab-pane p-4 fade {% if not choosen_person %}show active{% endif %}" id="{{person_label|default:'choosen_person'}}-nav-tab2" role="tabpanel" aria-labelledby="{{person_label|default:"choosen_person"}}-nav-tab2-tab">
         {% if not exclude_forms %}
         <form method="post" novalidate>
             {% endif %}
@@ -20,7 +20,7 @@
         </form>
         {% endif %}
     </div>
-    <div class="tab-pane p-4 fade {% if choosen_person %}show active{% endif %}" id="{{person_label|default:"choosen_person"}}-nav-tab1" role="tabpanel" aria-labelledby="{{person_label|default:"choosen_person"}}-nav-tab1-tab">
+    <div class="tab-pane p-4 fade {% if choosen_person %}show active{% endif %}" id="{{person_label|default:'choosen_person'}}-nav-tab1" role="tabpanel" aria-labelledby="{{person_label|default:"choosen_person"}}-nav-tab1-tab">
         {% if not exclude_forms %}
         <form method="post" novalidate>
         {% endif %}
