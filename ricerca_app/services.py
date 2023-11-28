@@ -26,7 +26,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     SitoWebCdsTopicArticoliRegAltriDati, \
     SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
-    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento
+    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi
 from . serializers import StructuresSerializer
 
 
@@ -316,6 +316,15 @@ class ServiceDidatticaCds:
             'descr_lunga_it',
             'descr_lunga_en'
         ).distinct()
+
+        res[0]['CdsPeriods'] = DidatticaCdsPeriodi.objects.filter(cds_cod=res[0]['cds_cod'],
+                                                                  aa_id=res[0]['didatticaregolamento__aa_reg_did']).values(
+            'ciclo_des',
+            'tipo_ciclo_des',
+            'tipo_ciclo_des_eng',
+            'data_inizio',
+            'data_fine'
+        )
 
         for group in res[0]['CdsGroups']:
             members = DidatticaCdsGruppiComponenti.objects.filter(query_visibile,
@@ -3871,14 +3880,14 @@ class ServicePersonale:
         roles = []
 
         for r in ruoli:
-                roles.append({'matricola': r[0],
-                              'cd_ruolo': r[1],
-                              'ds_ruolo': r[2],
-                              'priorita': priorita.get(r[1]) or 10,
-                              'cd_uo_aff_org': r[3],
-                              'ds_aff_org': r[4],
-                              'cd_tipo_nodo': r[5]
-                              })
+            roles.append({'matricola': r[0],
+                          'cd_ruolo': r[1],
+                          'ds_ruolo': r[2],
+                          'priorita': priorita.get(r[1]) or 10,
+                          'cd_uo_aff_org': r[3],
+                          'ds_aff_org': r[4],
+                          'cd_tipo_nodo': r[5]
+                          })
         roles.sort(key=lambda x: x['priorita'])
 
 
@@ -3899,6 +3908,16 @@ class ServicePersonale:
                 q["Roles"] = []
             else:
                 q["Roles"] = roles
+
+            q["cop_teacher"] = False
+            if not q["fl_docente"]:
+                query_teacher = Personale.objects\
+                                         .filter(didatticacopertura__aa_off_id=datetime.datetime.now().year,
+                                                 didatticacopertura__af__isnull=False,
+                                                 matricola__exact=personale_id)\
+                                         .exists()
+                if query_teacher:
+                    q["cop_teacher"] = True
 
         if not query:
             raise Http404

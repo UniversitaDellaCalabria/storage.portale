@@ -156,6 +156,34 @@
                                         </div>
                                     </div>
                                     {% endblock ssd %}
+
+                                    {% block cycle %}
+                                    <loading-icon
+                                        v-if="is_loading_cycle"
+                                        :loader_source="loader_source_cycle">
+                                    </loading-icon>
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_cycle_input">
+                                                {% trans "Cycle" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_cycle_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_cycle_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="key in Object.keys(cycle_filter)"
+                                                            :value="key"
+                                                            :selected="key == selected_cycle_id">
+                                                        [[ cycle_filter[key] ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock cycle %}
                                 </div>
                             </div>
                             {% endblock filters_phdactivitieslist %}
@@ -250,6 +278,10 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     let search = document.getElementById('{{ id }}_search')
     if (search && search.value) dict['search'] = search.value
 
+    // cycle
+    let cycle = document.getElementById('{{ id }}_cycle_input')
+    if (cycle && cycle.value) dict['cycle'] = cycle.value
+
     // teacher
     let teacher = document.getElementById('{{ id }}_teacher')
     if (teacher && teacher.value) dict['teacher'] = teacher.value
@@ -281,33 +313,34 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
 initial_year: {{ id }}_get_param('year') || '',
 
+selected_cycle_id: this.getItemFromSession("{{ id }}", 'cycle'),
 selected_ssd_id: this.getItemFromSession("{{ id }}", 'ssd'),
 selected_structure_id: this.getItemFromSession("{{ id }}", 'structure'),
 selected_phd_id: this.getItemFromSession("{{ id }}", 'phd'),
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
 selected_teacher: this.getItemFromSession("{{ id }}", 'teacher'),
 
-
-
 is_loading_phd: true,
 is_loading_structures: true,
 is_loading_ssd: true,
-
+is_loading_cycle: true,
 
 loader_source_structures: '{% url 'ricerca:ref-structures' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 loader_source_phd: '{% url 'ricerca:ref-phd' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 loader_source_ssd: '{% url 'ricerca:phd-ssd-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
-
+loader_source_cycles: '{% url 'ricerca:phd-cycles' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 
 structures_filter: [],
 phd_filter: [],
 ssd_filter: [],
+cycle_filter: [],
 {% endblock extra_data %}
 
 {% block extra_mounted %}
 this.callStructures();
 this.callPhD();
 this.callSSD();
+this.callCycles();
 
 this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
 {% endblock extra_mounted %}
@@ -359,6 +392,14 @@ callSSD() {
         .then(response => {
             this.ssd_filter = response.data.results;
             this.is_loading_ssd = false
+        })
+},
+callCycles() {
+    axios
+        .get(this.loader_source_cycles)
+        .then(response => {
+            this.cycle_filter = response.data;
+            this.is_loading_cycle = false
         })
 },
 {% endblock extra_methods %}
