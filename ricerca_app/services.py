@@ -2554,7 +2554,9 @@ class ServiceDocente:
         # mostro anche quelli che sono cessati
         # altrimenti solo quelli attivi
         if not regdid and not cds:
-            query = query.filter(Q(flg_cessato=0) | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year))
+            query = query.filter(Q(flg_cessato=0) |
+                                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
+                                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1))
 
         if dip:
             department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
@@ -2764,7 +2766,9 @@ class ServiceDocente:
     @staticmethod
     def getDocenteInfo(teacher):
         query1 = Personale.objects\
-                          .filter(Q(flg_cessato=0) | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year),
+                          .filter(Q(flg_cessato=0) |
+                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
+                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
                                   didatticacopertura__af__isnull=False,
                                   matricola__exact=teacher)\
                           .distinct()
@@ -3912,7 +3916,8 @@ class ServicePersonale:
             q["cop_teacher"] = False
             if not q["fl_docente"]:
                 query_teacher = Personale.objects\
-                                         .filter(didatticacopertura__aa_off_id=datetime.datetime.now().year,
+                                         .filter(Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
+                                                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
                                                  didatticacopertura__af__isnull=False,
                                                  matricola__exact=personale_id)\
                                          .exists()
