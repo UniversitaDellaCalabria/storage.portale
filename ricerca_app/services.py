@@ -333,7 +333,9 @@ class ServiceDidatticaCds:
                 'id',
                 'matricola',
                 'cognome',
-                'nome'
+                'nome',
+                'funzione_it',
+                'funzione_en'
             ).distinct()
             group['members'] = members
 

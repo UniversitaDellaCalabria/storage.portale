@@ -303,14 +303,15 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         return data
 
     @staticmethod
-    def to_dict_cds_group_members(query):
+    def to_dict_cds_group_members(query, req_lang='en'):
         data = []
         for q in query:
             data.append({
                 'Order': q['ordine'],
-                'Matricola': q['matricola'],
-                'Cognome': q['cognome'],
-                'Nome': q['nome'],
+                'ID': q['matricola'],
+                'Surname': q['cognome'],
+                'Name': q['nome'],
+                'Function': q['funzione_it'] if req_lang == 'it' or q['funzione_en'] is None else q['funzione_en'],
             })
         return data
 
