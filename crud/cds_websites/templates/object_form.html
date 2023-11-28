@@ -3,31 +3,78 @@
 {% load i18n %}
 {% load static %}
 
-{% block submit %}
-    {% include "object_form_submit_warning.html" %}
-{% endblock %}
+{% if edit %}
+    {% block submit %}
+        {% include "object_form_submit_warning.html" %}
+    {% endblock %}
+{% endif %}
 
 {% block after_forms%}
-    {% if edit %}
     <div class="card-wrapper card-space">
         <div class="card card-bg no-after">
             <div class="card-body">
-                <h3 style="font-weight: normal" class="mb-4">{% trans "Object Preview" %}</h3>
-                {% if object_preview.status_code == 200 %}
-                    {% autoescape off %}
-                        {% if object_preview.object_class == "Publication" %}
-                            {{ object_preview.content }}
-                        {% else %}
-                            <a href={{ object_preview.content }} target="_blank">
-                                {{ object_preview.name }}
-                            </a>
-                        {% endif %}
-                    {% endautoescape %}
-                {% else %}
-                    {{ object_preview.status_code }}
-                {% endif %}
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td class="text-left">
+                                <h3 style="font-weight: normal" class="mb-4">{% trans "Object Preview" %}</h3>
+                            </td>
+                            <td class="text-right">
+                                <a href="javascript:void(0);" id="btn-refresh" class="btn btn-success btn-xs">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-restore"></use>
+                                    </svg>
+                                    {% trans "Refresh Preview" %}
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Object Preview Content -->
+                <div id="objectpreview"><div>
+                <!-- /Object Preview Content -->
+                </div>
             </div>
         </div>
-    </div>
-    {% endif %}
+
+<script>
+    function refreshPreview() {
+        let objectclass = document.getElementById("id_id_classe_oggetto_portale").value;
+        let objectid = document.getElementById("id_id_oggetto_portale").value;
+        let previewdiv = document.getElementById("objectpreview");
+        url = "{% url 'ricerca:cdswebsite-object-preview' objectid='objectid' %}";
+        url = url.replace("objectid", objectid);
+        axios.get(url, {
+                "params": {
+                    "objectclass": objectclass,
+                }
+            }).then(response => {
+                let html = '';
+                if(response.data.status_code != 200) {
+                    html=`Request failed with status code ${response.data.status_code}`;
+                }
+                else {
+                    if(objectclass == "WebPath") {
+                        html=`<a target="_blank" href="${response.data.content}">${response.data.name}</a>`;
+                    }
+                    else {
+                        html=`${response.data.content}`;
+                    }
+                }
+                previewdiv.innerHTML = html;
+            }).catch(error => {
+                previewdiv.innerHTML = error.message;
+            });
+    }
+
+    button = document.getElementById("btn-refresh");
+    button.addEventListener("click", refreshPreview, false);
+
+    window.onload = () => {
+        if(document.getElementById("id_id_oggetto_portale") && document.getElementById("id_id_oggetto_portale").value)
+            refreshPreview();
+    };
+
+</script>
+    
 {% endblock after_forms %}

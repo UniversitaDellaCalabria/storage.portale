@@ -873,9 +873,7 @@ def cds_websites_object_edit(request, code, data_id, cds_website=None, my_office
         
     _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
     object_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None, instance=_object)
-    
-    object_preview = get_object_preview(_object.id_oggetto_portale, _object.id_classe_oggetto_portale)
-    
+        
     if request.POST:
         if object_form.is_valid():
             
@@ -913,7 +911,6 @@ def cds_websites_object_edit(request, code, data_id, cds_website=None, my_office
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
-                    'object_preview': object_preview,
                     'forms': [object_form,],
                     'item_label': _('Object'),
                     'edit': 1,
@@ -961,7 +958,7 @@ def cds_websites_object_new(request, code, cds_website=None, my_offices=None):
                    reverse('crud_cds_websites:crud_cds_websites_topics_edit', kwargs={'code': code}): _("Topics"),
                    '#': _("New Object") }
     
-    return render(request, 'cds_websites_unique_form.html',
+    return render(request, 'object_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
