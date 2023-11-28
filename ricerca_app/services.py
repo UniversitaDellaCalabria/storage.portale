@@ -3446,7 +3446,7 @@ class ServicePersonale:
                     # 'Struttura': q['cd_uo_aff_org__denominazione'],
                     # 'TipologiaStrutturaCod': q['cd_uo_aff_org__cd_tipo_nodo'],
                     # 'TipologiaStrutturaNome': q['cd_uo_aff_org__ds_tipo_nodo'],
-                    'fl_docente': q['fl_docente'],
+                    # 'fl_docente': q['fl_docente'],
                     'profilo': q['profilo'],
                     'ds_profilo': q['ds_profilo'],
                     'ds_profilo_breve': q['ds_profilo_breve'],
