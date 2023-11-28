@@ -142,6 +142,10 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/cds-websites/<str:cdswebsitecod>/exams/'.format(base_url),
                         api_views.ApiCdsWebsiteExams.as_view(),
                         name='cdswebsite-exams'),
+    
+    urlpatterns += path('{}/cds-websites/portal-object-preview/<str:objectid>/'.format(base_url),
+                        api_views.ApiCdsWebsitesPortalObjectPreview.as_view(),
+                        name='cdswebsite-object-preview'),
 
 
     urlpatterns += path('{}/activities/'.format(base_url),

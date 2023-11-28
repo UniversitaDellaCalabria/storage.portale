@@ -1,6 +1,9 @@
 import datetime
+import requests
+import json
 
 from django.utils import timezone
+from django.conf import settings
 
 from rest_framework import generics, permissions, status
 from rest_framework.authentication import TokenAuthentication
@@ -1385,3 +1388,39 @@ class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable): # pragma: no cover
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.event_types = ['ES']
+
+class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
+    allowed_methods = ('GET',)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        
+    def get(self, request, objectid, **kwargs):
+        UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
+        UNICMS_ROOT_URL = getattr(settings, 'UNICMS_ROOT_URL', '')
+        UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', {})
+
+        head = {'Authorization': 'Token {}'.format(UNICMS_AUTH_TOKEN)}
+        res = {
+            "status_code": 500
+        }
+        try:
+            objectclass = request.query_params.get("objectclass", None)
+            if objectclass not in UNICMS_OBJECT_API.keys():
+                res["status_code"] = 400
+            api_url = UNICMS_OBJECT_API[objectclass].format(objectid)
+            response = requests.get(api_url, headers=head, timeout=(10, 10))
+            res["status_code"] = response.status_code
+            if response.status_code == 200:
+                json_response = json.loads(response._content)
+                res["object_class"] = objectclass
+                if objectclass == "Publication":
+                    res["content"] = json_response["content"]
+                else:
+                    res["name"] = json_response["name"]
+                    res["content"] = UNICMS_ROOT_URL + json_response["get_full_path"]
+        except requests.exceptions.RequestException: 
+            pass
+        finally:
+            return Response(res)
+        
