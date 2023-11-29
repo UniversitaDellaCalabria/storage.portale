@@ -1393,7 +1393,7 @@ class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
-    def get(self, request, objectid, **kwargs):
+    def get(self, request, objectid, objectclass, **kwargs):
         UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
         UNICMS_ROOT_URL = getattr(settings, 'UNICMS_ROOT_URL', '')
         UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', {})
@@ -1403,7 +1403,6 @@ class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
             "status_code": 500
         }
         try:
-            objectclass = request.query_params.get("objectclass", None)
             if objectclass not in UNICMS_OBJECT_API.keys():
                 res["status_code"] = 400
             api_url = UNICMS_OBJECT_API[objectclass].format(objectid)

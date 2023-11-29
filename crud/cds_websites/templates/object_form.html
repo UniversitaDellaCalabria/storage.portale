@@ -42,13 +42,11 @@
         let objectclass = document.getElementById("id_id_classe_oggetto_portale").value;
         let objectid = document.getElementById("id_id_oggetto_portale").value;
         let previewdiv = document.getElementById("objectpreview");
-        url = "{% url 'ricerca:cdswebsite-object-preview' objectid='objectid' %}";
+        url = "{% url 'ricerca:cdswebsite-object-preview' objectid='objectid' objectclass='objectclass' %}";
         url = url.replace("objectid", objectid);
-        axios.get(url, {
-                "params": {
-                    "objectclass": objectclass,
-                }
-            }).then(response => {
+        url = url.replace("objectclass", objectclass);
+        axios.get(url)
+            .then(response => {
                 let html = '';
                 if(response.data.status_code != 200) {
                     html=`Request failed with status code ${response.data.status_code}`;

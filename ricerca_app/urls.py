@@ -143,7 +143,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiCdsWebsiteExams.as_view(),
                         name='cdswebsite-exams'),
     
-    urlpatterns += path('{}/cds-websites/portal-object-preview/<str:objectid>/'.format(base_url),
+    urlpatterns += path('{}/cds-websites/portal-object-preview/<str:objectclass>/<str:objectid>/'.format(base_url),
                         api_views.ApiCdsWebsitesPortalObjectPreview.as_view(),
                         name='cdswebsite-object-preview'),
 
