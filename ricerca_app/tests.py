@@ -1253,15 +1253,15 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {'department': 1}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 2
 
         data = {'department': 1, 'role': 'PO'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 0
+        assert len(res.json()['results']) == 1
 
         data = {'department': 1, 'role': 'PA', 'lang': 'en', 'year': '2015'}
         res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        assert len(res.json()['results']) == 0
 
         data = {'regdid': 1}
         res = req.get(url, data=data)
