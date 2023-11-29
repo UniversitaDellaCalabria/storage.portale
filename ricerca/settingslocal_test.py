@@ -144,3 +144,13 @@ else:
     LOGOUT_URL = f'/{LOCAL_URL_PREFIX}/logout/'
 
 LOGOUT_REDIRECT_URL=f'/'
+
+PERSON_CONTACTS_TO_TAKE = [
+    'Posta Elettronica',
+    'Fax',
+    'POSTA ELETTRONICA CERTIFICATA',
+    'Telefono Cellulare Ufficio',
+    'Telefono Ufficio',
+    'Riferimento Ufficio',
+    'URL Sito WEB',
+    'URL Sito WEB Curriculum Vitae']

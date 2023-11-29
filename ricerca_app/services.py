@@ -3475,7 +3475,7 @@ class ServicePersonale:
         filtered = []
         if phone:
             for item in final_query:
-                numbers = item.get('Telefono Cellulare Ufficio', '') + item.get('Telefono Ufficio', '')
+                numbers = item.get('Telefono Cellulare Ufficio', []) + item.get('Telefono Ufficio', [])
                 if any(phone in string for string in numbers):
                     filtered.append(item)
         else:
