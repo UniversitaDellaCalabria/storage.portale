@@ -49,3 +49,5 @@ CDS_BROCHURE_MEDIA_PATH = f'{settings.MEDIA_URL}portale/cds_media_brochure'
 # TEACHER_CV_IT_MEDIA_PATH = f'{settings.MEDIA_URL}docenti_pta/cv_ita'
 
 ENCRYPTION_KEY = b'XFJADCip-KZWSY0hbB6oLidPt4N543EI3ZomLconfZU='
+
+PERSON_CONTACTS_TO_TAKE = []

@@ -28,6 +28,10 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
     DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi
 from . serializers import StructuresSerializer
+from . settings import PERSON_CONTACTS_TO_TAKE
+
+
+PERSON_CONTACTS_TO_TAKE = getattr(settings, 'PERSON_CONTACTS_TO_TAKE', PERSON_CONTACTS_TO_TAKE)
 
 
 class ServiceQueryBuilder:
@@ -2788,18 +2792,8 @@ class ServiceDocente:
         if not query.exists():
             raise Http404
 
-        contacts_to_take = [
-            'Posta Elettronica',
-            'Fax',
-            'POSTA ELETTRONICA CERTIFICATA',
-            'Telefono Cellulare Ufficio',
-            'Telefono Ufficio',
-            'Riferimento Ufficio',
-            'URL Sito WEB',
-            'URL Sito WEB Curriculum Vitae']
         contacts = query.filter(
-            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take,
-            personalecontatti__prg_priorita__gte=900,
+            personalecontatti__cd_tipo_cont__descr_contatto__in=PERSON_CONTACTS_TO_TAKE
         ).values(
             "personalecontatti__cd_tipo_cont__descr_contatto",
             "personalecontatti__contatto")
@@ -2870,11 +2864,12 @@ class ServiceDocente:
 
 
         for q in query:
-            for c in contacts_to_take:
+            for c in PERSON_CONTACTS_TO_TAKE:
                 q[c] = []
             for c in contacts:
                 q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
-                    c['personalecontatti__contatto'])
+                    c['personalecontatti__contatto']
+                )
 
             dep = DidatticaDipartimento.objects.filter(
                 dip_cod=q["cd_uo_aff_org"]) .values(
@@ -3399,17 +3394,6 @@ class ServicePersonale:
             'ds_profilo_breve'
         ).order_by('cognome', 'nome')
 
-
-        contacts_to_take = [
-            'Posta Elettronica',
-            'Fax',
-            'POSTA ELETTRONICA CERTIFICATA',
-            'Telefono Cellulare Ufficio',
-            'Telefono Ufficio',
-            'Riferimento Ufficio',
-            'URL Sito WEB',
-            'URL Sito WEB Curriculum Vitae']
-
         grouped = {}
         last_id = -1
         final_query = []
@@ -3462,11 +3446,10 @@ class ServicePersonale:
                     'ds_profilo_breve': q['ds_profilo_breve'],
                     'Roles': [],
                 }
-                for c in contacts_to_take:
+                for c in PERSON_CONTACTS_TO_TAKE:
                     grouped[q['id_ab']][c] = []
 
-            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in contacts_to_take and q[
-                'personalecontatti__prg_priorita'] >= 900:
+            if q['personalecontatti__cd_tipo_cont__descr_contatto'] in PERSON_CONTACTS_TO_TAKE:
                 grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     q['personalecontatti__contatto'])
 
@@ -3814,18 +3797,9 @@ class ServicePersonale:
                     'UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG',
                 ])
 
-        contacts_to_take = [
-            'Posta Elettronica',
-            'Fax',
-            'POSTA ELETTRONICA CERTIFICATA',
-            'Telefono Cellulare Ufficio',
-            'Telefono Ufficio',
-            'Riferimento Ufficio',
-            'URL Sito WEB',
-            'URL Sito WEB Curriculum Vitae']
         contacts = query.filter(
-            personalecontatti__cd_tipo_cont__descr_contatto__in=contacts_to_take,
-            personalecontatti__prg_priorita__gte=900).values(
+            personalecontatti__cd_tipo_cont__descr_contatto__in=PERSON_CONTACTS_TO_TAKE
+        ).values(
             "personalecontatti__cd_tipo_cont__descr_contatto",
             "personalecontatti__contatto")
         contacts = list(contacts)
@@ -3905,7 +3879,7 @@ class ServicePersonale:
 
 
         for q in query:
-            for c in contacts_to_take:
+            for c in PERSON_CONTACTS_TO_TAKE:
                 q[c] = []
             for c in contacts:
                 q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
