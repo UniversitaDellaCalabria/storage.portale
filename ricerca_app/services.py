@@ -2525,12 +2525,12 @@ class ServiceDocente:
 
         # last_academic_year = ServiceDidatticaCds.getAcademicYears()[0]['aa_reg_did']
 
-        query = Personale.objects.filter(query_search,
+        query = Personale.objects.filter(Q(fl_docente=1) | Q(didatticacopertura__af__isnull=False),
+                                         query_search,
                                          query_cds,
                                          query_regdid,
                                          query_roles,
-                                         query_year,
-                                         didatticacopertura__af__isnull=False) \
+                                         query_year) \
             .values("matricola",
                     "nome",
                     "middle_name",
@@ -2556,7 +2556,8 @@ class ServiceDocente:
         # mostro anche quelli che sono cessati
         # altrimenti solo quelli attivi
         if not regdid and not cds:
-            query = query.filter(Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
+            query = query.filter(Q(fl_docente=1) |
+                                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
                                  flg_cessato=0)
 
@@ -2767,19 +2768,21 @@ class ServiceDocente:
 
     @staticmethod
     def getDocenteInfo(teacher):
-        query1 = Personale.objects\
-                          .filter(Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
-                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
-                                  flg_cessato=0,
-                                  didatticacopertura__af__isnull=False,
-                                  matricola=teacher)\
-                          .distinct()
-        query2 = Personale.objects.filter(fl_docente=1,
-                                          flg_cessato=0,
-                                          matricola=teacher)\
-                                  .distinct()
+        query = Personale.objects\
+                         .filter(Q(fl_docente=1) |
+                                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
+                                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
+                                 flg_cessato=0,
+                                 matricola=teacher)
+                                 # didatticacopertura__af__isnull=False,
+                         # .distinct()
+        # query2 = Personale.objects.filter(fl_docente=1,
+                                          # flg_cessato=0,
+                                          # matricola=teacher)\
+                                  # .distinct()
 
-        query = (query1 | query2).distinct()
+        # query = (query1 | query2).distinct()
+
 
         if not query.exists():
             raise Http404

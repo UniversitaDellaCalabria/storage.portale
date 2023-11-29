@@ -1223,11 +1223,12 @@ class ApiTeachersListUnitTest(TestCase):
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course1,
             'personale': doc1,
-            'aa_off_id': '2015',
+            'aa_off_id': datetime.datetime.now().year,
         })
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'af': course2,
             'personale': doc2,
+            'aa_off_id': datetime.datetime.now().year
         })
 
         url = reverse('ricerca:teacherslist')
