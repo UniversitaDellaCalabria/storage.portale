@@ -1412,10 +1412,14 @@ class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
                 json_response = json.loads(response._content)
                 res["object_class"] = objectclass
                 if objectclass == "Publication":
-                    res["content"] = json_response["content"]
+                    res["content"] = json_response.get("content", None)
+                    res["title"] = json_response.get("title", None)
+                    res["subheading"] = json_response.get("subheading", None)
+                    res["preview_image"] = json_response.get("preview_image", None)
+                    res["presentation_image"] = json_response.get("presentation_image", None)
                 else:
-                    res["name"] = json_response["name"]
-                    res["content"] = UNICMS_ROOT_URL + json_response["get_full_path"]
+                    res["name"] = json_response.get("name", None)
+                    res["content"] = UNICMS_ROOT_URL + json_response.get("get_full_path", None)
         except requests.exceptions.RequestException: 
             pass
         finally:
