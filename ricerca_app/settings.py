@@ -47,3 +47,5 @@ CDS_BROCHURE_MEDIA_PATH = f'{settings.MEDIA_URL}portale/cds_media_brochure'
 # TEACHER_PHOTO_MEDIA_PATH = f'{settings.MEDIA_URL}docenti_pta/foto'
 # TEACHER_CV_EN_MEDIA_PATH = f'{settings.MEDIA_URL}docenti_pta/cv_en'
 # TEACHER_CV_IT_MEDIA_PATH = f'{settings.MEDIA_URL}docenti_pta/cv_ita'
+
+ENCRYPTION_KEY = b'XFJADCip-KZWSY0hbB6oLidPt4N543EI3ZomLconfZU='

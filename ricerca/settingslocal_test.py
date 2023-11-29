@@ -144,4 +144,3 @@ else:
     LOGOUT_URL = f'/{LOCAL_URL_PREFIX}/logout/'
 
 LOGOUT_REDIRECT_URL=f'/'
-

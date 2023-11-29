@@ -14,14 +14,15 @@ from . import settings as app_settings
 FILETYPE_IMAGE = getattr(settings, 'FILETYPE_IMAGE', app_settings.FILETYPE_IMAGE)
 SETTINGS_LABEL_MAPPING = getattr(settings, 'LABEL_MAPPING', None)
 
+ENCRYPTION_KEY = getattr(settings, 'ENCRYPTION_KEY', app_settings.ENCRYPTION_KEY)
+
 
 def encrypt(value): # pragma: no cover
     if not value:
         return None
     value = str(value)
-    iv = b'\xbd\xc0,\x16\x87\xd7G\xb5\xe5\xcc\xdb\xf9\x07\xaf\xa0\xfa'
-    return Fernet(settings.ENCRYPTION_KEY)._encrypt_from_parts(value.encode(), 0, iv).decode()
-    # return Fernet(settings.ENCRYPTION_KEY).encrypt(value.encode()).decode()
+    # return Fernet(ENCRYPTION_KEY)._encrypt_from_parts(value.encode(), 0, ENCRYPTION_IV).decode()
+    return Fernet(settings.ENCRYPTION_KEY).encrypt(value.encode()).decode()
 
 
 def decrypt(value): # pragma: no cover
