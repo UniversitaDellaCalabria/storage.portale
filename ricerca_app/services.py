@@ -2773,7 +2773,8 @@ class ServiceDocente:
                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
                                  flg_cessato=0,
-                                 matricola=teacher)
+                                 matricola=teacher)\
+                         .distinct()
                                  # didatticacopertura__af__isnull=False,
                          # .distinct()
         # query2 = Personale.objects.filter(fl_docente=1,
