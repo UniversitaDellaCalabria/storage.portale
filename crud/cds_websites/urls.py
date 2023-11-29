@@ -7,7 +7,7 @@ urlpatterns = []
 urlpatterns += path('cds-websites/', cds_websites, name='crud_cds_websites'),
 urlpatterns += path('cds-websites/<str:code>/', cds_website, name='crud_cds_website'),
 #Dati Base
-urlpatterns += path('cds-websites/<str:code>/base/', cds_websites_base_edit, name='crud_cds_website_base_edit'),
+urlpatterns += path('cds-websites/<str:code>/info/', cds_websites_info_edit, name='crud_cds_website_info_edit'),
 #Sliders
 urlpatterns += path('cds-websites/<str:code>/sliders/', cds_websites_sliders, name='crud_cds_websites_sliders'),
 urlpatterns += path('cds-websites/<str:code>/sliders/new/', cds_websites_sliders_new, name='crud_cds_websites_sliders_new'),

@@ -58,7 +58,7 @@ def cds_website(request, code, cds_website=None, my_offices=None):
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_base_edit(request, code, cds_website=None, my_offices=None):
+def cds_websites_info_edit(request, code, cds_website=None, my_offices=None):
     base_form = SitoWebCdsDatiBaseForm(data=request.POST if request.POST else None, instance=cds_website)
     
     if request.POST:
@@ -72,13 +72,13 @@ def cds_websites_base_edit(request, code, cds_website=None, my_offices=None):
             log_action(user=request.user,
                             obj=cds_website,
                             flag=CHANGE,
-                            msg=_("Edit Base Information"))
+                            msg=_("Edited website info"))
 
             messages.add_message(request,
                                     messages.SUCCESS,
-                                    _("Base Information edited successfully"))
+                                    _("Website info edited successfully"))
 
-            return redirect('crud_cds_websites:crud_cds_website_base_edit', code=code)
+            return redirect('crud_cds_websites:crud_cds_website_info_edit', code=code)
 
         else:  # pragma: no cover
             for k, v in base_form.errors.items():
@@ -88,18 +88,18 @@ def cds_websites_base_edit(request, code, cds_website=None, my_offices=None):
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Course of Studies Websites'),
                    reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
-                   '#': _("Base Info") }
+                   '#': _("Info") }
     
     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds_website).pk,
                                    object_id=cds_website.pk)
     
-    return render(request, 'base_form.html',
+    return render(request, 'cds_website_info_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
                     'logs' : logs,
                     'forms': [base_form,],
-                    'item_label': _('Item'),
+                    'item_label': _('Info'),
                   })
 
 #Sliders

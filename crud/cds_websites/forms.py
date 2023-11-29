@@ -133,8 +133,8 @@ class SitoWebCdsSliderForm(SitoWebCdsForm):
     class Meta(SitoWebCdsForm.Meta):
         model = SitoWebCdsSlider
         labels = {
-            'slider_it': _("Scrollable Text (it)"),
-            'slider_en': _("Scrollable Text (en)"),
+            'slider_it': _("Scrollable text (it)"),
+            'slider_en': _("Scrollable text (en)"),
             'ordine': _("Order"),
         }
         
@@ -143,8 +143,8 @@ class SitoWebCdsLinkForm(SitoWebCdsForm):
         model = SitoWebCdsLink
         labels = {
             'ordine': _("Order"),
-            'descrizione_link_it': _("Link Description (it)"),
-            'descrizione_link_en': _("Link Description (en)"),
+            'descrizione_link_it': _("Link description (it)"),
+            'descrizione_link_en': _("Link description (en)"),
             'link_it': _("Link (it)"),
             'link_en': _("Link (en)"),
         }
@@ -178,7 +178,7 @@ class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
             "ordine": _("Order"),
             "visibile": _("Visible"),
             "id_sito_web_cds_articoli_regolamento": _("Regulament Article"),
-            "id_sito_web_cds_oggetti_portale": _("Portal Object"),
+            "id_sito_web_cds_oggetti_portale": _("Portal object"),
         }
    
 class SitoWebCdsArticoliRegolamentoItemForm(SitoWebCdsTopicArticoliRegForm):
@@ -195,7 +195,7 @@ class SitoWebCdsArticoliRegolamentoItemForm(SitoWebCdsTopicArticoliRegForm):
         
         self.fields["id_sito_web_cds_articoli_regolamento"] = forms.ChoiceField(
             choices=choices,
-            label=_("Articolo Regolamento"),
+            label=_("Regulament article"),
         )
 
 class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
@@ -210,7 +210,7 @@ class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
         
         self.fields["id_sito_web_cds_oggetti_portale"] = forms.ChoiceField(
             choices=choices,
-            label=_("Portal Objects"),
+            label=_("Portal object"),
         )
         
      
@@ -258,8 +258,8 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
             "testo_it": _("Text (it)"),
             "testo_en": _("Text (en)"),
             "id_oggetto_portale": _("Object Id"),
-            "aa_regdid_id": _("Didactic Regulation Academic Year"),
-            "id_classe_oggetto_portale": _("Object Class"),
+            "aa_regdid_id": _("Didactic regulation academic year"),
+            "id_classe_oggetto_portale": _("Object class"),
             "visibile": _("Visible"),
         }
     class Media:

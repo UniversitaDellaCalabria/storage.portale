@@ -3,9 +3,9 @@
 {% load i18n %}
 {% load static %}
 
-{% get_current_language as LANGUAGE_CODE %}
-
 {% block centered_container %}
+
+{% get_current_language as LANGUAGE_CODE %}
 
 <h3 style="font-weight: lighter;">
     {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
@@ -16,18 +16,18 @@
 </h3>
 
 <div class="row mt-5">
-    <!-- Dati Base -->
+    <!-- Info -->
     <div class="col col-lg">
         <div class="card-wrapper card-space">
             <div class="card card-big card-bg no-after">
                 <div class="card-body">
                     <h5 class="card-title">
-                        {% trans "Base Info" %}
+                        {% trans "Info" %}
                     </h5>
                     <p class="card-text">
-                        {% trans 'Manage Information' %}
+                        {% trans 'Manage Info' %}
                     </p>
-                    <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_website_base_edit' code=cds_website.id %}">
+                    <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_website_info_edit' code=cds_website.id %}">
                         <span class="text">{% trans "Manage" %}</span>
                         <svg class="icon">
                             <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
@@ -37,7 +37,7 @@
             </div>
         </div>
     </div>
-    <!-- /Dati Base -->
+    <!-- /Info -->
     <!-- Topics -->
     <div class="col col-lg">
         <div class="card-wrapper card-space">

@@ -7,26 +7,6 @@
 
 {% get_current_language as LANGUAGE_CODE %}
 
-{% comment %} <!-- Top Buttons -->
-<table class="table">
-    <tbody>
-        <tr>
-            <td class="text-left">
-                <a href="" class="btn btn-danger btn-xs"
-                data-toggle="modal"
-                data-target="#delete_laboratory">
-                    <svg class="icon icon-xs icon-white">
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                    </svg>
-                    {% trans "Remove" %}
-                </a>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<!-- /Top Buttons --> {% endcomment %}
-
-
 <h3 style="font-weight: normal;" class="mb-4 pb-4">
     {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
         {{ cds_website.nome_corso_it }}
