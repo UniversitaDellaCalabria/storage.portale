@@ -991,17 +991,17 @@ def cds_websites_object_delete(request, code, data_id, cds_website=None, my_offi
 @can_edit_cds_website
 def cds_websites_object_add(request, code, topic_id, cds_website=None, my_offices=None):
                 
-    art_reg_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, cds_id=cds_website.cds_id)
+    obj_item_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, cds_id=cds_website.cds_id)
     
     if request.POST:
-        if art_reg_form.is_valid():
+        if obj_item_form.is_valid():
         
-            art_reg = art_reg_form.save(commit=False)
-            art_reg.id_sito_web_cds_topic = get_object_or_404(SitoWebCdsTopic, pk=topic_id)
-            art_reg.id_sito_web_cds_oggetti_portale = get_object_or_404(SitoWebCdsOggettiPortale, pk=art_reg_form.data.get("id_sito_web_cds_oggetti_portale", None))
-            art_reg.dt_mod = now()
-            art_reg.id_user_mod=request.user
-            art_reg.save()
+            obj_item = obj_item_form.save(commit=False)
+            obj_item.id_sito_web_cds_topic = get_object_or_404(SitoWebCdsTopic, pk=topic_id)
+            obj_item.id_sito_web_cds_oggetti_portale = get_object_or_404(SitoWebCdsOggettiPortale, pk=obj_item_form.data.get("id_sito_web_cds_oggetti_portale", None))
+            obj_item.dt_mod = now()
+            obj_item.id_user_mod=request.user
+            obj_item.save()
         
             log_action(user=request.user,
                             obj=cds_website,
@@ -1012,12 +1012,12 @@ def cds_websites_object_add(request, code, topic_id, cds_website=None, my_office
                                     messages.SUCCESS,
                                     _("Portal Object added successfully"))
 
-            return redirect('crud_cds_websites:crud_cds_websites_regart_item_edit', code=code, topic_id=topic_id, data_id=art_reg.id)
+            return redirect('crud_cds_websites:crud_cds_websites_topics_edit', code=code)
 
         else:  # pragma: no cover
-            for k, v in art_reg_form.errors.items():
+            for k, v in obj_item_form.errors.items():
                 messages.add_message(request, messages.ERROR,
-                                        f"<b>{art_reg_form.fields[k].label}</b>: {v}")
+                                        f"<b>{obj_item_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites:crud_cds_websites'): _('Course of Studies Websites'),
@@ -1030,7 +1030,7 @@ def cds_websites_object_add(request, code, topic_id, cds_website=None, my_office
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
                     'topic_id' : topic_id,
-                    'forms': [art_reg_form,],
+                    'forms': [obj_item_form,],
                     'item_label': _('Portal Object'),
                   })
     
@@ -1043,15 +1043,15 @@ def cds_websites_object_item_edit(request, code, topic_id, data_id, cds_website=
     initial = {
         "id_sito_web_cds_oggetti_portale": regart.id_sito_web_cds_oggetti_portale.id,
     }
-    art_reg_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, instance=regart, cds_id=cds_website.cds_id, initial=initial)        
+    obj_item_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, instance=regart, cds_id=cds_website.cds_id, initial=initial)        
         
     if request.POST:
-        if art_reg_form.is_valid():
+        if obj_item_form.is_valid():
         
-            art_reg = art_reg_form.save(commit=False)
-            art_reg.dt_mod = now()
-            art_reg.id_user_mod=request.user
-            art_reg.save()
+            obj_item = obj_item_form.save(commit=False)
+            obj_item.dt_mod = now()
+            obj_item.id_user_mod=request.user
+            obj_item.save()
         
             log_action(user=request.user,
                             obj=cds_website,
@@ -1065,9 +1065,9 @@ def cds_websites_object_item_edit(request, code, topic_id, data_id, cds_website=
             return redirect('crud_cds_websites:crud_cds_websites_topics_edit', code=code)
 
         else:  # pragma: no cover
-            for k, v in art_reg_form.errors.items():
+            for k, v in obj_item_form.errors.items():
                 messages.add_message(request, messages.ERROR,
-                                        f"<b>{art_reg_form.fields[k].label}</b>: {v}")
+                                        f"<b>{obj_item_form.fields[k].label}</b>: {v}")
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
@@ -1081,7 +1081,7 @@ def cds_websites_object_item_edit(request, code, topic_id, data_id, cds_website=
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
-                    'forms': [art_reg_form,],
+                    'forms': [obj_item_form,],
                     'regart': regart,
                     'item_label': _('Item'),
                     'topic_id': topic_id,
