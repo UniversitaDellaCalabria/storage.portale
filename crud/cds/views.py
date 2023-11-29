@@ -841,11 +841,11 @@ def cds_group_new(request, regdid_id, my_offices=None, regdid=None):
             log_action(user=request.user,
                        obj=regdid.cds,
                        flag=CHANGE,
-                       msg=_("Nuovo gruppo creato con successo"))
+                       msg=_("Added Group"))
 
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 _("CdS Group successfully added"))
+                                 _("Group successfully added"))
 
             return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
         else:  # pragma: no cover
