@@ -170,8 +170,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
     
     if not (request.user.is_superuser or my_offices.exists()):
             return custom_message(request, _("Permission denied"))
-            operator_departments_codes = operator_departments_codes.values("office_id__organizational_structure_id__unique_code", flat=True) 
-
     
     allowed_related_departments_codes = [] if (not my_offices or not my_offices.exists()) else my_offices.values_list("office_id__organizational_structure_id__unique_code", flat=True)
     
