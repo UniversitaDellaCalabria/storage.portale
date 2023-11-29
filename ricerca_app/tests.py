@@ -1241,7 +1241,7 @@ class ApiTeachersListUnitTest(TestCase):
 
         # Three professor have flg_cessato = 0
         res = req.get(url)
-        assert len(res.json()['results']) == 2
+        assert len(res.json()['results']) == 3
 
         data = {'search': 'gar'}
         res = req.get(url, data=data)
