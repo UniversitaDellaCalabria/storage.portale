@@ -145,11 +145,11 @@ def cds_websites_sliders_new(request, code, cds_website=None, my_offices=None):
             log_action(user=request.user,
                             obj=cds_website,
                             flag=CHANGE,
-                            msg=_("Added Slider"))
+                            msg=_("Added Scrollable Text"))
 
             messages.add_message(request,
                                     messages.SUCCESS,
-                                    _("Slider added successfully"))
+                                    _("Scrollable Text added successfully"))
 
             return redirect('crud_cds_websites:crud_cds_websites_sliders', code=code)
 
@@ -193,11 +193,11 @@ def cds_websites_sliders_edit(request, code, data_id, cds_website=None, my_offic
             log_action(user=request.user,
                             obj=cds_website,
                             flag=CHANGE,
-                            msg=_("Edited Slider"))
+                            msg=_("Edited Scrollable Text"))
 
             messages.add_message(request,
                                     messages.SUCCESS,
-                                    _("Slider edited successfully"))
+                                    _("Scrollable Text edited successfully"))
 
             return redirect('crud_cds_websites:crud_cds_websites_sliders', code=code)
 
@@ -234,11 +234,11 @@ def cds_websites_sliders_delete(request, code, data_id, cds_website=None, my_off
     log_action( user=request.user,
                 obj=cds_website,
                 flag=CHANGE,
-                msg=_("Deleted Slider"))
+                msg=_("Deleted Scrollable Text"))
 
     messages.add_message(   request,
                             messages.SUCCESS,
-                            _("Slider deleted successfully"))
+                            _("Scrollable Text deleted successfully"))
 
     return redirect('crud_cds_websites:crud_cds_websites_sliders', code=code)
 

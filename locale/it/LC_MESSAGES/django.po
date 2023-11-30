@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-29 11:58+0100\n"
-"PO-Revision-Date: 2023-11-29 11:59+0100\n"
+"POT-Creation-Date: 2023-11-30 10:29+0100\n"
+"PO-Revision-Date: 2023-11-30 10:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -1193,11 +1193,11 @@ msgstr "Gestisci i Topic"
 #: crud/cds_websites/views.py:116 crud/cds_websites/views.py:165
 #: crud/cds_websites/views.py:213
 msgid "Sliders"
-msgstr ""
+msgstr "Testi Scorrevoli"
 
 #: crud/cds_websites/templates/cds_website.html:72
 msgid "Manage Sliders"
-msgstr "Gestisci gli Slider"
+msgstr "Gestisci i Testi Scorrevoli"
 
 #: crud/cds_websites/templates/cds_website.html:91
 #: crud/cds_websites/templates/cds_website_exstudents.html:24
@@ -1318,12 +1318,12 @@ msgid "Website info edited successfully"
 msgstr "Info del sito web modficate con successo"
 
 #: crud/cds_websites/views.py:148
-msgid "Added Slider"
-msgstr "Aggiunto Slider"
+msgid "Added Scrollable Text"
+msgstr "Aggiunto Testo Scorrevole"
 
 #: crud/cds_websites/views.py:152
-msgid "Slider added successfully"
-msgstr "Slider aggiunto con successo"
+msgid "Scrollable Text added successfully"
+msgstr "Testo Scorrevole aggiunto con successo"
 
 #: crud/cds_websites/views.py:166 crud/cds_websites/views.py:308
 #: crud/cds_websites/views.py:451 crud/companies/views.py:170
@@ -1335,20 +1335,20 @@ msgid "New"
 msgstr "Nuovo"
 
 #: crud/cds_websites/views.py:196
-msgid "Edited Slider"
-msgstr "Modificato Slider erogato"
+msgid "Edited Scrollable Text"
+msgstr "Modificato Testo Scorrevole"
 
 #: crud/cds_websites/views.py:200
-msgid "Slider edited successfully"
-msgstr "Sldier modificato con successo"
+msgid "Scrollable Text edited successfully"
+msgstr "Testo Scorrevole modificato con successo"
 
 #: crud/cds_websites/views.py:237
-msgid "Deleted Slider"
-msgstr "Eliminato Slider"
+msgid "Deleted Scrollable Text"
+msgstr "Eliminato Testo Scorrevole"
 
 #: crud/cds_websites/views.py:241
-msgid "Slider deleted successfully"
-msgstr "Slider eliminato con successo"
+msgid "Scrollable Text deleted successfully"
+msgstr "Testo Scorrevole eliminato con successo"
 
 #: crud/cds_websites/views.py:290
 msgid "Added Ex Student"
@@ -3462,6 +3462,21 @@ msgstr "L'immagine ha una proporzione tra altezza e lunghezza non valida"
 #: ricerca_app/validators.py:100
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
+
+#~ msgid "Added Slider"
+#~ msgstr "Aggiunto Slider"
+
+#~ msgid "Slider added successfully"
+#~ msgstr "Slider aggiunto con successo"
+
+#~ msgid "Edited Slider"
+#~ msgstr "Modificato Slider erogato"
+
+#~ msgid "Slider edited successfully"
+#~ msgstr "Slider modificato con successo"
+
+#~ msgid "Deleted Slider"
+#~ msgstr "Eliminato Slider"
 
 #, fuzzy
 #~| msgid "Research groups"
