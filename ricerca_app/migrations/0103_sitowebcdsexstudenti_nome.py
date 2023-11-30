@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sitowebcdsexstudenti',
             name='nome',
-            field=models.CharField(blank=True, db_column='NOME', max_length=1000, null=True),
+            field=models.CharField(blank=False, db_column='NOME', max_length=1000, null=True),
         ),
     ]

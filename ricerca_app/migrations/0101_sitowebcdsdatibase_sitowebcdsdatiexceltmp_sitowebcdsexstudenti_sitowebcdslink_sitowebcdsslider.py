@@ -116,7 +116,7 @@ class Migration(migrations.Migration):
             name='SitoWebCdsExStudenti',
             fields=[
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
-                ('ordine', models.PositiveIntegerField(blank=True, db_column='ORDINE', null=True)),
+                ('ordine', models.PositiveIntegerField(blank=False, db_column='ORDINE', null=True)),
                 ('profilo_it', models.TextField(db_column='PROFILO_IT')),
                 ('profilo_en', models.TextField(blank=True, db_column='PROFILO_EN', null=True)),
                 ('link_it', models.CharField(blank=True, db_column='LINK_IT', max_length=2000, null=True)),
