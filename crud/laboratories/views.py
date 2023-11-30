@@ -1194,13 +1194,13 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, i
         messages.add_message(request, messages.ERROR, _("Activities list is full"))
         return redirect('crud_laboratories:crud_laboratory_edit', code=code)
     
-    form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified)
+    activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified)
     
     if request.POST:
-        form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, data=request.POST)
-        if form.is_valid():
-            activity_type=get_object_or_404(LaboratorioTipologiaAttivita, pk=form.cleaned_data["tipologia_attivita"])
-            activity = form.save(commit=False)
+        activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, data=request.POST)
+        if activity_form.is_valid():
+            activity_type=get_object_or_404(LaboratorioTipologiaAttivita, pk=activity_form.cleaned_data["tipologia_attivita"])
+            activity = activity_form.save(commit=False)
             activity.id_laboratorio_dati=laboratory
             activity.id_tipologia_attivita=activity_type
             activity.save()
@@ -1231,7 +1231,7 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, i
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
-                   'forms': (form,),
+                   'forms': (activity_form,),
                    'laboratory': laboratory,
                    'item_label': _("Activity"),
                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
