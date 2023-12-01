@@ -4056,13 +4056,15 @@ class ServiceLaboratorio:
             erc1,
             teacher,
             infrastructure,
-            scope
+            scope,
+            is_active=True
     ):
         query_search = Q()
         query_ambito = Q()
         query_dip = Q()
         query_erc1 = Q()
         query_infrastructure = Q()
+        query_is_active = Q(visibile=True) if is_active else Q()
 
         if search:
             for k in search.split(" "):
@@ -4090,7 +4092,8 @@ class ServiceLaboratorio:
             query_ambito,
             query_dip,
             query_erc1,
-            query_infrastructure
+            query_infrastructure,
+            query_is_active
         ).values(
             'id',
             'nome_laboratorio',
@@ -4221,9 +4224,10 @@ class ServiceLaboratorio:
         return query
 
     @staticmethod
-    def getLaboratory(language, laboratoryid):
+    def getLaboratory(language, laboratoryid, is_active=True):
+        query_is_active = Q(visibile=True) if is_active else Q()
         query = LaboratorioDatiBase.objects.filter(
-            id__exact=laboratoryid).values(
+            Q(id__exact=laboratoryid), query_is_active).values(
             "id",
             "referente_compilazione",
             "matricola_referente_compilazione",

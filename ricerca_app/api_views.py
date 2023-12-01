@@ -709,8 +709,24 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
 
     def get_queryset(self):
         laboratoryid = self.kwargs['laboratoryid']
+        request = self.request
+        
+        #CRUD
+        only_active = True
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        elif request.user.is_authenticated: # pragma: no cover
+            offices = OrganizationalStructureOfficeEmployee\
+                .objects\
+                .filter(employee=request.user,
+                        office__is_active=True,
+                        office__organizational_structure__is_active=True)
+                
+            is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
+            is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
+            if(is_operator or is_validator):
+                only_active = False
 
-        return ServiceLaboratorio.getLaboratory(self.language, laboratoryid)
+        return ServiceLaboratorio.getLaboratory(self.language, laboratoryid, only_active)
 
 
 class ApiLaboratoriesList(ApiEndpointList):
@@ -727,9 +743,24 @@ class ApiLaboratoriesList(ApiEndpointList):
         teacher = decrypt(request.query_params.get('teacher'))
         infrastructure = request.query_params.get('infrastructure')
         scope = request.query_params.get('scope')
+        
+        #CRUD
+        only_active = True
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        elif request.user.is_authenticated: # pragma: no cover
+            offices = OrganizationalStructureOfficeEmployee\
+                .objects\
+                .filter(employee=request.user,
+                        office__is_active=True,
+                        office__organizational_structure__is_active=True)
+                
+            is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
+            is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
+            if(is_operator or is_validator):
+                only_active = False
 
         return ServiceLaboratorio.getLaboratoriesList(
-            self.language, search, area, department, erc1, teacher, infrastructure, scope)
+            self.language, search, area, department, erc1, teacher, infrastructure, scope, only_active)
 
 
 class ApiLaboratoriesAreasList(ApiEndpointList):
