@@ -2649,6 +2649,7 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'responsabile_scientifico': 'Mungari Simone',
             'matricola_responsabile_scientifico': p1,
             'laboratorio_interdipartimentale': 'SI',
+            'visibile': True
         })
 
         a1 = LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(
@@ -2669,6 +2670,7 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'sede_dimensione': "291",
             'responsabile_scientifico': 'Carlucci Carmine',
             'matricola_responsabile_scientifico': p2,
+            'visibile': True
         })
 
         erc0 = RicercaErc0UnitTest.create_ricercaErc0(**{
@@ -2700,6 +2702,7 @@ class ApiLaboratoriesListUnitTest(TestCase):
             'ambito': 'Tecnologico',
             'matricola_responsabile_scientifico': p2,
             'id_infrastruttura_riferimento': i1,
+            'visibile': True
         })
 
         a1 = LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(
@@ -2884,6 +2887,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'ambito': 'Tecnologico',
             'matricola_responsabile_scientifico': p1,
             'laboratorio_interdipartimentale': 'SI',
+            'visibile': True
         })
 
         lab2 = LaboratorioDatiBaseUnitTest.create_laboratorioDatiBase(**{
@@ -2893,6 +2897,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             'id_dipartimento_riferimento': dip2,
             'ambito': 'Umanistico',
             'matricola_responsabile_scientifico': p2,
+            'visibile': True
         })
         a1 = LaboratorioTipologiaAttivitaUnitTest.create_laboratorioTipologiaAttivita(
             **{"id": 1, "descrizione": "aaa"})
@@ -5628,7 +5633,8 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
             'id': 1,
             'nome_af': 'AAAA',
             'struttura_proponente_origine': 'dimes',
-            'rif_dottorato': 'matematica'
+            'rif_dottorato': 'matematica',
+            'ciclo': 1
 
         })
 
@@ -5636,7 +5642,8 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
             'id': 2,
             'nome_af': 'BBBB',
             'struttura_proponente_origine': 'aaaa',
-            'rif_dottorato': 'umanistici'
+            'rif_dottorato': 'umanistici',
+            'ciclo': 1
 
         })
 
@@ -5697,6 +5704,7 @@ class ApiPhdActivityDetailUnitTest(TestCase):
         a1 = DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
             'id': 1,
             'nome_af': 'AAAA',
+            'ciclo': 1
 
         })
 
@@ -5754,7 +5762,8 @@ class ApiRefPhdListUnitTest(TestCase):
             'id': 1,
             'nome_af': 'AAAA',
             'struttura_proponente_origine': 'dimes',
-            'rif_dottorato': 'matematica'
+            'rif_dottorato': 'matematica',
+            'ciclo': True
 
         })
 
@@ -5783,7 +5792,8 @@ class ApiRefStructuresListUnitTest(TestCase):
             'id': 1,
             'nome_af': 'AAAA',
             'struttura_proponente_origine': 'dimes',
-            'rif_dottorato': 'matematica'
+            'rif_dottorato': 'matematica',
+            'ciclo': 1
 
         })
 
@@ -5810,7 +5820,8 @@ class ApiPhdSsdListUnitTest(TestCase):
 
         DidatticaDottoratoAttivitaFormativaUnitTest.create_didatticaDottoratoAttivitaFormativa(**{
             'id': 1,
-            'ssd': 'Convenzionale'
+            'ssd': 'Convenzionale',
+            'ciclo': 1
 
         })
 
