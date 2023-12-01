@@ -102,8 +102,10 @@
     
 {% endblock title %}
 
-{% if edit %}
-    {% block submit %}
+{% block submit %}
+    {% if edit %}
         {% include "object_form_submit_warning.html" %}
-    {% endblock submit %}
-{% endif %}
+    {% else %}
+        {{block.super}}
+    {% endif %}
+{% endblock submit %}
