@@ -65,11 +65,11 @@ class Migration(migrations.Migration):
             name='id_laboratorio_dati',
             field=models.ForeignKey(blank=True, db_column='ID_LABORATORIO_DATI', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriodatibase'),
         ),
-        migrations.AlterField(
-            model_name='laboratorioattivita',
-            name='id_tipologia_attivita',
-            field=models.ForeignKey(db_column='ID_TIPOLOGIA_ATTIVITA', null=True, on_delete=django.db.models.deletion.CASCADE, to='ricerca_app.laboratoriotipologiaattivita'),
-        ),
+        # migrations.AlterField(
+            # model_name='laboratorioattivita',
+            # name='id_tipologia_attivita',
+            # field=models.ForeignKey(db_column='ID_TIPOLOGIA_ATTIVITA', null=True, on_delete=django.db.models.deletion.PROTECT, to='ricerca_app.laboratoriotipologiaattivita'),
+        # ),
         migrations.AlterField(
             model_name='laboratorioattrezzature',
             name='costo_unitario',

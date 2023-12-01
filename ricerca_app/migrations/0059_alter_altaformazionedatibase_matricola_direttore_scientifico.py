@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='altaformazionedatibase',
             name='matricola_direttore_scientifico',
-            field=models.ForeignKey(blank=True, db_column='MATRICOLA_DIRETTORE_SCIENTIFICO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.personale', to_field='matricola'),
+            field=models.ForeignKey(blank=True, db_column='MATRICOLA_DIRETTORE_SCIENTIFICO', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ricerca_app.personale', to_field='matricola'),
         ),
     ]

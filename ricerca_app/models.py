@@ -2955,7 +2955,7 @@ class RicercaAster1(InsModAbstract):
                                  blank=True, null=True)
     ricerca_erc0_cod = models.ForeignKey(
         'RicercaErc0',
-        models.DO_NOTHING,
+        models.PROTECT,
         db_column='RICERCA_ERC0_COD',
         blank=True,
         null=True)
@@ -3432,7 +3432,7 @@ class BrevettoDatiBase(models.Model):
     # Field name made lowercase.
     territorio = models.ForeignKey(
         BrevettoTerritori,
-        models.DO_NOTHING,
+        models.SET_NULL,
         db_column='TERRITORIO',
         blank=True,
         null=True)

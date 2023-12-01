@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 ('cfu', models.IntegerField(blank=True, db_column='CFU', null=True)),
                 ('tipo_af', models.CharField(blank=True, db_column='TIPO_AF', max_length=500, null=True)),
                 ('rif_dottorato', models.CharField(blank=True, db_column='RIF_DOTTORATO', max_length=1000, null=True)),
-                ('ciclo', models.IntegerField(blank=False, db_column='CICLO', null=True)),
+                ('ciclo', models.IntegerField(db_column='CICLO')),
                 ('struttura_proponente_origine', models.TextField(blank=True, db_column='STRUTTURA_PROPONENTE_ORIGINE')),
                 ('contenuti_af', models.TextField(blank=True, db_column='CONTENUTI_AF', null=True)),
                 ('prerequisiti', models.TextField(blank=True, db_column='PREREQUISITI', null=True)),
