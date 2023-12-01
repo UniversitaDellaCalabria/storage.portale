@@ -88,9 +88,10 @@
                     }
                 }
                 previewdiv.innerHTML = html;
-                previewModal.modal()
             }).catch(error => {
                 previewdiv.innerHTML = error.message;
+            }).then(() => {
+                previewModal.modal();
             });
     }
 
