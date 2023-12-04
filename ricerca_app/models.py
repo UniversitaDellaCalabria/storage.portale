@@ -4465,7 +4465,7 @@ class DidatticaPianoSceltaFilAnd(models.Model):
 
 class DidatticaPianoSceltaSchePiano(models.Model):
     sche_piano = models.OneToOneField('DidatticaPianoSche', models.DO_NOTHING, db_column='SCHE_PIANO_ID', primary_key=True)  # Field name made lowercase.
-    sche_statutario_flg = models.IntegerField(db_column='SCHE_STATUTARIO_FLG', blank=True, null=True)  # Field name made lowercase.
+    sche_statutario_flg = models.BooleanField(db_column='SCHE_STATUTARIO_FLG', default=False)  # Field name made lowercase.
     sche_pds_regdid_id = models.IntegerField(db_column='SCHE_PDS_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
     sche_pds_cod = models.CharField(db_column='SCHE_PDS_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
     sche_pds_des = models.CharField(db_column='SCHE_PDS_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
