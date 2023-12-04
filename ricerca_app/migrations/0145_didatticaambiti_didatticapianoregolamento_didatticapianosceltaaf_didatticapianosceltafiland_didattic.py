@@ -267,7 +267,7 @@ class Migration(migrations.Migration):
             name='DidatticaPianoSceltaSchePiano',
             fields=[
                 ('sche_piano', models.OneToOneField(db_column='SCHE_PIANO_ID', on_delete=django.db.models.deletion.DO_NOTHING, primary_key=True, serialize=False, to='ricerca_app.didatticapianosche')),
-                ('sche_statutario_flg', models.IntegerField(blank=True, db_column='SCHE_STATUTARIO_FLG', null=True)),
+                ('sche_statutario_flg', models.BooleanField(db_column='SCHE_STATUTARIO_FLG', default=False)),
                 ('sche_pds_regdid_id', models.IntegerField(blank=True, db_column='SCHE_PDS_REGDID_ID', null=True)),
                 ('sche_pds_cod', models.CharField(blank=True, db_column='SCHE_PDS_COD', max_length=10, null=True)),
                 ('sche_pds_des', models.CharField(blank=True, db_column='SCHE_PDS_DES', max_length=255, null=True)),
