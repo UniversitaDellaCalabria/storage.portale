@@ -52,7 +52,6 @@ class Migration(migrations.Migration):
                 ('come_iscriversi_en', models.TextField(blank=True, db_column='COME_ISCRIVERSI_EN', null=True)),
                 ('sito_web_it', models.CharField(blank=True, db_column='SITO_WEB_IT', max_length=2000, null=True)),
                 ('sito_web_en', models.CharField(blank=True, db_column='SITO_WEB_EN', max_length=2000, null=True)),
-                ('sito_web_cds_status', models.IntegerField(blank=True, db_column='SITO_WEB_CDS_STATUS', null=True)),
                 ('dt_mod', models.DateField(blank=True, db_column='DT_MOD', null=True)),
                 ('id_user_mod', models.ForeignKey(blank=True, db_column='ID_USER_MOD', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
                 ],

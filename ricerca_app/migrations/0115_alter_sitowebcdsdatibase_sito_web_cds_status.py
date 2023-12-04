@@ -10,9 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='sitowebcdsdatibase',
-            name='sito_web_cds_status',
-            field=models.BooleanField(db_column='SITO_WEB_CDS_STATUS', default=False),
-        ),
+        # migrations.AlterField(
+        #     model_name='sitowebcdsdatibase',
+        #     name='sito_web_cds_status',
+        #     field=models.BooleanField(db_column='SITO_WEB_CDS_STATUS', default=False),
+        # ),
     ]

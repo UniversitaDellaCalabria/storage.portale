@@ -16,15 +16,6 @@ UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 
 class SitoWebCdsDatiBaseForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(SitoWebCdsDatiBaseForm, self).__init__(*args, **kwargs)
-        if self.initial:
-            self.initial["sito_web_cds_status"] = bool(self.initial.get("sito_web_cds_status", None))
-                
-    sito_web_cds_status = forms.BooleanField(
-        label=_("Status"),
-        required=False,
-    )
     aa = forms.IntegerField(
         required=True,
         min_value=1901,
@@ -69,7 +60,6 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
             'come_iscriversi_en': _('Enrollement mode (en)'),
             'sito_web_it': _('Website (it)'),
             'sito_web_en': _('Website (en)'),
-            'sito_web_cds_status': _('Status'),
             'accesso_corso_it': _('Admission (it)'),
             'accesso_corso_en': _('Admission (en)'),
             'obiettivi_corso_it': _('Goals (it)'),
