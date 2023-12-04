@@ -377,7 +377,6 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             'CDSStudyPlan': query['cosa_si_studia_it'] if req_lang == 'it' or query['cosa_si_studia_en'] is None else query['cosa_si_studia_en'],
             'CDSEnrollmentMode': query['come_iscriversi_it'] if req_lang == 'it' or query['come_iscriversi_en'] is None else query['come_iscriversi_en'],
             'CDSUrl': query['sito_web_it'] if req_lang == 'it' or query['sito_web_en'] is None else query['sito_web_en'],
-            'CDSUrlStatus': query['sito_web_cds_status'],
             'CDSExStudents': ex_students,
             'CDSLinks': cds_link,
             'CDSSliders': cds_sliders,

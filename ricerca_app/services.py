@@ -755,7 +755,6 @@ class ServiceDidatticaCds:
             "come_iscriversi_en",
             "sito_web_it",
             "sito_web_en",
-            "sito_web_cds_status",
             'id_didattica_regolamento'
         )
 
@@ -855,7 +854,6 @@ class ServiceDidatticaCds:
             "come_iscriversi_en",
             "sito_web_it",
             "sito_web_en",
-            "sito_web_cds_status",
             'id_didattica_regolamento'
         )
 
