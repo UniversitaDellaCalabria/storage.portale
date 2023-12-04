@@ -30,10 +30,10 @@ def can_manage_cds_website(func_to_decorate):
             return func_to_decorate(*original_args, **original_kwargs)
 
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
-                                                                          office__name=OFFICE_CDS,
+                                                                          office__name=OFFICE_CDS_WEBSITES,
                                                                           office__is_active=True,
                                                                           office__organizational_structure__is_active=True)
-        if not my_offices:
+        if not my_offices.exists():
             return custom_message(request, _("Permission denied"))
         original_kwargs['my_offices'] = my_offices
         return func_to_decorate(*original_args, **original_kwargs)
@@ -46,6 +46,7 @@ def can_edit_cds_website(func_to_decorate):
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
+        cds_website = original_kwargs["cds_website"]
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
