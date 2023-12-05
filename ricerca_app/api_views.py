@@ -1351,11 +1351,27 @@ class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
     filter_backends = [ApiCdsWebsitesTopicArticlesListFilter]
 
     def get_queryset(self):
-
+        
+        request = self.request
         cds_cod = self.request.query_params.get('cds_cod')
         topic_id = self.request.query_params.get('topic_id')
+        
+        # get only active elements if public
+        # get all elements if in CRUD backend
+        only_active = True
+        if request.user.is_superuser: only_active = False # pragma: no cover
+        elif request.user.is_authenticated: # pragma: no cover
+            offices = OrganizationalStructureOfficeEmployee\
+                .objects\
+                .filter(employee=request.user,
+                        office__is_active=True,
+                        office__name=OFFICE_CDS_WEBSITES,
+                        office__organizational_structure__is_active=True)
+                
+            if(offices.exists()):
+                only_active = False
 
-        return ServiceDidatticaCds.getCdsWebsitesTopicArticles(cds_cod, topic_id)
+        return ServiceDidatticaCds.getCdsWebsitesTopicArticles(cds_cod, topic_id, only_active)
 
 
 

@@ -6041,35 +6041,42 @@ class ApiSitoWebCdsTopicListUnitTest(TestCase):
 
 
 class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
+    
+    def setUp(self, *args, **kwargs):
+        self.uname = "user"
+        self.passw = "pass"
+        self.user = get_user_model().objects.create_superuser(username=self.uname, password=self.passw)
+        self.token = Token.objects.create(user=self.user)
+        
+    
     def test_apisitiwebcdstopicarticles(self):
-        req = Client()
 
+        tipo_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
 
-        t1 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+        topic = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
             'id': 1,
             'descr_topic_it': 'prova',
             'descr_topic_en': 'test',
-            'visibile': 0,
+            'visibile': 1,
             'dt_mod': datetime.datetime.today(),
-
         })
-
-        t2 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+        
+        topic2 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
             'id': 2,
             'descr_topic_it': 'prova',
             'descr_topic_en': 'test',
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
-
         })
 
-        DidatticaCdsUnitTest.create_didatticaCds(**{
+        cds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'cds_id': 1,
             'cds_cod': '1',
             'nome_cds_it': 'Matematica',
             'nome_cds_eng': 'Math',
         })
 
+        # Regulament Article 1 visible
         a1 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
             'id': 1,
             'cds_id': 1,
@@ -6083,9 +6090,187 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'dt_mod': datetime.datetime.today(),
 
         })
-
+        
+        # Regulament Article 2 NOT visible
         a2 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
             'id': 2,
+            'cds_id': 1,
+            'aa_regdid_id': 2023,
+            'numero': 11,
+            'titolo_articolo_it': 'Prova',
+            'testo_it': 'Contenuto',
+            'titolo_articolo_en': 'Test',
+            'testo_en': 'Content',
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today(),
+        })
+
+        # Portal Object 1 visible
+        o1 = SitoWebCdsOggettiPortaleUnitTest.create_sitoWebCdsOggettiPortale(**{
+            'id': 1,
+            'cds_id': 1,
+            'aa_regdid_id': 2023,
+            'id_oggetto_portale': 1,
+            'id_classe_oggetto_portale': 1,
+            'testo_it': 'prova',
+            'testo_en': 'test',
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+        })
+        
+        
+        # Item art_reg 1 visible - linked to a1
+        item1 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 1,
+            'titolo_it': 'Item1',
+            'id_sito_web_cds_topic': topic,
+            'id_sito_web_cds_articoli_regolamento': a1,
+            'ordine': 0,
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today()
+        })
+
+        # Item art_reg 2 visible - linked to a2
+        item2 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 2,
+            'titolo_it': 'Item2',
+            'id_sito_web_cds_topic': topic,
+            'id_sito_web_cds_articoli_regolamento': a2,
+            'ordine': 0,
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today()
+        })
+        
+        # Item art_reg 3 visible - linked to o1
+        item3 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 3,
+            'titolo_it': 'Item3',
+            'id_sito_web_cds_topic': topic,
+            'id_sito_web_cds_oggetti_portale': o1,
+            'ordine': 0,
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today()
+        })
+
+        # Item art_reg 5 NOT visible - linked to a1
+        item5 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 5,
+            'titolo_it': 'Item5',
+            'id_sito_web_cds_topic': topic2,
+            'id_sito_web_cds_articoli_regolamento': a1,
+            'ordine': 0,
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today()
+        })
+
+        # art_reg_altri_dati visible - linked to item1
+        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
+            'id': 1,
+            'id_sito_web_cds_topic_articoli_reg': item1,
+            'titolo_it': 'prova',
+            'titolo_en': 'test',
+            'testo_it': 'prova',
+            'testo_en': 'test',
+            'id_sito_web_cds_tipo_dato': tipo_dato,
+            'ordine': 1,
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+        })
+        
+        # art_reg_altri_dati NOT visible - linked to item1
+        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
+            'id': 2,
+            'id_sito_web_cds_topic_articoli_reg': item1,
+            'titolo_it': 'prova',
+            'titolo_en': 'test',
+            'testo_it': 'prova',
+            'testo_en': 'test',
+            'id_sito_web_cds_tipo_dato': tipo_dato,
+            'ordine': 1,
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today(),
+        })
+        
+        # art_reg_altri_dati visible - linked to item5
+        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
+            'id': 3,
+            'id_sito_web_cds_topic_articoli_reg': item5,
+            'titolo_it': 'prova',
+            'titolo_en': 'test',
+            'testo_it': 'prova',
+            'testo_en': 'test',
+            'id_sito_web_cds_tipo_dato': tipo_dato,
+            'ordine': 1,
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+        })
+
+        url = reverse('ricerca:cdswebsitestopicarticleslist')
+
+        # check url
+        res = self.client.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = self.client.get(url)
+        assert len(res.json()['results']) == 0
+
+        data = {'cds_cod': '1', 'topic_id': 1}
+        res = self.client.get(url, data=data)
+        
+        # 3 visible, 1 not visible
+        assert len(res.json()['results']) == 3
+        r_items = res.json()['results']
+        r_item1, r_item2 = None, None
+
+        for r_item in r_items:
+            if r_item["ID"] == 1:
+                r_item1 = r_item
+            elif r_item["ID"] == 2:
+                r_item2 = r_item
+        
+        assert(r_item1 is not None)    
+        assert(len(r_item1["OtherData"]) == 1)
+        assert(r_item1["CdsArticle"] is not None)
+        
+        assert(r_item2 is not None)    
+        assert(len(r_item2["OtherData"]) == 0)
+        assert(r_item2["CdsArticle"] is None)
+        
+    def test_apisitiwebcdstopicarticleswithpermissions(self):
+
+        self.client.login(username=self.uname, password=self.passw)
+        
+        tipo_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
+
+        topic = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+            'id': 1,
+            'descr_topic_it': 'prova',
+            'descr_topic_en': 'test',
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+        })
+        
+        topic2 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+            'id': 2,
+            'descr_topic_it': 'prova',
+            'descr_topic_en': 'test',
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
+        })
+
+        cds = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'cds_id': 1,
+            'cds_cod': '1',
+            'nome_cds_it': 'Matematica',
+            'nome_cds_eng': 'Math',
+        })
+
+        # Regulament Article 1 visible
+        a1 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
+            'id': 1,
             'cds_id': 1,
             'aa_regdid_id': 2023,
             'numero': 11,
@@ -6097,7 +6282,22 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'dt_mod': datetime.datetime.today(),
 
         })
+        
+        # Regulament Article 2 NOT visible
+        a2 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
+            'id': 2,
+            'cds_id': 1,
+            'aa_regdid_id': 2023,
+            'numero': 11,
+            'titolo_articolo_it': 'Prova',
+            'testo_it': 'Contenuto',
+            'titolo_articolo_en': 'Test',
+            'testo_en': 'Content',
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today(),
+        })
 
+        # Portal Object 1 visible
         o1 = SitoWebCdsOggettiPortaleUnitTest.create_sitoWebCdsOggettiPortale(**{
             'id': 1,
             'cds_id': 1,
@@ -6108,63 +6308,57 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'testo_en': 'test',
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
-
         })
-
-        ar1 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+        
+        
+        # Item art_reg 1 visible - linked to a1
+        item1 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
             'id': 1,
-            'titolo_it': 'Prova',
-            'titolo_en': 'Test',
-            'id_sito_web_cds_topic': t1,
+            'titolo_it': 'Item1',
+            'id_sito_web_cds_topic': topic,
             'id_sito_web_cds_articoli_regolamento': a1,
-            'id_sito_web_cds_oggetti_portale': o1,
             'ordine': 0,
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today(),
-
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today()
         })
 
-        SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+        # Item art_reg 2 visible - linked to a2
+        item2 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
             'id': 2,
-            'id_sito_web_cds_topic': t2,
+            'titolo_it': 'Item2',
+            'id_sito_web_cds_topic': topic,
             'id_sito_web_cds_articoli_regolamento': a2,
+            'ordine': 0,
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today()
+        })
+        
+        # Item art_reg 3 visible - linked to o1
+        item3 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 3,
+            'titolo_it': 'Item3',
+            'id_sito_web_cds_topic': topic,
             'id_sito_web_cds_oggetti_portale': o1,
             'ordine': 0,
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today(),
-
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today()
         })
 
-        # SitoWebCdsArticoliRegAltriDatiUnitTest.create_sitoWebCdsArticoliRegAltriDati(**{
-            # 'id': 1,
-            # 'id_sito_web_cds_articoli_regolamento': a1,
-            # 'ordine': 0,
-            # 'titolo_en': 'Title',
-            # 'titolo_it': 'Titolo',
-            # 'testo_en': 'Text',
-            # 'testo_it': 'Testo',
-            # 'visibile': 0,
-            # 'dt_mod': datetime.datetime.today(),
+        # Item art_reg 5 NOT visible - linked to a1
+        item5 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'id': 5,
+            'titolo_it': 'Item5',
+            'id_sito_web_cds_topic': topic2,
+            'id_sito_web_cds_articoli_regolamento': a1,
+            'ordine': 0,
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today()
+        })
 
-        # })
-        # SitoWebCdsOggettiPortaleAltriDatiUnitTest.create_sitoWebCdsOggettiPortaleAltriDati(**{
-            # 'id': 1,
-            # 'id_sito_web_cds_oggetti_portale': o1,
-            # 'titolo_it': 'prova',
-            # 'titolo_en': 'test',
-            # 'testo_it': 'prova',
-            # 'testo_en': 'test',
-            # 'ordine': 1,
-            # 'visibile': 1,
-            # 'dt_mod': datetime.datetime.today(),
-
-        # })
-
-        tipo_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
-
+        # art_reg_altri_dati visible - linked to item1
         SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
             'id': 1,
-            'id_sito_web_cds_topic_articoli_reg': ar1,
+            'id_sito_web_cds_topic_articoli_reg': item1,
             'titolo_it': 'prova',
             'titolo_en': 'test',
             'testo_it': 'prova',
@@ -6173,26 +6367,56 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'ordine': 1,
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
-
+        })
+        
+        # art_reg_altri_dati NOT visible - linked to item1
+        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
+            'id': 2,
+            'id_sito_web_cds_topic_articoli_reg': item1,
+            'titolo_it': 'prova',
+            'titolo_en': 'test',
+            'testo_it': 'prova',
+            'testo_en': 'test',
+            'id_sito_web_cds_tipo_dato': tipo_dato,
+            'ordine': 1,
+            'visibile': 0,
+            'dt_mod': datetime.datetime.today(),
+        })
+        
+        # art_reg_altri_dati visible - linked to item5
+        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
+            'id': 3,
+            'id_sito_web_cds_topic_articoli_reg': item5,
+            'titolo_it': 'prova',
+            'titolo_en': 'test',
+            'testo_it': 'prova',
+            'testo_en': 'test',
+            'id_sito_web_cds_tipo_dato': tipo_dato,
+            'ordine': 1,
+            'visibile': 1,
+            'dt_mod': datetime.datetime.today(),
         })
 
-
-
         url = reverse('ricerca:cdswebsitestopicarticleslist')
+        
 
         # check url
-        res = req.get(url)
+        res = self.client.get(url)
 
         assert res.status_code == 200
 
         # GET
 
-        res = req.get(url)
+        res = self.client.get(url)
         assert len(res.json()['results']) == 0
 
-        data = {'cds_cod': '1', 'topic_id': 1}
-        res = req.get(url, data=data)
-        assert len(res.json()['results']) == 1
+        data = {'cds_cod': '1', 'topic_id': "1,2"}
+        
+        
+        res = self.client.get(url, data=data, HTTP_AUTHORIZATION= f'Token {self.token.key}')
+
+        assert len(res.json()['results']) == 4
+        
 
 
 

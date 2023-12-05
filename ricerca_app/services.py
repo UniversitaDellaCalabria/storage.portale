@@ -934,7 +934,8 @@ class ServiceDidatticaCds:
         return query
 
     @staticmethod
-    def getCdsWebsitesTopicArticles(cds_cod, topic_id):
+    def getCdsWebsitesTopicArticles(cds_cod, topic_id, only_active=True):
+        query_visibile = Q(visibile=True) if only_active else Q()
         if cds_cod and topic_id:
             topic_id_list = topic_id.split(",")
             query_cdscod = Q(id_sito_web_cds_oggetti_portale__cds_id__cds_cod=cds_cod) | Q(id_sito_web_cds_articoli_regolamento__cds_id__cds_cod=cds_cod)
@@ -942,7 +943,8 @@ class ServiceDidatticaCds:
 
             query = SitoWebCdsTopicArticoliReg.objects.filter(
                 query_cdscod,
-                query_topicid
+                query_topicid,
+                query_visibile
             ).values(
                 "id",
                 'titolo_it',
@@ -960,7 +962,7 @@ class ServiceDidatticaCds:
 
             for q in query:
                 article = SitoWebCdsArticoliRegolamento.objects.filter(
-                    id__exact=q['id_sito_web_cds_articoli_regolamento']).values(
+                    Q(id__exact=q['id_sito_web_cds_articoli_regolamento']), query_visibile).values(
                     'id',
                     'titolo_articolo_it',
                     'testo_it',
@@ -977,7 +979,7 @@ class ServiceDidatticaCds:
                 q['Articles'] = article
 
                 unicms_object = SitoWebCdsOggettiPortale.objects.filter(
-                    id__exact=q['id_sito_web_cds_oggetti_portale']).values(
+                    Q(id__exact=q['id_sito_web_cds_oggetti_portale']), query_visibile).values(
                     'id',
                     'cds_id',
                     'cds_id__cds_cod',
@@ -992,7 +994,7 @@ class ServiceDidatticaCds:
                 q['CdsObjects'] = unicms_object
 
                 other_data = SitoWebCdsTopicArticoliRegAltriDati.objects.filter(
-                        id_sito_web_cds_topic_articoli_reg=q['id']
+                        Q(id_sito_web_cds_topic_articoli_reg=q['id']), query_visibile
                     ).values(
                         'id',
                         'ordine',
