@@ -28,10 +28,11 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
     DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi
 from . serializers import StructuresSerializer
-from . settings import PERSON_CONTACTS_TO_TAKE
+from . settings import PERSON_CONTACTS_TO_TAKE, PERSON_CONTACTS_EXCLUDE_STRINGS
 
 
 PERSON_CONTACTS_TO_TAKE = getattr(settings, 'PERSON_CONTACTS_TO_TAKE', PERSON_CONTACTS_TO_TAKE)
+PERSON_CONTACTS_EXCLUDE_STRINGS = getattr(settings, 'PERSON_CONTACTS_EXCLUDE_STRINGS', PERSON_CONTACTS_EXCLUDE_STRINGS)
 
 
 class ServiceQueryBuilder:
@@ -2792,12 +2793,18 @@ class ServiceDocente:
         if not query.exists():
             raise Http404
 
-        contacts = query.filter(
-            personalecontatti__cd_tipo_cont__descr_contatto__in=PERSON_CONTACTS_TO_TAKE
+        q_contacts = query.filter(
+            personalecontatti__cd_tipo_cont__descr_contatto__in=PERSON_CONTACTS_TO_TAKE,
         ).values(
             "personalecontatti__cd_tipo_cont__descr_contatto",
             "personalecontatti__contatto")
-        contacts = list(contacts)
+
+        contacts = []
+        for contact in q_contacts:
+            res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word in contact['personalecontatti__contatto'])]
+            if not bool(res):
+                contacts.append(contact)
+        # contacts = list(contacts)
 
         functions = UnitaOrganizzativaFunzioni.objects.filter(
             matricola=teacher,
@@ -3450,8 +3457,10 @@ class ServicePersonale:
                     grouped[q['id_ab']][c] = []
 
             if q['personalecontatti__cd_tipo_cont__descr_contatto'] in PERSON_CONTACTS_TO_TAKE:
-                grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
-                    q['personalecontatti__contatto'])
+                res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word in q['personalecontatti__contatto'])]
+                if not bool(res):
+                    grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
+                        q['personalecontatti__contatto'])
 
             if last_id == -1 or last_id != q['id_ab']:
                 last_id = q['id_ab']
@@ -3882,8 +3891,10 @@ class ServicePersonale:
             for c in PERSON_CONTACTS_TO_TAKE:
                 q[c] = []
             for c in contacts:
-                q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
-                    c['personalecontatti__contatto'])
+                res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word in c['personalecontatti__contatto'])]
+                if not bool(res):
+                    q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
+                        c['personalecontatti__contatto'])
 
             if len(functions) == 0:
                 q["Functions"] = None
