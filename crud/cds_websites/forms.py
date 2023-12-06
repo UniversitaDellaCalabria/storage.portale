@@ -112,7 +112,6 @@ class SitoWebCdsForm(forms.ModelForm):
     ordine = forms.IntegerField(
         required=True,
         min_value=0,
-        max_value=100,
         label=_("Order"),
     )
     class Meta:
@@ -152,8 +151,7 @@ class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
     )
     ordine = forms.IntegerField(
         required=True,
-        max_value=100,
-        min_value=1,
+        min_value=0,
         label=_("Order"),
     )
     
@@ -269,8 +267,7 @@ class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
     )
     ordine = forms.IntegerField(
         required=True,
-        max_value=100,
-        min_value=1,
+        min_value=0,
         label=_("Order"),
     )
     id_sito_web_cds_tipo_dato = forms.ChoiceField(
