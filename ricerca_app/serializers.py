@@ -619,6 +619,8 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'PlanTabCod': q['sche_piano_cod'],
                 'PdsCod': q['pds_cod'],
                 'PdsDes': q['pds_des'],
+                'ClaMiurCod': q['cla_miur_cod'],
+                'ClaMiurDes': q['cla_miur_des'],
                 'CommonFlg': q['comune_flg'],
                 'Statutario': q['isStatutario'],
                 'AfRequired': CdsWebsitesStudyPlansSerializer.to_dict_af(q.get('AfRequired', []), req_lang),

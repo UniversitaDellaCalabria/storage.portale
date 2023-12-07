@@ -1058,6 +1058,8 @@ class ServiceDidatticaCds:
                     'comune_flg',
                     'apt_id',
                     'cla_m_id',
+                    'cla_miur_cod',
+                    'cla_miur_des',
                     'pds_cod'
                    )
 
