@@ -1056,11 +1056,10 @@ class ServiceDidatticaCds:
                     'pds_cod',
                     'pds_des',
                     'comune_flg',
-
+                    'apt_id',
+                    'cla_m_id',
+                    'pds_cod'
                    )
-
-                q['PlanTabs'] = schede
-
 
                 for s in schede:
                     obbl = DidatticaPianoSceltaSchePiano.objects.filter(
@@ -1082,14 +1081,15 @@ class ServiceDidatticaCds:
                             'vin_id',
                             'vin_sce_des',
                             'sce_id__opz_flg',
-                            'sce_id__anno_corso_ant'
+                            'sce_id__anno_corso_ant',
+                            'sche_statutario_flg'
                             )
-
-
+                    s['isStatutario'] = None
                     s['AfRequired'] = obbl
 
-
                     for af in obbl:
+                        if s['isStatutario'] == None:
+                            s['isStatutario'] = af['sche_statutario_flg']
 
                         af_obblig = DidatticaPianoSceltaAf.objects.filter(
                             sce_id__exact=af['sce_id']
@@ -1107,7 +1107,6 @@ class ServiceDidatticaCds:
                             'sce_id__sce_des',
                             'sce_id'
                         )
-
 
                         af['Required'] = af_obblig
 
@@ -1192,18 +1191,9 @@ class ServiceDidatticaCds:
                         'sce_id__anno_corso_ant'
                     )
 
-
-
-
-
                     verifica = Q(amb_id__isnull=False) | Q(amb_id_af_regsce__isnull=False) | Q(tipo_sce_cod='V')
 
-
-
-
                     s['AfChoices'] = scelte
-
-
 
                     for scelta in scelte:
 
@@ -1315,9 +1305,6 @@ class ServiceDidatticaCds:
                                 activity['MODULES'] = list_submodules
 
 
-
-
-
                             # if a['amb_id'] is not None:
                             #
                             #
@@ -1358,10 +1345,13 @@ class ServiceDidatticaCds:
                             #
                             #     # for el in a['ElectiveCourses']:
                             #     #     el['apt_slot_ord_num'] = a['apt_slot_ord_num']
+
+                schede = sorted(list(schede), key=lambda k: (k['cla_m_id'] if k['cla_m_id'] else 0,
+                                                             k['pds_cod'] if ['pds_cod'] else 0,
+                                                             -k['isStatutario'],
+                                                             k['apt_id'] if k['apt_id'] else 0))
+                q['PlanTabs'] = schede
             return query
-
-
-
 
 
 class ServiceDidatticaAttivitaFormativa:

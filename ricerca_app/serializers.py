@@ -620,6 +620,7 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'PdsCod': q['pds_cod'],
                 'PdsDes': q['pds_des'],
                 'CommonFlg': q['comune_flg'],
+                'Statutario': q['isStatutario'],
                 'AfRequired': CdsWebsitesStudyPlansSerializer.to_dict_af(q.get('AfRequired', []), req_lang),
                 'AfChoices': CdsWebsitesStudyPlansSerializer.to_dict_af(q.get('AfChoices', []), req_lang),
             })
