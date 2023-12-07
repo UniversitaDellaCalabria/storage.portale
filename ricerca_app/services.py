@@ -1352,7 +1352,6 @@ class ServiceDidatticaCds:
                             #     #     el['apt_slot_ord_num'] = a['apt_slot_ord_num']
 
                 schede = sorted(list(schede), key=lambda k: (k['cla_m_id'] if k['cla_m_id'] else 0,
-                                                             k['pds_cod'] if ['pds_cod'] else 0,
                                                              -k['isStatutario'],
                                                              k['apt_id'] if k['apt_id'] else 0))
                 q['PlanTabs'] = schede
