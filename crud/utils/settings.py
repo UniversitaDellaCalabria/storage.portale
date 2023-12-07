@@ -36,3 +36,5 @@ UNICMS_ROOT_URL = getattr(settings, "UNICMS_ROOT_URL", "")
 UNICMS_PUBLICATION_API_URL = getattr(settings, "UNICMS_PUBLICATION_API_URL", "")
 UNICMS_WEBPATH_API_URL = getattr(settings, "UNICMS_WEBPATH_API_URL", "")
 UNICMS_OBJECT_API = getattr(settings, "UNICMS_OBJECT_API", {})
+
+ETL_USER_IDS = getattr(settings, "ETL_USER_IDS", [])
