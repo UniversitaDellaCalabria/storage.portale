@@ -1199,6 +1199,9 @@ class ServiceDidatticaCds:
 
                     for scelta in scelte:
 
+                        if s['isStatutario'] == None:
+                            s['isStatutario'] = af['sche_statutario_flg']
+
                         fil_and = DidatticaPianoSceltaFilAnd.objects.filter(
                             sce_id__exact=scelta['sce_id']
                         ).values(
