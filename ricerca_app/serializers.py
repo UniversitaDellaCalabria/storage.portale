@@ -623,6 +623,7 @@ class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
                 'ClaMiurDes': q['cla_miur_des'],
                 'CommonFlg': q['comune_flg'],
                 'Statutario': q['isStatutario'],
+                'APT': True if q['apt_id'] else False,
                 'AfRequired': CdsWebsitesStudyPlansSerializer.to_dict_af(q.get('AfRequired', []), req_lang),
                 'AfChoices': CdsWebsitesStudyPlansSerializer.to_dict_af(q.get('AfChoices', []), req_lang),
             })
