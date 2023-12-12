@@ -710,7 +710,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
     def get_queryset(self):
         laboratoryid = self.kwargs['laboratoryid']
         request = self.request
-        
+
         #CRUD
         only_active = True
         if request.user.is_superuser: only_active = False # pragma: no cover
@@ -720,7 +720,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
                 .filter(employee=request.user,
                         office__is_active=True,
                         office__organizational_structure__is_active=True)
-                
+
             is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
             is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
             if(is_operator or is_validator):
@@ -743,7 +743,7 @@ class ApiLaboratoriesList(ApiEndpointList):
         teacher = decrypt(request.query_params.get('teacher'))
         infrastructure = request.query_params.get('infrastructure')
         scope = request.query_params.get('scope')
-        
+
         #CRUD
         only_active = True
         if request.user.is_superuser: only_active = False # pragma: no cover
@@ -753,7 +753,7 @@ class ApiLaboratoriesList(ApiEndpointList):
                 .filter(employee=request.user,
                         office__is_active=True,
                         office__organizational_structure__is_active=True)
-                
+
             is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
             is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
             if(is_operator or is_validator):
@@ -1351,11 +1351,11 @@ class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
     filter_backends = [ApiCdsWebsitesTopicArticlesListFilter]
 
     def get_queryset(self):
-        
+
         request = self.request
         cds_cod = self.request.query_params.get('cds_cod')
         topic_id = self.request.query_params.get('topic_id')
-        
+
         # get only active elements if public
         # get all elements if in CRUD backend
         only_active = True
@@ -1367,7 +1367,7 @@ class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
                         office__is_active=True,
                         office__name=OFFICE_CDS_WEBSITES,
                         office__organizational_structure__is_active=True)
-                
+
             if(offices.exists()):
                 only_active = False
 
@@ -1404,6 +1404,7 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
         cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
         date_month = self.request.query_params.get('date_month')
         date_year = self.request.query_params.get('date_year')
+        af_id = self.request.query_params.get('af_id')
 
         search_teaching = self.request.query_params.get('search_teaching')
         search_teacher = self.request.query_params.get('search_teacher')
@@ -1419,10 +1420,12 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                                  date_month=date_month,
                                  date_year=date_year,
                                  cds_cod=cds_cod,
-                                 types=self.event_types)
-            impegni_json = impegniSerializer(impegni,
-                                             int(year),
-                                             search)
+                                 types=self.event_types,
+                                 af_id=af_id)
+            impegni_json = impegniSerializer(impegni=impegni,
+                                             year=int(year),
+                                             af_id=af_id,
+                                             search=search)
             return Response(impegni_json)
         return Response({})
 
@@ -1434,12 +1437,13 @@ class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable): # pragma: no cover
         super().__init__(**kwargs)
         self.event_types = ['ES']
 
+
 class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
     allowed_methods = ('GET',)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        
+
     def get(self, request, objectid, objectclass, **kwargs):
         UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
         UNICMS_ROOT_URL = getattr(settings, 'UNICMS_ROOT_URL', '')
@@ -1467,8 +1471,7 @@ class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
                 else:
                     res["name"] = json_response.get("name", None)
                     res["content"] = UNICMS_ROOT_URL + json_response.get("get_full_path", None)
-        except requests.exceptions.RequestException: 
+        except requests.exceptions.RequestException:
             pass
         finally:
             return Response(res)
-        

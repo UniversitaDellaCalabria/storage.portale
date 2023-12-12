@@ -3,7 +3,7 @@ from datetime import datetime
 from django.utils import timezone
 
 
-def impegniSerializer(impegni, year=None, search={}): # pragma: no cover
+def impegniSerializer(impegni, year=None, af_id=None, search={}): # pragma: no cover
     impegni_up = []
 
     search_teaching = search.get('search_teaching', '')
@@ -13,6 +13,10 @@ def impegniSerializer(impegni, year=None, search={}): # pragma: no cover
     for impegno in impegni:
         if year and impegno['evento']['dettagliDidattici'][0]['annoCorso'] != year:
             continue
+
+        if af_id and impegno['evento']['dettagliDidattici'][0]['nome'].lower() != af_id.lower():
+            continue
+
         dataInizio = impegno['dataInizio'][0:10]
         dataFine = impegno['dataFine'][0:10]
 

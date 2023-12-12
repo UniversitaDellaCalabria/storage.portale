@@ -70,24 +70,38 @@ def getEventi(request, aa, cds_cod): # pragma: no cover
     return getData(request, url, cds_cod, body)
 
 
-def getImpegni(request, cds_cod, aa, year=1, date_month=None, date_year=None, types=[]): # pragma: no cover
+def getImpegni(request, cds_cod, aa, year=1, date_month=None, date_year=None, types=[], af_id=None): # pragma: no cover
     url = settings.URL_UP_API + 'Impegni/getImpegniByAnnoAccademico'
 
     settings_tz = zoneinfo.ZoneInfo(settings.TIME_ZONE)
 
-    up_month = int(date_month or datetime.now().month)
-    up_year = int(date_year or datetime.now().year)
-    last_day = calendar.monthrange(up_year, up_month)[1]
+    start_up = ""
+    end_up = ""
 
-    start = datetime(up_year, up_month, 1, 00, 00, tzinfo=settings_tz)
-    end = datetime(up_year, up_month, last_day, 23, 59, tzinfo=settings_tz)
+    try:
+        aa = int(aa)
+        year = int(year)
+    except:
+        return ""
 
-    start_up = datetime.strftime(start, "%Y-%m-%dT%H:%M:00.000Z")
-    end_up = datetime.strftime(end, "%Y-%m-%dT%H:%M:00.000Z")
+    if date_month and date_year:
+        try:
+            up_month = int(date_month)
+            up_year = int(date_year)
+        except:
+            return ""
+
+        last_day = calendar.monthrange(up_year, up_month)[1]
+
+        start = datetime(up_year, up_month, 1, 00, 00, tzinfo=settings_tz)
+        end = datetime(up_year, up_month, last_day, 23, 59, tzinfo=settings_tz)
+
+        start_up = datetime.strftime(start, "%Y-%m-%dT%H:%M:00.000Z")
+        end_up = datetime.strftime(end, "%Y-%m-%dT%H:%M:00.000Z")
 
     body = {
-        "annoAccademico": int(aa),
-        "annoCorso": int(year),
+        "annoAccademico": aa,
+        "annoCorso": year,
         "codCorso": cds_cod,
         "stati": ["P"],
         "codTipiEvento": types,
