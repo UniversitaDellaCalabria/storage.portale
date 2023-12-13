@@ -1389,7 +1389,7 @@ class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
         # regdid = self.request.query_params.get('regdid')
         cache_key = f"cdswebsite_studyplanlist_{cds_cod}_{year}"
         if not cache.get(cache_key):
-            cache.set(cache_key, ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year, regdid), 3600)
+            cache.set(cache_key, ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year), 3600)
         return cache.get(cache_key)
 
 
