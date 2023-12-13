@@ -70,7 +70,7 @@ def getEventi(request, aa, cds_cod): # pragma: no cover
     return getData(request, url, cds_cod, body)
 
 
-def getImpegni(request, cds_cod, aa, year=1, date_month=None, date_year=None, types=[], af_id=None): # pragma: no cover
+def getImpegni(request, cds_cod, aa, year=1, date_month=None, date_year=None, types=[], af_cod=None): # pragma: no cover
     url = settings.URL_UP_API + 'Impegni/getImpegniByAnnoAccademico'
 
     settings_tz = zoneinfo.ZoneInfo(settings.TIME_ZONE)
