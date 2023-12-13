@@ -1015,9 +1015,9 @@ class ServiceDidatticaCds:
         return {}
 
     @staticmethod
-    def getCdsWebsitesStudyPlans(cds_cod, year, regdid):
+    def getCdsWebsitesStudyPlans(cds_cod, year):#, regdid):
 
-        if cds_cod and year or regdid:
+        if cds_cod and year: # or regdid:
             query_cds = Q(regdid_id__cds_id__cds_cod__exact=cds_cod) if cds_cod else Q()
             query_year = Q(regdid_id__aa_reg_did__exact=year) if year else Q()
             # query_regdid = Q(regdid_id__exact=regdid) if regdid else Q()
