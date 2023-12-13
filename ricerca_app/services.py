@@ -1020,11 +1020,11 @@ class ServiceDidatticaCds:
         if cds_cod and year or regdid:
             query_cds = Q(regdid_id__cds_id__cds_cod__exact=cds_cod) if cds_cod else Q()
             query_year = Q(regdid_id__aa_reg_did__exact=year) if year else Q()
-            query_regdid = Q(regdid_id__exact=regdid) if regdid else Q()
+            # query_regdid = Q(regdid_id__exact=regdid) if regdid else Q()
 
             query = DidatticaPianoRegolamento.objects.filter(
                 query_cds,
-                query_regdid,
+                # query_regdid,
                 query_year,
                 stato_cod='A'
                ).select_related('regdid__cds').values(

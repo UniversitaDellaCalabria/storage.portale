@@ -2,7 +2,9 @@ import datetime
 import requests
 import json
 
+from django.core.cache import cache
 from django.utils import timezone
+from django.utils.text import slugify
 from django.conf import settings
 
 from rest_framework import generics, permissions, status
@@ -187,9 +189,11 @@ class ApiCdSStudyPlansList(ApiEndpointList):
 
     def get_queryset(self):
         cdsid_param = str(self.kwargs['regdidid'])
-
-        return ServiceDidatticaAttivitaFormativa.getStudyPlans(
-            regdid_id=cdsid_param)
+        cache_key = f"cdsstudyplans_{cdsid_param}"
+        if not cache.get(cache_key):
+            data = ServiceDidatticaAttivitaFormativa.getStudyPlans(regdid_id=cdsid_param)
+            cache.set(cache_key, data, 3600)
+        return cache.get(cache_key)
 
 
 class ApiStudyPlanDetail(ApiEndpointDetail):
@@ -460,7 +464,6 @@ class ApiTeachersList(ApiEndpointList):
         role = request.query_params.get('role')
         cds = request.query_params.get('cds')
         year = request.query_params.get('year')
-
 
         return ServiceDocente.teachersList(
             search, regdidid, department, role, cds, year)
@@ -813,11 +816,11 @@ class ApiPublicationsList(ApiEndpointList):
         teacherid = decrypt(self.kwargs.get('teacherid')) if self.kwargs.get('teacherid') else ''
         search = request.query_params.get('search')
         year = request.query_params.get('year')
-        type = request.query_params.get('type')
+        pub_type = request.query_params.get('type')
         structure = request.query_params.get('structure')
 
         return ServiceDocente.getPublicationsList(
-            teacherid, search, year, type, structure)
+            teacherid, search, year, pub_type, structure)
 
 
 class TeachingCoveragePublicationsList(AutoSchema):
@@ -1381,12 +1384,13 @@ class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
     filter_backends = [ApiCdsWebsitesStudyPlansListFilter]
 
     def get_queryset(self):
-
         cds_cod = self.request.query_params.get('cds_cod')
         year = self.request.query_params.get('year')
-        regdid = self.request.query_params.get('regdid')
-
-        return ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year, regdid)
+        # regdid = self.request.query_params.get('regdid')
+        cache_key = f"cdswebsite_studyplanlist_{cds_cod}_{year}"
+        if not cache.get(cache_key):
+            cache.set(cache_key, ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year, regdid), 3600)
+        return cache.get(cache_key)
 
 
 class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
@@ -1414,7 +1418,9 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                   'search_teacher': search_teacher,
                   'search_location': search_location}
         if cds:
-            impegni = getImpegni(request=self.request,
+            cache_key = f"cdswebsite_timetable_{cds_cod}_{academic_year}_{year}_{date_month or ''}_{date_year or ''}_{slugify(self.event_types)}_{slugify(af_id) if af_id else ''}"
+            if not cache.get(cache_key):
+                impegni = getImpegni(request=self.request,
                                  aa=academic_year,
                                  year=year,
                                  date_month=date_month,
@@ -1422,6 +1428,8 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                                  cds_cod=cds_cod,
                                  types=self.event_types,
                                  af_id=af_id)
+                cache.set(cache_key, impegni, 3600)
+            impegni = cache.get(cache_key)
             impegni_json = impegniSerializer(impegni=impegni,
                                              year=int(year),
                                              af_id=af_id,

@@ -372,3 +372,11 @@ KEY_API_UP =''
 UTENTE_API_UP =''
 PASSWORD_API_UP =''
 URL_UP_API = 'https://unical.prod.up.cineca.it/api/'
+
+# cache
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.PyLibMCCache",
+        "LOCATION": "127.0.0.1:11211",
+    }
+}
