@@ -1436,7 +1436,6 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                   'search_location': search_location}
         # if cds:
         cache_key = f"cdswebsite_timetable_{cds_cod}_{academic_year}_{year}_{date_month}_{date_year}_{slugify(self.event_types)}_{af_cod}"
-        # cache.delete(cache_key)
         if not cache.get(cache_key):
             impegni = getUPImpegni(request=self.request,
                                    aa=academic_year,
@@ -1460,6 +1459,16 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                                                 af_id=af_id,
                                                 aa=academic_year)
                 appelli_esse3_json = esse3AppelliSerializer(appelli=appelli_esse3)
+
+                duplicates_to_remove = []
+                for iu in impegni_json:
+                    for ae3 in appelli_esse3_json:
+                        if ae3['dataInizio'] == iu['dataInizio'] and ae3['orarioInizio'] == iu['orarioInizio']:
+                            duplicates_to_remove.append(iu)
+                            break
+
+                for delete in duplicates_to_remove:
+                    a = impegni_json.remove(delete)
 
                 all_events = impegni_json + appelli_esse3_json
                 impegni_json = sorted(all_events, key= lambda x: x['dataInizio'])
