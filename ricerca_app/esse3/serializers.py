@@ -16,7 +16,11 @@ def esse3AppelliSerializer(appelli, year=None, af_id=None, search={}): # pragma:
             "docente": appello['presidenteCognome']+" "+appello['presidenteNome'],
             "aula": appello['note'],
             "edificio": None,
-            "codice": "ESSE3_ES"
+            "codice": "ESSE3_ES",
+            "extra": {
+                "dataInizioIscrizioni": appello['dataInizioIscr'],
+                "dataFineIscrizioni": appello['dataFineIscr'],
+            }
         }
         appelli_list.append(appello_dict)
     return appelli_list

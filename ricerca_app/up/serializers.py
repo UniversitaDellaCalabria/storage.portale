@@ -64,7 +64,8 @@ def upImpegniSerializer(impegni, year=None, af_name=None, search={}): # pragma: 
             "docente": docente,
             "aula": aula,
             "edificio": edificio,
-            "codice": f"UP_{impegno['evento']['tipoEvento']['codice']}"
+            "codice": f"UP_{impegno['evento']['tipoEvento']['codice']}",
+            "extra": {}
         }
         impegni_up.append(impegno_dict)
     return impegni_up
