@@ -17,10 +17,13 @@ from django.contrib.messages import get_messages
 from django.utils.html import strip_tags
 
 
+logger = logging.getLogger(__name__)
+
+
 #chiamata alle api UP
-def getTokenUP(request): # pragma: no cover
-    if request.session.get('up_token'):
-        return request.session.get('up_token')
+def getUPToken(request): # pragma: no cover
+    # if request.session.get('up_token'):
+        # return request.session.get('up_token')
     try:
         data = {
             "username": settings.UTENTE_API_UP,
@@ -29,23 +32,21 @@ def getTokenUP(request): # pragma: no cover
         }
         url = settings.URL_UP_API +'utenti/login'
         response = requests.post(url, data, timeout=5)
-
         if response.status_code == 200:
             data = response.json()
             if data.get('id'):
                 request.session['up_token'] = data['id']
                 return data['id']
-        return ""
+        else:
+            logger.error(f"Error getting UP token: {response.json()['error']['message']}")
     except Exception as e:
-        print(e)
-        return ""
-
+        logger.error(f"Error getting UP token: {e}")
+    return ''
 
 def getData(request, url, cds_cod, body): # pragma: no cover
     try:
-        payload = ""
         headers = {
-            "Authorization": getTokenUP(request),
+            "Authorization": getUPToken(request),
             "Content-Type": "application/json",
         }
         payload= json.dumps(body)
@@ -53,43 +54,31 @@ def getData(request, url, cds_cod, body): # pragma: no cover
         if response.status_code == 200:
             return response.json()
         else:
-            data = response.json()
-            print(data['error']['message'])
-            return ""
+            logger.error(f"Error calling UP url {url}: {response.json()['error']['message']}")
     except Exception as e:
-        print(e)
-        return ""
+        logger.error(f"Error calling UP url {url}: {e}")
+    return []
 
 
-def getEventi(request, aa, cds_cod): # pragma: no cover
-    url = settings.URL_UP_API +'Eventi/getEventiByCorso'
-    body = {
-        "codCorso": cds_cod,
-        "annoAccademico": aa,
-    }
-    return getData(request, url, cds_cod, body)
-
-
-def getImpegni(request, cds_cod, aa, year=1, date_month=None, date_year=None, types=[], af_cod=None): # pragma: no cover
+def getUPImpegni(request, cds_cod, aa, year=1, date_month='', date_year='', types=[], af_cod=''): # pragma: no cover
     url = settings.URL_UP_API + 'Impegni/getImpegniByAnnoAccademico'
-
-    settings_tz = zoneinfo.ZoneInfo(settings.TIME_ZONE)
-
-    start_up = ""
-    end_up = ""
 
     try:
         aa = int(aa)
         year = int(year)
     except:
-        return ""
+        return []
+
+    settings_tz = zoneinfo.ZoneInfo(settings.TIME_ZONE)
+    start_up = ''
+    end_up = ''
 
     if date_month and date_year:
         try:
             up_month = int(date_month)
             up_year = int(date_year)
         except:
-            return ""
+            return []
 
         last_day = calendar.monthrange(up_year, up_month)[1]
 

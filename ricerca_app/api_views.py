@@ -21,12 +21,12 @@ from . serializers import *
 from . services import *
 
 # Esse3 utils
-from . esse3.services import getAppelli as esse3_getImpegni
-from . esse3.serializers import impegniSerializer as esse3_impegniSerializer
+from . esse3.services import getEsse3Appelli
+from . esse3.serializers import esse3AppelliSerializer
 
 # University Planner utils
-from . up.serializers import impegniSerializer as up_impegniSerializer
-from . up.services import getImpegni as up_getImpegni
+from . up.serializers import upImpegniSerializer
+from . up.services import getUPImpegni
 
 ### useful for storage backend only ###
 from organizational_area.models import OrganizationalStructureOfficeEmployee
@@ -1417,55 +1417,55 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
         cds_cod = self.kwargs['cdswebsitecod']
         current_year = timezone.localtime(timezone.now().replace(tzinfo=timezone.utc)).year
         academic_year = self.request.query_params.get('academic_year', current_year)
-        year = self.request.query_params.get('year', 1)
-        cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
-        date_month = self.request.query_params.get('date_month')
-        date_year = self.request.query_params.get('date_year')
-        af_name = self.request.query_params.get('af_name')
-        af_cod = self.request.query_params.get('af_cod')
+        try:
+            year = int(self.request.query_params.get('year'))
+        except:
+            year = 1
+        # cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
+        date_month = self.request.query_params.get('date_month', '')
+        date_year = self.request.query_params.get('date_year', '')
+        af_name = self.request.query_params.get('af_name', '')
+        af_cod = self.request.query_params.get('af_cod', '')
 
-        search_teaching = self.request.query_params.get('search_teaching')
-        search_teacher = self.request.query_params.get('search_teacher')
-        search_location = self.request.query_params.get('search_location')
+        search_teaching = self.request.query_params.get('search_teaching', '')
+        search_teacher = self.request.query_params.get('search_teacher', '')
+        search_location = self.request.query_params.get('search_location', '')
 
         search = {'search_teaching': search_teaching,
                   'search_teacher': search_teacher,
                   'search_location': search_location}
-        if cds:
-            cache_key = f"cdswebsite_timetable_{cds_cod}_{academic_year}_{year}_{date_month or ''}_{date_year or ''}_{slugify(self.event_types)}_{af_cod or ''}"
-            # cache.delete(cache_key)
-            if not cache.get(cache_key):
-                impegni = up_getImpegni(request=self.request,
-                                 aa=academic_year,
-                                 year=year,
-                                 date_month=date_month,
-                                 date_year=date_year,
-                                 cds_cod=cds_cod,
-                                 types=self.event_types,
-                                 af_cod=af_cod)
-                cache.set(cache_key, impegni, 3600)
+        # if cds:
+        cache_key = f"cdswebsite_timetable_{cds_cod}_{academic_year}_{year}_{date_month}_{date_year}_{slugify(self.event_types)}_{af_cod}"
+        # cache.delete(cache_key)
+        if not cache.get(cache_key):
+            impegni = getUPImpegni(request=self.request,
+                                   aa=academic_year,
+                                   year=year,
+                                   date_month=date_month,
+                                   date_year=date_year,
+                                   cds_cod=cds_cod,
+                                   types=self.event_types,
+                                   af_cod=af_cod)
+            impegni_json = upImpegniSerializer(impegni=impegni,
+                                               year=year,
+                                               af_name=af_name,
+                                               search=search)
 
-                impegni_json = up_impegniSerializer(impegni=impegni,
-                                                    year=int(year),
-                                                    af_name=af_name,
-                                                    search=search)
-
+            if 'ES' in self.event_types:
                 cds_id = DidatticaCdsEsse3.objects.get(cds_cod=cds_cod).cds_id_esse3
                 af_id = DidatticaAttivitaFormativaEsse3.objects.get(ad_cod=af_cod).ad_id_esse3
 
-                esse3_i = esse3_getImpegni(request=self.request,
-                                           cds_id=cds_id,
-                                           af_id=af_id,
-                                           aa=academic_year)
-                esse3_serialized = esse3_impegniSerializer(impegni=esse3_i)
+                appelli_esse3 = getEsse3Appelli(request=self.request,
+                                                cds_id=cds_id,
+                                                af_id=af_id,
+                                                aa=academic_year)
+                appelli_esse3_json = esse3AppelliSerializer(appelli=appelli_esse3)
 
-                all_events = impegni_json + esse3_serialized
-                sorted_list = sorted(all_events, key= lambda x: x['dataInizio'])
-                cache.set(cache_key, sorted_list, 3600)
+                all_events = impegni_json + appelli_esse3_json
+                impegni_json = sorted(all_events, key= lambda x: x['dataInizio'])
+            cache.set(cache_key, impegni_json, 3600)
 
-            impegni = cache.get(cache_key)
-            return Response(impegni)
-        return Response({})
+        return Response(cache.get(cache_key))
 
 
 class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable): # pragma: no cover
