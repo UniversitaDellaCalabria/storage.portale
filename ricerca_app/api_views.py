@@ -151,8 +151,12 @@ class ApiCdSList(ApiEndpointList):
     filter_backends = [ApiCdsListFilter]
 
     def get_queryset(self):
-        return ServiceDidatticaCds.cdslist(
-            self.language, self.request.query_params)
+        cache_key = f"cdslist_{self.language}_{slugify(self.request.query_params)}"
+        if not cache.get(cache_key):
+            data = ServiceDidatticaCds.cdslist(self.language,
+                                               self.request.query_params)
+            cache.set(cache_key, data, 3600)
+        return cache.get(cache_key)
 
 
 class ApiCdSDetail(ApiEndpointDetail):
@@ -1097,7 +1101,11 @@ class ApiCdsAreasList(ApiEndpointListSupport):
     filter_backends = []
 
     def get_queryset(self):
-        return ServiceDidatticaCds.getCdsAreas()
+        cache_key = f"cdsareas"
+        if not cache.get(cache_key):
+            data = ServiceDidatticaCds.getCdsAreas()
+            cache.set(cache_key, data, 3600)
+        return cache.get(cache_key)
 
 
 class ApiProjectsInfrastructuresList(ApiEndpointList):
