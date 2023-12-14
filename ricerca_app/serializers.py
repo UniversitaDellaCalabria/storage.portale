@@ -10,6 +10,7 @@ from crud.phd.settings import PHD_CYCLES
 from . models import DidatticaRegolamento
 from . settings import (ALLOWED_PROFILE_ID,
                         CDS_BROCHURE_MEDIA_PATH,
+                        CDS_BROCHURE_IS_VISIBLE,
                         # COMPANIES_MEDIA_PATH,
                         LABORATORIES_MEDIA_PATH,
                         PERSON_CONTACTS_TO_TAKE)
@@ -22,6 +23,7 @@ from . utils import build_media_path, encrypt, is_path
 
 ALLOWED_PROFILE_ID = getattr(settings, 'ALLOWED_PROFILE_ID', ALLOWED_PROFILE_ID)
 CDS_BROCHURE_MEDIA_PATH = getattr(settings, 'CDS_BROCHURE_MEDIA_PATH', CDS_BROCHURE_MEDIA_PATH)
+CDS_BROCHURE_IS_VISIBLE = getattr(settings, 'CDS_BROCHURE_IS_VISIBLE', CDS_BROCHURE_IS_VISIBLE)
 # COMPANIES_MEDIA_PATH = getattr(settings, 'COMPANIES_MEDIA_PATH', COMPANIES_MEDIA_PATH)
 LABORATORIES_MEDIA_PATH = getattr(settings, 'LABORATORIES_MEDIA_PATH', LABORATORIES_MEDIA_PATH)
 # PATENTS_MEDIA_PATH = getattr(settings, 'PATENTS_MEDIA_PATH', PATENTS_MEDIA_PATH)
@@ -227,7 +229,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             'CdSECTS': query['valore_min'],
             'CdSAttendance': query['didatticaregolamento__frequenza_obbligatoria'],
             'CdSIntro': query['INTRO_CDS_FMT'] if query['INTRO_CDS_FMT'] is not None else query['DESC_COR_BRE'],
-            'CdSDoc': doc,
+            'CdSDoc': doc if CDS_BROCHURE_IS_VISIBLE else None,
             'CdsUrl': query['URL_CDS'],
             'CdSVideo': video,
             'CdSGoals': query['OBB_SPEC'],
