@@ -218,7 +218,7 @@ class ApiCdSStudyPlansList(ApiEndpointList):
         lang = self.request.LANGUAGE_CODE
         self.language = self.request.query_params.get('lang', lang).lower()
         cdsid_param = str(self.kwargs['regdidid'])
-        cache_key = f"cdsstudyplans_{cdsid_param}"
+        cache_key = f"cdsstudyplans_{self.language}__{cdsid_param}"
         kwargs['cache_key'] = cache_key
         return super().get(*args, **kwargs)
 
@@ -1420,7 +1420,6 @@ class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
         cds_cod = self.request.query_params.get('cds_cod')
         year = self.request.query_params.get('year')
         # regdid = self.request.query_params.get('regdid')
-        cache_key = f"cdswebsite_studyplanlist_{cds_cod}_{year}"
         return ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year)
 
     def get(self, *args, **kwargs):
@@ -1428,7 +1427,7 @@ class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
         self.language = self.request.query_params.get('lang', lang).lower()
         cds_cod = self.request.query_params.get('cds_cod')
         year = self.request.query_params.get('year')
-        cache_key = f"cdswebsite_studyplanlist_{cds_cod}_{year}"
+        cache_key = f"cdswebsite_studyplanlist_{self.language}__{cds_cod}_{year}"
         kwargs['cache_key'] = cache_key
         return super().get(*args, **kwargs)
 
