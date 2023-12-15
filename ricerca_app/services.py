@@ -155,10 +155,6 @@ class ServiceDidatticaCds:
                 "lingua_des_eng").distinct()
 
             item['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=item['didatticaregolamento__regdid_id']).values(
-                'matricola_coordinatore',
-                'nome_origine_coordinatore',
-                'matricola_vice_coordinatore',
-                'nome_origine_vice_coordinatore',
                 'num_posti',
                 'modalita_iscrizione',
                 'manifesto_studi',
@@ -166,18 +162,18 @@ class ServiceDidatticaCds:
                 'ordinamento_didattico'
             ).distinct()
 
-            item['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=item['cds_id']).values(
-                'ordine',
-                'nome_ufficio',
-                'matricola_riferimento',
-                'nome_origine_riferimento',
-                'telefono',
-                'email',
-                'edificio',
-                'piano',
-                'orari',
-                'sportello_online'
-            ).distinct()
+            # item['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=item['cds_id']).values(
+                # 'ordine',
+                # 'nome_ufficio',
+                # 'matricola_riferimento',
+                # 'nome_origine_riferimento',
+                # 'telefono',
+                # 'email',
+                # 'edificio',
+                # 'piano',
+                # 'orari',
+                # 'sportello_online'
+            # ).distinct()
 
         return items
 

@@ -77,10 +77,6 @@ class CdSSerializer(CreateUpdateAbstract):
         if query["OtherData"] is not None:
             data = CdSSerializer.to_dict_data(
                 query["OtherData"])
-        offices_data = None
-        if query["OfficesData"] is not None:
-            offices_data = CdSSerializer.to_dict_offices_data(
-                query["OfficesData"])
         erogation_mode = None
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
@@ -115,40 +111,16 @@ class CdSSerializer(CreateUpdateAbstract):
             'DidacticRegulation': build_media_path(query["OtherData"][0]['regolamento_didattico']) if query["OtherData"] else None,
             'TeachingSystem': build_media_path(ordinamento_didattico[1]) if ordinamento_didattico else None,
             'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
-            'OtherData': data,
-            'OfficesData': offices_data
         }
 
     @staticmethod
     def to_dict_data(query):
         if query:
             q = query[0]
-            return {'DirectorId': encrypt(q['matricola_coordinatore']),
-                    'DirectorName': q['nome_origine_coordinatore'],
-                    'DeputyDirectorId': encrypt(q['matricola_vice_coordinatore']),
-                    'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
-                    'SeatsNumber': q['num_posti'],
+            return {'SeatsNumber': q['num_posti'],
                     'RegistrationMode': q['modalita_iscrizione'],
                     }
         return {}
-
-    @staticmethod
-    def to_dict_offices_data(query):
-        data = []
-        for q in query:
-            data.append({
-                'Order': q['ordine'],
-                'OfficeName': q['nome_ufficio'],
-                'OfficeBuilding': q['edificio'],
-                'Floor': q['piano'],
-                'OfficeDirector': encrypt(q['matricola_riferimento']),
-                'OfficeDirectorName': q['nome_origine_riferimento'],
-                'TelOffice': q['telefono'],
-                'Email': q['email'],
-                'Timetables': q['orari'],
-                'OnlineCounter': q['sportello_online'],
-            })
-        return data
 
 
 class CdsInfoSerializer(CreateUpdateAbstract):
