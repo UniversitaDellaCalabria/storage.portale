@@ -1490,6 +1490,8 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                 for iu in impegni_json:
                     for ae3 in appelli_esse3_json:
                         if ae3['dataInizio'] == iu['dataInizio'] and ae3['orarioInizio'] == iu['orarioInizio']:
+                            if not ae3['aula']:
+                                ae3['aula'] = iu['aula']
                             duplicates_to_remove.append(iu)
                             break
 
