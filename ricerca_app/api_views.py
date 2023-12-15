@@ -1499,7 +1499,7 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                     a = impegni_json.remove(delete)
 
                 all_events = impegni_json + appelli_esse3_json
-                impegni_json = sorted(all_events, key= lambda x: x['dataInizio'])
+                impegni_json = sorted(all_events, key= lambda x: (x['dataInizio'], x['orarioInizio']))
             cache.set(cache_key, impegni_json)
 
         return Response(cache.get(cache_key))
