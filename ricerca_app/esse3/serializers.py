@@ -18,8 +18,8 @@ def esse3AppelliSerializer(appelli, year=None, af_id=None, search={}): # pragma:
             "edificio": None,
             "codice": "ESSE3_ES",
             "extra": {
-                "dataInizioIscrizioni": appello['dataInizioIscr'],
-                "dataFineIscrizioni": appello['dataFineIscr'],
+                "dataInizioIscrizioni": appello['dataInizioIscr'].split(" ")[0],
+                "dataFineIscrizioni": appello['dataFineIscr'].split(" ")[0],
             }
         }
         appelli_list.append(appello_dict)
