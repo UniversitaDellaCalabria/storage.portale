@@ -53,23 +53,34 @@ class ApiEndpointList(generics.ListAPIView):
         super().__init__(**kwargs)
         self.language = None
 
-    def get(self, obj, **kwargs):
-        self.language = str(
-            self.request.query_params.get(
-                'lang', 'null')).lower()
-        if self.language == 'null':
-            self.language = self.request.LANGUAGE_CODE
-
+    def prepare_data(self, *args, **kwargs):
         queryset = self.get_queryset()
-
         serializer = self.get_serializer(queryset, many=True)
+        return serializer
 
-        results = self.paginate_queryset(serializer.data)
-        results = {
+    def get(self, obj, **kwargs):
+        if not self.language:
+            lang = self.request.LANGUAGE_CODE
+            self.language = self.request.query_params.get('lang', lang).lower()
+
+        # cache
+        if kwargs.get('cache_key'):
+            cache_key = kwargs['cache_key']
+            if not cache.get(cache_key):
+                serializer = self.prepare_data(**kwargs)
+                data = serializer.data
+                cache.set(cache_key, data)
+            data = cache.get(cache_key)
+        else:
+            serializer = self.prepare_data(**kwargs)
+            data = serializer.data
+
+        results = self.paginate_queryset(data)
+        response = {
             'data': results,
             'language': self.language,
         }
-        return self.get_paginated_response(results)
+        return self.get_paginated_response(response)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -151,12 +162,15 @@ class ApiCdSList(ApiEndpointList):
     filter_backends = [ApiCdsListFilter]
 
     def get_queryset(self):
-        cache_key = f"cdslist_{self.language}_{slugify(self.request.query_params)}"
-        if not cache.get(cache_key):
-            data = ServiceDidatticaCds.cdslist(self.language,
+        return ServiceDidatticaCds.cdslist(self.language,
                                                self.request.query_params)
-            cache.set(cache_key, data, 3600)
-        return cache.get(cache_key)
+
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get('lang', lang).lower()
+        cache_key = f"cdslist_{self.language}_{slugify(self.request.query_params)}"
+        kwargs['cache_key'] = cache_key
+        return super().get(*args, **kwargs)
 
 
 class ApiCdSDetail(ApiEndpointDetail):
@@ -198,11 +212,15 @@ class ApiCdSStudyPlansList(ApiEndpointList):
 
     def get_queryset(self):
         cdsid_param = str(self.kwargs['regdidid'])
+        return ServiceDidatticaAttivitaFormativa.getStudyPlans(regdid_id=cdsid_param)
+
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get('lang', lang).lower()
+        cdsid_param = str(self.kwargs['regdidid'])
         cache_key = f"cdsstudyplans_{cdsid_param}"
-        if not cache.get(cache_key):
-            data = ServiceDidatticaAttivitaFormativa.getStudyPlans(regdid_id=cdsid_param)
-            cache.set(cache_key, data, 3600)
-        return cache.get(cache_key)
+        kwargs['cache_key'] = cache_key
+        return super().get(*args, **kwargs)
 
 
 class ApiStudyPlanDetail(ApiEndpointDetail):
@@ -1101,12 +1119,14 @@ class ApiCdsAreasList(ApiEndpointListSupport):
     filter_backends = []
 
     def get_queryset(self):
-        cache_key = f"cdsareas"
-        if not cache.get(cache_key):
-            data = ServiceDidatticaCds.getCdsAreas()
-            cache.set(cache_key, data, 3600)
-        return cache.get(cache_key)
+        return ServiceDidatticaCds.getCdsAreas()
 
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get('lang', lang).lower()
+        cache_key = "cdsareas"
+        kwargs['cache_key'] = cache_key
+        return super().get(*args, **kwargs)
 
 class ApiProjectsInfrastructuresList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle infrastrutture dei progetti'
@@ -1401,9 +1421,16 @@ class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
         year = self.request.query_params.get('year')
         # regdid = self.request.query_params.get('regdid')
         cache_key = f"cdswebsite_studyplanlist_{cds_cod}_{year}"
-        if not cache.get(cache_key):
-            cache.set(cache_key, ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year), 3600)
-        return cache.get(cache_key)
+        return ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year)
+
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get('lang', lang).lower()
+        cds_cod = self.request.query_params.get('cds_cod')
+        year = self.request.query_params.get('year')
+        cache_key = f"cdswebsite_studyplanlist_{cds_cod}_{year}"
+        kwargs['cache_key'] = cache_key
+        return super().get(*args, **kwargs)
 
 
 class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
@@ -1472,7 +1499,7 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
 
                 all_events = impegni_json + appelli_esse3_json
                 impegni_json = sorted(all_events, key= lambda x: x['dataInizio'])
-            cache.set(cache_key, impegni_json, 3600)
+            cache.set(cache_key, impegni_json)
 
         return Response(cache.get(cache_key))
 
