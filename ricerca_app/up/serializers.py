@@ -1,12 +1,10 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from django.utils import timezone
 
 
-def upImpegniSerializer(impegni, year=None, af_name=None, search={}): # pragma: no cover
+def upImpegniSerializer(impegni, year=None, af_name=None, search={}, show_past=False): # pragma: no cover
     impegni_up = []
-
-    search_teaching = search.get('search_teaching', '')
     search_teacher = search.get('search_teacher', '')
     search_location = search.get('search_location', '')
 
@@ -32,9 +30,6 @@ def upImpegniSerializer(impegni, year=None, af_name=None, search={}): # pragma: 
         cfu = dettagliDidattici[0].get('cfu', None)
         insegnamento = dettagliDidattici[0]['nome']
 
-        if search_teaching and not search_teaching.lower() in insegnamento.lower():
-            continue
-
         annoCorso  = dettagliDidattici[0]['annoCorso']
 
         docente = ''
@@ -51,6 +46,9 @@ def upImpegniSerializer(impegni, year=None, af_name=None, search={}): # pragma: 
         if search_teacher and search_teacher.lower() not in docente.lower():
             continue
         if search_location and search_location.lower() not in aula.lower():
+            continue
+
+        if not show_past and dataInizio < date.today().strftime('%Y-%m-%d'):
             continue
 
         impegno_dict = {

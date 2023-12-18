@@ -1,3 +1,4 @@
+import base64
 import datetime
 import requests
 import json
@@ -1452,16 +1453,17 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
         date_year = self.request.query_params.get('date_year', '')
         af_name = self.request.query_params.get('af_name', '')
         af_cod = self.request.query_params.get('af_cod', '')
-
-        search_teaching = self.request.query_params.get('search_teaching', '')
         search_teacher = self.request.query_params.get('search_teacher', '')
         search_location = self.request.query_params.get('search_location', '')
+        show_past = self.request.query_params.get('show_past', 'true')
+        show_past = 0 if show_past == 'false' else 1
 
-        search = {'search_teaching': search_teaching,
-                  'search_teacher': search_teacher,
+        search = {'search_teacher': search_teacher,
                   'search_location': search_location}
+
+        search_key = base64.b64encode(str(search).encode())
         # if cds:
-        cache_key = f"cdswebsite_timetable_{cds_cod}_{academic_year}_{year}_{date_month}_{date_year}_{slugify(self.event_types)}_{af_cod}"
+        cache_key = f"cdswebsite_timetable_{cds_cod}_{academic_year}_{year}_{date_month}_{date_year}_{slugify(self.event_types)}_{af_cod}_{search_key.decode()}_{show_past}"
         if not cache.get(cache_key):
             impegni = getUPImpegni(request=self.request,
                                    aa=academic_year,
@@ -1470,12 +1472,15 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                                    date_year=date_year,
                                    cds_cod=cds_cod,
                                    types=self.event_types,
-                                   af_cod=af_cod)
+                                   af_cod=af_cod,
+                                   filter_by_af_cod='ES' not in self.event_types)
             impegni_json = upImpegniSerializer(impegni=impegni,
                                                year=year,
                                                af_name=af_name,
-                                               search=search)
+                                               search=search,
+                                               show_past=show_past)
 
+            # if Exams, search in Esse3 too
             if 'ES' in self.event_types:
                 cds_id = DidatticaCdsEsse3.objects.get(cds_cod=cds_cod).cds_id_esse3
                 af_id = DidatticaAttivitaFormativaEsse3.objects.get(ad_cod=af_cod).ad_id_esse3
@@ -1484,7 +1489,8 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                                                 cds_id=cds_id,
                                                 af_id=af_id,
                                                 aa=academic_year)
-                appelli_esse3_json = esse3AppelliSerializer(appelli=appelli_esse3)
+                appelli_esse3_json = esse3AppelliSerializer(appelli=appelli_esse3,
+                                                            show_past=show_past)
 
                 duplicates_to_remove = []
                 for iu in impegni_json:

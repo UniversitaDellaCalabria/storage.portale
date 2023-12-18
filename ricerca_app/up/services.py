@@ -60,7 +60,7 @@ def getData(request, url, cds_cod, body): # pragma: no cover
     return []
 
 
-def getUPImpegni(request, cds_cod, aa, year=1, date_month='', date_year='', types=[], af_cod=''): # pragma: no cover
+def getUPImpegni(request, cds_cod, aa, year=1, date_month='', date_year='', types=[], af_cod='', filter_by_af_cod=True): # pragma: no cover
     url = settings.URL_UP_API + 'Impegni/getImpegniByAnnoAccademico'
 
     try:
@@ -95,6 +95,8 @@ def getUPImpegni(request, cds_cod, aa, year=1, date_month='', date_year='', type
         "stati": ["P"],
         "codTipiEvento": types,
         "dataInizio": start_up,
-        "dataFine": end_up
+        "dataFine": end_up,
+        "codAF": af_cod if filter_by_af_cod else ''
     }
+
     return getData(request, url, cds_cod, body)
