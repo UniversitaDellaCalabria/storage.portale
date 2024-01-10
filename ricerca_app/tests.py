@@ -5186,20 +5186,16 @@ class ApiSortingContactsUnitTest(TestCase):
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'personale_id': 2,
             'cds_cod': '1',
-            'aa_off_id': 2022
+            'aa_off_id': datetime.datetime.now().year - 1
         })
-
-
 
         url = reverse('ricerca:sorting-contacts',kwargs={'cdscod': '1'})
 
         # check url
         res = req.get(url)
-
         assert res.status_code == 200
 
         # GET
-
         res = req.get(url)
         assert len(res.json()['results']) == 1
 
