@@ -10,16 +10,4 @@ class Migration(migrations.Migration):
         ('ricerca_app', '0153_didatticacdsperiodi'),
     ]
 
-    operations = [
-        migrations.CreateModel(
-            name='DidatticaSsd',
-            fields=[
-                ('ssd_id', models.CharField(db_column='SSD_ID', max_length=100, primary_key=True, serialize=False)),
-                ('ssd_des', models.CharField(db_column='SSD_DES', max_length=2000)),
-            ],
-            options={
-                'db_table': 'DIDATTICA_SSD',
-                'managed': True,
-            },
-        ),
-    ]
+    operations = []
