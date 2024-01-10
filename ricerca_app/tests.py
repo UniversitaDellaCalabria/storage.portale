@@ -5186,10 +5186,8 @@ class ApiSortingContactsUnitTest(TestCase):
         DidatticaCoperturaUnitTest.create_didatticaCopertura(**{
             'personale_id': 2,
             'cds_cod': '1',
-            'aa_off_id': 2022
+            'aa_off_id': datetime.datetime.now().year - 1
         })
-
-
 
         url = reverse('ricerca:sorting-contacts',kwargs={'cdscod': '1'})
 
@@ -6041,14 +6039,14 @@ class ApiSitoWebCdsTopicListUnitTest(TestCase):
 
 
 class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
-    
+
     def setUp(self, *args, **kwargs):
         self.uname = "user"
         self.passw = "pass"
         self.user = get_user_model().objects.create_superuser(username=self.uname, password=self.passw)
         self.token = Token.objects.create(user=self.user)
-        
-    
+
+
     def test_apisitiwebcdstopicarticles(self):
 
         tipo_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
@@ -6060,7 +6058,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
         })
-        
+
         topic2 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
             'id': 2,
             'descr_topic_it': 'prova',
@@ -6090,7 +6088,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'dt_mod': datetime.datetime.today(),
 
         })
-        
+
         # Regulament Article 2 NOT visible
         a2 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
             'id': 2,
@@ -6117,8 +6115,8 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
         })
-        
-        
+
+
         # Item art_reg 1 visible - linked to a1
         item1 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
             'id': 1,
@@ -6140,7 +6138,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': datetime.datetime.today()
         })
-        
+
         # Item art_reg 3 visible - linked to o1
         item3 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
             'id': 3,
@@ -6176,7 +6174,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
         })
-        
+
         # art_reg_altri_dati NOT visible - linked to item1
         SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
             'id': 2,
@@ -6190,7 +6188,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 0,
             'dt_mod': datetime.datetime.today(),
         })
-        
+
         # art_reg_altri_dati visible - linked to item5
         SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
             'id': 3,
@@ -6219,7 +6217,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
 
         data = {'cds_cod': '1', 'topic_id': 1}
         res = self.client.get(url, data=data)
-        
+
         # 3 visible, 1 not visible
         assert len(res.json()['results']) == 3
         r_items = res.json()['results']
@@ -6230,19 +6228,19 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                 r_item1 = r_item
             elif r_item["ID"] == 2:
                 r_item2 = r_item
-        
-        assert(r_item1 is not None)    
+
+        assert(r_item1 is not None)
         assert(len(r_item1["OtherData"]) == 1)
         assert(r_item1["CdsArticle"] is not None)
-        
-        assert(r_item2 is not None)    
+
+        assert(r_item2 is not None)
         assert(len(r_item2["OtherData"]) == 0)
         assert(r_item2["CdsArticle"] is None)
-        
+
     def test_apisitiwebcdstopicarticleswithpermissions(self):
 
         self.client.login(username=self.uname, password=self.passw)
-        
+
         tipo_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
 
         topic = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
@@ -6252,7 +6250,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
         })
-        
+
         topic2 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
             'id': 2,
             'descr_topic_it': 'prova',
@@ -6282,7 +6280,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'dt_mod': datetime.datetime.today(),
 
         })
-        
+
         # Regulament Article 2 NOT visible
         a2 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
             'id': 2,
@@ -6309,8 +6307,8 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
         })
-        
-        
+
+
         # Item art_reg 1 visible - linked to a1
         item1 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
             'id': 1,
@@ -6332,7 +6330,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': datetime.datetime.today()
         })
-        
+
         # Item art_reg 3 visible - linked to o1
         item3 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
             'id': 3,
@@ -6368,7 +6366,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': datetime.datetime.today(),
         })
-        
+
         # art_reg_altri_dati NOT visible - linked to item1
         SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
             'id': 2,
@@ -6382,7 +6380,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 0,
             'dt_mod': datetime.datetime.today(),
         })
-        
+
         # art_reg_altri_dati visible - linked to item5
         SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
             'id': 3,
@@ -6398,7 +6396,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         })
 
         url = reverse('ricerca:cdswebsitestopicarticleslist')
-        
+
 
         # check url
         res = self.client.get(url)
@@ -6411,12 +6409,12 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         assert len(res.json()['results']) == 0
 
         data = {'cds_cod': '1', 'topic_id': "1,2"}
-        
-        
+
+
         res = self.client.get(url, data=data, HTTP_AUTHORIZATION= f'Token {self.token.key}')
 
         assert len(res.json()['results']) == 4
-        
+
 
 
 
