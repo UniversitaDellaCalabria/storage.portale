@@ -81,6 +81,7 @@ def phd_new(request, my_offices=None):
                 return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
             phd = form.save(commit=False)
+            phd.ssd = f'{phd.id_didattica_ssd.ssd_id} {phd.id_didattica_ssd.ssd_des}'
             phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
             phd.user_mod_id = request.user
             phd.dt_mod = datetime.datetime.now()
@@ -149,6 +150,7 @@ def phd(request, code, my_offices=None, phd=None):
                 return custom_message(request, _("You are not authorized to post activities for this PhD"))
 
             new_phd = form.save(commit=False)
+            new_phd.ssd = f'{new_phd.id_didattica_ssd.ssd_id} {new_phd.id_didattica_ssd.ssd_des}'
             new_phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
             new_phd.user_mod_id = request.user
             new_phd.dt_mod = datetime.datetime.now()
