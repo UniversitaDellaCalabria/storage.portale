@@ -7,7 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.conf import settings
 
-from ricerca_app.models import (DidatticaDottoratoAttivitaFormativa,
+from ricerca_app.models import (DidatticaSsd,
+                                DidatticaDottoratoAttivitaFormativa,
                                 DidatticaDottoratoAttivitaFormativaAltriDocenti,
                                 DidatticaDottoratoAttivitaFormativaDocente,
                                 UnitaOrganizzativa)
@@ -48,12 +49,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
-        ssd_url = f'{CMS_STORAGE_ROOT_API}{reverse("ricerca:phd-ssd-list")}?page_size=1000'
-        ssd_api = requests.get(ssd_url)
-        ssd = ssd_api.json()['results']
-        lista_ssd = [('Non classificabile', 'Non classificabile')]
-
+        ssd_list = DidatticaSsd.objects.all()
         structures = UnitaOrganizzativa.objects.filter(uo_padre=STRUCTURES_FATHER,
                                                        cd_tipo_nodo__in=ALLOWED_STRUCTURE_TYPES)
 
@@ -71,16 +67,13 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
 
         for q in query:
             lista_rif_dott.append((q['rif_dottorato'], q['rif_dottorato']))
-        for s in ssd:
-            if s['SSD'] != 'Non classificabile':
-                lista_ssd.append((s['SSD'], s['SSD']))
 
         self.fields['id_struttura_proponente'] = forms.ModelChoiceField(
             label=_('Central Structure'),
             queryset=structures)
-        self.fields['ssd'] = forms.ChoiceField(
-            label=_('SSD'),
-            choices=lista_ssd)
+        self.fields['id_didattica_ssd'] = forms.ModelChoiceField(
+            queryset=ssd_list,
+            label=_('SSD'))
         self.fields['tipo_af'] = forms.ChoiceField(
             label=_('Type'),
             choices=lista_tipo_af)
@@ -101,7 +94,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
     class Meta:
         model = DidatticaDottoratoAttivitaFormativa
         fields = '__all__'
-        exclude = ['dt_mod', 'user_mod_id', 'struttura_proponente_origine']
+        exclude = ['dt_mod', 'user_mod_id', 'ssd', 'struttura_proponente_origine']
 
         labels = {
             'nome_af': _('Denomination'),

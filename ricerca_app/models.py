@@ -118,6 +118,8 @@ class DidatticaSsd(models.Model):
         managed = True
         db_table = 'DIDATTICA_SSD'
 
+    def __str__(self):
+        return f'{self.ssd_id} {self.ssd_des}'
 
 class DidatticaAttivitaFormativa(models.Model):
     af_id = models.IntegerField(db_column='AF_ID', primary_key=True)  # Field name made lowercase.
