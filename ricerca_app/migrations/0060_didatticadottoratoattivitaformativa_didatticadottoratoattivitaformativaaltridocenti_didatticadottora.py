@@ -42,11 +42,23 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='DidatticaSsd',
+            fields=[
+                ('ssd_id', models.CharField(db_column='SSD_ID', max_length=100, primary_key=True, serialize=False)),
+                ('ssd_des', models.CharField(db_column='SSD_DES', max_length=2000)),
+            ],
+            options={
+                'db_table': 'DIDATTICA_SSD',
+                'managed': True,
+            },
+        ),
+        migrations.CreateModel(
             name='DidatticaDottoratoAttivitaFormativa',
             fields=[
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('nome_af', models.CharField(blank=True, db_column='NOME_AF', max_length=1000, null=True)),
                 ('ssd', models.CharField(blank=True, db_column='SSD', max_length=1000, null=True)),
+                ('id_didattica_ssd', models.ForeignKey(blank=False, null=True, db_column='ID_DIDATTICA_SSD', to='ricerca_app.didatticassd', on_delete=django.db.models.deletion.SET_NULL, to_field='ssd_id')),
                 ('numero_ore', models.IntegerField(blank=True, db_column='NUMERO_ORE', null=True)),
                 ('cfu', models.IntegerField(blank=True, db_column='CFU', null=True)),
                 ('tipo_af', models.CharField(blank=True, db_column='TIPO_AF', max_length=500, null=True)),
