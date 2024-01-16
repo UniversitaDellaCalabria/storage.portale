@@ -1,8 +1,11 @@
+import base64
 import datetime
 import requests
 import json
 
+from django.core.cache import cache
 from django.utils import timezone
+from django.utils.text import slugify
 from django.conf import settings
 
 from rest_framework import generics, permissions, status
@@ -18,9 +21,13 @@ from . pagination import UnicalStorageApiPaginationList
 from . serializers import *
 from . services import *
 
+# Esse3 utils
+from . esse3.services import getEsse3Appelli
+from . esse3.serializers import esse3AppelliSerializer
+
 # University Planner utils
-from . up.serializers import *
-from . up.services import *
+from . up.serializers import upImpegniSerializer
+from . up.services import getUPImpegni
 
 ### useful for storage backend only ###
 from organizational_area.models import OrganizationalStructureOfficeEmployee
@@ -32,6 +39,7 @@ from crud.utils.settings import *
 # allow authenticated users to perform any request. Requests for
 # unauthorised users will only be permitted if the request method is
 # one of the "safe" methods; GET, HEAD or OPTIONS
+from . models import DidatticaAttivitaFormativaEsse3, DidatticaCdsEsse3
 from . utils import encode_labels, encrypt, decrypt
 
 
@@ -46,23 +54,34 @@ class ApiEndpointList(generics.ListAPIView):
         super().__init__(**kwargs)
         self.language = None
 
-    def get(self, obj, **kwargs):
-        self.language = str(
-            self.request.query_params.get(
-                'lang', 'null')).lower()
-        if self.language == 'null':
-            self.language = self.request.LANGUAGE_CODE
-
+    def prepare_data(self, *args, **kwargs):
         queryset = self.get_queryset()
-
         serializer = self.get_serializer(queryset, many=True)
+        return serializer
 
-        results = self.paginate_queryset(serializer.data)
-        results = {
+    def get(self, obj, **kwargs):
+        if not self.language:
+            lang = self.request.LANGUAGE_CODE
+            self.language = self.request.query_params.get('lang', lang).lower()
+
+        # cache
+        if kwargs.get('cache_key'):
+            cache_key = kwargs['cache_key']
+            if not cache.get(cache_key):
+                serializer = self.prepare_data(**kwargs)
+                data = serializer.data
+                cache.set(cache_key, data)
+            data = cache.get(cache_key)
+        else:
+            serializer = self.prepare_data(**kwargs)
+            data = serializer.data
+
+        results = self.paginate_queryset(data)
+        response = {
             'data': results,
             'language': self.language,
         }
-        return self.get_paginated_response(results)
+        return self.get_paginated_response(response)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -144,8 +163,15 @@ class ApiCdSList(ApiEndpointList):
     filter_backends = [ApiCdsListFilter]
 
     def get_queryset(self):
-        return ServiceDidatticaCds.cdslist(
-            self.language, self.request.query_params)
+        return ServiceDidatticaCds.cdslist(self.language,
+                                               self.request.query_params)
+
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get('lang', lang).lower()
+        cache_key = f"cdslist_{self.language}_{slugify(self.request.query_params)}"
+        kwargs['cache_key'] = cache_key
+        return super().get(*args, **kwargs)
 
 
 class ApiCdSDetail(ApiEndpointDetail):
@@ -187,9 +213,15 @@ class ApiCdSStudyPlansList(ApiEndpointList):
 
     def get_queryset(self):
         cdsid_param = str(self.kwargs['regdidid'])
+        return ServiceDidatticaAttivitaFormativa.getStudyPlans(regdid_id=cdsid_param)
 
-        return ServiceDidatticaAttivitaFormativa.getStudyPlans(
-            regdid_id=cdsid_param)
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get('lang', lang).lower()
+        cdsid_param = str(self.kwargs['regdidid'])
+        cache_key = f"cdsstudyplans_{self.language}__{cdsid_param}"
+        kwargs['cache_key'] = cache_key
+        return super().get(*args, **kwargs)
 
 
 class ApiStudyPlanDetail(ApiEndpointDetail):
@@ -461,7 +493,6 @@ class ApiTeachersList(ApiEndpointList):
         cds = request.query_params.get('cds')
         year = request.query_params.get('year')
 
-
         return ServiceDocente.teachersList(
             search, regdidid, department, role, cds, year)
 
@@ -710,7 +741,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
     def get_queryset(self):
         laboratoryid = self.kwargs['laboratoryid']
         request = self.request
-        
+
         #CRUD
         only_active = True
         if request.user.is_superuser: only_active = False # pragma: no cover
@@ -720,7 +751,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
                 .filter(employee=request.user,
                         office__is_active=True,
                         office__organizational_structure__is_active=True)
-                
+
             is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
             is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
             if(is_operator or is_validator):
@@ -743,7 +774,7 @@ class ApiLaboratoriesList(ApiEndpointList):
         teacher = decrypt(request.query_params.get('teacher'))
         infrastructure = request.query_params.get('infrastructure')
         scope = request.query_params.get('scope')
-        
+
         #CRUD
         only_active = True
         if request.user.is_superuser: only_active = False # pragma: no cover
@@ -753,7 +784,7 @@ class ApiLaboratoriesList(ApiEndpointList):
                 .filter(employee=request.user,
                         office__is_active=True,
                         office__organizational_structure__is_active=True)
-                
+
             is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
             is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
             if(is_operator or is_validator):
@@ -813,11 +844,11 @@ class ApiPublicationsList(ApiEndpointList):
         teacherid = decrypt(self.kwargs.get('teacherid')) if self.kwargs.get('teacherid') else ''
         search = request.query_params.get('search')
         year = request.query_params.get('year')
-        type = request.query_params.get('type')
+        pub_type = request.query_params.get('type')
         structure = request.query_params.get('structure')
 
         return ServiceDocente.getPublicationsList(
-            teacherid, search, year, type, structure)
+            teacherid, search, year, pub_type, structure)
 
 
 class TeachingCoveragePublicationsList(AutoSchema):
@@ -1091,6 +1122,12 @@ class ApiCdsAreasList(ApiEndpointListSupport):
     def get_queryset(self):
         return ServiceDidatticaCds.getCdsAreas()
 
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get('lang', lang).lower()
+        cache_key = "cdsareas"
+        kwargs['cache_key'] = cache_key
+        return super().get(*args, **kwargs)
 
 class ApiProjectsInfrastructuresList(ApiEndpointList):
     description = 'La funzione restituisce la lista delle infrastrutture dei progetti'
@@ -1351,11 +1388,11 @@ class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
     filter_backends = [ApiCdsWebsitesTopicArticlesListFilter]
 
     def get_queryset(self):
-        
+
         request = self.request
         cds_cod = self.request.query_params.get('cds_cod')
         topic_id = self.request.query_params.get('topic_id')
-        
+
         # get only active elements if public
         # get all elements if in CRUD backend
         only_active = True
@@ -1367,7 +1404,7 @@ class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
                         office__is_active=True,
                         office__name=OFFICE_CDS_WEBSITES,
                         office__organizational_structure__is_active=True)
-                
+
             if(offices.exists()):
                 only_active = False
 
@@ -1381,12 +1418,19 @@ class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
     filter_backends = [ApiCdsWebsitesStudyPlansListFilter]
 
     def get_queryset(self):
-
         cds_cod = self.request.query_params.get('cds_cod')
         year = self.request.query_params.get('year')
-        regdid = self.request.query_params.get('regdid')
+        # regdid = self.request.query_params.get('regdid')
+        return ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year)
 
-        return ServiceDidatticaCds.getCdsWebsitesStudyPlans(cds_cod, year, regdid)
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get('lang', lang).lower()
+        cds_cod = self.request.query_params.get('cds_cod')
+        year = self.request.query_params.get('year')
+        cache_key = f"cdswebsite_studyplanlist_{self.language}__{cds_cod}_{year}"
+        kwargs['cache_key'] = cache_key
+        return super().get(*args, **kwargs)
 
 
 class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
@@ -1400,31 +1444,71 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
         cds_cod = self.kwargs['cdswebsitecod']
         current_year = timezone.localtime(timezone.now().replace(tzinfo=timezone.utc)).year
         academic_year = self.request.query_params.get('academic_year', current_year)
-        year = self.request.query_params.get('year', 1)
-        cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
-        date_month = self.request.query_params.get('date_month')
-        date_year = self.request.query_params.get('date_year')
+        try:
+            year = int(self.request.query_params.get('year'))
+        except:
+            year = 1
+        # cds = ServiceDidatticaCds.getCdsWebsite(cds_cod)
+        date_month = self.request.query_params.get('date_month', '')
+        date_year = self.request.query_params.get('date_year', '')
+        af_name = self.request.query_params.get('af_name', '')
+        af_cod = self.request.query_params.get('af_cod', '')
+        search_teacher = self.request.query_params.get('search_teacher', '')
+        search_location = self.request.query_params.get('search_location', '')
+        show_past = self.request.query_params.get('show_past', 'true')
+        show_past = 0 if show_past == 'false' else 1
 
-        search_teaching = self.request.query_params.get('search_teaching')
-        search_teacher = self.request.query_params.get('search_teacher')
-        search_location = self.request.query_params.get('search_location')
-
-        search = {'search_teaching': search_teaching,
-                  'search_teacher': search_teacher,
+        search = {'search_teacher': search_teacher,
                   'search_location': search_location}
-        if cds:
-            impegni = getImpegni(request=self.request,
-                                 aa=academic_year,
-                                 year=year,
-                                 date_month=date_month,
-                                 date_year=date_year,
-                                 cds_cod=cds_cod,
-                                 types=self.event_types)
-            impegni_json = impegniSerializer(impegni,
-                                             int(year),
-                                             search)
-            return Response(impegni_json)
-        return Response({})
+
+        search_key = base64.b64encode(str(search).encode())
+        # if cds:
+        cache_key = f"cdswebsite_timetable_{cds_cod}_{academic_year}_{year}_{date_month}_{date_year}_{slugify(self.event_types)}_{af_cod}_{search_key.decode()}_{show_past}"
+        if not cache.get(cache_key):
+            impegni = getUPImpegni(request=self.request,
+                                   aa=academic_year,
+                                   year=year,
+                                   date_month=date_month,
+                                   date_year=date_year,
+                                   cds_cod=cds_cod,
+                                   types=self.event_types,
+                                   af_cod=af_cod,
+                                   filter_by_af_cod='ES' not in self.event_types)
+            impegni_json = upImpegniSerializer(impegni=impegni,
+                                               year=year,
+                                               af_name=af_name,
+                                               search=search,
+                                               show_past=show_past)
+
+            # if Exams, search in Esse3 too
+            if 'ES' in self.event_types:
+                cds_id = DidatticaCdsEsse3.objects.get(cds_cod=cds_cod).cds_id_esse3
+                af_id = DidatticaAttivitaFormativaEsse3.objects.get(ad_cod=af_cod).ad_id_esse3
+
+                appelli_esse3 = getEsse3Appelli(request=self.request,
+                                                cds_id=cds_id,
+                                                af_id=af_id,
+                                                aa=academic_year)
+                appelli_esse3_json = esse3AppelliSerializer(appelli=appelli_esse3,
+                                                            show_past=show_past)
+
+                duplicates_to_remove = []
+                for iu in impegni_json:
+                    for ae3 in appelli_esse3_json:
+                        if ae3['dataInizio'] == iu['dataInizio'] and ae3['orarioInizio'] == iu['orarioInizio']:
+                            if not ae3['aula']:
+                                ae3['aula'] = iu['aula']
+                            duplicates_to_remove.append(iu)
+                            break
+
+                for delete in duplicates_to_remove:
+                    a = impegni_json.remove(delete)
+
+                all_events = impegni_json + appelli_esse3_json
+                impegni_json = sorted(all_events, key= lambda x: (x['dataInizio'], x['orarioInizio']))
+            cache.set(cache_key, impegni_json)
+
+        return Response(cache.get(cache_key))
 
 
 class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable): # pragma: no cover
@@ -1434,12 +1518,13 @@ class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable): # pragma: no cover
         super().__init__(**kwargs)
         self.event_types = ['ES']
 
+
 class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
     allowed_methods = ('GET',)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        
+
     def get(self, request, objectid, objectclass, **kwargs):
         UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
         UNICMS_ROOT_URL = getattr(settings, 'UNICMS_ROOT_URL', '')
@@ -1467,8 +1552,7 @@ class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
                 else:
                     res["name"] = json_response.get("name", None)
                     res["content"] = UNICMS_ROOT_URL + json_response.get("get_full_path", None)
-        except requests.exceptions.RequestException: 
+        except requests.exceptions.RequestException:
             pass
         finally:
             return Response(res)
-        

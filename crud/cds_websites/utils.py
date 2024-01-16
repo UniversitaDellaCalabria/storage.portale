@@ -20,3 +20,6 @@ def get_topics_per_page():
             return res
     except requests.exceptions.RequestException: 
         return res
+    
+def is_protected_by_etl(id_user_mod):
+    return id_user_mod in ETL_USER_IDS

@@ -155,10 +155,6 @@ class ServiceDidatticaCds:
                 "lingua_des_eng").distinct()
 
             item['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=item['didatticaregolamento__regdid_id']).values(
-                'matricola_coordinatore',
-                'nome_origine_coordinatore',
-                'matricola_vice_coordinatore',
-                'nome_origine_vice_coordinatore',
                 'num_posti',
                 'modalita_iscrizione',
                 'manifesto_studi',
@@ -166,18 +162,18 @@ class ServiceDidatticaCds:
                 'ordinamento_didattico'
             ).distinct()
 
-            item['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=item['cds_id']).values(
-                'ordine',
-                'nome_ufficio',
-                'matricola_riferimento',
-                'nome_origine_riferimento',
-                'telefono',
-                'email',
-                'edificio',
-                'piano',
-                'orari',
-                'sportello_online'
-            ).distinct()
+            # item['OfficesData'] = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=item['cds_id']).values(
+                # 'ordine',
+                # 'nome_ufficio',
+                # 'matricola_riferimento',
+                # 'nome_origine_riferimento',
+                # 'telefono',
+                # 'email',
+                # 'edificio',
+                # 'piano',
+                # 'orari',
+                # 'sportello_online'
+            # ).distinct()
 
         return items
 
@@ -1015,16 +1011,16 @@ class ServiceDidatticaCds:
         return {}
 
     @staticmethod
-    def getCdsWebsitesStudyPlans(cds_cod, year, regdid):
+    def getCdsWebsitesStudyPlans(cds_cod, year):#, regdid):
 
-        if cds_cod and year or regdid:
+        if cds_cod and year: # or regdid:
             query_cds = Q(regdid_id__cds_id__cds_cod__exact=cds_cod) if cds_cod else Q()
             query_year = Q(regdid_id__aa_reg_did__exact=year) if year else Q()
-            query_regdid = Q(regdid_id__exact=regdid) if regdid else Q()
+            # query_regdid = Q(regdid_id__exact=regdid) if regdid else Q()
 
             query = DidatticaPianoRegolamento.objects.filter(
                 query_cds,
-                query_regdid,
+                # query_regdid,
                 query_year,
                 stato_cod='A'
                ).select_related('regdid__cds').values(
@@ -1056,11 +1052,12 @@ class ServiceDidatticaCds:
                     'pds_cod',
                     'pds_des',
                     'comune_flg',
-
+                    'apt_id',
+                    'cla_m_id',
+                    'cla_miur_cod',
+                    'cla_miur_des',
+                    'pds_cod'
                    )
-
-                q['PlanTabs'] = schede
-
 
                 for s in schede:
                     obbl = DidatticaPianoSceltaSchePiano.objects.filter(
@@ -1082,14 +1079,15 @@ class ServiceDidatticaCds:
                             'vin_id',
                             'vin_sce_des',
                             'sce_id__opz_flg',
-                            'sce_id__anno_corso_ant'
+                            'sce_id__anno_corso_ant',
+                            'sche_statutario_flg'
                             )
-
-
+                    s['isStatutario'] = None
                     s['AfRequired'] = obbl
 
-
                     for af in obbl:
+                        if s['isStatutario'] == None:
+                            s['isStatutario'] = af['sche_statutario_flg']
 
                         af_obblig = DidatticaPianoSceltaAf.objects.filter(
                             sce_id__exact=af['sce_id']
@@ -1107,7 +1105,6 @@ class ServiceDidatticaCds:
                             'sce_id__sce_des',
                             'sce_id'
                         )
-
 
                         af['Required'] = af_obblig
 
@@ -1192,20 +1189,14 @@ class ServiceDidatticaCds:
                         'sce_id__anno_corso_ant'
                     )
 
-
-
-
-
                     verifica = Q(amb_id__isnull=False) | Q(amb_id_af_regsce__isnull=False) | Q(tipo_sce_cod='V')
-
-
-
 
                     s['AfChoices'] = scelte
 
-
-
                     for scelta in scelte:
+
+                        if s['isStatutario'] == None:
+                            s['isStatutario'] = af['sche_statutario_flg']
 
                         fil_and = DidatticaPianoSceltaFilAnd.objects.filter(
                             sce_id__exact=scelta['sce_id']
@@ -1315,9 +1306,6 @@ class ServiceDidatticaCds:
                                 activity['MODULES'] = list_submodules
 
 
-
-
-
                             # if a['amb_id'] is not None:
                             #
                             #
@@ -1358,10 +1346,12 @@ class ServiceDidatticaCds:
                             #
                             #     # for el in a['ElectiveCourses']:
                             #     #     el['apt_slot_ord_num'] = a['apt_slot_ord_num']
+
+                schede = sorted(list(schede), key=lambda k: (k['cla_m_id'] if k['cla_m_id'] else 0,
+                                                             -k['isStatutario'],
+                                                             k['apt_id'] if k['apt_id'] else 0))
+                q['PlanTabs'] = schede
             return query
-
-
-
 
 
 class ServiceDidatticaAttivitaFormativa:
@@ -3438,7 +3428,6 @@ class ServicePersonale:
         for p in priorita_tmp:
             priorita.update({p['cd_ruolo']: p['priorita']})
 
-
         already_taken_contacts = []
         for q in query:
             if q['id_ab'] not in grouped:
@@ -3891,7 +3880,6 @@ class ServicePersonale:
                           'cd_tipo_nodo': r[5]
                           })
         roles.sort(key=lambda x: x['priorita'])
-
 
         already_taken_contacts = []
         for q in query:

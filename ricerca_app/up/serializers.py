@@ -1,18 +1,20 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from django.utils import timezone
 
 
-def impegniSerializer(impegni, year=None, search={}): # pragma: no cover
+def upImpegniSerializer(impegni, year=None, af_name=None, search={}, show_past=False): # pragma: no cover
     impegni_up = []
-
-    search_teaching = search.get('search_teaching', '')
     search_teacher = search.get('search_teacher', '')
     search_location = search.get('search_location', '')
 
     for impegno in impegni:
         if year and impegno['evento']['dettagliDidattici'][0]['annoCorso'] != year:
             continue
+
+        if af_name and impegno['evento']['dettagliDidattici'][0]['nome'].lower() != af_name.lower():
+            continue
+
         dataInizio = impegno['dataInizio'][0:10]
         dataFine = impegno['dataFine'][0:10]
 
@@ -27,9 +29,6 @@ def impegniSerializer(impegni, year=None, search={}): # pragma: no cover
 
         cfu = dettagliDidattici[0].get('cfu', None)
         insegnamento = dettagliDidattici[0]['nome']
-
-        if search_teaching and not search_teaching.lower() in insegnamento.lower():
-            continue
 
         annoCorso  = dettagliDidattici[0]['annoCorso']
 
@@ -49,6 +48,8 @@ def impegniSerializer(impegni, year=None, search={}): # pragma: no cover
         if search_location and search_location.lower() not in aula.lower():
             continue
 
+        if not show_past and dataInizio < date.today().strftime('%Y-%m-%d'):
+            continue
 
         impegno_dict = {
             "insegnamento": insegnamento,
@@ -61,17 +62,8 @@ def impegniSerializer(impegni, year=None, search={}): # pragma: no cover
             "docente": docente,
             "aula": aula,
             "edificio": edificio,
-            "codice": impegno['evento']['tipoEvento']['codice']
+            "codice": f"UP_{impegno['evento']['tipoEvento']['codice']}",
+            "extra": {}
         }
         impegni_up.append(impegno_dict)
     return impegni_up
-
-import json
-def eventiSerializer(eventi, year=None): # pragma: no cover
-    eventi_up = []
-
-    for evento in eventi:
-        json_formatted_str = json.dumps(evento, indent=2)
-        print(json_formatted_str)
-        # if evento['tipoEvento']['codice'] == 'ES':
-            # print(json_formatted_str)

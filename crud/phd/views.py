@@ -140,7 +140,6 @@ def phd(request, code, my_offices=None, phd=None):
     if request.POST:
         form = DidatticaDottoratoAttivitaFormativaForm(instance=phd,
                                                        data=request.POST)
-
         if form.is_valid():
 
             # controllo che l'utente abbia il permesso

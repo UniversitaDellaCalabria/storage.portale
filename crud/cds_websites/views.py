@@ -620,6 +620,10 @@ def cds_websites_topics_edit(request, code, cds_website=None, my_offices=None):
 @can_edit_cds_website
 def cds_websites_item_delete(request, code, topic_id, data_id, cds_website=None, my_offices=None):
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
+    
+    if not request.user.is_superuser and is_protected_by_etl(regart.id_user_mod.pk):
+        return custom_message(request, _("Permission denied"))
+    
     regart.delete()
     
     log_action(user=request.user,
@@ -694,6 +698,10 @@ def cds_websites_regart_item_edit(request, code, topic_id, data_id, cds_website=
     art_reg_form = SitoWebCdsArticoliRegolamentoItemForm(data=request.POST if request.POST else None, instance=regart, cds_id=cds_website.cds_id)        
         
     if request.POST:
+        
+        if not request.user.is_superuser and is_protected_by_etl(regart.id_user_mod.pk):
+            return custom_message(request, _("Permission denied"))
+        
         if art_reg_form.is_valid():
         
             art_reg = art_reg_form.save(commit=False)
@@ -795,6 +803,10 @@ def cds_websites_regart_extra_edit(request, code, topic_id, data_id, extra_id, c
     
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
     regart_extra = get_object_or_404(SitoWebCdsTopicArticoliRegAltriDati, pk=extra_id)
+    
+    if not request.user.is_superuser and is_protected_by_etl(regart_extra.id_user_mod.pk):
+        return custom_message(request, _("Permission denied"))
+    
     initial = {
         'id_sito_web_cds_tipo_dato' : regart_extra.id_sito_web_cds_tipo_dato_id
     }
@@ -850,6 +862,10 @@ def cds_websites_regart_extra_edit(request, code, topic_id, data_id, extra_id, c
 def cds_websites_regart_extra_delete(request, code, topic_id, data_id, extra_id, cds_website=None, my_offices=None):
     
     extra = get_object_or_404(SitoWebCdsTopicArticoliRegAltriDati, pk=extra_id)
+    
+    if not request.user.is_superuser and is_protected_by_etl(extra.id_user_mod.pk):
+        return custom_message(request, _("Permission denied"))
+    
     extra.delete()
     
     log_action(user=request.user,
@@ -872,6 +888,10 @@ def cds_websites_regart_extra_delete(request, code, topic_id, data_id, extra_id,
 def cds_websites_object_edit(request, code, data_id, cds_website=None, my_offices=None):
         
     _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
+    
+    if not request.user.is_superuser and is_protected_by_etl(_object.id_user_mod.pk):
+        return custom_message(request, _("Permission denied"))
+    
     object_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None, instance=_object)
         
     if request.POST:
@@ -972,6 +992,10 @@ def cds_websites_object_new(request, code, cds_website=None, my_offices=None):
 def cds_websites_object_delete(request, code, data_id, cds_website=None, my_offices=None):
         
     _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
+    
+    if not request.user.is_superuser and is_protected_by_etl(_object.id_user_mod.pk):
+        return custom_message(request, _("Permission denied"))
+    
     _object.delete()
 
     log_action(user=request.user,
@@ -1040,6 +1064,10 @@ def cds_websites_object_add(request, code, topic_id, cds_website=None, my_office
 def cds_websites_object_item_edit(request, code, topic_id, data_id, cds_website=None, my_offices=None):
     
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
+    
+    if not request.user.is_superuser and is_protected_by_etl(regart.id_user_mod.pk):
+        return custom_message(request, _("Permission denied"))
+    
     initial = {
         "id_sito_web_cds_oggetti_portale": regart.id_sito_web_cds_oggetti_portale.id,
     }

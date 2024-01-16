@@ -104,10 +104,10 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
         if not (request.user.is_superuser or my_offices.exists()):
             return custom_message(request, _("Permission denied"))
         
-        form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES, allowed_department_codes=allowed_related_departments_codes)
+        form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
                 
         if form.is_valid():
-            form.save(commit=False)
+            laboratory = form.save(commit=False)
             related_department_id = form.cleaned_data.get('choosen_department_id')[0]
             related_department = get_object_or_404(DidatticaDipartimento, pk=related_department_id)
             laboratory.id_dipartimento_riferimento = related_department

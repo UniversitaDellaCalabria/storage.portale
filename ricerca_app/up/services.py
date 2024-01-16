@@ -17,10 +17,13 @@ from django.contrib.messages import get_messages
 from django.utils.html import strip_tags
 
 
+logger = logging.getLogger(__name__)
+
+
 #chiamata alle api UP
-def getTokenUP(request): # pragma: no cover
-    if request.session.get('up_token'):
-        return request.session.get('up_token')
+def getUPToken(request): # pragma: no cover
+    # if request.session.get('up_token'):
+        # return request.session.get('up_token')
     try:
         data = {
             "username": settings.UTENTE_API_UP,
@@ -29,23 +32,21 @@ def getTokenUP(request): # pragma: no cover
         }
         url = settings.URL_UP_API +'utenti/login'
         response = requests.post(url, data, timeout=5)
-
         if response.status_code == 200:
             data = response.json()
             if data.get('id'):
                 request.session['up_token'] = data['id']
                 return data['id']
-        return ""
+        else:
+            logger.error(f"Error getting UP token: {response.json()['error']['message']}")
     except Exception as e:
-        print(e)
-        return ""
-
+        logger.error(f"Error getting UP token: {e}")
+    return ''
 
 def getData(request, url, cds_cod, body): # pragma: no cover
     try:
-        payload = ""
         headers = {
-            "Authorization": getTokenUP(request),
+            "Authorization": getUPToken(request),
             "Content-Type": "application/json",
         }
         payload= json.dumps(body)
@@ -53,45 +54,49 @@ def getData(request, url, cds_cod, body): # pragma: no cover
         if response.status_code == 200:
             return response.json()
         else:
-            data = response.json()
-            print(data['error']['message'])
-            return ""
+            logger.error(f"Error calling UP url {url}: {response.json()['error']['message']}")
     except Exception as e:
-        print(e)
-        return ""
+        logger.error(f"Error calling UP url {url}: {e}")
+    return []
 
 
-def getEventi(request, aa, cds_cod): # pragma: no cover
-    url = settings.URL_UP_API +'Eventi/getEventiByCorso'
-    body = {
-        "codCorso": cds_cod,
-        "annoAccademico": aa,
-    }
-    return getData(request, url, cds_cod, body)
-
-
-def getImpegni(request, cds_cod, aa, year=1, date_month=None, date_year=None, types=[]): # pragma: no cover
+def getUPImpegni(request, cds_cod, aa, year=1, date_month='', date_year='', types=[], af_cod='', filter_by_af_cod=True): # pragma: no cover
     url = settings.URL_UP_API + 'Impegni/getImpegniByAnnoAccademico'
 
+    try:
+        aa = int(aa)
+        year = int(year)
+    except:
+        return []
+
     settings_tz = zoneinfo.ZoneInfo(settings.TIME_ZONE)
+    start_up = ''
+    end_up = ''
 
-    up_month = int(date_month or datetime.now().month)
-    up_year = int(date_year or datetime.now().year)
-    last_day = calendar.monthrange(up_year, up_month)[1]
+    if date_month and date_year:
+        try:
+            up_month = int(date_month)
+            up_year = int(date_year)
+        except:
+            return []
 
-    start = datetime(up_year, up_month, 1, 00, 00, tzinfo=settings_tz)
-    end = datetime(up_year, up_month, last_day, 23, 59, tzinfo=settings_tz)
+        last_day = calendar.monthrange(up_year, up_month)[1]
 
-    start_up = datetime.strftime(start, "%Y-%m-%dT%H:%M:00.000Z")
-    end_up = datetime.strftime(end, "%Y-%m-%dT%H:%M:00.000Z")
+        start = datetime(up_year, up_month, 1, 00, 00, tzinfo=settings_tz)
+        end = datetime(up_year, up_month, last_day, 23, 59, tzinfo=settings_tz)
+
+        start_up = datetime.strftime(start, "%Y-%m-%dT%H:%M:00.000Z")
+        end_up = datetime.strftime(end, "%Y-%m-%dT%H:%M:00.000Z")
 
     body = {
-        "annoAccademico": int(aa),
-        "annoCorso": int(year),
+        "annoAccademico": aa,
+        "annoCorso": year,
         "codCorso": cds_cod,
         "stati": ["P"],
         "codTipiEvento": types,
         "dataInizio": start_up,
-        "dataFine": end_up
+        "dataFine": end_up,
+        "codAF": af_cod if filter_by_af_cod else ''
     }
+
     return getData(request, url, cds_cod, body)

@@ -2,8 +2,19 @@
 
 {% load i18n %}
 {% load static %}
+{% load crud_templatetags %}
+
+{% block submit %}
+{% settings_value "ETL_USER_IDS" as etl_ids %}
+{% if user.is_superuser or regart.id_user_mod.pk not in etl_ids %}
+    {{block.super}}
+{% endif %}
+
+{% endblock submit %}
 
 {% block after_forms %}
+{% settings_value "ETL_USER_IDS" as etl_ids %}
+
     <div class="card-wrapper card-space">
         <div class="card card-bg no-after">
             <div class="card-body">
@@ -68,20 +79,22 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="{% url 'crud_cds_websites:crud_cds_websites_regart_extra_edit' code=cds_website.id topic_id=topic_id data_id=regart.id extra_id=extra.id %}" class="btn btn-primary btn-xs">
-                                            <svg class="icon icon-xs icon-white">
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                            </svg>
-                                            {% trans "Edit" %}
-                                        </a>
-                                        <a href="" class="btn btn-danger btn-xs"
-                                            data-toggle="modal"
-                                            data-target="#delete_extra_{{extra.id}}">
-                                            <svg class="icon icon-xs icon-white">
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                            </svg>
-                                            {% trans "Remove" %}
-                                        </a>
+                                        {% if user.is_superuser or extra.id_user_mod.pk not in etl_ids %}
+                                            <a href="{% url 'crud_cds_websites:crud_cds_websites_regart_extra_edit' code=cds_website.id topic_id=topic_id data_id=regart.id extra_id=extra.id %}" class="btn btn-primary btn-xs">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                                </svg>
+                                                {% trans "Edit" %}
+                                            </a>
+                                            <a href="" class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#delete_extra_{{extra.id}}">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                                </svg>
+                                                {% trans "Remove" %}
+                                            </a>
+                                        {%endif%}
                                     </td>
                                 </tr>
                             {% endfor %}

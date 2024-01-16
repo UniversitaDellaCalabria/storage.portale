@@ -6,6 +6,8 @@
 
 {% with page_name=page_name|cut:" "|default:"Page" topic_obj_regarts=topic_obj_regarts|default:None cds=cds|default:None %}
 
+{% settings_value "ETL_USER_IDS" as etl_ids %}
+
 <div id="collapseDiv_{{page_name}}_{{topic_obj_regarts.topic.id}}" class="collapse-div collapse-left-icon">
     <div class="collapse-header" id="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
         <button data-toggle="collapse" data-target="#collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}" aria-expanded="false" aria-controls="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}">
@@ -88,14 +90,16 @@
                                     </svg>
                                     {% trans "Edit" %}
                                 </a>
-                                <a href="" class="btn btn-danger btn-xs"
-                                    data-toggle="modal"
-                                    data-target="#remove_regart_{{regart.id}}">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                    </svg>
-                                    {% trans "Remove" %}
-                                </a>
+                                {% if user.is_superuser or regart.id_user_mod.pk not in etl_ids %}
+                                    <a href="" class="btn btn-danger btn-xs"
+                                        data-toggle="modal"
+                                        data-target="#remove_regart_{{regart.id}}">
+                                        <svg class="icon icon-xs icon-white">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                        </svg>
+                                        {% trans "Remove" %}
+                                    </a>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
@@ -171,20 +175,22 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="{% url 'crud_cds_websites:crud_cds_websites_object_item_edit' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=object.id %}" class="btn btn-primary btn-xs">
-                                        <svg class="icon icon-xs icon-white">
-                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                        </svg>
-                                        {% trans "Edit" %}
-                                    </a>
-                                    <a href="" class="btn btn-danger btn-xs"
-                                        data-toggle="modal"
-                                        data-target="#delete_object_{{object.id}}">
-                                        <svg class="icon icon-xs icon-white">
-                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                        </svg>
-                                        {% trans "Remove" %}
-                                    </a>
+                                    {% if user.is_superuser or object.id_user_mod.pk not in etl_ids %}
+                                        <a href="{% url 'crud_cds_websites:crud_cds_websites_object_item_edit' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=object.id %}" class="btn btn-primary btn-xs">
+                                            <svg class="icon icon-xs icon-white">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                            </svg>
+                                            {% trans "Edit" %}
+                                        </a>
+                                        <a href="" class="btn btn-danger btn-xs"
+                                            data-toggle="modal"
+                                            data-target="#delete_object_{{object.id}}">
+                                            <svg class="icon icon-xs icon-white">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                            </svg>
+                                            {% trans "Remove" %}
+                                        </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
