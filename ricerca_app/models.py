@@ -121,6 +121,7 @@ class DidatticaSsd(models.Model):
     def __str__(self):
         return f'{self.ssd_id} {self.ssd_des}'
 
+
 class DidatticaAttivitaFormativa(models.Model):
     af_id = models.IntegerField(db_column='AF_ID', primary_key=True)  # Field name made lowercase.
     cds = models.ForeignKey('DidatticaCds', models.DO_NOTHING, db_column='CDS_ID', blank=True, null=True)  # Field name made lowercase.
@@ -945,7 +946,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     nome_af = models.CharField(db_column='NOME_AF', max_length=1000, blank=False, null=True)  # Field name made lowercase.
     ssd = models.CharField(db_column='SSD', max_length=1000, blank=False, null=True)  # Field name made lowercase.
-    id_didattica_ssd = models.ForeignKey('DidatticaSsd', on_delete=models.SET_NULL, db_column='ID_DIDATTICA_SSD', blank=False, null=True)  # Field name made lowercase.
+    id_didattica_ssd = models.ForeignKey('DidatticaSsd', on_delete=models.SET_NULL, db_column='ID_DIDATTICA_SSD', blank=False, null=True, to_field='ssd_id') # Field name made lowercase.
     numero_ore = models.IntegerField(db_column='NUMERO_ORE', blank=False, null=True)  # Field name made lowercase.
     cfu = models.IntegerField(db_column='CFU', blank=False, null=True)  # Field name made lowercase.
     tipo_af = models.CharField(db_column='TIPO_AF', max_length=500)  # Field name made lowercase.
