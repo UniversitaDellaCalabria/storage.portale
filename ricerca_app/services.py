@@ -2790,10 +2790,13 @@ class ServiceDocente:
             "personalecontatti__contatto")
 
         contacts = []
+        already_taken_contacts = []
         for contact in q_contacts:
+            if not contact['personalecontatti__contatto']: continue
             res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word in contact['personalecontatti__contatto'])]
-            if not bool(res):
+            if not bool(res) and contact['personalecontatti__contatto'].lower() not in already_taken_contacts:
                 contacts.append(contact)
+                already_taken_contacts.append(contact['personalecontatti__contatto'].lower())
         # contacts = list(contacts)
 
         functions = UnitaOrganizzativaFunzioni.objects.filter(
@@ -2864,6 +2867,7 @@ class ServiceDocente:
             for c in PERSON_CONTACTS_TO_TAKE:
                 q[c] = []
             for c in contacts:
+                if not c['personalecontatti__contatto']: continue
                 q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                     c['personalecontatti__contatto']
                 )
@@ -3424,7 +3428,7 @@ class ServicePersonale:
         for p in priorita_tmp:
             priorita.update({p['cd_ruolo']: p['priorita']})
 
-
+        already_taken_contacts = []
         for q in query:
             if q['id_ab'] not in grouped:
                 grouped[q['id_ab']] = {
@@ -3447,10 +3451,12 @@ class ServicePersonale:
                     grouped[q['id_ab']][c] = []
 
             if q['personalecontatti__cd_tipo_cont__descr_contatto'] in PERSON_CONTACTS_TO_TAKE:
-                res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word in q['personalecontatti__contatto'])]
-                if not bool(res):
-                    grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
-                        q['personalecontatti__contatto'])
+                if q['personalecontatti__contatto']:
+                    res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word in q['personalecontatti__contatto'])]
+                    if not bool(res) and not q['personalecontatti__contatto'].lower() in already_taken_contacts:
+                        grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
+                            q['personalecontatti__contatto'])
+                        already_taken_contacts.append(q['personalecontatti__contatto'].lower())
 
             if last_id == -1 or last_id != q['id_ab']:
                 last_id = q['id_ab']
@@ -3875,16 +3881,17 @@ class ServicePersonale:
                           })
         roles.sort(key=lambda x: x['priorita'])
 
-
-
+        already_taken_contacts = []
         for q in query:
             for c in PERSON_CONTACTS_TO_TAKE:
                 q[c] = []
             for c in contacts:
+                if not c['personalecontatti__contatto']: continue
                 res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word in c['personalecontatti__contatto'])]
-                if not bool(res):
+                if not bool(res) and not c['personalecontatti__contatto'].lower() in already_taken_contacts:
                     q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                         c['personalecontatti__contatto'])
+                    already_taken_contacts.append(c['personalecontatti__contatto'].lower())
 
             if len(functions) == 0:
                 q["Functions"] = None
