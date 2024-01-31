@@ -226,19 +226,19 @@
     </div>
     {% endif %}
 
-    {% if "crud.cds_websites" in installed_apps %}
+    {% if "crud.cds_websites_brochure" in installed_apps %}
     <div class="col-12 col-lg-3">
         <!--start card-->
         <div class="card-wrapper card-space">
             <div class="card card-bg">
                 <div class="card-body">
                     <h5 class="card-title">
-                        {% trans "Course of Studies Websites" %}
+                        {% trans "Course of Studies Websites Brochure" %}
                     </h5>
                     <p class="card-text">
-                        {% trans 'Manage Courses of Studies Websites' %}
+                        {% trans 'Manage Courses of Studies Websites Brochure' %}
                     </p>
-                    <a class="read-more" href="{% url 'crud_cds_websites:crud_cds_websites' %}">
+                    <a class="read-more" href="{% url 'crud_cds_websites_brochure:crud_cds_websites_brochure' %}">
                         <span class="text">{% trans "Manage" %}</span>
                         <svg class="icon">
                             <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>

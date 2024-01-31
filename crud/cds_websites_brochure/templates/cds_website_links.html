@@ -1,0 +1,114 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block centered_container %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h3 style="font-weight: normal;" class="mb-4 pb-4">
+                {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
+                    {{ cds_website.nome_corso_it }}
+                {% else %}
+                    {{ cds_website.nome_corso_en }}
+                {% endif %}
+            </h3>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Description" %}</th>
+                            <th>{% trans "Order" %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for link in links %}
+                            <!-- Link Delete Modal -->
+                            <div class="modal fade"
+                            tabindex="-1"
+                            role="dialog"
+                            id="delete_link_{{link.id}}">
+                            <div class="modal-dialog modal-dialog-centered"
+                                    role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Confirm" %}
+                                        </h5>
+                                        <button class="close"
+                                                type="button"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                            <svg class="icon">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {% trans "Do you want to remove this link?" %}
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites_brochure:crud_cds_websites_brochure_links_delete' code=cds_website.id data_id=link.id %}">
+                                            {% trans 'Yes, proceed' %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Link Delete Modal -->
+                        <tr>
+                            <td>
+                                <p class="text">
+                                    {{ link.descrizione_link_it }}
+                                </p>
+                            </td>
+                            <td>
+                                {{ link.ordine }}
+                            </td>
+                            <td>
+                                <a href="{% url 'crud_cds_websites_brochure:crud_cds_websites_brochure_links_edit' code=cds_website.id data_id=link.id %}" class="btn btn-primary btn-xs">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg>
+                                    {% trans "Edit" %}
+                                </a>
+                                <a href="" class="btn btn-danger btn-xs"
+                                    data-toggle="modal"
+                                    data-target="#delete_link_{{link.id}}">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                    </svg>
+                                    {% trans "Remove" %}
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{% url 'crud_cds_websites_brochure:crud_cds_websites_brochure_links_new' code=cds_website.id %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">Logs</h4>
+            {% include "obj_logs.html" with logs=logs %}
+        </div>
+    </div>
+</div>
+{% endblock centered_container %}
