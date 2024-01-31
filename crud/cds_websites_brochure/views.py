@@ -89,7 +89,7 @@ def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=
                                     messages.SUCCESS,
                                     _("Website info edited successfully"))
 
-            return redirect('crud_cds_websites_brochure:crud_cds_website_brochure_info_edit', code=code)
+            return redirect('crud_cds_websites_brochure:crud_cds_websites_brochure_info_edit', code=code)
 
         else:  # pragma: no cover
             for k, v in base_form.errors.items():
