@@ -67,11 +67,12 @@ class ApiEndpointList(generics.ListAPIView):
         # cache
         if kwargs.get('cache_key'):
             cache_key = kwargs['cache_key']
-            if not cache.get(cache_key):
+            if cache.get(cache_key):
+                data = cache.get(cache_key)
+            else:
                 serializer = self.prepare_data(**kwargs)
                 data = serializer.data
                 cache.set(cache_key, data)
-            data = cache.get(cache_key)
         else:
             serializer = self.prepare_data(**kwargs)
             data = serializer.data

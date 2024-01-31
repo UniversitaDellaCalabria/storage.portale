@@ -992,7 +992,7 @@ def cds_group_members_new(request, regdid_id, group_id,
                    'external_form': external_form,
                    'internal_form': internal_form,
                    'group': group,
-                   'url': reverse('ricerca:teacherslist')})
+                   'url': reverse('ricerca:addressbooklist')})
 
 
 @login_required
