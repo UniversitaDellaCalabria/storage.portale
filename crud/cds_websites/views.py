@@ -59,12 +59,28 @@ def cds_website(request, code, cds_website=None, my_offices=None):
 @can_manage_cds_website
 @can_edit_cds_website
 def cds_websites_info_edit(request, code, cds_website=None, my_offices=None):
-    base_form = SitoWebCdsDatiBaseForm(data=request.POST if request.POST else None, instance=cds_website)
+    base_form = SitoWebCdsDatiBaseForm(data=request.POST if request.POST else None, instance=cds_website, initial={'languages': cds_website.lingua_it})
     
     if request.POST:
         if base_form.is_valid():
-        
             base = base_form.save(commit=False)
+            selected_languages = base_form.data['languages']
+            languages = {
+                'italiano': {
+                    'it': 'italiano',
+                    'en': 'italian'
+                },
+                'inglese': {
+                    'it': 'inglese',
+                    'en': 'italiano'
+                },
+                'italiano, inglese': {
+                    'it': 'italiano, inglese',
+                    'en': 'italian, english'
+                }
+            }
+            base.lingua_it = languages[selected_languages]['it']
+            base.lingua_en = languages[selected_languages]['en']
             base.dt_mod = now()
             base.id_user_mod=request.user
             base.save()
@@ -951,6 +967,7 @@ def cds_websites_object_new(request, code, cds_website=None, my_offices=None):
             _object.cds = cds_website.cds 
             _object.id_user_mod = request.user
             _object.dt_mod = now()
+            _object.aa_regdid_id = max(DidatticaRegolamento.objects.filter(cds_id=cds_website.cds_id).values_list('aa_reg_did', flat=True))
             _object.save()
 
             log_action(user=request.user,

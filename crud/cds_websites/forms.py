@@ -5,16 +5,57 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import *
 from django.conf import settings
 
-import requests
-
 from ricerca_app.models import *
-
+from .validators import *
 
 UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
 UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 
 
 class SitoWebCdsDatiBaseForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super(SitoWebCdsDatiBaseForm, self).__init__(*args, **kwargs)
+        
+        self.fields['languages'] = forms.MultipleChoiceField(
+            label=_("Languages"),
+            choices = (('italiano', _('ITALIAN')), ('inglese', _('ENGLISH')), ('italiano, inglese', _('ITALIAN, ENGLISH')))
+        )
+        
+        self.order_fields([ 'aa',
+                            'nome_corso_it',
+                            'nome_corso_en',
+                            'durata',
+                            'num_posti',
+                            'languages',
+                            'classe_laurea_it',
+                            'classe_laurea_en',
+                            'classe_laurea_interclasse_it',
+                            'classe_laurea_interclasse_en',
+                            'link_video_cds_it',
+                            'link_video_cds_en',
+                            'descrizione_corso_it',
+                            'descrizione_corso_en',
+                            'tasse_contributi_esoneri_it',
+                            'tasse_contributi_esoneri_en',
+                            'borse_studio_it',
+                            'borse_studio_en',
+                            'agevolazioni_it',
+                            'agevolazioni_en',
+                            'corso_in_pillole_it',
+                            'corso_in_pillole_en',
+                            'cosa_si_studia_it',
+                            'cosa_si_studia_en',
+                            'come_iscriversi_it',
+                            'come_iscriversi_en',
+                            'sito_web_it',
+                            'sito_web_en',
+                            'accesso_corso_it',
+                            'accesso_corso_en',
+                            'obiettivi_corso_it',
+                            'obiettivi_corso_en',
+                            'sbocchi_professionali_it',
+                            'sbocchi_professionali_en',]) 
 
     aa = forms.IntegerField(
         required=True,
@@ -25,8 +66,7 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
 
     class Meta:
         model = SitoWebCdsDatiBase
-        exclude = ['dt_mod', 'id_user_mod', 'id_didattica_regolamento', 'cds_cod', 'cds']
-
+        exclude = ['dt_mod', 'id_user_mod', 'id_didattica_regolamento', 'cds_cod', 'cds', 'lingua_it', 'lingua_en']
 
         labels = {
             'aa': _('Academic year'),
@@ -207,26 +247,11 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
         super(SitoWebCdsOggettiPortaleForm, self).__init__(*args, **kwargs)
         if self.initial:
             self.initial["visibile"] = bool(self.initial.get("visibile", None))
-            
-    def clean(self):
-        super(SitoWebCdsOggettiPortaleForm, self).clean()
-        titolo_it = self.cleaned_data.get("titolo_it")
-        testo_it = self.cleaned_data.get("testo_it")
-        if not titolo_it and not testo_it:
-            raise forms.ValidationError(_("At least one must be provided between:") +
-                                        f" {self.fields['titolo_it'].label} or {self.fields['testo_it'].label}")
-        return self.cleaned_data
     
     id_classe_oggetto_portale = forms.ChoiceField(
         required=True,
         choices=(("WebPath", _("WebPath")),("Publication", _("Publication"))),
         label=_("Object class"),
-    )
-    aa_regdid_id = forms.IntegerField(
-        required=True,
-        min_value=1901,
-        max_value= now().year,
-        label=_("Academic year"),
     )
     id_oggetto_portale = forms.IntegerField(
         required=True,
@@ -239,7 +264,7 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
     )
     class Meta:
         model = SitoWebCdsOggettiPortale
-        exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine',]
+        exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'aa_regdid_id']
         labels = {
             "titolo_it": _("Title (it)"),
             "titolo_en": _("Title (en)"),
