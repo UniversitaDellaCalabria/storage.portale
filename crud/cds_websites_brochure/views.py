@@ -29,7 +29,7 @@ def cds_websites_brochure(request, my_offices=None):
                    '#': _('Course of Studies Websites')}
     context = { 'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:cdswebsitelist')}
-    return render(request, 'cds_websites.html', context)
+    return render(request, 'cds_websites_brochure.html', context)
 
 
 @login_required
@@ -44,7 +44,7 @@ def cds_website_brochure(request, code, cds_website=None, my_offices=None):
                     '#': cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                 }
     
-    return render(request, 'cds_website.html', {
+    return render(request, 'cds_website_brochure.html', {
         'breadcrumbs': breadcrumbs,
         'cds_website': cds_website,
     })
@@ -177,7 +177,7 @@ def cds_websites_brochure_sliders_new(request, code, cds_website=None, my_office
                    '#': _("New"), }
 
     
-    return render(request, 'cds_websites_unique_form.html',
+    return render(request, 'cds_websites_brochure_unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
@@ -225,7 +225,7 @@ def cds_websites_brochure_sliders_edit(request, code, data_id, cds_website=None,
                    '#': _("Edit"), }
 
     
-    return render(request, 'cds_websites_unique_form.html',
+    return render(request, 'cds_websites_brochure_unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
@@ -319,7 +319,7 @@ def cds_websites_brochure_exstudents_new(request, code, cds_website=None, my_off
                    '#': _("New"), }
 
     
-    return render(request, 'cds_websites_unique_form.html',
+    return render(request, 'cds_websites_brochure_unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
@@ -369,7 +369,7 @@ def cds_websites_brochure_exstudents_edit(request, code, data_id, cds_website=No
                    '#': exstudent.nome, }
 
     
-    return render(request, 'cds_websites_unique_form.html',
+    return render(request, 'cds_websites_brochure_unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
@@ -462,7 +462,7 @@ def cds_websites_brochure_links_new(request, code, cds_website=None, my_offices=
                    '#': _("New"), }
 
     
-    return render(request, 'cds_websites_unique_form.html',
+    return render(request, 'cds_websites_brochure_unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
@@ -510,7 +510,7 @@ def cds_websites_brochure_links_edit(request, code, data_id, cds_website=None, m
                    '#': link.descrizione_link_it, }
 
     
-    return render(request, 'cds_websites_unique_form.html',
+    return render(request, 'cds_websites_brochure_unique_form.html',
                   { 
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
