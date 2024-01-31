@@ -1,0 +1,16 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<h3 style="font-weight: lighter;" class="mb-4">{% trans "Courses of Study Websites" %}</h3>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            {% include "blocks/crud_cds_websites_pages.html" with uid="id_1" %}
+        </div>
+    </div>
+</div>
+{% endblock centered_container %}

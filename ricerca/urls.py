@@ -85,6 +85,9 @@ if 'crud.teachers' in settings.INSTALLED_APPS:
 if 'crud.cds_websites_brochure' in settings.INSTALLED_APPS:
     import crud.cds_websites_brochure.urls
     urlpatterns += path('', include((crud.cds_websites_brochure.urls, 'crud_cds_websites_brochure',))),
+if 'crud.cds_websites_pages' in settings.INSTALLED_APPS:
+    import crud.cds_websites_pages.urls
+    urlpatterns += path('', include((crud.cds_websites_pages.urls, 'crud_cds_websites_pages',))),
 if 'crud.laboratories' in settings.INSTALLED_APPS:
     import crud.laboratories.urls
     urlpatterns += path('', include((crud.laboratories.urls, 'crud_laboratories',))),

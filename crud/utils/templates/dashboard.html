@@ -252,6 +252,32 @@
     </div>
     {% endif %}
 
+    {% if "crud.cds_websites_pages" in installed_apps %}
+    <div class="col-12 col-lg-3">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+            <div class="card card-bg">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% trans "Course of Studies Websites Pages" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans 'Manage Courses of Studies Websites Pages' %}
+                    </p>
+                    <a class="read-more" href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages' %}">
+                        <span class="text">{% trans "Manage" %}</span>
+                        <svg class="icon">
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+
+    </div>
+    {% endif %}
+
 
     {% if "crud.laboratories" in installed_apps %}
 
