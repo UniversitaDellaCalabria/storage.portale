@@ -543,6 +543,7 @@ class DidatticaCdsAltriDatiUfficio(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_ALTRI_DATI_UFFICIO'
+        ordering = ('ordine',)
         # unique_together = (('cds', 'ordine'),)
 
 
