@@ -168,7 +168,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         cds_groups_data = None
         if query["CdsGroups"] is not None:
             cds_groups_data = CdsInfoSerializer.to_dict_cds_groups_data(
-                query["CdsGroups"])
+                query["CdsGroups"], req_lang)
 
         cds_periods_data = None
         if query["CdsPeriods"] is not None:
@@ -273,7 +273,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 'Order': q['ordine'],
                 'ShortDesc': q['descr_breve_it'] if req_lang == 'it' or q['descr_breve_en'] is None else q['descr_breve_en'],
                 'LongDesc': q['descr_lunga_it'] if req_lang == 'it' or q['descr_lunga_en'] is None else q['descr_lunga_en'],
-                'Members': CdsInfoSerializer.to_dict_cds_group_members(q['members']),
+                'Members': CdsInfoSerializer.to_dict_cds_group_members(q['members'], req_lang),
             })
         return data
 
