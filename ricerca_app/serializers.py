@@ -1561,7 +1561,8 @@ class AddressbookSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query,
-                req_lang='en'):
+                req_lang='en',
+                full=False):
         full_name = query['cognome'] + " " + query['nome'] + \
             (" " + query['middle_name']
              if query['middle_name'] is not None else "")
@@ -1569,7 +1570,7 @@ class AddressbookSerializer(CreateUpdateAbstract):
         roles = None
         if query["Roles"] is not None:
             roles = AddressbookSerializer.to_dict_roles(
-                query["Roles"])
+                query["Roles"], full)
 
         return {
             'Name': full_name,
@@ -1590,18 +1591,32 @@ class AddressbookSerializer(CreateUpdateAbstract):
         }
 
     @staticmethod
-    def to_dict_roles(query):
+    def to_dict_roles(query, full=False):
         roles = []
         for q in query:
-            roles.append({
+            d_data = {
                 'Role': q['cd_ruolo'],
                 'RoleDescription': q['ds_ruolo'],
                 'Priority': q['priorita'],
                 'StructureCod': q['cd_uo_aff_org'],
                 'Structure': q['ds_aff_org'],
-                'StructureTypeCOD': q['cd_tipo_nodo']
-            })
+                'StructureTypeCOD': q['cd_tipo_nodo'],
+            }
+            if full:
+                d_data['Start'] = q['dt_rap_ini']
+            roles.append(d_data)
         return roles
+
+
+class AddressbookFullSerializer(AddressbookSerializer):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower(),
+                                 True))
+        return data
+
 
 class PersonaleSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
@@ -1612,8 +1627,7 @@ class PersonaleSerializer(CreateUpdateAbstract):
         return data
 
     @staticmethod
-    def to_dict(query,
-                req_lang='en'):
+    def to_dict(query, req_lang='en', full=False):
         middle_name = f" {query['middle_name']} " if query['middle_name'] else " "
         full_name = f"{query['nome']}{middle_name}{query['cognome']}"
         functions = None
@@ -1623,7 +1637,7 @@ class PersonaleSerializer(CreateUpdateAbstract):
         roles = None
         if query["Roles"] is not None:
             roles = AddressbookSerializer.to_dict_roles(
-                query["Roles"])
+                query["Roles"], full)
 
         return {
             'Name': full_name,
@@ -1657,6 +1671,16 @@ class PersonaleSerializer(CreateUpdateAbstract):
                 'StructureName': q['cd_csa__denominazione'],
             })
         return functions
+
+
+class PersonaleFullSerializer(PersonaleSerializer):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query,
+                                 str(self.context['language']).lower(),
+                                 True))
+        return data
 
 
 class StructuresSerializer(CreateUpdateAbstract):
