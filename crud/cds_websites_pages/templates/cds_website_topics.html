@@ -3,6 +3,11 @@
 {% load i18n %}
 {% load static %}
 
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+{% endblock %}
+
 {% block centered_container %}
 
 {% get_current_language as LANGUAGE_CODE %}
@@ -17,7 +22,7 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal" class="pb-2">{% trans "Publications and WebPaths" %}</h3>
+            <h3 style="font-weight: normal" class="pb-3">{% trans "Publications and WebPaths" %}</h3>
             {% include "blocks/cds_website_topics_objects.html" with objects_list=objects_list cds_website=cds_website %}
         </div>
     </div>
@@ -26,18 +31,12 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal" class="pb-2">{% trans "Pages and Topics" %}</h3>
+            <h3 style="font-weight: normal">{% trans "Pages and Topics" %}</h3>
             {% for page_name, content in pages.items %}
-                <div class="card-wrapper card-space">
-                    <div class="card card-bg no-after">
-                        <div class="card-body">
-                            <h3 style="font-weight: normal" class="mb-4">{{ page_name }}</h3>
-                            {% for topic_id, tor in content.items %}
-                                {% include "blocks/cds_website_page_topics.html" with page_name=page_name topic_obj_regarts=tor %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
+                <p class="h4 lighter mt-5">{{ page_name }}</p>
+                {% for topic_id, tor in content.items %}
+                    {% include "blocks/cds_website_page_topics.html" with page_name=page_name topic_obj_regarts=tor %}
+                {% endfor %}
             {% endfor %}
         </div>
     </div>

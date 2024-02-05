@@ -6,111 +6,121 @@
 
 {% settings_value "ETL_USER_IDS" as etl_ids %}
 
-<div class="card-wrapper card-space">
-    <div class="card card-bg no-after">
-        <div class="card-body">
-            <div id="collapseDiv_objects_list" class="collapse-div collapse-left-icon">
-                <div class="collapse-header" id="heading_objects_list">
-                    <button data-toggle="collapse" data-target="#collapse_objects_list" aria-expanded="false" aria-controls="collapse_objects_list">
-                            <h4 style="font-weight: normal" class="pb-2">
-                                {% trans "Portal Objects" %}
-                            </h4>
-                    </button>
-                </div>
-                <div id="collapse_objects_list" class="collapse" role="region" aria-labelledby="heading_objects_list">
-                    <div class="collapse-body">
-                        <!-- Objects List -->
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>{% trans "Object" %}</th>
-                                        <th>{% trans "Visible" %}</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for obj in objects_list %}
-                                        <!-- Object list Remove Modal -->
-                                        <div class="modal fade"
-                                        tabindex="-1"
-                                        role="dialog"
-                                        id="remove_obj_list_{{obj.id}}">
-                                        <div class="modal-dialog modal-dialog-centered"
-                                                role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">
-                                                        {% trans "Confirm" %}
-                                                    </h5>
-                                                    <button class="close"
-                                                            type="button"
-                                                            data-dismiss="modal"
-                                                            aria-label="Close">
-                                                        <svg class="icon">
-                                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>
-                                                        {% trans "Removing this object will also remove it from every topic it has been added to. Do you want to remove this object?" %}
-                                                    </p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_object_delete' code=cds_website.id  data_id=obj.id %}">
-                                                        {% trans 'Yes, proceed' %}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <!-- /Object list Remove Modal -->
-                                            <tr>
-                                                <td>
-                                                    {% if obj.titolo_it %}
-                                                        {{ obj.titolo_it }}
-                                                    {% else %}
-                                                        {{ obj.testo_it }}
-                                                    {% endif %}         
-                                                </td>
-                                                <td>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" id="visibleCheckBox" disabled {% if obj.visibile %}checked{% endif %}>
-                                                        <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    {% if user.is_superuser or obj.id_user_mod.pk not in etl_ids %}
-                                                        <a href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_object_edit' code=cds_website.id data_id=obj.id %}" class="btn btn-primary btn-xs">
-                                                            <svg class="icon icon-xs icon-white">
-                                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                                            </svg>
-                                                            {% trans "Edit" %}
-                                                        </a>
-                                                        <a href="" class="btn btn-danger btn-xs"
-                                                            data-toggle="modal"
-                                                            data-target="#remove_obj_list_{{obj.id}}">
-                                                            <svg class="icon icon-xs icon-white">
-                                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                                            </svg>
-                                                            {% trans "Remove" %}
-                                                        </a>
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        <a href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_object_new' code=cds_website.id %}" class="btn btn-block btn-success">
-                            <svg class="icon icon-xs icon-white">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                            </svg> {% trans "Add new" %}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div id="collapseDiv_objects_list" 
+     class="collapse-div collapse-left-icon">
+    
+     <div class="collapse-header collapse-topic-header" 
+          id="heading_objects_list">
+
+        <button data-toggle="collapse"
+                data-target="#collapse_objects_list"
+                aria-expanded="false" 
+                aria-controls="collapse_objects_list">
+                <span>
+                    {% trans "Portal Objects (Shared among topics)" %}
+                </span>
+        </button>
+
     </div>
+
+    <div id="collapse_objects_list"
+         class="collapse"
+         role="region"
+         aria-labelledby="heading_objects_list">
+
+        <div class="collapse-body">
+            <!-- Objects List -->
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Object" %}</th>
+                            <th>{% trans "Visible" %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for obj in objects_list %}
+                            <!-- Object list Remove Modal -->
+                            <div class="modal fade"
+                            tabindex="-1"
+                            role="dialog"
+                            id="remove_obj_list_{{obj.id}}">
+                            <div class="modal-dialog modal-dialog-centered"
+                                    role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Confirm" %}
+                                        </h5>
+                                        <button class="close"
+                                                type="button"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                            <svg class="icon">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {% trans "Removing this object will also remove it from every topic it has been added to. Do you want to remove this object?" %}
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_object_delete' code=cds_website.id  data_id=obj.id %}">
+                                            {% trans 'Yes, proceed' %}
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- /Object list Remove Modal -->
+                                <tr>
+                                    <td>
+                                        {% if obj.titolo_it %}
+                                            {{ obj.titolo_it }}
+                                        {% else %}
+                                            {{ obj.testo_it }}
+                                        {% endif %}         
+                                    </td>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="visibleCheckBox" disabled {% if obj.visibile %}checked{% endif %}>
+                                            <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if user.is_superuser or obj.id_user_mod.pk not in etl_ids %}
+                                            <a href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_object_edit' code=cds_website.id data_id=obj.id %}" class="btn btn-primary btn-xs">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                                </svg>
+                                                {% trans "Edit" %}
+                                            </a>
+                                            <a href="" class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#remove_obj_list_{{obj.id}}">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                                </svg>
+                                                {% trans "Remove" %}
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_object_new' code=cds_website.id %}" class="btn btn-block btn-success">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Add new" %}
+            </a>
+        </div>
+
+    </div>
+
 </div>
+
 
 {% endblock card %}
