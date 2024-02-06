@@ -8,47 +8,45 @@
 
 {% settings_value "ETL_USER_IDS" as etl_ids %}
 
-<div id="collapseDiv_{{page_name}}_{{topic_obj_regarts.topic.id}}" 
-     class="collapse-div collapse-left-icon">
 
-    <div class="collapse-header collapse-topic-header"
-         id="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+<div class="collapse-header collapse-topic-header"
+        id="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
 
-        <button data-toggle="collapse"
-                data-target="#collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}"
-                aria-expanded="false"
-                aria-controls="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+    <button data-toggle="collapse"
+            data-target="#collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}"
+            aria-expanded="false"
+            aria-controls="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}">
 
-            <span>
-                {% if LANGUAGE_CODE == "it" or not topic_obj_regarts.topic.descr_topic_en %}
-                {{ topic_obj_regarts.topic.descr_topic_it }}
-                {% else %}
-                {{ topic_obj_regarts.topic.descr_topic_en }}
-                {% endif %}
-            </span>
+        <span>
+            {% if LANGUAGE_CODE == "it" or not topic_obj_regarts.topic.descr_topic_en %}
+            {{ topic_obj_regarts.topic.descr_topic_it }}
+            {% else %}
+            {{ topic_obj_regarts.topic.descr_topic_en }}
+            {% endif %}
+        </span>
 
-        </button>
+    </button>
 
-    </div>
+</div>
 
-    <div id="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}"
-         class="collapse"
-         role="region"
-         aria-labelledby="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+<div id="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}"
+        class="collapse"
+        role="region"
+        data-parent="#collapseDiv_{{page_name}}"
+        aria-labelledby="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
 
-        <div class="collapse-body">
-            <!-- Reg Articles -->
-            {% include "blocks/cds_website_regulament_article_items.html" %}
-            <!-- /Reg Articles -->
-            <hr />
-            <!-- Objects -->
-            {% include "blocks/cds_website_object_items.html" %}
-            <!-- /Objects -->
-        </div>
-
+    <div class="collapse-body">
+        <!-- Reg Articles -->
+        {% include "blocks/cds_website_regulament_article_items.html" %}
+        <!-- /Reg Articles -->
+        <hr />
+        <!-- Objects -->
+        {% include "blocks/cds_website_object_items.html" %}
+        <!-- /Objects -->
     </div>
 
 </div>
+
 
 {% endwith %}
 

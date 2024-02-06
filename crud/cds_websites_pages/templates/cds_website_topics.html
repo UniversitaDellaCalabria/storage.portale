@@ -28,16 +28,56 @@
     </div>
 </div>
 
+
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal">{% trans "Pages and Topics" %}</h3>
-            {% for page_name, content in pages.items %}
-                <p class="h4 lighter mt-5">{{ page_name }}</p>
-                {% for topic_id, tor in content.items %}
-                    {% include "blocks/cds_website_page_topics.html" with page_name=page_name topic_obj_regarts=tor %}
-                {% endfor %}
-            {% endfor %}
+            <h3 style="font-weight: normal" class="pb-4">{% trans "Pages and Topics" %}</h3>
+            <div class="row">
+                <div class="col-4 col-md-3">
+                    <div class="nav nav-tabs nav-tabs-vertical" 
+                         id="nav-vertical-tab-pages"
+                         role="tablist"
+                         aria-orientation="vertical">
+
+                        {% for page_name in pages.keys %}
+                        {% with trimmed_page_name=page_name|cut:" " %}
+                            <a  class="nav-link {% if forloop.first %}active{% endif %}" 
+                                id="nav-vertical-tab-pages-{{trimmed_page_name}}-tab"
+                                data-toggle="tab" href="#nav-vertical-tab-pages-{{trimmed_page_name}}"
+                                role="tab" aria-controls="nav-vertical-tab-pages-{{trimmed_page_name}}"
+                                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">{{page_name}}</a>
+                        {% endwith %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+                <div class="col-8 col-md-9">
+                    <div class="tab-content" 
+                         id="nav-vertical-tabContent-pages">
+
+                        {% for page_name, content in pages.items %}
+                        {% with trimmed_page_name=page_name|cut:" " %}
+                            <div class="tab-pane p-3 fade {% if forloop.first %}show active{% endif %}"
+                                 id="nav-vertical-tab-pages-{{trimmed_page_name}}"
+                                 role="tabpanel"
+                                 aria-labelledby="nav-vertical-tab-pages-{{trimmed_page_name}}">
+                                
+                                 <div id="collapseDiv_{{trimmed_page_name}}" 
+                                     class="collapse-div collapse-left-icon">
+
+                                    {% for topic_id, tor in content.items %}
+                                    {% include "blocks/cds_website_page_topics.html" with page_name=page_name topic_obj_regarts=tor %}
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                        {% endwith %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
