@@ -3364,7 +3364,8 @@ class ServicePersonale:
             structuretypes=None,
             role=None,
             structuretree=None,
-            phone=None):
+            phone=None,
+            full=False):
 
         query_search = Q()
         role = role.split(',') if role else []
@@ -3405,18 +3406,22 @@ class ServicePersonale:
             'ds_ruolo',
             'cd_uo_aff_org',
             'ds_aff_org',
-            'cd_uo_aff_org__cd_tipo_nodo'
+            'cd_uo_aff_org__cd_tipo_nodo',
+            'dt_rap_ini'
         ).distinct()
 
         ruoli_dict = {}
         for r in ruoli:
             if not ruoli_dict.get(r['matricola']):
                 ruoli_dict[r['matricola']] = []
-            ruoli_dict[r['matricola']].append([r['cd_ruolo'],
-                                               r['ds_ruolo'],
-                                               r['cd_uo_aff_org'],
-                                               r['ds_aff_org'],
-                                               r['cd_uo_aff_org__cd_tipo_nodo']])
+            l_data = [r['cd_ruolo'],
+                      r['ds_ruolo'],
+                      r['cd_uo_aff_org'],
+                      r['ds_aff_org'],
+                      r['cd_uo_aff_org__cd_tipo_nodo']]
+            if full: l_data.append(r['dt_rap_ini'])
+
+            ruoli_dict[r['matricola']].append(l_data)
 
         priorita_tmp = PersonalePrioritaRuolo.objects.values(
             'cd_ruolo',
@@ -3464,14 +3469,18 @@ class ServicePersonale:
                 ruoli_dip = ruoli_dict.get(q['matricola']) or []
                 roles = []
                 for r in ruoli_dip:
-                    roles.append({'matricola': q['matricola'],
-                                  'cd_ruolo': r[0],
-                                  'ds_ruolo': r[1],
-                                  'priorita': priorita.get(r[0]) or 10,
-                                  'cd_uo_aff_org': r[2],
-                                  'ds_aff_org': r[3],
-                                  'cd_tipo_nodo': r[4]
-                                  })
+                    d_data = {'matricola': q['matricola'],
+                              'cd_ruolo': r[0],
+                              'ds_ruolo': r[1],
+                              'priorita': priorita.get(r[0]) or 10,
+                              'cd_uo_aff_org': r[2],
+                              'ds_aff_org': r[3],
+                              'cd_tipo_nodo': r[4],
+                              }
+                    if full:
+                        d_data['dt_rap_ini'] = r[5]
+
+                    roles.append(d_data)
 
                 roles.sort(key=lambda x: x['priorita'])
                 grouped[q['id_ab']]['Roles'] = roles
@@ -3774,7 +3783,7 @@ class ServicePersonale:
         return query
 
     @staticmethod
-    def getPersonale(personale_id):
+    def getPersonale(personale_id, full=False):
         query = Personale.objects.filter(matricola__exact=personale_id,
                                          flg_cessato=0)
 
@@ -3855,7 +3864,8 @@ class ServicePersonale:
             'ds_ruolo',
             'cd_uo_aff_org',
             'ds_aff_org',
-            'cd_uo_aff_org__cd_tipo_nodo'
+            'cd_uo_aff_org__cd_tipo_nodo',
+            'dt_rap_ini'
         ).distinct()
 
         priorita_tmp = PersonalePrioritaRuolo.objects.values(
@@ -3871,14 +3881,18 @@ class ServicePersonale:
         roles = []
 
         for r in ruoli:
-            roles.append({'matricola': r[0],
-                          'cd_ruolo': r[1],
-                          'ds_ruolo': r[2],
-                          'priorita': priorita.get(r[1]) or 10,
-                          'cd_uo_aff_org': r[3],
-                          'ds_aff_org': r[4],
-                          'cd_tipo_nodo': r[5]
-                          })
+            d_data = {'matricola': r[0],
+                      'cd_ruolo': r[1],
+                      'ds_ruolo': r[2],
+                      'priorita': priorita.get(r[1]) or 10,
+                      'cd_uo_aff_org': r[3],
+                      'ds_aff_org': r[4],
+                      'cd_tipo_nodo': r[5]
+                      }
+            if full:
+                d_data['dt_rap_ini'] = r[6]
+
+            roles.append(d_data)
         roles.sort(key=lambda x: x['priorita'])
 
         already_taken_contacts = []

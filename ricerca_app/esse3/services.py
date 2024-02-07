@@ -27,7 +27,7 @@ def getEsse3Token(request): # pragma: no cover
 
 def getEsse3Appelli(request, cds_id, af_id, aa): # pragma: no cover
     headers = {'Authorization': f'Basic {getEsse3Token(request)}'}
-    url = f"{settings.URL_ESSE3_API}calesa-service-v1/appelli/{cds_id}/{af_id}/?aaCalId={aa}"
+    url = f"{settings.URL_ESSE3_API}calesa-service-v1/appelli/{cds_id}/{af_id}/?minDataApp=01/01/{ aa }"
     response = requests.get(url, headers=headers, timeout=5)
     if response.status_code == 200:
         return response.json()

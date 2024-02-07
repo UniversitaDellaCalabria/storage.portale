@@ -142,7 +142,7 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/cds-websites/<str:cdswebsitecod>/exams/'.format(base_url),
                         api_views.ApiCdsWebsiteExams.as_view(),
                         name='cdswebsite-exams'),
-    
+
     urlpatterns += path('{}/cds-websites/portal-object-preview/<str:objectclass>/<str:objectid>/'.format(base_url),
                         api_views.ApiCdsWebsitesPortalObjectPreview.as_view(),
                         name='cdswebsite-object-preview'),
@@ -263,9 +263,17 @@ if 'rest_framework' in settings.INSTALLED_APPS:
                         api_views.ApiAddressbookList.as_view(),
                         name='addressbooklist'),
 
+    urlpatterns += path('{}/addressbook-full/'.format(base_url),
+                        api_views.ApiAddressbookFullList.as_view(),
+                        name='addressbooklist-full'),
+
     urlpatterns += path('{}/addressbook/<str:personaleid>/'.format(base_url),
                         api_views.ApiPersonaleDetail.as_view(),
                         name='personaledetail'),
+
+    urlpatterns += path('{}/addressbook-full/<str:personaleid>/'.format(base_url),
+                        api_views.ApiPersonaleFullDetail.as_view(),
+                        name='personaledetail-full'),
 
     urlpatterns += path('{}/structures/'.format(base_url),
                         api_views.ApiStructuresList.as_view(),

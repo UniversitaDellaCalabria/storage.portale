@@ -2167,6 +2167,18 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
+        usr = get_user_model().objects.create(
+            **{
+                'username': 'test',
+                'password': 'password',
+            }
+        )
+        token = Token.objects.create(user=usr)
+
+        url = reverse('ricerca:addressbooklist-full')
+        res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {token.key}')
+        assert res.status_code == 200
+
 
 class ApiStructuresListUnitTest(TestCase):
 
@@ -2479,6 +2491,19 @@ class ApiPersonaleDetailUnitTest(TestCase):
 
         assert decrypt(res.json()['results']['ID']) == "111112"
         assert decrypt(res1.json()['results']['ID']) == "111113"
+
+        usr = get_user_model().objects.create(
+            **{
+                'username': 'test',
+                'password': 'password',
+            }
+        )
+        token = Token.objects.create(user=usr)
+
+        url = reverse('ricerca:personaledetail', kwargs={
+                      'personaleid': encrypt("111112")})
+        res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {token.key}')
+        assert res.status_code == 200
 
 
 class ApiStructureDetailUnitTest(TestCase):

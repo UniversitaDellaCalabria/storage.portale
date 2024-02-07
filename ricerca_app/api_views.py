@@ -671,6 +671,26 @@ class ApiAddressbookList(ApiEndpointList):
             search, structureid, structuretypes, role, structuretree, phone)
 
 
+class ApiAddressbookFullList(ApiEndpointList):
+    description = 'La funzione restituisce la rubrica telefonica del personale arricchita con dati riguardanti il contratto'
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = AddressbookFullSerializer
+    filter_backends = [ApiAddressbookListFilter]
+
+    def get_queryset(self):
+        request = self.request
+        search = request.query_params.get('search')
+        phone = request.query_params.get('phone')
+        structureid = request.query_params.get('structure')
+        structuretypes = request.query_params.get('structuretypes')
+        role = request.query_params.get('role')
+        structuretree = request.query_params.get('structuretree')
+
+        return ServicePersonale.getAddressbook(
+            search, structureid, structuretypes, role, structuretree, phone, True)
+
+
 class ApiStructuresList(ApiEndpointList):
     description = 'La funzione restituisce le strutture organizzative'
     serializer_class = StructuresSerializer
@@ -732,6 +752,18 @@ class ApiPersonaleDetail(ApiEndpointDetail):
         personaleid = decrypt(self.kwargs['personaleid'])
 
         return ServicePersonale.getPersonale(personaleid)
+
+
+class ApiPersonaleFullDetail(ApiEndpointDetail):
+    description = 'La funzione restituisce una specifica persona con i dati sul contratto'
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = PersonaleFullSerializer
+    # filter_backends = [ApiAddressbookListFilter]
+
+    def get_queryset(self):
+        personaleid = decrypt(self.kwargs['personaleid'])
+        return ServicePersonale.getPersonale(personaleid, True)
 
 
 class ApiLaboratoryDetail(ApiEndpointDetail):
