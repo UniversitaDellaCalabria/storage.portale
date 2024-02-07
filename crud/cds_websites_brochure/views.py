@@ -162,7 +162,7 @@ def cds_websites_brochure_sliders_new(request, code, cds_website=None, my_office
                                     messages.SUCCESS,
                                     _("Scrollable Text added successfully"))
 
-            return redirect('crud_cds_websites:crud_cds_websites_sliders', code=code)
+            return redirect('crud_cds_websites_brochure:crud_cds_websites_brochure_sliders', code=code)
 
         else:  # pragma: no cover
             for k, v in slider_form.errors.items():
@@ -171,9 +171,9 @@ def cds_websites_brochure_sliders_new(request, code, cds_website=None, my_office
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites:crud_cds_websites'): _('Course of Studies Websites'),
-                   reverse('crud_cds_websites:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
-                   reverse('crud_cds_websites:crud_cds_websites_sliders', kwargs={'code': code}): _("Sliders"),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites'),
+                   reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure_sliders', kwargs={'code': code}): _("Sliders"),
                    '#': _("New"), }
 
     
@@ -210,7 +210,7 @@ def cds_websites_brochure_sliders_edit(request, code, data_id, cds_website=None,
                                     messages.SUCCESS,
                                     _("Scrollable Text edited successfully"))
 
-            return redirect('crud_cds_websites:crud_cds_websites_sliders', code=code)
+            return redirect('crud_cds_websites_brochure:crud_cds_websites_brochure_sliders', code=code)
 
         else:  # pragma: no cover
             for k, v in slider_form.errors.items():
