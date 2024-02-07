@@ -1,12 +1,11 @@
-from ckeditor.widgets import CKEditorWidget
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import *
 from django.conf import settings
 
 from ricerca_app.models import *
-from .validators import *
+from .validators import CKEditorWidgetMinLenghtValidator, CKEditorWidgetMaxLenghtValidator
+from .widgets import CKEditorWidgetWordCount
 
 UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
 UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
@@ -22,52 +21,6 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
             choices = (('italiano', _('ITALIAN')), ('inglese', _('ENGLISH')), ('italiano, inglese', _('ITALIAN, ENGLISH')))
         )
         
-        self.order_fields([ 'aa',
-                            'nome_corso_it',
-                            'nome_corso_en',
-                            'durata',
-                            'num_posti',
-                            'languages',
-                            'classe_laurea_it',
-                            'classe_laurea_en',
-                            'classe_laurea_interclasse_it',
-                            'classe_laurea_interclasse_en',
-                            'link_video_cds_it',
-                            'link_video_cds_en',
-                            'descrizione_corso_it',
-                            'descrizione_corso_en',
-                            'tasse_contributi_esoneri_it',
-                            'tasse_contributi_esoneri_en',
-                            'borse_studio_it',
-                            'borse_studio_en',
-                            'agevolazioni_it',
-                            'agevolazioni_en',
-                            'corso_in_pillole_it',
-                            'corso_in_pillole_en',
-                            'cosa_si_studia_it',
-                            'cosa_si_studia_en',
-                            'come_iscriversi_it',
-                            'come_iscriversi_en',
-                            'sito_web_it',
-                            'sito_web_en',
-                            'accesso_corso_it',
-                            'accesso_corso_en',
-                            'obiettivi_corso_it',
-                            'obiettivi_corso_en',
-                            'sbocchi_professionali_it',
-                            'sbocchi_professionali_en',]) 
-
-    aa = forms.IntegerField(
-        required=True,
-        min_value=1901,
-        max_value=now().year,
-        label=_("Academic year"),
-    )
-
-    class Meta:
-        model = SitoWebCdsDatiBase
-        exclude = ['dt_mod', 'id_user_mod', 'id_didattica_regolamento', 'cds_cod', 'cds', 'lingua_it', 'lingua_en']
-
         labels = {
             'aa': _('Academic year'),
             'cds': _('Cds name'),
@@ -108,28 +61,83 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
             'sbocchi_professionali_en': _('Job opportunituies (en)')
         }
         
-        widgets = {'descrizione_corso_it': CKEditorWidget(),
-                   'descrizione_corso_en': CKEditorWidget(),
-                   'accesso_corso_it': CKEditorWidget(),
-                   'accesso_corso_en': CKEditorWidget(),
-                   'obiettivi_corso_it': CKEditorWidget(),
-                   'obiettivi_corso_en': CKEditorWidget(),
-                   'sbocchi_professionali_it': CKEditorWidget(),
-                   'sbocchi_professionali_en': CKEditorWidget(),
-                   'tasse_contributi_esoneri_it': CKEditorWidget(),
-                   'tasse_contributi_esoneri_en': CKEditorWidget(),
-                   'borse_studio_it': CKEditorWidget(),
-                   'borse_studio_en': CKEditorWidget(),
-                   'agevolazioni_it': CKEditorWidget(),
-                   'agevolazioni_en': CKEditorWidget(),
-                   'corso_in_pillole_it': CKEditorWidget(),
-                   'corso_in_pillole_en': CKEditorWidget(),
-                   'cosa_si_studia_it': CKEditorWidget(),
-                   'cosa_si_studia_en': CKEditorWidget(),
-                   'come_iscriversi_it': CKEditorWidget(),
-                   'come_iscriversi_en': CKEditorWidget(),
-                   }
+        ckeditor_fields = [
+                   {'descrizione_corso_it': {'min': 0, 'max': 700, 'enforce': True}},
+                   {'descrizione_corso_en': {'min': 0, 'max': 700, 'enforce': False}},
+                   {'accesso_corso_it': {'min': 200, 'max': 500, 'enforce': True}},
+                   {'accesso_corso_en': {'min': 200, 'max': 500, 'enforce': False}},
+                   {'obiettivi_corso_it': {'min': 200, 'max': 500, 'enforce': True}},
+                   {'obiettivi_corso_en': {'min': 200, 'max': 500, 'enforce': False}},
+                   {'sbocchi_professionali_it': {'min': 300, 'max': 500, 'enforce': True}},
+                   {'sbocchi_professionali_en': {'min': 300, 'max': 500, 'enforce': False}},
+                   {'tasse_contributi_esoneri_it': {'min': 0, 'max': 400, 'enforce': True}},
+                   {'tasse_contributi_esoneri_en': {'min': 0, 'max': 400, 'enforce': False}},
+                   {'borse_studio_it': {'min': 200, 'max': 400, 'enforce': True}},
+                   {'borse_studio_en': {'min': 200, 'max': 400, 'enforce': False}},
+                   {'agevolazioni_it': {'min': 200, 'max': 400, 'enforce': True}},
+                   {'agevolazioni_en': {'min': 200, 'max': 400, 'enforce': False}},
+                   {'corso_in_pillole_it': {'min': 300, 'max': 600, 'enforce': True}},
+                   {'corso_in_pillole_en': {'min': 300, 'max': 600, 'enforce': False}},
+                   {'cosa_si_studia_it': {'min': 300, 'max': 600, 'enforce': True}},
+                   {'cosa_si_studia_en': {'min': 300, 'max': 600, 'enforce': False}},
+                   {'come_iscriversi_it': {'min': 300, 'max': 600, 'enforce': True}},
+                   {'come_iscriversi_en': {'min': 300, 'max': 600, 'enforce': False}},
+                ]
+        
+        for field in ckeditor_fields:
+            for (name, min_max) in field.items():
+                self.fields[name] = forms.CharField(
+                    label=labels[name],
+                    required=False,
+                    widget=CKEditorWidgetWordCount(min_max['min'], min_max['max'], min_max['enforce']),
+                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']), CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
+                )
 
+        self.order_fields([ 'aa',
+                            'nome_corso_it',
+                            'nome_corso_en',
+                            'durata',
+                            'num_posti',
+                            'languages',
+                            'classe_laurea_it',
+                            'classe_laurea_en',
+                            'classe_laurea_interclasse_it',
+                            'classe_laurea_interclasse_en',
+                            'link_video_cds_it',
+                            'link_video_cds_en',
+                            'descrizione_corso_it',
+                            'descrizione_corso_en',
+                            'tasse_contributi_esoneri_it',
+                            'tasse_contributi_esoneri_en',
+                            'borse_studio_it',
+                            'borse_studio_en',
+                            'agevolazioni_it',
+                            'agevolazioni_en',
+                            'corso_in_pillole_it',
+                            'corso_in_pillole_en',
+                            'cosa_si_studia_it',
+                            'cosa_si_studia_en',
+                            'come_iscriversi_it',
+                            'come_iscriversi_en',
+                            'accesso_corso_it',
+                            'accesso_corso_en',
+                            'obiettivi_corso_it',
+                            'obiettivi_corso_en',
+                            'sbocchi_professionali_it',
+                            'sbocchi_professionali_en', 
+                            'sito_web_en',
+                            'sito_web_it',])
+
+    aa = forms.IntegerField(
+        required=True,
+        min_value=1901,
+        max_value=now().year,
+        label=_("Academic year"),
+    )
+
+    class Meta:
+        model = SitoWebCdsDatiBase
+        exclude = ['dt_mod', 'id_user_mod', 'id_didattica_regolamento', 'cds_cod', 'cds', 'lingua_it', 'lingua_en']
     class Media:
         js = ('js/textarea-autosize.js',)
 
@@ -158,6 +166,17 @@ class SitoWebCdsForm(forms.ModelForm):
         exclude = ['id_sito_web_cds_dati_base', 'id_user_mod', 'dt_mod',]
 
 class SitoWebCdsSliderForm(SitoWebCdsForm):
+
+    slider_it = forms.CharField(
+            label=_("Scrollable text (it)"),
+            required=False,
+            max_length=130
+        )
+    slider_en = forms.CharField(
+            label=_("Scrollable text (en)"),
+            required=False,
+            max_length=130
+        )
        
     class Meta(SitoWebCdsForm.Meta):
         model = SitoWebCdsSlider
