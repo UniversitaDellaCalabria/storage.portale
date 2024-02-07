@@ -102,9 +102,7 @@
                                         <div class="collapse-body">
                                             <div class="row" v-if="item.RLineResults">
                                                 <div class="col-12 col-md-auto">
-                                                    <span style="white-space: pre-line;">
-                                                        [[ item.RLineResults ]]
-                                                    </small>
+                                                    <span v-html="item.RLineResults"></span>
                                                 </div>
                                             </div>
                                             <div class="row mt-2" v-if="item.RYear">
