@@ -22,7 +22,7 @@ class RicercaLineaApplicataForm(forms.ModelForm):
     class Meta:
         model = RicercaLineaApplicata
         fields = ['descrizione', 'descr_pubblicaz_prog_brevetto',
-                  'anno', 'ricerca_aster2']
+                  'anno', 'ricerca_aster2', 'visibile']
         labels = {
             'descrizione': _('Denomination'),
             'descr_pubblicaz_prog_brevetto': _('Patent project description'),
@@ -39,7 +39,7 @@ class RicercaLineaBaseForm(forms.ModelForm):
     class Meta:
         model = RicercaLineaBase
         fields = ['descrizione', 'descr_pubblicaz_prog_brevetto',
-                  'anno', 'ricerca_erc2']
+                  'anno', 'ricerca_erc2', 'visibile']
         labels = {
             'descrizione': _('Denomination'),
             'descr_pubblicaz_prog_brevetto': _('Patent project description'),
