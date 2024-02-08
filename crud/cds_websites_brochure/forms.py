@@ -74,12 +74,12 @@ class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
         super(SitoWebCdsDatiBaseInPilloleForm, self).__init__(*args, **kwargs)
         
         labels = {  
-            'corso_in_pillole_it': _('Short description (it)'),
-            'corso_in_pillole_en': _('Short description (en)'),
-            'cosa_si_studia_it': _('Study plan (it)'),
-            'cosa_si_studia_en': _('Study plan (en)'),
-            'come_iscriversi_it': _('Enrollement mode (it)'),
-            'come_iscriversi_en': _('Enrollement mode (en)'),
+            'corso_in_pillole_it': _('Course in a nutshell (it)'),
+            'corso_in_pillole_en': _('Course in a nutshell (en)'),
+            'cosa_si_studia_it': _('What you will study (it)'),
+            'cosa_si_studia_en': _('What you will study (en)'),
+            'come_iscriversi_it': _('How to enroll (it)'),
+            'come_iscriversi_en': _('How to enroll (en)'),
         }
         
         ckeditor_fields = [
