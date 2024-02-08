@@ -61,6 +61,18 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name="DidatticaClasseLaurea",
+            fields=[
+                ("cla_m_id", models.IntegerField(db_column="CLA_M_ID", primary_key=True, serialize=False)),
+                ("cla_miur_cod", models.CharField(db_column="CLA_MIUR_COD", max_length=20)),
+                ("cla_miur_des", models.CharField(db_column="CLA_MIUR_DES", max_length=1000)),
+            ],
+            options={
+                "db_table": "DIDATTICA_CLASSE_LAUREA",
+                "managed": True,
+            },
+        ),
+        migrations.CreateModel(
             name='SitoWebCdsDatiExcelTmp',
             fields=[
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),

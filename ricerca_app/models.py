@@ -4062,6 +4062,16 @@ class DidatticaDipartimentoGruppiComponenti(models.Model):
         ordering = ('ordine',)
 
 
+class DidatticaClasseLaurea(models.Model):
+    cla_m_id = models.IntegerField(db_column='CLA_M_ID', primary_key=True)
+    cla_miur_cod = models.CharField(db_column='CLA_MIUR_COD', max_length=20)
+    cla_miur_des = models.CharField(db_column='CLA_MIUR_DES', max_length=1000)
+    
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CLASSE_LAUREA'
+        
+
 class SitoWebCdsDatiBase(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_didattica_regolamento = models.ForeignKey(DidatticaRegolamento, models.DO_NOTHING, db_column='ID_DIDATTICA_REGOLAMENTO', blank=True, null=True, to_field='regdid_id')  # Field name made lowercase.
