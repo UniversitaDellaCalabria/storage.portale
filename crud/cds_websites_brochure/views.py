@@ -54,31 +54,60 @@ def cds_website_brochure(request, code, cds_website=None, my_offices=None):
 @can_manage_cds_website
 @can_edit_cds_website
 def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=None):
-    base_form = SitoWebCdsDatiBaseForm(data=request.POST if request.POST else None, instance=cds_website, initial={'languages': cds_website.lingua_it})
+
+    tab_form_dict = {
+        'Dati corso': SitoWebCdsDatiBaseDatiCorsoForm(instance=cds_website, initial={'languages': cds_website.lingua_it}),
+        'In pillole': SitoWebCdsDatiBaseInPilloleForm(instance=cds_website),
+        'Profilo corso': SitoWebCdsDatiBaseProfiloCorsoForm(instance=cds_website),
+        'Intro amm': SitoWebCdsDatiBaseIntroAmmForm(instance=cds_website),
+    }
+    last_viewed_tab = None
     
     if request.POST:
-        if base_form.is_valid():
-            base = base_form.save(commit=False)
-            selected_languages = base_form.data['languages']
-            languages = {
-                'italiano': {
-                    'it': 'italiano',
-                    'en': 'italian'
-                },
-                'inglese': {
-                    'it': 'inglese',
-                    'en': 'italiano'
-                },
-                'italiano, inglese': {
-                    'it': 'italiano, inglese',
-                    'en': 'italian, english'
+        form = None
+        dati_base = None
+        form_name = request.POST.get('tab_form_dict_key')
+        try:
+            match form_name:
+                case 'Dati corso':
+                    form = SitoWebCdsDatiBaseDatiCorsoForm(data=request.POST, instance=cds_website, initial={'languages': cds_website.lingua_it})
+                case 'In pillole':
+                    form = SitoWebCdsDatiBaseInPilloleForm(data=request.POST, instance=cds_website)                
+                case 'Profilo corso':
+                    form = SitoWebCdsDatiBaseProfiloCorsoForm(data=request.POST, instance=cds_website)
+                case 'Intro amm':
+                    form = SitoWebCdsDatiBaseIntroAmmForm(data=request.POST, instance=cds_website)
+            
+            last_viewed_tab = form_name
+            
+            if not form.is_valid():
+                raise Exception(_("Form validation failed"))        
+            
+            dati_base = form.save(commit=False)            
+            
+            if form_name == 'Dati corso':
+                selected_languages = form.data['languages']
+                languages = {
+                    'italiano': {
+                        'it': 'italiano',
+                        'en': 'italian'
+                    },
+                    'inglese': {
+                        'it': 'inglese',
+                        'en': 'italiano'
+                    },
+                    'italiano, inglese': {
+                        'it': 'italiano, inglese',
+                        'en': 'italian, english'
+                    }
                 }
-            }
-            base.lingua_it = languages[selected_languages]['it']
-            base.lingua_en = languages[selected_languages]['en']
-            base.dt_mod = now()
-            base.id_user_mod=request.user
-            base.save()
+                dati_base.lingua_it = languages[selected_languages]['it']
+                dati_base.lingua_en = languages[selected_languages]['en']
+                        
+                                        
+            dati_base.dt_mod = now()
+            dati_base.id_user_mod=request.user
+            dati_base.save()
         
             log_action(user=request.user,
                             obj=cds_website,
@@ -89,12 +118,15 @@ def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=
                                     messages.SUCCESS,
                                     _("Website info edited successfully"))
 
-            return redirect('crud_cds_websites_brochure:crud_cds_websites_brochure_info_edit', code=code)
-
-        else:  # pragma: no cover
-            for k, v in base_form.errors.items():
+            return redirect('crud_cds_websites_brochure:crud_cds_websites_brochure_info_edit', code=code)    
+                
+        except:
+            
+            tab_form_dict[form_name] = form
+            
+            for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
-                                        f"<b>{base_form.fields[k].label}</b>: {v}")
+                                        f"<b>{form.fields[k].label}</b>: {v}")
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites Brochure'),
@@ -109,7 +141,8 @@ def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=
                     'cds_website': cds_website,
                     'breadcrumbs': breadcrumbs,
                     'logs' : logs,
-                    'forms': [base_form,],
+                    'forms': tab_form_dict,
+                    'last_viewed_tab': last_viewed_tab,
                     'item_label': _('Info'),
                   })
 

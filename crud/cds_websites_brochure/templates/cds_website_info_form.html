@@ -11,7 +11,49 @@
         {{ cds_website.nome_corso_en }}
     {% endif %}
 </h3>
-{% endblock %}
+{% endblock title %}
+
+{% block form_container %}
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after pt-4">
+        <div class="card-body">
+
+            <ul class="nav nav-tabs nav-justified" id="brochure-tabs" role="tablist">
+                {% for tab, form in forms.items %}
+                {% with trimmed_tab=tab|cut:" " %}
+                    <li class="nav-item"><a class="nav-link {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}active{% endif %}" id="{{trimmed_tab}}-nav-item"
+                        data-toggle="tab" href="#{{trimmed_tab}}-tab" 
+                        role="tab" aria-controls="{{trimmed_tab}}-tab"
+                        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">{{tab}}</a>
+                    </li>
+                {% endwith %}
+                {% endfor %}
+            </ul>
+
+            <div class="tab-content pt-2" id="brochure-tabsContent">
+                {% for tab, form in forms.items %}
+                {% with trimmed_tab=tab|cut:" " %}
+                
+                <div class="tab-pane p-4 mt-3 fade {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}show active{% endif %}"
+                     id="{{trimmed_tab}}-tab"
+                     role="tabpanel"
+                     aria-labelledby="{{trimmed_tab}}-tab">
+                    
+                     <form method="post" enctype="multipart/form-data" novalidate>
+                        {% include "form_template.html" with form=form %}
+                        <input type="hidden" name="tab_form_dict_key" maxlength="2000" id="id-{{trimmed_tab}}-dict-key" value="{{tab}}">
+                        <br />
+                        {% include "includes/form_submit.html" %}
+                    </form>
+                
+                </div>
+                {% endwith %}
+                {% endfor %} 
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock form_container %}
 
 {% block after_forms %}
 <div class="card-wrapper card-space">
@@ -22,4 +64,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock after_forms %}

@@ -11,16 +11,40 @@ UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
 UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 
 
-class SitoWebCdsDatiBaseForm(forms.ModelForm):
-    
+#-- Dati corso : titolo, classe, posti, lingua, durata
+class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(SitoWebCdsDatiBaseForm, self).__init__(*args, **kwargs)
+        super(SitoWebCdsDatiBaseDatiCorsoForm, self).__init__(*args, **kwargs)
         
         self.fields['languages'] = forms.MultipleChoiceField(
             label=_("Languages"),
             choices = (('italiano', _('ITALIAN')), ('inglese', _('ENGLISH')), ('italiano, inglese', _('ITALIAN, ENGLISH')))
         )
         
+        self.fields["aa"] = forms.IntegerField(
+            required=True,
+            min_value=1901,
+            max_value=now().year,
+            label=_("Academic year"),
+        )
+           
+    class Meta:
+        model = SitoWebCdsDatiBase
+        fields = [  
+            'aa',
+            'nome_corso_it',
+            'nome_corso_en',
+            'durata',
+            'num_posti',
+            'classe_laurea_it',
+            'classe_laurea_en',
+            'classe_laurea_interclasse_it',
+            'classe_laurea_interclasse_en',
+            'link_video_cds_it',
+            'link_video_cds_en',
+            'sito_web_it',
+            'sito_web_en',
+        ]
         labels = {
             'aa': _('Academic year'),
             'cds': _('Cds name'),
@@ -37,52 +61,35 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
             'num_posti': _('Seats Number'),
             'link_video_cds_it': _('Link video (it)'),
             'link_video_cds_en': _('Link video (en)'),
-            'descrizione_corso_it': _('Description (it)'),
-            'descrizione_corso_en': _('Description (en)'),
-            'tasse_contributi_esoneri_it': _('Taxes (it)'),
-            'tasse_contributi_esoneri_en': _('Taxes (en)'),
-            'borse_studio_it': _('Scholarships (it)'),
-            'borse_studio_en': _('Scholarships (en)'),
-            'agevolazioni_it': _('Concessions (it)'),
-            'agevolazioni_en': _('Concessions (en)'),
+            'sito_web_it': _('Website (it)'),
+            'sito_web_en': _('Website (en)'),
+        }
+    class Media:
+        js = ('js/textarea-autosize.js',)
+        
+        
+#-- In pillole: corso in pillole, cosa si studia, iscrizione
+class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SitoWebCdsDatiBaseInPilloleForm, self).__init__(*args, **kwargs)
+        
+        labels = {  
             'corso_in_pillole_it': _('Short description (it)'),
             'corso_in_pillole_en': _('Short description (en)'),
             'cosa_si_studia_it': _('Study plan (it)'),
             'cosa_si_studia_en': _('Study plan (en)'),
             'come_iscriversi_it': _('Enrollement mode (it)'),
             'come_iscriversi_en': _('Enrollement mode (en)'),
-            'sito_web_it': _('Website (it)'),
-            'sito_web_en': _('Website (en)'),
-            'accesso_corso_it': _('Admission (it)'),
-            'accesso_corso_en': _('Admission (en)'),
-            'obiettivi_corso_it': _('Goals (it)'),
-            'obiettivi_corso_en': _('Goals (en)'),
-            'sbocchi_professionali_it': _('Job opportunities (it)'),
-            'sbocchi_professionali_en': _('Job opportunituies (en)')
         }
         
         ckeditor_fields = [
-                   {'descrizione_corso_it': {'min': 0, 'max': 700, 'enforce': True}},
-                   {'descrizione_corso_en': {'min': 0, 'max': 700, 'enforce': False}},
-                   {'accesso_corso_it': {'min': 200, 'max': 500, 'enforce': True}},
-                   {'accesso_corso_en': {'min': 200, 'max': 500, 'enforce': False}},
-                   {'obiettivi_corso_it': {'min': 200, 'max': 500, 'enforce': True}},
-                   {'obiettivi_corso_en': {'min': 200, 'max': 500, 'enforce': False}},
-                   {'sbocchi_professionali_it': {'min': 300, 'max': 500, 'enforce': True}},
-                   {'sbocchi_professionali_en': {'min': 300, 'max': 500, 'enforce': False}},
-                   {'tasse_contributi_esoneri_it': {'min': 0, 'max': 400, 'enforce': True}},
-                   {'tasse_contributi_esoneri_en': {'min': 0, 'max': 400, 'enforce': False}},
-                   {'borse_studio_it': {'min': 200, 'max': 400, 'enforce': True}},
-                   {'borse_studio_en': {'min': 200, 'max': 400, 'enforce': False}},
-                   {'agevolazioni_it': {'min': 200, 'max': 400, 'enforce': True}},
-                   {'agevolazioni_en': {'min': 200, 'max': 400, 'enforce': False}},
-                   {'corso_in_pillole_it': {'min': 300, 'max': 600, 'enforce': True}},
-                   {'corso_in_pillole_en': {'min': 300, 'max': 600, 'enforce': False}},
-                   {'cosa_si_studia_it': {'min': 300, 'max': 600, 'enforce': True}},
-                   {'cosa_si_studia_en': {'min': 300, 'max': 600, 'enforce': False}},
-                   {'come_iscriversi_it': {'min': 300, 'max': 600, 'enforce': True}},
-                   {'come_iscriversi_en': {'min': 300, 'max': 600, 'enforce': False}},
-                ]
+            {'corso_in_pillole_it': {'min': 300, 'max': 600, 'enforce': True}},
+            {'corso_in_pillole_en': {'min': 300, 'max': 600, 'enforce': False}},
+            {'cosa_si_studia_it': {'min': 300, 'max': 600, 'enforce': True}},
+            {'cosa_si_studia_en': {'min': 300, 'max': 600, 'enforce': False}},
+            {'come_iscriversi_it': {'min': 300, 'max': 600, 'enforce': True}},
+            {'come_iscriversi_en': {'min': 300, 'max': 600, 'enforce': False}},
+        ]
         
         for field in ckeditor_fields:
             for (name, min_max) in field.items():
@@ -92,54 +99,119 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
                     widget=CKEditorWidgetWordCount(min_max['min'], min_max['max'], min_max['enforce']),
                     validators=[CKEditorWidgetMinLenghtValidator(min_max['min']), CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
                 )
-
-        self.order_fields([ 'aa',
-                            'nome_corso_it',
-                            'nome_corso_en',
-                            'durata',
-                            'num_posti',
-                            'languages',
-                            'classe_laurea_it',
-                            'classe_laurea_en',
-                            'classe_laurea_interclasse_it',
-                            'classe_laurea_interclasse_en',
-                            'link_video_cds_it',
-                            'link_video_cds_en',
-                            'descrizione_corso_it',
-                            'descrizione_corso_en',
-                            'tasse_contributi_esoneri_it',
-                            'tasse_contributi_esoneri_en',
-                            'borse_studio_it',
-                            'borse_studio_en',
-                            'agevolazioni_it',
-                            'agevolazioni_en',
-                            'corso_in_pillole_it',
-                            'corso_in_pillole_en',
-                            'cosa_si_studia_it',
-                            'cosa_si_studia_en',
-                            'come_iscriversi_it',
-                            'come_iscriversi_en',
-                            'accesso_corso_it',
-                            'accesso_corso_en',
-                            'obiettivi_corso_it',
-                            'obiettivi_corso_en',
-                            'sbocchi_professionali_it',
-                            'sbocchi_professionali_en', 
-                            'sito_web_en',
-                            'sito_web_it',])
-
-    aa = forms.IntegerField(
-        required=True,
-        min_value=1901,
-        max_value=now().year,
-        label=_("Academic year"),
-    )
-
+                
     class Meta:
         model = SitoWebCdsDatiBase
-        exclude = ['dt_mod', 'id_user_mod', 'id_didattica_regolamento', 'cds_cod', 'cds', 'lingua_it', 'lingua_en']
+        fields = [
+            'corso_in_pillole_it',
+            'corso_in_pillole_en',
+            'cosa_si_studia_it',
+            'cosa_si_studia_en',
+            'come_iscriversi_it',
+            'come_iscriversi_en',
+        ]
     class Media:
         js = ('js/textarea-autosize.js',)
+        
+        
+#-- Profilo corso: Descrizione, Ammissione, Obiettivi, Sbocchi
+class SitoWebCdsDatiBaseProfiloCorsoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SitoWebCdsDatiBaseProfiloCorsoForm, self).__init__(*args, **kwargs)
+        
+        labels = {  
+            'descrizione_corso_it': _('Description (it)'),
+            'descrizione_corso_en': _('Description (en)'),  
+            'accesso_corso_it': _('Admission (it)'),
+            'accesso_corso_en': _('Admission (en)'),
+            'obiettivi_corso_it': _('Goals (it)'),
+            'obiettivi_corso_en': _('Goals (en)'),
+            'sbocchi_professionali_it': _('Job opportunities (it)'),
+            'sbocchi_professionali_en': _('Job opportunituies (en)'),
+        }
+        
+        ckeditor_fields = [
+            {'descrizione_corso_it': {'min': 0, 'max': 700, 'enforce': True}},
+            {'descrizione_corso_en': {'min': 0, 'max': 700, 'enforce': False}},
+            {'accesso_corso_it': {'min': 200, 'max': 500, 'enforce': True}},
+            {'accesso_corso_en': {'min': 200, 'max': 500, 'enforce': False}},
+            {'obiettivi_corso_it': {'min': 200, 'max': 500, 'enforce': True}},
+            {'obiettivi_corso_en': {'min': 200, 'max': 500, 'enforce': False}},
+            {'sbocchi_professionali_it': {'min': 300, 'max': 500, 'enforce': True}},
+            {'sbocchi_professionali_en': {'min': 300, 'max': 500, 'enforce': False}},
+        ]
+        
+        for field in ckeditor_fields:
+            for (name, min_max) in field.items():
+                self.fields[name] = forms.CharField(
+                    label=labels[name],
+                    required=False,
+                    widget=CKEditorWidgetWordCount(min_max['min'], min_max['max'], min_max['enforce']),
+                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']), CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
+                )
+                
+    class Meta:
+        model = SitoWebCdsDatiBase
+        fields = [
+            'descrizione_corso_it',
+            'descrizione_corso_en',
+            'accesso_corso_it',
+            'accesso_corso_en',
+            'obiettivi_corso_it',
+            'obiettivi_corso_en',
+            'sbocchi_professionali_it',
+            'sbocchi_professionali_en',
+        ]
+    class Media:
+        js = ('js/textarea-autosize.js',)
+        
+
+#-- Intro amm: Tasse, contributi, agevolazioni
+class SitoWebCdsDatiBaseIntroAmmForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SitoWebCdsDatiBaseIntroAmmForm, self).__init__(*args, **kwargs)
+        
+        labels = {  
+            'tasse_contributi_esoneri_it': _('Taxes (it)'),
+            'tasse_contributi_esoneri_en': _('Taxes (en)'),
+            'borse_studio_it': _('Scholarships (it)'),
+            'borse_studio_en': _('Scholarships (en)'),
+            'agevolazioni_it': _('Concessions (it)'),
+            'agevolazioni_en': _('Concessions (en)'),
+        }
+        
+        ckeditor_fields = [
+            {'tasse_contributi_esoneri_it': {'min': 0, 'max': 400, 'enforce': True}},
+            {'tasse_contributi_esoneri_en': {'min': 0, 'max': 400, 'enforce': False}},
+            {'borse_studio_it': {'min': 200, 'max': 400, 'enforce': True}},
+            {'borse_studio_en': {'min': 200, 'max': 400, 'enforce': False}},
+            {'agevolazioni_it': {'min': 200, 'max': 400, 'enforce': True}},
+            {'agevolazioni_en': {'min': 200, 'max': 400, 'enforce': False}},
+        ]
+        
+        for field in ckeditor_fields:
+            for (name, min_max) in field.items():
+                self.fields[name] = forms.CharField(
+                    label=labels[name],
+                    required=False,
+                    widget=CKEditorWidgetWordCount(min_max['min'], min_max['max'], min_max['enforce']),
+                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']), CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
+                )
+                
+    class Meta:
+        model = SitoWebCdsDatiBase
+        fields = [
+            'tasse_contributi_esoneri_it',
+            'tasse_contributi_esoneri_en',
+            'borse_studio_it',
+            'borse_studio_en',
+            'agevolazioni_it',
+            'agevolazioni_en',
+        ]
+    class Media:
+        js = ('js/textarea-autosize.js',)
+        
+
 
 class SitoWebCdsExStudentiForm(forms.ModelForm):
     
