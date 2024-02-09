@@ -8,6 +8,7 @@ from ricerca_app.models import *
 from .validators import CKEditorWidgetMinLenghtValidator, CKEditorWidgetMaxLenghtValidator
 from .. utils.widgets import RicercaCRUDCkEditorWidget
 
+
 UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
 UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 
