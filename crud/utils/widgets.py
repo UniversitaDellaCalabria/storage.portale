@@ -28,10 +28,3 @@ class RicercaCRUDDateTimeWidget(DateTimeInput):
 
 class RicercaCRUDCkEditorWidget(CKEditor5Widget):
     template_name = 'widgets/ricerca_crud_ckeditor_widget.html'
-
-    def __init__(self, config_name="default", attrs=None, ckeditor_fields=None):
-        if attrs == None:
-            attrs = {}
-            attrs['min'] = ckeditor_fields.get('min',0)
-            attrs['max'] = ckeditor_fields.get('max',0)
-        return super().__init__(config_name=config_name, attrs=attrs)

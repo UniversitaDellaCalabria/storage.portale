@@ -120,7 +120,8 @@ class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
                 self.fields[name] = forms.CharField(
                     label=labels[name],
                     required=False,
-                    widget=RicercaCRUDCkEditorWidget(ckeditor_fields=min_max),
+                    widget=RicercaCRUDCkEditorWidget(attrs={'min': min_max['min'],
+                                                            'max': min_max['max']}),
                     validators=[CKEditorWidgetMinLenghtValidator(min_max['min']),
                                 CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
                 )
@@ -171,7 +172,8 @@ class SitoWebCdsDatiBaseProfiloCorsoForm(forms.ModelForm):
                 self.fields[name] = forms.CharField(
                     label=labels[name],
                     required=False,
-                    widget=RicercaCRUDCkEditorWidget(ckeditor_fields=min_max),
+                    widget=RicercaCRUDCkEditorWidget(attrs={'min': min_max['min'],
+                                                            'max': min_max['max']}),
                     validators=[CKEditorWidgetMinLenghtValidator(min_max['min']),
                                 CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
                 )
@@ -220,7 +222,8 @@ class SitoWebCdsDatiBaseIntroAmmForm(forms.ModelForm):
                 self.fields[name] = forms.CharField(
                     label=labels[name],
                     required=False,
-                    widget=RicercaCRUDCkEditorWidget(ckeditor_fields=min_max),
+                    widget=RicercaCRUDCkEditorWidget(attrs={'min': min_max['min'],
+                                                            'max': min_max['max']}),
                     validators=[CKEditorWidgetMinLenghtValidator(min_max['min']),
                                 CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
                 )
