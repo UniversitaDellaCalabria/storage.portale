@@ -355,21 +355,6 @@ else:
 
 LOGOUT_REDIRECT_URL=f'/'
 
-CKEDITOR_CONFIGS = {
-    'default': {
-        'forcePasteAsPlainText': True,
-        'height': 100,
-        'width': 'full',
-        'toolbar': 'Custom',
-        'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink'],
-            ['RemoveFormat']
-        ]
-    }
-}
-
 UNICMS_AUTH_TOKEN = 'secret_token'
 UNICMS_ROOT_URL = 'root_url'
 UNICMS_PUBLICATION_API_URL = UNICMS_ROOT_URL + '/api/publications/{}/?format=json'
@@ -391,4 +376,42 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.memcached.PyLibMCCache",
         "LOCATION": "127.0.0.1:11211",
     }
+}
+
+# ck editor
+customColorPalette = [
+        {
+            'color': 'hsl(4, 90%, 58%)',
+            'label': 'Red'
+        },
+        {
+            'color': 'hsl(340, 82%, 52%)',
+            'label': 'Pink'
+        },
+        {
+            'color': 'hsl(291, 64%, 42%)',
+            'label': 'Purple'
+        },
+        {
+            'color': 'hsl(262, 52%, 47%)',
+            'label': 'Deep Purple'
+        },
+        {
+            'color': 'hsl(231, 48%, 48%)',
+            'label': 'Indigo'
+        },
+        {
+            'color': 'hsl(207, 90%, 54%)',
+            'label': 'Blue'
+        },
+    ]
+
+# CKEDITOR_5_CUSTOM_CSS = 'path_to.css' # optional
+# CKEDITOR_5_FILE_STORAGE = "path_to_storage.CustomStorage" # optional
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                    'bulletedList', 'numberedList', '|', 'RemoveFormat']
+
+    },
 }
