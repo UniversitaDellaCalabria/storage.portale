@@ -3653,7 +3653,7 @@ class SpinoffStartupDipartimento(models.Model):
     nome_origine_dipartimento = models.CharField(db_column='NOME_ORIGINE_DIPARTIMENTO', max_length=1000)  # Field name made lowercase.
     id_didattica_dipartimento = models.ForeignKey(DidatticaDipartimento, models.CASCADE, db_column='ID_DIDATTICA_DIPARTIMENTO', blank=True, null=True)  # Field name made lowercase.
 
-    def __str__(): # pragma: no cover
+    def __str__(self): # pragma: no cover
         return self.nome_origine_dipartimento
 
     class Meta:
