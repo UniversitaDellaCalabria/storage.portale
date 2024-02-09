@@ -285,8 +285,8 @@ def cds_websites_pages_regart_extra_new(request, code, topic_id, data_id, cds_we
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites Pages'),
-                   reverse('crud_cds_websites_pages:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}) : _("Topics"),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}): 
+                       (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_regart_item_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
                    '#': _("New Extra") }
     
