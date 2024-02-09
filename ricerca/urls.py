@@ -92,6 +92,11 @@ if 'crud.laboratories' in settings.INSTALLED_APPS:
     import crud.laboratories.urls
     urlpatterns += path('', include((crud.laboratories.urls, 'crud_laboratories',))),
 
+urlpatterns += [
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
 if 'saml2_sp' in settings.INSTALLED_APPS:
     from djangosaml2 import views
     import saml2_sp.urls

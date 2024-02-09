@@ -1,6 +1,6 @@
 from bootstrap_italia_template.widgets import BootstrapItaliaDateWidget
 
-from ckeditor.widgets import CKEditorWidget
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
@@ -29,7 +29,7 @@ class RicercaLineaApplicataForm(forms.ModelForm):
             'anno': _('Year'),
             'ricerca_aster2': _('ASTER2'),
         }
-        widgets = {'descr_pubblicaz_prog_brevetto': CKEditorWidget()}
+        widgets = {'descr_pubblicaz_prog_brevetto': CKEditor5Widget()}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -46,7 +46,7 @@ class RicercaLineaBaseForm(forms.ModelForm):
             'anno': _('Year'),
             'ricerca_erc2': _('ERC2'),
         }
-        widgets = {'descr_pubblicaz_prog_brevetto': CKEditorWidget()}
+        widgets = {'descr_pubblicaz_prog_brevetto': CKEditor5Widget()}
 
     class Media:
         js = ('js/textarea-autosize.js',)

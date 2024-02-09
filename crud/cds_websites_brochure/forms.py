@@ -3,24 +3,27 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import *
 from django.conf import settings
 
+from django_ckeditor_5.widgets import CKEditor5Widget
+from .. utils.widgets import RicercaCRUDCkEditorWidget
+
 from ricerca_app.models import *
 from .validators import CKEditorWidgetMinLenghtValidator, CKEditorWidgetMaxLenghtValidator
-from .widgets import CKEditorWidgetWordCount
+
 
 UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
 UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 
 
 class SitoWebCdsDatiBaseForm(forms.ModelForm):
-    
+
     def __init__(self, *args, **kwargs):
         super(SitoWebCdsDatiBaseForm, self).__init__(*args, **kwargs)
-        
+
         self.fields['languages'] = forms.MultipleChoiceField(
             label=_("Languages"),
             choices = (('italiano', _('ITALIAN')), ('inglese', _('ENGLISH')), ('italiano, inglese', _('ITALIAN, ENGLISH')))
         )
-        
+
         labels = {
             'aa': _('Academic year'),
             'cds': _('Cds name'),
@@ -60,7 +63,7 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
             'sbocchi_professionali_it': _('Job opportunities (it)'),
             'sbocchi_professionali_en': _('Job opportunituies (en)')
         }
-        
+
         ckeditor_fields = [
                    {'descrizione_corso_it': {'min': 0, 'max': 700, 'enforce': True}},
                    {'descrizione_corso_en': {'min': 0, 'max': 700, 'enforce': False}},
@@ -83,14 +86,15 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
                    {'come_iscriversi_it': {'min': 300, 'max': 600, 'enforce': True}},
                    {'come_iscriversi_en': {'min': 300, 'max': 600, 'enforce': False}},
                 ]
-        
+
         for field in ckeditor_fields:
             for (name, min_max) in field.items():
                 self.fields[name] = forms.CharField(
                     label=labels[name],
                     required=False,
-                    widget=CKEditorWidgetWordCount(min_max['min'], min_max['max'], min_max['enforce']),
-                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']), CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
+                    widget=RicercaCRUDCkEditorWidget(ckeditor_fields=min_max),
+                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']),
+                                CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
                 )
 
         self.order_fields([ 'aa',
@@ -124,7 +128,7 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
                             'obiettivi_corso_it',
                             'obiettivi_corso_en',
                             'sbocchi_professionali_it',
-                            'sbocchi_professionali_en', 
+                            'sbocchi_professionali_en',
                             'sito_web_en',
                             'sito_web_it',])
 
@@ -137,12 +141,12 @@ class SitoWebCdsDatiBaseForm(forms.ModelForm):
 
     class Meta:
         model = SitoWebCdsDatiBase
-        exclude = ['dt_mod', 'id_user_mod', 'id_didattica_regolamento', 'cds_cod', 'cds', 'lingua_it', 'lingua_en']
-    class Media:
-        js = ('js/textarea-autosize.js',)
+        exclude = ['dt_mod', 'id_user_mod', 'id_didattica_regolamento',
+                   'cds_cod', 'cds', 'lingua_it', 'lingua_en']
+
 
 class SitoWebCdsExStudentiForm(forms.ModelForm):
-    
+
     class Meta:
         model = SitoWebCdsExStudenti
         exclude = ['id_sito_web_cds_dati_base', 'id_user_mod', 'dt_mod',]
@@ -177,7 +181,7 @@ class SitoWebCdsSliderForm(SitoWebCdsForm):
             required=False,
             max_length=130
         )
-       
+
     class Meta(SitoWebCdsForm.Meta):
         model = SitoWebCdsSlider
         labels = {
@@ -185,7 +189,7 @@ class SitoWebCdsSliderForm(SitoWebCdsForm):
             'slider_en': _("Scrollable text (en)"),
             'ordine': _("Order"),
         }
-        
+
 class SitoWebCdsLinkForm(SitoWebCdsForm):
     class Meta(SitoWebCdsForm.Meta):
         model = SitoWebCdsLink

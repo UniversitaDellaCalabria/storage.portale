@@ -15,7 +15,7 @@ def _normalize_text(text):
 class CKEditorWidgetMinLenghtValidator(MinLengthValidator):
     def clean(self, x):
         return len(_normalize_text(x))
-    
+
 class CKEditorWidgetMaxLenghtValidator(MaxLengthValidator):
     def clean(self, x):
         return len(_normalize_text(x))

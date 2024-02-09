@@ -25,7 +25,7 @@ cryptography
 
 python-magic
 
-django-ckeditor
+django-ckeditor-5
 
 requests
 
