@@ -4,8 +4,9 @@ from django.utils.timezone import *
 from django.conf import settings
 
 from ricerca_app.models import *
+
 from .validators import CKEditorWidgetMinLenghtValidator, CKEditorWidgetMaxLenghtValidator
-from .widgets import CKEditorWidgetWordCount
+from .. utils.widgets import RicercaCRUDCkEditorWidget
 
 UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
 UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
@@ -15,23 +16,23 @@ UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SitoWebCdsDatiBaseDatiCorsoForm, self).__init__(*args, **kwargs)
-        
+
         self.fields['languages'] = forms.MultipleChoiceField(
             label=_("Languages"),
             choices = (('italiano', _('ITALIAN')), ('inglese', _('ENGLISH')), ('italiano, inglese', _('ITALIAN, ENGLISH')))
         )
-        
+
         self.fields["aa"] = forms.IntegerField(
             required=True,
             min_value=1901,
             max_value=now().year,
             label=_("Academic year"),
         )
-        
+
         classi_laurea = DidatticaClasseLaurea.objects.all().values_list("cla_miur_cod", "cla_miur_des")
         classi_laurea_choices = list(map(lambda cod_des: (f"{cod_des[0]} {cod_des[1]}", f"{cod_des[0]} {cod_des[1]}"), classi_laurea))
         classi_laurea_choices.append(("", "-"))
-        
+
         self.fields["classe_laurea_it"] = forms.ChoiceField(
             label=_('Course class (it)'),
             choices=classi_laurea_choices
@@ -50,10 +51,10 @@ class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
             choices=classi_laurea_choices,
             required=False,
         )
-           
+
     class Meta:
         model = SitoWebCdsDatiBase
-        fields = [  
+        fields = [
             'aa',
             'nome_corso_it',
             'nome_corso_en',
@@ -89,14 +90,14 @@ class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
         }
     class Media:
         js = ('js/textarea-autosize.js',)
-        
-        
+
+
 #-- In pillole: corso in pillole, cosa si studia, iscrizione
 class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SitoWebCdsDatiBaseInPilloleForm, self).__init__(*args, **kwargs)
-        
-        labels = {  
+
+        labels = {
             'corso_in_pillole_it': _('Course in a nutshell (it)'),
             'corso_in_pillole_en': _('Course in a nutshell (en)'),
             'cosa_si_studia_it': _('What you will study (it)'),
@@ -104,7 +105,7 @@ class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
             'come_iscriversi_it': _('How to enroll (it)'),
             'come_iscriversi_en': _('How to enroll (en)'),
         }
-        
+
         ckeditor_fields = [
             {'corso_in_pillole_it': {'min': 300, 'max': 600, 'enforce': True}},
             {'corso_in_pillole_en': {'min': 300, 'max': 600, 'enforce': False}},
@@ -113,16 +114,17 @@ class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
             {'come_iscriversi_it': {'min': 300, 'max': 600, 'enforce': True}},
             {'come_iscriversi_en': {'min': 300, 'max': 600, 'enforce': False}},
         ]
-        
+
         for field in ckeditor_fields:
             for (name, min_max) in field.items():
                 self.fields[name] = forms.CharField(
                     label=labels[name],
                     required=False,
-                    widget=CKEditorWidgetWordCount(min_max['min'], min_max['max'], min_max['enforce']),
-                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']), CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
+                    widget=RicercaCRUDCkEditorWidget(ckeditor_fields=min_max),
+                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']),
+                                CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
                 )
-                
+
     class Meta:
         model = SitoWebCdsDatiBase
         fields = [
@@ -135,16 +137,16 @@ class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
         ]
     class Media:
         js = ('js/textarea-autosize.js',)
-        
-        
+
+
 #-- Profilo corso: Descrizione, Ammissione, Obiettivi, Sbocchi
 class SitoWebCdsDatiBaseProfiloCorsoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SitoWebCdsDatiBaseProfiloCorsoForm, self).__init__(*args, **kwargs)
-        
-        labels = {  
+
+        labels = {
             'descrizione_corso_it': _('Description (it)'),
-            'descrizione_corso_en': _('Description (en)'),  
+            'descrizione_corso_en': _('Description (en)'),
             'accesso_corso_it': _('Admission (it)'),
             'accesso_corso_en': _('Admission (en)'),
             'obiettivi_corso_it': _('Goals (it)'),
@@ -152,7 +154,7 @@ class SitoWebCdsDatiBaseProfiloCorsoForm(forms.ModelForm):
             'sbocchi_professionali_it': _('Job opportunities (it)'),
             'sbocchi_professionali_en': _('Job opportunituies (en)'),
         }
-        
+
         ckeditor_fields = [
             {'descrizione_corso_it': {'min': 0, 'max': 700, 'enforce': True}},
             {'descrizione_corso_en': {'min': 0, 'max': 700, 'enforce': False}},
@@ -163,16 +165,17 @@ class SitoWebCdsDatiBaseProfiloCorsoForm(forms.ModelForm):
             {'sbocchi_professionali_it': {'min': 300, 'max': 500, 'enforce': True}},
             {'sbocchi_professionali_en': {'min': 300, 'max': 500, 'enforce': False}},
         ]
-        
+
         for field in ckeditor_fields:
             for (name, min_max) in field.items():
                 self.fields[name] = forms.CharField(
                     label=labels[name],
                     required=False,
-                    widget=CKEditorWidgetWordCount(min_max['min'], min_max['max'], min_max['enforce']),
-                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']), CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
+                    widget=RicercaCRUDCkEditorWidget(ckeditor_fields=min_max),
+                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']),
+                                CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
                 )
-                
+
     class Meta:
         model = SitoWebCdsDatiBase
         fields = [
@@ -187,14 +190,14 @@ class SitoWebCdsDatiBaseProfiloCorsoForm(forms.ModelForm):
         ]
     class Media:
         js = ('js/textarea-autosize.js',)
-        
+
 
 #-- Intro amm: Tasse, contributi, agevolazioni
 class SitoWebCdsDatiBaseIntroAmmForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SitoWebCdsDatiBaseIntroAmmForm, self).__init__(*args, **kwargs)
-        
-        labels = {  
+
+        labels = {
             'tasse_contributi_esoneri_it': _('Taxes (it)'),
             'tasse_contributi_esoneri_en': _('Taxes (en)'),
             'borse_studio_it': _('Scholarships (it)'),
@@ -202,7 +205,7 @@ class SitoWebCdsDatiBaseIntroAmmForm(forms.ModelForm):
             'agevolazioni_it': _('Concessions (it)'),
             'agevolazioni_en': _('Concessions (en)'),
         }
-        
+
         ckeditor_fields = [
             {'tasse_contributi_esoneri_it': {'min': 0, 'max': 400, 'enforce': True}},
             {'tasse_contributi_esoneri_en': {'min': 0, 'max': 400, 'enforce': False}},
@@ -211,16 +214,17 @@ class SitoWebCdsDatiBaseIntroAmmForm(forms.ModelForm):
             {'agevolazioni_it': {'min': 200, 'max': 400, 'enforce': True}},
             {'agevolazioni_en': {'min': 200, 'max': 400, 'enforce': False}},
         ]
-        
+
         for field in ckeditor_fields:
             for (name, min_max) in field.items():
                 self.fields[name] = forms.CharField(
                     label=labels[name],
                     required=False,
-                    widget=CKEditorWidgetWordCount(min_max['min'], min_max['max'], min_max['enforce']),
-                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']), CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
+                    widget=RicercaCRUDCkEditorWidget(ckeditor_fields=min_max),
+                    validators=[CKEditorWidgetMinLenghtValidator(min_max['min']),
+                                CKEditorWidgetMaxLenghtValidator(min_max['max'])] if min_max['enforce'] else []
                 )
-                
+
     class Meta:
         model = SitoWebCdsDatiBase
         fields = [
@@ -233,11 +237,11 @@ class SitoWebCdsDatiBaseIntroAmmForm(forms.ModelForm):
         ]
     class Media:
         js = ('js/textarea-autosize.js',)
-        
+
 
 
 class SitoWebCdsExStudentiForm(forms.ModelForm):
-    
+
     class Meta:
         model = SitoWebCdsExStudenti
         exclude = ['id_sito_web_cds_dati_base', 'id_user_mod', 'dt_mod',]
@@ -272,7 +276,7 @@ class SitoWebCdsSliderForm(SitoWebCdsForm):
             required=False,
             max_length=130
         )
-       
+
     class Meta(SitoWebCdsForm.Meta):
         model = SitoWebCdsSlider
         labels = {
@@ -280,7 +284,7 @@ class SitoWebCdsSliderForm(SitoWebCdsForm):
             'slider_en': _("Scrollable text (en)"),
             'ordine': _("Order"),
         }
-        
+
 class SitoWebCdsLinkForm(SitoWebCdsForm):
     class Meta(SitoWebCdsForm.Meta):
         model = SitoWebCdsLink

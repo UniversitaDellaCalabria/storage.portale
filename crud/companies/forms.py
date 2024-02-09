@@ -1,8 +1,8 @@
-from ckeditor.widgets import CKEditorWidget
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from ricerca_app.models import SpinoffStartupDatiBase
 
@@ -52,8 +52,8 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
             'is_active': _('Active'),
             'ordinamento': _('Ordering')
         }
-        widgets = {'descrizione_ita': CKEditorWidget(),
-                   'descrizione_eng': CKEditorWidget()}
+        widgets = {'descrizione_ita': CKEditor5Widget(),
+                   'descrizione_eng': CKEditor5Widget()}
 
     class Media:
         js = ('js/textarea-autosize.js',)

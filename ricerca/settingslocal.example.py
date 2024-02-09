@@ -74,7 +74,7 @@ INSTALLED_APPS = [
     #  'drf_spectacular',
     'corsheaders',
 
-    'ckeditor',
+    'django_ckeditor_5',
 
     # frontend apps
     'django_unical_bootstrap_italia',
@@ -92,7 +92,7 @@ INSTALLED_APPS = [
     'crud.cds_websites_brochure',
     'crud.cds_websites_pages',
     'crud.laboratories',
-    
+
     # SAML2
     # 'djangosaml2',
     # 'saml2_sp'

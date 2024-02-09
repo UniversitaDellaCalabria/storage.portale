@@ -94,6 +94,15 @@
                                                 </a>
                                             </b>
                                         </button>
+                                        <span>
+                                            {% trans "Active"%}
+                                            <svg class="icon icon-xs icon-success" v-if="item.RLineVisibile">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                            </svg>
+                                            <svg class="icon icon-xs icon-danger" v-else>
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                            </svg>
+                                        </span>
                                     </div>
                                     <div :id="'collapseResearchLine{{ id }}-lft'+index"
                                          class="collapse"

@@ -1,8 +1,8 @@
-from ckeditor.widgets import CKEditorWidget
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from ricerca_app.models import (
     DidatticaCds, DidatticaCdsAltriDati,
@@ -32,7 +32,7 @@ class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
         labels = {
             "nome_origine_riferimento": _("Responsible"),
         }
-        widgets = {'orari': CKEditorWidget()}
+        widgets = {'orari': CKEditor5Widget()}
 
 
 class DidatticaCdsAltriDatiForm(forms.ModelForm):
@@ -51,7 +51,7 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
             # "manifesto_studi": _("Study manifesto"),
             # "regolamento_didattico": _("Didactic regulation"),
         }
-        widgets = {'modalita_iscrizione': CKEditorWidget()}
+        widgets = {'modalita_iscrizione': CKEditor5Widget()}
 
 
 class DidatticaCdsOrdinamentoForm(forms.ModelForm):

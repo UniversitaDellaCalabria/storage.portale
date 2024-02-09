@@ -1,11 +1,11 @@
 import requests
 
-from ckeditor.widgets import CKEditorWidget
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.conf import settings
+
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from ricerca_app.models import (DidatticaSsd,
                                 DidatticaDottoratoAttivitaFormativa,
@@ -113,10 +113,10 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
 
         widgets = {'nome_af': forms.Textarea(attrs={'rows': 1}),
                    # 'rif_dottorato': forms.Textarea(attrs={'rows': 1}),
-                   'contenuti_af': CKEditorWidget(),
-                   'prerequisiti': CKEditorWidget(),
-                   'modalita_verifica': CKEditorWidget(),
-                   'orario_aule': CKEditorWidget(),
+                   'contenuti_af': CKEditor5Widget(),
+                   'prerequisiti': CKEditor5Widget(),
+                   'modalita_verifica': CKEditor5Widget(),
+                   'orario_aule': CKEditor5Widget(),
                    'note': forms.Textarea(attrs={'rows': 2})}
 
     class Media:

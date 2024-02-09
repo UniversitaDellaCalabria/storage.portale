@@ -1,10 +1,10 @@
 from bootstrap_italia_template.widgets import BootstrapItaliaDateWidget
 
-from ckeditor.widgets import CKEditorWidget
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from ricerca_app.models import (DocenteMaterialeDidattico,
                                 DocentePtaAltriDati,
@@ -37,11 +37,11 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
         help_texts = {
             'path_foto': _('Please upload a square format photo'),
         }
-        widgets = {'breve_bio_en': CKEditorWidget(),
+        widgets = {'breve_bio_en': CKEditor5Widget(),
                    # 'breve_bio': forms.Textarea(attrs={'rows': 2}),
-                   'breve_bio': CKEditorWidget(),
-                   'orario_ricevimento': CKEditorWidget(),
-                   'orario_ricevimento_en': CKEditorWidget()
+                   'breve_bio': CKEditor5Widget(),
+                   'orario_ricevimento': CKEditor5Widget(),
+                   'orario_ricevimento_en': CKEditor5Widget()
                    }
 
         # def __init__(self, *args, **kwargs):
@@ -88,8 +88,8 @@ class DocentePtaBachecaForm(forms.ModelForm):
         }
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
                    'titolo_en': forms.Textarea(attrs={'rows': 2}),
-                   'testo': CKEditorWidget(),
-                   'testo_en': CKEditorWidget(),
+                   'testo': CKEditor5Widget(),
+                   'testo_en': CKEditor5Widget(),
                    # 'dt_pubblicazione': BootstrapItaliaDateWidget,
                    # 'dt_inizio_validita': BootstrapItaliaDateWidget,
                    'dt_inizio_validita': RicercaCRUDDateTimeWidget,
@@ -120,8 +120,8 @@ class DocenteMaterialeDidatticoForm(forms.ModelForm):
         }
         widgets = {'titolo': forms.Textarea(attrs={'rows': 2}),
                    'titolo_en': forms.Textarea(attrs={'rows': 2}),
-                   'testo': CKEditorWidget(),
-                   'testo_en': CKEditorWidget(),
+                   'testo': CKEditor5Widget(),
+                   'testo_en': CKEditor5Widget(),
                    # 'dt_pubblicazione': BootstrapItaliaDateWidget,
                    'dt_inizio_validita': RicercaCRUDDateTimeWidget,
                    'dt_fine_validita': RicercaCRUDDateTimeWidget}
