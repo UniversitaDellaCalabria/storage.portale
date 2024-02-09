@@ -56,7 +56,13 @@ def cds_website_brochure(request, code, cds_website=None, my_offices=None):
 def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=None):
 
     tab_form_dict = {
-        'Dati corso': SitoWebCdsDatiBaseDatiCorsoForm(instance=cds_website, initial={'languages': cds_website.lingua_it}),
+        'Dati corso': SitoWebCdsDatiBaseDatiCorsoForm(instance=cds_website, 
+                                                      initial={ 'languages': cds_website.lingua_it,
+                                                                'classe_laurea_it': cds_website.classe_laurea_it if cds_website.classe_laurea_it is not None else '',
+                                                                'classe_laurea_interclasse_it': cds_website.classe_laurea_interclasse_it if cds_website.classe_laurea_interclasse_it is not None else '',
+                                                                'classe_laurea_en': cds_website.classe_laurea_en if cds_website.classe_laurea_en is not None else '',
+                                                                'classe_laurea_interclasse_en': cds_website.classe_laurea_interclasse_en if cds_website.classe_laurea_interclasse_en is not None else '',
+                                                       }),
         'In pillole': SitoWebCdsDatiBaseInPilloleForm(instance=cds_website),
         'Profilo corso': SitoWebCdsDatiBaseProfiloCorsoForm(instance=cds_website),
         'Intro amm': SitoWebCdsDatiBaseIntroAmmForm(instance=cds_website),
@@ -103,6 +109,8 @@ def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=
                 }
                 dati_base.lingua_it = languages[selected_languages]['it']
                 dati_base.lingua_en = languages[selected_languages]['en']
+                
+                
                         
                                         
             dati_base.dt_mod = now()
@@ -122,7 +130,7 @@ def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=
                 
         except:
             
-            tab_form_dict[form_name] = form
+            tab_form_dict[form_name][0] = form
             
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,

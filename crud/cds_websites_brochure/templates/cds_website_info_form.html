@@ -21,10 +21,13 @@
             <ul class="nav nav-tabs nav-justified" id="brochure-tabs" role="tablist">
                 {% for tab, form in forms.items %}
                 {% with trimmed_tab=tab|cut:" " %}
-                    <li class="nav-item"><a class="nav-link {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}active{% endif %}" id="{{trimmed_tab}}-nav-item"
-                        data-toggle="tab" href="#{{trimmed_tab}}-tab" 
-                        role="tab" aria-controls="{{trimmed_tab}}-tab"
-                        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">{{tab}}</a>
+                    <li class="nav-item">
+                        <a  class="nav-link {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}active{% endif %}" id="{{trimmed_tab}}-nav-item"
+                            data-toggle="tab" href="#{{trimmed_tab}}-tab" 
+                            role="tab" aria-controls="{{trimmed_tab}}-tab"
+                            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                            {{tab}}
+                        </a>
                     </li>
                 {% endwith %}
                 {% endfor %}

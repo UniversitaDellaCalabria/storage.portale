@@ -27,6 +27,29 @@ class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
             max_value=now().year,
             label=_("Academic year"),
         )
+        
+        classi_laurea = DidatticaClasseLaurea.objects.all().values_list("cla_miur_cod", "cla_miur_des")
+        classi_laurea_choices = list(map(lambda cod_des: (f"{cod_des[0]} {cod_des[1]}", f"{cod_des[0]} {cod_des[1]}"), classi_laurea))
+        classi_laurea_choices.append(("", "-"))
+        
+        self.fields["classe_laurea_it"] = forms.ChoiceField(
+            label=_('Course class (it)'),
+            choices=classi_laurea_choices
+        )
+        self.fields["classe_laurea_interclasse_it"] = forms.ChoiceField(
+            label=_('Course interclass (it)'),
+            choices=classi_laurea_choices,
+            required=False,
+        )
+        self.fields["classe_laurea_en"] = forms.ChoiceField(
+            label=_('Course class (en)'),
+            choices=classi_laurea_choices
+        )
+        self.fields["classe_laurea_interclasse_en"] = forms.ChoiceField(
+            label=_('Course interclass (en)'),
+            choices=classi_laurea_choices,
+            required=False,
+        )
            
     class Meta:
         model = SitoWebCdsDatiBase
