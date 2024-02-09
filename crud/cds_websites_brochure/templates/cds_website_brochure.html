@@ -15,108 +15,19 @@
     {% endif %}    
 </h3>
 
-<div class="container">
-    <!-- Sezioni Brochure on-line -->
-    <div class="row mt-5">
-        <div class="col col-lg">
-            <div class="section section-muted">
-                <div class="section-content">
-                    <h3 style="font-weight: normal;" class="mb-4 pb-4">{% trans "On-line Brochure sections" %}</h3>
-                    <div class="card-deck">
-                        <!-- Info -->
-                        <div class="col col-lg">
-                            <div class="card-wrapper card-space">
-                                <div class="card card-big card-bg no-after">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            {% trans "Info" %}
-                                        </h5>
-                                        <p class="card-text">
-                                            {% trans 'Manage Info' %}
-                                        </p>
-                                        <a class="read-more" href="{% url 'crud_cds_websites_brochure:crud_cds_websites_brochure_info_edit' code=cds_website.id %}">
-                                            <span class="text">{% trans "Manage" %}</span>
-                                            <svg class="icon">
-                                                <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Info -->
-                        <!-- Sliders -->
-                        <div class="col col-lg">
-                            <div class="card-wrapper card-space">
-                                <div class="card card-bg card-big no-after">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            {% trans "Sliders" %}
-                                        </h5>
-                                        <p class="card-text">
-                                            {% trans 'Manage Sliders' %}
-                                        </p>
-                                        <a class="read-more" href="{% url 'crud_cds_websites_brochure:crud_cds_websites_brochure_sliders' code=cds_website.id %}">
-                                            <span class="text">{% trans "Manage" %}</span>
-                                            <svg class="icon">
-                                                <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Sliders -->
-                        <!-- Ex Students -->
-                        <div class="col col-lg">
-                            <div class="card-wrapper card-space">
-                                <div class="card card-bg card-big no-after">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            {% trans "Ex Students" %}
-                                        </h5>
-                                        <p class="card-text">
-                                            {% trans 'Manage Ex Students' %}
-                                        </p>
-                                        <a class="read-more" href="{% url 'crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents' code=cds_website.id %}">
-                                            <span class="text">{% trans "Manage" %}</span>
-                                            <svg class="icon">
-                                                <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Ex Students -->
-                        <!-- Links -->
-                        <div class="col col-lg">
-                            <div class="card-wrapper card-space">
-                                <div class="card card-bg card-big no-after">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            {% trans "Links" %}
-                                        </h5>
-                                        <p class="card-text">
-                                            {% trans 'Manage Links' %}
-                                        </p>
-                                        <a class="read-more" href="{% url 'crud_cds_websites_brochure:crud_cds_websites_brochure_links' code=cds_website.id %}">
-                                            <span class="text">{% trans "Manage" %}</span>
-                                            <svg class="icon">
-                                                <use href="{% static 'svg/sprite.svg' %}#it-arrow-right"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Links -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /Sezioni Brochure on-line -->
+<div class="container mt-2">
+    <!-- Info -->
+    {% include "blocks/cds_website_brochure_card.html" with title='Info' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_info_edit' %}
+    <!-- /Info -->
+    <!-- Sliders -->
+    {% include "blocks/cds_website_brochure_card.html" with title='Sliders' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_sliders' %}    
+    <!-- /Sliders -->
+    <!-- Ex Students -->
+    {% include "blocks/cds_website_brochure_card.html" with title='Ex Students' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents' %}    
+    <!-- /Ex Students -->
+    <!-- Links -->
+    {% include "blocks/cds_website_brochure_card.html" with title='Links' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_links' %}
+    <!-- /Links -->
 </div>
 
 {% endblock centered_container %}
