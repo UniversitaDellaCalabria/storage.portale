@@ -1,13 +1,17 @@
+{% load i18n %}
+
 <div class="ck-editor-container">
 <textarea  name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
 {% if widget.value %}{{ widget.value }}{% endif %}</textarea>
-<span class="word-count" id="{{script_id}}-word-count"></span>
-{% if widget.attrs.min %}
-<span>Min: {{ widget.attrs.min }}</span>
-{% endif %}
-{% if widget.attrs.max %}
-<span>Max: {{ widget.attrs.max }}</span>
-{% endif %}
+    <span class="word-count" id="{{script_id}}-word-count"></span>
+    {% if widget.attrs.min or widget.attrs.max %}
+    <span>
+        {% if widget.attrs.min %}Min: {{ widget.attrs.min }}{% endif %}
+        {% if widget.attrs.min and widget.attrs.max %} - {% endif %}
+        {% if widget.attrs.max %}Max: {{ widget.attrs.max }}{% endif %}
+        {% trans "characters" %}
+    </span>
+    {% endif %}
 {% if errors %}
 {{ errors }}
 {% endif %}
