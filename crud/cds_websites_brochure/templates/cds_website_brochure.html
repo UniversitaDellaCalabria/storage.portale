@@ -7,27 +7,34 @@
 
 {% get_current_language as LANGUAGE_CODE %}
 
-<h3 style="font-weight: lighter;">
-    {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
-    {{ cds_website.nome_corso_it }}
-    {% else %}
-    {{ cds_website.nome_corso_en }}
-    {% endif %}    
-</h3>
-
-<div class="container mt-2">
-    <!-- Info -->
-    {% include "blocks/cds_website_brochure_card.html" with title='Info' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_info_edit' %}
-    <!-- /Info -->
-    <!-- Sliders -->
-    {% include "blocks/cds_website_brochure_card.html" with title='Sliders' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_sliders' %}    
-    <!-- /Sliders -->
-    <!-- Ex Students -->
-    {% include "blocks/cds_website_brochure_card.html" with title='Ex Students' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents' %}    
-    <!-- /Ex Students -->
-    <!-- Links -->
-    {% include "blocks/cds_website_brochure_card.html" with title='Links' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_links' %}
-    <!-- /Links -->
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body p-3">
+            <h3 style="font-weight: normal;" class="mb-4 pb-4">
+                {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
+                {{ cds_website.nome_corso_it }}
+                {% else %}
+                {{ cds_website.nome_corso_en }}
+                {% endif %}
+                -    
+                {% trans "brochure sections" %}
+            </h3>
+            <div class="container">
+                <!-- Info -->
+                {% include "blocks/cds_website_brochure_card.html" with title='Info' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_info_edit' %}
+                <!-- /Info -->
+                <!-- Sliders -->
+                {% include "blocks/cds_website_brochure_card.html" with title='Sliders' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_sliders' %}    
+                <!-- /Sliders -->
+                <!-- Ex Students -->
+                {% include "blocks/cds_website_brochure_card.html" with title='Ex Students' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents' %}    
+                <!-- /Ex Students -->
+                <!-- Links -->
+                {% include "blocks/cds_website_brochure_card.html" with title='Links' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_links' %}
+                <!-- /Links -->
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock centered_container %}

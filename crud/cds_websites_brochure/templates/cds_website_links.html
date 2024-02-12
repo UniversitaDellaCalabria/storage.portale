@@ -20,10 +20,10 @@
             <div class="table-responsive">
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th>{% trans "Description" %}</th>
-                            <th>{% trans "Order" %}</th>
-                            <th></th>
+                        <tr class="d-flex">
+                            <th class="col-8">{% trans "Description" %}</th>
+                            <th class="col-2">{% trans "Order" %}</th>
+                            <th class="col-2"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,16 +63,16 @@
                             </div>
                         </div>
                         <!-- /Link Delete Modal -->
-                        <tr>
-                            <td>
+                        <tr class="d-flex">
+                            <td class="col-8">
                                 <p class="text">
                                     {{ link.descrizione_link_it }}
                                 </p>
                             </td>
-                            <td>
+                            <td class="col-2">
                                 {{ link.ordine }}
                             </td>
-                            <td>
+                            <td class="col-2 text-nowrap align-middle">
                                 <a href="{% url 'crud_cds_websites_brochure:crud_cds_websites_brochure_links_edit' code=cds_website.id data_id=link.id %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
