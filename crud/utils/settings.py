@@ -1,5 +1,28 @@
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+from django_ckeditor_5.widgets import CKEditor5Widget
+
+
+'''
+    ckeditor js and css removed to avoid duplicates
+    added one single import inside ./templates/storage_crud_base.html
+    
+    (default) js = ["django_ckeditor_5/dist/bundle.js" ]
+    (default) css = {
+                        "all": [
+                            "django_ckeditor_5/dist/styles.css",
+                        ],
+                    }
+'''
+CKEDITOR_WIDGET_OVERRIDES = getattr(settings,
+                                    'CKEDITOR_WIDGET_OVERRIDES', 
+                                    { 
+                                        "css" : { "all": [] },
+                                        "js": [] 
+                                    })
+
+CKEditor5Widget.Media.css = CKEDITOR_WIDGET_OVERRIDES["css"]
+CKEditor5Widget.Media.js = CKEDITOR_WIDGET_OVERRIDES["js"]
 
 
 STRUCTURE_PHD = getattr(
