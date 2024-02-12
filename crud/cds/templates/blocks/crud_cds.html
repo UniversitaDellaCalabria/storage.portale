@@ -10,6 +10,7 @@
 {% include "blocks/includes/vue_check.html" %}
 {% endblock storage_block_top %}
 
+
         <div class="row">
             <div class="col-12">
                 <div class="card-wrapper card-space">
@@ -77,7 +78,6 @@
                                                       - {% trans 'Choose an option' %} -
                                                   </option>
                                                   <option v-for="item in academic_years_filter"
-                                                          v-if="item.AcademicYear != '{{ cds_exclude_year }}'"
                                                           :value="item.AcademicYear"
                                                           :selected="item.AcademicYear == selected_academic_year">
                                                       [[ item.AcademicYear ]]/[[ item.AcademicYear + 1 ]]
@@ -303,8 +303,9 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
 {% settings_value "ALLOWED_CDS_LANGUAGES" as allowed_languages %}
 {% settings_value "ALLOWED_CDS_JOINT_DEGREES" as allowed_joint_degrees %}
+{% settings_value "CURRENT_YEAR" as current_year %}
 
-initial_academic_year: {{ id }}_get_param('academicyear')  || '{% now "Y" %}',
+initial_academic_year: {{ id }}_get_param('academicyear')  || '{{ current_year }}',
 
 selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
 selected_academic_year: this.getItemFromSession("{{ id }}", 'academicyear') || {{ id }}_get_param('academicyear'),

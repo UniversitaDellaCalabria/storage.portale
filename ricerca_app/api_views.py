@@ -165,7 +165,7 @@ class ApiCdSList(ApiEndpointList):
 
     def get_queryset(self):
         return ServiceDidatticaCds.cdslist(self.language,
-                                               self.request.query_params)
+                                           self.request.query_params)
 
     def get(self, *args, **kwargs):
         lang = self.request.LANGUAGE_CODE

@@ -154,3 +154,6 @@ PERSON_CONTACTS_TO_TAKE = [
     'Riferimento Ufficio',
     'URL Sito WEB',
     'URL Sito WEB Curriculum Vitae']
+
+CURRENT_YEAR = 2023
+HIGH_FORMATION_YEAR = 2023
