@@ -29,7 +29,7 @@ def cds_websites_pages(request, my_offices=None):
     lista dei siti web dei corsi di studio
     """
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   '#': _('Course of Studies Websites Pages')}
+                   '#': _('Course of Studies Websites pages')}
     context = { 'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:cdswebsitelist')}
     return render(request, 'cds_websites_pages.html', context)
@@ -100,12 +100,20 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
                 }
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites Pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites pages'),
                    '#': (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                   }
     
     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds_website).pk,
                                    object_id=cds_website.pk)
+    
+    popover_title_content = {
+        "portal_objects": {
+            "title": _("Shared Portal objects"),
+            "content": _("Objects are publications or webpaths taken from the editorial board.") + "<br />" +
+                       "<b>" + _("NOTE: you need to import an object here to be able to use it inside a topic.") + "</b>"
+        }
+    }
 
     return render(request, 'cds_website_topics.html',
                   { 
@@ -114,6 +122,7 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
                     'topics_list': topics,
                     'objects_list': objects_list,
                     'breadcrumbs': breadcrumbs,
+                    'popover_title_content': popover_title_content,
                     'logs' : logs,
                    })
 
@@ -177,7 +186,7 @@ def cds_websites_pages_regart_add(request, code, topic_id, cds_website=None, my_
                                         f"<b>{art_reg_form.fields[k].label}</b>: {v}")
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites Pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites pages'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}): 
                        (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                    '#': _("Add Regulament Article") }
@@ -231,7 +240,7 @@ def cds_websites_pages_regart_item_edit(request, code, topic_id, data_id, cds_we
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites Pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites pages'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}): 
                        (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                    '#': regart.titolo_it }
@@ -284,7 +293,7 @@ def cds_websites_pages_regart_extra_new(request, code, topic_id, data_id, cds_we
                                         f"<b>{regart_extra_form.fields[k].label}</b>: {v}")
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites Pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites pages'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}): 
                        (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_regart_item_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
@@ -343,7 +352,7 @@ def cds_websites_pages_regart_extra_edit(request, code, topic_id, data_id, extra
     
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites Pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites pages'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}): 
                        (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_regart_item_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
@@ -426,7 +435,7 @@ def cds_websites_pages_object_edit(request, code, data_id, cds_website=None, my_
                                      f"<b>{object_form.fields[k].label}</b>: {v}")                    
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites Pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites pages'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}): 
                        (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                    '#': _("Edit Object") }
@@ -478,7 +487,7 @@ def cds_websites_pages_object_new(request, code, cds_website=None, my_offices=No
                                      f"<b>{object_form.fields[k].label}</b>: {v}")  
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites Pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites pages'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}): 
                        (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                    '#': _("New Object") }
@@ -604,7 +613,7 @@ def cds_websites_pages_object_item_edit(request, code, topic_id, data_id, cds_we
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites Pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('Course of Studies Websites pages'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}): 
                        (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                    '#': regart.titolo_it }
