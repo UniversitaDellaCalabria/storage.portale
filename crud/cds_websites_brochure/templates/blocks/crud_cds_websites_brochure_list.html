@@ -184,7 +184,11 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
 {% settings_value "ALLOWED_CDS_LANGUAGES" as allowed_languages %}
 
-initial_academic_year: {{ id }}_get_param('academicyear') || {% now "Y" %},
+{% now "Y" as fallback_year %}
+
+{% settings_value "CURRENT_YEAR" as current_year %}
+
+initial_academic_year: {{ id }}_get_param('academicyear') || {{ current_year|default:fallback_year }},
 
 selected_academic_year: this.getItemFromSession("{{ id }}", 'academic_year') || {{ id }}_get_param('academic_year'),
 selected_language: this.getItemFromSession("{{ id }}", 'cdslanguage'),
