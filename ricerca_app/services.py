@@ -108,8 +108,7 @@ class ServiceDidatticaCds:
         # didatticacdslingua__lin_did_ord_id__isnull=False
 
         if 'academicyear' not in query_params:
-            items = items.filter(didatticaregolamento__aa_reg_did__lte=CURRENT_YEAR,
-                                 didatticaregolamento__stato_regdid_cod__exact='A')
+            items = items.filter(didatticaregolamento__aa_reg_did__lte=CURRENT_YEAR)
 
         if courses_allowed != '':
             items = items.filter(tipo_corso_cod__in=courses_allowed)
