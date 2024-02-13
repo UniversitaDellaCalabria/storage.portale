@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-13 09:43+0100\n"
-"PO-Revision-Date: 2024-02-13 09:44+0100\n"
+"POT-Creation-Date: 2024-02-13 09:54+0100\n"
+"PO-Revision-Date: 2024-02-13 09:57+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -1114,7 +1114,7 @@ msgstr "Vuoi davvero eliminare questo testo scorrevole?"
 
 #: crud/cds_websites_brochure/templates/cds_websites_brochure.html:8
 msgid "Courses of Study Websites in brief"
-msgstr "Siti web dei Corsi di Studio in breve"
+msgstr "Siti web dei Corsi di Studio in sintesi"
 
 #: crud/cds_websites_brochure/templates/cds_websites_brochure_unique_form.html:14
 #: crud/cds_websites_pages/templates/cds_websites_pages_unique_form.html:14
@@ -1153,7 +1153,7 @@ msgstr "Siti web dei Corsi di Studio"
 #: crud/cds_websites_brochure/views.py:500
 #: crud/cds_websites_brochure/views.py:548
 msgid "Course of Studies Websites in brief"
-msgstr "Siti web dei Corsi di Studio in breve"
+msgstr "Siti web dei Corsi di Studio in sintesi"
 
 #: crud/cds_websites_brochure/views.py:90
 msgid "Form validation failed"
@@ -3378,19 +3378,19 @@ msgstr "Gestisti i progetti delle strutture"
 
 #: crud/utils/templates/dashboard.html:236
 msgid "CdS in brief"
-msgstr "CdS in breve"
+msgstr "CdS in sintesi"
 
 #: crud/utils/templates/dashboard.html:239
-msgid "Manage Courses of Studies Websites Brochure"
-msgstr "Gestisci i Siti web dei Corsi di Studio Brochure"
+msgid "Manage the on-line brochure sections of CdS Websites"
+msgstr "Gestisci le sezioni della brochure on-line dei Siti Web dei CdS"
 
 #: crud/utils/templates/dashboard.html:262
 msgid "CdS pages"
 msgstr "CdS pagine"
 
 #: crud/utils/templates/dashboard.html:265
-msgid "Manage Courses of Studies Websites Pages"
-msgstr "Gestisci i Siti web dei Corsi di Studio Pagine"
+msgid "Manage the pages section of CdS Websites"
+msgstr "Gestisci la sezione pagine dei Siti Web dei CdS"
 
 #: crud/utils/templates/dashboard.html:293
 msgid "Manage Laboratories"
@@ -3536,6 +3536,12 @@ msgstr "L'immagine ha una proporzione tra altezza e lunghezza non valida"
 #: ricerca_app/validators.py:100
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
+
+#~ msgid "Manage Courses of Studies Websites Brochure"
+#~ msgstr "Gestisci i Siti web dei Corsi di Studio Brochure"
+
+#~ msgid "Manage Courses of Studies Websites Pages"
+#~ msgstr "Gestisci i Siti web dei Corsi di Studio Pagine"
 
 #, fuzzy
 #~| msgid "Portal object"
