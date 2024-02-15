@@ -77,21 +77,27 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
         super(SitoWebCdsOggettiPortaleForm, self).__init__(*args, **kwargs)
         if self.initial:
             self.initial["visibile"] = bool(self.initial.get("visibile", None))
+        self.fields["titolo_it"].help_text = _("Used to identify the object inside the dropdown menu when adding it to a topic")
+        self.fields["titolo_en"].help_text = _("Used to identify the object inside the dropdown menu when adding it to a topic")
+        self.fields["testo_it"].help_text = _("Used only for webpaths, when provided, the object will be shown as a collapsible element containing this text alongside the webpath")
+        self.fields["testo_en"].help_text = _("Used only for webpaths, when provided, the object will be shown as a collapsible element containing this text alongside the webpath")
+        self.fields["id_classe_oggetto_portale"] = forms.ChoiceField(
+            required=True,
+            choices=(("WebPath", _("WebPath")),("Publication", _("Publication"))),
+            label=_("Object class"),
+            help_text=_("Publication / WebPath (Active page)")
+        )
+        self.fields["id_oggetto_portale"] = forms.IntegerField(
+            required=True,
+            min_value=0,
+            label=_("Object id"),
+            help_text=_("Use Publication/WebPath ID from the editorial board")
+        )
+        self.fields["visibile"] = forms.BooleanField(
+            label=_("Visible"),
+            required=False,
+        )
     
-    id_classe_oggetto_portale = forms.ChoiceField(
-        required=True,
-        choices=(("WebPath", _("WebPath")),("Publication", _("Publication"))),
-        label=_("Object class"),
-    )
-    id_oggetto_portale = forms.IntegerField(
-        required=True,
-        min_value=0,
-        label=_("Object id"),
-    )
-    visibile = forms.BooleanField(
-        label=_("Visible"),
-        required=False,
-    )
     class Meta:
         model = SitoWebCdsOggettiPortale
         exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'aa_regdid_id']
@@ -115,25 +121,30 @@ class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
         if self.initial:
             self.initial["visibile"] = bool(self.initial.get("visibile", None))
             
-    
-    visibile = forms.BooleanField(
-        label=_("Visible"),
-        required=False,
-    )
-    ordine = forms.IntegerField(
-        required=True,
-        min_value=0,
-        label=_("Order"),
-    )
-    id_sito_web_cds_tipo_dato = forms.ChoiceField(
-        required=True,
-        choices=tuple(SitoWebCdsTipoDato.objects.all().values_list("id", "descr_breve")),
-        label=_("Type"),
-    )
-    link = forms.URLField(
-        label=_("Link"),
-        required=False,
-    )
+        self.fields["visibile"] = forms.BooleanField(
+            label=_("Visible"),
+            required=False,
+        )
+        self.fields["ordine"]  = forms.IntegerField(
+            required=True,
+            min_value=0,
+            label=_("Order"),
+        )
+        self.fields["id_sito_web_cds_tipo_dato"] = forms.ChoiceField(
+            required=True,
+            choices=tuple(SitoWebCdsTipoDato.objects.all().values_list("id", "descr_breve")),
+            label=_("Type"),
+            help_text=_("Used to determine the icon to show on the left of the element")
+        )
+        self.fields["link"] = forms.URLField(
+            label=_("Link"),
+            required=False,
+        )
+        self.fields["titolo_it"].help_text = _("Shown above the element if provided")
+        self.fields["titolo_en"].help_text = _("Shown above the element if provided")
+        self.fields["testo_it"].help_text = _("If provided it is used as the link text")
+        self.fields["testo_en"].help_text = _("If provided it is used as the link text")
+
     
     class Meta:
         model = SitoWebCdsTopicArticoliRegAltriDati

@@ -107,11 +107,18 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds_website).pk,
                                    object_id=cds_website.pk)
     
+    '''
+    "   La sezione permette di inserire, rimuovere o modificare le pubblicazioni (Publication) o le pagine attive
+        (WebPath) che vengono richiamate dal sito del Corso di studio. Per richiamare una pubblicazione o
+        una pagina del portale dal sito del Corso di Studio è necessario che venga prima inserito in questa
+        sezione. Successivamente potrà essere associato alla Pagina / Topic
+    '''
+    
     popover_title_content = {
         "portal_objects": {
             "title": _("Shared Portal objects"),
-            "content": _("Objects are publications or webpaths from the editorial board.") + "<br />" +
-                       "<b>" + _("NOTE: you need to import an object here to be able to use it inside a topic.") + "</b>"
+            "content": _("This section allows to insert, remove and edit Publications/WebPath (Active Pages) shown on the CdS Website.") + "<br /><br />" +
+                       "<b>" + _("In order for a Publication/WebPath to be shown under a certain topic, you must first import it here.") + "</b>"
         }
     }
 
