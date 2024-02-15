@@ -4352,8 +4352,8 @@ class SitoWebCdsTopicArticoliRegAltriDati(models.Model):
     id_sito_web_cds_topic_articoli_reg = models.ForeignKey(SitoWebCdsTopicArticoliReg, models.CASCADE, db_column='ID_SITO_WEB_CDS_TOPIC_ARTICOLI_REG')  # Field name made lowercase.
     ordine = models.PositiveIntegerField(db_column='ORDINE')  # Field name made lowercase.
     id_sito_web_cds_tipo_dato = models.ForeignKey(SitoWebCdsTipoDato, models.PROTECT, db_column='ID_SITO_WEB_CDS_TIPO_DATO')  # Field name made lowercase.
-    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
     link = models.CharField(db_column='LINK', max_length=1000, blank=True, null=True)  # Field name made lowercase.
