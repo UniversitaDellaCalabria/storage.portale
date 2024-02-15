@@ -107,13 +107,6 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
     logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(cds_website).pk,
                                    object_id=cds_website.pk)
     
-    '''
-    "   La sezione permette di inserire, rimuovere o modificare le pubblicazioni (Publication) o le pagine attive
-        (WebPath) che vengono richiamate dal sito del Corso di studio. Per richiamare una pubblicazione o
-        una pagina del portale dal sito del Corso di Studio è necessario che venga prima inserito in questa
-        sezione. Successivamente potrà essere associato alla Pagina / Topic
-    '''
-    
     popover_title_content = {
         "portal_objects": {
             "title": _("Shared Portal objects"),
@@ -252,6 +245,12 @@ def cds_websites_pages_regart_item_edit(request, code, topic_id, data_id, cds_we
                        (cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en) + ' (' + _("Topics") + ')',
                    '#': regart.titolo_it }
 
+    popover_title_content = {
+        'extras': {
+            'title': _("Regulament Articles' Extras"),
+            'content': _("This section allows to manage Extra elements (usually links) which are appended beneath the article.")
+        }
+    }
     
     return render(request, 'regulament_articles.html',
                   { 
@@ -261,6 +260,7 @@ def cds_websites_pages_regart_item_edit(request, code, topic_id, data_id, cds_we
                     'regart': regart,
                     'regart_extras': regart_extras,
                     'item_label': _('Regulament Article'),
+                    'popover_title_content': popover_title_content,
                     'topic_id': topic_id,
                     'edit': 1,
                   })
