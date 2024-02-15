@@ -110,7 +110,7 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
     popover_title_content = {
         "portal_objects": {
             "title": _("Shared Portal objects"),
-            "content": _("Objects are publications or webpaths taken from the editorial board.") + "<br />" +
+            "content": _("Objects are publications or webpaths from the editorial board.") + "<br />" +
                        "<b>" + _("NOTE: you need to import an object here to be able to use it inside a topic.") + "</b>"
         }
     }
