@@ -118,7 +118,7 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
         "portal_objects": {
             "title": _("Shared Portal objects"),
             "content": _("This section allows to insert, remove and edit Publications/WebPath (Active Pages) shown on the CdS Website.") + "<br /><br />" +
-                       "<b>" + _("In order for a Publication/WebPath to be shown under a certain topic, you must first import it here.") + "</b>"
+                       "<b>" + _("In order for a web Publication/WebPath to be shown in a particular topic, you must first import it here and only then include it within a topic.") + "</b>"
         }
     }
 
