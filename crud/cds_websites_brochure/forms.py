@@ -16,73 +16,103 @@ UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 #-- Dati corso : titolo, classe, posti, lingua, durata
 class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        
+        cds = kwargs.pop("cds", None)
+        
         super(SitoWebCdsDatiBaseDatiCorsoForm, self).__init__(*args, **kwargs)
 
+        if self.instance.pk:
+            cds = self.instance.cds
+            
         self.fields['languages'] = forms.MultipleChoiceField(
             label=_("Languages"),
             choices = (('italiano', _('ITALIAN')), ('inglese', _('ENGLISH')), ('italiano, inglese', _('ITALIAN, ENGLISH')))
         )
 
-        self.fields["aa"] = forms.IntegerField(
-            required=True,
-            min_value=1901,
-            max_value=now().year,
+        self.fields["aa"] = forms.CharField(
+            disabled=True,
+            required=False,
             label=_("Academic year"),
         )
-
-        classi_laurea = DidatticaClasseLaurea.objects.all().values_list("cla_miur_cod", "cla_miur_des")
-        classi_laurea_choices = list(map(lambda cod_des: (f"{cod_des[0]} {cod_des[1]}", f"{cod_des[0]} {cod_des[1]}"), classi_laurea))
-        classi_laurea_choices.append(("", "-"))
-
-        self.fields["classe_laurea_it"] = forms.ChoiceField(
-            label=_('Course class (it)'),
-            choices=classi_laurea_choices
-        )
-        self.fields["classe_laurea_interclasse_it"] = forms.ChoiceField(
-            label=_('Course interclass (it)'),
-            choices=classi_laurea_choices,
+        
+        self.fields["nome_corso_it"] = forms.CharField(
+            disabled=True,
             required=False,
+            initial=cds.nome_cds_it,
+            label=_("Course name (it)"),
         )
-        self.fields["classe_laurea_en"] = forms.ChoiceField(
-            label=_('Course class (en)'),
-            choices=classi_laurea_choices
-        )
-        self.fields["classe_laurea_interclasse_en"] = forms.ChoiceField(
-            label=_('Course interclass (en)'),
-            choices=classi_laurea_choices,
+        self.fields["nome_corso_en"] = forms.CharField(
+            disabled=True,
             required=False,
+            initial=cds.nome_cds_eng,
+            label=_("Course name (en)"),
         )
+        self.fields["classe_laurea_it"] = forms.CharField(
+            disabled=True,
+            required=False,
+            label=_("Course class"),
+            initial=f"{cds.cla_miur_cod} {cds.cla_miur_des}"
+        )
+        self.fields["classe_laurea_interclasse_it"] = forms.CharField(
+            disabled=True,
+            required=False,
+            label=_("Course interclass"),
+            initial=f"{cds.intercla_miur_cod} {cds.intercla_miur_des}" if cds.intercla_miur_cod else "-"
+        )
+        self.fields["durata"] = forms.CharField(
+            disabled=True,
+            required=False,
+            label=_("Duration (Years)"),
+            initial=cds.durata_anni
+        )
+        #self.fields["classe_laurea_en"].disabled = True
+        #self.fields["classe_laurea_interclasse_en"].disabled = True
+        
+        self.order_fields(field_order=(
+            "nome_corso_it",
+            "nome_corso_en",
+            "aa",
+            "classe_laurea_it",
+            "classe_laurea_interclasse_it",
+            "durata",
+            "languages",
+            "num_posti",
+            'link_video_cds_it',
+            'link_video_cds_en',
+            'sito_web_it',
+            'sito_web_en',
+        ))
 
     class Meta:
         model = SitoWebCdsDatiBase
         fields = [
             'aa',
-            'nome_corso_it',
-            'nome_corso_en',
-            'durata',
+            #'nome_corso_it',
+            #'nome_corso_en',
+            #'durata',
             'num_posti',
-            'classe_laurea_it',
-            'classe_laurea_en',
-            'classe_laurea_interclasse_it',
-            'classe_laurea_interclasse_en',
+            #'classe_laurea_it',
+            #'classe_laurea_en',
+            #'classe_laurea_interclasse_it',
+            #'classe_laurea_interclasse_en',
             'link_video_cds_it',
             'link_video_cds_en',
             'sito_web_it',
             'sito_web_en',
         ]
         labels = {
-            'aa': _('Academic year'),
+            # 'aa': _('Academic year'),
             'cds': _('Cds name'),
             'cds_cod': _('Cds code'),
-            'nome_corso_it': _('Course name (it)'),
-            'nome_corso_en': _('Course name (en)'),
-            'classe_laurea_it': _('Course class (it)'),
-            'classe_laurea_en': _('Course class (en)'),
-            'classe_laurea_interclasse_it': _('Course interclass (it)'),
-            'classe_laurea_interclasse_en': _('Course interclass (en)'),
+            # 'nome_corso_it': _('Course name (it)'),
+            # 'nome_corso_en': _('Course name (en)'),
+            # 'classe_laurea_it': _('Course class (it)'),
+            # 'classe_laurea_en': _('Course class (en)'),
+            # 'classe_laurea_interclasse_it': _('Course interclass (it)'),
+            # 'classe_laurea_interclasse_en': _('Course interclass (en)'),
             'lingua_it': _('Language (it)'),
             'lingua_en': _('Language (en)'),
-            'durata': _('Duration'),
+            # 'durata': _('Duration'),
             'num_posti': _('Seats Number'),
             'link_video_cds_it': _('Link video (it)'),
             'link_video_cds_en': _('Link video (en)'),
