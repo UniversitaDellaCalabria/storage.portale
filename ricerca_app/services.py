@@ -26,7 +26,7 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     SitoWebCdsTopicArticoliRegAltriDati, \
     SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
-    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi
+    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi, DidatticaRegolamentoAltriDati
 from . serializers import StructuresSerializer
 from . settings import (CURRENT_YEAR,
                         HIGH_FORMATION_YEAR,
@@ -242,6 +242,13 @@ class ServiceDidatticaCds:
             'profilo',
             'profilo_eng')
 
+        other_data = DidatticaRegolamentoAltriDati.objects.filter(
+            regdid=cdsid_param).values(
+            'regdid__regdid_id',
+            'clob_txt_ita',
+            'clob_txt_eng',
+            'tipo_testo_regdid_cod')
+
         list_profiles = {}
         last_profile = ""
 
@@ -269,8 +276,7 @@ class ServiceDidatticaCds:
                 else:
                     res[0][text['tipo_testo_regdid_cod']] = text['clob_txt_eng']
             else:
-                if (language !=
-                        "it" and text["profilo_eng"] is None) or language == 'it':
+                if (language != "it" and text["profilo_eng"] is None) or language == 'it':
                     if text["profilo"] != last_profile:
                         last_profile = text["profilo"]
                         list_profiles[last_profile] = {}
@@ -278,13 +284,17 @@ class ServiceDidatticaCds:
                     last_profile = text[f'{language == "it" and "profilo" or "profilo_eng"}']
                     list_profiles[last_profile] = {}
 
-                if (text["clob_txt_eng"] is None and language !=
-                        "it") or language == 'it':
-                    list_profiles[last_profile][text['tipo_testo_regdid_cod']
-                                                ] = text["clob_txt_ita"]
+                if (text["clob_txt_eng"] is None and language != "it") or language == 'it':
+                    list_profiles[last_profile][text['tipo_testo_regdid_cod']] = text["clob_txt_ita"]
                 else:
-                    list_profiles[last_profile][text['tipo_testo_regdid_cod']
-                                                ] = text['clob_txt_eng']
+                    list_profiles[last_profile][text['tipo_testo_regdid_cod']] = text['clob_txt_eng']
+
+        for od in other_data:
+            if (od['clob_txt_eng'] is None and language != "it") or language == 'it':
+                res[0][od['tipo_testo_regdid_cod']] = od['clob_txt_ita']
+            else:
+                res[0][od['tipo_testo_regdid_cod']] = od['clob_txt_eng']
+
         res[0]['PROFILO'] = list_profiles
 
         res[0]['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=cdsid_param).values(
