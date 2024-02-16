@@ -1349,6 +1349,32 @@ class DidatticaRegolamento(InsModAbstract):
         return '{} {}'.format(self.regdid_id, self.aa_reg_did)
 
 
+class DidatticaRegolamentoTipologiaAltriDati(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    tipo_testo_regdid_cod = models.CharField(db_column='TIPO_TESTO_REGDID_COD', unique=True, max_length=100)  # Field name made lowercase.
+    tipo_testo_regdid_des = models.CharField(db_column='TIPO_TESTO_REGDID_DES', max_length=2000)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.SET_NULL, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_REGOLAMENTO_TIPOLOGIA_ALTRI_DATI'
+
+
+class DidatticaRegolamentoAltriDati(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    regdid = models.ForeignKey(DidatticaRegolamento, models.CASCADE, db_column='REGDID_ID')  # Field name made lowercase.
+    tipo_testo_regdid_cod = models.ForeignKey(DidatticaRegolamentoTipologiaAltriDati, models.PROTECT, db_column='TIPO_TESTO_REGDID_COD', to_field='tipo_testo_regdid_cod')  # Field name made lowercase.
+    clob_txt_ita = models.TextField(db_column='CLOB_TXT_ITA', blank=True, null=True)  # Field name made lowercase.
+    clob_txt_eng = models.TextField(db_column='CLOB_TXT_ENG', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.SET_NULL, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_REGOLAMENTO_ALTRI_DATI'
+
+
 class DidatticaTestiAf(InsModAbstract):
     af = models.OneToOneField(
         DidatticaAttivitaFormativa,
@@ -4066,11 +4092,11 @@ class DidatticaClasseLaurea(models.Model):
     cla_m_id = models.IntegerField(db_column='CLA_M_ID', primary_key=True)
     cla_miur_cod = models.CharField(db_column='CLA_MIUR_COD', max_length=20)
     cla_miur_des = models.CharField(db_column='CLA_MIUR_DES', max_length=1000)
-    
+
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CLASSE_LAUREA'
-        
+
 
 class SitoWebCdsDatiBase(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
