@@ -28,6 +28,7 @@ def esse3AppelliSerializer(appelli, year=None, af_id=None, search={}, show_past=
                 "descr": appello['desApp'],
                 "dataInizioIscrizioni": appello['dataInizioIscr'].split(" ")[0],
                 "dataFineIscrizioni": appello['dataFineIscr'].split(" ")[0],
+                "stato": appello['statoDes']
             }
         }
         appelli_list.append(appello_dict)
