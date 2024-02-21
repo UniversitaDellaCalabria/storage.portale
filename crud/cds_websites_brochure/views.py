@@ -26,7 +26,7 @@ def cds_websites_brochure(request, my_offices=None):
     lista dei siti web dei corsi di studio
     """
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   '#': _('Course of Studies Websites')}
+                   '#': _('Course of Studies Websites in brief')}
     context = { 'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:cdswebsitelist')}
     return render(request, 'cds_websites_brochure.html', context)

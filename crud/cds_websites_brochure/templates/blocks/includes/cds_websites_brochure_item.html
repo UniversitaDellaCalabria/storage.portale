@@ -1,0 +1,27 @@
+{% load i18n %}
+{% load static %}
+
+{% with title=title|default:'' redirect_url=redirect_url|default:'' cds_website=cds_website subtitle=subtitle|default:'' %}
+<div class="mr-4 ml-4">
+    <a  href="{% url redirect_url code=cds_website.id %}"
+        class="text-decoration-none text-reset">
+        <div class="row d-flex justify-content-start align-items-center">
+            <div class="col mr-auto">
+                <div class="row">
+                    <div class="h5 mt-0 mb-0">
+                        {{ title }}
+                    </div>
+                </div>
+                <div class="row card-text">
+                    {{ subtitle }}
+                </div>
+            </div>
+            <svg class="p-1 icon icon-lg">
+                {% block icon %}
+                <use href="{% static 'svg/sprite.svg' %}#it-arrow-right-circle"></use>
+                {% endblock icon %}
+            </svg>
+        </div>
+    </a>
+</div>
+{% endwith %}

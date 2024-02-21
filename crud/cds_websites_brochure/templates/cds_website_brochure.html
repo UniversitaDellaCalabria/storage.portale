@@ -9,28 +9,35 @@
 
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
-        <div class="card-body p-3">
+        <div class="card-body mt-4">
             <h3 style="font-weight: normal;" class="mb-4 pb-4">
                 {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
                 {{ cds_website.nome_corso_it }}
                 {% else %}
                 {{ cds_website.nome_corso_en }}
                 {% endif %}
-                -    
-                {% trans "brochure sections" %}
+                -
+                ({% trans "cds in brief sections" %})
             </h3>
             <div class="container">
                 <!-- Info -->
-                {% include "blocks/cds_website_brochure_card.html" with title='Info' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_info_edit' %}
+                {% trans "Info" as title %}
+                {% include "blocks/includes/cds_websites_brochure_item.html" with title=title redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_info_edit' %}
                 <!-- /Info -->
+                <hr />
                 <!-- Sliders -->
-                {% include "blocks/cds_website_brochure_card.html" with title='Sliders' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_sliders' %}    
+                {% trans "Sliders" as title %}
+                {% include "blocks/includes/cds_websites_brochure_item.html" with title=title redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_sliders' %}    
                 <!-- /Sliders -->
+                <hr />
                 <!-- Ex Students -->
-                {% include "blocks/cds_website_brochure_card.html" with title='Ex Students' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents' %}    
+                {% trans "Ex Students" as title %}
+                {% include "blocks/includes/cds_websites_brochure_item.html" with title=title redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents' %}    
                 <!-- /Ex Students -->
+                <hr />
                 <!-- Links -->
-                {% include "blocks/cds_website_brochure_card.html" with title='Links' redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_links' %}
+                {% trans "Links" as title %}
+                {% include "blocks/includes/cds_websites_brochure_item.html" with title=title redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_links' %}
                 <!-- /Links -->
             </div>
         </div>
