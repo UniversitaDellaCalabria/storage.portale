@@ -7,7 +7,6 @@ from ricerca_app.models import *
 from .. utils.settings import *
 from .. utils.utils import custom_message
 
-
 def can_manage_cds(func_to_decorate):
     """
     """
@@ -42,6 +41,9 @@ def can_edit_cds(func_to_decorate):
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
+        
+        if regdid.aa_reg_did > CURRENT_YEAR:
+            return custom_message(request, _("Educational offer not yet available for the year") + f": {regdid.aa_reg_did}")
 
         departments = []
 
@@ -77,6 +79,9 @@ def can_manage_cds_documents(func_to_decorate):
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
+        
+        if regdid.aa_reg_did > CURRENT_YEAR:
+            return custom_message(request, _("Educational offer not yet available for the year") + f": {regdid.aa_reg_did}")
 
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
                                                                           office__name=OFFICE_CDS_DOCUMENTS,
@@ -104,6 +109,9 @@ def can_manage_cds_teaching_system(func_to_decorate):
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
+        
+        if regdid.aa_reg_did > CURRENT_YEAR:
+            return custom_message(request, _("Educational offer not yet available for the year") + f": {regdid.aa_reg_did}")
 
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
                                                                           office__name=OFFICE_CDS_TEACHING_SYSTEM,

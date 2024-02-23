@@ -1435,7 +1435,7 @@ class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
                 .objects\
                 .filter(employee=request.user,
                         office__is_active=True,
-                        office__name=OFFICE_CDS_WEBSITES,
+                        office__name=OFFICE_CDS_PAGES,
                         office__organizational_structure__is_active=True)
 
             if(offices.exists()):

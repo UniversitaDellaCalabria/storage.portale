@@ -24,7 +24,7 @@ def can_manage_cds_website(func_to_decorate):
             return func_to_decorate(*original_args, **original_kwargs)
 
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
-                                                                          office__name=OFFICE_CDS_WEBSITES,
+                                                                          office__name=OFFICE_CDS_PAGES,
                                                                           office__is_active=True,
                                                                           office__organizational_structure__is_active=True)
         if not my_offices.exists():

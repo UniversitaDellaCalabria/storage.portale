@@ -1,14 +1,8 @@
-from datetime import date
-
-from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
-
 from ricerca_app.models import *
-from ricerca_app.services import ServiceDocente
-from ricerca_app.utils import decrypt
 
 from .. utils.settings import *
 from .. utils.utils import custom_message
@@ -30,7 +24,7 @@ def can_manage_cds_website(func_to_decorate):
             return func_to_decorate(*original_args, **original_kwargs)
 
         my_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
-                                                                          office__name=OFFICE_CDS_WEBSITES,
+                                                                          office__name=OFFICE_CDS_BROCHURE,
                                                                           office__is_active=True,
                                                                           office__organizational_structure__is_active=True)
         if not my_offices.exists():

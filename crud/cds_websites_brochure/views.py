@@ -34,7 +34,6 @@ def cds_websites_brochure(request, my_offices=None):
 
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_website_brochure(request, code, cds_website=None, my_offices=None):
     """
     Menu di un sito web dei corsi di studio
@@ -52,7 +51,6 @@ def cds_website_brochure(request, code, cds_website=None, my_offices=None):
 #Dati Base
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=None):
 
     tab_form_dict = {
@@ -148,7 +146,6 @@ def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=
 #Sliders
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_sliders(request, code, cds_website=None, my_offices=None):
     
     sliders = SitoWebCdsSlider.objects.filter(id_sito_web_cds_dati_base=code).order_by("ordine")
@@ -172,7 +169,6 @@ def cds_websites_brochure_sliders(request, code, cds_website=None, my_offices=No
 
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_sliders_new(request, code, cds_website=None, my_offices=None):
     slider_form = SitoWebCdsSliderForm(data=request.POST if request.POST else None)        
         
@@ -220,7 +216,6 @@ def cds_websites_brochure_sliders_new(request, code, cds_website=None, my_office
     
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_sliders_edit(request, code, data_id, cds_website=None, my_offices=None):
     slider = get_object_or_404(SitoWebCdsSlider, pk=data_id)
     slider_form = SitoWebCdsSliderForm(data=request.POST if request.POST else None, instance=slider)        
@@ -268,7 +263,6 @@ def cds_websites_brochure_sliders_edit(request, code, data_id, cds_website=None,
     
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_sliders_delete(request, code, data_id, cds_website=None, my_offices=None):
     
     slider = get_object_or_404(SitoWebCdsSlider, pk=data_id)
@@ -289,7 +283,6 @@ def cds_websites_brochure_sliders_delete(request, code, data_id, cds_website=Non
 #Ex Students
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_exstudents(request, code, cds_website=None, my_offices=None):
     
     exstudents = SitoWebCdsExStudenti.objects.filter(id_sito_web_cds_dati_base=code).order_by("ordine")
@@ -313,7 +306,6 @@ def cds_websites_brochure_exstudents(request, code, cds_website=None, my_offices
 
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_exstudents_new(request, code, cds_website=None, my_offices=None):
     exstudent_form = SitoWebCdsExStudentiForm(data=request.POST if request.POST else None,
                                               files=request.FILES if request.FILES else None)
@@ -362,7 +354,6 @@ def cds_websites_brochure_exstudents_new(request, code, cds_website=None, my_off
     
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_exstudents_edit(request, code, data_id, cds_website=None, my_offices=None):
     exstudent = get_object_or_404(SitoWebCdsExStudenti, pk=data_id)
     exstudent_form = SitoWebCdsExStudentiForm(data=request.POST if request.POST else None,
@@ -412,7 +403,6 @@ def cds_websites_brochure_exstudents_edit(request, code, data_id, cds_website=No
     
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_exstudents_delete(request, code, data_id, cds_website=None, my_offices=None):
     
     exstudent = get_object_or_404(SitoWebCdsExStudenti, pk=data_id)
@@ -433,7 +423,6 @@ def cds_websites_brochure_exstudents_delete(request, code, data_id, cds_website=
 #Links
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_links(request, code, cds_website=None, my_offices=None):
     
     links = SitoWebCdsLink.objects.filter(id_sito_web_cds_dati_base=code).order_by("ordine")
@@ -457,7 +446,6 @@ def cds_websites_brochure_links(request, code, cds_website=None, my_offices=None
 
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_links_new(request, code, cds_website=None, my_offices=None):
     link_form = SitoWebCdsLinkForm(data=request.POST if request.POST else None)
         
@@ -505,7 +493,6 @@ def cds_websites_brochure_links_new(request, code, cds_website=None, my_offices=
     
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_links_edit(request, code, data_id, cds_website=None, my_offices=None):
     link = get_object_or_404(SitoWebCdsLink, pk=data_id)
     link_form = SitoWebCdsLinkForm(data=request.POST if request.POST else None, instance=link)        
@@ -553,7 +540,6 @@ def cds_websites_brochure_links_edit(request, code, data_id, cds_website=None, m
     
 @login_required
 @can_manage_cds_website
-@can_edit_cds_website
 def cds_websites_brochure_links_delete(request, code, data_id, cds_website=None, my_offices=None):
     
     link = get_object_or_404(SitoWebCdsLink, pk=data_id)

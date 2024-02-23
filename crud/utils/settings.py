@@ -33,7 +33,8 @@ OFFICE_RESEARCHGROUPS = getattr(
 OFFICE_RESEARCHLINES = getattr(
     settings, 'OFFICE_RESEARCHLINES', 'researchlines')
 OFFICE_CDS = getattr(settings, 'OFFICE_CDS', 'cds')
-OFFICE_CDS_WEBSITES = getattr(settings, 'OFFICE_CDS_WEBSITES', 'cds_websites')
+OFFICE_CDS_BROCHURE = getattr(settings, "OFFICE_CDS_BROCHURE", 'cds_brochure')
+OFFICE_CDS_PAGES = getattr(settings, 'OFFICE_CDS_PAGES', 'cds_pages')
 OFFICE_CDS_DOCUMENTS = getattr(settings, 'OFFICE_CDS_DOCUMENTS', 'cds_documents')
 OFFICE_CDS_TEACHING_SYSTEM = getattr(settings, 'OFFICE_CDS_TEACHING_SYSTEM', 'cds_teaching_system')
 OFFICE_PATENTS = getattr(settings, 'OFFICE_PATENTS', 'patents')
@@ -61,3 +62,6 @@ UNICMS_WEBPATH_API_URL = getattr(settings, "UNICMS_WEBPATH_API_URL", "")
 UNICMS_OBJECT_API = getattr(settings, "UNICMS_OBJECT_API", {})
 
 ETL_USER_IDS = getattr(settings, "ETL_USER_IDS", [])
+
+CURRENT_YEAR = getattr(settings, "CURRENT_YEAR", "")
+HIGH_FORMATION_YEAR = getattr(settings, "HIGH_FORMATION_YEAR", "")

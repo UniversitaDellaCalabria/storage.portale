@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-21 10:45+0100\n"
-"PO-Revision-Date: 2024-02-21 10:45+0100\n"
+"POT-Creation-Date: 2024-02-23 10:52+0100\n"
+"PO-Revision-Date: 2024-02-23 10:53+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -74,10 +74,10 @@ msgstr ""
 msgid "Users"
 msgstr "Utenti"
 
-#: crud/cds/decorators.py:24 crud/cds/decorators.py:60
-#: crud/cds/decorators.py:86 crud/cds/decorators.py:113
-#: crud/cds_websites_brochure/decorators.py:37
-#: crud/cds_websites_brochure/decorators.py:63
+#: crud/cds/decorators.py:23 crud/cds/decorators.py:62
+#: crud/cds/decorators.py:91 crud/cds/decorators.py:121
+#: crud/cds_websites_brochure/decorators.py:31
+#: crud/cds_websites_brochure/decorators.py:57
 #: crud/cds_websites_pages/decorators.py:31
 #: crud/cds_websites_pages/decorators.py:57
 #: crud/cds_websites_pages/views.py:138 crud/cds_websites_pages/views.py:216
@@ -99,6 +99,11 @@ msgstr "Utenti"
 #: crud/utils/decorators.py:13
 msgid "Permission denied"
 msgstr "Permesso negato"
+
+#: crud/cds/decorators.py:46 crud/cds/decorators.py:84
+#: crud/cds/decorators.py:114
+msgid "Educational offer not yet available for the year"
+msgstr "Offerta formativa non ancora disponibile per l'anno"
 
 #: crud/cds/forms.py:21 crud/research_groups/forms.py:35
 #: crud/research_lines/forms.py:76 crud/utils/forms.py:6
@@ -294,7 +299,7 @@ msgstr "Informazioni sul corso"
 #: crud/cds_websites_brochure/templates/cds_website_exstudents.html:79
 #: crud/cds_websites_brochure/templates/cds_website_links.html:80
 #: crud/cds_websites_brochure/templates/cds_website_sliders.html:80
-#: crud/cds_websites_brochure/views.py:257
+#: crud/cds_websites_brochure/views.py:252
 #: crud/cds_websites_pages/templates/blocks/cds_website_object_items.html:76
 #: crud/cds_websites_pages/templates/blocks/cds_website_regulament_article_items.html:75
 #: crud/cds_websites_pages/templates/blocks/cds_website_topics_objects.html:103
@@ -666,17 +671,17 @@ msgstr "Attualmente fa riferimento a quello dell'anno"
 #: crud/cds/views.py:573 crud/cds/views.py:656 crud/cds/views.py:743
 #: crud/cds/views.py:904 crud/cds/views.py:983 crud/cds/views.py:1069
 #: crud/cds_websites_brochure/views.py:28
-#: crud/cds_websites_brochure/views.py:42
-#: crud/cds_websites_brochure/views.py:130
-#: crud/cds_websites_brochure/views.py:156
-#: crud/cds_websites_brochure/views.py:205
-#: crud/cds_websites_brochure/views.py:253
-#: crud/cds_websites_brochure/views.py:297
-#: crud/cds_websites_brochure/views.py:347
-#: crud/cds_websites_brochure/views.py:397
-#: crud/cds_websites_brochure/views.py:441
-#: crud/cds_websites_brochure/views.py:490
-#: crud/cds_websites_brochure/views.py:538 crud/cds_websites_pages/views.py:31
+#: crud/cds_websites_brochure/views.py:41
+#: crud/cds_websites_brochure/views.py:128
+#: crud/cds_websites_brochure/views.py:153
+#: crud/cds_websites_brochure/views.py:201
+#: crud/cds_websites_brochure/views.py:248
+#: crud/cds_websites_brochure/views.py:290
+#: crud/cds_websites_brochure/views.py:339
+#: crud/cds_websites_brochure/views.py:388
+#: crud/cds_websites_brochure/views.py:430
+#: crud/cds_websites_brochure/views.py:478
+#: crud/cds_websites_brochure/views.py:525 crud/cds_websites_pages/views.py:31
 #: crud/cds_websites_pages/views.py:102 crud/cds_websites_pages/views.py:188
 #: crud/cds_websites_pages/views.py:242 crud/cds_websites_pages/views.py:302
 #: crud/cds_websites_pages/views.py:361 crud/cds_websites_pages/views.py:444
@@ -1062,35 +1067,35 @@ msgstr "Descrizione link (en)"
 msgid "Academic Year"
 msgstr "Anno Accademico"
 
-#: crud/cds_websites_brochure/templates/cds_website_brochure.html:19
+#: crud/cds_websites_brochure/templates/cds_website_brochure.html:20
 msgid "cds in brief sections"
 msgstr "sezioni cds in sintesi"
 
-#: crud/cds_websites_brochure/templates/cds_website_brochure.html:23
-#: crud/cds_websites_brochure/views.py:133
-#: crud/cds_websites_brochure/views.py:145
+#: crud/cds_websites_brochure/templates/cds_website_brochure.html:24
+#: crud/cds_websites_brochure/views.py:131
+#: crud/cds_websites_brochure/views.py:143
 msgid "Info"
 msgstr "Info"
 
-#: crud/cds_websites_brochure/templates/cds_website_brochure.html:28
-#: crud/cds_websites_brochure/views.py:159
-#: crud/cds_websites_brochure/views.py:208
-#: crud/cds_websites_brochure/views.py:256
+#: crud/cds_websites_brochure/templates/cds_website_brochure.html:29
+#: crud/cds_websites_brochure/views.py:156
+#: crud/cds_websites_brochure/views.py:204
+#: crud/cds_websites_brochure/views.py:251
 msgid "Sliders"
 msgstr "Testi Scorrevoli"
 
-#: crud/cds_websites_brochure/templates/cds_website_brochure.html:33
+#: crud/cds_websites_brochure/templates/cds_website_brochure.html:34
 #: crud/cds_websites_brochure/templates/cds_website_exstudents.html:24
-#: crud/cds_websites_brochure/views.py:300
-#: crud/cds_websites_brochure/views.py:350
-#: crud/cds_websites_brochure/views.py:400
+#: crud/cds_websites_brochure/views.py:293
+#: crud/cds_websites_brochure/views.py:342
+#: crud/cds_websites_brochure/views.py:391
 msgid "Ex Students"
 msgstr "Ex Studenti"
 
-#: crud/cds_websites_brochure/templates/cds_website_brochure.html:38
-#: crud/cds_websites_brochure/views.py:444
-#: crud/cds_websites_brochure/views.py:493
-#: crud/cds_websites_brochure/views.py:541
+#: crud/cds_websites_brochure/templates/cds_website_brochure.html:39
+#: crud/cds_websites_brochure/views.py:433
+#: crud/cds_websites_brochure/views.py:481
+#: crud/cds_websites_brochure/views.py:528
 msgid "Links"
 msgstr "Link"
 
@@ -1111,8 +1116,8 @@ msgid "Do you want to remove this link?"
 msgstr "Vuoi davvero eliminare questo link?"
 
 #: crud/cds_websites_brochure/templates/cds_website_sliders.html:24
-#: crud/cds_websites_brochure/views.py:217
-#: crud/cds_websites_brochure/views.py:265
+#: crud/cds_websites_brochure/views.py:213
+#: crud/cds_websites_brochure/views.py:260
 msgid "Scrollable Text"
 msgstr "Testo Scorrevole"
 
@@ -1146,46 +1151,46 @@ msgid " for "
 msgstr " per "
 
 #: crud/cds_websites_brochure/views.py:29
-#: crud/cds_websites_brochure/views.py:43
-#: crud/cds_websites_brochure/views.py:131
-#: crud/cds_websites_brochure/views.py:157
-#: crud/cds_websites_brochure/views.py:254
-#: crud/cds_websites_brochure/views.py:298
-#: crud/cds_websites_brochure/views.py:348
-#: crud/cds_websites_brochure/views.py:398
-#: crud/cds_websites_brochure/views.py:442
-#: crud/cds_websites_brochure/views.py:491
-#: crud/cds_websites_brochure/views.py:539
+#: crud/cds_websites_brochure/views.py:42
+#: crud/cds_websites_brochure/views.py:129
+#: crud/cds_websites_brochure/views.py:154
+#: crud/cds_websites_brochure/views.py:249
+#: crud/cds_websites_brochure/views.py:291
+#: crud/cds_websites_brochure/views.py:340
+#: crud/cds_websites_brochure/views.py:389
+#: crud/cds_websites_brochure/views.py:431
+#: crud/cds_websites_brochure/views.py:479
+#: crud/cds_websites_brochure/views.py:526
 msgid "Course of Studies Websites in brief"
 msgstr "Siti web dei Corsi di Studio in sintesi"
 
-#: crud/cds_websites_brochure/views.py:84
+#: crud/cds_websites_brochure/views.py:82
 msgid "Form validation failed"
 msgstr "Validazione del form fallita"
 
-#: crud/cds_websites_brochure/views.py:114
+#: crud/cds_websites_brochure/views.py:112
 msgid "Edited website info"
 msgstr "Modificate info del sito web"
 
-#: crud/cds_websites_brochure/views.py:118
+#: crud/cds_websites_brochure/views.py:116
 msgid "Website info edited successfully"
 msgstr "Info del sito web modficate con successo"
 
-#: crud/cds_websites_brochure/views.py:191
+#: crud/cds_websites_brochure/views.py:187
 msgid "Added Scrollable Text"
 msgstr "Aggiunto Testo Scorrevole"
 
-#: crud/cds_websites_brochure/views.py:195
+#: crud/cds_websites_brochure/views.py:191
 msgid "Scrollable Text added successfully"
 msgstr "Testo Scorrevole aggiunto con successo"
 
-#: crud/cds_websites_brochure/views.py:206 crud/cds_websites_pages/views.py:568
+#: crud/cds_websites_brochure/views.py:202
 msgid "Course of Studies Websites"
 msgstr "Siti web dei Corsi di Studio"
 
-#: crud/cds_websites_brochure/views.py:209
-#: crud/cds_websites_brochure/views.py:351
-#: crud/cds_websites_brochure/views.py:494 crud/companies/views.py:170
+#: crud/cds_websites_brochure/views.py:205
+#: crud/cds_websites_brochure/views.py:343
+#: crud/cds_websites_brochure/views.py:482 crud/companies/views.py:170
 #: crud/laboratories/views.py:247 crud/patents/views.py:71
 #: crud/phd/views.py:114 crud/projects/views.py:158
 #: crud/research_groups/views.py:182 crud/research_lines/views.py:117
@@ -1193,78 +1198,78 @@ msgstr "Siti web dei Corsi di Studio"
 msgid "New"
 msgstr "Nuovo"
 
-#: crud/cds_websites_brochure/views.py:239
+#: crud/cds_websites_brochure/views.py:234
 msgid "Edited Scrollable Text"
 msgstr "Modificato Testo Scorrevole"
 
-#: crud/cds_websites_brochure/views.py:243
+#: crud/cds_websites_brochure/views.py:238
 msgid "Scrollable Text edited successfully"
 msgstr "Testo Scorrevole modificato con successo"
 
-#: crud/cds_websites_brochure/views.py:280
+#: crud/cds_websites_brochure/views.py:274
 msgid "Deleted Scrollable Text"
 msgstr "Eliminato Testo Scorrevole"
 
-#: crud/cds_websites_brochure/views.py:284
+#: crud/cds_websites_brochure/views.py:278
 msgid "Scrollable Text deleted successfully"
 msgstr "Testo Scorrevole eliminato con successo"
 
-#: crud/cds_websites_brochure/views.py:333
+#: crud/cds_websites_brochure/views.py:325
 msgid "Added Ex Student"
 msgstr "Aggiunto Ex Studente"
 
-#: crud/cds_websites_brochure/views.py:337
+#: crud/cds_websites_brochure/views.py:329
 msgid "Ex Student added successfully"
 msgstr "Ex Studente aggiunto con successo"
 
-#: crud/cds_websites_brochure/views.py:359
-#: crud/cds_websites_brochure/views.py:409
+#: crud/cds_websites_brochure/views.py:351
+#: crud/cds_websites_brochure/views.py:400
 msgid "Ex Student"
 msgstr "Ex Studente"
 
-#: crud/cds_websites_brochure/views.py:383
+#: crud/cds_websites_brochure/views.py:374
 msgid "Edited Ex Student"
 msgstr "Modificato Ex Studente"
 
-#: crud/cds_websites_brochure/views.py:387
+#: crud/cds_websites_brochure/views.py:378
 msgid "Ex Student edited successfully"
 msgstr "Ex Studente modificato con successo"
 
-#: crud/cds_websites_brochure/views.py:424
+#: crud/cds_websites_brochure/views.py:414
 msgid "Deleted Ex Student"
 msgstr "Eliminato Ex Studente"
 
-#: crud/cds_websites_brochure/views.py:428
+#: crud/cds_websites_brochure/views.py:418
 msgid "Ex Student deleted successfully"
 msgstr "Ex Studente eliminato con successo"
 
-#: crud/cds_websites_brochure/views.py:476
+#: crud/cds_websites_brochure/views.py:464
 msgid "Added Link"
 msgstr "Aggiunto Link"
 
-#: crud/cds_websites_brochure/views.py:480
+#: crud/cds_websites_brochure/views.py:468
 msgid "Link added successfully"
 msgstr "Link aggiunto con successo"
 
-#: crud/cds_websites_brochure/views.py:502
-#: crud/cds_websites_brochure/views.py:550 crud/cds_websites_pages/forms.py:140
+#: crud/cds_websites_brochure/views.py:490
+#: crud/cds_websites_brochure/views.py:537 crud/cds_websites_pages/forms.py:140
 #: crud/cds_websites_pages/forms.py:160
 msgid "Link"
 msgstr "Link"
 
-#: crud/cds_websites_brochure/views.py:524
+#: crud/cds_websites_brochure/views.py:511
 msgid "Edited Link"
 msgstr "Modificato Link"
 
-#: crud/cds_websites_brochure/views.py:528
+#: crud/cds_websites_brochure/views.py:515
 msgid "Link edited successfully"
 msgstr "Link modificato con successo"
 
-#: crud/cds_websites_brochure/views.py:565
+#: crud/cds_websites_brochure/views.py:551
 msgid "Deleted Link"
 msgstr "Eliminato Link"
 
-#: crud/cds_websites_brochure/views.py:569
+#: crud/cds_websites_brochure/views.py:555
 msgid "Link deleted successfully"
 msgstr "Link eliminato con successo"
 
@@ -1456,9 +1461,10 @@ msgstr "Vuoi davvero eliminare questo elemento?"
 #: crud/cds_websites_pages/views.py:189 crud/cds_websites_pages/views.py:243
 #: crud/cds_websites_pages/views.py:303 crud/cds_websites_pages/views.py:362
 #: crud/cds_websites_pages/views.py:445 crud/cds_websites_pages/views.py:497
-#: crud/cds_websites_pages/views.py:623
-msgid "Course of Studies Websites pages"
-msgstr "Siti web dei Corsi di Studio pagine"
+#: crud/cds_websites_pages/views.py:568 crud/cds_websites_pages/views.py:623
+#: crud/utils/templates/dashboard.html:81
+msgid "CdS pages"
+msgstr "CdS pagine"
 
 #: crud/cds_websites_pages/views.py:60
 msgid ""
@@ -1704,7 +1710,7 @@ msgstr "Si"
 
 #: crud/companies/templates/blocks/crud_companies.html:67
 #: crud/companies/templates/blocks/crud_companies.html:91
-#: crud/utils/settings.py:48
+#: crud/utils/settings.py:49
 msgid "No"
 msgstr ""
 
@@ -3317,11 +3323,11 @@ msgstr "Nuovo elemento"
 msgid "Teachers materials data removed successfully"
 msgstr "Dati materiale docente rimossi con successo"
 
-#: crud/utils/settings.py:49
+#: crud/utils/settings.py:50
 msgid "Joint title"
 msgstr "Titolo congiunto"
 
-#: crud/utils/settings.py:50
+#: crud/utils/settings.py:51
 msgid "Double title"
 msgstr "Doppio titolo"
 
@@ -3393,10 +3399,6 @@ msgstr "CdS info"
 #: crud/utils/templates/dashboard.html:74
 msgid "Manage CdS' contact details, organization and documents"
 msgstr "Gestisci contatti, organizzazione e documenti dei CdS"
-
-#: crud/utils/templates/dashboard.html:81
-msgid "CdS pages"
-msgstr "CdS pagine"
 
 #: crud/utils/templates/dashboard.html:82
 msgid "Manage contents of CdS' website pages"
@@ -3586,6 +3588,9 @@ msgstr "L'immagine ha una proporzione tra altezza e lunghezza non valida"
 #: ricerca_app/validators.py:100
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
+
+#~ msgid "Course of Studies Websites pages"
+#~ msgstr "Siti web dei Corsi di Studio pagine"
 
 #~ msgid "brochure sections"
 #~ msgstr "sezioni brochure"
