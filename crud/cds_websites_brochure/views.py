@@ -26,7 +26,7 @@ def cds_websites_brochure(request, my_offices=None):
     lista dei siti web dei corsi di studio
     """
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   '#': _('Course of Studies Websites in brief')}
+                   '#': _('CdS in brief')}
     context = { 'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:cdswebsitelist')}
     return render(request, 'cds_websites_brochure.html', context)
@@ -39,7 +39,7 @@ def cds_website_brochure(request, code, cds_website=None, my_offices=None):
     Menu di un sito web dei corsi di studio
     """
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                     '#': cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                 }
     
@@ -126,7 +126,7 @@ def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=
                                         f"<b>{form.fields[k].label}</b>: {v}")
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                    reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    '#': _("Info") }
     
@@ -151,7 +151,7 @@ def cds_websites_brochure_sliders(request, code, cds_website=None, my_offices=No
     sliders = SitoWebCdsSlider.objects.filter(id_sito_web_cds_dati_base=code).order_by("ordine")
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                    reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    '#': _("Sliders") }
     
@@ -199,7 +199,7 @@ def cds_websites_brochure_sliders_new(request, code, cds_website=None, my_office
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS'),
                    reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    reverse('crud_cds_websites_brochure:crud_cds_websites_brochure_sliders', kwargs={'code': code}): _("Sliders"),
                    '#': _("New"), }
@@ -246,7 +246,7 @@ def cds_websites_brochure_sliders_edit(request, code, data_id, cds_website=None,
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                    reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    reverse('crud_cds_websites_brochure:crud_cds_websites_brochure_sliders', kwargs={'code': code}): _("Sliders"),
                    '#': _("Edit"), }
@@ -288,7 +288,7 @@ def cds_websites_brochure_exstudents(request, code, cds_website=None, my_offices
     exstudents = SitoWebCdsExStudenti.objects.filter(id_sito_web_cds_dati_base=code).order_by("ordine")
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                    reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    '#': _("Ex Students") }
     
@@ -337,7 +337,7 @@ def cds_websites_brochure_exstudents_new(request, code, cds_website=None, my_off
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                    reverse('crud_cds_websites_brochure:crud_cds_website', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    reverse('crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents', kwargs={'code': code}): _("Ex Students"),
                    '#': _("New"), }
@@ -386,7 +386,7 @@ def cds_websites_brochure_exstudents_edit(request, code, data_id, cds_website=No
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                    reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    reverse('crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents', kwargs={'code': code}): _("Ex Students"),
                    '#': exstudent.nome, }
@@ -428,7 +428,7 @@ def cds_websites_brochure_links(request, code, cds_website=None, my_offices=None
     links = SitoWebCdsLink.objects.filter(id_sito_web_cds_dati_base=code).order_by("ordine")
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                    reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    '#': _("Links") }
     
@@ -476,7 +476,7 @@ def cds_websites_brochure_links_new(request, code, cds_website=None, my_offices=
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                    reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    reverse('crud_cds_websites_brochure:crud_cds_websites_brochure_links', kwargs={'code': code}): _("Links"),
                    '#': _("New"), }
@@ -523,7 +523,7 @@ def cds_websites_brochure_links_edit(request, code, data_id, cds_website=None, m
         
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('Course of Studies Websites in brief'),
+                   reverse('crud_cds_websites_brochure:crud_cds_websites_brochure'): _('CdS in brief'),
                    reverse('crud_cds_websites_brochure:crud_cds_website_brochure', kwargs={'code': code} ): cds_website.nome_corso_it if (request.LANGUAGE_CODE == 'it' or not cds_website.nome_corso_en) else cds_website.nome_corso_en, 
                    reverse('crud_cds_websites_brochure:crud_cds_websites_brochure_links', kwargs={'code': code}): _("Links"),
                    '#': link.descrizione_link_it, }
