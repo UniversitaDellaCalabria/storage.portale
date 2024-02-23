@@ -28,14 +28,10 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
     DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi, DidatticaRegolamentoAltriDati
 from . serializers import StructuresSerializer
-from . settings import (CURRENT_YEAR,
-                        HIGH_FORMATION_YEAR,
-                        PERSON_CONTACTS_TO_TAKE,
+from . settings import (PERSON_CONTACTS_TO_TAKE,
                         PERSON_CONTACTS_EXCLUDE_STRINGS)
 
 
-CURRENT_YEAR = getattr(settings, 'CURRENT_YEAR', CURRENT_YEAR)
-HIGH_FORMATION_YEAR = getattr(settings, 'HIGH_FORMATION_YEAR', HIGH_FORMATION_YEAR)
 PERSON_CONTACTS_TO_TAKE = getattr(settings, 'PERSON_CONTACTS_TO_TAKE', PERSON_CONTACTS_TO_TAKE)
 PERSON_CONTACTS_EXCLUDE_STRINGS = getattr(settings, 'PERSON_CONTACTS_EXCLUDE_STRINGS', PERSON_CONTACTS_EXCLUDE_STRINGS)
 
@@ -52,10 +48,6 @@ class ServiceQueryBuilder:
 class ServiceDidatticaCds:
     @staticmethod
     def cdslist(language, query_params):
-        # check on current year
-        if(query_params.get('academicyear') and int(query_params['academicyear']) > CURRENT_YEAR):
-            return None
-
         didatticacds_params_to_query_field = {
             'courseclasscod': 'cla_miur_cod',
             'courseclassname': 'cla_miur_des__icontains',
@@ -108,7 +100,8 @@ class ServiceDidatticaCds:
         # didatticacdslingua__lin_did_ord_id__isnull=False
 
         if 'academicyear' not in query_params:
-            items = items.filter(didatticaregolamento__aa_reg_did__lte=CURRENT_YEAR)
+            items = items.filter(
+                didatticaregolamento__stato_regdid_cod__exact='A')
 
         if courses_allowed != '':
             items = items.filter(tipo_corso_cod__in=courses_allowed)
@@ -142,7 +135,9 @@ class ServiceDidatticaCds:
         items = items.order_by("nome_cds_it") if language == 'it' else items.order_by(
             F("nome_cds_eng").asc(nulls_last=True))
         for i in items:
-            erogation_mode = DidatticaRegolamento.objects.filter(cds_id=i['cds_id']).values(
+            erogation_mode = DidatticaRegolamento.objects.filter(
+                cds_id=i['cds_id'],
+                stato_regdid_cod__exact='A').values(
             'modalita_erogazione'
             )
             if (len(erogation_mode) != 0):
@@ -183,8 +178,7 @@ class ServiceDidatticaCds:
     @staticmethod
     def cds(language, cdsid_param, only_active=True):
         res = DidatticaCds.objects.filter(
-            didatticaregolamento__regdid_id=cdsid_param,
-            didatticaregolamento__aa_reg_did__lte=CURRENT_YEAR)
+            didatticaregolamento__regdid_id=cdsid_param)
 
         langs = res.prefetch_related('didatticacdslingua')
 
@@ -367,7 +361,6 @@ class ServiceDidatticaCds:
     @staticmethod
     def getAcademicYears():
         query = DidatticaRegolamento.objects\
-                                    .filter(aa_reg_did__lte=CURRENT_YEAR)\
                                     .values("aa_reg_did")\
                                     .order_by('-aa_reg_did')\
                                     .distinct()
@@ -396,10 +389,8 @@ class ServiceDidatticaCds:
 
     @staticmethod
     def getContacts(cdscod):
-        date = datetime.date.today()
-        last_year = int(date.strftime("%Y")) - 1
-        # current_year = int(date.strftime("%Y"))
-        current_year = CURRENT_YEAR
+        last_year = datetime.date.today().year - 1
+        current_year = datetime.date.today().year
         years = [last_year,current_year]
         query = DidatticaCopertura.objects.filter(
             cds_cod=cdscod,
@@ -448,8 +439,6 @@ class ServiceDidatticaCds:
         if language:
             query_language = Q(lingua__exact=language)
         if year:
-            if int(year) > HIGH_FORMATION_YEAR:
-                return None
             query_year = Q(anno_rilevazione__exact=year)
 
         query = AltaFormazioneDatiBase.objects.filter(
