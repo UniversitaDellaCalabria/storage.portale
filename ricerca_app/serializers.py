@@ -12,7 +12,7 @@ from . settings import (ALLOWED_PROFILE_ID,
                         CDS_BROCHURE_MEDIA_PATH,
                         CDS_BROCHURE_IS_VISIBLE,
                         # COMPANIES_MEDIA_PATH,
-                        LABORATORIES_MEDIA_PATH,
+                        # LABORATORIES_MEDIA_PATH,
                         PERSON_CONTACTS_TO_TAKE)
                         # PATENTS_MEDIA_PATH,
                         # TEACHER_CV_EN_MEDIA_PATH,
@@ -25,7 +25,7 @@ ALLOWED_PROFILE_ID = getattr(settings, 'ALLOWED_PROFILE_ID', ALLOWED_PROFILE_ID)
 CDS_BROCHURE_MEDIA_PATH = getattr(settings, 'CDS_BROCHURE_MEDIA_PATH', CDS_BROCHURE_MEDIA_PATH)
 CDS_BROCHURE_IS_VISIBLE = getattr(settings, 'CDS_BROCHURE_IS_VISIBLE', CDS_BROCHURE_IS_VISIBLE)
 # COMPANIES_MEDIA_PATH = getattr(settings, 'COMPANIES_MEDIA_PATH', COMPANIES_MEDIA_PATH)
-LABORATORIES_MEDIA_PATH = getattr(settings, 'LABORATORIES_MEDIA_PATH', LABORATORIES_MEDIA_PATH)
+# LABORATORIES_MEDIA_PATH = getattr(settings, 'LABORATORIES_MEDIA_PATH', LABORATORIES_MEDIA_PATH)
 # PATENTS_MEDIA_PATH = getattr(settings, 'PATENTS_MEDIA_PATH', PATENTS_MEDIA_PATH)
 # TEACHER_CV_EN_MEDIA_PATH = getattr(settings, 'TEACHER_CV_EN_MEDIA_PATH', TEACHER_CV_EN_MEDIA_PATH)
 # TEACHER_CV_IT_MEDIA_PATH = getattr(settings, 'TEACHER_CV_IT_MEDIA_PATH', TEACHER_CV_IT_MEDIA_PATH)
@@ -1855,7 +1855,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'ScientificDirectorName': query['responsabile_scientifico'],
             'LaboratoryName': query['nome_laboratorio'],
             'LaboratoryAcronym': query['acronimo'],
-            'LaboratoryLogo': build_media_path(query['nome_file_logo'], LABORATORIES_MEDIA_PATH),
+            'LaboratoryLogo': build_media_path(query['nome_file_logo']),
             'LaboratoryEquipment': query['strumentazione_descrizione'],
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
             'DepartmentReferentCod': query['id_dipartimento_riferimento__dip_cod'],
@@ -1988,7 +1988,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             'LaboratoryId': query['id'],
             'LaboratoryName': query['nome_laboratorio'],
             'LaboratoryAcronym': query['acronimo'],
-            'LaboratoryLogo': build_media_path(query['nome_file_logo'], LABORATORIES_MEDIA_PATH),
+            'LaboratoryLogo': build_media_path(query['nome_file_logo']),
             'Area': query['ambito'],
             'DepartmentName': query['dipartimento_riferimento'],
             'DepartmentReferentId': query['id_dipartimento_riferimento__dip_id'],
