@@ -40,7 +40,7 @@ FILE_MAX_SIZE = 5242880
 FILETYPE_IMAGE_YX_RATIO_MIN = 0.9
 FILETYPE_IMAGE_YX_RATIO_MAX = 1.1
 
-LABORATORIES_MEDIA_PATH = f'{settings.MEDIA_URL}portale/laboratori/loghi'
+# LABORATORIES_MEDIA_PATH = f'{settings.MEDIA_URL}portale/laboratori/loghi'
 # COMPANIES_MEDIA_PATH = f'{settings.MEDIA_URL}spinoff-startup/loghi'
 # PATENTS_MEDIA_PATH = f'{settings.MEDIA_URL}brevetti/loghi'
 CDS_BROCHURE_MEDIA_PATH = f'{settings.MEDIA_URL}portale/cds_media_brochure'
