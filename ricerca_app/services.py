@@ -863,13 +863,14 @@ class ServiceDidatticaCds:
 
         query = list(query)
         for q in query:
-
-            languages_it = q.get('lingua_it').split(', ') if q.get('lingua_it') is not None else []
-            languages_en = q.get('lingua_en').split(', ') if q.get('lingua_en') is not None else []
-
-            q['lingua_it'] = languages_it
-            q['lingua_en'] = languages_en
-
+            lingue = DidatticaCdsLingua.objects.filter(cdsord__pk=q['cds_id'])
+            lingua_it = []
+            lingua_en = []
+            for lingua in lingue:
+                lingua_it.append(lingua.lingua_des_it)
+                lingua_en.append(lingua.lingua_des_eng)
+            q['lingua_it'] = lingua_it
+            q['lingua_en'] = lingua_en
 
             ex_studenti = SitoWebCdsExStudenti.objects.filter(
                 id_sito_web_cds_dati_base__exact=q['id']).values(
