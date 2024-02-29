@@ -302,6 +302,25 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         return data
 
 
+class CdsWebsiteLightSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data.update(self.to_dict(instance,
+                                 str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query,
+                req_lang='en'):
+        return {
+                'Id': query['id'],
+                # 'CDSId': query['cds__cds_id'],
+                'CDSCOD': query['cds__cds_cod'],
+                'CDSAcademicYear': query['aa'],
+                'CDSName': query['cds__nome_cds_it'] if req_lang=='it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
+            }
+
+
 class CdsWebsiteSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -313,32 +332,40 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
     def to_dict(query,
                 req_lang='en'):
 
-        if query['ExStudents'] is not None:
+        ex_students = []
+        if query.get('ExStudents'):
             ex_students = CdsWebsiteSerializer.to_dict_ex_students(
                 query['ExStudents'], req_lang)
 
-        if query['CdsLink'] is not None:
+        cds_link = []
+        if query.get('CdsLink'):
             cds_link = CdsWebsiteSerializer.to_dict_links(
                 query['CdsLink'], req_lang)
 
-        if query['CdsSliders'] is not None:
+        cds_sliders = []
+        if query.get('CdsSliders'):
             cds_sliders = CdsWebsiteSerializer.to_dict_sliders(
                 query['CdsSliders'], req_lang)
 
+        course_interclass = None
+        if query['cds__intercla_miur_cod'] and query['cds__intercla_miur_des']:
+            course_interclass = f"{query['cds__intercla_miur_cod']} {query['cds__intercla_miur_des']}"
 
+        course_class = None
+        if query['cds__cla_miur_cod'] and query['cds__cla_miur_des']:
+            course_class = f"{query['cds__cla_miur_cod']} {query['cds__cla_miur_des']}"
 
         return {
             'Id': query['id'],
-            'CDSId': query['cds_id'],
-            'CDSCOD': query['cds_cod'],
+            # 'CDSId': query['cds_id'],
+            'CDSCOD': query['cds__cds_cod'],
             'CDSAcademicYear': query['aa'],
-            'CDSName': query['nome_corso_it'] if req_lang=='it' or query['nome_corso_en'] is None else query['nome_corso_en'],
-            'CDSCourseClassName': query['classe_laurea_it'] if req_lang=='it' or query['classe_laurea_en'] is None else query['classe_laurea_en'],
-            'CDSCourseInterClassDes': query['classe_laurea_interclasse_it'] if req_lang=='it' or query['classe_laurea_interclasse_en'] is None else query['classe_laurea_interclasse_en'],
+            'CDSName': query['cds__nome_cds_it'] if req_lang=='it' or query['cds__nome_cds_eng'] is None else query['cds__nome_corso_eng'],
+            'CDSCourseClassName': course_class,
+            'CDSCourseInterClassDes': course_interclass,
             'CDSLanguage': query['lingua_it'] if req_lang=='it' or query['lingua_en'] is None else query['lingua_en'],
-            'CDSDuration': query['durata'],
+            'CDSDuration': query['cds__durata_anni'],
             'CDSSeatsNumber': query['num_posti'],
-            'RegDidId': query['id_didattica_regolamento'],
             'CDSVideo': query['link_video_cds_it'] if req_lang=='it' or query['link_video_cds_en'] is None else query['link_video_cds_en'],
             'CDSIntro': query['descrizione_corso_it'] if req_lang == 'it' or query['descrizione_corso_en'] is None else query['descrizione_corso_en'],
             'CDSAdmission': query['accesso_corso_it'] if req_lang == 'it' or query['accesso_corso_en'] is None else query['accesso_corso_en'],
@@ -350,7 +377,6 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             'CDSShortDescription': query['corso_in_pillole_it'] if req_lang == 'it' or query['corso_in_pillole_en'] is None else query['corso_in_pillole_en'],
             'CDSStudyPlan': query['cosa_si_studia_it'] if req_lang == 'it' or query['cosa_si_studia_en'] is None else query['cosa_si_studia_en'],
             'CDSEnrollmentMode': query['come_iscriversi_it'] if req_lang == 'it' or query['come_iscriversi_en'] is None else query['come_iscriversi_en'],
-            'CDSUrl': query['sito_web_it'] if req_lang == 'it' or query['sito_web_en'] is None else query['sito_web_en'],
             'CDSExStudents': ex_students,
             'CDSLinks': cds_link,
             'CDSSliders': cds_sliders,

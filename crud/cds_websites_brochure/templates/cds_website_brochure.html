@@ -11,10 +11,11 @@
     <div class="card card-bg no-after">
         <div class="card-body mt-4">
             <h3 style="font-weight: normal;" class="mb-4 pb-4">
-                {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
-                {{ cds_website.nome_corso_it }}
+                {{ cds_website.cds.cds_cod }} -
+                {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
+                {{ cds_website.cds.nome_cds_it }}
                 {% else %}
-                {{ cds_website.nome_corso_en }}
+                {{ cds_website.cds.nome_cds_eng }}
                 {% endif %}
                 -
                 ({% trans "cds in brief sections" %})
@@ -27,12 +28,12 @@
                 <hr />
                 <!-- Sliders -->
                 {% trans "Sliders" as title %}
-                {% include "blocks/includes/cds_websites_brochure_item.html" with title=title redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_sliders' %}    
+                {% include "blocks/includes/cds_websites_brochure_item.html" with title=title redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_sliders' %}
                 <!-- /Sliders -->
                 <hr />
                 <!-- Ex Students -->
                 {% trans "Ex Students" as title %}
-                {% include "blocks/includes/cds_websites_brochure_item.html" with title=title redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents' %}    
+                {% include "blocks/includes/cds_websites_brochure_item.html" with title=title redirect_url='crud_cds_websites_brochure:crud_cds_websites_brochure_exstudents' %}
                 <!-- /Ex Students -->
                 <hr />
                 <!-- Links -->

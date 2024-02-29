@@ -696,174 +696,97 @@ class ServiceDidatticaCds:
         return query
 
     @staticmethod
-    def getCdsWebsites(search, academic_year, cdslanguage, course_class):
+    def getCdsWebsites(search):
         query_search = Q()
-        query_year = Q()
-        query_cdslanguage = Q()
-        query_courseclass = Q()
 
         if search:
             for k in search.split(" "):
                 q_nome_corso_it = Q(nome_corso_it__icontains=k)
                 query_search &= q_nome_corso_it
-        if academic_year:
-            query_year = Q(aa=academic_year)
-        if cdslanguage:
-            for k in cdslanguage.split(" "):
-                q_cdslanguage = Q(lingua_it__icontains=k) | Q(lingua_en__icontains=k)
-                query_cdslanguage &= q_cdslanguage
-        if course_class:
-            query_courseclass = Q(classe_laurea_it=course_class) | Q(classe_laurea_en=course_class)
 
-        query = SitoWebCdsDatiBase.objects.filter(
-            query_search,
-            query_year,
-            query_cdslanguage,
-            query_courseclass
-            ).values(
-            "id",
-            'cds_id',
-            "cds_cod",
-            'aa',
-            "nome_corso_it",
-            "nome_corso_en",
-            "classe_laurea_it",
-            "classe_laurea_en",
-            "classe_laurea_interclasse_it",
-            "classe_laurea_interclasse_en",
-            "lingua_it",
-            "lingua_en",
-            "durata",
-            "num_posti",
-            "link_video_cds_it",
-            "link_video_cds_en",
-            "descrizione_corso_it",
-            "descrizione_corso_en",
-            "accesso_corso_it",
-            "accesso_corso_en",
-            "obiettivi_corso_it",
-            "obiettivi_corso_en",
-            "sbocchi_professionali_it",
-            "sbocchi_professionali_en",
-            "tasse_contributi_esoneri_it",
-            "tasse_contributi_esoneri_en",
-            "borse_studio_it",
-            "borse_studio_en",
-            "agevolazioni_it",
-            "agevolazioni_en",
-            "corso_in_pillole_it",
-            "corso_in_pillole_en",
-            "cosa_si_studia_it",
-            "cosa_si_studia_en",
-            "come_iscriversi_it",
-            "come_iscriversi_en",
-            "sito_web_it",
-            "sito_web_en",
-            'id_didattica_regolamento'
-        )
-
-        query = list(query)
-
-        for q in query:
-
-            languages_it = q.get('lingua_it').split(', ') if q.get('lingua_it') is not None else []
-            languages_en = q.get('lingua_en').split(', ') if q.get('lingua_en') is not None else []
-
-            q['lingua_it'] = languages_it
-            q['lingua_en'] = languages_en
-
-
-            ex_studenti = SitoWebCdsExStudenti.objects.filter(
-                id_sito_web_cds_dati_base__exact=q['id']).values(
-                'id',
-                'ordine',
-                'nome',
-                'profilo_it',
-                'profilo_en',
-                'link_it',
-                'link_en',
-                'foto'
-            ).order_by('ordine')
-            if len(ex_studenti) > 0:
-                q['ExStudents'] = ex_studenti
-            else:
-                q['ExStudents'] = []
-            links = SitoWebCdsLink.objects.filter(
-                id_sito_web_cds_dati_base__exact=q['id']).values(
-                'id',
-                'ordine',
-                'descrizione_link_it',
-                'descrizione_link_en',
-                'link_it',
-                'link_en',
-            ).order_by('ordine')
-            if len(links) > 0:
-                q['CdsLink'] = links
-            else:
-                q['CdsLink'] = []
-
-            sliders = SitoWebCdsSlider.objects.filter(
-                id_sito_web_cds_dati_base__exact=q['id']).values(
-                'id',
-                'ordine',
-                'slider_it',
-                'slider_en',
-            ).order_by('ordine')
-            if len(sliders) > 0:
-                q['CdsSliders'] = sliders
-            else:
-                q['CdsSliders'] = []
-
-
-        return query
+        query = SitoWebCdsDatiBase.objects\
+                                  .filter(query_search)\
+                                  .select_related('cds')\
+                                  .values(
+                                    "id",
+                                    # 'cds__cds_id',
+                                    "cds__cds_cod",
+                                    "aa",
+                                    "cds__nome_cds_it",
+                                    "cds__nome_cds_eng",
+                                )
+        return list(query)
 
     @staticmethod
     def getCdsWebsite(cds_cod):
-        query = SitoWebCdsDatiBase.objects.filter(cds_cod__exact=cds_cod).values(
-            "id",
-            'cds_id',
-            "cds_cod",
-            'aa',
-            "nome_corso_it",
-            "nome_corso_en",
-            "classe_laurea_it",
-            "classe_laurea_en",
-            "classe_laurea_interclasse_it",
-            "classe_laurea_interclasse_en",
-            "lingua_it",
-            "lingua_en",
-            "durata",
-            "num_posti",
-            "link_video_cds_it",
-            "link_video_cds_en",
-            "descrizione_corso_it",
-            "descrizione_corso_en",
-            "accesso_corso_it",
-            "accesso_corso_en",
-            "obiettivi_corso_it",
-            "obiettivi_corso_en",
-            "sbocchi_professionali_it",
-            "sbocchi_professionali_en",
-            "tasse_contributi_esoneri_it",
-            "tasse_contributi_esoneri_en",
-            "borse_studio_it",
-            "borse_studio_en",
-            "agevolazioni_it",
-            "agevolazioni_en",
-            "corso_in_pillole_it",
-            "corso_in_pillole_en",
-            "cosa_si_studia_it",
-            "cosa_si_studia_en",
-            "come_iscriversi_it",
-            "come_iscriversi_en",
-            "sito_web_it",
-            "sito_web_en",
-            'id_didattica_regolamento'
-        )
+        query = SitoWebCdsDatiBase.objects\
+                                  .filter(cds__cds_cod=cds_cod)\
+                                  .select_related('cds')\
+                                  .values(
+                                    "id",
+                                    # "cds__cds_id",
+                                    "cds__cds_cod",
+                                    "aa",
+                                    "cds__nome_cds_it",
+                                    "cds__nome_cds_eng",
+                                    "cds__cla_miur_cod",
+                                    "cds__cla_miur_des",
+                                    "cds__intercla_miur_cod",
+                                    "cds__intercla_miur_des",
+                                    # "classe_laurea_it",
+                                    # "classe_laurea_en",
+                                    # "classe_laurea_interclasse_it",
+                                    # "classe_laurea_interclasse_en",
+                                    # "lingua_it",
+                                    # "lingua_en",
+                                    "cds__durata_anni",
+                                    # "num_posti",
+                                    # "link_video_cds_it",
+                                    # "link_video_cds_en",
+                                    "descrizione_corso_it",
+                                    "descrizione_corso_en",
+                                    "accesso_corso_it",
+                                    "accesso_corso_en",
+                                    "obiettivi_corso_it",
+                                    "obiettivi_corso_en",
+                                    "sbocchi_professionali_it",
+                                    "sbocchi_professionali_en",
+                                    "tasse_contributi_esoneri_it",
+                                    "tasse_contributi_esoneri_en",
+                                    "borse_studio_it",
+                                    "borse_studio_en",
+                                    "agevolazioni_it",
+                                    "agevolazioni_en",
+                                    "corso_in_pillole_it",
+                                    "corso_in_pillole_en",
+                                    "cosa_si_studia_it",
+                                    "cosa_si_studia_en",
+                                    "come_iscriversi_it",
+                                    "come_iscriversi_en",
+                                    # "sito_web_it",
+                                    # "sito_web_en",
+                                    # 'id_didattica_regolamento'
+                                )
 
         query = list(query)
         for q in query:
-            lingue = DidatticaCdsLingua.objects.filter(cdsord__pk=q['cds_id'])
+            cds_altri_dati = DidatticaCdsAltriDati.objects.filter(regdid_id__cds__cds_cod=q['cds__cds_cod'],
+                                                                  regdid_id__aa_reg_did=q['aa']).first()
+            q['num_posti'] = None
+            if cds_altri_dati:
+                q['num_posti'] = cds_altri_dati.num_posti
+
+            reg_did_video = DidatticaRegolamentoAltriDati.objects.filter(regdid__cds__cds_cod=q['cds__cds_cod'],
+                                                                         regdid__aa_reg_did=q['aa'],
+                                                                         tipo_testo_regdid_cod='URL_CDS_VIDEO')\
+                                                                 .first()
+            q['link_video_cds_it'] = None
+            q['link_video_cds_en'] = None
+            if reg_did_video:
+                q['link_video_cds_it'] = reg_did_video.clob_txt_ita
+                q['link_video_cds_en'] = reg_did_video.clob_txt_eng
+
+            lingue = DidatticaCdsLingua.objects.filter(cdsord__cds_cod=q['cds__cds_cod'])
             lingua_it = []
             lingua_en = []
             for lingua in lingue:
@@ -873,7 +796,7 @@ class ServiceDidatticaCds:
             q['lingua_en'] = lingua_en
 
             ex_studenti = SitoWebCdsExStudenti.objects.filter(
-                id_sito_web_cds_dati_base__exact=q['id']).values(
+                id_sito_web_cds_dati_base=q['id']).values(
                 'id',
                 'nome',
                 'ordine',
@@ -888,7 +811,7 @@ class ServiceDidatticaCds:
             else: # pragma: no cover
                 q['ExStudents'] = []
             links = SitoWebCdsLink.objects.filter(
-                id_sito_web_cds_dati_base__exact=q['id']).values(
+                id_sito_web_cds_dati_base=q['id']).values(
                 'id',
                 'ordine',
                 'descrizione_link_it',
@@ -902,7 +825,7 @@ class ServiceDidatticaCds:
                 q['CdsLink'] = []
 
             sliders = SitoWebCdsSlider.objects.filter(
-                id_sito_web_cds_dati_base__exact=q['id']).values(
+                id_sito_web_cds_dati_base=q['id']).values(
                 'id',
                 'ordine',
                 'slider_it',

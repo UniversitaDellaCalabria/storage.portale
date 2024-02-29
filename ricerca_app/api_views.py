@@ -1376,15 +1376,12 @@ class ApiPhdActivityTypeList(ApiEndpointList):
 
 class ApiCdsWebsiteList(ApiEndpointList):
     description = 'Restituisce l’elenco dei siti dei corsi di studio'
-    serializer_class = CdsWebsiteSerializer
+    serializer_class = CdsWebsiteLightSerializer
     filter_backends = [ApiCdsWebsitesListFilter]
 
     def get_queryset(self):
         search = self.request.query_params.get('search')
-        academic_year = self.request.query_params.get('academic_year')
-        cdslanguage = self.request.query_params.get('cdslanguage')
-        course_class = self.request.query_params.get('course_class')
-        return ServiceDidatticaCds.getCdsWebsites(search, academic_year, cdslanguage, course_class)
+        return ServiceDidatticaCds.getCdsWebsites(search)
 
 
 class ApiCdsWebsiteDetail(ApiEndpointDetail):

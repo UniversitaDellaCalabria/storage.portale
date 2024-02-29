@@ -11,11 +11,11 @@
 <div>
     {% block title %}
     <h3 style="font-weight: lighter;" class="mb-4">
-        {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %} 
-            {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}{{ cds_website.nome_corso_it }}{% else %} {{ cds_website.nome_corso_en }} {% endif %}
+        {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %}
+            {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}{{ cds_website.cds.nome_cds_it }}{% else %} {{ cds_website.cds.nome_cds_eng }} {% endif %}
     </h3>
     {% endblock title %}
-    
+
     {% block before_forms%}
     {% endblock before_forms %}
 
@@ -44,7 +44,7 @@
         {% endblock forms %}
     </form>
     {% endblock form_container %}
-    
+
     {% block after_forms%}
     {% endblock after_forms %}
 </div>

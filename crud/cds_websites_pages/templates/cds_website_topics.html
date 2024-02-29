@@ -17,17 +17,18 @@
         <div class="card-body">
 
             <h3 style="font-weight: normal;" class="mb-4 pb-4">
-                {% if LANGUAGE_CODE == "it" or not cds_website.nome_corso_en %}
-                    {{ cds_website.nome_corso_it }}
+                {{ cds_website.cds.cds_cod }} -
+                {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
+                    {{ cds_website.cds.nome_cds_it }}
                 {% else %}
-                    {{ cds_website.nome_corso_en }}
+                    {{ cds_website.cds.nome_cds_eng }}
                 {% endif %}
             </h3>
             <div class="card-wrapper card-space">
                 <div class="card card-bg no-after">
                     <div class="card-body">
                         <div class="d-flex justify-content-start align-items-center pb-4">
-                            <h3 style="font-weight: normal" 
+                            <h3 style="font-weight: normal"
                                 class="mr-auto">
                                 {% trans "Publications and WebPaths" %}
                             </h3>
@@ -55,14 +56,14 @@
                         <h3 style="font-weight: normal" class="pb-4">{% trans "Pages and Topics" %}</h3>
                         <div class="row">
                             <div class="col-4 col-md-3">
-                                <div class="nav nav-tabs nav-tabs-vertical" 
+                                <div class="nav nav-tabs nav-tabs-vertical"
                                     id="nav-vertical-tab-pages"
                                     role="tablist"
                                     aria-orientation="vertical">
 
                                     {% for page_name in pages.keys %}
                                     {% with trimmed_page_name=page_name|cut:" " %}
-                                        <a  class="nav-link {% if forloop.first %}active{% endif %}" 
+                                        <a  class="nav-link {% if forloop.first %}active{% endif %}"
                                             id="nav-vertical-tab-pages-{{trimmed_page_name}}-tab"
                                             data-toggle="tab" href="#nav-vertical-tab-pages-{{trimmed_page_name}}"
                                             role="tab" aria-controls="nav-vertical-tab-pages-{{trimmed_page_name}}"
@@ -73,7 +74,7 @@
                                 </div>
                             </div>
                             <div class="col-8 col-md-9">
-                                <div class="tab-content" 
+                                <div class="tab-content"
                                     id="nav-vertical-tabContent-pages">
 
                                     {% for page_name, content in pages.items %}
@@ -82,8 +83,8 @@
                                             id="nav-vertical-tab-pages-{{trimmed_page_name}}"
                                             role="tabpanel"
                                             aria-labelledby="nav-vertical-tab-pages-{{trimmed_page_name}}">
-                                            
-                                            <div id="collapseDiv_{{trimmed_page_name}}" 
+
+                                            <div id="collapseDiv_{{trimmed_page_name}}"
                                                 class="collapse-div collapse-left-icon">
 
                                                 {% for topic_id, tor in content.items %}
@@ -121,7 +122,7 @@
     });
     $('.popover-dismiss').popover({
         trigger: 'focus',
-      });      
+      });
 </script>
 {% endblock extra_scripts %}
 
