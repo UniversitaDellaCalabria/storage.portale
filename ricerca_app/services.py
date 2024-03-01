@@ -790,8 +790,10 @@ class ServiceDidatticaCds:
             lingua_it = []
             lingua_en = []
             for lingua in lingue:
-                lingua_it.append(lingua.lingua_des_it)
-                lingua_en.append(lingua.lingua_des_eng)
+                if not lingua.lingua_des_it in lingua_it:
+                    lingua_it.append(lingua.lingua_des_it)
+                if not lingua.lingua_des_eng in lingua_en:
+                    lingua_en.append(lingua.lingua_des_eng)
             q['lingua_it'] = lingua_it
             q['lingua_en'] = lingua_en
 
