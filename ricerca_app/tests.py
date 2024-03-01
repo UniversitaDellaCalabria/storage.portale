@@ -5955,9 +5955,16 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
     def test_apisitowebcdsdetail(self):
         req = Client()
 
+        cds = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'cds_id': 1,
+            'cds_cod': 'aaa',
+            'nome_cds_it': 'Matematica',
+            'nome_cds_eng': 'Math',
+        })
+
         s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
             'id': 1,
-            'cds_cod': '1',
+            'cds': cds,
             'aa': '2022',
             # 'nome_corso_it': 'Informatica',
             # 'nome_corso_en': 'Computer Science',
