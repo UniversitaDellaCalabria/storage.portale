@@ -6011,7 +6011,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
 
         # GET
         res = req.get(url)
-        assert res.json()['results']['CDSCOD'] == '1'
+        assert res.json()['results']['CDSCOD'] == 'aaa'
 
 
 
