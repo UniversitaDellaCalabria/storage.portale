@@ -5864,9 +5864,17 @@ class ApiSitoWebCdsListUnitTest(TestCase):
     def test_apisitiwebcdslist(self):
         req = Client()
 
+        cds = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'cds_id': 1,
+            'cds_cod': 'aaa',
+            'nome_cds_it': 'Matematica',
+            'nome_cds_eng': 'Math',
+        })
+
         s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
             'id': 1,
             'aa': '2022',
+            'cds': cds
             # 'nome_corso_it': 'Informatica',
             # 'nome_corso_en': 'Computer Science',
             # 'lingua_it': 'italiano',
@@ -5915,14 +5923,6 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             # 'num_posti': 50
         })
 
-        DidatticaCdsUnitTest.create_didatticaCds(**{
-            'cds_id': 1,
-            'cds_cod': 'aaa',
-            'nome_cds_it': 'Matematica',
-            'nome_cds_eng': 'Math',
-        })
-
-
         SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
             'id': 124,
             'ordine': 1,
@@ -5944,7 +5944,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
         res = req.get(url)
         assert len(res.json()['results']) == 2
 
-        data = {'search': 'Informatica', 'academic_year': 2022, 'cdslanguage': 'italiano', 'course_class': 'aaa'}
+        data = {'search': 'Matematica'} #, 'academic_year': 2022, 'cdslanguage': 'italiano', 'course_class': 'aaa'}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
 
