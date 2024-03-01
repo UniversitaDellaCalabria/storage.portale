@@ -28,7 +28,7 @@ class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
         model = DidatticaCdsAltriDatiUfficio
         fields = ['ordine', 'nome_ufficio',
                   'telefono', 'email', 'edificio', 'piano', 'orari',
-                  'sportello_online', 'nome_origine_riferimento', ]
+                  'sportello_online', 'nome_origine_riferimento']
         labels = {
             "nome_origine_riferimento": _("Responsible"),
         }
@@ -40,7 +40,8 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
         model = DidatticaCdsAltriDati
         fields = ['num_posti', 'modalita_iscrizione',
                   'nome_origine_coordinatore',
-                  'nome_origine_vice_coordinatore']
+                  'nome_origine_vice_coordinatore',
+                  'num_posti']
                   # 'manifesto_studi', 'regolamento_didattico']
         labels = {
             "nome_origine_coordinatore": _("Coordinator"),
