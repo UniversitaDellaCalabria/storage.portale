@@ -10,17 +10,17 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='sitowebcdsdatibase',
-            name='durata_en',
-        ),
-        migrations.RemoveField(
-            model_name='sitowebcdsdatibase',
-            name='durata_it',
-        ),
-        migrations.AddField(
-            model_name='sitowebcdsdatibase',
-            name='durata',
-            field=models.CharField(blank=True, db_column='DURATA', max_length=100, null=True),
-        ),
+        # migrations.RemoveField(
+            # model_name='sitowebcdsdatibase',
+            # name='durata_en',
+        # ),
+        # migrations.RemoveField(
+            # model_name='sitowebcdsdatibase',
+            # name='durata_it',
+        # ),
+        # migrations.AddField(
+            # model_name='sitowebcdsdatibase',
+            # name='durata',
+            # field=models.CharField(blank=True, db_column='DURATA', max_length=100, null=True),
+        # ),
     ]

@@ -360,7 +360,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             # 'CDSId': query['cds_id'],
             'CDSCOD': query['cds__cds_cod'],
             'CDSAcademicYear': query['aa'],
-            'CDSName': query['cds__nome_cds_it'] if req_lang=='it' or query['cds__nome_cds_eng'] is None else query['cds__nome_corso_eng'],
+            'CDSName': query['cds__nome_cds_it'] if req_lang=='it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
             'CDSCourseClassName': course_class,
             'CDSCourseInterClassDes': course_interclass,
             'CDSLanguage': query['lingua_it'] if req_lang=='it' or query['lingua_en'] is None else query['lingua_en'],
@@ -442,23 +442,20 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
     #     return data
 
 
-class CdsWebsitesDegreeTypesSerializer(CreateUpdateAbstract):
-    def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query,
-                                 str(self.context['language']).lower()))
-        return data
+# class CdsWebsitesDegreeTypesSerializer(CreateUpdateAbstract):
+    # def to_representation(self, instance):
+        # query = instance
+        # data = super().to_representation(instance)
+        # data.update(self.to_dict(query,
+                                 # str(self.context['language']).lower()))
+        # return data
 
-    @staticmethod
-    def to_dict(query,
-                req_lang='en'):
-
-
-        return {
-            'CDSCourseClassName': query['classe_laurea_it'] if req_lang=='it' or query['classe_laurea_en'] is None else query['classe_laurea_en'],
-        }
-
+    # @staticmethod
+    # def to_dict(query,
+                # req_lang='en'):
+        # return {
+            # 'CDSCourseClassName': query['classe_laurea_it'] if req_lang=='it' or query['classe_laurea_en'] is None else query['classe_laurea_en'],
+        # }
 
 
 class CdsWebsitesTopicSerializer(CreateUpdateAbstract):

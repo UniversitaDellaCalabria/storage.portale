@@ -701,7 +701,7 @@ class ServiceDidatticaCds:
 
         if search:
             for k in search.split(" "):
-                q_nome_corso_it = Q(nome_corso_it__icontains=k)
+                q_nome_corso_it = Q(cds__nome_cds_it__icontains=k)
                 query_search &= q_nome_corso_it
 
         query = SitoWebCdsDatiBase.objects\
@@ -838,16 +838,14 @@ class ServiceDidatticaCds:
 
         return query
 
+    # @staticmethod
+    # def getCdsWebsitesDegreeTypes():
+        # query = SitoWebCdsDatiBase.objects.values(
+            # "classe_laurea_it",
+            # "classe_laurea_en"
+        # ).distinct()
 
-    @staticmethod
-    def getCdsWebsitesDegreeTypes():
-        query = SitoWebCdsDatiBase.objects.values(
-            "classe_laurea_it",
-            "classe_laurea_en"
-        ).distinct()
-
-        return query
-
+        # return query
 
     @staticmethod
     def getCdsWebsitesTopics():

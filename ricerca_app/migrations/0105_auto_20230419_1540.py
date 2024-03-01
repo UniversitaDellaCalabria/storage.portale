@@ -50,11 +50,11 @@ class Migration(migrations.Migration):
             name='cds',
             field=models.ForeignKey(blank=True, db_column='CDS_ID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.didatticacds'),
         ),
-        migrations.AddField(
-            model_name='sitowebcdsdatibase',
-            name='id_didattica_regolamento',
-            field=models.ForeignKey(blank=True, db_column='ID_DIDATTICA_REGOLAMENTO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.didatticaregolamento'),
-        ),
+        # migrations.AddField(
+            # model_name='sitowebcdsdatibase',
+            # name='id_didattica_regolamento',
+            # field=models.ForeignKey(blank=True, db_column='ID_DIDATTICA_REGOLAMENTO', null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.didatticaregolamento'),
+        # ),
         migrations.AddField(
             model_name='sitowebcdsexstudenti',
             name='foto',

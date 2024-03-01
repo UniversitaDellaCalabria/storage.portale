@@ -4100,22 +4100,22 @@ class DidatticaClasseLaurea(models.Model):
 
 class SitoWebCdsDatiBase(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_didattica_regolamento = models.ForeignKey(DidatticaRegolamento, models.DO_NOTHING, db_column='ID_DIDATTICA_REGOLAMENTO', blank=True, null=True, to_field='regdid_id')  # Field name made lowercase.
+    # id_didattica_regolamento = models.ForeignKey(DidatticaRegolamento, models.DO_NOTHING, db_column='ID_DIDATTICA_REGOLAMENTO', blank=True, null=True, to_field='regdid_id')  # Field name made lowercase.
     aa = models.PositiveIntegerField(db_column='AA', blank=True, null=True )  # Field name made lowercase.
     cds = models.ForeignKey(DidatticaCds, models.DO_NOTHING, db_column='CDS_ID', blank=True, null=True, to_field='cds_id')  # Field name made lowercase.
     cds_cod = models.CharField(db_column='CDS_COD', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    nome_corso_it = models.CharField(db_column='NOME_CORSO_IT', max_length=500)  # Field name made lowercase.
-    nome_corso_en = models.CharField(db_column='NOME_CORSO_EN', max_length=500, blank=True, null=True)  # Field name made lowercase.
-    classe_laurea_it = models.CharField(db_column='CLASSE_LAUREA_IT', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    classe_laurea_en = models.CharField(db_column='CLASSE_LAUREA_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    classe_laurea_interclasse_it = models.CharField(db_column='CLASSE_LAUREA_INTERCLASSE_IT', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    classe_laurea_interclasse_en = models.CharField(db_column='CLASSE_LAUREA_INTERCLASSE_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    lingua_it = models.CharField(db_column='LINGUA_IT', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    lingua_en = models.CharField(db_column='LINGUA_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    durata = models.CharField(db_column='DURATA', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    num_posti = models.IntegerField(db_column='NUM_POSTI', blank=True, null=True)  # Field name made lowercase.
-    link_video_cds_it = models.CharField(db_column='LINK_VIDEO_CDS_IT', max_length=500, blank=True, null=True)  # Field name made lowercase.
-    link_video_cds_en = models.CharField(db_column='LINK_VIDEO_CDS_EN', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    # nome_corso_it = models.CharField(db_column='NOME_CORSO_IT', max_length=500)  # Field name made lowercase.
+    # nome_corso_en = models.CharField(db_column='NOME_CORSO_EN', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    # classe_laurea_it = models.CharField(db_column='CLASSE_LAUREA_IT', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    # classe_laurea_en = models.CharField(db_column='CLASSE_LAUREA_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    # classe_laurea_interclasse_it = models.CharField(db_column='CLASSE_LAUREA_INTERCLASSE_IT', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    # classe_laurea_interclasse_en = models.CharField(db_column='CLASSE_LAUREA_INTERCLASSE_EN', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    # lingua_it = models.CharField(db_column='LINGUA_IT', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    # lingua_en = models.CharField(db_column='LINGUA_EN', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    # durata = models.CharField(db_column='DURATA', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    # num_posti = models.IntegerField(db_column='NUM_POSTI', blank=True, null=True)  # Field name made lowercase.
+    # link_video_cds_it = models.CharField(db_column='LINK_VIDEO_CDS_IT', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    # link_video_cds_en = models.CharField(db_column='LINK_VIDEO_CDS_EN', max_length=500, blank=True, null=True)  # Field name made lowercase.
     descrizione_corso_it = models.TextField(db_column='DESCRIZIONE_CORSO_IT', blank=True, null=True)  # Field name made lowercase.
     descrizione_corso_en = models.TextField(db_column='DESCRIZIONE_CORSO_EN', blank=True, null=True)  # Field name made lowercase.
     accesso_corso_it = models.TextField(db_column='ACCESSO_CORSO_IT', blank=True, null=True)  # Field name made lowercase.
@@ -4136,8 +4136,8 @@ class SitoWebCdsDatiBase(models.Model):
     cosa_si_studia_en = models.TextField(db_column='COSA_SI_STUDIA_EN', blank=True, null=True)  # Field name made lowercase.
     come_iscriversi_it = models.TextField(db_column='COME_ISCRIVERSI_IT', blank=True, null=True)  # Field name made lowercase.
     come_iscriversi_en = models.TextField(db_column='COME_ISCRIVERSI_EN', blank=True, null=True)  # Field name made lowercase.
-    sito_web_it = models.CharField(db_column='SITO_WEB_IT', max_length=2000, blank=True, null=True)  # Field name made lowercase.
-    sito_web_en = models.CharField(db_column='SITO_WEB_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    # sito_web_it = models.CharField(db_column='SITO_WEB_IT', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    # sito_web_en = models.CharField(db_column='SITO_WEB_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 

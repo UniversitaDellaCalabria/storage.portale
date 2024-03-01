@@ -5867,13 +5867,13 @@ class ApiSitoWebCdsListUnitTest(TestCase):
         s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
             'id': 1,
             'aa': '2022',
-            'nome_corso_it': 'Informatica',
-            'nome_corso_en': 'Computer Science',
-            'lingua_it': 'italiano',
-            'lingua_en': "italian",
-            'classe_laurea_it': 'aaa',
-            'durata': 50,
-            'num_posti': 50
+            # 'nome_corso_it': 'Informatica',
+            # 'nome_corso_en': 'Computer Science',
+            # 'lingua_it': 'italiano',
+            # 'lingua_en': "italian",
+            # 'classe_laurea_it': 'aaa',
+            # 'durata': 50,
+            # 'num_posti': 50
         })
 
         SitoWebCdsExStudentiUnitTest.create_sitoWebCdsExStudenti(**{
@@ -5907,12 +5907,12 @@ class ApiSitoWebCdsListUnitTest(TestCase):
         s2 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
             'id': 2,
             'aa': '2022',
-            'nome_corso_it': 'Ingegneria',
-            'nome_corso_en': 'Computer Engineering',
-            'lingua_it': 'italiano',
-            'lingua_en': "italian",
-            'durata': 50,
-            'num_posti': 50
+            # 'nome_corso_it': 'Ingegneria',
+            # 'nome_corso_en': 'Computer Engineering',
+            # 'lingua_it': 'italiano',
+            # 'lingua_en': "italian",
+            # 'durata': 50,
+            # 'num_posti': 50
         })
 
         DidatticaCdsUnitTest.create_didatticaCds(**{
@@ -5959,12 +5959,12 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             'id': 1,
             'cds_cod': '1',
             'aa': '2022',
-            'nome_corso_it': 'Informatica',
-            'nome_corso_en': 'Computer Science',
-            'lingua_it': 'italiano',
-            'lingua_en': "italian",
-            'durata': 50,
-            'num_posti': 50
+            # 'nome_corso_it': 'Informatica',
+            # 'nome_corso_en': 'Computer Science',
+            # 'lingua_it': 'italiano',
+            # 'lingua_en': "italian",
+            # 'durata': 50,
+            # 'num_posti': 50
         })
 
 
@@ -6008,29 +6008,24 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
 
 
 
-class ApiSitoWebCdsDegreeTypesUnitTest(TestCase):
-    def test_apisitiwebcdsdegreetypes(self):
-        req = Client()
+# class ApiSitoWebCdsDegreeTypesUnitTest(TestCase):
+    # def test_apisitiwebcdsdegreetypes(self):
+        # req = Client()
 
-        SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
-            'classe_laurea_it': 'Laurea Triennale',
-        })
+        # SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
+            # 'classe_laurea_it': 'Laurea Triennale',
+        # })
 
+        # url = reverse('ricerca:cdswebsitesdegreetypes')
 
+        # #check url
+        # res = req.get(url)
 
-        url = reverse('ricerca:cdswebsitesdegreetypes')
+        # assert res.status_code == 200
 
-        # check url
-        res = req.get(url)
-
-        assert res.status_code == 200
-
-        # GET
-
-        res = req.get(url)
-        assert len(res.json()['results']) == 1
-
-
+        # #GET
+        # res = req.get(url)
+        # assert len(res.json()['results']) == 1
 
 
 class ApiSitoWebCdsTopicListUnitTest(TestCase):
