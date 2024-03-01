@@ -151,19 +151,25 @@
                 </table>
             </div>
             {% else %}
-            <a  href="#import_other_data" 
-                class="text-center btn-block btn btn-primary btn-xs"
-                data-toggle="modal"
-                data-target="">
-                <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-download"></use>
-                </svg> {% trans "Import from previous year" %}
-            </a>
-            <a href="{% url 'crud_cds:crud_cds_other_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-block btn-success btn-xs">
-                <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Add new" %}
-            </a>
+            <div class="row d-flex">
+                <div class="col">
+                    <a  href="#import_other_data" 
+                        class="text-center btn btn-primary btn-xs btn-block"
+                        data-toggle="modal"
+                        data-target="">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-download"></use>
+                        </svg> {% trans "Import from previous year" %}
+                    </a>
+                </div class="col">
+                <div class="col">
+                    <a href="{% url 'crud_cds:crud_cds_other_data_new' regdid_id=regdid.pk %}" class="text-center btn btn-success btn-xs btn-block">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                        </svg> {% trans "Add new" %}
+                    </a>
+                </div class="col">
+            </div>
             {% endif %}
         </div>
     </div>
