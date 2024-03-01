@@ -8,6 +8,8 @@ urlpatterns = []
 urlpatterns += path('cds/', cds, name='crud_cds'),
 urlpatterns += path('cds/<str:regdid_id>/', cds_detail,
                     name='crud_cds_detail'),
+urlpatterns += path('cds/<str:regdid_id>/other-data/import/',
+                    cds_other_data_import, name='crud_cds_other_data_import'),
 urlpatterns += path('cds/<str:regdid_id>/other-data/new/',
                     cds_other_data_new, name='crud_cds_other_data_new'),
 urlpatterns += path('cds/<str:regdid_id>/other-data/<str:data_id>/',

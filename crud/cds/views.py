@@ -91,6 +91,57 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
                    # 'gruppi_cds': gruppi_cds,
                    # 'gruppi_dip': gruppi_dip})
 
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_other_data_import(request, regdid_id, regdid=None, my_offices=None):
+        other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid_id).first()
+        previous_regdid = DidatticaRegolamento.objects.filter(cds_id=regdid.cds_id, aa_reg_did=regdid.aa_reg_did - 1).first()
+        
+        if not previous_regdid:
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 _("There is no data to import"))
+            return redirect('crud_cds:crud_cds_detail',
+                            regdid_id=regdid_id)
+        
+        other_data_previous_year = DidatticaCdsAltriDati.objects.filter(regdid_id=previous_regdid.regdid_id).first()
+        
+        if not other_data_previous_year:
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 _("There is no data to import"))
+            return redirect('crud_cds:crud_cds_detail',
+                            regdid_id=regdid_id)
+
+        if other_data:
+            other_data.matricola_coordinatore = other_data_previous_year.matricola_coordinatore
+            other_data.nome_origine_coordinatore = other_data_previous_year.nome_origine_coordinatore
+            other_data.nome_origine_vice_coordinatore = other_data_previous_year.nome_origine_vice_coordinatore
+            other_data.num_posti = other_data_previous_year.num_posti
+            other_data.modalita_iscrizione = other_data_previous_year.modalita_iscrizione
+            other_data.save()
+        else:
+            DidatticaCdsAltriDati.objects.create(
+                regdid_id=regdid,
+                matricola_coordinatore = other_data_previous_year.matricola_coordinatore,
+                nome_origine_coordinatore = other_data_previous_year.nome_origine_coordinatore,
+                nome_origine_vice_coordinatore = other_data_previous_year.nome_origine_vice_coordinatore,
+                num_posti = other_data_previous_year.num_posti,
+                modalita_iscrizione = other_data_previous_year.modalita_iscrizione
+            )
+        
+        log_action(user=request.user,
+                           obj=regdid,
+                           flag=CHANGE,
+                           msg=_("Imported course information from previous year"))
+        
+        messages.add_message(request,
+                                messages.SUCCESS,
+                                _("Successfully imported course information from last year"))
+        
+        return redirect('crud_cds:crud_cds_detail',
+                            regdid_id=regdid_id)
 
 @login_required
 @can_manage_cds
