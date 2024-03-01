@@ -787,15 +787,19 @@ class ServiceDidatticaCds:
                 q['link_video_cds_en'] = reg_did_video.clob_txt_eng
 
             lingue = DidatticaCdsLingua.objects.filter(cdsord__cds_cod=q['cds__cds_cod'])
-            lingua_it = []
-            lingua_en = []
+            # lingua_it = []
+            # lingua_en = []
+            lingue_list = []
             for lingua in lingue:
-                if not lingua.lingua_des_it in lingua_it:
-                    lingua_it.append(lingua.lingua_des_it)
-                if not lingua.lingua_des_eng in lingua_en:
-                    lingua_en.append(lingua.lingua_des_eng)
-            q['lingua_it'] = lingua_it
-            q['lingua_en'] = lingua_en
+                # if not lingua.lingua_des_it in lingua_it:
+                    # lingua_it.append(lingua.lingua_des_it)
+                # if not lingua.lingua_des_eng in lingua_en:
+                    # lingua_en.append(lingua.lingua_des_eng)
+                if not lingua.iso6392_cod in lingue_list:
+                    lingue_list.append(lingua.iso6392_cod)
+            # q['lingua_it'] = lingua_it
+            # q['lingua_en'] = lingua_en
+            q['lingue'] = lingue_list
 
             ex_studenti = SitoWebCdsExStudenti.objects.filter(
                 id_sito_web_cds_dati_base=q['id']).values(

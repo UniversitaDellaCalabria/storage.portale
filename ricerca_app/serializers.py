@@ -363,7 +363,7 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
             'CDSName': query['cds__nome_cds_it'] if req_lang=='it' or query['cds__nome_cds_eng'] is None else query['cds__nome_cds_eng'],
             'CDSCourseClassName': course_class,
             'CDSCourseInterClassDes': course_interclass,
-            'CDSLanguage': query['lingua_it'] if req_lang=='it' or query['lingua_en'] is None else query['lingua_en'],
+            'CDSLanguage': query['lingue_list'], # query['lingua_it'] if req_lang=='it' or query['lingua_en'] is None else query['lingua_en'],
             'CDSDuration': query['cds__durata_anni'],
             'CDSSeatsNumber': query['num_posti'],
             'CDSVideo': query['link_video_cds_it'] if req_lang=='it' or query['link_video_cds_en'] is None else query['link_video_cds_en'],
