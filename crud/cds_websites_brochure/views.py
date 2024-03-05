@@ -60,7 +60,10 @@ def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=
     }
     last_viewed_tab = None
 
-    languages = DidatticaCdsLingua.objects.filter(cdsord=cds_website.cds)
+    languages = DidatticaCdsLingua.objects.filter(cdsord=cds_website.cds)\
+                                          .values('lingua_des_it',
+                                                  'lingua_des_eng')\
+                                          .distinct()
 
     if request.POST:
         form = None
