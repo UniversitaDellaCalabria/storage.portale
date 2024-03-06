@@ -5881,7 +5881,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             # 'lingua_en': "italian",
             # 'classe_laurea_it': 'aaa',
             # 'durata': 50,
-            # 'num_posti': 50
+            'num_posti': 50
         })
 
         SitoWebCdsExStudentiUnitTest.create_sitoWebCdsExStudenti(**{
@@ -5920,7 +5920,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             # 'lingua_it': 'italiano',
             # 'lingua_en': "italian",
             # 'durata': 50,
-            # 'num_posti': 50
+            'num_posti': 50
         })
 
         SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
@@ -5971,7 +5971,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             # 'lingua_it': 'italiano',
             # 'lingua_en': "italian",
             # 'durata': 50,
-            # 'num_posti': 50
+            'num_posti': 50
         })
 
 

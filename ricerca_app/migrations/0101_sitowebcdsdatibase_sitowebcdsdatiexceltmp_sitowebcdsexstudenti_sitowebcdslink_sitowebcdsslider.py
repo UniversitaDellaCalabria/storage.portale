@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 # ('lingua_en', models.CharField(blank=True, db_column='LINGUA_EN', max_length=200, null=True)),
                 # ('durata_it', models.CharField(blank=True, db_column='DURATA_IT', max_length=100, null=True)),
                 # ('durata_en', models.CharField(blank=True, db_column='DURATA_EN', max_length=100, null=True)),
-                # ('num_posti', models.IntegerField(blank=True, db_column='NUM_POSTI', null=True)),
+                ('num_posti', models.IntegerField(blank=True, db_column='NUM_POSTI', null=True)),
                 # ('link_video_cds_it', models.CharField(blank=True, db_column='LINK_VIDEO_CDS_IT', max_length=500, null=True)),
                 # ('link_video_cds_en', models.CharField(blank=True, db_column='LINK_VIDEO_CDS_EN', max_length=500, null=True)),
                 ('descrizione_corso_it', models.TextField(blank=True, db_column='DESCRIZIONE_CORSO_IT', null=True)),
