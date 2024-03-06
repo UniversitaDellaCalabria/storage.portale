@@ -21,21 +21,13 @@
             </h3>
 
             <ul class="nav nav-tabs nav-justified" id="brochure-tabs" role="tablist">
-                <li class="nav-item">
-                    <a  class="nav-link active" id="cds-info-nav-item"
-                        data-toggle="tab" href="#cds-info-tab"
-                        role="tab" aria-controls="cds-info-tab"
-                        aria-selected="true">
-                        Dati corso
-                    </a>
-                </li>
                 {% for tab, form in forms.items %}
                 {% with trimmed_tab=tab|cut:" " %}
                     <li class="nav-item">
-                        <a  class="nav-link" id="{{trimmed_tab}}-nav-item"
+                        <a  class="nav-link {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}active{% endif %}" id="{{trimmed_tab}}-nav-item"
                             data-toggle="tab" href="#{{trimmed_tab}}-tab"
                             role="tab" aria-controls="{{trimmed_tab}}-tab"
-                            aria-selected="false">
+                            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
                             {{tab}}
                         </a>
                     </li>
@@ -44,10 +36,14 @@
             </ul>
 
             <div class="tab-content pt-2" id="brochure-tabsContent">
-                <div class="tab-pane p-4 mt-3 fade show active"
-                     id="cds-info-tab"
+                {% for tab, form in forms.items %}
+                {% with trimmed_tab=tab|cut:" " %}
+                <div class="tab-pane p-4 mt-3 fade {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}show active{% endif %}"
+                     id="{{trimmed_tab}}-tab"
                      role="tabpanel"
-                     aria-labelledby="cds-info-tab">
+                     aria-labelledby="{{trimmed_tab}}-tab">
+
+                    {% if not forloop.0 %}
                     <ul class="list-unstyled">
                         <li>
                             <b>{% trans "Course name (it)" %}</b>
@@ -98,14 +94,7 @@
                             {% endfor %}
                         </li>
                     </ul>
-                </div>
-
-                {% for tab, form in forms.items %}
-                {% with trimmed_tab=tab|cut:" " %}
-                <div class="tab-pane p-4 mt-3 fade"
-                     id="{{trimmed_tab}}-tab"
-                     role="tabpanel"
-                     aria-labelledby="{{trimmed_tab}}-tab">
+                    {% endif %}
 
                      <form method="post" enctype="multipart/form-data" novalidate>
                         {% include "form_template.html" with form=form %}
