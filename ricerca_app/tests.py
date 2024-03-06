@@ -5957,7 +5957,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
 
         cds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'cds_id': 1,
-            'cds_cod': 'aaa',
+            'cds_cod': '0999',
             'nome_cds_it': 'Matematica',
             'nome_cds_eng': 'Math',
         })
@@ -6003,7 +6003,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             'id_sito_web_cds_dati_base': s1,
         })
 
-        url = reverse('ricerca:cdswebsitedetail', kwargs={'cdswebsitecod': '1'})
+        url = reverse('ricerca:cdswebsitedetail', kwargs={'cdswebsitecod': '0999'})
 
         # check url
         res = req.get(url)
@@ -6011,7 +6011,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
 
         # GET
         res = req.get(url)
-        assert res.json()['results']['CDSCOD'] == 'aaa'
+        assert res.json()['results']['CDSCOD'] == '0999'
 
 
 

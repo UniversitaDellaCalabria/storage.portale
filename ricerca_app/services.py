@@ -154,7 +154,7 @@ class ServiceDidatticaCds:
 
             item['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=item['didatticaregolamento__regdid_id']).values(
                 'num_posti',
-                'modalita_iscrizione',
+                # 'modalita_iscrizione',
                 'manifesto_studi',
                 'regolamento_didattico',
                 'ordinamento_didattico'
@@ -297,7 +297,7 @@ class ServiceDidatticaCds:
             'matricola_vice_coordinatore',
             'nome_origine_vice_coordinatore',
             'num_posti',
-            'modalita_iscrizione',
+            # 'modalita_iscrizione',
             'manifesto_studi',
             'regolamento_didattico',
             'ordinamento_didattico'

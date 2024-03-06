@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('nome_origine_coordinatore', models.CharField(blank=True, db_column='NOME_ORIGINE_COORDINATORE', max_length=1000, null=True)),
                 ('nome_origine_vice_coordinatore', models.CharField(blank=True, db_column='NOME_ORIGINE_VICE_COORDINATORE', max_length=1000, null=True)),
                 ('num_posti', models.IntegerField(blank=True, db_column='NUM_POSTI', null=True)),
-                ('modalita_iscrizione', models.TextField(blank=True, db_column='MODALITA_ISCRIZIONE', null=True)),
+                # ('modalita_iscrizione', models.TextField(blank=True, db_column='MODALITA_ISCRIZIONE', null=True)),
                 ('matricola_coordinatore', models.ForeignKey(blank=True, db_column='MATRICOLA_COORDINATORE', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='coordinatore', to='ricerca_app.personale')),
                 ('matricola_vice_coordinatore', models.ForeignKey(blank=True, db_column='MATRICOLA_VICE_COORDINATORE', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='vice_coordinatore', to='ricerca_app.personale')),
             ],

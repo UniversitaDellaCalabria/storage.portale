@@ -118,7 +118,7 @@ class CdSSerializer(CreateUpdateAbstract):
         if query:
             q = query[0]
             return {'SeatsNumber': q['num_posti'],
-                    'RegistrationMode': q['modalita_iscrizione'],
+                    # 'RegistrationMode': q['modalita_iscrizione'],
                     }
         return {}
 
@@ -240,7 +240,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                     'DeputyDirectorId': encrypt(q['matricola_vice_coordinatore']),
                     'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
                     'SeatsNumber': q['num_posti'],
-                    'RegistrationMode': q['modalita_iscrizione'],
+                    # 'RegistrationMode': q['modalita_iscrizione'],
                     # 'StudyManifesto': build_media_path(q['manifesto_studi']),
                     # 'DidacticRegulation': build_media_path(q['regolamento_didattico']),
                     # 'TeachingSystem': build_media_path(q['ordinamento_didattico'])
