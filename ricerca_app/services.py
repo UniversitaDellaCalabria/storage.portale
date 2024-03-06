@@ -153,7 +153,7 @@ class ServiceDidatticaCds:
                 "lingua_des_eng").distinct()
 
             item['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=item['didatticaregolamento__regdid_id']).values(
-                'num_posti',
+                # 'num_posti',
                 # 'modalita_iscrizione',
                 'manifesto_studi',
                 'regolamento_didattico',
@@ -296,7 +296,7 @@ class ServiceDidatticaCds:
             'nome_origine_coordinatore',
             'matricola_vice_coordinatore',
             'nome_origine_vice_coordinatore',
-            'num_posti',
+            # 'num_posti',
             # 'modalita_iscrizione',
             'manifesto_studi',
             'regolamento_didattico',
@@ -740,7 +740,7 @@ class ServiceDidatticaCds:
                                     # "lingua_it",
                                     # "lingua_en",
                                     "cds__durata_anni",
-                                    # "num_posti",
+                                    "num_posti",
                                     # "link_video_cds_it",
                                     # "link_video_cds_en",
                                     "descrizione_corso_it",
@@ -770,12 +770,6 @@ class ServiceDidatticaCds:
 
         query = list(query)
         for q in query:
-            cds_altri_dati = DidatticaCdsAltriDati.objects.filter(regdid_id__cds__cds_cod=q['cds__cds_cod'],
-                                                                  regdid_id__aa_reg_did=q['aa']).first()
-            q['num_posti'] = None
-            if cds_altri_dati:
-                q['num_posti'] = cds_altri_dati.num_posti
-
             reg_did_video = DidatticaRegolamentoAltriDati.objects.filter(regdid__cds__cds_cod=q['cds__cds_cod'],
                                                                          regdid__aa_reg_did=q['aa'],
                                                                          tipo_testo_regdid_cod='URL_CDS_VIDEO')\

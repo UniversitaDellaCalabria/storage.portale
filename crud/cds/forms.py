@@ -38,14 +38,14 @@ class DidatticaCdsAltriDatiUfficioForm(forms.ModelForm):
 class DidatticaCdsAltriDatiForm(forms.ModelForm):
     class Meta:
         model = DidatticaCdsAltriDati
-        fields = ['num_posti', #'modalita_iscrizione',
+        fields = [# 'num_posti', 'modalita_iscrizione',
                   'nome_origine_coordinatore',
                   'nome_origine_vice_coordinatore']
                   # 'manifesto_studi', 'regolamento_didattico']
         labels = {
             "nome_origine_coordinatore": _("Coordinator"),
             "nome_origine_vice_coordinatore": _("Deputy coordinator"),
-            "num_posti": _("Number of seats"),
+            # "num_posti": _("Number of seats"),
             # "modalita_iscrizione": _("Registration procedure"),
             "visibile": _("Visibile"),
             # "manifesto_studi": _("Study manifesto"),
