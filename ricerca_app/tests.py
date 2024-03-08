@@ -2466,6 +2466,11 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'matricola': '111112',
         })
 
+        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
+            'matricola': '111114',
+            'ds_ruolo': 'test'
+        })
+
         url = reverse(
             'ricerca:personaledetail', kwargs={
                 'personaleid': encrypt("111112")})
@@ -5874,7 +5879,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
         s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
             'id': 1,
             'aa': '2022',
-            'cds': cds
+            'cds': cds,
             # 'nome_corso_it': 'Informatica',
             # 'nome_corso_en': 'Computer Science',
             # 'lingua_it': 'italiano',
