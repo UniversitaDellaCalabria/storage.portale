@@ -943,6 +943,19 @@ class DidatticaDipartimentoUrl(models.Model):
         db_table = 'DIDATTICA_DIPARTIMENTO_URL'
 
 
+class DidatticaDottoratoAttivitaFormativaTipologia(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome_it = models.CharField(db_column='NOME_IT', max_length=255)  # Field name made lowercase.
+    nome_en = models.CharField(db_column='NOME_EN', max_length=255, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA_TIPOLOGIA'
+
+    def __str__(self):
+        return self.nome_it
+
+
 class DidatticaDottoratoAttivitaFormativa(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     nome_af = models.CharField(db_column='NOME_AF', max_length=1000, blank=False, null=True)  # Field name made lowercase.
@@ -951,6 +964,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
     numero_ore = models.IntegerField(db_column='NUMERO_ORE', blank=False, null=True)  # Field name made lowercase.
     cfu = models.IntegerField(db_column='CFU', blank=False, null=True)  # Field name made lowercase.
     tipo_af = models.CharField(db_column='TIPO_AF', max_length=500)  # Field name made lowercase.
+    tipologia = models.ForeignKey('DidatticaDottoratoAttivitaFormativaTipologia', models.SET_NULL, db_column='TIPOLOGIA', blank=False, null=True)
     rif_dottorato = models.CharField(db_column='RIF_DOTTORATO', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     ciclo = models.IntegerField(db_column='CICLO')  # Field name made lowercase.
     id_struttura_proponente = models.ForeignKey('UnitaOrganizzativa', models.DO_NOTHING, db_column='ID_STRUTTURA_PROPONENTE', blank=True, null=True)  # Field name made lowercase.

@@ -2863,6 +2863,10 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
             other_teachers = PhdActivitiesSerializer.to_dict_teachers(
                 query['OtherTeachers'])
 
+        tipologia = None
+        if query['tipologia_obj']:
+            tipologia = query['tipologia_obj'].nome_it if req_lang == 'it' or query['tipologia_obj'].nome_en is None else query['tipologia_obj'].nome_en
+
         return {
             'ID': query['id'],
             'ActivityName': query['nome_af'],
@@ -2870,6 +2874,7 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
             'Hours': query['numero_ore'],
             'CFU': query['cfu'],
             'ActivityType': query['tipo_af'],
+            'ActivityTypology': tipologia,
             'ReferentPhd': query['rif_dottorato'],
             'Cycle': cycle_des,
             'ReferentStructureId': query['id_struttura_proponente'],

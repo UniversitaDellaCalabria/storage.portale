@@ -26,7 +26,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     SitoWebCdsTopicArticoliRegAltriDati, \
     SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
-    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi, DidatticaRegolamentoAltriDati
+    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi, DidatticaRegolamentoAltriDati,\
+    DidatticaDottoratoAttivitaFormativaTipologia
 from . serializers import StructuresSerializer
 from . settings import (PERSON_CONTACTS_TO_TAKE,
                         PERSON_CONTACTS_EXCLUDE_STRINGS)
@@ -3099,6 +3100,7 @@ class ServiceDottorato:
             "numero_ore",
             "cfu",
             "tipo_af",
+            "tipologia",
             "rif_dottorato",
             "ciclo",
             "id_struttura_proponente",
@@ -3116,6 +3118,8 @@ class ServiceDottorato:
             "visualizza_orario"
         )
         for q in query:
+            q["tipologia_obj"] = DidatticaDottoratoAttivitaFormativaTipologia.objects.filter(pk=q['tipologia']).first()
+
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
                 id_didattica_dottorato_attivita_formativa=q['id']).values(
                 'matricola',
@@ -3165,6 +3169,7 @@ class ServiceDottorato:
             "numero_ore",
             "cfu",
             "tipo_af",
+            "tipologia",
             "rif_dottorato",
             "ciclo",
             "id_struttura_proponente",
@@ -3183,6 +3188,8 @@ class ServiceDottorato:
         )
         query_filter_teachers = ~Q(cognome_nome_origine='....DOCENTE NON IN ELENCO')
         for q in query:
+            q["tipologia_obj"] = DidatticaDottoratoAttivitaFormativaTipologia.objects.filter(pk=q['tipologia']).first()
+
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
                 query_filter_teachers,
                 id_didattica_dottorato_attivita_formativa=q['id']).values(
