@@ -1,0 +1,131 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<div>
+    {% block title %}
+    <h3 style="font-weight: lighter;" class="mb-4">
+        {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %}
+            {% if LANGUAGE_CODE == "it" or not regdid.cds.nome_cds_eng %}{{ regdid.cds.nome_cds_it }}{% else %} {{ regdid.cds.nome_cds_eng }} {% endif %}
+            - {{regdid.aa_reg_did}}
+    </h3>
+    {% endblock title %}
+
+    {% block before_forms%}
+    {% endblock before_forms %}
+
+    {% block form_container %}
+        {% block forms %}
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                    <div class="card-body">
+                        {% if exclusive_form %}
+                        <p class="mb-0"><b>{% trans "Type" %}</b></p>
+                        <div style="padding: 0 0 1rem">
+                            <select name="type_select" class="form-control" id="id_exclusive_select">
+                                {% for name in form_name_dict.keys %}
+                                <option value="{{name}}" {% if selected_form_name == name %}selected{% endif %}>{{name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                        {% if edit and multiple_types %}
+                        <!-- Switch type modal-->
+                        <div class="modal fade"
+                            tabindex="-1"
+                            role="dialog"
+                            id="regdid_other_data_switch_type">
+                            <div class="modal-dialog modal-dialog-centered"
+                                role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Confirm" %}
+                                        </h5>
+                                        <button class="close"
+                                                type="button"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                        <svg class="icon">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                        </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>{% trans "Do you really want to change multimedia type for this item?" %}</p>
+                                        <p><b>{% trans "Warning: current item will be deleted and you will be asked to provide a new one" %}</b></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_regdid_other_data_delete' regdid_id=regdid.pk data_id=other_data.pk %}?redirect_to_new={{"yes"|urlencode}}">
+                                            {% trans 'Yes, proceed' %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Switch type modal -->
+                        <div class="d-flex">
+                            <a  href="javascript:void(0)"
+                                class="btn btn-warning btn-sm ml-auto"
+                                data-toggle="modal"
+                                data-target="#regdid_other_data_switch_type">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-exchange-circle"></use>
+                                </svg> {% trans "Change Type" %}
+                            </a>
+                        </div>
+                        {% endif %}
+                        {% for name, form in form_name_dict.items %}
+                        <form method="post" enctype="multipart/form-data" novalidate>
+                            <div id="id_exclusive_form_{{name}}">
+                            {% include "form_template.html" %}
+                            
+                            {% block before_submit %}
+                            {% endblock before_submit %}
+                            
+                            {% block submit %}
+                            {% include "includes/form_submit.html" %}
+                            {% endblock submit %}
+                            
+                            {% block after_submit%}
+                            {% endblock after_submit %}
+                            </div>
+                        </form>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endblock forms %}
+    {% endblock form_container %}
+
+    {% block after_forms%}
+    {% endblock after_forms %}
+</div>
+
+{% block extra_scripts %}
+{% if exclusive_form %}
+<script>
+    if ($("#id_exclusive_select").length)
+    {
+        function handleExclusiveForms() {
+            let selected_value = $("#id_exclusive_select")[0].value;
+            let selector = `#id_exclusive_form_${selected_value}`;
+                $('div[id^="id_exclusive_form_"]').hide();
+                $(selector).show();
+            };
+        
+        $("#id_exclusive_select").bind("click", handleExclusiveForms);
+        
+        handleExclusiveForms();
+    }
+</script>
+{% endif %}
+{% endblock extra_scripts %}
+
+{% endblock centered_container %}

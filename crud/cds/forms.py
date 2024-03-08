@@ -4,10 +4,11 @@ from django.conf import settings
 
 from django_ckeditor_5.widgets import CKEditor5Widget
 
+from ricerca_app.validators import validate_pdf_file_extension, validate_file_size
 from ricerca_app.models import (
     DidatticaCds, DidatticaCdsAltriDati,
     DidatticaCdsAltriDatiUfficio, DidatticaCdsGruppi,
-    DidatticaCdsGruppiComponenti)
+    DidatticaCdsGruppiComponenti, DidatticaRegolamentoAltriDati)
 
 from .. utils.forms import ChoosenPersonForm
 from .. utils.settings import CMS_STORAGE_ROOT_API
@@ -106,3 +107,44 @@ class ChoosenPersonForm(ChoosenPersonForm, forms.ModelForm):
     class Meta:
         model = DidatticaCdsGruppiComponenti
         fields = ['visibile', 'funzione_it', 'funzione_en', 'ordine']
+
+
+class DidatticaRegolamentoAltriDatiForm(forms.ModelForm):
+    def __init__(self, clob_type, clob_label, tipo_testo_regdid_cod, form_name, *args, **kwargs):
+        
+        clob_label_it = _(clob_label) + " (it)"
+        clob_label_en = _(clob_label) + " (en)"
+                
+        super(DidatticaRegolamentoAltriDatiForm, self).__init__(*args, **kwargs)
+        
+        if clob_type == "PDF": # pdf file
+            self.fields['clob_txt_ita'] = forms.FileField(validators=[validate_pdf_file_extension, validate_file_size])
+            self.fields['clob_txt_eng'] = forms.FileField(validators=[validate_pdf_file_extension, validate_file_size])
+            self.fields['clob_txt_eng'].widget = forms.widgets.ClearableFileInput()
+        elif clob_type == "URL": # url to some resource
+            self.fields['clob_txt_ita'] = forms.URLField()
+            self.fields['clob_txt_eng'] = forms.URLField()
+        elif clob_type == "MD": # markdown text
+            self.fields['clob_txt_ita'] = forms.CharField(widget=forms.widgets.Textarea())
+            self.fields['clob_txt_eng'] = forms.CharField(widget=forms.widgets.Textarea())
+        else: # default is handled as plain text
+            self.fields['clob_txt_ita'] = forms.CharField(widget=forms.widgets.Textarea())
+            self.fields['clob_txt_eng'] = forms.CharField(widget=forms.widgets.Textarea())
+        # common
+        self.fields['clob_txt_ita'].required = True
+        self.fields['clob_txt_eng'].required = False
+        self.fields['clob_txt_ita'].label = clob_label_it
+        self.fields['clob_txt_eng'].label = clob_label_en
+        self.fields['form_name'] = forms.CharField(
+            initial=form_name,
+            widget=forms.widgets.HiddenInput()
+        )
+        # tipo_testo_regdid_cod
+        self.fields['tipo_testo_regdid_cod'] = forms.CharField(
+            initial=tipo_testo_regdid_cod,
+            widget=forms.widgets.HiddenInput()
+        )
+        
+    class Meta:
+        model = DidatticaRegolamentoAltriDati
+        fields = ["clob_txt_ita", "clob_txt_eng"]

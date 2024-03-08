@@ -58,3 +58,11 @@ urlpatterns += path('cds/<str:regdid_id>/groups/<str:group_id>/members/<str:memb
                     cds_group_member_edit, name='cds_group_member_edit'),
 urlpatterns += path('cds/<str:regdid_id>/groups/<str:group_id>/members/<str:member_id>/delete/',
                     cds_group_member_delete, name='cds_group_member_delete'),
+
+# regdid other data (multimedia)
+urlpatterns += path('cds/<str:regdid_id>/regdid-other-data/<str:other_data_type>/new/',
+                    cds_regdid_other_data_new, name='crud_cds_regdid_other_data_new'),
+urlpatterns += path('cds/<str:regdid_id>/regdid-other-data/<str:data_id>/edit/',
+                    cds_regdid_other_data_edit, name='crud_cds_regdid_other_data_edit'),
+urlpatterns += path('cds/<str:regdid_id>/regdid-other-data/<str:data_id>/delete/',
+                    cds_regdid_other_data_delete, name='crud_cds_regdid_other_data_delete'),

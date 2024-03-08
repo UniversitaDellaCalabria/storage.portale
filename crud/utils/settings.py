@@ -2,7 +2,6 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.widgets import CKEditor5Widget
 
-
 '''
     ckeditor js and css removed to avoid duplicates
     added one single import inside ./templates/storage_crud_base.html
@@ -65,3 +64,12 @@ ETL_USER_IDS = getattr(settings, "ETL_USER_IDS", [])
 
 CURRENT_YEAR = getattr(settings, "CURRENT_YEAR", "")
 HIGH_FORMATION_YEAR = getattr(settings, "HIGH_FORMATION_YEAR", "")
+
+REGDID_OTHER_DATA_TYPES_MAPPINGS = getattr(settings, "REGDID_OTHER_DATA_TYPES_MAPPINGS",
+    {
+        "INTRO_CDS_FMT": ["MD"],
+        "URL_CDS_DOC": ["PDF"],
+        "URL_CDS_VIDEO": ["PDF", "URL"],
+    })
+
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT")
