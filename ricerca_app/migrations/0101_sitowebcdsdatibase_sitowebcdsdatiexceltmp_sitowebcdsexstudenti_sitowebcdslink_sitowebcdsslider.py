@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='ID', primary_key=True, serialize=False)),
                 ('cds_cod', models.CharField(blank=True, db_column='CDS_COD', max_length=100, null=True)),
                 # ('nome_corso_it', models.CharField(db_column='NOME_CORSO_IT', max_length=500)),
-                ('nome_corso_en', models.CharField(blank=True, db_column='NOME_CORSO_EN', max_length=500, null=True)),
+                # ('nome_corso_en', models.CharField(blank=True, db_column='NOME_CORSO_EN', max_length=500, null=True)),
                 # ('classe_laurea_it', models.CharField(blank=True, db_column='CLASSE_LAUREA_IT', max_length=100, null=True)),
                 # ('classe_laurea_en', models.CharField(blank=True, db_column='CLASSE_LAUREA_EN', max_length=100, null=True)),
                 # ('classe_laurea_interclasse_it', models.CharField(blank=True, db_column='CLASSE_LAUREA_INTERCLASSE_IT', max_length=100, null=True)),
