@@ -1,3 +1,4 @@
+import datetime
 import requests
 
 from django import forms
@@ -53,7 +54,8 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
 
         ssd_list = DidatticaSsd.objects.all()
         structures = UnitaOrganizzativa.objects.filter(uo_padre=STRUCTURES_FATHER,
-                                                       cd_tipo_nodo__in=ALLOWED_STRUCTURE_TYPES)
+                                                       cd_tipo_nodo__in=ALLOWED_STRUCTURE_TYPES,
+                                                       dt_fine_val__gte=datetime.datetime.today())
 
         lista_tipo_af = [
                          ('', '-'),

@@ -3871,7 +3871,8 @@ class ServicePersonale:
     @staticmethod
     def getStructure(structureid):
         query = UnitaOrganizzativa.objects.filter(
-            uo__exact=structureid)
+            uo__exact=structureid,
+            dt_fine_val__gte=datetime.datetime.today())
         contacts_to_take = [
             'EMAIL',
             'PEC',
@@ -3953,7 +3954,8 @@ class ServicePersonale:
 
         query = UnitaOrganizzativa.objects.filter(query_search,
                                                   query_father,
-                                                  query_type).extra(
+                                                  query_type,
+                                                  dt_fine_val__gte=datetime.datetime.today()).extra(
             select={
                 'matricola': 'PERSONALE.MATRICOLA',
                 'cd_uo_aff_org': 'PERSONALE.CD_UO_AFF_ORG'},
@@ -4780,7 +4782,8 @@ class ServiceStructure:
     def getStructureChilds(structureid=None):
 
         child = UnitaOrganizzativa.objects.filter(
-            uo_padre=structureid).values_list("uo", flat=True)
+            uo_padre=structureid,
+            dt_fine_val__gte=datetime.datetime.today()).values_list("uo", flat=True)
 
         result = [structureid]
 
