@@ -118,6 +118,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
             'orario_aule': _('Timetable and Classrooms'),
             'num_max_studenti': _('Maximum students number'),
             'num_min_studenti': _('Minimum students number'),
+            'tipologia': _('Tipologia attività')
         }
 
         widgets = {'nome_af': forms.Textarea(attrs={'rows': 1}),
