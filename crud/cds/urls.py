@@ -60,7 +60,7 @@ urlpatterns += path('cds/<str:regdid_id>/groups/<str:group_id>/members/<str:memb
                     cds_group_member_delete, name='cds_group_member_delete'),
 
 # regdid other data (multimedia)
-urlpatterns += path('cds/<str:regdid_id>/regdid-other-data/<str:other_data_type>/new/',
+urlpatterns += path('cds/<str:regdid_id>/regdid-other-data/<str:other_data_type_id>/new/',
                     cds_regdid_other_data_new, name='crud_cds_regdid_other_data_new'),
 urlpatterns += path('cds/<str:regdid_id>/regdid-other-data/<str:data_id>/edit/',
                     cds_regdid_other_data_edit, name='crud_cds_regdid_other_data_edit'),

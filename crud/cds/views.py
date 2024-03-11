@@ -1296,15 +1296,12 @@ def cds_regdid_other_data_delete(request, regdid_id, data_id, my_offices=None, r
     other_data = get_object_or_404(DidatticaRegolamentoAltriDati, pk=data_id)
     other_data_type = other_data.tipo_testo_regdid_cod.tipo_testo_regdid_cod
     # If the element is a file and is not present in any other record, it can be deleted on the server
-    file_deleted_on_server = False
-    file_deleted_on_server |= _handle_regdid_other_data_file_delete(other_data.clob_txt_ita, "clob_txt_ita", regdid_id)
-    file_deleted_on_server |= _handle_regdid_other_data_file_delete(other_data.clob_txt_eng, "clob_txt_eng", regdid_id)
+    _handle_regdid_other_data_file_delete(other_data.clob_txt_ita, "clob_txt_ita", regdid_id)
+    _handle_regdid_other_data_file_delete(other_data.clob_txt_eng, "clob_txt_eng", regdid_id)
     
     other_data.delete()
     
     log_message = _("Deleted") + f" multimedia {other_data.tipo_testo_regdid_cod.tipo_testo_regdid_des}"
-    if file_deleted_on_server:
-        log_message += " (permanently)"
     
     log_action(user=request.user,
                obj=regdid,
@@ -1318,7 +1315,7 @@ def cds_regdid_other_data_delete(request, regdid_id, data_id, my_offices=None, r
     if redirect_to_new != 'yes':
         return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
     else:
-        return redirect('crud_cds:crud_cds_regdid_other_data_new', regdid_id=regdid_id, other_data_type=other_data_type)    
+        return redirect('crud_cds:crud_cds_regdid_other_data_new', regdid_id=regdid_id, other_data_type_id=other_data.tipo_testo_regdid_cod.pk)    
     
     
 
@@ -1435,16 +1432,18 @@ def cds_regdid_other_data_edit(request, regdid_id, data_id, my_offices=None, reg
 @login_required
 @can_manage_cds
 @can_edit_cds
-def cds_regdid_other_data_new(request, regdid_id, other_data_type, my_offices=None, regdid=None):
-    other_data_des = DidatticaRegolamentoTipologiaAltriDati.objects.filter(tipo_testo_regdid_cod=other_data_type).values_list("tipo_testo_regdid_des", flat=True)[0]
+def cds_regdid_other_data_new(request, regdid_id, other_data_type_id, my_offices=None, regdid=None):
+    other_data_type = get_object_or_404(DidatticaRegolamentoTipologiaAltriDati, pk=other_data_type_id)
+    other_data_cod = other_data_type.tipo_testo_regdid_cod
+    other_data_des = other_data_type.tipo_testo_regdid_des
     other_data_des_formatted = other_data_des.lower().capitalize()
     
-    types_mappings = REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_type]
+    types_mappings = REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_cod]
     excusive_form = 1 if len(types_mappings) > 1 else 0
     form_name_dict = {}       
     for type in types_mappings:
         form_name_dict[type] = DidatticaRegolamentoAltriDatiForm(clob_type=type, clob_label=other_data_des_formatted,
-                                                                tipo_testo_regdid_cod=other_data_type, form_name=type)
+                                                                tipo_testo_regdid_cod=other_data_cod, form_name=type)
     selected_form_name = next(iter(form_name_dict))
     
     if request.POST:
@@ -1452,7 +1451,7 @@ def cds_regdid_other_data_new(request, regdid_id, other_data_type, my_offices=No
         form = DidatticaRegolamentoAltriDatiForm(data=request.POST if request.POST else None,
                                                 files=request.FILES if request.FILES else None,
                                                 clob_type=selected_form_name, clob_label=other_data_des_formatted,
-                                                tipo_testo_regdid_cod=other_data_type, form_name=selected_form_name)
+                                                tipo_testo_regdid_cod=other_data_cod, form_name=selected_form_name)
         form_name_dict[selected_form_name] = form
         if form.is_valid():
             instance = form.save(commit=False)

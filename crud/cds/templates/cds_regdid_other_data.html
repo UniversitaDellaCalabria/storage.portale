@@ -87,7 +87,7 @@
                         </svg> {% trans "Remove" %}
                     </a>
                     {% else %}
-                    <a  href="{% url 'crud_cds:crud_cds_regdid_other_data_new' regdid_id=regdid.pk other_data_type=regdid_other_data_type.tipo_testo_regdid_cod %}" class="btn btn-success btn-xs">
+                    <a  href="{% url 'crud_cds:crud_cds_regdid_other_data_new' regdid_id=regdid.pk other_data_type_id=regdid_other_data_type.pk %}" class="btn btn-success btn-xs">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                         </svg> {% trans "Add" %}
