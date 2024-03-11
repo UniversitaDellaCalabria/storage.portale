@@ -1469,7 +1469,12 @@ def cds_regdid_other_data_new(request, regdid_id, other_data_type_id, my_offices
                     errors = True
                     messages.add_message(request, messages.ERROR, _("Something went wrong with file upload (eng)"))
                 instance.clob_txt_eng = clob_txt_eng
-                
+            
+            is_clob_empty = instance.clob_txt_ita is None and instance.clob_txt_eng is None
+            if is_clob_empty:
+                errors = True
+                messages.add_message(request, messages.ERROR, _("At least one field must be provided"))
+            
             if not errors:
                 instance.regdid_id = regdid_id
                 instance.tipo_testo_regdid_cod_id = request.POST.get("tipo_testo_regdid_cod")
@@ -1505,3 +1510,66 @@ def cds_regdid_other_data_new(request, regdid_id, other_data_type_id, my_offices
                     'exclusive_form': excusive_form,
                     'selected_form_name':  selected_form_name,
                   })
+
+
+@login_required
+@can_manage_cds
+@can_edit_cds
+def cds_regdid_other_data_import(request, regdid_id, my_offices=None, regdid=None):
+    previous_regdid = DidatticaRegolamento.objects.filter(cds_id=regdid.cds_id, aa_reg_did=regdid.aa_reg_did - 1).first()
+        
+    if not previous_regdid:
+        messages.add_message(request,
+                                messages.ERROR,
+                                _("There is no data to import"))
+        return redirect('crud_cds:crud_cds_detail',
+                        regdid_id=regdid_id)
+    
+    regdid_other_data_previous_year = DidatticaRegolamentoAltriDati.objects.filter(regdid_id=previous_regdid.regdid_id).exclude(tipo_testo_regdid_cod='URL_CDS')
+    
+    if not regdid_other_data_previous_year.exists():
+        messages.add_message(request,
+                                messages.ERROR,
+                                _("There is no data to import"))
+    
+        return redirect('crud_cds:crud_cds_detail',
+                        regdid_id=regdid_id)
+        
+    
+    for regdid_oa_py in regdid_other_data_previous_year:
+        # update existing record
+        current = DidatticaRegolamentoAltriDati.objects.filter(regdid_id=regdid_id, tipo_testo_regdid_cod=regdid_oa_py.tipo_testo_regdid_cod.tipo_testo_regdid_cod).first()
+        if current:
+            # delete files if present
+            if 'PDF' in REGDID_OTHER_DATA_TYPES_MAPPINGS[current.tipo_testo_regdid_cod.tipo_testo_regdid_cod]:
+                if _file_exists(current.clob_txt_ita):
+                    _handle_regdid_other_data_file_delete(current.clob_txt_ita, "clob_txt_ita", regdid_id)
+                if _file_exists(current.clob_txt_eng):
+                    _handle_regdid_other_data_file_delete(current.clob_txt_eng, "clob_txt_eng", regdid_id)
+            # update instance
+            current.clob_txt_ita=regdid_oa_py.clob_txt_ita
+            current.clob_txt_eng=regdid_oa_py.clob_txt_eng
+            current.dt_mod=datetime.datetime.now()
+            current.id_user_mod=request.user
+            current.save()
+        else: # create new record
+            DidatticaRegolamentoAltriDati.objects.create(
+                regdid_id=regdid_id,
+                tipo_testo_regdid_cod=regdid_oa_py.tipo_testo_regdid_cod,
+                clob_txt_ita=regdid_oa_py.clob_txt_ita,
+                clob_txt_eng=regdid_oa_py.clob_txt_eng,
+                dt_mod=datetime.datetime.now(),
+                id_user_mod=request.user
+            )
+            
+    log_action(user=request.user,
+                        obj=regdid,
+                        flag=CHANGE,
+                        msg=_("Imported multimedia contents from previous year"))
+    
+    messages.add_message(request,
+                            messages.SUCCESS,
+                            _("Successfully imported multimedia contents from last year"))
+    
+    return redirect('crud_cds:crud_cds_detail',
+                        regdid_id=regdid_id)

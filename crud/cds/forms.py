@@ -131,7 +131,7 @@ class DidatticaRegolamentoAltriDatiForm(forms.ModelForm):
             self.fields['clob_txt_ita'] = forms.CharField(widget=forms.widgets.Textarea())
             self.fields['clob_txt_eng'] = forms.CharField(widget=forms.widgets.Textarea())
         # common
-        self.fields['clob_txt_ita'].required = True
+        self.fields['clob_txt_ita'].required = False
         self.fields['clob_txt_eng'].required = False
         self.fields['clob_txt_ita'].label = clob_label_it
         self.fields['clob_txt_eng'].label = clob_label_en

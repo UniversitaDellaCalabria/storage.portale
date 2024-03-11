@@ -1,39 +1,73 @@
 {% load i18n %}
 {% load static %}
 
-<h4 style="font-weight: lighter;">
-    {% trans "Multimedia" %}
-</h4>
+
+<!-- Import modal -->
+<div class="modal fade"
+tabindex="-1"
+role="dialog"
+id="import_regdid_other_data">
+<div class="modal-dialog modal-dialog-centered"
+role="document">
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">
+            {% trans "Import multimedia contents from previous year" %}
+        </h5>
+        <button class="close"
+        type="button"
+        data-dismiss="modal"
+        aria-label="Close">
+        <svg class="icon">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+        </svg>
+    </button>
+</div>
+<div class="modal-body">
+    <p>{% trans "Do you really want to import multimedia contents from the previous year?" %}</p>
+    <p class="mt-2">
+        <b>{% trans "Warning: this operation will overwrite any existing data in the multimedia contents section" %}</b>
+    </p>
+</div>
+<div class="modal-footer">
+    <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_regdid_other_data_import' regdid_id=regdid.pk %}">
+        {% trans 'Yes, proceed' %}
+            </a>
+        </div>
+    </div>
+</div>
+</div>
+<!-- /Import modal -->
 
 <!-- delete modals -->
 {% for regdid_other_data in regdid_other_data_dict.values %}
 {% if regdid_other_data.instance %}
 <div class="modal fade"
-    tabindex="-1"
-    role="dialog"
-    id="delete_regdid_other_data_{{regdid_other_data.instance.pk}}">
-    <div class="modal-dialog modal-dialog-centered"
-        role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
+tabindex="-1"
+role="dialog"
+id="delete_regdid_other_data_{{regdid_other_data.instance.pk}}">
+<div class="modal-dialog modal-dialog-centered"
+role="document">
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">
                     {% trans "Confirm" %}
                 </h5>
                 <button class="close"
-                        type="button"
-                        data-dismiss="modal"
-                        aria-label="Close">
+                type="button"
+                data-dismiss="modal"
+                aria-label="Close">
                 <svg class="icon">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                 </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    {% trans "Do you want to delete this item?" %}
-                </p>
-            </div>
-            <div class="modal-footer">
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>
+                {% trans "Do you want to delete this item?" %}
+            </p>
+        </div>
+        <div class="modal-footer">
                 <a class="btn btn-success btn-sm" href="{% url 'crud_cds:crud_cds_regdid_other_data_delete' regdid_id=regdid.pk data_id=regdid_other_data.instance.pk %}">
                     {% trans 'Yes, proceed' %}
                 </a>
@@ -45,6 +79,19 @@
 {% endfor %}
 <!-- delete modals -->
 
+<div class="d-flex justify-content-start align-items-center mb-2">
+    <h4 class="mr-auto" style="font-weight: lighter;">
+        {% trans "Multimedia contents" %}
+    </h4>
+    <a  href="#import_regdid_other_data" 
+        class="ml-auto btn btn-warning btn-xs"
+        data-toggle="modal"
+        data-target="">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-download"></use>
+        </svg> {% trans "Import" %}
+    </a>
+</div>
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead></thead>
