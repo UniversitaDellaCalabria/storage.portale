@@ -18,6 +18,8 @@ from .. utils.settings import (ALLOWED_STRUCTURE_TYPES,
                                STRUCTURES_FATHER)
 from .. utils.utils import _clean_teacher_dates
 
+from . settings import PHD_CYCLES
+
 
 ALLOWED_STRUCTURE_TYPES = getattr(
     settings, 'ALLOWED_STRUCTURE_TYPES', ALLOWED_STRUCTURE_TYPES)
@@ -25,7 +27,7 @@ CMS_STORAGE_ROOT_API = getattr(
     settings, 'CMS_STORAGE_ROOT_API', CMS_STORAGE_ROOT_API)
 STRUCTURES_FATHER = getattr(
     settings, 'STRUCTURES_FATHER', STRUCTURES_FATHER)
-
+PHD_CYCLES = getattr(settings, 'PHD_CYCLES', PHD_CYCLES)
 
 class DidatticaDottoratoAttivitaFormativaAltriDocentiForm(forms.ModelForm):
     class Meta:
@@ -81,6 +83,11 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
             label=_('Reference'),
             choices=lista_rif_dott,
             required=False)
+        self.fields['ciclo'] = forms.ChoiceField(
+            label=_('Cycle'),
+            choices=PHD_CYCLES,
+            required=True
+        )
 
     def clean(self):
         cleaned_data = super().clean()
