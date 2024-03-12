@@ -67,7 +67,7 @@ HIGH_FORMATION_YEAR = getattr(settings, "HIGH_FORMATION_YEAR", "")
 
 REGDID_OTHER_DATA_TYPES_MAPPINGS = getattr(settings, "REGDID_OTHER_DATA_TYPES_MAPPINGS",
     {
-        "INTRO_CDS_FMT": ["MD"],
+        "INTRO_CDS_FMT": ["HTML"],
         "URL_CDS_DOC": ["PDF"],
         "URL_CDS_VIDEO": ["PDF", "URL"],
     })

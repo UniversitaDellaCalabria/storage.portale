@@ -1328,7 +1328,7 @@ def cds_regdid_other_data_edit(request, regdid_id, data_id, my_offices=None, reg
     other_data_des = other_data.tipo_testo_regdid_cod.tipo_testo_regdid_des
     other_data_des_formatted = other_data_des.lower().capitalize()
     
-    clob_type = "MD"
+    clob_type = "HTML"
     initial_clob_txt_ita = other_data.clob_txt_ita
     initial_clob_txt_eng = other_data.clob_txt_eng
     
@@ -1437,6 +1437,9 @@ def cds_regdid_other_data_new(request, regdid_id, other_data_type_id, my_offices
     other_data_cod = other_data_type.tipo_testo_regdid_cod
     other_data_des = other_data_type.tipo_testo_regdid_des
     other_data_des_formatted = other_data_des.lower().capitalize()
+    
+    if DidatticaRegolamentoAltriDati.objects.filter(regdid_id=regdid_id, tipo_testo_regdid_cod=other_data_cod).exists():
+        return custom_message(request, _("Multimedia content of the same type already exists for this CdS"))
     
     types_mappings = REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_cod]
     excusive_form = 1 if len(types_mappings) > 1 else 0

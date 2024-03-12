@@ -124,9 +124,9 @@ class DidatticaRegolamentoAltriDatiForm(forms.ModelForm):
         elif clob_type == "URL": # url to some resource
             self.fields['clob_txt_ita'] = forms.URLField()
             self.fields['clob_txt_eng'] = forms.URLField()
-        elif clob_type == "MD": # markdown text
-            self.fields['clob_txt_ita'] = forms.CharField(widget=forms.widgets.Textarea())
-            self.fields['clob_txt_eng'] = forms.CharField(widget=forms.widgets.Textarea())
+        elif clob_type == "HTML": # markdown text
+            self.fields['clob_txt_ita'] = forms.CharField(widget=CKEditor5Widget())
+            self.fields['clob_txt_eng'] = forms.CharField(widget=CKEditor5Widget())
         else: # default is handled as plain text
             self.fields['clob_txt_ita'] = forms.CharField(widget=forms.widgets.Textarea())
             self.fields['clob_txt_eng'] = forms.CharField(widget=forms.widgets.Textarea())

@@ -112,7 +112,7 @@ role="document">
                             {{regdid_other_data.instance.clob_txt_ita}}
                         </a>    
                         {% else %}
-                        <p class="text-truncate" style="max-width: 40vw;">{{regdid_other_data.instance.clob_txt_ita}}</p>
+                        <p class="text-truncate" style="max-width: 40vw;">{{regdid_other_data.instance.clob_txt_ita|striptags}}</p>
                         {% endif %}
                     {% else %}
                     -
