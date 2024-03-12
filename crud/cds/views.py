@@ -2,10 +2,7 @@ import datetime
 import logging
 import os
 
-from pathlib import Path
-
-from .. utils.utils import log_action
-
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
@@ -18,22 +15,25 @@ from django.core.validators import URLValidator
 from django.core.files import File
 from django.core.files.storage import default_storage
 
+from pathlib import Path
+
 from ricerca_app.models import *
 from ricerca_app.utils import decrypt, encrypt
 
+from .. utils.utils import log_action
 from .. utils.forms import ChoosenPersonForm
 
 from . decorators import *
 from . forms import *
 
 
-
 logger = logging.getLogger(__name__)
+
 
 def _file_exists(file_rel_path):
     try:
         file_rel_path_uq = file_rel_path
-        file_abs_path = os.path.join(MEDIA_ROOT, file_rel_path_uq)
+        file_abs_path = os.path.join(settings.MEDIA_ROOT, file_rel_path_uq)
         if os.path.isfile(file_abs_path):
             return True
     except: pass
@@ -43,7 +43,7 @@ def _get_django_file(file_rel_path):
     output = None
     try:
         file_rel_path_uq = file_rel_path
-        file_abs_path = os.path.join(MEDIA_ROOT, file_rel_path_uq)
+        file_abs_path = os.path.join(settings.MEDIA_ROOT, file_rel_path_uq)
         with open(file_abs_path, "r") as clob_ita_file:
                     output = File(clob_ita_file)
                     output.url = default_storage.url(file_rel_path)
@@ -54,7 +54,7 @@ def _handle_regdid_other_data_file_upload(files, file_name, field_name):
     try:
         file_name_uq = file_name
         clob_rel_path = cds_multimedia_media_path(None, filename=file_name_uq)
-        clob_abs_path = os.path.join(MEDIA_ROOT, clob_rel_path)
+        clob_abs_path = os.path.join(settings.MEDIA_ROOT, clob_rel_path)
         output = None
         Path(clob_abs_path).parent.mkdir(parents=True, exist_ok=True) # create dir if it does not exist
         if os.path.isfile(clob_abs_path):
@@ -63,11 +63,11 @@ def _handle_regdid_other_data_file_upload(files, file_name, field_name):
             while os.path.exists(clob_abs_path):
                 clob_abs_path = abs_filename + " (" + str(counter) + ")" + extension
                 counter += 1
-                
+
             with open(clob_abs_path, "wb+") as destination:
                 for chunk in files[field_name].chunks():
                     destination.write(chunk)
-                    
+
             rel_filename, extension = os.path.splitext(clob_rel_path)
             rel_filename_q = rel_filename
             clob_rel_path = rel_filename_q + " (" + str(counter - 1) + ")" + extension
@@ -77,12 +77,12 @@ def _handle_regdid_other_data_file_upload(files, file_name, field_name):
                 for chunk in files[field_name].chunks():
                     destination.write(chunk)
                 output = clob_rel_path
-    except: pass 
+    except: pass
     return output
 
 def _handle_regdid_other_data_file_delete(file_rel_path, field_name, regdid_id):
     try:
-        clob_path = os.path.join(MEDIA_ROOT, file_rel_path)
+        clob_path = os.path.join(settings.MEDIA_ROOT, file_rel_path)
         q = { field_name: file_rel_path }
         if os.path.isfile(clob_path):
             occurrences_count = DidatticaRegolamentoAltriDati.objects\
@@ -140,7 +140,7 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
         regdid_other_data_dict[roat] = {
             "instance": instance,
             "clob_type": clob_type}
-    
+
     # altri dati corso di studio
     other_data = DidatticaCdsAltriDati.objects.filter(
         regdid_id=regdid_id).first()
@@ -193,16 +193,16 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
 def cds_other_data_import(request, regdid_id, regdid=None, my_offices=None):
         other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid_id).first()
         previous_regdid = DidatticaRegolamento.objects.filter(cds_id=regdid.cds_id, aa_reg_did=regdid.aa_reg_did - 1).first()
-        
+
         if not previous_regdid:
             messages.add_message(request,
                                  messages.ERROR,
                                  _("There is no data to import"))
             return redirect('crud_cds:crud_cds_detail',
                             regdid_id=regdid_id)
-        
+
         other_data_previous_year = DidatticaCdsAltriDati.objects.filter(regdid_id=previous_regdid.regdid_id).first()
-        
+
         if not other_data_previous_year:
             messages.add_message(request,
                                  messages.ERROR,
@@ -222,16 +222,16 @@ def cds_other_data_import(request, regdid_id, regdid=None, my_offices=None):
                 nome_origine_coordinatore = other_data_previous_year.nome_origine_coordinatore,
                 nome_origine_vice_coordinatore = other_data_previous_year.nome_origine_vice_coordinatore,
             )
-        
+
         log_action(user=request.user,
                            obj=regdid,
                            flag=CHANGE,
                            msg=_("Imported course information from previous year"))
-        
+
         messages.add_message(request,
                                 messages.SUCCESS,
                                 _("Successfully imported course information from last year"))
-        
+
         return redirect('crud_cds:crud_cds_detail',
                             regdid_id=regdid_id)
 
@@ -1293,37 +1293,37 @@ def cds_group_member_delete(request, regdid_id, group_id, member_id,
 @can_manage_cds
 @can_edit_cds
 def cds_regdid_other_data_delete(request, regdid_id, data_id, my_offices=None, regdid=None):
-    
+
     redirect_to_new = request.GET.get("redirect_to_new")
-        
+
     other_data = get_object_or_404(DidatticaRegolamentoAltriDati, pk=data_id)
     other_data_type = other_data.tipo_testo_regdid_cod.tipo_testo_regdid_cod
     type_mappings = REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_type]
-    
+
     # If the element is a file and is not present in any other record, it can be deleted on the server
     if "PDF" in type_mappings:
         _handle_regdid_other_data_file_delete(other_data.clob_txt_ita, "clob_txt_ita", regdid_id)
         _handle_regdid_other_data_file_delete(other_data.clob_txt_eng, "clob_txt_eng", regdid_id)
-    
+
     other_data.delete()
-    
+
     log_message = _("Deleted") + f" multimedia {other_data.tipo_testo_regdid_cod.tipo_testo_regdid_des}"
-    
+
     log_action(user=request.user,
                obj=regdid,
                flag=CHANGE,
                msg=log_message)
-    
+
     messages.add_message(request,
                          messages.SUCCESS,
                          f"{other_data.tipo_testo_regdid_cod.tipo_testo_regdid_des} " + _("removed successfully"))
-    
+
     if redirect_to_new != 'yes':
         return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
     else:
-        return redirect('crud_cds:crud_cds_regdid_other_data_new', regdid_id=regdid_id, other_data_type_id=other_data.tipo_testo_regdid_cod.pk)    
-    
-    
+        return redirect('crud_cds:crud_cds_regdid_other_data_new', regdid_id=regdid_id, other_data_type_id=other_data.tipo_testo_regdid_cod.pk)
+
+
 
 @login_required
 @can_manage_cds
@@ -1333,15 +1333,15 @@ def cds_regdid_other_data_edit(request, regdid_id, data_id, my_offices=None, reg
     other_data_type = other_data.tipo_testo_regdid_cod.tipo_testo_regdid_cod
     other_data_des = other_data.tipo_testo_regdid_cod.tipo_testo_regdid_des
     other_data_des_formatted = other_data_des.lower().capitalize()
-    
+
     initial_clob_txt_ita = other_data.clob_txt_ita
     initial_clob_txt_eng = other_data.clob_txt_eng
-    
+
     type_mappings = REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_type]
-    
+
     multiple_types = 1 if len(type_mappings) > 1 else 0
     clob_type = type_mappings[0]
-    
+
     if multiple_types == 1:
         if _file_exists(other_data.clob_txt_ita):
             clob_type = "PDF"
@@ -1355,7 +1355,7 @@ def cds_regdid_other_data_edit(request, regdid_id, data_id, my_offices=None, reg
                 url_validator(other_data.clob_txt_ita)
                 clob_type = "URL"
             except: pass
-    
+
     form_name_dict = {
         clob_type: DidatticaRegolamentoAltriDatiForm(instance=other_data,
                                                 data=request.POST if request.POST else None,
@@ -1367,9 +1367,9 @@ def cds_regdid_other_data_edit(request, regdid_id, data_id, my_offices=None, reg
                                                 initial={"clob_txt_ita": initial_clob_txt_ita,
                                                          "clob_txt_eng": initial_clob_txt_eng})
     }
-    
+
     form_name = next(iter(form_name_dict))
-    
+
     if request.POST:
         form = form_name_dict[form_name]
         if form.is_valid():
@@ -1385,8 +1385,8 @@ def cds_regdid_other_data_edit(request, regdid_id, data_id, my_offices=None, reg
                     if clob_txt_ita is None:
                         errors = True
                         messages.add_message(request, messages.ERROR, _("Something went wrong with file upload (ita)"))
-                    
-                    instance.clob_txt_ita = clob_txt_ita 
+
+                    instance.clob_txt_ita = clob_txt_ita
 
                 # if clob_txt_eng is updated
                 if request.FILES.get("clob_txt_eng", None) is not None:
@@ -1397,32 +1397,32 @@ def cds_regdid_other_data_edit(request, regdid_id, data_id, my_offices=None, reg
                         errors = True
                         messages.add_message(request, messages.ERROR, _("Something went wrong with file upload (eng)"))
 
-                    instance.clob_txt_eng = clob_txt_eng 
+                    instance.clob_txt_eng = clob_txt_eng
 
                 # if clear checkbox selected on clob_txt_eng
                 if old_instance.clob_txt_eng and instance.clob_txt_eng == 'False':
                     _handle_regdid_other_data_file_delete(old_instance.clob_txt_eng, "clob_txt_eng", regdid_id)
                     instance.clob_txt_eng = None
-                        
+
             if not errors:
                 instance.dt_mod = datetime.datetime.now()
                 instance.id_user_mod = request.user
                 instance.save()
-                
+
                 messages.add_message(request, messages.SUCCESS, f"{other_data.tipo_testo_regdid_cod.tipo_testo_regdid_des} " + _("updated successfully"))
-                                
+
                 log_action(user=request.user,
                     obj=regdid,
                     flag=CHANGE,
                     msg=_("Updated") + " multimedia " + other_data.tipo_testo_regdid_cod.tipo_testo_regdid_des)
-                
+
                 return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
-                
+
         else:
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
-    
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                 reverse('crud_cds:crud_cds'): _('CdS'),
                 reverse('crud_cds:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
@@ -1447,18 +1447,18 @@ def cds_regdid_other_data_new(request, regdid_id, other_data_type_id, my_offices
     other_data_cod = other_data_type.tipo_testo_regdid_cod
     other_data_des = other_data_type.tipo_testo_regdid_des
     other_data_des_formatted = other_data_des.lower().capitalize()
-    
+
     if DidatticaRegolamentoAltriDati.objects.filter(regdid_id=regdid_id, tipo_testo_regdid_cod=other_data_cod).exists():
         return custom_message(request, _("Multimedia content of the same type already exists for this CdS"))
-    
+
     types_mappings = REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_cod]
     excusive_form = 1 if len(types_mappings) > 1 else 0
-    form_name_dict = {}       
+    form_name_dict = {}
     for type in types_mappings:
         form_name_dict[type] = DidatticaRegolamentoAltriDatiForm(clob_type=type, clob_label=other_data_des_formatted,
                                                                 tipo_testo_regdid_cod=other_data_cod, form_name=type)
     selected_form_name = next(iter(form_name_dict))
-    
+
     if request.POST:
         selected_form_name = request.POST.get("form_name")
         form = DidatticaRegolamentoAltriDatiForm(data=request.POST if request.POST else None,
@@ -1475,41 +1475,41 @@ def cds_regdid_other_data_new(request, regdid_id, other_data_type_id, my_offices
                     errors = True
                     messages.add_message(request, messages.ERROR, _("Something went wrong with file upload (ita)"))
                 instance.clob_txt_ita = clob_txt_ita
-            
+
             if not errors and request.FILES.get("clob_txt_eng", None) is not None:
                 clob_txt_eng = _handle_regdid_other_data_file_upload(request.FILES, instance.clob_txt_eng, "clob_txt_eng")
                 if clob_txt_eng is None:
                     errors = True
                     messages.add_message(request, messages.ERROR, _("Something went wrong with file upload (eng)"))
                 instance.clob_txt_eng = clob_txt_eng
-            
+
             is_clob_empty = instance.clob_txt_ita is None and instance.clob_txt_eng is None
             if is_clob_empty:
                 errors = True
                 messages.add_message(request, messages.ERROR, _("At least one field must be provided"))
-            
+
             if not errors:
                 instance.regdid_id = regdid_id
                 instance.tipo_testo_regdid_cod_id = request.POST.get("tipo_testo_regdid_cod")
                 instance.dt_mod = datetime.datetime.now()
                 instance.id_user_mod = request.user
                 instance.save()
-                
+
                 messages.add_message(request, messages.SUCCESS, f"{other_data_des} " + _("added successfully"))
-                
+
                 log_action(user=request.user,
                     obj=regdid,
                     flag=CHANGE,
                     msg=_("Added") + " multimedia " + other_data_des)
-                
+
                 return redirect('crud_cds:crud_cds_detail', regdid_id=regdid_id)
-                
+
         else:
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
-        
-         
+
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds:crud_cds'): _('CdS'),
                    reverse('crud_cds:crud_cds_detail', kwargs={'regdid_id': regdid_id}): regdid.cds.nome_cds_it,
@@ -1530,25 +1530,25 @@ def cds_regdid_other_data_new(request, regdid_id, other_data_type_id, my_offices
 @can_edit_cds
 def cds_regdid_other_data_import(request, regdid_id, my_offices=None, regdid=None):
     previous_regdid = DidatticaRegolamento.objects.filter(cds_id=regdid.cds_id, aa_reg_did=regdid.aa_reg_did - 1).first()
-        
+
     if not previous_regdid:
         messages.add_message(request,
                                 messages.ERROR,
                                 _("There is no data to import"))
         return redirect('crud_cds:crud_cds_detail',
                         regdid_id=regdid_id)
-    
+
     regdid_other_data_previous_year = DidatticaRegolamentoAltriDati.objects.filter(regdid_id=previous_regdid.regdid_id).exclude(tipo_testo_regdid_cod='URL_CDS')
-    
+
     if not regdid_other_data_previous_year.exists():
         messages.add_message(request,
                                 messages.ERROR,
                                 _("There is no data to import"))
-    
+
         return redirect('crud_cds:crud_cds_detail',
                         regdid_id=regdid_id)
-        
-    
+
+
     for regdid_oa_py in regdid_other_data_previous_year:
         # update existing record
         current = DidatticaRegolamentoAltriDati.objects.filter(regdid_id=regdid_id, tipo_testo_regdid_cod=regdid_oa_py.tipo_testo_regdid_cod.tipo_testo_regdid_cod).first()
@@ -1574,15 +1574,15 @@ def cds_regdid_other_data_import(request, regdid_id, my_offices=None, regdid=Non
                 dt_mod=datetime.datetime.now(),
                 id_user_mod=request.user
             )
-            
+
     log_action(user=request.user,
                         obj=regdid,
                         flag=CHANGE,
                         msg=_("Imported multimedia contents from previous year"))
-    
+
     messages.add_message(request,
                             messages.SUCCESS,
                             _("Successfully imported multimedia contents from last year"))
-    
+
     return redirect('crud_cds:crud_cds_detail',
                         regdid_id=regdid_id)
