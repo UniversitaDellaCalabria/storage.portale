@@ -36,7 +36,7 @@ def cds_ordinamento_media_path(instance, filename): # pragma: no cover
     return f'portale/cds/ordinamenti/{instance.regdid_id.aa_reg_did}/{filename}'
 
 def cds_multimedia_media_path(instance, filename): # pragma: no cover
-    return f'portale/cds/multimedia/{filename}'
+    return f'portale/cds_media_brochure/{filename}'
 
 
 class InsModAbstract(models.Model):
