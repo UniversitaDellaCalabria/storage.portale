@@ -104,15 +104,15 @@ role="document">
                 <td>
                     {% if regdid_other_data.instance %}
                         {% if regdid_other_data.clob_type == "FILE" %}
-                        <a href="{% get_media_prefix %}{{ regdid_other_data.instance.clob_txt_ita }}" target="_blank">
+                        <a href="{% get_media_prefix %}{% if regdid_other_data.instance.clob_txt_ita %}{{ regdid_other_data.instance.clob_txt_ita|urlencode }}{% else %}{{ regdid_other_data.instance.clob_txt_eng|urlencode }}{% endif %}" target="_blank">
                             {% trans "Download" %}
                         </a>      
                         {% elif regdid_other_data.clob_type == "URL" %}
-                        <a href="{{ regdid_other_data.instance.clob_txt_ita }}" target="_blank">
+                        <a href="{% if regdid_other_data.instance.clob_txt_ita %}{{ regdid_other_data.instance.clob_txt_ita }}{% else %}{{ regdid_other_data.instance.clob_txt_eng }}{% endif %}" target="_blank">
                             {{regdid_other_data.instance.clob_txt_ita}}
                         </a>    
                         {% else %}
-                        <p class="text-truncate" style="max-width: 40vw;">{{regdid_other_data.instance.clob_txt_ita|striptags}}</p>
+                        <p class="text-truncate" style="max-width: 40vw;">{% if regdid_other_data.instance.clob_txt_ita %}{{ regdid_other_data.instance.clob_txt_ita|striptags }}{% else %}{{ regdid_other_data.instance.clob_txt_eng|striptags }}{% endif %}</p>
                         {% endif %}
                     {% else %}
                     -

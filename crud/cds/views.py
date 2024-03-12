@@ -119,12 +119,11 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
         instance = regdid_other_data.filter(tipo_testo_regdid_cod__tipo_testo_regdid_cod=roat.tipo_testo_regdid_cod).first()
         clob_type = ""
         if instance is not None: # check type
-            try:
-                file_path = os.path.join(MEDIA_ROOT, instance.clob_txt_ita)
-                if os.path.isfile(file_path):
+            if _file_exists(instance.clob_txt_ita):
                     clob_type = "FILE"
-            except: pass
-            if clob_type == "":
+            if _file_exists(instance.clob_txt_eng):
+                    clob_type = "FILE"
+            if clob_type != "FILE":
                 try:
                     url_validator = URLValidator()
                     url_validator(instance.clob_txt_ita)
@@ -1329,18 +1328,19 @@ def cds_regdid_other_data_edit(request, regdid_id, data_id, my_offices=None, reg
     initial_clob_txt_eng = other_data.clob_txt_eng
     
     multiple_types = 1 if len(REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_type]) > 1 else 0
-        
-    try:
-        if _file_exists(other_data.clob_txt_ita):
-            clob_type = "PDF"
-            initial_clob_txt_ita = _get_django_file(other_data.clob_txt_ita)
-            if _file_exists(other_data.clob_txt_eng):
-                initial_clob_txt_eng = _get_django_file(other_data.clob_txt_eng)
-        else:
+    
+    if _file_exists(other_data.clob_txt_ita):
+        clob_type = "PDF"
+        initial_clob_txt_ita = _get_django_file(other_data.clob_txt_ita)
+    if _file_exists(other_data.clob_txt_eng):
+        clob_type = "PDF"
+        initial_clob_txt_eng = _get_django_file(other_data.clob_txt_eng)
+    if clob_type != "PDF":
+        try:
             url_validator = URLValidator()
             url_validator(other_data.clob_txt_ita)
             clob_type = "URL"
-    except: pass
+        except: pass
     
     form_name_dict = {
         clob_type: DidatticaRegolamentoAltriDatiForm(instance=other_data,
