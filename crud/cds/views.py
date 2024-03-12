@@ -32,7 +32,8 @@ logger = logging.getLogger(__name__)
 
 def _file_exists(file_rel_path):
     try:
-        file_abs_path = os.path.join(MEDIA_ROOT, file_rel_path)
+        file_rel_path_uq = file_rel_path
+        file_abs_path = os.path.join(MEDIA_ROOT, file_rel_path_uq)
         if os.path.isfile(file_abs_path):
             return True
     except: pass
@@ -41,7 +42,8 @@ def _file_exists(file_rel_path):
 def _get_django_file(file_rel_path):
     output = None
     try:
-        file_abs_path = os.path.join(MEDIA_ROOT, file_rel_path)
+        file_rel_path_uq = file_rel_path
+        file_abs_path = os.path.join(MEDIA_ROOT, file_rel_path_uq)
         with open(file_abs_path, "r") as clob_ita_file:
                     output = File(clob_ita_file)
                     output.url = default_storage.url(file_rel_path)
@@ -49,10 +51,11 @@ def _get_django_file(file_rel_path):
     return output
 
 def _handle_regdid_other_data_file_upload(files, file_name, field_name):
-    clob_rel_path = cds_multimedia_media_path(None, filename=file_name)
-    clob_abs_path = os.path.join(MEDIA_ROOT, clob_rel_path)
-    output = None
     try:
+        file_name_uq = file_name
+        clob_rel_path = cds_multimedia_media_path(None, filename=file_name_uq)
+        clob_abs_path = os.path.join(MEDIA_ROOT, clob_rel_path)
+        output = None
         Path(clob_abs_path).parent.mkdir(parents=True, exist_ok=True) # create dir if it does not exist
         if os.path.isfile(clob_abs_path):
             abs_filename, extension = os.path.splitext(clob_abs_path)
@@ -66,7 +69,8 @@ def _handle_regdid_other_data_file_upload(files, file_name, field_name):
                     destination.write(chunk)
                     
             rel_filename, extension = os.path.splitext(clob_rel_path)
-            clob_rel_path = rel_filename + " (" + str(counter - 1) + ")" + extension
+            rel_filename_q = rel_filename
+            clob_rel_path = rel_filename_q + " (" + str(counter - 1) + ")" + extension
             output = clob_rel_path
         else:
             with open(clob_abs_path, "wb+") as destination:
@@ -118,17 +122,21 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
     for roat in regdid_other_data_types:
         instance = regdid_other_data.filter(tipo_testo_regdid_cod__tipo_testo_regdid_cod=roat.tipo_testo_regdid_cod).first()
         clob_type = ""
-        if instance is not None: # check type
-            if _file_exists(instance.clob_txt_ita):
-                    clob_type = "FILE"
-            if _file_exists(instance.clob_txt_eng):
-                    clob_type = "FILE"
-            if clob_type != "FILE":
-                try:
-                    url_validator = URLValidator()
-                    url_validator(instance.clob_txt_ita)
-                    clob_type = "URL"
-                except: pass
+        type_mappings = REGDID_OTHER_DATA_TYPES_MAPPINGS[roat.tipo_testo_regdid_cod]
+        if len(type_mappings) == 1:
+            clob_type = type_mappings[0]
+        else:
+            if instance is not None: # check type
+                if _file_exists(instance.clob_txt_ita):
+                        clob_type = "PDF"
+                if _file_exists(instance.clob_txt_eng):
+                        clob_type = "PDF"
+                if clob_type != "PDF":
+                    try:
+                        url_validator = URLValidator()
+                        url_validator(instance.clob_txt_ita)
+                        clob_type = "URL"
+                    except: pass
         regdid_other_data_dict[roat] = {
             "instance": instance,
             "clob_type": clob_type}
@@ -1290,9 +1298,12 @@ def cds_regdid_other_data_delete(request, regdid_id, data_id, my_offices=None, r
         
     other_data = get_object_or_404(DidatticaRegolamentoAltriDati, pk=data_id)
     other_data_type = other_data.tipo_testo_regdid_cod.tipo_testo_regdid_cod
+    type_mappings = REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_type]
+    
     # If the element is a file and is not present in any other record, it can be deleted on the server
-    _handle_regdid_other_data_file_delete(other_data.clob_txt_ita, "clob_txt_ita", regdid_id)
-    _handle_regdid_other_data_file_delete(other_data.clob_txt_eng, "clob_txt_eng", regdid_id)
+    if "PDF" in type_mappings:
+        _handle_regdid_other_data_file_delete(other_data.clob_txt_ita, "clob_txt_ita", regdid_id)
+        _handle_regdid_other_data_file_delete(other_data.clob_txt_eng, "clob_txt_eng", regdid_id)
     
     other_data.delete()
     
@@ -1323,24 +1334,27 @@ def cds_regdid_other_data_edit(request, regdid_id, data_id, my_offices=None, reg
     other_data_des = other_data.tipo_testo_regdid_cod.tipo_testo_regdid_des
     other_data_des_formatted = other_data_des.lower().capitalize()
     
-    clob_type = "HTML"
     initial_clob_txt_ita = other_data.clob_txt_ita
     initial_clob_txt_eng = other_data.clob_txt_eng
     
-    multiple_types = 1 if len(REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_type]) > 1 else 0
+    type_mappings = REGDID_OTHER_DATA_TYPES_MAPPINGS[other_data_type]
     
-    if _file_exists(other_data.clob_txt_ita):
-        clob_type = "PDF"
-        initial_clob_txt_ita = _get_django_file(other_data.clob_txt_ita)
-    if _file_exists(other_data.clob_txt_eng):
-        clob_type = "PDF"
-        initial_clob_txt_eng = _get_django_file(other_data.clob_txt_eng)
-    if clob_type != "PDF":
-        try:
-            url_validator = URLValidator()
-            url_validator(other_data.clob_txt_ita)
-            clob_type = "URL"
-        except: pass
+    multiple_types = 1 if len(type_mappings) > 1 else 0
+    clob_type = type_mappings[0]
+    
+    if multiple_types == 1:
+        if _file_exists(other_data.clob_txt_ita):
+            clob_type = "PDF"
+            initial_clob_txt_ita = _get_django_file(other_data.clob_txt_ita)
+        if _file_exists(other_data.clob_txt_eng):
+            clob_type = "PDF"
+            initial_clob_txt_eng = _get_django_file(other_data.clob_txt_eng)
+        if clob_type != "PDF":
+            try:
+                url_validator = URLValidator()
+                url_validator(other_data.clob_txt_ita)
+                clob_type = "URL"
+            except: pass
     
     form_name_dict = {
         clob_type: DidatticaRegolamentoAltriDatiForm(instance=other_data,

@@ -69,7 +69,7 @@ REGDID_OTHER_DATA_TYPES_MAPPINGS = getattr(settings, "REGDID_OTHER_DATA_TYPES_MA
     {
         "INTRO_CDS_FMT": ["HTML"],
         "URL_CDS_DOC": ["PDF"],
-        "URL_CDS_VIDEO": ["PDF", "URL"],
+        "URL_CDS_VIDEO": ["URL"],
     })
 
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT")

@@ -98,21 +98,46 @@ role="document">
         <tbody>
             {% for regdid_other_data_type, regdid_other_data in regdid_other_data_dict.items %}
             <tr class="d-flex text-nowrap">
-                <td class="col-2">
+                <td class="col-3 col-lg-2">
                     <p>{{regdid_other_data_type.tipo_testo_regdid_des}}</p>
                 </td>
                 <td>
                     {% if regdid_other_data.instance %}
-                        {% if regdid_other_data.clob_type == "FILE" %}
-                        <a href="{% get_media_prefix %}{% if regdid_other_data.instance.clob_txt_ita %}{{ regdid_other_data.instance.clob_txt_ita|urlencode }}{% else %}{{ regdid_other_data.instance.clob_txt_eng|urlencode }}{% endif %}" target="_blank">
-                            {% trans "Download" %}
-                        </a>      
+                        {% if regdid_other_data.clob_type == "PDF" %}
+                            {% if regdid_other_data.instance.clob_txt_ita %}
+                            <a href="{% get_media_prefix %}{{ regdid_other_data.instance.clob_txt_ita|urlencode }}" target="_blank">
+                                {% trans "Download (ita)" %}
+                            </a> 
+                            {% endif %}
+                            {% if regdid_other_data.instance.clob_txt_ita and regdid_other_data.instance.clob_txt_eng %} - {% endif %}
+                            {% if regdid_other_data.instance.clob_txt_eng %}
+                            <a href="{% get_media_prefix %}{{ regdid_other_data.instance.clob_txt_eng|urlencode }}" target="_blank">
+                                {% trans "Download (eng)" %}
+                            </a>
+                            {% endif %}
                         {% elif regdid_other_data.clob_type == "URL" %}
-                        <a href="{% if regdid_other_data.instance.clob_txt_ita %}{{ regdid_other_data.instance.clob_txt_ita }}{% else %}{{ regdid_other_data.instance.clob_txt_eng }}{% endif %}" target="_blank">
-                            {{regdid_other_data.instance.clob_txt_ita}}
-                        </a>    
+                            {% if regdid_other_data.instance.clob_txt_ita %}
+                            <a href="{{ regdid_other_data.instance.clob_txt_ita }}" target="_blank">
+                                {% trans "Open URL (ita)" %}
+                            </a>
+                            {% endif %}
+                            {% if regdid_other_data.instance.clob_txt_ita and regdid_other_data.instance.clob_txt_eng %} - {% endif %}
+                            {% if regdid_other_data.instance.clob_txt_eng %}
+                            <a href="{{ regdid_other_data.instance.clob_txt_eng }}" target="_blank">
+                                {% trans "Open URL (eng)" %}
+                            </a>
+                            {% endif %}
                         {% else %}
-                        <p class="text-truncate" style="max-width: 40vw;">{% if regdid_other_data.instance.clob_txt_ita %}{{ regdid_other_data.instance.clob_txt_ita|striptags }}{% else %}{{ regdid_other_data.instance.clob_txt_eng|striptags }}{% endif %}</p>
+                            {% if regdid_other_data.instance.clob_txt_ita %}
+                            <p class="text-truncate" style="max-width: 40vw;">
+                                {{ regdid_other_data.instance.clob_txt_ita|striptags }}
+                            </p>
+                            {% endif %}
+                            {% if regdid_other_data.instance.clob_txt_eng %}
+                            <p class="text-truncate" style="max-width: 40vw;">
+                                {{ regdid_other_data.instance.clob_txt_eng|striptags }}
+                            </p>
+                            {% endif %}
                         {% endif %}
                     {% else %}
                     -
