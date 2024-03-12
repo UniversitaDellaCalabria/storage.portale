@@ -117,13 +117,13 @@ role="document">
                             {% endif %}
                         {% elif regdid_other_data.clob_type == "URL" %}
                             {% if regdid_other_data.instance.clob_txt_ita %}
-                            <a href="{{ regdid_other_data.instance.clob_txt_ita }}" target="_blank">
+                            <a href="{% if 'http' not in regdid_other_data.instance.clob_txt_ita %}{% get_media_prefix %}{{ regdid_other_data.instance.clob_txt_ita|urlencode }}{% else %}{{ regdid_other_data.instance.clob_txt_ita }}{% endif %}" target="_blank">
                                 {% trans "Open URL (ita)" %}
                             </a>
                             {% endif %}
                             {% if regdid_other_data.instance.clob_txt_ita and regdid_other_data.instance.clob_txt_eng %} - {% endif %}
                             {% if regdid_other_data.instance.clob_txt_eng %}
-                            <a href="{{ regdid_other_data.instance.clob_txt_eng }}" target="_blank">
+                            <a href="{% if 'http' not in regdid_other_data.instance.clob_txt_eng %}{% get_media_prefix %}{{ regdid_other_data.instance.clob_txt_eng|urlencode }}{% else %}{{ regdid_other_data.instance.clob_txt_eng }}{% endif %}" target="_blank">
                                 {% trans "Open URL (eng)" %}
                             </a>
                             {% endif %}
