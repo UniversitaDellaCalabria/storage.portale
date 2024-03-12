@@ -207,8 +207,6 @@ def cds_other_data_import(request, regdid_id, regdid=None, my_offices=None):
             other_data.matricola_coordinatore = other_data_previous_year.matricola_coordinatore
             other_data.nome_origine_coordinatore = other_data_previous_year.nome_origine_coordinatore
             other_data.nome_origine_vice_coordinatore = other_data_previous_year.nome_origine_vice_coordinatore
-            other_data.num_posti = other_data_previous_year.num_posti
-            other_data.modalita_iscrizione = other_data_previous_year.modalita_iscrizione
             other_data.save()
         else:
             DidatticaCdsAltriDati.objects.create(
@@ -216,8 +214,6 @@ def cds_other_data_import(request, regdid_id, regdid=None, my_offices=None):
                 matricola_coordinatore = other_data_previous_year.matricola_coordinatore,
                 nome_origine_coordinatore = other_data_previous_year.nome_origine_coordinatore,
                 nome_origine_vice_coordinatore = other_data_previous_year.nome_origine_vice_coordinatore,
-                num_posti = other_data_previous_year.num_posti,
-                modalita_iscrizione = other_data_previous_year.modalita_iscrizione
             )
         
         log_action(user=request.user,

@@ -42,7 +42,8 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
         fields = [# 'num_posti', 'modalita_iscrizione',
                   'nome_origine_coordinatore',
                   'nome_origine_vice_coordinatore',
-                  'num_posti']
+                  #'num_posti'
+                  ]
                   # 'manifesto_studi', 'regolamento_didattico']
         labels = {
             "nome_origine_coordinatore": _("Coordinator"),
