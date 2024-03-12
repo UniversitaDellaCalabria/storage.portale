@@ -54,13 +54,17 @@ def cds_website_brochure(request, code, cds_website=None, my_offices=None):
 def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=None):
 
     tab_form_dict = {
+        'Dati corso': SitoWebCdsDatiBaseDatiCorsoForm(instance=cds_website),
         'In pillole': SitoWebCdsDatiBaseInPilloleForm(instance=cds_website),
         'Profilo corso': SitoWebCdsDatiBaseProfiloCorsoForm(instance=cds_website),
         'Intro amm': SitoWebCdsDatiBaseIntroAmmForm(instance=cds_website),
     }
     last_viewed_tab = None
 
-    languages = DidatticaCdsLingua.objects.filter(cdsord=cds_website.cds)
+    languages = DidatticaCdsLingua.objects.filter(cdsord=cds_website.cds)\
+                                          .values('lingua_des_it',
+                                                  'lingua_des_eng')\
+                                          .distinct()
 
     if request.POST:
         form = None
@@ -68,6 +72,8 @@ def cds_websites_brochure_info_edit(request, code, cds_website=None, my_offices=
         form_name = request.POST.get('tab_form_dict_key')
         try:
             match form_name:
+                case 'Dati corso':
+                    form = SitoWebCdsDatiBaseDatiCorsoForm(data=request.POST, instance=cds_website)
                 case 'In pillole':
                     form = SitoWebCdsDatiBaseInPilloleForm(data=request.POST, instance=cds_website)
                 case 'Profilo corso':

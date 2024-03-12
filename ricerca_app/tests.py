@@ -66,10 +66,10 @@ class ApiCdSListUnitTest(TestCase):
             'ordine': 1,
         })
 
-        DidatticaCdsAltriDatiUnitTest.create_didatticaCdsAltriDati(**{
-            'regdid_id': r1,
-            'num_posti': 2
-        })
+        # DidatticaCdsAltriDatiUnitTest.create_didatticaCdsAltriDati(**{
+            # 'regdid_id': r1,
+            # 'num_posti': 2
+        # })
 
         r1.get_ordinamento_didattico()
 
@@ -2464,6 +2464,11 @@ class ApiPersonaleDetailUnitTest(TestCase):
             'decorrenza': '1900-01-01',
             'ds_funzione': 'Direttore',
             'matricola': '111112',
+        })
+
+        PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
+            'matricola': '111114',
+            'ds_ruolo': 'test'
         })
 
         url = reverse(
@@ -5874,14 +5879,14 @@ class ApiSitoWebCdsListUnitTest(TestCase):
         s1 = SitoWebCdsDatiBaseUnitTest.create_sitoWebCdsDatiBase(**{
             'id': 1,
             'aa': '2022',
-            'cds': cds
+            'cds': cds,
             # 'nome_corso_it': 'Informatica',
             # 'nome_corso_en': 'Computer Science',
             # 'lingua_it': 'italiano',
             # 'lingua_en': "italian",
             # 'classe_laurea_it': 'aaa',
             # 'durata': 50,
-            # 'num_posti': 50
+            'num_posti': 50
         })
 
         SitoWebCdsExStudentiUnitTest.create_sitoWebCdsExStudenti(**{
@@ -5920,7 +5925,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             # 'lingua_it': 'italiano',
             # 'lingua_en': "italian",
             # 'durata': 50,
-            # 'num_posti': 50
+            'num_posti': 50
         })
 
         SitoWebCdsSliderUnitTest.create_sitoWebCdsSlider(**{
@@ -5957,7 +5962,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
 
         cds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'cds_id': 1,
-            'cds_cod': 'aaa',
+            'cds_cod': '0999',
             'nome_cds_it': 'Matematica',
             'nome_cds_eng': 'Math',
         })
@@ -5971,7 +5976,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             # 'lingua_it': 'italiano',
             # 'lingua_en': "italian",
             # 'durata': 50,
-            # 'num_posti': 50
+            'num_posti': 50
         })
 
 
@@ -6003,7 +6008,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             'id_sito_web_cds_dati_base': s1,
         })
 
-        url = reverse('ricerca:cdswebsitedetail', kwargs={'cdswebsitecod': '1'})
+        url = reverse('ricerca:cdswebsitedetail', kwargs={'cdswebsitecod': '0999'})
 
         # check url
         res = req.get(url)
@@ -6011,7 +6016,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
 
         # GET
         res = req.get(url)
-        assert res.json()['results']['CDSCOD'] == 'aaa'
+        assert res.json()['results']['CDSCOD'] == '0999'
 
 
 

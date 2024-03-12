@@ -13,6 +13,18 @@ UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
 UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 
 
+#-- Dati corso : posti
+class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
+    class Meta:
+        model = SitoWebCdsDatiBase
+        fields = [
+            'num_posti',
+        ]
+        labels = {
+            'num_posti': _('Seats Number'),
+        }
+
+
 #-- In pillole: corso in pillole, cosa si studia, iscrizione
 class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

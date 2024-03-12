@@ -73,10 +73,10 @@ class CdSSerializer(CreateUpdateAbstract):
         for q in query['Languages']:
             langs.append(q['lingua_des_it'] if req_lang ==
                          'it' or q['lingua_des_eng'] is None else q['lingua_des_eng'])
-        data = None
-        if query["OtherData"] is not None:
-            data = CdSSerializer.to_dict_data(
-                query["OtherData"])
+        # data = None
+        # if query["OtherData"] is not None:
+            # data = CdSSerializer.to_dict_data(
+                # query["OtherData"])
         erogation_mode = None
         if query['ErogationMode'] is not None:
             erogation_mode = query['ErogationMode'][0]['modalita_erogazione']
@@ -113,14 +113,14 @@ class CdSSerializer(CreateUpdateAbstract):
             'TeachingSystemYear': ordinamento_didattico[0] if ordinamento_didattico else None,
         }
 
-    @staticmethod
-    def to_dict_data(query):
-        if query:
-            q = query[0]
-            return {'SeatsNumber': q['num_posti'],
-                    'RegistrationMode': q['modalita_iscrizione'],
-                    }
-        return {}
+    # @staticmethod
+    # def to_dict_data(query):
+        # if query:
+            # q = query[0]
+            # return {'SeatsNumber': q['num_posti'],
+                    # 'RegistrationMode': q['modalita_iscrizione'],
+                    # }
+        # return {}
 
 
 class CdsInfoSerializer(CreateUpdateAbstract):
@@ -239,8 +239,8 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                     'DirectorName': q['nome_origine_coordinatore'],
                     'DeputyDirectorId': encrypt(q['matricola_vice_coordinatore']),
                     'DeputyDirectorName': q['nome_origine_vice_coordinatore'],
-                    'SeatsNumber': q['num_posti'],
-                    'RegistrationMode': q['modalita_iscrizione'],
+                    # 'SeatsNumber': q['num_posti'],
+                    # 'RegistrationMode': q['modalita_iscrizione'],
                     # 'StudyManifesto': build_media_path(q['manifesto_studi']),
                     # 'DidacticRegulation': build_media_path(q['regolamento_didattico']),
                     # 'TeachingSystem': build_media_path(q['ordinamento_didattico'])
@@ -2863,6 +2863,10 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
             other_teachers = PhdActivitiesSerializer.to_dict_teachers(
                 query['OtherTeachers'])
 
+        tipologia = None
+        if query['tipologia_obj']:
+            tipologia = query['tipologia_obj'].nome_it if req_lang == 'it' or query['tipologia_obj'].nome_en is None else query['tipologia_obj'].nome_en
+
         return {
             'ID': query['id'],
             'ActivityName': query['nome_af'],
@@ -2870,6 +2874,7 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
             'Hours': query['numero_ore'],
             'CFU': query['cfu'],
             'ActivityType': query['tipo_af'],
+            'ActivityTypology': tipologia,
             'ReferentPhd': query['rif_dottorato'],
             'Cycle': cycle_des,
             'ReferentStructureId': query['id_struttura_proponente'],

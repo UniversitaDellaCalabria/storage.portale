@@ -26,7 +26,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     SitoWebCdsTopicArticoliRegAltriDati, \
     SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
-    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi, DidatticaRegolamentoAltriDati
+    DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi, DidatticaRegolamentoAltriDati,\
+    DidatticaDottoratoAttivitaFormativaTipologia
 from . serializers import StructuresSerializer
 from . settings import (PERSON_CONTACTS_TO_TAKE,
                         PERSON_CONTACTS_EXCLUDE_STRINGS)
@@ -153,8 +154,8 @@ class ServiceDidatticaCds:
                 "lingua_des_eng").distinct()
 
             item['OtherData'] = DidatticaCdsAltriDati.objects.filter(regdid_id=item['didatticaregolamento__regdid_id']).values(
-                'num_posti',
-                'modalita_iscrizione',
+                # 'num_posti',
+                # 'modalita_iscrizione',
                 'manifesto_studi',
                 'regolamento_didattico',
                 'ordinamento_didattico'
@@ -296,8 +297,8 @@ class ServiceDidatticaCds:
             'nome_origine_coordinatore',
             'matricola_vice_coordinatore',
             'nome_origine_vice_coordinatore',
-            'num_posti',
-            'modalita_iscrizione',
+            # 'num_posti',
+            # 'modalita_iscrizione',
             'manifesto_studi',
             'regolamento_didattico',
             'ordinamento_didattico'
@@ -740,7 +741,7 @@ class ServiceDidatticaCds:
                                     # "lingua_it",
                                     # "lingua_en",
                                     "cds__durata_anni",
-                                    # "num_posti",
+                                    "num_posti",
                                     # "link_video_cds_it",
                                     # "link_video_cds_en",
                                     "descrizione_corso_it",
@@ -770,12 +771,6 @@ class ServiceDidatticaCds:
 
         query = list(query)
         for q in query:
-            cds_altri_dati = DidatticaCdsAltriDati.objects.filter(regdid_id__cds__cds_cod=q['cds__cds_cod'],
-                                                                  regdid_id__aa_reg_did=q['aa']).first()
-            q['num_posti'] = None
-            if cds_altri_dati:
-                q['num_posti'] = cds_altri_dati.num_posti
-
             reg_did_video = DidatticaRegolamentoAltriDati.objects.filter(regdid__cds__cds_cod=q['cds__cds_cod'],
                                                                          regdid__aa_reg_did=q['aa'],
                                                                          tipo_testo_regdid_cod='URL_CDS_VIDEO')\
@@ -3105,6 +3100,7 @@ class ServiceDottorato:
             "numero_ore",
             "cfu",
             "tipo_af",
+            "tipologia",
             "rif_dottorato",
             "ciclo",
             "id_struttura_proponente",
@@ -3122,6 +3118,8 @@ class ServiceDottorato:
             "visualizza_orario"
         )
         for q in query:
+            q["tipologia_obj"] = DidatticaDottoratoAttivitaFormativaTipologia.objects.filter(pk=q['tipologia']).first()
+
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
                 id_didattica_dottorato_attivita_formativa=q['id']).values(
                 'matricola',
@@ -3171,6 +3169,7 @@ class ServiceDottorato:
             "numero_ore",
             "cfu",
             "tipo_af",
+            "tipologia",
             "rif_dottorato",
             "ciclo",
             "id_struttura_proponente",
@@ -3189,6 +3188,8 @@ class ServiceDottorato:
         )
         query_filter_teachers = ~Q(cognome_nome_origine='....DOCENTE NON IN ELENCO')
         for q in query:
+            q["tipologia_obj"] = DidatticaDottoratoAttivitaFormativaTipologia.objects.filter(pk=q['tipologia']).first()
+
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
                 query_filter_teachers,
                 id_didattica_dottorato_attivita_formativa=q['id']).values(
@@ -3870,7 +3871,8 @@ class ServicePersonale:
     @staticmethod
     def getStructure(structureid):
         query = UnitaOrganizzativa.objects.filter(
-            uo__exact=structureid)
+            uo__exact=structureid,
+            dt_fine_val__gte=datetime.datetime.today())
         contacts_to_take = [
             'EMAIL',
             'PEC',
@@ -3952,7 +3954,8 @@ class ServicePersonale:
 
         query = UnitaOrganizzativa.objects.filter(query_search,
                                                   query_father,
-                                                  query_type).extra(
+                                                  query_type,
+                                                  dt_fine_val__gte=datetime.datetime.today()).extra(
             select={
                 'matricola': 'PERSONALE.MATRICOLA',
                 'cd_uo_aff_org': 'PERSONALE.CD_UO_AFF_ORG'},
@@ -4779,7 +4782,8 @@ class ServiceStructure:
     def getStructureChilds(structureid=None):
 
         child = UnitaOrganizzativa.objects.filter(
-            uo_padre=structureid).values_list("uo", flat=True)
+            uo_padre=structureid,
+            dt_fine_val__gte=datetime.datetime.today()).values_list("uo", flat=True)
 
         result = [structureid]
 

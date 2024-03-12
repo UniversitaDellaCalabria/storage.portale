@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from django.conf import settings
@@ -120,7 +121,8 @@ def project_new(request):
 
     if request.POST.get('choosen_structure', ''):
         structure = get_object_or_404(UnitaOrganizzativa,
-                                      uo=(request.POST['choosen_structure']))
+                                      uo=(request.POST['choosen_structure']),
+                                      dt_fine_val__gte=datetime.datetime.today())
 
     if request.POST:
         form = ProgettoDatiBaseForm(data=request.POST)
@@ -534,7 +536,8 @@ def project_structure_data_edit(request, code, data_id, project=None):
         if form.is_valid():
             structure_code = form.cleaned_data['choosen_structure']
             new_structure = get_object_or_404(UnitaOrganizzativa,
-                                              uo=structure_code)
+                                              uo=structure_code,
+                                              dt_fine_val__gte=datetime.datetime.today())
             structure_project.user_mod = request.user
             structure_project.uo = new_structure
             structure_project.save()
