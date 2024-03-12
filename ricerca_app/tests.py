@@ -1876,11 +1876,13 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'uo': '2',
             'uo_padre': '1',
             'cd_tipo_nodo': 'DRZ',
-            'ds_tipo_nodo': 'Direzione'
+            'ds_tipo_nodo': 'Direzione',
+            'dt_fine_val': '2222-01-01',
         })
         u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '3',
             'uo_padre': '2',
+            'dt_fine_val': '2222-01-01',
         })
         PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
             'matricola': '111114',
@@ -2093,10 +2095,12 @@ class ApiAddressbookStructuresListUnitTest(TestCase):
             'uo': '99',
             'denominazione': 'Rettorato',
             'cd_tipo_nodo': 'AMM',
+            'dt_fine_val': '2222-01-01',
         })
         UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '1',
             'denominazione': 'Dipartimento di Matematica e Informatica',
+            'dt_fine_val': '2222-01-01',
         })
 
         url = reverse('ricerca:addressbooklist')
@@ -2524,7 +2528,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'denominazione_padre': 'c',
             'uo_padre': '11',
             'cd_csa': '1',
-
+            'dt_fine_val': '2222-01-01',
         })
         u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '2',
@@ -2535,6 +2539,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'denominazione_padre': 'd',
             'uo_padre': '22',
             'cd_csa': '2',
+            'dt_fine_val': '2222-01-01',
         })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
@@ -2572,6 +2577,7 @@ class ApiStructureDetailUnitTest(TestCase):
             'denominazione': 'ccc',
             'denominazione_padre': 'd',
             'uo_padre': '33',
+            'dt_fine_val': '2222-01-01',
         })
 
         tipo_contatto = PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(
@@ -4413,6 +4419,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'denominazione_padre': 'c',
             'uo_padre': '11',
             'cd_csa': 1,
+            'dt_fine_val': '2222-01-01',
         })
         u2 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '2',
@@ -4423,6 +4430,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'denominazione_padre': 'd',
             'uo_padre': '22',
             'cd_csa': 2,
+            'dt_fine_val': '2222-01-01',
         })
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
@@ -4461,6 +4469,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
             'denominazione_padre': 'd',
             'uo_padre': '33',
             'cd_csa': 3,
+            'dt_fine_val': '2222-01-01',
         })
 
         tipo_contatto = PersonaleUoTipoContattoUnitTest.create_personaleUoTipoContatto(
