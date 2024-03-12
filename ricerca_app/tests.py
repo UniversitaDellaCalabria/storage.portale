@@ -66,10 +66,10 @@ class ApiCdSListUnitTest(TestCase):
             'ordine': 1,
         })
 
-        # DidatticaCdsAltriDatiUnitTest.create_didatticaCdsAltriDati(**{
-            # 'regdid_id': r1,
-            # 'num_posti': 2
-        # })
+        DidatticaCdsAltriDatiUnitTest.create_didatticaCdsAltriDati(**{
+            'regdid_id': r1,
+            'nome_origine_coordinatore': 'Test coordinatore'
+        })
 
         r1.get_ordinamento_didattico()
 
