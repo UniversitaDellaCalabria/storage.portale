@@ -58,6 +58,41 @@ def laboratories(request, laboratory=None, my_offices=None, is_validator=False):
     return render(request, 'laboratories.html', context)
 
 
+@login_required
+@can_manage_laboratories
+@can_view_laboratories
+def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
+    if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+    if request.POST:
+        laboratoriodatibaseinfosedeform = LaboratorioDatiBaseInfoSedeForm(data=request.POST, instance=laboratory)
+        if laboratoriodatibaseinfosedeform.is_valid():
+            lab_instance = laboratoriodatibaseinfosedeform.save(commit=False)
+            lab_instance.user_mod_id = request.user
+            lab_instance.dt_mod=datetime.now()
+            lab_instance.visibile=False
+            lab_instance.save(update_fields=['sede_note_descrittive', 'sede_dimensione'])
+            
+            if laboratoriodatibaseinfosedeform.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseinfosedeform,
+                                                                        laboratoriodatibaseinfosedeform.changed_data)
+                log_action(user=request.user,
+                            obj=laboratory,
+                            flag=CHANGE,
+                            msg=[{'changed': {"fields": changed_field_labels}}])
+
+                messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Laboratory edited successfully"))
+
+        else:  # pragma: no cover
+            for k, v in laboratoriodatibaseinfosedeform.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{laboratoriodatibaseinfosedeform.fields[k].label}</b>: {v}")
+            
+    return redirect('crud_laboratories:crud_laboratory_edit',
+        code=code)
+
 
 @login_required
 @can_manage_laboratories
@@ -76,6 +111,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     allowed_related_departments_codes = [] if (not user_lab_offices.exists()) else user_lab_offices.values_list("office_id__organizational_structure_id__unique_code", flat=True)
     initial = {"choosen_department_id": laboratory.id_dipartimento_riferimento.dip_id}
     form = LaboratorioDatiBaseForm(initial=initial, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
+    laboratoriodatibaseinfosedeform = LaboratorioDatiBaseInfoSedeForm(instance=laboratory)
     #LaboratorioTipologiaRischio
     selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
@@ -105,7 +141,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
             return custom_message(request, _("Permission denied"))
         
         form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
-                
+                    
         if form.is_valid():
             laboratory = form.save(commit=False)
             related_department_id = form.cleaned_data.get('choosen_department_id')[0]
@@ -149,6 +185,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
                   {'breadcrumbs': breadcrumbs,
                    'logs': logs,
                    'form': form,
+                   'laboratoriodatibaseinfosedeform': laboratoriodatibaseinfosedeform,
                    'risk_type_form': risk_type_form,
                    'laboratory': laboratory,
                    'extra_departments': extra_departments,

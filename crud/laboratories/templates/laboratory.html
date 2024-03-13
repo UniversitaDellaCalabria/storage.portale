@@ -662,6 +662,17 @@
             {% endif %}
             <!-- /Locations -->
             <hr />
+            <div class="shadow-sm p-3 mb-5 bg-white">
+                <form action="{% url 'crud_laboratories:crud_laboratory_info_sede_edit' code=laboratory.pk %}"
+                    method="POST"
+                    novalidate>
+                    {% include "form_template.html" with form=laboratoriodatibaseinfosedeform %}
+                    {% if user_roles.superuser or user_roles.operator %}
+                    {% include "form_submit_warning.html" with active=laboratory.visibile %}
+                    {% endif %}
+                </form>
+            </div>
+            <hr />
             <!-- Equipment -->
             <h4 style="font-weight: lighter;">{% trans "Laboratory Equipment" %}</h4>
             <div class="table-responsive">

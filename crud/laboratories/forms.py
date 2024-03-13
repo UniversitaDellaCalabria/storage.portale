@@ -47,7 +47,8 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
 
         self.order_fields(field_order=
                           ( 'nome_laboratorio', 'acronimo', 'logo_laboratorio',
-                            'nome_file_logo', 'sede_dimensione', 'sede_note_descrittive',
+                            'nome_file_logo',
+                            #'sede_dimensione', 'sede_note_descrittive',
                             'strumentazione_descrizione', 'strumentazione_valore',
                             'sito_web', 'id_infrastruttura_riferimento', 'altre_strutture_riferimento',
                             'descr_altre_strutture_riferimento_it', 'descr_altre_strutture_riferimento_en',
@@ -58,7 +59,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         fields = ['nome_laboratorio', 'acronimo', 'logo_laboratorio', 'laboratorio_interdipartimentale',
                   'altre_strutture_riferimento', 'descr_altre_strutture_riferimento_it',
                   'descr_altre_strutture_riferimento_en', 'ambito',
-                  'sede_dimensione', 'sede_note_descrittive',
+                  #'sede_dimensione', 'sede_note_descrittive',
                   'strumentazione_descrizione', 'strumentazione_valore',
                   'id_infrastruttura_riferimento',
                   'sito_web', 'nome_file_logo']
@@ -71,8 +72,8 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             'descr_altre_strutture_riferimento_it': _('Other Structures Description (it)'),
             'descr_altre_strutture_riferimento_en': _('Other Structures Description (en)'),
             'ambito': _('Scope'),
-            'sede_dimensione': _('Office Dimension'),
-            'sede_note_descrittive': _('Office Description Notes'),
+            #'sede_dimensione': _('Office Dimension'),
+            #'sede_note_descrittive': _('Office Description Notes'),
             'strumentazione_descrizione': _('Instrumentation Description'),
             'strumentazione_valore': _('Instrumentation Value'),
             'id_infrastruttura_riferimento': _("Reference Infrastrucure"),
@@ -82,8 +83,21 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         widgets = {'descr_altre_strutture_riferimento_it': CKEditor5Widget(),
                    'descr_altre_strutture_riferimento_en': CKEditor5Widget(),
                    'strumentazione_descrizione': CKEditor5Widget(),
-                   'sede_note_descrittive': CKEditor5Widget(),
+                   #'sede_note_descrittive': CKEditor5Widget(),
                   }
+        
+
+class LaboratorioDatiBaseInfoSedeForm(forms.ModelForm):
+    class Meta:
+        model = LaboratorioDatiBase
+        fields = ['sede_note_descrittive', 'sede_dimensione']
+        labels = {
+            'sede_dimensione': _('Office - Overall Dimensions'),
+            'sede_note_descrittive': _('Office - Description Notes'),
+        }
+        widgets = {
+            'sede_note_descrittive': CKEditor5Widget(),
+        }
 
 
 class LaboratorioDatiBaseScientificDirectorForm(forms.Form):
