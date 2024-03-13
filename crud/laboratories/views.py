@@ -65,17 +65,17 @@ def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, i
     if not (request.user.is_superuser or my_offices.exists()):
             return custom_message(request, _("Permission denied"))
     if request.POST:
-        laboratoriodatibaseinfosedeform = LaboratorioDatiBaseInfoSedeForm(data=request.POST, instance=laboratory)
-        if laboratoriodatibaseinfosedeform.is_valid():
-            lab_instance = laboratoriodatibaseinfosedeform.save(commit=False)
+        laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(data=request.POST, instance=laboratory)
+        if laboratoriodatibaseinfosedestruttureform.is_valid():
+            lab_instance = laboratoriodatibaseinfosedestruttureform.save(commit=False)
             lab_instance.user_mod_id = request.user
             lab_instance.dt_mod=datetime.now()
             lab_instance.visibile=False
-            lab_instance.save(update_fields=['sede_note_descrittive', 'sede_dimensione'])
+            lab_instance.save(update_fields=['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione', 'strumentazione_valore'])
             
-            if laboratoriodatibaseinfosedeform.changed_data:
-                changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseinfosedeform,
-                                                                        laboratoriodatibaseinfosedeform.changed_data)
+            if laboratoriodatibaseinfosedestruttureform.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseinfosedestruttureform,
+                                                                        laboratoriodatibaseinfosedestruttureform.changed_data)
                 log_action(user=request.user,
                             obj=laboratory,
                             flag=CHANGE,
@@ -86,9 +86,9 @@ def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, i
                                     _("Laboratory edited successfully"))
 
         else:  # pragma: no cover
-            for k, v in laboratoriodatibaseinfosedeform.errors.items():
+            for k, v in laboratoriodatibaseinfosedestruttureform.errors.items():
                 messages.add_message(request, messages.ERROR,
-                                     f"<b>{laboratoriodatibaseinfosedeform.fields[k].label}</b>: {v}")
+                                     f"<b>{laboratoriodatibaseinfosedestruttureform.fields[k].label}</b>: {v}")
             
     return redirect('crud_laboratories:crud_laboratory_edit',
         code=code)
@@ -111,7 +111,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     allowed_related_departments_codes = [] if (not user_lab_offices.exists()) else user_lab_offices.values_list("office_id__organizational_structure_id__unique_code", flat=True)
     initial = {"choosen_department_id": laboratory.id_dipartimento_riferimento.dip_id}
     form = LaboratorioDatiBaseForm(initial=initial, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
-    laboratoriodatibaseinfosedeform = LaboratorioDatiBaseInfoSedeForm(instance=laboratory)
+    laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(instance=laboratory)
     #LaboratorioTipologiaRischio
     selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
@@ -185,7 +185,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
                   {'breadcrumbs': breadcrumbs,
                    'logs': logs,
                    'form': form,
-                   'laboratoriodatibaseinfosedeform': laboratoriodatibaseinfosedeform,
+                   'laboratoriodatibaseinfosedestruttureform': laboratoriodatibaseinfosedestruttureform,
                    'risk_type_form': risk_type_form,
                    'laboratory': laboratory,
                    'extra_departments': extra_departments,

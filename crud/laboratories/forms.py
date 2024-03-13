@@ -49,7 +49,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                           ( 'nome_laboratorio', 'acronimo', 'logo_laboratorio',
                             'nome_file_logo',
                             #'sede_dimensione', 'sede_note_descrittive',
-                            'strumentazione_descrizione', 'strumentazione_valore',
+                            #'strumentazione_descrizione', 'strumentazione_valore',
                             'sito_web', 'id_infrastruttura_riferimento', 'altre_strutture_riferimento',
                             'descr_altre_strutture_riferimento_it', 'descr_altre_strutture_riferimento_en',
                             'ambito', 'laboratorio_interdipartimentale', 'choosen_department_id'))
@@ -60,7 +60,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                   'altre_strutture_riferimento', 'descr_altre_strutture_riferimento_it',
                   'descr_altre_strutture_riferimento_en', 'ambito',
                   #'sede_dimensione', 'sede_note_descrittive',
-                  'strumentazione_descrizione', 'strumentazione_valore',
+                  #'strumentazione_descrizione', 'strumentazione_valore',
                   'id_infrastruttura_riferimento',
                   'sito_web', 'nome_file_logo']
         labels = {
@@ -74,29 +74,37 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             'ambito': _('Scope'),
             #'sede_dimensione': _('Office Dimension'),
             #'sede_note_descrittive': _('Office Description Notes'),
-            'strumentazione_descrizione': _('Instrumentation Description'),
-            'strumentazione_valore': _('Instrumentation Value'),
+            #'strumentazione_descrizione': _('Instrumentation Description'),
+            #'strumentazione_valore': _('Instrumentation Value'),
             'id_infrastruttura_riferimento': _("Reference Infrastrucure"),
             'sito_web': _('Website'),
             'nome_file_logo': _('Logo')
         }
         widgets = {'descr_altre_strutture_riferimento_it': CKEditor5Widget(),
                    'descr_altre_strutture_riferimento_en': CKEditor5Widget(),
-                   'strumentazione_descrizione': CKEditor5Widget(),
+                   #'strumentazione_descrizione': CKEditor5Widget(),
                    #'sede_note_descrittive': CKEditor5Widget(),
                   }
         
 
-class LaboratorioDatiBaseInfoSedeForm(forms.ModelForm):
+class LaboratorioDatiBaseInfoSedeStruttureForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LaboratorioDatiBaseInfoSedeStruttureForm, self).__init__(*args, **kwargs)
+        self.fields['sede_dimensione'].help_text = _("Total square meters")
+        self.fields['sede_note_descrittive'].help_text = _("Any addition to the provided data")
+        self.fields['strumentazione_descrizione'].help_text = _("Public-use text (detail list below)")
     class Meta:
         model = LaboratorioDatiBase
-        fields = ['sede_note_descrittive', 'sede_dimensione']
+        fields = ['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione', 'strumentazione_valore']
         labels = {
             'sede_dimensione': _('Office - Overall Dimensions'),
             'sede_note_descrittive': _('Office - Description Notes'),
+            'strumentazione_descrizione': _('Equipment - Description'),
+            'strumentazione_valore': _('Equipment - Overall Value')
         }
         widgets = {
             'sede_note_descrittive': CKEditor5Widget(),
+            'strumentazione_descrizione': CKEditor5Widget(),
         }
 
 
