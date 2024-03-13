@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load crud_templatetags %}
 
 
 {% block centered_container %}
@@ -170,14 +171,15 @@
                                 <label class="form-check-label" for="visibleCheckBox">{% trans "Visible" %}</label>
                             </div>
                         </td>
-                    </tbody>
-                </table>
-                <form method="post" enctype="multipart/form-data" novalidate>
-                {% include "form_template.html" with form=form %}
-                <hr />
-                {% if user_roles.superuser or user_roles.operator %}
-                {% include "form_submit_warning.html" with active=laboratory.visibile %}
-                {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+            <form method="post" enctype="multipart/form-data" novalidate>
+            {% include "form_template.html" with form=form %}
+            <hr />
+            {% if user_roles.superuser or user_roles.operator %}
+            {% include "form_submit_warning.html" with active=laboratory.visibile %}
+            {% endif %}
             </form>
         </div>
     </div>
@@ -189,7 +191,71 @@
     <div class="card card-bg no-after">
         <div class="card-body">
             <!-- Extra departments -->
-            <h4 style="font-weight: lighter;">{% trans "Extra Departments" %}</h4>
+            <h4 class="mb-3" style="font-weight: lighter;">{% trans "Extra Departments" %}</h4>
+            <!-- /Interdepartmental form -->
+            <form method="post"
+                  action="{% url 'crud_laboratories:crud_laboratory_interdepartmental_edit' code=laboratory.pk %}"
+                  enctype="multipart/form-data"
+                  novalidate>
+                <div class="row">
+                    <div class="col">
+                    {% include "form_template.html" with form=laboratoriodatibaseinterdipartimentaleform %}
+                    </div>
+                    <div class="align-self-center pl-4 pr-4 pt-2">
+                        {% if user_roles.superuser or user_roles.operator %}
+                            {% random_id as lab_int_id %}
+                            <button class="btn btn-success btn-sm pl-3 pr-3"
+                                    type="button"
+                                    data-toggle="modal"
+                                    data-target="#{{ lab_int_id }}_action">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                </svg>
+                                {% trans "Submit" %}
+                            </button>
+                            <div class="modal fade"
+                                tabindex="-1"
+                                role="dialog"
+                                id="{{ lab_int_id }}_action">
+                                <div class="modal-dialog modal-dialog-centered"
+                                    role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                            <svg class="icon">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                            </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% if laboratory.visibile %}
+                                                    {% trans "This action will make the laboratory NOT visible untill it has been approved again. Do you want to confirm the entered data?" %}
+                                                {% else %}
+                                                    {% trans "Do you want to confirm the entered data?" %}
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input class="btn btn-success"
+                                                type="submit"
+                                                id="{{ id }}_submitForm"
+                                                value="{% trans 'Yes, proceed' %}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+            <!-- /Interdepartmental form -->
             <div class="table-responsive">
                 <table class="table table-striped table-hover">
                     <tbody>
@@ -572,7 +638,7 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal;">{% trans "Facilities and Equipment" %}</h3>
+            <h3 style="font-weight: normal;">{% trans "Endowements Section (Facilities and Equipment)" %}</h3>
             <hr />
             <!-- Locations -->
             <h4 style="font-weight: lighter;">{% trans "Locations" %}</h4>
@@ -662,8 +728,19 @@
             {% endif %}
             <!-- /Locations -->
             <hr />
+            <div class="shadow-sm p-3 mb-5 bg-white">
+                <form action="{% url 'crud_laboratories:crud_laboratory_info_sede_edit' code=laboratory.pk %}"
+                    method="POST"
+                    novalidate>
+                    {% include "form_template.html" with form=laboratoriodatibaseinfosedestruttureform %}
+                    {% if user_roles.superuser or user_roles.operator %}
+                    {% include "form_submit_warning.html" with active=laboratory.visibile %}
+                    {% endif %}
+                </form>
+            </div>
+            <hr />
             <!-- Equipment -->
-            <h4 style="font-weight: lighter;">{% trans "Laboratory Equipment" %}</h4>
+            <h4 style="font-weight: lighter;">{% trans "Equipment - Detail Information" %}</h4>
             <div class="table-responsive">
                 <table class="table table-striped table-hover">
                     <thead>
@@ -761,7 +838,7 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal;">{% trans "Service Catalogue" %}</h3>
+            <h3 style="font-weight: normal;">{% trans "Services Section" %}</h3>
             <hr />
             <!-- Offered Services -->
             <h4 style="font-weight: lighter;">{% trans "Offered Services" %}</h4>
@@ -936,8 +1013,8 @@
             <hr />
             <!-- Safety Manager -->
             <h4 style="font-weight: lighter;">{% trans "Safety Manager" %}</h4>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
+            <div class="table-responsive mb-1">
+                <table class="table table-striped table-hover mb-2">
                     <tbody>
                         <tr>
                             <td>
@@ -956,6 +1033,9 @@
                         </tr>
                     </tbody>
                 </table>
+                {% comment %} <small class="form-text text-muted">
+                    {% trans "Provide if different from Scientific Director" %}
+                </small> {% endcomment %}
             </div>
             <hr />
             <!-- Risk Types -->
