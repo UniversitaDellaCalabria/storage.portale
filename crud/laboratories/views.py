@@ -66,12 +66,12 @@ def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, i
             return custom_message(request, _("Permission denied"))
     if request.POST:
         laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(data=request.POST, instance=laboratory)
-        if laboratoriodatibaseinfosedestruttureform.is_valid():
+        if laboratoriodatibaseinfosedestruttureform.is_valid():          
             lab_instance = laboratoriodatibaseinfosedestruttureform.save(commit=False)
             lab_instance.user_mod_id = request.user
             lab_instance.dt_mod=datetime.now()
             lab_instance.visibile=False
-            lab_instance.save(update_fields=['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione', 'strumentazione_valore'])
+            lab_instance.save(update_fields=['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione', 'strumentazione_valore', 'visibile', 'user_mod_id', 'dt_mod'])
             
             if laboratoriodatibaseinfosedestruttureform.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseinfosedestruttureform,
@@ -92,6 +92,49 @@ def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, i
             
     return redirect('crud_laboratories:crud_laboratory_edit',
         code=code)
+    
+    
+@login_required
+@can_manage_laboratories
+@can_view_laboratories
+def laboratory_interdepartmental_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
+    if not (request.user.is_superuser or my_offices.exists()):
+            return custom_message(request, _("Permission denied"))
+    if request.POST:
+        laboratoriodatibaseinterdipartimentaleform = LaboratorioDatiBaseInterdipartimentaleForm(data=request.POST, instance=laboratory)
+        if laboratoriodatibaseinterdipartimentaleform.is_valid():
+            
+            extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
+            if extra_departments and request.POST.get("laboratorio_interdipartimentale") == "NO":
+                messages.add_message(request, messages.ERROR, _("Remove any extra department before setting 'Interdepartmental Laboratory' to 'NO'"))
+                return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+            
+            lab_instance = laboratoriodatibaseinterdipartimentaleform.save(commit=False)
+            lab_instance.user_mod_id = request.user
+            lab_instance.dt_mod=datetime.now()
+            lab_instance.visibile=False
+            lab_instance.save(update_fields=['laboratorio_interdipartimentale', 'visibile', 'user_mod_id', 'dt_mod'])
+            
+            if laboratoriodatibaseinterdipartimentaleform.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseinterdipartimentaleform,
+                                                                        laboratoriodatibaseinterdipartimentaleform.changed_data)
+                log_action(user=request.user,
+                            obj=laboratory,
+                            flag=CHANGE,
+                            msg=[{'changed': {"fields": changed_field_labels}}])
+
+                messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Laboratory edited successfully"))
+
+        else:  # pragma: no cover
+            for k, v in laboratoriodatibaseinterdipartimentaleform.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{laboratoriodatibaseinterdipartimentaleform.fields[k].label}</b>: {v}")
+            
+    return redirect('crud_laboratories:crud_laboratory_edit',
+        code=code)
+    
 
 
 @login_required
@@ -112,6 +155,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     initial = {"choosen_department_id": laboratory.id_dipartimento_riferimento.dip_id}
     form = LaboratorioDatiBaseForm(initial=initial, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
     laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(instance=laboratory)
+    laboratoriodatibaseinterdipartimentaleform = LaboratorioDatiBaseInterdipartimentaleForm(instance=laboratory)
     #LaboratorioTipologiaRischio
     selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
@@ -186,6 +230,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
                    'logs': logs,
                    'form': form,
                    'laboratoriodatibaseinfosedestruttureform': laboratoriodatibaseinfosedestruttureform,
+                   'laboratoriodatibaseinterdipartimentaleform': laboratoriodatibaseinterdipartimentaleform,
                    'risk_type_form': risk_type_form,
                    'laboratory': laboratory,
                    'extra_departments': extra_departments,
@@ -257,7 +302,8 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
             related_department = get_object_or_404(DidatticaDipartimento, pk=form.cleaned_data.get('choosen_department_id')[0])
             laboratory.id_dipartimento_riferimento = related_department
             laboratory.dipartimento_riferimento = related_department.dip_des_it
-
+            laboratory.laboratorio_interdipartimentale = 'NO'
+            
             laboratory.dt_sottomissione = datetime.now()
             laboratory.user_mod_id = request.user
             laboratory.dt_mod=datetime.now()

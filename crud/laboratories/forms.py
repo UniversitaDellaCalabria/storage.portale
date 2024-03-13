@@ -40,23 +40,32 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             label=_('Areas'),
             choices = scope_choices
             )
-        self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
-            label=_('Interdepartmental Laboratory'),
-            choices=(('SI', 'SI'),('NO', 'NO')),
-        )
+        
+        # self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
+        #     label=_('Interdepartmental Laboratory'),
+        #     choices=(('SI', 'SI'),('NO', 'NO')),
+        # )
 
         self.order_fields(field_order=
-                          ( 'nome_laboratorio', 'acronimo', 'logo_laboratorio',
+                          ( 'nome_laboratorio',
+                            'acronimo',
+                            'logo_laboratorio',
                             'nome_file_logo',
+                            'choosen_department_id',
+                            'id_infrastruttura_riferimento',
+                            'altre_strutture_riferimento',
+                            'descr_altre_strutture_riferimento_it',
+                            'descr_altre_strutture_riferimento_en',
+                            'sito_web',
+                            'ambito',
                             #'sede_dimensione', 'sede_note_descrittive',
                             #'strumentazione_descrizione', 'strumentazione_valore',
-                            'sito_web', 'id_infrastruttura_riferimento', 'altre_strutture_riferimento',
-                            'descr_altre_strutture_riferimento_it', 'descr_altre_strutture_riferimento_en',
-                            'ambito', 'laboratorio_interdipartimentale', 'choosen_department_id'))
+                            #'laboratorio_interdipartimentale',
+                            ))
 
     class Meta:
         model = LaboratorioDatiBase
-        fields = ['nome_laboratorio', 'acronimo', 'logo_laboratorio', 'laboratorio_interdipartimentale',
+        fields = ['nome_laboratorio', 'acronimo', 'logo_laboratorio',# 'laboratorio_interdipartimentale',
                   'altre_strutture_riferimento', 'descr_altre_strutture_riferimento_it',
                   'descr_altre_strutture_riferimento_en', 'ambito',
                   #'sede_dimensione', 'sede_note_descrittive',
@@ -67,7 +76,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             'nome_laboratorio': _('Name'),
             'acronimo': _('Acronym'),
             'logo_laboratorio': _('Link Laboratory Logo'),
-            'laboratorio_interdipartimentale': _('Interdepartmental Laboratory'),
+            #'laboratorio_interdipartimentale': _('Interdepartmental Laboratory'),
             'altre_strutture_riferimento': _('Other Structures'),
             'descr_altre_strutture_riferimento_it': _('Other Structures Description (it)'),
             'descr_altre_strutture_riferimento_en': _('Other Structures Description (en)'),
@@ -87,6 +96,21 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                   }
         
 
+class LaboratorioDatiBaseInterdipartimentaleForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LaboratorioDatiBaseInterdipartimentaleForm, self).__init__(*args, **kwargs)
+        
+        self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
+            label=_('Interdepartmental Laboratory'),
+            choices=(('SI', _('YES')),('NO', 'NO')),
+            help_text=_("Extra departments selection is available only after selecting 'YES' and then saving"),
+        )
+    class Meta:
+        model = LaboratorioDatiBase
+        fields = ['laboratorio_interdipartimentale']
+        labels = {
+            'laboratorio_interdipartimentale': _('Interdepartmental Laboratory'),
+        }
 class LaboratorioDatiBaseInfoSedeStruttureForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(LaboratorioDatiBaseInfoSedeStruttureForm, self).__init__(*args, **kwargs)
