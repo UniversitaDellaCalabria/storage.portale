@@ -7,6 +7,7 @@ from django.core.cache import cache
 from django.utils import timezone
 from django.utils.text import slugify
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 
 from rest_framework import generics, permissions, status
 from rest_framework.authentication import TokenAuthentication
@@ -779,6 +780,11 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
         only_active = True
         if request.user.is_superuser: only_active = False # pragma: no cover
         elif request.user.is_authenticated: # pragma: no cover
+            is_scientific_director = False
+            try:
+                user_profile = get_object_or_404(Personale, cod_fis=request.user.taxpayer_id)
+                is_scientific_director = LaboratorioDatiBase.objects.filter(matricola_responsabile_scientifico = user_profile).exists()
+            except: pass
             offices = OrganizationalStructureOfficeEmployee\
                 .objects\
                 .filter(employee=request.user,
@@ -787,7 +793,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
 
             is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
             is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
-            if(is_operator or is_validator):
+            if(is_operator or is_validator or is_scientific_director):
                 only_active = False
 
         return ServiceLaboratorio.getLaboratory(self.language, laboratoryid, only_active)
@@ -812,6 +818,11 @@ class ApiLaboratoriesList(ApiEndpointList):
         only_active = True
         if request.user.is_superuser: only_active = False # pragma: no cover
         elif request.user.is_authenticated: # pragma: no cover
+            is_scientific_director = False
+            try:
+                user_profile = get_object_or_404(Personale, cod_fis=request.user.taxpayer_id)
+                is_scientific_director = LaboratorioDatiBase.objects.filter(matricola_responsabile_scientifico = user_profile).exists()
+            except: pass
             offices = OrganizationalStructureOfficeEmployee\
                 .objects\
                 .filter(employee=request.user,
@@ -820,7 +831,7 @@ class ApiLaboratoriesList(ApiEndpointList):
 
             is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
             is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
-            if(is_operator or is_validator):
+            if(is_operator or is_validator or is_scientific_director):
                 only_active = False
 
         return ServiceLaboratorio.getLaboratoriesList(
