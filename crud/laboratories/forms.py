@@ -9,7 +9,7 @@ from django.urls import reverse
 
 from django_ckeditor_5.widgets import CKEditor5Widget
 
-from ricerca_app.models import DidatticaDipartimento, LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioTipologiaRischio, TipologiaRischio, LaboratorioAttrezzatureFondi, LaboratorioAttrezzatureRischi, LaboratorioFondo
+from ricerca_app.models import *
 
 # from .. utils.widgets import RicercaCRUDClearableWidget
 
@@ -222,11 +222,17 @@ class LaboratorioAttrezzatureRischiForm(forms.Form):
 class LaboratorioDatiErc1Form(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
+        erc0 = RicercaErc0.objects.all()
 
         choices = tuple(RicercaErc1.objects.all().values_list("id", "descrizione").distinct())
 
+        self.fields['erc0_selector'] = forms.ChoiceField(
+            label=_(''),
+        )
+        
         self.fields['id_ricerche_erc1'] = forms.MultipleChoiceField(
-            label=_('ERC1 Researches'),
+            label=_('ERC Classification'),
             choices=choices,
             required=False,
             widget=forms.CheckboxSelectMultiple()
