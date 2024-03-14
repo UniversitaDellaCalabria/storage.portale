@@ -900,11 +900,20 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
     researches_erc1_old = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code)
     
     #Ids to initialize form's checkboxes
-    researches_erc1 = researches_erc1_old.values("id","id_ricerca_erc1","id_ricerca_erc1__descrizione")
+    researches_erc1 = researches_erc1_old.values("id","id_ricerca_erc1","id_ricerca_erc1__descrizione", "id_ricerca_erc1__ricerca_erc0_cod")
+    erc0 = researches_erc1.first()['id_ricerca_erc1__ricerca_erc0_cod'] if researches_erc1.exists() else None
     researches_erc1_ids = researches_erc1.values_list('id_ricerca_erc1', flat=True)
+    fields = ['id_ricerche_erc1_ls', 'id_ricerche_erc1_pe', 'id_ricerche_erc1_sh']
     researches_erc1_ids = tuple(map(str, researches_erc1_ids))
-                        
-    research_erc1_form = LaboratorioDatiErc1Form(initial={'id_ricerche_erc1': researches_erc1_ids})
+    initial = {}
+    if erc0 is not None:
+        for field in fields:
+            if erc0.lower() in field:
+                initial[field] = researches_erc1_ids
+                initial['erc0_selector'] = erc0
+                break
+
+    research_erc1_form = LaboratorioDatiErc1Form(initial=initial)
     
     if request.POST:
         if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
@@ -912,8 +921,8 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
         
         research_erc1_form = LaboratorioDatiErc1Form(data=request.POST)
         if research_erc1_form.is_valid():
-            
-            selected_erc1_res_ids = research_erc1_form.cleaned_data.get('id_ricerche_erc1', [])
+            erc0_selector = request.POST.get("erc0_selector")
+            selected_erc1_res_ids = research_erc1_form.cleaned_data.get(f'id_ricerche_erc1_{erc0_selector.lower()}', [])
                         
             LaboratorioDatiErc1.objects\
                 .filter(id_laboratorio_dati=code)\
@@ -941,22 +950,23 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=_("Edited researches ERC1"))
+            msg=_("Edited ERC classification"))
 
-            messages.add_message(request, messages.SUCCESS, _("Researches ERC1 edited successfully"))
+            messages.add_message(request, messages.SUCCESS, _("ERC classification edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
-                   reverse('crud_laboratories:crud_laboratory_researches_erc1_edit', kwargs={'code': code}): _('Researches ERC1')
+                   reverse('crud_laboratories:crud_laboratory_researches_erc1_edit', kwargs={'code': code}): _('ERC classification')
                    }
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'forms': (research_erc1_form,),
                    'laboratory': laboratory,
-                   'item_label': _("ERC 1 Researches"),
+                   'erc_form': 1,
+                   'item_label': _("ERC classification"),
                    'edit': 1,
                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })

@@ -4,8 +4,6 @@ from datetime import date as dt
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
-from django.urls import reverse
 
 from django_ckeditor_5.widgets import CKEditor5Widget
 
@@ -223,17 +221,42 @@ class LaboratorioDatiErc1Form(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        erc0 = RicercaErc0.objects.all()
-
-        choices = tuple(RicercaErc1.objects.all().values_list("id", "descrizione").distinct())
-
+        erc0 = RicercaErc0.objects.all().values_list("erc0_cod", "description")
+        erc0_choices = ((e0[0], e0[1]) for e0 in erc0)
+        
+        erc1 = RicercaErc1.objects.all()
+        
+        erc1_ls = erc1.filter(ricerca_erc0_cod='LS').values_list("id", "descrizione")
+        erc1_ls_choices = ((e1[0], e1[1]) for e1 in erc1_ls)
+        
+        erc1_pe = erc1.filter(ricerca_erc0_cod='PE').values_list("id", "descrizione")
+        erc1_pe_choices = ((e1[0], e1[1]) for e1 in erc1_pe)
+        
+        erc1_sh = erc1.filter(ricerca_erc0_cod='SH').values_list("id", "descrizione")
+        erc1_sh_choices = ((e1[0], e1[1]) for e1 in erc1_sh)
+        
         self.fields['erc0_selector'] = forms.ChoiceField(
-            label=_(''),
+            label=_('ERC Classification'),
+            choices = erc0_choices
         )
         
-        self.fields['id_ricerche_erc1'] = forms.MultipleChoiceField(
-            label=_('ERC Classification'),
-            choices=choices,
+        self.fields['id_ricerche_erc1_ls'] = forms.MultipleChoiceField(
+            label=_('ERC Classification - Life Science'),
+            choices=erc1_ls_choices,
+            required=False,
+            widget=forms.CheckboxSelectMultiple()
+        )
+        
+        self.fields['id_ricerche_erc1_pe'] = forms.MultipleChoiceField(
+            label=_('ERC Classification - Physical Sciences and Engineering'),
+            choices=erc1_pe_choices,
+            required=False,
+            widget=forms.CheckboxSelectMultiple()
+        )
+        
+        self.fields['id_ricerche_erc1_sh'] = forms.MultipleChoiceField(
+            label=_('ERC Classification - Social Sciences and Humanities'),
+            choices=erc1_sh_choices,
             required=False,
             widget=forms.CheckboxSelectMultiple()
         )

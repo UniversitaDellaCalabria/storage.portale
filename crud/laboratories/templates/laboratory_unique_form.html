@@ -18,4 +18,38 @@
         {% endif %}
     </form>
 </div>
+
+{% if erc_form %}
+<script>
+    let erc0_selector = $('select[name="erc0_selector"]');
+    let erc1_ls = [$('div[id="id_id_ricerche_erc1_ls"]').parent(), $('div[id="id_id_ricerche_erc1_ls"]').parent().prev()];
+    let erc1_pe = [$('div[id="id_id_ricerche_erc1_pe"]').parent(), $('div[id="id_id_ricerche_erc1_pe"]').parent().prev()];
+    let erc1_sh = [$('div[id="id_id_ricerche_erc1_sh"]').parent(), $('div[id="id_id_ricerche_erc1_sh"]').parent().prev()];
+    
+    function handleErc0Selector() {
+        erc1_ls[0].hide();
+        erc1_ls[1].hide();
+        erc1_pe[0].hide();
+        erc1_pe[1].hide();
+        erc1_sh[0].hide();
+        erc1_sh[1].hide();
+        if(erc0_selector[0].value == 'LS'){
+            erc1_ls[0].show();
+            erc1_ls[1].show();
+        }
+        else if (erc0_selector[0].value == 'PE') {
+            erc1_pe[0].show();
+            erc1_pe[1].show();
+        }
+        else {
+            erc1_sh[0].show();
+            erc1_sh[1].show();
+        }
+    }
+    erc0_selector.bind("click", handleErc0Selector);
+    handleErc0Selector();
+
+</script>
+{% endif %}
+
 {% endblock centered_container %}

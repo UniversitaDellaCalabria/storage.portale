@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-14 11:02+0100\n"
-"PO-Revision-Date: 2024-03-14 11:03+0100\n"
+"POT-Creation-Date: 2024-03-14 15:54+0100\n"
+"PO-Revision-Date: 2024-03-14 15:54+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -44,7 +44,7 @@ msgstr ""
 
 #: accounts/models.py:15 crud/cds/templates/cds_detail.html:291
 #: crud/cds/templates/cds_group.html:38 crud/companies/forms.py:42
-#: crud/laboratories/forms.py:76 crud/laboratories/forms.py:334
+#: crud/laboratories/forms.py:74 crud/laboratories/forms.py:363
 #: crud/research_groups/forms.py:24
 #: crud/research_groups/templates/researchgroup.html:70
 #: crud/research_lines/templates/applied_researchline.html:70
@@ -84,14 +84,14 @@ msgstr "Utenti"
 #: crud/cds_websites_pages/views.py:328 crud/cds_websites_pages/views.py:387
 #: crud/cds_websites_pages/views.py:413 crud/cds_websites_pages/views.py:518
 #: crud/cds_websites_pages/views.py:590 crud/companies/decorators.py:32
-#: crud/laboratories/decorators.py:40 crud/laboratories/decorators.py:67
-#: crud/laboratories/decorators.py:80 crud/laboratories/decorators.py:98
-#: crud/laboratories/views.py:66 crud/laboratories/views.py:102
-#: crud/laboratories/views.py:185 crud/laboratories/views.py:254
-#: crud/laboratories/views.py:770 crud/laboratories/views.py:910
-#: crud/laboratories/views.py:974 crud/laboratories/views.py:1342
-#: crud/laboratories/views.py:1503 crud/laboratories/views.py:1640
-#: crud/laboratories/views.py:1818 crud/patents/decorators.py:32
+#: crud/laboratories/decorators.py:58 crud/laboratories/decorators.py:85
+#: crud/laboratories/decorators.py:98 crud/laboratories/decorators.py:116
+#: crud/laboratories/views.py:67 crud/laboratories/views.py:103
+#: crud/laboratories/views.py:186 crud/laboratories/views.py:255
+#: crud/laboratories/views.py:771 crud/laboratories/views.py:920
+#: crud/laboratories/views.py:985 crud/laboratories/views.py:1353
+#: crud/laboratories/views.py:1514 crud/laboratories/views.py:1651
+#: crud/laboratories/views.py:1829 crud/patents/decorators.py:32
 #: crud/phd/decorators.py:26 crud/phd/decorators.py:52
 #: crud/projects/decorators.py:31 crud/research_groups/decorators.py:28
 #: crud/research_groups/decorators.py:62 crud/research_lines/decorators.py:28
@@ -215,8 +215,8 @@ msgid "Course of study language"
 msgstr "Lingua"
 
 #: crud/cds/templates/blocks/crud_cds.html:127 crud/companies/forms.py:18
-#: crud/companies/forms.py:72 crud/laboratories/forms.py:170
-#: crud/laboratories/forms.py:176
+#: crud/companies/forms.py:72 crud/laboratories/forms.py:168
+#: crud/laboratories/forms.py:174
 #: crud/laboratories/templates/blocks/crud_laboratories.html:68
 #: crud/research_groups/templates/blocks/crud_researchgroups.html:37
 #: crud/research_lines/templates/blocks/crud_researchlines.html:36
@@ -758,7 +758,7 @@ msgstr " per "
 
 #: crud/cds/templates/cds_regdid_other_data_form.html:29
 #: crud/cds_websites_pages/forms.py:136 crud/cds_websites_pages/forms.py:159
-#: crud/laboratories/forms.py:197
+#: crud/laboratories/forms.py:195
 #: crud/laboratories/templates/laboratory.html:748 crud/phd/forms.py:82
 #: crud/teachers/templates/blocks/crud_teacher_news.html:40
 msgid "Type"
@@ -813,16 +813,16 @@ msgstr "Attualmente fa riferimento a quello dell'anno"
 #: crud/cds_websites_pages/views.py:622 crud/companies/views.py:34
 #: crud/companies/views.py:87 crud/companies/views.py:168
 #: crud/companies/views.py:230 crud/companies/views.py:305
-#: crud/companies/views.py:366 crud/laboratories/views.py:54
-#: crud/laboratories/views.py:223 crud/laboratories/views.py:328
-#: crud/laboratories/views.py:461 crud/laboratories/views.py:549
-#: crud/laboratories/views.py:639 crud/laboratories/views.py:738
-#: crud/laboratories/views.py:854 crud/laboratories/views.py:948
-#: crud/laboratories/views.py:999 crud/laboratories/views.py:1045
-#: crud/laboratories/views.py:1132 crud/laboratories/views.py:1228
-#: crud/laboratories/views.py:1309 crud/laboratories/views.py:1369
-#: crud/laboratories/views.py:1461 crud/laboratories/views.py:1551
-#: crud/laboratories/views.py:1616 crud/laboratories/views.py:1661
+#: crud/companies/views.py:366 crud/laboratories/views.py:55
+#: crud/laboratories/views.py:224 crud/laboratories/views.py:329
+#: crud/laboratories/views.py:462 crud/laboratories/views.py:550
+#: crud/laboratories/views.py:640 crud/laboratories/views.py:739
+#: crud/laboratories/views.py:855 crud/laboratories/views.py:958
+#: crud/laboratories/views.py:1010 crud/laboratories/views.py:1056
+#: crud/laboratories/views.py:1143 crud/laboratories/views.py:1239
+#: crud/laboratories/views.py:1320 crud/laboratories/views.py:1380
+#: crud/laboratories/views.py:1472 crud/laboratories/views.py:1562
+#: crud/laboratories/views.py:1627 crud/laboratories/views.py:1672
 #: crud/patents/views.py:33 crud/patents/views.py:69 crud/patents/views.py:121
 #: crud/patents/views.py:182 crud/patents/views.py:256 crud/phd/views.py:34
 #: crud/phd/views.py:112 crud/phd/views.py:181 crud/phd/views.py:261
@@ -1031,7 +1031,7 @@ msgstr "Aggiunto"
 #: crud/cds/views.py:1516 crud/cds_websites_brochure/views.py:192
 #: crud/cds_websites_brochure/views.py:330
 #: crud/cds_websites_brochure/views.py:469 crud/companies/views.py:170
-#: crud/laboratories/views.py:330 crud/patents/views.py:71
+#: crud/laboratories/views.py:331 crud/patents/views.py:71
 #: crud/phd/views.py:114 crud/projects/views.py:160
 #: crud/research_groups/views.py:182 crud/research_lines/views.py:117
 #: crud/research_lines/views.py:136
@@ -1257,8 +1257,8 @@ msgid "Languages"
 msgstr "Lingue"
 
 #: crud/cds_websites_brochure/templates/cds_website_links.html:25
-#: crud/laboratories/forms.py:198 crud/laboratories/forms.py:315
-#: crud/laboratories/forms.py:335
+#: crud/laboratories/forms.py:196 crud/laboratories/forms.py:344
+#: crud/laboratories/forms.py:364
 #: crud/laboratories/templates/laboratory.html:749
 #: crud/research_groups/forms.py:25
 msgid "Description"
@@ -1774,7 +1774,7 @@ msgstr ""
 msgid "Spinoff"
 msgstr ""
 
-#: crud/companies/forms.py:50 crud/laboratories/forms.py:90
+#: crud/companies/forms.py:50 crud/laboratories/forms.py:88
 #: crud/patents/forms.py:41
 msgid "Logo"
 msgstr ""
@@ -1799,9 +1799,9 @@ msgstr "Attivo"
 msgid "Ordering"
 msgstr "Ordinamento"
 
-#: crud/companies/forms.py:67 crud/laboratories/forms.py:137
-#: crud/laboratories/forms.py:143 crud/laboratories/forms.py:258
-#: crud/laboratories/forms.py:327 crud/patents/forms.py:91 crud/phd/forms.py:38
+#: crud/companies/forms.py:67 crud/laboratories/forms.py:135
+#: crud/laboratories/forms.py:141 crud/laboratories/forms.py:287
+#: crud/laboratories/forms.py:356 crud/patents/forms.py:91 crud/phd/forms.py:38
 #: crud/phd/forms.py:47 crud/projects/forms.py:56 crud/projects/forms.py:65
 msgid "Name and Surname"
 msgstr "Nome e Cognome"
@@ -1926,55 +1926,55 @@ msgstr "Dipartimento rimosso con successo"
 msgid "Company removed successfully"
 msgstr "Impresa rimossa con successo"
 
-#: crud/laboratories/forms.py:30
+#: crud/laboratories/forms.py:28
 msgid "Related Department"
 msgstr "Dipartimento di Riferimento"
 
-#: crud/laboratories/forms.py:40
+#: crud/laboratories/forms.py:38
 msgid "Areas"
 msgstr "Ambito del laboratorio"
 
-#: crud/laboratories/forms.py:77
+#: crud/laboratories/forms.py:75
 msgid "Acronym"
 msgstr "Acronimo"
 
-#: crud/laboratories/forms.py:78
+#: crud/laboratories/forms.py:76
 msgid "Link Laboratory Logo"
 msgstr "Link Logo Laboratorio"
 
-#: crud/laboratories/forms.py:80
+#: crud/laboratories/forms.py:78
 msgid "Other Structures"
 msgstr "Altre Strutture"
 
-#: crud/laboratories/forms.py:81
+#: crud/laboratories/forms.py:79
 msgid "Other Structures Description (it)"
 msgstr "Descrizione Altre Strutture (it)"
 
-#: crud/laboratories/forms.py:82
+#: crud/laboratories/forms.py:80
 msgid "Other Structures Description (en)"
 msgstr "Descrizione Altre Strutture (en)"
 
-#: crud/laboratories/forms.py:83
+#: crud/laboratories/forms.py:81
 msgid "Scope"
 msgstr "Ambito"
 
-#: crud/laboratories/forms.py:88
+#: crud/laboratories/forms.py:86
 msgid "Reference Infrastrucure"
 msgstr "Infrastruttura di riferimento"
 
-#: crud/laboratories/forms.py:89
+#: crud/laboratories/forms.py:87
 msgid "Website"
 msgstr "Sito Web"
 
-#: crud/laboratories/forms.py:104 crud/laboratories/forms.py:112
+#: crud/laboratories/forms.py:102 crud/laboratories/forms.py:110
 msgid "Interdepartmental Laboratory"
 msgstr "Laboratorio Interdipartimentale"
 
-#: crud/laboratories/forms.py:105
+#: crud/laboratories/forms.py:103
 msgid "YES"
 msgstr "SI"
 
-#: crud/laboratories/forms.py:106
+#: crud/laboratories/forms.py:104
 msgid ""
 "Extra departments selection is available only after selecting 'YES' and then "
 "saving"
@@ -1982,128 +1982,141 @@ msgstr ""
 "La selezione di altri dipartimenti è disponibile dopo aver selezionato 'SI' "
 "e salvato"
 
-#: crud/laboratories/forms.py:117
+#: crud/laboratories/forms.py:115
 msgid "Total square meters"
 msgstr "Metri quadri complessivi"
 
-#: crud/laboratories/forms.py:118
+#: crud/laboratories/forms.py:116
 msgid "Any addition to the provided data"
 msgstr "Eventuali integrazioni ai dati inseriti"
 
-#: crud/laboratories/forms.py:119
+#: crud/laboratories/forms.py:117
 msgid "Public-use text (detail list below)"
 msgstr "Testo ad uso pubblico (elenco dettagliato nel seguito)"
 
-#: crud/laboratories/forms.py:124
+#: crud/laboratories/forms.py:122
 msgid "Office - Overall Dimensions"
 msgstr "Sede - Dimensioni Complessive"
 
-#: crud/laboratories/forms.py:125
+#: crud/laboratories/forms.py:123
 msgid "Office - Description Notes"
 msgstr "Sede - Note Descrittive"
 
-#: crud/laboratories/forms.py:126
+#: crud/laboratories/forms.py:124
 msgid "Equipment - Description"
 msgstr "Strumentazione - Descrizione"
 
-#: crud/laboratories/forms.py:127
+#: crud/laboratories/forms.py:125
 msgid "Equipment - Overall Value"
 msgstr "Strumentazione - Valore Complessivo"
 
-#: crud/laboratories/forms.py:148
+#: crud/laboratories/forms.py:146
 #: crud/laboratories/templates/laboratory.html:461
-#: crud/laboratories/views.py:464 crud/laboratories/views.py:474
+#: crud/laboratories/views.py:465 crud/laboratories/views.py:475
 msgid "Scientific Director"
 msgstr "Responsabile Scientifico"
 
-#: crud/laboratories/forms.py:159
+#: crud/laboratories/forms.py:157
 #: crud/laboratories/templates/laboratory.html:1015
-#: crud/laboratories/views.py:552 crud/laboratories/views.py:562
+#: crud/laboratories/views.py:553 crud/laboratories/views.py:563
 msgid "Safety Manager"
 msgstr "Preposto Sicurezza"
 
-#: crud/laboratories/forms.py:185
+#: crud/laboratories/forms.py:183
 #: crud/laboratories/templates/laboratory.html:750
 msgid "Unit Cost"
 msgstr "Costo Unitario"
 
-#: crud/laboratories/forms.py:189
+#: crud/laboratories/forms.py:187
 #: crud/laboratories/templates/laboratory.html:751
 msgid "Quantity"
 msgstr "Quantità"
 
-#: crud/laboratories/forms.py:205
+#: crud/laboratories/forms.py:203
 msgid "Funds"
 msgstr "Fondi"
 
-#: crud/laboratories/forms.py:215 crud/laboratories/forms.py:352
+#: crud/laboratories/forms.py:213 crud/laboratories/forms.py:381
 msgid "Risk Types"
 msgstr "Tipologie Rischio"
 
-#: crud/laboratories/forms.py:229
-msgid "ERC1 Researches"
-msgstr "Ricerche ERC1"
+#: crud/laboratories/forms.py:239
+#: crud/laboratories/templates/laboratory.html:427
+msgid "ERC Classification"
+msgstr "Classificazione ERC"
 
-#: crud/laboratories/forms.py:240 crud/laboratories/forms.py:252
+#: crud/laboratories/forms.py:244
+msgid "ERC Classification - Life Science"
+msgstr "Classificazione ERC - Life Science"
+
+#: crud/laboratories/forms.py:251
+msgid "ERC Classification - Physical Sciences and Engineering"
+msgstr "Classificazione ERC - Physical Sciences and Engineering"
+
+#: crud/laboratories/forms.py:258
+msgid "ERC Classification - Social Sciences and Humanities"
+msgstr "Classificazione ERC - Social Sciences and Humanities"
+
+#: crud/laboratories/forms.py:269 crud/laboratories/forms.py:281
 msgid "Main Location"
 msgstr "Sede Principale"
 
-#: crud/laboratories/forms.py:250
+#: crud/laboratories/forms.py:279
 #: crud/laboratories/templates/laboratory.html:649
 msgid "Building"
 msgstr "Edificio"
 
-#: crud/laboratories/forms.py:251
+#: crud/laboratories/forms.py:280
 #: crud/laboratories/templates/laboratory.html:650
 msgid "Floor"
 msgstr "Piano"
 
-#: crud/laboratories/forms.py:253
+#: crud/laboratories/forms.py:282
 #: crud/laboratories/templates/laboratory.html:651
 msgid "Notes"
 msgstr "Note"
 
-#: crud/laboratories/forms.py:266
+#: crud/laboratories/forms.py:295
 #: crud/utils/templates/blocks/crud_addressbook.html:95
 msgid "Role"
 msgstr "Ruolo"
 
-#: crud/laboratories/forms.py:270
+#: crud/laboratories/forms.py:299
 msgid "Commitment %"
 msgstr "Impegno %"
 
-#: crud/laboratories/forms.py:282
+#: crud/laboratories/forms.py:311
 msgid "Activity Type"
 msgstr "Tipo Attività"
 
-#: crud/laboratories/forms.py:292
+#: crud/laboratories/forms.py:321
 msgid "Purpouse (it)"
 msgstr "Finalità (it)"
 
-#: crud/laboratories/forms.py:293
+#: crud/laboratories/forms.py:322
 msgid "Purpouse (en)"
 msgstr "Finalità (en)"
 
-#: crud/laboratories/forms.py:306
+#: crud/laboratories/forms.py:335
 #: crud/projects/templates/blocks/crud_projects.html:33
 #: crud/research_lines/forms.py:29 crud/research_lines/forms.py:46
 msgid "Year"
 msgstr "Anno"
 
-#: crud/laboratories/forms.py:308 crud/laboratories/forms.py:318
+#: crud/laboratories/forms.py:337 crud/laboratories/forms.py:347
 msgid "Monetary Amount (Euros)"
 msgstr "Importo (EURO)"
 
-#: crud/laboratories/forms.py:309 crud/laboratories/forms.py:317
+#: crud/laboratories/forms.py:338 crud/laboratories/forms.py:346
 msgid "Duration (Months)"
 msgstr "Durata (mesi)"
 
-#: crud/laboratories/forms.py:316
+#: crud/laboratories/forms.py:345
 msgid "Client"
 msgstr "Committente"
 
-#: crud/laboratories/forms.py:319 crud/laboratories/views.py:741
-#: crud/laboratories/views.py:857
+#: crud/laboratories/forms.py:348 crud/laboratories/views.py:742
+#: crud/laboratories/views.py:858
 msgid "Equipment"
 msgstr "Attrezzatura"
 
@@ -2158,15 +2171,15 @@ msgid "Do you want to confirm the entered data?"
 msgstr "Vuoi davvero confermare i dati immessi?"
 
 #: crud/laboratories/templates/laboratories.html:15
-#: crud/laboratories/views.py:55 crud/laboratories/views.py:329
-#: crud/laboratories/views.py:462 crud/laboratories/views.py:550
-#: crud/laboratories/views.py:640 crud/laboratories/views.py:739
-#: crud/laboratories/views.py:855 crud/laboratories/views.py:949
-#: crud/laboratories/views.py:1000 crud/laboratories/views.py:1046
-#: crud/laboratories/views.py:1133 crud/laboratories/views.py:1229
-#: crud/laboratories/views.py:1310 crud/laboratories/views.py:1370
-#: crud/laboratories/views.py:1462 crud/laboratories/views.py:1552
-#: crud/laboratories/views.py:1617 crud/laboratories/views.py:1662
+#: crud/laboratories/views.py:56 crud/laboratories/views.py:330
+#: crud/laboratories/views.py:463 crud/laboratories/views.py:551
+#: crud/laboratories/views.py:641 crud/laboratories/views.py:740
+#: crud/laboratories/views.py:856 crud/laboratories/views.py:959
+#: crud/laboratories/views.py:1011 crud/laboratories/views.py:1057
+#: crud/laboratories/views.py:1144 crud/laboratories/views.py:1240
+#: crud/laboratories/views.py:1321 crud/laboratories/views.py:1381
+#: crud/laboratories/views.py:1473 crud/laboratories/views.py:1563
+#: crud/laboratories/views.py:1628 crud/laboratories/views.py:1673
 #: crud/utils/templates/dashboard.html:112
 msgid "Laboratories"
 msgstr "Laboratori"
@@ -2220,7 +2233,7 @@ msgid "Type and Purpouses"
 msgstr "Tipologia e Finalità"
 
 #: crud/laboratories/templates/laboratory.html:342
-#: crud/laboratories/views.py:1312
+#: crud/laboratories/views.py:1323
 msgid "Activities"
 msgstr "Attività"
 
@@ -2238,11 +2251,6 @@ msgstr "Visualizza"
 msgid "Do you want to delete this activity?"
 msgstr "Vuoi davvero eliminare l'attività selezionata?"
 
-#: crud/laboratories/templates/laboratory.html:427
-#: crud/laboratories/views.py:951
-msgid "Researches ERC1"
-msgstr "Ricerche ERC1"
-
 #: crud/laboratories/templates/laboratory.html:444
 msgid "Manage"
 msgstr "Gestisci"
@@ -2253,7 +2261,7 @@ msgid "Staff"
 msgstr "Personale"
 
 #: crud/laboratories/templates/laboratory.html:492
-#: crud/laboratories/views.py:1135
+#: crud/laboratories/views.py:1146
 msgid "Research Staff"
 msgstr "Personale di Ricerca"
 
@@ -2262,7 +2270,7 @@ msgid "Do you want to delete this researcher?"
 msgstr "Vuoi davvero eliminare ricercatore selezionato?"
 
 #: crud/laboratories/templates/laboratory.html:564
-#: crud/laboratories/views.py:1231
+#: crud/laboratories/views.py:1242
 msgid "Technical Staff"
 msgstr "Personale Tecnico"
 
@@ -2275,7 +2283,7 @@ msgid "Endowements Section (Facilities and Equipment)"
 msgstr "Sezione Dotazioni (Spazi e Strumentazione)"
 
 #: crud/laboratories/templates/laboratory.html:644
-#: crud/laboratories/views.py:1048
+#: crud/laboratories/views.py:1059
 msgid "Locations"
 msgstr "Sedi"
 
@@ -2364,12 +2372,12 @@ msgstr "Nuovo Membro del Personale Tecnico per"
 msgid "Choose one technician"
 msgstr "Seleziona un tecnico"
 
-#: crud/laboratories/views.py:86 crud/laboratories/views.py:128
-#: crud/laboratories/views.py:210
+#: crud/laboratories/views.py:87 crud/laboratories/views.py:129
+#: crud/laboratories/views.py:211
 msgid "Laboratory edited successfully"
 msgstr "Laboratorio modificato con successo"
 
-#: crud/laboratories/views.py:109
+#: crud/laboratories/views.py:110
 msgid ""
 "Remove any extra department before setting 'Interdepartmental Laboratory' to "
 "'NO'"
@@ -2377,311 +2385,311 @@ msgstr ""
 "Rimuovere eventuali altri dipartimenti prima di impostare 'Laboratorio "
 "Interdipartimentale' a 'NO'"
 
-#: crud/laboratories/views.py:146
+#: crud/laboratories/views.py:147
 msgid "Laboratory NOT visible"
 msgstr "Laboratorio NON visibile"
 
-#: crud/laboratories/views.py:224
+#: crud/laboratories/views.py:225
 msgid "Laboratory"
 msgstr "Laboratorio"
 
-#: crud/laboratories/views.py:318
+#: crud/laboratories/views.py:319
 msgid ""
 "Laboratory anagraphic created successfully, please fill in the other fields"
 msgstr ""
 "Anagrafica del Laboratorio creata con successo, si prega di riempire i campi "
 "rimanenti"
 
-#: crud/laboratories/views.py:452
+#: crud/laboratories/views.py:453
 msgid "Laboratory scientific director edited successfully"
 msgstr "Responsabile Scientifico del Laboratorio modificato con successo"
 
-#: crud/laboratories/views.py:537
+#: crud/laboratories/views.py:538
 msgid "Laboratory safety manager edited successfully"
 msgstr "Preposto Sicurezza modificato con successo"
 
-#: crud/laboratories/views.py:582
+#: crud/laboratories/views.py:583
 msgid "Deleted safety manager"
 msgstr "Eliminato preposto sicurezza"
 
-#: crud/laboratories/views.py:584
+#: crud/laboratories/views.py:585
 msgid "Safety manager removed successfully"
 msgstr "Preposto Sicurezza rimosso con successo"
 
-#: crud/laboratories/views.py:595
+#: crud/laboratories/views.py:596
 msgid "Laboratory removed successfully"
 msgstr "Laboratorio rimosso con successo"
 
-#: crud/laboratories/views.py:613
+#: crud/laboratories/views.py:614
 msgid "Extra departments must be different from Laboratory's department"
 msgstr ""
 "Gli Altri Dipartimenti devono essere diversi dal Dipartimento di Riferimento "
 "del Laboratorio"
 
-#: crud/laboratories/views.py:629
+#: crud/laboratories/views.py:630
 msgid "Added extra department"
 msgstr "Aggiunto Altro Dipartimento"
 
-#: crud/laboratories/views.py:631
+#: crud/laboratories/views.py:632
 msgid "Extra department added successfully"
 msgstr "Altro Dipartimento aggiunto con successo"
 
-#: crud/laboratories/views.py:642
+#: crud/laboratories/views.py:643
 msgid "Extra Department"
 msgstr "Altro Dipartimento"
 
-#: crud/laboratories/views.py:673
+#: crud/laboratories/views.py:674
 msgid "Deleted extra department"
 msgstr "Eliminato altro dipartimento"
 
-#: crud/laboratories/views.py:675
+#: crud/laboratories/views.py:676
 msgid "Extra department removed successfully"
 msgstr "Altro Dipartimento rimosso con successo"
 
-#: crud/laboratories/views.py:722
+#: crud/laboratories/views.py:723
 msgid "Added piece of equipment"
 msgstr "Aggiunta attrezzatura"
 
-#: crud/laboratories/views.py:724
+#: crud/laboratories/views.py:725
 msgid "Piece of equipment added successfully"
 msgstr "Attrezzatura aggiunta con successo"
 
-#: crud/laboratories/views.py:748 crud/laboratories/views.py:864
+#: crud/laboratories/views.py:749 crud/laboratories/views.py:865
 msgid "Equipment Piece"
 msgstr "Attrezzatura"
 
-#: crud/laboratories/views.py:837
+#: crud/laboratories/views.py:838
 msgid "Edited piece of equipment"
 msgstr "Modificata attrezzatura"
 
-#: crud/laboratories/views.py:839
+#: crud/laboratories/views.py:840
 msgid "Piece of equipment edited successfully"
 msgstr "Attrezzatura modficata con successo"
 
-#: crud/laboratories/views.py:887
+#: crud/laboratories/views.py:888
 msgid "Deleted piece of equipment"
 msgstr "Eliminata attrezzatura"
 
-#: crud/laboratories/views.py:889
+#: crud/laboratories/views.py:890
 msgid "Piece of equipment removed successfully"
 msgstr "Attrezzatura rimossa con successo"
 
-#: crud/laboratories/views.py:943
-msgid "Edited researches ERC1"
-msgstr "Modificate Ricerche ERC1"
+#: crud/laboratories/views.py:953
+msgid "Edited ERC classification"
+msgstr "Modificata classificazione ERC"
 
-#: crud/laboratories/views.py:945
-msgid "Researches ERC1 edited successfully"
-msgstr "Ricerche ERC1 modificate con successo"
+#: crud/laboratories/views.py:955
+msgid "ERC classification edited successfully"
+msgstr "Classificazione ERC modificata con successo"
 
-#: crud/laboratories/views.py:958
-msgid "ERC 1 Researches"
-msgstr "Ricerche ERC1"
+#: crud/laboratories/views.py:961 crud/laboratories/views.py:969
+msgid "ERC classification"
+msgstr "Classificazione ERC"
 
-#: crud/laboratories/views.py:989
+#: crud/laboratories/views.py:1000
 msgid "Edited laboratory location"
 msgstr "Modificata sede laboratorio"
 
-#: crud/laboratories/views.py:991
+#: crud/laboratories/views.py:1002
 msgid "Location edited successfully"
 msgstr "Sede modificata con successo"
 
-#: crud/laboratories/views.py:1002 crud/laboratories/views.py:1008
-#: crud/laboratories/views.py:1055
+#: crud/laboratories/views.py:1013 crud/laboratories/views.py:1019
+#: crud/laboratories/views.py:1066
 #: crud/research_lines/templates/applied_researchline.html:72
 #: crud/research_lines/templates/base_researchline.html:72
 msgid "Location"
 msgstr "Sede"
 
-#: crud/laboratories/views.py:1035
+#: crud/laboratories/views.py:1046
 msgid "Added laboratory location"
 msgstr "Aggiunta sede laboratorio"
 
-#: crud/laboratories/views.py:1037
+#: crud/laboratories/views.py:1048
 msgid "Location added successfully"
 msgstr "Sede aggiunta con successo"
 
-#: crud/laboratories/views.py:1077
+#: crud/laboratories/views.py:1088
 msgid "Deleted location"
 msgstr "Eliminata sede"
 
-#: crud/laboratories/views.py:1079
+#: crud/laboratories/views.py:1090
 msgid "Location removed successfully"
 msgstr "Sede rimossa con successo"
 
-#: crud/laboratories/views.py:1122
+#: crud/laboratories/views.py:1133
 msgid "Added laboratory researcher"
 msgstr "Aggiunto ricercatore"
 
-#: crud/laboratories/views.py:1124 crud/projects/views.py:400
+#: crud/laboratories/views.py:1135 crud/projects/views.py:400
 msgid "Researcher added successfully"
 msgstr "Ricercatore aggiunto con successo"
 
-#: crud/laboratories/views.py:1144
+#: crud/laboratories/views.py:1155
 msgid "Research Staff Member"
 msgstr "Membro del Personale di Ricerca"
 
-#: crud/laboratories/views.py:1164
+#: crud/laboratories/views.py:1175
 msgid "Deleted researcher"
 msgstr "Eliminato ricercatore"
 
-#: crud/laboratories/views.py:1166 crud/projects/views.py:517
+#: crud/laboratories/views.py:1177 crud/projects/views.py:517
 msgid "Researcher removed successfully"
 msgstr "Ricercatore rimosso con successo"
 
-#: crud/laboratories/views.py:1215
+#: crud/laboratories/views.py:1226
 msgid "Added laboratory technician"
 msgstr "Aggiunto tecnico"
 
-#: crud/laboratories/views.py:1217
+#: crud/laboratories/views.py:1228
 msgid "technician added successfully"
 msgstr "tecnico aggiunto con successo"
 
-#: crud/laboratories/views.py:1260
+#: crud/laboratories/views.py:1271
 msgid "Deleted technician"
 msgstr "Eliminato tecnico"
 
-#: crud/laboratories/views.py:1262
+#: crud/laboratories/views.py:1273
 msgid "Technician removed successfully"
 msgstr "Tecnico rimosso con successo"
 
-#: crud/laboratories/views.py:1277
+#: crud/laboratories/views.py:1288
 msgid "Activities list is full"
 msgstr "Lista Attivita Piena"
 
-#: crud/laboratories/views.py:1299
+#: crud/laboratories/views.py:1310
 msgid "Added activity"
 msgstr "Aggiunta attività"
 
-#: crud/laboratories/views.py:1301
+#: crud/laboratories/views.py:1312
 msgid "Activities added successfully"
 msgstr "Attività aggiunto con successo"
 
-#: crud/laboratories/views.py:1319 crud/laboratories/views.py:1372
-#: crud/laboratories/views.py:1379
+#: crud/laboratories/views.py:1330 crud/laboratories/views.py:1383
+#: crud/laboratories/views.py:1390
 msgid "Activity"
 msgstr "Attività"
 
-#: crud/laboratories/views.py:1359
+#: crud/laboratories/views.py:1370
 msgid "Edited activity"
 msgstr "Modificata attività"
 
-#: crud/laboratories/views.py:1361
+#: crud/laboratories/views.py:1372
 msgid "Activity edited successfully"
 msgstr "Attività modificata con successo"
 
-#: crud/laboratories/views.py:1400
+#: crud/laboratories/views.py:1411
 msgid "Deleted activity"
 msgstr "Eliminata attività"
 
-#: crud/laboratories/views.py:1402
+#: crud/laboratories/views.py:1413
 msgid "Activity removed successfully"
 msgstr "Attività rimossa con successo"
 
-#: crud/laboratories/views.py:1448
+#: crud/laboratories/views.py:1459
 msgid "Added provided service"
 msgstr "Aggiunto servizio erogato"
 
-#: crud/laboratories/views.py:1450
+#: crud/laboratories/views.py:1461
 msgid "Provided service added successfully"
 msgstr "Servizio Erogato aggiunto con successo"
 
-#: crud/laboratories/views.py:1464 crud/laboratories/views.py:1554
+#: crud/laboratories/views.py:1475 crud/laboratories/views.py:1565
 msgid "Provided Service"
 msgstr "Servizio Erogato"
 
-#: crud/laboratories/views.py:1535
+#: crud/laboratories/views.py:1546
 msgid "Edited provided service"
 msgstr "Modificato servizio erogato"
 
-#: crud/laboratories/views.py:1537
+#: crud/laboratories/views.py:1548
 msgid "Provided service edited successfully"
 msgstr "Servizio Erogato modificato con successo"
 
-#: crud/laboratories/views.py:1585
+#: crud/laboratories/views.py:1596
 msgid "Deleted provided service"
 msgstr "Eliminato servizio erogato"
 
-#: crud/laboratories/views.py:1587
+#: crud/laboratories/views.py:1598
 msgid "Provided service removed successfully"
 msgstr "Servizio Erogato rimosso con successo"
 
-#: crud/laboratories/views.py:1611
+#: crud/laboratories/views.py:1622
 msgid "Added offered service"
 msgstr "Aggiunto servizio offerto"
 
-#: crud/laboratories/views.py:1613
+#: crud/laboratories/views.py:1624
 msgid "Offered service added successfully"
 msgstr "Servizio Offerto aggiunto con successo"
 
-#: crud/laboratories/views.py:1619 crud/laboratories/views.py:1625
-#: crud/laboratories/views.py:1664 crud/laboratories/views.py:1672
+#: crud/laboratories/views.py:1630 crud/laboratories/views.py:1636
+#: crud/laboratories/views.py:1675 crud/laboratories/views.py:1683
 msgid "Offered Service"
 msgstr "Servizio Offerto"
 
-#: crud/laboratories/views.py:1655
+#: crud/laboratories/views.py:1666
 msgid "Edited offered service"
 msgstr "Modificato servizio offerto"
 
-#: crud/laboratories/views.py:1657
+#: crud/laboratories/views.py:1668
 msgid "Offered service edited successfully"
 msgstr "Servizio Offerto modificato con successo"
 
-#: crud/laboratories/views.py:1693
+#: crud/laboratories/views.py:1704
 msgid "Deleted offered service"
 msgstr "Eliminato servizio offerto"
 
-#: crud/laboratories/views.py:1695
+#: crud/laboratories/views.py:1706
 msgid "Offered service removed successfully"
 msgstr "Servizio Offerto rimosso con successo"
 
-#: crud/laboratories/views.py:1739
+#: crud/laboratories/views.py:1750
 msgid "Risk types updated"
 msgstr "Aggiornate tipologie di rischio"
 
-#: crud/laboratories/views.py:1741
+#: crud/laboratories/views.py:1752
 msgid "Risk types updated successfully"
 msgstr "Tipologie di Rischio modificate con successo"
 
-#: crud/laboratories/views.py:1756 crud/laboratories/views.py:1820
+#: crud/laboratories/views.py:1767 crud/laboratories/views.py:1831
 msgid "Laboratory is already visible"
 msgstr "Il Laboratorio è già visibile"
 
-#: crud/laboratories/views.py:1760
+#: crud/laboratories/views.py:1771
 msgid "Laboratory must have a Safety Manager"
 msgstr "Il Laboratorio deve avere un Responsabile della Sicurezza"
 
-#: crud/laboratories/views.py:1766
+#: crud/laboratories/views.py:1777
 msgid "Extra Departments specified for NON Interdepartmental Laboratory"
 msgstr ""
 "Sono stati inseriti Altri Dipartimenti per un Laboratorio NON "
 "Interdipartimentale"
 
-#: crud/laboratories/views.py:1772
+#: crud/laboratories/views.py:1783
 msgid "Laboratory must have at least one ERC 1 Research"
 msgstr "I Laboratorio deve possedere almeno una Ricerca ERC 1"
 
-#: crud/laboratories/views.py:1778
+#: crud/laboratories/views.py:1789
 msgid "Laboratory must have at least one Location"
 msgstr "Il Laboratorio deve possedere almeno una sede"
 
-#: crud/laboratories/views.py:1784
+#: crud/laboratories/views.py:1795
 msgid "Laboratory must have at least one Activity"
 msgstr "Il Laboratorio deve possedere almeno un'Attività"
 
-#: crud/laboratories/views.py:1807
+#: crud/laboratories/views.py:1818
 msgid "Requested approval"
 msgstr "Richiedi Approvazione"
 
-#: crud/laboratories/views.py:1809
+#: crud/laboratories/views.py:1820
 msgid "Request for approval sent successfully"
 msgstr "Richiesta di approvazione inviata con successo"
 
-#: crud/laboratories/views.py:1828
+#: crud/laboratories/views.py:1839
 msgid "Approved Laboratory"
 msgstr "Laboratorio approvato"
 
-#: crud/laboratories/views.py:1830
+#: crud/laboratories/views.py:1841
 msgid "Laboratory approved successfully"
 msgstr "Laboratorio approvato con successo"
 
@@ -3731,6 +3739,24 @@ msgstr "L'immagine ha una proporzione tra altezza e lunghezza non valida"
 #: ricerca_app/validators.py:100
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
+
+#~ msgid "ERC Classificaton"
+#~ msgstr "Classificazione ERC"
+
+#~ msgid "ERC1 Researches"
+#~ msgstr "Ricerche ERC1"
+
+#~ msgid "Researches ERC1"
+#~ msgstr "Ricerche ERC1"
+
+#~ msgid "Edited researches ERC1"
+#~ msgstr "Modificate Ricerche ERC1"
+
+#~ msgid "Researches ERC1 edited successfully"
+#~ msgstr "Ricerche ERC1 modificate con successo"
+
+#~ msgid "ERC 1 Researches"
+#~ msgstr "Ricerche ERC1"
 
 #~ msgid "Instrumentation Value"
 #~ msgstr "Valore Strumentazione"
