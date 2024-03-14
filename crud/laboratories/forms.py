@@ -156,7 +156,7 @@ class LaboratorioDatiBaseScientificDirectorChoosenPersonForm(forms.Form):
             self.fields['choosen_scientific_director'].required = True
 
 class LaboratorioDatiBaseSafetyManagerChoosenPersonForm(forms.Form):
-    choosen_safety_manager = forms.CharField(label=_('Scientific Director'),
+    choosen_safety_manager = forms.CharField(label=_('Safety Manager'),
                                      widget=forms.HiddenInput(),
                                      required=False)
 

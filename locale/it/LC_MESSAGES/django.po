@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-13 13:58+0100\n"
-"PO-Revision-Date: 2024-03-13 13:59+0100\n"
+"POT-Creation-Date: 2024-03-14 11:02+0100\n"
+"PO-Revision-Date: 2024-03-14 11:03+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -2010,11 +2010,17 @@ msgstr "Strumentazione - Descrizione"
 msgid "Equipment - Overall Value"
 msgstr "Strumentazione - Valore Complessivo"
 
-#: crud/laboratories/forms.py:148 crud/laboratories/forms.py:159
+#: crud/laboratories/forms.py:148
 #: crud/laboratories/templates/laboratory.html:461
 #: crud/laboratories/views.py:464 crud/laboratories/views.py:474
 msgid "Scientific Director"
-msgstr "Direttore Scientifico"
+msgstr "Responsabile Scientifico"
+
+#: crud/laboratories/forms.py:159
+#: crud/laboratories/templates/laboratory.html:1015
+#: crud/laboratories/views.py:552 crud/laboratories/views.py:562
+msgid "Safety Manager"
+msgstr "Preposto Sicurezza"
 
 #: crud/laboratories/forms.py:185
 #: crud/laboratories/templates/laboratory.html:750
@@ -2309,13 +2315,8 @@ msgstr "Vuoi davvero eliminare questo servizio erogato?"
 msgid "Laboratory Safety"
 msgstr "Sicurezza del Laboratorio"
 
-#: crud/laboratories/templates/laboratory.html:1015
-#: crud/laboratories/views.py:552 crud/laboratories/views.py:562
-msgid "Safety Manager"
-msgstr "Preposto Sicurezza"
-
 #: crud/laboratories/templates/laboratory.html:1037
-msgid "Provide if different from Scientific Director"
+msgid "Provide only if different from Scientific Director"
 msgstr "Inserire se diverso dal Responsabile Scientifico"
 
 #: crud/laboratories/templates/laboratory_department.html:9
@@ -2337,7 +2338,7 @@ msgstr "Nuovo Laboratorio"
 
 #: crud/laboratories/templates/laboratory_new.html:26
 msgid "Choose one Scientific Director"
-msgstr "Scegli un Direttore Scientifico"
+msgstr "Scegli un Responsabile Scientifico"
 
 #: crud/laboratories/templates/laboratory_new.html:39
 msgid "Save and Continue"
@@ -2393,7 +2394,7 @@ msgstr ""
 
 #: crud/laboratories/views.py:452
 msgid "Laboratory scientific director edited successfully"
-msgstr "Direttore Scientifico del Laboratorio modificato con successo"
+msgstr "Responsabile Scientifico del Laboratorio modificato con successo"
 
 #: crud/laboratories/views.py:537
 msgid "Laboratory safety manager edited successfully"
@@ -3047,7 +3048,7 @@ msgstr "Struttura di riferimento"
 
 #: crud/projects/templates/project.html:138
 msgid "Scientific Directors"
-msgstr "Direttori scientifici"
+msgstr "Responsabili scientifici"
 
 #: crud/projects/templates/project.html:217
 msgid "Researchers"
