@@ -29,16 +29,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                                             choices=tuple(department_choices),
                                             required=True
                                             )
-
-
-        scope_choices = LaboratorioDatiBase.objects.all().values_list("ambito", flat=True).distinct().order_by("ambito")
-        scope_choices = tuple(map(lambda ambito: (ambito, ambito), scope_choices))
-
-        self.fields['ambito'] = forms.ChoiceField(
-            label=_('Areas'),
-            choices = scope_choices
-            )
-        
+       
         # self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
         #     label=_('Interdepartmental Laboratory'),
         #     choices=(('SI', 'SI'),('NO', 'NO')),
@@ -55,7 +46,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                             'descr_altre_strutture_riferimento_it',
                             'descr_altre_strutture_riferimento_en',
                             'sito_web',
-                            'ambito',
+                            #'ambito',
                             #'sede_dimensione', 'sede_note_descrittive',
                             #'strumentazione_descrizione', 'strumentazione_valore',
                             #'laboratorio_interdipartimentale',
@@ -65,7 +56,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         model = LaboratorioDatiBase
         fields = ['nome_laboratorio', 'acronimo', 'logo_laboratorio',# 'laboratorio_interdipartimentale',
                   'altre_strutture_riferimento', 'descr_altre_strutture_riferimento_it',
-                  'descr_altre_strutture_riferimento_en', 'ambito',
+                  'descr_altre_strutture_riferimento_en',# 'ambito',
                   #'sede_dimensione', 'sede_note_descrittive',
                   #'strumentazione_descrizione', 'strumentazione_valore',
                   'id_infrastruttura_riferimento',
@@ -78,7 +69,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             'altre_strutture_riferimento': _('Other Structures'),
             'descr_altre_strutture_riferimento_it': _('Other Structures Description (it)'),
             'descr_altre_strutture_riferimento_en': _('Other Structures Description (en)'),
-            'ambito': _('Scope'),
+            #'ambito': _('Scope'),
             #'sede_dimensione': _('Office Dimension'),
             #'sede_note_descrittive': _('Office Description Notes'),
             #'strumentazione_descrizione': _('Instrumentation Description'),
@@ -135,6 +126,22 @@ class LaboratorioDatiBaseStrumentazioneValoreForm(forms.ModelForm):
         fields = ['strumentazione_valore']
         labels = {
             'strumentazione_valore': _('Equipment - Overall Value')
+        }
+        
+class LaboratorioDatiBaseAmbitoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LaboratorioDatiBaseAmbitoForm, self).__init__(*args, **kwargs)
+        scope_choices = LaboratorioDatiBase.objects.all().values_list("ambito", flat=True).distinct().order_by("ambito")
+        scope_choices = tuple(map(lambda ambito: (ambito, ambito), scope_choices))
+        self.fields['ambito'] = forms.ChoiceField(
+            label=_('Areas'),
+            choices = scope_choices
+            )
+    class Meta:
+        model = LaboratorioDatiBase
+        fields = ['ambito']
+        labels = {
+            'ambito': _('Scope')
         }
 
 

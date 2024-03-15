@@ -9,6 +9,8 @@ urlpatterns += path('laboratories/', laboratories, name='crud_laboratories'),
 urlpatterns += path('laboratories/new/', laboratory_new, name='crud_laboratory_new'),
 urlpatterns += path('laboratories/<str:code>/', laboratory, name='crud_laboratory_edit'),
 urlpatterns += path('laboratories/<str:code>/delete/', laboratory_delete, name='crud_laboratory_delete'),
+#LaboratorioDatiBaseAmbitoForm
+urlpatterns += path('laboratories/<str:code>/scope/', laboratory_scope_edit, name='crud_laboratory_scope_edit'),
 #LaboratorioDatiBaseInfoSede
 urlpatterns += path('laboratories/<str:code>/edit-office/', laboratory_info_sede_edit, name='crud_laboratory_info_sede_edit'),
 #LaboratorioDatiBaseStrumentazioneValore
