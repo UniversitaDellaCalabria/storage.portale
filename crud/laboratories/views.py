@@ -175,10 +175,8 @@ def laboratory_interdepartmental_edit(request, code, laboratory=None, my_offices
         laboratoriodatibaseinterdipartimentaleform = LaboratorioDatiBaseInterdipartimentaleForm(data=request.POST, instance=laboratory)
         if laboratoriodatibaseinterdipartimentaleform.is_valid():
             
-            extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
-            if extra_departments and request.POST.get("laboratorio_interdipartimentale") == "NO":
-                messages.add_message(request, messages.ERROR, _("Remove any extra department before setting 'Interdepartmental Laboratory' to 'NO'"))
-                return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+            if request.POST.get("laboratorio_interdipartimentale") == "NO":
+                LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).delete()
             
             lab_instance = laboratoriodatibaseinterdipartimentaleform.save(commit=False)
             lab_instance.user_mod_id = request.user
