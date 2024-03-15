@@ -1767,9 +1767,9 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
         return custom_message(request, _("Laboratory is already visible"))
     
     #LaboratorioDatiBase
-    if not (laboratory.preposto_sicurezza or laboratory.matricola_preposto_sicurezza):
-        messages.add_message(request, messages.ERROR, _("Laboratory must have a Safety Manager"))
-        return redirect('crud_laboratories:crud_laboratory_edit', code=code)    
+    # if not (laboratory.preposto_sicurezza or laboratory.matricola_preposto_sicurezza):
+    #     messages.add_message(request, messages.ERROR, _("Laboratory must have a Safety Manager"))
+    #     return redirect('crud_laboratories:crud_laboratory_edit', code=code)    
     
     #LaboratorioAltriDipartimenti
     extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
