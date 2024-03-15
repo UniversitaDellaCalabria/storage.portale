@@ -2093,13 +2093,10 @@ class LaboratorioDatiBase(models.Model):
         null=True)  # Field name made lowercase.
     strumentazione_descrizione = models.TextField(
         db_column='STRUMENTAZIONE_DESCRIZIONE',
-        blank=True,
-        null=True)  # Field name made lowercase.
+    )  # Field name made lowercase.
     strumentazione_valore = models.CharField(
         db_column='STRUMENTAZIONE_VALORE',
-        max_length=100,
-        blank=True,
-        null=True)  # Field name made lowercase.
+        max_length=100)  # Field name made lowercase.
     preposto_sicurezza = models.CharField(
         db_column='PREPOSTO_SICUREZZA',
         max_length=200,

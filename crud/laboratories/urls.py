@@ -11,6 +11,8 @@ urlpatterns += path('laboratories/<str:code>/', laboratory, name='crud_laborator
 urlpatterns += path('laboratories/<str:code>/delete/', laboratory_delete, name='crud_laboratory_delete'),
 #LaboratorioDatiBaseInfoSede
 urlpatterns += path('laboratories/<str:code>/edit-office/', laboratory_info_sede_edit, name='crud_laboratory_info_sede_edit'),
+#LaboratorioDatiBaseStrumentazioneValore
+urlpatterns += path('laboratories/<str:code>/equipment-value/', laboratory_equipment_value_edit, name='crud_laboratory_equipment_value_edit'),
 #LaboratorioDatiBaseInterdipartimentale
 urlpatterns += path('laboratories/<str:code>/interdepartmental/', laboratory_interdepartmental_edit, name='crud_laboratory_interdepartmental_edit'),
 # urlpatterns += path('laboratories/<str:code>/department/', laboratory_unical_department_edit, name='crud_laboratory_unical_department_edit'),

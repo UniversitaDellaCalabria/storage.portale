@@ -117,16 +117,24 @@ class LaboratorioDatiBaseInfoSedeStruttureForm(forms.ModelForm):
         self.fields['strumentazione_descrizione'].help_text = _("Public-use text (detail list below)")
     class Meta:
         model = LaboratorioDatiBase
-        fields = ['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione', 'strumentazione_valore']
+        fields = ['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione']
         labels = {
             'sede_dimensione': _('Office - Overall Dimensions'),
             'sede_note_descrittive': _('Office - Description Notes'),
             'strumentazione_descrizione': _('Equipment - Description'),
-            'strumentazione_valore': _('Equipment - Overall Value')
         }
         widgets = {
             'sede_note_descrittive': CKEditor5Widget(),
             'strumentazione_descrizione': CKEditor5Widget(),
+        }
+        
+
+class LaboratorioDatiBaseStrumentazioneValoreForm(forms.ModelForm):
+    class Meta:
+        model = LaboratorioDatiBase
+        fields = ['strumentazione_valore']
+        labels = {
+            'strumentazione_valore': _('Equipment - Overall Value')
         }
 
 
