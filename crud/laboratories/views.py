@@ -1825,7 +1825,7 @@ def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, 
             for k, v in risk_type_form.errors.items():
                 messages.add_message(request, messages.ERROR, f"<b>{risk_type_form.fields[k].label}</b>: {v}")
                 
-        return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+        return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#risks")
 
 
 @login_required
