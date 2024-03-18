@@ -24,21 +24,22 @@ from ricerca_app.utils import decrypt, encrypt
 
 
 from . decorators import *
+from . decorators import _is_user_scientific_director
 from . forms import *
 from . settings import *
 
 logger = logging.getLogger(__name__)
 
-def __get_user_roles(user, my_offices, is_validator):
+def __get_user_roles(request, laboratory, my_offices, is_validator):
     roles = {
         "superuser": False,
         "operator": False,
         "validator": False
     }
-    if user.is_superuser:
+    if request.user.is_superuser:
         roles["superuser"] = True
         return roles
-    if my_offices.exists():
+    if my_offices.exists() or _is_user_scientific_director(request, laboratory):
         roles["operator"] = True
     if is_validator:
         roles["validator"] = True
@@ -62,7 +63,7 @@ def laboratories(request, laboratory=None, my_offices=None, is_validator=False):
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
-    if not (request.user.is_superuser or my_offices.exists()):
+    if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
     if request.POST:
         laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(data=request.POST, instance=laboratory)
@@ -71,7 +72,7 @@ def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, i
             lab_instance.user_mod_id = request.user
             lab_instance.dt_mod=datetime.now()
             lab_instance.visibile=False
-            lab_instance.save(update_fields=['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione', 'strumentazione_valore', 'visibile', 'user_mod_id', 'dt_mod'])
+            lab_instance.save(update_fields=['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione', 'visibile', 'user_mod_id', 'dt_mod'])
             
             if laboratoriodatibaseinfosedestruttureform.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseinfosedestruttureform,
@@ -89,25 +90,99 @@ def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, i
             for k, v in laboratoriodatibaseinfosedestruttureform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibaseinfosedestruttureform.fields[k].label}</b>: {v}")
+                
+            request.session["lab_infosedestrutture_form_data"] = laboratoriodatibaseinfosedestruttureform.data
             
-    return redirect('crud_laboratories:crud_laboratory_edit',
-        code=code)
+    return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#facilities_equipment")
+
+
+
+@login_required
+@can_manage_laboratories
+@can_view_laboratories
+def laboratory_scope_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
+    if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
+            return custom_message(request, _("Permission denied"))
+    if request.POST:
+        laboratoriodatibaseambitoform = LaboratorioDatiBaseAmbitoForm(data=request.POST, instance=laboratory)
+        if laboratoriodatibaseambitoform.is_valid():          
+            lab_instance = laboratoriodatibaseambitoform.save(commit=False)
+            lab_instance.user_mod_id = request.user
+            lab_instance.dt_mod=datetime.now()
+            lab_instance.visibile=False
+            lab_instance.save(update_fields=['ambito', 'visibile', 'user_mod_id', 'dt_mod'])
+            
+            if laboratoriodatibaseambitoform.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseambitoform,
+                                                                        laboratoriodatibaseambitoform.changed_data)
+                log_action(user=request.user,
+                            obj=laboratory,
+                            flag=CHANGE,
+                            msg=[{'changed': {"fields": changed_field_labels}}])
+
+                messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Laboratory edited successfully"))
+
+        else:  # pragma: no cover
+            for k, v in laboratoriodatibaseambitoform.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{laboratoriodatibaseambitoform.fields[k].label}</b>: {v}")
+                
+            request.session["lab_ambito_form_data"] = laboratoriodatibaseambitoform.data
+            
+    return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#scope")
+
+
+@login_required
+@can_manage_laboratories
+@can_view_laboratories
+def laboratory_equipment_value_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
+    if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
+            return custom_message(request, _("Permission denied"))
+    if request.POST:
+        laboratoriodatibasestrumentazionevaloreform = LaboratorioDatiBaseStrumentazioneValoreForm(data=request.POST, instance=laboratory)
+        if laboratoriodatibasestrumentazionevaloreform.is_valid():          
+            lab_instance = laboratoriodatibasestrumentazionevaloreform.save(commit=False)
+            lab_instance.user_mod_id = request.user
+            lab_instance.dt_mod=datetime.now()
+            lab_instance.visibile=False
+            lab_instance.save(update_fields=['strumentazione_valore', 'visibile', 'user_mod_id', 'dt_mod'])
+            
+            if laboratoriodatibasestrumentazionevaloreform.changed_data:
+                changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibasestrumentazionevaloreform,
+                                                                        laboratoriodatibasestrumentazionevaloreform.changed_data)
+                log_action(user=request.user,
+                            obj=laboratory,
+                            flag=CHANGE,
+                            msg=[{'changed': {"fields": changed_field_labels}}])
+
+                messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Laboratory edited successfully"))
+
+        else:  # pragma: no cover
+            for k, v in laboratoriodatibasestrumentazionevaloreform.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                     f"<b>{laboratoriodatibasestrumentazionevaloreform.fields[k].label}</b>: {v}")
+                
+            request.session["lab_strumentazionevalore_form_data"] = laboratoriodatibasestrumentazionevaloreform.data
+            
+    return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#equipment_value")
     
     
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_interdepartmental_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
-    if not (request.user.is_superuser or my_offices.exists()):
+    if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
     if request.POST:
         laboratoriodatibaseinterdipartimentaleform = LaboratorioDatiBaseInterdipartimentaleForm(data=request.POST, instance=laboratory)
         if laboratoriodatibaseinterdipartimentaleform.is_valid():
             
-            extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
-            if extra_departments and request.POST.get("laboratorio_interdipartimentale") == "NO":
-                messages.add_message(request, messages.ERROR, _("Remove any extra department before setting 'Interdepartmental Laboratory' to 'NO'"))
-                return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+            if request.POST.get("laboratorio_interdipartimentale") == "NO":
+                LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).delete()
             
             lab_instance = laboratoriodatibaseinterdipartimentaleform.save(commit=False)
             lab_instance.user_mod_id = request.user
@@ -131,9 +206,10 @@ def laboratory_interdepartmental_edit(request, code, laboratory=None, my_offices
             for k, v in laboratoriodatibaseinterdipartimentaleform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibaseinterdipartimentaleform.fields[k].label}</b>: {v}")
+                
+            request.session["lab_interdipartimentale_form_data"] = laboratoriodatibaseinterdipartimentaleform.data
             
-    return redirect('crud_laboratories:crud_laboratory_edit',
-        code=code)
+    return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#extra_department")
     
 
 
@@ -144,6 +220,11 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     
     if not laboratory.visibile and not request.POST:
         messages.add_message(request, messages.WARNING, _("Laboratory NOT visible"))
+        
+    lab_infosedestrutture_form_data = request.session.pop('lab_infosedestrutture_form_data', None)
+    lab_ambito_form_data = request.session.pop('lab_ambito_form_data', None)
+    lab_strumentazionevalore_form_data = request.session.pop('lab_strumentazionevalore_form_data', None)
+    lab_interdipartimentale_form_data = request.session.pop('lab_interdipartimentale_form_data', None)
 
     #LaboratorioDatiBase
     user_lab_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
@@ -154,8 +235,10 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     allowed_related_departments_codes = [] if (not user_lab_offices.exists()) else user_lab_offices.values_list("office_id__organizational_structure_id__unique_code", flat=True)
     initial = {"choosen_department_id": laboratory.id_dipartimento_riferimento.dip_id}
     form = LaboratorioDatiBaseForm(initial=initial, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
-    laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(instance=laboratory)
-    laboratoriodatibaseinterdipartimentaleform = LaboratorioDatiBaseInterdipartimentaleForm(instance=laboratory)
+    laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(instance=laboratory, data=lab_infosedestrutture_form_data)
+    laboratoriodatibaseambitoform = LaboratorioDatiBaseAmbitoForm(instance=laboratory, data=lab_ambito_form_data)
+    laboratoriodatibasestrumentazionevaloreform = LaboratorioDatiBaseStrumentazioneValoreForm(instance=laboratory, data=lab_strumentazionevalore_form_data)
+    laboratoriodatibaseinterdipartimentaleform = LaboratorioDatiBaseInterdipartimentaleForm(instance=laboratory, data=lab_interdipartimentale_form_data)
     #LaboratorioTipologiaRischio
     selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
@@ -181,7 +264,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
 
     
     if request.POST:
-        if not (request.user.is_superuser or my_offices.exists()):
+        if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
         
         form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
@@ -230,6 +313,8 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
                    'logs': logs,
                    'form': form,
                    'laboratoriodatibaseinfosedestruttureform': laboratoriodatibaseinfosedestruttureform,
+                   'laboratoriodatibaseambitoform': laboratoriodatibaseambitoform,
+                   'laboratoriodatibasestrumentazionevaloreform': laboratoriodatibasestrumentazionevaloreform,
                    'laboratoriodatibaseinterdipartimentaleform': laboratoriodatibaseinterdipartimentaleform,
                    'risk_type_form': risk_type_form,
                    'laboratory': laboratory,
@@ -242,7 +327,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
                    'activities': activities,
                    'provided_services': provided_services,
                    'offered_services': offered_services,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator)
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator)
                    })     
         
 
@@ -391,7 +476,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 #                    'form': form,
 #                    'laboratory': laboratory,
 #                    'choosen_department': old_label,
-#                    'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+#                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
 #                    })
 
 @login_required
@@ -473,7 +558,7 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
                    'internal_form': internal_form,
                    'item_label': _("Scientific Director"),
                    'edit': 1,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    'url': reverse('ricerca:teacherslist'),
                    'including': 'blocks/crud_teacherslist.html'})
 
@@ -561,7 +646,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
                    'internal_form': internal_form,
                    'item_label': _("Safety Manager"),
                    'edit': 1,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')})
     
 @login_required
@@ -648,7 +733,7 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
                    'form': department_form,
                    'laboratory': laboratory,
                    'choosen_department': department_data,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    'url': reverse('ricerca:departmentslist')})
 
 
@@ -746,7 +831,7 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, is
                    'forms': (equipment_form, equipment_funds_form, equipment_risks_form,),
                    'laboratory': laboratory,
                    'item_label': _("Equipment Piece"),
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
 
 
@@ -766,7 +851,7 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
     equipment_risks_form = LaboratorioAttrezzatureRischiForm(initial={"id_tipologia_rischio" : selected_risks_ids})
 
     if request.POST:
-        if not (request.user.is_superuser or my_offices.exists()):
+        if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
         
         equipment_form = LaboratorioAttrezzatureForm(instance=laboratory_equipment, data=request.POST)
@@ -863,7 +948,7 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
                    'laboratory': laboratory,
                    'item_label': _("Equipment Piece"),
                    'edit': 1,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
 
 
@@ -899,20 +984,29 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
     researches_erc1_old = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code)
     
     #Ids to initialize form's checkboxes
-    researches_erc1 = researches_erc1_old.values("id","id_ricerca_erc1","id_ricerca_erc1__descrizione")
+    researches_erc1 = researches_erc1_old.values("id","id_ricerca_erc1","id_ricerca_erc1__descrizione", "id_ricerca_erc1__ricerca_erc0_cod")
+    erc0 = researches_erc1.first()['id_ricerca_erc1__ricerca_erc0_cod'] if researches_erc1.exists() else None
     researches_erc1_ids = researches_erc1.values_list('id_ricerca_erc1', flat=True)
+    fields = ['id_ricerche_erc1_ls', 'id_ricerche_erc1_pe', 'id_ricerche_erc1_sh']
     researches_erc1_ids = tuple(map(str, researches_erc1_ids))
-                        
-    research_erc1_form = LaboratorioDatiErc1Form(initial={'id_ricerche_erc1': researches_erc1_ids})
+    initial = {}
+    if erc0 is not None:
+        for field in fields:
+            if erc0.lower() in field:
+                initial[field] = researches_erc1_ids
+                initial['erc0_selector'] = erc0
+                break
+
+    research_erc1_form = LaboratorioDatiErc1Form(initial=initial)
     
     if request.POST:
-        if not (request.user.is_superuser or my_offices.exists()):
+        if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
         
         research_erc1_form = LaboratorioDatiErc1Form(data=request.POST)
         if research_erc1_form.is_valid():
-            
-            selected_erc1_res_ids = research_erc1_form.cleaned_data.get('id_ricerche_erc1', [])
+            erc0_selector = request.POST.get("erc0_selector")
+            selected_erc1_res_ids = research_erc1_form.cleaned_data.get(f'id_ricerche_erc1_{erc0_selector.lower()}', [])
                         
             LaboratorioDatiErc1.objects\
                 .filter(id_laboratorio_dati=code)\
@@ -940,24 +1034,25 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
-            msg=_("Edited researches ERC1"))
+            msg=_("Edited ERC classification"))
 
-            messages.add_message(request, messages.SUCCESS, _("Researches ERC1 edited successfully"))
+            messages.add_message(request, messages.SUCCESS, _("ERC classification edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
-                   reverse('crud_laboratories:crud_laboratory_researches_erc1_edit', kwargs={'code': code}): _('Researches ERC1')
+                   reverse('crud_laboratories:crud_laboratory_researches_erc1_edit', kwargs={'code': code}): _('ERC classification')
                    }
     return render(request,
                   'laboratory_unique_form.html',
                   {'breadcrumbs': breadcrumbs,
                    'forms': (research_erc1_form,),
                    'laboratory': laboratory,
-                   'item_label': _("ERC 1 Researches"),
+                   'erc_form': 1,
+                   'item_label': _("ERC classification"),
                    'edit': 1,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
     
 
@@ -970,7 +1065,7 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
     location_form = LaboratorioUbicazioneForm(instance=location)
     
     if request.POST:
-        if not (request.user.is_superuser or my_offices.exists()):
+        if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
         
         location_form = LaboratorioUbicazioneForm(instance=location, data=request.POST)
@@ -1007,7 +1102,7 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
                    'forms': (location_form,),
                    'item_label': _("Location"),
                    'laboratory': laboratory,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
     
 
@@ -1054,7 +1149,7 @@ def laboratory_locations_new(request, code, laboratory=None, my_offices=None, is
                    'laboratory': laboratory,
                    'item_label': _("Location"),
                    'edit': 1,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
 
 @login_required
@@ -1142,7 +1237,7 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'item_label': _("Research Staff Member"),
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')})
 
 @login_required
@@ -1238,7 +1333,7 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'form': technician_form,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')})
 
 @login_required
@@ -1317,7 +1412,7 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, i
                    'forms': (activity_form,),
                    'laboratory': laboratory,
                    'item_label': _("Activity"),
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
     
 
@@ -1338,7 +1433,7 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
     activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, instance=activity, initial={'tipologia_attivita': selected_activity_id})
     
     if request.POST:
-        if not (request.user.is_superuser or my_offices.exists()):
+        if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
         
         activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, instance=activity, data=request.POST)
@@ -1378,7 +1473,7 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
                    'laboratory': laboratory,
                    'item_label': _("Activity"),
                    'edit': 1,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
 
 @login_required
@@ -1471,7 +1566,7 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
                    'choosen_person': manager,
                    'internal_form': internal_form,
                    'external_form': external_form,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    'url': reverse('ricerca:teacherslist')
                    })
     
@@ -1499,7 +1594,7 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
     form = LaboratorioServiziErogatiForm(instance=provided_service)
 
     if request.POST:
-        if not (request.user.is_superuser or my_offices.exists()):
+        if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
         
         form = LaboratorioServiziErogatiForm(data=request.POST, instance=provided_service)
@@ -1562,7 +1657,7 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'provided_service': provided_service,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')
                    })
 
@@ -1624,7 +1719,7 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
                    'forms': (form,),
                    'item_label': _("Offered Service"),
                    'laboratory': laboratory,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    })
     
     
@@ -1636,7 +1731,7 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
     form = LaboratorioServiziOffertiForm(instance=offered_service)
 
     if request.POST:
-        if not (request.user.is_superuser or my_offices.exists()):
+        if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
         
         form = LaboratorioServiziOffertiForm(data=request.POST, instance=offered_service)
@@ -1671,7 +1766,7 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
                    'offered_service': offered_service,
                    'item_label': _("Offered Service"),
                    'edit': 1,
-                   'user_roles' : __get_user_roles(request.user, my_offices, is_validator),
+                   'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    })
 
 @login_required
@@ -1743,7 +1838,7 @@ def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, 
             for k, v in risk_type_form.errors.items():
                 messages.add_message(request, messages.ERROR, f"<b>{risk_type_form.fields[k].label}</b>: {v}")
                 
-        return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+        return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#risks")
 
 
 @login_required
@@ -1756,9 +1851,9 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
         return custom_message(request, _("Laboratory is already visible"))
     
     #LaboratorioDatiBase
-    if not (laboratory.preposto_sicurezza or laboratory.matricola_preposto_sicurezza):
-        messages.add_message(request, messages.ERROR, _("Laboratory must have a Safety Manager"))
-        return redirect('crud_laboratories:crud_laboratory_edit', code=code)    
+    # if not (laboratory.preposto_sicurezza or laboratory.matricola_preposto_sicurezza):
+    #     messages.add_message(request, messages.ERROR, _("Laboratory must have a Safety Manager"))
+    #     return redirect('crud_laboratories:crud_laboratory_edit', code=code)    
     
     #LaboratorioAltriDipartimenti
     extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()

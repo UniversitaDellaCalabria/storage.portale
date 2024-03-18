@@ -187,12 +187,13 @@
 <!-- /Anagraphic -->
 
 
+<a id="extra_department"></a>
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
             <!-- Extra departments -->
             <h4 class="mb-3" style="font-weight: lighter;">{% trans "Extra Departments" %}</h4>
-            <!-- /Interdepartmental form -->
+            <!-- Interdepartmental form -->
             <form method="post"
                   action="{% url 'crud_laboratories:crud_laboratory_interdepartmental_edit' code=laboratory.pk %}"
                   enctype="multipart/form-data"
@@ -245,7 +246,7 @@
                                         <div class="modal-footer">
                                             <input class="btn btn-success"
                                                 type="submit"
-                                                id="{{ id }}_submitForm"
+                                                id="{{ lab_int_id }}_submitForm"
                                                 value="{% trans 'Yes, proceed' %}">
                                         </div>
                                     </div>
@@ -333,12 +334,77 @@
 </div>
 
 
+<a id="scope"></a>
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
             <h3 style="font-weight: normal;">{% trans "Type and Purpouses" %}</h3>
             <hr />
             <!-- Activities -->
+            <!-- Equipment value form -->
+            <form method="post"
+                action="{% url 'crud_laboratories:crud_laboratory_scope_edit' code=laboratory.pk %}"
+                enctype="multipart/form-data"
+                novalidate>
+                <div class="row">
+                    <div class="col">
+                    {% include "form_template.html" with form=laboratoriodatibaseambitoform %}
+                    </div>
+                    <div class="align-self-center pl-4 pr-4 pt-2">
+                        {% if user_roles.superuser or user_roles.operator %}
+                            {% random_id as lab_scope_id %}
+                            <button class="btn btn-success btn-sm pl-3 pr-3"
+                                    type="button"
+                                    data-toggle="modal"
+                                    data-target="#{{ lab_scope_id }}_action">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                </svg>
+                                {% trans "Submit" %}
+                            </button>
+                            <div class="modal fade"
+                                tabindex="-1"
+                                role="dialog"
+                                id="{{ lab_scope_id }}_action">
+                                <div class="modal-dialog modal-dialog-centered"
+                                    role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                            <svg class="icon">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                            </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% if laboratory.visibile %}
+                                                    {% trans "This action will make the laboratory NOT visible untill it has been approved again. Do you want to confirm the entered data?" %}
+                                                {% else %}
+                                                    {% trans "Do you want to confirm the entered data?" %}
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input class="btn btn-success"
+                                                type="submit"
+                                                id="{{ lab_scope_id }}_submitForm"
+                                                value="{% trans 'Yes, proceed' %}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+            <!-- /Equipment value form -->
             <h4 style="font-weight: lighter;">{% trans "Activities" %}</h4>
             <div class="table-responsive">
                 <table class="table table-striped table-hover">
@@ -423,8 +489,8 @@
             {% endif %}
             <!-- /Activities -->
             <hr />
-            <!-- Researches ERC1 -->
-            <h4 style="font-weight: lighter;">{% trans "Researches ERC1" %}</h4>
+            <!-- Classification ERC -->
+            <h4 style="font-weight: lighter;">{% trans "ERC Classification" %}</h4>
             <table class="table table-striped table-hover">
                 <tbody>
                     {% for research_erc1 in researches_erc1 %}
@@ -446,7 +512,7 @@
                 {% trans "View" %}
                 {% endif %}
             </a>
-            <!-- /Researches ERC1 -->
+            <!-- /Classification ERC -->
         </div>
     </div>
 </div>
@@ -634,7 +700,7 @@
     </div>
 </div>
 
-
+<a id="facilities_equipment"></a>
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
@@ -738,317 +804,401 @@
                     {% endif %}
                 </form>
             </div>
-            <hr />
-            <!-- Equipment -->
-            <h4 style="font-weight: lighter;">{% trans "Equipment - Detail Information" %}</h4>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>{% trans "Type" %}</th>
-                            <th>{% trans "Description" %}</th>
-                            <th>{% trans "Unit Cost" %}</th>
-                            <th>{% trans "Quantity" %}</th>
-                            <th></th> 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for equipment_piece in laboratory_equipment %}
-                        <tr>
-                            <td>{{ equipment_piece.tipologia }}</td>
-                            <td>{{ equipment_piece.descrizione }}</td>
-                            <td>{{ equipment_piece.costo_unitario }}</td>
-                            <td>{{ equipment_piece.quantita }}</td>
-
-                            <td class="text-right">
-                                <a href="{% url 'crud_laboratories:crud_laboratory_equipment_edit' code=laboratory.pk data_id=equipment_piece.id %}" class="btn btn-primary btn-xs">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                    </svg>
-                                    {% if user_roles.superuser or user_roles.operator %}
-                                    {% trans "Edit" %}
-                                    {% else %}
-                                    {% trans "View" %}
-                                    {% endif %}
-                                </a>
-                                {% if user_roles.superuser or user_roles.operator %}
-                                <a href="" class="btn btn-danger btn-xs"
-                                    data-toggle="modal"
-                                    data-target="#delete_equipment_{{equipment_piece.id}}">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                    </svg>
-                                    {% trans "Remove" %}
-                                </a>
-                                <!-- Modal Remove Equip -->
-                                <div class="modal fade"
-                                        tabindex="-1"
-                                        role="dialog"
-                                        id="delete_equipment_{{equipment_piece.id}}">
-                                    <div class="modal-dialog modal-dialog-centered"
-                                            role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    {% trans "Confirm" %}
-                                                </h5>
-                                                <button class="close"
-                                                        type="button"
-                                                        data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <svg class="icon">
-                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-                                                    {% trans "Do you want to delete this piece of equipment?" %}
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_equipment_delete' code=laboratory.pk data_id=equipment_piece.id %}">
-                                                    {% trans 'Yes, proceed' %}
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /Modal Remove Equip -->
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% if user_roles.superuser or user_roles.operator %}
-            <a href="{% url 'crud_laboratories:crud_laboratory_equipment_new' code=laboratory.pk %}" class="btn btn-block btn-success">
-                <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Add new" %}
-            </a>
-            {% endif %}
-            <!-- /Equipment -->
         </div>
     </div>
 </div>
 
-
+<a id="equipment_value"></a>
+<!-- Internal-use information -->
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal;">{% trans "Services Section" %}</h3>
+            <h3 style="font-weight: normal;">{% trans "Internal-use Information" %}</h3>
             <hr />
-            <!-- Offered Services -->
-            <h4 style="font-weight: lighter;">{% trans "Offered Services" %}</h4>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <tbody>
-                        {% for offered_service in offered_services %}
-                        <tr>
-                            <td>
-                                {% trans offered_service.nome_servizio|default:"-" %}
-                            </td>
-                            <td class="text-right">
-                                <a href="{% url 'crud_laboratories:crud_laboratory_offered_services_edit' code=laboratory.pk data_id=offered_service.id %}" class="btn btn-primary btn-xs">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                    </svg>
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                    <div class="card-body">
+                        <!-- Equipment -->
+                        <!-- Equipment value form -->
+                        <form method="post"
+                            action="{% url 'crud_laboratories:crud_laboratory_equipment_value_edit' code=laboratory.pk %}"
+                            enctype="multipart/form-data"
+                            novalidate>
+                            <div class="row">
+                                <div class="col">
+                                {% include "form_template.html" with form=laboratoriodatibasestrumentazionevaloreform %}
+                                </div>
+                                <div class="align-self-center pl-4 pr-4 pt-2">
                                     {% if user_roles.superuser or user_roles.operator %}
-                                    {% trans "Edit" %}
-                                    {% else %}
-                                    {% trans "View" %}
-                                    {% endif %}
-                                </a>
-                                {% if user_roles.superuser or user_roles.operator %}
-                                <a href="" class="btn btn-danger btn-xs"
-                                    data-toggle="modal"
-                                    data-target="#delete_offered_service_{{offered_service.id}}">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                    </svg>
-                                    {% trans "Remove" %}
-                                </a>
-                                <!-- Offered Service Delete Modal -->
-                                <div class="modal fade"
-                                        tabindex="-1"
-                                        role="dialog"
-                                        id="delete_offered_service_{{offered_service.id}}">
-                                    <div class="modal-dialog modal-dialog-centered"
-                                            role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    {% trans "Confirm" %}
-                                                </h5>
-                                                <button class="close"
-                                                        type="button"
-                                                        data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <svg class="icon">
-                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-                                                    {% trans "Do you want to delete this offered service?" %}
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_offered_services_delete' code=laboratory.pk data_id=offered_service.id %}">
-                                                    {% trans 'Yes, proceed' %}
-                                                </a>
+                                        {% random_id as lab_equip_id %}
+                                        <button class="btn btn-success btn-sm pl-3 pr-3"
+                                                type="button"
+                                                data-toggle="modal"
+                                                data-target="#{{ lab_equip_id }}_action">
+                                            <svg class="icon icon-xs icon-white">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                            </svg>
+                                            {% trans "Submit" %}
+                                        </button>
+                                        <div class="modal fade"
+                                            tabindex="-1"
+                                            role="dialog"
+                                            id="{{ lab_equip_id }}_action">
+                                            <div class="modal-dialog modal-dialog-centered"
+                                                role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            {% trans "Confirm" %}
+                                                        </h5>
+                                                        <button class="close"
+                                                                type="button"
+                                                                data-dismiss="modal"
+                                                                aria-label="Close">
+                                                        <svg class="icon">
+                                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                        </svg>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            {% if laboratory.visibile %}
+                                                                {% trans "This action will make the laboratory NOT visible untill it has been approved again. Do you want to confirm the entered data?" %}
+                                                            {% else %}
+                                                                {% trans "Do you want to confirm the entered data?" %}
+                                                            {% endif %}
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input class="btn btn-success"
+                                                            type="submit"
+                                                            id="{{ lab_equip_id }}_submitForm"
+                                                            value="{% trans 'Yes, proceed' %}">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                {% endif %}
-                                <!-- /Offered Service Delete Modal -->
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% if user_roles.superuser or user_roles.operator %}
-            <a href="{% url 'crud_laboratories:crud_laboratory_offered_services_new' code=laboratory.pk %}" class="btn btn-block btn-success">
-                <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Add new" %}
-            </a>
-            {% endif %}
-            <!-- /Offered Services -->
-            <hr />
-            <h4 style="font-weight: lighter;">{% trans "Provided Services - (Activities on behalf of Others)" %}</h4>
-            <hr />
-            <!-- Provided Services -->
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <tbody>
-                        {% for provided_service in provided_services %}
-                        <tr>
-                            <td>
-                                {% trans provided_service.descrizione|default:"-" %}
-                            </td>
-                            <td class="text-right">
-                                <a href="{% url 'crud_laboratories:crud_laboratory_provided_services_edit' code=laboratory.pk data_id=provided_service.id %}" class="btn btn-primary btn-xs">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                    </svg>
-                                    {% if user_roles.superuser or user_roles.operator %}
-                                    {% trans "Edit" %}
-                                    {% else %}
-                                    {% trans "View" %}
                                     {% endif %}
-                                </a>
-                                {% if user_roles.superuser or user_roles.operator %}
-                                <a href="" class="btn btn-danger btn-xs"
-                                    data-toggle="modal"
-                                    data-target="#delete_provided_service_{{provided_service.id}}">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                    </svg>
-                                    {% trans "Remove" %}
-                                </a>
-                                <!-- Provided Service Delete Modal -->
-                                <div class="modal fade"
-                                        tabindex="-1"
-                                        role="dialog"
-                                        id="delete_provided_service_{{provided_service.id}}">
-                                    <div class="modal-dialog modal-dialog-centered"
-                                            role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    {% trans "Confirm" %}
-                                                </h5>
-                                                <button class="close"
-                                                        type="button"
-                                                        data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <svg class="icon">
-                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-                                                    {% trans "Do you want to delete this provided service?" %}
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_provided_services_delete' code=laboratory.pk data_id=provided_service.id %}">
-                                                    {% trans 'Yes, proceed' %}
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                                <!-- /Provided Service Delete Modal -->
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div> 
-            {% if user_roles.superuser or user_roles.operator %}
-            <a href="{% url 'crud_laboratories:crud_laboratory_provided_services_new' code=laboratory.pk %}" class="btn btn-block btn-success">
-                <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Add new" %}
-            </a>
-            {% endif %}
-            <!-- /Provided Services -->
-        </div>
-    </div>
-</div>
+                            </div>
+                        </form>
+                        <!-- /Equipment value form -->
+                        <h4 style="font-weight: lighter;">{% trans "Relevant equipment items" %}</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{% trans "Type" %}</th>
+                                        <th>{% trans "Description" %}</th>
+                                        <th>{% trans "Unit Cost" %}</th>
+                                        <th>{% trans "Quantity" %}</th>
+                                        <th></th> 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for equipment_piece in laboratory_equipment %}
+                                    <tr>
+                                        <td>{{ equipment_piece.tipologia }}</td>
+                                        <td>{{ equipment_piece.descrizione }}</td>
+                                        <td>{{ equipment_piece.costo_unitario }}</td>
+                                        <td>{{ equipment_piece.quantita }}</td>
 
-<div class="card-wrapper card-space">
-    <div class="card card-bg no-after">
-        <div class="card-body">
-            <h3 style="font-weight: normal;">{% trans "Laboratory Safety" %}</h3>
-            <hr />
-            <!-- Safety Manager -->
-            <h4 style="font-weight: lighter;">{% trans "Safety Manager" %}</h4>
-            <div class="table-responsive mb-1">
-                <table class="table table-striped table-hover mb-2">
-                    <tbody>
-                        <tr>
-                            <td>
-                                {{ laboratory.preposto_sicurezza|default:"-" }}
-                            </td>
-                            <td class="text-right">
-                                {% if user_roles.superuser or user_roles.operator %}
-                                <a href="{% url 'crud_laboratories:crud_laboratory_safety_manager_edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                    </svg> 
-                                    {% trans "Edit" %}
-                                </a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                {% comment %} <small class="form-text text-muted">
-                    {% trans "Provide if different from Scientific Director" %}
-                </small> {% endcomment %}
+                                        <td class="text-right">
+                                            <a href="{% url 'crud_laboratories:crud_laboratory_equipment_edit' code=laboratory.pk data_id=equipment_piece.id %}" class="btn btn-primary btn-xs">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                                </svg>
+                                                {% if user_roles.superuser or user_roles.operator %}
+                                                {% trans "Edit" %}
+                                                {% else %}
+                                                {% trans "View" %}
+                                                {% endif %}
+                                            </a>
+                                            {% if user_roles.superuser or user_roles.operator %}
+                                            <a href="" class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#delete_equipment_{{equipment_piece.id}}">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                                </svg>
+                                                {% trans "Remove" %}
+                                            </a>
+                                            <!-- Modal Remove Equip -->
+                                            <div class="modal fade"
+                                                    tabindex="-1"
+                                                    role="dialog"
+                                                    id="delete_equipment_{{equipment_piece.id}}">
+                                                <div class="modal-dialog modal-dialog-centered"
+                                                        role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">
+                                                                {% trans "Confirm" %}
+                                                            </h5>
+                                                            <button class="close"
+                                                                    type="button"
+                                                                    data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>
+                                                                {% trans "Do you want to delete this piece of equipment?" %}
+                                                            </p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_equipment_delete' code=laboratory.pk data_id=equipment_piece.id %}">
+                                                                {% trans 'Yes, proceed' %}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /Modal Remove Equip -->
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if user_roles.superuser or user_roles.operator %}
+                        <a href="{% url 'crud_laboratories:crud_laboratory_equipment_new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                            </svg> {% trans "Add new" %}
+                        </a>
+                        {% endif %}
+                        <!-- /Equipment -->
+
+                    </div>
+                </div>
             </div>
-            <hr />
-            <!-- Risk Types -->
-            <form method="post" action="{% url 'crud_laboratories:crud_laboratory_risk_types_edit' code=laboratory.pk %}" novalidate>
-                {% include "form_template.html" with form=risk_type_form %}
-                <hr />
-                {% if user_roles.superuser or user_roles.operator %}
-                {% include "form_submit_warning.html" with active=laboratory.visibile %}
-                {% endif %}
-            </form>
+
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                    <div class="card-body">
+                        <h3 style="font-weight: normal;">{% trans "Services Section" %}</h3>
+                        <hr />
+                        <!-- Offered Services -->
+                        <h4 style="font-weight: lighter;">{% trans "Offered Services" %}</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <tbody>
+                                    {% for offered_service in offered_services %}
+                                    <tr>
+                                        <td>
+                                            {% trans offered_service.nome_servizio|default:"-" %}
+                                        </td>
+                                        <td class="text-right">
+                                            <a href="{% url 'crud_laboratories:crud_laboratory_offered_services_edit' code=laboratory.pk data_id=offered_service.id %}" class="btn btn-primary btn-xs">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                                </svg>
+                                                {% if user_roles.superuser or user_roles.operator %}
+                                                {% trans "Edit" %}
+                                                {% else %}
+                                                {% trans "View" %}
+                                                {% endif %}
+                                            </a>
+                                            {% if user_roles.superuser or user_roles.operator %}
+                                            <a href="" class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#delete_offered_service_{{offered_service.id}}">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                                </svg>
+                                                {% trans "Remove" %}
+                                            </a>
+                                            <!-- Offered Service Delete Modal -->
+                                            <div class="modal fade"
+                                                    tabindex="-1"
+                                                    role="dialog"
+                                                    id="delete_offered_service_{{offered_service.id}}">
+                                                <div class="modal-dialog modal-dialog-centered"
+                                                        role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">
+                                                                {% trans "Confirm" %}
+                                                            </h5>
+                                                            <button class="close"
+                                                                    type="button"
+                                                                    data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>
+                                                                {% trans "Do you want to delete this offered service?" %}
+                                                            </p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_offered_services_delete' code=laboratory.pk data_id=offered_service.id %}">
+                                                                {% trans 'Yes, proceed' %}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <!-- /Offered Service Delete Modal -->
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if user_roles.superuser or user_roles.operator %}
+                        <a href="{% url 'crud_laboratories:crud_laboratory_offered_services_new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                            </svg> {% trans "Add new" %}
+                        </a>
+                        {% endif %}
+                        <!-- /Offered Services -->
+                        <hr />
+                        <h4 style="font-weight: lighter;">{% trans "Provided Services - (Activities on behalf of Others)" %}</h4>
+                        <hr />
+                        <!-- Provided Services -->
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <tbody>
+                                    {% for provided_service in provided_services %}
+                                    <tr>
+                                        <td>
+                                            {% trans provided_service.descrizione|default:"-" %}
+                                        </td>
+                                        <td class="text-right">
+                                            <a href="{% url 'crud_laboratories:crud_laboratory_provided_services_edit' code=laboratory.pk data_id=provided_service.id %}" class="btn btn-primary btn-xs">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                                </svg>
+                                                {% if user_roles.superuser or user_roles.operator %}
+                                                {% trans "Edit" %}
+                                                {% else %}
+                                                {% trans "View" %}
+                                                {% endif %}
+                                            </a>
+                                            {% if user_roles.superuser or user_roles.operator %}
+                                            <a href="" class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#delete_provided_service_{{provided_service.id}}">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                                </svg>
+                                                {% trans "Remove" %}
+                                            </a>
+                                            <!-- Provided Service Delete Modal -->
+                                            <div class="modal fade"
+                                                    tabindex="-1"
+                                                    role="dialog"
+                                                    id="delete_provided_service_{{provided_service.id}}">
+                                                <div class="modal-dialog modal-dialog-centered"
+                                                        role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">
+                                                                {% trans "Confirm" %}
+                                                            </h5>
+                                                            <button class="close"
+                                                                    type="button"
+                                                                    data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>
+                                                                {% trans "Do you want to delete this provided service?" %}
+                                                            </p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-success btn-sm" href="{% url 'crud_laboratories:crud_laboratory_provided_services_delete' code=laboratory.pk data_id=provided_service.id %}">
+                                                                {% trans 'Yes, proceed' %}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /Provided Service Delete Modal -->
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div> 
+                        {% if user_roles.superuser or user_roles.operator %}
+                        <a href="{% url 'crud_laboratories:crud_laboratory_provided_services_new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                            </svg> {% trans "Add new" %}
+                        </a>
+                        {% endif %}
+                        <!-- /Provided Services -->
+                    </div>
+                </div>
+            </div>
+
+            <a id="risks"></a>
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                    <div class="card-body">
+                        <h3 style="font-weight: normal;">{% trans "Laboratory Safety" %}</h3>
+                        <hr />
+                        <!-- Safety Manager -->
+                        <h4 style="font-weight: lighter;">{% trans "Safety Manager" %}</h4>
+                        <div class="table-responsive mb-1">
+                            <table class="table table-striped table-hover mb-2">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {{ laboratory.preposto_sicurezza|default:"-" }}
+                                        </td>
+                                        <td class="text-right">
+                                            {% if user_roles.superuser or user_roles.operator %}
+                                            <a href="{% url 'crud_laboratories:crud_laboratory_safety_manager_edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                                </svg> 
+                                                {% trans "Edit" %}
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <small class="form-text text-muted">
+                                {% trans "Provide only if different from Scientific Director" %}
+                            </small>
+                        </div>
+                        <hr />
+                        <!-- Risk Types -->
+                        <form method="post" action="{% url 'crud_laboratories:crud_laboratory_risk_types_edit' code=laboratory.pk %}" novalidate>
+                            {% include "form_template.html" with form=risk_type_form %}
+                            <hr />
+                            {% if user_roles.superuser or user_roles.operator %}
+                            {% include "form_submit_warning.html" with active=laboratory.visibile %}
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 </div>
+<!-- /Internal-use information -->
+
 
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
@@ -1058,7 +1208,6 @@
         </div>
     </div>
 </div>
-
 
 
 {% endblock centered_container %}

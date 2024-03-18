@@ -1,15 +1,15 @@
-import requests
 
+from decimal import Decimal
 from datetime import date as dt
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
-from django.urls import reverse
+from django.core.validators import MinValueValidator
 
 from django_ckeditor_5.widgets import CKEditor5Widget
 
-from ricerca_app.models import DidatticaDipartimento, LaboratorioDatiBase, LaboratorioDatiErc1, RicercaErc1, LaboratorioAttrezzature, LaboratorioTipologiaRischio, LaboratorioUbicazione, LaboratorioAttivita, LaboratorioTipologiaAttivita, LaboratorioServiziErogati, LaboratorioServiziOfferti, LaboratorioTipologiaRischio, TipologiaRischio, LaboratorioAttrezzatureFondi, LaboratorioAttrezzatureRischi, LaboratorioFondo
+from ricerca_app.models import *
+
 
 # from .. utils.widgets import RicercaCRUDClearableWidget
 
@@ -31,16 +31,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                                             choices=tuple(department_choices),
                                             required=True
                                             )
-
-
-        scope_choices = LaboratorioDatiBase.objects.all().values_list("ambito", flat=True).distinct().order_by("ambito")
-        scope_choices = tuple(map(lambda ambito: (ambito, ambito), scope_choices))
-
-        self.fields['ambito'] = forms.ChoiceField(
-            label=_('Areas'),
-            choices = scope_choices
-            )
-        
+       
         # self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
         #     label=_('Interdepartmental Laboratory'),
         #     choices=(('SI', 'SI'),('NO', 'NO')),
@@ -57,7 +48,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                             'descr_altre_strutture_riferimento_it',
                             'descr_altre_strutture_riferimento_en',
                             'sito_web',
-                            'ambito',
+                            #'ambito',
                             #'sede_dimensione', 'sede_note_descrittive',
                             #'strumentazione_descrizione', 'strumentazione_valore',
                             #'laboratorio_interdipartimentale',
@@ -67,7 +58,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         model = LaboratorioDatiBase
         fields = ['nome_laboratorio', 'acronimo', 'logo_laboratorio',# 'laboratorio_interdipartimentale',
                   'altre_strutture_riferimento', 'descr_altre_strutture_riferimento_it',
-                  'descr_altre_strutture_riferimento_en', 'ambito',
+                  'descr_altre_strutture_riferimento_en',# 'ambito',
                   #'sede_dimensione', 'sede_note_descrittive',
                   #'strumentazione_descrizione', 'strumentazione_valore',
                   'id_infrastruttura_riferimento',
@@ -80,7 +71,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             'altre_strutture_riferimento': _('Other Structures'),
             'descr_altre_strutture_riferimento_it': _('Other Structures Description (it)'),
             'descr_altre_strutture_riferimento_en': _('Other Structures Description (en)'),
-            'ambito': _('Scope'),
+            #'ambito': _('Scope'),
             #'sede_dimensione': _('Office Dimension'),
             #'sede_note_descrittive': _('Office Description Notes'),
             #'strumentazione_descrizione': _('Instrumentation Description'),
@@ -119,16 +110,43 @@ class LaboratorioDatiBaseInfoSedeStruttureForm(forms.ModelForm):
         self.fields['strumentazione_descrizione'].help_text = _("Public-use text (detail list below)")
     class Meta:
         model = LaboratorioDatiBase
-        fields = ['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione', 'strumentazione_valore']
+        fields = ['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione']
         labels = {
             'sede_dimensione': _('Office - Overall Dimensions'),
             'sede_note_descrittive': _('Office - Description Notes'),
             'strumentazione_descrizione': _('Equipment - Description'),
-            'strumentazione_valore': _('Equipment - Overall Value')
         }
         widgets = {
             'sede_note_descrittive': CKEditor5Widget(),
             'strumentazione_descrizione': CKEditor5Widget(),
+        }
+        
+
+class LaboratorioDatiBaseStrumentazioneValoreForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LaboratorioDatiBaseStrumentazioneValoreForm, self).__init__(*args, **kwargs)
+        self.fields['strumentazione_valore'].validators = [MinValueValidator(Decimal(0))]
+    class Meta:
+        model = LaboratorioDatiBase
+        fields = ['strumentazione_valore']
+        labels = {
+            'strumentazione_valore': _('Equipment - Overall Value')
+        }
+        
+class LaboratorioDatiBaseAmbitoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LaboratorioDatiBaseAmbitoForm, self).__init__(*args, **kwargs)
+        scope_choices = LaboratorioDatiBase.objects.all().values_list("ambito", flat=True).distinct().order_by("ambito")
+        scope_choices = tuple(map(lambda ambito: (ambito, ambito), scope_choices))
+        self.fields['ambito'] = forms.ChoiceField(
+            label=_('Areas'),
+            choices = scope_choices
+            )
+    class Meta:
+        model = LaboratorioDatiBase
+        fields = ['ambito']
+        labels = {
+            'ambito': _('Scope')
         }
 
 
@@ -156,7 +174,7 @@ class LaboratorioDatiBaseScientificDirectorChoosenPersonForm(forms.Form):
             self.fields['choosen_scientific_director'].required = True
 
 class LaboratorioDatiBaseSafetyManagerChoosenPersonForm(forms.Form):
-    choosen_safety_manager = forms.CharField(label=_('Scientific Director'),
+    choosen_safety_manager = forms.CharField(label=_('Safety Manager'),
                                      widget=forms.HiddenInput(),
                                      required=False)
 
@@ -222,12 +240,43 @@ class LaboratorioAttrezzatureRischiForm(forms.Form):
 class LaboratorioDatiErc1Form(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        choices = tuple(RicercaErc1.objects.all().values_list("id", "descrizione").distinct())
-
-        self.fields['id_ricerche_erc1'] = forms.MultipleChoiceField(
-            label=_('ERC1 Researches'),
-            choices=choices,
+        
+        erc0 = RicercaErc0.objects.all().values_list("erc0_cod", "description")
+        erc0_choices = ((e0[0], e0[1]) for e0 in erc0)
+        
+        erc1 = RicercaErc1.objects.all()
+        
+        erc1_ls = erc1.filter(ricerca_erc0_cod='LS').values_list("id", "descrizione")
+        erc1_ls_choices = ((e1[0], e1[1]) for e1 in erc1_ls)
+        
+        erc1_pe = erc1.filter(ricerca_erc0_cod='PE').values_list("id", "descrizione")
+        erc1_pe_choices = ((e1[0], e1[1]) for e1 in erc1_pe)
+        
+        erc1_sh = erc1.filter(ricerca_erc0_cod='SH').values_list("id", "descrizione")
+        erc1_sh_choices = ((e1[0], e1[1]) for e1 in erc1_sh)
+        
+        self.fields['erc0_selector'] = forms.ChoiceField(
+            label=_('ERC Classification'),
+            choices = erc0_choices
+        )
+        
+        self.fields['id_ricerche_erc1_ls'] = forms.MultipleChoiceField(
+            label=_('ERC Classification - Life Science'),
+            choices=erc1_ls_choices,
+            required=False,
+            widget=forms.CheckboxSelectMultiple()
+        )
+        
+        self.fields['id_ricerche_erc1_pe'] = forms.MultipleChoiceField(
+            label=_('ERC Classification - Physical Sciences and Engineering'),
+            choices=erc1_pe_choices,
+            required=False,
+            widget=forms.CheckboxSelectMultiple()
+        )
+        
+        self.fields['id_ricerche_erc1_sh'] = forms.MultipleChoiceField(
+            label=_('ERC Classification - Social Sciences and Humanities'),
+            choices=erc1_sh_choices,
             required=False,
             widget=forms.CheckboxSelectMultiple()
         )

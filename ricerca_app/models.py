@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from .validators import *
 
 
+
 def patents_media_path(instance, filename): # pragma: no cover
     return f'portale/brevetti/loghi/{filename}'
 
@@ -2093,13 +2094,11 @@ class LaboratorioDatiBase(models.Model):
         null=True)  # Field name made lowercase.
     strumentazione_descrizione = models.TextField(
         db_column='STRUMENTAZIONE_DESCRIZIONE',
-        blank=True,
-        null=True)  # Field name made lowercase.
-    strumentazione_valore = models.CharField(
-        db_column='STRUMENTAZIONE_VALORE',
-        max_length=100,
-        blank=True,
-        null=True)  # Field name made lowercase.
+    )  # Field name made lowercase.
+    strumentazione_valore = models.DecimalField(
+        decimal_places=2,
+        max_digits=20,
+        db_column='STRUMENTAZIONE_VALORE')  # Field name made lowercase.
     preposto_sicurezza = models.CharField(
         db_column='PREPOSTO_SICUREZZA',
         max_length=200,
