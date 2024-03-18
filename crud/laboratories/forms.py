@@ -1,13 +1,15 @@
-import requests
 
+from decimal import Decimal
 from datetime import date as dt
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator
 
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from ricerca_app.models import *
+
 
 # from .. utils.widgets import RicercaCRUDClearableWidget
 
@@ -121,6 +123,9 @@ class LaboratorioDatiBaseInfoSedeStruttureForm(forms.ModelForm):
         
 
 class LaboratorioDatiBaseStrumentazioneValoreForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LaboratorioDatiBaseStrumentazioneValoreForm, self).__init__(*args, **kwargs)
+        self.fields['strumentazione_valore'].validators = [MinValueValidator(Decimal(0))]
     class Meta:
         model = LaboratorioDatiBase
         fields = ['strumentazione_valore']

@@ -90,6 +90,8 @@ def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, i
             for k, v in laboratoriodatibaseinfosedestruttureform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibaseinfosedestruttureform.fields[k].label}</b>: {v}")
+                
+            request.session["lab_infosedestrutture_form_data"] = laboratoriodatibaseinfosedestruttureform.data
             
     return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#facilities_equipment")
 
@@ -126,6 +128,8 @@ def laboratory_scope_edit(request, code, laboratory=None, my_offices=None, is_va
             for k, v in laboratoriodatibaseambitoform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibaseambitoform.fields[k].label}</b>: {v}")
+                
+            request.session["lab_ambito_form_data"] = laboratoriodatibaseambitoform.data
             
     return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#scope")
 
@@ -161,6 +165,8 @@ def laboratory_equipment_value_edit(request, code, laboratory=None, my_offices=N
             for k, v in laboratoriodatibasestrumentazionevaloreform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibasestrumentazionevaloreform.fields[k].label}</b>: {v}")
+                
+            request.session["lab_strumentazionevalore_form_data"] = laboratoriodatibasestrumentazionevaloreform.data
             
     return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#equipment_value")
     
@@ -200,6 +206,8 @@ def laboratory_interdepartmental_edit(request, code, laboratory=None, my_offices
             for k, v in laboratoriodatibaseinterdipartimentaleform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibaseinterdipartimentaleform.fields[k].label}</b>: {v}")
+                
+            request.session["lab_interdipartimentale_form_data"] = laboratoriodatibaseinterdipartimentaleform.data
             
     return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#extra_department")
     
@@ -212,6 +220,11 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     
     if not laboratory.visibile and not request.POST:
         messages.add_message(request, messages.WARNING, _("Laboratory NOT visible"))
+        
+    lab_infosedestrutture_form_data = request.session.pop('lab_infosedestrutture_form_data', None)
+    lab_ambito_form_data = request.session.pop('lab_ambito_form_data', None)
+    lab_strumentazionevalore_form_data = request.session.pop('lab_strumentazionevalore_form_data', None)
+    lab_interdipartimentale_form_data = request.session.pop('lab_interdipartimentale_form_data', None)
 
     #LaboratorioDatiBase
     user_lab_offices = OrganizationalStructureOfficeEmployee.objects.filter(employee=request.user,
@@ -222,10 +235,10 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     allowed_related_departments_codes = [] if (not user_lab_offices.exists()) else user_lab_offices.values_list("office_id__organizational_structure_id__unique_code", flat=True)
     initial = {"choosen_department_id": laboratory.id_dipartimento_riferimento.dip_id}
     form = LaboratorioDatiBaseForm(initial=initial, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
-    laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(instance=laboratory)
-    laboratoriodatibaseambitoform = LaboratorioDatiBaseAmbitoForm(instance=laboratory)
-    laboratoriodatibasestrumentazionevaloreform = LaboratorioDatiBaseStrumentazioneValoreForm(instance=laboratory)
-    laboratoriodatibaseinterdipartimentaleform = LaboratorioDatiBaseInterdipartimentaleForm(instance=laboratory)
+    laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(instance=laboratory, data=lab_infosedestrutture_form_data)
+    laboratoriodatibaseambitoform = LaboratorioDatiBaseAmbitoForm(instance=laboratory, data=lab_ambito_form_data)
+    laboratoriodatibasestrumentazionevaloreform = LaboratorioDatiBaseStrumentazioneValoreForm(instance=laboratory, data=lab_strumentazionevalore_form_data)
+    laboratoriodatibaseinterdipartimentaleform = LaboratorioDatiBaseInterdipartimentaleForm(instance=laboratory, data=lab_interdipartimentale_form_data)
     #LaboratorioTipologiaRischio
     selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
