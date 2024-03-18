@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                 ('sede_dimensione', models.CharField(blank=True, db_column='SEDE_DIMENSIONE', max_length=100, null=True)),
                 ('sede_note_descrittive', models.TextField(blank=True, db_column='SEDE_NOTE_DESCRITTIVE', null=True)),
                 ('strumentazione_descrizione', models.TextField(db_column='STRUMENTAZIONE_DESCRIZIONE')),
-                ('strumentazione_valore', models.DecimalField(db_column='STRUMENTAZIONE_VALORE', decimal_places=2, max_digits=20)),
+                ('strumentazione_valore', models.DecimalField(db_column='STRUMENTAZIONE_VALORE', decimal_places=2, max_digits=20, blank=True, null=True)),
                 ('preposto_sicurezza', models.CharField(blank=True, db_column='PREPOSTO_SICUREZZA', max_length=200, null=True)),
                 ('matricola_preposto_sicurezza', models.CharField(blank=True, db_column='MATRICOLA_PREPOSTO_SICUREZZA', max_length=20, null=True)),
             ],

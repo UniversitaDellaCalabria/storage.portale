@@ -2097,6 +2097,8 @@ class LaboratorioDatiBase(models.Model):
     )  # Field name made lowercase.
     strumentazione_valore = models.DecimalField(
         decimal_places=2,
+        blank=True,
+        null=True,
         max_digits=20,
         db_column='STRUMENTAZIONE_VALORE')  # Field name made lowercase.
     preposto_sicurezza = models.CharField(
