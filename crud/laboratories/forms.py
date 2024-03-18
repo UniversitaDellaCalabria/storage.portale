@@ -126,6 +126,7 @@ class LaboratorioDatiBaseStrumentazioneValoreForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(LaboratorioDatiBaseStrumentazioneValoreForm, self).__init__(*args, **kwargs)
         self.fields['strumentazione_valore'].validators = [MinValueValidator(Decimal(0))]
+        self.fields['strumentazione_valore'].required = True
     class Meta:
         model = LaboratorioDatiBase
         fields = ['strumentazione_valore']
