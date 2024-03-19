@@ -130,24 +130,26 @@
                 </a>
             </td>
             <td class="text-right">
-            {% if user_roles.superuser or user_roles.operator and not laboratory.visibile %}
-                <a href="" class="btn btn-warning btn-xs"
-                data-toggle="modal"
-                data-target="#ask_to_approve_laboratory">
-                 <svg class="icon icon-xs icon-white">
-                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
-                 </svg> {% trans "Request for Approval" %}
-             </a>
+            {% if not laboratory.visibile %}
+                {% if user_roles.superuser or user_roles.operator %}
+                    <a href="" class="btn btn-warning btn-xs"
+                    data-toggle="modal"
+                    data-target="#ask_to_approve_laboratory">
+                    <svg class="icon icon-xs icon-white">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
+                    </svg> {% trans "Request for Approval" %}
+                </a>
+                {% endif %}
+                {% if user_roles.superuser or user_roles.validator %}
+                    <a href="" class="btn btn-success btn-xs"
+                    data-toggle="modal"
+                    data-target="#approve_laboratory">
+                    <svg class="icon icon-xs icon-white">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                    </svg> {% trans "Approve" %}
+                </a>
+                {% endif %}
             {% endif %}
-            {% if user_roles.superuser or user_roles.validator and not laboratory.visibile %}
-                <a href="" class="btn btn-success btn-xs"
-                data-toggle="modal"
-                data-target="#approve_laboratory">
-                 <svg class="icon icon-xs icon-white">
-                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
-                 </svg> {% trans "Approve" %}
-             </a>
-             {% endif %}
             </td>
         </tr>
     </tbody>

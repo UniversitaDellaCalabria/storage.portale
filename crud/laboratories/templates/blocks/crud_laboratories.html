@@ -196,11 +196,22 @@
                                         <img :src="item.LaboratoryLogo" class="w-100"/>
                                     </div>
                                     <div class="col">
+                                        <div class="row pl-1 pr-1">
                                         <h5>
                                             <a :href="item.LaboratoryId+'/'" class="no-color">
                                                 <b>[[ item.LaboratoryName ]]</b>
                                             </a>
                                         </h5>
+                                        <div class="h5 align-self-center ml-auto">
+                                            {% trans "Active"%}
+                                            <svg class="icon icon-sm icon-success" v-if="item.Visible">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                            </svg>
+                                            <svg class="icon icon-sm icon-danger" v-else>
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                            </svg>
+                                        </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-12">
                                                 <small>
