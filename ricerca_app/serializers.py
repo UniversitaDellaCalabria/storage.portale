@@ -1898,6 +1898,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'LaboratoryOfferedServices': offered_services,
             'LaboratoryLocation': location,
             'LaboratoryURL': query['sito_web'],
+            'Visible': query['visibile'],
         }
 
     @staticmethod
@@ -2032,6 +2033,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
                 'finalita_ricerca_en'] is None else query['finalita_ricerca_en'],
             'LaboratoryTeachingScope': query['finalita_didattica_it'] if req_lang == "it" or query[
                 'finalita_didattica_en'] is None else query['finalita_didattica_en'],
+            'Visible': query['visibile'],
         }
 
     @staticmethod

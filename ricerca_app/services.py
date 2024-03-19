@@ -4075,6 +4075,7 @@ class ServiceLaboratorio:
             "id_infrastruttura_riferimento__descrizione",
             "acronimo",
             "nome_file_logo",
+            "visibile",
         ).distinct()
 
         for q in query:
@@ -4211,7 +4212,8 @@ class ServiceLaboratorio:
             "matricola_responsabile_scientifico",
             'laboratorio_interdipartimentale',
             'sito_web',
-            'strumentazione_descrizione',)
+            'strumentazione_descrizione',
+            "visibile")
         finalita = LaboratorioAttivita.objects.filter(
             id_laboratorio_dati=laboratoryid).values(
             "id_tipologia_attivita__id",
