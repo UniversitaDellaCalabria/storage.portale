@@ -1567,7 +1567,7 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
                    'internal_form': internal_form,
                    'external_form': external_form,
                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
-                   'url': reverse('ricerca:teacherslist')
+                   'url': reverse('ricerca:addressbooklist')
                    })
     
     
