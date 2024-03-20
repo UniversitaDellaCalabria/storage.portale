@@ -3301,6 +3301,7 @@ class ServicePersonale:
             role=None,
             structuretree=None,
             phone=None,
+            taxpayer_id=None,
             full=False):
 
         query_search = Q()
@@ -3308,6 +3309,9 @@ class ServicePersonale:
 
         if search is not None:
             query_search = Q(cognome__istartswith=search)
+
+        if taxpayer_id is not None:
+            query_search = Q(cod_fis=taxpayer_id)
 
         query = Personale.objects.filter(
             query_search,
@@ -3323,6 +3327,7 @@ class ServicePersonale:
             # 'cd_uo_aff_org__ds_tipo_nodo',
             "id_ab",
             "matricola",
+            'cod_fis',
             'personalecontatti__cd_tipo_cont__descr_contatto',
             'personalecontatti__contatto',
             'personalecontatti__prg_priorita',
@@ -3379,6 +3384,7 @@ class ServicePersonale:
                     'cognome': q['cognome'],
                     # 'cd_uo_aff_org': q['cd_uo_aff_org'],
                     'matricola': q['matricola'],
+                    'cod_fis': q['cod_fis'],
                     # 'Struttura': q['cd_uo_aff_org__denominazione'],
                     # 'TipologiaStrutturaCod': q['cd_uo_aff_org__cd_tipo_nodo'],
                     # 'TipologiaStrutturaNome': q['cd_uo_aff_org__ds_tipo_nodo'],
@@ -3720,8 +3726,12 @@ class ServicePersonale:
 
     @staticmethod
     def getPersonale(personale_id, full=False):
-        query = Personale.objects.filter(matricola__exact=personale_id,
-                                         flg_cessato=0)
+        if full:
+            query = Personale.objects.filter(Q(matricola=personale_id)|Q(cod_fis=personale_id),
+                                             flg_cessato=0)
+        else:
+            query = Personale.objects.filter(matricola=personale_id,
+                                             flg_cessato=0)
 
         if not query:
             raise Http404
@@ -3767,6 +3777,7 @@ class ServicePersonale:
         query = query.values(
             "id_ab",
             "matricola",
+            "cod_fis",
             "nome",
             "middle_name",
             "cognome",

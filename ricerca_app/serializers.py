@@ -1640,6 +1640,38 @@ class AddressbookFullSerializer(AddressbookSerializer):
                                  True))
         return data
 
+    @staticmethod
+    def to_dict(query,
+                req_lang='en',
+                full=False):
+        full_name = query['cognome'] + " " + query['nome'] + \
+            (" " + query['middle_name']
+             if query['middle_name'] is not None else "")
+
+        roles = None
+        if query["Roles"] is not None:
+            roles = AddressbookSerializer.to_dict_roles(
+                query["Roles"], full)
+
+        return {
+            'Name': full_name,
+            'ID': query['matricola'],
+            'Taxpayer_ID': query['cod_fis'],
+            'Roles': roles,
+            'OfficeReference': query['Riferimento Ufficio'] if 'Riferimento Ufficio' in PERSON_CONTACTS_TO_TAKE else [],
+            'Email': query['Posta Elettronica'] if 'Posta Elettronica' in PERSON_CONTACTS_TO_TAKE else [],
+            'PEC': query['POSTA ELETTRONICA CERTIFICATA'] if 'POSTA ELETTRONICA CERTIFICATA' in PERSON_CONTACTS_TO_TAKE else [],
+            'TelOffice': query['Telefono Ufficio'] if 'Telefono Ufficio' in PERSON_CONTACTS_TO_TAKE else [],
+            'TelCelOffice': query['Telefono Cellulare Ufficio'] if 'Telefono Cellulare Ufficio' in PERSON_CONTACTS_TO_TAKE else [],
+            'Fax': query['Fax'] if 'Fax' in PERSON_CONTACTS_TO_TAKE else [],
+            'WebSite': query['URL Sito WEB'] if 'URL Sito WEB' in PERSON_CONTACTS_TO_TAKE else [],
+            'CV': query['URL Sito WEB Curriculum Vitae'] if 'URL Sito WEB Curriculum Vitae' in PERSON_CONTACTS_TO_TAKE else [],
+            # 'Teacher': query['fl_docente'],
+            'ProfileId': query['profilo'],
+            'ProfileDescription': query['ds_profilo'] if query['profilo'] in ALLOWED_PROFILE_ID else None,
+            'ProfileShortDescription': query['ds_profilo_breve'] if query['profilo'] in ALLOWED_PROFILE_ID else None,
+        }
+
 
 class PersonaleSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
@@ -1704,6 +1736,41 @@ class PersonaleFullSerializer(PersonaleSerializer):
                                  str(self.context['language']).lower(),
                                  True))
         return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en', full=False):
+        middle_name = f" {query['middle_name']} " if query['middle_name'] else " "
+        full_name = f"{query['nome']}{middle_name}{query['cognome']}"
+        functions = None
+        if query["Functions"] is not None:
+            functions = PersonaleSerializer.to_dict_functions(
+                query["Functions"])
+        roles = None
+        if query["Roles"] is not None:
+            roles = AddressbookSerializer.to_dict_roles(
+                query["Roles"], full)
+
+        return {
+            'Name': full_name,
+            'ID': query['matricola'],
+            'Taxpayer_ID': query['cod_fis'],
+            'Roles': roles,
+            'OfficeReference': query['Riferimento Ufficio'] if 'Riferimento Ufficio' in PERSON_CONTACTS_TO_TAKE else [],
+            'Email': query['Posta Elettronica'] if 'Posta Elettronica' in PERSON_CONTACTS_TO_TAKE else [],
+            'PEC': query['POSTA ELETTRONICA CERTIFICATA'] if 'POSTA ELETTRONICA CERTIFICATA' in PERSON_CONTACTS_TO_TAKE else [],
+            'TelOffice': query['Telefono Ufficio'] if 'Telefono Ufficio' in PERSON_CONTACTS_TO_TAKE else [],
+            'TelCelOffice': query['Telefono Cellulare Ufficio'] if 'Telefono Cellulare Ufficio' in PERSON_CONTACTS_TO_TAKE else [],
+            'Fax': query['Fax'] if 'Faxe' in PERSON_CONTACTS_TO_TAKE else [],
+            'WebSite': query['URL Sito WEB'] if 'URL Sito WEB' in PERSON_CONTACTS_TO_TAKE else [],
+            'CV': query['URL Sito WEB Curriculum Vitae'] if 'URL Sito WEB Curriculum Vitae' in PERSON_CONTACTS_TO_TAKE else [],
+            'Teacher': query['fl_docente'] or query['cop_teacher'],
+            'PersonFunctions': functions,
+            'TeacherCVFull': query['cv_full_it'] if req_lang == "it" or not query['cv_full_eng'] else query['cv_full_eng'],
+            'TeacherCVShort': query['cv_short_it'] if req_lang == "it" or not query['cv_short_eng'] else query['cv_short_eng'],
+            'ProfileId': query['profilo'],
+            'ProfileDescription': query['ds_profilo'] if query['profilo'] in ALLOWED_PROFILE_ID else None,
+            'ProfileShortDescription':query['ds_profilo_breve'] if query['profilo'] in ALLOWED_PROFILE_ID else None,
+        }
 
 
 class StructuresSerializer(CreateUpdateAbstract):

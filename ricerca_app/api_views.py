@@ -687,9 +687,17 @@ class ApiAddressbookFullList(ApiEndpointList):
         structuretypes = request.query_params.get('structuretypes')
         role = request.query_params.get('role')
         structuretree = request.query_params.get('structuretree')
+        taxpayer_id=request.query_params.get('taxpayer_id')
 
         return ServicePersonale.getAddressbook(
-            search, structureid, structuretypes, role, structuretree, phone, True)
+            search=search,
+            structureid=structureid,
+            structuretypes=structuretypes,
+            role=role,
+            structuretree=structuretree,
+            phone=phone,
+            taxpayer_id=taxpayer_id,
+            full=True)
 
 
 class ApiStructuresList(ApiEndpointList):
@@ -763,8 +771,8 @@ class ApiPersonaleFullDetail(ApiEndpointDetail):
     # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
-        personaleid = decrypt(self.kwargs['personaleid'])
-        return ServicePersonale.getPersonale(personaleid, True)
+        personaleid = self.kwargs['personaleid']
+        return ServicePersonale.getPersonale(personale_id=personaleid, full=True)
 
 
 class ApiLaboratoryDetail(ApiEndpointDetail):
