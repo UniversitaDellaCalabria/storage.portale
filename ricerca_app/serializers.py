@@ -1644,7 +1644,7 @@ class AddressbookFullSerializer(AddressbookSerializer):
     def to_dict(query,
                 req_lang='en',
                 full=False):
-        full_name = query['cognome'] + " " + query['nome'] + \
+        full_name = query['nome'] + \
             (" " + query['middle_name']
              if query['middle_name'] is not None else "")
 
@@ -1655,6 +1655,7 @@ class AddressbookFullSerializer(AddressbookSerializer):
 
         return {
             'Name': full_name,
+            'Surname': query['cognome'],
             'ID': query['matricola'],
             'Taxpayer_ID': query['cod_fis'],
             'Roles': roles,
@@ -1740,7 +1741,7 @@ class PersonaleFullSerializer(PersonaleSerializer):
     @staticmethod
     def to_dict(query, req_lang='en', full=False):
         middle_name = f" {query['middle_name']} " if query['middle_name'] else " "
-        full_name = f"{query['nome']}{middle_name}{query['cognome']}"
+        full_name = f"{query['nome']}{middle_name}"
         functions = None
         if query["Functions"] is not None:
             functions = PersonaleSerializer.to_dict_functions(
@@ -1752,6 +1753,7 @@ class PersonaleFullSerializer(PersonaleSerializer):
 
         return {
             'Name': full_name,
+            'Surname': query['cognome'],
             'ID': query['matricola'],
             'Taxpayer_ID': query['cod_fis'],
             'Roles': roles,
