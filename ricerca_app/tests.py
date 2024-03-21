@@ -2515,6 +2515,80 @@ class ApiPersonaleDetailUnitTest(TestCase):
         assert res.status_code == 200
 
 
+class ApiPersonaleFullDetail(TestCase):
+    
+    def test_apipersonalefulldetail(self):
+        req = Client()
+        
+        u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
+            'uo': '2',
+            'uo_padre': '1',
+        })
+        
+        p1 = PersonaleUnitTest.create_personale(**{
+            'id': 1,
+            'nome': 'Simone',
+            'cognome': 'Mungari',
+            'cd_ruolo': 'PA',
+            'ds_ruolo_locale': 'Professore Associato',
+            'id_ab': 1,
+            'matricola': '111112',
+            'fl_docente': 1,
+            'flg_cessato': 0,
+            'cd_uo_aff_org': u1,
+            'cod_fis': 'SMN1',
+            'cv_full_it': 'AAA',
+            'cv_short_it': 'A',
+            'cv_full_eng': 'BBB',
+            'cv_short_eng': 'B',
+        })
+        
+        patr = PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
+            'matricola': '111112',
+            'cd_ruolo': 'PO',
+            'ds_ruolo': 'Professore Ordinario',
+            'cd_uo_aff_org': u1,
+            'ds_aff_org': 'Direzione',
+            'dt_rap_ini': '2015-01-01',
+        })
+        
+        url = reverse(
+            'ricerca:personaledetail-full', kwargs={
+                'personaleid': "111112"})
+        
+        # GET
+        res = req.get(url)
+        assert res.status_code == 401
+        
+        
+        # Authenticated request
+        usr = get_user_model().objects.create(**{'username': 'test','password': 'password'})
+        token = Token.objects.create(user=usr)
+        
+        # Search by id
+        url = reverse('ricerca:personaledetail-full', kwargs={
+                      'personaleid': "111112"})
+        
+        res = req.get(url,{}, HTTP_AUTHORIZATION= f'Token {token.key}')
+                
+        assert res.status_code == 200
+        assert res.json()['results']['Taxpayer_ID'] == 'SMN1'
+        assert res.json()['results']['ID'] == "111112"
+        assert datetime.datetime(year=2015, month=1, day=1).isoformat() == res.json()['results']['Roles'][0]['Start']
+        
+        # Search by taxpayer_id
+        url = reverse('ricerca:personaledetail-full', kwargs={
+                      'personaleid': "SMN1"})
+        
+        res = req.get(url,{}, HTTP_AUTHORIZATION= f'Token {token.key}')
+                
+                
+        assert res.status_code == 200
+        assert res.json()['results']['Taxpayer_ID'] == 'SMN1'
+        assert res.json()['results']['ID'] == "111112"
+        assert datetime.datetime(year=2015, month=1, day=1).isoformat() == res.json()['results']['Roles'][0]['Start']
+
+
 class ApiStructureDetailUnitTest(TestCase):
 
     def test_apistructuredetail(self):
