@@ -3736,6 +3736,8 @@ class ServicePersonale:
         if not query:
             raise Http404
 
+        personale_id = query[0].matricola
+
         if query.values('cd_uo_aff_org').first()['cd_uo_aff_org'] is None:
             query = query.annotate(
                         Struttura=Value(
