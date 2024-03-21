@@ -7,7 +7,6 @@ from django.core.cache import cache
 from django.utils import timezone
 from django.utils.text import slugify
 from django.conf import settings
-from django.shortcuts import get_object_or_404
 
 from rest_framework import generics, permissions, status
 from rest_framework.authentication import TokenAuthentication
@@ -787,18 +786,19 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
         #CRUD
         only_active = True
         if request.user.is_superuser: only_active = False # pragma: no cover
+        
         elif request.user.is_authenticated: # pragma: no cover
-            is_scientific_director = False
-            try:
-                user_profile = get_object_or_404(Personale, cod_fis=request.user.taxpayer_id)
-                is_scientific_director = LaboratorioDatiBase.objects.filter(matricola_responsabile_scientifico = user_profile).exists()
-            except: pass
+            user_profile = None
+            if request.user.taxpayer_id is not None:
+                user_profile = Personale.objects.filter(cod_fis=request.user.taxpayer_id).first()
+
             offices = OrganizationalStructureOfficeEmployee\
                 .objects\
                 .filter(employee=request.user,
                         office__is_active=True,
                         office__organizational_structure__is_active=True)
-
+            
+            is_scientific_director = user_profile is not None and LaboratorioDatiBase.objects.filter(matricola_responsabile_scientifico = user_profile).exists()
             is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
             is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
             if(is_operator or is_validator or is_scientific_director):
@@ -826,17 +826,17 @@ class ApiLaboratoriesList(ApiEndpointList):
         only_active = True
         if request.user.is_superuser: only_active = False # pragma: no cover
         elif request.user.is_authenticated: # pragma: no cover
-            is_scientific_director = False
-            try:
-                user_profile = get_object_or_404(Personale, cod_fis=request.user.taxpayer_id)
-                is_scientific_director = LaboratorioDatiBase.objects.filter(matricola_responsabile_scientifico = user_profile).exists()
-            except: pass
+            user_profile = None
+            if request.user.taxpayer_id is not None:
+                user_profile = Personale.objects.filter(cod_fis=request.user.taxpayer_id).first()
+                
             offices = OrganizationalStructureOfficeEmployee\
                 .objects\
                 .filter(employee=request.user,
                         office__is_active=True,
                         office__organizational_structure__is_active=True)
 
+            is_scientific_director = user_profile is not None and LaboratorioDatiBase.objects.filter(matricola_responsabile_scientifico = user_profile).exists()
             is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
             is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
             if(is_operator or is_validator or is_scientific_director):
