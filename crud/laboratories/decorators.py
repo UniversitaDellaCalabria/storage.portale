@@ -10,11 +10,11 @@ from .. utils.settings import *
 from .. utils.utils import custom_message
 
 def _is_user_scientific_director(request, laboratory):
-    try:
-        user_profile = get_object_or_404(Personale, cod_fis=request.user.taxpayer_id)
-        scientific_director = laboratory.matricola_responsabile_scientifico
-        return user_profile == scientific_director
-    except: return False
+    if request.user.taxpayer_id is None:
+        return False
+    else:
+        user_profile = Personale.objects.filter(cod_fis=request.user.taxpayer_id).first()
+        return user_profile is not None and laboratory.matricola_responsabile_scientifico == user_profile
 
 def can_manage_laboratories(func_to_decorate):
     """
@@ -29,16 +29,13 @@ def can_manage_laboratories(func_to_decorate):
             laboratory = get_object_or_404(
                 LaboratorioDatiBase, pk=original_kwargs['code'])
             original_kwargs['laboratory'] = laboratory
-            try:
-                user_profile = get_object_or_404(Personale, cod_fis=request.user.taxpayer_id)
-                is_scientific_director = laboratory.matricola_responsabile_scientifico == user_profile
-            except: pass
+            
+            is_scientific_director = _is_user_scientific_director(request, laboratory)
+            
         else:
-            try:
-                user_profile = get_object_or_404(Personale, cod_fis=request.user.taxpayer_id)
-                is_scientific_director = LaboratorioDatiBase.objects.filter(matricola_responsabile_scientifico = user_profile).exists()
-            except: pass
-
+            if request.user.taxpayer_id is not None:                
+                user_profile = Personale.objects.filter(cod_fis=request.user.taxpayer_id).first()
+                is_scientific_director = user_profile is not None and LaboratorioDatiBase.objects.filter(matricola_responsabile_scientifico = user_profile).exists()
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
