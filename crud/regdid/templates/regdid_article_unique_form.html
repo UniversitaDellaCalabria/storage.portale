@@ -1,0 +1,114 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+{% endblock %}
+
+{% block centered_container %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<div class="row">
+    <div class="col-4 col-md-3 overflow-auto">
+        <div class="nav nav-tabs nav-tabs-vertical"
+            id="nav-vertical-tab-articles"
+            role="tablist"
+            style="position: absolute;"
+            aria-orientation="vertical">
+
+            {% for title, struct_art_list in titoli_struttura_articoli_dict.items %}
+                <div class="h6 mb-0">
+                    {{ title.descr_titolo_it }}
+                </div>
+                {% for struct_art in struct_art_list %}
+                <div class="m-2">
+                    {% for struct, art_sub_arts in struct_art.items %}
+                        {% for art, sub_articles in art_sub_arts.items %}
+                            <a  
+                                href="{% if art %}{% url 'crud_regdid:crud_regdid_articles_edit' regdid_id=regdid.pk article_id=art.pk %}{% else %}{% url 'crud_regdid:crud_regdid_articles_new' regdid_id=regdid.pk article_num=struct.numero %}{% endif %}"
+                                class="nav-link {% if article and art == article %}active{% elif new_article and article_num == struct.numero %}active{% endif %}"
+                                id="nav-vertical-tab-articles-{{struct.pk}}-tab"
+                                aria-selected="{% if article and art == article %}true{% elif new_article and article_num == struct.numero %}true{% else %}false{% endif %}">
+                                
+                                <div class="span align-self-start">Art. {{struct.numero}} -</div>
+                                <div class="span col">
+                                    {% if struct.titolo_it %}
+                                        {{ struct.titolo_it }}
+                                    {% endif %}
+                                </div>
+                            
+                            </a>
+                            {% for sub_art in sub_articles %}
+                                <a  
+                                    class="ml-4 nav-link {% if sub_article and sub_article == sub_art %}active{% endif %}"
+                                    id="nav-vertical-tab-articles-{{sub_art.pk}}-tab"
+                                    href="{% url 'crud_regdid:crud_regdid_sub_articles_edit' regdid_id=regdid.pk article_id=art.pk sub_article_id=sub_art.pk %}"
+                                    style="font-weight: normal;"
+                                    aria-selected="{% if sub_article and sub_article == sub_art %}true{% else %}false{% endif %}">
+                                   
+                                    {% if sub_art.titolo_it %}
+                                        <div class="ml-4 span align-self-start">
+                                            Art. {{struct.numero}}.{{sub_art.ordine}} - 
+                                        </div>
+                                        <div class="span col">{{sub_art.titolo_it}}</div>
+                                    {% endif %}
+
+                                </a>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <hr />
+            {% endfor %}      
+        </div>
+    </div>
+    <div class="col-8 col-md-9">
+        <div class="tab-content ml-4"
+            id="nav-vertical-tabContent-article">
+            <div class="h3 mb-4 pb-4" style="font-weight: lighter;" class="mb-4">{{item_label|safe}}</div>
+            <form method="post" enctype="multipart/form-data" novalidate>             
+                <!-- Review Notes -->
+                {% include "blocks/regdid_review_notes.html" %}
+                <!-- /Review Notes -->
+                {% for form in forms %}
+                    {% include "form_template.html" with form=form %}
+                {% endfor %}
+                {% include "includes/form_submit.html" %}
+            </form>
+        </div>
+            
+        {% if show_sub_articles %}
+        <!-- Sub-Articles -->
+        <div class="ml-4">
+            <hr />
+            <h3 style="font-weight: lighter;" class="mt-4 mb-4">{% trans "Sub articles" %}</h3>
+            <div id="collapseDiv_sub_art"
+                class="collapse-div collapse-left-icon m-3 mt-2"
+                style="border-bottom: 0;">
+                {% for sub_art in sub_art_list %}
+                <div class="m-2">
+                    {% include "blocks/regdid_sub_article_item.html" with sub_art=sub_art %}
+                </div>
+                {% endfor %}
+            </div>
+            <a  
+            href="{% url 'crud_regdid:crud_regdid_sub_articles_new' regdid_id=regdid.pk article_id=article.pk %}"
+            class="btn btn-success btn-block">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+            </svg>
+            {% trans "New" %}
+            </a>
+        </div>
+        <!-- /Sub-Articles -->
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock centered_container %}

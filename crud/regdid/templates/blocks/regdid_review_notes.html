@@ -1,0 +1,51 @@
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% random_id uid as collapse_id %}
+
+{% with review_notes=review_notes|default:None review_notes_form=review_notes_form edit_review_notes=edit_review_notes|default:None %}
+
+<div id="collapseDiv_review_notes_{{collapse_id}}"
+     class="collapse-div collapse-left-icon"
+     style="border-bottom: 0;">
+
+    <div class="collapse-header collapse-topic-header"
+            id="heading_review_notes_{{collapse_id}}">
+
+        <a  class="text-reset text-decoration-none p-1 row"
+            data-toggle="collapse"
+            data-target="#collapse_review_notes_{{collapse_id}}"
+            aria-expanded="false"
+            aria-controls="collapse_review_notes_{{collapse_id}}"
+            style="border-top: 0;">
+
+            <div class="span align-self-start">
+                {% trans "Review notes" %}
+            </div>
+
+        </a>
+
+    </div>
+
+    <div id="collapse_review_notes_{{collapse_id}}"
+        class="collapse pt-3 pb-1"
+        role="region"
+        data-parent="#collapseDiv_review_notes_{{collapse_id}}"
+        aria-labelledby="collapse_review_notes_{{collapse_id}}">
+
+        {% if edit_review_notes %} 
+            {% if request.user.is_superuser or roles.revision_operator %}
+                {% include "form_template.html" with form=review_notes_form %}
+            {% endif %}
+        {% else %}
+            <div class="collapse-body shadow-sm pt-3 pb-1 p-0">
+                <div class="m-4">{{review_notes|default:"-"|safe}}</div>
+            </div>
+        {% endif %}
+    </div>
+    <hr/>
+</div>
+
+
+{% endwith %}

@@ -12,6 +12,7 @@ design-django-theme==1.6.4post4
 django-unical-bootstrap-italia==1.2.0
 git+https://github.com/UniversitaDellaCalabria/django-organizational-area.git
 pillow
+reportlab
 
 # Rest
 # openAPI schema v3

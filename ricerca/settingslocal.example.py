@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     'crud.cds_websites_brochure',
     'crud.cds_websites_pages',
     'crud.laboratories',
+    'crud.regdid',
 
     # SAML2
     # 'djangosaml2',

@@ -76,6 +76,14 @@
                 <hr />
                 {% endif %}
                 <!-- /Cds Info -->
+                <!-- Regdid -->
+                {% if "crud.regdid" in installed_apps %}
+                {% trans "Regdid" as title %}
+                {% trans "Manage didactic regulations" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="crud_regdid:crud_regdid" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Regdid -->
                 <!-- CdS Pages -->
                 {% if "crud.cds_websites_pages" in installed_apps %}
                 {% trans "CdS pages" as title %}

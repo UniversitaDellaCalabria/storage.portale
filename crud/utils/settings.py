@@ -42,6 +42,10 @@ OFFICE_PROJECTS = getattr(settings, 'OFFICE_PROJECTS', 'projects')
 OFFICE_TEACHERS = getattr(settings, 'OFFICE_TEACHERS', 'teachers')
 OFFICE_LABORATORIES = getattr(settings, 'OFFICE_LABORATORIES', 'laboratories')
 OFFICE_LABORATORY_VALIDATORS = getattr(settings, 'OFFICE_LABORATORIES', 'laboratory_validators')
+OFFICE_REGDIDS_DEPARTMENT = getattr(settings, 'OFFICE_REGDIDS', 'regdids_department')
+OFFICE_REGDIDS_REVISION = getattr(settings, 'OFFICE_REGDIDS_VALIDATORS', 'regdids_revision')
+OFFICE_REGDIDS_APPROVAL = getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_approval')
+
 
 ALLOWED_CDS_LANGUAGES = ['ita', 'eng']
 ALLOWED_CDS_JOINT_DEGREES = [
@@ -52,6 +56,7 @@ ALLOWED_CDS_JOINT_DEGREES = [
 CMS_STORAGE_ROOT_API = 'https://pp.storage.unical.it'
 STRUCTURES_FATHER = ''
 ALLOWED_STRUCTURE_TYPES = []
+REGDID_ALLOWED_COURSE_TYPES = getattr(settings, 'REGDID_ALLOWED_COURSE_TYPES', ['L', 'LM', 'LM5', 'LM6'])
 
 UNICMS_AUTH_TOKEN = getattr(settings, "UNICMS_AUTH_TOKEN", "")
 UNICMS_TOPIC_API_URL = getattr(settings, "UNICMS_TOPIC_API_URL", "")

@@ -4742,3 +4742,114 @@ class DidatticaPianoSche(models.Model):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_PIANO_SCHE'
+
+
+class DidatticaArticoliRegolamentoStatus(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    status_cod = models.CharField(db_column='STATUS_COD', max_length=100)  # Field name made lowercase.
+    status_desc = models.TextField(db_column='STATUS_DESC', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS'
+
+
+class DidatticaCdsTipoCorso(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    tipo_corso_cod = models.CharField(db_column='TIPO_CORSO_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    tipo_corso_des = models.CharField(db_column='TIPO_CORSO_DES', max_length=80, blank=True, null=True)  # Field name made lowercase.
+    note = models.CharField(db_column='NOTE', max_length=400, blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_TIPO_CORSO'
+
+
+class DidatticaArticoliRegolamentoStruttura(VisibileModAbstract):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    aa = models.IntegerField(db_column='AA')  # Field name made lowercase.
+    numero = models.PositiveIntegerField(db_column='NUMERO', blank=True, null=True)  # Field name made lowercase.
+    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=2000)  # Field name made lowercase.
+    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+    id_didattica_cds_tipo_corso = models.ForeignKey(DidatticaCdsTipoCorso, models.PROTECT, db_column='ID_DIDATTICA_CDS_TIPO_CORSO')  # Field name made lowercase.
+    id_didattica_articoli_regolamento_titolo = models.ForeignKey("DidatticaArticoliRegolamentoTitolo", models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA'
+        
+        
+class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    cds = models.ForeignKey('DidatticaCds', models.DO_NOTHING, db_column='CDS_ID')  # Field name made lowercase.
+    aa = models.IntegerField(db_column='AA')  # Field name made lowercase.
+    note = models.TextField(db_column='NOTE')  # Field name made lowercase.
+    id_didattica_articoli_regolamento_status = models.ForeignKey(DidatticaArticoliRegolamentoStatus, models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS')  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA'
+
+
+class DidatticaArticoliRegolamentoStrutturaTopic(VisibileModAbstract):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_sito_web_cds_topic = models.ForeignKey(SitoWebCdsTopic, models.PROTECT, db_column='ID_SITO_WEB_CDS_TOPIC')  # Field name made lowercase.
+    id_did_art_regolamento_struttura = models.ForeignKey(DidatticaArticoliRegolamentoStruttura, models.DO_NOTHING, db_column='ID_DID_ART_REGOLAMENTO_STRUTTURA')  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase. TODO
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA_TOPIC'        
+        
+        
+class DidatticaCdsArticoliRegolamento(VisibileModAbstract):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_didattica_cds_articoli_regolamento_testata = models.ForeignKey(DidatticaCdsArticoliRegolamentoTestata, models.PROTECT, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA', blank=True, null=True)  # Field name made lowercase.
+    id_didattica_articoli_regolamento_struttura = models.ForeignKey(DidatticaArticoliRegolamentoStruttura, models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA')  # Field name made lowercase.
+    testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
+    testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
+    note = models.TextField(db_column='NOTE', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_ARTICOLI_REGOLAMENTO'
+
+
+class DidatticaArticoliRegolamentoTitolo(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    descr_titolo_it = models.CharField(db_column='DESCR_TITOLO_IT', max_length=1000)  # Field name made lowercase.
+    descr_titolo_en = models.CharField(db_column='DESCR_TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO'
+        
+
+class DidatticaCdsSubArticoliRegolamento(VisibileModAbstract):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    ordine = models.PositiveIntegerField(db_column='ORDINE')  # Field name made lowercase.
+    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000)  # Field name made lowercase.
+    titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
+    testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
+    id_didattica_cds_articoli_regolamento = models.ForeignKey(DidatticaCdsArticoliRegolamento, models.CASCADE, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_SUB_ARTICOLI_REGOLAMENTO'

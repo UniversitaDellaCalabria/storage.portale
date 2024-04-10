@@ -1,0 +1,150 @@
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% with struct=struct|default:None article=article|default:None sub_articles=sub_articles|default:None %}
+
+<div class="collapse-header collapse-topic-header m-2"
+        id="heading_art_struct_{{struct.pk}}">
+
+    <a  class="text-reset text-decoration-none p-1 row"
+        data-toggle="collapse"
+        data-target="#collapse_art_struct_{{struct.pk}}"
+        aria-expanded="false"
+        aria-controls="collapse_art_struct_{{struct.pk}}"
+        style="border-top: 0;">
+
+        <div class="span align-self-start">Art. {{struct.numero}} -</div>
+        <div class="span col">
+            {% if struct.titolo_it %}
+                {{ struct.titolo_it }}
+            {% endif %}
+            <br/>
+            {% if struct.titolo_en %}
+            <div style="font-weight: normal;">({{ struct.titolo_en }})</div>
+            {% endif %}
+        </div>
+        {% if article and article.note and article.note|length > 0 %}
+            <div class="text">({% trans "Notes" %})</div>
+        {% endif %}
+
+    </a>
+
+</div>
+
+{% if article %}
+<!-- Article delete modal -->
+<div class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    id="delete_art_{{article.id}}">
+    <div class="modal-dialog modal-dialog-centered"
+            role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Confirm" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <svg class="icon">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {% trans "Do you want to remove this article and all its sub articles?" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success btn-sm" href="{% url 'crud_regdid:crud_regdid_articles_delete' regdid_id=regdid.pk article_id=article.pk %}">
+                    {% trans 'Yes, proceed' %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Article delete modal -->
+{% endif %}
+
+<div id="collapse_art_struct_{{struct.pk}}"
+        class="collapse p-3 mb-4 shadow-sm"
+        style="background-color: #FAFAFA;"
+        role="region"
+        data-parent="#collapseDiv_art_struct"
+        aria-labelledby="collapse_art_struct_{{struct.pk}}">
+
+    <div class="collapse-body pt-3 pb-2">
+        <!-- Reg article text_it -->
+        <div class="span h6">{% trans "Text (it)" %}:</div>
+        <div class="span">{% if article.testo_it %}{{article.testo_it|safe}}{% else %} - {% endif %}</div>
+        <!-- /Reg article text_it -->
+        <hr />
+        <!-- Reg article text_en -->
+        <div class="span h6">{% trans "Text (en)" %}:</div>
+        <div class="span">{% if article.testo_en %}{{article.testo_en|safe}}{% else %} - {% endif %}</div>
+        <!-- /Reg article text_en -->
+    </div>
+    <div class="d-flex ml-4 mr-4">
+        {% if article %}
+        <a  
+            href="{% url 'crud_regdid:crud_regdid_articles_edit' regdid_id=regdid.pk article_id=article.pk %}"
+            class="btn btn-primary btn-block p-2 m-0">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+            </svg>
+            {% trans "Edit" %}
+        </a>
+        <a  
+            href="javascript:void(0)"
+            data-toggle="modal"
+            data-target="#delete_art_{{article.id}}"
+            class="btn btn-danger btn-block p-2 m-0">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+            </svg>
+            {% trans "Remove" %}
+        </a>
+        {% else %}
+        <a  
+            href="{% url 'crud_regdid:crud_regdid_articles_new' regdid_id=regdid.pk article_num=struct.numero %}"
+            class="btn btn-success btn-block p-2">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+            </svg>
+            {% trans "New" %}
+        </a>
+        {% endif %}
+    </div>
+
+    {% if article and sub_articles and sub_articles|length > 0 %}
+    <!-- Sub articles -->
+    <div class="pt-4 ml-3 mb-2">
+        <div class="h5 ml-2 mt-4 mb-4">{% trans "Sub articles" %}</div>
+        <div id="collapseDiv_sub_art"
+            class="collapse-div collapse-left-icon m-3"
+            style="border: 0;">
+            {% for sub_art in sub_articles %}
+            <div class="m-2">
+                {% include "blocks/regdid_sub_article_item.html" with sub_art=sub_art %}
+            </div>
+            {% endfor %}
+            <a  
+                href="{% url 'crud_regdid:crud_regdid_sub_articles_new' regdid_id=regdid.pk article_id=article.pk %}"
+                class="btn btn-success btn-block p-2">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                </svg>
+                {% trans "New" %}
+            </a>
+        </div>
+        <!-- /Sub articles -->
+    </div>
+    {% endif %}
+
+</div>
+
+{% endwith %}

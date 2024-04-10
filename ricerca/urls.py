@@ -91,6 +91,9 @@ if 'crud.cds_websites_pages' in settings.INSTALLED_APPS:
 if 'crud.laboratories' in settings.INSTALLED_APPS:
     import crud.laboratories.urls
     urlpatterns += path('', include((crud.laboratories.urls, 'crud_laboratories',))),
+if 'crud.regdid' in settings.INSTALLED_APPS:
+    import crud.regdid.urls
+    urlpatterns += path('', include((crud.regdid.urls, 'crud_regdid',))),
 
 urlpatterns += [
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),

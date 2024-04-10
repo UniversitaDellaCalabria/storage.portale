@@ -1,0 +1,108 @@
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% with sub_art=sub_art|default:None %}
+
+<div class="collapse-header collapse-topic-header m-2"
+        id="heading_sub_art_{{sub_art.pk}}">
+
+    <a  class="text-reset text-decoration-none p-1 row"
+        data-toggle="collapse"
+        data-target="#collapse_sub_art_{{sub_art.pk}}"
+        aria-expanded="false"
+        aria-controls="collapse_sub_art_{{sub_art.pk}}"
+        style="border-top: 0;">
+
+        <div class="span align-self-start">
+            {% if sub_art.titolo_it %}
+                Art. {{article.id_didattica_articoli_regolamento_struttura.numero}}.{{sub_art.ordine}} - {{sub_art.titolo_it}}
+            {% endif %}
+            <br/>
+            {% if sub_art.titolo_en %}
+            <div style="font-weight: normal;">({{sub_art.titolo_en}})</div>
+            {% endif %}
+        </div>
+
+    </a>
+
+</div>
+
+<div id="collapse_sub_art_{{sub_art.pk}}"
+        class="collapse pl-4 pb-3"
+        role="region"
+        data-parent="#collapseDiv_sub_art"
+        aria-labelledby="collapse_sub_art_{{sub_art.pk}}">
+
+    <div class="collapse-body pt-3 pb-1">
+        <!-- Reg article text_it -->
+        <div class="span h6">{% trans "Text (it)" %}:</div>
+        <div class="span">{% if sub_art.testo_it %}{{sub_art.testo_it|safe}}{% else %} - {% endif %}</div>
+        <!-- /Reg article text_it -->
+        <hr />
+        <!-- Reg article text_en -->
+        <div class="span h6">{% trans "Text (en)" %}:</div>
+        <div class="span">{% if sub_art.testo_en %}{{sub_art.testo_en|safe}}{% else %} - {% endif %}</div>
+        <!-- /Reg article text_en -->
+    </div>
+
+    <!-- Sub article delete modal -->
+    <div class="modal fade"
+        tabindex="-1"
+        role="dialog"
+        id="delete_sub_art_{{sub_art.id}}">
+        <div class="modal-dialog modal-dialog-centered"
+                role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {% trans "Confirm" %}
+                    </h5>
+                    <button class="close"
+                            type="button"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        {% trans "Do you want to remove this sub article?" %}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-success btn-sm" href="{% url 'crud_regdid:crud_regdid_sub_articles_delete' regdid_id=regdid.pk article_id=article.pk sub_article_id=sub_art.pk %}">
+                        {% trans 'Yes, proceed' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Sub article delete modal -->
+        
+    <div class="d-flex mb-4 mr-4 ml-4">
+        <a  
+            href="{% url 'crud_regdid:crud_regdid_sub_articles_edit' regdid_id=regdid.pk article_id=article.pk sub_article_id=sub_art.pk %}"
+            class="btn btn-primary btn-block p-2 m-0">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+            </svg>
+            {% trans "Edit" %}
+        </a>
+        <a  
+            href="javascript:void(0)"
+            data-toggle="modal"
+            data-target="#delete_sub_art_{{sub_art.id}}"
+            class="btn btn-danger btn-block p-2 m-0">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+            </svg>
+            {% trans "Remove" %}
+        </a>
+    </div>
+
+</div>
+
+{% endwith %}

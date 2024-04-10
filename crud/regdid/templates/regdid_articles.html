@@ -1,0 +1,72 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+{% endblock %}
+
+{% block centered_container %}
+
+
+<div class="d-flex">
+    <div class="h3 mb-1" style="font-weight: lighter;">{{regdid.cds.nome_cds_it}}</div>
+    <a href="{% url 'crud_regdid:crud_regdid_articles_pdf' regdid_id=regdid.pk %}" class="btn btn-success btn-xs align-self-center mb-2 ml-auto">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-download"></use>
+        </svg> {% trans "Generate PDF" %}
+    </a>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <div class="h4 m-4 p-2 text-center">
+                {% trans "Didactic regulation" %} - {{regdid.aa_reg_did}}
+            </div>
+            <div id="collapseDiv_art_struct"
+                 class="collapse-div collapse-left-icon m-3 mt-4 pt-4"
+                 style="border-bottom: 0;">
+                {% for title, struct_art_list in titoli_struttura_articoli_dict.items %}
+                <div class="m-2 mb-4">
+                    <div class="pb-2 pt-3">
+                        <div class="h6 mb-0">
+                            {{ title.descr_titolo_it }}
+                        </div>
+                        {% if title.descr_titolo_en %}
+                        <div class="h6" style="font-weight: normal;">
+                            ({{ title.descr_titolo_en }})
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% for struct_art in struct_art_list %}
+                    <div class="m-2">
+                        {% for struct, art_sub_arts in struct_art.items %}
+                            {% for article, sub_articles in art_sub_arts.items %}
+                                {% include "blocks/regdid_article_item.html" with struct=struct article=article sub_articles=sub_articles %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <hr />
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Log -->
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">Logs RegDID</h4>
+            {% include "obj_logs.html" with logs=logs_regdid id=regdid.pk %}
+        </div>
+    </div>
+</div>
+<!-- END log -->
+{% endblock centered_container %}
