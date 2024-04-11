@@ -4788,7 +4788,7 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     cds = models.ForeignKey('DidatticaCds', models.DO_NOTHING, db_column='CDS_ID')  # Field name made lowercase.
     aa = models.IntegerField(db_column='AA')  # Field name made lowercase.
-    note = models.TextField(db_column='NOTE')  # Field name made lowercase.
+    note = models.TextField(db_column='NOTE', blank=True)  # Field name made lowercase.
     id_didattica_articoli_regolamento_status = models.ForeignKey(DidatticaArticoliRegolamentoStatus, models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS')  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.

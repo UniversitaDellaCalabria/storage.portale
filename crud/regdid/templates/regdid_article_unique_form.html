@@ -73,7 +73,8 @@
             <div class="h3 mb-4 pb-4" style="font-weight: lighter;" class="mb-4">{{item_label|safe}}</div>
             <form method="post" enctype="multipart/form-data" novalidate>             
                 <!-- Review Notes -->
-                {% include "blocks/regdid_review_notes.html" %}
+                {% trans "Revision notes" as note_title %}
+                {% include "blocks/regdid_notes.html" with title=note_title notes=review_notes notes_form=review_notes_form user_can_edit=roles.revision_operator %}
                 <!-- /Review Notes -->
                 {% for form in forms %}
                     {% include "form_template.html" with form=form %}

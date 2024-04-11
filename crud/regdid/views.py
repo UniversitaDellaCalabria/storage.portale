@@ -156,6 +156,26 @@ def regdid_articles(request, regdid_id, regdid=None, my_offices=None, roles=None
             }
         ]  
     
+    didatticacdsarticoliregolamentotestatanoteform = DidatticaCdsArticoliRegolamentoTestataNoteForm(data=request.POST if request.POST else None, instance=testata)
+    if request.POST:
+        if didatticacdsarticoliregolamentotestatanoteform.is_valid():
+            if didatticacdsarticoliregolamentotestatanoteform.changed_data:
+                note_dipartimento = didatticacdsarticoliregolamentotestatanoteform.save(commit=False)
+                note_dipartimento.save(update_fields=['note',])
+
+                log_action( user=request.user,
+                            obj=regdid,
+                            flag=CHANGE,
+                            msg=_("Edited department notes"))
+                
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     _("Department notes edited successfully"))
+        else:  # pragma: no cover
+            for k, v in didatticacdsarticoliregolamentotestatanoteform.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{didatticacdsarticoliregolamentotestatanoteform.fields[k].label}</b>: {v}")  
+    
     # logs
     logs_regdid = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(regdid).pk,
                                            object_id=regdid.pk)
@@ -171,6 +191,7 @@ def regdid_articles(request, regdid_id, regdid=None, my_offices=None, roles=None
                       'logs_regdid': logs_regdid,
                       'regdid': regdid,
                       'titoli_struttura_articoli_dict': titoli_struttura_articoli_dict,
+                      'department_notes_form': didatticacdsarticoliregolamentotestatanoteform,
                       'roles': roles,
                   })
     
@@ -213,6 +234,8 @@ def regdid_articles_edit(request, regdid_id, article_id, regdid=None, my_offices
                             flag=CHANGE,
                             msg=_("Edited notes") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}")
             
+                messages.add_message(request, messages.SUCCESS, _("Notes edited successfully"))
+            
             return redirect('crud_regdid:crud_regdid_articles_edit', regdid_id=regdid_id, article_id=articolo.pk)    
         
         else:  # pragma: no cover
@@ -238,7 +261,7 @@ def regdid_articles_edit(request, regdid_id, article_id, regdid=None, my_offices
                       'titoli_struttura_articoli_dict': titoli_struttura_articoli_dict,
                       'review_notes_form': didatticacdsarticoliregolamentonoteform,
                       'review_notes': note_revisione,
-                      'edit_review_notes': 1,
+                      'edit_notes': 1,
                       'roles': roles,
                   })
     

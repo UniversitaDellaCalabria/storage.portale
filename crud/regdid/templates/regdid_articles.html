@@ -27,6 +27,15 @@
             <div class="h4 m-4 p-2 text-center">
                 {% trans "Didactic regulation" %} - {{regdid.aa_reg_did}}
             </div>
+            <!-- Department Notes -->
+            <form method="post"
+                  action="{% url 'crud_regdid:crud_regdid_articles' regdid_id=regdid.pk %}"
+                  enctype="multipart/form-data"
+                  novalidate>
+                {% trans "Department notes" as note_title %}
+                {% include "blocks/regdid_notes.html" with title=note_title notes=department_notes notes_form=department_notes_form edit_notes=1 user_can_edit=roles.department_operator show_submit_button=1 %}
+            </form>
+            <!-- /Department Notes -->
             <div id="collapseDiv_art_struct"
                  class="collapse-div collapse-left-icon m-3 mt-4 pt-4"
                  style="border-bottom: 0;">

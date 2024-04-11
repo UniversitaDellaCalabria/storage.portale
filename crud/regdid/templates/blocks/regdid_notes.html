@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% random_id uid as collapse_id %}
+
+{% with title=title|default:"Notes" notes=notes|default:None notes_form=notes_form edit_notes=edit_notes|default:None user_can_edit=user_can_edit|default:None show_submit_button=show_submit_button|default:None %}
+
+<div id="collapseDiv_notes_{{collapse_id}}"
+     class="collapse-div collapse-left-icon"
+     style="border-bottom: 0;">
+
+    <div class="collapse-header collapse-topic-header"
+            id="heading_notes_{{collapse_id}}">
+
+        <a  class="text-reset text-decoration-none p-1 row"
+            data-toggle="collapse"
+            data-target="#collapse_notes_{{collapse_id}}"
+            aria-expanded="false"
+            aria-controls="collapse_notes_{{collapse_id}}"
+            style="border-top: 0;">
+
+            <div class="span align-self-start">
+                {{title}}
+            </div>
+
+        </a>
+
+    </div>
+
+    <div id="collapse_notes_{{collapse_id}}"
+        class="collapse pt-3 pb-1"
+        role="region"
+        data-parent="#collapseDiv_notes_{{collapse_id}}"
+        aria-labelledby="collapse_notes_{{collapse_id}}">
+
+        {% if edit_notes %}
+            {% if request.user.is_superuser or user_can_edit %}
+                {% include "form_template.html" with form=notes_form %}
+                {% if show_submit_button %}
+                    {% include "includes/form_submit.html" %}
+                {% endif %}
+            {% else %}
+                <div class="collapse-body shadow-sm pt-3 pb-1 p-0">
+                    <div class="m-4">{{notes|default:"-"|safe}}</div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="collapse-body shadow-sm pt-3 pb-1 p-0">
+                <div class="m-4">{{notes|default:"-"|safe}}</div>
+            </div>
+        {% endif %}
+    </div>
+    <hr/>
+</div>
+
+
+{% endwith %}

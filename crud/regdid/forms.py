@@ -54,3 +54,7 @@ class DidatticaCdsArticoliRegolamentoNoteForm(forms.ModelForm):
         fields = ('note',)
         labels = {'note': _("Notes")}
         widgets = {'note': CKEditor5Widget()}
+        
+class DidatticaCdsArticoliRegolamentoTestataNoteForm(DidatticaCdsArticoliRegolamentoNoteForm):
+    class Meta(DidatticaCdsArticoliRegolamentoNoteForm.Meta):
+        model = DidatticaCdsArticoliRegolamentoTestata
