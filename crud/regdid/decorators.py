@@ -66,8 +66,7 @@ def can_edit_regdid(func_to_decorate):
             department = regdid.cds.dip
             roles = __get_user_roles(request, my_offices, department)
 
-        if 'roles' in original_kwargs.keys():
-            original_kwargs["roles"] = roles
+        original_kwargs["roles"] = roles
         
         for role in roles.values():
             if role == True:
