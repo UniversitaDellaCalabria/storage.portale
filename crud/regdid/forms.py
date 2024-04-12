@@ -41,8 +41,8 @@ class DidatticaCdsSubArticoliRegolamentoForm(BaseArticoliModelForm):
         fields = ('ordine', 'titolo_it', 'titolo_en', 'testo_it', 'testo_en')
         labels = BaseArticoliModelForm.Meta.labels | {
             'ordine': _("Order"),
-            'titolo_it': _("Titolo (it)"),
-            'titolo_en': _("Titolo (en)")
+            'titolo_it': _("Title (it)"),
+            'titolo_en': _("Title (en)")
         }
         help_texts = {
             'ordine': _("This field is also used to enumerate the article (ex: Art 1.x)")

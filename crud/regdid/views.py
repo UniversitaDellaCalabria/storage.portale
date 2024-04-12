@@ -371,7 +371,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id, reg
                 log_action(user=request.user,
                                     obj=regdid,
                                     flag=CHANGE,
-                                    msg=_("Edited") + f" Art.{articolo.id_didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}")
+                                    msg=_("Edited") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}")
 
                 messages.add_message(request,
                                         messages.SUCCESS,
@@ -428,7 +428,7 @@ def regdid_sub_articles_new(request, regdid_id, article_id, regdid=None, my_offi
             log_action(user=request.user,
                                 obj=regdid,
                                 flag=CHANGE,
-                                msg=_("Added") + f" Art.{articolo.id_didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}")
+                                msg=_("Added") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}")
 
             messages.add_message(request,
                                     messages.SUCCESS,
@@ -473,7 +473,7 @@ def regdid_sub_articles_delete(request, regdid_id, article_id, sub_article_id, r
     log_action(user=request.user,
                         obj=regdid,
                         flag=CHANGE,
-                        msg=_("Deleted") + f" Art.{articolo.id_didattica_articoli_regolamento_struttura.numero}.{ordine_sotto_articolo} - {titolo_sotto_articolo}")
+                        msg=_("Deleted") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero}.{ordine_sotto_articolo} - {titolo_sotto_articolo}")
 
     messages.add_message(request,
                             messages.SUCCESS,

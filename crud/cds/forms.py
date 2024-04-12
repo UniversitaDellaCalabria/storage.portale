@@ -50,7 +50,7 @@ class DidatticaCdsAltriDatiForm(forms.ModelForm):
             "nome_origine_vice_coordinatore": _("Deputy coordinator"),
             # "num_posti": _("Number of seats"),
             # "modalita_iscrizione": _("Registration procedure"),
-            "visibile": _("Visibile"),
+            "visibile": _("Visible"),
             # "manifesto_studi": _("Study manifesto"),
             # "regolamento_didattico": _("Didactic regulation"),
         }
