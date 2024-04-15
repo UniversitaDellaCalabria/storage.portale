@@ -3,13 +3,15 @@ import logging
 
 from django.http import FileResponse
 from django.contrib import messages
-from django.contrib.admin.models import CHANGE, LogEntry
+from django.contrib.admin.models import CHANGE, ADDITION, LogEntry
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+from django_xhtml2pdf.utils import pdf_decorator
 
 from . decorators import *
 from . forms import *
@@ -22,11 +24,10 @@ from .. utils.utils import log_action
 logger = logging.getLogger(__name__)
 
 
-def _get_titoli_struttura_articoli_dict(regdid):
+def _get_titoli_struttura_articoli_dict(regdid, testata):
     didattica_cds_tipo_corso = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod)
     titoli = DidatticaArticoliRegolamentoTitolo.objects.all()
     struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(id_didattica_cds_tipo_corso=didattica_cds_tipo_corso).order_by("numero")
-    testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     articoli = DidatticaCdsArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata, id_didattica_articoli_regolamento_struttura__in=struttura_articoli)
     titoli_struttura_articoli_dict = {titolo : [] for titolo in titoli}
     for titolo in titoli_struttura_articoli_dict.keys():
@@ -141,8 +142,8 @@ def regdid_articles(request, regdid_id, regdid=None, my_offices=None, roles=None
     
     if created:
         log_action( user=request.user,
-                    obj=regdid,
-                    flag=CHANGE,
+                    obj=testata,
+                    flag=ADDITION,
                     msg=_("Added regulament testata"))
     
     articoli = DidatticaCdsArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata, id_didattica_articoli_regolamento_struttura__in=struttura_articoli)
@@ -164,7 +165,7 @@ def regdid_articles(request, regdid_id, regdid=None, my_offices=None, roles=None
                 note_dipartimento.save(update_fields=['note',])
 
                 log_action( user=request.user,
-                            obj=regdid,
+                            obj=testata,
                             flag=CHANGE,
                             msg=_("Edited department notes"))
                 
@@ -177,8 +178,8 @@ def regdid_articles(request, regdid_id, regdid=None, my_offices=None, roles=None
                                         f"<b>{didatticacdsarticoliregolamentotestatanoteform.fields[k].label}</b>: {v}")  
     
     # logs
-    logs_regdid = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(regdid).pk,
-                                           object_id=regdid.pk)
+    logs_regdid_testata = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(testata).pk,
+                                           object_id=testata.pk)
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_regdid:crud_regdid'): _('Didactic regulations'),
@@ -188,7 +189,8 @@ def regdid_articles(request, regdid_id, regdid=None, my_offices=None, roles=None
                   'regdid_articles.html',
                   {
                       'breadcrumbs': breadcrumbs,
-                      'logs_regdid': logs_regdid,
+                      'logs_regdid_testata': logs_regdid_testata,
+                      'testata': testata,
                       'regdid': regdid,
                       'titoli_struttura_articoli_dict': titoli_struttura_articoli_dict,
                       'department_notes_form': didatticacdsarticoliregolamentotestatanoteform,
@@ -205,8 +207,10 @@ def regdid_articles_edit(request, regdid_id, article_id, regdid=None, my_offices
     sub_art_list = DidatticaCdsSubArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento=article_id).order_by("ordine")
     didatticacdsarticoliregolamentoform = DidatticaCdsArticoliRegolamentoForm(data=request.POST if request.POST else None, instance=articolo)
     didatticacdsarticoliregolamentonoteform = DidatticaCdsArticoliRegolamentoNoteForm(data=request.POST if request.POST else None, instance=articolo)
+    testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
+    
     # Nav-bar items
-    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid)
+    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
     note_revisione = articolo.note
     
     if request.POST:
@@ -218,7 +222,7 @@ def regdid_articles_edit(request, regdid_id, article_id, regdid=None, my_offices
                 articolo.save()
                 
                 log_action(user=request.user,
-                                    obj=regdid,
+                                    obj=testata,
                                     flag=CHANGE,
                                     msg=_("Edited") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}")
 
@@ -226,11 +230,11 @@ def regdid_articles_edit(request, regdid_id, article_id, regdid=None, my_offices
                                         messages.SUCCESS,
                                         _("Article edited successfully"))
             
-            if didatticacdsarticoliregolamentonoteform.changed_data:
+            if didatticacdsarticoliregolamentonoteform.changed_data: #TODO
                 note_articolo = didatticacdsarticoliregolamentonoteform.save(commit=False)
                 note_articolo.save(update_fields=['note',])
                 log_action( user=request.user,
-                            obj=regdid,
+                            obj=testata,
                             flag=CHANGE,
                             msg=_("Edited notes") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}")
             
@@ -277,7 +281,7 @@ def regdid_articles_new(request, regdid_id, article_num, regdid=None, my_offices
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     
     # Nav-bar items
-    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid)
+    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
     
     if request.POST:
         if didatticacdsarticoliregolamentoform.is_valid():
@@ -291,7 +295,7 @@ def regdid_articles_new(request, regdid_id, article_num, regdid=None, my_offices
             articolo.save()
             
             log_action(user=request.user,
-                                obj=regdid,
+                                obj=testata,
                                 flag=CHANGE,
                                 msg=_("Added") + f" Art. {struttura_articolo.numero} - {struttura_articolo.titolo_it}")
 
@@ -332,10 +336,11 @@ def regdid_articles_delete(request, regdid_id, article_id, regdid=None, my_offic
     numero_articolo = articolo.id_didattica_articoli_regolamento_struttura.numero
     titolo_articolo = articolo.id_didattica_articoli_regolamento_struttura.titolo_it
     numero_sotto_art = DidatticaCdsSubArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento=article_id).count()
+    testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     articolo.delete()
     
     log_action(user=request.user,
-                        obj=regdid,
+                        obj=testata,
                         flag=CHANGE,
                         msg=_("Deleted") + f" Art. {numero_articolo} - {titolo_articolo} (" + _("sub articles") + f": {numero_sotto_art})")
 
@@ -355,10 +360,11 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id, reg
     articolo = get_object_or_404(DidatticaCdsArticoliRegolamento, pk=article_id)
     sotto_articolo = get_object_or_404(DidatticaCdsSubArticoliRegolamento, pk=sub_article_id)
     didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None, instance=sotto_articolo)
+    testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     note_revisione = articolo.note
     
     # Nav-bar items
-    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid)
+    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
     
     if request.POST:
         if didatticacdssubarticoliregolamentoform.is_valid():
@@ -369,7 +375,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id, reg
                 sotto_articolo.save()
                 
                 log_action(user=request.user,
-                                    obj=regdid,
+                                    obj=testata,
                                     flag=CHANGE,
                                     msg=_("Edited") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}")
 
@@ -411,10 +417,11 @@ def regdid_sub_articles_new(request, regdid_id, article_id, regdid=None, my_offi
     articolo = get_object_or_404(DidatticaCdsArticoliRegolamento, pk=article_id)
     didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None)
     strutt_articolo = articolo.id_didattica_articoli_regolamento_struttura
+    testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     note_revisione = articolo.note
     
     # Nav-bar items
-    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid)
+    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
     
     if request.POST:
         if didatticacdssubarticoliregolamentoform.is_valid():
@@ -426,7 +433,7 @@ def regdid_sub_articles_new(request, regdid_id, article_id, regdid=None, my_offi
             sotto_articolo.save()
             
             log_action(user=request.user,
-                                obj=regdid,
+                                obj=testata,
                                 flag=CHANGE,
                                 msg=_("Added") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}")
 
@@ -468,10 +475,11 @@ def regdid_sub_articles_delete(request, regdid_id, article_id, sub_article_id, r
     sotto_articolo = get_object_or_404(DidatticaCdsSubArticoliRegolamento, pk=sub_article_id)
     titolo_sotto_articolo = sotto_articolo.titolo_it
     ordine_sotto_articolo = sotto_articolo.ordine
+    testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     sotto_articolo.delete()
     
     log_action(user=request.user,
-                        obj=regdid,
+                        obj=testata,
                         flag=CHANGE,
                         msg=_("Deleted") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero}.{ordine_sotto_articolo} - {titolo_sotto_articolo}")
 
@@ -482,17 +490,17 @@ def regdid_sub_articles_delete(request, regdid_id, article_id, sub_article_id, r
     return redirect('crud_regdid:crud_regdid_articles_edit', regdid_id=regdid_id, article_id=article_id)
 
 
-
 # Regulament PDF
 @login_required
 @can_manage_regdid
 @can_edit_regdid
+@pdf_decorator(pdfname="test.pdf")
 def regdid_articles_pdf(request, regdid_id, regdid=None, my_offices=None, roles=None):
-   
-    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid)
-        
-    response = FileResponse(generate_regulament_pdf_file(titoli_struttura_articoli_dict), 
-                            as_attachment=True, 
-                            filename='regolamento.pdf')
-    
-    return response
+    testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
+    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
+    context = {
+        'regdid': regdid,
+        'titoli_struttura_articoli_dict': titoli_struttura_articoli_dict,
+        'roles': roles,
+    }    
+    return render(request, 'regdid_generate_pdf.html', context)
