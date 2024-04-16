@@ -54,7 +54,9 @@ class DidatticaCdsArticoliRegolamentoNoteForm(forms.ModelForm):
         fields = ('note',)
         labels = {'note': _("Notes")}
         widgets = {'note': CKEditor5Widget()}
+        help_texts = {'note': _("This field is shared between the main article and its sub articles")}
         
 class DidatticaCdsArticoliRegolamentoTestataNoteForm(DidatticaCdsArticoliRegolamentoNoteForm):
     class Meta(DidatticaCdsArticoliRegolamentoNoteForm.Meta):
         model = DidatticaCdsArticoliRegolamentoTestata
+        help_texts = {}

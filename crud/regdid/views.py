@@ -156,11 +156,13 @@ def regdid_articles(request, regdid_id, regdid=None, my_offices=None, roles=None
                 for art_struttura in struttura_articoli.filter(id_didattica_articoli_regolamento_titolo=titolo)
             }
         ]  
-    
+    # Department notes
     didatticacdsarticoliregolamentotestatanoteform = DidatticaCdsArticoliRegolamentoTestataNoteForm(data=request.POST if request.POST else None, instance=testata)
     if request.POST:
         if didatticacdsarticoliregolamentotestatanoteform.is_valid():
-            if didatticacdsarticoliregolamentotestatanoteform.changed_data:
+            if (request.user.is_superuser or roles['department_operator'])\
+               and didatticacdsarticoliregolamentotestatanoteform.changed_data:
+                    
                 note_dipartimento = didatticacdsarticoliregolamentotestatanoteform.save(commit=False)
                 note_dipartimento.save(update_fields=['note',])
 
@@ -219,7 +221,7 @@ def regdid_articles_edit(request, regdid_id, article_id, regdid=None, my_offices
                 articolo = didatticacdsarticoliregolamentoform.save(commit=False)
                 articolo.dt_mod = datetime.datetime.now()
                 articolo.id_user_mod = request.user
-                articolo.save()
+                articolo.save(update_fields=didatticacdsarticoliregolamentoform.changed_data)
                 
                 log_action(user=request.user,
                                     obj=testata,
@@ -230,9 +232,13 @@ def regdid_articles_edit(request, regdid_id, article_id, regdid=None, my_offices
                                         messages.SUCCESS,
                                         _("Article edited successfully"))
             
-            if didatticacdsarticoliregolamentonoteform.changed_data: #TODO
+            if 'note' in request.POST\
+                and (request.user.is_superuser or roles['revision_operator'])\
+                and didatticacdsarticoliregolamentonoteform.changed_data:
+                    
                 note_articolo = didatticacdsarticoliregolamentonoteform.save(commit=False)
                 note_articolo.save(update_fields=['note',])
+                
                 log_action( user=request.user,
                             obj=testata,
                             flag=CHANGE,
