@@ -36,13 +36,13 @@
 
     <div class="collapse-body pt-3 pb-1">
         <!-- Reg article text_it -->
-        <div class="span h6">{% trans "Text (it)" %}:</div>
-        <div class="span">{% if sub_art.testo_it %}{{sub_art.testo_it|safe}}{% else %} - {% endif %}</div>
+        <div class="h6">{% trans "Text (it)" %}:</div>
+        <div class="col mt-3">{% if sub_art.testo_it %}{{sub_art.testo_it|safe}}{% else %} - {% endif %}</div>
         <!-- /Reg article text_it -->
         <hr />
         <!-- Reg article text_en -->
-        <div class="span h6">{% trans "Text (en)" %}:</div>
-        <div class="span">{% if sub_art.testo_en %}{{sub_art.testo_en|safe}}{% else %} - {% endif %}</div>
+        <div class="h6">{% trans "Text (en)" %}:</div>
+        <div class="col mt-3">{% if sub_art.testo_en %}{{sub_art.testo_en|safe}}{% else %} - {% endif %}</div>
         <!-- /Reg article text_en -->
     </div>
 
