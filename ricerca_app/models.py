@@ -2,8 +2,10 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from .validators import *
+from organizational_area.models import OrganizationalStructureOfficeEmployee
 
+from .validators import *
+from . settings import *
 
 
 def patents_media_path(instance, filename): # pragma: no cover
@@ -38,6 +40,80 @@ def cds_ordinamento_media_path(instance, filename): # pragma: no cover
 
 def cds_multimedia_media_path(instance, filename): # pragma: no cover
     return f'portale/cds_media_brochure/{filename}'
+
+
+class PermissionsModAbstract(models.Model):
+    
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        '''
+        returns a tuple containing the names of the relevant offices
+        for this model
+        '''
+        raise NotImplementedError()
+    
+    @classmethod
+    def get_all_user_offices(cls, user, **kwargs):     
+        return OrganizationalStructureOfficeEmployee.objects.filter(employee=user,
+                                                                    office__is_active=True,
+                                                                    office__name__in=cls.get_offices_names(),
+                                                                    office__organizational_structure__is_active=True)
+    
+    def _is_valid_office(self, office_name, all_user_offices, **kwargs):
+        '''
+        this method performs advanced checks on a office record: all_user_offices.get(office__name=office_name)
+        
+        example:
+            check if the given office's unique_code mathes the department code related to the object
+            
+        default: the user is part of an office related to the model
+        '''
+        return True
+    
+    def _check_access_permission(self, user_offices_names, **kwargs):
+        '''
+        default: the user is part of at least one office related to the model 
+        '''
+        return len(user_offices_names) > 0
+    
+    def _check_edit_permission(self, user_offices_names, **kwargs):
+        return False
+    
+    def _check_lock_permission(self, user_offices_names, **kwargs):
+        return False
+
+    def get_user_offices_names(self, user, **kwargs):
+        '''
+        returns a tuple containing the offices names a user is part of,
+        among the ones returned by get_offices_names(),
+        that matches all the conditions of _is_valid_office()
+        '''
+        try:
+            self._all_user_offices = self._all_user_offices 
+        except AttributeError:
+            self._all_user_offices = {}
+        
+        # avoid querying the same offices for the same user multiple times on the same object
+        if not user in self._all_user_offices:
+            self._all_user_offices[user] = self.get_all_user_offices(user, **kwargs)
+        return tuple(user_office.office.name for user_office in self._all_user_offices[user]
+                     if self._is_valid_office(user_office.office.name, self._all_user_offices[user], **kwargs))
+        
+    
+    def get_user_permissions(self, user, **kwargs):
+        '''
+        returns a dict containing whether or not the user possesses the following permissions
+        (access, edit, lock)
+        '''
+        user_offices_names = self.get_user_offices_names(user, **kwargs)
+        return {
+            'access': user.is_superuser or self._check_access_permission(user_offices_names, **kwargs),
+            'edit': user.is_superuser or self._check_edit_permission(user_offices_names, **kwargs),
+            'lock': user.is_superuser or self._check_lock_permission(user_offices_names, **kwargs)
+        }
+        
+    class Meta:
+        abstract = True
 
 
 class InsModAbstract(models.Model):
@@ -4744,17 +4820,23 @@ class DidatticaPianoSche(models.Model):
         db_table = 'DIDATTICA_PIANO_SCHE'
 
 
-class DidatticaArticoliRegolamentoStatus(models.Model):
+class DidatticaArticoliRegolamentoStatus(PermissionsModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     status_cod = models.CharField(db_column='STATUS_COD', max_length=100)  # Field name made lowercase.
     status_desc = models.TextField(db_column='STATUS_DESC', blank=True, null=True)  # Field name made lowercase.
 
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        return (getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department'),
+                getattr(settings, 'OFFICE_REGDIDS_REVISON', 'regdids_revision'),
+                getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_revision'))
+    
     class Meta:
         managed = True
         db_table = 'DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS'
 
 
-class DidatticaCdsTipoCorso(models.Model):
+class DidatticaCdsTipoCorso(PermissionsModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     tipo_corso_cod = models.CharField(db_column='TIPO_CORSO_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
     tipo_corso_des = models.CharField(db_column='TIPO_CORSO_DES', max_length=80, blank=True, null=True)  # Field name made lowercase.
@@ -4762,6 +4844,12 @@ class DidatticaCdsTipoCorso(models.Model):
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
 
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        return (getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department'),
+                getattr(settings, 'OFFICE_REGDIDS_REVISON', 'regdids_revision'),
+                getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_revision'))
+    
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_TIPO_CORSO'
@@ -4779,12 +4867,18 @@ class DidatticaArticoliRegolamentoStruttura(VisibileModAbstract):
     id_didattica_cds_tipo_corso = models.ForeignKey(DidatticaCdsTipoCorso, models.PROTECT, db_column='ID_DIDATTICA_CDS_TIPO_CORSO')  # Field name made lowercase.
     id_didattica_articoli_regolamento_titolo = models.ForeignKey("DidatticaArticoliRegolamentoTitolo", models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO')  # Field name made lowercase.
 
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        return (getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department'),
+                getattr(settings, 'OFFICE_REGDIDS_REVISON', 'regdids_revision'),
+                getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_revision'))
+    
     class Meta:
         managed = True
         db_table = 'DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA'
         
         
-class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract):
+class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract, PermissionsModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     cds = models.ForeignKey('DidatticaCds', models.DO_NOTHING, db_column='CDS_ID')  # Field name made lowercase.
     aa = models.IntegerField(db_column='AA')  # Field name made lowercase.
@@ -4792,6 +4886,35 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract):
     id_didattica_articoli_regolamento_status = models.ForeignKey(DidatticaArticoliRegolamentoStatus, models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS')  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
+
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        return (getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department'),
+                getattr(settings, 'OFFICE_REGDIDS_REVISON', 'regdids_revision'),
+                getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_revision'))
+        
+    def _is_valid_office(self, office_name, all_user_offices, **kwargs):
+        offices_names = self.get_offices_names()
+          
+        if office_name == offices_names[0]:
+            user_office = all_user_offices.get(office__name=office_name)
+            return user_office.office.organizational_structure.unique_code == self.cds.dip.dip_cod
+        return True
+        
+    def _check_edit_permission(self, user_offices_names, **kwargs):
+        offices_names = self.get_offices_names()
+        
+        status_cod = self.id_didattica_articoli_regolamento_status\
+                         .status_cod
+        
+        if status_cod == '0' and offices_names[0] in user_offices_names:
+            return True
+        elif status_cod == '1' and offices_names[1] in user_offices_names:
+            return True
+        elif status_cod in ['2', '3'] and offices_names[2] in user_offices_names:
+            return True
+        
+        return False
 
     class Meta:
         managed = True
@@ -4806,12 +4929,18 @@ class DidatticaArticoliRegolamentoStrutturaTopic(VisibileModAbstract):
     dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase. TODO
 
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        return (getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department'),
+                getattr(settings, 'OFFICE_REGDIDS_REVISON', 'regdids_revision'),
+                getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_revision'))
+    
     class Meta:
         managed = True
         db_table = 'DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA_TOPIC'        
         
         
-class DidatticaCdsArticoliRegolamento(VisibileModAbstract):
+class DidatticaCdsArticoliRegolamento(VisibileModAbstract, PermissionsModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     id_didattica_cds_articoli_regolamento_testata = models.ForeignKey(DidatticaCdsArticoliRegolamentoTestata, models.PROTECT, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA', blank=True, null=True)  # Field name made lowercase.
     id_didattica_articoli_regolamento_struttura = models.ForeignKey(DidatticaArticoliRegolamentoStruttura, models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA')  # Field name made lowercase.
@@ -4820,13 +4949,46 @@ class DidatticaCdsArticoliRegolamento(VisibileModAbstract):
     note = models.TextField(db_column='NOTE', blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
-
+       
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        return (getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department'),
+                getattr(settings, 'OFFICE_REGDIDS_REVISON', 'regdids_revision'),
+                getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_revision'))
+    
+    def _is_valid_office(self, office_name, all_user_offices, **kwargs):
+        offices_names = self.get_offices_names()
+          
+        if office_name == offices_names[0]:
+            user_office = all_user_offices.get(office__name=office_name)
+            return user_office.office.organizational_structure.unique_code == self.id_didattica_cds_articoli_regolamento_testata.cds.dip.dip_cod
+        return True
+        
+    def _check_edit_permission(self, user_offices_names, **kwargs):
+        offices_names = self.get_offices_names()
+        
+        status_cod = self.id_didattica_cds_articoli_regolamento_testata\
+                         .id_didattica_articoli_regolamento_status\
+                         .status_cod
+        
+        if status_cod == '0' and offices_names[0] in user_offices_names:
+            return True
+        elif status_cod == '1' and offices_names[1] in user_offices_names:
+            return True
+        elif status_cod in ['2', '3'] and offices_names[2] in user_offices_names:
+            return True
+        
+        return False
+    
+    def _check_lock_permission(self, user_offices_names, **kwargs):
+        return self._check_edit_permission(user_offices_names, **kwargs)
+       
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_ARTICOLI_REGOLAMENTO'
 
 
-class DidatticaArticoliRegolamentoTitolo(models.Model):
+class DidatticaArticoliRegolamentoTitolo(PermissionsModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     descr_titolo_it = models.CharField(db_column='DESCR_TITOLO_IT', max_length=1000)  # Field name made lowercase.
     descr_titolo_en = models.CharField(db_column='DESCR_TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
@@ -4834,12 +4996,18 @@ class DidatticaArticoliRegolamentoTitolo(models.Model):
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
 
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        return (getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department'),
+                getattr(settings, 'OFFICE_REGDIDS_REVISON', 'regdids_revision'),
+                getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_revision'))
+
     class Meta:
         managed = True
         db_table = 'DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO'
         
 
-class DidatticaCdsSubArticoliRegolamento(VisibileModAbstract):
+class DidatticaCdsSubArticoliRegolamento(VisibileModAbstract, PermissionsModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     ordine = models.PositiveIntegerField(db_column='ORDINE')  # Field name made lowercase.
     titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000)  # Field name made lowercase.
@@ -4849,7 +5017,41 @@ class DidatticaCdsSubArticoliRegolamento(VisibileModAbstract):
     id_didattica_cds_articoli_regolamento = models.ForeignKey(DidatticaCdsArticoliRegolamento, models.CASCADE, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO', blank=True, null=True)  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
-
+    
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        return (getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department'),
+                getattr(settings, 'OFFICE_REGDIDS_REVISON', 'regdids_revision'),
+                getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_revision'))
+    
+    def _is_valid_office(self, office_name, all_user_offices, **kwargs):
+        offices_names = self.get_offices_names()
+          
+        if office_name == offices_names[0]:
+            user_office = all_user_offices.get(office__name=office_name)
+            return user_office.office.organizational_structure.unique_code == self.id_didattica_cds_articoli_regolamento.id_didattica_cds_articoli_regolamento_testata.cds.dip.dip_cod
+        return True
+        
+    def _check_edit_permission(self, user_offices_names, **kwargs):
+        offices_names = self.get_offices_names()
+        
+        status_cod = self.id_didattica_cds_articoli_regolamento\
+                         .id_didattica_cds_articoli_regolamento_testata\
+                         .id_didattica_articoli_regolamento_status\
+                         .status_cod
+        
+        if status_cod == '0' and offices_names[0] in user_offices_names:
+            return True
+        elif status_cod == '1' and offices_names[1] in user_offices_names:
+            return True
+        elif status_cod in ['2', '3'] and offices_names[2] in user_offices_names:
+            return True
+        
+        return False
+    
+    def _check_lock_permission(self, user_offices_names, **kwargs):
+        return self._check_edit_permission(user_offices_names, **kwargs)
+    
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_SUB_ARTICOLI_REGOLAMENTO'

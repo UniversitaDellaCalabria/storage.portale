@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 ALLOWED_PROFILE_ID = []
@@ -57,3 +58,11 @@ PERSON_CONTACTS_EXCLUDE_STRINGS = []
 
 CURRENT_YEAR = ""
 HIGH_FORMATION_YEAR = ""
+
+# locks timed cache
+STORAGE_CACHE_KEY_PREFIX = 'storage_'
+LOCKS_CACHE_TTL = 25 # seconds
+LOCKS_CACHE_KEY_PREFIX = f'{STORAGE_CACHE_KEY_PREFIX}locks_'
+LOCK_MESSAGE = _("Unable to make changes. "
+                 "{user} is currently editing this item")
+

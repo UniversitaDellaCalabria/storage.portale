@@ -497,3 +497,11 @@ if 'rest_framework' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/phd-activity-type-list/'.format(base_url),
                         api_views.ApiPhdActivityTypeList.as_view(),
                         name='phd-activity-type-list'),
+    
+    urlpatterns += path('{}/lock/<int:content_type_id>/<int:object_id>/'.format(base_url),
+                    api_views.LockView.as_view(),
+                    name='check-lock'),
+    
+    urlpatterns += path('{}/lock/set/'.format(base_url),
+                    api_views.LockSetView.as_view(),
+                    name='set-lock'),
