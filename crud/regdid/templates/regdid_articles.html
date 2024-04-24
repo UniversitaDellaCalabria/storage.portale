@@ -33,7 +33,7 @@
                   enctype="multipart/form-data"
                   novalidate>
                 {% trans "Department notes" as note_title %}
-                {% include "blocks/regdid_notes.html" with title=note_title notes=department_notes notes_form=department_notes_form edit_notes=1 user_can_edit=roles.department_operator show_submit_button=1 %}
+                {% include "blocks/regdid_notes.html" with title=note_title notes=department_notes notes_form=department_notes_form edit_notes=1 user_can_edit=can_edit_notes show_submit_button=1 %}
             </form>
             <!-- /Department Notes -->
             <div id="collapseDiv_art_struct"

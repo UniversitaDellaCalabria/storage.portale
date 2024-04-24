@@ -42,9 +42,6 @@ OFFICE_PROJECTS = getattr(settings, 'OFFICE_PROJECTS', 'projects')
 OFFICE_TEACHERS = getattr(settings, 'OFFICE_TEACHERS', 'teachers')
 OFFICE_LABORATORIES = getattr(settings, 'OFFICE_LABORATORIES', 'laboratories')
 OFFICE_LABORATORY_VALIDATORS = getattr(settings, 'OFFICE_LABORATORIES', 'laboratory_validators')
-OFFICE_REGDIDS_DEPARTMENT = getattr(settings, 'OFFICE_REGDIDS', 'regdids_department')
-OFFICE_REGDIDS_REVISION = getattr(settings, 'OFFICE_REGDIDS_VALIDATORS', 'regdids_revision')
-OFFICE_REGDIDS_APPROVAL = getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_approval')
 
 
 ALLOWED_CDS_LANGUAGES = ['ita', 'eng']

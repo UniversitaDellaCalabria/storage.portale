@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
 {% endblock %}
 
+
 {% block centered_container %}
 
-{% get_current_language as LANGUAGE_CODE %}
+<div id="lock_alert">
+</div>
 
 <div class="row">
     <div class="col-4 col-md-3 overflow-auto">
@@ -74,12 +76,16 @@
             <form method="post" enctype="multipart/form-data" novalidate>             
                 <!-- Review Notes -->
                 {% trans "Revision notes" as note_title %}
-                {% include "blocks/regdid_notes.html" with title=note_title notes=review_notes notes_form=review_notes_form user_can_edit=roles.revision_operator %}
+                {% include "blocks/regdid_notes.html" with title=note_title notes=review_notes notes_form=review_notes_form user_can_edit=can_edit_notes %}
                 <!-- /Review Notes -->
                 {% for form in forms %}
                     {% include "form_template.html" with form=form %}
                 {% endfor %}
+                {% if user_permissions.edit %}
+                <div id="form_submit">
                 {% include "includes/form_submit.html" %}
+                </div>
+                {% endif %}
             </form>
         </div>
             
@@ -113,3 +119,72 @@
 </div>
 
 {% endblock centered_container %}
+
+{% block extra_scripts %}
+{% if check_for_locks and user_permissions.lock %}
+<script>
+
+    function show_alert(message) {
+        let alert = `<div class="alert alert-danger fade show" role="alert">
+                        ${message}
+                        <hr>
+                        <a href="javascript:location.reload()" class="btn btn-success btn-block p-1">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-restore"></use>
+                            </svg>
+                            {% trans "Refresh page" %}
+                        </a>
+                    </div>`
+        document.getElementById("lock_alert").innerHTML = alert;
+    }
+
+    const lock_axios = axios.create(
+        {
+            headers: {"X-CSRFToken": "{{lock_csrf}}"},
+            timeout: 3000 // milliseconds
+        }
+    );
+   
+    // concurrency management
+    const obj_content_type_id = {{lock_obj_content_type_id}};
+    const obj_id = {{lock_obj_id}};
+    // set lock
+    const api_set_lock_url = "{% url 'ricerca:set-lock' %}";
+    const set_lock_params = {'content_type_id': obj_content_type_id, 'object_id': obj_id};
+    let set_lock_debounce_timeout = null; // ensures there is at most one call per second
+    const call_set_lock_api = () => {
+        if (!set_lock_debounce_timeout) {
+            lock_axios.post(api_set_lock_url, set_lock_params);
+            set_lock_debounce_timeout = setTimeout(() => {
+                set_lock_debounce_timeout = null;
+            }, 1000); // milliseconds
+        }
+    };
+    // check lock
+    const api_check_lock_url = "{% url 'ricerca:check-lock' content_type_id=lock_obj_content_type_id object_id=lock_obj_id %}";
+    const call_check_lock_api = () => {
+        let promise = lock_axios.get(api_check_lock_url);
+        promise.then((response) => {
+            if(Object.entries(response.data).length != 0) {
+                show_alert(response.data.message);
+                // disable form submit button
+                document.querySelectorAll('div[id="form_submit"] > button').forEach(btn => btn.setAttribute("disabled", ""));
+            }
+        });
+    };
+    // try to lock the object
+    call_check_lock_api();
+    call_set_lock_api();
+
+    const check_lock_interval = setInterval(() => {
+        call_check_lock_api();
+        //location.reload();
+    }, 5000) // milliseconds
+    
+    document.addEventListener("keyup", call_set_lock_api, false);
+    document.addEventListener("mousedown", call_set_lock_api, false);
+    // end concurrency management
+
+</script>
+{% endif %}
+{% endblock extra_scripts %}
