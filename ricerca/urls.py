@@ -92,6 +92,10 @@ if 'crud.laboratories' in settings.INSTALLED_APPS:
     import crud.laboratories.urls
     urlpatterns += path('', include((crud.laboratories.urls, 'crud_laboratories',))),
 
+if 'pentaho' in settings.INSTALLED_APPS:
+    import pentaho.urls
+    urlpatterns += path('', include((pentaho.urls, 'pentaho',))),
+
 urlpatterns += [
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
