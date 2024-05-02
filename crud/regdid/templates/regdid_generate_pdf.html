@@ -1,0 +1,99 @@
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            @page {
+                size: a4 portrait;
+                @frame header_frame {           /* Static Frame */
+                    -pdf-frame-content: header_content;
+                    top: 50pt; 
+                    left: 2cm;
+                    right: 2cm;
+                    {% comment %} width: 200pt; {% endcomment %}
+                    height: 40pt;
+                    {% comment %} -pdf-frame-border: 1; {% endcomment %}
+                }
+                @frame content_frame {          /* Content Frame */
+                    top: 110pt; 
+                    left: 2cm;
+                    right: 2cm;
+                    {% comment %} width: 200pt; {% endcomment %}
+                    height: 632pt;
+                    {% comment %} -pdf-frame-border: 1; {% endcomment %}
+                }
+                @frame footer_frame {           /* Another static Frame */
+                    -pdf-frame-content: footer_content;
+                    top: 772pt;
+                    left: 2cm;
+                    right: 2cm;
+                    {% comment %} width: 200pt; {% endcomment %}
+                    height: 20pt;
+                    
+                }
+            }
+            pdftoc {
+                font-weight: bold;
+                margin: 0;
+            }
+            table { -pdf-keep-with-next: true; }
+            p { margin: 0; 
+                -pdf-keep-with-next: true;
+                font-size: 8pt;
+            }
+            p.separator { -pdf-keep-with-next: false;}
+            div, ol, li, h6 {
+                margin: 0; 
+                font-size: 9pt;
+            }
+            .art {
+                margin: 0;
+            }
+            .text {
+                margin-bottom: 9pt;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Content for Static Frame 'header_frame' -->
+        <div id="header_content"><image src="{% static 'images/unical_logo.svg' %}" style="width: 4cm;"></image></div>
+        <!-- Content for Static Frame 'footer_frame' -->
+        <div id="footer_content">c<pdf:pagenumber></div>
+
+        <!-- PDF CONTENT -->
+        <div>
+            <pdf:toc /> 
+        </div>
+
+        <div>
+            <pdf:nextpage /> 
+        </div> 
+
+        {% for title, struct_art_list in titoli_struttura_articoli_dict.items %}
+            <h6>
+                {{ title.descr_titolo_it }}
+            </h6>
+            <div>
+            {% for struct_art in struct_art_list %}
+                {% for struct, art_sub_arts in struct_art.items %}
+                    {% for article, sub_articles in art_sub_arts.items %}
+                        <h6 class="art">Art. {{struct.numero}} - {{struct.titolo_it}}</h6>
+                        <div class="text">{% if article.testo_it %}{{article.testo_it|safe}}{% else %} omissis {% endif %}</div>
+                        {% for sub_art in sub_articles %}
+                            <h6 class="art">Art. {{struct.numero}}.{{sub_art.ordine}} - {{sub_art.titolo_it}}</h6>
+                            <div class="text">{{sub_art.testo_it|safe }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+    </body>
+</html>
