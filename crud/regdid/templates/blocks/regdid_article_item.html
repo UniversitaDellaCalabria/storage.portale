@@ -98,25 +98,29 @@
             </svg>
             {% trans "Edit" %}
         </a>
-        <a  
-            href="javascript:void(0)"
-            data-toggle="modal"
-            data-target="#delete_art_{{article.id}}"
-            class="btn btn-danger btn-block p-2 m-0">
-            <svg class="icon icon-xs icon-white">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-            </svg>
-            {% trans "Remove" %}
-        </a>
+            {% if testata.id_didattica_articoli_regolamento_status.status_cod != '2' and testata.id_didattica_articoli_regolamento_status.status_cod != '3' %}
+            <a  
+                href="javascript:void(0)"
+                data-toggle="modal"
+                data-target="#delete_art_{{article.id}}"
+                class="btn btn-danger btn-block p-2 m-0">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                </svg>
+                {% trans "Remove" %}
+            </a>
+            {% endif %}
         {% else %}
-        <a  
-            href="{% url 'crud_regdid:crud_regdid_articles_new' regdid_id=regdid.pk article_num=struct.numero %}"
-            class="btn btn-success btn-block p-2">
-            <svg class="icon icon-xs icon-white">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-            </svg>
-            {% trans "New" %}
-        </a>
+            {% if testata.id_didattica_articoli_regolamento_status.status_cod != '2' and testata.id_didattica_articoli_regolamento_status.status_cod != '3' %}
+            <a  
+                href="{% url 'crud_regdid:crud_regdid_articles_new' regdid_id=regdid.pk article_num=struct.numero %}"
+                class="btn btn-success btn-block p-2">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                </svg>
+                {% trans "New" %}
+            </a>
+            {% endif %}
         {% endif %}
     </div>
 
@@ -132,6 +136,7 @@
                 {% include "blocks/regdid_sub_article_item.html" with sub_art=sub_art %}
             </div>
             {% endfor %}
+            {% if testata.id_didattica_articoli_regolamento_status.status_cod != '2' and testata.id_didattica_articoli_regolamento_status.status_cod != '3' %}
             <a  
                 href="{% url 'crud_regdid:crud_regdid_sub_articles_new' regdid_id=regdid.pk article_id=article.pk %}"
                 class="btn btn-success btn-block p-2">
@@ -140,6 +145,7 @@
                 </svg>
                 {% trans "New" %}
             </a>
+            {% endif %}
         </div>
         <!-- /Sub articles -->
     </div>

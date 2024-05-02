@@ -91,6 +91,7 @@
             </svg>
             {% trans "Edit" %}
         </a>
+        {% if testata.id_didattica_articoli_regolamento_status.status_cod != '2' and testata.id_didattica_articoli_regolamento_status.status_cod != '3' %}
         <a  
             href="javascript:void(0)"
             data-toggle="modal"
@@ -101,6 +102,7 @@
             </svg>
             {% trans "Remove" %}
         </a>
+        {% endif %}
     </div>
 
 </div>
