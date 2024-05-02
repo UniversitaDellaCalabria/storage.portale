@@ -77,7 +77,7 @@
         data-parent="#collapseDiv_art_struct"
         aria-labelledby="collapse_art_struct_{{struct.pk}}">
 
-    <div class="collapse-body pt-3 pb-2">
+    <div class="collapse-body pt-3 pb-2 overflow-auto">
         <!-- Reg article text_it -->
         <div class="h6">{% trans "Text (it)" %}:</div>
         <div class="col mt-3">{% if article.testo_it %}{{article.testo_it|safe}}{% else %} - {% endif %}</div>
