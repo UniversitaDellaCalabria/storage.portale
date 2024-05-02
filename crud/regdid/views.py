@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.middleware.csrf import get_token
+from django.db import transaction
 
 from django_xhtml2pdf.utils import pdf_decorator
 
@@ -39,38 +40,7 @@ def _get_titoli_struttura_articoli_dict(regdid, testata):
                 for art_struttura in struttura_articoli.filter(id_didattica_articoli_regolamento_titolo=titolo)
             }
         ]
-    return titoli_struttura_articoli_dict
-
-def _validate_json_import(import_dict):
-    errors = []
-    result = True
-    mandatory_fields = ['aa', 'numero', 'ordine', 'titolo_it']
-    for tipo_corso_cod, articles_struct in import_dict.items():
-        for art_struct in articles_struct:
-            art_numbers = []
-            if art_struct is not None:
-                # check missing fields
-                for mf in mandatory_fields:
-                    if mf not in art_struct.keys():
-                        result = False
-                        if 'numero' in art_struct.keys():
-                            errors.append(f"Course Type: '{tipo_corso_cod}' - Article number: {art_struct['numero']}: field <b>'{mf}'</b> is missing")
-                        elif 'titolo_it' in art_struct.keys():
-                            errors.append(f"Course Type: '{tipo_corso_cod}' - Article title: {art_struct['titolo_it']}: field <b>'{mf}'</b> is missing")
-                        else:
-                            errors.append(f"Course Type: '{tipo_corso_cod}': field <b>'{mf}'</b> is missing")
-                # check duplicate article number
-                if 'number' in art_struct.keys():
-                    if art_struct['number'] in art_numbers:
-                        result = False
-                        errors.append(f"Course Type: '{tipo_corso_cod}': field <b>'number'</b> is duplicated")
-                    art_numbers.append(art_struct['number'])
-                if 'ordine' in art_struct.keys():
-                    if art_struct['ordine'] in art_numbers:
-                        result = False
-                        errors.append(f"Course Type: '{tipo_corso_cod}': field <b>'ordine'</b> is duplicated")
-    return result, errors
-            
+    return titoli_struttura_articoli_dict         
     
 
 @login_required
@@ -97,18 +67,51 @@ def regdid_structure_import(request):
     
     if request.POST:
         if didatticaarticoliregolamentostrutturaform.is_valid():
+            '''
+            json structure:
+            [
+                {
+                    "aa" : 2024,
+                    "numero" : 1,
+                    "titolo_it" : "Scopo del regolamento",
+                    "titolo_en" : "Purpose of the regulation",
+                    "ordine" : 0,
+                    "id_didattica_cds_tipo_corso": 2,
+                    "id_didattica_articoli_regolamento_titolo" : 2
+                },
+                ...
+            ]
+            '''
+                   
+            struttura = didatticaarticoliregolamentostrutturaform.cleaned_data.get('structure')
             
-            classes = didatticaarticoliregolamentostrutturaform.cleaned_data.get('structure')
+            objs_to_be_created = []
+            objs_to_be_updated = []
             
-            result, errors = _validate_json_import(classes)
-            if not result:
-                for err in errors:
-                    messages.add_message(request, messages.ERROR, f"{err}")
-            
-            # obj, created = DidatticaArticoliRegolamentoStruttura.objects.update_or_create(
-            #     aa=L['numero'], numero=,
-            #     defaults={'first_name': 'Bob'},
-            # )
+            for struttura_articolo in struttura:
+                struttura_articolo["id_user_mod_id"] = request.user.pk
+                struttura_articolo["dt_mod"] = datetime.datetime.now().isoformat()
+                struttura_articolo["visibile"] = True
+                 
+                old_obj = DidatticaArticoliRegolamentoStruttura.objects.filter(aa=struttura_articolo["aa"],
+                                                                        id_didattica_cds_tipo_corso_id=struttura_articolo["id_didattica_cds_tipo_corso_id"],
+                                                                        numero=struttura_articolo["numero"])
+                if old_obj.exists():
+                    objs_to_be_updated.append((old_obj, struttura_articolo))
+                else:
+                    objs_to_be_created.append(struttura_articolo)
+                
+            try:
+                with transaction.atomic():
+                    for o_obj, n_obj in objs_to_be_updated:
+                       o_obj.update(**n_obj)
+                    for c_obj in objs_to_be_created:
+                        DidatticaArticoliRegolamentoStruttura.objects.create(**c_obj)
+
+                    messages.add_message(request, messages.SUCCESS, _("Structure imported with success"))
+
+            except Exception as e:
+                messages.add_message(request, messages.ERROR, _("Unable to import the structure") + f"{ - repr(e)}")
             
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
