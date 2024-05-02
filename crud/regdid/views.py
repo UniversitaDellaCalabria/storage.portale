@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 def _get_titoli_struttura_articoli_dict(regdid, testata):
     didattica_cds_tipo_corso = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod)
     titoli = DidatticaArticoliRegolamentoTitolo.objects.all()
-    struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(id_didattica_cds_tipo_corso=didattica_cds_tipo_corso).order_by("numero")
+    struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(id_didattica_cds_tipo_corso=didattica_cds_tipo_corso, aa=testata.aa).order_by("numero")
     articoli = DidatticaCdsArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata, id_didattica_articoli_regolamento_struttura__in=struttura_articoli)
     titoli_struttura_articoli_dict = {titolo : [] for titolo in titoli}
     for titolo in titoli_struttura_articoli_dict.keys():
@@ -133,7 +133,7 @@ def regdid_articles(request, regdid_id):
     regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
     didattica_cds_tipo_corso = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod)
     titoli = DidatticaArticoliRegolamentoTitolo.objects.all()
-    struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(id_didattica_cds_tipo_corso=didattica_cds_tipo_corso).order_by("numero")
+    struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(id_didattica_cds_tipo_corso=didattica_cds_tipo_corso, aa=regdid.aa_reg_did).order_by("numero")
     
     # get or create Testata
     testata, created = DidatticaCdsArticoliRegolamentoTestata.objects.get_or_create(
