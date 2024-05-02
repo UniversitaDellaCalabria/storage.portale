@@ -1,0 +1,53 @@
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% random_id as sc_id %}
+
+{% with button_text=button_text|default:"" button_type=button_type|default:"success" button_icon=button_icon|default:"#it-upload" message=message|default:"" regdid_id=regdid_id target_status_cod=target_status_cod %}
+
+<div class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    id="{{sc_id}}">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Confirm" %}
+                </h5>
+                <button class="close"
+                    type="button"
+                    data-dismiss="modal"
+                    aria-label="Close">
+                    <svg class="icon">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {{message}}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success btn-sm" href="{% url 'crud_regdid:crud_regdid_status_change' regdid_id=regdid.pk status_cod=target_status_cod %}">
+                    {% trans 'Yes, proceed' %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a  href="javascript:void(0)"
+    data-toggle="modal"
+    data-target="#{{sc_id}}"
+    class="btn btn-{{button_type}} btn-xs align-self-center mb-2 ml-2">
+    <svg class="icon icon-xs icon-white">
+        <use xlink:href="{% static 'svg/sprite.svg' %}{{button_icon}}"></use>
+    </svg>
+    {{button_text}}
+</a>
+
+{% endwith %}

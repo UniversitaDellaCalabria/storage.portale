@@ -181,6 +181,12 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     let academic_year = document.getElementById('{{ id }}_academic_year_input')
     if (academic_year && academic_year.value) dict['academicyear'] = academic_year.value
 
+    //department_cod
+    {% if department_code %}
+    dict['departmentcod'] = '{{department_code}}';
+    {% endif %}
+    
+
     setItemInSession("{{ id }}", dict)
 
     return dict
@@ -195,6 +201,10 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 {% settings_value "ALLOWED_CDS_JOINT_DEGREES" as allowed_joint_degrees %}
 
 initial_academic_year: {{ id }}_get_param('academicyear')  || '{% now "Y" %}',
+
+{% if department_code %}
+department_cod: '{{department_code}}',
+{% endif %}
 
 selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
 selected_academic_year: this.getItemFromSession("{{ id }}", 'academicyear') || {{ id }}_get_param('academicyear'),
@@ -238,6 +248,8 @@ CallURL(url, initial=false) {
     this.loader_source = url
     if (!url.includes("academicyear") && this.initial_academic_year)
         url = url + '&academicyear=' + this.initial_academic_year
+    if (!url.includes("departmentcod") && this.department_cod)
+        url = url + '&departmentcod=' + this.department_cod
     axios
         .get(url)
         .then(response => {

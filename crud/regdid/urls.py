@@ -8,6 +8,8 @@ urlpatterns = []
 urlpatterns += path('regdid/', regdid_list, name='crud_regdid'),
 # Structure
 urlpatterns += path('regdid/structure/import/', regdid_structure_import, name='crud_regdid_structure_import'),
+# Status
+urlpatterns += path('regdid/<str:regdid_id>/status-change/<str:status_cod>/', regdid_status_change, name='crud_regdid_status_change'),
 # Regdid PDF
 urlpatterns += path('regdid/<str:regdid_id>/articles/pdf', regdid_articles_pdf, name='crud_regdid_articles_pdf'),
 # Regdid Articles

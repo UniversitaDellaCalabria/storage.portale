@@ -76,12 +76,12 @@
             <form method="post" enctype="multipart/form-data" novalidate>             
                 <!-- Review Notes -->
                 {% trans "Revision notes" as note_title %}
-                {% include "blocks/regdid_notes.html" with title=note_title notes=review_notes notes_form=review_notes_form user_can_edit=can_edit_notes %}
+                {% include "blocks/regdid_notes.html" with title=note_title notes=revision_notes notes_form=revision_notes_form user_can_edit=can_edit_notes %}
                 <!-- /Review Notes -->
                 {% for form in forms %}
                     {% include "form_template.html" with form=form %}
                 {% endfor %}
-                {% if user_permissions.edit %}
+                {% if user_permissions_and_offices.permissions.edit and testata.id_didattica_articoli_regolamento_status.status_cod != '3' %}
                 <div id="form_submit">
                 {% include "includes/form_submit.html" %}
                 </div>
@@ -103,14 +103,18 @@
                 </div>
                 {% endfor %}
             </div>
-            <a  
-            href="{% url 'crud_regdid:crud_regdid_sub_articles_new' regdid_id=regdid.pk article_id=article.pk %}"
-            class="btn btn-success btn-block">
-            <svg class="icon icon-xs icon-white">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-            </svg>
-            {% trans "New" %}
-            </a>
+            {% if user_permissions_and_offices.permissions.edit %} 
+                {% if testata.id_didattica_articoli_regolamento_status.status_cod != '3' or testata.id_didattica_articoli_regolamento_status.status_cod != '2' %}
+                <a  
+                href="{% url 'crud_regdid:crud_regdid_sub_articles_new' regdid_id=regdid.pk article_id=article.pk %}"
+                class="btn btn-success btn-block">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                </svg>
+                {% trans "New" %}
+                </a>
+                {% endif %}
+            {% endif %}
         </div>
         <!-- /Sub-Articles -->
         {% endif %}
@@ -121,7 +125,7 @@
 {% endblock centered_container %}
 
 {% block extra_scripts %}
-{% if check_for_locks and user_permissions.lock %}
+{% if check_for_locks and user_permissions_and_offices.permissions.lock %}
 <script>
 
     function show_alert(message) {

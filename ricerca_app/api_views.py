@@ -1645,8 +1645,8 @@ class LockSetView(APIView):
         obj = get_object_or_404(ct.model_class(), pk=object_id)
             
         try:
-            permissions = obj.get_user_permissions(request.user)
-            if not permissions.get("lock", False):
+            permissions_and_offices = obj.get_user_permissions_and_offices(request.user)
+            if not permissions_and_offices['permissions']['lock']:
                 raise PermissionDenied()
             
             acquire_lock(user_id=request.user.pk,

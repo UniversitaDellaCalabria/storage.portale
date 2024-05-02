@@ -66,3 +66,7 @@ LOCKS_CACHE_KEY_PREFIX = f'{STORAGE_CACHE_KEY_PREFIX}locks_'
 LOCK_MESSAGE = _("Unable to make changes. "
                  "{user} is currently editing this item")
 
+# offices names
+OFFICE_REGDIDS_DEPARTMENT = getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department')
+OFFICE_REGDIDS_REVISION = getattr(settings, 'OFFICE_REGDIDS_REVISION', 'regdids_revision')
+OFFICE_REGDIDS_APPROVAL = getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_approval')
