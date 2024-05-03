@@ -44,17 +44,12 @@ def _get_titoli_struttura_articoli_dict(regdid, testata):
     
 
 @login_required
-@check_model_permissions(DidatticaCdsArticoliRegolamento)
+@check_model_permissions(DidatticaCdsArticoliRegolamentoTestata)
 def regdid_list(request):
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    '#': _('Didactic regulations')}
     context = {'breadcrumbs': breadcrumbs,
                'url': reverse('ricerca:cdslist'),}
-    user_offices = DidatticaCdsArticoliRegolamento._get_all_user_offices(request.user)
-    dep_office = user_offices.filter(office__name=OFFICE_REGDIDS_DEPARTMENT)
-    # user only has a department office
-    if user_offices.exists() and user_offices.count() == dep_office.count():
-        context['department_code'] = dep_office.first().office.organizational_structure.unique_code
         
     return render(request, 'regdid_list.html', context)
 
@@ -128,39 +123,37 @@ def regdid_structure_import(request):
 
 
 @login_required
-@check_model_permissions(DidatticaCdsArticoliRegolamento)
 def regdid_articles(request, regdid_id):
-    regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
-    didattica_cds_tipo_corso = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod)
-    titoli = DidatticaArticoliRegolamentoTitolo.objects.all()
-    struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(id_didattica_cds_tipo_corso=didattica_cds_tipo_corso, aa=regdid.aa_reg_did).order_by("numero")
-    
-    # get or create Testata
-    testata, created = DidatticaCdsArticoliRegolamentoTestata.objects.get_or_create(
-        cds_id = regdid.cds,
-        aa=regdid.aa_reg_did,
-        defaults = {
-            'cds_id': regdid.cds_id,
-            'aa': regdid.aa_reg_did,
-            'note': '',
-            'id_didattica_articoli_regolamento_status': get_object_or_404(DidatticaArticoliRegolamentoStatus, status_cod=0),
-            'visibile': 1,
-            'dt_mod': datetime.datetime.now(),
-            'id_user_mod': request.user
-        }
-    )
-    
-    if created:
+    regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)    
+    testata = DidatticaCdsArticoliRegolamentoTestata.objects.filter(cds_id=regdid.cds, aa=regdid.aa_reg_did).first()
+    if testata is None:
+        if not DidatticaCdsArticoliRegolamentoTestata.can_user_create_object(request.user, regdid=regdid):
+            return custom_message(request, _("Permission denied"))
+            
+        # create Testata
+        testata = DidatticaCdsArticoliRegolamentoTestata.objects.create(
+            cds = regdid.cds,
+            aa=regdid.aa_reg_did,
+            note = '',
+            id_didattica_articoli_regolamento_status = get_object_or_404(DidatticaArticoliRegolamentoStatus, status_cod=0),
+            visibile = 1,
+            dt_mod = datetime.datetime.now(),
+            id_user_mod = request.user
+        )
         log_action( user=request.user,
                     obj=testata,
                     flag=ADDITION,
-                    msg=_("Added regulament testata"))
-    
+                    msg=_("Added didactic regulation testata"))
+        
     # permissions    
     user_permissions_and_offices = testata.get_user_permissions_and_offices(request.user)
     if not user_permissions_and_offices['permissions']['access']:
         return custom_message(request, _("Permission denied"))
-                
+    
+    didattica_cds_tipo_corso = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod)
+    titoli = DidatticaArticoliRegolamentoTitolo.objects.all()
+    struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(id_didattica_cds_tipo_corso=didattica_cds_tipo_corso, aa=regdid.aa_reg_did).order_by("numero")    
+                    
     articoli = DidatticaCdsArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata, id_didattica_articoli_regolamento_struttura__in=struttura_articoli)
     titoli_struttura_articoli_dict = {titolo : [] for titolo in titoli}
     for titolo in titoli_struttura_articoli_dict.keys():
@@ -249,8 +242,10 @@ def regdid_articles_edit(request, regdid_id, article_id):
     note_revisione = articolo.note
     
     if request.POST:
+        if testata.id_didattica_articoli_regolamento_status.status_cod in ['2', '3']:
+            return custom_message(request, _("Permission denied"))
         try:
-            if not user_permissions_and_offices['permissions']['edit'] or not user_permissions_and_offices['permissions'].get('lock', False):
+            if not user_permissions_and_offices['permissions']['edit'] or not user_permissions_and_offices['permissions']['lock']:
                 messages.add_message(request, messages.ERROR, _("Unable to edit this item"))
             elif didatticacdsarticoliregolamentoform.is_valid() and didatticacdsarticoliregolamentonoteform.is_valid():
                 if didatticacdsarticoliregolamentoform.changed_data:
@@ -455,8 +450,10 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
     titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
     
     if request.POST:
+        if testata.id_didattica_articoli_regolamento_status.status_cod in ['2', '3']:
+            return custom_message(request, _("Permission denied"))
         try:
-            if not user_permissions_and_offices['permissions']['edit'] or not user_permissions_and_offices['permissions'].get('lock', False):
+            if not user_permissions_and_offices['permissions']['edit'] or not user_permissions_and_offices['permissions']['lock']:
                 messages.add_message(request, messages.ERROR, _("Unable to edit this item"))
             elif didatticacdssubarticoliregolamentoform.is_valid():
                 if didatticacdssubarticoliregolamentoform.changed_data:
@@ -670,11 +667,16 @@ def regdid_status_change(request, regdid_id, status_cod):
 
 # Regulament PDF
 @login_required
-@check_model_permissions(DidatticaCdsArticoliRegolamentoTestata)
-@pdf_decorator(pdfname="test.pdf")
+@pdf_decorator(pdfname="RegolamentoDidattico.pdf")
 def regdid_articles_pdf(request, regdid_id):
     regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
+    
+    # permissions    
+    user_permissions_and_offices = testata.get_user_permissions_and_offices(request.user)
+    if not user_permissions_and_offices['permissions']['access']:
+        return custom_message(request, _("Permission denied"))
+    
     titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
     context = {
         'regdid': regdid,

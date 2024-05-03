@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -59,6 +61,13 @@ class PermissionsModAbstract(models.Model):
         without performing any additional checks
         '''
         return cls._get_all_user_offices(user, **kwargs).exists()
+    
+    @classmethod
+    def can_user_create_object(cls, user, **kwargs):
+        '''
+        Returns whether or not the user can create an object
+        '''
+        return False
     
     @classmethod
     def _get_all_user_offices(cls, user, **kwargs):
@@ -4918,6 +4927,19 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract, PermissionsMod
         return (OFFICE_REGDIDS_DEPARTMENT,
                 OFFICE_REGDIDS_REVISION,
                 OFFICE_REGDIDS_APPROVAL)
+        
+    @classmethod
+    def can_user_create_object(cls, user, **kwargs):
+        regdid = kwargs.pop("regdid", None)
+        if regdid is None or not regdid.aa_reg_did == datetime.datetime.now().year:
+            return False
+        
+        dep_offices = cls._get_all_user_offices(user).filter(office__name=cls.get_offices_names()[0])
+        if dep_offices.exists():
+            dep_codes = [dep_office.office.organizational_structure.unique_code for dep_office in dep_offices]
+            if regdid.cds.dip.dip_cod in dep_codes:
+                return True
+        return False
         
     def _is_valid_office(self, office_name, all_user_offices, **kwargs):
         offices_names = self.get_offices_names()
