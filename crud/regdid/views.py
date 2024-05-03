@@ -25,7 +25,6 @@ from . forms import *
 
 logger = logging.getLogger(__name__)
 
-
 def _get_titoli_struttura_articoli_dict(regdid, testata):
     didattica_cds_tipo_corso = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod)
     titoli = DidatticaArticoliRegolamentoTitolo.objects.all()

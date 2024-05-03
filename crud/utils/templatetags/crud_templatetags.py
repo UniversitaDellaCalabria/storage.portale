@@ -43,3 +43,11 @@ def user_from_pk(user_id):
     user_model = get_user_model()
     user = user_model.objects.get(pk=user_id)
     return user if user else False
+
+@register.simple_tag
+def latin_enum(value):
+    latin_numerals = ['bis', 'ter', 'quater', 'quinquies', 'sexies', 'septies', 'octies', 'novies', 'decies']
+    if 0 <= value < len(latin_numerals):
+        return latin_numerals[value]
+    else:
+        return ""

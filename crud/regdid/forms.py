@@ -44,9 +44,6 @@ class DidatticaCdsSubArticoliRegolamentoForm(BaseArticoliModelForm):
             'titolo_it': _("Title (it)"),
             'titolo_en': _("Title (en)")
         }
-        help_texts = {
-            'ordine': _("This field is also used to enumerate the article (ex: Art 1.x)")
-        }
         
 class DidatticaCdsArticoliRegolamentoNoteForm(forms.ModelForm):
     class Meta:
