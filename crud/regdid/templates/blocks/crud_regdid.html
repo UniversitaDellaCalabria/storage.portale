@@ -26,6 +26,35 @@
                                 <!-- type & Academic year & language -->
                                 <div class="row">
 
+                                    {% block filters_department %}
+                                    <loading-icon
+                                        v-if="is_loading_departments"
+                                        :loader_source="loader_source_departments">
+                                    </loading-icon>
+
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_department_input">
+                                                {% trans "Department" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_department_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_department_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in departments_filter"
+                                                            :value="item.DepartmentCod"
+                                                            :selected="item.DepartmentCod == selected_department_id">
+                                                        [[ item.DepartmentName ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock filters_department %}
+
                                     {% block filters_coursetype %}
 
                                     <loading-icon
@@ -181,10 +210,9 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     let academic_year = document.getElementById('{{ id }}_academic_year_input')
     if (academic_year && academic_year.value) dict['academicyear'] = academic_year.value
 
-    //department_cod
-    {% if department_code %}
-    dict['departmentcod'] = '{{department_code}}';
-    {% endif %}
+    // department name
+    let department = document.getElementById('{{ id }}_department_input')
+    if (department && department.value) dict['departmentcod'] = department.value
     
 
     setItemInSession("{{ id }}", dict)
@@ -209,16 +237,20 @@ department_cod: '{{department_code}}',
 selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
 selected_academic_year: this.getItemFromSession("{{ id }}", 'academicyear') || {{ id }}_get_param('academicyear'),
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
+selected_department_id: this.getItemFromSession("{{ id }}", 'departmentcod'),
 
 course_types: [],
 
 is_loading_degreetypes: true,
 is_loading_academicyears: true,
+is_loading_departments: true,
 
+loader_source_departments: '{% url 'ricerca:departmentslist' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 loader_source_degreetypes: '{% url 'ricerca:degreetypes' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 loader_source_academicyears: '{% url 'ricerca:academicyears' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 
 academic_years_filter: [],
+departments_filter: [],
 joint_degree_filter: {{ allowed_joint_degrees|safe }}
 {% endblock extra_data %}
 
@@ -230,6 +262,7 @@ let get_coursetype = params.get("coursetype")
 
 this.callDegreeTypes();
 this.callAcademicYears();
+this.callDepartments();
 
 this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
 {% endblock extra_mounted %}
@@ -279,6 +312,14 @@ callAcademicYears() {
             this.academic_years_filter = response.data.results;
             this.is_loading_academicyears = false
         });
+},
+callDepartments() {
+    axios
+        .get(this.loader_source_departments)
+        .then(response => {
+            this.departments_filter = response.data.results;
+            this.is_loading_departments = false
+        })
 },
 {% endblock extra_methods %}
 
