@@ -1617,6 +1617,7 @@ class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
 class LockView(APIView):
     description = ""
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
         content_type_id = self.kwargs['content_type_id']
@@ -1633,6 +1634,7 @@ class LockView(APIView):
 class LockSetView(APIView):
     description = ""
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def post(self, request, *args, **kwargs):
         content_type_id = request.data.get('content_type_id', None)
