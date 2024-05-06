@@ -95,6 +95,14 @@ from .models import (
     DidatticaPianoSceltaVincoli,
     DidatticaAmbiti,
     DidatticaPianoSceltaAf,
+    DidatticaArticoliRegolamentoStatus,
+    DidatticaCdsTipoCorso,
+    DidatticaArticoliRegolamentoStruttura,
+    DidatticaCdsArticoliRegolamentoTestata,
+    DidatticaArticoliRegolamentoStrutturaTopic,
+    DidatticaCdsArticoliRegolamento,
+    DidatticaArticoliRegolamentoTitolo,
+    DidatticaCdsSubArticoliRegolamento
 )
 
 
@@ -1182,4 +1190,89 @@ class DidatticaPianoSceltaAfUnitTest(TestCase): # pragma: no cover
             data[k] = v
 
         obj = DidatticaPianoSceltaAf.objects.create(**data)
+        return obj
+
+class DidatticaArticoliRegolamentoStatusUnitTest(TestCase):
+    @classmethod
+    def create_didatticaArticoliRegolamentoStatus(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaArticoliRegolamentoStatus.objects.create(**data)
+        return obj
+
+class DidatticaCdsTipoCorsoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaCdsTipoCorso(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaCdsTipoCorso.objects.create(**data)
+        return obj
+    
+    
+class DidatticaArticoliRegolamentoStrutturaUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaArticoliRegolamentoStruttura(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaArticoliRegolamentoStruttura.objects.create(**data)
+        return obj
+    
+    
+class DidatticaCdsArticoliRegolamentoTestataUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaCdsArticoliRegolamentoTestata(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaCdsArticoliRegolamentoTestata.objects.create(**data)
+        return obj
+    
+class DidatticaArticoliRegolamentoStrutturaTopicUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaArticoliRegolamentoStrutturaTopic(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaArticoliRegolamentoStrutturaTopic.objects.create(**data)
+        return obj
+    
+    
+class DidatticaCdsArticoliRegolamentoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaCdsArticoliRegolamento(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaCdsArticoliRegolamento.objects.create(**data)
+        return obj
+    
+    
+class DidatticaArticoliRegolamentoTitoloUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaArticoliRegolamentoTitolo(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaArticoliRegolamentoTitolo.objects.create(**data)
+        return obj
+
+
+class DidatticaCdsSubArticoliRegolamentoUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaCdsSubArticoliRegolamento(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaCdsSubArticoliRegolamento.objects.create(**data)
         return obj

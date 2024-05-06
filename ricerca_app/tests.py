@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase, Client
 from django.urls import reverse
 
@@ -31,8 +32,10 @@ from . util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, D
     DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest, \
     SitoWebCdsTopicArticoliRegAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
     DidatticaPianoRegolamentoUnitTest, DidatticaPianoScheUnitTest, DidatticaPianoSceltaSchePianoUnitTest, DidatticaPianoSceltaVincoliUnitTest, DidatticaAmbitiUnitTest, \
-    DidatticaPianoSceltaAfUnitTest
+    DidatticaPianoSceltaAfUnitTest, DidatticaCdsTipoCorsoUnitTest, DidatticaArticoliRegolamentoStrutturaUnitTest, DidatticaCdsArticoliRegolamentoTestataUnitTest, DidatticaArticoliRegolamentoStrutturaTopicUnitTest, \
+    DidatticaCdsArticoliRegolamentoUnitTest, DidatticaArticoliRegolamentoTitoloUnitTest, DidatticaCdsSubArticoliRegolamentoUnitTest, DidatticaArticoliRegolamentoStatusUnitTest
 from . serializers import CreateUpdateAbstract
+from . concurrency import acquire_lock
 
 
 class ApiCdSListUnitTest(TestCase):
@@ -6755,3 +6758,174 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
         data = {'cds_cod': '1', 'year': 2022}
         res = req.get(url, data=data)
         assert len(res.json()['results']) == 1
+
+
+class ApiLockUnitTest(TestCase):
+    def setUp(self):
+        self.user1 = get_user_model().objects.create_superuser(
+            **{
+                'username': 'test1',
+                'password': 'password',
+            }
+        )
+        self.user2 = get_user_model().objects.create_superuser(
+            **{
+                'username': 'test2',
+                'password': 'password',
+            }
+        )
+        self.token1 = Token.objects.create(user=self.user1)
+        self.token2 = Token.objects.create(user=self.user2)
+        self.dipartimento = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+        })
+        self.cds = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'dip': self.dipartimento,
+            'tipo_corso_cod': 'L',
+            'area_cds': 'scienze',
+            'cds_id': 1,
+        })
+        self.tipo_corso = DidatticaCdsTipoCorsoUnitTest.create_didatticaCdsTipoCorso(**{
+            'tipo_corso_cod': 'L',
+            'tipo_corso_des': 'Laurea',
+            'note': '',
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        self.titolo = DidatticaArticoliRegolamentoTitoloUnitTest.create_didatticaArticoliRegolamentoTitolo(**{
+            'descr_titolo_it': 'Titolo I',
+            'ordine': 0,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        self.struttura_articolo = DidatticaArticoliRegolamentoStrutturaUnitTest.create_didatticaArticoliRegolamentoStruttura(**{
+            'aa': '2024',
+            'titolo_it': 'Test titolo articolo',
+            'numero': 1,
+            'visibile': 1,
+            'id_didattica_cds_tipo_corso': self.tipo_corso,
+            'id_didattica_articoli_regolamento_titolo': self.titolo,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1,
+        })
+        self.regolamento_status = DidatticaArticoliRegolamentoStatusUnitTest.create_didatticaArticoliRegolamentoStatus(**{
+            'status_cod': '0',
+            'status_desc': 'In bozza',
+        })
+        self.testata = DidatticaCdsArticoliRegolamentoTestataUnitTest.create_didatticaCdsArticoliRegolamentoTestata(**{
+            'cds_id': self.cds.pk,
+            'aa': '2024',
+            'note': '',
+            'id_didattica_articoli_regolamento_status': self.regolamento_status,
+            'visibile': 1,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        self.articolo = DidatticaCdsArticoliRegolamentoUnitTest.create_didatticaCdsArticoliRegolamento(**{
+            'id_didattica_cds_articoli_regolamento_testata': self.testata,
+            'id_didattica_articoli_regolamento_struttura': self.struttura_articolo,
+            'testo_it': 'Test testo articolo',
+            'visibile': 1,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        
+    
+    def test_apilock(self):
+        req = Client()
+        content_type_id = ContentType.objects.get_for_model(self.articolo.__class__).pk
+        url = reverse("ricerca:check-lock", kwargs={'content_type_id': content_type_id, 'object_id': self.articolo.pk})
+        # user1 calls api
+        res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {self.token1.key}')
+        assert not res.data
+        # acquire lock for user1
+        acquire_lock(self.user1.pk, content_type_id, self.articolo.pk)
+        res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {self.token1.key}')
+        assert not res.data
+        # user2 calls api
+        res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {self.token2.key}')
+        assert res.data.get('lock')
+        
+    
+class ApiSetLockUnitTest(TestCase):
+    def setUp(self):
+        self.user1 = get_user_model().objects.create_superuser(
+            **{
+                'username': 'test1',
+                'password': 'password',
+            }
+        )
+        self.user2 = get_user_model().objects.create_superuser(
+            **{
+                'username': 'test2',
+                'password': 'password',
+            }
+        )
+        self.token1 = Token.objects.create(user=self.user1)
+        self.token2 = Token.objects.create(user=self.user2)
+        self.dipartimento = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
+            'dip_id': 1,
+        })
+        self.cds = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'dip': self.dipartimento,
+            'tipo_corso_cod': 'L',
+            'area_cds': 'scienze',
+            'cds_id': 1,
+        })
+        self.tipo_corso = DidatticaCdsTipoCorsoUnitTest.create_didatticaCdsTipoCorso(**{
+            'tipo_corso_cod': 'L',
+            'tipo_corso_des': 'Laurea',
+            'note': '',
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        self.titolo = DidatticaArticoliRegolamentoTitoloUnitTest.create_didatticaArticoliRegolamentoTitolo(**{
+            'descr_titolo_it': 'Titolo I',
+            'ordine': 0,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        self.struttura_articolo = DidatticaArticoliRegolamentoStrutturaUnitTest.create_didatticaArticoliRegolamentoStruttura(**{
+            'aa': '2024',
+            'titolo_it': 'Test titolo articolo',
+            'numero': 1,
+            'visibile': 1,
+            'id_didattica_cds_tipo_corso': self.tipo_corso,
+            'id_didattica_articoli_regolamento_titolo': self.titolo,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1,
+        })
+        self.regolamento_status = DidatticaArticoliRegolamentoStatusUnitTest.create_didatticaArticoliRegolamentoStatus(**{
+            'status_cod': '0',
+            'status_desc': 'In bozza',
+        })
+        self.testata = DidatticaCdsArticoliRegolamentoTestataUnitTest.create_didatticaCdsArticoliRegolamentoTestata(**{
+            'cds_id': self.cds.pk,
+            'aa': '2024',
+            'note': '',
+            'id_didattica_articoli_regolamento_status': self.regolamento_status,
+            'visibile': 1,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        self.articolo = DidatticaCdsArticoliRegolamentoUnitTest.create_didatticaCdsArticoliRegolamento(**{
+            'id_didattica_cds_articoli_regolamento_testata': self.testata,
+            'id_didattica_articoli_regolamento_struttura': self.struttura_articolo,
+            'testo_it': 'Test testo articolo',
+            'visibile': 1,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        
+    
+    def test_apisetlock(self):
+        req = Client()
+        content_type_id = ContentType.objects.get_for_model(self.articolo.__class__).pk
+        url = reverse("ricerca:set-lock")
+        # user1 calls api
+        data={'content_type_id': content_type_id, 'object_id': self.articolo.pk}
+        res = req.post(url,data,HTTP_AUTHORIZATION= f'Token {self.token1.key}')
+        assert res.status_code == 200
+        # user2 calls api
+        res = req.post(url,data,HTTP_AUTHORIZATION= f'Token {self.token2.key}')
+        assert res.data.get('lock')
