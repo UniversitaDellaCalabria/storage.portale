@@ -4893,7 +4893,7 @@ class DidatticaCdsTipoCorso(PermissionsModAbstract):
 class DidatticaArticoliRegolamentoStruttura(VisibileModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     aa = models.IntegerField(db_column='AA')  # Field name made lowercase.
-    numero = models.PositiveIntegerField(db_column='NUMERO', blank=True, null=True)  # Field name made lowercase.
+    numero = models.PositiveIntegerField(db_column='NUMERO')  # Field name made lowercase.
     titolo_it = models.CharField(db_column='TITOLO_IT', max_length=2000)  # Field name made lowercase.
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE', blank=True, null=True)  # Field name made lowercase.
@@ -4990,7 +4990,7 @@ class DidatticaArticoliRegolamentoStrutturaTopic(VisibileModAbstract):
         
 class DidatticaCdsArticoliRegolamento(VisibileModAbstract, PermissionsModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_didattica_cds_articoli_regolamento_testata = models.ForeignKey(DidatticaCdsArticoliRegolamentoTestata, models.PROTECT, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA', blank=True, null=True)  # Field name made lowercase.
+    id_didattica_cds_articoli_regolamento_testata = models.ForeignKey(DidatticaCdsArticoliRegolamentoTestata, models.PROTECT, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA')  # Field name made lowercase.
     id_didattica_articoli_regolamento_struttura = models.ForeignKey(DidatticaArticoliRegolamentoStruttura, models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA')  # Field name made lowercase.
     testo_it = models.TextField(db_column='TESTO_IT')  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
