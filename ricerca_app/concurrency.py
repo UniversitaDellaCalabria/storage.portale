@@ -22,6 +22,8 @@ def get_lock_from_cache(content_type_id, object_id):
     key = f'{LOCKS_CACHE_KEY_PREFIX}{content_type_id}_{object_id}'
     res = cache.get(key)
     if res: # pragma: no cover
+        return (res, 0)
+        #TODO ttl
         exp_info = cache._expire_info.get(cache.make_key(key), None)
         exp_info_seconds = 0
         if exp_info is not None:
