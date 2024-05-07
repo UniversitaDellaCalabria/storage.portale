@@ -13,7 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 
 from rest_framework import generics, permissions, status
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -1617,7 +1617,7 @@ class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
 class LockView(APIView):
     description = ""
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
 
     def get(self, request, *args, **kwargs):
         content_type_id = self.kwargs['content_type_id']
@@ -1634,7 +1634,7 @@ class LockView(APIView):
 class LockSetView(APIView):
     description = ""
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
 
     def post(self, request, *args, **kwargs):
         content_type_id = request.data.get('content_type_id', None)
