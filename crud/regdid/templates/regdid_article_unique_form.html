@@ -158,13 +158,20 @@
     let set_lock_debounce_timeout = null; // ensures there is at most one call per second
     const call_set_lock_api = () => {
         if (!set_lock_debounce_timeout) {
-            lock_axios.post(api_set_lock_url, set_lock_params);
+            let promise = lock_axios.post(api_set_lock_url, set_lock_params);
+            promise.then((response) => {
+                if("lock" in response.data) {
+                    document.removeEventListener("keyup", call_set_lock_api, false);
+                    document.removeEventListener("mousedown", call_set_lock_api, false);
+                }
+            });
             set_lock_debounce_timeout = setTimeout(() => {
                 set_lock_debounce_timeout = null;
             }, 1000); // milliseconds
         }
     };
     // check lock
+    let check_lock_interval = null;
     const api_check_lock_url = "{% url 'ricerca:check-lock' content_type_id=lock_obj_content_type_id object_id=lock_obj_id %}";
     const call_check_lock_api = () => {
         let promise = lock_axios.get(api_check_lock_url);
@@ -173,6 +180,9 @@
                 show_alert(response.data.message);
                 // disable form submit button
                 document.querySelectorAll('div[id="form_submit"] > button').forEach(btn => btn.setAttribute("disabled", ""));
+                clearInterval(check_lock_interval);
+                document.removeEventListener("keyup", call_set_lock_api, false);
+                document.removeEventListener("mousedown", call_set_lock_api, false);
             }
         });
     };
@@ -180,7 +190,7 @@
     call_check_lock_api();
     call_set_lock_api();
 
-    const check_lock_interval = setInterval(() => {
+    check_lock_interval = setInterval(() => {
         call_check_lock_api();
         //location.reload();
     }, 5000) // milliseconds
