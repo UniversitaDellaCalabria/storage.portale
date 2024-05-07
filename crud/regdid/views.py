@@ -677,8 +677,28 @@ def regdid_articles_pdf(request, regdid_id):
         return custom_message(request, _("Permission denied"))
     
     titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
+    tipo_corso_cod = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod).tipo_corso_cod
+    reg_titolo_tipo_corso_des = 'Laurea Magistrale'
+    if tipo_corso_cod == 'L':
+        tipo_corso_des = 'Laurea'
+        
+    nome_cds_it = regdid.cds.nome_cds_it
+    cla_cod = regdid.cds.cla_miur_cod
+    cla_des = regdid.cds.cla_miur_des
+    icla_cod = regdid.cds.intercla_miur_cod
+    icla_des = regdid.cds.intercla_miur_des
+    
+    nome_corso=f"Corso di {tipo_corso_des} in {nome_cds_it}"
+    classe_laurea_desc = f'Classi {cla_cod} - {cla_des}'
+    if icla_cod and icla_des:
+        classe_laurea_desc += f' & {icla_cod} - {icla_des}'
+        
+    classe_laurea_desc = re.sub('classe delle lauree(\w|\s)+in', '', classe_laurea_desc, flags=re.IGNORECASE)
+    
     context = {
         'regdid': regdid,
         'titoli_struttura_articoli_dict': titoli_struttura_articoli_dict,
-    }    
+        'nome_corso': nome_corso,
+        'classe_laurea_desc': classe_laurea_desc,
+    }
     return render(request, 'regdid_generate_pdf.html', context)

@@ -2,39 +2,33 @@
 {% load static %}
 {% load crud_templatetags %}
 
-
 <!DOCTYPE html>
 <html lang="it">
     <head>
         <meta charset="UTF-8">
         <style>
+            html {
+                font-family: "Helvetica";
+            }
             @page {
                 size: a4 portrait;
                 @frame header_frame {           /* Static Frame */
                     -pdf-frame-content: header_content;
-                    top: 50pt; 
-                    left: 2cm;
-                    right: 2cm;
-                    {% comment %} width: 200pt; {% endcomment %}
-                    height: 40pt;
-                    {% comment %} -pdf-frame-border: 1; {% endcomment %}
+                    top: 1.7cm;
+                    left: 1.9cm;
+                    right: 1.9cm;
                 }
                 @frame content_frame {          /* Content Frame */
-                    top: 110pt; 
-                    left: 2cm;
-                    right: 2cm;
-                    {% comment %} width: 200pt; {% endcomment %}
-                    height: 632pt;
-                    {% comment %} -pdf-frame-border: 1; {% endcomment %}
+                    top: 3.9cm;
+                    left: 1.9cm;
+                    right: 1.9cm;
+                    height: 23.2cm;
                 }
                 @frame footer_frame {           /* Another static Frame */
                     -pdf-frame-content: footer_content;
-                    top: 772pt;
-                    left: 2cm;
-                    right: 2cm;
-                    {% comment %} width: 200pt; {% endcomment %}
-                    height: 20pt;
-                    
+                    top: 27.8cm;
+                    left: 1.9cm;
+                    right: 1.9cm;                    
                 }
             }
             pdftoc {
@@ -44,28 +38,49 @@
             table { -pdf-keep-with-next: true; }
             p { margin: 0; 
                 -pdf-keep-with-next: true;
-                font-size: 8pt;
             }
             p.separator { -pdf-keep-with-next: false;}
-            div, ol, li, h6 {
+            h6 {
                 margin: 0; 
-                font-size: 9pt;
+                font-size: 11pt;
+            }
+            div, span, p {
+                font-size: 10pt;
             }
             .art {
                 margin: 0;
             }
             .text {
                 margin-bottom: 9pt;
+                font-size: 11pt;
+            }
+            .reg_title {
+                padding-top: 8cm;
+                font-size: 12pt;
+                font-weight: bold;
+                text-align: center;
             }
         </style>
     </head>
     <body>
         <!-- Content for Static Frame 'header_frame' -->
-        <div id="header_content"><image src="{% static 'images/unical_logo.svg' %}" style="width: 4cm;"></image></div>
+        <div id="header_content"><image src="{% static 'images/unical_logo.svg' %}" style="width: 6.1cm; height: 1.1cm;"></image></div>
         <!-- Content for Static Frame 'footer_frame' -->
-        <div id="footer_content">c<pdf:pagenumber></div>
-
+        <div id="footer_content" style="text-align:center"><pdf:pagenumber />&nbsp</div>
+        
         <!-- PDF CONTENT -->
+        <div class="reg_title">
+            Regolamento didattico del<br />
+                {{nome_corso}}<br />
+            <span style="font-weight: normal;">
+                {{classe_laurea_desc}}
+            </span>
+        </div>
+        
+        <div>
+            <pdf:nextpage /> 
+        </div> 
+
         <div>
             <pdf:toc /> 
         </div>
@@ -85,7 +100,7 @@
                         <h6 class="art">Art. {{struct.numero}} - {{struct.titolo_it}}</h6>
                         <div class="text">{% if article.testo_it %}{{article.testo_it|safe}}{% else %} omissis {% endif %}</div>
                         {% for sub_art in sub_articles %}
-                            <h6 class="art">Art. {{struct.numero}}.{{sub_art.ordine}} - {{sub_art.titolo_it}}</h6>
+                            <h6 class="art">Art. {{struct.numero}} {% latin_enum forloop.counter0 %} - {{sub_art.titolo_it}}</h6>
                             <div class="text">{{sub_art.testo_it|safe }}</div>
                         {% endfor %}
                     {% endfor %}
