@@ -21,8 +21,8 @@ class DidatticaArticoliRegolamentoStrutturaForm(forms.Form):
 class BaseArticoliModelForm(forms.ModelForm):
     class Meta:
         widgets = {
-            'testo_it': CKEditor5Widget(),
-            'testo_en': CKEditor5Widget()
+            'testo_it': CKEditor5Widget(config_name="regdid"),
+            'testo_en': CKEditor5Widget(config_name="regdid")
         }
         labels = {
             'testo_it': _("Text (it)"),
@@ -50,7 +50,7 @@ class DidatticaCdsArticoliRegolamentoNoteForm(forms.ModelForm):
         model = DidatticaCdsArticoliRegolamento
         fields = ('note',)
         labels = {'note': _("Notes")}
-        widgets = {'note': CKEditor5Widget()}
+        widgets = {'note': CKEditor5Widget(config_name="regdid")}
         help_texts = {'note': _("This field is shared between the main article and its sub articles")}
         
 class DidatticaCdsArticoliRegolamentoTestataNoteForm(DidatticaCdsArticoliRegolamentoNoteForm):
