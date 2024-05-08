@@ -8,6 +8,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 from . import api_views
 
+
 app_name = 'ricerca'
 base_url = 'api/ricerca'
 

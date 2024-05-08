@@ -95,6 +95,10 @@ if 'crud.regdid' in settings.INSTALLED_APPS:
     import crud.regdid.urls
     urlpatterns += path('', include((crud.regdid.urls, 'crud_regdid',))),
 
+if 'pentaho' in settings.INSTALLED_APPS:
+    import pentaho.urls
+    urlpatterns += path('', include((pentaho.urls, 'pentaho',))),
+
 urlpatterns += [
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
