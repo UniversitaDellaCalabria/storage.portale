@@ -70,8 +70,8 @@ def regdid_structure_import(request):
                     "titolo_it" : "Scopo del regolamento",
                     "titolo_en" : "Purpose of the regulation",
                     "ordine" : 0,
-                    "id_didattica_cds_tipo_corso": 2,
-                    "id_didattica_articoli_regolamento_titolo" : 2
+                    "id_didattica_cds_tipo_corso_id": 2,
+                    "id_didattica_articoli_regolamento_titolo_id" : 2
                 },
                 ...
             ]
@@ -124,6 +124,8 @@ def regdid_structure_import(request):
 @login_required
 def regdid_articles(request, regdid_id):
     regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)    
+    if regdid.cds.tipo_corso_cod not in REGDID_ALLOWED_COURSE_TYPES:
+        return custom_message(request, _("Permission denied"))
     testata = DidatticaCdsArticoliRegolamentoTestata.objects.filter(cds_id=regdid.cds, aa=regdid.aa_reg_did).first()
     if testata is None:
         if not DidatticaCdsArticoliRegolamentoTestata.can_user_create_object(request.user, regdid=regdid):
