@@ -6774,8 +6774,6 @@ class ApiLockUnitTest(TestCase):
                 'password': 'password',
             }
         )
-        self.token1 = Token.objects.create(user=self.user1)
-        self.token2 = Token.objects.create(user=self.user2)
         self.dipartimento = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
         })
@@ -6833,19 +6831,30 @@ class ApiLockUnitTest(TestCase):
     
     def test_apilock(self):
         req = Client()
+        # user1 login
+        req.login(**{
+            'username': 'test1',
+            'password': 'password',
+        })
         content_type_id = ContentType.objects.get_for_model(self.articolo.__class__).pk
         url = reverse("ricerca:check-lock", kwargs={'content_type_id': content_type_id, 'object_id': self.articolo.pk})
         # user1 calls api
-        res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {self.token1.key}')
+        res = req.get(url)
         assert not res.data
         # acquire lock for user1
         acquire_lock(self.user1.pk, content_type_id, self.articolo.pk)
-        res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {self.token1.key}')
+        res = req.get(url)
         assert not res.data
+        # user1 logout
+        req.logout()
+        # user2 login
+        req.login(**{
+            'username': 'test2',
+            'password': 'password',
+        })
         # user2 calls api
-        res = req.get(url,{},HTTP_AUTHORIZATION= f'Token {self.token2.key}')
-        assert res.data.get('lock')
-        
+        res = req.get(url)
+        assert res.data.get('lock')        
     
 class ApiSetLockUnitTest(TestCase):
     def setUp(self):
@@ -6861,8 +6870,6 @@ class ApiSetLockUnitTest(TestCase):
                 'password': 'password',
             }
         )
-        self.token1 = Token.objects.create(user=self.user1)
-        self.token2 = Token.objects.create(user=self.user2)
         self.dipartimento = DidatticaDipartimentoUnitTest.create_didatticaDipartimento(**{
             'dip_id': 1,
         })
@@ -6922,10 +6929,22 @@ class ApiSetLockUnitTest(TestCase):
         req = Client()
         content_type_id = ContentType.objects.get_for_model(self.articolo.__class__).pk
         url = reverse("ricerca:set-lock")
+        # user1 login
+        req.login(**{
+            'username': 'test1',
+            'password': 'password',
+        })
         # user1 calls api
         data={'content_type_id': content_type_id, 'object_id': self.articolo.pk}
-        res = req.post(url,data,HTTP_AUTHORIZATION= f'Token {self.token1.key}')
+        res = req.post(url,data)
         assert res.status_code == 200
+        # user1 logout
+        req.logout()
+        # user2 login
+        req.login(**{
+            'username': 'test2',
+            'password': 'password',
+        })
         # user2 calls api
-        res = req.post(url,data,HTTP_AUTHORIZATION= f'Token {self.token2.key}')
+        res = req.post(url,data)
         assert res.data.get('lock')
