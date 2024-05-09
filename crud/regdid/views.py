@@ -680,9 +680,13 @@ def regdid_articles_pdf(request, regdid_id):
     
     titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
     tipo_corso_cod = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod).tipo_corso_cod
-    reg_titolo_tipo_corso_des = 'Laurea Magistrale'
-    if tipo_corso_cod == 'L':
-        tipo_corso_des = 'Laurea'
+    tipo_corso_des = 'Laurea'
+    if tipo_corso_cod == 'LM':
+        tipo_corso_des = 'Laurea Magistrale'
+    elif tipo_corso_cod == 'LM5':
+        tipo_corso_des = 'Laurea Magistrale a ciclo unico 5 anni'
+    elif tipo_corso_cod == 'LM6':
+        tipo_corso_des = 'Laurea Magistrale a ciclo unico 6 anni'
         
     nome_cds_it = regdid.cds.nome_cds_it
     cla_cod = regdid.cds.cla_miur_cod
@@ -691,7 +695,7 @@ def regdid_articles_pdf(request, regdid_id):
     icla_des = regdid.cds.intercla_miur_des
     
     nome_corso=f"Corso di {tipo_corso_des} in {nome_cds_it}"
-    classe_laurea_desc = f'Classi {cla_cod} - {cla_des}'
+    classe_laurea_desc = f'{cla_cod} - {cla_des}'
     if icla_cod and icla_des:
         classe_laurea_desc += f' & {icla_cod} - {icla_des}'
         
