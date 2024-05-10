@@ -10,11 +10,14 @@ from rest_framework.views import APIView
 
 from ricerca_app.models import DidatticaCds
 
-from . settings import PENTAHO_ISODID_MEDIA_PATH
+from . settings import (PENTAHO_ISODID_MEDIA_PATH,
+                        PENTAHO_ISODID_REPORT_LEGENDA,
+                        PENTAHO_ISODID_REPORT_START_YEAR)
 from . utils import *
 
 
 PENTAHO_ISODID_MEDIA_PATH = getattr(settings, 'PENTAHO_ISODID_MEDIA_PATH', PENTAHO_ISODID_MEDIA_PATH)
+PENTAHO_ISODID_REPORT_LEGENDA = getattr(settings, 'PENTAHO_ISODID_REPORT_LEGENDA', PENTAHO_ISODID_REPORT_LEGENDA)
 PENTAHO_ISODID_REPORT_START_YEAR = getattr(settings, 'PENTAHO_ISODID_REPORT_START_YEAR', PENTAHO_ISODID_REPORT_START_YEAR)
 
 
@@ -58,12 +61,16 @@ class PentahoIsodid(APIView): # pragma: no cover
                         return Response({})
                     if row[0] not in result:
                         data_labels = [row[1]]
+                        legenda = {}
+                        legenda[row[1]] = PENTAHO_ISODID_REPORT_LEGENDA.get(row[1], row[1])
                         data = {labels[0]: [row[2] or '0'],
                                 labels[1]: [row[3] or '0'],
                                 labels[2]: [row[4] or '0']}
                         result[row[0]] = {'labels': data_labels,
-                                          'data': data}
+                                          'data': data,
+                                          'legenda': legenda}
                     else:
+                        result[row[0]]['legenda'][row[1]] = PENTAHO_ISODID_REPORT_LEGENDA.get(row[1], row[1])
                         result[row[0]]['labels'].append(row[1])
                         result[row[0]]['data'][labels[0]].append(row[2] or '0')
                         result[row[0]]['data'][labels[1]].append(row[3] or '0')
