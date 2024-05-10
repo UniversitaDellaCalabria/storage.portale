@@ -1,7 +1,6 @@
+import datetime
 import logging
 import os
-
-from datetime import datetime
 
 from .. utils.utils import log_action
 from .. utils.utils import custom_message
@@ -67,13 +66,13 @@ def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, i
             return custom_message(request, _("Permission denied"))
     if request.POST:
         laboratoriodatibaseinfosedestruttureform = LaboratorioDatiBaseInfoSedeStruttureForm(data=request.POST, instance=laboratory)
-        if laboratoriodatibaseinfosedestruttureform.is_valid():          
+        if laboratoriodatibaseinfosedestruttureform.is_valid():
             lab_instance = laboratoriodatibaseinfosedestruttureform.save(commit=False)
             lab_instance.user_mod_id = request.user
-            lab_instance.dt_mod=datetime.now()
+            lab_instance.dt_mod=datetime.datetime.now()
             lab_instance.visibile=False
             lab_instance.save(update_fields=['sede_note_descrittive', 'sede_dimensione', 'strumentazione_descrizione', 'visibile', 'user_mod_id', 'dt_mod'])
-            
+
             if laboratoriodatibaseinfosedestruttureform.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseinfosedestruttureform,
                                                                         laboratoriodatibaseinfosedestruttureform.changed_data)
@@ -90,9 +89,9 @@ def laboratory_info_sede_edit(request, code, laboratory=None, my_offices=None, i
             for k, v in laboratoriodatibaseinfosedestruttureform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibaseinfosedestruttureform.fields[k].label}</b>: {v}")
-                
+
             request.session["lab_infosedestrutture_form_data"] = laboratoriodatibaseinfosedestruttureform.data
-            
+
     return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#facilities_equipment")
 
 
@@ -105,13 +104,13 @@ def laboratory_scope_edit(request, code, laboratory=None, my_offices=None, is_va
             return custom_message(request, _("Permission denied"))
     if request.POST:
         laboratoriodatibaseambitoform = LaboratorioDatiBaseAmbitoForm(data=request.POST, instance=laboratory)
-        if laboratoriodatibaseambitoform.is_valid():          
+        if laboratoriodatibaseambitoform.is_valid():
             lab_instance = laboratoriodatibaseambitoform.save(commit=False)
             lab_instance.user_mod_id = request.user
-            lab_instance.dt_mod=datetime.now()
+            lab_instance.dt_mod=datetime.datetime.now()
             lab_instance.visibile=False
             lab_instance.save(update_fields=['ambito', 'visibile', 'user_mod_id', 'dt_mod'])
-            
+
             if laboratoriodatibaseambitoform.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseambitoform,
                                                                         laboratoriodatibaseambitoform.changed_data)
@@ -128,9 +127,9 @@ def laboratory_scope_edit(request, code, laboratory=None, my_offices=None, is_va
             for k, v in laboratoriodatibaseambitoform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibaseambitoform.fields[k].label}</b>: {v}")
-                
+
             request.session["lab_ambito_form_data"] = laboratoriodatibaseambitoform.data
-            
+
     return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#scope")
 
 
@@ -142,13 +141,13 @@ def laboratory_equipment_value_edit(request, code, laboratory=None, my_offices=N
             return custom_message(request, _("Permission denied"))
     if request.POST:
         laboratoriodatibasestrumentazionevaloreform = LaboratorioDatiBaseStrumentazioneValoreForm(data=request.POST, instance=laboratory)
-        if laboratoriodatibasestrumentazionevaloreform.is_valid():          
+        if laboratoriodatibasestrumentazionevaloreform.is_valid():
             lab_instance = laboratoriodatibasestrumentazionevaloreform.save(commit=False)
             lab_instance.user_mod_id = request.user
-            lab_instance.dt_mod=datetime.now()
+            lab_instance.dt_mod=datetime.datetime.now()
             lab_instance.visibile=False
             lab_instance.save(update_fields=['strumentazione_valore', 'visibile', 'user_mod_id', 'dt_mod'])
-            
+
             if laboratoriodatibasestrumentazionevaloreform.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibasestrumentazionevaloreform,
                                                                         laboratoriodatibasestrumentazionevaloreform.changed_data)
@@ -165,12 +164,12 @@ def laboratory_equipment_value_edit(request, code, laboratory=None, my_offices=N
             for k, v in laboratoriodatibasestrumentazionevaloreform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibasestrumentazionevaloreform.fields[k].label}</b>: {v}")
-                
+
             request.session["lab_strumentazionevalore_form_data"] = laboratoriodatibasestrumentazionevaloreform.data
-            
+
     return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#equipment_value")
-    
-    
+
+
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
@@ -180,16 +179,16 @@ def laboratory_interdepartmental_edit(request, code, laboratory=None, my_offices
     if request.POST:
         laboratoriodatibaseinterdipartimentaleform = LaboratorioDatiBaseInterdipartimentaleForm(data=request.POST, instance=laboratory)
         if laboratoriodatibaseinterdipartimentaleform.is_valid():
-            
+
             if request.POST.get("laboratorio_interdipartimentale") == "NO":
                 LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).delete()
-            
+
             lab_instance = laboratoriodatibaseinterdipartimentaleform.save(commit=False)
             lab_instance.user_mod_id = request.user
-            lab_instance.dt_mod=datetime.now()
+            lab_instance.dt_mod=datetime.datetime.now()
             lab_instance.visibile=False
             lab_instance.save(update_fields=['laboratorio_interdipartimentale', 'visibile', 'user_mod_id', 'dt_mod'])
-            
+
             if laboratoriodatibaseinterdipartimentaleform.changed_data:
                 changed_field_labels = _get_changed_field_labels_from_form(laboratoriodatibaseinterdipartimentaleform,
                                                                         laboratoriodatibaseinterdipartimentaleform.changed_data)
@@ -206,21 +205,21 @@ def laboratory_interdepartmental_edit(request, code, laboratory=None, my_offices
             for k, v in laboratoriodatibaseinterdipartimentaleform.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{laboratoriodatibaseinterdipartimentaleform.fields[k].label}</b>: {v}")
-                
+
             request.session["lab_interdipartimentale_form_data"] = laboratoriodatibaseinterdipartimentaleform.data
-            
+
     return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#extra_department")
-    
+
 
 
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory(request, code, laboratory=None, my_offices=None, is_validator=False):
-    
+
     if not laboratory.visibile and not request.POST:
         messages.add_message(request, messages.WARNING, _("Laboratory NOT visible"))
-        
+
     lab_infosedestrutture_form_data = request.session.pop('lab_infosedestrutture_form_data', None)
     lab_ambito_form_data = request.session.pop('lab_ambito_form_data', None)
     lab_strumentazionevalore_form_data = request.session.pop('lab_strumentazionevalore_form_data', None)
@@ -262,13 +261,13 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     #LaboratorioServiziOfferti
     offered_services = LaboratorioServiziOfferti.objects.filter(id_laboratorio_dati=code).values("id", "nome_servizio")
 
-    
+
     if request.POST:
         if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
-        
+
         form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES, allowed_department_codes=allowed_related_departments_codes, instance=laboratory)
-                    
+
         if form.is_valid():
             laboratory = form.save(commit=False)
             related_department_id = form.cleaned_data.get('choosen_department_id')[0]
@@ -276,7 +275,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
             laboratory.id_dipartimento_riferimento = related_department
             laboratory.dipartimento_riferimento = related_department.dip_des_it
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
 
@@ -328,18 +327,18 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
                    'provided_services': provided_services,
                    'offered_services': offered_services,
                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator)
-                   })     
-        
+                   })
+
 
 @login_required
 @can_manage_laboratories
 def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False):
-    
+
     if not (request.user.is_superuser or my_offices.exists()):
             return custom_message(request, _("Permission denied"))
-    
+
     allowed_related_departments_codes = [] if (not my_offices or not my_offices.exists()) else my_offices.values_list("office_id__organizational_structure_id__unique_code", flat=True)
-    
+
     form = LaboratorioDatiBaseForm(allowed_department_codes=allowed_related_departments_codes)
 
     scientific_director_internal_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(required=True)
@@ -353,15 +352,15 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 
     if request.POST.get("choosen_scientific_director", ''):
         scientific_director = get_object_or_404(Personale, matricola=(decrypt(request.POST["choosen_scientific_director"])))
-    
+
     if request.POST:
         form = LaboratorioDatiBaseForm(data=request.POST, files=request.FILES, allowed_department_codes=allowed_related_departments_codes)
-        
+
         if "choosen_scientific_director" in request.POST and request.POST["choosen_scientific_director"]:
-            scientific_director_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(data=request.POST, required=True) 
+            scientific_director_form = LaboratorioDatiBaseScientificDirectorChoosenPersonForm(data=request.POST, required=True)
         else:
             scientific_director_form = LaboratorioDatiBaseScientificDirectorForm(data=request.POST)
-                    
+
         if form.is_valid() and scientific_director_form.is_valid():
             laboratory = form.save(commit=False)
 
@@ -374,27 +373,27 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 
                 laboratory.matricola_preposto_sicurezza = scientific_director
                 laboratory.preposto_sicurezza = f'{scientific_director.cognome} {scientific_director.nome}'
-                
+
             else:
                 laboratory.matricola_responsabile_scientifico = None
                 laboratory.responsabile_scientifico = scientific_director_form.cleaned_data['responsabile_scientifico']
-                
+
                 laboratory.matricola_preposto_sicurezza = None
                 laboratory.preposto_sicurezza = scientific_director_form.cleaned_data['responsabile_scientifico']
-            
-            
+
+
             #department
             related_department = get_object_or_404(DidatticaDipartimento, pk=form.cleaned_data.get('choosen_department_id')[0])
             laboratory.id_dipartimento_riferimento = related_department
             laboratory.dipartimento_riferimento = related_department.dip_des_it
             laboratory.laboratorio_interdipartimentale = 'NO'
-            
-            laboratory.dt_sottomissione = datetime.now()
+
+            laboratory.dt_sottomissione = datetime.datetime.now()
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
-            
+
             log_action(user=request.user,
                        obj=laboratory,
                        flag=ADDITION,
@@ -430,10 +429,10 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 # @can_view_laboratories
 # @can_edit_laboratories
 # def laboratory_unical_department_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
-    
+
 #     department = laboratory.id_dipartimento_riferimento
 #     old_label = department.dip_des_it
-    
+
 #     form = LaboratorioDatiBaseDipartimentoForm(initial={'choosen_department': department.dip_id})
 
 #     if request.POST:
@@ -445,7 +444,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 #             laboratory.id_dipartimento_riferimento = department
 #             laboratory.dipartimento_riferimento = f'{department.dip_des_it}'
 #             laboratory.user_mod_id = request.user
-#             laboratory.dt_mod=datetime.now()
+#             laboratory.dt_mod=datetime.datetime.now()
 #             laboratory.visibile=False
 #             laboratory.save()
 
@@ -458,7 +457,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 
 #             messages.add_message(request, messages.SUCCESS, _("Department edited successfully"))
 #             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-        
+
 #         else:  # pragma: no cover
 #             for k, v in form.errors.items():
 #                 messages.add_message(request, messages.ERROR,
@@ -484,7 +483,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_scientific_director_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
-    
+
     scientific_director = None
     scientific_director_ecode = None
     old_label = None
@@ -494,7 +493,7 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
         old_label = f'{scientific_director.cognome} {scientific_director.nome}'
         scientific_director_ecode = encrypt(scientific_director.matricola)
         initial = {'choosen_person': scientific_director_ecode}
-    
+
     else:
         old_label = laboratory.responsabile_scientifico
         initial = {'responsabile_scientifico': old_label}
@@ -512,7 +511,7 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
             form = external_form
 
         if form.is_valid():
-            
+
             if form.cleaned_data.get('choosen_person'):
                 scientific_director = get_object_or_404(Personale, matricola=decrypt(form.cleaned_data['choosen_person']))
                 laboratory.matricola_responsabile_scientifico = scientific_director
@@ -520,9 +519,9 @@ def laboratory_scientific_director_edit(request, code, laboratory=None, my_offic
             else:
                 laboratory.matricola_responsabile_scientifico = None
                 laboratory.responsabile_scientifico = form.cleaned_data['responsabile_scientifico']
-                
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
 
@@ -578,7 +577,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
         choosen_person = old_label
         safety_manager_ecode = encrypt(safety_manager.matricola)
         initial = {'choosen_person': safety_manager_ecode}
-    
+
     else:
         old_label = laboratory.preposto_sicurezza
         initial = {'preposto_sicurezza': old_label}
@@ -596,7 +595,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
             form = external_form
 
         if form.is_valid():
-            
+
             if form.cleaned_data.get('choosen_person'):
                 safety_manager = get_object_or_404(Personale, matricola=decrypt(form.cleaned_data['choosen_person']))
                 laboratory.matricola_preposto_sicurezza = safety_manager
@@ -605,9 +604,9 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
             else:
                 laboratory.matricola_preposto_sicurezza = None
                 laboratory.preposto_sicurezza = form.cleaned_data['preposto_sicurezza']
-            
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
 
@@ -627,7 +626,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
-                
+
             external_form = LaboratorioDatiBaseSafetyManagerForm(initial=initial)
             internal_form = ChoosenPersonForm(initial=initial, required=True)
 
@@ -648,7 +647,7 @@ def laboratory_safety_manager_edit(request, code, laboratory=None, my_offices=No
                    'edit': 1,
                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')})
-    
+
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
@@ -657,7 +656,7 @@ def laboratory_safety_manager_delete(request, code, laboratory=None, my_offices=
     laboratory.matricola_preposto_sicurezza = None
     laboratory.preposto_sicurezza = None
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.now()
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.visibile=False
     laboratory.save()
 
@@ -691,7 +690,7 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
     if request.POST:
         department_form = LaboratorioAltriDipartimentiForm(data=request.POST)
         if department_form.is_valid() and department_form.cleaned_data.get('choosen_department'):
-            
+
             department = get_object_or_404(DidatticaDipartimento, pk=department_form.cleaned_data['choosen_department'])
 
             if department.dip_id == laboratory.id_dipartimento_riferimento_id:
@@ -702,9 +701,9 @@ def laboratory_extra_departments_new(request, code, laboratory=None, my_offices=
                     id_dip=department,
                     descr_dip_lab=department.dip_des_it
                 )
-                
+
                 laboratory.user_mod_id = request.user
-                laboratory.dt_mod=datetime.now()
+                laboratory.dt_mod=datetime.datetime.now()
                 laboratory.visibile=False
                 laboratory.save()
 
@@ -746,12 +745,12 @@ def laboratory_extra_departments_delete(request, code, data_id, laboratory=None,
     extra_department_lab = get_object_or_404(LaboratorioAltriDipartimenti, pk=data_id)
 
     extra_department_lab.delete()
-    
+
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.now()
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.visibile=False
     laboratory.save()
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -773,31 +772,31 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, is
         equipment_form = LaboratorioAttrezzatureForm(data=request.POST)
         equipment_funds_form = LaboratorioAttrezzatureFondiForm(data=request.POST)
         equipment_risks_form = LaboratorioAttrezzatureRischiForm(data=request.POST)
-        
+
         if equipment_form.is_valid() and equipment_funds_form.is_valid() and equipment_risks_form.is_valid():
 
             laboratory_equipment = equipment_form.save(commit=False)
             laboratory_equipment.id_laboratorio_dati = laboratory
             laboratory_equipment.save()
-            
+
             for fund_id in equipment_funds_form.cleaned_data.get('id_laboratorio_fondo', []):
                 LaboratorioAttrezzatureFondi.objects.create(
                     id_laboratorio_attrezzature=laboratory_equipment,
                     id_laboratorio_fondo=get_object_or_404(LaboratorioFondo, pk=fund_id),
                     user_mod_id=request.user,
-                    dt_mod=datetime.now()
+                    dt_mod=datetime.datetime.now()
                 )
-            
+
             for risk_id in equipment_risks_form.cleaned_data.get('id_tipologia_rischio', []):
                 LaboratorioAttrezzatureRischi.objects.create(
                     id_laboratorio_attrezzature=laboratory_equipment,
                     id_tipologia_rischio=get_object_or_404(TipologiaRischio, pk=risk_id),
                     user_mod_id=request.user,
-                    dt_mod=datetime.now()
+                    dt_mod=datetime.datetime.now()
                 )
-            
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
 
@@ -841,11 +840,11 @@ def laboratory_equipment_new(request, code, laboratory=None, my_offices=None, is
 def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     laboratory_equipment = get_object_or_404(LaboratorioAttrezzature, pk=data_id)
     equipment_form = LaboratorioAttrezzatureForm(instance=laboratory_equipment)
-    
+
     selected_funds_ids = LaboratorioAttrezzatureFondi.objects.filter(id_laboratorio_attrezzature=laboratory_equipment.id).values_list("id_laboratorio_fondo", flat=True)
     selected_funds_ids = tuple(map(str, selected_funds_ids))
     equipment_funds_form = LaboratorioAttrezzatureFondiForm(initial={"id_laboratorio_fondo" : selected_funds_ids})
-    
+
     selected_risks_ids = LaboratorioAttrezzatureRischi.objects.filter(id_laboratorio_attrezzature=laboratory_equipment.id).values_list("id_tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
     equipment_risks_form = LaboratorioAttrezzatureRischiForm(initial={"id_tipologia_rischio" : selected_risks_ids})
@@ -853,66 +852,66 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
     if request.POST:
         if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
-        
+
         equipment_form = LaboratorioAttrezzatureForm(instance=laboratory_equipment, data=request.POST)
         equipment_funds_form = LaboratorioAttrezzatureFondiForm(data=request.POST)
         equipment_risks_form = LaboratorioAttrezzatureRischiForm(data=request.POST)
-        
+
         if equipment_form.is_valid() and equipment_funds_form.is_valid() and equipment_risks_form.is_valid():
-            
+
             laboratory_equipment = equipment_form.save()
-            
+
             #LaboratorioAttrezzatureFondi
             new_selected_funds = equipment_funds_form.cleaned_data.get("id_laboratorio_fondo", [])
-            
+
             LaboratorioAttrezzatureFondi.objects\
                 .filter(id_laboratorio_attrezzature=laboratory_equipment.id)\
                 .exclude(id_laboratorio_fondo__in=new_selected_funds)\
                 .delete()
-            
+
             current_funds = LaboratorioAttrezzatureFondi.objects\
                 .filter(id_laboratorio_attrezzature=laboratory_equipment.id).values_list("id_laboratorio_fondo", flat=True)
             current_funds = map(str, current_funds)
-                
+
             #for all (new_selected_funds - current_funds) create
             funds_id = list(set(new_selected_funds) - set(current_funds))
             funds = LaboratorioFondo.objects.filter(id__in=funds_id)
-                     
+
             for fund in funds:
                 LaboratorioAttrezzatureFondi.objects.create(
                     id_laboratorio_attrezzature=laboratory_equipment,
                     id_laboratorio_fondo=fund,
                     user_mod_id=request.user,
-                    dt_mod=datetime.now()
+                    dt_mod=datetime.datetime.now()
                 )
-            
-            
+
+
             #LaboratorioAttrezzatureRischi
             new_selected_risks = equipment_risks_form.cleaned_data.get("id_tipologia_rischio", [])
-            
+
             LaboratorioAttrezzatureRischi.objects\
                 .filter(id_laboratorio_attrezzature=laboratory_equipment.id)\
                 .exclude(id_tipologia_rischio__in=new_selected_risks)\
                 .delete()
-            
+
             current_risks = LaboratorioAttrezzatureRischi.objects\
                 .filter(id_laboratorio_attrezzature=laboratory_equipment.id).values_list("id_tipologia_rischio", flat=True)
             current_risks = map(str, current_risks)
-                
+
             #for all (new_selected_risks - current_risks) create
             risk_types_id = list(set(new_selected_risks) - set(current_risks))
             risk_types = TipologiaRischio.objects.filter(id__in=risk_types_id)
-                     
+
             for risk_type in risk_types:
                 LaboratorioAttrezzatureRischi.objects.create(
                     id_laboratorio_attrezzature=laboratory_equipment,
                     id_tipologia_rischio=risk_type,
                     user_mod_id=request.user,
-                    dt_mod=datetime.now()
+                    dt_mod=datetime.datetime.now()
                 )
-                
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
 
@@ -931,7 +930,7 @@ def laboratory_equipment_edit(request, code, data_id, laboratory=None, my_office
             for k, v in equipment_funds_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                     f"<b>{equipment_funds_form.fields[k].label}</b>: {v}")
-            
+
             for k, v in equipment_risks_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{equipment_risks_form.fields[k].label}</b>: {v}")
@@ -960,12 +959,12 @@ def laboratory_equipment_delete(request, code, data_id, laboratory=None, my_offi
     equipment_piece = get_object_or_404(LaboratorioAttrezzature, pk=data_id)
 
     equipment_piece.delete()
-    
+
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.now()
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.visibile=False
     laboratory.save()
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -979,10 +978,10 @@ def laboratory_equipment_delete(request, code, data_id, laboratory=None, my_offi
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
-    
+
     #Previously selected researches
     researches_erc1_old = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code)
-    
+
     #Ids to initialize form's checkboxes
     researches_erc1 = researches_erc1_old.values("id","id_ricerca_erc1","id_ricerca_erc1__descrizione", "id_ricerca_erc1__ricerca_erc0_cod")
     erc0 = researches_erc1.first()['id_ricerca_erc1__ricerca_erc0_cod'] if researches_erc1.exists() else None
@@ -998,39 +997,39 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
                 break
 
     research_erc1_form = LaboratorioDatiErc1Form(initial=initial)
-    
+
     if request.POST:
         if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
-        
+
         research_erc1_form = LaboratorioDatiErc1Form(data=request.POST)
         if research_erc1_form.is_valid():
             erc0_selector = request.POST.get("erc0_selector")
             selected_erc1_res_ids = research_erc1_form.cleaned_data.get(f'id_ricerche_erc1_{erc0_selector.lower()}', [])
-                        
+
             LaboratorioDatiErc1.objects\
                 .filter(id_laboratorio_dati=code)\
                 .exclude(id_ricerca_erc1__in=selected_erc1_res_ids)\
                 .delete()
-                
+
             current_erc1_res_ids = LaboratorioDatiErc1.objects\
                 .filter(id_laboratorio_dati=code).values_list("id_ricerca_erc1", flat=True)
             current_erc1_res_ids = map(str, current_erc1_res_ids)
-                
+
             current_erc1_res = list(set(selected_erc1_res_ids) - set(current_erc1_res_ids))
             erc1_researches = RicercaErc1.objects.filter(id__in=current_erc1_res)
-            
+
             for research in erc1_researches:
                 LaboratorioDatiErc1.objects.create(
                     id_laboratorio_dati=laboratory,
                     id_ricerca_erc1=research
                 )
-                
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
-            laboratory.save()        
-            
+            laboratory.save()
+
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1038,7 +1037,7 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
 
             messages.add_message(request, messages.SUCCESS, _("ERC classification edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-    
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -1054,7 +1053,7 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
                    'edit': 1,
                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
-    
+
 
 # Can be viewed by validators but not modified
 @login_required
@@ -1063,21 +1062,21 @@ def laboratory_researches_erc1_edit(request, code, laboratory=None, my_offices=N
 def laboratory_locations_edit(request, data_id, code, laboratory=None, my_offices=None, is_validator=False):
     location = get_object_or_404(LaboratorioUbicazione, pk=data_id)
     location_form = LaboratorioUbicazioneForm(instance=location)
-    
+
     if request.POST:
         if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
-        
+
         location_form = LaboratorioUbicazioneForm(instance=location, data=request.POST)
         if location_form.is_valid():
-           
+
             location_form.save()
-            
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
-            
+
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1085,12 +1084,12 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
 
             messages.add_message(request, messages.SUCCESS, _("Location edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-        
+
         else:  # pragma: no cover
             for k, v in location_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{location_form.fields[k].label}</b>: {v}")
-                    
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -1104,7 +1103,7 @@ def laboratory_locations_edit(request, data_id, code, laboratory=None, my_office
                    'laboratory': laboratory,
                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
-    
+
 
 @login_required
 @can_manage_laboratories
@@ -1115,12 +1114,12 @@ def laboratory_locations_new(request, code, laboratory=None, my_offices=None, is
     if request.POST:
         location_form = LaboratorioUbicazioneForm(data=request.POST)
         if location_form.is_valid():
-            location = location_form.save(commit=False)         
+            location = location_form.save(commit=False)
             location.id_laboratorio_dati = laboratory
             location.save()
-            
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
 
@@ -1160,12 +1159,12 @@ def laboratory_locations_delete(request, code, data_id, laboratory=None, my_offi
     location = get_object_or_404(LaboratorioUbicazione, pk=data_id)
 
     location.delete()
-    
+
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.now()
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.visibile=False
     laboratory.save()
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -1183,7 +1182,7 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
     researcher = None
     internal_form = ChoosenPersonForm(required=True)
     external_form = LaboratorioPersonaleForm()
-    
+
     if request.POST:
         internal_form = ChoosenPersonForm(data=request.POST, required=True)
         external_form = LaboratorioPersonaleForm(data=request.POST)
@@ -1191,7 +1190,7 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
             form = internal_form
         else:
             form = external_form
-            
+
         if form.is_valid():
             if form.cleaned_data.get('choosen_person'):
                 researcher_code = decrypt(form.cleaned_data['choosen_person'])
@@ -1207,7 +1206,7 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
                     cognomenome_origine=form.cleaned_data['laboratory_staff'])
 
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
 
@@ -1247,12 +1246,12 @@ def laboratory_research_staff_new(request, code, laboratory=None, my_offices=Non
 def laboratory_research_staff_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     researcher = get_object_or_404(LaboratorioPersonaleRicerca, pk=data_id)
     researcher.delete()
-    
+
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.now()
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.visibile=False
     laboratory.save()
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -1271,15 +1270,15 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
     internal_form = ChoosenPersonForm(required=True)
     external_form = LaboratorioPersonaleForm()
     technician_form = LaboratorioPersonaleTecnicoForm()
-    
+
     if request.POST:
         technician_form = LaboratorioPersonaleTecnicoForm(request.POST)
-        
+
         if "choosen_person" in request.POST and request.POST["choosen_person"]:
             person_form = ChoosenPersonForm(data=request.POST, required=True)
         else:
             person_form = LaboratorioPersonaleForm(data=request.POST)
-            
+
         if person_form.is_valid() and technician_form.is_valid():
 
             if person_form.cleaned_data.get('choosen_person'):
@@ -1300,7 +1299,7 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
                     percentuale_impegno=technician_form.cleaned_data.get('percentuale_impegno'))
 
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
 
@@ -1343,12 +1342,12 @@ def laboratory_technical_staff_new(request, code, laboratory=None, my_offices=No
 def laboratory_technical_staff_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     technician = get_object_or_404(LaboratorioPersonaleTecnico, pk=data_id)
     technician.delete()
-    
+
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.now()
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.visibile=False
     laboratory.save()
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -1362,18 +1361,18 @@ def laboratory_technical_staff_delete(request, code, data_id, laboratory=None, m
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_activities_new(request, code, laboratory=None, my_offices=None, is_validator=False):
-    
+
     activity_types_already_specified = LaboratorioAttivita\
         .objects\
         .filter(id_laboratorio_dati=code)\
         .values_list("id_tipologia_attivita", flat=True)
-        
+
     if activity_types_already_specified and len(activity_types_already_specified) >= 3:
         messages.add_message(request, messages.ERROR, _("Activities list is full"))
         return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-    
+
     activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified)
-    
+
     if request.POST:
         activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, data=request.POST)
         if activity_form.is_valid():
@@ -1382,12 +1381,12 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, i
             activity.id_laboratorio_dati=laboratory
             activity.id_tipologia_attivita=activity_type
             activity.save()
-            
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
-            
+
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1395,12 +1394,12 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, i
 
             messages.add_message(request, messages.SUCCESS, _("Activities added successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-        
+
         else:  # pragma: no cover
             for k, v in activity_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{activity_form.fields[k].label}</b>: {v}")
-                    
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -1414,7 +1413,7 @@ def laboratory_activities_new(request, code, laboratory=None, my_offices=None, i
                    'item_label': _("Activity"),
                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                 })
-    
+
 
 @login_required
 @can_manage_laboratories
@@ -1423,31 +1422,31 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
     selected_activity_id = activity.id_tipologia_attivita.id
     selected_activity_type = get_object_or_404(LaboratorioTipologiaAttivita, pk=selected_activity_id)
-    
+
     activity_types_already_specified = LaboratorioAttivita\
         .objects\
         .filter(id_laboratorio_dati=code)\
         .exclude(id_tipologia_attivita=selected_activity_type)\
         .values_list("id_tipologia_attivita", flat=True)
-    
+
     activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, instance=activity, initial={'tipologia_attivita': selected_activity_id})
-    
+
     if request.POST:
         if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
-        
+
         activity_form = LaboratorioAttivitaForm(activity_types_already_specified=activity_types_already_specified, instance=activity, data=request.POST)
         if activity_form.is_valid():
             activity_type = get_object_or_404(LaboratorioTipologiaAttivita, pk=activity_form.cleaned_data["tipologia_attivita"])
             activity = activity_form.save(commit=False)
             activity.id_tipologia_attivita = activity_type
             activity.save()
-            
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
-            
+
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1455,12 +1454,12 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
 
             messages.add_message(request, messages.SUCCESS, _("Activity edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-        
+
         else:  # pragma: no cover
             for k, v in activity_form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{activity_form.fields[k].label}</b>: {v}")
-    
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -1483,12 +1482,12 @@ def laboratory_activities_edit(request, code, data_id, laboratory=None, my_offic
 def laboratory_activities_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
     activity.delete()
-    
+
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.now()
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.visibile=False
     laboratory.save()
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -1508,16 +1507,16 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
     external_form = LaboratorioServiziErogatiResponsabileForm()
     manager = None
     if request.POST:
-        
+
         form = LaboratorioServiziErogatiForm(data=request.POST)
-        
+
         if "choosen_person" in request.POST and request.POST["choosen_person"]:
             person_form = ChoosenPersonForm(data=request.POST, required=True)
         else:
             person_form = LaboratorioServiziErogatiResponsabileForm(data=request.POST)
-            
+
         if person_form.is_valid() and form.is_valid():
-            
+
             provided_service = form.save(commit=False)
             provided_service.id_laboratorio_dati = laboratory
 
@@ -1531,12 +1530,12 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
                 provided_service.responsabile_origine = person_form.cleaned_data['laboratory_manager']
 
             provided_service.save()
-            
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
-            
+
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1544,7 +1543,7 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
 
             messages.add_message(request, messages.SUCCESS, _("Provided service added successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-        
+
         else:  # pragma: no cover
             for k, v in person_form.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -1552,7 +1551,7 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
-    
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -1569,8 +1568,8 @@ def laboratory_provided_services_new(request, code, laboratory=None, my_offices=
                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    'url': reverse('ricerca:addressbooklist')
                    })
-    
-    
+
+
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
@@ -1588,7 +1587,7 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
         choosen_person = manager_origine
     else:
         lpf_initial["laboratory_manager"] = provided_service.responsabile_origine
-        
+
     internal_form = ChoosenPersonForm(initial=cpf_initial, required=False)
     external_form = LaboratorioServiziErogatiResponsabileForm(initial=lpf_initial)
     form = LaboratorioServiziErogatiForm(instance=provided_service)
@@ -1596,18 +1595,18 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
     if request.POST:
         if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
-        
+
         form = LaboratorioServiziErogatiForm(data=request.POST, instance=provided_service)
-        
+
         if "choosen_person" in request.POST and request.POST["choosen_person"]:
             person_form = ChoosenPersonForm(initial=cpf_initial, data=request.POST, required=False)
         else:
             person_form = LaboratorioServiziErogatiResponsabileForm(initial=lpf_initial, data=request.POST)
-            
+
         if person_form.is_valid() and form.is_valid():
-            
+
             provided_service = form.save(commit=False)
-            
+
             if person_form.cleaned_data.get('choosen_person'):
                 manager_code = decrypt(person_form.cleaned_data['choosen_person'])
                 manager = get_object_or_404(Personale, matricola=manager_code)
@@ -1618,20 +1617,20 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
                 provided_service.responsabile_origine = person_form.cleaned_data['laboratory_manager']
 
             provided_service.save()
-            
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
-            
+
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
             msg=_("Edited provided service"))
-            
+
             messages.add_message(request, messages.SUCCESS, _("Provided service edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-        
+
         else:  # pragma: no cover
             for k, v in person_form.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -1639,7 +1638,7 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
             for k, v in form.errors.items():
                 messages.add_message(request, messages.ERROR,
                                      f"<b>{form.fields[k].label}</b>: {v}")
-                
+
             internal_form = ChoosenPersonForm(initial=cpf_initial, required=False)
             external_form = LaboratorioServiziErogatiResponsabileForm(initial=lpf_initial)
 
@@ -1668,12 +1667,12 @@ def laboratory_provided_services_edit(request, code, data_id, laboratory=None, m
 def laboratory_provided_services_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     provided_service = get_object_or_404(LaboratorioServiziErogati, pk=data_id)
     provided_service.delete()
-    
+
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.now()
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.visibile=False
     laboratory.save()
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -1694,12 +1693,12 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
         offered_service = form.save(commit=False)
         offered_service.id_laboratorio_dati = laboratory
         offered_service.save()
-        
+
         laboratory.user_mod_id = request.user
-        laboratory.dt_mod=datetime.now()
+        laboratory.dt_mod=datetime.datetime.now()
         laboratory.visibile=False
         laboratory.save()
-        
+
         log_action(user=request.user,
         obj=laboratory,
         flag=CHANGE,
@@ -1707,7 +1706,7 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
 
         messages.add_message(request, messages.SUCCESS, _("Offered service added successfully"))
         return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-    
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -1721,8 +1720,8 @@ def laboratory_offered_services_new(request, code, laboratory=None, my_offices=N
                    'laboratory': laboratory,
                    'user_roles' : __get_user_roles(request, laboratory, my_offices, is_validator),
                    })
-    
-    
+
+
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
@@ -1733,17 +1732,17 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
     if request.POST:
         if not (request.user.is_superuser or my_offices.exists() or _is_user_scientific_director(request, laboratory)):
             return custom_message(request, _("Permission denied"))
-        
+
         form = LaboratorioServiziOffertiForm(data=request.POST, instance=offered_service)
-    
+
         if form.is_valid():
             offered_service = form.save()
-            
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
-            
+
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
@@ -1751,8 +1750,8 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
 
             messages.add_message(request, messages.SUCCESS, _("Offered service edited successfully"))
             return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-        
-    
+
+
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_laboratories:crud_laboratories'): _('Laboratories'),
                    reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}): laboratory.nome_laboratorio,
@@ -1776,12 +1775,12 @@ def laboratory_offered_services_edit(request, code, data_id, laboratory=None, my
 def laboratory_offered_services_delete(request, code, data_id, laboratory=None, my_offices=None, is_validator=False):
     offered_service = get_object_or_404(LaboratorioServiziOfferti, pk=data_id)
     offered_service.delete()
-    
+
     laboratory.user_mod_id = request.user
-    laboratory.dt_mod=datetime.now()
+    laboratory.dt_mod=datetime.datetime.now()
     laboratory.visibile=False
     laboratory.save()
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
@@ -1795,49 +1794,49 @@ def laboratory_offered_services_delete(request, code, data_id, laboratory=None, 
 @can_manage_laboratories
 @can_view_laboratories
 @can_edit_laboratories
-def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, is_validator=False):   
+def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
     if request.POST:
         risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
-        
+
         if risk_type_form.is_valid():
 
             #LaboratorioTipologiaRischio
             new_selected_risks = risk_type_form.cleaned_data.get("tipologie_rischio", [])
-            
+
             LaboratorioTipologiaRischio.objects\
                 .filter(id_laboratorio_dati=code)\
                 .exclude(id_tipologia_rischio__in=new_selected_risks)\
                 .delete()
-            
+
             current_risks = LaboratorioTipologiaRischio.objects\
                 .filter(id_laboratorio_dati=code).values_list("id_tipologia_rischio", flat=True)
             current_risks = map(str, current_risks)
-                
+
             #for all (new_selected_risks - current_risks) create
             risk_types_id = list(set(new_selected_risks) - set(current_risks))
             risk_types = TipologiaRischio.objects.filter(id__in=risk_types_id)
-            
+
             for rt in risk_types:
                 LaboratorioTipologiaRischio.objects.create(
                     id_laboratorio_dati=laboratory,
                     id_tipologia_rischio=rt
                 )
-                
+
             laboratory.user_mod_id = request.user
-            laboratory.dt_mod=datetime.now()
+            laboratory.dt_mod=datetime.datetime.now()
             laboratory.visibile=False
             laboratory.save()
-            
+
             log_action(user=request.user,
             obj=laboratory,
             flag=CHANGE,
             msg=_("Risk types updated"))
-        
+
             messages.add_message(request, messages.SUCCESS, _("Risk types updated successfully"))
         else:  # pragma: no cover
             for k, v in risk_type_form.errors.items():
                 messages.add_message(request, messages.ERROR, f"<b>{risk_type_form.fields[k].label}</b>: {v}")
-                
+
         return redirect(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': code}) + "#risks")
 
 
@@ -1846,48 +1845,48 @@ def laboratory_risk_types_edit(request, code, laboratory=None, my_offices=None, 
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_request_approval(request, code, laboratory=None, my_offices=None, is_validator=False):
-    
+
     if laboratory.visibile:
         return custom_message(request, _("Laboratory is already visible"))
-    
+
     #LaboratorioDatiBase
     # if not (laboratory.preposto_sicurezza or laboratory.matricola_preposto_sicurezza):
     #     messages.add_message(request, messages.ERROR, _("Laboratory must have a Safety Manager"))
-    #     return redirect('crud_laboratories:crud_laboratory_edit', code=code)    
-    
+    #     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
     #LaboratorioAltriDipartimenti
     extra_departments = LaboratorioAltriDipartimenti.objects.filter(id_laboratorio_dati=code).exists()
     if extra_departments and laboratory.laboratorio_interdipartimentale == "NO":
         messages.add_message(request, messages.ERROR, _("Extra Departments specified for NON Interdepartmental Laboratory"))
         return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-        
+
     #LaboratorioDatiErc1
     researches_erc1 = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).exists()
     if not researches_erc1:
         messages.add_message(request, messages.ERROR, _("Laboratory must have at least one ERC 1 Research"))
         return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-    
+
     #LaboratorioUbicazione
     locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).exists()
     if not locations:
         messages.add_message(request, messages.ERROR, _("Laboratory must have at least one Location"))
         return redirect('crud_laboratories:crud_laboratory_edit', code=code)
-    
+
     #LaboratorioAttivita
     activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).exists()
     if not activities:
         messages.add_message(request, messages.ERROR, _("Laboratory must have at least one Activity"))
-        return redirect('crud_laboratories:crud_laboratory_edit', code=code)    
-    
-    
+        return redirect('crud_laboratories:crud_laboratory_edit', code=code)
+
+
     validators = OrganizationalStructureOfficeEmployee.objects.filter(office__is_active=True,
                                                                     office__name=OFFICE_LABORATORY_VALIDATORS,
                                                                     office__organizational_structure__is_active=True)\
                                                                .values_list('employee_id__email', flat=True)
-                                                
+
     validators = (list(set(validators)))
     lab_url = request.build_absolute_uri(reverse('crud_laboratories:crud_laboratory_edit', kwargs={'code': laboratory.id}))
-    
+
     send_mail(
         TO_VALIDATORS_EMAIL_SUBJECT,
         f"{TO_VALIDATORS_EMAIL_MESSAGE} {laboratory.nome_laboratorio} {lab_url}",
@@ -1895,12 +1894,12 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
         validators,
         fail_silently=True,
     )
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
     msg=_("Requested approval"))
-    
+
     messages.add_message(request, messages.SUCCESS, _("Request for approval sent successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
 
@@ -1908,19 +1907,19 @@ def laboratory_request_approval(request, code, laboratory=None, my_offices=None,
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_approve(request, code, laboratory=None, my_offices=None, is_validator=False):
-    
+
     if not (request.user.is_superuser or is_validator):
         return custom_message(request, _("Permission denied"))
     if laboratory.visibile:
         return custom_message(request, _("Laboratory is already visible"))
-    
+
     laboratory.visibile = True
     laboratory.save()
-    
+
     log_action(user=request.user,
     obj=laboratory,
     flag=CHANGE,
     msg=_("Approved Laboratory"))
-    
+
     messages.add_message(request, messages.SUCCESS, _("Laboratory approved successfully"))
     return redirect('crud_laboratories:crud_laboratory_edit', code=code)
