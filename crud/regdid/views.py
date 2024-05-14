@@ -10,8 +10,10 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.middleware.csrf import get_token
 from django.db import transaction
+from django.http import HttpResponse
 
-from django_xhtml2pdf.utils import pdf_decorator
+from django_xhtml2pdf.utils import pdf_decorator, fetch_resources
+from xhtml2pdf import pisa
 
 from ricerca_app.models import *
 from ricerca_app.concurrency import acquire_lock, get_lock_from_cache
@@ -668,7 +670,6 @@ def regdid_status_change(request, regdid_id, status_cod):
 
 # Regulament PDF
 @login_required
-@pdf_decorator(pdfname="RegolamentoDidattico.pdf")
 def regdid_articles_pdf(request, regdid_id):
     regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
@@ -707,4 +708,17 @@ def regdid_articles_pdf(request, regdid_id):
         'nome_corso': nome_corso,
         'classe_laurea_desc': classe_laurea_desc,
     }
-    return render(request, 'regdid_generate_pdf.html', context)
+    
+    cds_name = nome_cds_it.replace(" ", "_").title()
+    pdf_file_name=f"Regolamento_{cds_name}_{datetime.datetime.now().strftime('%m_%d_%Y')}"
+    pdf_file_name=pdf_file_name
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename={pdf_file_name}.pdf'
+    template = render(request, 'regdid_generate_pdf.html', context)
+    html_src_b = template.getvalue()
+    pisa.CreatePDF(
+        html_src_b,
+        dest=response,
+        link_callback=fetch_resources)
+    return response
