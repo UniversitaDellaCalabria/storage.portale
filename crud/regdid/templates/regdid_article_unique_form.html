@@ -6,6 +6,23 @@
 {% block extra_head %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+
+    <style>
+        table {
+            border: solid 0.1mm #000000 !important;
+            table-layout: fixed;
+            width: 100%;
+            padding-bottom: 1mm;
+            overflow-wrap: break-word;
+        }
+        td, th {
+            border: solid 0.1mm #000000 !important;
+            text-align: left;
+            padding-left: 1.0mm;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+    </style>
 {% endblock %}
 
 
