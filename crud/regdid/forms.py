@@ -1,4 +1,6 @@
 from json import JSONEncoder
+from django.utils.html import strip_tags
+from re import sub
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
@@ -6,6 +8,14 @@ from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from ricerca_app.models import *
+
+def _normalize_text(text):
+    normalized_text = text
+    normalized_text = sub(r"(\&[a-z0-9#]{2,8}\;)", " ", normalized_text)
+    normalized_text = sub(r"(\r|\n)", "", normalized_text)
+    normalized_text = normalized_text.strip()
+    normalized_text = strip_tags(normalized_text)
+    return normalized_text
 
 class PrettyJSONEncoder(JSONEncoder):
     def __init__(self, *args, indent, sort_keys, **kwargs):
@@ -46,6 +56,14 @@ class DidatticaCdsSubArticoliRegolamentoForm(BaseArticoliModelForm):
         }
         
 class DidatticaCdsArticoliRegolamentoNoteForm(forms.ModelForm):
+    def clean_note(self):
+        data = self.cleaned_data["note"]
+        if data:
+            n_data = _normalize_text(data)
+            if not n_data or n_data.isspace():
+                data = None
+        return data
+    
     class Meta:
         model = DidatticaCdsArticoliRegolamento
         fields = ('note',)
@@ -54,6 +72,14 @@ class DidatticaCdsArticoliRegolamentoNoteForm(forms.ModelForm):
         help_texts = {'note': _("This field is shared between the main article and its sub articles")}
         
 class DidatticaCdsArticoliRegolamentoTestataNoteForm(DidatticaCdsArticoliRegolamentoNoteForm):
+    def clean_note(self):
+        data = self.cleaned_data["note"]
+        if data:
+            n_data = _normalize_text(data)
+            if not n_data or n_data.isspace():
+                data = ''
+        return data
+        
     class Meta(DidatticaCdsArticoliRegolamentoNoteForm.Meta):
         model = DidatticaCdsArticoliRegolamentoTestata
         help_texts = {}

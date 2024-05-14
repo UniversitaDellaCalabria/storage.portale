@@ -176,18 +176,18 @@ def regdid_articles(request, regdid_id):
             messages.add_message(request, messages.ERROR, _("Unable to edit this item"))
             
         elif didatticacdsarticoliregolamentotestatanoteform.is_valid() and didatticacdsarticoliregolamentotestatanoteform.changed_data:  
-                
-            note_dipartimento = didatticacdsarticoliregolamentotestatanoteform.save(commit=False)
-            note_dipartimento.save(update_fields=['note',])
+            if not didatticacdsarticoliregolamentotestatanoteform.cleaned_data.get('note') == department_notes:
+                note_dipartimento = didatticacdsarticoliregolamentotestatanoteform.save(commit=False)
+                note_dipartimento.save(update_fields=['note',])
 
-            log_action( user=request.user,
-                        obj=testata,
-                        flag=CHANGE,
-                        msg=_("Edited department notes"))
-            
-            messages.add_message(request,
-                                messages.SUCCESS,
-                                _("Department notes edited successfully"))
+                log_action( user=request.user,
+                            obj=testata,
+                            flag=CHANGE,
+                            msg=_("Edited department notes"))
+                
+                messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Department notes edited successfully"))
         else:  # pragma: no cover
             for k, v in didatticacdsarticoliregolamentotestatanoteform.errors.items():
                 messages.add_message(request, messages.ERROR,
@@ -270,17 +270,18 @@ def regdid_articles_edit(request, regdid_id, article_id):
                     
                 
                 if 'note' in request.POST and didatticacdsarticoliregolamentonoteform.changed_data:
-                    note_articolo = didatticacdsarticoliregolamentonoteform.save(commit=False)
-                    note_articolo.save(update_fields=['note',])
+                    if didatticacdsarticoliregolamentonoteform.cleaned_data.get('note') != note_revisione:
+                        note_articolo = didatticacdsarticoliregolamentonoteform.save(commit=False)
+                        note_articolo.save(update_fields=['note',])
+                        
+                        log_action( user=request.user,
+                                    obj=testata,
+                                    flag=CHANGE,
+                                    msg=_("Edited notes") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}")
                     
-                    log_action( user=request.user,
-                                obj=testata,
-                                flag=CHANGE,
-                                msg=_("Edited notes") + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}")
-                
-                    messages.add_message(request, messages.SUCCESS, _("Notes edited successfully"))
-                
-                return redirect('crud_regdid:crud_regdid_articles_edit', regdid_id=regdid_id, article_id=articolo.pk)    
+                        messages.add_message(request, messages.SUCCESS, _("Notes edited successfully"))
+                    
+                    return redirect('crud_regdid:crud_regdid_articles_edit', regdid_id=regdid_id, article_id=articolo.pk)    
             
             else:  # pragma: no cover
                 for k, v in didatticacdsarticoliregolamentoform.errors.items():
