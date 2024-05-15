@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.middleware.csrf import get_token
 from django.db import transaction
 from django.http import HttpResponse
+from django.core.mail import send_mail
 
 from django_xhtml2pdf.utils import pdf_decorator, fetch_resources
 from xhtml2pdf import pisa
@@ -24,6 +25,7 @@ from .. utils.decorators import *
 from .. utils.utils import log_action
 
 from . forms import *
+from . settings import *
 
 logger = logging.getLogger(__name__)
 
@@ -656,6 +658,38 @@ def regdid_status_change(request, regdid_id, status_cod):
             testata.dt_mod = datetime.datetime.now()
             testata.save()
             
+            # email
+            regdid_articles_url = request.build_absolute_uri(reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}))
+            
+            active_offices_employees = OrganizationalStructureOfficeEmployee.objects.filter(office__is_active=True, office__organizational_structure__is_active=True)
+            department_office_employees_email = active_offices_employees.filter(office__name=OFFICE_REGDIDS_DEPARTMENT,
+                                                                                office__organizational_structure__unique_code=regdid.cds.dip.dip_cod)\
+                                                                        .values_list('employee_id__email', flat=True)
+            revision_office_employees_email = active_offices_employees.filter(office__name=OFFICE_REGDIDS_REVISION)\
+                                                                      .values_list('employee_id__email', flat=True)
+            approval_office_employees_email = active_offices_employees.filter(office__name=OFFICE_REGDIDS_APPROVAL)\
+                                                                      .values_list('employee_id__email', flat=True)
+                                                    
+            recipients = []
+            status_email_message = None
+            if status_cod == '0': # send email to department
+                recipients = list(set(department_office_employees_email))
+                status_email_message = STATUS_EMAIL_MESSAGE_DEPARTMENT
+            elif status_cod == '1': # send email to revision
+                recipients = list(set(revision_office_employees_email))
+                status_email_message = STATUS_EMAIL_MESSAGE_REVISION
+            elif status_cod == '2': # send email to approval
+                recipients = list(set(approval_office_employees_email))
+                status_email_message = STATUS_EMAIL_MESSAGE_APPROVAL
+
+            send_mail(
+                STATUS_EMAIL_SUBJECT,
+                f"{status_email_message} {regdid.cds.nome_cds_it.title()}: {regdid_articles_url}",
+                STATUS_EMAIL_FROM,
+                recipients,
+                fail_silently=True,
+            )
+        
             log_action(user=request.user,
                     obj=testata,
                     flag=CHANGE,
