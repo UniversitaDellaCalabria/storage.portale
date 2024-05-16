@@ -4911,14 +4911,13 @@ class DidatticaArticoliRegolamentoStruttura(VisibileModAbstract):
     class Meta:
         managed = True
         db_table = 'DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA'
-        
+                
         
 class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract, PermissionsModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     cds = models.ForeignKey('DidatticaCds', models.DO_NOTHING, db_column='CDS_ID')  # Field name made lowercase.
     aa = models.IntegerField(db_column='AA')  # Field name made lowercase.
     note = models.TextField(db_column='NOTE', blank=True)  # Field name made lowercase.
-    id_didattica_articoli_regolamento_status = models.ForeignKey(DidatticaArticoliRegolamentoStatus, models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS')  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='ID_USER_MOD')  # Field name made lowercase.
 
@@ -4952,8 +4951,11 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract, PermissionsMod
     def _check_edit_permission(self, user_offices_names, **kwargs):
         offices_names = self.get_offices_names()
         
-        status_cod = self.id_didattica_articoli_regolamento_status\
-                         .status_cod
+        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=self.pk).order_by("-dt_mod").first()
+        if testata_status is None:
+            return False
+        
+        status_cod = testata_status.id_didattica_articoli_regolamento_status.status_cod
         
         if status_cod == '0' and offices_names[0] in user_offices_names:
             return True
@@ -4967,6 +4969,19 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract, PermissionsMod
     class Meta:
         managed = True
         db_table = 'DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA'
+
+
+class DidatticaCdsTestataStatus(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_didattica_articoli_regolamento_status = models.ForeignKey(DidatticaArticoliRegolamentoStatus, models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS')  # Field name made lowercase.
+    id_didattica_cds_articoli_regolamento_testata = models.ForeignKey(DidatticaCdsArticoliRegolamentoTestata, models.PROTECT, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA')  # Field name made lowercase.
+    motivazione = models.TextField(db_column='MOTIVAZIONE', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
+    id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='id_user_mod', blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'DIDATTICA_CDS_TESTATA_STATUS'
 
 
 class DidatticaArticoliRegolamentoStrutturaTopic(VisibileModAbstract):
@@ -5015,9 +5030,11 @@ class DidatticaCdsArticoliRegolamento(VisibileModAbstract, PermissionsModAbstrac
     def _check_edit_permission(self, user_offices_names, **kwargs):
         offices_names = self.get_offices_names()
         
-        status_cod = self.id_didattica_cds_articoli_regolamento_testata\
-                         .id_didattica_articoli_regolamento_status\
-                         .status_cod
+        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=self.id_didattica_cds_articoli_regolamento_testata.pk).order_by("-dt_mod").first()
+        if testata_status is None:
+            return False
+        
+        status_cod = testata_status.id_didattica_articoli_regolamento_status.status_cod
         
         if status_cod == '0' and offices_names[0] in user_offices_names:
             return True
@@ -5083,11 +5100,12 @@ class DidatticaCdsSubArticoliRegolamento(VisibileModAbstract, PermissionsModAbst
     def _check_edit_permission(self, user_offices_names, **kwargs):
         offices_names = self.get_offices_names()
         
-        status_cod = self.id_didattica_cds_articoli_regolamento\
-                         .id_didattica_cds_articoli_regolamento_testata\
-                         .id_didattica_articoli_regolamento_status\
-                         .status_cod
+        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=self.id_didattica_cds_articoli_regolamento.id_didattica_cds_articoli_regolamento_testata.pk).order_by("-dt_mod").first()
+        if testata_status is None:
+            return False
         
+        status_cod = testata_status.id_didattica_articoli_regolamento_status.status_cod
+
         if status_cod == '0' and offices_names[0] in user_offices_names:
             return True
         elif status_cod == '1' and offices_names[1] in user_offices_names:
