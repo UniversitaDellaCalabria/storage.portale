@@ -150,6 +150,7 @@ def regdid_articles(request, regdid_id):
         testata_status = DidatticaCdsTestataStatus.objects.create(
             id_didattica_articoli_regolamento_status = status,
             id_didattica_cds_articoli_regolamento_testata = testata,
+            data_status = datetime.datetime.now(), 
             dt_mod = datetime.datetime.now(),
             id_user_mod = request.user
         )
@@ -159,7 +160,7 @@ def regdid_articles(request, regdid_id):
                     flag=ADDITION,
                     msg=_("Added didactic regulation testata"))
     else:
-        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-dt_mod").first()
+        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
         
     # permissions 
     user_permissions_and_offices = testata.get_user_permissions_and_offices(request.user)
@@ -246,7 +247,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
     sub_art_list = DidatticaCdsSubArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento=article_id).order_by("ordine")
     didatticacdsarticoliregolamentoform = DidatticaCdsArticoliRegolamentoForm(data=request.POST if request.POST else None, instance=articolo)
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
-    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-dt_mod").first()
+    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
     
     # Revision notes
     can_edit_notes = True if (OFFICE_REGDIDS_REVISION in user_permissions_and_offices['offices']) and user_permissions_and_offices['permissions']['edit'] else False
@@ -346,7 +347,7 @@ def regdid_articles_new(request, regdid_id, article_num):
     struttura_articolo = get_object_or_404(DidatticaArticoliRegolamentoStruttura, id_didattica_cds_tipo_corso=didattica_cds_tipo_corso, numero=article_num)
     didatticacdsarticoliregolamentoform = DidatticaCdsArticoliRegolamentoForm(data=request.POST if request.POST else None)
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
-    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-dt_mod").first()
+    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
     
     if testata_status.id_didattica_articoli_regolamento_status.status_cod in ['2', '3']:
         return custom_message(request, _("Permission denied"))
@@ -428,7 +429,7 @@ def regdid_articles_delete(request, regdid_id, article_id):
     titolo_articolo = articolo.id_didattica_articoli_regolamento_struttura.titolo_it
     numero_sotto_art = DidatticaCdsSubArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento=article_id).count()
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
-    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-dt_mod").first()
+    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
 
     if testata_status.id_didattica_articoli_regolamento_status.status_cod in ['2', '3']:
         return custom_message(request, _("Permission denied"))
@@ -462,7 +463,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
     
     didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None, instance=sotto_articolo)
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
-    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-dt_mod").first()
+    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
     
     note_revisione = articolo.note
     
@@ -545,7 +546,7 @@ def regdid_sub_articles_new(request, regdid_id, article_id):
     didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None)
     strutt_articolo = articolo.id_didattica_articoli_regolamento_struttura
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
-    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-dt_mod").first()
+    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
     
     if testata_status.id_didattica_articoli_regolamento_status.status_cod in ['2', '3']:
         return custom_message(request, _("Permission denied"))
@@ -619,7 +620,7 @@ def regdid_sub_articles_delete(request, regdid_id, article_id, sub_article_id):
     titolo_sotto_articolo = sotto_articolo.titolo_it
     ordine_sotto_articolo = sotto_articolo.ordine
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
-    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-dt_mod").first()
+    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
     
     if testata_status.id_didattica_articoli_regolamento_status.status_cod in ['2', '3']:
         return custom_message(request, _("Permission denied"))
@@ -643,7 +644,7 @@ def regdid_sub_articles_delete(request, regdid_id, article_id, sub_article_id):
 def regdid_status_change(request, regdid_id, status_cod):
     regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
-    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-dt_mod").first()
+    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
 
     # permissions    
     user_permissions_and_offices = testata.get_user_permissions_and_offices(request.user)
@@ -677,6 +678,7 @@ def regdid_status_change(request, regdid_id, status_cod):
             testata_status = DidatticaCdsTestataStatus.objects.create(
                 id_didattica_articoli_regolamento_status = status,
                 id_didattica_cds_articoli_regolamento_testata = testata,
+                data_status = datetime.datetime.now(),
                 dt_mod = datetime.datetime.now(),
                 id_user_mod = request.user
             )

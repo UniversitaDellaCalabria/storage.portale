@@ -4951,7 +4951,7 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract, PermissionsMod
     def _check_edit_permission(self, user_offices_names, **kwargs):
         offices_names = self.get_offices_names()
         
-        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=self.pk).order_by("-dt_mod").first()
+        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=self.pk).order_by("-data_status").first()
         if testata_status is None:
             return False
         
@@ -5031,7 +5031,7 @@ class DidatticaCdsArticoliRegolamento(VisibileModAbstract, PermissionsModAbstrac
     def _check_edit_permission(self, user_offices_names, **kwargs):
         offices_names = self.get_offices_names()
         
-        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=self.id_didattica_cds_articoli_regolamento_testata.pk).order_by("-dt_mod").first()
+        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=self.id_didattica_cds_articoli_regolamento_testata.pk).order_by("-data_status").first()
         if testata_status is None:
             return False
         
@@ -5101,7 +5101,7 @@ class DidatticaCdsSubArticoliRegolamento(VisibileModAbstract, PermissionsModAbst
     def _check_edit_permission(self, user_offices_names, **kwargs):
         offices_names = self.get_offices_names()
         
-        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=self.id_didattica_cds_articoli_regolamento.id_didattica_cds_articoli_regolamento_testata.pk).order_by("-dt_mod").first()
+        testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=self.id_didattica_cds_articoli_regolamento.id_didattica_cds_articoli_regolamento_testata.pk).order_by("-data_status").first()
         if testata_status is None:
             return False
         
