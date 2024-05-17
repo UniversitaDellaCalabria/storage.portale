@@ -89,9 +89,13 @@
             <svg class="icon icon-xs icon-white">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
             </svg>
+            {% if user_permissions_and_offices.permissions.edit %}
             {% trans "Edit" %}
+            {% else %}
+            {% trans "View" %}
+            {% endif %}
         </a>
-        {% if testata_status.id_didattica_articoli_regolamento_status.status_cod != '2' and testata_status.id_didattica_articoli_regolamento_status.status_cod != '3' %}
+        {% if user_permissions_and_offices.permissions.edit and testata_status.id_didattica_articoli_regolamento_status.status_cod != '2' and testata_status.id_didattica_articoli_regolamento_status.status_cod != '3' %}
         <a  
             href="javascript:void(0)"
             data-toggle="modal"

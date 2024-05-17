@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load crud_templatetags %}
 
 {% block extra_head %}
     {{ block.super }}
@@ -93,7 +94,7 @@
             <form method="post" enctype="multipart/form-data" novalidate>             
                 <!-- Review Notes -->
                 {% trans "Revision notes" as note_title %}
-                {% include "blocks/regdid_notes.html" with title=note_title notes=revision_notes notes_form=revision_notes_form user_can_edit=can_edit_notes %}
+                {% include "blocks/regdid_notes.html" with title=note_title notes=revision_notes notes_form=revision_notes_form user_can_edit=can_edit_notes hide_submit_button=1 %}
                 <!-- /Review Notes -->
                 {% for form in forms %}
                     {% include "form_template.html" with form=form %}
@@ -215,7 +216,33 @@
     document.addEventListener("keyup", call_set_lock_api, false);
     document.addEventListener("mousedown", call_set_lock_api, false);
     // end concurrency management
-
+</script>
+{% endif %}
+{% if not user_permissions_and_offices.permissions.edit %}
+{% random_id uid as e_id %}
+<script>
+    //readonly editor
+    {{e_id}}_set_editor_readonly = (editor_id) => {
+        // hide/show toolbar
+        const editor = this.editors[editor_id];
+        const toolbarElement = editor.ui.view.toolbar.element;
+        //const wordCount = editor.ui.view.element.parentNode.getElementsByClassName("word-count")[0];
+        editor.on( 'change:isReadOnly', ( evt, propertyName, isReadOnly ) => {
+            if ( isReadOnly ) {
+                toolbarElement.style.display = 'none';
+                //wordCount.style.display = 'none';
+            } else {
+                toolbarElement.style.display = 'flex';
+                //wordCount.style.display = 'flex';
+            }
+        });
+        // set editor readonly
+        editor.enableReadOnlyMode("view");
+    };
+    $(function() {
+        {{e_id}}_set_editor_readonly("id_testo_it");
+        {{e_id}}_set_editor_readonly("id_testo_en");
+    });
 </script>
 {% endif %}
 {% endblock extra_scripts %}
