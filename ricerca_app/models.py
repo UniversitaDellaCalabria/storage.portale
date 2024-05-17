@@ -4976,6 +4976,7 @@ class DidatticaCdsTestataStatus(models.Model):
     id_didattica_articoli_regolamento_status = models.ForeignKey(DidatticaArticoliRegolamentoStatus, models.PROTECT, db_column='ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS')  # Field name made lowercase.
     id_didattica_cds_articoli_regolamento_testata = models.ForeignKey(DidatticaCdsArticoliRegolamentoTestata, models.PROTECT, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA')  # Field name made lowercase.
     motivazione = models.TextField(db_column='MOTIVAZIONE', blank=True, null=True)  # Field name made lowercase.
+    data_status = models.DateTimeField(db_column='DATA_STATUS')  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), models.DO_NOTHING, db_column='id_user_mod', blank=True, null=True)
 
