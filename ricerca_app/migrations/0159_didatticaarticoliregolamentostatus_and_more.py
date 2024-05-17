@@ -91,6 +91,39 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name="DidatticaCdsArticoliRegolamentoTestata",
+            fields=[
+                ("visibile", models.BooleanField(db_column="VISIBILE", default=False)),
+                (
+                    "id",
+                    models.AutoField(db_column="ID", primary_key=True, serialize=False),
+                ),
+                ("aa", models.IntegerField(db_column="AA")),
+                ("note", models.TextField(blank=True, db_column="NOTE")),
+                ("dt_mod", models.DateTimeField(db_column="DT_MOD")),
+                (
+                    "cds",
+                    models.ForeignKey(
+                        db_column="CDS_ID",
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="ricerca_app.didatticacds",
+                    ),
+                ),
+                (
+                    "id_user_mod",
+                    models.ForeignKey(
+                        db_column="ID_USER_MOD",
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA",
+                "managed": True,
+            },
+        ),
+        migrations.CreateModel(
             name="DidatticaCdsTipoCorso",
             fields=[
                 (
@@ -130,6 +163,54 @@ class Migration(migrations.Migration):
             ],
             options={
                 "db_table": "DIDATTICA_CDS_TIPO_CORSO",
+                "managed": True,
+            },
+        ),
+        migrations.CreateModel(
+            name="DidatticaCdsTestataStatus",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(db_column="ID", primary_key=True, serialize=False),
+                ),
+                (
+                    "motivazione",
+                    models.TextField(blank=True, db_column="MOTIVAZIONE", null=True),
+                ),
+                ("data_status", models.DateTimeField(db_column="DATA_STATUS")),
+                (
+                    "dt_mod",
+                    models.DateTimeField(blank=True, db_column="DT_MOD", null=True),
+                ),
+                (
+                    "id_didattica_articoli_regolamento_status",
+                    models.ForeignKey(
+                        db_column="ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS",
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="ricerca_app.didatticaarticoliregolamentostatus",
+                    ),
+                ),
+                (
+                    "id_didattica_cds_articoli_regolamento_testata",
+                    models.ForeignKey(
+                        db_column="ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA",
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="ricerca_app.didatticacdsarticoliregolamentotestata",
+                    ),
+                ),
+                (
+                    "id_user_mod",
+                    models.ForeignKey(
+                        blank=True,
+                        db_column="id_user_mod",
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "DIDATTICA_CDS_TESTATA_STATUS",
                 "managed": True,
             },
         ),
@@ -176,47 +257,6 @@ class Migration(migrations.Migration):
             ],
             options={
                 "db_table": "DIDATTICA_CDS_SUB_ARTICOLI_REGOLAMENTO",
-                "managed": True,
-            },
-        ),
-        migrations.CreateModel(
-            name="DidatticaCdsArticoliRegolamentoTestata",
-            fields=[
-                ("visibile", models.BooleanField(db_column="VISIBILE", default=False)),
-                (
-                    "id",
-                    models.AutoField(db_column="ID", primary_key=True, serialize=False),
-                ),
-                ("aa", models.IntegerField(db_column="AA")),
-                ("note", models.TextField(blank=True, db_column="NOTE")),
-                ("dt_mod", models.DateTimeField(db_column="DT_MOD")),
-                (
-                    "cds",
-                    models.ForeignKey(
-                        db_column="CDS_ID",
-                        on_delete=django.db.models.deletion.DO_NOTHING,
-                        to="ricerca_app.didatticacds",
-                    ),
-                ),
-                (
-                    "id_didattica_articoli_regolamento_status",
-                    models.ForeignKey(
-                        db_column="ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS",
-                        on_delete=django.db.models.deletion.PROTECT,
-                        to="ricerca_app.didatticaarticoliregolamentostatus",
-                    ),
-                ),
-                (
-                    "id_user_mod",
-                    models.ForeignKey(
-                        db_column="ID_USER_MOD",
-                        on_delete=django.db.models.deletion.DO_NOTHING,
-                        to=settings.AUTH_USER_MODEL,
-                    ),
-                ),
-            ],
-            options={
-                "db_table": "DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA",
                 "managed": True,
             },
         ),
