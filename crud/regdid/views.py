@@ -185,6 +185,10 @@ def regdid_articles(request, regdid_id):
     can_edit_notes = True if (OFFICE_REGDIDS_DEPARTMENT in user_permissions_and_offices['offices']) and user_permissions_and_offices['permissions']['edit'] else False
     didatticacdsarticoliregolamentotestatanoteform = DidatticaCdsArticoliRegolamentoTestataNoteForm(data=request.POST if request.POST else None, instance=testata)
     department_notes = testata.note
+    
+    # Status change reason
+    didatticacdstestatastatusform = DidatticaCdsTestataStatusForm()
+    
     if request.POST:
         if not user_permissions_and_offices['permissions']['edit']:
             messages.add_message(request, messages.ERROR, _("Unable to edit this item"))
@@ -227,6 +231,8 @@ def regdid_articles(request, regdid_id):
                       'department_notes_form': didatticacdsarticoliregolamentotestatanoteform,
                       'department_notes': department_notes,
                       'can_edit_notes': can_edit_notes,
+                      # Status Change
+                      'didatticacdstestatastatusform': didatticacdstestatastatusform,
                       # Offices and Permissions
                       'user_permissions_and_offices': user_permissions_and_offices,
                       'testata_status': testata_status,
@@ -651,6 +657,8 @@ def regdid_status_change(request, regdid_id, status_cod):
     if not user_permissions_and_offices['permissions']['access'] or not user_permissions_and_offices['permissions']['edit']:
         return custom_message(request, _("Permission denied"))
     
+    didatticacdstestatastatusform = DidatticaCdsTestataStatusForm(data = request.POST if request.POST else None)
+    
     try:
         # check if there are any locks on articles or sub-articles
         articoli = DidatticaCdsArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata)
@@ -669,15 +677,28 @@ def regdid_status_change(request, regdid_id, status_cod):
             
         # check status
         old_status = testata_status.id_didattica_articoli_regolamento_status
+        status = get_object_or_404(DidatticaArticoliRegolamentoStatus, status_cod=status_cod)
         if old_status.status_cod == status_cod:
             messages.add_message(request, messages.ERROR, _("RegDid is already") + f" '{status.status_desc}'")
         
         # add status update
         else:
-            status = get_object_or_404(DidatticaArticoliRegolamentoStatus, status_cod=status_cod)
+            motivazione = None
+            # handle reopening / approval
+            if old_status.status_cod == '3' or status_cod == '3':
+                if not request.POST:
+                    return custom_message(request, _("Permission denied"))
+                if didatticacdstestatastatusform.is_valid():
+                    motivazione = didatticacdstestatastatusform.cleaned_data.get('motivazione')
+                else:
+                    for k, v in didatticacdstestatastatusform.errors.items():
+                        messages.add_message(request, messages.ERROR, f"<b>{didatticacdstestatastatusform.fields[k].label}</b>: {v}")
+                    return redirect('crud_regdid:crud_regdid_articles', regdid_id=regdid_id)
+            
             testata_status = DidatticaCdsTestataStatus.objects.create(
                 id_didattica_articoli_regolamento_status = status,
                 id_didattica_cds_articoli_regolamento_testata = testata,
+                motivazione = motivazione,
                 data_status = datetime.datetime.now(),
                 dt_mod = datetime.datetime.now(),
                 id_user_mod = request.user
@@ -721,6 +742,8 @@ def regdid_status_change(request, regdid_id, status_cod):
                     obj=testata,
                     flag=CHANGE,
                     msg=_("Changed regdid stataus to") + f" '{status.status_desc}'")
+            
+            messages.add_message(request, messages.SUCCESS, _("Regdid status updated successfully"))
     
     except LockCannotBeAcquiredException as lock_exception:
         messages.add_message(request, messages.ERROR, LOCK_MESSAGE.format(user=get_user_model().objects.filter(pk=lock_exception.lock[0]).first(),

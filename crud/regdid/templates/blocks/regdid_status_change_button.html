@@ -4,13 +4,14 @@
 
 {% random_id as sc_id %}
 
-{% with button_text=button_text|default:"" button_type=button_type|default:"success" button_icon=button_icon|default:"#it-upload" message=message|default:"" regdid_id=regdid_id target_status_cod=target_status_cod %}
+{% with button_text=button_text|default:"" button_type=button_type|default:"success" button_icon=button_icon|default:"#it-upload" message=message|default:"" approve_or_reopen=approve_or_reopen|default:None regdid_id=regdid_id target_status_cod=target_status_cod %}
 
+<!-- Status change modal -->
 <div class="modal fade"
     tabindex="-1"
     role="dialog"
     id="{{sc_id}}">
-    <div class="modal-dialog modal-dialog-centered"
+    <div class="modal-dialog modal-dialog-centered {% if approve_or_reopen %}modal-lg{% endif %}"
          role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -27,18 +28,33 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>
+                {% if approve_or_reopen %}<div class="h6">{% else %}<p>{% endif %}
                     {{message}}
-                </p>
+                {% if approve_or_reopen %}</div>{% else %}</p>{% endif %}
+                {% if approve_or_reopen %}
+                <div class="mt-2">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'crud_regdid:crud_regdid_status_change' regdid_id=regdid.pk status_cod=target_status_cod %}">
+                        {% include "form_template.html" with form=didatticacdstestatastatusform %}
+                        <input class="btn btn-success btn-block"
+                            type="submit"
+                            id="{{sc_id}}_submitForm"
+                            value="{% trans 'Yes, proceed' %}">
+                        </input>
+                    </form>
+                </div>
+                {% endif %}
             </div>
             <div class="modal-footer">
+                {% if not approve_or_reopen %}
                 <a class="btn btn-success btn-sm" href="{% url 'crud_regdid:crud_regdid_status_change' regdid_id=regdid.pk status_cod=target_status_cod %}">
                     {% trans 'Yes, proceed' %}
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
+<!-- /Status change modal -->
 
 <a  href="javascript:void(0)"
     data-toggle="modal"

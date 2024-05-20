@@ -28,7 +28,7 @@
 {% block centered_container %}
 
 <!-- Cds Name and Status des -->
-<div class="d-flex">
+<div class="d-flex mt-2">
     <div class="h3 mb-1" style="font-weight: lighter;">{{regdid.cds.nome_cds_it}}</div>
     <div class="h4 ml-auto text-right">{{testata_status.id_didattica_articoli_regolamento_status.status_desc}}</div>
 </div>
@@ -61,9 +61,10 @@
         {% trans "Are you sure you want to send this regdid back to the department?" as b_message %}
         {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='danger' button_icon='#it-ban' message=b_message regdid_id=regdid.pk target_status_cod='0' %}
             {% if office_approval_name in user_permissions_and_offices.offices or request.user.is_superuser %}
+                <!-- Approve -->
                 {% trans "Approve" as b_text %}
                 {% trans "Are you sure you want to approve this regdid?" as b_message %}
-                {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-check-circle' message=b_message regdid_id=regdid.pk target_status_cod='3' %}
+                {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-check-circle' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='3' %}
             {% else %}
                 <!-- Send for approval -->
                 {% trans "Send for approval" as b_text %}
@@ -79,16 +80,12 @@
         <!-- Approve -->
         {% trans "Approve" as b_text %}
         {% trans "Are you sure you want to approve this regdid?" as b_message %}
-        {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-check-circle' message=b_message regdid_id=regdid.pk target_status_cod='3' %}
+        {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-check-circle' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='3' %}
     {% elif testata_status.id_didattica_articoli_regolamento_status.status_cod == '3' %}
         <!-- Send back to revision -->
         {% trans "Send to revision" as b_text %}
         {% trans "This regdid was previously approved, are you sure you want to send it back to revision?" as b_message %}
-        {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='danger' button_icon='#it-ban' message=b_message regdid_id=regdid.pk target_status_cod='1' %}
-        {% comment %} <!-- Send for approval -->
-        {% trans "Put it back to 'waiting for approval'" as b_text %}
-        {% trans "This regdid was previously approved, are you sure you want to put it back to 'waiting for approval'?" as b_message %}
-        {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='danger' button_icon='#it-ban' message=b_message regdid_id=regdid.pk target_status_cod='2' %} {% endcomment %}
+        {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='danger' button_icon='#it-ban' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='1' %}
     {% endif %}
 {% endif %}
 <!-- /Status Buttons -->

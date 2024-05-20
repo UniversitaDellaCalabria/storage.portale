@@ -1,5 +1,4 @@
 from json import JSONEncoder
-from django.utils.html import strip_tags
 from re import sub
 
 from django import forms
@@ -9,13 +8,6 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 
 from ricerca_app.models import *
 
-def _normalize_text(text):
-    normalized_text = text
-    normalized_text = sub(r"(\&[a-z0-9#]{2,8}\;)", " ", normalized_text)
-    normalized_text = sub(r"(\r|\n)", "", normalized_text)
-    normalized_text = normalized_text.strip()
-    normalized_text = strip_tags(normalized_text)
-    return normalized_text
 
 class PrettyJSONEncoder(JSONEncoder):
     def __init__(self, *args, indent, sort_keys, **kwargs):
@@ -29,6 +21,16 @@ class DidatticaArticoliRegolamentoStrutturaForm(forms.Form):
 
 
 class BaseArticoliModelForm(forms.ModelForm):
+    def clean_testo_it(self):
+        data = self.cleaned_data["testo_it"]
+        data = sub(r"(\&nbsp\;)", " ", data) #remove spaces
+        return data
+        
+    def clean_testo_en(self):
+        data = self.cleaned_data["testo_en"]
+        data = sub(r"(\&nbsp\;)", " ", data) #remove spaces
+        return data
+    
     class Meta:
         widgets = {
             'testo_it': CKEditor5Widget(config_name="regdid"),
@@ -83,3 +85,11 @@ class DidatticaCdsArticoliRegolamentoTestataNoteForm(DidatticaCdsArticoliRegolam
     class Meta(DidatticaCdsArticoliRegolamentoNoteForm.Meta):
         model = DidatticaCdsArticoliRegolamentoTestata
         help_texts = {}
+        
+        
+class DidatticaCdsTestataStatusForm(forms.Form):
+    motivazione = forms.CharField(
+        label = _("Reason"),
+        required = True,
+        widget=forms.widgets.Textarea()
+    )
