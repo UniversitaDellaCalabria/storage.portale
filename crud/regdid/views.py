@@ -132,6 +132,7 @@ def regdid_articles(request, regdid_id):
         return custom_message(request, _("Permission denied"))
     testata = DidatticaCdsArticoliRegolamentoTestata.objects.filter(cds_id=regdid.cds, aa=regdid.aa_reg_did).first()
     testata_status = None
+    
     if testata is None:
         if not DidatticaCdsArticoliRegolamentoTestata.can_user_create_object(request.user, regdid=regdid):
             return custom_message(request, _("Permission denied"))
@@ -215,6 +216,9 @@ def regdid_articles(request, regdid_id):
     logs_regdid_testata = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(testata).pk,
                                            object_id=testata.pk)
     
+    # testata status history
+    status_history = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status")
+    
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_regdid:crud_regdid'): _('Didactic regulations'),
                    '#': _('Didactic regulation')}
@@ -233,6 +237,7 @@ def regdid_articles(request, regdid_id):
                       'can_edit_notes': can_edit_notes,
                       # Status Change
                       'didatticacdstestatastatusform': didatticacdstestatastatusform,
+                      'status_history': status_history,
                       # Offices and Permissions
                       'user_permissions_and_offices': user_permissions_and_offices,
                       'testata_status': testata_status,
