@@ -135,7 +135,7 @@ def regdid_articles(request, regdid_id):
     
     if testata is None:
         if not DidatticaCdsArticoliRegolamentoTestata.can_user_create_object(request.user, regdid=regdid):
-            return custom_message(request, _("Permission denied"))
+            return custom_message(request, _("Didactic regulament must be edited by a department first"))
             
         # create Testata
         testata = DidatticaCdsArticoliRegolamentoTestata.objects.create(
@@ -221,7 +221,7 @@ def regdid_articles(request, regdid_id):
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_regdid:crud_regdid'): _('Didactic regulations'),
-                   '#': _('Didactic regulation')}
+                   '#': regdid.cds.nome_cds_it.title() }
 
     return render(request,
                   'regdid_articles.html',
@@ -319,7 +319,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_regdid:crud_regdid'): _('Didactic regulations'),
-                   reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}): _('Articles'),
+                   reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}): regdid.cds.nome_cds_it.title(),
                    '#': f"Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}"}
 
     return render(request,
@@ -408,7 +408,7 @@ def regdid_articles_new(request, regdid_id, article_num):
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_regdid:crud_regdid'): _('Didactic regulations'),
-                   reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}): _('Articles'),
+                   reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}): regdid.cds.nome_cds_it.title(),
                    '#': f" Art. {article_num} - {struttura_articolo.titolo_it}"}
 
     return render(request,
@@ -518,7 +518,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_regdid:crud_regdid'): _('Didactic regulations'),
-                   reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}): _('Articles'),
+                   reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}): regdid.cds.nome_cds_it.title(),
                    reverse('crud_regdid:crud_regdid_articles_edit', kwargs={"regdid_id":regdid_id, "article_id":articolo.pk}): f"Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}",
                    '#': f"{sotto_articolo.titolo_it}"}
 
@@ -597,7 +597,7 @@ def regdid_sub_articles_new(request, regdid_id, article_id):
         
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_regdid:crud_regdid'): _('Didactic regulations'),
-                   reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}): _('Articles'),
+                   reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}): regdid.cds.nome_cds_it.title(),
                    reverse('crud_regdid:crud_regdid_articles_edit', kwargs={"regdid_id":regdid_id, "article_id":articolo.pk}): f"Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}",
                    '#': _("New sub article")}
 
