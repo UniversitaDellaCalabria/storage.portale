@@ -102,7 +102,8 @@ from .models import (
     DidatticaArticoliRegolamentoStrutturaTopic,
     DidatticaCdsArticoliRegolamento,
     DidatticaArticoliRegolamentoTitolo,
-    DidatticaCdsSubArticoliRegolamento
+    DidatticaCdsSubArticoliRegolamento,
+    DidatticaCdsTestataStatus
 )
 
 
@@ -1275,4 +1276,15 @@ class DidatticaCdsSubArticoliRegolamentoUnitTest(TestCase): # pragma: no cover
             data[k] = v
 
         obj = DidatticaCdsSubArticoliRegolamento.objects.create(**data)
+        return obj
+    
+
+class DidatticaCdsTestataStatusUnitTest(TestCase): # pragma: no cover
+    @classmethod
+    def create_didatticaCdsTestataStatus(cls, **kwargs):
+        data = {}
+        for k, v in kwargs.items():
+            data[k] = v
+
+        obj = DidatticaCdsTestataStatus.objects.create(**data)
         return obj

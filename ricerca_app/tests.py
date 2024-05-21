@@ -33,7 +33,7 @@ from . util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, D
     SitoWebCdsTopicArticoliRegAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
     DidatticaPianoRegolamentoUnitTest, DidatticaPianoScheUnitTest, DidatticaPianoSceltaSchePianoUnitTest, DidatticaPianoSceltaVincoliUnitTest, DidatticaAmbitiUnitTest, \
     DidatticaPianoSceltaAfUnitTest, DidatticaCdsTipoCorsoUnitTest, DidatticaArticoliRegolamentoStrutturaUnitTest, DidatticaCdsArticoliRegolamentoTestataUnitTest, DidatticaArticoliRegolamentoStrutturaTopicUnitTest, \
-    DidatticaCdsArticoliRegolamentoUnitTest, DidatticaArticoliRegolamentoTitoloUnitTest, DidatticaCdsSubArticoliRegolamentoUnitTest, DidatticaArticoliRegolamentoStatusUnitTest
+    DidatticaCdsArticoliRegolamentoUnitTest, DidatticaArticoliRegolamentoTitoloUnitTest, DidatticaCdsSubArticoliRegolamentoUnitTest, DidatticaArticoliRegolamentoStatusUnitTest, DidatticaCdsTestataStatusUnitTest
 from . serializers import CreateUpdateAbstract
 from . concurrency import acquire_lock
 
@@ -6814,8 +6814,14 @@ class ApiLockUnitTest(TestCase):
             'cds_id': self.cds.pk,
             'aa': '2024',
             'note': '',
-            'id_didattica_articoli_regolamento_status': self.regolamento_status,
             'visibile': 1,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        self.testata_status = DidatticaCdsTestataStatusUnitTest.create_didatticaCdsTestataStatus(**{
+            'id_didattica_articoli_regolamento_status': self.regolamento_status,
+            'id_didattica_cds_articoli_regolamento_testata': self.testata,
+            'data_status': '2024-01-01',
             'dt_mod': '2024-01-01',
             'id_user_mod': self.user1
         })
@@ -6910,8 +6916,14 @@ class ApiSetLockUnitTest(TestCase):
             'cds_id': self.cds.pk,
             'aa': '2024',
             'note': '',
-            'id_didattica_articoli_regolamento_status': self.regolamento_status,
             'visibile': 1,
+            'dt_mod': '2024-01-01',
+            'id_user_mod': self.user1
+        })
+        self.testata_status = DidatticaCdsTestataStatusUnitTest.create_didatticaCdsTestataStatus(**{
+            'id_didattica_articoli_regolamento_status': self.regolamento_status,
+            'id_didattica_cds_articoli_regolamento_testata': self.testata,
+            'data_status': '2024-01-01',
             'dt_mod': '2024-01-01',
             'id_user_mod': self.user1
         })
