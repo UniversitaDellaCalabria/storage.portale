@@ -262,6 +262,18 @@ def regdid_articles_edit(request, regdid_id, article_id):
     
     # Revision notes
     can_edit_notes = True if (OFFICE_REGDIDS_REVISION in user_permissions_and_offices['offices']) and user_permissions_and_offices['permissions']['edit'] else False
+    note_revisione = articolo.note
+    
+    # Testo_it / en
+    request.POST._mutable = True
+    post_testo_it = request.POST.get("testo_it", None)
+    if post_testo_it:
+        request.POST["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
+    post_testo_en = request.POST.get("testo_en", None)
+    if post_testo_en:
+        request.POST["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
+    request.POST._mutable = False
+        
     didatticacdsarticoliregolamentonoteform = DidatticaCdsArticoliRegolamentoNoteForm(data=request.POST if request.POST else None, instance=articolo)
     
     # Concurrency
@@ -269,7 +281,6 @@ def regdid_articles_edit(request, regdid_id, article_id):
     
     # Nav-bar items
     titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
-    note_revisione = articolo.note
         
     if request.POST:
         if testata_status.id_didattica_articoli_regolamento_status.status_cod in ['2', '3']:
@@ -356,7 +367,6 @@ def regdid_articles_new(request, regdid_id, article_num):
     regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
     didattica_cds_tipo_corso = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod)
     struttura_articolo = get_object_or_404(DidatticaArticoliRegolamentoStruttura, id_didattica_cds_tipo_corso=didattica_cds_tipo_corso, numero=article_num)
-    didatticacdsarticoliregolamentoform = DidatticaCdsArticoliRegolamentoForm(data=request.POST if request.POST else None)
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
     
@@ -368,6 +378,17 @@ def regdid_articles_new(request, regdid_id, article_num):
     if not user_permissions_and_offices['permissions']['access']:
         return custom_message(request, _("Permission denied"))
     
+    # Testo_it / en
+    request.POST._mutable = True
+    post_testo_it = request.POST.get("testo_it", None)
+    if post_testo_it:
+        request.POST["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
+    post_testo_en = request.POST.get("testo_en", None)
+    if post_testo_en:
+        request.POST["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
+    request.POST._mutable = False
+        
+    didatticacdsarticoliregolamentoform = DidatticaCdsArticoliRegolamentoForm(data=request.POST if request.POST else None)
     
     # Nav-bar items
     titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
@@ -472,11 +493,23 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
     if not user_permissions_and_offices['permissions']['access']:
         return custom_message(request, _("Permission denied"))
     
-    didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None, instance=sotto_articolo)
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
     
+    # Revision Notes
     note_revisione = articolo.note
+    
+    # Testo_it / en
+    request.POST._mutable = True
+    post_testo_it = request.POST.get("testo_it", None)
+    if post_testo_it:
+        request.POST["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
+    post_testo_en = request.POST.get("testo_en", None)
+    if post_testo_en:
+        request.POST["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
+    request.POST._mutable = False
+        
+    didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None, instance=sotto_articolo)
     
     # Concurrency
     content_type_id = ContentType.objects.get_for_model(sotto_articolo.__class__).pk
@@ -554,7 +587,6 @@ def regdid_sub_articles_new(request, regdid_id, article_id):
     if not user_permissions_and_offices['permissions']['access']:
         return custom_message(request, _("Permission denied"))
     
-    didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None)
     strutt_articolo = articolo.id_didattica_articoli_regolamento_struttura
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
@@ -562,7 +594,20 @@ def regdid_sub_articles_new(request, regdid_id, article_id):
     if testata_status.id_didattica_articoli_regolamento_status.status_cod in ['2', '3']:
         return custom_message(request, _("Permission denied"))
     
+    # Revision Notes
     note_revisione = articolo.note
+    
+    # Testo_it / en
+    request.POST._mutable = True
+    post_testo_it = request.POST.get("testo_it", None)
+    if post_testo_it:
+        request.POST["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
+    post_testo_en = request.POST.get("testo_en", None)
+    if post_testo_en:
+        request.POST["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
+    request.POST._mutable = False
+        
+    didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None)
     
     # Nav-bar items
     titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
