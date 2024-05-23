@@ -29,6 +29,17 @@ from . settings import *
 
 logger = logging.getLogger(__name__)
 
+def _process_articles_request_data(data):
+    mut_value = data._mutable
+    data._mutable = True
+    post_testo_it = data.get("testo_it", None)
+    if post_testo_it:
+        data["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
+    post_testo_en = data.get("testo_en", None)
+    if post_testo_en:
+        data["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
+    data._mutable = mut_value
+
 def _get_titoli_struttura_articoli_dict(regdid, testata):
     didattica_cds_tipo_corso = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod)
     titoli = DidatticaArticoliRegolamentoTitolo.objects.all()
@@ -265,14 +276,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
     note_revisione = articolo.note
     
     # Testo_it / en
-    request.POST._mutable = True
-    post_testo_it = request.POST.get("testo_it", None)
-    if post_testo_it:
-        request.POST["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
-    post_testo_en = request.POST.get("testo_en", None)
-    if post_testo_en:
-        request.POST["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
-    request.POST._mutable = False
+    _process_articles_request_data(request.POST)
         
     didatticacdsarticoliregolamentonoteform = DidatticaCdsArticoliRegolamentoNoteForm(data=request.POST if request.POST else None, instance=articolo)
     
@@ -379,14 +383,7 @@ def regdid_articles_new(request, regdid_id, article_num):
         return custom_message(request, _("Permission denied"))
     
     # Testo_it / en
-    request.POST._mutable = True
-    post_testo_it = request.POST.get("testo_it", None)
-    if post_testo_it:
-        request.POST["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
-    post_testo_en = request.POST.get("testo_en", None)
-    if post_testo_en:
-        request.POST["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
-    request.POST._mutable = False
+    _process_articles_request_data(request.POST)
         
     didatticacdsarticoliregolamentoform = DidatticaCdsArticoliRegolamentoForm(data=request.POST if request.POST else None)
     
@@ -500,14 +497,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
     note_revisione = articolo.note
     
     # Testo_it / en
-    request.POST._mutable = True
-    post_testo_it = request.POST.get("testo_it", None)
-    if post_testo_it:
-        request.POST["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
-    post_testo_en = request.POST.get("testo_en", None)
-    if post_testo_en:
-        request.POST["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
-    request.POST._mutable = False
+    _process_articles_request_data(request.POST)
         
     didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None, instance=sotto_articolo)
     
@@ -598,14 +588,7 @@ def regdid_sub_articles_new(request, regdid_id, article_id):
     note_revisione = articolo.note
     
     # Testo_it / en
-    request.POST._mutable = True
-    post_testo_it = request.POST.get("testo_it", None)
-    if post_testo_it:
-        request.POST["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
-    post_testo_en = request.POST.get("testo_en", None)
-    if post_testo_en:
-        request.POST["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
-    request.POST._mutable = False
+    _process_articles_request_data(request.POST)
         
     didatticacdssubarticoliregolamentoform = DidatticaCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None)
     
