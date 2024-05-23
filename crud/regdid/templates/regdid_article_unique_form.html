@@ -144,7 +144,10 @@
 
 {% block extra_scripts %}
 
+{% settings_value "REGDID_CKEDITOR_FORCE_PASTE_AS_PLAIN_TEXT" as ckeditor_force_plain_text %}
+{% if ckeditor_force_plain_text %}
 <script src="{% static '/js/ckeditor5.force-paste-as-plain-text.js' %}"/>
+{% endif %}
 
 {% if check_for_locks and user_permissions_and_offices.permissions.lock %}
 <script>
