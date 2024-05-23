@@ -31,10 +31,6 @@ def ricerca_settings_value(value):
     app_value = getattr(ricerca_app_settings, value, None)
     return getattr(settings, value, app_value)
 
-@register.simple_tag
-def crud_settings_value(value):
-    app_value = getattr(app_settings, value, None)
-    return getattr(settings, value, app_value)
 
 @register.simple_tag
 def user_from_pk(user_id):
@@ -43,6 +39,7 @@ def user_from_pk(user_id):
     user_model = get_user_model()
     user = user_model.objects.get(pk=user_id)
     return user if user else False
+
 
 @register.simple_tag
 def latin_enum(value):
