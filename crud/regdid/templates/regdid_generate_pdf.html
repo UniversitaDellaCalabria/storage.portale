@@ -94,6 +94,7 @@
                                 </div>
                                 <div class="text">
                                     {% if article.testo_it %}{{article.testo_it}}{% else %} omissis {% endif %}
+                                    <div class="text-divider">&nbsp;</div>
                                 </div>
                                 {% for sub_art in sub_articles %}
                                     <div class="art toc-article">
@@ -101,6 +102,7 @@
                                     </div>
                                     <div class="text">
                                         {{sub_art.testo_it}}
+                                        <div class="text-divider">&nbsp;</div>
                                     </div>
                                 {% endfor %}
                             {% endfor %}

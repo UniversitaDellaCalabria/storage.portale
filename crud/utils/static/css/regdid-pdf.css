@@ -120,6 +120,8 @@ p.separator { -pdf-keep-with-next: false; }
 .text {
     font-size: 10pt;
     text-align: justify;
+}
+.text-divider {
     margin: 0 0 3mm 0;
 }
 .section-title {
