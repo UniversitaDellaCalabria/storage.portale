@@ -74,15 +74,20 @@
     -pdf-level: 1;
     -pdf-outline-level: 1;
 }
+.toc_text {
+    font-family: "Titillium Web Normal";
+}
 .index {
     font-weight: bold;
     padding-bottom: 0.2cm;
+}
+.content {
+    font-family: "Titillium Web";
 }
 h1, h2, h3, h4, h5, h6 {
     -pdf-outline: false;
 }
 html {
-    font-family: Helvetica;
     margin: 0;
     padding: 0;
     font-size: 10pt;
@@ -97,12 +102,12 @@ table {
 td, th {
     border: solid 0.1mm #000000;
     text-align: left;
-    padding: 1.5mm 1mm 0 1mm;
+    padding: 1mm;
     vertical-align: middle;
     -pdf-word-wrap: CJK;
 }
 p {  
-    -pdf-keep-with-next: true;
+    margin: 0 0 3mm 0;
 }
 p.separator { -pdf-keep-with-next: false; }
 
@@ -115,7 +120,7 @@ p.separator { -pdf-keep-with-next: false; }
 .text {
     font-size: 10pt;
     text-align: justify;
-    margin-bottom: 4.5mm;
+    margin: 0 0 3mm 0;
 }
 .section-title {
     margin: 0;
