@@ -82,32 +82,36 @@
         <div class="content">
             {% autoescape off %}
             {% for title, struct_art_list in titoli_struttura_articoli_dict.items %}
-                <div class="section-title toc-title">
-                    {{ title.descr_titolo_it }}
-                </div>
-                <div>
-                    {% for struct_art in struct_art_list %}
-                        {% for struct, art_sub_arts in struct_art.items %}
-                            {% for article, sub_articles in art_sub_arts.items %}
-                                <div class="art toc-article">
-                                    Art. {{struct.numero}} - {{struct.titolo_it}}
-                                </div>
-                                <div class="text">
-                                    {% if article.testo_it %}{{article.testo_it}}{% else %} omissis {% endif %}
-                                    <div class="text-divider">&nbsp;</div>
-                                </div>
-                                {% for sub_art in sub_articles %}
-                                    <div class="art toc-article">
-                                        Art. {{struct.numero}} {% latin_enum forloop.counter0 %} - {{sub_art.titolo_it}}
+                <div class="keep-with-next">
+                    <div class="section-title toc-title">
+                        {{ title.descr_titolo_it }}
+                    </div>
+                    <div class="not-keep-with-next">
+                        {% for struct_art in struct_art_list %}
+                            {% for struct, art_sub_arts in struct_art.items %}
+                                {% for article, sub_articles in art_sub_arts.items %}
+                                    <div class="keep-with-next">
+                                        <div class="art toc-article">
+                                            Art. {{struct.numero}} - {{struct.titolo_it}}
+                                        </div>
+                                        <div class="text not-keep-with-next">
+                                            {% if article.testo_it %}{{article.testo_it}}{% else %} omissis {% endif %}
+                                            <div class="text-divider">&nbsp;</div>
+                                        </div>
                                     </div>
-                                    <div class="text">
-                                        {{sub_art.testo_it}}
-                                        <div class="text-divider">&nbsp;</div>
-                                    </div>
+                                    {% for sub_art in sub_articles %}
+                                        <div class="art toc-article keep-with-next">
+                                            Art. {{struct.numero}} {% latin_enum forloop.counter0 %} - {{sub_art.titolo_it}}
+                                        </div>
+                                        <div class="text not-keep-with-next">
+                                            {{sub_art.testo_it}}
+                                            <div class="text-divider">&nbsp;</div>
+                                        </div>
+                                    {% endfor %}
                                 {% endfor %}
                             {% endfor %}
                         {% endfor %}
-                    {% endfor %}
+                    </div>
                 </div>
             {% endfor %}
         </div>

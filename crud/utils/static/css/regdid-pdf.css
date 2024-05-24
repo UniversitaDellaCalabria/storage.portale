@@ -112,6 +112,12 @@ p {
 p.separator { -pdf-keep-with-next: false; }
 
 /*articles*/
+.keep-with-next {
+    -pdf-keep-with-next: true;
+}
+.not-keep-with-next {
+    -pdf-keep-with-next: false;
+}
 .art {
     margin: 0;
     padding: 0;
