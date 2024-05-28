@@ -111,6 +111,10 @@ p {
 }
 p.separator { -pdf-keep-with-next: false; }
 
+li {
+    padding: 2mm 0 2mm 0;
+}
+
 /*articles*/
 .keep-with-next {
     -pdf-keep-with-next: true;
