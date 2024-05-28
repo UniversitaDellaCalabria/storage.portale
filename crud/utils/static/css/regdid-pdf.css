@@ -115,6 +115,21 @@ li {
     padding: 2mm 0 2mm 0;
 }
 
+/* list style */
+ol {
+    list-style-type: decimal;
+}
+ol li ol {
+    list-style-type: lower-alpha;
+}
+ol li ol li ol {
+    list-style-type: lower-roman;
+}
+ol li ol li ol li ol {
+    list-style-type: upper-alpha;
+}
+
+
 /*articles*/
 .keep-with-next {
     -pdf-keep-with-next: true;
