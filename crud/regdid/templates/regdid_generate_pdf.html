@@ -95,7 +95,7 @@
                                             Art. {{struct.numero}} - {{struct.titolo_it}}
                                         </div>
                                         <div class="text not-keep-with-next">
-                                            {% if article.testo_it %}{{article.testo_it}}{% else %} omissis {% endif %}
+                                            {% if article.testo_it %}{{article.testo_it}}{% else %}Articolo non applicabile{% endif %}
                                             <div class="text-divider">&nbsp;</div>
                                         </div>
                                     </div>
@@ -114,6 +114,12 @@
                     </div>
                 </div>
             {% endfor %}
+            <div class="section-title">
+                Ordinamento
+            </div>
+            <div class="section-title">
+                Manifesto degli Studi
+            </div>
         </div>
         {% endautoescape %}
 
