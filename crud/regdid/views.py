@@ -26,6 +26,7 @@ from .. utils.utils import log_action
 
 from . forms import *
 from . settings import *
+from . utils import extractArticlesFromPdf
 
 logger = logging.getLogger(__name__)
 
@@ -60,10 +61,15 @@ def _get_titoli_struttura_articoli_dict(regdid, testata):
 @login_required
 @check_model_permissions(DidatticaCdsArticoliRegolamentoTestata)
 def regdid_list(request):
+    
+    testata_user_offices = DidatticaCdsArticoliRegolamentoTestata._get_all_user_offices(request.user)
+    show_pdf_import_button = testata_user_offices.filter(office__name__in=(OFFICE_REGDIDS_REVISION, OFFICE_REGDIDS_APPROVAL)).count()
+    
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    '#': _('Didactic regulations')}
     context = {'breadcrumbs': breadcrumbs,
-               'url': reverse('ricerca:cdslist'),}
+               'url': reverse('ricerca:cdslist'),
+               'show_pdf_import_button': show_pdf_import_button}
         
     return render(request, 'regdid_list.html', context)
 
@@ -788,7 +794,7 @@ def regdid_status_change(request, regdid_id, status_cod):
 
 # Regulament PDF
 @login_required
-def regdid_articles_pdf(request, regdid_id): #TODO fix caratteri
+def regdid_articles_pdf(request, regdid_id):
     regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
     testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
     
@@ -840,3 +846,99 @@ def regdid_articles_pdf(request, regdid_id): #TODO fix caratteri
         dest=response,
         link_callback=fetch_resources)
     return response
+
+
+# PDF import
+@login_required
+def regdid_articles_import_pdf(request, regdid_id, **kwargs):
+    regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
+    testata = DidatticaCdsArticoliRegolamentoTestata.objects.filter(cds_id=regdid.cds, aa=regdid.aa_reg_did).first()
+    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata).order_by("-data_status").first()
+
+    if testata is not None:
+        # permissions 
+        user_permissions_and_offices = testata.get_user_permissions_and_offices(request.user)
+        if not user_permissions_and_offices['permissions']['edit']:
+            return custom_message(request, _("Permission denied"))
+        if testata_status.id_didattica_articoli_regolamento_status.status_cod in ['2','3']:
+            return custom_message(request, _("Regdid status must be") + " 'In bozza'/'In revisione' " + _("to be imported from file"))
+        
+        messages.add_message(request, messages.WARNING, _("Regdid was previously edited, the import opertation will overwrite every article"))
+    
+    elif not DidatticaCdsArticoliRegolamentoTestata.can_user_create_object(request.user, regdid=regdid, importing=True):
+        return custom_message(request, _("Permission denied"))
+    
+    
+    regolamentopdfimportform = RegolamentoPdfImportForm(data = request.POST if request.POST else None,
+                                                        files = request.FILES if request.FILES else None)
+    
+    if request.POST:
+        if regolamentopdfimportform.is_valid():
+            try:
+                first_page = regolamentopdfimportform.cleaned_data.get("first_page")
+                last_page = regolamentopdfimportform.cleaned_data.get("last_page")
+                pdf = regolamentopdfimportform.cleaned_data.get("pdf")
+                parsed_articles = extractArticlesFromPdf(pdf, first_page, last_page)
+                didattica_cds_tipo_corso = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod)
+                struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(id_didattica_cds_tipo_corso=didattica_cds_tipo_corso, aa=regdid.aa_reg_did)
+                if len(parsed_articles) != struttura_articoli.count(): raise Exception()
+                
+                with transaction.atomic():
+                    if testata is None:
+                        testata = DidatticaCdsArticoliRegolamentoTestata.objects.create(
+                            cds = regdid.cds,
+                            aa=regdid.aa_reg_did,
+                            note = '',
+                            visibile = 1,
+                            dt_mod = datetime.datetime.now(),
+                            id_user_mod = request.user
+                        )
+                    
+                    status = DidatticaArticoliRegolamentoStatus.objects.get(status_cod='1')
+                    testata_status = DidatticaCdsTestataStatus.objects.create(
+                        id_didattica_articoli_regolamento_status = status,
+                        id_didattica_cds_articoli_regolamento_testata = testata,
+                        motivazione = "Importazione da file",
+                        data_status = datetime.datetime.now(), 
+                        dt_mod = datetime.datetime.now(),
+                        id_user_mod = request.user
+                    )
+                    
+                    # delete all the articles    
+                    DidatticaCdsArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata).delete()
+                    
+                    # insert new articles
+                    for parsed_article in parsed_articles:
+                        parsed_article["id_user_mod_id"] = request.user.pk
+                        parsed_article["dt_mod"] = datetime.datetime.now().isoformat()
+                        parsed_article["visibile"] = True
+                        parsed_article["id_didattica_cds_articoli_regolamento_testata_id"] = testata.pk
+                        parsed_article["id_didattica_articoli_regolamento_struttura_id"] = struttura_articoli.get(numero=parsed_article["numero"]).pk
+                        del parsed_article["numero"]
+
+                        DidatticaCdsArticoliRegolamento.objects.create(**parsed_article)
+                        
+                log_action(user=request.user,
+                           obj=testata,
+                           flag=CHANGE,
+                           msg=_("Didactic regulation imported from file") + f" - '{status.status_desc}'")
+                
+                messages.add_message(request, messages.SUCCESS, _("Didactic regulation imported successfully"))
+            
+            except Exception as e:
+                messages.add_message(request, messages.ERROR, _("Didactic regulation import failed"))
+            
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_regdid:crud_regdid'): _('Didactic regulations'),
+                   '#': regdid.cds.nome_cds_it.title() }
+
+    return render(request,
+                  'regdid_pdf_import_form.html',
+                  {
+                      'breadcrumbs': breadcrumbs,
+                      'regdid': regdid,
+                      'form': regolamentopdfimportform,
+                      'item_label': regdid.cds.nome_cds_it.title(),
+                      'show_goto_regdid_button': testata is not None,
+                  })

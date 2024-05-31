@@ -4933,6 +4933,10 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileModAbstract, PermissionsMod
         if regdid is None or not regdid.aa_reg_did == datetime.datetime.now().year:
             return False
         
+        importing = kwargs.pop("importing", False)
+        if importing and (user.is_superuser or cls._get_all_user_offices(user).filter(office__name__in=cls.get_offices_names()[1:3]).exists()):
+            return True
+        
         dep_offices = cls._get_all_user_offices(user).filter(office__name=cls.get_offices_names()[0])
         if dep_offices.exists():
             dep_codes = [dep_office.office.organizational_structure.unique_code for dep_office in dep_offices]

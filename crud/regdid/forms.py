@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from ricerca_app.models import *
+from ricerca_app.validators import validate_pdf_file_extension, validate_file_size
 
 def _normalize_text(text):
     normalized_text = text
@@ -90,4 +91,21 @@ class DidatticaCdsTestataStatusForm(forms.Form):
         label = _("Reason"),
         required = True,
         widget=forms.widgets.Textarea()
+    )
+    
+class RegolamentoPdfImportForm(forms.Form):
+    pdf = forms.FileField(
+        label=_("PDF Regulation"),
+        validators=[validate_pdf_file_extension, validate_file_size],
+        required=True,
+    )
+    
+    first_page = forms.ChoiceField(
+        label=_("Number of the page which contains 'TITOLO I'"),
+        choices=(((num, num) for num in range(1,200)))
+    )
+    
+    last_page = forms.ChoiceField(
+        label=_("Number of the page which contains the last article untill the end"),
+        choices=(((num, num) for num in range(1,200)))
     )
