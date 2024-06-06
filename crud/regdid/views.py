@@ -835,7 +835,7 @@ def regdid_articles_pdf(request, regdid_id):
     }
     
     cds_name = nome_cds_it.replace(" ", "_").title()
-    pdf_file_name=f"Regolamento_{icla_cod}_{cds_name}_{datetime.datetime.now().strftime('%m_%d_%Y')}"
+    pdf_file_name=f"Regolamento_{cla_cod}_{cds_name}_{datetime.datetime.now().strftime('%m_%d_%Y')}"
     pdf_file_name=pdf_file_name
     
     response = HttpResponse(content_type='application/pdf')
