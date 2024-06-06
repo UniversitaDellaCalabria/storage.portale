@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-30 10:05+0200\n"
-"PO-Revision-Date: 2024-05-30 10:10+0200\n"
+"POT-Creation-Date: 2024-06-06 12:28+0200\n"
+"PO-Revision-Date: 2024-06-06 13:02+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -100,7 +100,7 @@ msgstr "Utenti"
 #: crud/regdid/views.py:470 crud/regdid/views.py:497 crud/regdid/views.py:518
 #: crud/regdid/views.py:584 crud/regdid/views.py:591 crud/regdid/views.py:663
 #: crud/regdid/views.py:671 crud/regdid/views.py:697 crud/regdid/views.py:729
-#: crud/regdid/views.py:804 crud/regdid/views.py:861
+#: crud/regdid/views.py:804 crud/regdid/views.py:864 crud/regdid/views.py:871
 #: crud/research_groups/decorators.py:28 crud/research_groups/decorators.py:62
 #: crud/research_lines/decorators.py:28 crud/research_lines/decorators.py:66
 #: crud/research_lines/decorators.py:100 crud/teachers/decorators.py:42
@@ -356,6 +356,7 @@ msgstr ""
 #: crud/regdid/templates/blocks/regdid_status_change_button.html:41
 #: crud/regdid/templates/blocks/regdid_status_change_button.html:50
 #: crud/regdid/templates/blocks/regdid_sub_article_item.html:77
+#: crud/regdid/templates/regdid_pdf_import_form.html:41
 #: crud/research_groups/templates/researchgroup.html:42
 #: crud/research_groups/templates/researchgroup.html:132
 #: crud/research_groups/templates/researchgroup_teacher.html:44
@@ -658,6 +659,7 @@ msgstr "Nuovo membro per"
 
 #: crud/cds/templates/cds_manifesto_regulation.html:9
 #: crud/cds/templates/cds_teaching_system.html:9
+#: crud/regdid/templates/regdid_pdf_import_form.html:94
 msgid "Upload"
 msgstr ""
 
@@ -865,7 +867,7 @@ msgstr "Attualmente fa riferimento a quello dell'anno"
 #: crud/projects/views.py:482 crud/projects/views.py:562
 #: crud/regdid/views.py:68 crud/regdid/views.py:132 crud/regdid/views.py:239
 #: crud/regdid/views.py:341 crud/regdid/views.py:433 crud/regdid/views.py:548
-#: crud/regdid/views.py:632 crud/regdid/views.py:895
+#: crud/regdid/views.py:632 crud/regdid/views.py:935
 #: crud/research_groups/views.py:31 crud/research_groups/views.py:78
 #: crud/research_groups/views.py:180 crud/research_groups/views.py:228
 #: crud/research_groups/views.py:286 crud/research_lines/views.py:31
@@ -3220,17 +3222,17 @@ msgstr ""
 msgid "Reason"
 msgstr "Motivazione"
 
-#: crud/regdid/forms.py:100
-msgid "Required Field"
-msgstr "Campo obbligatorio"
-
-#: crud/regdid/forms.py:104
+#: crud/regdid/forms.py:98
 msgid "PDF Regulation"
 msgstr "PDF Regolamento"
 
-#: crud/regdid/forms.py:111
-msgid "I am sure I want to import this regulation from file"
-msgstr "Sono sicuro di voler importare questo regolamento da file"
+#: crud/regdid/forms.py:104
+msgid "Number of the page which contains 'TITOLO I'"
+msgstr ""
+
+#: crud/regdid/forms.py:109
+msgid "Number of the page which contains the last article untill the end"
+msgstr ""
 
 #: crud/regdid/settings.py:5
 msgid "Didactic Regulation App"
@@ -3249,7 +3251,7 @@ msgid "Requested approval for the didactic regulation"
 msgstr "Richiesta approvazione per il regolamento didattico"
 
 #: crud/regdid/templates/blocks/crud_regdid.html:176
-#: crud/regdid/templates/regdid_pdf_import_form.html:11
+#: crud/regdid/templates/regdid_pdf_import_form.html:52
 msgid "Import from PDF"
 msgstr "Importa da PDF"
 
@@ -3357,9 +3359,31 @@ msgstr "Regolamenti didattici"
 msgid "Import structure"
 msgstr "Importa struttura"
 
+#: crud/regdid/templates/regdid_pdf_import_form.html:22
+msgid "Import regulation from PDF"
+msgstr "Importa regolamento da PDF"
+
+#: crud/regdid/templates/regdid_pdf_import_form.html:34
+msgid "This operation cannot be undone, do you really want to proceed?"
+msgstr "Questa operazione non può essere annullata, vuoi davvero continuare?"
+
+#: crud/regdid/templates/regdid_pdf_import_form.html:59
+msgid "Go to regulation"
+msgstr "Vai al regolamento"
+
+#: crud/regdid/templates/regdid_pdf_import_form.html:80
+msgid ""
+"Uploading a document will cause most of its formatting to be lost, it is "
+"therefore necessary that each article is re-formatted by hand through the "
+"editor"
+msgstr ""
+"Caricare un documento comporterà la perdita della maggior parte della sua "
+"formattazione, sarà quindi necessario che ogni articolo venga riformattato a "
+"mano attraverso l'editor"
+
 #: crud/regdid/views.py:69 crud/regdid/views.py:133 crud/regdid/views.py:240
 #: crud/regdid/views.py:342 crud/regdid/views.py:434 crud/regdid/views.py:549
-#: crud/regdid/views.py:633 crud/regdid/views.py:896
+#: crud/regdid/views.py:633 crud/regdid/views.py:936
 msgid "Didactic regulations"
 msgstr "Regolamenti didattici"
 
@@ -3461,13 +3485,33 @@ msgstr "Cambiato status del regolamento a"
 msgid "Regdid status updated successfully"
 msgstr "Stato del regolamento modificato con successo"
 
-#: crud/regdid/views.py:858
+#: crud/regdid/views.py:866
+msgid "Regdid status must be"
+msgstr "Lo stato del regolamento deve essere"
+
+#: crud/regdid/views.py:866
+msgid "to be imported from file"
+msgstr "per poter essere importato da file"
+
+#: crud/regdid/views.py:868
 msgid ""
 "Regdid was previously edited, the import opertation will overwrite every "
 "article"
 msgstr ""
 "Il regolamento è stato precedentemente modificato, l'operazione di "
 "importazione sovrascriverà tutti gli articoli"
+
+#: crud/regdid/views.py:927
+msgid "Didactic regulation imported from file"
+msgstr "Regolamento didattico importato da file"
+
+#: crud/regdid/views.py:929
+msgid "Didactic regulation imported successfully"
+msgstr "Regolamento didattico importato con successo"
+
+#: crud/regdid/views.py:932
+msgid "Didactic regulation import failed"
+msgstr "Importazione del regolamento didattico fallita"
 
 #: crud/research_groups/forms.py:26
 msgid "ERC1"
@@ -4069,6 +4113,12 @@ msgstr "L'immagine ha una proporzione tra altezza e lunghezza non valida"
 #: ricerca_app/validators.py:100
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
+
+#~ msgid "Required Field"
+#~ msgstr "Campo obbligatorio"
+
+#~ msgid "I am sure I want to import this regulation from file"
+#~ msgstr "Sono sicuro di voler importare questo regolamento da file"
 
 #~ msgid "This field is also used to enumerate the article (ex: Art 1.x)"
 #~ msgstr ""
