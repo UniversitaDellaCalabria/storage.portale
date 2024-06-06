@@ -55,11 +55,11 @@
         <div class="col-xs align-self-end mb-2">
             {% if show_goto_regdid_button %}
                 <a  href="{% url 'crud_regdid:crud_regdid_articles' regdid_id=regdid.pk %}"
-                    class="btn btn-success btn-icon btn-xs">
-                    <svg class="icon icon-xs icon-white">
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-upload"></use>
+                class="btn btn-primary btn-icon btn-xs">
+                {% trans "Go to regulation" %}
+                <svg class="icon icon-sm icon-white ml-1">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-right-circle"></use>
                     </svg>
-                    {% trans "Go to regulation" %}
                 </a>
             {% endif %}
         </div>
@@ -68,6 +68,21 @@
         <div class="card-wrapper card-space">
             <div class="card card-bg no-after mb-4">
                 <div class="card-body">
+                    <div class="row justify-content-end">
+                        <a  tabindex="0"
+                            href="javascript:void(0)"
+                            role="button"
+                            data-toggle="popover"
+                            data-trigger="focus"
+                            data-placement="left"
+                            data-html="true"
+                            title="INFO"
+                            data-content="{% trans 'Uploading a document will cause most of its formatting to be lost, it is therefore necessary that each article is re-formatted by hand through the editor' %}">
+                            <svg class="icon">
+                                <use href="{% static 'svg/sprite.svg' %}#it-help-circle"></use>
+                            </svg>
+                        </a>
+                    </div>
                     {% include "form_template.html" with form=form %}
                     <a  href="javascript:void(0)"
                         data-toggle="modal"
@@ -83,5 +98,16 @@
         </div>
     </form>
 </div>
+
+{% block extra_scripts %}
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+    $('.popover-dismiss').popover({
+        trigger: 'focus',
+      });
+</script>
+{% endblock extra_scripts %}
 
 {% endblock centered_container %}
