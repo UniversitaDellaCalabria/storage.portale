@@ -13,6 +13,7 @@ django-unical-bootstrap-italia==1.2.0
 git+https://github.com/UniversitaDellaCalabria/django-organizational-area.git
 pillow
 django-xhtml2pdf
+pymupdf
 
 # Rest
 # openAPI schema v3
