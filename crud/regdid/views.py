@@ -803,7 +803,8 @@ def regdid_articles_pdf(request, regdid_id):
     if not user_permissions_and_offices['permissions']['access']:
         return custom_message(request, _("Permission denied"))
     
-    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)
+    titoli_struttura_articoli_dict = _get_titoli_struttura_articoli_dict(regdid, testata)                     
+
     tipo_corso_cod = get_object_or_404(DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod).tipo_corso_cod
     tipo_corso_des = 'Laurea'
     if tipo_corso_cod == 'LM':
@@ -834,13 +835,14 @@ def regdid_articles_pdf(request, regdid_id):
     }
     
     cds_name = nome_cds_it.replace(" ", "_").title()
-    pdf_file_name=f"Regolamento_{cds_name}_{datetime.datetime.now().strftime('%m_%d_%Y')}"
+    pdf_file_name=f"Regolamento_{icla_cod}_{cds_name}_{datetime.datetime.now().strftime('%m_%d_%Y')}"
     pdf_file_name=pdf_file_name
     
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename={pdf_file_name}.pdf'
     template = render(request, 'regdid_generate_pdf.html', context)
     html_src_b = template.getvalue()
+
     pisa.CreatePDF(
         html_src_b,
         dest=response,
@@ -909,6 +911,7 @@ def regdid_articles_import_pdf(request, regdid_id, **kwargs):
                     
                     # insert new articles
                     for parsed_article in parsed_articles:
+                        if parsed_article["testo_it"] is None: continue
                         parsed_article["id_user_mod_id"] = request.user.pk
                         parsed_article["dt_mod"] = datetime.datetime.now().isoformat()
                         parsed_article["visibile"] = True

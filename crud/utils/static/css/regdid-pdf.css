@@ -2,68 +2,76 @@
 
 /* first page */
 @page {
-    @frame header_frame {           /* Header Static Frame */
+    @frame header_frame {
         -pdf-frame-content: header_content;
         top: 1.6cm;
         left: 1.9cm;
         right: 1.9cm;
+        height: 2cm;
     }
-    @frame content_frame {          /* Content Frame */
+    @frame content_frame {
         top: 3.8cm;
         left: 1.9cm;
-        height: 23.2cm;
         right: 1.9cm;
+        height: 23.2cm;
     }
-    @frame footer_frame {           /* Footer Static Frame */
+    @frame footer_frame {
         -pdf-frame-content: footer_content;
-        top: 27.8cm;
+        top: 28cm;
         left: 1.9cm;
         right: 1.9cm;
+        height: 1.1cm;
     }
 }
 
-@page regular_page {
-    @frame header_frame {           /* Header Static Frame */
-        -pdf-frame-content: header_content;
-        top: 1.6cm;
-        left: 1.9cm;
-        right: 1.9cm;
-    }
-    @frame content_frame {          /* Content Frame */
-        top: 3.8cm;
-        left: 1.9cm;
-        height: 23.2cm;
-        right: 1.9cm;
-    }
-    @frame footer_frame {           /* Footer Static Frame */
-        -pdf-frame-content: footer_content;
-        top: 27.8cm;
-        left: 1.9cm;
-        right: 1.9cm;
-    }
-}
-
+/* toc page */
 @page toc_page {
-    @frame header_frame {           /* Header Static Frame */
+    @frame header_frame {
         -pdf-frame-content: header_content;
         top: 1.6cm;
         left: 1.9cm;
         right: 1.9cm;
+        height: 2cm;
     }
-    @frame content_frame {          /* Content Frame */
+    @frame content_frame {
         top: 3.8cm;
         left: 1.9cm;
         height: 23.2cm;
     }
-    @frame footer_frame {           /* Footer Static Frame */
+    @frame footer_frame {
         -pdf-frame-content: footer_content;
-        top: 27.8cm;
+        top: 28cm;
         left: 1.9cm;
         right: 1.9cm;
+        height: 1.1cm;
     }
 }
 
-/* tags */
+/* regular page */
+@page regular_page {
+    @frame header_frame {
+        -pdf-frame-content: header_content;
+        top: 1.6cm;
+        left: 1.9cm;
+        right: 1.9cm;
+        height: 2cm;
+    }
+    @frame content_frame {
+        top: 3.8cm;
+        left: 1.9cm;
+        right: 1.9cm;
+        height: 23.2cm;
+    }
+    @frame footer_frame {
+        -pdf-frame-content: footer_content;
+        top: 28cm;
+        left: 1.9cm;
+        right: 1.9cm;
+        height: 1.1cm;
+    }
+}
+
+/* toc */
 .toc-title {
     -pdf-outline: true;
     -pdf-level: 1;
@@ -76,21 +84,22 @@
 }
 .toc_text {
     font-family: "Titillium Web Normal";
+    padding: 0;
+    margin: 0;
+    line-height: 6mm;
 }
 .index {
     font-weight: bold;
     padding-bottom: 0.2cm;
 }
-.content {
-    font-family: "Titillium Web";
-}
 h1, h2, h3, h4, h5, h6 {
     -pdf-outline: false;
 }
+
+/* general */
 html {
-    margin: 0;
-    padding: 0;
     font-size: 10pt;
+    line-height: 2mm;
     display: block;
 }
 table {
@@ -106,19 +115,18 @@ td, th {
     vertical-align: middle;
     -pdf-word-wrap: CJK;
 }
-p {  
-    margin: 0 0 3mm 0;
+p, li {
+    margin-top: 0;
+    padding-top: 0;
 }
-p.separator { -pdf-keep-with-next: false; }
-
-li {
-    padding: 2mm 0 2mm 0;
-}
-
-/* list style */
 ol {
     list-style-type: decimal;
+    margin-bottom: 2mm;
 }
+ul {
+    margin-bottom: 2mm;
+}
+/* ol styling */
 ol li ol {
     list-style-type: lower-alpha;
 }
@@ -129,13 +137,13 @@ ol li ol li ol li ol {
     list-style-type: upper-alpha;
 }
 
-
 /*articles*/
-.keep-with-next {
-    -pdf-keep-with-next: true;
+.content {
+    font-family: "Titillium Web";
 }
-.not-keep-with-next {
-    -pdf-keep-with-next: false;
+.art-separator {
+    margin: 2mm;
+    padding: 0;
 }
 .art {
     margin: 0;
@@ -146,12 +154,7 @@ ol li ol li ol li ol {
     font-size: 10pt;
     text-align: justify;
 }
-.text-divider {
-    margin: 0 0 3mm 0;
-}
 .section-title {
-    margin: 0;
-    padding: 0;
     font-weight: bold;
 }
 .reg-title {
@@ -159,4 +162,7 @@ ol li ol li ol li ol {
     font-size: 11pt;
     font-weight: bold;
     text-align: center;
+}
+.title {
+    -pdf-keep-with-next: true;
 }

@@ -7,7 +7,8 @@
 <html lang="it">
     <head>
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="{% static 'css/regdid-pdf.css' %}" type="text/css" />
+        <title>Regolamento Didattico</title>
+        <link rel="stylesheet" href="{% static 'css/regdid-pdf.css' %}" type="text/css">
         <style>
            {% django_bootstrap_italia_static_path 'fonts' as font_path %}
             /* titillium-web-regular - latin-ext_latin */
@@ -51,71 +52,86 @@
         <div id="header_content"><image src="{% static 'images/unical_logo.svg' %}" style="width: 6.1cm; height: 1.1cm;"></image></div>
         <!-- Content for Static Frame 'footer_frame' -->
         <div id="footer_content" style="text-align:center;"><pdf:pagenumber />&nbsp;</div>
-        
-        <!-- PDF CONTENT -->
-        
+                
+        <!-- first page -->
         <div class="reg-title content">
-            Regolamento didattico del<br />
-                {{nome_corso}}<br />
+            Regolamento didattico del<br>
+                {{nome_corso}}<br>
             <span style="font-weight: normal;">
                 {{classe_laurea_desc}}
             </span>
         </div>
+        <!-- /first page -->
         
+        <!-- toc pages -->
         <pdf:nexttemplate name="toc_page" />
-
         <div>
             <pdf:nextpage /> 
         </div> 
-
+        
         <span class="index content">Indice</span>
         <div class="toc_text">
             <pdf:toc /> 
         </div>
+        <!-- /toc pages -->
 
+        <!-- regular pages -->
         <pdf:nexttemplate name="regular_page" />
 
         <div>
             <pdf:nextpage /> 
         </div> 
-
+        
+        <!-- content -->
         <div class="content">
             {% autoescape off %}
             {% for title, struct_art_list in titoli_struttura_articoli_dict.items %}
-                <div class="keep-with-next">
-                    <div class="section-title toc-title">
-                        {{ title.descr_titolo_it }}
-                    </div>
-                    <div class="not-keep-with-next">
-                        {% for struct_art in struct_art_list %}
-                            {% for struct, art_sub_arts in struct_art.items %}
-                                {% for article, sub_articles in art_sub_arts.items %}
-                                    <div class="keep-with-next">
-                                        <div class="art toc-article">
-                                            Art. {{struct.numero}} - {{struct.titolo_it}}
-                                        </div>
-                                        <div class="text not-keep-with-next">
-                                            {% if article.testo_it %}{{article.testo_it}}{% else %}Articolo non applicabile{% endif %}
-                                            <div class="text-divider">&nbsp;</div>
-                                        </div>
-                                    </div>
-                                    {% for sub_art in sub_articles %}
-                                        <div class="art toc-article keep-with-next">
-                                            Art. {{struct.numero}} {% latin_enum forloop.counter0 %} - {{sub_art.titolo_it}}
-                                        </div>
-                                        <div class="text not-keep-with-next">
-                                            {{sub_art.testo_it}}
-                                            <div class="text-divider">&nbsp;</div>
-                                        </div>
-                                    {% endfor %}
-                                {% endfor %}
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
+                <div class="title section-title toc-title">
+                    {{ title.descr_titolo_it }}
                 </div>
+                <!-- stuctures -->
+                {% for struct_art in struct_art_list %}
+                    <!-- structure -->
+                    {% for struct, art_sub_arts in struct_art.items %}
+                        <!-- articles -->
+                        {% for article, sub_articles in art_sub_arts.items %}
+                            <!-- article -->
+                            <div class="title art toc-article">
+                                Art. {{struct.numero}} - {{struct.titolo_it}}
+                            </div>
+                            <div class="text">
+                            {% if article.testo_it %}
+                                {{ article.testo_it }}
+                            {% else %}
+                                Articolo non applicabile
+                            {% endif %}
+                            </div>
+                            <div class="art-separator">&nbsp;</div>
+                            <!-- /article -->
+                            <!-- /subarticles -->
+                            {% for sub_art in sub_articles %}
+                                <!-- subarticle -->
+                                <div class="title art toc-article">
+                                    Art. {{struct.numero}} {% latin_enum forloop.counter0 %} - {{sub_art.titolo_it}}
+                                </div>
+                                <div class="text">
+                                    {{sub_art.testo_it}}
+                                </div>
+                                <div class="art-separator">&nbsp;</div>
+                                <!-- /subarticle -->
+                            {% endfor %}
+                            <!-- /subarticles -->
+                            <!-- /article -->
+                        {% endfor %}
+                        <!-- /articles -->
+                    {% endfor %}
+                    <!-- /structure -->
+                {% endfor %}
+                <!-- /structures -->
             {% endfor %}
+            {% endautoescape %}
         </div>
-        {% endautoescape %}
-
+        <!-- /content -->
+        <!-- /regular pages -->
     </body>
 </html>
