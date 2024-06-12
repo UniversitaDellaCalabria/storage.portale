@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-06 12:28+0200\n"
-"PO-Revision-Date: 2024-06-06 13:02+0200\n"
+"POT-Creation-Date: 2024-06-12 13:25+0200\n"
+"PO-Revision-Date: 2024-06-12 13:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -3227,12 +3227,20 @@ msgid "PDF Regulation"
 msgstr "PDF Regolamento"
 
 #: crud/regdid/forms.py:104
-msgid "Number of the page which contains 'TITOLO I'"
+msgid ""
+"Number of the page which contains 'TITOLO I' - Count from 1 from the title "
+"page (included)"
 msgstr ""
+"Numero della pagina che contiene 'TITOLO I' - Conta da 1 dalla pagina del "
+"frontespizio (inclusa)"
 
 #: crud/regdid/forms.py:109
-msgid "Number of the page which contains the last article untill the end"
+msgid ""
+"Number of the page which contains the last article untill the end - Count "
+"from 1 from the title page (included)"
 msgstr ""
+"Numero della pagina che contiene l'ultimo articolo fino alla fine - Conta da "
+"1 dalla pagina del frontespizio (inclusa)"
 
 #: crud/regdid/settings.py:5
 msgid "Didactic Regulation App"
