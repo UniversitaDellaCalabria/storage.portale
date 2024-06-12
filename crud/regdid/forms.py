@@ -101,11 +101,11 @@ class RegolamentoPdfImportForm(forms.Form):
     )
     
     first_page = forms.ChoiceField(
-        label=_("Number of the page which contains 'TITOLO I'"),
+        label=_("Number of the page which contains 'TITOLO I' - Count from 1 from the title page (included)"),
         choices=(((num, num) for num in range(1,200)))
     )
     
     last_page = forms.ChoiceField(
-        label=_("Number of the page which contains the last article untill the end"),
+        label=_("Number of the page which contains the last article untill the end - Count from 1 from the title page (included)"),
         choices=(((num, num) for num in range(1,200)))
     )

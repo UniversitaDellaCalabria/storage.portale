@@ -4,10 +4,9 @@ from django.utils.text import normalize_newlines
 RE_PAGE_NUMBER = re.compile(r"^\d+$")
 RE_BLANK_LINE = re.compile(r"^(\n+|\s+\n+)(\s|\n)+$|(^$)")
 RE_SECTION_TITLE_I = re.compile(r"\s*TITOLO\s+[I]\s(\-|\–)+")
-RE_SECTION_TITLE = re.compile(r"\s*TITOLO\s+[I|V|X]+\s(\-|\–)+.*")
+RE_SECTION_TITLE = re.compile(r"\s*TITOLO\s+[I|V|X]+\s*(\-|\–)+.*")
 RE_ARTICLE_TITLE = re.compile(r"^(Art(\.){0,1})\s*\d.*")
 RE_MISSING_ARTICLE = re.compile(r"Articolo non applicabile", re.IGNORECASE)
-RE_ORDINAMENTO_MANIFESTO = re.compile(r"^Ordinamento|Manifesto", re.IGNORECASE)
 RE_FIRST_TITLE = re.compile(r"TITOLO\s+I")
 RE_FIRST_ARTICLE = re.compile(r"^(Art(\.){0,1})\s*1(\s+|-|–)")
 RE_LI = re.compile(r"^\s*((\d\.)+|([a-z-A-Z]\))|([i|v|x]+\)))\s*(\w)")
@@ -54,8 +53,7 @@ def extractArticlesFromPdf(file, first_page, last_page):
         
         for line in lines:
             _stripped_line = line.strip()
-            if RE_PAGE_NUMBER.match(_stripped_line) or\
-               RE_ORDINAMENTO_MANIFESTO.match(_stripped_line): continue #skip pagenumber
+            if RE_PAGE_NUMBER.match(_stripped_line): continue #skip pagenumber
             if not (found_first_title and found_first_article): 
                 if RE_FIRST_TITLE.match(_stripped_line):
                     found_first_title = True
