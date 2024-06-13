@@ -1349,9 +1349,9 @@ class ApiPhdActivitiesList(ApiEndpointList):
         cycle = request.query_params.get('cycle')
         ssd = request.query_params.get('ssd')
         teacher = request.query_params.get('teacher')
-        tipology = request.query_params.get('tipology')
+        typology = request.query_params.get('typology')
 
-        return ServiceDottorato.getPhdActivities(search, structure, phd, ssd, teacher, cycle, tipology)
+        return ServiceDottorato.getPhdActivities(search, structure, phd, ssd, teacher, cycle, typology)
 
 
 class ApiPhdActivityDetail(ApiEndpointDetail):
