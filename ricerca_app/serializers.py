@@ -3053,5 +3053,6 @@ class PhdActivityTypologySerializer(serializers.Serializer): # pragma: no cover
     def to_dict(query, req_lang='en'):
 
         return {
+            'ID': query.id,
             'Name': query.nome_it if req_lang == 'it' or query.nome_en is None else query.nome_en
         }
