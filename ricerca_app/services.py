@@ -3067,13 +3067,14 @@ class ServiceDottorato:
             'idesse3_ddr__regdid_id_esse3')
 
     @staticmethod
-    def getPhdActivities(search=None, structure=None, phd=None, ssd=None, teacher=None, cycle=None):
+    def getPhdActivities(search=None, structure=None, phd=None, ssd=None, teacher=None, cycle=None, typology=None):
 
         query_search = Q()
         query_structure = Q()
         query_phd = Q()
         query_ssd = Q()
         query_cycle = Q()
+        query_typology = Q()
 
 
         if search is not None:
@@ -3086,6 +3087,8 @@ class ServiceDottorato:
             query_ssd = Q(ssd__icontains=ssd)
         if cycle:
             query_cycle = Q(ciclo=cycle)
+        if typology:
+            query_typology = Q(tipologia=typology)
 
         query = DidatticaDottoratoAttivitaFormativa.objects.filter(
             query_search,
@@ -3093,6 +3096,7 @@ class ServiceDottorato:
             query_phd,
             query_ssd,
             query_cycle,
+            query_typology,
         ).values(
             "id",
             "nome_af",
