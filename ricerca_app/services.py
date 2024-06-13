@@ -3245,6 +3245,11 @@ class ServiceDottorato:
         return list(query)
 
     @staticmethod
+    def getPhdActivityTypologies(): # pragma: no cover
+        query = DidatticaDottoratoAttivitaFormativaTipologia.objects.all()
+        return list(query)
+
+    @staticmethod
     def getRefStructures(): # pragma:no cover
         query = DidatticaDottoratoAttivitaFormativa.objects\
                                                    .filter(struttura_proponente_origine__isnull=False)\

@@ -792,7 +792,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
         #CRUD
         only_active = True
         if request.user.is_superuser: only_active = False # pragma: no cover
-        
+
         elif request.user.is_authenticated: # pragma: no cover
             user_profile = None
             if request.user.taxpayer_id is not None:
@@ -803,7 +803,7 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
                 .filter(employee=request.user,
                         office__is_active=True,
                         office__organizational_structure__is_active=True)
-            
+
             is_scientific_director = user_profile is not None and LaboratorioDatiBase.objects.filter(matricola_responsabile_scientifico = user_profile).exists()
             is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
             is_validator = offices.filter(office__name=OFFICE_LABORATORY_VALIDATORS).exists()
@@ -835,7 +835,7 @@ class ApiLaboratoriesList(ApiEndpointList):
             user_profile = None
             if request.user.taxpayer_id is not None:
                 user_profile = Personale.objects.filter(cod_fis=request.user.taxpayer_id).first()
-                
+
             offices = OrganizationalStructureOfficeEmployee\
                 .objects\
                 .filter(employee=request.user,
@@ -1391,12 +1391,21 @@ class ApiPhdSsdList(ApiEndpointList):
 
 
 class ApiPhdActivityTypeList(ApiEndpointList):
-    description = 'La funzione restituisce la lista delle tipologie di dottorato'
+    description = 'La funzione restituisce la lista dei tipi di attività di dottorato'
     serializer_class = PhdActivityTypeSerializer
     filter_backends = []
 
     def get_queryset(self):
         return ServiceDottorato.getPhdActivityTypeList()
+
+
+class ApiPhdActivityTypologies(ApiEndpointList):
+    description = 'La funzione restituisce la lista delle tipologie di attività di dottorato'
+    serializer_class = PhdActivityTypologySerializer
+    filter_backends = []
+
+    def get_queryset(self):
+        return ServiceDottorato.getPhdActivityTypologies()
 
 
 class ApiCdsWebsiteList(ApiEndpointList):
@@ -1645,20 +1654,20 @@ class LockSetView(APIView):
 
         ct = get_object_or_404(ContentType, pk=content_type_id)
         obj = get_object_or_404(ct.model_class(), pk=object_id)
-            
+
         try:
             permissions_and_offices = obj.get_user_permissions_and_offices(request.user)
             if not permissions_and_offices['permissions']['lock']:
                 raise PermissionDenied()
-            
+
             acquire_lock(user_id=request.user.pk,
                         content_type_id=content_type_id,
                         object_id=object_id)
             return Response({'message': _('Lock successfully set')})
-        
+
         except AttributeError:
             raise PermissionDenied()
-        
+
         except LockCannotBeAcquiredException as lock_exception:
             return Response({'lock': lock_exception.lock,
                              'message': LOCK_MESSAGE.format(user=get_user_model().objects.filter(pk=lock_exception.lock[0]).first(),

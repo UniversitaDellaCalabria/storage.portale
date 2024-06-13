@@ -3025,7 +3025,6 @@ class PhdSsdListSerializer(CreateUpdateAbstract):
         }
 
 
-
 class PhdActivityTypeSerializer(CreateUpdateAbstract): # pragma: no cover
 
     def to_representation(self, instance):
@@ -3039,4 +3038,20 @@ class PhdActivityTypeSerializer(CreateUpdateAbstract): # pragma: no cover
 
         return {
             'ActivityType': query['tipo_af'],
+        }
+
+
+class PhdActivityTypologySerializer(serializers.Serializer): # pragma: no cover
+
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context['language']).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang='en'):
+
+        return {
+            'Name': query.nome_it if req_lang == 'it' or query.nome_en is None else query.nome_en
         }

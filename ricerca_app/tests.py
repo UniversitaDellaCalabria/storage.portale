@@ -2519,15 +2519,15 @@ class ApiPersonaleDetailUnitTest(TestCase):
 
 
 class ApiPersonaleFullDetail(TestCase):
-    
+
     def test_apipersonalefulldetail(self):
         req = Client()
-        
+
         u1 = UnitaOrganizzativaUnitTest.create_unitaOrganizzativa(**{
             'uo': '2',
             'uo_padre': '1',
         })
-        
+
         p1 = PersonaleUnitTest.create_personale(**{
             'id': 1,
             'nome': 'Simone',
@@ -2545,7 +2545,7 @@ class ApiPersonaleFullDetail(TestCase):
             'cv_full_eng': 'BBB',
             'cv_short_eng': 'B',
         })
-        
+
         patr = PersonaleAttivoTuttiRuoliUnitTest.create_personaleAttivoTuttiRuoli(**{
             'matricola': '111112',
             'cd_ruolo': 'PO',
@@ -2554,38 +2554,38 @@ class ApiPersonaleFullDetail(TestCase):
             'ds_aff_org': 'Direzione',
             'dt_rap_ini': '2015-01-01',
         })
-        
+
         url = reverse(
             'ricerca:personaledetail-full', kwargs={
                 'personaleid': "111112"})
-        
+
         # GET
         res = req.get(url)
         assert res.status_code == 401
-        
-        
+
+
         # Authenticated request
         usr = get_user_model().objects.create(**{'username': 'test','password': 'password'})
         token = Token.objects.create(user=usr)
-        
+
         # Search by id
         url = reverse('ricerca:personaledetail-full', kwargs={
                       'personaleid': "111112"})
-        
+
         res = req.get(url,{}, HTTP_AUTHORIZATION= f'Token {token.key}')
-                
+
         assert res.status_code == 200
         assert res.json()['results']['Taxpayer_ID'] == 'SMN1'
         assert res.json()['results']['ID'] == "111112"
         assert datetime.datetime(year=2015, month=1, day=1).isoformat() == res.json()['results']['Roles'][0]['Start']
-        
+
         # Search by taxpayer_id
         url = reverse('ricerca:personaledetail-full', kwargs={
                       'personaleid': "SMN1"})
-        
+
         res = req.get(url,{}, HTTP_AUTHORIZATION= f'Token {token.key}')
-                
-                
+
+
         assert res.status_code == 200
         assert res.json()['results']['Taxpayer_ID'] == 'SMN1'
         assert res.json()['results']['ID'] == "111112"
@@ -5778,6 +5778,7 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
 
         assert res.status_code == 200
 
+
         # GET
 
         res = req.get(url)
@@ -5862,6 +5863,9 @@ class ApiPhdActivityDetailUnitTest(TestCase):
         res = req.get(url)
         assert res.json()['results']['ID'] == 1
 
+        url = reverse('ricerca:phd-activity-typologies')
+        res = req.get(url)
+        assert res.status_code == 200
 
 
 class ApiRefPhdListUnitTest(TestCase):
@@ -6833,8 +6837,8 @@ class ApiLockUnitTest(TestCase):
             'dt_mod': '2024-01-01',
             'id_user_mod': self.user1
         })
-        
-    
+
+
     def test_apilock(self):
         req = Client()
         # user1 login
@@ -6860,8 +6864,8 @@ class ApiLockUnitTest(TestCase):
         })
         # user2 calls api
         res = req.get(url)
-        assert res.data.get('lock')        
-    
+        assert res.data.get('lock')
+
 class ApiSetLockUnitTest(TestCase):
     def setUp(self):
         self.user1 = get_user_model().objects.create_superuser(
@@ -6935,8 +6939,8 @@ class ApiSetLockUnitTest(TestCase):
             'dt_mod': '2024-01-01',
             'id_user_mod': self.user1
         })
-        
-    
+
+
     def test_apisetlock(self):
         req = Client()
         content_type_id = ContentType.objects.get_for_model(self.articolo.__class__).pk
