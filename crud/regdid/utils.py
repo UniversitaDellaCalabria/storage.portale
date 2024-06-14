@@ -4,12 +4,12 @@ from django.utils.text import normalize_newlines
 RE_PAGE_NUMBER = re.compile(r"^\d+$")
 RE_BLANK_LINE = re.compile(r"^(\n+|\s+\n+)(\s|\n)+$|(^$)")
 RE_SECTION_TITLE_I = re.compile(r"\s*TITOLO\s+[I]\s(\-|\–)+")
-RE_SECTION_TITLE = re.compile(r"\s*TITOLO\s+[I|V|X]+\s*(\-|\–)+.*")
+RE_SECTION_TITLE = re.compile(r"(\s*TITOLO\s+[I|V|X]+)((\s*(\-|\–)+.*)|($))")
 RE_ARTICLE_TITLE = re.compile(r"^(Art(\.){0,1})\s*\d.*")
 RE_MISSING_ARTICLE = re.compile(r"Articolo non applicabile", re.IGNORECASE)
 RE_FIRST_TITLE = re.compile(r"TITOLO\s+I")
 RE_FIRST_ARTICLE = re.compile(r"^(Art(\.){0,1})\s*1(\s+|-|–)")
-RE_LI = re.compile(r"^\s*((\d\.)+|([a-z-A-Z]\))|([i|v|x]+\)))\s*(\w)")
+RE_LI = re.compile(r"^\s*((\d+\.)|([a-z-A-Z]\))|([i|v|x]+\)))\s*((\w).*|$)")
 
 def extractArticlesFromPdf(file, first_page, last_page):
     file_stream = file.read()
@@ -20,6 +20,7 @@ def extractArticlesFromPdf(file, first_page, last_page):
     current_num = 1
     found_first_title = False
     found_first_article = False
+    skip_lines = False
         
     def format_as_html():
         nonlocal current_content
@@ -50,7 +51,8 @@ def extractArticlesFromPdf(file, first_page, last_page):
         nonlocal current_num
         nonlocal found_first_title
         nonlocal found_first_article
-        
+        nonlocal skip_lines
+
         for line in lines:
             _stripped_line = line.strip()
             if RE_PAGE_NUMBER.match(_stripped_line): continue #skip pagenumber
@@ -61,12 +63,14 @@ def extractArticlesFromPdf(file, first_page, last_page):
                     found_first_article = True
                 continue
                 
-            if RE_SECTION_TITLE.match(_stripped_line) or\
-               RE_ARTICLE_TITLE.match(_stripped_line):
+            if RE_SECTION_TITLE.match(_stripped_line):
+                skip_lines = True
+            if RE_ARTICLE_TITLE.match(_stripped_line):
                 if current_content.strip():
                     save_article()
                     current_num += 1
-            else:
+                    skip_lines = False
+            elif not skip_lines:
                 if RE_LI.match(line):
                     line = '\n\n' + line
                 current_content += line
