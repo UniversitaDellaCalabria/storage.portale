@@ -5,10 +5,10 @@ RE_PAGE_NUMBER = re.compile(r"^\d+$")
 RE_BLANK_LINE = re.compile(r"^(\n+|\s+\n+)(\s|\n)+$|(^$)")
 RE_SECTION_TITLE_I = re.compile(r"\s*TITOLO\s+[I]\s(\-|\–)+")
 RE_SECTION_TITLE = re.compile(r"(\s*TITOLO\s+[I|V|X]+)((\s*(\-|\–)+.*)|($))")
-RE_ARTICLE_TITLE = re.compile(r"^(Art(\.){0,1})\s*\d.*")
+RE_ARTICLE_TITLE = re.compile(r"^(Art(\.){0,1})\s*\d.*", re.IGNORECASE)
 RE_MISSING_ARTICLE = re.compile(r"Articolo non applicabile", re.IGNORECASE)
 RE_FIRST_TITLE = re.compile(r"TITOLO\s+I")
-RE_FIRST_ARTICLE = re.compile(r"^(Art(\.){0,1})\s*1(\s+|-|–)")
+RE_FIRST_ARTICLE = re.compile(r"^(Art(\.){0,1})\s*1\.{0,1}(\s+|-|–)", re.IGNORECASE)
 RE_LI = re.compile(r"^\s*((\d+\.)|([a-z-A-Z]\))|([i|v|x]+\)))\s*((\w).*|$)")
 
 def extractArticlesFromPdf(file, first_page, last_page):
