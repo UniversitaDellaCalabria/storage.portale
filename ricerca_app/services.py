@@ -2507,10 +2507,6 @@ class ServiceDocente:
                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
                                  flg_cessato=0)
 
-        contacts = PersonaleContatti.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
-                                            .order_by('prg_priorita')\
-                                            .values('contatto', 'id_ab')
-
         if dip:
             department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
                 "dip_id", "dip_cod", "dip_des_it", "dip_des_eng").first()
@@ -2548,6 +2544,9 @@ class ServiceDocente:
                     q["dip_des_it"] = None
                     q["dip_des_eng"] = None
 
+        contacts = PersonaleContatti.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
+                                            .order_by('prg_priorita')\
+                                            .values('contatto', 'id_ab')
         clean_contacts = []
         for contact in contacts:
             for domain in PERSON_CONTACTS_EXCLUDE_STRINGS:
@@ -2653,6 +2652,22 @@ class ServiceDocente:
                     q["dip_cod"] = None
                     q["dip_des_it"] = None
                     q["dip_des_eng"] = None
+
+        contacts = PersonaleContatti.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
+                                            .order_by('prg_priorita')\
+                                            .values('contatto', 'id_ab')
+        clean_contacts = []
+        for contact in contacts:
+            for domain in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                if not domain.lower() in contact['contatto'].lower():
+                    clean_contacts.append(contact)
+
+        for q in query:
+            emails = []
+            for contact in clean_contacts:
+                if contact['id_ab'] == q['id_ab']:
+                    emails.append(contact['contatto'])
+            q['email'] = emails
 
         return query
 
