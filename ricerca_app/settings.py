@@ -70,3 +70,5 @@ LOCK_MESSAGE = _("Unable to make changes. "
 OFFICE_REGDIDS_DEPARTMENT = getattr(settings, 'OFFICE_REGDIDS_DEPARTMENT', 'regdids_department')
 OFFICE_REGDIDS_REVISION = getattr(settings, 'OFFICE_REGDIDS_REVISION', 'regdids_revision')
 OFFICE_REGDIDS_APPROVAL = getattr(settings, 'OFFICE_REGDIDS_APPROVAL', 'regdids_approval')
+
+ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN = ''

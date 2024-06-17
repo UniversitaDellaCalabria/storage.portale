@@ -1007,7 +1007,8 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
                 'ActivityType': q['tipo_att_did_cod'],
                 'Hours': q['ore'],
                 'StudyActivityTeacherID': encrypt(q['coper_id__personale_id__matricola']) if not q['coper_id__personale_id__flg_cessato'] else None,
-                'StudyActivityTeacherName': full_name
+                'StudyActivityTeacherName': full_name,
+                'TeacherEmail': q['email']
             })
         return hours
 
@@ -1347,6 +1348,7 @@ class TeachersSerializer(CreateUpdateAbstract):
             'ProfileId': query['profilo'],
             'ProfileDescription': query['ds_profilo'],
             'ProfileShortDescription': query['ds_profilo_breve'],
+            'Email': query['email']
         }
 
 

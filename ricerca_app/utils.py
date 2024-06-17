@@ -2,6 +2,7 @@ import magic
 
 from cryptography.fernet import Fernet
 
+from django.apps import apps
 from django.conf import settings
 from django.http import Http404
 
@@ -11,10 +12,10 @@ from . labels import LABEL_MAPPING as LOCAL_LABEL_MAPPING
 from . import settings as app_settings
 
 
+ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN = getattr(settings, 'ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN', app_settings.ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN)
+ENCRYPTION_KEY = getattr(settings, 'ENCRYPTION_KEY', app_settings.ENCRYPTION_KEY)
 FILETYPE_IMAGE = getattr(settings, 'FILETYPE_IMAGE', app_settings.FILETYPE_IMAGE)
 SETTINGS_LABEL_MAPPING = getattr(settings, 'LABEL_MAPPING', None)
-
-ENCRYPTION_KEY = getattr(settings, 'ENCRYPTION_KEY', app_settings.ENCRYPTION_KEY)
 
 
 def encrypt(value): # pragma: no cover
@@ -94,3 +95,16 @@ def build_media_path(filename, path=None): # pragma: no cover
         return f'//{settings.DEFAULT_HOST}{path}/{filename}'
     except:
         return None
+
+
+def get_personale_matricola_from_email(email_username):
+    personale_model = apps.get_model('ricerca_app.Personale')
+    personalecontatti_model = apps.get_model('ricerca_app.PersonaleContatti')
+
+    contatto = personalecontatti_model.objects\
+                                     .filter(contatto__istartswith=f'{email_username}@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}')\
+                                     .first()
+    if not contatto: raise Http404
+    personale = personale_model.objects.filter(id_ab=contatto.id_ab).values('matricola').first()
+    if not personale: raise Http404
+    return personale['matricola']
