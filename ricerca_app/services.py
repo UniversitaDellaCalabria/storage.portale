@@ -1799,8 +1799,6 @@ class ServiceDidatticaAttivitaFormativa:
                     hour['ore'] = hour['ore'] + hour2['ore']
                     filtered_hours.remove(hour2)
 
-
-
         query[0]['Hours'] = filtered_hours
 
 
@@ -3386,7 +3384,7 @@ class ServicePersonale:
             'profilo',
             'ds_profilo',
             'ds_profilo_breve'
-        ).order_by('cognome', 'nome', '-personalecontatti__prg_priorita')
+        ).order_by('cognome', 'nome', 'personalecontatti__prg_priorita')
 
         grouped = {}
         last_id = -1
@@ -3662,7 +3660,9 @@ class ServicePersonale:
             personalecontatti__cd_tipo_cont__descr_contatto__in=PERSON_CONTACTS_TO_TAKE
         ).values(
             "personalecontatti__cd_tipo_cont__descr_contatto",
-            "personalecontatti__contatto")
+            "personalecontatti__contatto",
+        ).order_by('personalecontatti__prg_priorita')
+
         contacts = list(contacts)
 
         functions = UnitaOrganizzativaFunzioni.objects.filter(
