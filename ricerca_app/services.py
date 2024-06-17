@@ -27,10 +27,11 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
     DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi, DidatticaRegolamentoAltriDati,\
-    DidatticaDottoratoAttivitaFormativaTipologia
+    DidatticaDottoratoAttivitaFormativaTipologia, PersonaleContatti
 from . serializers import StructuresSerializer
 from . settings import (PERSON_CONTACTS_TO_TAKE,
                         PERSON_CONTACTS_EXCLUDE_STRINGS)
+from . utils import get_personale_matricola_from_email
 
 
 PERSON_CONTACTS_TO_TAKE = getattr(settings, 'PERSON_CONTACTS_TO_TAKE', PERSON_CONTACTS_TO_TAKE)
@@ -1522,8 +1523,6 @@ class ServiceDidatticaAttivitaFormativa:
                 else:
                     q['af_gen_cod'] = None
 
-
-
             if q['anno_corso'] == None: # pragma: no cover
                 anno = None
                 anno = DidatticaCopertura.objects.filter(af_id__exact=q['af_id']).values(
@@ -1752,6 +1751,7 @@ class ServiceDidatticaAttivitaFormativa:
         copertura = DidatticaCopertura.objects.filter(
             af_id=af_id).values(
             'personale__id',
+            'personale__id_ab',
             'personale__nome',
             'personale__cognome',
             'personale__middle_name',
@@ -1761,11 +1761,16 @@ class ServiceDidatticaAttivitaFormativa:
             'part_stu_cod',
             'part_stu_des',
         )
+
+        contacts = PersonaleContatti.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
+                                            .order_by('prg_priorita')\
+                                            .values('contatto', 'id_ab')
         query = list(query)
 
         filtered_hours = DidatticaCoperturaDettaglioOre.objects.filter(~Q(coper_id__stato_coper_cod='R'),coper_id__af_id=af_id).values(
             'tipo_att_did_cod',
             'ore',
+            'coper_id__personale_id__id_ab',
             'coper_id__personale_id__matricola',
             'coper_id__personale_id__nome',
             'coper_id__personale_id__cognome',
@@ -1773,8 +1778,20 @@ class ServiceDidatticaAttivitaFormativa:
             'coper_id__personale_id__flg_cessato',
             'coper_id'
         )
-        filtered_hours = list(filtered_hours)
 
+        clean_contacts = []
+        for contact in contacts:
+            for domain in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                if not domain.lower() in contact['contatto'].lower():
+                    clean_contacts.append(contact)
+
+        for f in filtered_hours:
+            emails = []
+            for contact in clean_contacts:
+                if contact['id_ab'] == f['coper_id__personale_id__id_ab']:
+                    emails.append(contact['contatto'])
+            f['email'] = emails
+        filtered_hours = list(filtered_hours)
 
         for hour in filtered_hours:
             for hour2 in filtered_hours:
@@ -1974,7 +1991,9 @@ class ServiceDocente:
     #     return query
 
     @staticmethod
-    def getAllResearchGroups(search, teacher, department, cod):
+    def getAllResearchGroups(search, teacher, department, cod, crypted=True):
+        if teacher and not crypted:
+            teacher = get_personale_matricola_from_email(teacher)
 
         query_search = Q()
         query_cod = Q()
@@ -2047,7 +2066,10 @@ class ServiceDocente:
             return query
 
     @staticmethod
-    def getResearchLines(teacher_id, only_active=True):
+    def getResearchLines(teacher_id, only_active=True, crypted=True):
+        if not crypted:
+            teacher_id = get_personale_matricola_from_email(teacher_id)
+
         query_is_active_app = Q(ricercadocentelineaapplicata__ricerca_linea_applicata__visibile=True) if only_active else Q()
         query_is_active_base = Q(ricercadocentelineabase__ricerca_linea_base__visibile=True) if only_active else Q()
 
@@ -2456,7 +2478,8 @@ class ServiceDocente:
                                          query_regdid,
                                          query_roles,
                                          query_year) \
-            .values("matricola",
+            .values("id_ab",
+                    "matricola",
                     "nome",
                     "middle_name",
                     "cognome",
@@ -2486,6 +2509,22 @@ class ServiceDocente:
                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year-1),
                                  flg_cessato=0)
 
+        contacts = PersonaleContatti.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
+                                            .order_by('prg_priorita')\
+                                            .values('contatto', 'id_ab')
+        clean_contacts = []
+        for contact in contacts:
+            for domain in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                if not domain.lower() in contact['contatto'].lower():
+                    clean_contacts.append(contact)
+
+        for q in query:
+            emails = []
+            for contact in clean_contacts:
+                if contact['id_ab'] == q['id_ab']:
+                    emails.append(contact['contatto'])
+            q['email'] = emails
+
         if dip:
             department = DidatticaDipartimento.objects.filter(dip_cod=dip) .values(
                 "dip_id", "dip_cod", "dip_des_it", "dip_des_eng").first()
@@ -2498,7 +2537,6 @@ class ServiceDocente:
                 q["dip_cod"] = department['dip_cod']
                 q["dip_des_it"] = department['dip_des_it']
                 q["dip_des_eng"] = department["dip_des_eng"]
-
         else:
             dip_cods = query.values_list("cd_uo_aff_org", flat=True).distinct()
             dip_cods = list(dip_cods)
@@ -2620,7 +2658,9 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo):
+    def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo, crypted=True):
+        if not crypted:
+            teacher = get_personale_matricola_from_email(teacher)
 
         if year:
             query = DidatticaCopertura.objects.filter(
@@ -2692,7 +2732,10 @@ class ServiceDocente:
         ).order_by('-aa_off_id')
 
     @staticmethod
-    def getDocenteInfo(teacher):
+    def getDocenteInfo(teacher, crypted=True):
+        if not crypted:
+            teacher = get_personale_matricola_from_email(teacher)
+
         query = Personale.objects\
                          .filter(Q(fl_docente=1) |
                                  Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) |
@@ -2700,15 +2743,6 @@ class ServiceDocente:
                                  flg_cessato=0,
                                  matricola=teacher)\
                          .distinct()
-                                 # didatticacopertura__af__isnull=False,
-                         # .distinct()
-        # query2 = Personale.objects.filter(fl_docente=1,
-                                          # flg_cessato=0,
-                                          # matricola=teacher)\
-                                  # .distinct()
-
-        # query = (query1 | query2).distinct()
-
 
         if not query.exists():
             raise Http404
@@ -2826,7 +2860,9 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getDocenteMaterials(user, teacher, search=None):
+    def getDocenteMaterials(user, teacher, search=None, crypted=True):
+        if not crypted:
+            teacher = get_personale_matricola_from_email(teacher)
 
         query_search = Q()
         query_is_active = Q(attivo=True)
@@ -2872,7 +2908,9 @@ class ServiceDocente:
 
 
     @staticmethod
-    def getDocenteNews(user, teacher, search=None):
+    def getDocenteNews(user, teacher, search=None, crypted=True):
+        if not crypted:
+            teacher = get_personale_matricola_from_email(teacher)
 
         query_search = Q()
         query_is_active = Q(attivo=True)
@@ -2929,9 +2967,13 @@ class ServiceDocente:
             teacherid=None,
             search=None,
             year=None,
-            type=None,
-            structure=None
-    ):
+            pub_type=None,
+            structure=None,
+            crypted=True):
+
+        if not crypted:
+            teacherid = get_personale_matricola_from_email(teacherid)
+
         query_search = Q()
         query_year = Q()
         query_type = Q()
@@ -2945,8 +2987,8 @@ class ServiceDocente:
                     contributors__icontains=k)
         if year is not None:
             query_year = Q(date_issued_year=year)
-        if type is not None:
-            query_type = Q(collection_id__community_id__community_id=type)
+        if pub_type is not None:
+            query_type = Q(collection_id__community_id__community_id=pub_type)
         if teacherid:
             query_teacher = Q(pubblicazioneautori__id_ab__matricola=teacherid)
         if structure:
@@ -3344,7 +3386,7 @@ class ServicePersonale:
             'profilo',
             'ds_profilo',
             'ds_profilo_breve'
-        ).order_by('cognome', 'nome')
+        ).order_by('cognome', 'nome', '-personalecontatti__prg_priorita')
 
         grouped = {}
         last_id = -1
@@ -3408,7 +3450,7 @@ class ServicePersonale:
 
             if q['personalecontatti__cd_tipo_cont__descr_contatto'] in PERSON_CONTACTS_TO_TAKE:
                 if q['personalecontatti__contatto']:
-                    res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word in q['personalecontatti__contatto'])]
+                    res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word.lower() in q['personalecontatti__contatto'].lower())]
                     if not bool(res) and not q['personalecontatti__contatto'].lower() in already_taken_contacts:
                         grouped[q['id_ab']][q['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                             q['personalecontatti__contatto'])
@@ -3506,161 +3548,6 @@ class ServicePersonale:
 
         return filtered5
 
-        # if phone or role or structuretypes:
-        #     filtered = []
-        #     if phone and role and structuretypes:
-        #         filtered1 = []
-        #         filtered2 = []
-        #         filtered3 = []
-        #
-        #         roles = []
-        #         for k in role.split(","):
-        #             roles.append(k)
-        #         s = []
-        #         for k in structuretypes.split(","):
-        #             s.append(k)
-        #         for item in final_query:
-        #             final_roles = []
-        #             if item['Roles'] and len(item['Roles']) != 0:
-        #                 for r in item['Roles']:
-        #                     final_roles.append(r['cd_ruolo'])
-        #             final_roles.append(item['profilo'])
-        #             if (set(roles).intersection(set(final_roles))):
-        #                 filtered1.append(item)
-        #
-        #             numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
-        #             if any(phone in string for string in numbers):
-        #                 filtered2.append(item)
-        #
-        #             final_structures = []
-        #             if item['Roles'] and len(item['Roles']) != 0:
-        #                 for r in item['Roles']:
-        #                     final_structures.append(r['cd_tipo_nodo'])
-        #             if (set(s).intersection(set(final_structures))):
-        #                 filtered3.append(item)
-        #
-        #
-        #         filtered = [value for value in filtered1 if value in filtered2 and filtered3]
-        #
-        #         return filtered
-        #
-        #     if phone and role :
-        #         filtered1 = []
-        #         filtered2 = []
-        #
-        #         roles = []
-        #         for k in role.split(","):
-        #             roles.append(k)
-        #
-        #         for item in final_query:
-        #             final_roles = []
-        #             if item['Roles'] and len(item['Roles']) != 0:
-        #                 for r in item['Roles']:
-        #                     final_roles.append(r['cd_ruolo'])
-        #             final_roles.append(item['profilo'])
-        #             if (set(roles).intersection(set(final_roles))):
-        #                 filtered1.append(item)
-        #
-        #             numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
-        #             if any(phone in string for string in numbers):
-        #                 filtered2.append(item)
-        #
-        #
-        #         filtered = [value for value in filtered1 if value in filtered2]
-        #
-        #         return filtered
-        #     if phone and structuretypes:
-        #         filtered2 = []
-        #         filtered3 = []
-        #
-        #
-        #         s = []
-        #         for k in structuretypes.split(","):
-        #             s.append(k)
-        #         for item in final_query:
-        #
-        #             numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
-        #             if any(phone in string for string in numbers):
-        #                 filtered2.append(item)
-        #
-        #             final_structures = []
-        #             if item['Roles'] and len(item['Roles']) != 0:
-        #                 for r in item['Roles']:
-        #                     final_structures.append(r['cd_tipo_nodo'])
-        #             if (set(s).intersection(set(final_structures))):
-        #                 filtered3.append(item)
-        #
-        #         filtered = [value for value in filtered2 if value in filtered3]
-        #
-        #         return filtered
-        #
-        #     if role and structuretypes:
-        #         filtered1 = []
-        #         filtered3 = []
-        #
-        #         roles = []
-        #         for k in role.split(","):
-        #             roles.append(k)
-        #         s = []
-        #         for k in structuretypes.split(","):
-        #             s.append(k)
-        #         for item in final_query:
-        #             final_roles = []
-        #             if item['Roles'] and len(item['Roles']) != 0:
-        #                 for r in item['Roles']:
-        #                     final_roles.append(r['cd_ruolo'])
-        #             final_roles.append(item['profilo'])
-        #             if (set(roles).intersection(set(final_roles))):
-        #                 filtered1.append(item)
-        #
-        #             final_structures = []
-        #             if item['Roles'] and len(item['Roles']) != 0:
-        #                 for r in item['Roles']:
-        #                     final_structures.append(r['cd_tipo_nodo'])
-        #             if (set(s).intersection(set(final_structures))):
-        #                 filtered3.append(item)
-        #
-        #         filtered = [value for value in filtered1 if value in filtered3]
-        #
-        #         return filtered
-        #
-        #     if phone:
-        #         for item in final_query:
-        #             numbers = item['Telefono Cellulare Ufficio'] + item['Telefono Ufficio']
-        #             if any(phone in string for string in numbers):
-        #                 filtered.append(item)
-        #         return filtered
-        #
-        #     if role:
-        #         roles = []
-        #         for k in role.split(","):
-        #             roles.append(k)
-        #         filtered = []
-        #         for item in final_query:
-        #             final_roles = []
-        #             if item['Roles'] and len(item['Roles']) != 0:
-        #                 for r in item['Roles']:
-        #                     final_roles.append(r['cd_ruolo'])
-        #             final_roles.append(item['profilo'])
-        #             if (set(roles).intersection(set(final_roles))):
-        #                 filtered.append(item)
-        #         return filtered
-        #
-        #     if structuretypes:
-        #         s = []
-        #         for k in structuretypes.split(","):
-        #             s.append(k)
-        #         filtered = []
-        #         for item in final_query:
-        #             final_structures = []
-        #             if item['Roles'] and len(item['Roles']) != 0:
-        #                 for r in item['Roles']:
-        #                     final_structures.append(r['cd_tipo_nodo'])
-        #             if (set(s).intersection(set(final_structures))):
-        #                 filtered.append(item)
-        #         return filtered
-
-
     @staticmethod
     def getStructuresList(search=None, father=None, type=None, depth=0):
 
@@ -3734,7 +3621,10 @@ class ServicePersonale:
         return query
 
     @staticmethod
-    def getPersonale(personale_id, full=False):
+    def getPersonale(personale_id, full=False, crypted=True):
+        if not crypted:
+            personale_id = get_personale_matricola_from_email(personale_id)
+
         if full:
             query = Personale.objects.filter(Q(matricola=personale_id)|Q(cod_fis=personale_id),
                                              flg_cessato=0)
@@ -3859,7 +3749,7 @@ class ServicePersonale:
                 q[c] = []
             for c in contacts:
                 if not c['personalecontatti__contatto']: continue
-                res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word in c['personalecontatti__contatto'])]
+                res = [word for word in PERSON_CONTACTS_EXCLUDE_STRINGS if(word.lower() in c['personalecontatti__contatto'].lower())]
                 if not bool(res) and not c['personalecontatti__contatto'].lower() in already_taken_contacts:
                     q[c['personalecontatti__cd_tipo_cont__descr_contatto']].append(
                         c['personalecontatti__contatto'])
@@ -4039,8 +3929,12 @@ class ServiceLaboratorio:
             teacher,
             infrastructure,
             scope,
-            is_active=True
-    ):
+            is_active=True,
+            crypted=True):
+
+        if teacher and not crypted:
+            teacher = get_personale_matricola_from_email(teacher)
+
         query_search = Q()
         query_ambito = Q()
         query_dip = Q()

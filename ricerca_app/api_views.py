@@ -357,11 +357,18 @@ class ApiResearchGroupsList(ApiEndpointList):
     def get_queryset(self):
         request = self.request
         search = request.query_params.get('search')
-        teacher = decrypt(request.query_params.get('teacher'))
         department = request.query_params.get('department')
         cod = request.query_params.get('coderc1')
-
-        return ServiceDocente.getAllResearchGroups(search, teacher, department, cod)
+        teacher = request.query_params.get('teacher')
+        crypted = False
+        if teacher and teacher[len(teacher) - 2:] == '==':
+            crypted = True
+            teacher = decrypt(teacher)
+        return ServiceDocente.getAllResearchGroups(search=search,
+                                                   teacher=teacher,
+                                                   department=department,
+                                                   cod=cod,
+                                                   crypted=crypted)
 
 
 class ApiTeacherResearchLinesList(ApiEndpointList):
@@ -372,8 +379,11 @@ class ApiTeacherResearchLinesList(ApiEndpointList):
     filter_backends = []
 
     def get_queryset(self):
-        teacherid = decrypt(self.kwargs['teacherid'])
-
+        teacherid = self.kwargs['teacherid']
+        crypted = False
+        if teacherid[len(teacherid) - 2:] == '==':
+            crypted = True
+            teacherid = decrypt(teacherid)
         only_active = True
         # get only active elements if public
         # get all elements if in CRUD backend
@@ -386,7 +396,9 @@ class ApiTeacherResearchLinesList(ApiEndpointList):
                                                                               office__organizational_structure__is_active=True)
             if my_offices.exists(): only_active = False
 
-        return ServiceDocente.getResearchLines(teacherid, only_active)
+        return ServiceDocente.getResearchLines(teacher_id=teacherid,
+                                               only_active=only_active,
+                                               crypted=crypted)
 
 
 class ApiBaseResearchLinesList(ApiEndpointList):
@@ -539,13 +551,22 @@ class ApiTeacherStudyActivitiesList(ApiEndpointList):
 
     def get_queryset(self):
         request = self.request
-        teacherid = decrypt(self.kwargs['teacherid'])
+        teacherid = self.kwargs['teacherid']
         year = request.query_params.get('year')
         yearFrom = request.query_params.get('yearFrom')
         yearTo = request.query_params.get('yearTo')
 
+        crypted = False
+        if teacherid[len(teacherid) - 2:] == '==':
+            crypted = True
+            teacherid = decrypt(teacherid)
+
         return ServiceDocente.getAttivitaFormativeByDocente(
-            teacherid, year, yearFrom, yearTo)
+            teacher=teacherid,
+            year=year,
+            yearFrom=yearFrom,
+            yearTo=yearTo,
+            crypted=crypted)
 
 
 class TeachingCoverageStudyActivitiesList(AutoSchema):
@@ -564,10 +585,13 @@ class ApiTeacherDetail(ApiEndpointDetail):
     filter_backends = []
 
     def get_queryset(self):
-
-        teacherid = decrypt(self.kwargs['teacherid'])
-
-        return ServiceDocente.getDocenteInfo(teacherid)
+        teacherid = self.kwargs['teacherid']
+        crypted = False
+        if teacherid[len(teacherid) - 2:] == '==':
+            crypted = True
+            teacherid = decrypt(teacherid)
+        return ServiceDocente.getDocenteInfo(teacher=teacherid,
+                                             crypted=crypted)
 
 
 class ApiTeacherMaterials(ApiEndpointList):
@@ -578,18 +602,17 @@ class ApiTeacherMaterials(ApiEndpointList):
     def get_queryset(self):
         request = self.request
         search = request.query_params.get('search')
-        teacherid = decrypt(self.kwargs['teacherid'])
-        return ServiceDocente.getDocenteMaterials(request.user, teacherid, search)
 
+        teacherid = self.kwargs['teacherid']
+        crypted = False
+        if teacherid[len(teacherid) - 2:] == '==':
+            crypted=True
+            teacherid= decrypt(teacherid)
 
-# class ApiTeacherMaterial(ApiEndpointDetail):
-    # description = 'La funzione restituisce il materiale diddattico specifico di un docente'
-    # serializer_class = TeacherMaterialsSerializer
-    # filter_backends = []
-
-    # def get_queryset(self):
-        # teacherid = decrypt(self.kwargs['teacherid'])
-        # return ServiceDocente.getDocenteMaterials(teacherid)
+        return ServiceDocente.getDocenteMaterials(user=request.user,
+                                                  teacher=teacherid,
+                                                  search=search,
+                                                  crypted=crypted)
 
 
 class ApiTeacherNews(ApiEndpointList):
@@ -600,9 +623,17 @@ class ApiTeacherNews(ApiEndpointList):
     def get_queryset(self):
         request = self.request
         search = request.query_params.get('search')
-        teacherid = decrypt(self.kwargs['teacherid'])
 
-        return ServiceDocente.getDocenteNews(request.user, teacherid, search)
+        teacherid = self.kwargs['teacherid']
+        crypted = False
+        if teacherid[len(teacherid) - 2:] == '==':
+            crypted=True
+            teacherid= decrypt(teacherid)
+
+        return ServiceDocente.getDocenteNews(user=request.user,
+                                             teacher=teacherid,
+                                             search=search,
+                                             crypted=crypted)
 
 
 class TeachingCoveragesInfo(AutoSchema):
@@ -763,9 +794,12 @@ class ApiPersonaleDetail(ApiEndpointDetail):
     # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
-        personaleid = decrypt(self.kwargs['personaleid'])
-
-        return ServicePersonale.getPersonale(personaleid)
+        personaleid = self.kwargs['personaleid']
+        crypted = False
+        if personaleid[len(personaleid) - 2:] == '==':
+            crypted=True
+            personaleid= decrypt(personaleid)
+        return ServicePersonale.getPersonale(personale_id=personaleid, crypted=crypted)
 
 
 class ApiPersonaleFullDetail(ApiEndpointDetail):
@@ -824,9 +858,15 @@ class ApiLaboratoriesList(ApiEndpointList):
         area = request.query_params.get('area')
         department = request.query_params.get('department')
         erc1 = request.query_params.get('erc1')
-        teacher = decrypt(request.query_params.get('teacher'))
+        teacher = request.query_params.get('teacher')
         infrastructure = request.query_params.get('infrastructure')
         scope = request.query_params.get('scope')
+
+        teacher = request.query_params.get('teacher')
+        crypted = False
+        if teacher and teacher[len(teacher) - 2:] == '==':
+            crypted = True
+            teacher = decrypt(teacher)
 
         #CRUD
         only_active = True
@@ -849,7 +889,16 @@ class ApiLaboratoriesList(ApiEndpointList):
                 only_active = False
 
         return ServiceLaboratorio.getLaboratoriesList(
-            self.language, search, area, department, erc1, teacher, infrastructure, scope, only_active)
+            language=self.language,
+            search=search,
+            ambito=area,
+            dip=department,
+            erc1=erc1,
+            teacher=teacher,
+            infrastructure=infrastructure,
+            scope=scope,
+            is_active=only_active,
+            crypted=crypted)
 
 
 class ApiLaboratoriesAreasList(ApiEndpointList):
@@ -899,14 +948,25 @@ class ApiPublicationsList(ApiEndpointList):
 
     def get_queryset(self):
         request = self.request
-        teacherid = decrypt(self.kwargs.get('teacherid')) if self.kwargs.get('teacherid') else ''
+        teacherid = self.kwargs.get('teacherid') or ''
         search = request.query_params.get('search')
         year = request.query_params.get('year')
         pub_type = request.query_params.get('type')
         structure = request.query_params.get('structure')
 
+        crypted = False
+
+        if teacherid and teacherid[len(teacherid) - 2:] == '==':
+            crypted = True
+            teacherid = decrypt(teacherid)
+
         return ServiceDocente.getPublicationsList(
-            teacherid, search, year, pub_type, structure)
+            teacherid=teacherid,
+            search=search,
+            year=year,
+            pub_type=pub_type,
+            structure=structure,
+            crypted=crypted)
 
 
 class TeachingCoveragePublicationsList(AutoSchema):
