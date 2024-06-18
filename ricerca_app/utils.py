@@ -115,20 +115,19 @@ def get_personale_matricola_from_email(email_username):
 def append_email_addresses(addressbook_queryset, obj_class, id_ab_key):
     personalecontatti_model = apps.get_model('ricerca_app.PersonaleContatti')
     cache_key = f"addressbook_email_list_{obj_class}_{id_ab_key}"
-    if not cache.get(cache_key):
+    if cache.get(cache_key) == None:
         contacts = personalecontatti_model.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
                                                           .order_by('prg_priorita')\
                                                           .values('contatto', 'id_ab')
         cache.set(cache_key, contacts)
-    cached_contacts = cache.get(cache_key)
-    if cached_contacts:
-        for q in addressbook_queryset:
-            emails = []
-            for contact in cached_contacts:
-                if contact['contatto'].lower() in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                    continue
-                if contact['contatto'] in emails:
-                    continue
-                if contact['id_ab'] == q[id_ab_key]:
-                    emails.append(contact['contatto'])
-            q['email'] = emails
+    cached_contacts = cache.get(cache_key, [])
+    for q in addressbook_queryset:
+        emails = []
+        for contact in cached_contacts:
+            if contact['contatto'].lower() in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                continue
+            if contact['contatto'] in emails:
+                continue
+            if contact['id_ab'] == q[id_ab_key]:
+                emails.append(contact['contatto'])
+        q['email'] = emails
