@@ -3,7 +3,7 @@ import operator
 import re
 
 from django.conf import settings
-from django.db.models import CharField, Q, Value, F
+from django.db.models import CharField, Q, Value, F, Case, When, Prefetch
 from django.http import Http404
 
 from functools import reduce
@@ -22,9 +22,9 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
     RicercaAster1, RicercaAster2, RicercaErc0, DidatticaCdsAltriDatiUfficio, DidatticaCdsAltriDati, DidatticaCoperturaDettaglioOre, \
     DidatticaAttivitaFormativaModalita, RicercaErc1, DidatticaDottoratoAttivitaFormativa, DidatticaDottoratoAttivitaFormativaAltriDocenti, DidatticaDottoratoAttivitaFormativaDocente, \
     SpinoffStartupDipartimento, PersonaleAttivoTuttiRuoli, PersonalePrioritaRuolo, DocentePtaBacheca, DocentePtaAltriDati, DocenteMaterialeDidattico, SitoWebCdsDatiBase, SitoWebCdsSlider, SitoWebCdsLink, \
-    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, SitoWebCdsArticoliRegolamento, \
-    SitoWebCdsTopicArticoliRegAltriDati, \
-    SitoWebCdsOggettiPortale, SitoWebCdsArticoliRegolamento, \
+    SitoWebCdsExStudenti, SitoWebCdsTopic, SitoWebCdsTopicArticoliReg, DidatticaCdsArticoliRegolamento, DidatticaCdsSubArticoliRegolamento,\
+    SitoWebCdsTopicArticoliRegAltriDati, SitoWebCdsSubArticoliRegolamento,\
+    SitoWebCdsOggettiPortale, \
     DidatticaPianoRegolamento, DidatticaPianoSche, DidatticaPianoSceltaSchePiano, DidatticaPianoSceltaVincoli, DidatticaPianoSceltaFilAnd, DidatticaAmbiti, DidatticaPianoSceltaAf, \
     DidatticaCdsGruppi, DidatticaCdsGruppiComponenti, DidatticaTestiRegolamento, DidatticaCdsPeriodi, DidatticaRegolamentoAltriDati,\
     DidatticaDottoratoAttivitaFormativaTipologia
@@ -862,83 +862,125 @@ class ServiceDidatticaCds:
 
     @staticmethod
     def getCdsWebsitesTopicArticles(cds_cod, topic_id, only_active=True):
+        result = []
+
+        if not (cds_cod and topic_id):
+            return result
+
+        topic_id_list = topic_id.split(",")
+
         query_visibile = Q(visibile=True) if only_active else Q()
-        if cds_cod and topic_id:
-            topic_id_list = topic_id.split(",")
-            query_cdscod = Q(id_sito_web_cds_oggetti_portale__cds_id__cds_cod=cds_cod) | Q(id_sito_web_cds_articoli_regolamento__cds_id__cds_cod=cds_cod)
-            query_topicid = Q(id_sito_web_cds_topic__id__in=topic_id_list)
+        query_topic_id = Q(id_sito_web_cds_topic__id__in=topic_id_list)
+        query_cds_cod = (
+            Q(id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds__cds_cod=str(cds_cod)) |
+            Q(id_sito_web_cds_oggetti_portale__cds__cds_cod=str(cds_cod))
+        )
 
-            query = SitoWebCdsTopicArticoliReg.objects.filter(
-                query_cdscod,
-                query_topicid,
-                query_visibile
-            ).values(
-                "id",
-                'titolo_it',
-                'titolo_en',
-                "id_sito_web_cds_topic__id",
-                'id_sito_web_cds_oggetti_portale',
-                'id_sito_web_cds_articoli_regolamento',
-                "id_sito_web_cds_topic__descr_topic_it",
-                "id_sito_web_cds_topic__descr_topic_en",
-                'visibile',
-                'ordine'
-            ).distinct().order_by('id_sito_web_cds_topic__id','ordine')
+        articoli_reg_altri_dati_qs = (
+            SitoWebCdsTopicArticoliRegAltriDati.objects
+            .filter(query_visibile)
+            .select_related('id_sito_web_cds_tipo_dato')
+            .defer('dt_mod','id_user_mod','id_sito_web_cds_tipo_dato__descr_lunga')
+            .annotate(
+                type_id=F('id_sito_web_cds_tipo_dato__id'),
+                type=F('id_sito_web_cds_tipo_dato__descr_breve')
+            )
+        )
+       
+        sub_articoli_qs = (
+            SitoWebCdsSubArticoliRegolamento.objects
+            .filter(query_visibile)
+            .defer('dt_mod','id_user_mod')
+        )
+        
+        records = (
+            SitoWebCdsTopicArticoliReg.objects
+            .prefetch_related(
+                Prefetch('sitowebcdstopicarticoliregaltridati_set', queryset=articoli_reg_altri_dati_qs),
+                Prefetch('sitowebcdssubarticoliregolamento_set', queryset=sub_articoli_qs)
+            )
+            .select_related(
+                'id_sito_web_cds_oggetti_portale__cds',
+                'id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds',
+                'id_sito_web_cds_topic'
+            )
+            .filter(query_topic_id, query_cds_cod, query_visibile)
+            .only(
+                'id', 'titolo_it', 'titolo_en', 'testo_it', 'testo_en', 'visibile', 'ordine',
+                'id_sito_web_cds_topic__id', 'id_sito_web_cds_topic__descr_topic_it', 'id_sito_web_cds_topic__descr_topic_en',
+                'id_sito_web_cds_oggetti_portale__id', 'id_sito_web_cds_oggetti_portale__id_classe_oggetto_portale',
+                'id_sito_web_cds_oggetti_portale__id_oggetto_portale', 'id_sito_web_cds_oggetti_portale__aa_regdid_id',
+                'id_sito_web_cds_oggetti_portale__testo_it', 'id_sito_web_cds_oggetti_portale__testo_en',
+                'id_sito_web_cds_oggetti_portale__cds__cds_cod',
+                'id_didattica_cds_articoli_regolamento__id', 'id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds__cds_cod'
+            )
+            .annotate(
+                tipo=Case(
+                    When(id_didattica_cds_articoli_regolamento__isnull=False, then=Value('Article')),
+                    default=Value('Object'),
+                    output_field=CharField()
+                )
+            )
+            .order_by('id_sito_web_cds_topic__id', 'ordine')
+        )
+        
+        for record in records:
+            data = {
+                'id': record.id,
+                'tipo': record.tipo,
+                'topic_id': record.id_sito_web_cds_topic_id,
+                'descr_topic_it': record.id_sito_web_cds_topic.descr_topic_it,
+                'descr_topic_en': record.id_sito_web_cds_topic.descr_topic_en,
+                'titolo_it': record.titolo_it,
+                'titolo_en': record.titolo_en,
+                'testo_it': record.testo_it,
+                'testo_en': record.testo_en,
+                'visibile': record.visibile,
+                'ordine': record.ordine,
+                'altri_dati': [
+                    {
+                        'id': sito_cds_topic_articoli_reg_altri_dati.id,
+                        'ordine': sito_cds_topic_articoli_reg_altri_dati.ordine,
+                        'titolo_it': sito_cds_topic_articoli_reg_altri_dati.titolo_it,
+                        'titolo_en': sito_cds_topic_articoli_reg_altri_dati.titolo_en,
+                        'testo_it': sito_cds_topic_articoli_reg_altri_dati.testo_it,
+                        'testo_en': sito_cds_topic_articoli_reg_altri_dati.testo_en,
+                        'link': sito_cds_topic_articoli_reg_altri_dati.link,
+                        'type_id': sito_cds_topic_articoli_reg_altri_dati.type_id,
+                        'type': sito_cds_topic_articoli_reg_altri_dati.type,
+                        'visibile': sito_cds_topic_articoli_reg_altri_dati.visibile
+                    }
+                    for sito_cds_topic_articoli_reg_altri_dati in record.sitowebcdstopicarticoliregaltridati_set.all()
+                ],
+                'sotto_articoli': [
+                    {
+                        'id': sito_web_cds_sub_articoli_regolamento.id,
+                        'ordine': sito_web_cds_sub_articoli_regolamento.ordine,
+                        'titolo_it': sito_web_cds_sub_articoli_regolamento.titolo_it,
+                        'titolo_en': sito_web_cds_sub_articoli_regolamento.titolo_en,
+                        'testo_it': sito_web_cds_sub_articoli_regolamento.testo_it,
+                        'testo_en': sito_web_cds_sub_articoli_regolamento.testo_en,
+                        'visibile': sito_web_cds_sub_articoli_regolamento.visibile
+                    }
+                    for sito_web_cds_sub_articoli_regolamento in record.sitowebcdssubarticoliregolamento_set.all()
+                ]
+            }
 
-            query = list(query)
+            if record.tipo == 'Object':
+                data['oggetto'] = {
+                    'id': record.id_sito_web_cds_oggetti_portale.id,
+                    'id_classe_oggetto_portale': record.id_sito_web_cds_oggetti_portale.id_classe_oggetto_portale,
+                    'id_oggetto_portale': record.id_sito_web_cds_oggetti_portale.id_oggetto_portale,
+                    'aa_regdid_id': record.id_sito_web_cds_oggetti_portale.aa_regdid_id,
+                    'testo_it': record.id_sito_web_cds_oggetti_portale.testo_it,
+                    'testo_en': record.id_sito_web_cds_oggetti_portale.testo_en,
+                }
 
-            for q in query:
-                article = SitoWebCdsArticoliRegolamento.objects.filter(
-                    Q(id__exact=q['id_sito_web_cds_articoli_regolamento']), query_visibile).values(
-                    'id',
-                    'titolo_articolo_it',
-                    'testo_it',
-                    'titolo_articolo_en',
-                    'titolo_articolo_en',
-                    'testo_en',
-                    'numero',
-                    'visibile',
-                    'aa_regdid_id',
-                    'cds_id',
-                    'cds_id__cds_cod',
-                ).first()
-                # .order_by('id_sito_web_cds_articoli_regolamento')
-                q['Articles'] = article
+            result.append(data)
+            
 
-                unicms_object = SitoWebCdsOggettiPortale.objects.filter(
-                    Q(id__exact=q['id_sito_web_cds_oggetti_portale']), query_visibile).values(
-                    'id',
-                    'cds_id',
-                    'cds_id__cds_cod',
-                    'aa_regdid_id',
-                    'id_oggetto_portale',
-                    'id_classe_oggetto_portale',
-                    'testo_it',
-                    'testo_en',
-                    'visibile'
-                ).first()
+        return result
 
-                q['CdsObjects'] = unicms_object
-
-                other_data = SitoWebCdsTopicArticoliRegAltriDati.objects.filter(
-                        Q(id_sito_web_cds_topic_articoli_reg=q['id']), query_visibile
-                    ).values(
-                        'id',
-                        'ordine',
-                        'titolo_en',
-                        'titolo_it',
-                        'testo_it',
-                        'testo_en',
-                        'link',
-                        'id_sito_web_cds_tipo_dato__pk',
-                        'id_sito_web_cds_tipo_dato__descr_breve',
-                        'visibile'
-                    ).order_by('ordine')
-
-                q['OtherData'] = other_data if other_data else []
-
-            return query
-        return {}
 
     @staticmethod
     def getCdsWebsitesStudyPlans(cds_cod, year):#, regdid):
