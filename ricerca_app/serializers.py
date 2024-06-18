@@ -1947,6 +1947,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             'CompletionReferentName': query['referente_compilazione'],
             'ScientificDirectorId': encrypt(query['matricola_responsabile_scientifico']),
             'ScientificDirectorName': query['responsabile_scientifico'],
+            'ScientificDirectorEmail': query['email'],
             'LaboratoryName': query['nome_laboratorio'],
             'LaboratoryAcronym': query['acronimo'],
             'LaboratoryLogo': build_media_path(query['nome_file_logo']),
@@ -2020,6 +2021,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             result.append({
                 'ResearchPersonnelID': encrypt(q['matricola_personale_ricerca__matricola']),
                 'ResearchPersonnelName': full_name,
+                'ResearchPersonnelEmail': q['email'],
             })
         return result
 
@@ -2037,6 +2039,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
                 'TechPersonnelID': encrypt(q['matricola_personale_tecnico__matricola']),
                 'TechPersonnelName': full_name,
                 'TechPersonnelRole': q['ruolo'],
+                'TechPersonnelEmail': q['email'],
             })
         return result
 
@@ -2319,6 +2322,7 @@ class PublicationSerializer(CreateUpdateAbstract):
             result.append({
                 'AuthorId': encrypt(q['id_ab__matricola']),
                 'AuthorName': full_name,
+                'AuthorEmail': q['email']
             })
         return result
 

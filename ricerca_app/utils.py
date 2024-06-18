@@ -4,6 +4,7 @@ from cryptography.fernet import Fernet
 
 from django.apps import apps
 from django.conf import settings
+from django.core.cache import cache
 from django.http import Http404
 
 from PIL import Image
@@ -16,6 +17,7 @@ ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN = getattr(settings, 'ADDRESSBOOK_FRIE
 ENCRYPTION_KEY = getattr(settings, 'ENCRYPTION_KEY', app_settings.ENCRYPTION_KEY)
 FILETYPE_IMAGE = getattr(settings, 'FILETYPE_IMAGE', app_settings.FILETYPE_IMAGE)
 SETTINGS_LABEL_MAPPING = getattr(settings, 'LABEL_MAPPING', None)
+PERSON_CONTACTS_EXCLUDE_STRINGS = getattr(settings, 'PERSON_CONTACTS_EXCLUDE_STRINGS', app_settings.PERSON_CONTACTS_EXCLUDE_STRINGS)
 
 
 def encrypt(value): # pragma: no cover
@@ -108,3 +110,25 @@ def get_personale_matricola_from_email(email_username):
     personale = personale_model.objects.filter(id_ab=contatto.id_ab).values('matricola').first()
     if not personale: raise Http404
     return personale['matricola']
+
+
+def append_email_addresses(addressbook_queryset, obj_class, id_ab_key):
+    personalecontatti_model = apps.get_model('ricerca_app.PersonaleContatti')
+    cache_key = f"addressbook_email_list_{obj_class}_{id_ab_key}"
+    if not cache.get(cache_key):
+        contacts = personalecontatti_model.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
+                                                          .order_by('prg_priorita')\
+                                                          .values('contatto', 'id_ab')
+        cache.set(cache_key, contacts)
+    cached_contacts = cache.get(cache_key)
+    if cached_contacts:
+        for q in addressbook_queryset:
+            emails = []
+            for contact in cached_contacts:
+                if contact['contatto'].lower() in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                    continue
+                if contact['contatto'] in emails:
+                    continue
+                if contact['id_ab'] == q[id_ab_key]:
+                    emails.append(contact['contatto'])
+            q['email'] = emails

@@ -31,7 +31,8 @@ from .models import DidatticaCds, DidatticaAttivitaFormativa, \
 from . serializers import StructuresSerializer
 from . settings import (PERSON_CONTACTS_TO_TAKE,
                         PERSON_CONTACTS_EXCLUDE_STRINGS)
-from . utils import get_personale_matricola_from_email
+from . utils import (append_email_addresses,
+                     get_personale_matricola_from_email)
 
 
 PERSON_CONTACTS_TO_TAKE = getattr(settings, 'PERSON_CONTACTS_TO_TAKE', PERSON_CONTACTS_TO_TAKE)
@@ -1762,9 +1763,6 @@ class ServiceDidatticaAttivitaFormativa:
             'part_stu_des',
         )
 
-        contacts = PersonaleContatti.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
-                                            .order_by('prg_priorita')\
-                                            .values('contatto', 'id_ab')
         query = list(query)
 
         filtered_hours = DidatticaCoperturaDettaglioOre.objects.filter(~Q(coper_id__stato_coper_cod='R'),coper_id__af_id=af_id).values(
@@ -1779,18 +1777,9 @@ class ServiceDidatticaAttivitaFormativa:
             'coper_id'
         )
 
-        clean_contacts = []
-        for contact in contacts:
-            for domain in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                if not domain.lower() in contact['contatto'].lower():
-                    clean_contacts.append(contact)
-
-        for f in filtered_hours:
-            emails = []
-            for contact in clean_contacts:
-                if contact['id_ab'] == f['coper_id__personale_id__id_ab']:
-                    emails.append(contact['contatto'])
-            f['email'] = emails
+        append_email_addresses(filtered_hours,
+                               'DidatticaCoperturaDettaglioOre',
+                               'coper_id__personale_id__id_ab')
         filtered_hours = list(filtered_hours)
 
         for hour in filtered_hours:
@@ -2544,22 +2533,7 @@ class ServiceDocente:
                     q["dip_des_it"] = None
                     q["dip_des_eng"] = None
 
-        contacts = PersonaleContatti.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
-                                            .order_by('prg_priorita')\
-                                            .values('contatto', 'id_ab')
-        clean_contacts = []
-        for contact in contacts:
-            for domain in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                if not domain.lower() in contact['contatto'].lower():
-                    clean_contacts.append(contact)
-
-        for q in query:
-            emails = []
-            for contact in clean_contacts:
-                if contact['id_ab'] == q['id_ab']:
-                    emails.append(contact['contatto'])
-            q['email'] = emails
-
+        append_email_addresses(query, 'Personale', 'id_ab')
         return query
 
     @staticmethod
@@ -2653,22 +2627,7 @@ class ServiceDocente:
                     q["dip_des_it"] = None
                     q["dip_des_eng"] = None
 
-        contacts = PersonaleContatti.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
-                                            .order_by('prg_priorita')\
-                                            .values('contatto', 'id_ab')
-        clean_contacts = []
-        for contact in contacts:
-            for domain in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                if not domain.lower() in contact['contatto'].lower():
-                    clean_contacts.append(contact)
-
-        for q in query:
-            emails = []
-            for contact in clean_contacts:
-                if contact['id_ab'] == q['id_ab']:
-                    emails.append(contact['contatto'])
-            q['email'] = emails
-
+        append_email_addresses(query, 'Personale', 'id_ab')
         return query
 
     @staticmethod
@@ -3060,6 +3019,7 @@ class ServiceDocente:
         for q in query:
             autori = PubblicazioneAutori.objects.filter(
                 item_id=publicationid).values(
+                "id_ab__id_ab",
                 "id_ab__nome",
                 "id_ab__cognome",
                 "id_ab__middle_name",
@@ -3070,6 +3030,8 @@ class ServiceDocente:
                 q['Authors'] = []
             else:
                 q['Authors'] = autori
+
+        append_email_addresses(autori, 'Personale', 'id_ab__id_ab')
 
         return query
 
@@ -4142,10 +4104,13 @@ class ServiceLaboratorio:
             "finalita_didattica_it",
             "responsabile_scientifico",
             "matricola_responsabile_scientifico",
+            "matricola_responsabile_scientifico__id_ab",
             'laboratorio_interdipartimentale',
             'sito_web',
             'strumentazione_descrizione',
             "visibile")
+        append_email_addresses(query, 'Personale', 'matricola_responsabile_scientifico__id_ab')
+
         finalita = LaboratorioAttivita.objects.filter(
             id_laboratorio_dati=laboratoryid).values(
             "id_tipologia_attivita__id",
@@ -4171,17 +4136,23 @@ class ServiceLaboratorio:
 
         personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values(
+            "matricola_personale_ricerca__id_ab",
             "matricola_personale_ricerca__matricola",
             "matricola_personale_ricerca__nome",
             "matricola_personale_ricerca__cognome",
             "matricola_personale_ricerca__middle_name")
+        append_email_addresses(personale_ricerca, 'Personale', 'matricola_personale_ricerca__id_ab')
+
         personale_tecnico = LaboratorioPersonaleTecnico.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values(
+            "matricola_personale_tecnico__id_ab",
             "matricola_personale_tecnico__matricola",
             "matricola_personale_tecnico__nome",
             "matricola_personale_tecnico__cognome",
             "matricola_personale_tecnico__middle_name",
             "ruolo")
+        append_email_addresses(personale_tecnico, 'Personale', 'matricola_personale_tecnico__id_ab')
+
         servizi_offerti = LaboratorioServiziOfferti.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values(
             "nome_servizio", "descrizione_servizio")
