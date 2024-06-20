@@ -888,13 +888,13 @@ class ServiceDidatticaCds:
                 type=F('id_sito_web_cds_tipo_dato__descr_breve')
             )
         )
-       
+
         sub_articoli_qs = (
             SitoWebCdsSubArticoliRegolamento.objects
             .filter(query_visibile)
             .defer('dt_mod','id_user_mod')
         )
-        
+
         records = (
             SitoWebCdsTopicArticoliReg.objects
             .prefetch_related(
@@ -925,7 +925,7 @@ class ServiceDidatticaCds:
             )
             .order_by('id_sito_web_cds_topic__id', 'ordine')
         )
-        
+
         for record in records:
             data = {
                 'id': record.id,
@@ -979,7 +979,7 @@ class ServiceDidatticaCds:
                 }
 
             result.append(data)
-            
+
 
         return result
 
@@ -2986,7 +2986,7 @@ class ServiceDocente:
             structure=None,
             crypted=True):
 
-        if not crypted:
+        if teacherid and not crypted:
             teacherid = get_personale_matricola_from_email(teacherid)
 
         query_search = Q()

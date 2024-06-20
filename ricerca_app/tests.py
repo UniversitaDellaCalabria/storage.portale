@@ -4242,7 +4242,6 @@ class ApiAllPublicationsListUnitTest(TestCase):
             'label_pubblicazione': 'Convegno',
             'collection_id': 2,
             'url_pubblicazione': 'aba',
-
         })
 
         PubblicazioneDatiBaseUnitTest.create_pubblicazioneDatiBase(**{
@@ -4255,7 +4254,6 @@ class ApiAllPublicationsListUnitTest(TestCase):
             'label_pubblicazione': 'Convegno',
             'collection_id': 2,
             'url_pubblicazione': 'ccc',
-
         })
 
         req = Client()
@@ -4264,7 +4262,6 @@ class ApiAllPublicationsListUnitTest(TestCase):
 
         # check url
         res = req.get(url)
-
         assert res.status_code == 200
 
         # GET
@@ -6164,10 +6161,10 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         self.uname = "user"
         self.passw = "pass"
         self.user = get_user_model().objects.create_superuser(username=self.uname, password=self.passw)
-        
+
         self.current_datetime = datetime.datetime.now()
         self.current_year = self.current_datetime.year
-        
+
         _swc_topic_data = {
             'id': 1,
             'descr_topic_it': 'Topic 1',
@@ -6175,17 +6172,17 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': self.current_datetime,
         }
-        
+
         # Topics
         self.swc_topic_1 = SitoWebCdsTopicListUnitTest\
             .create_sitoWebCdsTopicList(**_swc_topic_data)
-            
+
         _swc_topic_data['id'] += 1
         _swc_topic_data['descr_topic_it'] = 'Topic 2'
         _swc_topic_data['descr_topic_en'] = 'Topic 2'
         self.swc_topic_2 = SitoWebCdsTopicListUnitTest\
             .create_sitoWebCdsTopicList(**_swc_topic_data)
-        
+
         # Cds
         self.cds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'cds_id': 1,
@@ -6194,7 +6191,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'nome_cds_eng': 'Math',
             'tipo_corso_cod': 'L'
         })
-        
+
         # Articles
         self.dct_corso = DidatticaCdsTipoCorsoUnitTest.create_didatticaCdsTipoCorso(**{
             'id': 1,
@@ -6202,14 +6199,14 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'tipo_corso_des': 'Laurea',
             'id_user_mod': self.user
         })
-        
+
         self.dar_titolo = DidatticaArticoliRegolamentoTitoloUnitTest.create_didatticaArticoliRegolamentoTitolo(**{
             'id': 1,
             'descr_titolo_it': 'TITOLO I',
             'ordine': 10,
             'id_user_mod': self.user
         })
-        
+
         _dar_struttura_data = {
             'id': 1,
             'aa': self.current_year,
@@ -6223,22 +6220,22 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'dt_mod': self.current_datetime,
             'id_user_mod': self.user,
         }
-        
+
         self.dar_struttura_1 = DidatticaArticoliRegolamentoStrutturaUnitTest\
             .create_didatticaArticoliRegolamentoStruttura(**_dar_struttura_data)
-            
+
         _dar_struttura_data['id'] += 1
         _dar_struttura_data['numero'] += 1
         _dar_struttura_data['ordine'] += 10
         self.dar_struttura_2 = DidatticaArticoliRegolamentoStrutturaUnitTest\
             .create_didatticaArticoliRegolamentoStruttura(**_dar_struttura_data)
-        
+
         _dar_struttura_data['id'] += 1
         _dar_struttura_data['numero'] += 1
         _dar_struttura_data['ordine'] += 10
         self.dar_struttura_3 = DidatticaArticoliRegolamentoStrutturaUnitTest\
             .create_didatticaArticoliRegolamentoStruttura(**_dar_struttura_data)
-        
+
         self.dcar_testata = DidatticaCdsArticoliRegolamentoTestataUnitTest.create_didatticaCdsArticoliRegolamentoTestata(**{
             'id': 1,
             'cds_id': self.cds.cds_id,
@@ -6248,7 +6245,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'dt_mod': self.current_datetime,
             'id_user_mod': self.user,
         })
-        
+
         _dca_regolamento_data = {
             'id': 1,
             'id_didattica_cds_articoli_regolamento_testata': self.dcar_testata,
@@ -6259,23 +6256,23 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'dt_mod': self.current_datetime,
             'id_user_mod': self.user,
         }
-                
+
         self.dca_regolamento_1 = DidatticaCdsArticoliRegolamentoUnitTest\
                                                 .create_didatticaCdsArticoliRegolamento(**_dca_regolamento_data)
-        
+
         _dca_regolamento_data['id'] += 1
         _dca_regolamento_data['id_didattica_articoli_regolamento_struttura'] = self.dar_struttura_2
         self.dca_regolamento_2 = DidatticaCdsArticoliRegolamentoUnitTest\
-                                                .create_didatticaCdsArticoliRegolamento(**_dca_regolamento_data)                          
-        
+                                                .create_didatticaCdsArticoliRegolamento(**_dca_regolamento_data)
+
         _dca_regolamento_data['id'] += 1
         _dca_regolamento_data['id_didattica_articoli_regolamento_struttura'] = self.dar_struttura_3
         self.dca_regolamento_3 = DidatticaCdsArticoliRegolamentoUnitTest\
                                                 .create_didatticaCdsArticoliRegolamento(**_dca_regolamento_data)
-        
+
         _dca_regolamento_list = [self.dca_regolamento_1, self.dca_regolamento_2, self.dca_regolamento_3]
-        
-        # Sub articles                             
+
+        # Sub articles
         _dcsa_regolamento_data = {
             'id': 1,
             'id_didattica_cds_articoli_regolamento': self.dca_regolamento_1,
@@ -6287,22 +6284,22 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'visibile': 1,
             'dt_mod': self.current_datetime,
             'id_user_mod': self.user
-        }                
-             
+        }
+
         self.dcsa_regolamento_visbile_1 = DidatticaCdsSubArticoliRegolamentoUnitTest\
                                             .create_didatticaCdsSubArticoliRegolamento(**_dcsa_regolamento_data)
 
         _dcsa_regolamento_data['id'] += 1
         self.dcsa_regolamento_visbile_2 = DidatticaCdsSubArticoliRegolamentoUnitTest\
                                             .create_didatticaCdsSubArticoliRegolamento(**_dcsa_regolamento_data)
-        
+
         _dcsa_regolamento_data['id'] += 1
         _dcsa_regolamento_data['id_didattica_cds_articoli_regolamento'] = self.dca_regolamento_3
         self.dcsa_regolamento_visbile_3 = DidatticaCdsSubArticoliRegolamentoUnitTest\
                                             .create_didatticaCdsSubArticoliRegolamento(**_dcsa_regolamento_data)
-        
+
         _dcsa_regolamento_list = [self.dcsa_regolamento_visbile_1, self.dcsa_regolamento_visbile_2, self.dcsa_regolamento_visbile_3]
-        
+
         # CMS objects
         _swco_portale_data =  {
             'id': 1,
@@ -6318,21 +6315,21 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'dt_mod': self.current_datetime,
             'id_user_mod': self.user
         }
-        
+
         self.swco_portale_visibile_1 = SitoWebCdsOggettiPortaleUnitTest\
             .create_sitoWebCdsOggettiPortale(**_swco_portale_data)
-            
+
         _swco_portale_data['id'] += 1
         self.swco_portale_visibile_2 = SitoWebCdsOggettiPortaleUnitTest\
             .create_sitoWebCdsOggettiPortale(**_swco_portale_data)
-            
+
         _swco_portale_data['id'] += 1
         _swco_portale_data['visibile'] = 0
         self.swco_portale_non_visibile_1 = SitoWebCdsOggettiPortaleUnitTest\
             .create_sitoWebCdsOggettiPortale(**_swco_portale_data)
-            
+
         _swco_portale_list = [self.swco_portale_visibile_1, self.swco_portale_visibile_2, self.swco_portale_non_visibile_1]
-        
+
         # Struttura topic
         _swars_topic_data = {
             'id': 1,
@@ -6345,15 +6342,15 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             'dt_mod': self.current_datetime,
             'id_user_mod': self.user,
         }
-        
+
         _swars_topic_list = []
         for _ in range(3):
             _swars_topic_list.append(SitoWebArticoliRegolamentoStrutturaTopicUnitTest
                                         .create_sitoWebArticoliRegolamentoStrutturaTopic(**_swars_topic_data))
             _swars_topic_data['id'] += 1
-            
+
         self._swcta_reg_list = []
-        
+
         # SitoWebCdsArticoliReg for Articles
         for idx, swars_topic in enumerate(_swars_topic_list, 0):
             _dca_regolamento = _dca_regolamento_list[idx]
@@ -6369,9 +6366,9 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                 'ordine': swars_topic.ordine,
                 'visibile': 1 if idx < 2 else 0,
                 'dt_mod': self.current_datetime,
-                'id_user_mod': self.user 
+                'id_user_mod': self.user
             }))
-            
+
         # SitoWebCdsSubArticoliRegolamento
         for idx, _ in enumerate(_dcsa_regolamento_list, 0):
             _swcta_reg = self._swcta_reg_list[0 if idx < 2 else idx]
@@ -6387,7 +6384,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                 'dt_mod': self.current_datetime,
                 'id_user_mod': self.user,
             })
-        
+
         # SitoWebCdsArticoliReg for Objects
         for idx, swars_topic in enumerate(_swars_topic_list, 0):
             _swco_portale = _swco_portale_list[0 if idx < 2 else idx]
@@ -6403,12 +6400,12 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                 'ordine': swars_topic.ordine,
                 'visibile': 1,
                 'dt_mod': self.current_datetime,
-                'id_user_mod': self.user 
+                'id_user_mod': self.user
             }))
-        
+
         # SitoWebCdsTopicArticoliRegAltriDati
         self.swct_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
-        
+
         for idx, swcta_reg in enumerate(self._swcta_reg_list, 0):
             if swcta_reg.pk not in [1, 3, 4]: continue
             SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
@@ -6424,12 +6421,12 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                 'visibile': 1,
                 'dt_mod': self.current_datetime,
                 'id_user_mod': self.user,
-            })    
-        
+            })
+
         self.num_swcta_reg = len(self._swcta_reg_list)
         self.num_swcta_reg_visibili = self.num_swcta_reg - 1
 
-    def test_apisitiwebcdstopicarticles(self):        
+    def test_apisitiwebcdstopicarticles(self):
         url = reverse('ricerca:cdswebsitestopicarticleslist')
 
         # Call without parameters
@@ -6440,26 +6437,26 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         # Call with parameters
         data = {'cds_cod': '1', 'topic_id': 1}
         res = self.client.get(url, data=data)
-        
+
         assert res.status_code == 200
-                
+
         # Number of returned items
         assert len(res.json()['results']) == self.num_swcta_reg_visibili
-        
+
         for result in res.json()['results']:
             if result['ID'] == 1:
                 assert len(result['SubArticles']) == 1
             else:
                 assert len(result['SubArticles']) == 0
-            
+
             if result['ID'] >= 4:
                 assert result['Type'] == 'Object'
-            
+
             if result['ID'] in [1, 3, 4]:
                 assert result['OtherData']
             else:
                 assert not result['OtherData']
-            
+
             assert result['Visible']
 
 
