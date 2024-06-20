@@ -1606,31 +1606,33 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                                                show_past=show_past)
 
             # if Exams, search in Esse3 too
-            if 'ES' in self.event_types:
+            if 'ES' in self.event_types and af_cod:
                 cds_id = DidatticaCdsEsse3.objects.get(cds_cod=cds_cod).cds_id_esse3
-                af_id = DidatticaAttivitaFormativaEsse3.objects.get(ad_cod=af_cod).ad_id_esse3
+                af_esse3 = DidatticaAttivitaFormativaEsse3.objects.filter(ad_cod=af_cod).first()
+                if af_esse3:
+                    af_id = af_esse3.ad_id_esse3
 
-                appelli_esse3 = getEsse3Appelli(request=self.request,
-                                                cds_id=cds_id,
-                                                af_id=af_id,
-                                                aa=academic_year)
-                appelli_esse3_json = esse3AppelliSerializer(appelli=appelli_esse3,
-                                                            show_past=show_past)
+                    appelli_esse3 = getEsse3Appelli(request=self.request,
+                                                    cds_id=cds_id,
+                                                    af_id=af_id,
+                                                    aa=academic_year)
+                    appelli_esse3_json = esse3AppelliSerializer(appelli=appelli_esse3,
+                                                                show_past=show_past)
 
-                duplicates_to_remove = []
-                for iu in impegni_json:
-                    for ae3 in appelli_esse3_json:
-                        if ae3['dataInizio'] == iu['dataInizio'] and ae3['orarioInizio'] == iu['orarioInizio']:
-                            if not ae3['aula']:
-                                ae3['aula'] = iu['aula']
-                            duplicates_to_remove.append(iu)
-                            break
+                    duplicates_to_remove = []
+                    for iu in impegni_json:
+                        for ae3 in appelli_esse3_json:
+                            if ae3['dataInizio'] == iu['dataInizio'] and ae3['orarioInizio'] == iu['orarioInizio']:
+                                if not ae3['aula']:
+                                    ae3['aula'] = iu['aula']
+                                duplicates_to_remove.append(iu)
+                                break
 
-                for delete in duplicates_to_remove:
-                    a = impegni_json.remove(delete)
+                    for delete in duplicates_to_remove:
+                        a = impegni_json.remove(delete)
 
-                all_events = impegni_json + appelli_esse3_json
-                impegni_json = sorted(all_events, key= lambda x: (x['dataInizio'], x['orarioInizio']))
+                    all_events = impegni_json + appelli_esse3_json
+                    impegni_json = sorted(all_events, key= lambda x: (x['dataInizio'], x['orarioInizio']))
             cache.set(cache_key, impegni_json)
 
         return Response(cache.get(cache_key))
