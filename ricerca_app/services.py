@@ -3362,7 +3362,7 @@ class ServicePersonale:
             'profilo',
             'ds_profilo',
             'ds_profilo_breve'
-        ).order_by('cognome', 'nome', 'personalecontatti__prg_priorita')
+        ).order_by('cognome', 'nome')
 
         grouped = {}
         last_id = -1
