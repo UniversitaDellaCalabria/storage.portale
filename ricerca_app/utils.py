@@ -112,9 +112,9 @@ def get_personale_matricola_from_email(email_username):
     return personale['matricola']
 
 
-def append_email_addresses(addressbook_queryset, obj_class, id_ab_key):
+def append_email_addresses(addressbook_queryset, id_ab_key):
     personalecontatti_model = apps.get_model('ricerca_app.PersonaleContatti')
-    cache_key = f"addressbook_email_list_{obj_class}_{id_ab_key}"
+    cache_key = f"addressbook_email_list"
     if cache.get(cache_key) == None:
         contacts = personalecontatti_model.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
                                                           .order_by('prg_priorita')\

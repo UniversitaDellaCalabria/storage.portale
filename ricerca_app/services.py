@@ -1820,7 +1820,6 @@ class ServiceDidatticaAttivitaFormativa:
         )
 
         append_email_addresses(filtered_hours,
-                               'DidatticaCoperturaDettaglioOre',
                                'coper_id__personale_id__id_ab')
         filtered_hours = list(filtered_hours)
 
@@ -2575,7 +2574,7 @@ class ServiceDocente:
                     q["dip_des_it"] = None
                     q["dip_des_eng"] = None
 
-        append_email_addresses(query, 'Personale', 'id_ab')
+        append_email_addresses(query, 'id_ab')
         return query
 
     @staticmethod
@@ -2669,7 +2668,7 @@ class ServiceDocente:
                     q["dip_des_it"] = None
                     q["dip_des_eng"] = None
 
-        append_email_addresses(query, 'Personale', 'id_ab')
+        append_email_addresses(query, 'id_ab')
         return query
 
     @staticmethod
@@ -3073,7 +3072,7 @@ class ServiceDocente:
             else:
                 q['Authors'] = autori
 
-        append_email_addresses(autori, 'Personale', 'id_ab__id_ab')
+        append_email_addresses(autori, 'id_ab__id_ab')
 
         return query
 
@@ -4151,7 +4150,7 @@ class ServiceLaboratorio:
             'sito_web',
             'strumentazione_descrizione',
             "visibile")
-        append_email_addresses(query, 'Personale', 'matricola_responsabile_scientifico__id_ab')
+        append_email_addresses(query, 'matricola_responsabile_scientifico__id_ab')
 
         finalita = LaboratorioAttivita.objects.filter(
             id_laboratorio_dati=laboratoryid).values(
@@ -4183,7 +4182,7 @@ class ServiceLaboratorio:
             "matricola_personale_ricerca__nome",
             "matricola_personale_ricerca__cognome",
             "matricola_personale_ricerca__middle_name")
-        append_email_addresses(personale_ricerca, 'Personale', 'matricola_personale_ricerca__id_ab')
+        append_email_addresses(personale_ricerca, 'matricola_personale_ricerca__id_ab')
 
         personale_tecnico = LaboratorioPersonaleTecnico.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values(
@@ -4193,7 +4192,7 @@ class ServiceLaboratorio:
             "matricola_personale_tecnico__cognome",
             "matricola_personale_tecnico__middle_name",
             "ruolo")
-        append_email_addresses(personale_tecnico, 'Personale', 'matricola_personale_tecnico__id_ab')
+        append_email_addresses(personale_tecnico, 'matricola_personale_tecnico__id_ab')
 
         servizi_offerti = LaboratorioServiziOfferti.objects.filter(
             id_laboratorio_dati__id=laboratoryid).values(
