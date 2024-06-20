@@ -99,12 +99,15 @@ def build_media_path(filename, path=None): # pragma: no cover
         return None
 
 
-def get_personale_matricola_from_email(email_username):
+def get_personale_matricola(personale_id):
+    if personale_id[len(personale_id) - 2:] == '==':
+        return decrypt(personale_id)
+
     personale_model = apps.get_model('ricerca_app.Personale')
     personalecontatti_model = apps.get_model('ricerca_app.PersonaleContatti')
 
     contatto = personalecontatti_model.objects\
-                                     .filter(contatto__istartswith=f'{email_username}@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}')\
+                                     .filter(contatto__istartswith=f'{personale_id}@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}')\
                                      .first()
     if not contatto: raise Http404
     personale = personale_model.objects.filter(id_ab=contatto.id_ab).values('matricola').first()

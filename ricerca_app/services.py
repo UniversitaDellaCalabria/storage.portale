@@ -32,7 +32,7 @@ from . serializers import StructuresSerializer
 from . settings import (PERSON_CONTACTS_TO_TAKE,
                         PERSON_CONTACTS_EXCLUDE_STRINGS)
 from . utils import (append_email_addresses,
-                     get_personale_matricola_from_email)
+                     get_personale_matricola)
 
 
 PERSON_CONTACTS_TO_TAKE = getattr(settings, 'PERSON_CONTACTS_TO_TAKE', PERSON_CONTACTS_TO_TAKE)
@@ -2019,9 +2019,9 @@ class ServiceDocente:
     #     return query
 
     @staticmethod
-    def getAllResearchGroups(search, teacher, department, cod, crypted=True):
-        if teacher and not crypted:
-            teacher = get_personale_matricola_from_email(teacher)
+    def getAllResearchGroups(search, teacher, department, cod):
+        if teacher:
+            teacher = get_personale_matricola(teacher)
 
         query_search = Q()
         query_cod = Q()
@@ -2094,9 +2094,8 @@ class ServiceDocente:
             return query
 
     @staticmethod
-    def getResearchLines(teacher_id, only_active=True, crypted=True):
-        if not crypted:
-            teacher_id = get_personale_matricola_from_email(teacher_id)
+    def getResearchLines(teacher_id, only_active=True):
+        teacher_id = get_personale_matricola(teacher_id)
 
         query_is_active_app = Q(ricercadocentelineaapplicata__ricerca_linea_applicata__visibile=True) if only_active else Q()
         query_is_active_base = Q(ricercadocentelineabase__ricerca_linea_base__visibile=True) if only_active else Q()
@@ -2672,9 +2671,8 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo, crypted=True):
-        if not crypted:
-            teacher = get_personale_matricola_from_email(teacher)
+    def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo):
+        teacher = get_personale_matricola(teacher)
 
         if year:
             query = DidatticaCopertura.objects.filter(
@@ -2746,9 +2744,8 @@ class ServiceDocente:
         ).order_by('-aa_off_id')
 
     @staticmethod
-    def getDocenteInfo(teacher, crypted=True):
-        if not crypted:
-            teacher = get_personale_matricola_from_email(teacher)
+    def getDocenteInfo(teacher):
+        teacher = get_personale_matricola(teacher)
 
         query = Personale.objects\
                          .filter(Q(fl_docente=1) |
@@ -2874,9 +2871,8 @@ class ServiceDocente:
         return query
 
     @staticmethod
-    def getDocenteMaterials(user, teacher, search=None, crypted=True):
-        if not crypted:
-            teacher = get_personale_matricola_from_email(teacher)
+    def getDocenteMaterials(user, teacher, search=None):
+        teacher = get_personale_matricola(teacher)
 
         query_search = Q()
         query_is_active = Q(attivo=True)
@@ -2922,9 +2918,8 @@ class ServiceDocente:
 
 
     @staticmethod
-    def getDocenteNews(user, teacher, search=None, crypted=True):
-        if not crypted:
-            teacher = get_personale_matricola_from_email(teacher)
+    def getDocenteNews(user, teacher, search=None):
+        teacher = get_personale_matricola(teacher)
 
         query_search = Q()
         query_is_active = Q(attivo=True)
@@ -2982,11 +2977,10 @@ class ServiceDocente:
             search=None,
             year=None,
             pub_type=None,
-            structure=None,
-            crypted=True):
+            structure=None):
 
-        if teacherid and not crypted:
-            teacherid = get_personale_matricola_from_email(teacherid)
+        if teacherid:
+            teacherid = get_personale_matricola(teacherid)
 
         query_search = Q()
         query_year = Q()
@@ -3638,9 +3632,8 @@ class ServicePersonale:
         return query
 
     @staticmethod
-    def getPersonale(personale_id, full=False, crypted=True):
-        if not crypted:
-            personale_id = get_personale_matricola_from_email(personale_id)
+    def getPersonale(personale_id, full=False):
+        personale_id = get_personale_matricola(personale_id)
 
         if full:
             query = Personale.objects.filter(Q(matricola=personale_id)|Q(cod_fis=personale_id),
@@ -3948,11 +3941,10 @@ class ServiceLaboratorio:
             teacher,
             infrastructure,
             scope,
-            is_active=True,
-            crypted=True):
+            is_active=True):
 
-        if teacher and not crypted:
-            teacher = get_personale_matricola_from_email(teacher)
+        if teacher:
+            teacher = get_personale_matricola(teacher)
 
         query_search = Q()
         query_ambito = Q()
