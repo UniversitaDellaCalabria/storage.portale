@@ -9,31 +9,31 @@ from rest_framework.authtoken.models import Token
 
 from . models import SitoWebCdsTipoDato
 from . utils import encrypt, decrypt
-from . util_test import ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest, \
-    DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest, \
-    DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest, \
-    RicercaAster1UnitTest, RicercaAster2UnitTest, RicercaDocenteGruppoUnitTest, RicercaDocenteLineaApplicataUnitTest, \
-    RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest, \
-    RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest, \
-    DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest, \
-    PersonaleUoTipoContattoUnitTest, PersonaleContattiUnitTest, UnitaOrganizzativaFunzioniUnitTest, \
-    UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest, LaboratorioDatiBaseUnitTest, \
-    LaboratorioAttivitaUnitTest, LaboratorioDatiErc1UnitTest, LaboratorioPersonaleRicercaUnitTest, \
-    LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest, \
-    LaboratorioAltriDipartimentiUnitTest, PubblicazioneDatiBaseUnitTest, PubblicazioneCommunityUnitTest, \
-    PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest, \
-    BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest, \
-    ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,\
-    UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest,\
-    AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest, \
-    AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest, \
-    DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest, \
-    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest, DocentePtaMaterialeDidatticoUnitTest, \
-    DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest, \
-    SitoWebCdsTopicArticoliRegAltriDatiUnitTest, SitoWebCdsArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest, SitoWebCdsOggettiPortaleUnitTest, \
-    DidatticaPianoRegolamentoUnitTest, DidatticaPianoScheUnitTest, DidatticaPianoSceltaSchePianoUnitTest, DidatticaPianoSceltaVincoliUnitTest, DidatticaAmbitiUnitTest, \
-    DidatticaPianoSceltaAfUnitTest, DidatticaCdsTipoCorsoUnitTest, DidatticaArticoliRegolamentoStrutturaUnitTest, DidatticaCdsArticoliRegolamentoTestataUnitTest, DidatticaArticoliRegolamentoStrutturaTopicUnitTest, \
-    DidatticaCdsArticoliRegolamentoUnitTest, DidatticaArticoliRegolamentoTitoloUnitTest, DidatticaCdsSubArticoliRegolamentoUnitTest, DidatticaArticoliRegolamentoStatusUnitTest, DidatticaCdsTestataStatusUnitTest
+from . util_test import (ComuniAllUnitTest, DidatticaAttivitaFormativaUnitTest, DidatticaCdsLinguaUnitTest,
+    DidatticaCdsUnitTest, DidatticaCoperturaUnitTest, DidatticaDipartimentoUnitTest, DidatticaPdsRegolamentoUnitTest,
+    DidatticaRegolamentoUnitTest, DidatticaTestiAfUnitTest, DidatticaTestiRegolamentoUnitTest, PersonaleUnitTest,
+    RicercaAster1UnitTest, RicercaAster2UnitTest, RicercaDocenteGruppoUnitTest, RicercaDocenteLineaApplicataUnitTest,
+    RicercaDocenteLineaBaseUnitTest, RicercaErc1UnitTest, RicercaErc2UnitTest, RicercaGruppoUnitTest,
+    RicercaLineaApplicataUnitTest, RicercaLineaBaseUnitTest, TerritorioItUnitTest, RicercaErc0UnitTest,
+    DidatticaDottoratoCdsUnitTest, DidatticaDottoratoPdsUnitTest, DidatticaDottoratoRegolamentoUnitTest,
+    PersonaleUoTipoContattoUnitTest, PersonaleContattiUnitTest, UnitaOrganizzativaFunzioniUnitTest,
+    UnitaOrganizzativaUnitTest, UnitaOrganizzativaContattiUnitTest, LaboratorioDatiBaseUnitTest,
+    LaboratorioAttivitaUnitTest, LaboratorioDatiErc1UnitTest, LaboratorioPersonaleRicercaUnitTest,
+    LaboratorioPersonaleTecnicoUnitTest, LaboratorioServiziOffertiUnitTest, LaboratorioUbicazioneUnitTest,
+    LaboratorioAltriDipartimentiUnitTest, PubblicazioneDatiBaseUnitTest, PubblicazioneCommunityUnitTest,
+    PubblicazioneCollectionUnitTest, PubblicazioneAutoriUnitTest, LaboratorioInfrastrutturaUnitTest, LaboratorioTipologiaAttivitaUnitTest,
+    BrevettoDatiBaseUnitTest, BrevettoInventoriUnitTest, TipologiaAreaTecnologicaUnitTest, SpinoffStartupDatiBaseUnitTest,
+    ProgettoDatiBaseUnitTest, ProgettoTipologiaProgrammaUnitTest, ProgettoAmbitoTerritorialeUnitTest, ProgettoResponsabileScientificoUnitTest,
+    UnitaOrganizzativaTipoFunzioniUnitTest, ProgettoRicercatoreUnitTest, AltaFormazioneDatiBaseUnitTest, AltaFormazioneTipoCorsoUnitTest, AltaFormazioneModalitaErogazioneUnitTest,
+    AltaFormazioneModalitaSelezioneUnitTest, AltaFormazionePartnerUnitTest, AltaFormazioneConsiglioScientificoEsternoUnitTest, AltaFormazioneConsiglioScientificoInternoUnitTest,
+    AltaFormazioneIncaricoDidatticoUnitTest, AltaFormazionePianoDidatticoUnitTest, DidatticaCdsAltriDatiUnitTest, DidatticaCdsAltriDatiUfficioUnitTest, DidatticaAttivitaFormativaModalitaUnitTest,
+    DidatticaCoperturaDettaglioOreUnitTest, DidatticaDottoratoAttivitaFormativaUnitTest, DidatticaDottoratoAttivitaFormativaAltriDocentiUnitTest,
+    DidatticaDottoratoAttivitaFormativaDocenteUnitTest, SpinoffStartupDipartimentoUnitTest, PersonaleAttivoTuttiRuoliUnitTest, PersonalePrioritaRuoloUnitTest, DocentePtaMaterialeDidatticoUnitTest,
+    DocentePtaBachecaUnitTest, DocentePtaAltriDatiUnitTest, SitoWebCdsDatiBaseUnitTest, SitoWebCdsSliderUnitTest, SitoWebCdsExStudentiUnitTest, SitoWebCdsLinkUnitTest, SitoWebCdsTopicListUnitTest,
+    SitoWebCdsTopicArticoliRegAltriDatiUnitTest, SitoWebArticoliRegolamentoStrutturaTopicUnitTest, DidatticaCdsSubArticoliRegolamentoUnitTest, SitoWebCdsTopicArticoliRegUnitTest,
+    SitoWebCdsOggettiPortaleUnitTest, SitoWebCdsSubArticoliRegolamentoUnitTest, DidatticaPianoRegolamentoUnitTest, DidatticaPianoScheUnitTest, DidatticaPianoSceltaSchePianoUnitTest,
+    DidatticaPianoSceltaVincoliUnitTest, DidatticaAmbitiUnitTest, DidatticaPianoSceltaAfUnitTest, DidatticaCdsTipoCorsoUnitTest, DidatticaArticoliRegolamentoStrutturaUnitTest,
+    DidatticaCdsArticoliRegolamentoTestataUnitTest, DidatticaCdsArticoliRegolamentoUnitTest, DidatticaArticoliRegolamentoTitoloUnitTest, DidatticaArticoliRegolamentoStatusUnitTest, DidatticaCdsTestataStatusUnitTest)
 from . serializers import CreateUpdateAbstract
 from . concurrency import acquire_lock
 
@@ -6164,378 +6164,303 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         self.uname = "user"
         self.passw = "pass"
         self.user = get_user_model().objects.create_superuser(username=self.uname, password=self.passw)
-        self.token = Token.objects.create(user=self.user)
-
-
-    def test_apisitiwebcdstopicarticles(self):
-
-        tipo_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
-
-        topic = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
+        
+        self.current_datetime = datetime.datetime.now()
+        self.current_year = self.current_datetime.year
+        
+        _swc_topic_data = {
             'id': 1,
-            'descr_topic_it': 'prova',
-            'descr_topic_en': 'test',
+            'descr_topic_it': 'Topic 1',
+            'descr_topic_en': 'Topic 1',
             'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        topic2 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
-            'id': 2,
-            'descr_topic_it': 'prova',
-            'descr_topic_en': 'test',
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        cds = DidatticaCdsUnitTest.create_didatticaCds(**{
+            'dt_mod': self.current_datetime,
+        }
+        
+        # Topics
+        self.swc_topic_1 = SitoWebCdsTopicListUnitTest\
+            .create_sitoWebCdsTopicList(**_swc_topic_data)
+            
+        _swc_topic_data['id'] += 1
+        _swc_topic_data['descr_topic_it'] = 'Topic 2'
+        _swc_topic_data['descr_topic_en'] = 'Topic 2'
+        self.swc_topic_2 = SitoWebCdsTopicListUnitTest\
+            .create_sitoWebCdsTopicList(**_swc_topic_data)
+        
+        # Cds
+        self.cds = DidatticaCdsUnitTest.create_didatticaCds(**{
             'cds_id': 1,
             'cds_cod': '1',
             'nome_cds_it': 'Matematica',
             'nome_cds_eng': 'Math',
+            'tipo_corso_cod': 'L'
         })
-
-        # Regulament Article 1 visible
-        a1 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
+        
+        # Articles
+        self.dct_corso = DidatticaCdsTipoCorsoUnitTest.create_didatticaCdsTipoCorso(**{
             'id': 1,
-            'cds_id': 1,
-            'aa_regdid_id': 2023,
-            'numero': 11,
-            'titolo_articolo_it': 'Prova',
-            'testo_it': 'Contenuto',
-            'titolo_articolo_en': 'Test',
-            'testo_en': 'Content',
+            'tipo_corso_cod': 'L',
+            'tipo_corso_des': 'Laurea',
+            'id_user_mod': self.user
+        })
+        
+        self.dar_titolo = DidatticaArticoliRegolamentoTitoloUnitTest.create_didatticaArticoliRegolamentoTitolo(**{
+            'id': 1,
+            'descr_titolo_it': 'TITOLO I',
+            'ordine': 10,
+            'id_user_mod': self.user
+        })
+        
+        _dar_struttura_data = {
+            'id': 1,
+            'aa': self.current_year,
+            'numero': 1,
+            'titolo_it': "Test Titolo Articolo 1",
+            'titolo_en': "Test Title Article 1",
+            'ordine': 10,
             'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-
-        })
-
-        # Regulament Article 2 NOT visible
-        a2 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
-            'id': 2,
-            'cds_id': 1,
-            'aa_regdid_id': 2023,
-            'numero': 11,
-            'titolo_articolo_it': 'Prova',
-            'testo_it': 'Contenuto',
-            'titolo_articolo_en': 'Test',
-            'testo_en': 'Content',
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        # Portal Object 1 visible
-        o1 = SitoWebCdsOggettiPortaleUnitTest.create_sitoWebCdsOggettiPortale(**{
+            'id_didattica_cds_tipo_corso': self.dct_corso,
+            'id_didattica_articoli_regolamento_titolo': self.dar_titolo,
+            'dt_mod': self.current_datetime,
+            'id_user_mod': self.user,
+        }
+        
+        self.dar_struttura_1 = DidatticaArticoliRegolamentoStrutturaUnitTest\
+            .create_didatticaArticoliRegolamentoStruttura(**_dar_struttura_data)
+            
+        _dar_struttura_data['id'] += 1
+        _dar_struttura_data['numero'] += 1
+        _dar_struttura_data['ordine'] += 10
+        self.dar_struttura_2 = DidatticaArticoliRegolamentoStrutturaUnitTest\
+            .create_didatticaArticoliRegolamentoStruttura(**_dar_struttura_data)
+        
+        _dar_struttura_data['id'] += 1
+        _dar_struttura_data['numero'] += 1
+        _dar_struttura_data['ordine'] += 10
+        self.dar_struttura_3 = DidatticaArticoliRegolamentoStrutturaUnitTest\
+            .create_didatticaArticoliRegolamentoStruttura(**_dar_struttura_data)
+        
+        self.dcar_testata = DidatticaCdsArticoliRegolamentoTestataUnitTest.create_didatticaCdsArticoliRegolamentoTestata(**{
             'id': 1,
-            'cds_id': 1,
-            'aa_regdid_id': 2023,
+            'cds_id': self.cds.cds_id,
+            'aa': self.current_year,
+            'note': '',
+            'visibile': 1,
+            'dt_mod': self.current_datetime,
+            'id_user_mod': self.user,
+        })
+        
+        _dca_regolamento_data = {
+            'id': 1,
+            'id_didattica_cds_articoli_regolamento_testata': self.dcar_testata,
+            'id_didattica_articoli_regolamento_struttura': self.dar_struttura_1,
+            'testo_it': 'Testo articolo IT',
+            'testo_en': 'Testo articolo EN',
+            'visibile': 1,
+            'dt_mod': self.current_datetime,
+            'id_user_mod': self.user,
+        }
+                
+        self.dca_regolamento_1 = DidatticaCdsArticoliRegolamentoUnitTest\
+                                                .create_didatticaCdsArticoliRegolamento(**_dca_regolamento_data)
+        
+        _dca_regolamento_data['id'] += 1
+        _dca_regolamento_data['id_didattica_articoli_regolamento_struttura'] = self.dar_struttura_2
+        self.dca_regolamento_2 = DidatticaCdsArticoliRegolamentoUnitTest\
+                                                .create_didatticaCdsArticoliRegolamento(**_dca_regolamento_data)                          
+        
+        _dca_regolamento_data['id'] += 1
+        _dca_regolamento_data['id_didattica_articoli_regolamento_struttura'] = self.dar_struttura_3
+        self.dca_regolamento_3 = DidatticaCdsArticoliRegolamentoUnitTest\
+                                                .create_didatticaCdsArticoliRegolamento(**_dca_regolamento_data)
+        
+        _dca_regolamento_list = [self.dca_regolamento_1, self.dca_regolamento_2, self.dca_regolamento_3]
+        
+        # Sub articles                             
+        _dcsa_regolamento_data = {
+            'id': 1,
+            'id_didattica_cds_articoli_regolamento': self.dca_regolamento_1,
+            'titolo_it': 'Titolo sub articolo',
+            'titolo_en': 'Title sub article',
+            'testo_it': 'Testo sub articolo IT',
+            'testo_en': 'Testo sub articolo EN',
+            'ordine': 10,
+            'visibile': 1,
+            'dt_mod': self.current_datetime,
+            'id_user_mod': self.user
+        }                
+             
+        self.dcsa_regolamento_visbile_1 = DidatticaCdsSubArticoliRegolamentoUnitTest\
+                                            .create_didatticaCdsSubArticoliRegolamento(**_dcsa_regolamento_data)
+
+        _dcsa_regolamento_data['id'] += 1
+        self.dcsa_regolamento_visbile_2 = DidatticaCdsSubArticoliRegolamentoUnitTest\
+                                            .create_didatticaCdsSubArticoliRegolamento(**_dcsa_regolamento_data)
+        
+        _dcsa_regolamento_data['id'] += 1
+        _dcsa_regolamento_data['id_didattica_cds_articoli_regolamento'] = self.dca_regolamento_3
+        self.dcsa_regolamento_visbile_3 = DidatticaCdsSubArticoliRegolamentoUnitTest\
+                                            .create_didatticaCdsSubArticoliRegolamento(**_dcsa_regolamento_data)
+        
+        _dcsa_regolamento_list = [self.dcsa_regolamento_visbile_1, self.dcsa_regolamento_visbile_2, self.dcsa_regolamento_visbile_3]
+        
+        # CMS objects
+        _swco_portale_data =  {
+            'id': 1,
+            'cds_id': self.cds.cds_id,
+            'aa_regdid_id': self.current_year,
             'id_oggetto_portale': 1,
-            'id_classe_oggetto_portale': 1,
-            'testo_it': 'prova',
-            'testo_en': 'test',
+            'id_classe_oggetto_portale': 'WebPath',
+            'testo_it': 'TESTO IT',
+            'testo_en': 'TESTO EN',
+            'titolo_it': 'TITOLO IT',
+            'titolo_en': 'TITOLO EN',
             'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-
-        # Item art_reg 1 visible - linked to a1
-        item1 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+            'dt_mod': self.current_datetime,
+            'id_user_mod': self.user
+        }
+        
+        self.swco_portale_visibile_1 = SitoWebCdsOggettiPortaleUnitTest\
+            .create_sitoWebCdsOggettiPortale(**_swco_portale_data)
+            
+        _swco_portale_data['id'] += 1
+        self.swco_portale_visibile_2 = SitoWebCdsOggettiPortaleUnitTest\
+            .create_sitoWebCdsOggettiPortale(**_swco_portale_data)
+            
+        _swco_portale_data['id'] += 1
+        _swco_portale_data['visibile'] = 0
+        self.swco_portale_non_visibile_1 = SitoWebCdsOggettiPortaleUnitTest\
+            .create_sitoWebCdsOggettiPortale(**_swco_portale_data)
+            
+        _swco_portale_list = [self.swco_portale_visibile_1, self.swco_portale_visibile_2, self.swco_portale_non_visibile_1]
+        
+        # Struttura topic
+        _swars_topic_data = {
             'id': 1,
-            'titolo_it': 'Item1',
-            'id_sito_web_cds_topic': topic,
-            'id_sito_web_cds_articoli_regolamento': a1,
-            'ordine': 0,
+            'id_sito_web_cds_topic': self.swc_topic_1,
+            'id_did_art_regolamento_struttura': self.dar_struttura_1,
+            'titolo_it': self.dar_struttura_1.titolo_it,
+            'titolo_en': self.dar_struttura_1.titolo_en,
+            'ordine': self.dar_struttura_1.ordine,
             'visibile': 1,
-            'dt_mod': datetime.datetime.today()
-        })
+            'dt_mod': self.current_datetime,
+            'id_user_mod': self.user,
+        }
+        
+        _swars_topic_list = []
+        for _ in range(3):
+            _swars_topic_list.append(SitoWebArticoliRegolamentoStrutturaTopicUnitTest
+                                        .create_sitoWebArticoliRegolamentoStrutturaTopic(**_swars_topic_data))
+            _swars_topic_data['id'] += 1
+            
+        self._swcta_reg_list = []
+        
+        # SitoWebCdsArticoliReg for Articles
+        for idx, swars_topic in enumerate(_swars_topic_list, 0):
+            _dca_regolamento = _dca_regolamento_list[idx]
+            self._swcta_reg_list.append(SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+                'id': idx + 1,
+                'titolo_it': swars_topic.titolo_it,
+                'titolo_en': swars_topic.titolo_en,
+                'testo_it': _dca_regolamento.testo_it,
+                'testo_en': _dca_regolamento.testo_en,
+                'id_sito_web_cds_topic': swars_topic.id_sito_web_cds_topic,
+                'id_sito_web_cds_oggetti_portale': None,
+                'id_didattica_cds_articoli_regolamento': _dca_regolamento,
+                'ordine': swars_topic.ordine,
+                'visibile': 1 if idx < 2 else 0,
+                'dt_mod': self.current_datetime,
+                'id_user_mod': self.user 
+            }))
+            
+        # SitoWebCdsSubArticoliRegolamento
+        for idx, _ in enumerate(_dcsa_regolamento_list, 0):
+            _swcta_reg = self._swcta_reg_list[0 if idx < 2 else idx]
+            SitoWebCdsSubArticoliRegolamentoUnitTest.create_sitoWebCdsSubArticoliRegolamento(**{
+                'id': idx + 1,
+                'id_sito_web_cds_topic_articoli_reg': _swcta_reg,
+                'titolo_it': 'TITOLO SUB IT',
+                'titolo_en': 'TITOLO SUB EN',
+                'testo_it': 'TESTO SUB IT',
+                'testo_en': 'TESTO SUB EN',
+                'ordine': (idx + 1) * 10,
+                'visibile': 1 if idx != 1 else 0,
+                'dt_mod': self.current_datetime,
+                'id_user_mod': self.user,
+            })
+        
+        # SitoWebCdsArticoliReg for Objects
+        for idx, swars_topic in enumerate(_swars_topic_list, 0):
+            _swco_portale = _swco_portale_list[0 if idx < 2 else idx]
+            self._swcta_reg_list.append(SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
+                'id': idx + 4,
+                'titolo_it': swars_topic.titolo_it,
+                'titolo_en': swars_topic.titolo_en,
+                'testo_it': _swco_portale.testo_it,
+                'testo_en': _swco_portale.testo_en,
+                'id_sito_web_cds_topic': swars_topic.id_sito_web_cds_topic,
+                'id_sito_web_cds_oggetti_portale': _swco_portale,
+                'id_didattica_cds_articoli_regolamento': None,
+                'ordine': swars_topic.ordine,
+                'visibile': 1,
+                'dt_mod': self.current_datetime,
+                'id_user_mod': self.user 
+            }))
+        
+        # SitoWebCdsTopicArticoliRegAltriDati
+        self.swct_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
+        
+        for idx, swcta_reg in enumerate(self._swcta_reg_list, 0):
+            if swcta_reg.pk not in [1, 3, 4]: continue
+            SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
+                'id': idx + 1,
+                'id_sito_web_cds_topic_articoli_reg': swcta_reg,
+                'ordine': 1,
+                'id_sito_web_cds_tipo_dato': self.swct_dato,
+                'titolo_en': 'TITOLO ALTRO DATO IT',
+                'titolo_it': 'TITOLO ALTRO DATO EN',
+                'testo_it': 'TESTO ALTRO DATO IT',
+                'testo_en': 'TESTO ALTRO DATO EN',
+                'link': '',
+                'visibile': 1,
+                'dt_mod': self.current_datetime,
+                'id_user_mod': self.user,
+            })    
+        
+        self.num_swcta_reg = len(self._swcta_reg_list)
+        self.num_swcta_reg_visibili = self.num_swcta_reg - 1
 
-        # Item art_reg 2 visible - linked to a2
-        item2 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
-            'id': 2,
-            'titolo_it': 'Item2',
-            'id_sito_web_cds_topic': topic,
-            'id_sito_web_cds_articoli_regolamento': a2,
-            'ordine': 0,
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today()
-        })
-
-        # Item art_reg 3 visible - linked to o1
-        item3 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
-            'id': 3,
-            'titolo_it': 'Item3',
-            'id_sito_web_cds_topic': topic,
-            'id_sito_web_cds_oggetti_portale': o1,
-            'ordine': 0,
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today()
-        })
-
-        # Item art_reg 5 NOT visible - linked to a1
-        item5 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
-            'id': 5,
-            'titolo_it': 'Item5',
-            'id_sito_web_cds_topic': topic2,
-            'id_sito_web_cds_articoli_regolamento': a1,
-            'ordine': 0,
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today()
-        })
-
-        # art_reg_altri_dati visible - linked to item1
-        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
-            'id': 1,
-            'id_sito_web_cds_topic_articoli_reg': item1,
-            'titolo_it': 'prova',
-            'titolo_en': 'test',
-            'testo_it': 'prova',
-            'testo_en': 'test',
-            'id_sito_web_cds_tipo_dato': tipo_dato,
-            'ordine': 1,
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        # art_reg_altri_dati NOT visible - linked to item1
-        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
-            'id': 2,
-            'id_sito_web_cds_topic_articoli_reg': item1,
-            'titolo_it': 'prova',
-            'titolo_en': 'test',
-            'testo_it': 'prova',
-            'testo_en': 'test',
-            'id_sito_web_cds_tipo_dato': tipo_dato,
-            'ordine': 1,
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        # art_reg_altri_dati visible - linked to item5
-        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
-            'id': 3,
-            'id_sito_web_cds_topic_articoli_reg': item5,
-            'titolo_it': 'prova',
-            'titolo_en': 'test',
-            'testo_it': 'prova',
-            'testo_en': 'test',
-            'id_sito_web_cds_tipo_dato': tipo_dato,
-            'ordine': 1,
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
+    def test_apisitiwebcdstopicarticles(self):        
         url = reverse('ricerca:cdswebsitestopicarticleslist')
 
-        # check url
+        # Call without parameters
         res = self.client.get(url)
-
         assert res.status_code == 200
-
-        # GET
-
-        res = self.client.get(url)
         assert len(res.json()['results']) == 0
 
+        # Call with parameters
         data = {'cds_cod': '1', 'topic_id': 1}
         res = self.client.get(url, data=data)
-
-        # 3 visible, 1 not visible
-        assert len(res.json()['results']) == 3
-        r_items = res.json()['results']
-        r_item1, r_item2 = None, None
-
-        for r_item in r_items:
-            if r_item["ID"] == 1:
-                r_item1 = r_item
-            elif r_item["ID"] == 2:
-                r_item2 = r_item
-
-        assert(r_item1 is not None)
-        assert(len(r_item1["OtherData"]) == 1)
-        assert(r_item1["CdsArticle"] is not None)
-
-        assert(r_item2 is not None)
-        assert(len(r_item2["OtherData"]) == 0)
-        assert(r_item2["CdsArticle"] is None)
-
-    def test_apisitiwebcdstopicarticleswithpermissions(self):
-
-        self.client.login(username=self.uname, password=self.passw)
-
-        tipo_dato = SitoWebCdsTipoDato.objects.create(descr_breve='TICKET')
-
-        topic = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
-            'id': 1,
-            'descr_topic_it': 'prova',
-            'descr_topic_en': 'test',
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        topic2 = SitoWebCdsTopicListUnitTest.create_sitoWebCdsTopicList(**{
-            'id': 2,
-            'descr_topic_it': 'prova',
-            'descr_topic_en': 'test',
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        cds = DidatticaCdsUnitTest.create_didatticaCds(**{
-            'cds_id': 1,
-            'cds_cod': '1',
-            'nome_cds_it': 'Matematica',
-            'nome_cds_eng': 'Math',
-        })
-
-        # Regulament Article 1 visible
-        a1 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
-            'id': 1,
-            'cds_id': 1,
-            'aa_regdid_id': 2023,
-            'numero': 11,
-            'titolo_articolo_it': 'Prova',
-            'testo_it': 'Contenuto',
-            'titolo_articolo_en': 'Test',
-            'testo_en': 'Content',
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-
-        })
-
-        # Regulament Article 2 NOT visible
-        a2 = SitoWebCdsArticoliRegolamentoUnitTest.create_sitoWebCdsArticoliRegolamento(**{
-            'id': 2,
-            'cds_id': 1,
-            'aa_regdid_id': 2023,
-            'numero': 11,
-            'titolo_articolo_it': 'Prova',
-            'testo_it': 'Contenuto',
-            'titolo_articolo_en': 'Test',
-            'testo_en': 'Content',
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        # Portal Object 1 visible
-        o1 = SitoWebCdsOggettiPortaleUnitTest.create_sitoWebCdsOggettiPortale(**{
-            'id': 1,
-            'cds_id': 1,
-            'aa_regdid_id': 2023,
-            'id_oggetto_portale': 1,
-            'id_classe_oggetto_portale': 1,
-            'testo_it': 'prova',
-            'testo_en': 'test',
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-
-        # Item art_reg 1 visible - linked to a1
-        item1 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
-            'id': 1,
-            'titolo_it': 'Item1',
-            'id_sito_web_cds_topic': topic,
-            'id_sito_web_cds_articoli_regolamento': a1,
-            'ordine': 0,
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today()
-        })
-
-        # Item art_reg 2 visible - linked to a2
-        item2 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
-            'id': 2,
-            'titolo_it': 'Item2',
-            'id_sito_web_cds_topic': topic,
-            'id_sito_web_cds_articoli_regolamento': a2,
-            'ordine': 0,
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today()
-        })
-
-        # Item art_reg 3 visible - linked to o1
-        item3 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
-            'id': 3,
-            'titolo_it': 'Item3',
-            'id_sito_web_cds_topic': topic,
-            'id_sito_web_cds_oggetti_portale': o1,
-            'ordine': 0,
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today()
-        })
-
-        # Item art_reg 5 NOT visible - linked to a1
-        item5 = SitoWebCdsTopicArticoliRegUnitTest.create_sitoWebCdsTopicArticoliReg(**{
-            'id': 5,
-            'titolo_it': 'Item5',
-            'id_sito_web_cds_topic': topic2,
-            'id_sito_web_cds_articoli_regolamento': a1,
-            'ordine': 0,
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today()
-        })
-
-        # art_reg_altri_dati visible - linked to item1
-        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
-            'id': 1,
-            'id_sito_web_cds_topic_articoli_reg': item1,
-            'titolo_it': 'prova',
-            'titolo_en': 'test',
-            'testo_it': 'prova',
-            'testo_en': 'test',
-            'id_sito_web_cds_tipo_dato': tipo_dato,
-            'ordine': 1,
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        # art_reg_altri_dati NOT visible - linked to item1
-        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
-            'id': 2,
-            'id_sito_web_cds_topic_articoli_reg': item1,
-            'titolo_it': 'prova',
-            'titolo_en': 'test',
-            'testo_it': 'prova',
-            'testo_en': 'test',
-            'id_sito_web_cds_tipo_dato': tipo_dato,
-            'ordine': 1,
-            'visibile': 0,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        # art_reg_altri_dati visible - linked to item5
-        SitoWebCdsTopicArticoliRegAltriDatiUnitTest.create_sitoWebCdsTopicArticoliRegAltriDati(**{
-            'id': 3,
-            'id_sito_web_cds_topic_articoli_reg': item5,
-            'titolo_it': 'prova',
-            'titolo_en': 'test',
-            'testo_it': 'prova',
-            'testo_en': 'test',
-            'id_sito_web_cds_tipo_dato': tipo_dato,
-            'ordine': 1,
-            'visibile': 1,
-            'dt_mod': datetime.datetime.today(),
-        })
-
-        url = reverse('ricerca:cdswebsitestopicarticleslist')
-
-
-        # check url
-        res = self.client.get(url)
-
+        
         assert res.status_code == 200
-
-        # GET
-
-        res = self.client.get(url)
-        assert len(res.json()['results']) == 0
-
-        data = {'cds_cod': '1', 'topic_id': "1,2"}
-
-
-        res = self.client.get(url, data=data, HTTP_AUTHORIZATION= f'Token {self.token.key}')
-
-        assert len(res.json()['results']) == 4
-
-
+                
+        # Number of returned items
+        assert len(res.json()['results']) == self.num_swcta_reg_visibili
+        
+        for result in res.json()['results']:
+            if result['ID'] == 1:
+                assert len(result['SubArticles']) == 1
+            else:
+                assert len(result['SubArticles']) == 0
+            
+            if result['ID'] >= 4:
+                assert result['Type'] == 'Object'
+            
+            if result['ID'] in [1, 3, 4]:
+                assert result['OtherData']
+            else:
+                assert not result['OtherData']
+            
+            assert result['Visible']
 
 
 class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):

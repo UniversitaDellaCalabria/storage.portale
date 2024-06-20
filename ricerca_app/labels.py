@@ -564,7 +564,10 @@ LABEL_MAPPING = {
         'Required': 'Required',
         'Choices': 'Choices',
         'FilAnd': 'FilAnd',
-        'NotFlg': 'Not Flag'
+        'NotFlg': 'Not Flag',
+        'Type': 'Type',
+        'Content': 'Content',
+        'SubArticles': 'SubArticles',
     },
     'it': {
         'RegDidId': 'ID Regolamento Didattico',
@@ -1131,6 +1134,9 @@ LABEL_MAPPING = {
         'Required': 'Required',
         'Choices': 'Choices',
         'FilAnd': 'FilAnd',
-        'NotFlg': 'Not Flag'
+        'NotFlg': 'Not Flag',
+        'Type': 'Tipo',
+        'Content': 'Contenuto',
+        'SubArticles': 'Sotto Articoli',
     }
 }
