@@ -852,7 +852,7 @@ def regdid_articles_pdf(request, regdid_id):
 
 # PDF import
 @login_required
-def regdid_articles_import_pdf(request, regdid_id, **kwargs):
+def regdid_articles_import_pdf(request, regdid_id):
     regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
     testata = DidatticaCdsArticoliRegolamentoTestata.objects.filter(cds_id=regdid.cds, aa=regdid.aa_reg_did).first()
     testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata).order_by("-data_status").first()
@@ -945,3 +945,87 @@ def regdid_articles_import_pdf(request, regdid_id, **kwargs):
                       'item_label': regdid.cds.nome_cds_it.title(),
                       'show_goto_regdid_button': testata is not None,
                   })
+    
+    
+# Publish
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def regdid_articles_publish(request, regdid_id):
+    regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
+    testata = get_object_or_404(DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did)
+    testata_status = DidatticaCdsTestataStatus.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata.pk).order_by("-data_status").first()
+
+    # permissions    
+    user_permissions_and_offices = testata.get_user_permissions_and_offices(request.user)
+    if not user_permissions_and_offices['permissions']['access'] or not user_permissions_and_offices['permissions']['edit'] or not testata_status.id_didattica_articoli_regolamento_status.status_cod == '3':
+        return custom_message(request, _("Permission denied"))
+    
+    # Regulation Articles
+    articoli = DidatticaCdsArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento_testata=testata)
+    
+    # Old SitoWebCdsTopicArticoliReg/SitoWebCdsSubArticoliRegolamento records
+    old_swcta_reg = SitoWebCdsTopicArticoliReg.objects.filter(id_didattica_cds_articoli_regolamento__in=articoli)
+    
+    # SitoWebCdsTopicArticoliReg/SitoWebCdsSubArticoliRegolamento to be published
+    strutture_topic = (SitoWebArticoliRegolamentoStrutturaTopic.objects
+                       .select_related('id_sito_web_cds_topic', 'id_did_art_regolamento_struttura'))
+        
+    articles_to_publish = (DidatticaCdsArticoliRegolamento.objects
+                           .select_related('id_didattica_articoli_regolamento_struttura', 'id_didattica_cds_articoli_regolamento_testata')
+                           .filter(id_didattica_articoli_regolamento_struttura__in=strutture_topic.values_list('id_did_art_regolamento_struttura', flat=True),
+                                   id_didattica_cds_articoli_regolamento_testata=testata,
+                                   visibile=True)
+                           .order_by('id_didattica_articoli_regolamento_struttura__numero'))
+    
+    try:                   
+        # Delete
+        old_swcta_reg.delete()
+        
+        # (Re)Create
+        ordine_articolo = 0
+        for articolo in articles_to_publish:
+            ordine_articolo += 10
+            _strutture_topic = strutture_topic.filter(id_did_art_regolamento_struttura=articolo.id_didattica_articoli_regolamento_struttura)
+            for struttura_topic in _strutture_topic:
+                swctar = SitoWebCdsTopicArticoliReg.objects.create(
+                    titolo_it = struttura_topic.titolo_it,
+                    titolo_en = struttura_topic.titolo_en,
+                    testo_it = articolo.testo_it,
+                    testo_en = articolo.testo_en,
+                    id_sito_web_cds_topic = struttura_topic.id_sito_web_cds_topic,
+                    id_sito_web_cds_oggetti_portale = None,
+                    id_didattica_cds_articoli_regolamento = articolo,
+                    ordine = struttura_topic.ordine,
+                    visibile = True,
+                    dt_mod = datetime.datetime.now(),
+                    id_user_mod = request.user
+                )
+                
+                sotto_articoli = DidatticaCdsSubArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento=articolo)
+                ordine_sotto_articolo = 0
+                for sotto_articolo in sotto_articoli:
+                    ordine_sotto_articolo += 10
+                    SitoWebCdsSubArticoliRegolamento.objects.create(
+                        id_sito_web_cds_topic_articoli_reg = swctar,
+                        titolo_it = sotto_articolo.titolo_it,
+                        titolo_en = sotto_articolo.titolo_en,
+                        testo_it = sotto_articolo.testo_it,
+                        testo_en = sotto_articolo.testo_en,
+                        ordine = ordine_sotto_articolo,
+                        visibile = True,
+                        dt_mod = datetime.datetime.now(),
+                        id_user_mod = request.user 
+                    )   
+    
+        messages.add_message(request, messages.SUCCESS, _("Didactic regulation published successfully"))
+            
+        log_action(user=request.user,
+                obj=testata,
+                flag=CHANGE,
+                msg=_("Published didactic regulation"))
+    
+    except Exception as e:
+        messages.add_message(request, messages.ERROR, _("Didactic regulation publishing failed"))
+    
+    return redirect('crud_regdid:crud_regdid_articles', regdid_id=regdid_id)
+        

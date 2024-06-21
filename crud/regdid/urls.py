@@ -13,6 +13,8 @@ urlpatterns += path('regdid/<str:regdid_id>/status-change/<str:status_cod>/', re
 # Regdid PDF
 urlpatterns += path('regdid/<str:regdid_id>/articles/pdf', regdid_articles_pdf, name='crud_regdid_articles_pdf'),
 urlpatterns += path('regdid/<str:regdid_id>/articles/pdf-import', regdid_articles_import_pdf, name='crud_regdid_articles_import_pdf'),
+# Regdid publication
+urlpatterns += path('regdid/<str:regdid_id>/articles/publish', regdid_articles_publish, name='crud_regdid_articles_publish'),
 
 # Regdid Articles
 urlpatterns += path('regdid/<str:regdid_id>/articles/', regdid_articles, name='crud_regdid_articles'),
