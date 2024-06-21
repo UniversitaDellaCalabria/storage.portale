@@ -126,8 +126,9 @@ def append_email_addresses(addressbook_queryset, id_ab_key):
     cached_contacts = cache.get(cache_key, [])
     for q in addressbook_queryset:
         emails = []
-        for contact in cached_contacts:
-            if contact['contatto'].lower() in PERSON_CONTACTS_EXCLUDE_STRINGS:
+        uc = cached_contacts.filter(id_ab=q['id_ab'])
+        for contact in uc:
+            if any(x in contact['contatto'].lower() for x in PERSON_CONTACTS_EXCLUDE_STRINGS):
                 continue
             if contact['contatto'] in emails:
                 continue

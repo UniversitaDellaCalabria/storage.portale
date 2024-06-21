@@ -23,7 +23,8 @@ def can_manage_teacher(user, teacher_code):
 
     # se l'utente è il docente stesso
     my_profile = Personale.objects.filter(cod_fis=user.taxpayer_id).first()
-    my_teacher_profile = ServiceDocente.getDocenteInfo(my_profile.matricola)
+    my_teacher_profile = ServiceDocente.getDocenteInfo(teacher=my_profile.matricola,
+                                                       use_this_id=True)
 
     if my_profile and teacher and my_teacher_profile[0]['matricola'] == teacher.matricola:
         return True
