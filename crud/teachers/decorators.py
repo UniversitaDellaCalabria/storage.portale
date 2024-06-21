@@ -35,7 +35,8 @@ def can_manage_teachers(func_to_decorate):
         try:
             my_profile = get_object_or_404(Personale,
                                            cod_fis=request.user.taxpayer_id)
-            my_teacher_profile = ServiceDocente.getDocenteInfo(my_profile.matricola)
+            my_teacher_profile = ServiceDocente.getDocenteInfo(teacher=my_profile.matricola,
+                                                               use_this_id=True)
             original_kwargs['my_teacher_profile'] = my_teacher_profile
             return func_to_decorate(*original_args, **original_kwargs)
         except:

@@ -2744,8 +2744,9 @@ class ServiceDocente:
         ).order_by('-aa_off_id')
 
     @staticmethod
-    def getDocenteInfo(teacher):
-        teacher = get_personale_matricola(teacher)
+    def getDocenteInfo(teacher, use_this_id=False):
+        if not use_this_id:
+            teacher = get_personale_matricola(teacher)
 
         query = Personale.objects\
                          .filter(Q(fl_docente=1) |
