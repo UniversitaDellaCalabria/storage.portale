@@ -36,7 +36,7 @@ class PentahoIsodid(APIView): # pragma: no cover
         # check year
         year = request.query_params.get('year')
         if not year:
-            year = 2023
+            year = settings.CURRENT_YEAR
         else:
             if not year.isnumeric():
                 return Response("Wrong year", status=status.HTTP_400_BAD_REQUEST)
