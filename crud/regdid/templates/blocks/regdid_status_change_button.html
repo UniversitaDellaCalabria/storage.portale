@@ -1,69 +1,44 @@
+{% extends "blocks/regdid_top_button.html" %}
 {% load i18n %}
 {% load static %}
 {% load crud_templatetags %}
 
-{% random_id as sc_id %}
-
 {% with button_text=button_text|default:"" button_type=button_type|default:"success" button_icon=button_icon|default:"#it-upload" message=message|default:"" approve_or_reopen=approve_or_reopen|default:None regdid_id=regdid_id target_status_cod=target_status_cod %}
 
-<!-- Status change modal -->
-<div class="modal fade"
-    tabindex="-1"
-    role="dialog"
-    id="{{sc_id}}">
-    <div class="modal-dialog modal-dialog-centered {% if approve_or_reopen %}modal-lg{% endif %}"
-         role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {% trans "Confirm" %}
-                </h5>
-                <button class="close"
-                    type="button"
-                    data-dismiss="modal"
-                    aria-label="Close">
-                    <svg class="icon">
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                    </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                {% if approve_or_reopen %}<div class="h6">{% else %}<p>{% endif %}
-                    {{message}}
-                {% if approve_or_reopen %}</div>{% else %}</p>{% endif %}
-                {% if approve_or_reopen %}
-                <div class="mt-2">
-                    <form method="post" enctype="multipart/form-data" action="{% url 'crud_regdid:crud_regdid_status_change' regdid_id=regdid.pk status_cod=target_status_cod %}">
-                        {% include "form_template.html" with form=didatticacdstestatastatusform %}
-                        <input class="btn btn-success btn-block"
-                            type="submit"
-                            id="{{sc_id}}_submitForm"
-                            value="{% trans 'Yes, proceed' %}">
-                        </input>
-                    </form>
-                </div>
-                {% endif %}
-            </div>
-            <div class="modal-footer">
-                {% if not approve_or_reopen %}
-                <a class="btn btn-success btn-sm" href="{% url 'crud_regdid:crud_regdid_status_change' regdid_id=regdid.pk status_cod=target_status_cod %}">
-                    {% trans 'Yes, proceed' %}
-                </a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /Status change modal -->
+{% block modal_extra_class %}
+{% if approve_or_reopen %}
+    modal-lg
+{% endif %}
+{% endblock modal_extra_class %}
 
-<a  href="javascript:void(0)"
-    data-toggle="modal"
-    data-target="#{{sc_id}}"
-    class="btn btn-{{button_type}} btn-xs align-self-center mb-2 ml-2">
-    <svg class="icon icon-xs icon-white">
-        <use xlink:href="{% static 'svg/sprite.svg' %}{{button_icon}}"></use>
-    </svg>
-    {{button_text}}
-</a>
+{% block modal_title %}
+    {% trans "Confirm" %}
+{% endblock modal_title %}
+
+{% block modal_body %}
+    {% if approve_or_reopen %}<div class="h6">{% else %}<p>{% endif %}
+        {{message}}
+    {% if approve_or_reopen %}</div>{% else %}</p>{% endif %}
+    {% if approve_or_reopen %}
+    <div class="mt-2">
+        <form method="post" enctype="multipart/form-data" action="{% url 'crud_regdid:crud_regdid_status_change' regdid_id=regdid.pk status_cod=target_status_cod %}">
+            {% include "form_template.html" with form=didatticacdstestatastatusform %}
+            <input class="btn btn-success btn-block"
+                type="submit"
+                id="{{id}}_submitForm"
+                value="{% trans 'Yes, proceed' %}">
+            </input>
+        </form>
+    </div>
+    {% endif %}
+{% endblock modal_body %}
+
+{% block modal_footer %}
+    {% if not approve_or_reopen %}
+    <a class="btn btn-success btn-sm" href="{% url 'crud_regdid:crud_regdid_status_change' regdid_id=regdid.pk status_cod=target_status_cod %}">
+        {% trans 'Yes, proceed' %}
+    </a>
+    {% endif %}
+{% endblock modal_footer %}
 
 {% endwith %}

@@ -90,7 +90,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 db_column="ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO",
                 null=True,
-                on_delete=django.db.models.deletion.DO_NOTHING,
+                on_delete=django.db.models.deletion.CASCADE,
                 to="ricerca_app.didatticacdsarticoliregolamento",
             ),
         ),
@@ -116,8 +116,17 @@ class Migration(migrations.Migration):
                 blank=True,
                 db_column="ID_SITO_WEB_CDS_OGGETTI_PORTALE",
                 null=True,
-                on_delete=django.db.models.deletion.DO_NOTHING,
+                on_delete=django.db.models.deletion.CASCADE,
                 to="ricerca_app.sitowebcdsoggettiportale",
+            ),
+        ),
+        migrations.AlterField(
+            model_name="sitowebcdstopicarticolireg",
+            name="id_sito_web_cds_topic",
+            field=models.ForeignKey(
+                db_column="ID_SITO_WEB_CDS_TOPIC",
+                on_delete=django.db.models.deletion.PROTECT,
+                to="ricerca_app.sitowebcdstopic",
             ),
         ),
         migrations.AlterField(

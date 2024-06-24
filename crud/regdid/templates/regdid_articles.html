@@ -84,17 +84,17 @@
             {% trans "Send to department" as b_text %}
             {% trans "Are you sure you want to send this regdid back to the department?" as b_message %}
             {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='danger' button_icon='#it-ban' message=b_message regdid_id=regdid.pk target_status_cod='0' %}
-                {% if office_approval_name in user_permissions_and_offices.offices or request.user.is_superuser %}
-                    <!-- Approve -->
-                    {% trans "Approve" as b_text %}
-                    {% trans "Are you sure you want to approve this regdid?" as b_message %}
-                    {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-check-circle' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='3' %}
-                {% else %}
-                    <!-- Send for approval -->
-                    {% trans "Send for approval" as b_text %}
-                    {% trans "Are you sure you want to send this regdid for approval?" as b_message %}
-                    {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-upload' message=b_message regdid_id=regdid.pk target_status_cod='2' %}
-                {% endif %}
+            {% if office_approval_name in user_permissions_and_offices.offices or request.user.is_superuser %}
+                <!-- Approve -->
+                {% trans "Approve" as b_text %}
+                {% trans "Are you sure you want to approve this regdid?" as b_message %}
+                {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-check-circle' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='3' %}
+            {% else %}
+                <!-- Send for approval -->
+                {% trans "Send for approval" as b_text %}
+                {% trans "Are you sure you want to send this regdid for approval?" as b_message %}
+                {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-upload' message=b_message regdid_id=regdid.pk target_status_cod='2' %}
+            {% endif %}
         <!-- In attesa di approvazione -->
         {% elif testata_status.id_didattica_articoli_regolamento_status.status_cod == '2' %}
             <!-- Send back to revision -->
@@ -105,11 +105,19 @@
             {% trans "Approve" as b_text %}
             {% trans "Are you sure you want to approve this regdid?" as b_message %}
             {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-check-circle' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='3' %}
+        <!-- Approvato -->
         {% elif testata_status.id_didattica_articoli_regolamento_status.status_cod == '3' %}
             <!-- Send back to revision -->
             {% trans "Send to revision" as b_text %}
             {% trans "This regdid was previously approved, are you sure you want to send it back to revision?" as b_message %}
             {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='danger' button_icon='#it-ban' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='1' %}
+            <!-- Publish -->
+            {% if request.user.is_superuser %}
+                {% trans "Publish" as b_text %}
+                {% trans "This action will update all the articles/sub articles shown on the cds' website" as b_message %}
+                {% url 'crud_regdid:crud_regdid_articles_publish' regdid_id=regdid.pk as c_url %}
+                {% include "blocks/regdid_top_button.html" with button_text=b_text button_type='primary' button_icon='#it-upload' message=b_message confirm_url=c_url %}
+            {% endif %}
         {% endif %}
     {% endif %}
     <!-- /Status Buttons -->

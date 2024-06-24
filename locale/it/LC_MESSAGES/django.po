@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-12 13:25+0200\n"
-"PO-Revision-Date: 2024-06-12 13:26+0200\n"
+"POT-Creation-Date: 2024-06-21 11:57+0200\n"
+"PO-Revision-Date: 2024-06-21 11:58+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -100,12 +100,12 @@ msgstr "Utenti"
 #: crud/regdid/views.py:470 crud/regdid/views.py:497 crud/regdid/views.py:518
 #: crud/regdid/views.py:584 crud/regdid/views.py:591 crud/regdid/views.py:663
 #: crud/regdid/views.py:671 crud/regdid/views.py:697 crud/regdid/views.py:729
-#: crud/regdid/views.py:804 crud/regdid/views.py:864 crud/regdid/views.py:871
-#: crud/research_groups/decorators.py:28 crud/research_groups/decorators.py:62
-#: crud/research_lines/decorators.py:28 crud/research_lines/decorators.py:66
-#: crud/research_lines/decorators.py:100 crud/teachers/decorators.py:42
-#: crud/teachers/decorators.py:76 crud/utils/decorators.py:21
-#: crud/utils/decorators.py:33
+#: crud/regdid/views.py:804 crud/regdid/views.py:865 crud/regdid/views.py:872
+#: crud/regdid/views.py:962 crud/research_groups/decorators.py:28
+#: crud/research_groups/decorators.py:62 crud/research_lines/decorators.py:28
+#: crud/research_lines/decorators.py:66 crud/research_lines/decorators.py:100
+#: crud/teachers/decorators.py:42 crud/teachers/decorators.py:76
+#: crud/utils/decorators.py:21 crud/utils/decorators.py:33
 msgid "Permission denied"
 msgstr "Permesso negato"
 
@@ -157,7 +157,7 @@ msgid "Study manifesto"
 msgstr "Manifesto degli studi"
 
 #: crud/cds/forms.py:75 crud/cds/templates/cds_detail.html:490
-#: crud/regdid/templates/regdid_articles.html:122
+#: crud/regdid/templates/regdid_articles.html:130
 msgid "Didactic regulation"
 msgstr "Regolamento didattico"
 
@@ -353,9 +353,10 @@ msgstr ""
 #: crud/projects/templates/project.html:193
 #: crud/projects/templates/project.html:272
 #: crud/regdid/templates/blocks/regdid_article_item.html:64
-#: crud/regdid/templates/blocks/regdid_status_change_button.html:41
-#: crud/regdid/templates/blocks/regdid_status_change_button.html:50
+#: crud/regdid/templates/blocks/regdid_status_change_button.html:29
+#: crud/regdid/templates/blocks/regdid_status_change_button.html:39
 #: crud/regdid/templates/blocks/regdid_sub_article_item.html:77
+#: crud/regdid/templates/blocks/regdid_top_button.html:42
 #: crud/regdid/templates/regdid_pdf_import_form.html:41
 #: crud/research_groups/templates/researchgroup.html:42
 #: crud/research_groups/templates/researchgroup.html:132
@@ -516,8 +517,9 @@ msgstr "Rimuovi"
 #: crud/projects/templates/project.html:175
 #: crud/projects/templates/project.html:254
 #: crud/regdid/templates/blocks/regdid_article_item.html:46
-#: crud/regdid/templates/blocks/regdid_status_change_button.html:19
+#: crud/regdid/templates/blocks/regdid_status_change_button.html:15
 #: crud/regdid/templates/blocks/regdid_sub_article_item.html:59
+#: crud/regdid/templates/blocks/regdid_top_button.html:20
 #: crud/research_groups/templates/researchgroup.html:24
 #: crud/research_groups/templates/researchgroup.html:114
 #: crud/research_groups/templates/researchgroup_teacher.html:26
@@ -867,7 +869,7 @@ msgstr "Attualmente fa riferimento a quello dell'anno"
 #: crud/projects/views.py:482 crud/projects/views.py:562
 #: crud/regdid/views.py:68 crud/regdid/views.py:132 crud/regdid/views.py:239
 #: crud/regdid/views.py:341 crud/regdid/views.py:433 crud/regdid/views.py:548
-#: crud/regdid/views.py:632 crud/regdid/views.py:935
+#: crud/regdid/views.py:632 crud/regdid/views.py:936
 #: crud/research_groups/views.py:31 crud/research_groups/views.py:78
 #: crud/research_groups/views.py:180 crud/research_groups/views.py:228
 #: crud/research_groups/views.py:286 crud/research_lines/views.py:31
@@ -3314,7 +3316,7 @@ msgstr "Genera PDF"
 
 #: crud/regdid/templates/regdid_articles.html:78
 #: crud/regdid/templates/regdid_articles.html:101
-#: crud/regdid/templates/regdid_articles.html:110
+#: crud/regdid/templates/regdid_articles.html:111
 msgid "Send to revision"
 msgstr "Invia in revisione"
 
@@ -3347,7 +3349,7 @@ msgstr "Vuoi davvero inviare questo regdid per l'approvazione?"
 msgid "Are you sure you want to send this regdid back to revision?"
 msgstr "Vuoi davvero rinviare a revisione questo regdid?"
 
-#: crud/regdid/templates/regdid_articles.html:111
+#: crud/regdid/templates/regdid_articles.html:112
 msgid ""
 "This regdid was previously approved, are you sure you want to send it back "
 "to revision?"
@@ -3355,7 +3357,19 @@ msgstr ""
 "Questo regdid è stato precedentemente approvato, vuoi davvero rinviarlo a "
 "revisione?"
 
-#: crud/regdid/templates/regdid_articles.html:129
+#: crud/regdid/templates/regdid_articles.html:116
+msgid "Publish"
+msgstr "Pubblica"
+
+#: crud/regdid/templates/regdid_articles.html:117
+msgid ""
+"This action will update all the articles/sub articles shown on the cds' "
+"website"
+msgstr ""
+"Questa azione aggiornerà tutti gli articoli/sotto-articoli mostrati sul sito "
+"web del cds"
+
+#: crud/regdid/templates/regdid_articles.html:137
 msgid "Department notes"
 msgstr "Note del dipartimento"
 
@@ -3391,7 +3405,7 @@ msgstr ""
 
 #: crud/regdid/views.py:69 crud/regdid/views.py:133 crud/regdid/views.py:240
 #: crud/regdid/views.py:342 crud/regdid/views.py:434 crud/regdid/views.py:549
-#: crud/regdid/views.py:633 crud/regdid/views.py:936
+#: crud/regdid/views.py:633 crud/regdid/views.py:937
 msgid "Didactic regulations"
 msgstr "Regolamenti didattici"
 
@@ -3493,15 +3507,15 @@ msgstr "Cambiato status del regolamento a"
 msgid "Regdid status updated successfully"
 msgstr "Stato del regolamento modificato con successo"
 
-#: crud/regdid/views.py:866
+#: crud/regdid/views.py:867
 msgid "Regdid status must be"
 msgstr "Lo stato del regolamento deve essere"
 
-#: crud/regdid/views.py:866
+#: crud/regdid/views.py:867
 msgid "to be imported from file"
 msgstr "per poter essere importato da file"
 
-#: crud/regdid/views.py:868
+#: crud/regdid/views.py:869
 msgid ""
 "Regdid was previously edited, the import opertation will overwrite every "
 "article"
@@ -3509,17 +3523,29 @@ msgstr ""
 "Il regolamento è stato precedentemente modificato, l'operazione di "
 "importazione sovrascriverà tutti gli articoli"
 
-#: crud/regdid/views.py:927
+#: crud/regdid/views.py:928
 msgid "Didactic regulation imported from file"
 msgstr "Regolamento didattico importato da file"
 
-#: crud/regdid/views.py:929
+#: crud/regdid/views.py:930
 msgid "Didactic regulation imported successfully"
 msgstr "Regolamento didattico importato con successo"
 
-#: crud/regdid/views.py:932
+#: crud/regdid/views.py:933
 msgid "Didactic regulation import failed"
 msgstr "Importazione del regolamento didattico fallita"
+
+#: crud/regdid/views.py:1021
+msgid "Didactic regulation published successfully"
+msgstr "Regolamento didattico pubblicato con successo"
+
+#: crud/regdid/views.py:1026
+msgid "Published didactic regulation"
+msgstr "Pubblicato il regolamento didattico"
+
+#: crud/regdid/views.py:1029
+msgid "Didactic regulation publishing failed"
+msgstr "Pubblicazione del regolamento didattico fallita"
 
 #: crud/research_groups/forms.py:26
 msgid "ERC1"
@@ -4032,7 +4058,7 @@ msgstr "caratteri"
 msgid "Start date is greater than end date"
 msgstr "La data di inizio è successiva alla data di fine"
 
-#: ricerca_app/api_views.py:1657
+#: ricerca_app/api_views.py:1727
 msgid "Lock successfully set"
 msgstr "Lock acquisito con successo"
 
@@ -4121,6 +4147,9 @@ msgstr "L'immagine ha una proporzione tra altezza e lunghezza non valida"
 #: ricerca_app/validators.py:100
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
+
+#~ msgid "Didactic regulation published"
+#~ msgstr "Regolamenti didattico pubblicato"
 
 #~ msgid "Required Field"
 #~ msgstr "Campo obbligatorio"

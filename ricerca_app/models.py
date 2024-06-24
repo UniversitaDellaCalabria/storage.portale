@@ -4481,9 +4481,9 @@ class SitoWebCdsTopicArticoliReg(VisibileModAbstract):
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     testo_it = models.TextField(db_column='TESTO_IT', blank=True, null=True)  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
-    id_sito_web_cds_topic = models.ForeignKey('SitoWebCdsTopic', models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_TOPIC')  # Field name made lowercase.
-    id_sito_web_cds_oggetti_portale = models.ForeignKey('SitoWebCdsOggettiPortale', models.DO_NOTHING, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', blank=True, null=True)  # Field name made lowercase.
-    id_didattica_cds_articoli_regolamento = models.ForeignKey('DidatticaCdsArticoliRegolamento', models.DO_NOTHING, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO', blank=True, null=True)  # Field name made lowercase.
+    id_sito_web_cds_topic = models.ForeignKey('SitoWebCdsTopic', models.PROTECT, db_column='ID_SITO_WEB_CDS_TOPIC')  # Field name made lowercase.
+    id_sito_web_cds_oggetti_portale = models.ForeignKey('SitoWebCdsOggettiPortale', models.CASCADE, db_column='ID_SITO_WEB_CDS_OGGETTI_PORTALE', blank=True, null=True)  # Field name made lowercase.
+    id_didattica_cds_articoli_regolamento = models.ForeignKey('DidatticaCdsArticoliRegolamento', models.CASCADE, db_column='ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO', blank=True, null=True)  # Field name made lowercase.
     ordine = models.IntegerField(db_column='ORDINE')  # Field name made lowercase.
     dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
