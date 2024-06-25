@@ -119,22 +119,24 @@ def append_email_addresses(addressbook_queryset, id_ab_key):
     personalecontatti_model = apps.get_model('ricerca_app.PersonaleContatti')
     cache_key = f"addressbook_email_list"
     if cache.get(cache_key) == None:
+        cached_contacts = {}
         contacts = personalecontatti_model.objects.filter(cd_tipo_cont__descr_contatto='Posta Elettronica')\
                                                           .order_by('prg_priorita')\
                                                           .values('contatto', 'id_ab')
-        cache.set(cache_key, contacts)
-    cached_contacts = cache.get(cache_key, [])
+        for cc in contacts:
+            if cc['id_ab'] not in cached_contacts:
+                cached_contacts[cc['id_ab']] = []
+            cached_contacts[cc['id_ab']].append(cc['contatto'])
+
+        cache.set(cache_key, cached_contacts)
+    cached_contacts = cache.get(cache_key, {})
+
     for q in addressbook_queryset:
-        emails = []
+        good_emails = []
         if cached_contacts:
-            uc = cached_contacts.filter(id_ab=q[id_ab_key])
-            for contact in uc:
-                if any(x in contact['contatto'].lower() for x in PERSON_CONTACTS_EXCLUDE_STRINGS):
+            emails = cached_contacts.get(q[id_ab_key], [])
+            for email in emails:
+                if any(x in email.lower() for x in PERSON_CONTACTS_EXCLUDE_STRINGS):
                     continue
-                if contact['contatto'] in emails:
-                    continue
-                if contact['id_ab'] == q[id_ab_key]:
-                    emails.append(contact['contatto'])
-            q['email'] = emails
-        else:
-            q['email'] = emails
+                good_emails.append(email)
+        q['email'] = good_emails

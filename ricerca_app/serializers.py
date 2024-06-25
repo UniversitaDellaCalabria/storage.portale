@@ -489,7 +489,7 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query,
                 req_lang='en'):
-        
+
         if query['tipo'] == 'Article':
             content = {
                 'Text': query['testo_it'] if req_lang == 'it' or query['testo_en'] is None else query['testo_en']
@@ -528,7 +528,7 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'ClassObjectId': q['id_classe_oggetto_portale'],
                 'ObjectText': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
             }
-            
+
 
     @staticmethod
     def to_dict_other_data(query, req_lang='en'):
@@ -545,7 +545,7 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'Visible': q['visibile']
             })
         return other_data
-    
+
     @staticmethod
     def to_dict_sub_articles(query, req_lang='en'):
         sub_articles = []
