@@ -492,16 +492,16 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
         
         if query['tipo'] == 'Article':
             content = {
-                'Text': query['testo_it'] if req_lang == 'it' or query['testo_en'] is None else query['testo_en']
+                'Text': query['testo_it'] if req_lang == 'it' or not query['testo_en'] else query['testo_en']
             }
         else:
             content = CdsWebsitesTopicArticlesSerializer.to_dict_objects(query.get('oggetto', None), req_lang)
 
         return {
             'ID': query['id'],
-            'Title': query['titolo_it'] if req_lang=='it' or query['titolo_en'] is None else query['titolo_en'],
+            'Title': query['titolo_it'] if req_lang=='it' or not query['titolo_en'] else query['titolo_en'],
             'TopicId': query['topic_id'],
-            'TopicDescription': query['descr_topic_it'] if req_lang=='it' or query['descr_topic_en'] is None else query['descr_topic_en'],
+            'TopicDescription': query['descr_topic_it'] if req_lang=='it' or not query['descr_topic_en'] else query['descr_topic_en'],
             'Visible': query['visibile'],
             'Order': query['ordine'],
             'Type': query['tipo'],
@@ -526,7 +526,7 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
                 'ObjectId': q['id_oggetto_portale'],
                 'Object': json.loads(unicms_object._content) if unicms_object else None,
                 'ClassObjectId': q['id_classe_oggetto_portale'],
-                'ObjectText': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'ObjectText': q['testo_it'] if req_lang == 'it' or not q['testo_en'] else q['testo_en'],
             }
             
 
@@ -537,8 +537,8 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
             other_data.append({
                 'Id': q['id'],
                 'Order': q['ordine'],
-                'Title': q['titolo_it'] if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
-                'Text': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'Title': q['titolo_it'] if req_lang == 'it' or not q['titolo_en'] else q['titolo_en'],
+                'Text': q['testo_it'] if req_lang == 'it' or not q['testo_en'] else q['testo_en'],
                 'Link': q['link'],
                 'TypeID': q['type_id'],
                 'Type': q['type'],
@@ -553,8 +553,8 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
             sub_articles.append({
                 'Id': q['id'],
                 'Order': q['ordine'],
-                'Title': q['titolo_it'] if req_lang == 'it' or q['titolo_en'] is None else q['titolo_en'],
-                'Text': q['testo_it'] if req_lang == 'it' or q['testo_en'] is None else q['testo_en'],
+                'Title': q['titolo_it'] if req_lang == 'it' or not q['titolo_en'] else q['titolo_en'],
+                'Text': q['testo_it'] if req_lang == 'it' or not q['testo_en'] else q['testo_en'],
                 'Visible': q['visibile']
             })
         return sub_articles
