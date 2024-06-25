@@ -1,5 +1,6 @@
 import datetime
 import logging
+import re
 
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, ADDITION, LogEntry
@@ -35,10 +36,14 @@ def _process_articles_request_data(data):
     data._mutable = True
     post_testo_it = data.get("testo_it", None)
     if post_testo_it:
-        data["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) #remove spaces
+        data["testo_it"] = sub(r"(\&nbsp\;)", " ", post_testo_it) # transforms &nbsp; to normal spaces
+        if re.match(r"^<p>\s*<\/p>$", data["testo_it"]): # sets empty paragraphs to None
+            data["testo_it"] = None
     post_testo_en = data.get("testo_en", None)
     if post_testo_en:
-        data["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) #remove spaces
+        data["testo_en"] = sub(r"(\&nbsp\;)", " ", post_testo_en) # transforms &nbsp; to normal spaces
+        if re.match(r"^<p>\s*<\/p>$", data["testo_en"]): # sets empty paragraphs to None
+            data["testo_en"] = None
     data._mutable = mut_value
 
 def _get_titoli_struttura_articoli_dict(regdid, testata):
@@ -966,9 +971,10 @@ def regdid_articles_publish(request, regdid_id):
     # Old SitoWebCdsTopicArticoliReg/SitoWebCdsSubArticoliRegolamento records
     old_swcta_reg = SitoWebCdsTopicArticoliReg.objects.filter(id_didattica_cds_articoli_regolamento__in=articoli)
     
-    # SitoWebCdsTopicArticoliReg/SitoWebCdsSubArticoliRegolamento to be published
+    # SitoWebCdsTopicArticoliReg to be published
     strutture_topic = (SitoWebArticoliRegolamentoStrutturaTopic.objects
-                       .select_related('id_sito_web_cds_topic', 'id_did_art_regolamento_struttura'))
+                       .select_related('id_sito_web_cds_topic', 'id_did_art_regolamento_struttura')
+                       .filter(visibile=True))
         
     articles_to_publish = (DidatticaCdsArticoliRegolamento.objects
                            .select_related('id_didattica_articoli_regolamento_struttura', 'id_didattica_cds_articoli_regolamento_testata')
@@ -977,46 +983,87 @@ def regdid_articles_publish(request, regdid_id):
                                    visibile=True)
                            .order_by('id_didattica_articoli_regolamento_struttura__numero'))
     
-    try:                   
-        # Delete
-        old_swcta_reg.delete()
-        
-        # (Re)Create
-        ordine_articolo = 0
-        for articolo in articles_to_publish:
-            ordine_articolo += 10
-            _strutture_topic = strutture_topic.filter(id_did_art_regolamento_struttura=articolo.id_didattica_articoli_regolamento_struttura)
-            for struttura_topic in _strutture_topic:
-                swctar = SitoWebCdsTopicArticoliReg.objects.create(
-                    titolo_it = struttura_topic.titolo_it,
-                    titolo_en = struttura_topic.titolo_en,
-                    testo_it = articolo.testo_it,
-                    testo_en = articolo.testo_en,
-                    id_sito_web_cds_topic = struttura_topic.id_sito_web_cds_topic,
-                    id_sito_web_cds_oggetti_portale = None,
-                    id_didattica_cds_articoli_regolamento = articolo,
-                    ordine = struttura_topic.ordine,
-                    visibile = True,
-                    dt_mod = datetime.datetime.now(),
-                    id_user_mod = request.user
-                )
-                
-                sotto_articoli = DidatticaCdsSubArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento=articolo)
-                ordine_sotto_articolo = 0
-                for sotto_articolo in sotto_articoli:
-                    ordine_sotto_articolo += 10
-                    SitoWebCdsSubArticoliRegolamento.objects.create(
-                        id_sito_web_cds_topic_articoli_reg = swctar,
-                        titolo_it = sotto_articolo.titolo_it,
-                        titolo_en = sotto_articolo.titolo_en,
-                        testo_it = sotto_articolo.testo_it,
-                        testo_en = sotto_articolo.testo_en,
-                        ordine = ordine_sotto_articolo,
+    try:
+        with transaction.atomic():             
+            # Delete (swcta_reg that doesn't match any article that should be published)
+            swcta_reg_to_delete = old_swcta_reg.exclude(id_didattica_cds_articoli_regolamento__in=articles_to_publish)
+            swcta_reg_to_delete.delete()
+            
+            # Delete (swcsa_regolamento)
+            swcsa_regolamento_to_delete = SitoWebCdsSubArticoliRegolamento.objects.filter(id_sito_web_cds_topic_articoli_reg__in=old_swcta_reg)
+            swcsa_regolamento_to_delete.delete()
+            
+            # Update
+            swcta_reg_to_update = old_swcta_reg.filter(id_didattica_cds_articoli_regolamento__in=articles_to_publish)
+            for swcta_reg in swcta_reg_to_update:
+                _strutture_topic = (strutture_topic
+                                    .filter(id_did_art_regolamento_struttura=swcta_reg.id_didattica_cds_articoli_regolamento.id_didattica_articoli_regolamento_struttura,
+                                            id_sito_web_cds_topic=swcta_reg.id_sito_web_cds_topic))
+
+                for struttura_topic in _strutture_topic:
+                    articolo = articles_to_publish.get(id=swcta_reg.id_didattica_cds_articoli_regolamento.pk)
+                    swcta_reg.titolo_it = struttura_topic.titolo_it
+                    swcta_reg.titolo_en = struttura_topic.titolo_en
+                    swcta_reg.testo_it = articolo.testo_it
+                    swcta_reg.testo_en = articolo.testo_en
+                    swcta_reg.ordine = struttura_topic.ordine
+                    swcta_reg.visibile = True
+                    swcta_reg.dt_mod = datetime.datetime.now()
+                    swcta_reg.id_user_mod = request.user
+                    swcta_reg.save()
+                    
+                    sotto_articoli = DidatticaCdsSubArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento=articolo, visibile=True)
+                    ordine_sotto_articolo = 0
+                    for sotto_articolo in sotto_articoli:
+                        ordine_sotto_articolo += 10
+                        SitoWebCdsSubArticoliRegolamento.objects.create(
+                            id_sito_web_cds_topic_articoli_reg = swcta_reg,
+                            titolo_it = sotto_articolo.titolo_it,
+                            titolo_en = sotto_articolo.titolo_en,
+                            testo_it = sotto_articolo.testo_it,
+                            testo_en = sotto_articolo.testo_en,
+                            ordine = ordine_sotto_articolo,
+                            visibile = True,
+                            dt_mod = datetime.datetime.now(),
+                            id_user_mod = request.user
+                        )
+                    
+            # Create
+            dca_regolamento_for_creation = articles_to_publish.exclude(id__in=swcta_reg_to_update.values_list('id_didattica_cds_articoli_regolamento', flat=True))
+            
+            for articolo in dca_regolamento_for_creation:
+                _strutture_topic = strutture_topic.filter(id_did_art_regolamento_struttura=articolo.id_didattica_articoli_regolamento_struttura)
+                for struttura_topic in _strutture_topic:
+                    swcta_reg = SitoWebCdsTopicArticoliReg.objects.create(
+                        titolo_it = struttura_topic.titolo_it,
+                        titolo_en = struttura_topic.titolo_en,
+                        testo_it = articolo.testo_it,
+                        testo_en = articolo.testo_en,
+                        id_sito_web_cds_topic = struttura_topic.id_sito_web_cds_topic,
+                        id_sito_web_cds_oggetti_portale = None,
+                        id_didattica_cds_articoli_regolamento = articolo,
+                        ordine = struttura_topic.ordine,
                         visibile = True,
                         dt_mod = datetime.datetime.now(),
-                        id_user_mod = request.user 
-                    )   
-    
+                        id_user_mod = request.user
+                    )
+                    
+                    sotto_articoli = DidatticaCdsSubArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento=articolo, visibile=True)
+                    ordine_sotto_articolo = 0
+                    for sotto_articolo in sotto_articoli:
+                        ordine_sotto_articolo += 10
+                        SitoWebCdsSubArticoliRegolamento.objects.create(
+                            id_sito_web_cds_topic_articoli_reg = swcta_reg,
+                            titolo_it = sotto_articolo.titolo_it,
+                            titolo_en = sotto_articolo.titolo_en,
+                            testo_it = sotto_articolo.testo_it,
+                            testo_en = sotto_articolo.testo_en,
+                            ordine = ordine_sotto_articolo,
+                            visibile = True,
+                            dt_mod = datetime.datetime.now(),
+                            id_user_mod = request.user
+                        )   
+        
         messages.add_message(request, messages.SUCCESS, _("Didactic regulation published successfully"))
             
         log_action(user=request.user,
