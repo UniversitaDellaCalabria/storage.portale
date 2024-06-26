@@ -5,8 +5,9 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from ricerca_app.models import *
 
-from .. utils.settings import *
 from .. utils.utils import custom_message
+
+from . settings import PHD_DEFAULT_OFFICE, STRUCTURE_PHD
 
 
 def can_manage_phd(func_to_decorate):
@@ -46,6 +47,8 @@ def can_edit_phd(func_to_decorate):
             return func_to_decorate(*original_args, **original_kwargs)
 
         for office in original_kwargs['my_offices']:
+            if office.office.name == PHD_DEFAULT_OFFICE:
+                return func_to_decorate(*original_args, **original_kwargs)
             if office.office.name == phd.rif_dottorato:
                 return func_to_decorate(*original_args, **original_kwargs)
 

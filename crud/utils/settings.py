@@ -25,9 +25,6 @@ CKEditor5Widget.Media.js = CKEDITOR_WIDGET_OVERRIDES["js"]
 
 REGDID_CKEDITOR_FORCE_PASTE_AS_PLAIN_TEXT = getattr(settings, "REGDID_CKEDITOR_FORCE_PASTE_AS_PLAIN_TEXT", False)
 
-STRUCTURE_PHD = getattr(
-    settings, 'STRUCTURE_PHD', 'phd-management')
-
 OFFICE_RESEARCHGROUPS = getattr(
     settings, 'OFFICE_RESEARCHGROUPS', 'researchgroups')
 OFFICE_RESEARCHLINES = getattr(
