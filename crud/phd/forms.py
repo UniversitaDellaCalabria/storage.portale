@@ -74,7 +74,8 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
 
         self.fields['id_struttura_proponente'] = forms.ModelChoiceField(
             label=_('Central Structure'),
-            queryset=structures)
+            queryset=structures,
+            required=False)
         self.fields['id_didattica_ssd'] = forms.ModelChoiceField(
             queryset=ssd_list,
             label=_('SSD'))
