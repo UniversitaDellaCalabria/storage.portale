@@ -62,7 +62,8 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
                          ('Dipartimentale', 'Dipartimentale'),
                          ('Attività di Ateneo', 'Attività di Ateneo')]
 
-        lista_rif_dott = [('', '-'),]
+        lista_rif_dott = [('Tutti i corsi di dottorato',
+                           'Tutti i corsi di dottorato'),]
 
         query = DidatticaDottoratoAttivitaFormativa.objects\
                                                    .filter(rif_dottorato__isnull=False)\
@@ -85,7 +86,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         self.fields['rif_dottorato'] = forms.ChoiceField(
             label=_('Reference'),
             choices=lista_rif_dott,
-            required=False)
+            required=True)
         self.fields['ciclo'] = forms.ChoiceField(
             label=_('Cycle'),
             choices=PHD_CYCLES,
