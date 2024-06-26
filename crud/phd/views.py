@@ -82,7 +82,8 @@ def phd_new(request, my_offices=None):
 
             phd = form.save(commit=False)
             phd.ssd = f'{phd.id_didattica_ssd.ssd_id} {phd.id_didattica_ssd.ssd_des}'
-            phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
+            if phd.id_struttura_proponente:
+                phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
             phd.user_mod_id = request.user
             phd.dt_mod = datetime.datetime.now()
             phd.save()
