@@ -67,6 +67,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
 
         query = DidatticaDottoratoAttivitaFormativa.objects\
                                                    .filter(rif_dottorato__isnull=False)\
+                                                   .exclude(rif_dottorato__exact='')\
                                                    .values('rif_dottorato')\
                                                    .distinct()
 

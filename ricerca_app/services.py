@@ -3279,6 +3279,7 @@ class ServiceDottorato:
     def getRefPhd():
         query = DidatticaDottoratoAttivitaFormativa.objects\
                                                    .filter(rif_dottorato__isnull=False)\
+                                                   .exclude(rif_dottorato__exact='')\
                                                    .order_by('rif_dottorato')\
                                                    .values('rif_dottorato')\
                                                    .distinct()
