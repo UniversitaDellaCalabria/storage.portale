@@ -2,6 +2,7 @@ import datetime
 import requests
 
 from django import forms
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.conf import settings
@@ -19,7 +20,7 @@ from .. utils.settings import (ALLOWED_STRUCTURE_TYPES,
                                STRUCTURES_FATHER)
 from .. utils.utils import _clean_teacher_dates
 
-from . settings import PHD_CYCLES
+from . settings import PHD_CYCLES, PHD_ADDITIONAL_REF_STRUCTURES
 
 
 ALLOWED_STRUCTURE_TYPES = getattr(
@@ -53,9 +54,10 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         ssd_list = DidatticaSsd.objects.all()
-        structures = UnitaOrganizzativa.objects.filter(uo_padre=STRUCTURES_FATHER,
+        structures = UnitaOrganizzativa.objects.filter(Q(uo_padre=STRUCTURES_FATHER)|Q(uo__in=PHD_ADDITIONAL_REF_STRUCTURES),
                                                        cd_tipo_nodo__in=ALLOWED_STRUCTURE_TYPES,
-                                                       dt_fine_val__gte=datetime.datetime.today())
+                                                       dt_fine_val__gte=datetime.datetime.today())\
+                                               .order_by('denominazione')
 
         lista_tipo_af = [
                          ('', '-'),

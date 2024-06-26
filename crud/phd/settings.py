@@ -8,3 +8,6 @@ STRUCTURE_PHD = getattr(
 
 PHD_DEFAULT_OFFICE = getattr(
     settings, 'PHD_DEFAULT_OFFICE', 'default')
+
+PHD_ADDITIONAL_REF_STRUCTURES = getattr(
+    settings, 'PHD_ADDITIONAL_REF_STRUCTURES', [])
