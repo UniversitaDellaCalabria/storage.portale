@@ -3636,15 +3636,13 @@ class ServicePersonale:
 
     @staticmethod
     def getPersonale(personale_id, full=False):
-        personale_id = get_personale_matricola(personale_id)
-
         if full:
             query = Personale.objects.filter(Q(matricola=personale_id)|Q(cod_fis=personale_id),
                                              flg_cessato=0)
         else:
+            personale_id = get_personale_matricola(personale_id)
             query = Personale.objects.filter(matricola=personale_id,
                                              flg_cessato=0)
-
         if not query:
             raise Http404
 

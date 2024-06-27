@@ -2571,7 +2571,6 @@ class ApiPersonaleFullDetail(TestCase):
         # Search by id
         url = reverse('ricerca:personaledetail-full', kwargs={
                       'personaleid': "111112"})
-
         res = req.get(url,{}, HTTP_AUTHORIZATION= f'Token {token.key}')
 
         assert res.status_code == 200
