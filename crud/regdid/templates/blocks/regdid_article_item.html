@@ -137,7 +137,7 @@
             style="border: 0;">
             {% for sub_art in sub_articles %}
             <div class="m-2">
-                {% include "blocks/regdid_sub_article_item.html" with sub_art=sub_art %}
+                {% include "blocks/regdid_sub_article_item.html" with sub_art=sub_art numero_sotto_articolo=forloop.counter0 %}
             </div>
             {% endfor %}
             {% if user_permissions_and_offices.permissions.edit and testata_status.id_didattica_articoli_regolamento_status.status_cod != '2' and testata_status.id_didattica_articoli_regolamento_status.status_cod != '3' %}

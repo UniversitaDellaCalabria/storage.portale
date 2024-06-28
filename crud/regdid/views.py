@@ -22,6 +22,7 @@ from ricerca_app.concurrency import acquire_lock, get_lock_from_cache
 from ricerca_app.exceptions import *
 from ricerca_app.settings import OFFICE_REGDIDS_DEPARTMENT, OFFICE_REGDIDS_REVISION, OFFICE_REGDIDS_APPROVAL
 
+from .. utils.templatetags.crud_templatetags import latin_enum
 from .. utils.decorators import *
 from .. utils.utils import log_action
 
@@ -496,6 +497,9 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
     articolo = get_object_or_404(DidatticaCdsArticoliRegolamento, pk=article_id)
     sotto_articolo = get_object_or_404(DidatticaCdsSubArticoliRegolamento, pk=sub_article_id)
     
+    numero_sotto_articolo = DidatticaCdsSubArticoliRegolamento.objects.filter(id_didattica_cds_articoli_regolamento=articolo, ordine__lte=sotto_articolo.ordine).count() -1
+    latin_enum_sotto_articolo = latin_enum(numero_sotto_articolo)
+    
     # permissions    
     user_permissions_and_offices = sotto_articolo.get_user_permissions_and_offices(request.user)
     if not user_permissions_and_offices['permissions']['access']:
@@ -554,7 +558,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
                    reverse('crud_regdid:crud_regdid'): _('Didactic regulations'),
                    reverse('crud_regdid:crud_regdid_articles', kwargs={"regdid_id":regdid_id}): regdid.cds.nome_cds_it.title(),
                    reverse('crud_regdid:crud_regdid_articles_edit', kwargs={"regdid_id":regdid_id, "article_id":articolo.pk}): f"Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}",
-                   '#': f"{sotto_articolo.titolo_it}"}
+                   '#': f"Art {sotto_articolo.id_didattica_cds_articoli_regolamento.id_didattica_articoli_regolamento_struttura.numero} {latin_enum_sotto_articolo} - {sotto_articolo.titolo_it}"}
 
     return render(request,
                   'regdid_article_unique_form.html',
@@ -562,7 +566,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
                       'breadcrumbs': breadcrumbs,
                       'regdid': regdid,
                       'forms': [didatticacdssubarticoliregolamentoform],
-                      'item_label': f"Art {sotto_articolo.id_didattica_cds_articoli_regolamento.id_didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}",
+                      'item_label': f"Art {sotto_articolo.id_didattica_cds_articoli_regolamento.id_didattica_articoli_regolamento_struttura.numero} {latin_enum_sotto_articolo} - {sotto_articolo.titolo_it}",
                       'sub_article': sotto_articolo,
                       'titoli_struttura_articoli_dict': titoli_struttura_articoli_dict,
                       # Notes

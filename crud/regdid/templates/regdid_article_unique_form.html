@@ -71,8 +71,9 @@
                                     aria-selected="{% if sub_article and sub_article == sub_art %}true{% else %}false{% endif %}">
                                    
                                     {% if sub_art.titolo_it %}
+                                    {% latin_enum forloop.counter0 as latin_enum_sotto_articolo %}
                                         <div class="ml-4 span align-self-start">
-                                            Art. {{struct.numero}}.{{sub_art.ordine}} - 
+                                            Art. {{struct.numero}} {{latin_enum_sotto_articolo}} - 
                                         </div>
                                         <div class="span col">{{sub_art.titolo_it}}</div>
                                     {% endif %}
@@ -117,7 +118,7 @@
                 style="border-bottom: 0;">
                 {% for sub_art in sub_art_list %}
                 <div class="m-2">
-                    {% include "blocks/regdid_sub_article_item.html" with sub_art=sub_art %}
+                    {% include "blocks/regdid_sub_article_item.html" with sub_art=sub_art numero_sotto_articolo=forloop.counter0 %}
                 </div>
                 {% endfor %}
             </div>

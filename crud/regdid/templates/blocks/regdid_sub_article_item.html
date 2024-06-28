@@ -2,7 +2,7 @@
 {% load static %}
 {% load crud_templatetags %}
 
-{% with sub_art=sub_art|default:None %}
+{% with sub_art=sub_art|default:None numero_sotto_articolo=numero_sotto_articolo|default:0 %}
 
 <div class="collapse-header collapse-topic-header m-2"
         id="heading_sub_art_{{sub_art.pk}}">
@@ -16,7 +16,8 @@
 
         <div class="span align-self-start">
             {% if sub_art.titolo_it %}
-                Art. {{article.id_didattica_articoli_regolamento_struttura.numero}}.{{sub_art.ordine}} - {{sub_art.titolo_it}}
+                {% latin_enum numero_sotto_articolo as latin_enum_sotto_articolo %}
+                Art. {{article.id_didattica_articoli_regolamento_struttura.numero}} {{latin_enum_sotto_articolo}} - {{sub_art.titolo_it}}
             {% endif %}
             <br/>
             {% if sub_art.titolo_en %}
