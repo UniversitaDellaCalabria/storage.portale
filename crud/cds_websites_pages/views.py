@@ -403,7 +403,7 @@ def cds_websites_pages_object_edit(request, code, data_id, cds_website=None, my_
                                  messages.SUCCESS,
                                  _("Object edited successfully"))
 
-            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', code=code)
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', code=code)
 
         else:  # pragma: no cover
             for k, v in object_form.errors.items():
@@ -417,6 +417,7 @@ def cds_websites_pages_object_edit(request, code, data_id, cds_website=None, my_
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
                        (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', kwargs={'code': code}): _("Shared objects"),
                    '#': _("Edit Object") }
 
     return render(request, 'cds_website_pages_shared_object_form.html',
@@ -455,7 +456,7 @@ def cds_websites_pages_object_new(request, code, cds_website=None, my_offices=No
                                  messages.SUCCESS,
                                  _("Object added successfully"))
 
-            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', code=code)
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', code=code)
 
         else:  # pragma: no cover
             for k, v in object_form.errors.items():
@@ -469,6 +470,7 @@ def cds_websites_pages_object_new(request, code, cds_website=None, my_offices=No
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
                        (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', kwargs={'code': code}): _("Shared objects"),
                    '#': _("New Object") }
 
     return render(request, 'cds_website_pages_shared_object_form.html',
@@ -500,7 +502,7 @@ def cds_websites_pages_object_delete(request, code, data_id, cds_website=None, m
                             messages.SUCCESS,
                             _("Object removed successfully"))
 
-    return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', code=code)
+    return redirect('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', code=code)
 
 
 @login_required
