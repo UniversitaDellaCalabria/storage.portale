@@ -1,0 +1,148 @@
+{% extends "cds_websites_pages_unique_form.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% block submit %}
+{% settings_value "ETL_USER_IDS" as etl_ids %}
+{% if user.is_superuser or regart.id_user_mod.pk not in etl_ids %}
+    {{block.super}}
+{% endif %}
+
+{% endblock submit %}
+
+{% block after_forms %}
+{% settings_value "ETL_USER_IDS" as etl_ids %}
+
+    <div class="card-wrapper card-space">
+        <div class="card card-bg no-after">
+            <div class="card-body">
+                <!-- Reg Articles Extras-->
+                <div class="d-flex justify-content-start align-items-center pb-4">
+                    <h5 style="font-weight: normal" 
+                        class="mr-auto">
+                        {% trans "Regulation Articles' Extras" %}
+                    </h5>
+                    <a  tabindex="0"
+                        href="javascript:void(0)"
+                        role="button"
+                        data-toggle="popover"
+                        data-trigger="focus"
+                        data-html="true"
+                        title="{{popover_title_content.extras.title}}"
+                        data-content="{{popover_title_content.extras.content}}">
+                        <svg class="pr-2 ml-2 icon icon-lg">
+                            <use href="{% static 'svg/sprite.svg' %}#it-help-circle"></use>
+                        </svg>
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="d-flex">
+                                <th class="col-5">{% trans "Extra" %}</th>
+                                <th class="col-3">{% trans "Order" %}</th>
+                                <th class="col-2">{% trans "Visible" %}</th>
+                                <th class="col-2"></th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for extra in regart_extras %}
+                                <!-- Extra Delete Modal -->
+                                <div class="modal fade"
+                                tabindex="-1"
+                                role="dialog"
+                                id="delete_extra_{{extra.id}}">
+                                <div class="modal-dialog modal-dialog-centered"
+                                        role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                {% trans "Confirm" %}
+                                            </h5>
+                                            <button class="close"
+                                                    type="button"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <svg class="icon">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {% trans "Do you want to delete this item?" %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-success btn-sm" href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_regart_extra_delete' code=cds_website.id topic_id=topic_id data_id=regart.id extra_id=extra.id %}">
+                                                {% trans 'Yes, proceed' %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /Extra Delete Modal -->
+                                <tr class="d-flex">
+                                    <td class="col-5">
+                                        {{ extra.testo_it }}            
+                                    </td>
+                                    <td class="col-3">
+                                        {{ extra.ordine }}
+                                    </td>
+                                    <td class="col-2">
+                                    {% if extra.visibile %}
+                                        <svg class="icon icon-sm icon-success">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                        </svg>
+                                        {% else %}
+                                        <svg class="icon icon-sm icon-danger">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-ban"></use>
+                                        </svg>
+                                    {% endif %}
+                                    </td>
+                                    <td class="col-2 text-nowrap">
+                                        {% if user.is_superuser or extra.id_user_mod.pk not in etl_ids %}
+                                            <a href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_regart_extra_edit' code=cds_website.id topic_id=topic_id data_id=regart.id extra_id=extra.id %}" class="btn btn-primary btn-xs">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                                </svg>
+                                                {% trans "Edit" %}
+                                            </a>
+                                            <a href="" class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#delete_extra_{{extra.id}}">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                                </svg>
+                                                {% trans "Remove" %}
+                                            </a>
+                                        {%endif%}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_regart_extra_new' code=cds_website.id topic_id=topic_id data_id=regart.id %}" class="btn btn-block btn-success">
+                    <svg class="icon icon-xs icon-white">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                    </svg> {% trans "Add new" %}
+                </a>
+                <!-- /Reg Articles Extras -->
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+    $('.popover-dismiss').popover({
+        trigger: 'focus',
+      });      
+</script>
+{% endblock extra_scripts %}

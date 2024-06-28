@@ -15,19 +15,19 @@ class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
         if self.initial:
             self.initial["visibile"] = bool(self.initial.get("visibile", None))
             
-    visibile = forms.BooleanField(
-        label=_("Visible"),
-        required=False,
-    )
-    ordine = forms.IntegerField(
-        required=True,
-        min_value=0,
-        label=_("Order"),
-    )
+        self.fields["visibile"] = forms.BooleanField(
+            label=_("Visible"),
+            required=False,
+        )
+        self.fields["ordine"] = forms.IntegerField(
+            required=True,
+            min_value=0,
+            label=_("Order"),
+        )
     
     class Meta:
         model = SitoWebCdsTopicArticoliReg
-        exclude = ['dt_mod', 'id_user_mod', 'id_sito_web_cds_topic', 'id_sito_web_cds_oggetti_portale', 'id_sito_web_cds_articoli_regolamento']
+        exclude = ['dt_mod', 'id_user_mod', 'id_sito_web_cds_topic', 'id_sito_web_cds_oggetti_portale', 'id_didattica_cds_articoli_regolamento']
         labels = {
             "titolo_it": _("Title (it)"),
             "titolo_en": _("Title (en)"),
@@ -35,26 +35,16 @@ class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
             "testo_en": _("Text (en)"),
             "ordine": _("Order"),
             "visibile": _("Visible"),
-            "id_sito_web_cds_articoli_regolamento": _("Regulament Article"),
+            "id_didattica_cds_articoli_regolamento": _("Regulation Article"),
             "id_sito_web_cds_oggetti_portale": _("Portal object"),
         }
    
 class SitoWebCdsArticoliRegolamentoItemForm(SitoWebCdsTopicArticoliRegForm):
     def __init__(self, *args, **kwargs):
         cds_id = kwargs.pop("cds_id", None)
-        
         super(SitoWebCdsArticoliRegolamentoItemForm, self).__init__(*args, **kwargs)
-        if not self.instance.pk:
-            choices = SitoWebCdsArticoliRegolamento.objects.filter(cds_id=cds_id).values_list("id", "aa_regdid_id", "titolo_articolo_it").order_by("aa_regdid_id", "titolo_articolo_it")
-            choices = map(lambda reg: (reg[0], f"{reg[1]} - {reg[2]}"), choices)
-            choices = tuple(choices)
-        else:
-            choices=((self.instance.id_sito_web_cds_articoli_regolamento.id, f"{self.instance.id_sito_web_cds_articoli_regolamento.aa_regdid_id} - {self.instance.id_sito_web_cds_articoli_regolamento.titolo_articolo_it}"),)
-        
-        self.fields["id_sito_web_cds_articoli_regolamento"] = forms.ChoiceField(
-            choices=choices,
-            label=_("Regulament article"),
-        )
+    class Meta(SitoWebCdsTopicArticoliRegForm.Meta):
+        exclude = ["titolo_it", "titolo_en", "testo_it", "testo_en"] + SitoWebCdsTopicArticoliRegForm.Meta.exclude
 
 class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
     def __init__(self, *args, **kwargs):
@@ -70,6 +60,9 @@ class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
             choices=choices,
             label=_("Portal object"),
         )
+        
+        self.order_fields(['visibile', 'id_sito_web_cds_oggetti_portale', 'ordine', 'titolo_it', 'titolo_en', 'testo_it','testo_en'])
+
         
      
 class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
@@ -96,8 +89,11 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
         self.fields["visibile"] = forms.BooleanField(
             label=_("Visible"),
             required=False,
-        )
-    
+        )    
+        
+        self.order_fields(['visibile', 'id_oggetto_portale', 'id_classe_oggetto_portale', 'titolo_it', 'titolo_en', 'testo_it','testo_en'])
+
+
     class Meta:
         model = SitoWebCdsOggettiPortale
         exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'aa_regdid_id']
@@ -144,6 +140,8 @@ class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
         self.fields["titolo_en"].help_text = _("Shown above the element if provided")
         self.fields["testo_it"].help_text = _("If provided it is used as the link text")
         self.fields["testo_en"].help_text = _("If provided it is used as the link text")
+
+        self.order_fields(['visibile', 'ordine', "titolo_it", 'titolo_en', 'testo_it','testo_en', 'link', 'id_sito_web_cds_tipo_dato',])
 
     
     class Meta:

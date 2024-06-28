@@ -1,0 +1,53 @@
+{% load i18n %}
+{% load static %}
+{% load crud_templatetags %}
+
+{% block cds_page %}
+
+{% with page_name=page_name|cut:" "|default:"Page" topic_obj_regarts=topic_obj_regarts|default:None cds=cds|default:None %}
+
+{% settings_value "ETL_USER_IDS" as etl_ids %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<div class="collapse-header collapse-topic-header"
+        id="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+
+    <button data-toggle="collapse"
+            data-target="#collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}"
+            aria-expanded="false"
+            aria-controls="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+
+        <span>
+            {% if LANGUAGE_CODE == "it" or not topic_obj_regarts.topic.descr_topic_en %}
+            {{ topic_obj_regarts.topic.descr_topic_it }}
+            {% else %}
+            {{ topic_obj_regarts.topic.descr_topic_en }}
+            {% endif %}
+        </span>
+
+    </button>
+
+</div>
+
+<div id="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}"
+        class="collapse"
+        role="region"
+        data-parent="#collapseDiv_{{page_name}}"
+        aria-labelledby="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+
+    <div class="collapse-body">
+        <!-- Reg Articles -->
+        {% include "blocks/cds_website_pages_regulation_article_items.html" %}
+        <!-- /Reg Articles -->
+        <hr style="border-color: white;">
+        <!-- Objects -->
+        {% include "blocks/cds_website_pages_object_items.html" %}
+        <!-- /Objects -->
+    </div>
+
+</div>
+
+
+{% endwith %}
+
+{% endblock %}

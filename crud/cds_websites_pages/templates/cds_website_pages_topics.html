@@ -1,0 +1,118 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+{% endblock %}
+
+{% block centered_container %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<h3 style="font-weight: normal;">
+    {{ cds_website.cds.cds_cod }} -
+    {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
+        {{ cds_website.cds.nome_cds_it }}
+    {% else %}
+        {{ cds_website.cds.nome_cds_eng }}
+    {% endif %}
+</h3>
+<hr>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            
+            <div class="nav nav-tabs auto"
+                id="nav-tab-pages"
+                role="tablist"
+                aria-orientation="orizzontal">
+
+                {% for page_name in pages.keys %}
+                {% with trimmed_page_name=page_name|cut:" " %}
+                    <a  class="nav-link pb-4 {% if forloop.first %}active{% endif %}"
+                        id="nav-tab-pages-{{trimmed_page_name}}-tab"
+                        data-toggle="tab" href="#nav-tab-pages-{{trimmed_page_name}}"
+                        role="tab" aria-controls="nav-tab-pages-{{trimmed_page_name}}"
+                        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">{{page_name}}</a>
+                {% endwith %}
+                {% endfor %}
+            </div>
+
+            <div class="tab-content"
+                id="nav-tabContent-pages">
+
+                {% for page_name, content in pages.items %}
+                {% with trimmed_page_name=page_name|cut:" " %}
+                    <div class="tab-pane fade {% if forloop.first %}show active{% endif %}"
+                        id="nav-tab-pages-{{trimmed_page_name}}"
+                        role="tabpanel"
+                        aria-labelledby="nav-tab-pages-{{trimmed_page_name}}">
+
+                        <div id="collapseDiv_{{trimmed_page_name}}"
+                            class="collapse-div collapse-left-icon">
+
+                            {% for topic_id, tor in content.items %}
+                            {% include "blocks/cds_website_pages_topic_item.html" with page_name=page_name topic_obj_regarts=tor %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                {% endwith %}
+                {% endfor %}
+            </div>
+            <hr style="border-color: white;">
+            <!-- Manage shared objects -->
+            <div class="mt-4 p-3" style="border:1px solid rgb(0,0,0,.1);">
+                <a  href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_objects_edit' code=cds_website.id %}"
+                    class="text-reset"
+                    target="_blank">
+                    <div class="ml-2 d-flex justify-content-start align-items-center">
+                        <div class="col mr-auto">
+                            <div class="row">
+                                <div class="h6">
+                                    {% trans "Shared objects" %}
+                                </div>
+                            </div>
+                            <div class="row small text-muted">
+                                {% trans "Manage portal objects shared among all topics" %}
+                            </div>
+                        </div>
+                        <svg class="p-1 icon icon-lg">
+                            {% block icon %}
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right-circle"></use>
+                            {% endblock icon %}
+                        </svg>
+                    </div>
+                </a>
+            </div>            
+            <!-- /Manage shared objects -->
+
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">Logs</h4>
+            {% include "obj_logs.html" with logs=logs %}
+        </div>
+    </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+    $('.popover-dismiss').popover({
+        trigger: 'focus',
+      });
+</script>
+{% endblock extra_scripts %}
+
+
+{% endblock centered_container %}

@@ -1,6 +1,8 @@
 import requests
 import json
 
+from django.utils.translation import get_language
+
 from .. utils.settings import *
 
 def get_topics_per_page():
@@ -15,9 +17,7 @@ def get_topics_per_page():
         if response.status_code == 200:
             json_response = json.loads(response._content)
             res["content"] = json_response
-            return res
-        else:
-            return res
+        return res
     except requests.exceptions.RequestException: 
         return res
     

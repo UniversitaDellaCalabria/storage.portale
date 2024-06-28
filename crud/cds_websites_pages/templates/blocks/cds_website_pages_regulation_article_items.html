@@ -1,0 +1,61 @@
+{% load i18n %}
+{% load static %}
+
+<table class="table table-sm table-striped">
+    <thead>
+        <tr class="d-flex">
+            <th class="col-5">{% trans "Articles" %}</th>
+            <th class="col-3">{% trans "Order" %}</th>
+            <th class="col-2">{% trans "Visible" %}</th>
+            <th class="col-2"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for regart in topic_obj_regarts.regarts %}
+        <tr class="d-flex">
+            <td class="col-5">
+                {{ regart.titolo_it }}
+            </td>
+            <td class="col-3">
+                {{ regart.ordine }}
+            </td>
+            <td class="col-2">
+                {% if regart.visibile %}
+                    <svg class="icon icon-sm icon-success">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                    </svg>
+                    {% else %}
+                    <svg class="icon icon-sm icon-danger">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-ban"></use>
+                    </svg>
+                {% endif %}
+            </td>
+            <td class="col-2">
+                <div class="row">
+                    <a  href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_regart_item_edit' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=regart.id %}"
+                        class="btn btn-primary btn-xs" style="width:100%;">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                        </svg>
+                        {% trans "Edit" %}
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% if topic_obj_regarts.regarts|length < 1 %}
+        <tr class="d-flex">
+            <td class="col-5">
+                {% trans "None" %}
+            </td>
+            <td class="col-3">
+                -
+            </td>
+            <td class="col-2">
+                -
+            </td>
+            <td class="col-2">&nbsp;</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>

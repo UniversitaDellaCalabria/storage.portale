@@ -1,0 +1,7 @@
+{% extends "includes/form_submit.html" %}
+
+{% load i18n %}
+
+{% block message %}
+    {% trans "Changes made to this object will take effect on every topic it has been added to. Do you want to confirm the entered data?" %}
+{% endblock %}

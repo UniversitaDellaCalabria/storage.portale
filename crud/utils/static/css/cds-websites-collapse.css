@@ -14,3 +14,9 @@
   padding: 14px 24px;
   border-top: 1px solid #c5c7c9;
 }
+
+.collapse-topic-header:first-child [data-toggle=collapse] {
+  color: #383838;
+  padding: 14px 24px;
+  border-top: none;
+}
