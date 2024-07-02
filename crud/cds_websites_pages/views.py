@@ -1,5 +1,6 @@
 import logging
 import datetime
+import unicodedata
 
 from .. utils.utils import log_action
 
@@ -42,6 +43,12 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
     """
     modifica dei dati dei topic del sito web del corso di studio
     """
+    
+    cds_website_url = getattr(settings, 'UNICMS_CORSI_LM_URL', '') if(cds_website.cds.tipo_corso_cod == 'LM') else getattr(settings, 'UNICMS_CORSI_LT_LMCU_URL', '')
+    cds_website_page_name = re.sub(r"[^ \w]", "", cds_website.cds.nome_cds_it)
+    cds_website_page_name = re.sub(r"\s", "-", cds_website_page_name) 
+    cds_website_page_name = cds_website_page_name.lower()
+    cds_website_url += ('/' + cds_website_page_name + '/cds')
 
     topics = SitoWebCdsTopic.objects.all()
 
@@ -72,7 +79,7 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
     '''
     pages = {}
     for key in topics_per_page.keys():
-        pages[key.capitalize()] = {}
+        pages[unicodedata.normalize('NFKD', key).encode('ascii', 'ignore').decode().capitalize()] = {}
     pages["Topic non mostrati"] = {}
     
     for topic in topics:
@@ -84,7 +91,7 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
         is_shown_topic = False
         for k,v in topics_per_page.items():
             if t_id in v:
-                pages[k.capitalize()][str(t_id)] = {
+                pages[unicodedata.normalize('NFKD', k).encode('ascii', 'ignore').decode().capitalize()][str(t_id)] = {
                     "topic" : topic,
                     "objects" : topic_objs,
                     "regarts" : topic_areg
@@ -123,6 +130,7 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
                     'objects_list': objects_list,
                     'breadcrumbs': breadcrumbs,
                     'popover_title_content': popover_title_content,
+                    'cds_website_url': cds_website_url,
                     'logs' : logs,
                    })
 
