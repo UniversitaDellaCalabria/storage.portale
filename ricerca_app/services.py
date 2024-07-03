@@ -4694,7 +4694,7 @@ class ServiceProgetto:
         query = ProgettoTipologiaProgramma.objects.values(
             "id",
             "nome_programma"
-        ).distinct()
+        ).order_by('nome_programma').distinct()
 
         return query
 
