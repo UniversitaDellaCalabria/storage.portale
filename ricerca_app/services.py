@@ -4704,14 +4704,11 @@ class ServiceProgetto:
         query = ProgettoDatiBase.objects.values(
             "uo",
             "uo__denominazione",
-        ).distinct()
-
+        ).distinct().order_by("uo__denominazione")
         query = list(query)
-
         for q in query:
             if q['uo'] == None:
                 query.remove(q)
-
         return query
 
 
