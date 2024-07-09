@@ -36,7 +36,11 @@
                         id="nav-tab-pages-{{trimmed_page_name}}-tab"
                         data-toggle="tab" href="#nav-tab-pages-{{trimmed_page_name}}"
                         role="tab" aria-controls="nav-tab-pages-{{trimmed_page_name}}"
-                        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">{{page_name}}</a>
+                        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                        <span>
+                            {{page_name}}
+                        </span>
+                    </a>
                 {% endwith %}
                 {% endfor %}
             </div>
@@ -56,7 +60,7 @@
                             style="border-bottom: none;">
 
                             {% for topic_id, tor in content.items %}
-                                {% include "blocks/cds_website_pages_topic_item.html" with page_name=page_name topic_obj_regarts=tor %}
+                                {% include "blocks/cds_websites_pages_topic_item.html" with page_name=page_name topic_obj_regarts=tor %}
                             {% endfor %}
 
                             {% if not forloop.last %}
@@ -93,7 +97,7 @@
 
             <!-- Manage shared objects -->
             <div class="mt-4 p-3" style="border:1px solid rgb(0,0,0,.1);">
-                <a  href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_objects_edit' code=cds_website.id %}"
+                <a  href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_shared_objects' code=cds_website.id %}"
                     class="text-reset"
                     target="_blank">
                     <div class="ml-2 d-flex justify-content-start align-items-center">
@@ -130,6 +134,10 @@
     </div>
 </div>
 
+
+
+{% endblock centered_container %}
+
 {% block extra_scripts %}
 <script>
     $(function () {
@@ -140,6 +148,3 @@
       });
 </script>
 {% endblock extra_scripts %}
-
-
-{% endblock centered_container %}

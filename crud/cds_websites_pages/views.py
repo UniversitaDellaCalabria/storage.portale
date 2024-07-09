@@ -35,11 +35,12 @@ def cds_websites_pages(request, my_offices=None):
                'url': reverse('ricerca:cdswebsitelist')}
     return render(request, 'cds_websites_pages.html', context)
 
-#Topics
+
+# Topics
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=None):
+def cds_websites_pages_topics(request, code, cds_website=None, my_offices=None):
     """
     modifica dei dati dei topic del sito web del corso di studio
     """
@@ -51,8 +52,6 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
     cds_website_url += ('/' + cds_website_page_name + '/cds')
 
     topics = SitoWebCdsTopic.objects.all()
-
-    objects_list = SitoWebCdsOggettiPortale.objects.filter(cds_id=cds_website.cds_id)
 
     cds_topic_ogg_art = SitoWebCdsTopicArticoliReg.objects\
         .select_related("id_sito_web_cds_oggetti_portale", "id_sito_web_cds_topic", "id_didattica_cds_articoli_regolamento")\
@@ -122,29 +121,29 @@ def cds_websites_pages_topics_edit(request, code, cds_website=None, my_offices=N
         }
     }
 
-    return render(request, 'cds_website_pages_topics.html',
+    return render(request, 'cds_websites_pages_topics.html',
                   {
                     'cds_website' : cds_website,
                     'pages': pages,
                     'topics_list': topics,
-                    'objects_list': objects_list,
                     'breadcrumbs': breadcrumbs,
                     'popover_title_content': popover_title_content,
                     'cds_website_url': cds_website_url,
                     'logs' : logs,
                    })
 
+# Shared Objects
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_pages_objects_edit(request, code, cds_website=None, my_offices=None):
+def cds_websites_pages_shared_objects(request, code, cds_website=None, my_offices=None):
     
     objects_list = SitoWebCdsOggettiPortale.objects.filter(cds_id=cds_website.cds_id)
 
     
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
                           (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
                         '#': _("Shared objects") }
     
@@ -155,15 +154,442 @@ def cds_websites_pages_objects_edit(request, code, cds_website=None, my_offices=
                   'breadcrumbs': breadcrumbs,
                   })    
 
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_pages_shared_object_edit(request, code, data_id, cds_website=None, my_offices=None):
+
+    _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
+
+    object_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None, user=request.user, instance=_object)
+    user_can_edit = request.user.is_superuser or _object.id_user_mod_id not in getattr(settings, "ETL_USER_IDS", [])
+
+    if request.POST:
+        if not request.user.is_superuser and is_protected_by_etl(_object.id_user_mod.pk):
+            return custom_message(request, _("Permission denied"))
+        
+        if object_form.is_valid():
+
+            _object = object_form.save(commit=False)
+            _object.id_user_mod = request.user
+            _object.dt_mod = datetime.datetime.now()
+            _object.save()
+
+            log_action(user=request.user,
+                        obj=cds_website,
+                        flag=CHANGE,
+                        msg=_("Edited object"))
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Object edited successfully"))
+
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_shared_objects', kwargs={'code': code})
+
+        else:  # pragma: no cover
+            for k, v in object_form.errors.items():
+                if k == '__all__':
+                    messages.add_message(request, messages.ERROR, f"{v}")
+                else:
+                    messages.add_message(request, messages.ERROR,
+                                     f"<b>{object_form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
+                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_shared_objects', kwargs={'code': code}): _("Shared objects"),
+                   '#': _("Edit Object") }
+
+    return render(request, 'cds_website_pages_shared_object_form.html',
+                  {
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'forms': [object_form,],
+                    'user_can_edit': user_can_edit,
+                    'item_label': _('Object'),
+                    'edit': 1,
+                  })
+
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_pages_shared_object_new(request, code, cds_website=None, my_offices=None):
+
+    object_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None)
+
+    if request.POST:
+        if  object_form.is_valid():
+
+            _object = object_form.save(commit=False)
+            _object.cds = cds_website.cds
+            _object.id_user_mod = request.user
+            _object.dt_mod = datetime.datetime.now()
+            _object.aa_regdid_id = max(DidatticaRegolamento.objects.filter(cds_id=cds_website.cds_id).values_list('aa_reg_did', flat=True))
+            _object.save()
+
+            log_action(user=request.user,
+                        obj=cds_website,
+                        flag=CHANGE,
+                        msg=_("Added object"))
+
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _("Object added successfully"))
+
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_shared_objects', kwargs={'code': code})
+
+        else:  # pragma: no cover
+            for k, v in object_form.errors.items():
+                if k == '__all__':
+                    messages.add_message(request, messages.ERROR, f"{v}")
+                else:
+                    messages.add_message(request, messages.ERROR,
+                                     f"<b>{object_form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
+                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_shared_objects', kwargs={'code': code}): _("Shared objects"),
+                   '#': _("New Object") }
+
+    return render(request, 'cds_website_pages_shared_object_form.html',
+                  {
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'forms': [object_form,],
+                    'item_label': _('Object'),
+                  })
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_pages_shared_object_delete(request, code, data_id, cds_website=None, my_offices=None):
+
+    _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
+
+    if not request.user.is_superuser and is_protected_by_etl(_object.id_user_mod.pk):
+        return custom_message(request, _("Permission denied"))
+
+    _object.delete()
+
+    log_action(user=request.user,
+                obj=cds_website,
+                flag=CHANGE,
+                msg=_("Removed object"))
+
+    messages.add_message(request,
+                            messages.SUCCESS,
+                            _("Object removed successfully"))
+
+    return redirect('crud_cds_websites_pages:crud_cds_websites_pages_shared_objects', code=code)
+
+
 #Common
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_pages_item_delete(request, code, topic_id, data_id, cds_website=None, my_offices=None):
+def cds_websites_pages_items_order_edit(request, code, topic_id, cds_website=None, my_offices=None):
+    
+    topic = get_object_or_404(SitoWebCdsTopic, pk=topic_id)
+    
+    items_list = (SitoWebCdsTopicArticoliReg.objects
+                  .select_related("id_sito_web_cds_oggetti_portale", "id_sito_web_cds_topic", "id_didattica_cds_articoli_regolamento")
+                  .filter(Q(id_sito_web_cds_topic=topic) & (Q(id_sito_web_cds_oggetti_portale__cds_id=cds_website.cds_id) | Q(id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds_id=cds_website.cds_id)))
+                  .order_by("ordine").all())
+
+    if request.POST:
+        item_order = request.POST.getlist('item_order')
+        for index, item_id in enumerate(item_order):
+            item = items_list.get(id=item_id)
+            item.ordine = (index * 10) + 10
+            item.dt_mod = datetime.datetime.now()
+            item.save(update_fields=["ordine", "dt_mod"])
+            
+        log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Updated items order") + f" - {topic.descr_topic_it}")
+
+        messages.add_message(request,
+                                messages.SUCCESS,
+                                _("Items order updated successfully"))
+
+    
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
+                          (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                        '#': f"{topic.descr_topic_it} - " + _("order") }
+    
+    return render(request, 'cds_website_pages_items_order.html',
+                  {
+                  'cds_website' : cds_website,
+                  'items_list': items_list,
+                  'breadcrumbs': breadcrumbs,
+                  })   
+
+# Articles
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_pages_article_edit(request, code, topic_id, data_id, cds_website=None, my_offices=None):
+
+    regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
+    art_reg_form = SitoWebCdsArticoliRegolamentoItemForm(data=request.POST if request.POST else None, user=request.user, instance=regart)
+    user_can_edit = request.user.is_superuser
+
+    if request.POST:
+        if not request.user.is_superuser:
+            return custom_message(request, _("Permission denied"))
+
+        if art_reg_form.is_valid():
+
+            art_reg = art_reg_form.save(commit=False)
+            art_reg.dt_mod = datetime.datetime.now()
+            #art_reg.id_user_mod=request.user
+            art_reg.save()
+
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Edited Regulation Article") + f" {regart.titolo_it}")
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Regulation Article edited successfully"))
+
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics', code=code)
+
+        else:  # pragma: no cover
+            for k, v in art_reg_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{art_reg_form.fields[k].label}</b>: {v}")
+
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
+                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                   '#': regart.titolo_it }
+
+
+    return render(request, 'cds_websites_pages_unique_form.html',
+                  {
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'forms': [art_reg_form,],
+                    'regart': regart,
+                    'item_label': _('Regulation Article'),
+                    'topic_id': topic_id,
+                    'user_can_edit': user_can_edit,
+                    'edit': 1,
+                  })
+    
+
+#Sub articles
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_pages_sub_articles(request, code, topic_id, data_id, cds_website=None, my_offices=None):
+    
+    regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
+    if(not regart.id_didattica_cds_articoli_regolamento):
+        return custom_message(request, _("Permission denied"))
+    
+    sub_articles_list = (SitoWebCdsSubArticoliRegolamento.objects
+                   .filter(id_sito_web_cds_topic_articoli_reg=regart)
+                   .order_by("ordine").all())
+    
+    breadcrumbs = { reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
+                          (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_article_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
+                        '#': _("Sub articles") }
+    
+    return render(request, 'cds_websites_pages_sub_articles.html',
+                  {
+                  'cds_website' : cds_website,
+                  'sub_articles_list': sub_articles_list,
+                  'regart': regart,
+                  'topic_id': topic_id,
+                  'breadcrumbs': breadcrumbs,
+                  })
+    
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_pages_sub_article_edit(request, code, topic_id, data_id, sub_art_id, cds_website=None, my_offices=None):
+    
+    regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
+    sub_article = get_object_or_404(SitoWebCdsSubArticoliRegolamento, pk=sub_art_id)
+    sitowebcdssubarticoliregolamentoform = SitoWebCdsSubArticoliRegolamentoForm(data=request.POST if request.POST else None, instance=sub_article)
+    user_can_edit = request.user.is_superuser
+    
+    if request.POST:
+        if not request.user.is_superuser:
+            return custom_message(request, _("Permission denied"))
+
+        if sitowebcdssubarticoliregolamentoform.is_valid():
+
+            art_reg = sitowebcdssubarticoliregolamentoform.save(commit=False)
+            art_reg.dt_mod = datetime.datetime.now()
+            art_reg.id_user_mod=request.user
+            art_reg.save()
+
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Edited sub article") + f" {sub_article.titolo_it}")
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Sub article edited successfully"))
+
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics', code=code)
+        
+    
+    breadcrumbs = { reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
+                          (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_article_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_sub_articles', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : _("Sub articles"),
+                        '#': sub_article.titolo_it }
+    
+    return render(request, 'cds_websites_pages_unique_form.html',
+                  {
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'forms': [sitowebcdssubarticoliregolamentoform,],
+                    'regart': regart,
+                    'item_label': _('Sub article'),
+                    'topic_id': topic_id,
+                    'user_can_edit': user_can_edit,
+                    'edit': 1,
+                  })
+
+
+# Objects
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_pages_object_add(request, code, topic_id, cds_website=None, my_offices=None):
+
+    obj_item_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, cds_id=cds_website.cds_id)
+
+    if request.POST:
+        if obj_item_form.is_valid():
+
+            obj_item = obj_item_form.save(commit=False)
+            obj_item.id_sito_web_cds_topic = get_object_or_404(SitoWebCdsTopic, pk=topic_id)
+            obj_item.id_sito_web_cds_oggetti_portale = get_object_or_404(SitoWebCdsOggettiPortale, pk=obj_item_form.data.get("id_sito_web_cds_oggetti_portale", None))
+            obj_item.dt_mod = datetime.datetime.now()
+            obj_item.id_user_mod=request.user
+            obj_item.save()
+
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Added Portal Object"))
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Portal Object added successfully"))
+
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics', code=code)
+
+        else:  # pragma: no cover
+            for k, v in obj_item_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{obj_item_form.fields[k].label}</b>: {v}")
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
+                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                   '#': _("Add Portal Object") }
+
+    return render(request, 'cds_websites_pages_unique_form.html',
+                  {
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'topic_id' : topic_id,
+                    'forms': [obj_item_form,],
+                    'item_label': _('Portal Object'),
+                  })
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_pages_object_edit(request, code, topic_id, data_id, cds_website=None, my_offices=None):
+
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
 
-    if not request.user.is_superuser and (is_protected_by_etl(regart.id_user_mod.pk) 
-                                          or regart.id_didattica_cds_articoli_regolamento is not None):
+    initial = {
+        "id_sito_web_cds_oggetti_portale": regart.id_sito_web_cds_oggetti_portale.id,
+    }
+    obj_item_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, instance=regart, user=request.user, cds_id=cds_website.cds_id, initial=initial)
+    user_can_edit = request.user.is_superuser or regart.id_user_mod_id not in getattr(settings, "ETL_USER_IDS", [])
+
+    if request.POST:
+        if not request.user.is_superuser and is_protected_by_etl(regart.id_user_mod.pk):
+            return custom_message(request, _("Permission denied"))
+        if obj_item_form.is_valid():
+
+            obj_item = obj_item_form.save(commit=False)
+            obj_item.dt_mod = datetime.datetime.now()
+            obj_item.id_user_mod=request.user
+            obj_item.save()
+
+            log_action(user=request.user,
+                            obj=cds_website,
+                            flag=CHANGE,
+                            msg=_("Edited Object"))
+
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    _("Object edited successfully"))
+
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics', code=code)
+
+        else:  # pragma: no cover
+            for k, v in obj_item_form.errors.items():
+                messages.add_message(request, messages.ERROR,
+                                        f"<b>{obj_item_form.fields[k].label}</b>: {v}")
+
+
+    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
+                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                   '#': regart.titolo_it }
+
+
+    return render(request, 'cds_websites_pages_unique_form.html',
+                  {
+                    'cds_website': cds_website,
+                    'breadcrumbs': breadcrumbs,
+                    'forms': [obj_item_form,],
+                    'regart': regart,
+                    'user_can_edit': user_can_edit,
+                    'item_label': _('Object'),
+                    'topic_id': topic_id,
+                    'edit': 1,
+                  })
+
+@login_required
+@can_manage_cds_website
+@can_edit_cds_website
+def cds_websites_pages_object_delete(request, code, topic_id, data_id, cds_website=None, my_offices=None):
+    regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
+
+    if not request.user.is_superuser and (is_protected_by_etl(regart.id_user_mod.pk) or regart.id_didattica_cds_articoli_regolamento is not None):
         return custom_message(request, _("Permission denied"))
 
     regart.delete()
@@ -177,78 +603,57 @@ def cds_websites_pages_item_delete(request, code, topic_id, data_id, cds_website
                             messages.SUCCESS,
                             _("Item removed successfully"))
 
-    return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', code=code)
+    return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics', code=code)
 
 
-
+# Extras
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_pages_regart_item_edit(request, code, topic_id, data_id, cds_website=None, my_offices=None):
-
+def cds_websites_pages_extras(request, code, topic_id, data_id, cds_website=None, my_offices=None):
+    
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
-    regart_extras = SitoWebCdsTopicArticoliRegAltriDati.objects.filter(id_sito_web_cds_topic_articoli_reg=data_id)
-    art_reg_form = SitoWebCdsArticoliRegolamentoItemForm(data=request.POST if request.POST else None, instance=regart, cds_id=cds_website.cds_id)
+    extras_list = (SitoWebCdsTopicArticoliRegAltriDati.objects
+                   .filter(id_sito_web_cds_topic_articoli_reg=regart)
+                   .order_by("ordine").all())
 
     if request.POST:
-
-        if not request.user.is_superuser and is_protected_by_etl(regart.id_user_mod.pk):
-            return custom_message(request, _("Permission denied"))
-
-        if art_reg_form.is_valid():
-
-            art_reg = art_reg_form.save(commit=False)
-            art_reg.dt_mod = datetime.datetime.now()
-            art_reg.id_user_mod=request.user
-            art_reg.save()
-
-            log_action(user=request.user,
+        item_order = request.POST.getlist('item_order')
+        for index, item_id in enumerate(item_order):
+            item = extras_list.get(id=item_id)
+            item.ordine = (index * 10) + 10
+            item.dt_mod = datetime.datetime.now()
+            item.save(update_fields=["ordine", "dt_mod"])
+            
+        log_action(user=request.user,
                             obj=cds_website,
                             flag=CHANGE,
-                            msg=_("Edited Regulation Article"))
+                            msg=_("Updated extras order") + f" - {regart.titolo_it}")
 
-            messages.add_message(request,
-                                    messages.SUCCESS,
-                                    _("Regulation Article edited successfully"))
-
-            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', code=code)
-
-        else:  # pragma: no cover
-            for k, v in art_reg_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                        f"<b>{art_reg_form.fields[k].label}</b>: {v}")
-
-
-    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
-                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
-                   '#': regart.titolo_it }
-
-    popover_title_content = {
-        'extras': {
-            'title': _("Regulation Articles' Extras"),
-            'content': _("This section allows to manage Extra elements (usually links) which are appended beneath the article.")
-        }
-    }
-
-    return render(request, 'cds_websites_pages_regulation_articles_form.html',
+        messages.add_message(request,
+                                messages.SUCCESS,
+                                _("Extras order updated successfully"))
+    
+    breadcrumbs = { reverse('crud_utils:crud_dashboard'): _('Dashboard'),
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
+                          (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
+                    reverse('crud_cds_websites_pages:crud_cds_websites_pages_article_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
+                        '#': _("Extras") }
+    
+    return render(request, 'cds_websites_pages_extras.html',
                   {
-                    'cds_website': cds_website,
-                    'breadcrumbs': breadcrumbs,
-                    'forms': [art_reg_form,],
-                    'regart': regart,
-                    'regart_extras': regart_extras,
-                    'item_label': _('Regulation Article'),
-                    'popover_title_content': popover_title_content,
-                    'topic_id': topic_id,
-                    'edit': 1,
-                  })
+                  'cds_website' : cds_website,
+                  'extras_list': extras_list,
+                  'regart': regart,
+                  'topic_id': topic_id,
+                  'breadcrumbs': breadcrumbs,
+                  })    
 
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_pages_regart_extra_new(request, code, topic_id, data_id, cds_website=None, my_offices=None):
+def cds_websites_pages_extra_new(request, code, topic_id, data_id, cds_website=None, my_offices=None):
 
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
     regart_extra_form = SitoWebCdsTopicArticoliRegAltriDatiForm(data=request.POST if request.POST else None)
@@ -272,7 +677,7 @@ def cds_websites_pages_regart_extra_new(request, code, topic_id, data_id, cds_we
                                     messages.SUCCESS,
                                     _("Regulation Article Extra added successfully"))
 
-            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_regart_item_edit', code=code, topic_id=topic_id, data_id=data_id)
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_extras', code=code, topic_id=topic_id, data_id=data_id)
 
         else:  # pragma: no cover
             for k, v in regart_extra_form.errors.items():
@@ -281,42 +686,39 @@ def cds_websites_pages_regart_extra_new(request, code, topic_id, data_id, cds_we
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
                        (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_regart_item_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_article_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_extras', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : _('Extras'),
                    '#': _("New Extra") }
 
     return render(request, 'cds_websites_pages_unique_form.html',
                   {
                     'cds_website': cds_website,
                     'topic_id': topic_id,
+                    'regart': regart,
                     'forms': [regart_extra_form,],
                     'item_label': _('Regulation Article Extra'),
                     'breadcrumbs': breadcrumbs,
                   })
 
-
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_pages_regart_extra_edit(request, code, topic_id, data_id, extra_id, cds_website=None, my_offices=None):
+def cds_websites_pages_extra_edit(request, code, topic_id, data_id, extra_id, cds_website=None, my_offices=None):
 
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
     regart_extra = get_object_or_404(SitoWebCdsTopicArticoliRegAltriDati, pk=extra_id)
+    user_can_edit = request.user.is_superuser or regart_extra.id_user_mod_id not in getattr(settings, "ETL_USER_IDS", []) or regart.id_user_mod_id not in getattr(settings, "ETL_USER_IDS", [])
 
     if not request.user.is_superuser and is_protected_by_etl(regart_extra.id_user_mod.pk):
         return custom_message(request, _("Permission denied"))
 
-    initial = {
-        'id_sito_web_cds_tipo_dato' : regart_extra.id_sito_web_cds_tipo_dato_id
-    }
-    regart_extra_form = SitoWebCdsTopicArticoliRegAltriDatiForm(data=request.POST if request.POST else None, instance=regart_extra, initial=initial)
+    regart_extra_form = SitoWebCdsTopicArticoliRegAltriDatiForm(data=request.POST if request.POST else None, instance=regart_extra)
 
     if request.POST:
-        if regart_extra_form.is_valid():
-
+        if regart_extra_form.is_valid() and regart_extra_form.has_changed():
             regart_extra = regart_extra_form.save(commit=False)
-            regart_extra.id_sito_web_cds_tipo_dato = get_object_or_404(SitoWebCdsTipoDato, pk=regart_extra_form.data.get("id_sito_web_cds_tipo_dato", None))
             regart_extra.dt_mod = datetime.datetime.now()
             regart_extra.id_user_mod=request.user
             regart_extra.save()
@@ -330,7 +732,7 @@ def cds_websites_pages_regart_extra_edit(request, code, topic_id, data_id, extra
                                     messages.SUCCESS,
                                     _("Regulation Article Extra edited successfully"))
 
-            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_regart_item_edit', code=code, topic_id=topic_id, data_id=data_id)
+            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_extras', code=code, topic_id=topic_id, data_id=data_id)
 
         else:  # pragma: no cover
             for k, v in regart_extra_form.errors.items():
@@ -340,9 +742,10 @@ def cds_websites_pages_regart_extra_edit(request, code, topic_id, data_id, extra
 
     breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
                    reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics', kwargs={'code': code}):
                        (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_regart_item_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_article_edit', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : regart.titolo_it,
+                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_extras', kwargs={'code': code, 'topic_id' : topic_id, 'data_id' : data_id }) : _('Extras'),
                    '#': regart_extra.testo_it if (request.LANGUAGE_CODE == 'it' or not regart_extra.testo_en) else regart_extra.testo_en }
 
     return render(request, 'cds_websites_pages_unique_form.html',
@@ -351,6 +754,7 @@ def cds_websites_pages_regart_extra_edit(request, code, topic_id, data_id, extra
                     'breadcrumbs': breadcrumbs,
                     'topic_id': topic_id,
                     'forms': [regart_extra_form,],
+                    'user_can_edit': user_can_edit,
                     'item_label': _('Regulation Article Extra'),
                     'edit': 1,
                   })
@@ -359,7 +763,7 @@ def cds_websites_pages_regart_extra_edit(request, code, topic_id, data_id, extra
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
-def cds_websites_pages_regart_extra_delete(request, code, topic_id, data_id, extra_id, cds_website=None, my_offices=None):
+def cds_websites_pages_extra_delete(request, code, topic_id, data_id, extra_id, cds_website=None, my_offices=None):
 
     extra = get_object_or_404(SitoWebCdsTopicArticoliRegAltriDati, pk=extra_id)
 
@@ -377,244 +781,4 @@ def cds_websites_pages_regart_extra_delete(request, code, topic_id, data_id, ext
                             messages.SUCCESS,
                             _("Regulation Article Extra deleted successfully"))
 
-    return redirect('crud_cds_websites_pages:crud_cds_websites_pages_regart_item_edit', code=code, topic_id=topic_id, data_id=data_id)
-
-
-
-#Objects
-@login_required
-@can_manage_cds_website
-@can_edit_cds_website
-def cds_websites_pages_object_edit(request, code, data_id, cds_website=None, my_offices=None):
-
-    _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
-
-    if not request.user.is_superuser and is_protected_by_etl(_object.id_user_mod.pk):
-        return custom_message(request, _("Permission denied"))
-
-    object_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None, instance=_object)
-
-    if request.POST:
-        if object_form.is_valid():
-
-            _object = object_form.save(commit=False)
-            _object.id_user_mod = request.user
-            _object.dt_mod = datetime.datetime.now()
-            _object.save()
-
-            log_action(user=request.user,
-                        obj=cds_website,
-                        flag=CHANGE,
-                        msg=_("Edited object"))
-
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("Object edited successfully"))
-
-            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', code=code)
-
-        else:  # pragma: no cover
-            for k, v in object_form.errors.items():
-                if k == '__all__':
-                    messages.add_message(request, messages.ERROR, f"{v}")
-                else:
-                    messages.add_message(request, messages.ERROR,
-                                     f"<b>{object_form.fields[k].label}</b>: {v}")
-
-    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
-                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', kwargs={'code': code}): _("Shared objects"),
-                   '#': _("Edit Object") }
-
-    return render(request, 'cds_website_pages_shared_object_form.html',
-                  {
-                    'cds_website': cds_website,
-                    'breadcrumbs': breadcrumbs,
-                    'forms': [object_form,],
-                    'item_label': _('Object'),
-                    'edit': 1,
-                  })
-
-
-@login_required
-@can_manage_cds_website
-@can_edit_cds_website
-def cds_websites_pages_object_new(request, code, cds_website=None, my_offices=None):
-
-    object_form = SitoWebCdsOggettiPortaleForm(data=request.POST if request.POST else None)
-
-    if request.POST:
-        if  object_form.is_valid():
-
-            _object = object_form.save(commit=False)
-            _object.cds = cds_website.cds
-            _object.id_user_mod = request.user
-            _object.dt_mod = datetime.datetime.now()
-            _object.aa_regdid_id = max(DidatticaRegolamento.objects.filter(cds_id=cds_website.cds_id).values_list('aa_reg_did', flat=True))
-            _object.save()
-
-            log_action(user=request.user,
-                        obj=cds_website,
-                        flag=CHANGE,
-                        msg=_("Added object"))
-
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 _("Object added successfully"))
-
-            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', code=code)
-
-        else:  # pragma: no cover
-            for k, v in object_form.errors.items():
-                if k == '__all__':
-                    messages.add_message(request, messages.ERROR, f"{v}")
-                else:
-                    messages.add_message(request, messages.ERROR,
-                                     f"<b>{object_form.fields[k].label}</b>: {v}")
-
-    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
-                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', kwargs={'code': code}): _("Shared objects"),
-                   '#': _("New Object") }
-
-    return render(request, 'cds_website_pages_shared_object_form.html',
-                  {
-                    'cds_website': cds_website,
-                    'breadcrumbs': breadcrumbs,
-                    'forms': [object_form,],
-                    'item_label': _('Object'),
-                  })
-
-@login_required
-@can_manage_cds_website
-@can_edit_cds_website
-def cds_websites_pages_object_delete(request, code, data_id, cds_website=None, my_offices=None):
-
-    _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
-
-    if not request.user.is_superuser and is_protected_by_etl(_object.id_user_mod.pk):
-        return custom_message(request, _("Permission denied"))
-
-    _object.delete()
-
-    log_action(user=request.user,
-                obj=cds_website,
-                flag=CHANGE,
-                msg=_("Removed object"))
-
-    messages.add_message(request,
-                            messages.SUCCESS,
-                            _("Object removed successfully"))
-
-    return redirect('crud_cds_websites_pages:crud_cds_websites_pages_objects_edit', code=code)
-
-
-@login_required
-@can_manage_cds_website
-@can_edit_cds_website
-def cds_websites_pages_object_item_add(request, code, topic_id, cds_website=None, my_offices=None):
-
-    obj_item_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, cds_id=cds_website.cds_id)
-
-    if request.POST:
-        if obj_item_form.is_valid():
-
-            obj_item = obj_item_form.save(commit=False)
-            obj_item.id_sito_web_cds_topic = get_object_or_404(SitoWebCdsTopic, pk=topic_id)
-            obj_item.id_sito_web_cds_oggetti_portale = get_object_or_404(SitoWebCdsOggettiPortale, pk=obj_item_form.data.get("id_sito_web_cds_oggetti_portale", None))
-            obj_item.dt_mod = datetime.datetime.now()
-            obj_item.id_user_mod=request.user
-            obj_item.save()
-
-            log_action(user=request.user,
-                            obj=cds_website,
-                            flag=CHANGE,
-                            msg=_("Added Portal Object"))
-
-            messages.add_message(request,
-                                    messages.SUCCESS,
-                                    _("Portal Object added successfully"))
-
-            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', code=code)
-
-        else:  # pragma: no cover
-            for k, v in obj_item_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                        f"<b>{obj_item_form.fields[k].label}</b>: {v}")
-
-    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
-                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
-                   '#': _("Add Portal Object") }
-
-    return render(request, 'cds_websites_pages_unique_form.html',
-                  {
-                    'cds_website': cds_website,
-                    'breadcrumbs': breadcrumbs,
-                    'topic_id' : topic_id,
-                    'forms': [obj_item_form,],
-                    'item_label': _('Portal Object'),
-                  })
-
-@login_required
-@can_manage_cds_website
-@can_edit_cds_website
-def cds_websites_pages_object_item_edit(request, code, topic_id, data_id, cds_website=None, my_offices=None):
-
-    regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
-
-    if not request.user.is_superuser and is_protected_by_etl(regart.id_user_mod.pk):
-        return custom_message(request, _("Permission denied"))
-
-    initial = {
-        "id_sito_web_cds_oggetti_portale": regart.id_sito_web_cds_oggetti_portale.id,
-    }
-    obj_item_form = SitoWebCdsOggettiItemForm(data=request.POST if request.POST else None, instance=regart, cds_id=cds_website.cds_id, initial=initial)
-
-    if request.POST:
-        if obj_item_form.is_valid():
-
-            obj_item = obj_item_form.save(commit=False)
-            obj_item.dt_mod = datetime.datetime.now()
-            obj_item.id_user_mod=request.user
-            obj_item.save()
-
-            log_action(user=request.user,
-                            obj=cds_website,
-                            flag=CHANGE,
-                            msg=_("Edited Item Article"))
-
-            messages.add_message(request,
-                                    messages.SUCCESS,
-                                    _("Item edited successfully"))
-
-            return redirect('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', code=code)
-
-        else:  # pragma: no cover
-            for k, v in obj_item_form.errors.items():
-                messages.add_message(request, messages.ERROR,
-                                        f"<b>{obj_item_form.fields[k].label}</b>: {v}")
-
-
-    breadcrumbs = {reverse('crud_utils:crud_dashboard'): _('Dashboard'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages'): _('CdS pages'),
-                   reverse('crud_cds_websites_pages:crud_cds_websites_pages_topics_edit', kwargs={'code': code}):
-                       (cds_website.cds.nome_cds_it if (request.LANGUAGE_CODE == 'it' or not cds_website.cds.nome_cds_eng) else cds_website.cds.nome_cds_eng) + ' (' + _("Topics") + ')',
-                   '#': regart.titolo_it }
-
-
-    return render(request, 'cds_websites_pages_unique_form.html',
-                  {
-                    'cds_website': cds_website,
-                    'breadcrumbs': breadcrumbs,
-                    'forms': [obj_item_form,],
-                    'regart': regart,
-                    'item_label': _('Item'),
-                    'topic_id': topic_id,
-                    'edit': 1,
-                  })
+    return redirect('crud_cds_websites_pages:crud_cds_websites_pages_extras', code=code, topic_id=topic_id, data_id=data_id)

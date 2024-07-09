@@ -47,8 +47,19 @@
         {% trans "Show Preview" %}
     </a>
 </div>
+    
+{% endblock title %}
 
+{% block submit %}
+    {% if edit and user_can_edit %}
+        {% include "cds_websites_pages_shared_object_form_submit_warning.html" %}
+    {% else %}
+        {{block.super}}
+    {% endif %}
+{% endblock submit %}
 
+{% block extra_scripts %}
+{{ block.super }}
 <script>
     function refreshPreview() {
         let objectclass = document.getElementById("id_id_classe_oggetto_portale").value;
@@ -92,13 +103,4 @@
     button.addEventListener("click", refreshPreview, false);
 
 </script>
-    
-{% endblock title %}
-
-{% block submit %}
-    {% if edit %}
-        {% include "cds_websites_pages_shared_object_form_submit_warning.html" %}
-    {% else %}
-        {{block.super}}
-    {% endif %}
-{% endblock submit %}
+{% endblock %}

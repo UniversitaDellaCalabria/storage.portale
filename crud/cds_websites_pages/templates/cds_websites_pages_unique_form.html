@@ -2,10 +2,11 @@
 
 {% load i18n %}
 {% load static %}
-
+{% load crud_templatetags %}
 
 {% block centered_container %}
 
+{% settings_value "ETL_USER_IDS" as etl_ids %}
 {% get_current_language as LANGUAGE_CODE %}
 
 <div>
@@ -14,9 +15,11 @@
         {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %}
             {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_en %}{{ cds_website.cds.nome_cds_it }}{% else %} {{ cds_website.cds.nome_cds_eng }} {% endif %}
     </h3>
+    
     {% endblock %}
     {% block before_forms%}
     {% endblock before_forms %}
+
     <form method="post" enctype="multipart/form-data" novalidate>
         {% block forms %}
             <div class="card-wrapper card-space">
@@ -30,7 +33,9 @@
                         {% endblock before_submit %}
 
                         {% block submit %}
+                        {% if not edit or user_can_edit %}
                             {% include "includes/form_submit.html" %}
+                        {%endif%}
                         {% endblock submit %}
 
                         {% block after_submit%}
@@ -44,3 +49,34 @@
     {% endblock after_forms %}
 </div>
 {% endblock centered_container %}
+
+{% block extra_scripts %}
+{% settings_value "ETL_USER_IDS" as etl_ids %}
+{% if edit and not user_can_edit %}
+    {% random_id uid as e_id %}
+    <script>
+        //readonly editor
+        {{e_id}}_set_editor_readonly = (editor_id) => {
+            // hide/show toolbar
+            const editor = this.editors[editor_id];
+            const toolbarElement = editor.ui.view.toolbar.element;
+            //const wordCount = editor.ui.view.element.parentNode.getElementsByClassName("word-count")[0];
+            editor.on( 'change:isReadOnly', ( evt, propertyName, isReadOnly ) => {
+                if ( isReadOnly ) {
+                    toolbarElement.style.display = 'none';
+                    //wordCount.style.display = 'none';
+                } else {
+                    toolbarElement.style.display = 'flex';
+                    //wordCount.style.display = 'flex';
+                }
+            });
+            // set editor readonly
+            editor.enableReadOnlyMode("view");
+        };
+        $(function() {
+            {{e_id}}_set_editor_readonly("id_testo_it");
+            {{e_id}}_set_editor_readonly("id_testo_en");
+        });
+    </script>
+{% endif %}
+{% endblock extra_scripts %}
