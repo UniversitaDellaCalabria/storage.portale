@@ -3413,7 +3413,8 @@ class ServicePersonale:
             'cd_uo_aff_org',
             'ds_aff_org',
             'cd_uo_aff_org__cd_tipo_nodo',
-            'dt_rap_ini'
+            'dt_rap_ini',
+            'sede'
         ).distinct()
 
         ruoli_dict = {}
@@ -3424,7 +3425,8 @@ class ServicePersonale:
                       r['ds_ruolo'],
                       r['cd_uo_aff_org'],
                       r['ds_aff_org'],
-                      r['cd_uo_aff_org__cd_tipo_nodo']]
+                      r['cd_uo_aff_org__cd_tipo_nodo'],
+                      r['sede']]
             if full: l_data.append(r['dt_rap_ini'])
 
             ruoli_dict[r['matricola']].append(l_data)
@@ -3483,6 +3485,7 @@ class ServicePersonale:
                               'cd_uo_aff_org': r[2],
                               'ds_aff_org': r[3],
                               'cd_tipo_nodo': r[4],
+                              'sede': r[5]
                               }
                     if full:
                         d_data['dt_rap_ini'] = r[5]
@@ -3536,11 +3539,10 @@ class ServicePersonale:
 
         filtered4 = []
         if structureid:
-
             for item in filtered3:
                 for r in item['Roles']:
-                    if r['cd_uo_aff_org'] == structureid:
-                        if r['cd_ruolo'] in role or item['profilo'] in role or not role:
+                    if r['cd_uo_aff_org'] == structureid or r['sede'] == structureid:
+                        if not role or r['cd_ruolo'] in role or item['profilo'] in role:
                             filtered4.append(item)
                             break
         else:
@@ -3549,11 +3551,10 @@ class ServicePersonale:
         filtered5 = []
         if structuretree:
             query_structuretree = ServiceStructure.getStructureChilds(structuretree)
-
             for item in filtered4:
                 if item['Roles'] and len(item['Roles']) != 0:
                     for r in item['Roles']:
-                        if r['cd_uo_aff_org'] in query_structuretree:
+                        if r['cd_uo_aff_org'] in query_structuretree or r['sede'] in query_structuretree:
                             if r['cd_ruolo'] in role or item['profilo'] in role or not role:
                                 filtered5.append(item)
                                 break
@@ -4719,19 +4720,12 @@ class ServiceStructure:
 
     @staticmethod
     def getStructureChilds(structureid=None):
-
         child = UnitaOrganizzativa.objects.filter(
             uo_padre=structureid,
             dt_fine_val__gte=datetime.datetime.today()).values_list("uo", flat=True)
-
         result = [structureid]
-
-
         for c in child:
-
             structures_tree = ServiceStructure.getStructureChilds(c)
             result.extend(structures_tree)
-
         result.extend(child)
-
         return result
