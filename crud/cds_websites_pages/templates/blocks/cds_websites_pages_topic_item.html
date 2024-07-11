@@ -36,15 +36,18 @@
         aria-labelledby="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
 
     <div class="collapse-body">
+        {% if user.is_superuser %}
         <div class="d-flex">
             <a  href="{% url 'crud_cds_websites_pages:crud_cds_websites_pages_items_order_edit' code=cds_website.id topic_id=topic_id %}"
-                class="btn btn-xs btn-primary ml-auto">
+                class="btn btn-xs btn-primary ml-auto"
+                style="display: none;">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                 </svg> 
                 {% trans "Manage order" %}
             </a>
         </div>
+        {% endif %}
         <!-- Reg Articles -->
         {% include "blocks/cds_websites_pages_regulation_article_items.html" %}
         <!-- /Reg Articles -->

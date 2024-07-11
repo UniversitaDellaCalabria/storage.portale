@@ -1,13 +1,14 @@
 {% load i18n %}
 {% load static %}
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped table-responsive-sm">
     <thead>
         <tr class="d-flex">
-            <th class="col-5">{% trans "Objects" %}</th>
-            <th class="col-3 text-center">{% trans "Order" %}</th>
-            <th class="col-2 text-center">{% trans "Visible" %}</th>
-            <th class="col-2 text-right">
+            <th class="col">{% trans "Objects" %}</th>
+            <th class="col-2 text-center text-truncate">{% trans "Type" %}</th>
+            <th class="col-2 text-center text-truncate">{% trans "Order" %}</th>
+            <th class="col-2 text-center text-truncate">{% trans "Visible" %}</th>
+            <th class="col-auto text-right">
                 <a  tabindex="0"
                     href="javascript:void(0)"
                     role="button"
@@ -61,13 +62,16 @@
             </div>
             <!-- /Object Delete Modal -->
             <tr class="d-flex">
-                <td class="col-5">
+                <td class="col">
                     {{ object.titolo_it }}
                 </td>
-                <td class="col-3 text-center">
+                <td class="col-2 text-center text-truncate">
+                    {{ object.id_sito_web_cds_oggetti_portale.id_classe_oggetto_portale }}
+                </td>
+                <td class="col-2 text-center text-truncate">
                     {{ object.ordine }}
                 </td>
-                <td class="col-2 text-center">
+                <td class="col-2 text-center text-truncate">
                     {% if object.visibile %}
                     <svg class="icon icon-sm icon-success">
                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
@@ -78,7 +82,7 @@
                     </svg>
                     {% endif %}
                 </td>
-                <td class="col-2 text-right">
+                <td class="col-auto text-right">
                     <div class="btn-group">
                         <a href="javascript:void(0)" type="button" class="btn dropdown-toggle p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <svg class="icon">
@@ -144,6 +148,27 @@
                 </td>
             </tr>
         {% endfor %}
+        {% if topic_obj_regarts.objects|length < 1 %}
+            <tr class="d-flex">
+                <td class="col">
+                    {% trans "None" %}
+                </td>
+                <td class="col-2 text-center text-truncate">
+                    -
+                </td>
+                <td class="col-2 text-center text-truncate">
+                    -
+                </td>
+                <td class="col-2 text-center text-truncate">
+                    -
+                </td>
+                <td class="col-auto text-right">
+                    <svg class="icon" style="visibility: hidden;">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-more-actions"></use>
+                    </svg>
+                </td>
+            </tr>
+        {% endif %}
     </tbody>
 </table>
 

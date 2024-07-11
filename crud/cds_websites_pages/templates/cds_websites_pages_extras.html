@@ -12,6 +12,9 @@
         pointer-events: none;
         opacity: 0.2;
     }
+    .dropdown-menu.show::before {
+        display: none !important;
+    }
 </style>
 {% endblock %}
 
@@ -34,7 +37,7 @@
         <div class="card-body">
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
-                <table id="sortable" class="table table-sm table-striped mb-0">
+                <table id="sortable" class="table table-sm table-striped table-responsive-xs mb-0">
                     <thead class="table-white sticky-top">
                         <tr class="d-flex">
                             <th class="col-auto text-center">
@@ -43,7 +46,7 @@
                                 </svg>
                             </th>
                             <th class="col">{% trans "Extra" %}</th>
-                            <th class="col-auto col-md-2 col-xs-1 col-1 text-center text-truncate">{% trans "Visible" %}</th>
+                            <th class="col-2 text-center text-truncate">{% trans "Visible" %}</th>
                             <th class="col-auto text-right">
                                 <svg class="icon" style="visibility: hidden;">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-more-actions"></use>
@@ -103,7 +106,7 @@
                                     <td class="col align-content-center">
                                         {{regart_extra.testo_it}}     
                                     </td>
-                                    <td class="col-auto col-md-2 align-content-center text-center">
+                                    <td class="col-2 align-content-center text-center">
                                     {% if regart_extra.visibile %}
                                         <svg class="icon icon-sm icon-success">
                                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>

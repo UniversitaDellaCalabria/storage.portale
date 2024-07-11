@@ -7,6 +7,11 @@
 {% block extra_head %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+<style>
+    .dropdown-menu.show::before {
+        display: none !important;
+    }
+</style>
 {% endblock %}
 
 {% block centered_container %}
@@ -27,11 +32,11 @@
     <div class="card card-bg no-after">
         <div class="card-body">
             
-            <table class="table table-sm table-striped">
+            <table class="table table-sm table-striped table-responsive-xs">
                 <thead class="table-dark sticky-top shadow-sm">
                     <tr class="d-flex">
                         <th class="col">{% trans "Sub article" %}</th>
-                        <th class="col-auto col-md-2 col-xs-1 col-1 text-center text-truncate">{% trans "Visible" %}</th>
+                        <th class="col-2 text-center text-truncate">{% trans "Visible" %}</th>
                         <th class="col-auto text-right">
                             <svg class="icon" style="visibility: hidden;">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-search"></use>
@@ -49,7 +54,7 @@
                                         {{ sub_article.testo_it }}
                                     {% endif %}         
                                 </td>
-                                <td class="col-auto col-md-2 align-content-center text-center">
+                                <td class="col-2 align-content-center text-center">
                                 {% if sub_article.visibile %}
                                     <svg class="icon icon-sm icon-success">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>

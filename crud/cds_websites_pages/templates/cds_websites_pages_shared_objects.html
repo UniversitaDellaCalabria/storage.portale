@@ -7,6 +7,11 @@
 {% block extra_head %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+<style>
+    .dropdown-menu.show::before {
+        display: none !important;
+    }
+</style>
 {% endblock %}
 
 {% block centered_container %}
@@ -27,7 +32,7 @@
     <div class="card card-bg no-after">
         <div class="card-body">
             
-            <table class="table table-sm table-striped">
+            <table class="table table-sm table-striped table-responsive-sm">
                 <thead class="table-dark sticky-top shadow-sm">
                     <tr class="d-flex">
                         <th class="col">{% trans "Object" %}</th>

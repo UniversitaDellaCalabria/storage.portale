@@ -6,6 +6,11 @@
 {% block extra_head %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+<style>
+    .dropdown-menu.show::before {
+        display: none !important;
+    }
+</style>
 {% endblock %}
 
 {% block centered_container %}
@@ -146,5 +151,54 @@
     $('.popover-dismiss').popover({
         trigger: 'focus',
       });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all dropdown toggle buttons within table-responsive
+        var dropdownToggles = document.querySelectorAll('.table-responsive .dropdown-toggle');
+
+        dropdownToggles.forEach(function (toggle) {
+            toggle.addEventListener('click', function (event) {
+                // Find the dropdown menu
+                var dropdownMenu = toggle.nextElementSibling;
+                var btnGroup = toggle.parentElement;
+
+                // Check if the parent .btn-group has the 'show' class
+                if (btnGroup.classList.contains('show')) {
+                    // Remove the 'show' class and hide the dropdown
+                    btnGroup.classList.remove('show');
+                    dropdownMenu.style.display = 'none';
+                } else {
+                    // Add the 'show' class to parent .btn-group and show the dropdown
+                    btnGroup.classList.add('show');
+                    dropdownMenu.style.display = 'block';
+
+                    // Get the position of the button group relative to the viewport
+                    var rect = btnGroup.getBoundingClientRect();
+
+                    // Calculate the top and left positions for the dropdown
+                    var dropdownTop = rect.top + btnGroup.offsetHeight;
+                    var dropdownLeft = rect.left;
+
+                    // Apply the calculated positions
+                    dropdownMenu.style.top = dropdownTop + 'px';
+                    dropdownMenu.style.left = dropdownLeft + 'px';
+                }
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            dropdownToggles.forEach(function (toggle) {
+                var btnGroup = toggle.parentElement;
+                var dropdownMenu = toggle.nextElementSibling;
+
+                if (!btnGroup.contains(event.target)) {
+                    btnGroup.classList.remove('show');
+                    dropdownMenu.style.display = 'none';
+                }
+            });
+        });
+    });
 </script>
 {% endblock extra_scripts %}
