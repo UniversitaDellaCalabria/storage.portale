@@ -3381,7 +3381,7 @@ class ServicePersonale:
         query = Personale.objects.filter(
             query_search,
             flg_cessato=0,
-            cd_uo_aff_org__isnull=False,
+            # cd_uo_aff_org__isnull=False,
             dt_rap_fin__gte=datetime.datetime.today()).values(
             "nome",
             "middle_name",
