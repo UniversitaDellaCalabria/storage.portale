@@ -3415,7 +3415,7 @@ class ServicePersonale:
             'cd_uo_aff_org__cd_tipo_nodo',
             'dt_rap_ini',
             'sede'
-        ).distinct()
+        ).filter(cd_uo_aff_org__isnull=False).distinct()
 
         ruoli_dict = {}
         for r in ruoli:
@@ -3730,7 +3730,7 @@ class ServicePersonale:
             'ds_aff_org',
             'cd_uo_aff_org__cd_tipo_nodo',
             'dt_rap_ini'
-        ).distinct()
+        ).filter(cd_uo_aff_org__isnull=False).distinct()
 
         priorita_tmp = PersonalePrioritaRuolo.objects.values(
             'cd_ruolo',
