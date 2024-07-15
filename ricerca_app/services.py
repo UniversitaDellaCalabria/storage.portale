@@ -3829,6 +3829,7 @@ class ServicePersonale:
                     c['unitaorganizzativacontatti__contatto'])
             funzioni_personale = UnitaOrganizzativaFunzioni.objects.filter(
                 cd_csa=q['cd_csa'],
+                cod_fis__flg_cessato=False,
                 termine__gt=datetime.datetime.now()).values(
                 "ds_funzione",
                 "funzione",
