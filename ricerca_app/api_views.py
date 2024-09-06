@@ -1593,45 +1593,6 @@ class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable): # pragma: no cover
         self.event_types = ['ES']
 
 
-class ApiCdsWebsitesPortalObjectPreview(APIView): # pragma: no cover
-    allowed_methods = ('GET',)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def get(self, request, objectid, objectclass, **kwargs):
-        UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
-        UNICMS_ROOT_URL = getattr(settings, 'UNICMS_ROOT_URL', '')
-        UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', {})
-
-        head = {'Authorization': 'Token {}'.format(UNICMS_AUTH_TOKEN)}
-        res = {
-            "status_code": 500
-        }
-        try:
-            if objectclass not in UNICMS_OBJECT_API.keys():
-                res["status_code"] = 400
-            api_url = UNICMS_OBJECT_API[objectclass].format(objectid)
-            response = requests.get(api_url, headers=head, timeout=(10, 10))
-            res["status_code"] = response.status_code
-            if response.status_code == 200:
-                json_response = json.loads(response._content)
-                res["object_class"] = objectclass
-                if objectclass == "Publication":
-                    res["content"] = json_response.get("content", None)
-                    res["title"] = json_response.get("title", None)
-                    res["subheading"] = json_response.get("subheading", None)
-                    res["preview_image"] = json_response.get("preview_image", None)
-                    res["presentation_image"] = json_response.get("presentation_image", None)
-                else:
-                    res["name"] = json_response.get("name", None)
-                    res["content"] = UNICMS_ROOT_URL + json_response.get("get_full_path", None)
-        except requests.exceptions.RequestException:
-            pass
-        finally:
-            return Response(res)
-
-
 # Lock
 class LockView(APIView):
     description = ""
