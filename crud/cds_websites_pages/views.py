@@ -842,7 +842,7 @@ class ExternalOggettiPortaleViewSet(GenericViewSet):
             
         url = UNICMS_OBJECT_API[object_class] 
         headers = { 'Authorization': f'Token {UNICMS_AUTH_TOKEN}' }
-        params = {'search': search}
+        params = { 'search': search, 'format': 'json' }
         try:
             response_obj = {}
             response = requests.get(url, params=params, headers=headers)
@@ -885,9 +885,10 @@ class ExternalOggettiPortaleViewSet(GenericViewSet):
         
         url = f"{UNICMS_OBJECT_API[object_class]}{pk}/"
         headers = { 'Authorization': f'Token {UNICMS_AUTH_TOKEN}' }
+        params = { 'format': 'json' }
 
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, params=params)
             response.raise_for_status()
             response_json = response.json()
             response_json["object_class"] = object_class

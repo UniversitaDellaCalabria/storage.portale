@@ -59,7 +59,7 @@
                         clearTimeout(this.api_debounce_timeout);
                     }
                     this.api_debounce_timeout = setTimeout(() => {
-                        this.search(this.url + '?search=' + newQuery);
+                        this.search(`${this.url}?search=${newQuery}&format=json`);
                     }, 500); // 500 milliseconds
                 }
             }
@@ -106,7 +106,7 @@
             fetchInitialData() {
                 this.is_loading = true
                 axios
-                    .get(this.url + `${this.initial_value}`)
+                    .get(this.url + `${this.initial_value}/?format=json`)
                     .then(response => {
                         this.selectOption(response.data, true);
                     })
