@@ -4393,9 +4393,12 @@ class SitoWebCdsOggettiPortale(models.Model):
     testo_it = models.TextField(db_column='TESTO_IT', blank=True, null=True)  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
     visibile = models.IntegerField(db_column='VISIBILE')  # Field name made lowercase.
-    dt_mod = models.DateField(db_column='DT_MOD')  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD')  # Field name made lowercase.
     id_user_mod = models.ForeignKey(get_user_model(),on_delete=models.DO_NOTHING, db_column='ID_USER_MOD', blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return f"{self.titolo_it} - {self.aa_regdid_id}" 
+    
     class Meta:
         managed = True
         db_table = 'SITO_WEB_CDS_OGGETTI_PORTALE'
@@ -4477,7 +4480,7 @@ class SitoWebCdsTopic(models.Model):
 
 class SitoWebCdsTopicArticoliReg(VisibileModAbstract):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000, blank=True, null=True)  # Field name made lowercase.
+    titolo_it = models.CharField(db_column='TITOLO_IT', max_length=1000)  # Field name made lowercase.
     titolo_en = models.CharField(db_column='TITOLO_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     testo_it = models.TextField(db_column='TESTO_IT', blank=True, null=True)  # Field name made lowercase.
     testo_en = models.TextField(db_column='TESTO_EN', blank=True, null=True)  # Field name made lowercase.
