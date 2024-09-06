@@ -3381,7 +3381,7 @@ class ServicePersonale:
         query = Personale.objects.filter(
             query_search,
             flg_cessato=0,
-            cd_uo_aff_org__isnull=False,
+            # cd_uo_aff_org__isnull=False,
             dt_rap_fin__gte=datetime.datetime.today()).values(
             "nome",
             "middle_name",
@@ -3415,7 +3415,7 @@ class ServicePersonale:
             'cd_uo_aff_org__cd_tipo_nodo',
             'dt_rap_ini',
             'sede'
-        ).distinct()
+        ).filter(cd_uo_aff_org__isnull=False).distinct()
 
         ruoli_dict = {}
         for r in ruoli:
@@ -3728,7 +3728,7 @@ class ServicePersonale:
             'ds_aff_org',
             'cd_uo_aff_org__cd_tipo_nodo',
             'dt_rap_ini'
-        ).distinct()
+        ).filter(cd_uo_aff_org__isnull=False).distinct()
 
         priorita_tmp = PersonalePrioritaRuolo.objects.values(
             'cd_ruolo',
@@ -3827,6 +3827,7 @@ class ServicePersonale:
                     c['unitaorganizzativacontatti__contatto'])
             funzioni_personale = UnitaOrganizzativaFunzioni.objects.filter(
                 cd_csa=q['cd_csa'],
+                cod_fis__flg_cessato=False,
                 termine__gt=datetime.datetime.now()).values(
                 "ds_funzione",
                 "funzione",
@@ -4695,7 +4696,7 @@ class ServiceProgetto:
         query = ProgettoTipologiaProgramma.objects.values(
             "id",
             "nome_programma"
-        ).distinct()
+        ).order_by('nome_programma').distinct()
 
         return query
 
@@ -4705,19 +4706,15 @@ class ServiceProgetto:
         query = ProgettoDatiBase.objects.values(
             "uo",
             "uo__denominazione",
-        ).distinct()
-
+        ).distinct().order_by("uo__denominazione")
         query = list(query)
-
         for q in query:
             if q['uo'] == None:
                 query.remove(q)
-
         return query
 
 
 class ServiceStructure:
-
     @staticmethod
     def getStructureChilds(structureid=None):
         child = UnitaOrganizzativa.objects.filter(
