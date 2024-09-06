@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
                 ('testo_it', models.TextField(blank=True, db_column='TESTO_IT', null=True)),
                 ('testo_en', models.TextField(blank=True, db_column='TESTO_EN', null=True)),
                 ('visibile', models.IntegerField(db_column='VISIBILE')),
-                ('dt_mod', models.DateField(db_column='DT_MOD')),
+                ('dt_mod', models.DateTimeField(db_column='DT_MOD')),
                 ('cds', models.ForeignKey(db_column='CDS_ID', on_delete=django.db.models.deletion.DO_NOTHING, to='ricerca_app.didatticacds')),
                 ('id_user_mod', models.ForeignKey(db_column='ID_USER_MOD', on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
             ],

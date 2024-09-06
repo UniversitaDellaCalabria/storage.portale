@@ -132,8 +132,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="sitowebcdstopicarticolireg",
             name="titolo_it",
-            field=models.CharField(
-                blank=True, db_column="TITOLO_IT", max_length=1000, null=True
+            field=models.CharField(db_column="TITOLO_IT", max_length=1000
             ),
         ),
         migrations.AlterField(
