@@ -1,0 +1,237 @@
+{% load i18n static crud_templatetags %}
+{% random_id uid as id %}
+{% settings_value "UNICMS_ROOT_URL" as root_url %}
+
+{% include "includes/vue_loading.html" %}
+
+<div id="{{ id }}">
+    <input type="hidden" :name="fieldName" :value="selectedOption ? selectedOption.id : ''">
+    <div class="input-group">
+        <div class="input-group-prepend" style="min-width: 10%;">
+            <select v-model="searchField" class="pl-1 w-100" :disabled="objectClass !== 'Publication'" @change="clearAll">
+                <option value="ID">{% trans 'ID' %}</option>
+                <option value="Name" v-if="objectClass === 'Publication'">{% trans 'Name' %}</option>
+            </select>
+        </div>
+        <input type="text"
+            id="{{ id }}_search"
+            class="form-control"
+            name="{{ id }}_search"
+            v-model="query"
+            :placeholder="searchPlaceholder"
+            @input="validateInput">
+        <div class="input-group-append">
+            <btn class="btn btn-icon btn-primary" @click="handlePreview">
+                <svg class="icon icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-external-link"></use>
+                </svg>
+                {% trans "Preview" %}
+            </btn>
+        </div>
+    </div>
+    <loading-icon v-if="isLoadingSearch"></loading-icon>
+    <div v-if="options.length" class="list-group border" style="max-height: 190px; overflow-y: auto;">
+        <a href="#" v-for="option in options" :key="option.id" class="list-group-item list-group-item-action text-reset h6 m-0" @click="selectOption(option)">
+            <template v-if="objectClass==='Publication'">ID: [[ option.id ]] - [[ option.title ]]</template>
+            <template v-else-if="objectClass==='WebPath'">ID: [[ option.id ]] - https:[[ option.get_absolute_url ]]</template>
+            <template v-else>ID: [[ option.id ]]</template>
+        </a>
+    </div> 
+    <span :class="!data || data.count == 0 ? 'text-danger' : ''" v-if="!selectedOption && query && query.length">[[ data && data.count ? data.count : 0 ]] {% trans "found" %}</span>
+
+    <!-- Preview Modal -->
+    <div class="modal fade it-dialog-scrollable"
+        tabindex="-1"
+        role="dialog"
+        id="preview-modal"
+        aria-labelledby="preview-modal"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>{% trans "Preview" %}</h3>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <loading-icon v-if="isLoadingPreview"></loading-icon>
+                    <div v-if="preview">
+                        <h3 v-if="preview.title">[[ preview.title ]]</h3>
+                        <h4 v-if="preview.subheading" class="pt-1 pb-4" style="font-weight: lighter">[[ preview.subheading ]]</h4>
+                        <div v-if="preview.content" v-html="preview.content"></div>
+                        <img v-if="preview.preview_image" class="w-100" :src="imageUrl(preview.preview_image.file)">
+                        <img v-if="preview.presentation_image" class="w-100" :src="imageUrl(preview.presentation_image.file)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Preview Modal -->
+</div>
+
+<script>
+    var {{ id }} = new Vue({
+        el: "[id='{{id}}']",
+        data: {
+            fieldName: '{{ widget.name }}',
+            url: "{% url 'crud_cds_websites_pages:cds_websites_external_objects_list' %}",
+            query: '',
+            searchField: 'ID',
+            options: [],
+            preview: null,
+            data: null,
+            rootUrl: "{{ root_url }}",
+            initialValue: '{{ widget.initial_value }}',
+            selectedOption: null,
+            isLoadingSearch: false,
+            isLoadingPreview: false,
+            objectClass: '',
+            ignoreWatch: null,
+            apiDebounceTimeout: null,
+        },
+        computed: {
+            searchPlaceholder() {
+                return (this.searchField === 'Name') ? `{% trans 'Start typing to search...' %}` : '{% trans 'Insert' %} ID';
+            },
+        },
+        watch: {
+            query(newQuery) {
+                if (!newQuery.length || (this.searchField === 'Name' && newQuery.length < 3)) {
+                    this.clearFields();
+                    return;
+                }
+                if (!this.ignoreWatch) {
+                    if (this.apiDebounceTimeout) {
+                        clearTimeout(this.apiDebounceTimeout);
+                    }
+                    this.apiDebounceTimeout = setTimeout(() => {
+                        this.search();
+                    }, 500); // Debounce API call
+                }
+            }
+        },
+        mounted() {
+            const objectClassElement = document.getElementById("id_id_classe_oggetto_portale");
+            this.objectClass = objectClassElement.value;
+
+            objectClassElement.addEventListener("change", () => {
+                this.objectClass = objectClassElement.value;
+                if (this.objectClass === 'WebPath') {
+                    this.searchField = 'ID';
+                }
+                this.clearAll();
+            });
+
+            if (this.initialValue) {
+                this.fetchInitialData();
+            }
+        },
+        methods: {
+            search() {
+                this.clearFields();
+                this.clearFormTitles();
+                const objectClass = this.objectClass;
+                var searchUrl = '';
+                if(this.searchField === 'ID') {
+                    searchUrl = `${this.url}${this.query}/?object_class=${objectClass}`;
+                }
+                else if(this.searchField === 'Name') {
+                    searchUrl = `${this.url}?search=${this.query}&object_class=${objectClass}`;
+                }
+                this.fetchData(searchUrl);
+            },
+            fetchData(url) {
+                this.isLoadingSearch = true;
+                axios.get(url)
+                    .then(response => {
+                        this.data = response.data;
+                        if(this.searchField === 'ID') {
+                            this.data['count'] = 1;
+                            this.options = Array.of(response.data);
+                        }
+                        else {
+                            this.options = response.data.results;
+                        }
+                    })
+                    .catch(error => {})
+                    .finally(() => this.isLoadingSearch = false);
+            },
+            selectOption(option, initial = false) {
+                this.ignoreWatch = true;
+                this.selectedOption = option;
+                if(this.objectClass === 'Publication') this.query = `${option.id} - ${option.title}`;
+                else if(this.objectClass === 'WebPath')  this.query = `${option.id} - https:${option.get_absolute_url}`;
+                else this.query = `${option.id}`;
+                this.options = [];
+                this.$nextTick(() => this.ignoreWatch = false);
+
+                if (!initial) {
+                    if(this.objectClass === 'Publication') this.setFormTitles(option.title, '');
+                    else if(this.objectClass === 'WebPath') this.setFormTitles(option.name, '');
+                }
+            },
+            setFormTitles(title_it, title_en) {
+                const titolo_it = document.getElementById("id_titolo_it");
+                const titolo_en = document.getElementById("id_titolo_en");
+                if (titolo_it) titolo_it.value = title_it;
+                if (titolo_en) titolo_en.value = title_en;
+            },
+            fetchInitialData() {
+                const objectClass = this.objectClass;
+                const initialUrl = `${this.url}${this.initialValue}/?object_class=${objectClass}`;
+                this.isLoadingSearch = true;
+                axios.get(initialUrl)
+                    .then(response => {
+                        this.data = response.data;
+                        this.data['count'] = 1;
+                        this.selectOption(response.data, initial = true);
+                    })
+                    .catch(error => {})
+                    .finally(() => this.isLoadingSearch = false);
+            },
+            imageUrl(filePath) {
+                return `${this.rootUrl}/${filePath}`;
+            },
+            handlePreview() {
+                if (!this.selectedOption) return;
+                const objectClass = this.selectedOption.object_class;
+                if (objectClass === "Publication") {
+                    const previewUrl = `${this.url}${this.selectedOption.id}/?object_class=${objectClass}`;
+                    this.isLoadingPreview = true;
+                    $('#preview-modal').modal('show');
+                    axios.get(previewUrl)
+                        .then(response => {
+                            this.preview = response.data;
+                        })
+                        .catch(error => {})
+                        .finally(() => this.isLoadingPreview = false);
+                }
+                else if (objectClass === "WebPath") {
+                    window.open(`https:${this.selectedOption.get_absolute_url}`, "_blank");
+                }
+            },
+            clearAll() {
+                this.query = '';
+                this.clearFields();
+                this.setFormTitles('', '');
+            },
+            clearFields() {
+                this.options = [];
+                this.selectedOption = null;
+                this.preview = null;
+                this.data = null;
+            },
+            clearFormTitles() {
+                this.setFormTitles('', '');
+            },
+            validateInput() {
+                if (this.searchField === 'ID') {
+                    this.query = this.query.replace(/\D/g, '');
+                }
+            },
+        },
+    });
+</script>
