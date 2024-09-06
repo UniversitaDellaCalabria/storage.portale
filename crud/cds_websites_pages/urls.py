@@ -2,6 +2,8 @@ from django.urls import path
 
 from . views import *
 
+#router.register(r'cds-websites-external-shared-objects', ExternalOggettiPortaleViewSet, basename='cds-websites-external-shared-objects')
+
 urlpatterns = []
 
 urlpatterns += path('cds-websites-pages/', cds_websites_pages, name='crud_cds_websites_pages'),
@@ -28,3 +30,8 @@ urlpatterns += path('cds-websites-pages/<str:code>/topics/<str:topic_id>/items/<
 urlpatterns += path('cds-websites-pages/<str:code>/topics/<str:topic_id>/items/<str:data_id>/extras/new', cds_websites_pages_extra_new, name='crud_cds_websites_pages_extra_new'),
 urlpatterns += path('cds-websites-pages/<str:code>/topics/<str:topic_id>/items/<str:data_id>/extras/<str:extra_id>/', cds_websites_pages_extra_edit, name='crud_cds_websites_pages_extra_edit'),
 urlpatterns += path('cds-websites-pages/<str:code>/topics/<str:topic_id>/items/<str:data_id>/extras/<str:extra_id>/delete/', cds_websites_pages_extra_delete, name='crud_cds_websites_pages_extra_delete'),
+#Apis
+urlpatterns += path('cds-websites-pages/api/<int:code>/shared-objects/', SitoWebCdsOggettiPortaleViewSet.as_view({'get' : 'list'}), name="cds_websites_shared_objects_list"),
+urlpatterns += path('cds-websites-pages/api/<int:code>/shared-objects/<int:pk>/', SitoWebCdsOggettiPortaleViewSet.as_view({'get' : 'retrieve'}), name="cds_websites_shared_objects_detail"),
+urlpatterns += path('cds-websites-pages/api/portal-objects/', ExternalOggettiPortaleViewSet.as_view({'get' : 'list'}), name="cds_websites_external_objects_list"),
+urlpatterns += path('cds-websites-pages/api/portal-objects/<int:pk>/', ExternalOggettiPortaleViewSet.as_view({'get' : 'retrieve'}), name="cds_websites_external_objects_detail"),

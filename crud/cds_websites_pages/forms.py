@@ -7,6 +7,8 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 
 from ricerca_app.models import *
 
+from . widgets import OggettiPortaleWidget, ExternalOggettiPortaleWidget
+
 UNICMS_AUTH_TOKEN = getattr(settings, 'UNICMS_AUTH_TOKEN', '')
 UNICMS_OBJECT_API = getattr(settings, 'UNICMS_OBJECT_API', '')
 
@@ -46,6 +48,10 @@ class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
             "id_didattica_cds_articoli_regolamento": _("Regulation Article"),
             "id_sito_web_cds_oggetti_portale": _("Portal object"),
         }
+        widgets = {
+            'testo_it': CKEditor5Widget(config_name="regdid"),
+            'testo_en': CKEditor5Widget(config_name="regdid")
+        }
    
 class SitoWebCdsArticoliRegolamentoItemForm(SitoWebCdsTopicArticoliRegForm):
     def __init__(self, *args, user=None, **kwargs):
@@ -54,28 +60,27 @@ class SitoWebCdsArticoliRegolamentoItemForm(SitoWebCdsTopicArticoliRegForm):
             for field in self.fields.values():
                 field.widget.attrs['disabled'] = 'disabled'
 
-    class Meta(SitoWebCdsTopicArticoliRegForm.Meta):
-        widgets = {
-            'testo_it': CKEditor5Widget(config_name="regdid"),
-            'testo_en': CKEditor5Widget(config_name="regdid")
-        }
-
 class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, user=None, **kwargs):
         cds_id = kwargs.pop("cds_id", None)
         
-        super(SitoWebCdsOggettiItemForm, self).__init__(*args, **kwargs)
+        super(SitoWebCdsOggettiItemForm, self).__init__(*args, user=user, **kwargs)
         
-        choices = SitoWebCdsOggettiPortale.objects.filter(cds_id=cds_id).values_list("id", "aa_regdid_id", "titolo_it", "testo_it").order_by("aa_regdid_id", "titolo_it", "testo_it")
-        choices = map(lambda reg: (reg[0], f"{reg[1]} - {reg[2] if reg[2] else ''} - {reg[3] if reg[3] else ''}"), choices)
-        choices = tuple(choices)
+        choices = SitoWebCdsOggettiPortale.objects.filter(cds_id=cds_id).order_by("aa_regdid_id", "titolo_it")
+        swcd_base = SitoWebCdsDatiBase.objects.get(cds_id=cds_id)
         
-        self.fields["id_sito_web_cds_oggetti_portale"] = forms.ChoiceField(
-            choices=choices,
-            label=_("Portal object"),
-        )
+        self.fields["id_sito_web_cds_oggetti_portale"].queryset = choices
+        self.fields["id_sito_web_cds_oggetti_portale"].label = _("Portal object")
+        self.fields["id_sito_web_cds_oggetti_portale"].required = True
+        self.fields["testo_it"].help_text = _("Used only for webpaths, when provided, the object will be shown as a collapsible element containing this text alongside the webpath")
+        self.fields["testo_en"].help_text = _("Used only for webpaths, when provided, the object will be shown as a collapsible element containing this text alongside the webpath")
+        self.fields["id_sito_web_cds_oggetti_portale"].widget = OggettiPortaleWidget(swcd_base.id)
+        self.fields["id_sito_web_cds_oggetti_portale"].label= _("Portal object")
         
         self.order_fields(['visibile', 'id_sito_web_cds_oggetti_portale', 'ordine', 'titolo_it', 'titolo_en', 'testo_it','testo_en'])
+        
+    class Meta(SitoWebCdsTopicArticoliRegForm.Meta):
+        exclude = [field for field in SitoWebCdsTopicArticoliRegForm.Meta.exclude if not field == 'id_sito_web_cds_oggetti_portale']
 
         
      
@@ -86,42 +91,35 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
             self.initial["visibile"] = bool(self.initial.get("visibile", None))
         self.fields["titolo_it"].help_text = _("Used to identify the object inside the dropdown menu when adding it to a topic")
         self.fields["titolo_en"].help_text = _("Used to identify the object inside the dropdown menu when adding it to a topic")
-        self.fields["testo_it"].help_text = _("Used only for webpaths, when provided, the object will be shown as a collapsible element containing this text alongside the webpath")
-        self.fields["testo_en"].help_text = _("Used only for webpaths, when provided, the object will be shown as a collapsible element containing this text alongside the webpath")
         self.fields["id_classe_oggetto_portale"] = forms.ChoiceField(
             required=True,
             choices=(("WebPath", _("WebPath")),("Publication", _("Publication"))),
             label=_("Object class"),
             help_text=_("Publication / WebPath (Active page)")
         )
-        self.fields["id_oggetto_portale"] = forms.IntegerField(
-            required=True,
-            min_value=0,
-            label=_("Object id"),
-            help_text=_("Use Publication/WebPath ID from the editorial board")
-        )
+        self.fields["id_oggetto_portale"].widget=ExternalOggettiPortaleWidget()
+        self.fields["id_oggetto_portale"].label=_("Object")
+        
         self.fields["visibile"] = forms.BooleanField(
             label=_("Visible"),
             required=False,
         )    
         
-        self.order_fields(['visibile', 'id_oggetto_portale', 'id_classe_oggetto_portale', 'titolo_it', 'titolo_en', 'testo_it','testo_en'])
+        self.order_fields(['visibile', 'id_classe_oggetto_portale', 'id_oggetto_portale', 'titolo_it', 'titolo_en'])
         
         self.instance_provided = 'instance' in kwargs and kwargs['instance'] is not None
         if self.instance_provided:
             if not user or (not user.is_superuser and self.instance.id_user_mod_id in getattr(settings, "ETL_USER_IDS", [])):
                 for field in self.fields.values():
                     field.widget.attrs['disabled'] = 'disabled'
-
+                    
 
     class Meta:
         model = SitoWebCdsOggettiPortale
-        exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'aa_regdid_id']
+        exclude = ['dt_mod', 'id_user_mod','id_sito_web_cds_topic', 'cds', 'ordine', 'aa_regdid_id', 'testo_it', 'testo_en']
         labels = {
             "titolo_it": _("Title (it)"),
             "titolo_en": _("Title (en)"),
-            "testo_it": _("Text (it)"),
-            "testo_en": _("Text (en)"),
             "id_oggetto_portale": _("Object Id"),
             "aa_regdid_id": _("Didactic regulation academic year"),
             "id_classe_oggetto_portale": _("Object class"),
