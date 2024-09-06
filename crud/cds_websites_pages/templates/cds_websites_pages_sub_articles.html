@@ -102,6 +102,17 @@
                                 </td>
                             </tr>
                     {% endfor %}
+                    {% if sub_articles_list|length < 1 %}
+                        <tr class="d-flex">
+                            <td class="col align-content-center">{% trans "None" %}</td>
+                            <td class="col-2 align-content-center text-center">-</td>
+                            <td class="col-auto align-content-center text-right text-no-wrap">
+                                <svg class="icon" style="visibility: hidden;">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-more-actions"></use>
+                                </svg>
+                            </td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
