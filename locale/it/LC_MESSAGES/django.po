@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-09 11:23+0200\n"
-"PO-Revision-Date: 2024-07-09 11:24+0200\n"
+"POT-Creation-Date: 2024-09-06 11:36+0200\n"
+"PO-Revision-Date: 2024-09-06 11:36+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: accounts/admin.py:20
 msgid "Anagrafica"
@@ -43,9 +43,10 @@ msgid "Altro"
 msgstr ""
 
 #: accounts/models.py:15 crud/cds/templates/cds_detail.html:291
-#: crud/cds/templates/cds_group.html:38 crud/companies/forms.py:42
-#: crud/laboratories/forms.py:67 crud/laboratories/forms.py:384
-#: crud/research_groups/forms.py:24
+#: crud/cds/templates/cds_group.html:38
+#: crud/cds_websites_pages/templates/widgets/cds_websites_pages_external_oggetti_portale_widget.html:13
+#: crud/companies/forms.py:42 crud/laboratories/forms.py:67
+#: crud/laboratories/forms.py:384 crud/research_groups/forms.py:24
 #: crud/research_groups/templates/researchgroup.html:70
 #: crud/research_lines/templates/applied_researchline.html:70
 #: crud/research_lines/templates/base_researchline.html:70
@@ -80,11 +81,11 @@ msgstr "Utenti"
 #: crud/cds_websites_brochure/decorators.py:57
 #: crud/cds_websites_pages/decorators.py:31
 #: crud/cds_websites_pages/decorators.py:57
-#: crud/cds_websites_pages/views.py:170 crud/cds_websites_pages/views.py:275
-#: crud/cds_websites_pages/views.py:347 crud/cds_websites_pages/views.py:401
-#: crud/cds_websites_pages/views.py:436 crud/cds_websites_pages/views.py:542
-#: crud/cds_websites_pages/views.py:593 crud/cds_websites_pages/views.py:715
-#: crud/cds_websites_pages/views.py:771 crud/companies/decorators.py:32
+#: crud/cds_websites_pages/views.py:179 crud/cds_websites_pages/views.py:285
+#: crud/cds_websites_pages/views.py:358 crud/cds_websites_pages/views.py:412
+#: crud/cds_websites_pages/views.py:447 crud/cds_websites_pages/views.py:549
+#: crud/cds_websites_pages/views.py:600 crud/cds_websites_pages/views.py:728
+#: crud/cds_websites_pages/views.py:786 crud/companies/decorators.py:32
 #: crud/laboratories/decorators.py:55 crud/laboratories/decorators.py:82
 #: crud/laboratories/decorators.py:95 crud/laboratories/decorators.py:113
 #: crud/laboratories/views.py:66 crud/laboratories/views.py:104
@@ -136,17 +137,17 @@ msgid "Deputy coordinator"
 msgstr "Vice-coordinatore"
 
 #: crud/cds/forms.py:53 crud/cds/templates/cds_detail.html:292
-#: crud/cds/templates/cds_group.html:40 crud/cds_websites_pages/forms.py:21
-#: crud/cds_websites_pages/forms.py:45 crud/cds_websites_pages/forms.py:104
-#: crud/cds_websites_pages/forms.py:128 crud/cds_websites_pages/forms.py:141
-#: crud/cds_websites_pages/forms.py:169 crud/cds_websites_pages/forms.py:184
-#: crud/cds_websites_pages/forms.py:206
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:9
+#: crud/cds/templates/cds_group.html:40 crud/cds_websites_pages/forms.py:23
+#: crud/cds_websites_pages/forms.py:47 crud/cds_websites_pages/forms.py:114
+#: crud/cds_websites_pages/forms.py:143 crud/cds_websites_pages/forms.py:156
+#: crud/cds_websites_pages/forms.py:184 crud/cds_websites_pages/forms.py:199
+#: crud/cds_websites_pages/forms.py:221
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:10
 #: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:9
 #: crud/cds_websites_pages/templates/cds_website_pages_items_order.html:46
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:46
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:35
-#: crud/cds_websites_pages/templates/cds_websites_pages_sub_articles.html:34
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:49
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:40
+#: crud/cds_websites_pages/templates/cds_websites_pages_sub_articles.html:39
 #: crud/laboratories/templates/laboratory.html:173
 msgid "Visible"
 msgstr "Visibile"
@@ -331,11 +332,11 @@ msgstr ""
 #: crud/cds_websites_brochure/templates/cds_website_exstudents.html:60
 #: crud/cds_websites_brochure/templates/cds_website_links.html:60
 #: crud/cds_websites_brochure/templates/cds_website_sliders.html:60
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:56
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:57
 #: crud/cds_websites_pages/templates/cds_website_pages_items_order.html:134
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:84
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:232
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:73
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:87
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:244
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:78
 #: crud/companies/templates/company.html:42
 #: crud/companies/templates/company.html:196
 #: crud/laboratories/templates/laboratory.html:38
@@ -398,12 +399,12 @@ msgstr "Importa"
 #: crud/cds_websites_brochure/templates/cds_website_links.html:81
 #: crud/cds_websites_brochure/templates/cds_website_sliders.html:81
 #: crud/cds_websites_brochure/views.py:239
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:99
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:51
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:103
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:55
 #: crud/cds_websites_pages/templates/blocks/crud_cds_websites_pages_list.html:123
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:135
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:118
-#: crud/cds_websites_pages/templates/cds_websites_pages_sub_articles.html:81
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:138
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:123
+#: crud/cds_websites_pages/templates/cds_websites_pages_sub_articles.html:86
 #: crud/companies/templates/blocks/crud_companies.html:168
 #: crud/companies/templates/company.html:82
 #: crud/companies/templates/company.html:158
@@ -448,9 +449,9 @@ msgstr "Modifica"
 #: crud/cds_websites_brochure/templates/cds_website_exstudents.html:88
 #: crud/cds_websites_brochure/templates/cds_website_links.html:89
 #: crud/cds_websites_brochure/templates/cds_website_sliders.html:89
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:135
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:160
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:143
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:139
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:163
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:148
 #: crud/companies/templates/company.html:13
 #: crud/companies/templates/company.html:165
 #: crud/laboratories/templates/laboratory.html:129
@@ -496,11 +497,11 @@ msgstr "Rimuovi"
 #: crud/cds_websites_brochure/templates/cds_website_exstudents.html:42
 #: crud/cds_websites_brochure/templates/cds_website_links.html:42
 #: crud/cds_websites_brochure/templates/cds_website_sliders.html:42
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:38
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:39
 #: crud/cds_websites_pages/templates/cds_website_pages_items_order.html:112
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:66
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:210
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:55
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:69
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:222
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:60
 #: crud/companies/templates/company.html:24
 #: crud/companies/templates/company.html:178
 #: crud/laboratories/templates/laboratory.html:20
@@ -574,9 +575,10 @@ msgstr "Importa dall'anno precedente"
 #: crud/cds_websites_brochure/templates/cds_website_exstudents.html:99
 #: crud/cds_websites_brochure/templates/cds_website_links.html:100
 #: crud/cds_websites_brochure/templates/cds_website_sliders.html:100
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:154
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:186
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:162
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:179
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:198
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:167
+#: crud/cds_websites_pages/templates/widgets/cds_websites_pages_oggetti_portale_widget.html:23
 #: crud/companies/templates/companies.html:11
 #: crud/companies/templates/company.html:210
 #: crud/laboratories/templates/laboratories.html:11
@@ -774,6 +776,7 @@ msgstr "Aggiungi"
 
 #: crud/cds/templates/cds_regdid_other_data_form.html:14
 #: crud/cds_websites_brochure/templates/cds_websites_brochure_unique_form.html:14
+#: crud/cds_websites_pages/templates/cds_websites_pages_objects_form.html:13
 #: crud/cds_websites_pages/templates/cds_websites_pages_unique_form.html:15
 #: crud/laboratories/templates/laboratory_choose_person.html:9
 #: crud/laboratories/templates/laboratory_unique_form.html:10
@@ -782,6 +785,7 @@ msgstr "Modifica "
 
 #: crud/cds/templates/cds_regdid_other_data_form.html:14
 #: crud/cds_websites_brochure/templates/cds_websites_brochure_unique_form.html:14
+#: crud/cds_websites_pages/templates/cds_websites_pages_objects_form.html:13
 #: crud/cds_websites_pages/templates/cds_websites_pages_unique_form.html:15
 #: crud/laboratories/templates/laboratory_choose_person.html:9
 #: crud/laboratories/templates/laboratory_unique_form.html:10
@@ -790,6 +794,7 @@ msgstr "Nuovo "
 
 #: crud/cds/templates/cds_regdid_other_data_form.html:14
 #: crud/cds_websites_brochure/templates/cds_websites_brochure_unique_form.html:14
+#: crud/cds_websites_pages/templates/cds_websites_pages_objects_form.html:13
 #: crud/cds_websites_pages/templates/cds_websites_pages_unique_form.html:15
 #: crud/laboratories/templates/laboratory_choose_person.html:9
 #: crud/laboratories/templates/laboratory_unique_form.html:10
@@ -797,8 +802,9 @@ msgid " for "
 msgstr " per "
 
 #: crud/cds/templates/cds_regdid_other_data_form.html:29
-#: crud/cds_websites_pages/forms.py:172
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:34
+#: crud/cds_websites_pages/forms.py:187
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:8
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:39
 #: crud/laboratories/forms.py:216
 #: crud/laboratories/templates/laboratory.html:893 crud/phd/forms.py:87
 #: crud/teachers/templates/blocks/crud_teacher_news.html:40
@@ -846,14 +852,14 @@ msgstr "Attualmente fa riferimento a quello dell'anno"
 #: crud/cds_websites_brochure/views.py:375
 #: crud/cds_websites_brochure/views.py:417
 #: crud/cds_websites_brochure/views.py:465
-#: crud/cds_websites_brochure/views.py:512 crud/cds_websites_pages/views.py:32
-#: crud/cds_websites_pages/views.py:108 crud/cds_websites_pages/views.py:144
-#: crud/cds_websites_pages/views.py:198 crud/cds_websites_pages/views.py:252
-#: crud/cds_websites_pages/views.py:322 crud/cds_websites_pages/views.py:373
-#: crud/cds_websites_pages/views.py:407 crud/cds_websites_pages/views.py:457
-#: crud/cds_websites_pages/views.py:512 crud/cds_websites_pages/views.py:567
-#: crud/cds_websites_pages/views.py:637 crud/cds_websites_pages/views.py:687
-#: crud/cds_websites_pages/views.py:743 crud/companies/views.py:34
+#: crud/cds_websites_brochure/views.py:512 crud/cds_websites_pages/views.py:41
+#: crud/cds_websites_pages/views.py:117 crud/cds_websites_pages/views.py:153
+#: crud/cds_websites_pages/views.py:207 crud/cds_websites_pages/views.py:262
+#: crud/cds_websites_pages/views.py:333 crud/cds_websites_pages/views.py:384
+#: crud/cds_websites_pages/views.py:418 crud/cds_websites_pages/views.py:468
+#: crud/cds_websites_pages/views.py:522 crud/cds_websites_pages/views.py:574
+#: crud/cds_websites_pages/views.py:647 crud/cds_websites_pages/views.py:700
+#: crud/cds_websites_pages/views.py:758 crud/companies/views.py:34
 #: crud/companies/views.py:87 crud/companies/views.py:168
 #: crud/companies/views.py:230 crud/companies/views.py:305
 #: crud/companies/views.py:366 crud/laboratories/views.py:54
@@ -1186,10 +1192,10 @@ msgstr "Agevolazioni (en)"
 #: crud/cds_websites_brochure/templates/cds_website_exstudents.html:26
 #: crud/cds_websites_brochure/templates/cds_website_links.html:26
 #: crud/cds_websites_brochure/templates/cds_website_sliders.html:26
-#: crud/cds_websites_pages/forms.py:27 crud/cds_websites_pages/forms.py:44
-#: crud/cds_websites_pages/forms.py:147 crud/cds_websites_pages/forms.py:168
-#: crud/cds_websites_pages/forms.py:190 crud/cds_websites_pages/forms.py:205
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:8
+#: crud/cds_websites_pages/forms.py:29 crud/cds_websites_pages/forms.py:46
+#: crud/cds_websites_pages/forms.py:162 crud/cds_websites_pages/forms.py:183
+#: crud/cds_websites_pages/forms.py:205 crud/cds_websites_pages/forms.py:220
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:9
 #: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:8
 #: crud/regdid/forms.py:54
 #: crud/teachers/templates/blocks/crud_teacher_books.html:43
@@ -1421,8 +1427,8 @@ msgid "Link added successfully"
 msgstr "Link aggiunto con successo"
 
 #: crud/cds_websites_brochure/views.py:477
-#: crud/cds_websites_brochure/views.py:524 crud/cds_websites_pages/forms.py:150
-#: crud/cds_websites_pages/forms.py:173
+#: crud/cds_websites_brochure/views.py:524 crud/cds_websites_pages/forms.py:165
+#: crud/cds_websites_pages/forms.py:188
 msgid "Link"
 msgstr "Link"
 
@@ -1442,53 +1448,44 @@ msgstr "Eliminato Link"
 msgid "Link deleted successfully"
 msgstr "Link eliminato con successo"
 
-#: crud/cds_websites_pages/forms.py:40 crud/cds_websites_pages/forms.py:121
-#: crud/cds_websites_pages/forms.py:166 crud/cds_websites_pages/forms.py:203
+#: crud/cds_websites_pages/forms.py:42 crud/cds_websites_pages/forms.py:138
+#: crud/cds_websites_pages/forms.py:181 crud/cds_websites_pages/forms.py:218
 #: crud/regdid/forms.py:55 crud/teachers/forms.py:80 crud/teachers/forms.py:112
 msgid "Title (it)"
 msgstr "Titolo (it)"
 
-#: crud/cds_websites_pages/forms.py:41 crud/cds_websites_pages/forms.py:122
-#: crud/cds_websites_pages/forms.py:167 crud/cds_websites_pages/forms.py:204
+#: crud/cds_websites_pages/forms.py:43 crud/cds_websites_pages/forms.py:139
+#: crud/cds_websites_pages/forms.py:182 crud/cds_websites_pages/forms.py:219
 #: crud/regdid/forms.py:56 crud/teachers/forms.py:81 crud/teachers/forms.py:113
 msgid "Title (en)"
 msgstr "Titolo (en)"
 
-#: crud/cds_websites_pages/forms.py:42 crud/cds_websites_pages/forms.py:123
-#: crud/cds_websites_pages/forms.py:170 crud/cds_websites_pages/forms.py:207
-#: crud/regdid/forms.py:39
+#: crud/cds_websites_pages/forms.py:44 crud/cds_websites_pages/forms.py:185
+#: crud/cds_websites_pages/forms.py:222 crud/regdid/forms.py:39
 #: crud/regdid/templates/blocks/regdid_article_item.html:82
 #: crud/regdid/templates/blocks/regdid_sub_article_item.html:40
 #: crud/teachers/forms.py:82 crud/teachers/forms.py:114
 msgid "Text (it)"
 msgstr "Testo (it)"
 
-#: crud/cds_websites_pages/forms.py:43 crud/cds_websites_pages/forms.py:124
-#: crud/cds_websites_pages/forms.py:171 crud/cds_websites_pages/forms.py:208
-#: crud/regdid/forms.py:40
+#: crud/cds_websites_pages/forms.py:45 crud/cds_websites_pages/forms.py:186
+#: crud/cds_websites_pages/forms.py:223 crud/regdid/forms.py:40
 #: crud/regdid/templates/blocks/regdid_article_item.html:87
 #: crud/regdid/templates/blocks/regdid_sub_article_item.html:45
 #: crud/teachers/forms.py:83 crud/teachers/forms.py:115
 msgid "Text (en)"
 msgstr "Testo (en)"
 
-#: crud/cds_websites_pages/forms.py:46 crud/cds_websites_pages/views.py:386
+#: crud/cds_websites_pages/forms.py:48 crud/cds_websites_pages/views.py:397
 msgid "Regulation Article"
 msgstr "Articolo di Regolamento"
 
-#: crud/cds_websites_pages/forms.py:47 crud/cds_websites_pages/forms.py:75
+#: crud/cds_websites_pages/forms.py:49 crud/cds_websites_pages/forms.py:73
+#: crud/cds_websites_pages/forms.py:79
 msgid "Portal object"
 msgstr "Oggetto del Portale"
 
-#: crud/cds_websites_pages/forms.py:87 crud/cds_websites_pages/forms.py:88
-msgid ""
-"Used to identify the object inside the dropdown menu when adding it to a "
-"topic"
-msgstr ""
-"Utilizzato per identificare l'oggetto nel menu a tendina quando lo si "
-"aggiunge a un topic"
-
-#: crud/cds_websites_pages/forms.py:89 crud/cds_websites_pages/forms.py:90
+#: crud/cds_websites_pages/forms.py:75 crud/cds_websites_pages/forms.py:76
 msgid ""
 "Used only for webpaths, when provided, the object will be shown as a "
 "collapsible element containing this text alongside the webpath"
@@ -1497,49 +1494,60 @@ msgstr ""
 "mostrato come un elemento collassabile contenente questo testo accanto al "
 "webpath"
 
-#: crud/cds_websites_pages/forms.py:93
+#: crud/cds_websites_pages/forms.py:88
+msgid "Selected object does not exist"
+msgstr "L'oggetto selezionato non esiste"
+
+#: crud/cds_websites_pages/forms.py:101 crud/cds_websites_pages/forms.py:102
+msgid ""
+"Used to identify the object inside the dropdown menu when adding it to a "
+"topic"
+msgstr ""
+"Utilizzato per identificare l'oggetto nel menu a tendina quando lo si "
+"aggiunge a un topic"
+
+#: crud/cds_websites_pages/forms.py:105
 msgid "WebPath"
 msgstr "WebPath"
 
-#: crud/cds_websites_pages/forms.py:93
+#: crud/cds_websites_pages/forms.py:105
 #: crud/teachers/templates/blocks/crud_teacher_books.html:42
 #: crud/teachers/templates/blocks/crud_teacher_news.html:42
 msgid "Publication"
 msgstr "Publicazione"
 
-#: crud/cds_websites_pages/forms.py:94 crud/cds_websites_pages/forms.py:127
+#: crud/cds_websites_pages/forms.py:106 crud/cds_websites_pages/forms.py:142
 msgid "Object class"
 msgstr "Classe Oggetto"
 
-#: crud/cds_websites_pages/forms.py:95
+#: crud/cds_websites_pages/forms.py:107
 msgid "Publication / WebPath (Active page)"
 msgstr "Pubblicazioni / WebPath (Pagina attiva)"
 
-#: crud/cds_websites_pages/forms.py:100
-msgid "Object id"
-msgstr "Id Oggetto"
+#: crud/cds_websites_pages/forms.py:111
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:38
+#: crud/cds_websites_pages/views.py:220 crud/cds_websites_pages/views.py:274
+#: crud/cds_websites_pages/views.py:588
+msgid "Object"
+msgstr "Oggetto"
 
-#: crud/cds_websites_pages/forms.py:101
-msgid "Use Publication/WebPath ID from the editorial board"
-msgstr "Utilizzare ID Pubblicazione/WebPath ricavato dall'editorial board"
-
-#: crud/cds_websites_pages/forms.py:125
+#: crud/cds_websites_pages/forms.py:131 crud/cds_websites_pages/forms.py:140
 msgid "Object Id"
 msgstr "Id Oggetto"
 
-#: crud/cds_websites_pages/forms.py:126
+#: crud/cds_websites_pages/forms.py:141
 msgid "Didactic regulation academic year"
 msgstr "Anno accademico del regolamento didattico"
 
-#: crud/cds_websites_pages/forms.py:153 crud/cds_websites_pages/forms.py:154
+#: crud/cds_websites_pages/forms.py:168 crud/cds_websites_pages/forms.py:169
 msgid "Shown above the element if provided"
 msgstr "Se fornito, viene mostrato sopra l'elemento"
 
-#: crud/cds_websites_pages/forms.py:155 crud/cds_websites_pages/forms.py:156
+#: crud/cds_websites_pages/forms.py:170 crud/cds_websites_pages/forms.py:171
 msgid "If provided it is used as the link text"
 msgstr "Se fornito, viene utilizzato come testo del link"
 
-#: crud/cds_websites_pages/forms.py:157
+#: crud/cds_websites_pages/forms.py:172
 msgid "Used to determine the icon to show on the left of the element"
 msgstr ""
 "Utilizzato per determinare quale icona mostrare a sinistra dell'elemento"
@@ -1548,15 +1556,15 @@ msgstr ""
 msgid "Objects"
 msgstr "Oggetti"
 
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:51
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:52
 msgid "Do you want to remove this object from this topic?"
 msgstr "Vuoi davvero rimuovere l'oggetto selezionato da questo topic?"
 
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:106
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:58
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:142
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:125
-#: crud/cds_websites_pages/templates/cds_websites_pages_sub_articles.html:88
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:110
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:62
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:145
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:130
+#: crud/cds_websites_pages/templates/cds_websites_pages_sub_articles.html:93
 #: crud/laboratories/templates/laboratory.html:427
 #: crud/laboratories/templates/laboratory.html:514
 #: crud/laboratories/templates/laboratory.html:548
@@ -1569,31 +1577,33 @@ msgstr "Vuoi davvero rimuovere l'oggetto selezionato da questo topic?"
 msgid "View"
 msgstr "Visualizza"
 
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:118
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:81
-#: crud/cds_websites_pages/views.py:642 crud/cds_websites_pages/views.py:692
-#: crud/cds_websites_pages/views.py:748
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:122
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:85
+#: crud/cds_websites_pages/views.py:652 crud/cds_websites_pages/views.py:705
+#: crud/cds_websites_pages/views.py:763
 msgid "Extras"
 msgstr "Attributi"
+
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_object_items.html:154
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:99
+#: crud/cds_websites_pages/templates/cds_website_pages_items_order.html:84
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:183
+#: crud/cds_websites_pages/templates/cds_websites_pages_sub_articles.html:107
+msgid "None"
+msgstr "Nessuno"
 
 #: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:7
 msgid "Articles"
 msgstr "Articoli"
 
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:70
-#: crud/cds_websites_pages/views.py:412 crud/cds_websites_pages/views.py:462
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:74
+#: crud/cds_websites_pages/views.py:423 crud/cds_websites_pages/views.py:473
 #: crud/regdid/templates/blocks/regdid_article_item.html:134
 #: crud/regdid/templates/regdid_article_unique_form.html:115
 msgid "Sub articles"
 msgstr "Sotto-articoli"
 
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_regulation_article_items.html:95
-#: crud/cds_websites_pages/templates/cds_website_pages_items_order.html:84
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:175
-msgid "None"
-msgstr "Nessuno"
-
-#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_topic_item.html:45
+#: crud/cds_websites_pages/templates/blocks/cds_websites_pages_topic_item.html:47
 msgid "Manage order"
 msgstr "Gestisci ordine"
 
@@ -1602,12 +1612,12 @@ msgid "Item"
 msgstr "Elemento"
 
 #: crud/cds_websites_pages/templates/cds_website_pages_items_order.html:100
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:198
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:210
 msgid "Save order"
 msgstr "Salva ordine"
 
 #: crud/cds_websites_pages/templates/cds_website_pages_items_order.html:126
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:224
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:236
 #: crud/laboratories/templates/form_submit_warning.html:9
 #: crud/laboratories/templates/laboratory.html:244
 #: crud/laboratories/templates/laboratory.html:392
@@ -1616,23 +1626,15 @@ msgstr "Salva ordine"
 msgid "Do you want to confirm the entered data?"
 msgstr "Vuoi davvero confermare i dati immessi?"
 
-#: crud/cds_websites_pages/templates/cds_website_pages_shared_object_form.html:21
-msgid "Object Preview"
-msgstr "Antreprima dell'Oggetto"
-
-#: crud/cds_websites_pages/templates/cds_website_pages_shared_object_form.html:47
-msgid "Show Preview"
-msgstr "Mostra Anteprima"
-
 #: crud/cds_websites_pages/templates/cds_websites_pages.html:8
 msgid "Courses of Study Websites pages"
 msgstr "Siti web dei Corsi di Studio pagine"
 
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:45
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:48
 msgid "Extra"
 msgstr "Attributo"
 
-#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:79
+#: crud/cds_websites_pages/templates/cds_websites_pages_extras.html:82
 msgid "Do you really want to remove this item?"
 msgstr "Vuoi davvero eliminare questo elemento?"
 
@@ -1644,13 +1646,7 @@ msgstr ""
 "I cambiamenti effettuati su questo oggetto avranno effetto su ogni topic in "
 "cui è stato aggiunto. Vuoi davvero confermare i dati immessi?"
 
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:33
-#: crud/cds_websites_pages/views.py:211 crud/cds_websites_pages/views.py:264
-#: crud/cds_websites_pages/views.py:581
-msgid "Object"
-msgstr "Oggetto"
-
-#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:68
+#: crud/cds_websites_pages/templates/cds_websites_pages_shared_objects.html:73
 msgid ""
 "Removing this object will also remove it from every topic it has been added "
 "to. Do you want to remove this object?"
@@ -1658,41 +1654,67 @@ msgstr ""
 "L'eliminazione di questo oggetto ne coporterà la rimozione da tutti i topic "
 "nei quali è stato aggiunto. Vuoi davvero eliminare questo oggetto?"
 
-#: crud/cds_websites_pages/templates/cds_websites_pages_sub_articles.html:33
-#: crud/cds_websites_pages/views.py:471
+#: crud/cds_websites_pages/templates/cds_websites_pages_sub_articles.html:38
+#: crud/cds_websites_pages/views.py:482
 msgid "Sub article"
 msgstr "Sotto-articolo"
 
-#: crud/cds_websites_pages/templates/cds_websites_pages_topics.html:76
+#: crud/cds_websites_pages/templates/cds_websites_pages_topics.html:81
 msgid "Open website page"
 msgstr "Apri sito web del corso"
 
-#: crud/cds_websites_pages/templates/cds_websites_pages_topics.html:80
+#: crud/cds_websites_pages/templates/cds_websites_pages_topics.html:85
 msgid "Go to cds website page"
 msgstr "Vai alla pagina del corso"
 
-#: crud/cds_websites_pages/templates/cds_websites_pages_topics.html:107
-#: crud/cds_websites_pages/views.py:148 crud/cds_websites_pages/views.py:202
-#: crud/cds_websites_pages/views.py:256
+#: crud/cds_websites_pages/templates/cds_websites_pages_topics.html:112
+#: crud/cds_websites_pages/views.py:157 crud/cds_websites_pages/views.py:211
+#: crud/cds_websites_pages/views.py:266
 msgid "Shared objects"
 msgstr "Oggetti del Portale condivisi"
 
-#: crud/cds_websites_pages/templates/cds_websites_pages_topics.html:111
+#: crud/cds_websites_pages/templates/cds_websites_pages_topics.html:116
 msgid "Manage portal objects shared among all topics"
 msgstr "Oggetti del Portale (condivisi tra i topic)"
 
-#: crud/cds_websites_pages/views.py:33 crud/cds_websites_pages/views.py:109
-#: crud/cds_websites_pages/views.py:145 crud/cds_websites_pages/views.py:199
-#: crud/cds_websites_pages/views.py:253 crud/cds_websites_pages/views.py:323
-#: crud/cds_websites_pages/views.py:374 crud/cds_websites_pages/views.py:408
-#: crud/cds_websites_pages/views.py:458 crud/cds_websites_pages/views.py:513
-#: crud/cds_websites_pages/views.py:568 crud/cds_websites_pages/views.py:638
-#: crud/cds_websites_pages/views.py:688 crud/cds_websites_pages/views.py:744
+#: crud/cds_websites_pages/templates/widgets/cds_websites_pages_external_oggetti_portale_widget.html:12
+msgid "ID"
+msgstr ""
+
+#: crud/cds_websites_pages/templates/widgets/cds_websites_pages_external_oggetti_portale_widget.html:28
+#: crud/cds_websites_pages/templates/widgets/cds_websites_pages_external_oggetti_portale_widget.html:52
+msgid "Preview"
+msgstr "Anteprima"
+
+#: crud/cds_websites_pages/templates/widgets/cds_websites_pages_external_oggetti_portale_widget.html:40
+msgid "found"
+msgstr "trovati"
+
+#: crud/cds_websites_pages/templates/widgets/cds_websites_pages_external_oggetti_portale_widget.html:97
+msgid "Start typing to search..."
+msgstr "Inizia a digitare per cercare..."
+
+#: crud/cds_websites_pages/templates/widgets/cds_websites_pages_external_oggetti_portale_widget.html:97
+msgid "Insert"
+msgstr "Inserisci"
+
+#: crud/cds_websites_pages/templates/widgets/cds_websites_pages_oggetti_portale_widget.html:15
+#: crud/utils/templates/includes/vue_search_button.html:7
+msgid "Search"
+msgstr "Cerca"
+
+#: crud/cds_websites_pages/views.py:42 crud/cds_websites_pages/views.py:118
+#: crud/cds_websites_pages/views.py:154 crud/cds_websites_pages/views.py:208
+#: crud/cds_websites_pages/views.py:263 crud/cds_websites_pages/views.py:334
+#: crud/cds_websites_pages/views.py:385 crud/cds_websites_pages/views.py:419
+#: crud/cds_websites_pages/views.py:469 crud/cds_websites_pages/views.py:523
+#: crud/cds_websites_pages/views.py:575 crud/cds_websites_pages/views.py:648
+#: crud/cds_websites_pages/views.py:701 crud/cds_websites_pages/views.py:759
 #: crud/utils/templates/dashboard.html:89
 msgid "CdS pages"
 msgstr "CdS pagine"
 
-#: crud/cds_websites_pages/views.py:66
+#: crud/cds_websites_pages/views.py:75
 msgid ""
 "Unable to determine which topics are shown on the Portal nor the page "
 "they're appearing on"
@@ -1700,21 +1722,21 @@ msgstr ""
 "Impossibile determinare quali topic vengono mostrati sul Portale e la pagina "
 "sulla quale appaiono"
 
-#: crud/cds_websites_pages/views.py:110 crud/cds_websites_pages/views.py:147
-#: crud/cds_websites_pages/views.py:201 crud/cds_websites_pages/views.py:255
-#: crud/cds_websites_pages/views.py:325 crud/cds_websites_pages/views.py:376
-#: crud/cds_websites_pages/views.py:410 crud/cds_websites_pages/views.py:460
-#: crud/cds_websites_pages/views.py:515 crud/cds_websites_pages/views.py:570
-#: crud/cds_websites_pages/views.py:640 crud/cds_websites_pages/views.py:690
-#: crud/cds_websites_pages/views.py:746
+#: crud/cds_websites_pages/views.py:119 crud/cds_websites_pages/views.py:156
+#: crud/cds_websites_pages/views.py:210 crud/cds_websites_pages/views.py:265
+#: crud/cds_websites_pages/views.py:336 crud/cds_websites_pages/views.py:387
+#: crud/cds_websites_pages/views.py:421 crud/cds_websites_pages/views.py:471
+#: crud/cds_websites_pages/views.py:525 crud/cds_websites_pages/views.py:577
+#: crud/cds_websites_pages/views.py:650 crud/cds_websites_pages/views.py:703
+#: crud/cds_websites_pages/views.py:761
 msgid "Topics"
 msgstr "Topics"
 
-#: crud/cds_websites_pages/views.py:118
+#: crud/cds_websites_pages/views.py:127
 msgid "Shared Portal objects"
 msgstr "Oggetti del Portale condivisi"
 
-#: crud/cds_websites_pages/views.py:119
+#: crud/cds_websites_pages/views.py:128
 msgid ""
 "This section allows to insert, remove and edit Publications/WebPath (Active "
 "Pages) under a certain topic."
@@ -1722,7 +1744,7 @@ msgstr ""
 "Questa sezione permette di inserire, rimuovere e modificare Pubblicazioni/"
 "WebPaths (Pagine attive) sotto un determinato topic."
 
-#: crud/cds_websites_pages/views.py:120
+#: crud/cds_websites_pages/views.py:129
 msgid ""
 "In order for a web Publication/WebPath to be iserted here, you must first "
 "import it from the \"Shared objects\" section."
@@ -1730,131 +1752,131 @@ msgstr ""
 "Affinché una Pubblicazione/WebPath possa essere inserita qui, è necessario "
 "prima importarla dalla sezione \"Oggetti condivisi\"."
 
-#: crud/cds_websites_pages/views.py:182
+#: crud/cds_websites_pages/views.py:191
 msgid "Edited object"
 msgstr "Modificato oggetto"
 
-#: crud/cds_websites_pages/views.py:186 crud/cds_websites_pages/views.py:557
+#: crud/cds_websites_pages/views.py:195 crud/cds_websites_pages/views.py:564
 msgid "Object edited successfully"
 msgstr "Oggetto modificato con successo"
 
-#: crud/cds_websites_pages/views.py:203
+#: crud/cds_websites_pages/views.py:212
 msgid "Edit Object"
 msgstr "Modifica oggetto"
 
-#: crud/cds_websites_pages/views.py:236
+#: crud/cds_websites_pages/views.py:246
 msgid "Added object"
 msgstr "Aggiunto oggetto"
 
-#: crud/cds_websites_pages/views.py:240
+#: crud/cds_websites_pages/views.py:250
 msgid "Object added successfully"
 msgstr "Oggetto aggiunto con successo"
 
-#: crud/cds_websites_pages/views.py:257
+#: crud/cds_websites_pages/views.py:267
 msgid "New Object"
 msgstr "Nuovo Oggetto"
 
-#: crud/cds_websites_pages/views.py:282
+#: crud/cds_websites_pages/views.py:292
 msgid "Removed object"
 msgstr "Rimosso Oggetto"
 
-#: crud/cds_websites_pages/views.py:286
+#: crud/cds_websites_pages/views.py:296
 msgid "Object removed successfully"
 msgstr "Oggetto rimosso con successo"
 
-#: crud/cds_websites_pages/views.py:315
+#: crud/cds_websites_pages/views.py:326
 msgid "Updated items order"
 msgstr "Aggiornato ordine degli elementi"
 
-#: crud/cds_websites_pages/views.py:319
+#: crud/cds_websites_pages/views.py:330
 msgid "Items order updated successfully"
 msgstr "Ordine aggiornato con successo"
 
-#: crud/cds_websites_pages/views.py:326
+#: crud/cds_websites_pages/views.py:337
 msgid "order"
 msgstr "odine"
 
-#: crud/cds_websites_pages/views.py:359
+#: crud/cds_websites_pages/views.py:370
 msgid "Edited Regulation Article"
 msgstr "Modificato Articolo di Regolamento"
 
-#: crud/cds_websites_pages/views.py:363
+#: crud/cds_websites_pages/views.py:374
 msgid "Regulation Article edited successfully"
 msgstr "Articolo di Regolamento modificato con successo"
 
-#: crud/cds_websites_pages/views.py:448
+#: crud/cds_websites_pages/views.py:459
 msgid "Edited sub article"
 msgstr "Modificato sotto-articolo"
 
-#: crud/cds_websites_pages/views.py:452 crud/regdid/views.py:546
+#: crud/cds_websites_pages/views.py:463 crud/regdid/views.py:546
 msgid "Sub article edited successfully"
 msgstr "Sotto-articolo modificato con successo"
 
-#: crud/cds_websites_pages/views.py:499
+#: crud/cds_websites_pages/views.py:509
 msgid "Added Portal Object"
 msgstr "Aggiunto Oggetto del Portale"
 
-#: crud/cds_websites_pages/views.py:503
+#: crud/cds_websites_pages/views.py:513
 msgid "Portal Object added successfully"
 msgstr "Oggetto del Portale aggiunto con successo"
 
-#: crud/cds_websites_pages/views.py:516
+#: crud/cds_websites_pages/views.py:526
 msgid "Add Portal Object"
 msgstr "Aggiungi Oggetto del Portale"
 
-#: crud/cds_websites_pages/views.py:524
+#: crud/cds_websites_pages/views.py:534
 msgid "Portal Object"
 msgstr "Oggetto del Portale"
 
-#: crud/cds_websites_pages/views.py:553
+#: crud/cds_websites_pages/views.py:560
 msgid "Edited Object"
 msgstr "Modificato Oggetto"
 
-#: crud/cds_websites_pages/views.py:600
+#: crud/cds_websites_pages/views.py:607
 msgid "Removed Item"
 msgstr "Rimosso Elemento"
 
-#: crud/cds_websites_pages/views.py:604
+#: crud/cds_websites_pages/views.py:611
 msgid "Item removed successfully"
 msgstr "Elemento rimosso con successo"
 
-#: crud/cds_websites_pages/views.py:631
+#: crud/cds_websites_pages/views.py:638
 msgid "Updated extras order"
 msgstr "Aggiornato ordine degli attributi"
 
-#: crud/cds_websites_pages/views.py:635
+#: crud/cds_websites_pages/views.py:642
 msgid "Extras order updated successfully"
 msgstr "Ordine aggiornato con successo"
 
-#: crud/cds_websites_pages/views.py:674
+#: crud/cds_websites_pages/views.py:684
 msgid "Added Regulation Article Extra"
 msgstr "Aggiunto Attributo all'articolo di regolamento"
 
-#: crud/cds_websites_pages/views.py:678
+#: crud/cds_websites_pages/views.py:688
 msgid "Regulation Article Extra added successfully"
 msgstr "Attributo modificato con successo"
 
-#: crud/cds_websites_pages/views.py:693
+#: crud/cds_websites_pages/views.py:706
 msgid "New Extra"
 msgstr "Nuovo Attributo"
 
-#: crud/cds_websites_pages/views.py:701 crud/cds_websites_pages/views.py:758
+#: crud/cds_websites_pages/views.py:714 crud/cds_websites_pages/views.py:773
 msgid "Regulation Article Extra"
 msgstr "Attributo Articolo di Regolamento"
 
-#: crud/cds_websites_pages/views.py:729
+#: crud/cds_websites_pages/views.py:742
 msgid "Edited Regulation Article Extra"
 msgstr "Modificato Attributo dell'articolo di regolamento"
 
-#: crud/cds_websites_pages/views.py:733
+#: crud/cds_websites_pages/views.py:746
 msgid "Regulation Article Extra edited successfully"
 msgstr "Attributo dell'articolo di regolamento modificato con successo"
 
-#: crud/cds_websites_pages/views.py:778
+#: crud/cds_websites_pages/views.py:793
 msgid "Deleted Regulation Article Extra"
 msgstr "Eliminato Attributo dell'articolo di regolamento"
 
-#: crud/cds_websites_pages/views.py:782
+#: crud/cds_websites_pages/views.py:797
 msgid "Regulation Article Extra deleted successfully"
 msgstr "Attributo dell'articolo di regolamento aggiunto con successo"
 
@@ -4069,10 +4091,6 @@ msgstr "successiva"
 msgid "Loading data"
 msgstr ""
 
-#: crud/utils/templates/includes/vue_search_button.html:7
-msgid "Search"
-msgstr "Cerca"
-
 #: crud/utils/templates/main_menu.html:9
 msgid "Home"
 msgstr ""
@@ -4101,7 +4119,7 @@ msgstr "caratteri"
 msgid "Start date is greater than end date"
 msgstr "La data di inizio è successiva alla data di fine"
 
-#: ricerca_app/api_views.py:1676
+#: ricerca_app/api_views.py:1637
 msgid "Lock successfully set"
 msgstr "Lock acquisito con successo"
 
@@ -4190,6 +4208,15 @@ msgstr "L'immagine ha una proporzione tra altezza e lunghezza non valida"
 #: ricerca_app/validators.py:100
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
+
+#~ msgid "Object id "
+#~ msgstr "Id Oggetto "
+
+#~ msgid "Use Publication/WebPath ID from the editorial board"
+#~ msgstr "Utilizzare ID Pubblicazione/WebPath ricavato dall'editorial board"
+
+#~ msgid "Object Preview"
+#~ msgstr "Antreprima dell'Oggetto"
 
 #, fuzzy
 #~| msgid "Edited Item Article"
