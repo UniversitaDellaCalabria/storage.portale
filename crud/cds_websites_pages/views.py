@@ -803,6 +803,7 @@ class SitoWebCdsOggettiPortaleViewSet(ReadOnlyModelViewSet):
     serializer_class = SitoWebCdsOggettiPortaleSerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+    schema = None
 
     def get_queryset(self):
         if self.action != 'list':
@@ -827,6 +828,7 @@ class ExternalOggettiPortaleViewSet(GenericViewSet):
 
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+    schema = None
 
     
     def list(self, request):
