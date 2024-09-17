@@ -98,5 +98,4 @@ def getUPImpegni(request, cds_cod, aa, year=1, date_month='', date_year='', type
         "dataFine": end_up,
         "codAF": af_cod if filter_by_af_cod else ''
     }
-
     return getData(request, url, cds_cod, body)
