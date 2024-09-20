@@ -9,8 +9,8 @@ def upImpegniSerializer(impegni, year=None, af_name=None, search={}, show_past=F
     search_location = search.get('search_location', '')
 
     for impegno in impegni:
-        if year and impegno['evento']['dettagliDidattici'][0]['annoCorso'] != year:
-            continue
+        # if year and impegno['evento']['dettagliDidattici'][0]['annoCorso'] != year:
+            # continue
 
         if af_name and impegno['evento']['dettagliDidattici'][0]['nome'].lower() != af_name.lower():
             continue
