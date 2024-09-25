@@ -1,0 +1,135 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<p style="font-weight: lighter;" class="h3 mb-4">
+    {% if group %}
+        {% trans "Edit" %} {{ group.descr_breve_it }}
+    {% else %}
+        {% trans "New Group" %}
+    {% endif %}
+</p>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% include "form_template.html" with form=form %}
+                {% include "includes/form_submit.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if group %}
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <p style="font-weight: lighter;" class="mb-4 h3">
+                {% trans "Members" %}
+            </p>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Function" %}</th>
+                            <th>{% trans "Visible" %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in group.didatticacdsgruppicomponenti_set.all %}
+                        <tr>
+                            <td>{{ member.ordine }}</td>
+                            <td>
+                                {{ member.cognome }} {{ member.nome }}
+                                {% if member.matricola %}
+                                <br>
+                                ({% trans "Link to" %}: {{  member.matricola|default:"-" }})
+                                {% endif %}
+                            </td>
+                            <td>{{ member.funzione_it|default:"-" }}</td>
+                            <td>
+                                {% if member.visibile %}
+                                <svg class="icon icon-sm icon-success">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                </svg>
+                                {% else %}
+                                <svg class="icon icon-sm icon-danger">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                </svg>
+                                {% endif %}
+                            </td>
+                            <td class="text-right">
+                                <a href="{% url 'cds:management:cds-group-member-edit' regdid_id=regdid.pk group_id=group.pk member_id=member.pk %}" class="btn btn-primary btn-xs">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg> {% trans "Edit" %}
+                                </a>
+
+                                <a href="" class="btn btn-danger btn-xs"
+                                   data-toggle="modal"
+                                   data-target="#delete_cds_group_member_{{ member.pk }}">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                    </svg> {% trans "Remove" %}
+                                </a>
+                                <div class="modal fade"
+                                     tabindex="-1"
+                                     role="dialog"
+                                     id="delete_cds_group_member_{{ member.pk }}">
+                                    <div class="modal-dialog modal-dialog-centered"
+                                         role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    {% trans "Confirm" %}
+                                                </h5>
+                                                <button class="close"
+                                                        type="button"
+                                                        data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <svg class="icon">
+                                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>
+                                                    {% trans "Do you want to delete member?" %}
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-success btn-sm" href="{% url 'cds:management:cds-group-member-delete' regdid_id=regdid.pk group_id=group.pk member_id=member.pk %}">
+                                                    {% trans 'Yes, proceed' %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'cds:management:cds-group-members-new' regdid_id=regdid.pk group_id=group.pk %}" class="text-center btn btn-block btn-success btn-xs">
+                    <svg class="icon icon-xs icon-white">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                    </svg> {% trans "Add new" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock centered_container %}

@@ -1,0 +1,194 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load management_templatetags %}
+
+
+{% block centered_container %}
+
+{% settings_value "DISABLED_MANAGEMENT_APPS" as disabled_management_apps %}
+
+
+<div class="container">
+    <h3 style="font-weight: normal" class="pb-4">{% trans "Dashboard" %}</h3>
+    <div class="row mt-4" style="min-height: 75vh;">
+        <div class="col col-md-3 col-lg-3 col-xl-3">
+            <div class="nav nav-tabs nav-tabs-vertical" id="nav-vertical-tab-links-cds" role="tablist" aria-orientation="vertical">
+                <!-- Corsi di Studio -->
+                <a class="nav-link pb-4 active"
+                    id="nav-vertical-tab-link-cds"
+                    data-toggle="tab"
+                    href="#nav-vertical-tab-cds"
+                    role="tab"
+                    aria-controls="nav-vertical-link-cds-tab"
+                    aria-selected="true">
+                    {% trans "Study Courses" %}
+                </a>
+                <!-- /Corsi di Studio -->
+                <!-- Ricerca -->
+                <a class="nav-link pb-4"
+                    id="nav-vertical-tab-link-research"
+                    data-toggle="tab"
+                    href="#nav-vertical-tab-research"
+                    role="tab"
+                    aria-controls="nav-vertical-link-research-tab"
+                    aria-selected="false">
+                    {% trans "Research" %}
+                </a>
+                <!-- /Ricerca -->
+                <!-- Innovazione -->
+                <a class="nav-link pb-4"
+                    id="nav-vertical-tab-link-innovation"
+                    data-toggle="tab"
+                    href="#nav-vertical-tab-innovation"
+                    role="tab"
+                    aria-controls="nav-vertical-link-innovation-tab"
+                    aria-selected="false">
+                    {% trans "Innovation" %}
+                </a>
+                <!-- /Innovazione -->
+                <!-- Personale -->
+                <a class="nav-link pb-4"
+                    id="nav-vertical-tab-link-staff"
+                    data-toggle="tab"
+                    href="#nav-vertical-tab-staff"
+                    role="tab"
+                    aria-controls="nav-vertical-link-staff-tab"
+                    aria-selected="false">
+                    {% trans "Staff" %}
+                </a>
+                <!-- /Personale -->
+        </div>
+    </div>
+    <div class="col col-md-9 col-lg-9 col-xl-9" style="overflow-y: auto; max-height:75vh;">
+        <div class="tab-content" id="nav-vertical-tabContent">
+            <!-- Corsi di Studio -->
+            <div class="tab-pane p-3 fade show active"
+                id="nav-vertical-tab-cds"
+                role="tabpanel"
+                aria-labelledby="nav-vertical-tabcontent-cds-tab">
+                <!-- Cds Info -->
+                {% if not disabled_management_apps or "cds" not in disabled_management_apps %}
+                {% trans "CdS info" as title %}
+                {% trans "Manage CdS' contact details, organization and documents" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="cds:management:cds" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Cds Info -->
+                <!-- Regdid -->
+                {% if not disabled_management_apps or "regdid" not in disabled_management_apps %}
+                {% trans "Regdid" as title %}
+                {% trans "Manage didactic regulations" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="regdid:management:regdid" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Regdid -->
+                <!-- CdS Pages -->
+                {% if not disabled_management_apps or "cds_websites" not in disabled_management_apps %}
+                {% trans "CdS pages" as title %}
+                {% trans "Manage contents of CdS' website pages" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="cds-websites:management:cds-websites" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /CdS Pages -->
+                <!-- CdS in Sintesi -->
+                {% if not disabled_management_apps or "cds_brochure" not in disabled_management_apps %}
+                {% trans "CdS in brief" as title %}
+                {% trans "Manage contents of Course in brief" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="cds-brochure:management:cds-brochure" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- CdS in Sintesi -->
+            </div>
+            <!-- /Corsi di Studio -->
+            <!-- Ricerca -->
+            <div class="tab-pane p-3 fade"
+                id="nav-vertical-tab-research"
+                role="tabpanel"
+                aria-labelledby="nav-vertical-tabcontent-research-tab">
+                <!-- Attivita Dottorati -->
+                {% if not disabled_management_apps or "phd" not in disabled_management_apps %}
+                {% trans "PhD activities" as title %}
+                {% trans "Manage PhD activities" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="phd:management:phd-list" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Attivita Dottorati -->
+                <!-- Laboratori -->
+                {% if not disabled_management_apps or "laboratories" not in disabled_management_apps %}
+                {% trans "Laboratories" as title %}
+                {% trans "Manage Laboratories" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="laboratories:management:laboratories" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Laboratori -->
+                <!-- Gruppi di Ricerca -->
+                {% if not disabled_management_apps or "research_groups" not in disabled_management_apps %}
+                {% trans "Research groups" as title %}
+                {% trans "Manage groups and their teachers" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="research-groups:management:research-groups" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Gruppi di Ricerca -->
+                <!-- Linee di Ricerca -->
+                {% if not disabled_management_apps or "research_lines" not in disabled_management_apps %}
+                {% trans "Research lines" as title %}
+                {% trans "Manage lines and their teachers" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="research-lines:management:base-research-lines" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Linee di Ricerca -->
+                <!-- Progetti -->
+                {% if not disabled_management_apps or "projects" not in disabled_management_apps %}
+                {% trans "Projects" as title %}
+                {% trans "Manage projects" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="projects:management:projects" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- Progetti -->
+            </div>
+            <!-- /Ricerca -->
+            <!-- Innovazione -->
+            <div class="tab-pane p-3 fade"
+                id="nav-vertical-tab-innovation"
+                role="tabpanel"
+                aria-labelledby="nav-vertical-tabcontent-innovation-tab">
+                <!-- Brevetti -->
+                {% if not disabled_management_apps or "patents" not in disabled_management_apps %}
+                {% trans "Patents" as title %}
+                {% trans "Manage patents" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="patents:management:patents" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Brevetti -->
+                <!-- Imprese -->
+                {% if not disabled_management_apps or "companies" not in disabled_management_apps %}
+                {% trans "Spin-offs and Startups" as title %}
+                {% trans "Manage companies" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="companies:management:companies" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Imprese -->
+            </div>
+            <!-- /Innovazione -->
+            <!-- Personale -->
+            <div class="tab-pane p-3 fade"
+                id="nav-vertical-tab-staff"
+                role="tabpanel"
+                aria-labelledby="nav-vertical-tabcontent-staff-tab">
+                <!-- Docenti -->
+                {% if not disabled_management_apps or "teachers" not in disabled_management_apps %}
+                {% trans "Teachers" as title %}
+                {% trans "Manage teachers and PTA" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="teachers:management:teachers" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Docenti -->
+            </div>
+            <!-- /Personale -->
+        </div>
+    </div>
+</div>
+
+{% endblock centered_container %}

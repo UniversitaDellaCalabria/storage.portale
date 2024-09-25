@@ -1,0 +1,189 @@
+{% extends "includes/vue_list.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load management_templatetags %}
+
+{% block content %}
+
+{% block storage_block_top %}
+{% include "blocks/includes/vue_check.html" %}
+{% endblock storage_block_top %}
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-wrapper card-space">
+                    <div class="card card-bg no-after">
+                        <div class="card-body">
+
+                            {% include "includes/vue_search_input.html" with id=id %}
+
+                            <!-- CdsId & DepartmentID & Role -->
+                            <div class="form-group mb-0">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <loading-icon
+                                            v-if="is_loading_departments"
+                                            :loader_source="loader_source_departments">
+                                        </loading-icon>
+
+                                        <div v-else>
+                                            <label for="{{ id }}_department_input">
+                                                {% trans "Department" %}
+                                            </label>
+                                            <div class="w-40 mt-5">
+                                                <select id="{{ id }}_department_input"
+                                                        title="Scegli una opzione"
+                                                        name="{{ id }}_department_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in departments_filter"
+                                                            :value="item.DepartmentCod"
+                                                            :selected="item.DepartmentCod == selected_department_id">
+                                                        [[ item.DepartmentName ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+
+        <loading-icon
+            v-if="is_loading"
+            :loader_source="loader_source">
+        </loading-icon>
+
+        <div class="table-responsive" v-else>
+            <table class="table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">[[ labels.TeacherName ]]</th>
+                        <th scope="col">[[ labels.TeacherRole ]]</th>
+                        <th scope="col">[[ labels.TeacherSSDCod ]]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in items.results">
+                        <td>
+                            <a href="javascript:void(0)" @click="{{person_label|default:'choosen_person'}}_setPerson(item.TeacherID, item.TeacherName)">
+                                [[ item.TeacherName ]]
+                            </a>
+                        </td>
+                        {% if mark_contract_teachers %}
+                        <td v-if="contract_teacher_roles.includes(item.TeacherRole)">
+                            {% trans "Contract teacher" %}
+                        </td>
+                        <td v-else>
+                            [[ item.TeacherRoleDescription ]]
+                        </td>
+                        {% else %}
+                        <td>
+                            [[ item.TeacherRoleDescription ]]
+                        </td>
+                        {% endif %}
+                        <td v-if="!item.TeacherSSDCod.includes('0000')">
+                            [[ item.TeacherSSDCod ]] - [[ item.TeacherSSDDescription ]]
+                        </td>
+                        <td v-else>
+                            -
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+    </div>
+
+{% block storage_block_bottom %}
+    <div v-else>
+        {% trans "No items here" %}
+    </div>
+
+</div>
+{% endblock storage_block_bottom %}
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+function {{ id }}_get_form_paramenters(keyword=null, value=null) {
+
+    let dict = {}
+
+    if (keyword)
+        dict[keyword] = value
+
+    // search
+    let search = document.getElementById('{{ id }}_search')
+    if (search && search.value) dict['search'] = search.value
+
+    // department
+    let department = document.getElementById('{{ id }}_department_input')
+    if (department && department.value) dict['department'] = department.value
+
+    setItemInSession("{{ id }}", dict)
+
+    return dict
+};
+function {{person_label|default:"choosen_person"}}_unsetPerson() {
+    document.getElementById('id_{{person_label|default:"choosen_person"}}').value = "";
+    let elements = document.getElementsByClassName('{{person_label|default:"choosen_person"}}_name');
+    for(let i=0; i < elements.length; i++)
+        elements[i].innerHTML = `<div class="alert alert-warning" role="alert">
+            {% if required %}
+                {% trans "Choose a person to proceed" %}
+            {% else %}
+                {% trans "Choose a person" %}
+            {% endif %}
+        </div>`;
+};
+</script>
+{% endblock extra_scripts %}
+
+{% block extra_data %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+search_dict: {},
+departments: [],
+
+is_loading_departments: true,
+
+loader_source_departments: '{% url 'structures:apiv1:departments-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+
+selected_department_id: this.getItemFromSession("{{ id }}", 'department'),
+selected_search: this.getItemFromSession("{{ id }}", 'search'),
+
+{% endblock extra_data %}
+
+{% block extra_mounted %}
+    this.callDepartments();
+    this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
+{% endblock extra_mounted %}
+
+{% block extra_methods %}
+callDepartments() {
+    axios
+        .get(this.loader_source_departments)
+        .then(response => {
+            this.departments_filter = response.data.results;
+            this.is_loading_departments = false
+        })
+},
+{{person_label|default:"choosen_person"}}_setPerson(id, name) {
+    document.getElementById('id_{{person_label|default:"choosen_person"}}').value = id;
+    let elements = document.getElementsByClassName('{{person_label|default:"choosen_person"}}_name');
+    for(let i=0; i < elements.length; i++)
+        elements[i].innerHTML = "<div class='alert alert-success' role='alert'>{% trans 'Choosen person' %} <b>"+name+"</b></div>";
+}
+{% endblock extra_methods %}

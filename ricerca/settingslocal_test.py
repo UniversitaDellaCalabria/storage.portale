@@ -19,6 +19,7 @@ ADMIN_PATH = 'test_admin'
 DATA_DIR = os.path.join(BASE_DIR, "data")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+STATIC_URL = '/static/'
 
 INSTALLED_APPS = [
     'accounts',
@@ -29,12 +30,36 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'accounts.apps.AccountsConfig',
-    'organizational_area',
     'rest_framework',
     'rest_framework.authtoken',
-    'ricerca_app',
+
     # 'silk',
-    # 'ricerca_app.apps.RicercaAppConfig',
+    
+    # OAS 3 specs
+    # 'drf_spectacular',
+    
+    # frontend apps
+    'django_unical_bootstrap_italia',
+    'bootstrap_italia_template',
+    'organizational_area',
+    'generics',
+    'esse3',
+    'locks',
+    'structures',
+    'addressbook',
+    'advanced_training',
+    'cds',
+    'companies',
+    'patents',
+    'phd',
+    'projects',
+    'research_lines',
+    'teachers',
+    'cds_brochure',
+    'cds_websites',
+    'research_groups',
+    'laboratories',
+    'regdid',
 
     # cors headers
     'corsheaders',
@@ -143,7 +168,7 @@ else:
     LOGIN_URL = f'/{LOCAL_URL_PREFIX}/login/'
     LOGOUT_URL = f'/{LOCAL_URL_PREFIX}/logout/'
 
-LOGOUT_REDIRECT_URL=f'/'
+LOGOUT_REDIRECT_URL='/'
 
 PERSON_CONTACTS_TO_TAKE = [
     'Posta Elettronica',

@@ -1,0 +1,183 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load management_templatetags %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+
+    <style>
+        table {
+            border: solid 0.1mm #000000 !important;
+            table-layout: fixed;
+            width: 100%;
+            padding-bottom: 1mm;
+            overflow-wrap: break-word;
+        }
+        td, th {
+            border: solid 0.1mm #000000 !important;
+            text-align: left;
+            padding-left: 1.0mm;
+            vertical-align: middle;
+        }
+        ol {
+            list-style-type: decimal;
+        }
+        ol li ol {
+            list-style-type: lower-alpha;
+        }
+        ol li ol li ol {
+            list-style-type: lower-roman;
+        }
+        ol li ol li ol li ol {
+            list-style-type: upper-alpha;
+        }
+    </style>
+{% endblock %}
+
+{% block centered_container %}
+
+<!-- Cds Name and Status des -->
+<div class="d-flex m-1 mt-2">
+    <div class="col h3 mb-1 p-0" style="font-weight: lighter;">
+        {{regdid.cds.nome_cds_it}}
+    </div>
+    <div class="col text-right">
+        {% trans "Status" %}:
+    </div>
+    <div class="col-xs ml-2 mr-2 h6">  
+        <div class="row mb-1">
+            {{testata_status.id_didattica_articoli_regolamento_status.status_desc}}
+        </div>
+        <div class="row">
+            {% include "blocks/regdid_status_change_history.html" with status_history=status_history %}
+        </div>
+    </div>
+</div>
+<!-- /Cds Name and Status des -->
+<hr/>
+
+<div class="d-flex ml-2 mr-2">
+    <!-- Pdf Button -->
+    <a href="{% url 'regdid:management:regdid-articles-pdf' regdid_id=regdid.pk %}" class="btn btn-success btn-xs align-self-center mb-2 mr-auto">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-download"></use>
+        </svg> {% trans "Generate PDF" %}
+    </a>
+    <!-- /Pdf Button -->
+
+    {% settings_value 'OFFICE_REGDIDS_APPROVAL' package="regdid" as office_approval_name %}
+
+    <!-- Status Buttons -->
+    {% if user_permissions_and_offices.permissions.edit %}
+        <!-- In bozza -->
+        {% if testata_status.id_didattica_articoli_regolamento_status.status_cod == '0' %}
+            <!-- Send to revision -->
+            {% trans "Send to revision" as b_text %}
+            {% trans "Are you sure you want to send this regdid to revision?" as b_message %}
+            {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-upload' message=b_message regdid_id=regdid.pk target_status_cod='1' %}
+        <!-- In revisione -->
+        {% elif testata_status.id_didattica_articoli_regolamento_status.status_cod == '1' %}
+            <!-- Send back to department -->
+            {% trans "Send to department" as b_text %}
+            {% trans "Are you sure you want to send this regdid back to the department?" as b_message %}
+            {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='danger' button_icon='#it-ban' message=b_message regdid_id=regdid.pk target_status_cod='0' %}
+            {% if office_approval_name in user_permissions_and_offices.offices or request.user.is_superuser %}
+                <!-- Approve -->
+                {% trans "Approve" as b_text %}
+                {% trans "Are you sure you want to approve this regdid?" as b_message %}
+                {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-check-circle' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='3' %}
+            {% else %}
+                <!-- Send for approval -->
+                {% trans "Send for approval" as b_text %}
+                {% trans "Are you sure you want to send this regdid for approval?" as b_message %}
+                {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-upload' message=b_message regdid_id=regdid.pk target_status_cod='2' %}
+            {% endif %}
+        <!-- In attesa di approvazione -->
+        {% elif testata_status.id_didattica_articoli_regolamento_status.status_cod == '2' %}
+            <!-- Send back to revision -->
+            {% trans "Send to revision" as b_text %}
+            {% trans "Are you sure you want to send this regdid back to revision?" as b_message %}
+            {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='danger' button_icon='#it-ban' message=b_message regdid_id=regdid.pk target_status_cod='1' %}
+            <!-- Approve -->
+            {% trans "Approve" as b_text %}
+            {% trans "Are you sure you want to approve this regdid?" as b_message %}
+            {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='success' button_icon='#it-check-circle' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='3' %}
+        <!-- Approvato -->
+        {% elif testata_status.id_didattica_articoli_regolamento_status.status_cod == '3' %}
+            <!-- Send back to revision -->
+            {% trans "Send to revision" as b_text %}
+            {% trans "This regdid was previously approved, are you sure you want to send it back to revision?" as b_message %}
+            {% include "blocks/regdid_status_change_button.html" with button_text=b_text button_type='danger' button_icon='#it-ban' message=b_message approve_or_reopen=1 regdid_id=regdid.pk target_status_cod='1' %}
+            <!-- Publish -->
+            {% if request.user.is_superuser %}
+                {% trans "Publish" as b_text %}
+                {% trans "This action will update all the articles/sub articles shown on the cds' website" as b_message %}
+                {% url 'regdid:management:regdid-articles-publish' regdid_id=regdid.pk as c_url %}
+                {% include "blocks/regdid_top_button.html" with button_text=b_text button_type='primary' button_icon='#it-upload' message=b_message confirm_url=c_url %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    <!-- /Status Buttons -->
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <div class="h4 m-4 p-2 text-center">
+                {% trans "Didactic regulation" %} - {{regdid.aa_reg_did}}
+            </div>
+            <!-- Department Notes -->
+            <form method="post"
+                  action="{% url 'regdid:management:regdid-articles' regdid_id=regdid.pk %}"
+                  enctype="multipart/form-data"
+                  novalidate>
+                {% trans "Department notes" as note_title %}
+                {% include "blocks/regdid_notes.html" with title=note_title notes=testata.note notes_form=department_notes_form user_can_edit=can_edit_notes %}
+            </form>
+            <!-- /Department Notes -->
+            <div id="collapseDiv_art_struct"
+                 class="collapse-div collapse-left-icon m-3 mt-4 pt-4"
+                 style="border-bottom: 0;">
+                {% for title, struct_art_list in titoli_struttura_articoli_dict.items %}
+                <div class="m-2 mb-4">
+                    <div class="pb-2 pt-3">
+                        <div class="h6 mb-0">
+                            {{ title.descr_titolo_it }}
+                        </div>
+                        {% if title.descr_titolo_en %}
+                        <div class="h6" style="font-weight: normal;">
+                            ({{ title.descr_titolo_en }})
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% for struct_art in struct_art_list %}
+                    <div class="m-2">
+                        {% for struct, art_sub_arts in struct_art.items %}
+                            {% for article, sub_articles in art_sub_arts.items %}
+                                {% include "blocks/regdid_article_item.html" with struct=struct article=article sub_articles=sub_articles %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <hr />
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Log -->
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">Logs RegDID</h4>
+            {% include "obj_logs.html" with logs=logs_regdid_testata id=testata.pk %}
+        </div>
+    </div>
+</div>
+<!-- END log -->
+{% endblock centered_container %}

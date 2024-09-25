@@ -1,0 +1,126 @@
+{% load i18n static management_templatetags %}
+
+{% include "includes/vue_loading.html" %}
+
+{% random_id uid as id %}
+
+<div id="{{ id }}">
+    <input type="hidden" :name="fieldName" :value="selectedOption ? selectedOption.id : ''">
+    <div class="input-group">
+        <input type="text"
+            id="{{ id }}_search"
+            class="form-control"
+            name="{{ id }}_search"
+            v-model="query"
+            placeholder="{% trans 'Search' %}...">
+        <div class="input-group-append">
+            <a class="btn btn-icon btn-success"
+                target="_blank"
+                href="{% url 'cds-websites:management:cds-websites-shared-object-new' code=widget.sito_web_cds_dati_base_id %}">
+                <svg class="icon icon-white mt-2 mb-1 mr-1">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg>
+                {% trans "Add new" %}
+            </a>
+        </div>
+    </div>
+    <loading-icon v-if="is_loading" :loader_source="loader_source"></loading-icon>
+    <ul v-if="options.length" class="list-group border" style="max-height: 190px; overflow-y: auto;">
+        <li v-for="option in options">
+            <a href="javascript:void(0)" :key="option.id" class="list-group-item list-group-item-action text-reset h6 m-0" class="list-item" @click="selectOption(option)">
+                [[ option.titolo_it ]]
+            </a>
+        </li>
+    </ul> 
+</div>
+
+<script>
+    var {{ id }} = new Vue({
+        el: "[id='{{id}}']",
+        data: {
+            fieldName: '{{ widget.name }}',
+            url: "{% url 'cds-websites:apiv1:cds-websites-shared-objects-list' code=widget.sito_web_cds_dati_base_id %}",
+            query: '',
+            options: [],
+            initial_value: '{{ widget.initial_value }}',
+            selectedOption: null,
+            is_loading: false,
+            loader_source: '',
+            ignoreWatch: null
+        },
+        watch: {
+            query: function(newQuery, oldQuery) {
+                if (this.query.length < 3) {
+                    this.clearOptions();
+                    return;
+                }
+                if (!this.ignoreWatch) {
+                    if (this.api_debounce_timeout) {
+                        clearTimeout(this.api_debounce_timeout);
+                    }
+                    this.api_debounce_timeout = setTimeout(() => {
+                        this.search(`${this.url}?search=${newQuery}&format=json`);
+                    }, 500); // 500 milliseconds
+                }
+            }
+        },
+        created() {
+            if(this.initial_value) {
+                this.fetchInitialData();
+            }
+        },
+        methods: {
+            search(url) {
+                this.is_loading = true
+                axios
+                    .get(url)
+                    .then(response => {
+                        this.options = response.data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    })
+                    .finally(() => {
+                        this.is_loading = false;
+                    });
+            },
+            selectOption(option, initial=false) {
+                this.ignoreWatch = true;
+                this.selectedOption = option;
+                this.query = option.titolo_it;
+                this.options = [];
+                this.$nextTick(() => {
+                    this.ignoreWatch = false;
+                });
+                if(!initial) {
+                    const titolo_it = document.getElementById("id_titolo_it");
+                    const titolo_en = document.getElementById("id_titolo_en");
+                    if(titolo_it) {
+                        titolo_it.value = option.titolo_it;
+                    }
+                    if(titolo_en) {
+                        titolo_en.value = option.titolo_en;
+                    }
+                }
+            },
+            fetchInitialData() {
+                this.is_loading = true
+                axios
+                    .get(this.url + `${this.initial_value}/?format=json`)
+                    .then(response => {
+                        this.selectOption(response.data, true);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    })
+                    .finally(() => {
+                        this.is_loading = false;
+                    });
+            },
+            clearOptions() {
+                this.options = [];
+                this.selectedOption = null;
+            }
+        },
+    });
+</script>

@@ -1,10 +1,12 @@
-from django.urls import path
+from django.urls import include, path
+from generics.settings import RICERCA_API_URL
 
-from . api_views import PentahoIsodid
+from .api.v1 import urls as apiv1_urls
+from .api.v2 import urls as apiv2_urls
 
-urlpatterns = []
+app_name = "pentaho"
 
-# pentaho reports
-urlpatterns += path('api/ricerca/pentaho/<str:cdscod>/isodid/',
-                    PentahoIsodid.as_view(),
-                    name='pentaho-isodid'),
+urlpatterns = [
+    path(RICERCA_API_URL, include(apiv1_urls)),
+    path(RICERCA_API_URL, include(apiv2_urls)),
+]

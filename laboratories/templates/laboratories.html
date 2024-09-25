@@ -1,0 +1,24 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<a href="{% url 'laboratories:management:laboratory-new' %}" class="btn btn-success btn-xs">
+    <svg class="icon icon-xs icon-white">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+    </svg> {% trans "Add new" %}
+</a>
+<hr />
+<h3 style="font-weight: lighter;" class="mb-4">
+    {% trans "Laboratories" %}
+</h3>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            {% include "blocks/crud_laboratories.html" with uid="id_1" %}
+        </div>
+    </div>
+</div>
+{% endblock centered_container %}

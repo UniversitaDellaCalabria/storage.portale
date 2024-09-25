@@ -1,0 +1,204 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+<style>
+    .dropdown-menu.show::before {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block centered_container %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<h3 style="font-weight: normal;">
+    {{ cds_website.cds.cds_cod }} -
+    {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
+        {{ cds_website.cds.nome_cds_it }}
+    {% else %}
+        {{ cds_website.cds.nome_cds_eng }}
+    {% endif %}
+</h3>
+<hr>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            
+            <div class="nav nav-tabs auto"
+                id="nav-tab-pages"
+                role="tablist"
+                aria-orientation="orizzontal">
+
+                {% for page_name in pages.keys %}
+                {% with trimmed_page_name=page_name|cut:" " %}
+                    <a  class="nav-link pb-4 {% if forloop.first %}active{% endif %}"
+                        id="nav-tab-pages-{{trimmed_page_name}}-tab"
+                        data-toggle="tab" href="#nav-tab-pages-{{trimmed_page_name}}"
+                        role="tab" aria-controls="nav-tab-pages-{{trimmed_page_name}}"
+                        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                        <span>
+                            {{page_name}}
+                        </span>
+                    </a>
+                {% endwith %}
+                {% endfor %}
+            </div>
+
+            <div class="tab-content"
+                id="nav-tabContent-pages">
+
+                {% for page_name, content in pages.items %}
+                {% with trimmed_page_name=page_name|cut:" " %}
+                    <div class="tab-pane fade {% if forloop.first %}show active{% endif %}"
+                        id="nav-tab-pages-{{trimmed_page_name}}"
+                        role="tabpanel"
+                        aria-labelledby="nav-tab-pages-{{trimmed_page_name}}">
+
+                        <div id="collapseDiv_{{trimmed_page_name}}"
+                            class="collapse-div collapse-left-icon"
+                            style="border-bottom: none;">
+
+                            {% for topic_id, tor in content.items %}
+                                {% include "blocks/cds_websites_topic_item.html" with page_name=page_name topic_obj_regarts=tor %}
+                            {% endfor %}
+
+                            {% if not forloop.last %}
+                            <!-- Cds website page -->
+                                <div class="mt-4 p-3" style="border:1px solid rgb(0,0,0,.1);">
+                                    <a  href="{{cds_website_url}}/{{trimmed_page_name|lower}}/"
+                                        class="text-reset"
+                                        target="_blank">
+                                        <div class="ml-2 d-flex justify-content-start align-items-center">
+                                            <div class="col mr-auto">
+                                                <div class="row">
+                                                    <div class="h6">
+                                                        {% trans 'Open website page' %}
+                                                    </div>
+                                                </div>
+                                                <div class="row small text-muted">
+                                                    {% trans "Go to cds website page" %}: {{page_name}}
+                                                </div>
+                                            </div>
+                                            <svg class="p-1 icon icon-lg">
+                                                <use href="{% static 'svg/sprite.svg' %}#it-arrow-right-circle"></use>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                </div>            
+                                <!-- /Cds website page -->
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endwith %}
+                {% endfor %}
+            </div>
+
+
+            <!-- Manage shared objects -->
+            <div class="mt-4 p-3" style="border:1px solid rgb(0,0,0,.1);">
+                <a  href="{% url 'cds-websites:management:cds-websites-shared-objects' code=cds_website.id %}"
+                    class="text-reset"
+                    target="_blank">
+                    <div class="ml-2 d-flex justify-content-start align-items-center">
+                        <div class="col mr-auto">
+                            <div class="row">
+                                <div class="h6">
+                                    {% trans "Shared objects" %}
+                                </div>
+                            </div>
+                            <div class="row small text-muted">
+                                {% trans "Manage portal objects shared among all topics" %}
+                            </div>
+                        </div>
+                        <svg class="p-1 icon icon-lg">
+                            {% block icon %}
+                            <use href="{% static 'svg/sprite.svg' %}#it-arrow-right-circle"></use>
+                            {% endblock icon %}
+                        </svg>
+                    </div>
+                </a>
+            </div>            
+            <!-- /Manage shared objects -->
+
+        </div>
+    </div>
+</div>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">Logs</h4>
+            {% include "obj_logs.html" with logs=logs %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock centered_container %}
+
+{% block extra_scripts %}
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+    $('.popover-dismiss').popover({
+        trigger: 'focus',
+      });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all dropdown toggle buttons within table-responsive
+        var dropdownToggles = document.querySelectorAll('.table-responsive .dropdown-toggle');
+
+        dropdownToggles.forEach(function (toggle) {
+            toggle.addEventListener('click', function (event) {
+                // Find the dropdown menu
+                var dropdownMenu = toggle.nextElementSibling;
+                var btnGroup = toggle.parentElement;
+
+                // Check if the parent .btn-group has the 'show' class
+                if (btnGroup.classList.contains('show')) {
+                    // Remove the 'show' class and hide the dropdown
+                    btnGroup.classList.remove('show');
+                    dropdownMenu.style.display = 'none';
+                } else {
+                    // Add the 'show' class to parent .btn-group and show the dropdown
+                    btnGroup.classList.add('show');
+                    dropdownMenu.style.display = 'block';
+
+                    // Get the position of the button group relative to the viewport
+                    var rect = btnGroup.getBoundingClientRect();
+
+                    // Calculate the top and left positions for the dropdown
+                    var dropdownTop = rect.top + btnGroup.offsetHeight;
+                    var dropdownLeft = rect.left;
+
+                    // Apply the calculated positions
+                    dropdownMenu.style.top = dropdownTop + 'px';
+                    dropdownMenu.style.left = dropdownLeft + 'px';
+                }
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            dropdownToggles.forEach(function (toggle) {
+                var btnGroup = toggle.parentElement;
+                var dropdownMenu = toggle.nextElementSibling;
+
+                if (!btnGroup.contains(event.target)) {
+                    btnGroup.classList.remove('show');
+                    dropdownMenu.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock extra_scripts %}

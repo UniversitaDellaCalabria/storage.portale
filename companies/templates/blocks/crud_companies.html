@@ -1,0 +1,261 @@
+{% extends "includes/vue_list.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load management_templatetags %}
+
+{% block content %}
+
+{% settings_value "CMS_STORAGE_ROOT_API" package="generics" as api_root %}
+
+
+{% block storage_block_top %}
+{% include "blocks/includes/vue_check.html" %}
+{% endblock storage_block_top %}
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-wrapper card-space">
+                    <div class="card card-bg no-after">
+                        <div class="card-body">
+                            {% include "includes/vue_search_input.html" with id=id %}
+
+                            <div class="form-group mb-0">
+                                <!-- Areas & Department -->
+
+                                <div class="row">
+                                    <div class="col-sm form-group mb-0">
+                                        <div>
+                                            <label for="{{ id }}_techarea_input">
+                                                {% trans "Tech Area" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_techarea_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_techarea_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in techareas"
+                                                            :value="item.TechAreaId"
+                                                            :selected="item.TechAreaId == selected_techarea">
+                                                        [[ item.TechAreaDescription ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% block filter_spinoff_type %}
+                                    <div class="col-sm form-group mb-0">
+                                        <div>
+                                            <label for="{{ id }}_area_input">
+                                                {% trans "Spin-off" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_spinoff_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_spinoff_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option value="1"
+                                                          :selected="selected_spinoff.includes(1)">
+                                                        {% trans "Yes" %}
+                                                    </option>
+                                                    <option value="0"
+                                                          :selected="selected_spinoff.includes(0)">
+                                                        {% trans "No" %}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm form-group mb-0">
+                                        <div>
+                                            <label for="{{ id }}_area_input">
+                                                {% trans "Startup" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_startup_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_startup_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option value="1"
+                                                          :selected="selected_startup.includes(1)">
+                                                        {% trans "Yes" %}
+                                                    </option>
+                                                    <option value="0"
+                                                          :selected="selected_startup.includes(0)">
+                                                        {% trans "No" %}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock filter_spinoff_type %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+
+        <loading-icon
+            v-if="is_loading"
+            :loader_source="loader_source">
+        </loading-icon>
+
+        <div v-else>
+            <div class="row mb-3" v-for="item in items.results">
+                <div class="col-12">
+                    <!--start card-->
+                    <div class="card-wrapper pb-0">
+                        <div class="card no-after" style="border:1px solid #b71918">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-2 me-lg-3 mb-3 mb-lg-0" v-if="item.SpinoffImage">
+                                        <img :src="item.SpinoffImage" class="w-100"/>
+                                    </div>
+                                    <div class="col">
+                                        <span>
+                                            {% trans "Active"%}
+                                            <svg class="icon icon-xs icon-success" v-if="item.IsActive">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                            </svg>
+                                            <svg class="icon icon-xs icon-danger" v-else>
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                            </svg>
+                                        </span>
+                                        <h5 class="mt-3">
+                                            <b>[[ item.SpinoffAgencyName ]]</b>
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-12 col-md-auto">
+                                                <small v-if="item.IsSpinoff">
+                                                    <b>{% trans "Spin-off" %}</b>
+                                                </small>
+                                                <small v-if="item.IsSpinoff && item.IsStartup">
+                                                /
+                                                </small>
+                                                <small v-if="item.IsStartup">
+                                                    <b>{% trans "Startup" %}</b>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-md-auto">
+                                                <small v-html="item.SpinoffDescription"></small>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-md-auto">
+                                                <small>
+                                                    {% trans "Tech Area" %} >
+                                                    <b>[[ item.TechAreaDescription ]]</b>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a :href="item.SpinoffId+'/'" class="btn btn-sm btn-primary float-right">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg> {% trans "Edit" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end card-->
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+    </div>
+
+{% block storage_block_bottom %}
+    <div v-else>
+        {% trans "No items here" %}
+    </div>
+
+</div>
+{% endblock storage_block_bottom %}
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+function {{ id }}_get_form_paramenters(keyword=null, value=null) {
+
+    let dict = {}
+
+    if (keyword)
+        dict[keyword] = value
+
+    // search
+    let search = document.getElementById('{{ id }}_search')
+    if (search && search.value) dict['search'] = search.value
+
+    {% block filter_spinoff_type_script %}
+    // spinoff
+    let spinoff = document.getElementById('{{ id }}_spinoff_input')
+    if (spinoff && spinoff.value) dict['spinoff'] = spinoff.value
+
+    // startup
+    let startup = document.getElementById('{{ id }}_startup_input')
+    if (startup && startup.value) dict['startup'] = startup.value
+    {% endblock filter_spinoff_type_script %}
+
+    // techarea
+    let techarea = document.getElementById('{{ id }}_techarea_input')
+    if (techarea && techarea.value) dict['techarea'] = techarea.value
+
+    setItemInSession("{{ id }}", dict)
+
+    return dict
+}
+</script>
+{% endblock extra_scripts %}
+
+{% block extra_data %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+search_dict: {},
+
+loader_source_types: '{{ types_api }}?lang={{ LANGUAGE_CODE }}',
+
+selected_search: this.getItemFromSession("{{ id }}", 'search'),
+selected_spinoff: this.getItemFromSession("{{ id }}", 'spinoff') || '',
+selected_startup: this.getItemFromSession("{{ id }}", 'startup') || '',
+selected_techarea: this.getItemFromSession("{{ id }}", 'techarea') || '',
+
+techareas: [],
+is_loading_techareas: true,
+loader_source_techareas: '{% url 'companies:apiv1:tech-areas-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+
+{% endblock extra_data %}
+
+{% block extra_mounted %}
+
+this.callTechAreas();
+
+this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
+{% endblock extra_mounted %}
+
+{% block extra_methods %}
+callTechAreas() {
+    axios
+        .get(this.loader_source_techareas)
+        .then(response => {
+            this.techareas = response.data.results;
+            this.is_loading_techareas = false
+        })
+},
+{% endblock extra_methods %}
+</script>

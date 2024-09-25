@@ -1,0 +1,64 @@
+{% load i18n %}
+{% load static %}
+{% load management_templatetags %}
+
+{% block cds_page %}
+
+{% with page_name=page_name|cut:" "|default:"Page" topic_obj_regarts=topic_obj_regarts|default:None cds=cds|default:None %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<div class="collapse-header collapse-topic-header"
+        id="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+
+    <button data-toggle="collapse"
+            data-target="#collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}"
+            aria-expanded="false"
+            aria-controls="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+
+        <span>
+            {% if LANGUAGE_CODE == "it" or not topic_obj_regarts.topic.descr_topic_en %}
+            {{ topic_obj_regarts.topic.descr_topic_it }}
+            {% else %}
+            {{ topic_obj_regarts.topic.descr_topic_en }}
+            {% endif %}
+        </span>
+
+    </button>
+
+</div>
+
+<div id="collapse_{{page_name}}_{{topic_obj_regarts.topic.id}}"
+        class="collapse"
+        role="region"
+        data-parent="#collapseDiv_{{page_name}}"
+        aria-labelledby="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
+
+    <div class="collapse-body">
+        {% if user.is_superuser %}
+        <div class="d-flex">
+            <a  href="{% url 'cds-websites:management:cds-websites-items-order-edit' code=cds_website.id topic_id=topic_id %}"
+                class="btn btn-xs btn-primary ml-auto"
+                style="display: none;">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                </svg> 
+                {% trans "Manage order" %}
+            </a>
+        </div>
+        {% endif %}
+        <!-- Reg Articles -->
+        {% include "blocks/cds_websites_regulation_article_items.html" %}
+        <!-- /Reg Articles -->
+        <hr style="border-color: white;">
+        <!-- Objects -->
+        {% include "blocks/cds_websites_object_items.html" %}
+        <!-- /Objects -->
+    </div>
+
+</div>
+
+
+{% endwith %}
+
+{% endblock %}

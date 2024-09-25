@@ -1,0 +1,21 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<h3 style="font-weight: lighter;" class="mb-4">
+    {% trans "Add data set for" %} {{ teacher }}
+</h3>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% include "form_template.html" with form=form %}
+                {% include "includes/form_submit.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock centered_container %}

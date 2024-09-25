@@ -64,9 +64,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'ricerca_app',
     'rangefilter',
-
+    
     # REST API
     'rest_framework',
     'rest_framework.authtoken',
@@ -80,19 +79,24 @@ INSTALLED_APPS = [
     'django_unical_bootstrap_italia',
     'bootstrap_italia_template',
     'organizational_area',
-    'crud.utils',
-    'crud.cds',
-    'crud.companies',
-    'crud.patents',
-    'crud.phd',
-    'crud.projects',
-    'crud.research_groups',
-    'crud.research_lines',
-    'crud.teachers',
-    'crud.cds_websites_brochure',
-    'crud.cds_websites_pages',
-    'crud.laboratories',
-    'crud.regdid',
+    'generics',
+    'esse3',
+    'locks',
+    'structures',
+    'addressbook',
+    'advanced_training',
+    'cds',
+    'companies',
+    'patents',
+    'phd',
+    'projects',
+    'research_lines',
+    'teachers',
+    'cds_brochure',
+    'cds_websites',
+    'research_groups',
+    'laboratories',
+    'regdid',
 
     # SAML2
     # 'djangosaml2',
@@ -111,7 +115,7 @@ REST_FRAMEWORK = {
     # ],
 
     # OAS 3 specs
-  #   'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.openapi_agid.AgidAutoSchema',
+    #   'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.openapi_agid.AgidAutoSchema',
   #   'DEFAULT_PARSER_CLASSES': [
   #       'rest_framework.parsers.OAS3JSONParser',
         #  'rest_framework.parsers.JSONParser',
@@ -249,62 +253,62 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.utils': {
+        'generics': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.cds': {
+        'cds': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.companies': {
+        'companies': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.patents': {
+        'patents': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.phd': {
+        'phd': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.projects': {
+        'projects': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.research_groups': {
+        'research_groups': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.research_lines': {
+        'research_lines': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.teachers': {
+        'teachers': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'crud.laboratories': {
+        'laboratories': {
              'handlers': ['console'],
              'level': 'DEBUG',
              'propagate': False,
         },
-        'crud.cds_websites_brochure': {
+        'cds_brochure': {
              'handlers': ['console'],
              'level': 'DEBUG',
              'propagate': False,
         },
-        'crud.cds_websites_pages': {
+        'cds_websites': {
              'handlers': ['console', 'mail_admins'],
              'level': 'DEBUG',
              'propagate': False,

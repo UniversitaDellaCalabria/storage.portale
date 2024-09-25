@@ -1,11 +1,19 @@
-import logging
-import requests
 import base64
+import logging
 import os
 
+import requests
 from django.conf import settings
 
-from . settings import *
+from .settings import (
+    PENTAHO_BASE,
+    PENTAHO_ISODID_MEDIA_PATH,
+    PENTAHO_ISODID_REPORT_OUTPUT,
+    PENTAHO_ISODID_REPORT_PARAMS,
+    PENTAHO_ISODID_REPORT_PATH,
+    PENTAHO_PASSWORD,
+    PENTAHO_USERNAME,
+)
 
 # from xlsx2html import xlsx2html
 
@@ -13,16 +21,24 @@ logger = logging.getLogger(__name__)
 
 
 PENTAHO_BASE = getattr(settings, "PENTAHO_BASE", PENTAHO_BASE)
-PENTAHO_ISODID_MEDIA_PATH = getattr(settings, "PENTAHO_ISODID_MEDIA_PATH", PENTAHO_ISODID_MEDIA_PATH)
-PENTAHO_ISODID_REPORT_OUTPUT = getattr(settings, "PENTAHO_ISODID_REPORT_OUTPUT", PENTAHO_ISODID_REPORT_OUTPUT)
-PENTAHO_ISODID_REPORT_PARAMS = getattr(settings, "PENTAHO_ISODID_REPORT_PARAMS", PENTAHO_ISODID_REPORT_PARAMS)
-PENTAHO_ISODID_REPORT_PATH = getattr(settings, "PENTAHO_ISODID_REPORT_PATH", PENTAHO_ISODID_REPORT_PATH)
+PENTAHO_ISODID_MEDIA_PATH = getattr(
+    settings, "PENTAHO_ISODID_MEDIA_PATH", PENTAHO_ISODID_MEDIA_PATH
+)
+PENTAHO_ISODID_REPORT_OUTPUT = getattr(
+    settings, "PENTAHO_ISODID_REPORT_OUTPUT", PENTAHO_ISODID_REPORT_OUTPUT
+)
+PENTAHO_ISODID_REPORT_PARAMS = getattr(
+    settings, "PENTAHO_ISODID_REPORT_PARAMS", PENTAHO_ISODID_REPORT_PARAMS
+)
+PENTAHO_ISODID_REPORT_PATH = getattr(
+    settings, "PENTAHO_ISODID_REPORT_PATH", PENTAHO_ISODID_REPORT_PATH
+)
 PENTAHO_USERNAME = getattr(settings, "PENTAHO_USERNAME", PENTAHO_USERNAME)
 PENTAHO_PASSWORD = getattr(settings, "PENTAHO_PASSWORD", PENTAHO_PASSWORD)
 
 _upseq = f"{PENTAHO_USERNAME}:{PENTAHO_PASSWORD}"
-token = base64.b64encode(_upseq.encode('utf-8')).decode()
-headers = {'Authorization': f'Basic {token}'}
+token = base64.b64encode(_upseq.encode("utf-8")).decode()
+headers = {"Authorization": f"Basic {token}"}
 
 
 def getIsodidReport(cds=[], years=[]):

@@ -1,0 +1,71 @@
+{% load i18n %}
+{% load static %}
+{% load management_templatetags %}
+
+{% random_id uid as collapse_id %}
+
+{% with title=title|default:"Notes" notes=notes|default:None notes_form=notes_form user_can_edit=user_can_edit|default:None hide_submit_button=hide_submit_button|default:None %}
+
+<div id="collapseDiv_notes_{{collapse_id}}"
+     class="collapse-div collapse-left-icon"
+     style="border-bottom: 0;">
+
+    <div class="collapse-header collapse-topic-header"
+            id="heading_notes_{{collapse_id}}">
+
+        <a  class="text-reset text-decoration-none p-1 row"
+            data-toggle="collapse"
+            data-target="#collapse_notes_{{collapse_id}}"
+            aria-expanded="false"
+            aria-controls="collapse_notes_{{collapse_id}}"
+            style="border-top: 0;">
+
+            <div class="span align-self-start">
+                {{title}}
+            </div>
+
+        </a>
+
+    </div>
+
+    <div id="collapse_notes_{{collapse_id}}"
+        class="collapse pt-3 pb-1"
+        role="region"
+        data-parent="#collapseDiv_notes_{{collapse_id}}"
+        aria-labelledby="collapse_notes_{{collapse_id}}">
+        {% include "form_template.html" with form=notes_form %}
+        {% if user_can_edit and not hide_submit_button %}
+            {% include "includes/form_submit.html" %}
+        {% endif %}
+    </div>
+    <hr/>
+</div>
+
+{% if not user_can_edit or not user_permissions_and_offices.permissions.edit %}
+{% random_id uid as n_id %}
+<script>
+    //readonly editor
+    {{n_id}}_set_editor_readonly = (editor_id) => {
+        // hide/show toolbar
+        const editor = this.editors[editor_id];
+        const toolbarElement = editor.ui.view.toolbar.element;
+        const wordCount = editor.ui.view.element.parentNode.getElementsByClassName("word-count")[0];
+        editor.on( 'change:isReadOnly', ( evt, propertyName, isReadOnly ) => {
+            if ( isReadOnly ) {
+                toolbarElement.style.display = 'none';
+                wordCount.style.display = 'none';
+            } else {
+                toolbarElement.style.display = 'flex';
+                wordCount.style.display = 'flex';
+            }
+        });
+        // set editor readonly
+        editor.enableReadOnlyMode("view");
+    };
+    $(function() {
+        {{n_id}}_set_editor_readonly("id_note");
+    });
+</script>
+{% endif %}
+
+{% endwith %}

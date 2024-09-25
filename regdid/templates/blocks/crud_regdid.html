@@ -1,0 +1,337 @@
+{% extends "includes/vue_list.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load management_templatetags %}
+
+{% block content %}
+
+{% block storage_block_top %}
+{% include "blocks/includes/vue_check.html" %}
+{% endblock storage_block_top %}
+
+{% settings_value "REGDID_ALLOWED_COURSE_TYPES" package="regdid" as regdid_allowed_course_types %}
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-wrapper card-space">
+                    <div class="card card-bg no-after">
+                        <div class="card-body">
+
+                            {% include "includes/vue_search_input.html" with id=id %}
+
+                            {% block filters_cdslist %}
+                            <div class="mb-0">
+
+                                <!-- type & Academic year & language -->
+                                <div class="row">
+
+                                    {% block filters_department %}
+                                    <loading-icon
+                                        v-if="is_loading_departments"
+                                        :loader_source="loader_source_departments">
+                                    </loading-icon>
+
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_department_input">
+                                                {% trans "Department" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_department_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_department_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in departments_filter"
+                                                            :value="item.DepartmentCod"
+                                                            :selected="item.DepartmentCod == selected_department_id">
+                                                        [[ item.DepartmentName ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock filters_department %}
+
+                                    {% block filters_coursetype %}
+
+                                    <loading-icon
+                                        v-if="is_loading_degreetypes"
+                                        :loader_source="loader_source_degreetypes">
+                                    </loading-icon>
+
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_cds_type">
+                                                {% trans "Course type" %}
+                                            </label>
+
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_coursetype_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_coursetype_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <template v-for="degree in course_types">
+                                                        <option v-if="{{regdid_allowed_course_types|safe}}.indexOf(degree.CourseType) != -1"
+                                                                :value="degree.CourseType"
+                                                                :selected="degree.CourseType == selected_coursetype">
+                                                            [[ degree.CourseTypeDescription ]]
+                                                        </option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock filters_coursetype %}
+
+                                    <loading-icon
+                                        v-if="is_loading_academicyears"
+                                        :loader_source="loader_source_academicyears">
+                                    </loading-icon>
+
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_academic_year_input">
+                                                {% trans "Year of registration" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_academic_year_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_academic_year_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                  <option value="" v-if="initial_academic_year==''">
+                                                      - {% trans 'Choose an option' %} -
+                                                  </option>
+                                                  <option v-for="item in academic_years_filter"
+                                                          :value="item.AcademicYear"
+                                                          :selected="item.AcademicYear == selected_academic_year">
+                                                      [[ item.AcademicYear ]]/[[ item.AcademicYear + 1 ]]
+                                                  </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endblock filters_cdslist %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+
+        <loading-icon
+            v-if="is_loading"
+            :loader_source="loader_source">
+        </loading-icon>
+
+        <div v-else>
+            <div class="row mb-3" v-for="item in items.results">
+                <div class="col-12">
+                    <!--start card-->
+                    <div class="card-wrapper pb-0">
+                        <div class="card no-after" style="border-top:1px solid #b71918">
+                            <div class="card-body p-1 pt-3 d-flex">
+                                <div class="col">
+                                    <h5>
+                                        <a :href="item.RegDidId+'/articles/'" class="no-color">
+                                            <b>[[ item.CdSName ]]</b>
+                                        </a>
+
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-12 col-md-auto me-md-4">
+
+                                            <b>
+                                                [[ item.CourseTypeDescription ]]
+                                                <span v-if="item.ErogationMode && item.ErogationMode != 'Convenzionale'">
+                                                    ([[ item.ErogationMode ]])
+                                                </span>
+                                            </b>
+                                            <b v-for="joint in joint_degree_filter"
+                                                v-if="item.JointDegree == joint.COD && item.JointDegree != 'N'"
+                                                style="display: inline">
+                                                &nbsp;- [[ joint.name ]]
+                                            </b>
+                                        </div>
+                                        <div class="col-12 col-md-auto" v-if="item.AcademicYear">
+                                            <small>
+                                                {% trans "A.Y." %} >
+                                                <b>[[ item.AcademicYear ]]/[[ item.AcademicYear + 1]]</b>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-if="show_pdf_import_button" class="col-xs">
+                                    <a :href="item.RegDidId+'/articles/pdf-import'" class="btn btn-warning btn-xs btn-icon">
+                                        <svg class="icon icon-xs icon-white mr-1">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-upload"></use>
+                                        </svg> {% trans "Import from PDF" %}
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--end card-->
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+    </div>
+
+{% block storage_block_bottom %}
+    <div v-else>
+        {% trans "No items here" %}
+    </div>
+
+</div>
+{% endblock storage_block_bottom %}
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+function {{ id }}_get_form_paramenters(keyword=null, value=null) {
+
+    let dict = {}
+
+    if (keyword)
+        dict[keyword] = value
+
+    // search
+    let search = document.getElementById('{{ id }}_search')
+    if (search && search.value) dict['search'] = search.value
+
+    // coursetype
+    let coursetype = document.getElementById('{{ id }}_coursetype_input')
+    if (coursetype && coursetype.value) dict['coursetype'] = coursetype.value
+
+    // academic year
+    let academic_year = document.getElementById('{{ id }}_academic_year_input')
+    if (academic_year && academic_year.value) dict['academicyear'] = academic_year.value
+
+    // department name
+    let department = document.getElementById('{{ id }}_department_input')
+    if (department && department.value) dict['departmentcod'] = department.value
+    
+
+    setItemInSession("{{ id }}", dict)
+
+    return dict
+}
+</script>
+{% endblock extra_scripts %}
+
+{% block extra_data %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+{% settings_value "REGDID_ALLOWED_COURSE_TYPES" package="regdid" as regdid_allowed_course_types %}
+
+{% settings_value "ALLOWED_CDS_JOINT_DEGREES" package="cds" as allowed_joint_degrees %}
+
+initial_academic_year: {{ id }}_get_param('academicyear')  || '{% now "Y" %}',
+
+selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
+selected_academic_year: this.getItemFromSession("{{ id }}", 'academicyear') || {{ id }}_get_param('academicyear'),
+selected_search: this.getItemFromSession("{{ id }}", 'search'),
+selected_department_id: this.getItemFromSession("{{ id }}", 'departmentcod'),
+
+course_types: [],
+
+initial_course_types: {{regdid_allowed_course_types|safe}},
+
+is_loading_degreetypes: true,
+is_loading_academicyears: true,
+is_loading_departments: true,
+
+loader_source_departments: '{% url 'structures:apiv1:departments-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+loader_source_degreetypes: '{% url 'cds:apiv1:degree-types' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+loader_source_academicyears: '{% url 'cds:apiv1:academic-years' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+
+academic_years_filter: [],
+departments_filter: [],
+joint_degree_filter: {{ allowed_joint_degrees|safe }},
+
+show_pdf_import_button: {{ show_pdf_import_button|safe }} || {{ request.user.is_superuser|lower }}
+
+{% endblock extra_data %}
+
+{% block extra_mounted %}
+// if url is pre-filtered with preferred coursetypes
+// get them, else show all
+let params = new URLSearchParams(this.url.split('?')[1]);
+let get_coursetype = params.get("coursetype")
+
+this.callDegreeTypes();
+this.callAcademicYears();
+this.callDepartments();
+
+this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
+{% endblock extra_mounted %}
+
+{% block method_search %}
+search(keyword=null, value=null) {
+    if (value) this.parameters = {{ id }}_encodeQueryData({{ id }}_get_form_paramenters(keyword, value));
+    else this.parameters = {{ id }}_encodeQueryData({{ id }}_get_form_paramenters());
+    this.CallURL(this.url + this.parameters);
+},
+{% endblock method_search %}
+
+{% block method_callurl %}
+CallURL(url, initial=false) {
+    this.is_loading = true
+    this.loader_source = url
+    if (!url.includes("coursetype"))
+        url = url + '&coursetype=' + this.initial_course_types
+    if (!url.includes("academicyear") && this.initial_academic_year)
+        url = url + '&academicyear=' + this.initial_academic_year
+    axios
+        .get(url)
+        .then(response => {
+            if(initial) this.initial_items = response.data.results;
+            this.items = response.data;
+            this.next_page = response.data.next;
+            this.previous_page = response.data.previous;
+            this.labels = response.data.labels;
+            this.is_loading = false;
+        })
+},
+{% endblock method_callurl %}
+
+{% block extra_methods %}
+callDegreeTypes() {
+    axios
+        .get(this.loader_source_degreetypes)
+        .then(response => {
+            this.course_types = response.data.results;
+            this.is_loading_degreetypes = false;
+        });
+},
+callAcademicYears() {
+    axios
+        .get(this.loader_source_academicyears)
+        .then(response => {
+            this.academic_years_filter = response.data.results;
+            this.is_loading_academicyears = false
+        });
+},
+callDepartments() {
+    axios
+        .get(this.loader_source_departments)
+        .then(response => {
+            this.departments_filter = response.data.results;
+            this.is_loading_departments = false
+        })
+},
+{% endblock extra_methods %}
+

@@ -1,0 +1,121 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load management_templatetags %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/cds-websites-collapse.css' %}" type="text/css" />
+<style>
+    .dropdown-menu.show::before {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block centered_container %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<h3 style="font-weight: normal;">
+    {{ cds_website.cds.cds_cod }} -
+    {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
+        {{ cds_website.cds.nome_cds_it }}
+    {% else %}
+        {{ cds_website.cds.nome_cds_eng }}
+    {% endif %}
+</h3>
+<hr>
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            
+            <table class="table table-sm table-striped table-responsive-xs">
+                <thead class="table-dark sticky-top shadow-sm">
+                    <tr class="d-flex">
+                        <th class="col">{% trans "Sub article" %}</th>
+                        <th class="col-2 text-center text-truncate">{% trans "Visible" %}</th>
+                        <th class="col-auto text-right">
+                            <svg class="icon" style="visibility: hidden;">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-search"></use>
+                            </svg>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="shadow-sm">
+                    {% for sub_article in sub_articles_list %}
+                            <tr class="d-flex">
+                                <td class="col align-content-center">
+                                    {% if sub_article.titolo_it %}
+                                        {{ sub_article.titolo_it }}
+                                    {% else %}
+                                        {{ sub_article.testo_it }}
+                                    {% endif %}         
+                                </td>
+                                <td class="col-2 align-content-center text-center">
+                                {% if sub_article.visibile %}
+                                    <svg class="icon icon-sm icon-success">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                    </svg>
+                                    {% else %}
+                                    <svg class="icon icon-sm icon-danger">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-ban"></use>
+                                    </svg>
+                                {% endif %}
+                                </td>
+                                <td class="col-auto align-content-center text-right text-no-wrap">
+                                    <div class="btn-group">
+                                        <a href="javascript:void(0)" type="button" class="btn dropdown-toggle p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <svg class="icon">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-more-actions"></use>
+                                            </svg>
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <div class="link-list-wrapper">
+                                                <ul class="link-list text-nowrap">
+                                                    <li>
+                                                        <a  href="{% url 'cds-websites:management:cds-websites-sub-article-edit' code=cds_website.id topic_id=topic_id data_id=regart.id sub_art_id=sub_article.id %}"
+                                                            class="list-item left-icon">
+                                                            {% if user.is_superuser %}
+                                                                <svg class="icon icon-dark left p-1 pl-2 mt-2">
+                                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                                                </svg>
+                                                                <span class="text-primary">
+                                                                    {% trans "Edit" %}
+                                                                </span>
+                                                            {% else %}
+                                                                <svg class="icon icon-dark left p-1 pl-2 mt-2">
+                                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-search"></use>
+                                                                </svg>
+                                                                <span class="text-primary">
+                                                                    {% trans "View" %}
+                                                                </span>
+                                                            {% endif %}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                    {% endfor %}
+                    {% if sub_articles_list|length < 1 %}
+                        <tr class="d-flex">
+                            <td class="col align-content-center">{% trans "None" %}</td>
+                            <td class="col-2 align-content-center text-center">-</td>
+                            <td class="col-auto align-content-center text-right text-no-wrap">
+                                <svg class="icon" style="visibility: hidden;">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-more-actions"></use>
+                                </svg>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock centered_container %}

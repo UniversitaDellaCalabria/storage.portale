@@ -1,0 +1,70 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n static management_templatetags %}
+
+{% block centered_container %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<div>
+    {% block title %}
+    <h3 style="font-weight: lighter;" class="mb-4">
+        {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %}
+            {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_en %}{{ cds_website.cds.nome_cds_it }}{% else %} {{ cds_website.cds.nome_cds_eng }} {% endif %}
+    </h3>
+    {% endblock title %}
+    <div class="card-wrapper card-space">
+        <div class="card card-bg no-after pt-4">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" novalidate> 
+                    <div>
+                        {% for field in form %}
+                            {% if field.field.widget.input_type != 'hidden' %}
+                            <p class="mb-0">
+                                <b>
+                                    {{ field.label_tag }}
+                                    {% if field.field.required %}*{% endif %}
+                                </b>
+                            </p>
+                            <div style="padding: 0 0 1rem">
+                            {% endif %}
+                            {% if field.field.widget.input_type == 'select' %}
+                                <select name="{{ field.name }}" class="form-control" id="id_{{ field.name }}" {% if field.field.required %}required{% endif %}>
+                                    {% for choice in field.field.choices %}
+                                        <option value="{{ choice.0 }}" {% if field.value|slugify == choice.0|slugify %}selected{% endif %}>
+                                            {{ choice.1 }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">
+                                    {{ field.help_text|safe }}
+                                </small>
+                            {% endif %}
+                            {% if field.errors and field.field.widget.input_type != 'hidden' %}
+                                <small class="text-danger">
+                                    {{ field.errors }}
+                                </small>
+                            {% endif %}
+                            {% if field.field.widget.input_type != 'hidden' %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% csrf_token %}
+
+                    </div>
+                    {{ form.media }}
+                    {% if show_submit_warning %}
+                        {% include "cds_websites_shared_object_form_submit_warning.html" %}
+                    {% else %}
+                        {% include "includes/form_submit.html" %}
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock centered_container %}
