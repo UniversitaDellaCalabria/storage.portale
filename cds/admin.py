@@ -11,7 +11,8 @@ from .models import (
 @admin.register(DidatticaCds)
 class DidatticaCdsAdmin(admin.ModelAdmin):
     readonly_fields = ()
-    list_display = ()
+    list_display = ("nome_cds_it", "dip")
+    search_fields = ("nome_cds_it",)
 
 
 @admin.register(DidatticaCdsLingua)
