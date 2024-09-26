@@ -13,12 +13,13 @@ from cds_websites.models import (
     SitoWebCdsTopicArticoliRegAltriDati,
 )
 from cds_websites.settings import (
+    OFFICE_CDS_WEBSITES_STRUCTURES,
     UNICMS_CORSI_LM_URL,
     UNICMS_CORSI_LT_LMCU_URL,
 )
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, LogEntry
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -28,19 +29,26 @@ from generics.utils import custom_message, log_action
 
 from .decorators import (
     can_edit_cds_website,
-    can_manage_cds_website,
     can_edit_cds_website_structure,
+    can_manage_cds_website,
 )
 from .forms import (
     SitoWebCdsArticoliRegolamentoItemForm,
+    SitoWebCdsExternalOggettiPortaleForm,
     SitoWebCdsOggettiItemForm,
-    SitoWebCdsOggettiPortaleForm,
     SitoWebCdsSubArticoliRegolamentoForm,
     SitoWebCdsTopicArticoliRegAltriDatiForm,
 )
 from .utils import get_topics_per_page
 
 logger = logging.getLogger(__name__)
+
+
+def _can_user_edit_structure(offices_structures):
+    for structure in offices_structures:
+        if structure.office.name == OFFICE_CDS_WEBSITES_STRUCTURES:
+            return True
+    return False
 
 
 @login_required
@@ -71,8 +79,11 @@ def cds_websites_topics(request, code, cds_website=None, my_offices=None):
         if (cds_website.cds.tipo_corso_cod == "LM")
         else UNICMS_CORSI_LT_LMCU_URL
     )
+
+    user_can_edit = request.user.is_superuser or _can_user_edit_structure(my_offices)
+
     cds_website_page_name = re.sub(r"[^ \w]", "", cds_website.cds.nome_cds_it)
-    cds_website_page_name = re.sub(r"\s", "-", cds_website_page_name)
+    cds_website_page_name = re.sub(r"\s+", "-", cds_website_page_name)
     cds_website_page_name = cds_website_page_name.lower()
     cds_website_url += "/" + cds_website_page_name + "/cds"
 
@@ -200,6 +211,7 @@ def cds_websites_topics(request, code, cds_website=None, my_offices=None):
             "breadcrumbs": breadcrumbs,
             "popover_title_content": popover_title_content,
             "cds_website_url": cds_website_url,
+            "user_can_edit": user_can_edit,
             "logs": logs,
         },
     )
@@ -211,6 +223,8 @@ def cds_websites_topics(request, code, cds_website=None, my_offices=None):
 @can_edit_cds_website
 def cds_websites_shared_objects(request, code, cds_website=None, my_offices=None):
     objects_list = SitoWebCdsOggettiPortale.objects.filter(cds_id=cds_website.cds_id)
+
+    user_can_edit = request.user.is_superuser or _can_user_edit_structure(my_offices)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -236,6 +250,7 @@ def cds_websites_shared_objects(request, code, cds_website=None, my_offices=None
             "cds_website": cds_website,
             "objects_list": objects_list,
             "breadcrumbs": breadcrumbs,
+            "user_can_edit": user_can_edit,
         },
     )
 
@@ -248,13 +263,13 @@ def cds_websites_shared_object_edit(
 ):
     _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
 
-    object_form = SitoWebCdsOggettiPortaleForm(
+    object_form = SitoWebCdsExternalOggettiPortaleForm(
         data=request.POST if request.POST else None, user=request.user, instance=_object
     )
-    user_can_edit = request.user.is_superuser
+    user_can_edit = request.user.is_superuser or _can_user_edit_structure(my_offices)
 
     if request.POST:
-        if not request.user.is_superuser:
+        if not user_can_edit:
             return custom_message(request, _("Permission denied"))
 
         if object_form.is_valid() and object_form.changed_data:
@@ -326,8 +341,9 @@ def cds_websites_shared_object_edit(
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
+@can_edit_cds_website_structure
 def cds_websites_shared_object_new(request, code, cds_website=None, my_offices=None):
-    object_form = SitoWebCdsOggettiPortaleForm(
+    object_form = SitoWebCdsExternalOggettiPortaleForm(
         data=request.POST if request.POST else None
     )
 
@@ -404,13 +420,11 @@ def cds_websites_shared_object_new(request, code, cds_website=None, my_offices=N
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
+@can_edit_cds_website_structure
 def cds_websites_shared_object_delete(
     request, code, data_id, cds_website=None, my_offices=None
 ):
     _object = get_object_or_404(SitoWebCdsOggettiPortale, pk=data_id)
-
-    if not request.user.is_superuser:
-        return custom_message(request, _("Permission denied"))
 
     _object.delete()
 
@@ -426,12 +440,15 @@ def cds_websites_shared_object_delete(
 
 # Common
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
 @can_manage_cds_website
 @can_edit_cds_website
 def cds_websites_items_order_edit(
     request, code, topic_id, cds_website=None, my_offices=None
 ):
+    user_can_edit = request.user.is_superuser
+    if not user_can_edit:
+        return custom_message(request, _("Permission denied"))
+
     topic = get_object_or_404(SitoWebCdsTopic, pk=topic_id)
 
     items_list = (
@@ -494,6 +511,7 @@ def cds_websites_items_order_edit(
         "cds_website_pages_items_order.html",
         {
             "cds_website": cds_website,
+            "user_can_edit": user_can_edit,
             "items_list": items_list,
             "breadcrumbs": breadcrumbs,
         },
@@ -511,10 +529,10 @@ def cds_websites_article_edit(
     art_reg_form = SitoWebCdsArticoliRegolamentoItemForm(
         data=request.POST if request.POST else None, user=request.user, instance=regart
     )
-    user_can_edit = request.user.is_superuser
+    user_can_edit = request.user.is_superuser or _can_user_edit_structure(my_offices)
 
     if request.POST:
-        if not request.user.is_superuser:
+        if not user_can_edit:
             return custom_message(request, _("Permission denied"))
 
         if art_reg_form.is_valid():
@@ -593,6 +611,8 @@ def cds_websites_sub_articles(
     if not regart.id_didattica_cds_articoli_regolamento:
         return custom_message(request, _("Permission denied"))
 
+    user_can_edit = request.user.is_superuser or _can_user_edit_structure(my_offices)
+
     sub_articles_list = (
         SitoWebCdsSubArticoliRegolamento.objects.filter(
             id_sito_web_cds_topic_articoli_reg=regart
@@ -630,6 +650,7 @@ def cds_websites_sub_articles(
             "sub_articles_list": sub_articles_list,
             "regart": regart,
             "topic_id": topic_id,
+            "user_can_edit": user_can_edit,
             "breadcrumbs": breadcrumbs,
         },
     )
@@ -644,12 +665,14 @@ def cds_websites_sub_article_edit(
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
     sub_article = get_object_or_404(SitoWebCdsSubArticoliRegolamento, pk=sub_art_id)
     sitowebcdssubarticoliregolamentoform = SitoWebCdsSubArticoliRegolamentoForm(
-        data=request.POST if request.POST else None, instance=sub_article
+        data=request.POST if request.POST else None,
+        instance=sub_article,
+        user=request.user,
     )
-    user_can_edit = request.user.is_superuser
+    user_can_edit = request.user.is_superuser or _can_user_edit_structure(my_offices)
 
     if request.POST:
-        if not request.user.is_superuser:
+        if not user_can_edit:
             return custom_message(request, _("Permission denied"))
 
         if sitowebcdssubarticoliregolamentoform.is_valid():
@@ -721,10 +744,13 @@ def cds_websites_sub_article_edit(
 @login_required
 @can_manage_cds_website
 @can_edit_cds_website
+@can_edit_cds_website_structure
 def cds_websites_object_add(request, code, topic_id, cds_website=None, my_offices=None):
     obj_item_form = SitoWebCdsOggettiItemForm(
         data=request.POST if request.POST else None, cds_id=cds_website.cds_id
     )
+
+    user_can_edit = True
 
     if request.POST:
         if obj_item_form.is_valid():
@@ -785,6 +811,7 @@ def cds_websites_object_add(request, code, topic_id, cds_website=None, my_office
             "breadcrumbs": breadcrumbs,
             "topic_id": topic_id,
             "form": obj_item_form,
+            "user_can_edit": user_can_edit,
             "item_label": _("Portal Object"),
         },
     )
@@ -796,6 +823,8 @@ def cds_websites_object_add(request, code, topic_id, cds_website=None, my_office
 def cds_websites_object_edit(
     request, code, topic_id, data_id, cds_website=None, my_offices=None
 ):
+    user_can_edit = request.user.is_superuser or _can_user_edit_structure(my_offices)
+
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
 
     obj_item_form = SitoWebCdsOggettiItemForm(
@@ -804,10 +833,9 @@ def cds_websites_object_edit(
         user=request.user,
         cds_id=cds_website.cds_id,
     )
-    user_can_edit = request.user.is_superuser
 
     if request.POST:
-        if not request.user.is_superuser:
+        if not user_can_edit:
             return custom_message(request, _("Permission denied"))
         if obj_item_form.is_valid() and obj_item_form.has_changed():
             obj_item = obj_item_form.save(commit=False)
@@ -879,9 +907,8 @@ def cds_websites_object_delete(
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
 
     if (
-        request.user.is_superuser
-        and regart.id_didattica_cds_articoli_regolamento is None
-    ):
+        regart.id_didattica_cds_articoli_regolamento is not None
+    ):  # Can't delete articles
         return custom_message(request, _("Permission denied"))
 
     regart.delete()
@@ -901,6 +928,7 @@ def cds_websites_extras(
     request, code, topic_id, data_id, cds_website=None, my_offices=None
 ):
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
+    user_can_edit = True
     extras_list = (
         SitoWebCdsTopicArticoliRegAltriDati.objects.filter(
             id_sito_web_cds_topic_articoli_reg=regart
@@ -930,10 +958,10 @@ def cds_websites_extras(
 
     breadcrumbs_regart = (
         reverse(
-            "cds-websites:management:cds-websites-object-edit",
+            "cds-websites:management:cds-websites-article-edit",
             kwargs={"code": code, "topic_id": topic_id, "data_id": data_id},
         )
-        if regart.id_sito_web_cds_oggetti_portale is not None
+        if regart.id_didattica_cds_articoli_regolamento is not None
         else reverse(
             "cds-websites:management:cds-websites-object-edit",
             kwargs={"code": code, "topic_id": topic_id, "data_id": data_id},
@@ -964,6 +992,7 @@ def cds_websites_extras(
         {
             "cds_website": cds_website,
             "extras_list": extras_list,
+            "user_can_edit": user_can_edit,
             "regart": regart,
             "topic_id": topic_id,
             "breadcrumbs": breadcrumbs,
@@ -981,6 +1010,8 @@ def cds_websites_extra_new(
     regart_extra_form = SitoWebCdsTopicArticoliRegAltriDatiForm(
         data=request.POST if request.POST else None
     )
+
+    user_can_edit = True
 
     if request.POST:
         if regart_extra_form.is_valid():
@@ -1062,6 +1093,7 @@ def cds_websites_extra_new(
         {
             "cds_website": cds_website,
             "topic_id": topic_id,
+            "user_can_edit": user_can_edit,
             "regart": regart,
             "forms": [
                 regart_extra_form,
@@ -1078,12 +1110,9 @@ def cds_websites_extra_new(
 def cds_websites_extra_edit(
     request, code, topic_id, data_id, extra_id, cds_website=None, my_offices=None
 ):
+    user_can_edit = True
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
     regart_extra = get_object_or_404(SitoWebCdsTopicArticoliRegAltriDati, pk=extra_id)
-    user_can_edit = True
-
-    if not request.user.is_superuser:
-        return custom_message(request, _("Permission denied"))
 
     regart_extra_form = SitoWebCdsTopicArticoliRegAltriDatiForm(
         data=request.POST if request.POST else None, instance=regart_extra
@@ -1184,9 +1213,6 @@ def cds_websites_extra_delete(
     request, code, topic_id, data_id, extra_id, cds_website=None, my_offices=None
 ):
     extra = get_object_or_404(SitoWebCdsTopicArticoliRegAltriDati, pk=extra_id)
-
-    if not request.user.is_superuser:
-        return custom_message(request, _("Permission denied"))
 
     extra.delete()
 

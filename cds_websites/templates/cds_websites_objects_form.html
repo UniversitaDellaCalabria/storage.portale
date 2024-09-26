@@ -57,10 +57,12 @@
 
                     </div>
                     {{ form.media }}
-                    {% if show_submit_warning %}
-                        {% include "cds_websites_shared_object_form_submit_warning.html" %}
-                    {% else %}
-                        {% include "includes/form_submit.html" %}
+                    {% if not edit or user_can_edit %}
+                        {% if show_submit_warning %}
+                            {% include "cds_websites_shared_object_form_submit_warning.html" %}
+                        {% else %}
+                            {% include "includes/form_submit.html" %}
+                        {% endif %}
                     {% endif %}
                 </form>
             </div>
@@ -68,3 +70,33 @@
     </div>
 </div>
 {% endblock centered_container %}
+
+{% block extra_scripts %}
+{% if edit and not user_can_edit %}
+    {% random_id uid as e_id %}
+    <script>
+        //readonly editor
+        {{e_id}}_set_editors_readonly = () => {
+            // hide/show toolbar
+            for(const editor of Object.values(this.editors)) {
+                const toolbarElement = editor.ui.view.toolbar.element;
+                //const wordCount = editor.ui.view.element.parentNode.getElementsByClassName("word-count")[0];
+                editor.on( 'change:isReadOnly', ( evt, propertyName, isReadOnly ) => {
+                    if ( isReadOnly ) {
+                        toolbarElement.style.display = 'none';
+                        //wordCount.style.display = 'none';
+                    } else {
+                        toolbarElement.style.display = 'flex';
+                        //wordCount.style.display = 'flex';
+                    }
+                });
+                // set editor readonly
+                editor.enableReadOnlyMode("view");
+            }
+        };
+        $(function() {
+            {{e_id}}_set_editors_readonly();
+        });
+    </script>
+{% endif %}
+{% endblock extra_scripts %}

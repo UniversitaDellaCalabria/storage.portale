@@ -12,11 +12,12 @@
             class="form-control"
             name="{{ id }}_search"
             v-model="query"
+            {{ widget.attrs.disabled|safe }}
             placeholder="{% trans 'Search' %}...">
         <div class="input-group-append">
-            <a class="btn btn-icon btn-success"
+            <a class="btn btn-icon btn-success {{ widget.attrs.disabled}}"
                 target="_blank"
-                href="{% url 'cds-websites:management:cds-websites-shared-object-new' code=widget.sito_web_cds_dati_base_id %}">
+                href="{% if widget.attrs.disabled %}{% else %}{% url 'cds-websites:management:cds-websites-shared-object-new' code=widget.sito_web_cds_dati_base_id %}{% endif %}">
                 <svg class="icon icon-white mt-2 mb-1 mr-1">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg>

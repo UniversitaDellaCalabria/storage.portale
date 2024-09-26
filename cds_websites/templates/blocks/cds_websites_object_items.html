@@ -95,7 +95,7 @@
                                     <li>
                                         <a  href="{% url 'cds-websites:management:cds-websites-object-edit' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=object.id %}"
                                             class="list-item left-icon">
-                                            {% if user.is_superuser or user_can_edit %}
+                                            {% if user_can_edit %}
                                             <svg class="icon icon-dark left p-1 pl-2 mt-2">
                                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                             </svg>
@@ -123,7 +123,7 @@
                                             </span>
                                         </a>
                                     </li>
-                                    {% if user.is_superuser or user_can_edit %}
+                                    {% if user_can_edit %}
                                         <li>
                                             <span class="divider"></span>
                                         </li>
@@ -172,9 +172,11 @@
     </tbody>
 </table>
 
+{% if user_can_edit %}
 <a  href="{% url 'cds-websites:management:cds-websites-object-add' code=cds_website.id topic_id=topic_obj_regarts.topic.id %}"
     class="btn btn-xs btn-block btn-success">
     <svg class="icon icon-xs icon-white">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
     </svg> {% trans "Add new" %}
 </a>
+{% endif %}

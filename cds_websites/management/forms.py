@@ -5,15 +5,13 @@ from cds_websites.models import (
     SitoWebCdsTopicArticoliReg,
     SitoWebCdsTopicArticoliRegAltriDati,
 )
+from cds_websites.settings import OFFICE_CDS_WEBSITES_STRUCTURES
 from django import forms
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.widgets import CKEditor5Widget
+from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from .widgets import ExternalOggettiPortaleWidget, OggettiPortaleWidget
-
-UNICMS_AUTH_TOKEN = getattr(settings, "UNICMS_AUTH_TOKEN", "")
-UNICMS_OBJECT_API = getattr(settings, "UNICMS_OBJECT_API", "")
 
 
 class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
@@ -32,9 +30,16 @@ class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
             label=_("Order"),
         )
 
+        user_can_edit = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=user,
+            office__is_active=True,
+            office__name=OFFICE_CDS_WEBSITES_STRUCTURES,
+            office__organizational_structure__is_active=True,
+        ).exists()
+
         self.instance_provided = "instance" in kwargs and kwargs["instance"] is not None
         if self.instance_provided:
-            if not user or not user.is_superuser:
+            if not user or (not user.is_superuser and not user_can_edit):
                 for field in self.fields.values():
                     field.widget.attrs["disabled"] = "disabled"
 
@@ -68,9 +73,19 @@ class SitoWebCdsArticoliRegolamentoItemForm(SitoWebCdsTopicArticoliRegForm):
         super(SitoWebCdsArticoliRegolamentoItemForm, self).__init__(
             *args, user=user, **kwargs
         )
-        if not user or not user.is_superuser:
-            for field in self.fields.values():
-                field.widget.attrs["disabled"] = "disabled"
+
+        user_can_edit = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=user,
+            office__is_active=True,
+            office__name=OFFICE_CDS_WEBSITES_STRUCTURES,
+            office__organizational_structure__is_active=True,
+        ).exists()
+
+        self.instance_provided = "instance" in kwargs and kwargs["instance"] is not None
+        if self.instance_provided:
+            if not user or (not user.is_superuser and not user_can_edit):
+                for field in self.fields.values():
+                    field.widget.attrs["disabled"] = "disabled"
 
 
 class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
@@ -110,6 +125,19 @@ class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
             ]
         )
 
+        user_can_edit = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=user,
+            office__is_active=True,
+            office__name=OFFICE_CDS_WEBSITES_STRUCTURES,
+            office__organizational_structure__is_active=True,
+        ).exists()
+
+        self.instance_provided = "instance" in kwargs and kwargs["instance"] is not None
+        if self.instance_provided:
+            if not user or (not user.is_superuser and not user_can_edit):
+                for field in self.fields.values():
+                    field.widget.attrs["disabled"] = "disabled"
+
     class Meta(SitoWebCdsTopicArticoliRegForm.Meta):
         exclude = [
             field
@@ -118,9 +146,9 @@ class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
         ]
 
 
-class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
+class SitoWebCdsExternalOggettiPortaleForm(forms.ModelForm):
     def __init__(self, *args, user=None, **kwargs):
-        super(SitoWebCdsOggettiPortaleForm, self).__init__(*args, **kwargs)
+        super(SitoWebCdsExternalOggettiPortaleForm, self).__init__(*args, **kwargs)
         if self.initial:
             self.initial["visibile"] = bool(self.initial.get("visibile", None))
         self.fields["titolo_it"].help_text = _(
@@ -153,11 +181,24 @@ class SitoWebCdsOggettiPortaleForm(forms.ModelForm):
             ]
         )
 
+        user_can_edit = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=user,
+            office__is_active=True,
+            office__name=OFFICE_CDS_WEBSITES_STRUCTURES,
+            office__organizational_structure__is_active=True,
+        ).exists()
+
         self.instance_provided = "instance" in kwargs and kwargs["instance"] is not None
         if self.instance_provided:
-            if not user or not user.is_superuser:
+            if not user or (not user.is_superuser and not user_can_edit):
                 for field in self.fields.values():
                     field.widget.attrs["disabled"] = "disabled"
+                self.fields["id_classe_oggetto_portale"].choices = (
+                    (
+                        kwargs["instance"].id_classe_oggetto_portale,
+                        _(kwargs["instance"].id_classe_oggetto_portale),
+                    ),
+                )
 
     class Meta:
         model = SitoWebCdsOggettiPortale
@@ -255,9 +296,16 @@ class SitoWebCdsSubArticoliRegolamentoForm(forms.ModelForm):
             label=_("Order"),
         )
 
+        user_can_edit = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=user,
+            office__is_active=True,
+            office__name=OFFICE_CDS_WEBSITES_STRUCTURES,
+            office__organizational_structure__is_active=True,
+        ).exists()
+
         self.instance_provided = "instance" in kwargs and kwargs["instance"] is not None
         if self.instance_provided:
-            if not user or not user.is_superuser:
+            if not user or (not user.is_superuser and not user_can_edit):
                 for field in self.fields.values():
                     field.widget.attrs["disabled"] = "disabled"
 
@@ -271,4 +319,8 @@ class SitoWebCdsSubArticoliRegolamentoForm(forms.ModelForm):
             "visibile": _("Visible"),
             "testo_it": _("Text (it)"),
             "testo_en": _("Text (en)"),
+        }
+        widgets = {
+            "testo_it": CKEditor5Widget(config_name="regdid"),
+            "testo_en": CKEditor5Widget(config_name="regdid"),
         }

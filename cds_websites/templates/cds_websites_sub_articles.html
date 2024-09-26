@@ -77,7 +77,7 @@
                                                     <li>
                                                         <a  href="{% url 'cds-websites:management:cds-websites-sub-article-edit' code=cds_website.id topic_id=topic_id data_id=regart.id sub_art_id=sub_article.id %}"
                                                             class="list-item left-icon">
-                                                            {% if user.is_superuser %}
+                                                            {% if user_can_edit %}
                                                                 <svg class="icon icon-dark left p-1 pl-2 mt-2">
                                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                                                 </svg>

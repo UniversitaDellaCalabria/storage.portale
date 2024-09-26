@@ -54,26 +54,26 @@
     {% random_id uid as e_id %}
     <script>
         //readonly editor
-        {{e_id}}_set_editor_readonly = (editor_id) => {
+        {{e_id}}_set_editors_readonly = () => {
             // hide/show toolbar
-            const editor = this.editors[editor_id];
-            const toolbarElement = editor.ui.view.toolbar.element;
-            //const wordCount = editor.ui.view.element.parentNode.getElementsByClassName("word-count")[0];
-            editor.on( 'change:isReadOnly', ( evt, propertyName, isReadOnly ) => {
-                if ( isReadOnly ) {
-                    toolbarElement.style.display = 'none';
-                    //wordCount.style.display = 'none';
-                } else {
-                    toolbarElement.style.display = 'flex';
-                    //wordCount.style.display = 'flex';
-                }
-            });
-            // set editor readonly
-            editor.enableReadOnlyMode("view");
+            for(const editor of Object.values(this.editors)) {
+                const toolbarElement = editor.ui.view.toolbar.element;
+                //const wordCount = editor.ui.view.element.parentNode.getElementsByClassName("word-count")[0];
+                editor.on( 'change:isReadOnly', ( evt, propertyName, isReadOnly ) => {
+                    if ( isReadOnly ) {
+                        toolbarElement.style.display = 'none';
+                        //wordCount.style.display = 'none';
+                    } else {
+                        toolbarElement.style.display = 'flex';
+                        //wordCount.style.display = 'flex';
+                    }
+                });
+                // set editor readonly
+                editor.enableReadOnlyMode("view");
+            }
         };
         $(function() {
-            {{e_id}}_set_editor_readonly("id_testo_it");
-            {{e_id}}_set_editor_readonly("id_testo_en");
+            {{e_id}}_set_editors_readonly();
         });
     </script>
 {% endif %}
