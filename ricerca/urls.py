@@ -74,30 +74,3 @@ else:
     urlpatterns += re_path('{}/logout/?$'.format(settings.LOCAL_URL_PREFIX), LogoutView.as_view(template_name='logout.html', next_page='/'), name='logout'),
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-agid_api_dict = {
-    "title": "Unical - Ricerca",
-    #  "generator_class": openapi_agid_generator,
-    "permission_classes": (permissions.AllowAny,),
-    "description": "OpenData per la Ricerca in Unical",
-    "termsOfService": "https://tos.unical.it",
-    "x-api-id": "00000000-0000-0000-0000-000000000001",
-    "x-summary": "OpenData per la Ricerca in Unical",
-    "license": dict(
-        name="apache2", url="http://www.apache.org/licenses/LICENSE-2.0.html"
-    ),
-    "servers": [
-        dict(description="description", url="https://storage.portale.unical.it"),
-        dict(description="description", url="https://ricerca.unical.it"),
-    ],
-    "tags": [
-        dict(description="description", name="api"),
-        dict(description="description", name="public"),
-    ],
-    "contact": dict(
-        email="giuseppe.demarco@unical.it",
-        name="Giuseppe De Marco",
-        url="https://github.com/UniversitaDellaCalabria",
-    ),
-    "version": "0.1.2",
-}
