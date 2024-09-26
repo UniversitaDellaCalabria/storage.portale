@@ -35,7 +35,7 @@
         aria-labelledby="heading_{{page_name}}_{{topic_obj_regarts.topic.id}}">
 
     <div class="collapse-body">
-        {% if user.is_superuser %}
+        {% comment %} {% if user.is_superuser %}
         <div class="d-flex">
             <a  href="{% url 'cds-websites:management:cds-websites-items-order-edit' code=cds_website.id topic_id=topic_id %}"
                 class="btn btn-xs btn-primary ml-auto"
@@ -46,7 +46,7 @@
                 {% trans "Manage order" %}
             </a>
         </div>
-        {% endif %}
+        {% endif %} {% endcomment %}
         <!-- Reg Articles -->
         {% include "blocks/cds_websites_regulation_article_items.html" %}
         <!-- /Reg Articles -->
