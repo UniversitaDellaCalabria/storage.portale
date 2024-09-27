@@ -14,6 +14,7 @@ def esse3AppelliSerializer(appelli, year=None, af_id=None, search={}, show_past=
         new_ora = f"{ora[0]}:{ora[1]}"
         appello_dict = {
             "insegnamento": appello['adDes'],
+            "codice_insegnamento": appello['adCod'],
             "dataInizio": new_data,
             "dataFine": None,
             "orarioInizio": new_ora,

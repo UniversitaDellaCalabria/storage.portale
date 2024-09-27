@@ -61,6 +61,7 @@ def getData(request, url, cds_cod, body): # pragma: no cover
 
 
 def getUPImpegni(request, cds_cod, aa, year=1, date_month='', date_year='', types=[], af_cod='', filter_by_af_cod=True): # pragma: no cover
+    # filter_by_af_cod: UP non ritorna risultati se si filtrano gli esami per codAF
     url = settings.URL_UP_API + 'Impegni/getImpegniByAnnoAccademico'
 
     try:
@@ -96,6 +97,6 @@ def getUPImpegni(request, cds_cod, aa, year=1, date_month='', date_year='', type
         "codTipiEvento": types,
         "dataInizio": start_up,
         "dataFine": end_up,
-        "codAF": af_cod if filter_by_af_cod else ''
+        "codAF": af_cod if filter_by_af_cod else '' # UP non ritorna risultati se si filtrano gli esami per codAF
     }
     return getData(request, url, cds_cod, body)
