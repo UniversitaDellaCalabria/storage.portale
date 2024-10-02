@@ -74,7 +74,7 @@ class ExternalOggettiPortaleViewSet(GenericViewSet):
         params = {"search": search, "format": "json"}
         try:
             response_obj = {}
-            response = requests.get(url, params=params, headers=headers)
+            response = requests.get(url, params=params, headers=headers, timeout=5)
             response.raise_for_status()
 
             json_response = json.loads(response._content)
@@ -120,7 +120,7 @@ class ExternalOggettiPortaleViewSet(GenericViewSet):
         params = {"format": "json"}
 
         try:
-            response = requests.get(url, headers=headers, params=params)
+            response = requests.get(url, headers=headers, params=params, timeout=5)
             response.raise_for_status()
             response_json = response.json()
             response_json["object_class"] = object_class

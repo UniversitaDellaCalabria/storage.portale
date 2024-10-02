@@ -18,7 +18,7 @@ class OggettiPortaleWidget(TextInput):
 
     def render(self, name, value, attrs=None, renderer=None):
         context = self.get_context(name, value, attrs)
-        return mark_safe(renderer.render(self.template_name, context))
+        return mark_safe(renderer.render(self.template_name, context)) # nosec B703, B308
 
 
 class ExternalOggettiPortaleWidget(TextInput):
@@ -32,4 +32,4 @@ class ExternalOggettiPortaleWidget(TextInput):
 
     def render(self, name, value, attrs=None, renderer=None):
         context = self.get_context(name, value, attrs)
-        return mark_safe(renderer.render(self.template_name, context))
+        return mark_safe(renderer.render(self.template_name, context)) # nosec B703, B308

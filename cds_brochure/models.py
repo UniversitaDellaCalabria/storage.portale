@@ -7,7 +7,6 @@ from .settings import cds_websites_exstudents_media_path
 
 class SitoWebCdsDatiBase(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    # id_didattica_regolamento = models.ForeignKey(DidatticaRegolamento, models.DO_NOTHING, db_column='ID_DIDATTICA_REGOLAMENTO', blank=True, null=True, to_field='regdid_id')
     aa = models.PositiveIntegerField(db_column="AA", blank=True, null=True)
     cds = models.ForeignKey(
         "cds.DidatticaCds",
@@ -20,18 +19,7 @@ class SitoWebCdsDatiBase(models.Model):
     cds_cod = models.CharField(
         db_column="CDS_COD", max_length=100, blank=True, null=True
     )
-    # nome_corso_it = models.CharField(db_column='NOME_CORSO_IT', max_length=500)
-    # nome_corso_en = models.CharField(db_column='NOME_CORSO_EN', max_length=500, blank=True, null=True)
-    # classe_laurea_it = models.CharField(db_column='CLASSE_LAUREA_IT', max_length=100, blank=True, null=True)
-    # classe_laurea_en = models.CharField(db_column='CLASSE_LAUREA_EN', max_length=100, blank=True, null=True)
-    # classe_laurea_interclasse_it = models.CharField(db_column='CLASSE_LAUREA_INTERCLASSE_IT', max_length=100, blank=True, null=True)
-    # classe_laurea_interclasse_en = models.CharField(db_column='CLASSE_LAUREA_INTERCLASSE_EN', max_length=100, blank=True, null=True)
-    # lingua_it = models.CharField(db_column='LINGUA_IT', max_length=200, blank=True, null=True)
-    # lingua_en = models.CharField(db_column='LINGUA_EN', max_length=200, blank=True, null=True)
-    # durata = models.CharField(db_column='DURATA', max_length=100, blank=True, null=True)
     num_posti = models.IntegerField(db_column="NUM_POSTI", blank=True, null=True)
-    # link_video_cds_it = models.CharField(db_column='LINK_VIDEO_CDS_IT', max_length=500, blank=True, null=True)
-    # link_video_cds_en = models.CharField(db_column='LINK_VIDEO_CDS_EN', max_length=500, blank=True, null=True)
     descrizione_corso_it = models.TextField(
         db_column="DESCRIZIONE_CORSO_IT", blank=True, null=True
     )
@@ -92,8 +80,6 @@ class SitoWebCdsDatiBase(models.Model):
     come_iscriversi_en = models.TextField(
         db_column="COME_ISCRIVERSI_EN", blank=True, null=True
     )
-    # sito_web_it = models.CharField(db_column='SITO_WEB_IT', max_length=2000, blank=True, null=True)
-    # sito_web_en = models.CharField(db_column='SITO_WEB_EN', max_length=2000, blank=True, null=True)
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
         get_user_model(),

@@ -1121,7 +1121,6 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             **{
                 "sce_id": 2,
                 "sche_piano_id": 2,
-                "tipo_sce_cod": "N",
                 "amb_id": 1,
                 "ambito_des": "Prova",
                 "min_unt": 1,
@@ -1142,7 +1141,6 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             **{
                 "sce_id": 3,
                 "sche_piano_id": 3,
-                "tipo_sce_cod": "N",
                 "ambito_des": "Prova",
                 "min_unt": 1,
                 "max_unt": 2,
