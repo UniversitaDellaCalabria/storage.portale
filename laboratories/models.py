@@ -4,6 +4,7 @@ from generics.validators import validate_file_size, validate_image_file_extensio
 
 from .settings import laboratories_media_path
 
+
 class TipologiaRischio(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     descr_tipologia = models.CharField(db_column="DESCR_TIPOLOGIA", max_length=1000)
@@ -11,6 +12,7 @@ class TipologiaRischio(models.Model):
     class Meta:
         managed = True
         db_table = "TIPOLOGIA_RISCHIO"
+
 
 class LaboratorioAltriDipartimenti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -503,4 +505,3 @@ class LaboratorioUbicazione(models.Model):
     class Meta:
         managed = True
         db_table = "LABORATORIO_UBICAZIONE"
-

@@ -1,3 +1,4 @@
+# flake8: noqa
 import pathlib
 import os
 import sys
@@ -65,7 +66,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rangefilter',
-    
+   
     # REST API
     'rest_framework',
     'rest_framework.authtoken',
@@ -101,7 +102,8 @@ INSTALLED_APPS = [
     # SAML2
     # 'djangosaml2',
     # 'saml2_sp'
-    ]
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',

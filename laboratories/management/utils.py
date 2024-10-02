@@ -1,5 +1,6 @@
 from addressbook.models import Personale
 
+
 def _is_user_scientific_director(request, laboratory):
     if request.user.taxpayer_id is None:
         return False
@@ -12,12 +13,9 @@ def _is_user_scientific_director(request, laboratory):
             and laboratory.matricola_responsabile_scientifico == user_profile
         )
 
+
 def _get_user_roles(request, laboratory, my_offices, is_validator):
-    roles = {
-        "superuser": False,
-        "operator": False,
-        "validator": False
-    }
+    roles = {"superuser": False, "operator": False, "validator": False}
     if request.user.is_superuser:
         roles["superuser"] = True
         return roles

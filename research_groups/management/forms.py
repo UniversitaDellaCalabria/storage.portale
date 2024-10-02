@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.widgets import CKEditor5Widget
 from research_groups.models import RicercaDocenteGruppo, RicercaGruppo
 
+
 class RicercaGruppoForm(forms.ModelForm):
     class Meta:
         model = RicercaGruppo

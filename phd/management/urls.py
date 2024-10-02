@@ -17,6 +17,7 @@ app_name = "management"
 
 urlpatterns = []
 
+
 urlpatterns += path('phd/', phd_list, name='phd-list'),
 urlpatterns += path('phd/new/', phd_new, name='phd-new'),
 urlpatterns += path('phd/<str:code>/', phd, name='phd-edit'),

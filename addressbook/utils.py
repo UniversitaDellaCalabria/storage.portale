@@ -10,7 +10,7 @@ from .settings import (
 
 
 def get_personale_matricola(personale_id):
-    if personale_id[len(personale_id) - 2 :] == "==":
+    if personale_id[len(personale_id) - 2:] == "==":
         return decrypt(personale_id)
 
     personale_model = apps.get_model("addressbook.Personale")

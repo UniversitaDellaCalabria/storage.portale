@@ -21,6 +21,7 @@ app_name = "management"
 
 urlpatterns = []
 
+
 urlpatterns += path('baseresearchlines/', base_research_lines, name='base-research-lines'),
 urlpatterns += path('baseresearchlines/new/', base_research_line_new, name='base-research-line-new'),
 urlpatterns += path('baseresearchlines/<str:code>/', base_research_line, name='base-research-line-edit'),

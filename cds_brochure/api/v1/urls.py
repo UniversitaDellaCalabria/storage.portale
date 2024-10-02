@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import ApiCdsWebsiteDetail, ApiCdsWebsiteList
 
-app_name="apiv1"
+app_name = "apiv1"
 
 urlpatterns = [
     path('cds-websites/', ApiCdsWebsiteList.as_view(), name='cds-websites-list'),

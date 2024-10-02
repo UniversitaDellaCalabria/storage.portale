@@ -9,7 +9,7 @@ from .views import (
     ApiStructureTypesList,
 )
 
-app_name="apiv1"
+app_name = "apiv1"
 
 urlpatterns = [
     path('structures/', ApiStructuresList.as_view(), name='structures-list'),

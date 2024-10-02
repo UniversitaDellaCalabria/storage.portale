@@ -18,6 +18,7 @@ app_name = "management"
 
 urlpatterns = []
 
+
 urlpatterns += path('teachers/', teachers, name='teachers'),
 urlpatterns += path('teachers/<str:code>/', teacher_detail, name='teacher-edit'),
 urlpatterns += path('teachers/<str:code>/other-data/new/', teacher_other_data_new, name='teacher-other-data-new'),

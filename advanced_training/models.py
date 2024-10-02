@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class AltaFormazioneConsiglioScientificoEsterno(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     nome_cons = models.CharField(db_column="NOME_CONS", max_length=1000)
@@ -24,7 +25,11 @@ class AltaFormazioneConsiglioScientificoEsterno(models.Model):
 class AltaFormazioneConsiglioScientificoInterno(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     matricola_cons = models.ForeignKey(
-        "addressbook.Personale", models.SET_NULL, db_column="MATRICOLA_CONS", blank=True, null=True
+        "addressbook.Personale",
+        models.SET_NULL,
+        db_column="MATRICOLA_CONS",
+        blank=True,
+        null=True,
     )
     nome_origine_cons = models.CharField(db_column="NOME_ORIGINE_CONS", max_length=1000)
     id_alta_formazione_dati_base = models.ForeignKey(

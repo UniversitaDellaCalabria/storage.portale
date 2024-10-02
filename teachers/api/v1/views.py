@@ -2,6 +2,7 @@ from generics.views import ApiEndpointDetail, ApiEndpointList
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from research_lines.settings import OFFICE_RESEARCH_LINES
 from rest_framework.schemas.openapi import AutoSchema
+
 from teachers.api.v1.services import ServiceDocente
 
 from .filters import (
@@ -48,9 +49,9 @@ class ApiTeachersList(ApiEndpointList):
 class TeachingCoveragesList(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "listTeachingCoverages" 
+        operation["operationId"] = "listTeachingCoverages"
         return operation
-    
+
 
 class ApiTeachingCoveragesList(ApiEndpointList):
     description = (
@@ -132,9 +133,9 @@ class ApiTeacherStudyActivitiesList(ApiEndpointList):
 class TeachingCoverageStudyActivitiesList(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "listTeachingCoverageStudyActivities" 
+        operation["operationId"] = "listTeachingCoverageStudyActivities"
         return operation
-    
+
 
 class ApiTeachingCoverageActivitiesList(ApiTeacherStudyActivitiesList):
     schema = TeachingCoverageStudyActivitiesList()
@@ -183,9 +184,9 @@ class ApiTeacherNews(ApiEndpointList):
 class TeachingCoveragesInfo(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "retrieveTeachingCoverageInfo" 
+        operation["operationId"] = "retrieveTeachingCoverageInfo"
         return operation
-    
+
 
 class ApiTeachingCoverageDetail(ApiTeacherDetail):
     schema = TeachingCoveragesInfo()
@@ -217,9 +218,9 @@ class ApiPublicationsList(ApiEndpointList):
 class TeachingCoveragePublicationsList(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "listTeachingCoveragePublications" 
+        operation["operationId"] = "listTeachingCoveragePublications"
         return operation
-    
+
 
 class ApiTeachingCoveragePublicationsList(ApiPublicationsList):
     schema = TeachingCoveragePublicationsList()
@@ -228,9 +229,9 @@ class ApiTeachingCoveragePublicationsList(ApiPublicationsList):
 class TeacherPublicationsList(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "listTeacherPublications" 
+        operation["operationId"] = "listTeacherPublications"
         return operation
-    
+
 
 class ApiTeacherPublicationsList(ApiPublicationsList):
     schema = TeacherPublicationsList()
@@ -259,9 +260,9 @@ class ApiPublicationDetail(ApiEndpointDetail):
 class TeacherPublicationDetail(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "retrieveTeacherPublication" 
+        operation["operationId"] = "retrieveTeacherPublication"
         return operation
-    
+
 
 class ApiTeacherPublicationDetail(ApiPublicationDetail):
     schema = TeacherPublicationDetail()
@@ -270,9 +271,9 @@ class ApiTeacherPublicationDetail(ApiPublicationDetail):
 class TeachingCoveragePublicationsDetail(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "retrieveTeachingCoveragePublication" 
+        operation["operationId"] = "retrieveTeachingCoveragePublication"
         return operation
-    
+
 
 class ApiTeachingCoveragePublicationDetail(ApiPublicationDetail):
     schema = TeachingCoveragePublicationsDetail()

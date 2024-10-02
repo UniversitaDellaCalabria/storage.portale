@@ -57,10 +57,10 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                 "descr_altre_strutture_riferimento_it",
                 "descr_altre_strutture_riferimento_en",
                 "sito_web",
-                #'ambito',
-                #'sede_dimensione', 'sede_note_descrittive',
-                #'strumentazione_descrizione', 'strumentazione_valore',
-                #'laboratorio_interdipartimentale',
+                # 'ambito',
+                # 'sede_dimensione', 'sede_note_descrittive',
+                # 'strumentazione_descrizione', 'strumentazione_valore',
+                # 'laboratorio_interdipartimentale',
             )
         )
 
@@ -73,8 +73,8 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             "altre_strutture_riferimento",
             "descr_altre_strutture_riferimento_it",
             "descr_altre_strutture_riferimento_en",  # 'ambito',
-            #'sede_dimensione', 'sede_note_descrittive',
-            #'strumentazione_descrizione', 'strumentazione_valore',
+            # 'sede_dimensione', 'sede_note_descrittive',
+            # 'strumentazione_descrizione', 'strumentazione_valore',
             "id_infrastruttura_riferimento",
             "sito_web",
             "nome_file_logo",
@@ -83,7 +83,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             "nome_laboratorio": _("Name"),
             "acronimo": _("Acronym"),
             "logo_laboratorio": _("Link Laboratory Logo"),
-            #'laboratorio_interdipartimentale': _('Interdepartmental Laboratory'),
+            # 'laboratorio_interdipartimentale': _('Interdepartmental Laboratory'),
             "altre_strutture_riferimento": _("Other Structures"),
             "descr_altre_strutture_riferimento_it": _(
                 "Other Structures Description (it)"
@@ -91,11 +91,11 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             "descr_altre_strutture_riferimento_en": _(
                 "Other Structures Description (en)"
             ),
-            #'ambito': _('Scope'),
-            #'sede_dimensione': _('Office Dimension'),
-            #'sede_note_descrittive': _('Office Description Notes'),
-            #'strumentazione_descrizione': _('Instrumentation Description'),
-            #'strumentazione_valore': _('Instrumentation Value'),
+            # 'ambito': _('Scope'),
+            # 'sede_dimensione': _('Office Dimension'),
+            # 'sede_note_descrittive': _('Office Description Notes'),
+            # 'strumentazione_descrizione': _('Instrumentation Description'),
+            # 'strumentazione_valore': _('Instrumentation Value'),
             "id_infrastruttura_riferimento": _("Reference Infrastrucure"),
             "sito_web": _("Website"),
             "nome_file_logo": _("Logo"),
@@ -103,8 +103,8 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         widgets = {
             "descr_altre_strutture_riferimento_it": CKEditor5Widget(),
             "descr_altre_strutture_riferimento_en": CKEditor5Widget(),
-            #'strumentazione_descrizione': CKEditor5Widget(),
-            #'sede_note_descrittive': CKEditor5Widget(),
+            # 'strumentazione_descrizione': CKEditor5Widget(),
+            # 'sede_note_descrittive': CKEditor5Widget(),
         }
 
 

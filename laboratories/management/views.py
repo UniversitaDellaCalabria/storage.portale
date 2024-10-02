@@ -81,7 +81,10 @@ def laboratories(request, laboratory=None, my_offices=None, is_validator=False):
     """
     lista dei laboratori
     """
-    breadcrumbs = {reverse("generics:dashboard"): _("Dashboard"), "#": _("Laboratories")}
+    breadcrumbs = {
+        reverse("generics:dashboard"): _("Dashboard"),
+        "#": _("Laboratories"),
+    }
     context = {
         "breadcrumbs": breadcrumbs,
         "url": reverse("laboratories:apiv1:laboratories-list"),
@@ -561,11 +564,6 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
     )
     scientific_director_external_form = LaboratorioDatiBaseScientificDirectorForm()
 
-    department = None
-    if request.POST.get("choosen_department", ""):
-        department = get_object_or_404(
-            DidatticaDipartimento, dip_id=request.POST["choosen_department"]
-        )
     scientific_director = None
 
     if request.POST.get("choosen_scientific_director", ""):
@@ -739,7 +737,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 #                    'form': form,
 #                    'laboratory': laboratory,
 #                    'choosen_department': old_label,
-#                    'user_roles' : _get_user_roles(request, laboratory, my_offices, is_validator),
+#                    'user_roles': _get_user_roles(request, laboratory, my_offices, is_validator),
 #                    })
 
 
@@ -2248,14 +2246,12 @@ def laboratory_provided_services_edit(
     cpf_initial = {}
     lpf_initial = {}
     manager_origine = None
-    choosen_person = None
     if provided_service.matricola_responsabile:
         manager = get_object_or_404(
             Personale, matricola=provided_service.matricola_responsabile
         )
         cpf_initial["choosen_person"] = encrypt(provided_service.matricola_responsabile)
         manager_origine = f"{manager.cognome} {manager.nome}"
-        choosen_person = manager_origine
     else:
         lpf_initial["laboratory_manager"] = provided_service.responsabile_origine
 

@@ -20,6 +20,7 @@ app_name = "management"
 
 urlpatterns = []
 
+
 urlpatterns += path('regdid/', regdid_list, name='regdid'),
 # Structure
 urlpatterns += path('regdid/structure/import/', regdid_structure_import, name='regdid-structure-import'),

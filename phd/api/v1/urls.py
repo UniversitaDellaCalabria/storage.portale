@@ -12,7 +12,7 @@ from .views import (
     ApiRefStructuresList,
 )
 
-app_name="apiv1"
+app_name = "apiv1"
 
 urlpatterns = [
     path("phdlist/", ApiPhdList.as_view(), name="phd-list"),

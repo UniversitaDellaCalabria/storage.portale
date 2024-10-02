@@ -101,7 +101,7 @@ def phd_new(request, my_offices=None):
             phd.dt_mod = datetime.datetime.now()
             phd.save()
 
-            new_teacher = DidatticaDottoratoAttivitaFormativaDocente.objects.create(
+            DidatticaDottoratoAttivitaFormativaDocente.objects.create(
                 id_didattica_dottorato_attivita_formativa=phd,
                 cognome_nome_origine=cognome_nome_origine,
                 matricola=teacher,

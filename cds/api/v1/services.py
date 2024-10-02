@@ -1907,7 +1907,7 @@ class ServiceDidatticaAttivitaFormativa:
             else:
                 activity_father = activity_father.first()
 
-        copertura = DidatticaCopertura.objects.filter(af_id=af_id).values(
+        DidatticaCopertura.objects.filter(af_id=af_id).values(
             "personale__id",
             "personale__id_ab",
             "personale__nome",
@@ -1998,7 +1998,7 @@ class ServiceDidatticaAttivitaFormativa:
         query[0]["MODULES"] = list()
         allowed = []
         for i in range(len(list_submodules)):
-            copertura = (
+            (
                 DidatticaCopertura.objects.filter(
                     af_id=list_submodules[i]["af_id"],
                     personale__matricola=list_submodules[i]["matricola_resp_did"],

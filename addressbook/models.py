@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from generics.models import InsModAbstract
 
+
 class Personale(InsModAbstract):
     id_ab = models.IntegerField(db_column="ID_AB", unique=True)
     cd_esterno = models.CharField(
@@ -48,7 +49,11 @@ class Personale(InsModAbstract):
         db_column="DS_NAZI_BREVE_NASC", max_length=20, blank=True, null=True
     )
     id_comu_res = models.ForeignKey(
-        "structures.ComuniAll", models.DO_NOTHING, db_column="ID_COMU_RES", blank=True, null=True
+        "structures.ComuniAll",
+        models.DO_NOTHING,
+        db_column="ID_COMU_RES",
+        blank=True,
+        null=True,
     )
     ds_comune_res = models.CharField(
         db_column="DS_COMUNE_RES", max_length=255, blank=True, null=True

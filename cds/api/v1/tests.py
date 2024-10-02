@@ -469,7 +469,7 @@ class ApiStudyPlanActivitiesUnitTest(TestCase):
         res = req.get(url)
         assert res.json()["results"][0]["StudyActivityID"] == 1
 
-        # 3 courses : 2 main courses, 1 module course, should return 2 courses
+        # 3 courses: 2 main courses, 1 module course, should return 2 courses
         res = req.get(url)
         assert len(res.json()["results"]) == 2
 
@@ -978,7 +978,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
     def test_apisitiwebcdsstudyplans(self):
         req = Client()
 
-        cds1 = DidatticaCdsUnitTest.create_didatticaCds(
+        DidatticaCdsUnitTest.create_didatticaCds(
             **{
                 "tipo_corso_cod": "L",
                 "area_cds": "scienze",
@@ -987,7 +987,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        r1 = DidatticaRegolamentoUnitTest.create_didatticaRegolamento(
+        DidatticaRegolamentoUnitTest.create_didatticaRegolamento(
             **{
                 "regdid_id": 1,
                 "stato_regdid_cod": "A",
@@ -997,7 +997,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        dpr1 = DidatticaPianoRegolamento.objects.create(
+        DidatticaPianoRegolamento.objects.create(
             **{
                 "regpiani_id": 1,
                 "regdid_id": 1,
@@ -1014,7 +1014,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        dps1 = DidatticaPianoSche.objects.create(
+        DidatticaPianoSche.objects.create(
             **{
                 "sche_piano_id": 1,
                 "sche_piano_des": "prova",
@@ -1026,7 +1026,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        dps2 = DidatticaPianoSche.objects.create(
+        DidatticaPianoSche.objects.create(
             **{
                 "sche_piano_id": 2,
                 "sche_piano_des": "prova",
@@ -1038,7 +1038,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        dps3 = DidatticaPianoSche.objects.create(
+        DidatticaPianoSche.objects.create(
             **{
                 "sche_piano_id": 3,
                 "sche_piano_des": "prova",
@@ -1049,22 +1049,22 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
                 "comune_flg": 1,
             }
         )
-        dpsv1 = DidatticaPianoSceltaVincoli.objects.create(
+        DidatticaPianoSceltaVincoli.objects.create(
             **{
                 "sce_id": 1,
             }
         )
-        dpsv2 = DidatticaPianoSceltaVincoli.objects.create(
+        DidatticaPianoSceltaVincoli.objects.create(
             **{
                 "sce_id": 2,
             }
         )
-        dpsv3 = DidatticaPianoSceltaVincoli.objects.create(
+        DidatticaPianoSceltaVincoli.objects.create(
             **{
                 "sce_id": 3,
             }
         )
-        dpssp1 = DidatticaPianoSceltaSchePiano.objects.create(
+        DidatticaPianoSceltaSchePiano.objects.create(
             **{
                 "sce_id": 1,
                 "sche_piano_id": 1,
@@ -1073,7 +1073,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        af1 = DidatticaPianoSceltaAf.objects.create(
+        DidatticaPianoSceltaAf.objects.create(
             **{
                 "sce_id": 1,
                 "anno_corso_af": 2022,
@@ -1087,7 +1087,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        af2 = DidatticaPianoSceltaAf.objects.create(
+        DidatticaPianoSceltaAf.objects.create(
             **{
                 "sce_id": 2,
                 "anno_corso_af": 2022,
@@ -1101,7 +1101,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        af3 = DidatticaPianoSceltaAf.objects.create(
+        DidatticaPianoSceltaAf.objects.create(
             **{
                 "sce_id": 3,
                 "anno_corso_af": 2022,
@@ -1115,9 +1115,9 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        da1 = DidatticaAmbiti.objects.create(**{"amb_id": 1})
+        DidatticaAmbiti.objects.create(**{"amb_id": 1})
 
-        dpssp2 = DidatticaPianoSceltaSchePiano.objects.create(
+        DidatticaPianoSceltaSchePiano.objects.create(
             **{
                 "sce_id": 2,
                 "sche_piano_id": 2,
@@ -1137,7 +1137,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        dpssp3 = DidatticaPianoSceltaSchePiano.objects.create(
+        DidatticaPianoSceltaSchePiano.objects.create(
             **{
                 "sce_id": 3,
                 "sche_piano_id": 3,
@@ -1155,7 +1155,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        daf1 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(
             **{
                 "amb_id": 1,
                 "af_gen_id": 1,
@@ -1170,7 +1170,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        daf2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(
             **{
                 "af_id": 2,
                 "amb_id": 2,
@@ -1186,7 +1186,7 @@ class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
             }
         )
 
-        daf2 = DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(
             **{
                 "af_id": 3,
                 "amb_id": 3,

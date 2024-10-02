@@ -1676,7 +1676,7 @@ class ApiAster2ListUnitTest(TestCase):
                 "description_en": "IT",
             }
         )
-        aster1 = RicercaAster1.objects.create(
+        RicercaAster1.objects.create(
             **{
                 "id": 1,
                 "descrizione": "Computer Science and Informatics",

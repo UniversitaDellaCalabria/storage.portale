@@ -116,7 +116,7 @@ class ServiceDocente:
                     if q["Teachers"] is not None:
                         res.append(q)
             # eliminazione duplicati di res
-            res = [i for n, i in enumerate(res) if i not in res[n + 1 :]]
+            res = [i for n, i in enumerate(res) if i not in res[n + 1:]]
             return res
 
         else:

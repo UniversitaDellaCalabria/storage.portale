@@ -14,6 +14,7 @@ app_name = "management"
 
 urlpatterns = []
 
+
 urlpatterns += path('patents/', patents, name='patents'),
 urlpatterns += path('patents/new/', patent_new, name='patent-new'),
 urlpatterns += path('patents/<str:code>/', patent, name='patent-edit'),

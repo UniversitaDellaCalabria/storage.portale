@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import ApiAllResearchLinesList, ApiAppliedResearchLinesList, ApiBaseResearchLinesList
 
-app_name="apiv1"
+app_name = "apiv1"
 
 urlpatterns = [
     path('baseresearchlines/', ApiBaseResearchLinesList.as_view(), name='base-research-lines'),

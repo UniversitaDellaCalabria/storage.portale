@@ -18,6 +18,7 @@ app_name = "management"
 
 urlpatterns = []
 
+
 urlpatterns += path('projects/', projects, name='projects'),
 urlpatterns += path('projects/new/', project_new, name='project-new'),
 urlpatterns += path('projects/<str:code>/', project, name='project-edit'),

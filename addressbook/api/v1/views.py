@@ -122,11 +122,10 @@ class ApiAddressbookStructuresList(ApiEndpointList):
 
 
 class AddressbookStructureDetail(AutoSchema):
-    def get_operation(self, path, method):  
+    def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "retrieveAddressbookStructureDetail" 
+        operation["operationId"] = "retrieveAddressbookStructureDetail"
         return operation
-        
 
 
 class ApiAddressbookStructureDetail(ApiStructureDetail):
@@ -148,9 +147,8 @@ class ApiPersonnelCfList(ApiEndpointList):
 class ApiPersonIdSchema(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "getPersonId" 
+        operation["operationId"] = "getPersonId"
         return operation
-
 
 
 class ApiPersonId(APIView):
@@ -175,7 +173,7 @@ class ApiPersonId(APIView):
 class ApiDecryptedPersonIdSchema(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "getDecryptedPersonId" 
+        operation["operationId"] = "getDecryptedPersonId"
         return operation
 
 

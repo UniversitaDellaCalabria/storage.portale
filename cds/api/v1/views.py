@@ -124,7 +124,7 @@ class ApiStudyPlanDetail(ApiEndpointDetail):
 class StudyPlanActivitiesList(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "listCdsStudyPlanActivities" 
+        operation["operationId"] = "listCdsStudyPlanActivities"
         return operation
 
 
@@ -199,7 +199,7 @@ class ApiStudyActivityDetail(ApiEndpointDetail):
 class StudyActivityInfo(AutoSchema):
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
-        operation['operationId'] = "retrieveCdsStudyPlanActivity" 
+        operation["operationId"] = "retrieveCdsStudyPlanActivity"
         return operation
 
 

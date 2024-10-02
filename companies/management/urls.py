@@ -11,9 +11,10 @@ from .views import (
     company_unical_referent_edit,
 )
 
-app_name="management"
+app_name = "management"
 
 urlpatterns = []
+
 
 urlpatterns += path('companies/', companies, name='companies'),
 urlpatterns += path('companies/new/', company_new, name='company-new'),

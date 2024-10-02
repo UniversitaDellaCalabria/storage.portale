@@ -7,7 +7,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-
+# flake8: noqa
 import os
 from pathlib import Path
 
@@ -34,10 +34,10 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 
     # 'silk',
-    
+   
     # OAS 3 specs
     # 'drf_spectacular',
-    
+   
     # frontend apps
     'django_unical_bootstrap_italia',
     'bootstrap_italia_template',
@@ -149,11 +149,11 @@ DATABASES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # DjangoSAML2 conf
-if 'djangosaml2'  in INSTALLED_APPS:
+if 'djangosaml2' in INSTALLED_APPS:
     MIDDLEWARE.append('djangosaml2.middleware.SamlSessionMiddleware')
     from saml2_sp.settings import *
     # pySAML2 SP mandatory
-    SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
     SAML2_URL_PREFIX = 'saml2'
     LOGIN_URL = f'/{SAML2_URL_PREFIX}/login'
@@ -168,7 +168,7 @@ else:
     LOGIN_URL = f'/{LOCAL_URL_PREFIX}/login/'
     LOGOUT_URL = f'/{LOCAL_URL_PREFIX}/logout/'
 
-LOGOUT_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL = '/'
 
 PERSON_CONTACTS_TO_TAKE = [
     'Posta Elettronica',

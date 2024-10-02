@@ -36,6 +36,6 @@ def getIsodidReport(cds=[], years=[]):
                 f = open(filename, "wb")
                 f.write(response.content)
                 f.close()
-                logger.info(f"Pentaho ISODID report for {year} - {cds_cod} : OK")
+                logger.info(f"Pentaho ISODID report for {year} - {cds_cod}: OK")
             except Exception as e:
                 logger.error(e)

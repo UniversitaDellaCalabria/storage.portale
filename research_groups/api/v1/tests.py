@@ -46,7 +46,7 @@ class ApiResearchGroupsUnitTest(TestCase):
                 "ricerca_erc1_id": 1,
             }
         )
-        ricerca_gruppo2 = RicercaGruppo.objects.create(
+        RicercaGruppo.objects.create(
             **{
                 "id": 2,
                 "nome": "machine learning",

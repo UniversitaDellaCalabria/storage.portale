@@ -3,7 +3,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
-from locks.concurrency import LOCK_MESSAGE, acquire_lock, get_lock_from_cache
+from locks.concurrency import acquire_lock, get_lock_from_cache
+from locks.settings import LOCK_MESSAGE
 from locks.exceptions import LockCannotBeAcquiredException
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import PermissionDenied

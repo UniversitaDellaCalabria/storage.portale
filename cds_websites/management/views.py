@@ -116,9 +116,9 @@ def cds_websites_topics(request, code, cds_website=None, my_offices=None):
     pages = {
         "page_name": {
             topic_id: {
-                "topic" : topic,
-                "objects" : topic_objs,
-                "regarts" : topic_areg
+                "topic": topic,
+                "objects": topic_objs,
+                "regarts": topic_areg
             },
         },
     }

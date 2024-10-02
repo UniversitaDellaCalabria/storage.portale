@@ -38,6 +38,7 @@ app_name = "management"
 
 urlpatterns = []
 
+
 urlpatterns += path('cds/', cds, name='cds'),
 urlpatterns += path('cds/<str:regdid_id>/', cds_detail, name='cds-detail'),
 urlpatterns += path('cds/<str:regdid_id>/other-data/import/', cds_other_data_import, name='cds-other-data-import'),

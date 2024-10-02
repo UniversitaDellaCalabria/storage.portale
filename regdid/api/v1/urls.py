@@ -1,3 +1,3 @@
-app_name="apiv1"
+app_name = "apiv1"
 
 urlpatterns = []

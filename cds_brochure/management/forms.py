@@ -18,7 +18,7 @@ UNICMS_AUTH_TOKEN = getattr(settings, "UNICMS_AUTH_TOKEN", "")
 UNICMS_OBJECT_API = getattr(settings, "UNICMS_OBJECT_API", "")
 
 
-# -- Dati corso : posti
+# -- Dati corso: posti
 class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
     class Meta:
         model = SitoWebCdsDatiBase

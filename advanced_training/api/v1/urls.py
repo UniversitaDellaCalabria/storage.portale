@@ -6,7 +6,7 @@ from .views import (
     ApiHighFormationMastersList,
 )
 
-app_name="apiv1"
+app_name = "apiv1"
 
 urlpatterns = [
     path('high-formation-masters/', ApiHighFormationMastersList.as_view(), name='high-formation-masters'),

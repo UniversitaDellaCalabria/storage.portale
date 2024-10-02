@@ -7,7 +7,14 @@ from .admin_inlines import (
     RicercaLineaApplicataInline,
     RicercaLineaBaseInline,
 )
-from .models import *
+from .models import (
+    RicercaAster1,
+    RicercaAster2,
+    RicercaErc1,
+    RicercaErc2,
+    RicercaLineaApplicata,
+    RicercaLineaBase,
+)
 
 
 @admin.register(RicercaAster1)

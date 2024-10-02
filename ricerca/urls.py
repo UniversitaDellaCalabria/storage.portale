@@ -7,15 +7,14 @@ from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.renderers import JSONOpenAPIRenderer
 from rest_framework.schemas import get_schema_view
-from rest_framework import permissions
 
 
 urlpatterns = [
     path(f'{settings.ADMIN_PATH}/', admin.site.urls),
     path("api/token", obtain_auth_token, name="auth-token"),
-    
+
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck-editor-5-upload-file"),
-    
+
     path('', include('addressbook.urls')),
     path('', include('advanced_training.urls')),
     path('', include('cds.urls')),
@@ -51,7 +50,7 @@ except BaseException:
 # urlpatterns += re_path("^openapi.json$", SpectacularAPIView.as_view(), name="openapi-schema-json"),
 # urlpatterns += path('api/', SpectacularRedocView.as_view(url_name='openapi-schema', template_name='redoc.html'), name='api-redoc'),
 
-    
+
 if 'silk' in settings.INSTALLED_APPS:
     urlpatterns += re_path(r'^silk/', include('silk.urls', namespace='silk'))
 

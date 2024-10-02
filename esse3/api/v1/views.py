@@ -99,7 +99,7 @@ class ApiCdsWebsiteTimetable(APIView):  # pragma: no cover
                                 break
 
                     for delete in duplicates_to_remove:
-                        a = impegni_json.remove(delete)
+                        impegni_json.remove(delete)
 
                     all_events = impegni_json + appelli_esse3_json
                     impegni_json = sorted(

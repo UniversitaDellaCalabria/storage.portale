@@ -74,7 +74,7 @@ class ApiProjectsListUnitTest(TestCase):
             }
         )
 
-        pr2 = ProgettoDatiBase.objects.create(
+        ProgettoDatiBase.objects.create(
             **{
                 "id": 2,
                 "id_ambito_territoriale": a1,

@@ -161,13 +161,13 @@ def regdid_structure_import(request):
             json structure:
             [
                 {
-                    "aa" : 2024,
-                    "numero" : 1,
-                    "titolo_it" : "Scopo del regolamento",
-                    "titolo_en" : "Purpose of the regulation",
-                    "ordine" : 0,
+                    "aa": 2024,
+                    "numero": 1,
+                    "titolo_it": "Scopo del regolamento",
+                    "titolo_en": "Purpose of the regulation",
+                    "ordine": 0,
                     "id_didattica_cds_tipo_corso_id": 2,
-                    "id_didattica_articoli_regolamento_titolo_id" : 2
+                    "id_didattica_articoli_regolamento_titolo_id": 2
                 },
                 ...
             ]
@@ -1216,7 +1216,7 @@ def regdid_status_change(request, regdid_id, status_cod):
             )
 
             logger.info(
-                f"{regdid.aa_reg_did} - {regdid.cds.cds_cod} sent emails : {emails_sent}"
+                f"{regdid.aa_reg_did} - {regdid.cds.cds_cod} sent emails: {emails_sent}"
             )
 
             log_action(
@@ -1285,7 +1285,7 @@ def regdid_articles_pdf(request, regdid_id):
         classe_laurea_desc += f" & {icla_cod} - {icla_des}"
 
     classe_laurea_desc = re.sub(
-        "classe delle lauree(\w|\s)+in", "", classe_laurea_desc, flags=re.IGNORECASE
+        "classe delle lauree(\w|\s)+in", "", classe_laurea_desc, flags=re.IGNORECASE  # noqa: W605
     )
 
     context = {

@@ -17,4 +17,3 @@ def get_topics_per_page():
         return res
     except requests.exceptions.RequestException:
         return res
-
