@@ -5,7 +5,7 @@ from generics.validators import validate_file_size, validate_image_file_extensio
 from .settings import cds_websites_exstudents_media_path
 
 
-class SitoWebCdsDatiBase(models.Model):
+class CdsBrochure(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     aa = models.PositiveIntegerField(db_column="AA", blank=True, null=True)
     cds = models.ForeignKey(
@@ -91,113 +91,10 @@ class SitoWebCdsDatiBase(models.Model):
 
     class Meta:
         managed = True
-        db_table = "SITO_WEB_CDS_DATI_BASE"
+        db_table = "CDS_BROCHURE"
 
 
-class SitoWebCdsDatiExcelTmpOld(models.Model):
-    id = models.AutoField(db_column="ID", primary_key=True)
-    nome_corso_it = models.CharField(db_column="NOME_CORSO_IT", max_length=500)
-    classe_laurea_it = models.CharField(
-        db_column="CLASSE_LAUREA_IT", max_length=100, blank=True, null=True
-    )
-    classe_laurea_interclasse = models.CharField(
-        db_column="CLASSE_LAUREA_INTERCLASSE", max_length=100, blank=True, null=True
-    )
-    lingua = models.CharField(db_column="LINGUA", max_length=200, blank=True, null=True)
-    durata = models.CharField(db_column="DURATA", max_length=100, blank=True, null=True)
-    num_posti = models.IntegerField(db_column="NUM_POSTI", blank=True, null=True)
-    link_video_cds = models.CharField(
-        db_column="LINK_VIDEO_CDS", max_length=500, blank=True, null=True
-    )
-    slider_autopromo1 = models.TextField(
-        db_column="SLIDER_AUTOPROMO1", blank=True, null=True
-    )
-    slider_autopromo2 = models.TextField(
-        db_column="SLIDER_AUTOPROMO2", blank=True, null=True
-    )
-    slider_autopromo3 = models.TextField(
-        db_column="SLIDER_AUTOPROMO3", blank=True, null=True
-    )
-    descrizione_corso = models.TextField(
-        db_column="DESCRIZIONE_CORSO", blank=True, null=True
-    )
-    accesso_corso = models.TextField(db_column="ACCESSO_CORSO", blank=True, null=True)
-    obiettivi_corso = models.TextField(
-        db_column="OBIETTIVI_CORSO", blank=True, null=True
-    )
-    sbocchi_professionali = models.TextField(
-        db_column="SBOCCHI_PROFESSIONALI", blank=True, null=True
-    )
-    tasse_contributi_esoneri = models.TextField(
-        db_column="TASSE_CONTRIBUTI_ESONERI", blank=True, null=True
-    )
-    borse_studio = models.TextField(db_column="BORSE_STUDIO", blank=True, null=True)
-    agevolazioni = models.TextField(db_column="AGEVOLAZIONI", blank=True, null=True)
-    corso_in_pillole = models.TextField(
-        db_column="CORSO_IN_PILLOLE", blank=True, null=True
-    )
-    cosa_si_studia = models.TextField(db_column="COSA_SI_STUDIA", blank=True, null=True)
-    come_iscriversi = models.TextField(
-        db_column="COME_ISCRIVERSI", blank=True, null=True
-    )
-    descrizione_file1 = models.TextField(
-        db_column="DESCRIZIONE_FILE1", blank=True, null=True
-    )
-    link_file1 = models.TextField(db_column="LINK_FILE1", blank=True, null=True)
-    descrizione_file2 = models.TextField(
-        db_column="DESCRIZIONE_FILE2", blank=True, null=True
-    )
-    link_file2 = models.TextField(db_column="LINK_FILE2", blank=True, null=True)
-    descrizione_file3 = models.TextField(
-        db_column="DESCRIZIONE_FILE3", blank=True, null=True
-    )
-    link_file3 = models.TextField(db_column="LINK_FILE3", blank=True, null=True)
-    descrizione_file4 = models.TextField(
-        db_column="DESCRIZIONE_FILE4", blank=True, null=True
-    )
-    link_file4 = models.TextField(db_column="LINK_FILE4", blank=True, null=True)
-    descrizione_file5 = models.TextField(
-        db_column="DESCRIZIONE_FILE5", blank=True, null=True
-    )
-    link_file5 = models.TextField(db_column="LINK_FILE5", blank=True, null=True)
-    descrizione_file6 = models.TextField(
-        db_column="DESCRIZIONE_FILE6", blank=True, null=True
-    )
-    link_file6 = models.TextField(db_column="LINK_FILE6", blank=True, null=True)
-    ex_studente_profilo_1 = models.TextField(
-        db_column="EX_STUDENTE_PROFILO_1", blank=True, null=True
-    )
-    ex_studente_link_1 = models.TextField(
-        db_column="EX_STUDENTE_LINK_1", blank=True, null=True
-    )
-    ex_studente_profilo_2 = models.TextField(
-        db_column="EX_STUDENTE_PROFILO_2", blank=True, null=True
-    )
-    ex_studente_link_2 = models.TextField(
-        db_column="EX_STUDENTE_LINK_2", blank=True, null=True
-    )
-    ex_studente_profilo_3 = models.TextField(
-        db_column="EX_STUDENTE_PROFILO_3", blank=True, null=True
-    )
-    ex_studente_link_3 = models.TextField(
-        db_column="EX_STUDENTE_LINK_3", blank=True, null=True
-    )
-    ex_studente_profilo_4 = models.TextField(
-        db_column="EX_STUDENTE_PROFILO_4", blank=True, null=True
-    )
-    ex_studente_link_4 = models.TextField(
-        db_column="EX_STUDENTE_LINK_4", blank=True, null=True
-    )
-    sito_web = models.CharField(
-        db_column="SITO_WEB", max_length=2000, blank=True, null=True
-    )
-
-    class Meta:
-        managed = True
-        db_table = "SITO_WEB_CDS_DATI_EXCEL_TMP_OLD"
-
-
-class SitoWebCdsExStudenti(models.Model):
+class CdsBrochureExStudenti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     nome = models.CharField(db_column="NOME", max_length=1000, blank=False, null=True)
     ordine = models.PositiveIntegerField(db_column="ORDINE", blank=False, null=True)
@@ -210,9 +107,9 @@ class SitoWebCdsExStudenti(models.Model):
         db_column="LINK_EN", max_length=2000, blank=True, null=True
     )
     id_sito_web_cds_dati_base = models.ForeignKey(
-        SitoWebCdsDatiBase,
+        CdsBrochure,
         models.CASCADE,
-        db_column="ID_SITO_WEB_CDS_DATI_BASE",
+        db_column="ID_CDS_BROCHURE",
         to_field="id",
     )
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
@@ -234,10 +131,10 @@ class SitoWebCdsExStudenti(models.Model):
 
     class Meta:
         managed = True
-        db_table = "SITO_WEB_CDS_EX_STUDENTI"
+        db_table = "CDS_BROCHURE_EX_STUDENTI"
 
 
-class SitoWebCdsLink(models.Model):
+class CdsBrochureLink(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     ordine = models.PositiveIntegerField(db_column="ORDINE", blank=True, null=True)
     descrizione_link_it = models.CharField(
@@ -253,9 +150,9 @@ class SitoWebCdsLink(models.Model):
         db_column="LINK_EN", max_length=2000, blank=True, null=True
     )
     id_sito_web_cds_dati_base = models.ForeignKey(
-        SitoWebCdsDatiBase,
+        CdsBrochure,
         models.CASCADE,
-        db_column="ID_SITO_WEB_CDS_DATI_BASE",
+        db_column="ID_CDS_BROCHURE",
         to_field="id",
     )
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
@@ -269,15 +166,15 @@ class SitoWebCdsLink(models.Model):
 
     class Meta:
         managed = True
-        db_table = "SITO_WEB_CDS_LINK"
+        db_table = "CDS_BROCHURE_LINK"
 
 
-class SitoWebCdsSlider(models.Model):
+class CdsBrochureSlider(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     id_sito_web_cds_dati_base = models.ForeignKey(
-        SitoWebCdsDatiBase,
+        CdsBrochure,
         models.CASCADE,
-        db_column="ID_SITO_WEB_CDS_DATI_BASE",
+        db_column="ID_CDS_BROCHURE",
         blank=True,
         null=True,
         to_field="id",
@@ -296,4 +193,4 @@ class SitoWebCdsSlider(models.Model):
 
     class Meta:
         managed = True
-        db_table = "SITO_WEB_CDS_SLIDER"
+        db_table = "CDS_BROCHURE_SLIDER"

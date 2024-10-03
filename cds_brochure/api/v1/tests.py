@@ -2,10 +2,10 @@ from cds.api.v1.util_tests import (
     DidatticaCdsUnitTest,
 )
 from cds_brochure.models import (
-    SitoWebCdsDatiBase,
-    SitoWebCdsExStudenti,
-    SitoWebCdsLink,
-    SitoWebCdsSlider,
+    CdsBrochure,
+    CdsBrochureExStudenti,
+    CdsBrochureLink,
+    CdsBrochureSlider,
 )
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -24,7 +24,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             }
         )
 
-        s1 = SitoWebCdsDatiBase.objects.create(
+        s1 = CdsBrochure.objects.create(
             **{
                 "id": 1,
                 "aa": "2022",
@@ -39,7 +39,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             }
         )
 
-        SitoWebCdsExStudenti.objects.create(
+        CdsBrochureExStudenti.objects.create(
             **{
                 "id": 111,
                 "ordine": 1,
@@ -51,7 +51,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             }
         )
 
-        SitoWebCdsLink.objects.create(
+        CdsBrochureLink.objects.create(
             **{
                 "id": 111111,
                 "ordine": 1,
@@ -63,7 +63,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             }
         )
 
-        SitoWebCdsSlider.objects.create(
+        CdsBrochureSlider.objects.create(
             **{
                 "id": 123,
                 "ordine": 1,
@@ -73,7 +73,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             }
         )
 
-        s2 = SitoWebCdsDatiBase.objects.create(
+        s2 = CdsBrochure.objects.create(
             **{
                 "id": 2,
                 "aa": "2022",
@@ -86,7 +86,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             }
         )
 
-        SitoWebCdsSlider.objects.create(
+        CdsBrochureSlider.objects.create(
             **{
                 "id": 124,
                 "ordine": 1,
@@ -128,7 +128,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             }
         )
 
-        s1 = SitoWebCdsDatiBase.objects.create(
+        s1 = CdsBrochure.objects.create(
             **{
                 "id": 1,
                 "cds": cds,
@@ -142,7 +142,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             }
         )
 
-        SitoWebCdsExStudenti.objects.create(
+        CdsBrochureExStudenti.objects.create(
             **{
                 "id": 1,
                 "ordine": 1,
@@ -154,7 +154,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             }
         )
 
-        SitoWebCdsLink.objects.create(
+        CdsBrochureLink.objects.create(
             **{
                 "id": 1,
                 "ordine": 1,
@@ -166,7 +166,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             }
         )
 
-        SitoWebCdsSlider.objects.create(
+        CdsBrochureSlider.objects.create(
             **{
                 "id": 1,
                 "ordine": 1,

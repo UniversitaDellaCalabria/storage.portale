@@ -36,10 +36,10 @@ from cds.models import (
     DidatticaTestiRegolamento,
 )
 from cds_brochure.models import (
-    SitoWebCdsDatiBase,
-    SitoWebCdsExStudenti,
-    SitoWebCdsLink,
-    SitoWebCdsSlider,
+    CdsBrochure,
+    CdsBrochureExStudenti,
+    CdsBrochureLink,
+    CdsBrochureSlider,
 )
 from cds_websites.models import (
     SitoWebCdsSubArticoliRegolamento,
@@ -762,7 +762,7 @@ class ServiceDidatticaCds:
                 query_search &= q_nome_corso_it
 
         query = (
-            SitoWebCdsDatiBase.objects.filter(query_search)
+            CdsBrochure.objects.filter(query_search)
             .select_related("cds")
             .values(
                 "id",
@@ -778,7 +778,7 @@ class ServiceDidatticaCds:
     @staticmethod
     def getCdsWebsite(cds_cod):
         query = (
-            SitoWebCdsDatiBase.objects.filter(cds__cds_cod=cds_cod)
+            CdsBrochure.objects.filter(cds__cds_cod=cds_cod)
             .select_related("cds")
             .values(
                 "id",
@@ -858,7 +858,7 @@ class ServiceDidatticaCds:
             q["lingue"] = lingue_list
 
             ex_studenti = (
-                SitoWebCdsExStudenti.objects.filter(id_sito_web_cds_dati_base=q["id"])
+                CdsBrochureExStudenti.objects.filter(id_sito_web_cds_dati_base=q["id"])
                 .values(
                     "id",
                     "nome",
@@ -876,7 +876,7 @@ class ServiceDidatticaCds:
             else:  # pragma: no cover
                 q["ExStudents"] = []
             links = (
-                SitoWebCdsLink.objects.filter(id_sito_web_cds_dati_base=q["id"])
+                CdsBrochureLink.objects.filter(id_sito_web_cds_dati_base=q["id"])
                 .values(
                     "id",
                     "ordine",
@@ -893,7 +893,7 @@ class ServiceDidatticaCds:
                 q["CdsLink"] = []
 
             sliders = (
-                SitoWebCdsSlider.objects.filter(id_sito_web_cds_dati_base=q["id"])
+                CdsBrochureSlider.objects.filter(id_sito_web_cds_dati_base=q["id"])
                 .values(
                     "id",
                     "ordine",
@@ -911,7 +911,7 @@ class ServiceDidatticaCds:
 
     # @staticmethod
     # def getCdsWebsitesDegreeTypes():
-    # query = SitoWebCdsDatiBase.objects.values(
+    # query = CdsBrochure.objects.values(
     # "classe_laurea_it",
     # "classe_laurea_en"
     # ).distinct()

@@ -18,11 +18,11 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 <h3 style="font-weight: normal;">
-    {{ cds_website.cds.cds_cod }} -
-    {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
-        {{ cds_website.cds.nome_cds_it }}
+    {{ cds.cds_cod }} -
+    {% if LANGUAGE_CODE == "it" or not cds.nome_cds_eng %}
+        {{ cds.nome_cds_it }}
     {% else %}
-        {{ cds_website.cds.nome_cds_eng }}
+        {{ cds.nome_cds_eng }}
     {% endif %}
 </h3>
 <hr>
@@ -65,7 +65,7 @@
                             style="border-bottom: none;">
 
                             {% for topic_id, tor in content.items %}
-                                {% include "blocks/cds_websites_topic_item.html" with page_name=page_name topic_obj_regarts=tor %}
+                                {% include "blocks/cds_websites_topic_item.html" with page_name=page_name topic_obj_regarts=tor cds=cds %}
                             {% endfor %}
 
                             {% if not forloop.last %}
@@ -102,7 +102,7 @@
 
             <!-- Manage shared objects -->
             <div class="mt-4 p-3" style="border:1px solid rgb(0,0,0,.1);">
-                <a  href="{% url 'cds-websites:management:cds-websites-shared-objects' code=cds_website.id %}"
+                <a  href="{% url 'cds-websites:management:cds-websites-shared-objects' cds_id=cds.cds_id %}"
                     class="text-reset"
                     target="_blank">
                     <div class="ml-2 d-flex justify-content-start align-items-center">

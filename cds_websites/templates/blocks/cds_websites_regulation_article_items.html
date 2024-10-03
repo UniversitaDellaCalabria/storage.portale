@@ -45,7 +45,7 @@
                         <div class="link-list-wrapper">
                             <ul class="link-list text-nowrap">
                                 <li>
-                                    <a href="{% url 'cds-websites:management:cds-websites-article-edit' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=regart.id %}"
+                                    <a href="{% url 'cds-websites:management:cds-websites-article-edit' cds_id=cds.cds_id topic_id=topic_obj_regarts.topic.id data_id=regart.id %}"
                                         class="list-item left-icon">
                                         {% if user.is_superuser %}
                                             <svg class="icon icon-dark left p-1 pl-2 mt-2">
@@ -65,7 +65,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a  href="{% url 'cds-websites:management:cds-websites-sub-articles' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=regart.id %}"
+                                    <a  href="{% url 'cds-websites:management:cds-websites-sub-articles' cds_id=cds.cds_id topic_id=topic_obj_regarts.topic.id data_id=regart.id %}"
                                         class="list-item left-icon">
                                         <svg class="icon icon-dark left p-1 pl-2 mt-2">
                                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-list"></use>
@@ -76,7 +76,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a  href="{% url 'cds-websites:management:cds-websites-extras' code=cds_website.id topic_id=topic_obj_regarts.topic.id data_id=regart.id %}"
+                                    <a  href="{% url 'cds-websites:management:cds-websites-extras' cds_id=cds.cds_id topic_id=topic_obj_regarts.topic.id data_id=regart.id %}"
                                         class="list-item left-icon">
                                         <svg class="icon icon-dark left p-1 pl-2 mt-2">
                                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-list"></use>

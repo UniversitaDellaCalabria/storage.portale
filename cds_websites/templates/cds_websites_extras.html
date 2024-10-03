@@ -23,11 +23,11 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 <h3 style="font-weight: normal;">
-    {{ cds_website.cds.cds_cod }} -
-    {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
-        {{ cds_website.cds.nome_cds_it }}
+    {{ cds.cds_cod }} -
+    {% if LANGUAGE_CODE == "it" or not cds.nome_cds_eng %}
+        {{ cds.nome_cds_it }}
     {% else %}
-        {{ cds_website.cds.nome_cds_eng }}
+        {{ cds.nome_cds_eng }}
     {% endif %}
 </h3>
 <hr>
@@ -82,7 +82,7 @@
                                         </p>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-success btn-sm" href="{% url 'cds-websites:management:cds-websites-extra-delete' code=cds_website.id topic_id=topic_id data_id=regart.id extra_id=regart_extra.id %}">
+                                        <a class="btn btn-success btn-sm" href="{% url 'cds-websites:management:cds-websites-extra-delete' cds_id=cds.cds_id topic_id=topic_id data_id=regart.id extra_id=regart_extra.id %}">
                                             {% trans 'Yes, proceed' %}
                                         </a>
                                     </div>
@@ -127,7 +127,7 @@
                                                 <div class="link-list-wrapper">
                                                     <ul class="link-list text-nowrap">
                                                         <li>
-                                                            <a  href="{% url 'cds-websites:management:cds-websites-extra-edit' code=cds_website.id topic_id=topic_id data_id=regart.id extra_id=regart_extra.id %}"
+                                                            <a  href="{% url 'cds-websites:management:cds-websites-extra-edit' cds_id=cds.cds_id topic_id=topic_id data_id=regart.id extra_id=regart_extra.id %}"
                                                                 class="list-item left-icon">
                                                                 <svg class="icon icon-dark left p-1 pl-2 mt-2">
                                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
@@ -179,7 +179,7 @@
                         {% endif %}
                     </tbody>
                 </table>
-                <a  href="{% url 'cds-websites:management:cds-websites-extra-new' code=cds_website.id topic_id=topic_id data_id=regart.id %}"
+                <a  href="{% url 'cds-websites:management:cds-websites-extra-new' cds_id=cds.cds_id topic_id=topic_id data_id=regart.id %}"
                     class="btn btn-xs btn-block btn-success">
                     <svg class="icon icon-xs icon-white">
                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>

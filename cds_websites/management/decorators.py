@@ -1,4 +1,4 @@
-from cds_brochure.models import SitoWebCdsDatiBase
+from cds.models import DidatticaCds
 from cds_websites.settings import OFFICE_CDS_WEBSITES, OFFICE_CDS_WEBSITES_STRUCTURES
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
@@ -10,10 +10,10 @@ def can_manage_cds_website(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
 
-        if original_kwargs.get("code"):
-            cds_sito_web_id = original_kwargs.get("code")
-            cds_website = get_object_or_404(SitoWebCdsDatiBase, pk=cds_sito_web_id)
-            original_kwargs["cds_website"] = cds_website
+        if original_kwargs.get("cds_id"):
+            cds_id = original_kwargs.get("cds_id")
+            cds = get_object_or_404(DidatticaCds, pk=cds_id)
+            original_kwargs["cds"] = cds
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
@@ -35,7 +35,7 @@ def can_manage_cds_website(func_to_decorate):
 def can_edit_cds_website(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        cds_website = original_kwargs["cds_website"]
+        cds = original_kwargs["cds"]
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
@@ -48,7 +48,7 @@ def can_edit_cds_website(func_to_decorate):
             if myoffice.office.organizational_structure.unique_code not in departments:
                 departments.append(myoffice.office.organizational_structure.unique_code)
 
-        if cds_website.cds.dip.dip_cod in departments:
+        if cds.dip.dip_cod in departments:
             return func_to_decorate(*original_args, **original_kwargs)
         return custom_message(request, _("Permission denied"))
 

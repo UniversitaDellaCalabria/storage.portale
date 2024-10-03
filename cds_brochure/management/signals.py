@@ -1,9 +1,9 @@
-from cds_brochure.models import SitoWebCdsExStudenti
+from cds_brochure.models import CdsBrochureExStudenti
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 
 
-@receiver(post_delete, sender=SitoWebCdsExStudenti)
+@receiver(post_delete, sender=CdsBrochureExStudenti)
 def post_save_image(sender, instance, *args, **kwargs):
     """Clean Old Image file"""
     try:
@@ -12,7 +12,7 @@ def post_save_image(sender, instance, *args, **kwargs):
         pass
 
 
-@receiver(pre_save, sender=SitoWebCdsExStudenti)
+@receiver(pre_save, sender=CdsBrochureExStudenti)
 def pre_save_image(sender, instance, *args, **kwargs):
     """instance old image file will delete from os"""
     try:

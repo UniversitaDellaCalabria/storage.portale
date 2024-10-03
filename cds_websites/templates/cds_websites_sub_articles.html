@@ -19,11 +19,11 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 <h3 style="font-weight: normal;">
-    {{ cds_website.cds.cds_cod }} -
-    {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
-        {{ cds_website.cds.nome_cds_it }}
+    {{ cds.cds_cod }} -
+    {% if LANGUAGE_CODE == "it" or not cds.nome_cds_eng %}
+        {{ cds.nome_cds_it }}
     {% else %}
-        {{ cds_website.cds.nome_cds_eng }}
+        {{ cds.nome_cds_eng }}
     {% endif %}
 </h3>
 <hr>
@@ -75,7 +75,7 @@
                                             <div class="link-list-wrapper">
                                                 <ul class="link-list text-nowrap">
                                                     <li>
-                                                        <a  href="{% url 'cds-websites:management:cds-websites-sub-article-edit' code=cds_website.id topic_id=topic_id data_id=regart.id sub_art_id=sub_article.id %}"
+                                                        <a  href="{% url 'cds-websites:management:cds-websites-sub-article-edit' cds_id=cds.cds_id topic_id=topic_id data_id=regart.id sub_art_id=sub_article.id %}"
                                                             class="list-item left-icon">
                                                             {% if user_can_edit %}
                                                                 <svg class="icon icon-dark left p-1 pl-2 mt-2">

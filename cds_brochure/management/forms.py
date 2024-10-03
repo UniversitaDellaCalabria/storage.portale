@@ -1,8 +1,8 @@
 from cds_brochure.models import (
-    SitoWebCdsDatiBase,
-    SitoWebCdsExStudenti,
-    SitoWebCdsLink,
-    SitoWebCdsSlider,
+    CdsBrochure,
+    CdsBrochureExStudenti,
+    CdsBrochureLink,
+    CdsBrochureSlider,
 )
 from django import forms
 from django.conf import settings
@@ -19,9 +19,9 @@ UNICMS_OBJECT_API = getattr(settings, "UNICMS_OBJECT_API", "")
 
 
 # -- Dati corso: posti
-class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
+class CdsBrochureDatiCorsoForm(forms.ModelForm):
     class Meta:
-        model = SitoWebCdsDatiBase
+        model = CdsBrochure
         fields = [
             "num_posti",
         ]
@@ -31,9 +31,9 @@ class SitoWebCdsDatiBaseDatiCorsoForm(forms.ModelForm):
 
 
 # -- In pillole: corso in pillole, cosa si studia, iscrizione
-class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
+class CdsBrochureInPilloleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(SitoWebCdsDatiBaseInPilloleForm, self).__init__(*args, **kwargs)
+        super(CdsBrochureInPilloleForm, self).__init__(*args, **kwargs)
 
         labels = {
             "corso_in_pillole_it": _("Course in a nutshell (it)"),
@@ -70,7 +70,7 @@ class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
                 )
 
     class Meta:
-        model = SitoWebCdsDatiBase
+        model = CdsBrochure
         fields = [
             "corso_in_pillole_it",
             "corso_in_pillole_en",
@@ -85,9 +85,9 @@ class SitoWebCdsDatiBaseInPilloleForm(forms.ModelForm):
 
 
 # -- Profilo corso: Descrizione, Ammissione, Obiettivi, Sbocchi
-class SitoWebCdsDatiBaseProfiloCorsoForm(forms.ModelForm):
+class CdsBrochureProfiloCorsoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(SitoWebCdsDatiBaseProfiloCorsoForm, self).__init__(*args, **kwargs)
+        super(CdsBrochureProfiloCorsoForm, self).__init__(*args, **kwargs)
 
         labels = {
             "descrizione_corso_it": _("Description (it)"),
@@ -128,7 +128,7 @@ class SitoWebCdsDatiBaseProfiloCorsoForm(forms.ModelForm):
                 )
 
     class Meta:
-        model = SitoWebCdsDatiBase
+        model = CdsBrochure
         fields = [
             "descrizione_corso_it",
             "descrizione_corso_en",
@@ -145,9 +145,9 @@ class SitoWebCdsDatiBaseProfiloCorsoForm(forms.ModelForm):
 
 
 # -- Intro amm: Tasse, contributi, agevolazioni
-class SitoWebCdsDatiBaseIntroAmmForm(forms.ModelForm):
+class CdsBrochureIntroAmmForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(SitoWebCdsDatiBaseIntroAmmForm, self).__init__(*args, **kwargs)
+        super(CdsBrochureIntroAmmForm, self).__init__(*args, **kwargs)
 
         labels = {
             "tasse_contributi_esoneri_it": _("Taxes (it)"),
@@ -184,7 +184,7 @@ class SitoWebCdsDatiBaseIntroAmmForm(forms.ModelForm):
                 )
 
     class Meta:
-        model = SitoWebCdsDatiBase
+        model = CdsBrochure
         fields = [
             "tasse_contributi_esoneri_it",
             "tasse_contributi_esoneri_en",
@@ -198,9 +198,9 @@ class SitoWebCdsDatiBaseIntroAmmForm(forms.ModelForm):
         js = ("js/textarea-autosize.js",)
 
 
-class SitoWebCdsExStudentiForm(forms.ModelForm):
+class CdsBrochureExStudentiForm(forms.ModelForm):
     class Meta:
-        model = SitoWebCdsExStudenti
+        model = CdsBrochureExStudenti
         exclude = [
             "id_sito_web_cds_dati_base",
             "id_user_mod",
@@ -231,7 +231,7 @@ class SitoWebCdsForm(forms.ModelForm):
         ]
 
 
-class SitoWebCdsSliderForm(SitoWebCdsForm):
+class CdsBrochureSliderForm(SitoWebCdsForm):
     slider_it = forms.CharField(
         label=_("Scrollable text (it)"), required=False, max_length=130
     )
@@ -240,7 +240,7 @@ class SitoWebCdsSliderForm(SitoWebCdsForm):
     )
 
     class Meta(SitoWebCdsForm.Meta):
-        model = SitoWebCdsSlider
+        model = CdsBrochureSlider
         labels = {
             "slider_it": _("Scrollable text (it)"),
             "slider_en": _("Scrollable text (en)"),
@@ -248,9 +248,9 @@ class SitoWebCdsSliderForm(SitoWebCdsForm):
         }
 
 
-class SitoWebCdsLinkForm(SitoWebCdsForm):
+class CdsBrochureLinkForm(SitoWebCdsForm):
     class Meta(SitoWebCdsForm.Meta):
-        model = SitoWebCdsLink
+        model = CdsBrochureLink
         labels = {
             "ordine": _("Order"),
             "descrizione_link_it": _("Link description (it)"),

@@ -1,4 +1,3 @@
-from cds_brochure.models import SitoWebCdsDatiBase
 from cds_websites.models import (
     SitoWebCdsOggettiPortale,
     SitoWebCdsSubArticoliRegolamento,
@@ -97,7 +96,6 @@ class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
         choices = SitoWebCdsOggettiPortale.objects.filter(cds_id=cds_id).order_by(
             "aa_regdid_id", "titolo_it"
         )
-        swcd_base = SitoWebCdsDatiBase.objects.get(cds_id=cds_id)
 
         self.fields["id_sito_web_cds_oggetti_portale"].queryset = choices
         self.fields["id_sito_web_cds_oggetti_portale"].label = _("Portal object")
@@ -109,7 +107,7 @@ class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
             "Used only for webpaths, when provided, the object will be shown as a collapsible element containing this text alongside the webpath"
         )
         self.fields["id_sito_web_cds_oggetti_portale"].widget = OggettiPortaleWidget(
-            swcd_base.id
+            cds_id
         )
         self.fields["id_sito_web_cds_oggetti_portale"].label = _("Portal object")
 

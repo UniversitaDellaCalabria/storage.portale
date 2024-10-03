@@ -37,7 +37,7 @@
     <div class="collapse-body">
         {% comment %} {% if user.is_superuser %}
         <div class="d-flex">
-            <a  href="{% url 'cds-websites:management:cds-websites-items-order-edit' code=cds_website.id topic_id=topic_id %}"
+            <a  href="{% url 'cds-websites:management:cds-websites-items-order-edit' cds_id=cds.cds_id topic_id=topic_id %}"
                 class="btn btn-xs btn-primary ml-auto"
                 style="display: none;">
                 <svg class="icon icon-xs icon-white">

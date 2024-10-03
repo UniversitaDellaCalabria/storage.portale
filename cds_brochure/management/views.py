@@ -3,9 +3,9 @@ import logging
 
 from cds.models import DidatticaCdsLingua
 from cds_brochure.models import (
-    SitoWebCdsExStudenti,
-    SitoWebCdsLink,
-    SitoWebCdsSlider,
+    CdsBrochureExStudenti,
+    CdsBrochureLink,
+    CdsBrochureSlider,
 )
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, LogEntry
@@ -18,13 +18,13 @@ from generics.utils import log_action
 
 from .decorators import can_manage_cds_website
 from .forms import (
-    SitoWebCdsDatiBaseDatiCorsoForm,
-    SitoWebCdsDatiBaseInPilloleForm,
-    SitoWebCdsDatiBaseIntroAmmForm,
-    SitoWebCdsDatiBaseProfiloCorsoForm,
-    SitoWebCdsExStudentiForm,
-    SitoWebCdsLinkForm,
-    SitoWebCdsSliderForm,
+    CdsBrochureDatiCorsoForm,
+    CdsBrochureInPilloleForm,
+    CdsBrochureIntroAmmForm,
+    CdsBrochureProfiloCorsoForm,
+    CdsBrochureExStudentiForm,
+    CdsBrochureLinkForm,
+    CdsBrochureSliderForm,
 )
 
 logger = logging.getLogger(__name__)
@@ -75,10 +75,10 @@ def cds_website_brochure(request, code, cds_website=None, my_offices=None):
 @can_manage_cds_website
 def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
     tab_form_dict = {
-        "Dati corso": SitoWebCdsDatiBaseDatiCorsoForm(instance=cds_website),
-        "In pillole": SitoWebCdsDatiBaseInPilloleForm(instance=cds_website),
-        "Profilo corso": SitoWebCdsDatiBaseProfiloCorsoForm(instance=cds_website),
-        "Intro amm": SitoWebCdsDatiBaseIntroAmmForm(instance=cds_website),
+        "Dati corso": CdsBrochureDatiCorsoForm(instance=cds_website),
+        "In pillole": CdsBrochureInPilloleForm(instance=cds_website),
+        "Profilo corso": CdsBrochureProfiloCorsoForm(instance=cds_website),
+        "Intro amm": CdsBrochureIntroAmmForm(instance=cds_website),
     }
     last_viewed_tab = None
 
@@ -95,19 +95,19 @@ def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
         try:
             match form_name:
                 case "Dati corso":
-                    form = SitoWebCdsDatiBaseDatiCorsoForm(
+                    form = CdsBrochureDatiCorsoForm(
                         data=request.POST, instance=cds_website
                     )
                 case "In pillole":
-                    form = SitoWebCdsDatiBaseInPilloleForm(
+                    form = CdsBrochureInPilloleForm(
                         data=request.POST, instance=cds_website
                     )
                 case "Profilo corso":
-                    form = SitoWebCdsDatiBaseProfiloCorsoForm(
+                    form = CdsBrochureProfiloCorsoForm(
                         data=request.POST, instance=cds_website
                     )
                 case "Intro amm":
-                    form = SitoWebCdsDatiBaseIntroAmmForm(
+                    form = CdsBrochureIntroAmmForm(
                         data=request.POST, instance=cds_website
                     )
 
@@ -186,7 +186,7 @@ def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
 @login_required
 @can_manage_cds_website
 def cds_brochure_sliders(request, code, cds_website=None, my_offices=None):
-    sliders = SitoWebCdsSlider.objects.filter(id_sito_web_cds_dati_base=code).order_by(
+    sliders = CdsBrochureSlider.objects.filter(id_sito_web_cds_dati_base=code).order_by(
         "ordine"
     )
 
@@ -224,7 +224,7 @@ def cds_brochure_sliders(request, code, cds_website=None, my_offices=None):
 @login_required
 @can_manage_cds_website
 def cds_brochure_sliders_new(request, code, cds_website=None, my_offices=None):
-    slider_form = SitoWebCdsSliderForm(data=request.POST if request.POST else None)
+    slider_form = CdsBrochureSliderForm(data=request.POST if request.POST else None)
 
     if request.POST:
         if slider_form.is_valid():
@@ -293,8 +293,8 @@ def cds_brochure_sliders_new(request, code, cds_website=None, my_offices=None):
 def cds_brochure_sliders_edit(
     request, code, data_id, cds_website=None, my_offices=None
 ):
-    slider = get_object_or_404(SitoWebCdsSlider, pk=data_id)
-    slider_form = SitoWebCdsSliderForm(
+    slider = get_object_or_404(CdsBrochureSlider, pk=data_id)
+    slider_form = CdsBrochureSliderForm(
         data=request.POST if request.POST else None, instance=slider
     )
 
@@ -367,7 +367,7 @@ def cds_brochure_sliders_edit(
 def cds_brochure_sliders_delete(
     request, code, data_id, cds_website=None, my_offices=None
 ):
-    slider = get_object_or_404(SitoWebCdsSlider, pk=data_id)
+    slider = get_object_or_404(CdsBrochureSlider, pk=data_id)
     slider.delete()
 
     log_action(
@@ -390,7 +390,7 @@ def cds_brochure_sliders_delete(
 @login_required
 @can_manage_cds_website
 def cds_brochure_exstudents(request, code, cds_website=None, my_offices=None):
-    exstudents = SitoWebCdsExStudenti.objects.filter(
+    exstudents = CdsBrochureExStudenti.objects.filter(
         id_sito_web_cds_dati_base=code
     ).order_by("ordine")
 
@@ -430,7 +430,7 @@ def cds_brochure_exstudents(request, code, cds_website=None, my_offices=None):
 def cds_brochure_exstudents_new(
     request, code, cds_website=None, my_offices=None
 ):
-    exstudent_form = SitoWebCdsExStudentiForm(
+    exstudent_form = CdsBrochureExStudentiForm(
         data=request.POST if request.POST else None,
         files=request.FILES if request.FILES else None,
     )
@@ -503,8 +503,8 @@ def cds_brochure_exstudents_new(
 def cds_brochure_exstudents_edit(
     request, code, data_id, cds_website=None, my_offices=None
 ):
-    exstudent = get_object_or_404(SitoWebCdsExStudenti, pk=data_id)
-    exstudent_form = SitoWebCdsExStudentiForm(
+    exstudent = get_object_or_404(CdsBrochureExStudenti, pk=data_id)
+    exstudent_form = CdsBrochureExStudentiForm(
         data=request.POST if request.POST else None,
         files=request.FILES if request.FILES else None,
         instance=exstudent,
@@ -579,7 +579,7 @@ def cds_brochure_exstudents_edit(
 def cds_brochure_exstudents_delete(
     request, code, data_id, cds_website=None, my_offices=None
 ):
-    exstudent = get_object_or_404(SitoWebCdsExStudenti, pk=data_id)
+    exstudent = get_object_or_404(CdsBrochureExStudenti, pk=data_id)
     exstudent.delete()
 
     log_action(
@@ -599,7 +599,7 @@ def cds_brochure_exstudents_delete(
 @login_required
 @can_manage_cds_website
 def cds_brochure_links(request, code, cds_website=None, my_offices=None):
-    links = SitoWebCdsLink.objects.filter(id_sito_web_cds_dati_base=code).order_by(
+    links = CdsBrochureLink.objects.filter(id_sito_web_cds_dati_base=code).order_by(
         "ordine"
     )
 
@@ -637,7 +637,7 @@ def cds_brochure_links(request, code, cds_website=None, my_offices=None):
 @login_required
 @can_manage_cds_website
 def cds_brochure_links_new(request, code, cds_website=None, my_offices=None):
-    link_form = SitoWebCdsLinkForm(data=request.POST if request.POST else None)
+    link_form = CdsBrochureLinkForm(data=request.POST if request.POST else None)
 
     if request.POST:
         if link_form.is_valid():
@@ -703,8 +703,8 @@ def cds_brochure_links_new(request, code, cds_website=None, my_offices=None):
 def cds_brochure_links_edit(
     request, code, data_id, cds_website=None, my_offices=None
 ):
-    link = get_object_or_404(SitoWebCdsLink, pk=data_id)
-    link_form = SitoWebCdsLinkForm(
+    link = get_object_or_404(CdsBrochureLink, pk=data_id)
+    link_form = CdsBrochureLinkForm(
         data=request.POST if request.POST else None, instance=link
     )
 
@@ -772,7 +772,7 @@ def cds_brochure_links_edit(
 def cds_brochure_links_delete(
     request, code, data_id, cds_website=None, my_offices=None
 ):
-    link = get_object_or_404(SitoWebCdsLink, pk=data_id)
+    link = get_object_or_404(CdsBrochureLink, pk=data_id)
     link.delete()
 
     log_action(user=request.user, obj=cds_website, flag=CHANGE, msg=_("Deleted Link"))

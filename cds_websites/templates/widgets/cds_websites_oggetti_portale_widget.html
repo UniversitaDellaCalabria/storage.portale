@@ -17,7 +17,7 @@
         <div class="input-group-append">
             <a class="btn btn-icon btn-success {{ widget.attrs.disabled}}"
                 target="_blank"
-                href="{% if widget.attrs.disabled %}{% else %}{% url 'cds-websites:management:cds-websites-shared-object-new' code=widget.sito_web_cds_dati_base_id %}{% endif %}">
+                href="{% if widget.attrs.disabled %}{% else %}{% url 'cds-websites:management:cds-websites-shared-object-new' cds_id=widget.cds_id %}{% endif %}">
                 <svg class="icon icon-white mt-2 mb-1 mr-1">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg>
@@ -40,7 +40,7 @@
         el: "[id='{{id}}']",
         data: {
             fieldName: '{{ widget.name }}',
-            url: "{% url 'cds-websites:apiv1:cds-websites-shared-objects-list' code=widget.sito_web_cds_dati_base_id %}",
+            url: "{% url 'cds-websites:apiv1:cds-websites-shared-objects-list' cds_id=widget.cds_id %}",
             query: '',
             options: [],
             initial_value: '{{ widget.initial_value }}',

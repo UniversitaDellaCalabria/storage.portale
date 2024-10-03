@@ -1,4 +1,4 @@
-from cds_brochure.models import SitoWebCdsDatiBase
+from cds_brochure.models import CdsBrochure
 from cds_brochure.settings import OFFICE_CDS_BROCHURE
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
@@ -14,7 +14,7 @@ def can_manage_cds_website(func_to_decorate):
 
         if original_kwargs.get("code"):
             cds_sito_web_id = original_kwargs.get("code")
-            cds_website = get_object_or_404(SitoWebCdsDatiBase, pk=cds_sito_web_id)
+            cds_website = get_object_or_404(CdsBrochure, pk=cds_sito_web_id)
             original_kwargs["cds_website"] = cds_website
 
         if request.user.is_superuser:

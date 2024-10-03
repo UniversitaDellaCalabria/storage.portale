@@ -2,7 +2,6 @@ import json
 
 import requests
 from cds.api.v1.services import ServiceDidatticaCds
-from cds_brochure.models import SitoWebCdsDatiBase
 from cds_websites.models import SitoWebCdsOggettiPortale
 from cds_websites.settings import OFFICE_CDS_WEBSITES
 from django.conf import settings
@@ -33,8 +32,7 @@ class SitoWebCdsOggettiPortaleViewSet(ReadOnlyModelViewSet):
         if self.action != "list":
             return SitoWebCdsOggettiPortale.objects.all()
 
-        cds_website_id = self.kwargs.get("code")
-        cds_id = SitoWebCdsDatiBase.objects.get(pk=cds_website_id).cds_id
+        cds_id = self.kwargs.get("cds_id")
 
         search_query = self.request.query_params.get("search", "")
 
