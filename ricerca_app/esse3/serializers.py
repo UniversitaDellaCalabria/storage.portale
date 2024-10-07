@@ -10,6 +10,8 @@ def esse3AppelliSerializer(appelli, year=None, af_id=None, search={}, show_past=
         if not show_past and new_data < date.today().strftime('%Y-%m-%d'):
             continue
 
+        if not appello['oraEsa']: continue
+
         ora = appello['oraEsa'].split(" ")[1].split(":")
         new_ora = f"{ora[0]}:{ora[1]}"
         appello_dict = {
