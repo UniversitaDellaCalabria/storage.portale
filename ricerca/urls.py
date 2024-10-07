@@ -6,7 +6,7 @@ from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.renderers import JSONOpenAPIRenderer
-from rest_framework.schemas import get_schema_view
+from rest_framework.schemas.agid_schema_views import get_schema_view
 
 
 urlpatterns = [
