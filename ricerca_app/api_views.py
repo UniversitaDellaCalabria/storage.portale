@@ -1511,8 +1511,12 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.event_types = ['AD']
+        self.language = None
 
     def get(self, obj, **kwargs):
+        if not self.language:
+            lang = self.request.LANGUAGE_CODE
+            self.language = self.request.query_params.get('lang', lang).lower()
         cds_cod = self.kwargs['cdswebsitecod']
         current_year = timezone.localtime(timezone.now().replace(tzinfo=timezone.utc)).year
         academic_year = self.request.query_params.get('academic_year', current_year)
@@ -1551,7 +1555,8 @@ class ApiCdsWebsiteTimetable(APIView): # pragma: no cover
                                                af_name=af_name,
                                                af_cod=af_cod,
                                                search=search,
-                                               show_past=show_past)
+                                               show_past=show_past,
+                                               lang=self.language)
 
             # if Exams, search in Esse3 too
             if 'ES' in self.event_types and af_cod:

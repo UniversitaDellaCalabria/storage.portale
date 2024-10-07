@@ -3,14 +3,16 @@ from datetime import date, datetime
 from django.utils import timezone
 
 
-def upImpegniSerializer(impegni, year=None, af_name=None, af_cod=None, search={}, show_past=False): # pragma: no cover
+def upImpegniSerializer(impegni, lang, year=None, af_name=None, af_cod=None, search={}, show_past=False): # pragma: no cover
     impegni_up = []
     search_teacher = search.get('search_teacher', '')
     search_location = search.get('search_location', '')
 
     for impegno in impegni:
-        code = impegno['evento']['dettagliDidattici'][0].get('codice')
-        name = impegno['evento']['dettagliDidattici'][0].get('nome')
+        dettagliDidattici = impegno['evento']['dettagliDidattici']
+
+        code = dettagliDidattici[0].get('codiceAF')
+        name = dettagliDidattici[0].get('nome')
 
         # UP non restituisce sempre il codice dell'attività
         # (quando si recuperano gli esami non c'è!)
@@ -29,10 +31,8 @@ def upImpegniSerializer(impegni, year=None, af_name=None, af_cod=None, search={}
         orarioInizio = f"{str(inizio_tz.hour).zfill(2)}:{str(inizio_tz.minute).zfill(2)}"
         orarioFine = f"{str(fine_tz.hour).zfill(2)}:{str(fine_tz.minute).zfill(2)}"
 
-        dettagliDidattici = impegno['evento']['dettagliDidattici']
-
         cfu = dettagliDidattici[0].get('cfu', None)
-        insegnamento = dettagliDidattici[0]['nome']
+        insegnamento = dettagliDidattici[0]['nome'] if lang == 'it' or not dettagliDidattici[0]['nome_EN'] else dettagliDidattici[0]['nome_EN']
 
         annoCorso  = dettagliDidattici[0]['annoCorso']
 
@@ -61,6 +61,11 @@ def upImpegniSerializer(impegni, year=None, af_name=None, af_cod=None, search={}
         if not show_past and dataInizio < date.today().strftime('%Y-%m-%d'):
             continue
 
+        extra = {}
+        notePubbliche = impegno.get('notePubbliche', '')
+        if notePubbliche:
+            extra['note'] = notePubbliche
+
         impegno_dict = {
             "insegnamento": insegnamento,
             "codice_insegnamento": impegno['evento']['dettagliDidattici'][0]['codice'],
@@ -74,7 +79,7 @@ def upImpegniSerializer(impegni, year=None, af_name=None, af_cod=None, search={}
             "aula": aula,
             "edificio": edificio,
             "codice": f"UP_{impegno['evento']['tipoEvento']['codice']}",
-            "extra": {}
+            "extra": extra
         }
         impegni_up.append(impegno_dict)
     return impegni_up
