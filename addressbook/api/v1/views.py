@@ -7,11 +7,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.views import APIView
-from structures.api.v1.filters import ApiStructuresListFilter
 from structures.api.v1.views import ApiStructureDetail
 from teachers.api.v1.services import ServiceDocente
 
-from .filters import ApiAddressbookListFilter
+from .filters import (
+    ApiAddressbookListFilter,
+    ApiAddressbookStructuresListFilter,
+    ApiPersonnelCfListFilter,
+)
 from .serializers import (
     AddressbookFullSerializer,
     AddressbookSerializer,
@@ -25,7 +28,7 @@ from .services import ServicePersonale
 
 
 class ApiAddressbookList(ApiEndpointList):
-    description = "La funzione restituisce la rubrica telefonica del personale"
+    description = "Returns the personnel address book."
     serializer_class = AddressbookSerializer
     filter_backends = [ApiAddressbookListFilter]
 
@@ -44,7 +47,7 @@ class ApiAddressbookList(ApiEndpointList):
 
 
 class ApiAddressbookFullList(ApiEndpointList):
-    description = "La funzione restituisce la rubrica telefonica del personale arricchita con dati riguardanti il contratto"
+    description = "Returns the personnel address book with additional contract data."
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = AddressbookFullSerializer
@@ -73,7 +76,7 @@ class ApiAddressbookFullList(ApiEndpointList):
 
 
 class ApiRolesList(ApiEndpointListSupport):
-    description = "La funzione restituisce i ruoli"
+    description = "Returns the list of roles."
     serializer_class = RolesSerializer
     filter_backends = []
 
@@ -82,9 +85,8 @@ class ApiRolesList(ApiEndpointListSupport):
 
 
 class ApiPersonaleDetail(ApiEndpointDetail):
-    description = "La funzione restituisce una specifica persona"
+    description = "Retrieves details of a specific person."
     serializer_class = PersonaleSerializer
-    # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
         personaleid = self.kwargs["personaleid"]
@@ -92,9 +94,7 @@ class ApiPersonaleDetail(ApiEndpointDetail):
 
 
 class ApiPersonaleFullDetail(ApiEndpointDetail):
-    description = (
-        "La funzione restituisce una specifica persona con i dati sul contratto"
-    )
+    description = "Retrieves details of a specific person, including contract data."
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = PersonaleFullSerializer
@@ -106,11 +106,9 @@ class ApiPersonaleFullDetail(ApiEndpointDetail):
 
 
 class ApiAddressbookStructuresList(ApiEndpointList):
-    description = (
-        "La funzione restituisce le strutture organizzative a cui un docente afferisce"
-    )
+    description = "Returns the organizational structures a person is affiliated with."
     serializer_class = AddressbookStructuresSerializer
-    filter_backends = [ApiStructuresListFilter]
+    filter_backends = [ApiAddressbookStructuresListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -135,9 +133,9 @@ class ApiAddressbookStructureDetail(ApiStructureDetail):
 class ApiPersonnelCfList(ApiEndpointList):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    description = "La funzione restituisce la lista dei cf del personale"
+    description = "Returns the list of personnel tax codes."
     serializer_class = PersonnelCfSerializer
-    filter_backends = []
+    filter_backends = [ApiPersonnelCfListFilter]
 
     def get_queryset(self):
         roles = self.request.query_params.get("roles")
@@ -154,7 +152,7 @@ class ApiPersonIdSchema(AutoSchema):
 class ApiPersonId(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    description = "La funzione restituisce il codice criptato di una persona"
+    description = "Returns the encrypted ID of a person."
     schema = ApiPersonIdSchema()
 
     def post(self, request, *args, **kwargs):
@@ -180,7 +178,7 @@ class ApiDecryptedPersonIdSchema(AutoSchema):
 class ApiDecryptedPersonId(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    description = "La funzione restituisce la matricola in chiaro una persona"
+    description = "Returns the plain text matricola of a person."
     schema = ApiDecryptedPersonIdSchema()
 
     def post(self, request, *args, **kwargs):
