@@ -5,13 +5,15 @@ class ApiHighFormationMastersListFilter(GenericApiFilter):
     search_params = [
         {
             "name": "coursetype",
-            "description": "Tipo Corso",
+            "description": "Course type",
             "required": False,
-            "type": "string",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "erogation",
-            "description": "Erogazione",
+            "description": "Erogation mode",
             "required": False,
             "schema": {
                 "type": "integer",
@@ -20,25 +22,33 @@ class ApiHighFormationMastersListFilter(GenericApiFilter):
         },
         {
             "name": "department",
-            "description": "Dipartimento",
+            "description": "Department ID",
             "required": False,
-            "type": "string",
+            "schema": {
+                "type": "integer",
+                "format": "int32",
+            },
         },
         {
             "name": "director",
-            "description": "Direttore Scientifico",
+            "description": "Scientific director ID",
             "required": False,
-            "type": "string",
+            "schema": {
+                "type": "integer",
+                "format": "int32",
+            },
         },
         {
             "name": "language",
-            "description": "Lingua Master",
+            "description": "Master language",
             "required": False,
-            "type": "string",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "year",
-            "description": "Anno Rilevazione",
+            "description": "Year of survey",
             "required": False,
             "schema": {
                 "type": "integer",

@@ -8,29 +8,8 @@ from .serializers import (
 )
 
 
-class ApiHighFormationMastersDetail(ApiEndpointDetail):
-    description = "La funzione restituisce il dettaglio di un master"
-    serializer_class = HighFormationMastersSerializer
-    filter_backends = [ApiHighFormationMastersListFilter]
-
-    def get_queryset(self):
-        master_id = self.kwargs["id"]
-        return ServiceDidatticaCds.getHighFormationMaster(master_id)
-
-
-class ApiHighFormationCourseTypesList(ApiEndpointList):
-    description = (
-        "La funzione restituisce la lista dei tipi di corso dell'alta formazione"
-    )
-    serializer_class = HighFormationCourseTypesSerializer
-    filter_backends = []
-
-    def get_queryset(self):
-        return ServiceDidatticaCds.getHighFormationCourseTypes()
-
-
 class ApiHighFormationMastersList(ApiEndpointList):
-    description = "La funzione restituisce i master alta formazione"
+    description = "Returns the list of high-formation masters."
     serializer_class = HighFormationMastersSerializer
     filter_backends = [ApiHighFormationMastersListFilter]
 
@@ -47,3 +26,20 @@ class ApiHighFormationMastersList(ApiEndpointList):
         return ServiceDidatticaCds.getHighFormationMasters(
             search, director, coursetype, erogation, department, language, year
         )
+
+
+class ApiHighFormationMastersDetail(ApiEndpointDetail):
+    description = "Returns the details of a high-formation master."
+    serializer_class = HighFormationMastersSerializer
+
+    def get_queryset(self):
+        master_id = self.kwargs["id"]
+        return ServiceDidatticaCds.getHighFormationMaster(master_id)
+
+
+class ApiHighFormationCourseTypesList(ApiEndpointList):
+    description = "Returns the list of high-formation course types."
+    serializer_class = HighFormationCourseTypesSerializer
+
+    def get_queryset(self):
+        return ServiceDidatticaCds.getHighFormationCourseTypes()
