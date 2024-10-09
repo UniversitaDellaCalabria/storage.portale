@@ -68,7 +68,7 @@ def upImpegniSerializer(impegni, lang, year=None, af_name=None, af_cod=None, sea
 
         impegno_dict = {
             "insegnamento": insegnamento,
-            "codice_insegnamento": impegno['evento']['dettagliDidattici'][0]['codice'],
+            "codice_insegnamento": code,
             "dataInizio": dataInizio,
             "dataFine": dataFine,
             "orarioInizio": orarioInizio,
