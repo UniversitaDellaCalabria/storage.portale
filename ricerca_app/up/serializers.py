@@ -32,7 +32,7 @@ def upImpegniSerializer(impegni, lang, year=None, af_name=None, af_cod=None, sea
         orarioFine = f"{str(fine_tz.hour).zfill(2)}:{str(fine_tz.minute).zfill(2)}"
 
         cfu = dettagliDidattici[0].get('cfu', None)
-        insegnamento = dettagliDidattici[0]['nome'] if lang == 'it' or not dettagliDidattici[0]['nome_EN'] else dettagliDidattici[0]['nome_EN']
+        insegnamento = dettagliDidattici[0]['nome'] if lang == 'it' or not dettagliDidattici[0].get('nome_EN') else dettagliDidattici[0].get('nome_EN')
 
         annoCorso  = dettagliDidattici[0]['annoCorso']
 
@@ -68,7 +68,7 @@ def upImpegniSerializer(impegni, lang, year=None, af_name=None, af_cod=None, sea
 
         impegno_dict = {
             "insegnamento": insegnamento,
-            "codice_insegnamento": impegno['evento']['dettagliDidattici'][0]['codice'],
+            "codice_insegnamento": code,
             "dataInizio": dataInizio,
             "dataFine": dataFine,
             "orarioInizio": orarioInizio,
