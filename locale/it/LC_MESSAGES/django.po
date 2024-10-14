@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-02 18:24+0200\n"
-"PO-Revision-Date: 2024-10-02 18:27+0200\n"
+"POT-Creation-Date: 2024-10-14 14:16+0200\n"
+"PO-Revision-Date: 2024-10-14 14:18+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -24,7 +24,7 @@ msgstr ""
 
 #: accounts/admin.py:46
 msgid "Permissions"
-msgstr ""
+msgstr "Permessi"
 
 #: accounts/admin.py:50
 msgid "Date accessi sistema"
@@ -832,10 +832,10 @@ msgstr "Progetti"
 #: cds_websites/management/decorators.py:28
 #: cds_websites/management/decorators.py:53
 #: cds_websites/management/decorators.py:67
-#: cds_websites/management/views.py:294 cds_websites/management/views.py:467
-#: cds_websites/management/views.py:553 cds_websites/management/views.py:629
-#: cds_websites/management/views.py:693 cds_websites/management/views.py:856
-#: cds_websites/management/views.py:929 companies/management/decorators.py:29
+#: cds_websites/management/views.py:301 cds_websites/management/views.py:480
+#: cds_websites/management/views.py:566 cds_websites/management/views.py:642
+#: cds_websites/management/views.py:706 cds_websites/management/views.py:869
+#: cds_websites/management/views.py:945 companies/management/decorators.py:29
 #: generics/decorators.py:15 generics/decorators.py:27
 #: laboratories/management/decorators.py:55
 #: laboratories/management/decorators.py:85
@@ -937,12 +937,12 @@ msgstr "Regolamento didattico"
 #: cds_brochure/management/views.py:545 cds_brochure/management/views.py:607
 #: cds_brochure/management/views.py:670 cds_brochure/management/views.py:738
 #: cds_websites/management/views.py:60 cds_websites/management/views.py:172
-#: cds_websites/management/views.py:251 cds_websites/management/views.py:327
-#: cds_websites/management/views.py:409 cds_websites/management/views.py:510
-#: cds_websites/management/views.py:586 cds_websites/management/views.py:642
-#: cds_websites/management/views.py:718 cds_websites/management/views.py:807
-#: cds_websites/management/views.py:885 cds_websites/management/views.py:988
-#: cds_websites/management/views.py:1085 cds_websites/management/views.py:1185
+#: cds_websites/management/views.py:258 cds_websites/management/views.py:337
+#: cds_websites/management/views.py:422 cds_websites/management/views.py:523
+#: cds_websites/management/views.py:599 cds_websites/management/views.py:655
+#: cds_websites/management/views.py:731 cds_websites/management/views.py:820
+#: cds_websites/management/views.py:901 cds_websites/management/views.py:1009
+#: cds_websites/management/views.py:1106 cds_websites/management/views.py:1206
 #: companies/management/views.py:29 companies/management/views.py:86
 #: companies/management/views.py:182 companies/management/views.py:254
 #: companies/management/views.py:342 companies/management/views.py:416
@@ -1252,8 +1252,8 @@ msgstr "A.A."
 msgid "years"
 msgstr "anni"
 
-#: cds/templates/cds.html:8
-msgid "Study courses"
+#: cds/templates/cds.html:8 generics/templates/dashboard.html:26
+msgid "Courses of study"
 msgstr "Corsi di studio"
 
 #: cds/templates/cds_detail.html:25
@@ -1847,7 +1847,7 @@ msgstr "Testo (it)"
 msgid "Text (en)"
 msgstr "Testo (en)"
 
-#: cds_websites/management/forms.py:61 cds_websites/management/views.py:612
+#: cds_websites/management/forms.py:61 cds_websites/management/views.py:625
 msgid "Regulation Article"
 msgstr "Articolo di Regolamento"
 
@@ -1885,8 +1885,8 @@ msgstr "Classe Oggetto"
 msgid "Publication / WebPath (Active page)"
 msgstr "Pubblicazioni / WebPath (Pagina attiva)"
 
-#: cds_websites/management/forms.py:165 cds_websites/management/views.py:355
-#: cds_websites/management/views.py:436 cds_websites/management/views.py:910
+#: cds_websites/management/forms.py:165 cds_websites/management/views.py:365
+#: cds_websites/management/views.py:449 cds_websites/management/views.py:926
 #: cds_websites/templates/cds_websites_shared_objects.html:37
 msgid "Object"
 msgstr "Oggetto"
@@ -1913,12 +1913,12 @@ msgstr ""
 "Utilizzato per determinare quale icona mostrare a sinistra dell'elemento"
 
 #: cds_websites/management/views.py:60 cds_websites/management/views.py:173
-#: cds_websites/management/views.py:252 cds_websites/management/views.py:328
-#: cds_websites/management/views.py:410 cds_websites/management/views.py:511
-#: cds_websites/management/views.py:587 cds_websites/management/views.py:643
-#: cds_websites/management/views.py:719 cds_websites/management/views.py:808
-#: cds_websites/management/views.py:886 cds_websites/management/views.py:989
-#: cds_websites/management/views.py:1086 cds_websites/management/views.py:1186
+#: cds_websites/management/views.py:259 cds_websites/management/views.py:338
+#: cds_websites/management/views.py:423 cds_websites/management/views.py:524
+#: cds_websites/management/views.py:600 cds_websites/management/views.py:656
+#: cds_websites/management/views.py:732 cds_websites/management/views.py:821
+#: cds_websites/management/views.py:902 cds_websites/management/views.py:1010
+#: cds_websites/management/views.py:1107 cds_websites/management/views.py:1207
 #: generics/templates/dashboard.html:89
 msgid "CdS pages"
 msgstr "CdS pagine"
@@ -1931,21 +1931,21 @@ msgstr ""
 "Impossibile determinare quali topic vengono mostrati sul Portale e la pagina "
 "sulla quale appaiono"
 
-#: cds_websites/management/views.py:180 cds_websites/management/views.py:262
-#: cds_websites/management/views.py:338 cds_websites/management/views.py:420
-#: cds_websites/management/views.py:521 cds_websites/management/views.py:597
-#: cds_websites/management/views.py:653 cds_websites/management/views.py:729
-#: cds_websites/management/views.py:818 cds_websites/management/views.py:896
-#: cds_websites/management/views.py:999 cds_websites/management/views.py:1096
-#: cds_websites/management/views.py:1196
+#: cds_websites/management/views.py:180 cds_websites/management/views.py:269
+#: cds_websites/management/views.py:348 cds_websites/management/views.py:433
+#: cds_websites/management/views.py:534 cds_websites/management/views.py:610
+#: cds_websites/management/views.py:666 cds_websites/management/views.py:742
+#: cds_websites/management/views.py:831 cds_websites/management/views.py:912
+#: cds_websites/management/views.py:1020 cds_websites/management/views.py:1117
+#: cds_websites/management/views.py:1217
 msgid "Topics"
 msgstr "Topics"
 
-#: cds_websites/management/views.py:212
+#: cds_websites/management/views.py:219
 msgid "Shared Portal objects"
 msgstr "Oggetti del Portale condivisi"
 
-#: cds_websites/management/views.py:214
+#: cds_websites/management/views.py:221
 msgid ""
 "This section allows to insert, remove and edit Publications/WebPath (Active "
 "Pages) under a certain topic."
@@ -1953,7 +1953,7 @@ msgstr ""
 "Questa sezione permette di inserire, rimuovere e modificare Pubblicazioni/"
 "WebPaths (Pagine attive) sotto un determinato topic."
 
-#: cds_websites/management/views.py:219
+#: cds_websites/management/views.py:226
 msgid ""
 "In order for a web Publication/WebPath to be iserted here, you must first "
 "import it from the \"Shared objects\" section."
@@ -1961,148 +1961,148 @@ msgstr ""
 "Affinché una Pubblicazione/WebPath possa essere inserita qui, è necessario "
 "prima importarla dalla sezione \"Oggetti condivisi\"."
 
-#: cds_websites/management/views.py:264 cds_websites/management/views.py:343
-#: cds_websites/management/views.py:425
+#: cds_websites/management/views.py:271 cds_websites/management/views.py:353
+#: cds_websites/management/views.py:438
 #: cds_websites/templates/cds_websites_topics.html:112
 msgid "Shared objects"
 msgstr "Oggetti del Portale condivisi"
 
-#: cds_websites/management/views.py:303
+#: cds_websites/management/views.py:313
 msgid "Edited Shared Object"
 msgstr "Modificato Oggetto Condiviso"
 
-#: cds_websites/management/views.py:307 cds_websites/management/views.py:868
+#: cds_websites/management/views.py:317 cds_websites/management/views.py:884
 msgid "Object edited successfully"
 msgstr "Oggetto modificato con successo"
 
-#: cds_websites/management/views.py:344
+#: cds_websites/management/views.py:354
 msgid "Edit Object"
 msgstr "Modifica oggetto"
 
-#: cds_websites/management/views.py:385
+#: cds_websites/management/views.py:398
 msgid "Added Shared Object"
 msgstr "Aggiunto Oggetto Condiviso"
 
-#: cds_websites/management/views.py:389 cds_websites/management/views.py:790
+#: cds_websites/management/views.py:402 cds_websites/management/views.py:803
 msgid "Object added successfully"
 msgstr "Oggetto aggiunto con successo"
 
-#: cds_websites/management/views.py:426
+#: cds_websites/management/views.py:439
 msgid "New Object"
 msgstr "Nuovo Oggetto"
 
-#: cds_websites/management/views.py:452
+#: cds_websites/management/views.py:465
 msgid "Object removed successfully"
 msgstr "Oggetto rimosso con successo"
 
-#: cds_websites/management/views.py:502
+#: cds_websites/management/views.py:515
 msgid "Updated item order"
 msgstr "Aggiornato ordine dell'elemento"
 
-#: cds_websites/management/views.py:506
+#: cds_websites/management/views.py:519
 msgid "Items order updated successfully"
 msgstr "Ordine aggiornato con successo"
 
-#: cds_websites/management/views.py:523
+#: cds_websites/management/views.py:536
 msgid "order"
 msgstr "odine"
 
-#: cds_websites/management/views.py:565
+#: cds_websites/management/views.py:578
 msgid "Edited Regulation Article"
 msgstr "Modificato Articolo di Regolamento"
 
-#: cds_websites/management/views.py:569
+#: cds_websites/management/views.py:582
 msgid "Regulation Article edited successfully"
 msgstr "Articolo di Regolamento modificato con successo"
 
-#: cds_websites/management/views.py:659 cds_websites/management/views.py:738
+#: cds_websites/management/views.py:672 cds_websites/management/views.py:751
 #: cds_websites/templates/blocks/cds_websites_regulation_article_items.html:74
 #: regdid/templates/blocks/regdid_article_item.html:134
 #: regdid/templates/regdid_article_unique_form.html:115
 msgid "Sub articles"
 msgstr "Sotto-articoli"
 
-#: cds_websites/management/views.py:705
+#: cds_websites/management/views.py:718
 msgid "Edited sub article"
 msgstr "Modificato sotto-articolo"
 
-#: cds_websites/management/views.py:709 regdid/management/views.py:859
+#: cds_websites/management/views.py:722 regdid/management/views.py:859
 msgid "Sub article edited successfully"
 msgstr "Sotto-articolo modificato con successo"
 
-#: cds_websites/management/views.py:752
+#: cds_websites/management/views.py:765
 #: cds_websites/templates/cds_websites_sub_articles.html:37
 msgid "Sub article"
 msgstr "Sotto-articolo"
 
-#: cds_websites/management/views.py:786
+#: cds_websites/management/views.py:799
 msgid "Added Object"
 msgstr "Aggiunto Oggetto"
 
-#: cds_websites/management/views.py:820
+#: cds_websites/management/views.py:833
 msgid "Add Portal Object"
 msgstr "Aggiungi Oggetto del Portale"
 
-#: cds_websites/management/views.py:832
+#: cds_websites/management/views.py:845
 msgid "Portal Object"
 msgstr "Oggetto del Portale"
 
-#: cds_websites/management/views.py:864
+#: cds_websites/management/views.py:880
 msgid "Edited Object"
 msgstr "Modificato Oggetto"
 
-#: cds_websites/management/views.py:934
+#: cds_websites/management/views.py:954
 msgid "Removed Object"
 msgstr "Rimosso Oggetto"
 
-#: cds_websites/management/views.py:936
+#: cds_websites/management/views.py:957
 msgid "Item removed successfully"
 msgstr "Elemento rimosso con successo"
 
-#: cds_websites/management/views.py:968
+#: cds_websites/management/views.py:989
 msgid "Updated extras order"
 msgstr "Aggiornato ordine degli attributi"
 
-#: cds_websites/management/views.py:972
+#: cds_websites/management/views.py:993
 msgid "Extras order updated successfully"
 msgstr "Ordine aggiornato con successo"
 
-#: cds_websites/management/views.py:1002 cds_websites/management/views.py:1102
-#: cds_websites/management/views.py:1202
+#: cds_websites/management/views.py:1023 cds_websites/management/views.py:1123
+#: cds_websites/management/views.py:1223
 #: cds_websites/templates/blocks/cds_websites_object_items.html:122
 #: cds_websites/templates/blocks/cds_websites_regulation_article_items.html:85
 msgid "Extras"
 msgstr "Attributi"
 
-#: cds_websites/management/views.py:1048
+#: cds_websites/management/views.py:1069
 msgid "Added Regulation Article Extra"
 msgstr "Aggiunto Attributo all'articolo di regolamento"
 
-#: cds_websites/management/views.py:1054
+#: cds_websites/management/views.py:1075
 msgid "Regulation Article Extra added successfully"
 msgstr "Attributo modificato con successo"
 
-#: cds_websites/management/views.py:1103
+#: cds_websites/management/views.py:1124
 msgid "New Extra"
 msgstr "Nuovo Attributo"
 
-#: cds_websites/management/views.py:1117 cds_websites/management/views.py:1219
+#: cds_websites/management/views.py:1138 cds_websites/management/views.py:1240
 msgid "Regulation Article Extra"
 msgstr "Attributo Articolo di Regolamento"
 
-#: cds_websites/management/views.py:1148
+#: cds_websites/management/views.py:1169
 msgid "Edited Regulation Article Extra"
 msgstr "Modificato Attributo dell'articolo di regolamento"
 
-#: cds_websites/management/views.py:1154
+#: cds_websites/management/views.py:1175
 msgid "Regulation Article Extra edited successfully"
 msgstr "Attributo dell'articolo di regolamento modificato con successo"
 
-#: cds_websites/management/views.py:1240
+#: cds_websites/management/views.py:1261
 msgid "Deleted Regulation Article Extra"
 msgstr "Eliminato Attributo dell'articolo di regolamento"
 
-#: cds_websites/management/views.py:1244
+#: cds_websites/management/views.py:1265
 msgid "Regulation Article Extra deleted successfully"
 msgstr "Attributo dell'articolo di regolamento aggiunto con successo"
 
@@ -2434,10 +2434,6 @@ msgstr ""
 #: generics/templates/custom_message.html:24
 msgid "Back to Dashboard"
 msgstr "Torna alla Dashboard"
-
-#: generics/templates/dashboard.html:26
-msgid "Study Courses"
-msgstr "Corsi di studio"
 
 #: generics/templates/dashboard.html:37
 msgid "Research"
@@ -3443,7 +3439,7 @@ msgstr "Vantaggi"
 
 #: patents/management/forms.py:19
 msgid "Initial TRL"
-msgstr ""
+msgstr "TRL Iniziale"
 
 #: patents/management/forms.py:20
 msgid "Updated TRL"
@@ -3551,7 +3547,7 @@ msgstr "Dottorato di riferimento"
 
 #: phd/management/forms.py:93 phd/templates/blocks/crud_phd_list.html:170
 msgid "Cycle"
-msgstr ""
+msgstr "Ciclo"
 
 #: phd/management/forms.py:102
 msgid "Reference PhD required if activity type is Departmental"
@@ -4693,11 +4689,11 @@ msgstr "Dati materiale docente rimossi con successo"
 #~ msgstr "Vuoi davvero eliminare l'inventore selezionato?"
 
 #, fuzzy
-#~| msgid "Study courses"
-#~ msgid "Study courses websites"
+#~| msgid "Courses of study"
+#~ msgid "Courses of study websites"
 #~ msgstr "Corsi di studio"
 
-#~ msgid "Study course websites"
+#~ msgid "course of study websites"
 #~ msgstr "Siti dei Corsi di Studio"
 
 #~ msgid "Research Purposes (it)"
