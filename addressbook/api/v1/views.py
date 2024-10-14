@@ -1,20 +1,20 @@
-from addressbook.models import Personale
 from generics.utils import decrypt, encrypt
 from generics.views import ApiEndpointDetail, ApiEndpointList, ApiEndpointListSupport
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.views import APIView
-from structures.api.v1.views import ApiStructureDetail
 from teachers.api.v1.services import ServiceDocente
 
+from addressbook.models import Personale
+
 from .filters import (
-    ApiAddressbookListFilter,
-    ApiAddressbookStructuresListFilter,
-    ApiPersonnelCfListFilter,
+    AddressbookListFilter,
+    AddressbookStructuresListFilter,
+    PersonnelCfListFilter,
 )
+from .schemas import ApiDecryptedPersonIdSchema, ApiPersonIdSchema
 from .serializers import (
     AddressbookFullSerializer,
     AddressbookSerializer,
@@ -28,9 +28,9 @@ from .services import ServicePersonale
 
 
 class ApiAddressbookList(ApiEndpointList):
-    description = "Returns the personnel address book."
+    description = "Retrieves the personnel address book."
     serializer_class = AddressbookSerializer
-    filter_backends = [ApiAddressbookListFilter]
+    filter_backends = [AddressbookListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -47,11 +47,11 @@ class ApiAddressbookList(ApiEndpointList):
 
 
 class ApiAddressbookFullList(ApiEndpointList):
-    description = "Returns the personnel address book with additional contract data."
+    description = "Retrieves the personnel address book with additional contract data."
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = AddressbookFullSerializer
-    filter_backends = [ApiAddressbookListFilter]
+    filter_backends = [AddressbookListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -76,16 +76,15 @@ class ApiAddressbookFullList(ApiEndpointList):
 
 
 class ApiRolesList(ApiEndpointListSupport):
-    description = "Returns the list of roles."
+    description = "Retrieves a list of roles of the personnel."
     serializer_class = RolesSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceDocente.getRoles()
 
 
 class ApiPersonaleDetail(ApiEndpointDetail):
-    description = "Retrieves details of a specific person."
+    description = "Retrieves detailed information of a specific person."
     serializer_class = PersonaleSerializer
 
     def get_queryset(self):
@@ -94,11 +93,10 @@ class ApiPersonaleDetail(ApiEndpointDetail):
 
 
 class ApiPersonaleFullDetail(ApiEndpointDetail):
-    description = "Retrieves details of a specific person, including contract data."
+    description = "Retrieves detailed information of a specific person, including contract data."
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = PersonaleFullSerializer
-    # filter_backends = [ApiAddressbookListFilter]
 
     def get_queryset(self):
         personaleid = self.kwargs["personaleid"]
@@ -106,9 +104,9 @@ class ApiPersonaleFullDetail(ApiEndpointDetail):
 
 
 class ApiAddressbookStructuresList(ApiEndpointList):
-    description = "Returns the organizational structures a person is affiliated with."
+    description = "Retrieves the organizational structures a person is affiliated with."
     serializer_class = AddressbookStructuresSerializer
-    filter_backends = [ApiAddressbookStructuresListFilter]
+    filter_backends = [AddressbookStructuresListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -119,40 +117,22 @@ class ApiAddressbookStructuresList(ApiEndpointList):
         return ServicePersonale.getAllStructuresList(search, father, type)
 
 
-class AddressbookStructureDetail(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "retrieveAddressbookStructureDetail"
-        return operation
-
-
-class ApiAddressbookStructureDetail(ApiStructureDetail):
-    schema = AddressbookStructureDetail()
-
-
 class ApiPersonnelCfList(ApiEndpointList):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    description = "Returns the list of personnel tax codes."
+    description = "Retrieves the list of personnel tax codes."
     serializer_class = PersonnelCfSerializer
-    filter_backends = [ApiPersonnelCfListFilter]
+    filter_backends = [PersonnelCfListFilter]
 
     def get_queryset(self):
         roles = self.request.query_params.get("roles")
         return ServicePersonale.getPersonnelCfs(roles)
 
 
-class ApiPersonIdSchema(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "getPersonId"
-        return operation
-
-
 class ApiPersonId(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    description = "Returns the encrypted ID of a person."
+    description = "Retrieves the encrypted matricola of a person."
     schema = ApiPersonIdSchema()
 
     def post(self, request, *args, **kwargs):
@@ -168,17 +148,10 @@ class ApiPersonId(APIView):
         return Response(encrypt(matricola))
 
 
-class ApiDecryptedPersonIdSchema(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "getDecryptedPersonId"
-        return operation
-
-
 class ApiDecryptedPersonId(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    description = "Returns the plain text matricola of a person."
+    description = "Retrieves the decypted matricola of a person."
     schema = ApiDecryptedPersonIdSchema()
 
     def post(self, request, *args, **kwargs):

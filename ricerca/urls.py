@@ -46,11 +46,6 @@ except BaseException:
     urlpatterns += re_path('^openapi.json$', get_schema_view(renderer_classes=[JSONOpenAPIRenderer], **{}), name='openapi-schema-json'),
 
 
-# urlpatterns += re_path("^openapi.yaml$", SpectacularAPIView.as_view(), name="openapi-schema"),
-# urlpatterns += re_path("^openapi.json$", SpectacularAPIView.as_view(), name="openapi-schema-json"),
-# urlpatterns += path('api/', SpectacularRedocView.as_view(url_name='openapi-schema', template_name='redoc.html'), name='api-redoc'),
-
-
 if 'silk' in settings.INSTALLED_APPS:
     urlpatterns += re_path(r'^silk/', include('silk.urls', namespace='silk'))
 

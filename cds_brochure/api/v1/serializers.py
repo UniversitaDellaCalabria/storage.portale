@@ -2,7 +2,7 @@ from generics.serializers import CreateUpdateAbstract
 from generics.utils import build_media_path
 
 
-class CdsWebsiteLightSerializer(CreateUpdateAbstract):
+class CdsBrochureLightSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data.update(self.to_dict(instance, str(self.context["language"]).lower()))
@@ -21,7 +21,7 @@ class CdsWebsiteLightSerializer(CreateUpdateAbstract):
         }
 
 
-class CdsWebsiteSerializer(CreateUpdateAbstract):
+class CdsBrochureSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data.update(self.to_dict(instance, str(self.context["language"]).lower()))
@@ -31,17 +31,17 @@ class CdsWebsiteSerializer(CreateUpdateAbstract):
     def to_dict(query, req_lang="en"):
         ex_students = []
         if query.get("ExStudents"):
-            ex_students = CdsWebsiteSerializer.to_dict_ex_students(
+            ex_students = CdsBrochureSerializer.to_dict_ex_students(
                 query["ExStudents"], req_lang
             )
 
         cds_link = []
         if query.get("CdsLink"):
-            cds_link = CdsWebsiteSerializer.to_dict_links(query["CdsLink"], req_lang)
+            cds_link = CdsBrochureSerializer.to_dict_links(query["CdsLink"], req_lang)
 
         cds_sliders = []
         if query.get("CdsSliders"):
-            cds_sliders = CdsWebsiteSerializer.to_dict_sliders(
+            cds_sliders = CdsBrochureSerializer.to_dict_sliders(
                 query["CdsSliders"], req_lang
             )
 

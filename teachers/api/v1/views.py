@@ -1,14 +1,16 @@
 from generics.views import ApiEndpointDetail, ApiEndpointList
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from research_lines.settings import OFFICE_RESEARCH_LINES
-from rest_framework.schemas.openapi import AutoSchema
 
 from teachers.api.v1.services import ServiceDocente
 
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
+
 from .filters import (
-    ApiPublicationsListFilter,
-    ApiTeachersListFilter,
-    ApiTeacherStudyActivitiesFilter,
+    PublicationsListFilter,
+    TeacherMaterialsAndNewsFilter,
+    TeachersListFilter,
+    TeacherStudyActivitiesFilter,
 )
 from .serializers import (
     PublicationsCommunityTypesSerializer,
@@ -24,13 +26,9 @@ from .serializers import (
 
 
 class ApiTeachersList(ApiEndpointList):
-    description = (
-        "Restituisce un elenco di Docenti che hanno una copertura attiva in ateneo, con un set minimo di "
-        "informazioni identificative: Nome, Ruolo, "
-        "Settore scientifico disciplinare, …"
-    )
+    description = "Retrieves a list of teachers that have an active coverage, together with a minimum set of identifying information."
     serializer_class = TeachersSerializer
-    filter_backends = [ApiTeachersListFilter]
+    filter_backends = [TeachersListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -46,22 +44,11 @@ class ApiTeachersList(ApiEndpointList):
         )
 
 
-class TeachingCoveragesList(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "listTeachingCoverages"
-        return operation
-
-
 class ApiTeachingCoveragesList(ApiEndpointList):
-    description = (
-        "Restituisce un elenco di Docenti con il fl_docente=1 e fl_cessato=0"
-        "con un set minimo di informazioni identificative: Nome, Ruolo, "
-        "Settore scientifico disciplinare, …"
-    )
+    description = "Retrieves a list of teachers that have fl_docente=1 e fl_cessato=0, together with a minimum set of identifying information."
     serializer_class = TeachersSerializer
-    filter_backends = [ApiTeachersListFilter]
-    schema = TeachingCoveragesList()
+    filter_backends = [TeachersListFilter]
+    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoverage")
 
     def get_queryset(self):
         request = self.request
@@ -79,12 +66,9 @@ class ApiTeachingCoveragesList(ApiEndpointList):
 
 class ApiTeacherResearchLinesList(ApiEndpointList):
     description = (
-        "La funzione restituisce l’elenco delle Linee di"
-        " ricerca del docente ordinati "
-        "per Tipo (applicata/di base) e Nome."
+        "Retrieves a list of research lines of a teacher ordered by type and name."
     )
     serializer_class = TeacherResearchLinesSerializer
-    filter_backends = []
 
     def get_queryset(self):
         teacherid = self.kwargs["teacherid"]
@@ -110,13 +94,9 @@ class ApiTeacherResearchLinesList(ApiEndpointList):
 
 
 class ApiTeacherStudyActivitiesList(ApiEndpointList):
-    description = (
-        "La funzione restituisce l’elenco degli insegnamenti"
-        " (per gli ultimi anni) ordinati per anno e nome"
-        " dell’insegnamento."
-    )
+    description = "Retrieves a list of courses (for the latest years) ordered by year and course name."
     serializer_class = TeacherStudyActivitiesSerializer
-    filter_backends = [ApiTeacherStudyActivitiesFilter]
+    filter_backends = [TeacherStudyActivitiesFilter]
 
     def get_queryset(self):
         request = self.request
@@ -130,23 +110,13 @@ class ApiTeacherStudyActivitiesList(ApiEndpointList):
         )
 
 
-class TeachingCoverageStudyActivitiesList(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "listTeachingCoverageStudyActivities"
-        return operation
-
-
 class ApiTeachingCoverageActivitiesList(ApiTeacherStudyActivitiesList):
-    schema = TeachingCoverageStudyActivitiesList()
+    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoverageStudyActivities")
 
 
 class ApiTeacherDetail(ApiEndpointDetail):
-    description = (
-        "La funzione restituisce la scheda informativa" " dettagliata di un docente"
-    )
+    description = "Retrieves detailed information of a teacher."
     serializer_class = TeacherInfoSerializer
-    filter_backends = []
 
     def get_queryset(self):
         teacherid = self.kwargs["teacherid"]
@@ -154,9 +124,9 @@ class ApiTeacherDetail(ApiEndpointDetail):
 
 
 class ApiTeacherMaterials(ApiEndpointList):
-    description = "La funzione restituisce il materiale didattico di un docente"
+    description = "Retrieves the teaching materials of a teacher."
     serializer_class = TeacherMaterialsSerializer
-    filter_backends = []
+    filter_backends = [TeacherMaterialsAndNewsFilter]
 
     def get_queryset(self):
         request = self.request
@@ -168,9 +138,9 @@ class ApiTeacherMaterials(ApiEndpointList):
 
 
 class ApiTeacherNews(ApiEndpointList):
-    description = "La funzione restituisce le news di un docente"
+    description = "Retrieves a list of news of a teacher."
     serializer_class = TeacherNewsSerializer
-    filter_backends = []
+    filter_backends = [TeacherMaterialsAndNewsFilter]
 
     def get_queryset(self):
         request = self.request
@@ -181,23 +151,10 @@ class ApiTeacherNews(ApiEndpointList):
         )
 
 
-class TeachingCoveragesInfo(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "retrieveTeachingCoverageInfo"
-        return operation
-
-
-class ApiTeachingCoverageDetail(ApiTeacherDetail):
-    schema = TeachingCoveragesInfo()
-
-
 class ApiPublicationsList(ApiEndpointList):
-    description = (
-        "La funzione restituisce la lista delle pubblicazioni di un dato docente"
-    )
+    description = "Retrieves a list of publications of a teacher."
     serializer_class = PublicationsSerializer
-    filter_backends = [ApiPublicationsListFilter]
+    filter_backends = [PublicationsListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -215,41 +172,29 @@ class ApiPublicationsList(ApiEndpointList):
         )
 
 
-class TeachingCoveragePublicationsList(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "listTeachingCoveragePublications"
-        return operation
+class ApiTeachingCoverageDetail(ApiTeacherDetail):
+    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoverageInfo")
 
 
 class ApiTeachingCoveragePublicationsList(ApiPublicationsList):
-    schema = TeachingCoveragePublicationsList()
-
-
-class TeacherPublicationsList(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "listTeacherPublications"
-        return operation
+    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoveragePublication")
 
 
 class ApiTeacherPublicationsList(ApiPublicationsList):
-    schema = TeacherPublicationsList()
+    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeacherPublication")
 
 
 class ApiPublicationsCommunityTypesList(ApiEndpointList):
-    description = "La funzione restituisce la lista delle tipologie di pubblicazioni"
+    description = "Retrieves a list of typologies of publications."
     serializer_class = PublicationsCommunityTypesSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceDocente.getPublicationsCommunityTypesList()
 
 
 class ApiPublicationDetail(ApiEndpointDetail):
-    description = "La funzione restituisce il dettaglio di una pubblicazione"
+    description = "Retrieves detailed information of a pubication."
     serializer_class = PublicationSerializer
-    filter_backends = []
 
     def get_queryset(self):
         publicationid = self.kwargs["publicationid"]
@@ -257,23 +202,9 @@ class ApiPublicationDetail(ApiEndpointDetail):
         return ServiceDocente.getPublication(publicationid)
 
 
-class TeacherPublicationDetail(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "retrieveTeacherPublication"
-        return operation
-
-
 class ApiTeacherPublicationDetail(ApiPublicationDetail):
-    schema = TeacherPublicationDetail()
-
-
-class TeachingCoveragePublicationsDetail(AutoSchema):
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
-        operation["operationId"] = "retrieveTeachingCoveragePublication"
-        return operation
+    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeacherPublication")
 
 
 class ApiTeachingCoveragePublicationDetail(ApiPublicationDetail):
-    schema = TeachingCoveragePublicationsDetail()
+    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoveragePublication")

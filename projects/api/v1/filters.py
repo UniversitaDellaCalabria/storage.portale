@@ -1,12 +1,22 @@
 from generics.filters import GenericApiFilter
 
 
-class ApiProjectsListFilter(GenericApiFilter):
+class ProjectsListFilter(GenericApiFilter):
     search_params = [
         {
-            "name": "techarea",
-            "description": "Area Tecnologica",
+            "name": "search",
+            "description": "Search by title, name, technological area's description, organizational structure's name, starting year or territorial scope.",
             "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
+        },
+        {
+            "name": "techarea",
+            "description": "ID technological area.",
+            "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -14,8 +24,9 @@ class ApiProjectsListFilter(GenericApiFilter):
         },
         {
             "name": "infrastructure",
-            "description": "Id Infrastruttura Riferimento",
+            "description": "ID infrastructure.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -23,8 +34,9 @@ class ApiProjectsListFilter(GenericApiFilter):
         },
         {
             "name": "year",
-            "description": "Anno del progetto",
+            "description": "Project year.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -32,8 +44,9 @@ class ApiProjectsListFilter(GenericApiFilter):
         },
         {
             "name": "programtype",
-            "description": "Id Tipologia Programma",
+            "description": "ID program type.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -41,8 +54,9 @@ class ApiProjectsListFilter(GenericApiFilter):
         },
         {
             "name": "territorialscope",
-            "description": "Id Ambito Territoriale",
+            "description": "ID territorial scope.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",

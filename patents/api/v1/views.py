@@ -1,16 +1,18 @@
 from generics.views import ApiEndpointDetail, ApiEndpointList
 from organizational_area.models import OrganizationalStructureOfficeEmployee
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
+
 from patents.settings import OFFICE_PATENTS
 
-from .filters import ApiPatentsListFilter
+from .filters import PatentsListFilter
 from .serializers import PatentsSerializer
 from .services import ServiceBrevetto
 
 
 class ApiPatentsList(ApiEndpointList):
-    description = "La funzione restituisce la lista dei brevetti"
+    description = "Retrieves a list of patents."
     serializer_class = PatentsSerializer
-    filter_backends = [ApiPatentsListFilter]
+    filter_backends = [PatentsListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -39,9 +41,9 @@ class ApiPatentsList(ApiEndpointList):
 
 
 class ApiPatentDetail(ApiEndpointDetail):
-    description = "La funzione restituisce uno specifico brevetto"
+    description = "Retrieves detailed information of a specifc patent."
     serializer_class = PatentsSerializer
-    filter_backends = []
+    schema = AgidAutoSchema(tags=["public"], operation_id_base="Patent")
 
     def get_queryset(self):
         patentid = self.kwargs["patentid"]

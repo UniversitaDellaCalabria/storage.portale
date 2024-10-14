@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import PentahoIsodid
+from .views import ApiPentahoIsodid
 
 app_name = "apiv1"
 
 urlpatterns = [
-    path('api/ricerca/pentaho/<str:cdscod>/isodid/', PentahoIsodid.as_view(), name='pentaho-isodid'),
+    path('pentaho/<str:cdscod>/isodid/', ApiPentahoIsodid.as_view(), name='pentaho-isodid'),
 ]

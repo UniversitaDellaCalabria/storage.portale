@@ -1,7 +1,9 @@
 from addressbook.api.v1.services import ServicePersonale
 from generics.views import ApiEndpointDetail, ApiEndpointList, ApiEndpointListSupport
-from structures.api.v1.filters import ApiStructuresListFilter
 
+from structures.api.v1.filters import StructuresListFilter, StructureTypesListFilter
+
+from .schemas import StructureDetailSchema
 from .serializers import (
     DepartmentSerializer,
     StructureDetailSerializer,
@@ -13,18 +15,16 @@ from .services import ServiceDipartimento
 
 
 class ApiDepartmentsList(ApiEndpointList):
-    description = "La funzione restituisce la lista dei dipartimenti"
+    description = "Retrieves a list of departments."
     serializer_class = DepartmentSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceDipartimento.getDepartmentsList(self.language)
 
 
 class ApiDepartmentDetail(ApiEndpointDetail):
-    description = "La funzione restituisce uno specifico dipartimento"
+    description = "Retrieves detailed information of a department."
     serializer_class = DepartmentSerializer
-    filter_backends = []
 
     def get_queryset(self):
         departmentcod = self.kwargs["departmentcod"]
@@ -32,9 +32,9 @@ class ApiDepartmentDetail(ApiEndpointDetail):
 
 
 class ApiStructuresList(ApiEndpointList):
-    description = "La funzione restituisce le strutture organizzative"
+    description = "Retrieves a list of orgranizational structures."
     serializer_class = StructuresSerializer
-    filter_backends = [ApiStructuresListFilter]
+    filter_backends = [StructuresListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -46,9 +46,9 @@ class ApiStructuresList(ApiEndpointList):
 
 
 class ApiStructureTypesList(ApiEndpointListSupport):
-    description = "La funzione restituisce le tipologie di strutture organizzative"
+    description = "Retrieves a list of typologies of organizational structures."
     serializer_class = StructureTypesSerializer
-    filter_backends = [ApiStructuresListFilter]
+    filter_backends = [StructureTypesListFilter]
 
     def get_queryset(self):
         father = self.request.query_params.get("father")
@@ -56,9 +56,9 @@ class ApiStructureTypesList(ApiEndpointListSupport):
 
 
 class ApiStructureDetail(ApiEndpointDetail):
-    description = "La funzione restituisce una specifica struttura"
+    description = "Retrieves detailed information of a specific organizational structure."
     serializer_class = StructureDetailSerializer
-    filter_backends = [ApiStructuresListFilter]
+    schema = StructureDetailSchema(tags=['public'])
 
     def get_queryset(self):
         structureid = self.kwargs["structureid"]
@@ -66,11 +66,8 @@ class ApiStructureDetail(ApiEndpointDetail):
 
 
 class ApiStructureFunctionsList(ApiEndpointList):
-    description = (
-        "La funzione restituisce la lista delle funzioni della unità organizzativa"
-    )
+    description = "Retrieves a list of functions of organizational structures."
     serializer_class = StructureFunctionsSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServicePersonale.getStructureFunctions()

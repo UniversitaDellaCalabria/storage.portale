@@ -6,6 +6,9 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
+
+from .filters import PentahoIsodidFilter
 
 from pentaho.settings import (
     PENTAHO_ISODID_MEDIA_PATH,
@@ -25,8 +28,10 @@ PENTAHO_ISODID_REPORT_START_YEAR = getattr(
 )
 
 
-class PentahoIsodid(APIView):  # pragma: no cover
+class ApiPentahoIsodid(APIView):  # pragma: no cover
+    filter_backends = [PentahoIsodidFilter]
     allowed_methods = ("GET",)
+    schema = AgidAutoSchema(tags = ['public'])
 
     def get(self, obj, **kwargs):
         request = self.request

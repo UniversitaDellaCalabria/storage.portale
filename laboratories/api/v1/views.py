@@ -1,7 +1,5 @@
 from addressbook.models import Personale
 from generics.views import ApiEndpointDetail, ApiEndpointList
-from laboratories.models import LaboratorioDatiBase
-from laboratories.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from research_lines.api.v1.serializers import (
     Asters1Serializer,
@@ -10,9 +8,13 @@ from research_lines.api.v1.serializers import (
     Erc1Serializer,
     Erc2Serializer,
 )
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
 from structures.api.v1.serializers import InfrastructuresSerializer
 
-from .filters import ApiLaboratoriesListFilter
+from laboratories.models import LaboratorioDatiBase
+from laboratories.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
+
+from .filters import LaboratoriesListFilter
 from .serializers import (
     LaboratoriesAreasSerializer,
     LaboratoriesScopesSerializer,
@@ -23,9 +25,9 @@ from .services import ServiceLaboratorio
 
 
 class ApiLaboratoryDetail(ApiEndpointDetail):
-    description = "La funzione restituisce un laboratorio specifico"
+    description = "Retrieves the detail of a specific laboratory."
     serializer_class = LaboratoryDetailSerializer
-    # filter_backends = [ApiAddressbookListFilter]
+    schema = AgidAutoSchema(tags=["public"], operation_id_base="Laboratory")
 
     def get_queryset(self):
         laboratoryid = self.kwargs["laboratoryid"]
@@ -68,9 +70,9 @@ class ApiLaboratoryDetail(ApiEndpointDetail):
 
 
 class ApiLaboratoriesList(ApiEndpointList):
-    description = "La funzione restituisce i laboratori"
+    description = "Retrieves a list of laboratories."
     serializer_class = LaboratoriesSerializer
-    filter_backends = [ApiLaboratoriesListFilter]
+    filter_backends = [LaboratoriesListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -127,72 +129,64 @@ class ApiLaboratoriesList(ApiEndpointList):
 
 
 class ApiLaboratoriesAreasList(ApiEndpointList):
-    description = "La funzione restituisce la lista degli ambiti dei laboratori"
+    description = "Retrieves a list of research areas of the laboratories."
     serializer_class = LaboratoriesAreasSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceLaboratorio.getLaboratoriesAreasList()
 
 
+class ApiErc0List(ApiEndpointList):
+    description = "Retrieves a list of top-level ERC classifications, which represent broad scientific areas."
+    serializer_class = Erc0Serializer
+
+    def get_queryset(self):
+        return ServiceLaboratorio.getErc0List()
+
+
 class ApiErc1List(ApiEndpointList):
-    description = "La funzione restituisce la lista degli erc1"
+    description = "Retrieves a list of second-level ERC classifications, which provide more detailed categories within the broad areas defined by ERC0."
     serializer_class = Erc1Serializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceLaboratorio.getErc1List()
 
 
 class ApiErc2List(ApiEndpointList):
-    description = "La funzione restituisce la lista degli erc2"
+    description = "Retrieves a list of third-level ERC classifications, which offer specific scientific topics within the detailed ERC1 categories."
     serializer_class = Erc2Serializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceLaboratorio.getErc2List()
 
 
-class ApiErc0List(ApiEndpointList):
-    description = "La funzione restituisce la lista degli erc0"
-    serializer_class = Erc0Serializer
-    filter_backends = []
-
-    def get_queryset(self):
-        return ServiceLaboratorio.getErc0List()
-
-
 class ApiAster1List(ApiEndpointList):
-    description = "La funzione restituisce la lista degli aster1"
+    description = "Retrieves a list of broad research sectors."
     serializer_class = Asters1Serializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceLaboratorio.getAster1List()
 
 
 class ApiAster2List(ApiEndpointList):
-    description = "La funzione restituisce la lista degli aster2"
+    description = "Retrieves a list of specific research and innovation areas."
     serializer_class = Asters2Serializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceLaboratorio.getAster2List()
 
 
 class ApiLaboratoriesScopesList(ApiEndpointList):
-    description = "La funzione restituisce la lista delle finalità dei laboratori"
+    description = "Retrieves a list of scopes of the laboratories."
     serializer_class = LaboratoriesScopesSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceLaboratorio.getScopes()
 
 
 class ApiInfrastructuresList(ApiEndpointList):
-    description = "La funzione restituisce la lista delle infrastrutture di riferimento"
+    description = "Retrieves a list of infrastructures of the laboratories."
     serializer_class = InfrastructuresSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceLaboratorio.getInfrastructures()

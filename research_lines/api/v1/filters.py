@@ -1,24 +1,40 @@
 from generics.filters import GenericApiFilter
 
 
-class ApiBaseResearchLinesListFilter(GenericApiFilter):
+class ResearchLinesListFilter(GenericApiFilter):
     search_params = [
         {
-            "name": "teacher",
-            "description": "Matricola di un docente",
+            "name": "search",
+            "description": "Search by description.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
+        },
+        {
+            "name": "teacher",
+            "description": "Teacher's encrypted matricola.",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "department",
-            "description": "Codice di un dipartimento",
+            "description": "Department code.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "year",
-            "description": "Anno",
+            "description": "Year.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -27,92 +43,71 @@ class ApiBaseResearchLinesListFilter(GenericApiFilter):
     ]
 
 
-class ApiAllResearchLinesListFilter(GenericApiFilter):
+class AllResearchLinesListFilter(GenericApiFilter):
     search_params = [
         {
-            "name": "department",
-            "description": "Codice di un dipartimento",
+            "name": "search",
+            "description": "Search by description.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
+        },
+        {
+            "name": "department",
+            "description": "Department code.",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "year",
-            "description": "Anno",
+            "description": "Year.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
             },
         },
         {
-            "name": "department",
-            "description": "Dipartimento",
+            "name": "erc1",
+            "description": "List of ERC (European Research Council) codes (comma-separated).",
             "required": False,
-            "type": "string",
-        },
-        {
-            "name": "ercs",
-            "description": "Lista di codici erc1",
-            "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "example": "LS1,PE4",
+                "type": "string",
+            },
         },
         {
             "name": "asters",
-            "description": "Lista di codici aster1",
+            "description": "List of broad research sectors IDs (comma-separated).",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "exclude_base",
-            "description": "Esclude le linee di ricerca di base",
+            "description": "Excludes base research lines.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "boolean",
             },
         },
         {
             "name": "exclude_applied",
-            "description": "Esclude le linee di ricerca applicate",
+            "description": "Excludes applied research lines.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "boolean",
             },
-        },
-    ]
-
-
-class ApiAppliedResearchLinesListFilter(GenericApiFilter):
-    search_params = [
-        {
-            "name": "teacher",
-            "description": "Matricola di un docente",
-            "required": False,
-            "type": "string",
-        },
-        {
-            "name": "department",
-            "description": "Codice di un dipartimento",
-            "required": False,
-            "type": "string",
-        },
-        {
-            "name": "year",
-            "description": "Anno",
-            "required": False,
-            "schema": {
-                "type": "integer",
-                "format": "int32",
-            },
-        },
-    ]
-
-
-class ApiErc1ListFilter(GenericApiFilter):
-    search_params = [
-        {
-            "name": "laboratory",
-            "description": "Id di un laboratorio",
-            "required": False,
-            "type": "string",
         },
     ]

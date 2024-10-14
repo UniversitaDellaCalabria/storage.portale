@@ -2,44 +2,49 @@ from generics.filters import GenericApiFilter
 from addressbook.models import Personale
 
 
-class ApiAddressbookListFilter(GenericApiFilter):
+class AddressbookListFilter(GenericApiFilter):
     search_params = [
         {
             "name": "search",
-            "description": "Search by surname (starts with)",
+            "description": "Search by last name (starts with).",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
             },
         },
         {
             "name": "phone",
-            "description": "Phone number to filter",
+            "description": "Phone number to filter.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
             },
         },
         {
             "name": "structure",
-            "description": "Organizational structure ID to filter",
+            "description": "Organizational structure ID to filter.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
             },
         },
         {
             "name": "structuretypes",
-            "description": "Structure type codes to filter (comma-separated)",
+            "description": "Structure type codes to filter (comma-separated).",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
             },
         },
         {
             "name": "role",
-            "description": "Roles to filter (comma-separated)",
+            "description": "Roles to filter (comma-separated).",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
                 "example": ",".join(
@@ -47,22 +52,24 @@ class ApiAddressbookListFilter(GenericApiFilter):
                     for role in Personale.objects.all()
                     .values("cd_ruolo", "ds_ruolo_locale")
                     .order_by("ds_ruolo_locale")
-                    .distinct()[:3]  # Limit to 3 roles
+                    .distinct()[:3]
                 ),
             },
         },
         {
             "name": "structuretree",
-            "description": "Structure tree ID to filter",
+            "description": "Structure tree ID to filter.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
             },
         },
         {
             "name": "taxpayer_id",
-            "description": "Taxpayer ID to filter",
+            "description": "Taxpayer ID to filter.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
             },
@@ -70,12 +77,13 @@ class ApiAddressbookListFilter(GenericApiFilter):
     ]
 
 
-class ApiPersonnelCfListFilter(GenericApiFilter):
+class PersonnelCfListFilter(GenericApiFilter):
     search_params = [
         {
             "name": "roles",
-            "description": ("Roles to filter (comma-separated)"),
+            "description": "Roles to filter (comma-separated).",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
                 "example": ",".join(
@@ -90,12 +98,13 @@ class ApiPersonnelCfListFilter(GenericApiFilter):
     ]
 
 
-class ApiAddressbookStructuresListFilter(GenericApiFilter):
+class AddressbookStructuresListFilter(GenericApiFilter):
     search_params = [
         {
             "name": "search",
-            "description": "Search the name of the organizational structure. Supports partial search.",
+            "description": "Search by the name of the organizational structure.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
                 "example": "Department of Mathematics",
@@ -105,6 +114,7 @@ class ApiAddressbookStructuresListFilter(GenericApiFilter):
             "name": "father",
             "description": "ID of the parent structure (if applicable). Must be a valid ID of an existing organizational unit.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "example": 1234,
@@ -113,8 +123,9 @@ class ApiAddressbookStructuresListFilter(GenericApiFilter):
         },
         {
             "name": "type",
-            "description": "Type of organizational structure, separated by commas.",
+            "description": "List of types of organizational structures (comma-separated).",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
                 "example": "DPT,FAC",

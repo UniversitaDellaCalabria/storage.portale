@@ -1,12 +1,22 @@
 from generics.filters import GenericApiFilter
 
 
-class ApiPatentsListFilter(GenericApiFilter):
+class PatentsListFilter(GenericApiFilter):
     search_params = [
         {
-            "name": "techarea",
-            "description": "Area Tecnologica",
+            "name": "search",
+            "description": "Search by name or title.",
             "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
+        },
+        {
+            "name": "techarea",
+            "description": "ID technology area.",
+            "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -14,8 +24,9 @@ class ApiPatentsListFilter(GenericApiFilter):
         },
         {
             "name": "structure",
-            "description": "Codice di una struttura",
+            "description": "Organizational unit code.",
             "required": False,
+            "in": "query",
             "type": "string",
         },
     ]

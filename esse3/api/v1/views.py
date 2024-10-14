@@ -6,6 +6,7 @@ from django.utils.text import slugify
 from esse3.models import DidatticaAttivitaFormativaEsse3, DidatticaCdsEsse3
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
 
 # University Planner utils
 from up.serializers import upImpegniSerializer
@@ -14,16 +15,21 @@ from up.services import getUPImpegni
 from .serializers import esse3AppelliSerializer
 from .services import getEsse3Appelli
 
+from .filters import CdsWebsiteTimetableFilter
+
 
 class ApiCdsWebsiteTimetable(APIView):  # pragma: no cover
+    description = "Retrieves the timetable for a course of study."
+    filter_backends = [CdsWebsiteTimetableFilter]
     allowed_methods = ("GET",)
+    schema = AgidAutoSchema(tags = ['public'])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.event_types = ["AD"]
 
     def get(self, obj, **kwargs):
-        cds_cod = self.kwargs["cdswebsitecod"]
+        cds_cod = self.kwargs["cds_cod"]
         current_year = timezone.localtime(
             timezone.now().replace(tzinfo=timezone.utc)
         ).year
@@ -111,6 +117,7 @@ class ApiCdsWebsiteTimetable(APIView):  # pragma: no cover
 
 
 class ApiCdsWebsiteExams(ApiCdsWebsiteTimetable):  # pragma: no cover
+    description = "Retrieves the exams calendar for a course of study."
     allowed_methods = ("GET",)
 
     def __init__(self, **kwargs):

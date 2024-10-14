@@ -96,7 +96,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             }
         )
 
-        url = reverse("cds-brochure:apiv1:cds-websites-list")
+        url = reverse("cds-brochure:apiv1:cds-brochures-list")
 
         # check url
         res = req.get(url)
@@ -176,7 +176,9 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
             }
         )
 
-        url = reverse("cds-brochure:apiv1:cds-website-detail", kwargs={"cdswebsitecod": "0999"})
+        url = reverse(
+            "cds-brochure:apiv1:cds-brochure-detail", kwargs={"cds_cod": "0999"}
+        )
 
         # check url
         res = req.get(url)

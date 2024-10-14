@@ -1,19 +1,20 @@
 from cds.api.v1.serializers import ProgramTypesSerializer
 from generics.views import ApiEndpointDetail, ApiEndpointList
 from organizational_area.models import OrganizationalStructureOfficeEmployee
-from projects.settings import OFFICE_PROJECTS
 from rest_framework.filters import OrderingFilter
 from structures.api.v1.serializers import TerritorialScopesSerializer
 
-from .filters import ApiProjectsListFilter
+from projects.settings import OFFICE_PROJECTS
+
+from .filters import ProjectsListFilter
 from .serializers import ProjectInfrastructuresSerializer, ProjectSerializer
 from .services import ServiceProgetto
 
 
 class ApiProjectsList(ApiEndpointList):
-    description = "La funzione restituisce la lista dei progetti"
+    description = "Retrieves a list of projects."
     serializer_class = ProjectSerializer
-    filter_backends = [ApiProjectsListFilter, OrderingFilter]
+    filter_backends = [ProjectsListFilter, OrderingFilter]
 
     def get_queryset(self):
         request = self.request
@@ -55,9 +56,8 @@ class ApiProjectsList(ApiEndpointList):
 
 
 class ApiProjectDetail(ApiEndpointDetail):
-    description = "La funzione restituisce il dettaglio"
+    description = "Retrieves detailed information of a specific project."
     serializer_class = ProjectSerializer
-    filter_backends = []
 
     def get_queryset(self):
         projectid = self.kwargs["projectid"]
@@ -65,29 +65,24 @@ class ApiProjectDetail(ApiEndpointDetail):
 
 
 class ApiProjectsTerritorialScopesList(ApiEndpointList):
-    description = "La funzione restituisce la lista degli ambiti territoriali"
+    description = "Retrieves a list of territorial scopes of projects."
     serializer_class = TerritorialScopesSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceProgetto.getTerritorialScopes()
 
 
 class ApiProjectsProgramTypesList(ApiEndpointList):
-    description = (
-        "La funzione restituisce la lista delle tipologie di programmi di progetto"
-    )
+    description = "Retrieves a list of program types of projects."
     serializer_class = ProgramTypesSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceProgetto.getProgramTypes()
 
 
 class ApiProjectsInfrastructuresList(ApiEndpointList):
-    description = "La funzione restituisce la lista delle infrastrutture dei progetti"
+    description = "Retrieves a list of infrastructures of projects."
     serializer_class = ProjectInfrastructuresSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceProgetto.getProjectInfrastructures()

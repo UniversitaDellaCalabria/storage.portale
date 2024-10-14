@@ -1,51 +1,72 @@
 from generics.filters import GenericApiFilter
 
 
-class ApiLaboratoriesListFilter(GenericApiFilter):
+class LaboratoriesListFilter(GenericApiFilter):
     search_params = [
         {
-            "name": "area",
-            "description": "Ambito di un laboratorio",
+            "name": "search",
+            "description": "Search for laboratories by name, description or purpose.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
-                "example": "Informatico/Multimediale",
+            },
+        },
+        {
+            "name": "area",
+            "description": "Scientific area (exact match required).",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+                "example": "Scientifico/Tecnologico",
             },
         },
         {
             "name": "department",
-            "description": "Codice di un dipartimento",
+            "description": "Department code.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "erc1",
-            "description": "Codice di ricerca erc1",
+            "description": "List of ERC (European Research Council) codes (comma-separated).",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "example": "LS1,PE4",
+                "type": "string",
+            },
         },
         {
             "name": "teacher",
-            "description": "Matricola di un docente",
+            "description": "Teacher's encrpyted matricola.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
-            "name": "scope",
-            "description": "Scopo di un laboratorio",
+            "name": "infrastructure",
+            "description": "ID infrastructure.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
             },
         },
         {
-            "name": "infrastructure",
-            "description": "Id Infrastruttura Riferimento",
+            "name": "scope",
+            "description": "Scope of the laboratory.",
             "required": False,
+            "in": "query",
             "schema": {
-                "type": "integer",
-                "format": "int32",
+                "type": "string",
             },
         },
     ]

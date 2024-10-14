@@ -5,9 +5,8 @@ from research_lines.settings import OFFICE_RESEARCH_LINES
 from teachers.api.v1.services import ServiceDocente
 
 from .filters import (
-    ApiAllResearchLinesListFilter,
-    ApiAppliedResearchLinesListFilter,
-    ApiBaseResearchLinesListFilter,
+    AllResearchLinesListFilter,
+    ResearchLinesListFilter,
 )
 from .serializers import (
     AllResearchLinesSerializer,
@@ -17,9 +16,9 @@ from .serializers import (
 
 
 class ApiBaseResearchLinesList(ApiEndpointList):
-    description = "La funzione restituisce l’elenco delle Linee di" " ricerca di base"
+    description = "Retrieves a list of base reasearch lines."
     serializer_class = BaseResearchLinesSerializer
-    filter_backends = [ApiBaseResearchLinesListFilter]
+    filter_backends = [ResearchLinesListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -49,9 +48,9 @@ class ApiBaseResearchLinesList(ApiEndpointList):
 
 
 class ApiAppliedResearchLinesList(ApiEndpointList):
-    description = "La funzione restituisce l’elenco delle Linee di" " ricerca applicate"
+    description = "Retrieves a list of applied reasearch lines."
     serializer_class = AppliedResearchLinesSerializer
-    filter_backends = [ApiAppliedResearchLinesListFilter]
+    filter_backends = [ResearchLinesListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -81,9 +80,9 @@ class ApiAppliedResearchLinesList(ApiEndpointList):
 
 
 class ApiAllResearchLinesList(ApiEndpointList):
-    description = "La funzione restituisce l’elenco di tutte le Linee di" " ricerca"
+    description = "Retrieves a list of all research lines."
     serializer_class = AllResearchLinesSerializer
-    filter_backends = [ApiAllResearchLinesListFilter]
+    filter_backends = [AllResearchLinesListFilter]
 
     def get_queryset(self):
         request = self.request

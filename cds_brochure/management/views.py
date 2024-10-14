@@ -39,7 +39,7 @@ def cds_brochure(request, my_offices=None):
     breadcrumbs = {reverse("generics:dashboard"): _("Dashboard"), "#": _("CdS in brief")}
     context = {
         "breadcrumbs": breadcrumbs,
-        "url": reverse("cds-brochure:apiv1:cds-websites-list"),
+        "url": reverse("cds-brochure:apiv1:cds-brochures-list"),
     }
     return render(request, "cds_brochures.html", context)
 

@@ -1,16 +1,18 @@
-from companies.settings import OFFICE_COMPANIES
 from generics.views import ApiEndpointDetail, ApiEndpointList
 from organizational_area.models import OrganizationalStructureOfficeEmployee
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
 
-from .filters import ApiCompaniesListFilter
+from companies.settings import OFFICE_COMPANIES
+
+from .filters import CompaniesListFilter
 from .serializers import CompaniesSerializer, TechAreasSerializer
 from .services import ServiceCompany
 
 
 class ApiCompaniesList(ApiEndpointList):
-    description = "La funzione restituisce la lista degli spin-off"
+    description = "Retrieves spinoffs/startups."
     serializer_class = CompaniesSerializer
-    filter_backends = [ApiCompaniesListFilter]
+    filter_backends = [CompaniesListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -43,9 +45,9 @@ class ApiCompaniesList(ApiEndpointList):
 
 
 class ApiCompanyDetail(ApiEndpointDetail):
-    description = "La funzione restituisce un particolare spinoff/startup"
+    description = "Retrieves detailed information of a specific spinoff/startup."
     serializer_class = CompaniesSerializer
-    filter_backends = []
+    schema = AgidAutoSchema(tags=["public"], operation_id_base="Company")
 
     def get_queryset(self):
         companyid = self.kwargs["companyid"]
@@ -54,9 +56,8 @@ class ApiCompanyDetail(ApiEndpointDetail):
 
 
 class ApiTechAreasList(ApiEndpointList):
-    description = "La funzione restituisce la lista delle aree tecnologiche"
+    description = "Retrieves a list of technology areas."
     serializer_class = TechAreasSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceCompany.getTechAreas()

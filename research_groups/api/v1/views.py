@@ -1,16 +1,16 @@
 from generics.views import ApiEndpointList
 from teachers.api.v1.services import ServiceDocente
 
-from .filters import ApiResearchGroupsListFilter
+from .filters import ResearchGroupsListFilter
 from .serializers import AllResearchGroupsSerializer
 
 
 class ApiResearchGroupsList(ApiEndpointList):
     description = (
-        "La funzione restituisce l’elenco " "dei gruppi di ricerca ordinati per nome."
+        "Retrieves a list of research groups ordered by name."
     )
     serializer_class = AllResearchGroupsSerializer
-    filter_backends = [ApiResearchGroupsListFilter]
+    filter_backends = [ResearchGroupsListFilter]
 
     def get_queryset(self):
         request = self.request

@@ -1,15 +1,18 @@
 import datetime
 
-from cds.api.v1.util_tests import DidatticaCdsUnitTest
-from cds.models import DidatticaCdsTipoCorso
-from cds_websites.models import (
-    SitoWebArticoliRegolamentoStrutturaTopic,
-    SitoWebCdsOggettiPortale,
-    SitoWebCdsSubArticoliRegolamento,
-    SitoWebCdsTipoDato,
-    SitoWebCdsTopic,
-    SitoWebCdsTopicArticoliReg,
-    SitoWebCdsTopicArticoliRegAltriDati,
+from cds.api.v1.util_tests import (
+    DidatticaAttivitaFormativaUnitTest,
+    DidatticaCdsUnitTest,
+    DidatticaRegolamentoUnitTest,
+)
+from cds.models import (
+    DidatticaAmbiti,
+    DidatticaCdsTipoCorso,
+    DidatticaPianoRegolamento,
+    DidatticaPianoSceltaAf,
+    DidatticaPianoSceltaSchePiano,
+    DidatticaPianoSceltaVincoli,
+    DidatticaPianoSche,
 )
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
@@ -20,6 +23,16 @@ from regdid.models import (
     DidatticaCdsArticoliRegolamento,
     DidatticaCdsArticoliRegolamentoTestata,
     DidatticaCdsSubArticoliRegolamento,
+)
+
+from cds_websites.models import (
+    SitoWebArticoliRegolamentoStrutturaTopic,
+    SitoWebCdsOggettiPortale,
+    SitoWebCdsSubArticoliRegolamento,
+    SitoWebCdsTipoDato,
+    SitoWebCdsTopic,
+    SitoWebCdsTopicArticoliReg,
+    SitoWebCdsTopicArticoliRegAltriDati,
 )
 
 
@@ -406,3 +419,248 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                 assert not result["OtherData"]
 
             assert result["Visible"]
+
+
+class ApiSitoWebCdsStudyPlansListUnitTest(TestCase):
+    def test_apisitiwebcdsstudyplans(self):
+        req = Client()
+
+        DidatticaCdsUnitTest.create_didatticaCds(
+            **{
+                "tipo_corso_cod": "L",
+                "area_cds": "scienze",
+                "cds_id": 1,
+                "cds_cod": "1",
+            }
+        )
+
+        DidatticaRegolamentoUnitTest.create_didatticaRegolamento(
+            **{
+                "regdid_id": 1,
+                "stato_regdid_cod": "A",
+                "titolo_congiunto_cod": "N",
+                "cds_id": 1,
+                "aa_reg_did": 2022,
+            }
+        )
+
+        DidatticaPianoRegolamento.objects.create(
+            **{
+                "regpiani_id": 1,
+                "regdid_id": 1,
+                "aa_coorte_id": 2022,
+                "aa_regpiani_id": 2022,
+                "des": "prova",
+                "def_flg": 1,
+                "stato_cod": "A",
+                "stato_des": "A",
+                "regpiani_pdr_id": 1,
+                "regpiani_pdr_cod": "test",
+                "regpiani_pdr_des": "test",
+                "flg_exp_seg_stu": 1,
+            }
+        )
+
+        DidatticaPianoSche.objects.create(
+            **{
+                "sche_piano_id": 1,
+                "sche_piano_des": "prova",
+                "sche_piano_cod": "test",
+                "regpiani_id": 1,
+                "pds_cod": "GEN",
+                "pds_des": "Generico",
+                "comune_flg": 1,
+            }
+        )
+
+        DidatticaPianoSche.objects.create(
+            **{
+                "sche_piano_id": 2,
+                "sche_piano_des": "prova",
+                "sche_piano_cod": "test",
+                "regpiani_id": 1,
+                "pds_cod": "GEN",
+                "pds_des": "Generico",
+                "comune_flg": 1,
+            }
+        )
+
+        DidatticaPianoSche.objects.create(
+            **{
+                "sche_piano_id": 3,
+                "sche_piano_des": "prova",
+                "sche_piano_cod": "test",
+                "regpiani_id": 1,
+                "pds_cod": "GEN",
+                "pds_des": "Generico",
+                "comune_flg": 1,
+            }
+        )
+        DidatticaPianoSceltaVincoli.objects.create(
+            **{
+                "sce_id": 1,
+            }
+        )
+        DidatticaPianoSceltaVincoli.objects.create(
+            **{
+                "sce_id": 2,
+            }
+        )
+        DidatticaPianoSceltaVincoli.objects.create(
+            **{
+                "sce_id": 3,
+            }
+        )
+        DidatticaPianoSceltaSchePiano.objects.create(
+            **{
+                "sce_id": 1,
+                "sche_piano_id": 1,
+                "tipo_sce_cod": "O",
+                "apt_slot_ord_num": 5,
+            }
+        )
+
+        DidatticaPianoSceltaAf.objects.create(
+            **{
+                "sce_id": 1,
+                "anno_corso_af": 2022,
+                "ciclo_des": "Prova",
+                "af_gen_des": "Prova",
+                "af_id": 1,
+                "tipo_af_des_af": "Contenuto",
+                "ambito_des_af": "Test",
+                "sett_cod": "Content",
+                "peso": 6,
+            }
+        )
+
+        DidatticaPianoSceltaAf.objects.create(
+            **{
+                "sce_id": 2,
+                "anno_corso_af": 2022,
+                "ciclo_des": "Prova",
+                "af_gen_des": "Prova",
+                "af_id": 1,
+                "tipo_af_des_af": "Contenuto",
+                "ambito_des_af": "Test",
+                "sett_cod": "Content",
+                "peso": 6,
+            }
+        )
+
+        DidatticaPianoSceltaAf.objects.create(
+            **{
+                "sce_id": 3,
+                "anno_corso_af": 2022,
+                "ciclo_des": "Prova",
+                "af_gen_des": "Prova",
+                "af_id": 2,
+                "tipo_af_des_af": "Contenuto",
+                "ambito_des_af": "Test",
+                "sett_cod": "Content",
+                "peso": 6,
+            }
+        )
+
+        DidatticaAmbiti.objects.create(**{"amb_id": 1})
+
+        DidatticaPianoSceltaSchePiano.objects.create(
+            **{
+                "sce_id": 2,
+                "sche_piano_id": 2,
+                "amb_id": 1,
+                "ambito_des": "Prova",
+                "min_unt": 1,
+                "max_unt": 2,
+                "sce_des": "Content",
+                "apt_slot_ord_num": 1,
+                "tipo_sce_cod": "Pr",
+                "tipo_sce_des": "Prova",
+                "tipo_regsce_cod": "P",
+                "tipo_regsce_des": "Prova",
+                "tipo_um_regsce_cod": "P",
+                "vin_sce_des": 1,
+                "vin_id": 1,
+            }
+        )
+
+        DidatticaPianoSceltaSchePiano.objects.create(
+            **{
+                "sce_id": 3,
+                "sche_piano_id": 3,
+                "ambito_des": "Prova",
+                "min_unt": 1,
+                "max_unt": 2,
+                "sce_des": "Content",
+                "apt_slot_ord_num": 1,
+                "tipo_sce_cod": "Pr",
+                "tipo_sce_des": "Prova",
+                "tipo_regsce_cod": "P",
+                "tipo_regsce_des": "Prova",
+                "tipo_um_regsce_cod": "P",
+                "amb_id_af_regsce": 1,
+            }
+        )
+
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(
+            **{
+                "amb_id": 1,
+                "af_gen_id": 1,
+                "af_gen_cod": "AAA",
+                "des": "Prova",
+                "af_gen_des_eng": "Test",
+                "anno_corso": 1,
+                "sett_cod": "Sem",
+                "sett_des": "Semestere",
+                "peso": 6,
+                "fat_part_stu_cod": "AA",
+            }
+        )
+
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(
+            **{
+                "af_id": 2,
+                "amb_id": 2,
+                "af_gen_id": 2,
+                "af_gen_cod": "AAA",
+                "des": "Prova",
+                "af_gen_des_eng": "Test",
+                "anno_corso": 1,
+                "sett_cod": "Sem",
+                "sett_des": "Semestere",
+                "peso": 6,
+                "fat_part_stu_cod": "AA",
+            }
+        )
+
+        DidatticaAttivitaFormativaUnitTest.create_didatticaAttivitaFormativa(
+            **{
+                "af_id": 3,
+                "amb_id": 3,
+                "af_gen_id": 3,
+                "af_gen_cod": "AAA",
+                "des": "Prova",
+                "af_gen_des_eng": "Test",
+                "anno_corso": 1,
+                "sett_cod": "Sem",
+                "sett_des": "Semestere",
+                "peso": 6,
+                "fat_part_stu_cod": "AA",
+            }
+        )
+
+        url = reverse("cds-websites:apiv1:cds-websites-studyplans-list")
+
+        # check url
+        res = req.get(url)
+
+        assert res.status_code == 200
+
+        # GET
+
+        res = req.get(url)
+        assert len(res.json()["results"]) == 0
+
+        data = {"cds_cod": "1", "year": 2022}
+        res = req.get(url, data=data)
+        assert len(res.json()["results"]) == 1

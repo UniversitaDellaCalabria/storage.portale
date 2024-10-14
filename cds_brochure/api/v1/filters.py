@@ -1,27 +1,13 @@
 from generics.filters import GenericApiFilter
 
 
-class ApiCdsWebsitesListFilter(GenericApiFilter):
+class CdsBrochuresListFilter(GenericApiFilter):
     search_params = [
         {
-            "name": "academic_year",
-            "description": "Anno Accademico",
+            "name": "search",
+            "description": "Search by the name of the course of study.",
             "required": False,
-            "schema": {
-                "type": "integer",
-                "format": "int32",
-            },
-        },
-        {
-            "name": "language",
-            "description": "Lingua Master",
-            "required": False,
-            "type": "string",
-        },
-        {
-            "name": "course_class",
-            "description": "Classe di laurea",
-            "required": False,
+            "in": "query",
             "type": "string",
         },
     ]

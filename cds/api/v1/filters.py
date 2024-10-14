@@ -1,66 +1,92 @@
 from generics.filters import GenericApiFilter
 
 
-class ApiCdsListFilter(GenericApiFilter):
+class CdsListFilter(GenericApiFilter):
     search_params = [
         {
             "name": "academicyear",
-            "description": "Cds erogati in uno specifico anno accademico",
+            "description": "Academic year.",
             "required": False,
+            "in": "query",
+            "schema": {
+                "type": "integer",
+                "format": "int32",
+                "example": 2024,
+            },
+        },
+        {
+            "name": "departmentcod",
+            "description": "Code of a department.",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
+        },
+        {
+            "name": "departmentid",
+            "description": "ID of a department.",
+            "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
             },
         },
         {
-            "name": "departmentcod",
-            "description": "Codice di un dipartimento",
-            "required": False,
-            "type": "string",
-        },
-        {
-            "name": "departmentid",
-            "description": "Id di un dipartimento",
-            "required": False,
-            "type": "string",
-        },
-        {
             "name": "departmentname",
-            "description": "Nome di un dipartimento",
+            "description": "Name of a department.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "coursetype",
-            "description": "Tipologia di corso di studi",
+            "description": "Type of course of study.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
-            "name": "courseclassid",
-            "description": "Id della classe di un corso di studi",
+            "name": "courseclasscod",
+            "description": "Code of the course of study class.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "courseclassname",
-            "description": "Nome delle classe di un corso di studi",
+            "description": "Name of the course of study class.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "jointdegree",
-            "description": "Titolo congiunto",
+            "description": "Joint degree type.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "array",
+                "items": {
+                    "type": "string",
+                },
                 "example": ["D", "N", "S"],
             },
         },
         {
             "name": "regdid",
-            "description": "Id regolamento didattico",
+            "description": "ID of the didactic regulation.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -68,101 +94,101 @@ class ApiCdsListFilter(GenericApiFilter):
         },
         {
             "name": "cdscod",
-            "description": "Codice di un Corso di Studi",
+            "description": "Code of a course of study.",
             "required": False,
+            "in": "query",
+            "schema": {"type": "string"},
         },
         {
             "name": "cdslanguage",
-            "description": "Lingua del corso di studi",
+            "description": "Language of the course of study.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {"type": "string", "example": "eng"},
         },
         {
             "name": "area",
-            "description": "Area del Corso di Studio",
+            "description": "Area of the course of study.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
     ]
 
 
-class ApiAllActivitiesListFilter(GenericApiFilter):
+class AllActivitiesListFilter(GenericApiFilter):
     search_params = [
         {
             "name": "department",
-            "description": "Dipartimento",
+            "description": "Department code.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "cds",
-            "description": "CDS",
+            "description": "Course of study name.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
             },
         },
         {
             "name": "period",
-            "description": "Periodo",
+            "description": "Period of the course.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "academic_year",
-            "description": "Anno Accademico",
+            "description": "Academic year.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
             },
         },
-        {"name": "ssd", "description": "SSD", "required": False, "type": "string"},
+        {
+            "name": "ssd",
+            "description": "SSD (Scientific Disciplinary Sector).",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
+        },
         {
             "name": "teaching",
-            "description": "Insegnamento",
+            "description": "Teaching name.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "teacher",
-            "description": "Docente",
+            "description": "Teacher's last name.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
         {
             "name": "course_year",
-            "description": "Anno Di Corso",
+            "description": "Course year.",
             "required": False,
-            "schema": {
-                "type": "integer",
-                "format": "int32",
-            },
-        },
-    ]
-
-
-class ApiCdsWebsitesStudyPlansListFilter(GenericApiFilter):
-    search_params = [
-        {
-            "name": "year",
-            "description": "Anno Accademico",
-            "required": False,
-            "schema": {
-                "type": "integer",
-                "format": "int32",
-            },
-        },
-        {
-            "name": "cds_cod",
-            "description": "Codice di un cds",
-            "required": False,
-            "type": "string",
-        },
-        {
-            "name": "regdid",
-            "description": "Id regolamento didattico",
-            "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",

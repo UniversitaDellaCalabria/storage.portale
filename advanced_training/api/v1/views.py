@@ -1,7 +1,8 @@
 from cds.api.v1.services import ServiceDidatticaCds
 from generics.views import ApiEndpointDetail, ApiEndpointList
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
 
-from .filters import ApiHighFormationMastersListFilter
+from .filters import HighFormationMastersListFilter
 from .serializers import (
     HighFormationCourseTypesSerializer,
     HighFormationMastersSerializer,
@@ -9,9 +10,9 @@ from .serializers import (
 
 
 class ApiHighFormationMastersList(ApiEndpointList):
-    description = "Returns the list of high-formation masters."
+    description = "Retrieves the list of high-formation masters."
     serializer_class = HighFormationMastersSerializer
-    filter_backends = [ApiHighFormationMastersListFilter]
+    filter_backends = [HighFormationMastersListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -29,8 +30,9 @@ class ApiHighFormationMastersList(ApiEndpointList):
 
 
 class ApiHighFormationMastersDetail(ApiEndpointDetail):
-    description = "Returns the details of a high-formation master."
+    description = "Retrieves detailed information of a high-formation master."
     serializer_class = HighFormationMastersSerializer
+    schema = AgidAutoSchema(tags=["public"], operation_id_base="HighFormationMaster")
 
     def get_queryset(self):
         master_id = self.kwargs["id"]
@@ -38,7 +40,7 @@ class ApiHighFormationMastersDetail(ApiEndpointDetail):
 
 
 class ApiHighFormationCourseTypesList(ApiEndpointList):
-    description = "Returns the list of high-formation course types."
+    description = "Retrieves the list of high-formation course types."
     serializer_class = HighFormationCourseTypesSerializer
 
     def get_queryset(self):

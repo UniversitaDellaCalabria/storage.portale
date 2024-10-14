@@ -3,6 +3,7 @@ from django.core.cache import cache
 from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
 
 from .pagination import UnicalStorageApiPaginationList
 from .utils import encode_labels
@@ -19,6 +20,7 @@ class ApiEndpointList(generics.ListAPIView):
     # filter_backends = [OrderingFilter]
     # ordering_fields = '__all__'
     allowed_methods = ("GET",)
+    schema = AgidAutoSchema(tags = ['public'])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

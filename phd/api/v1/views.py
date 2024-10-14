@@ -1,9 +1,11 @@
 from generics.views import ApiEndpointDetail, ApiEndpointList
-from phd.settings import PHD_CYCLES
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
 
-from .filters import ApiPhdListFilter
+from phd.settings import PHD_CYCLES
+
+from .filters import PhdListFilter, PhdActivitiesListFilter
 from .serializers import (
     PhdActivitiesSerializer,
     PhdActivityTypeSerializer,
@@ -17,15 +19,18 @@ from .services import ServiceDottorato
 
 
 class ApiPhdList(ApiEndpointList):
-    description = "La funzione restituisce una lista di dottorati"
+    description = "Retrieves a list of PhDs."
     serializer_class = PhdSerializer
-    filter_backends = [ApiPhdListFilter]
+    filter_backends = [PhdListFilter]
 
     def get_queryset(self):
         return ServiceDottorato.getPhd(self.request.query_params)
 
 
 class ApiPhdCycles(APIView):
+    description = "Retrieves a list of PhD cycles."
+    schema = AgidAutoSchema(tags = ['public'])
+
     def get(self, request):
         result = {}
         for cycle in PHD_CYCLES:
@@ -34,9 +39,9 @@ class ApiPhdCycles(APIView):
 
 
 class ApiPhdActivitiesList(ApiEndpointList):
-    description = "La funzione restituisce la lista delle attività dei dottorati"
+    description = "Retrieves a list of activities of PhD programs."
     serializer_class = PhdActivitiesSerializer
-    filter_backends = []
+    filter_backends = [PhdActivitiesListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -54,11 +59,9 @@ class ApiPhdActivitiesList(ApiEndpointList):
 
 
 class ApiPhdActivityDetail(ApiEndpointDetail):
-    description = (
-        "La funzione restituisce il dettaglio di una attività riferita ad un dottorato"
-    )
+    description = "Retrieves detailed information about an activity of a PhD program."
     serializer_class = PhdActivitiesSerializer
-    filter_backends = []
+    schema = AgidAutoSchema(tags=['public'], operation_id_base='PhdActivity')
 
     def get_queryset(self):
         activity_id = self.kwargs["id"]
@@ -66,47 +69,42 @@ class ApiPhdActivityDetail(ApiEndpointDetail):
 
 
 class ApiRefPhdList(ApiEndpointList):
-    description = "La funzione restituisce la lista dei dottorati di riferimento"
+    description = "Retrieves a list of names of PhD programs."
     serializer_class = RefPhdSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceDottorato.getRefPhd()
 
 
 class ApiRefStructuresList(ApiEndpointList):
-    description = "La funzione restituisce la lista delle strutture di riferimento"
+    description = "Retrieves a list of proposing structures of PhDs programs."
     serializer_class = RefStructuresSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceDottorato.getRefStructures()
 
 
 class ApiPhdSsdList(ApiEndpointList):
-    description = "La funzione restituisce la lista degli ssd dei dottorati"
+    description = (
+        "Retrieves a list of SSDs (Scientific Disciplinary Sectors) of PhD programs."
+    )
     serializer_class = PhdSsdListSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceDottorato.getPhdSsdList()
 
 
 class ApiPhdActivityTypeList(ApiEndpointList):
-    description = "La funzione restituisce la lista dei tipi di attività di dottorato"
+    description = "Retrieves a list of types of activities of PhD programs."
     serializer_class = PhdActivityTypeSerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceDottorato.getPhdActivityTypeList()
 
 
 class ApiPhdActivityTypologies(ApiEndpointList):
-    description = (
-        "La funzione restituisce la lista delle tipologie di attività di dottorato"
-    )
+    description = "Retrieves a list of typologies of activities of PhD programs."
     serializer_class = PhdActivityTypologySerializer
-    filter_backends = []
 
     def get_queryset(self):
         return ServiceDottorato.getPhdActivityTypologies()

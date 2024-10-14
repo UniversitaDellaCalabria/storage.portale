@@ -1,12 +1,20 @@
 from generics.filters import GenericApiFilter
 
 
-class ApiTeachersListFilter(GenericApiFilter):
+class TeachersListFilter(GenericApiFilter):
     search_params = [
         {
-            "name": "regdid",
-            "description": "Id regolamento didattico",
+            "name": "search",
+            "description": "Search by teacher's last name.",
             "required": False,
+            "in": "query",
+            "type": "string",
+        },
+        {
+            "name": "regdid",
+            "description": "ID didactic regulation.",
+            "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -14,26 +22,36 @@ class ApiTeachersListFilter(GenericApiFilter):
         },
         {
             "name": "cds",
-            "description": "Codice del corso di studi",
+            "description": "Code of a course of study.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            }
         },
         {
             "name": "department",
-            "description": "Codice di un dipartimento",
+            "description": "Code of a department.",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            }
         },
         {
             "name": "role",
-            "description": "Ruolo di un docente",
+            "description": "List of roles codes (comma-separated).",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            }
         },
         {
             "name": "year",
-            "description": "Anno Erogazione Attività",
+            "description": "Coverage year.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -42,12 +60,13 @@ class ApiTeachersListFilter(GenericApiFilter):
     ]
 
 
-class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
+class TeacherStudyActivitiesFilter(GenericApiFilter):
     search_params = [
         {
             "name": "year",
-            "description": "Attività formative erogate in uno specifico anno",
+            "description": "Specific year of erogation.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -55,8 +74,9 @@ class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
         },
         {
             "name": "yearFrom",
-            "description": "Attività formative erogate in un anno maggiore uguale a yearFrom",
+            "description": "First year of erogation.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -64,8 +84,9 @@ class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
         },
         {
             "name": "yearTo",
-            "description": "Attività formative erogate in un anno minore uguale a yearTo",
+            "description": "Last year of erogation.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -74,11 +95,34 @@ class ApiTeacherStudyActivitiesFilter(GenericApiFilter):
     ]
 
 
-class ApiPublicationsListFilter(GenericApiFilter):
+class TeacherMaterialsAndNewsFilter(GenericApiFilter):
     search_params = [
         {
+            "name": "search",
+            "description": "Search by title.",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            }
+        }
+    ]
+
+
+class PublicationsListFilter(GenericApiFilter):
+    search_params = [
+        {
+            "name": "search",
+            "description": "Search by title.",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            }
+        },
+        {
             "name": "year",
-            "description": "Anno",
+            "description": "Year.",
             "required": False,
             "schema": {
                 "type": "integer",
@@ -87,13 +131,15 @@ class ApiPublicationsListFilter(GenericApiFilter):
         },
         {
             "name": "type",
-            "description": "Id di una tipologia di community",
+            "description": "ID community type.",
             "required": False,
-            "type": "string",
+            "schema": {
+                "type": "string",
+            }
         },
         {
             "name": "structure",
-            "description": "Struttura di un docente",
+            "description": "Code of a structure.",
             "required": False,
             "type": "string",
         },

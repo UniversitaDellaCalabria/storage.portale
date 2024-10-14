@@ -1,9 +1,6 @@
 import json
 
 import requests
-from cds.api.v1.services import ServiceDidatticaCds
-from cds_websites.models import SitoWebCdsOggettiPortale
-from cds_websites.settings import OFFICE_CDS_WEBSITES
 from django.conf import settings
 from django.db.models import Q
 from generics.views import ApiEndpointList
@@ -14,15 +11,24 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
-from .filters import ApiCdsWebsitesTopicArticlesListFilter
+from cds_websites.models import SitoWebCdsOggettiPortale
+from cds_websites.settings import OFFICE_CDS_WEBSITES
+
+from .filters import (
+    CdsWebsitesTopicArticlesListFilter,
+    CdsWebsitesStudyPlansListFilter,
+)
 from .serializers import (
     CdsWebsitesTopicArticlesSerializer,
     CdsWebsitesTopicSerializer,
     SitoWebCdsOggettiPortaleSerializer,
+    CdsWebsitesStudyPlansSerializer,
 )
+from .services import ServiceSitoWebCds
 
 
 class SitoWebCdsOggettiPortaleViewSet(ReadOnlyModelViewSet):
+    description = "Retrieves a list of objects for the management crud."
     serializer_class = SitoWebCdsOggettiPortaleSerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -46,6 +52,7 @@ class SitoWebCdsOggettiPortaleViewSet(ReadOnlyModelViewSet):
 
 
 class ExternalOggettiPortaleViewSet(GenericViewSet):
+    description = "Retrieves a list of external objects for the management crud."
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     schema = None
@@ -131,18 +138,17 @@ class ExternalOggettiPortaleViewSet(GenericViewSet):
 
 
 class ApiCdsWebsitesTopicList(ApiEndpointList):
-    description = "Restituisce l’elenco dei topic per i siti web dei cds"
+    description = "Retrieves the list of topics of the cds web sites."
     serializer_class = CdsWebsitesTopicSerializer
-    filter_backends = []
 
     def get_queryset(self):
-        return ServiceDidatticaCds.getCdsWebsitesTopics()
+        return ServiceSitoWebCds.getCdsWebsitesTopics()
 
 
 class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
-    description = "Restituisce l’elenco dei topic per i siti web dei cds"
+    description = "Retrieves the list of items (regulament articles, sub articles, objects, extras) of cds web sites."
     serializer_class = CdsWebsitesTopicArticlesSerializer
-    filter_backends = [ApiCdsWebsitesTopicArticlesListFilter]
+    filter_backends = [CdsWebsitesTopicArticlesListFilter]
 
     def get_queryset(self):
         request = self.request
@@ -165,6 +171,26 @@ class ApiCdsWebsitesTopicArticlesList(ApiEndpointList):
             if offices.exists():
                 only_active = False
 
-        return ServiceDidatticaCds.getCdsWebsitesTopicArticles(
+        return ServiceSitoWebCds.getCdsWebsitesTopicArticles(
             cds_cod, topic_id, only_active
         )
+
+
+class ApiCdsWebsitesStudyPlansList(ApiEndpointList):
+    description = "Retrieves the list of study plans for courses of study."
+    serializer_class = CdsWebsitesStudyPlansSerializer
+    filter_backends = [CdsWebsitesStudyPlansListFilter]
+
+    def get_queryset(self):
+        cds_cod = self.request.query_params.get("cds_cod")
+        year = self.request.query_params.get("year")
+        return ServiceSitoWebCds.getCdsWebsitesStudyPlans(cds_cod, year)
+
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get("lang", lang).lower()
+        cds_cod = self.request.query_params.get("cds_cod")
+        year = self.request.query_params.get("year")
+        cache_key = f"cdswebsite_studyplanlist_{self.language}__{cds_cod}_{year}"
+        kwargs["cache_key"] = cache_key
+        return super().get(*args, **kwargs)

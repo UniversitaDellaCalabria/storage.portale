@@ -1,12 +1,13 @@
 from generics.filters import GenericApiFilter
 
 
-class ApiCompaniesListFilter(GenericApiFilter):
+class CompaniesListFilter(GenericApiFilter):
     search_params = [
         {
             "name": "techarea",
-            "description": "Area Tecnologica",
+            "description": "ID technoly area.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -14,26 +15,38 @@ class ApiCompaniesListFilter(GenericApiFilter):
         },
         {
             "name": "spinoff",
-            "description": "Spinoff",
+            "description": "Whether or not the company is a spinoff.",
             "required": False,
+            "in": "query",
             "schema": {
-                "type": "integer",
-                "format": "int32",
+                "type": "boolean",
             },
         },
         {
             "name": "startup",
-            "description": "Startup",
+            "description": "Whether or not the company is a startup.",
             "required": False,
+            "in": "query",
             "schema": {
-                "type": "integer",
-                "format": "int32",
+                "type": "boolean",
             },
         },
         {
             "name": "departments",
-            "description": "Lista di codici di dipartimento",
+            "description": "List of departments codes (comma-separated).",
             "required": False,
-            "type": "string",
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
+        },
+        {
+            "name": "search",
+            "description": "Search for company name or description.",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
         },
     ]

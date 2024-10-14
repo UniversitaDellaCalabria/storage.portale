@@ -1,7 +1,7 @@
 from rest_framework import filters
 
 
-class GenericApiFilter(filters.SearchFilter):
+class GenericApiFilter(filters.BaseFilterBackend):
     def get_schema_operation_parameters(self, view):
         params = super().get_schema_operation_parameters(view)
         for search_param in self.search_params:
@@ -19,7 +19,7 @@ class GenericApiFilter(filters.SearchFilter):
                 "name": "lang",
                 "required": False,
                 "in": "query",
-                "description": "language",
+                "description": "Language.",
                 "schema": {
                     "type": "string",
                     "example": "en",

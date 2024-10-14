@@ -1,20 +1,22 @@
 from generics.filters import GenericApiFilter
 
 
-class ApiHighFormationMastersListFilter(GenericApiFilter):
+class HighFormationMastersListFilter(GenericApiFilter):
     search_params = [
         {
             "name": "coursetype",
-            "description": "Course type",
+            "description": "Course type.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
             },
         },
         {
             "name": "erogation",
-            "description": "Erogation mode",
+            "description": "Erogation mode.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -22,8 +24,9 @@ class ApiHighFormationMastersListFilter(GenericApiFilter):
         },
         {
             "name": "department",
-            "description": "Department ID",
+            "description": "Department ID.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -31,8 +34,9 @@ class ApiHighFormationMastersListFilter(GenericApiFilter):
         },
         {
             "name": "director",
-            "description": "Scientific director ID",
+            "description": "Scientific director ID.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
@@ -40,16 +44,18 @@ class ApiHighFormationMastersListFilter(GenericApiFilter):
         },
         {
             "name": "language",
-            "description": "Master language",
+            "description": "Master language.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "string",
             },
         },
         {
             "name": "year",
-            "description": "Year of survey",
+            "description": "Year.",
             "required": False,
+            "in": "query",
             "schema": {
                 "type": "integer",
                 "format": "int32",
