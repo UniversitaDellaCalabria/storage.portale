@@ -10,3 +10,4 @@ omit =
     */accounts/*
     */ricerca/*
     */tests.py
+    */management/*
