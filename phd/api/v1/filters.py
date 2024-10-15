@@ -8,45 +8,35 @@ class PhdActivitiesListFilter(GenericApiFilter):
             "description": "Search by educational activity name.",
             "required": False,
             "in": "query",
-            "schema": {
-                "type": "string"
-            },
+            "schema": {"type": "string"},
         },
         {
             "name": "structure",
             "description": "Proposing structure name.",
             "required": False,
             "in": "query",
-            "schema": {
-                "type": "string"
-            },
+            "schema": {"type": "string"},
         },
         {
             "name": "phd",
             "description": "PhD's name.",
             "required": False,
             "in": "query",
-            "schema": {
-                "type": "string"
-            },
+            "schema": {"type": "string"},
         },
         {
             "name": "ssd",
             "description": "SSD (Scientific Disciplinary Sector).",
             "required": False,
             "in": "query",
-            "schema": {
-                "type": "string"
-            },
+            "schema": {"type": "string"},
         },
         {
             "name": "teacher",
             "description": "Teacher's last name (starts with).",
             "required": False,
             "in": "query",
-            "schema": {
-                "type": "string"
-            },
+            "schema": {"type": "string"},
         },
         {
             "name": "cycle",
@@ -68,6 +58,7 @@ class PhdActivitiesListFilter(GenericApiFilter):
             },
         },
     ]
+
 
 class PhdListFilter(GenericApiFilter):
     search_params = [

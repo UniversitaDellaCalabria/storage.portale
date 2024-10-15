@@ -3,26 +3,26 @@ import base64
 from django.core.cache import cache
 from django.utils import timezone
 from django.utils.text import slugify
-from esse3.models import DidatticaAttivitaFormativaEsse3, DidatticaCdsEsse3
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.schemas.openapi_agid import AgidAutoSchema
+from rest_framework.views import APIView
 
 # University Planner utils
 from up.serializers import upImpegniSerializer
 from up.services import getUPImpegni
 
-from .serializers import esse3AppelliSerializer
-from .services import getEsse3Appelli
+from esse3.models import DidatticaAttivitaFormativaEsse3, DidatticaCdsEsse3
 
 from .filters import CdsWebsiteTimetableFilter
+from .serializers import esse3AppelliSerializer
+from .services import getEsse3Appelli
 
 
 class ApiCdsWebsiteTimetable(APIView):  # pragma: no cover
     description = "Retrieves the timetable for a course of study."
     filter_backends = [CdsWebsiteTimetableFilter]
     allowed_methods = ("GET",)
-    schema = AgidAutoSchema(tags = ['public'])
+    schema = AgidAutoSchema(tags=["public"])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

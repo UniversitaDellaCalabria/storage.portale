@@ -16,12 +16,12 @@ from .serializers import (
     CdsAreasSerializer,
     CdsInfoSerializer,
     CdSSerializer,
+    CdsStudyPlansActivitiesSerializer,
     CdSStudyPlanSerializer,
     CdSStudyPlansSerializer,
     DegreeTypesSerializer,
     StudyActivitiesSerializer,
     StudyActivityInfoSerializer,
-    CdsStudyPlansActivitiesSerializer,
 )
 from .services import ServiceDidatticaAttivitaFormativa, ServiceDidatticaCds
 
@@ -160,7 +160,7 @@ class ApiAllStudyActivitiesList(ApiEndpointList):
 class ApiStudyActivityDetail(ApiEndpointDetail):
     description = "Retrieves detailed information about a specific course."
     serializer_class = StudyActivityInfoSerializer
-    schema = ApiStudyActivityDetailSchema(tags=['public'])
+    schema = ApiStudyActivityDetailSchema(tags=["public"])
 
     def get_queryset(self):
         studyactivityid = str(self.kwargs["studyactivityid"])

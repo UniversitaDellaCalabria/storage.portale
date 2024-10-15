@@ -1,11 +1,11 @@
 from generics.views import ApiEndpointDetail, ApiEndpointList
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.schemas.openapi_agid import AgidAutoSchema
+from rest_framework.views import APIView
 
 from phd.settings import PHD_CYCLES
 
-from .filters import PhdListFilter, PhdActivitiesListFilter
+from .filters import PhdActivitiesListFilter, PhdListFilter
 from .serializers import (
     PhdActivitiesSerializer,
     PhdActivityTypeSerializer,
@@ -29,7 +29,7 @@ class ApiPhdList(ApiEndpointList):
 
 class ApiPhdCycles(APIView):
     description = "Retrieves a list of PhD cycles."
-    schema = AgidAutoSchema(tags = ['public'])
+    schema = AgidAutoSchema(tags=["public"])
 
     def get(self, request):
         result = {}
@@ -61,7 +61,7 @@ class ApiPhdActivitiesList(ApiEndpointList):
 class ApiPhdActivityDetail(ApiEndpointDetail):
     description = "Retrieves detailed information about an activity of a PhD program."
     serializer_class = PhdActivitiesSerializer
-    schema = AgidAutoSchema(tags=['public'], operation_id_base='PhdActivity')
+    schema = AgidAutoSchema(tags=["public"], operation_id_base="PhdActivity")
 
     def get_queryset(self):
         activity_id = self.kwargs["id"]

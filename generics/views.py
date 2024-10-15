@@ -20,7 +20,7 @@ class ApiEndpointList(generics.ListAPIView):
     # filter_backends = [OrderingFilter]
     # ordering_fields = '__all__'
     allowed_methods = ("GET",)
-    schema = AgidAutoSchema(tags = ['public'])
+    schema = AgidAutoSchema(tags=["public"])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

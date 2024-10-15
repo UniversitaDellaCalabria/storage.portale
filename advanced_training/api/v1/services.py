@@ -1,4 +1,5 @@
 from django.db.models import Q
+
 from advanced_training.models import (
     AltaFormazioneConsiglioScientificoEsterno,
     AltaFormazioneConsiglioScientificoInterno,
@@ -11,8 +12,8 @@ from advanced_training.models import (
     AltaFormazioneTipoCorso,
 )
 
+
 class ServiceAltaFormazione:
-    
     @staticmethod
     def getHighFormationMasters(
         search, director, coursetype, erogation, department, language, year

@@ -5,10 +5,8 @@ from cds.models import DidatticaCds
 from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.schemas.openapi_agid import AgidAutoSchema
-
-from .filters import PentahoIsodidFilter
+from rest_framework.views import APIView
 
 from pentaho.settings import (
     PENTAHO_ISODID_MEDIA_PATH,
@@ -16,6 +14,8 @@ from pentaho.settings import (
     PENTAHO_ISODID_REPORT_START_YEAR,
 )
 from pentaho.utils import getIsodidReport
+
+from .filters import PentahoIsodidFilter
 
 PENTAHO_ISODID_MEDIA_PATH = getattr(
     settings, "PENTAHO_ISODID_MEDIA_PATH", PENTAHO_ISODID_MEDIA_PATH
@@ -31,7 +31,7 @@ PENTAHO_ISODID_REPORT_START_YEAR = getattr(
 class ApiPentahoIsodid(APIView):  # pragma: no cover
     filter_backends = [PentahoIsodidFilter]
     allowed_methods = ("GET",)
-    schema = AgidAutoSchema(tags = ['public'])
+    schema = AgidAutoSchema(tags=["public"])
 
     def get(self, obj, **kwargs):
         request = self.request
