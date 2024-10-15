@@ -70,6 +70,7 @@ def getUPImpegni(
     af_cod="",
     filter_by_af_cod=True,
 ):  # pragma: no cover
+    # filter_by_af_cod: UP non ritorna risultati se si filtrano gli esami per codAF
     url = settings.URL_UP_API + "Impegni/getImpegniByAnnoAccademico"
 
     try:
@@ -105,7 +106,9 @@ def getUPImpegni(
         "codTipiEvento": types,
         "dataInizio": start_up,
         "dataFine": end_up,
-        "codAF": af_cod if filter_by_af_cod else "",
+        "codAF": af_cod
+        if filter_by_af_cod
+        else "",  # UP non ritorna risultati se si filtrano gli esami per codAF
     }
 
     return getData(request, url, cds_cod, body)

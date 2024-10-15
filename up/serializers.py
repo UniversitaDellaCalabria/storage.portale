@@ -4,20 +4,21 @@ from django.utils import timezone
 
 
 def upImpegniSerializer(
-    impegni, year=None, af_name=None, search={}, show_past=False
+    impegni, year=None, af_name=None, af_cod=None, search={}, show_past=False
 ):  # pragma: no cover
     impegni_up = []
     search_teacher = search.get("search_teacher", "")
     search_location = search.get("search_location", "")
 
     for impegno in impegni:
-        # if year and impegno["evento"]["dettagliDidattici"][0]["annoCorso"] != year:
-        #     continue
+        code = impegno["evento"]["dettagliDidattici"][0].get("codice")
+        name = impegno["evento"]["dettagliDidattici"][0].get("nome")
 
-        # if af_name and impegno['evento']['dettagliDidattici'][0]['nome'].lower() != af_name.lower():
-        if af_name and not impegno["evento"]["dettagliDidattici"][0][
-            "nome"
-        ].lower().startswith(af_name.lower()):
+        # UP non restituisce sempre il codice dell'attività
+        # (quando si recuperano gli esami non c'è!)
+        if code and af_cod and code != af_cod:
+            continue
+        if not code and af_name and not name.lower().startswith(af_name.lower()):
             continue
 
         dataInizio = impegno["dataInizio"][0:10]
@@ -69,6 +70,7 @@ def upImpegniSerializer(
 
         impegno_dict = {
             "insegnamento": insegnamento,
+            "codice_insegnamento": impegno['evento']['dettagliDidattici'][0]['codice'],
             "dataInizio": dataInizio,
             "dataFine": dataFine,
             "orarioInizio": orarioInizio,

@@ -69,6 +69,7 @@ class ApiCdsWebsiteTimetable(APIView):  # pragma: no cover
                 impegni=impegni,
                 year=year,
                 af_name=af_name,
+                af_cod=af_cod,
                 search=search,
                 show_past=show_past,
             )
