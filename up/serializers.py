@@ -38,8 +38,8 @@ def upImpegniSerializer(
         cfu = dettagliDidattici[0].get("cfu", None)
         insegnamento = (
             dettagliDidattici[0]["nome"]
-            if lang == "it" or not dettagliDidattici[0]["nome_EN"]
-            else dettagliDidattici[0]["nome_EN"]
+            if lang == "it" or not dettagliDidattici[0].get("nome_EN")
+            else dettagliDidattici[0].get("nome_EN")
         )
 
         annoCorso = dettagliDidattici[0]["annoCorso"]
@@ -79,7 +79,7 @@ def upImpegniSerializer(
 
         impegno_dict = {
             "insegnamento": insegnamento,
-            "codice_insegnamento": impegno["evento"]["dettagliDidattici"][0]["codice"],
+            "codice_insegnamento": code,
             "dataInizio": dataInizio,
             "dataFine": dataFine,
             "orarioInizio": orarioInizio,
