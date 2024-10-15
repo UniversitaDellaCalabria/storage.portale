@@ -26,11 +26,11 @@ class LaboratorioAltriDipartimenti(models.Model):
     id_dip = models.ForeignKey(
         "structures.DidatticaDipartimento",
         models.DO_NOTHING,
-        db_column="id_dip",
+        db_column="ID_DIDATTICA_DIPARTIMENTO",
         blank=True,
         null=True,
     )
-    descr_dip_lab = models.CharField(max_length=400, blank=True, null=True)
+    descr_dip_lab = models.CharField(max_length=400, db_column="DESCR_DIP_LAB", blank=True, null=True)
 
     class Meta:
         managed = True
@@ -190,7 +190,7 @@ class LaboratorioDatiBase(models.Model):
     matricola_referente_compilazione = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
-        db_column="MATRICOLA_REFERENTE_COMPILAZIONE",
+        db_column="ID_PERSONALE_MATRICOLA_REFERENTE_COMPILAZIONE",
         blank=True,
         null=True,
         related_name="matricola_referente_compilazione_personale",
@@ -258,7 +258,7 @@ class LaboratorioDatiBase(models.Model):
     matricola_responsabile_scientifico = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
-        db_column="MATRICOLA_RESPONSABILE_SCIENTIFICO",
+        db_column="ID_PERSONALE_MATRICOLA_RESPONSABILE_SCIENTIFICO",
         blank=True,
         null=True,
         related_name="matricola_responsabile_scientifico_personale",
@@ -286,7 +286,7 @@ class LaboratorioDatiBase(models.Model):
     matricola_preposto_sicurezza = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
-        db_column="MATRICOLA_PREPOSTO_SICUREZZA",
+        db_column="ID_PERSONALE_MATRICOLA_PREPOSTO_SICUREZZA",
         blank=True,
         null=True,
         related_name="matricola_preposto_sicurezza_personale",
@@ -365,7 +365,7 @@ class LaboratorioPersonaleRicerca(models.Model):
     matricola_personale_ricerca = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
-        db_column="MATRICOLA_PERSONALE_RICERCA",
+        db_column="ID_PERSONALE_MATRICOLA",
         blank=True,
         null=True,
         to_field="matricola",
@@ -391,7 +391,7 @@ class LaboratorioPersonaleTecnico(models.Model):
     matricola_personale_tecnico = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
-        db_column="MATRICOLA_PERSONALE_TECNICO",
+        db_column="ID_PERSONALE_MATRICOLA",
         blank=True,
         null=True,
         to_field="matricola",

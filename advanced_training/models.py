@@ -27,9 +27,10 @@ class AltaFormazioneConsiglioScientificoInterno(models.Model):
     matricola_cons = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
-        db_column="MATRICOLA_CONS",
+        db_column="ID_PERSONALE_MATRICOLA",
         blank=True,
         null=True,
+        to_field="matricola",
     )
     nome_origine_cons = models.CharField(db_column="NOME_ORIGINE_CONS", max_length=1000)
     id_alta_formazione_dati_base = models.ForeignKey(
@@ -55,10 +56,10 @@ class AltaFormazioneDatiBase(models.Model):
     anno_rilevazione = models.IntegerField(
         db_column="ANNO_RILEVAZIONE", blank=True, null=True
     )
-    id_dipartiento_riferimento = models.ForeignKey(
+    id_dipartimento_riferimento = models.ForeignKey(
         "structures.DidatticaDipartimento",
         models.DO_NOTHING,
-        db_column="ID_DIPARTIENTO_RIFERIMENTO",
+        db_column="ID_DIPARTIMENTO_RIFERIMENTO",
         blank=True,
         null=True,
     )
@@ -77,8 +78,8 @@ class AltaFormazioneDatiBase(models.Model):
         blank=True,
         null=True,
     )
-    ore = models.IntegerField(blank=True, null=True)
-    mesi = models.IntegerField(blank=True, null=True)
+    ore = models.IntegerField(blank=True, null=True, db_column="ORE")
+    mesi = models.IntegerField(blank=True, null=True, db_column="MESI")
     data_inizio = models.DateField(db_column="DATA_INIZIO", blank=True, null=True)
     data_fine = models.DateField(db_column="DATA_FINE", blank=True, null=True)
     sede_corso = models.CharField(
@@ -107,7 +108,7 @@ class AltaFormazioneDatiBase(models.Model):
         "addressbook.Personale",
         models.SET_NULL,
         to_field="matricola",
-        db_column="MATRICOLA_DIRETTORE_SCIENTIFICO",
+        db_column="ID_PERSONALE_MATRICOLA_DIRETTORE_SCIENTIFICO",
         blank=True,
         null=True,
     )

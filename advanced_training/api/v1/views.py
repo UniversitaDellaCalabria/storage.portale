@@ -1,12 +1,13 @@
-from cds.api.v1.services import ServiceDidatticaCds
 from generics.views import ApiEndpointDetail, ApiEndpointList
 from rest_framework.schemas.openapi_agid import AgidAutoSchema
 
 from .filters import HighFormationMastersListFilter
 from .serializers import (
+    ErogationModesSerializer,
     HighFormationCourseTypesSerializer,
     HighFormationMastersSerializer,
 )
+from .services import ServiceAltaFormazione
 
 
 class ApiHighFormationMastersList(ApiEndpointList):
@@ -24,7 +25,7 @@ class ApiHighFormationMastersList(ApiEndpointList):
         language = request.query_params.get("language")
         year = request.query_params.get("year")
 
-        return ServiceDidatticaCds.getHighFormationMasters(
+        return ServiceAltaFormazione.getHighFormationMasters(
             search, director, coursetype, erogation, department, language, year
         )
 
@@ -36,7 +37,7 @@ class ApiHighFormationMastersDetail(ApiEndpointDetail):
 
     def get_queryset(self):
         master_id = self.kwargs["id"]
-        return ServiceDidatticaCds.getHighFormationMaster(master_id)
+        return ServiceAltaFormazione.getHighFormationMaster(master_id)
 
 
 class ApiHighFormationCourseTypesList(ApiEndpointList):
@@ -44,4 +45,12 @@ class ApiHighFormationCourseTypesList(ApiEndpointList):
     serializer_class = HighFormationCourseTypesSerializer
 
     def get_queryset(self):
-        return ServiceDidatticaCds.getHighFormationCourseTypes()
+        return ServiceAltaFormazione.getHighFormationCourseTypes()
+
+
+class ApiErogationModesList(ApiEndpointList):
+    description = "Retrieves the list of erogation modes."
+    serializer_class = ErogationModesSerializer
+
+    def get_queryset(self):
+        return ServiceAltaFormazione.getErogationModes()

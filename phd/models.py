@@ -38,7 +38,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
     tipologia = models.ForeignKey(
         DidatticaDottoratoAttivitaFormativaTipologia,
         models.SET_NULL,
-        db_column="TIPOLOGIA",
+        db_column="ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA_TIPOLOGIA",
         blank=False,
         null=True,
     )
@@ -77,7 +77,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     user_mod_id = models.ForeignKey(
-        get_user_model(), models.SET_NULL, blank=True, null=True
+        get_user_model(), models.SET_NULL, db_column="user_mod_id", blank=True, null=True
     )
 
     class Meta:
@@ -97,7 +97,7 @@ class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
     matricola = models.ForeignKey(
         "addressbook.Personale",
         models.CASCADE,
-        db_column="MATRICOLA",
+        db_column="ID_PERSONALE_MATRICOLA",
         to_field="matricola",
         blank=True,
         null=True,
@@ -107,7 +107,7 @@ class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     user_mod_id = models.ForeignKey(
-        get_user_model(), models.SET_NULL, blank=True, null=True
+        get_user_model(), models.SET_NULL, db_column="user_mod_id", blank=True, null=True
     )
 
     class Meta:
@@ -127,7 +127,7 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     matricola = models.ForeignKey(
         "addressbook.Personale",
         models.CASCADE,
-        db_column="MATRICOLA",
+        db_column="ID_PERSONALE_MATRICOLA",
         to_field="matricola",
         blank=True,
         null=True,
@@ -137,7 +137,7 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     user_mod_id = models.ForeignKey(
-        get_user_model(), models.SET_NULL, blank=True, null=True
+        get_user_model(), models.SET_NULL, db_column="user_mod_id", blank=True, null=True
     )
 
     def __str__(self):  # pragma: no cover

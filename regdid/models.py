@@ -40,7 +40,7 @@ class DidatticaArticoliRegolamentoStruttura(VisibileModAbstract):
     ordine = models.IntegerField(db_column="ORDINE", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD")
     id_user_mod = models.ForeignKey(
-        get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
+        get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
     id_didattica_cds_tipo_corso = models.ForeignKey(
         "cds.DidatticaCdsTipoCorso",
@@ -70,12 +70,12 @@ class DidatticaCdsArticoliRegolamentoTestata(
     VisibileModAbstract, PermissionsModAbstract
 ):
     id = models.AutoField(db_column="ID", primary_key=True)
-    cds = models.ForeignKey("cds.DidatticaCds", models.DO_NOTHING, db_column="CDS_ID")
+    cds = models.ForeignKey("cds.DidatticaCds", models.DO_NOTHING, db_column="ID_DIDATTICA_CDS")
     aa = models.IntegerField(db_column="AA")
     note = models.TextField(db_column="NOTE", blank=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD")
     id_user_mod = models.ForeignKey(
-        get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
+        get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
 
     @classmethod
@@ -171,7 +171,7 @@ class DidatticaCdsTestataStatus(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         models.DO_NOTHING,
-        db_column="id_user_mod",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -198,7 +198,7 @@ class DidatticaCdsArticoliRegolamento(VisibileModAbstract, PermissionsModAbstrac
     note = models.TextField(db_column="NOTE", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD")
     id_user_mod = models.ForeignKey(
-        get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
+        get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
 
     @classmethod
@@ -261,7 +261,7 @@ class DidatticaArticoliRegolamentoTitolo(PermissionsModAbstract):
     ordine = models.IntegerField(db_column="ORDINE")
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
-        get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
+        get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
 
     @classmethod
@@ -295,7 +295,7 @@ class DidatticaCdsSubArticoliRegolamento(VisibileModAbstract, PermissionsModAbst
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD")
     id_user_mod = models.ForeignKey(
-        get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
+        get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
 
     @classmethod

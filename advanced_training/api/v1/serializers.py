@@ -72,12 +72,12 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
             "HighFormationMinParticipants": query["num_min_partecipanti"],
             "HighFormationMaxParticipants": query["num_max_partecipanti"],
             "HighFormationMasterYear": query["anno_rilevazione"],
-            "DepartmentId": query["id_dipartiento_riferimento"],
-            "DepartmentCod": query["id_dipartiento_riferimento__dip_cod"],
-            "DepartmentName": query["id_dipartiento_riferimento__dip_des_it"]
+            "DepartmentId": query["id_dipartimento_riferimento"],
+            "DepartmentCod": query["id_dipartimento_riferimento__dip_cod"],
+            "DepartmentName": query["id_dipartimento_riferimento__dip_des_it"]
             if req_lang == "it"
-            or query["id_dipartiento_riferimento__dip_des_eng"] is None
-            else query["id_dipartiento_riferimento__dip_des_eng"],
+            or query["id_dipartimento_riferimento__dip_des_eng"] is None
+            else query["id_dipartimento_riferimento__dip_des_eng"],
             "ListenersAccepted": query["uditori_ammessi"],
             "MaxListeners": query["num_max_uditori"],
             "AdmissionRequirements": query["requisiti_ammissione"],
@@ -203,3 +203,15 @@ class HighFormationCourseTypesSerializer(CreateUpdateAbstract):
     @staticmethod
     def to_dict(query, req_lang="en"):
         return {"ID": query["id"], "Description": query["tipo_corso_descr"]}
+
+
+class ErogationModesSerializer(CreateUpdateAbstract):
+    def to_representation(self, instance):
+        query = instance
+        data = super().to_representation(instance)
+        data.update(self.to_dict(query, str(self.context["language"]).lower()))
+        return data
+
+    @staticmethod
+    def to_dict(query, req_lang="en"):
+        return {"ID": query["id"], "Description": query["descrizione"]}

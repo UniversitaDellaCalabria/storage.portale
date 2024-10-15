@@ -265,7 +265,7 @@ class DidatticaDipartimentoUrl(models.Model):
     dip_cod = models.OneToOneField(
         DidatticaDipartimento,
         models.DO_NOTHING,
-        db_column="DIP_COD",
+        db_column="ID_DIDATTICA_DIPARTIMENTO_COD",
         primary_key=True,
         to_field="dip_cod",
     )

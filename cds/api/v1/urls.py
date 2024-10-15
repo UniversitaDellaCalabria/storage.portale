@@ -8,7 +8,6 @@ from .views import (
     ApiCdSList,
     ApiCdSStudyPlansList,
     ApiDegreeTypesList,
-    ApiErogationModesList,
     ApiSortingContacts,
     ApiStudyActivityDetail,
     ApiStudyPlanActivitiesList,
@@ -29,6 +28,5 @@ urlpatterns = [
     path("activities/<int:studyactivityid>/", ApiStudyActivityDetail.as_view(), name="studyactivity-detail"),  # TODO same as studyactivity-info
     path("academicyears/", ApiAcademicYearsList.as_view(), name="academic-years"),
     path("degreetypes/", ApiDegreeTypesList.as_view(), name="degree-types"),
-    path("erogation-modes/", ApiErogationModesList.as_view(), name="erogation-modes"),
     path("sorting-contacts/<str:cdscod>/", ApiSortingContacts.as_view(), name="sorting-contacts"),
 ]

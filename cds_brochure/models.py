@@ -11,7 +11,7 @@ class CdsBrochure(models.Model):
     cds = models.ForeignKey(
         "cds.DidatticaCds",
         models.DO_NOTHING,
-        db_column="CDS_ID",
+        db_column="ID_DIDATTICA_CDS",
         blank=True,
         null=True,
         to_field="cds_id",
@@ -84,7 +84,7 @@ class CdsBrochure(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -116,7 +116,7 @@ class CdsBrochureExStudenti(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -159,7 +159,7 @@ class CdsBrochureLink(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -186,7 +186,7 @@ class CdsBrochureSlider(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )

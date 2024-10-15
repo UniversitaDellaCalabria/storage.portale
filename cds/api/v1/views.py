@@ -19,7 +19,6 @@ from .serializers import (
     CdSStudyPlanSerializer,
     CdSStudyPlansSerializer,
     DegreeTypesSerializer,
-    ErogationModesSerializer,
     StudyActivitiesSerializer,
     StudyActivityInfoSerializer,
     CdsStudyPlansActivitiesSerializer,
@@ -209,11 +208,3 @@ class ApiSortingContacts(ApiEndpointList):
     def get_queryset(self):
         cdscod = self.kwargs["cdscod"]
         return ServiceDidatticaCds.getContacts(cdscod)
-
-
-class ApiErogationModesList(ApiEndpointList):
-    description = "Retrieves the list of erogation modes."
-    serializer_class = ErogationModesSerializer
-
-    def get_queryset(self):
-        return ServiceDidatticaCds.getErogationModes()

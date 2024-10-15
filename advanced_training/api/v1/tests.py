@@ -23,7 +23,7 @@ class ApiErogationModesListUnitTest(TestCase):
             **{"id": 1, "descrizione": "AAAA"}
         )
 
-        url = reverse("cds:apiv1:erogation-modes")
+        url = reverse("advanced-training:apiv1:erogation-modes")
 
         # check url
         res = req.get(url)
@@ -75,7 +75,7 @@ class ApiHighFormationMastersListUnitTest(TestCase):
                 "matricola_direttore_scientifico": doc1,
                 "id_alta_formazione_tipo_corso": aftc,
                 "id_alta_formazione_mod_erogazione": afme,
-                "id_dipartiento_riferimento": dip,
+                "id_dipartimento_riferimento": dip,
                 "anno_rilevazione": 2021,
             }
         )
@@ -225,7 +225,7 @@ class ApiHighFormationMasterDetailUnitTest(TestCase):
                 "matricola_direttore_scientifico": doc1,
                 "id_alta_formazione_tipo_corso": aftc,
                 "id_alta_formazione_mod_erogazione": afme,
-                "id_dipartiento_riferimento": dip,
+                "id_dipartimento_riferimento": dip,
             }
         )
 

@@ -438,7 +438,7 @@ class DidatticaCdsPeriodi(models.Model):
 
 class DidatticaCdsAltriDatiUfficio(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    cds = models.ForeignKey(DidatticaCds, models.DO_NOTHING, db_column="CDS_ID")
+    cds = models.ForeignKey(DidatticaCds, models.DO_NOTHING, db_column="ID_DIDATTICA_CDS")
     ordine = models.IntegerField(db_column="ORDINE")
     nome_ufficio = models.CharField(
         db_column="NOME_UFFICIO", max_length=1000, blank=True, null=True
@@ -446,7 +446,7 @@ class DidatticaCdsAltriDatiUfficio(models.Model):
     matricola_riferimento = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
-        db_column="MATRICOLA_RIFERIMENTO",
+        db_column="ID_PERSONALE_MATRICOLA_RIFERIMENTO",
         blank=True,
         null=True,
         to_field="matricola",
@@ -766,7 +766,7 @@ class DidatticaRegolamentoTipologiaAltriDati(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         models.SET_NULL,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -779,12 +779,12 @@ class DidatticaRegolamentoTipologiaAltriDati(models.Model):
 class DidatticaRegolamentoAltriDati(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     regdid = models.ForeignKey(
-        DidatticaRegolamento, models.CASCADE, db_column="REGDID_ID"
+        DidatticaRegolamento, models.CASCADE, db_column="ID_DIDATTICA_REGOLAMENTO"
     )
     tipo_testo_regdid_cod = models.ForeignKey(
         DidatticaRegolamentoTipologiaAltriDati,
         models.PROTECT,
-        db_column="TIPO_TESTO_REGDID_COD",
+        db_column="ID_DIDATTICA_REGOLAMENTO_TIPOLOGIA_ALTRI_DATI",
         to_field="tipo_testo_regdid_cod",
     )
     clob_txt_ita = models.TextField(db_column="CLOB_TXT_ITA", blank=True, null=True)
@@ -793,7 +793,7 @@ class DidatticaRegolamentoAltriDati(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         models.SET_NULL,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -904,13 +904,13 @@ class DidatticaTestiRegolamento(InsModAbstract):
 
 class DidatticaCdsAltriDati(models.Model):
     regdid_id = models.OneToOneField(
-        DidatticaRegolamento, models.DO_NOTHING, db_column="REGDID_ID", primary_key=True
+        DidatticaRegolamento, models.DO_NOTHING, db_column="ID_DIDATTICA_REGOLAMENTO", primary_key=True
     )
     matricola_coordinatore = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
         related_name="coordinatore",
-        db_column="MATRICOLA_COORDINATORE",
+        db_column="ID_PERSONALE_MATRICOLA_COORDINATORE",
         blank=True,
         null=True,
         to_field="matricola",
@@ -922,7 +922,7 @@ class DidatticaCdsAltriDati(models.Model):
         "addressbook.Personale",
         models.SET_NULL,
         related_name="vice_coordinatore",
-        db_column="MATRICOLA_VICE_COORDINATORE",
+        db_column="ID_PERSONALE_MATRICOLA_VICE_COORDINATORE",
         blank=True,
         null=True,
         to_field="matricola",
@@ -1918,7 +1918,7 @@ class DidatticaCdsTipoCorso(PermissionsModAbstract):
     )
     note = models.CharField(db_column="NOTE", max_length=400, blank=True, null=True)
     id_user_mod = models.ForeignKey(
-        get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
+        get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
 
