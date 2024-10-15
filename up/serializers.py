@@ -40,21 +40,28 @@ def upImpegniSerializer(
 
         annoCorso = dettagliDidattici[0]["annoCorso"]
 
-        docente = ""
+        docenti = []
         aula = ""
         edificio = ""
         risorse = impegno["risorse"]
         for risorsa in risorse:
-            if risorsa.get("docente"):
-                docente = (
+            if risorsa.get("docenteId"):
+                docenti.append(
                     risorsa["docente"]["cognome"] + " " + risorsa["docente"]["nome"]
                 )
             if risorsa.get("aula"):
                 aula = risorsa["aula"]["descrizione"]
                 edificio = risorsa["aula"]["edificio"]["descrizione"]
 
-        if search_teacher and search_teacher.lower() not in docente.lower():
-            continue
+        if search_teacher:
+            teacher_found = False
+            for docente in docenti:
+                if search_teacher.lower() in docente.lower():
+                    teacher_found = True
+                    break
+            if not teacher_found:
+                continue
+
         if search_location and search_location.lower() not in aula.lower():
             continue
 
