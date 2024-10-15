@@ -14,11 +14,10 @@ def upImpegniSerializer(
         # if year and impegno["evento"]["dettagliDidattici"][0]["annoCorso"] != year:
         #     continue
 
-        if (
-            af_name
-            and impegno["evento"]["dettagliDidattici"][0]["nome"].lower()
-            != af_name.lower()
-        ):
+        # if af_name and impegno['evento']['dettagliDidattici'][0]['nome'].lower() != af_name.lower():
+        if af_name and not impegno["evento"]["dettagliDidattici"][0][
+            "nome"
+        ].lower().startswith(af_name.lower()):
             continue
 
         dataInizio = impegno["dataInizio"][0:10]
