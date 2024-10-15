@@ -12,11 +12,14 @@ def esse3AppelliSerializer(
         if not show_past and new_data < date.today().strftime("%Y-%m-%d"):
             continue
 
+        if not appello["oraEsa"]:
+            continue
+
         ora = appello["oraEsa"].split(" ")[1].split(":")
         new_ora = f"{ora[0]}:{ora[1]}"
         appello_dict = {
             "insegnamento": appello["adDes"],
-            "codice_insegnamento": appello['adCod'],
+            "codice_insegnamento": appello["adCod"],
             "dataInizio": new_data,
             "dataFine": None,
             "orarioInizio": new_ora,
