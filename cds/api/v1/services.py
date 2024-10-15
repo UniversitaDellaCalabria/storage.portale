@@ -968,16 +968,27 @@ class ServiceDidatticaAttivitaFormativa:
         append_email_addresses(filtered_hours, "coper_id__personale_id__id_ab")
         filtered_hours = list(filtered_hours)
 
-        for hour in filtered_hours:
-            for hour2 in filtered_hours:
+        clean_list = []
+        to_pass = []
+        for index, hour in enumerate(filtered_hours):
+            if index in to_pass:
+                continue
+            clean_list.append(hour)
+            to_pass.append(index)
+            for index2, hour2 in enumerate(filtered_hours):
+                if index2 in to_pass:
+                    continue
+                c = clean_list[len(clean_list) - 1]
                 if (
-                    hour["tipo_att_did_cod"] == hour2["tipo_att_did_cod"]
-                    and hour["coper_id__personale_id__matricola"]
+                    c["tipo_att_did_cod"] == hour2["tipo_att_did_cod"]
+                    and c["coper_id__personale_id__matricola"]
+                    and c["coper_id__personale_id__matricola"]
                     == hour2["coper_id__personale_id__matricola"]
-                    and hour["coper_id"] != hour2["coper_id"]
+                    and c["coper_id"] != hour2["coper_id"]
                 ):  # pragma: no cover
-                    hour["ore"] = hour["ore"] + hour2["ore"]
-                    filtered_hours.remove(hour2)
+                    c["ore"] = c["ore"] + hour2["ore"]
+                    to_pass.append(index2)
+        filtered_hours = clean_list
 
         query[0]["Hours"] = filtered_hours
 
