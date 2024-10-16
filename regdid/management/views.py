@@ -8,6 +8,7 @@ from cds_websites.models import (
     SitoWebCdsSubArticoliRegolamento,
     SitoWebCdsTopicArticoliReg,
 )
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.auth import get_user_model
@@ -42,6 +43,10 @@ from regdid.settings import (
     OFFICE_REGDIDS_DEPARTMENT,
     OFFICE_REGDIDS_REVISION,
     REGDID_ALLOWED_COURSE_TYPES,
+    STATUS_EMAIL_MESSAGE_APPROVAL,
+    STATUS_EMAIL_MESSAGE_DEPARTMENT,
+    STATUS_EMAIL_MESSAGE_REVISION,
+    STATUS_EMAIL_SUBJECT,
 )
 from xhtml2pdf import pisa
 
@@ -53,13 +58,6 @@ from .forms import (
     DidatticaCdsSubArticoliRegolamentoForm,
     DidatticaCdsTestataStatusForm,
     RegolamentoPdfImportForm,
-)
-from .settings import (
-    STATUS_EMAIL_FROM,
-    STATUS_EMAIL_MESSAGE_APPROVAL,
-    STATUS_EMAIL_MESSAGE_DEPARTMENT,
-    STATUS_EMAIL_MESSAGE_REVISION,
-    STATUS_EMAIL_SUBJECT,
 )
 from .utils import extractArticlesFromPdf
 
@@ -1210,7 +1208,7 @@ def regdid_status_change(request, regdid_id, status_cod):
             emails_sent = send_mail(
                 STATUS_EMAIL_SUBJECT,
                 f"{status_email_message} {regdid.cds.nome_cds_it.title()}: {regdid_articles_url}",
-                STATUS_EMAIL_FROM,
+                settings.DEFAULT_FROM_EMAIL,
                 recipients,
                 fail_silently=True,
             )
@@ -1285,7 +1283,10 @@ def regdid_articles_pdf(request, regdid_id):
         classe_laurea_desc += f" & {icla_cod} - {icla_des}"
 
     classe_laurea_desc = re.sub(
-        "classe delle lauree(\w|\s)+in", "", classe_laurea_desc, flags=re.IGNORECASE  # noqa: W605
+        "classe delle lauree(\w|\s)+in",
+        "",
+        classe_laurea_desc,
+        flags=re.IGNORECASE,  # noqa: W605
     )
 
     context = {

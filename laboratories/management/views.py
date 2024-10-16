@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from addressbook.models import Personale
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
@@ -33,7 +34,6 @@ from laboratories.models import (
 from laboratories.settings import (
     OFFICE_LABORATORIES,
     OFFICE_LABORATORY_VALIDATORS,
-    TO_VALIDATORS_EMAIL_FROM,
     TO_VALIDATORS_EMAIL_MESSAGE,
     TO_VALIDATORS_EMAIL_SUBJECT,
 )
@@ -2675,7 +2675,7 @@ def laboratory_request_approval(
     send_mail(
         TO_VALIDATORS_EMAIL_SUBJECT,
         f"{TO_VALIDATORS_EMAIL_MESSAGE} {laboratory.nome_laboratorio} {lab_url}",
-        TO_VALIDATORS_EMAIL_FROM,
+        settings.DEFAULT_FROM_EMAIL,
         validators,
         fail_silently=True,
     )
