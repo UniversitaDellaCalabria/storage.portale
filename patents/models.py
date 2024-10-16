@@ -17,7 +17,7 @@ class BrevettoDirittiCommerciali(models.Model):
 
 class BrevettoTerritori(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    territorio = models.CharField(db_column="ID_BREVETTO_TERRITORI", max_length=80)
+    territorio = models.CharField(db_column="TERRITORIO", max_length=80)
 
     def __str__(self):  # pragma: no cover
         return self.territorio
@@ -91,7 +91,7 @@ class BrevettoDatiBase(models.Model):
     territorio = models.ForeignKey(
         BrevettoTerritori,
         models.SET_NULL,
-        db_column="TERRITORIO",
+        db_column="ID_BREVETTO_TERRITORI",
         blank=True,
         null=True,
     )
