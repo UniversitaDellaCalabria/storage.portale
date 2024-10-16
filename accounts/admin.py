@@ -8,7 +8,7 @@ from . models import User
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    readonly_fields = ('date_joined', 'last_login',)
+    readonly_fields = ('date_joined', 'last_login','manual_user_update')
     list_display = ('username', 'email', 'is_active',
                     'is_staff', 'is_superuser', )
     list_editable = ('is_active', 'is_staff', 'is_superuser',)
@@ -29,7 +29,8 @@ class CustomUserAdmin(UserAdmin):
 
 
         (_('Date accessi sistema'), {'fields': (('date_joined',
-                                                 'last_login', ))
+                                                 'last_login',
+                                                 'manual_user_update' ))
                                     }),
     )
     add_fieldsets = (

@@ -24,6 +24,7 @@ class User(AbstractUser):
     origin = models.CharField(_('from which connector this user come from'),
                               max_length=254,
                               blank=True, null=True)
+    manual_user_update = models.DateTimeField(_('Ultimo aggiornamento manuale dei dati'), blank=True, null=True)
 
     class Meta:
         ordering = ['username']

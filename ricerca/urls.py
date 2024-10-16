@@ -94,7 +94,9 @@ if 'crud.laboratories' in settings.INSTALLED_APPS:
 if 'crud.regdid' in settings.INSTALLED_APPS:
     import crud.regdid.urls
     urlpatterns += path('', include((crud.regdid.urls, 'crud_regdid',))),
-
+if "accounts" in settings.INSTALLED_APPS:
+    import accounts.urls
+    urlpatterns += (path("", include(accounts.urls, "accounts")),)
 if 'pentaho' in settings.INSTALLED_APPS:
     import pentaho.urls
     urlpatterns += path('', include((pentaho.urls, 'pentaho',))),

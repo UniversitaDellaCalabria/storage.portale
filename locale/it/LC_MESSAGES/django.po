@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-21 11:57+0200\n"
-"PO-Revision-Date: 2024-06-21 11:58+0200\n"
+"POT-Creation-Date: 2024-10-16 14:00+0200\n"
+"PO-Revision-Date: 2024-10-16 14:00+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: accounts/admin.py:20
 msgid "Anagrafica"
@@ -29,6 +29,10 @@ msgstr ""
 #: accounts/admin.py:31
 msgid "Date accessi sistema"
 msgstr ""
+
+#: accounts/middlewares.py:23
+msgid "Complete your profile to be able to use the system"
+msgstr "Completa il tuo profilo per poter utilizzare il sistema"
 
 #: accounts/models.py:11
 msgid "Maschio"
@@ -70,9 +74,239 @@ msgstr ""
 msgid "from which connector this user come from"
 msgstr ""
 
-#: accounts/models.py:30
+#: accounts/models.py:27
+msgid "Ultimo aggiornamento manuale dei dati"
+msgstr ""
+
+#: accounts/models.py:31
 msgid "Users"
 msgstr "Utenti"
+
+#: accounts/settings.py:24
+#, python-brace-format
+msgid ""
+"Dear user,\n"
+"this message was sent by {hostname}.\n"
+"Please do not reply to this email.\n"
+"\n"
+"-------------------\n"
+"\n"
+msgstr ""
+"Gentile utente,\n"
+"questo messaggio è stato inviato da {hostname}.\n"
+"Si prega di non rispondere a questa email.\n"
+"\n"
+"-------------------\n"
+
+#: accounts/settings.py:38
+msgid ""
+"\n"
+"\n"
+"-------------------\n"
+"\n"
+"For technical problems contact our staff.\n"
+"Best regards.\n"
+msgstr ""
+"\n"
+"\n"
+"-------------------\n"
+"\n"
+"Per problemi tecnici contattare il nostro staff.\n"
+"Distinti saluti.\n"
+
+#: accounts/templates/account.html:10 accounts/views.py:20 accounts/views.py:29
+#: crud/utils/templates/main_menu.html:21
+msgid "Account"
+msgstr ""
+
+#: accounts/templates/account.html:14
+msgid "First name"
+msgstr "Nome"
+
+#: accounts/templates/account.html:18
+msgid "Last name"
+msgstr "Cognome"
+
+#: accounts/templates/account.html:22
+msgid "Email"
+msgstr ""
+
+#: accounts/templates/account.html:26
+msgid "Taxpayer ID"
+msgstr "Codice fiscale"
+
+#: accounts/templates/account.html:34 accounts/views.py:30
+#: crud/cds/templates/cds_detail.html:78 crud/cds/templates/cds_detail.html:218
+#: crud/cds/templates/cds_detail.html:318
+#: crud/cds/templates/cds_detail.html:443
+#: crud/cds/templates/cds_detail.html:504
+#: crud/cds/templates/cds_detail.html:567 crud/cds/templates/cds_group.html:10
+#: crud/cds/templates/cds_group.html:71
+#: crud/cds/templates/cds_office_data.html:36
+#: crud/cds/templates/cds_other_data.html:39
+#: crud/cds/templates/cds_other_data.html:110
+#: crud/cds/templates/cds_regdid_other_data.html:151 crud/cds/views.py:1429
+#: crud/cds_websites_brochure/templates/blocks/crud_cds_websites_brochure_list.html:123
+#: crud/cds_websites_brochure/templates/cds_website_exstudents.html:80
+#: crud/cds_websites_brochure/templates/cds_website_links.html:81
+#: crud/cds_websites_brochure/templates/cds_website_sliders.html:81
+#: crud/cds_websites_brochure/views.py:239
+#: crud/cds_websites_pages/templates/blocks/cds_website_object_items.html:76
+#: crud/cds_websites_pages/templates/blocks/cds_website_regulament_article_items.html:75
+#: crud/cds_websites_pages/templates/blocks/cds_website_topics_objects.html:103
+#: crud/cds_websites_pages/templates/blocks/crud_cds_websites_pages_list.html:123
+#: crud/cds_websites_pages/templates/regulament_articles.html:110
+#: crud/companies/templates/blocks/crud_companies.html:168
+#: crud/companies/templates/company.html:82
+#: crud/companies/templates/company.html:158
+#: crud/laboratories/templates/blocks/crud_laboratories.html:262
+#: crud/laboratories/templates/laboratory.html:425
+#: crud/laboratories/templates/laboratory.html:546
+#: crud/laboratories/templates/laboratory.html:734
+#: crud/laboratories/templates/laboratory.html:914
+#: crud/laboratories/templates/laboratory.html:1004
+#: crud/laboratories/templates/laboratory.html:1086
+#: crud/laboratories/templates/laboratory.html:1175
+#: crud/patents/templates/blocks/crud_patents.html:137
+#: crud/patents/templates/patent.html:82
+#: crud/phd/templates/blocks/crud_phd_list.html:250
+#: crud/phd/templates/phd.html:84 crud/phd/templates/phd.html:163
+#: crud/projects/templates/blocks/crud_projects.html:243
+#: crud/projects/templates/project.html:80
+#: crud/projects/templates/project.html:155
+#: crud/projects/templates/project.html:234
+#: crud/regdid/templates/blocks/regdid_article_item.html:100
+#: crud/regdid/templates/blocks/regdid_sub_article_item.html:93
+#: crud/research_groups/templates/blocks/crud_researchgroups.html:161
+#: crud/research_groups/templates/researchgroup.html:92
+#: crud/research_lines/templates/applied_researchline.html:92
+#: crud/research_lines/templates/base_researchline.html:92
+#: crud/research_lines/templates/blocks/crud_researchlines.html:164
+#: crud/teachers/templates/blocks/crud_teacher_books.html:73
+#: crud/teachers/templates/blocks/crud_teacher_news.html:74
+#: crud/teachers/templates/teacher_detail.html:25
+msgid "Edit"
+msgstr "Modifica"
+
+#: accounts/templates/change_user_data.html:8
+msgid "Edit user data"
+msgstr "Modifica dati utente"
+
+#: accounts/templates/change_user_data.html:13
+msgid "Send"
+msgstr ""
+
+#: accounts/templates/change_user_data.html:22 accounts/views.py:77
+msgid "Edit personal data"
+msgstr "Modifica dati personali"
+
+#: accounts/templates/change_user_data.html:31
+msgid "Do you want to confirm data?"
+msgstr "Desideri confermare i dati immessi?"
+
+#: accounts/templates/change_user_data.html:36
+msgid "Ok"
+msgstr ""
+
+#: accounts/views.py:19 accounts/views.py:28 crud/cds/views.py:103
+#: crud/cds/views.py:171 crud/cds/views.py:286 crud/cds/views.py:356
+#: crud/cds/views.py:430 crud/cds/views.py:627 crud/cds/views.py:716
+#: crud/cds/views.py:799 crud/cds/views.py:886 crud/cds/views.py:1047
+#: crud/cds/views.py:1126 crud/cds/views.py:1212 crud/cds/views.py:1426
+#: crud/cds/views.py:1513 crud/cds_websites_brochure/views.py:28
+#: crud/cds_websites_brochure/views.py:41
+#: crud/cds_websites_brochure/views.py:114
+#: crud/cds_websites_brochure/views.py:140
+#: crud/cds_websites_brochure/views.py:188
+#: crud/cds_websites_brochure/views.py:235
+#: crud/cds_websites_brochure/views.py:277
+#: crud/cds_websites_brochure/views.py:326
+#: crud/cds_websites_brochure/views.py:375
+#: crud/cds_websites_brochure/views.py:417
+#: crud/cds_websites_brochure/views.py:465
+#: crud/cds_websites_brochure/views.py:512 crud/cds_websites_pages/views.py:31
+#: crud/cds_websites_pages/views.py:102 crud/cds_websites_pages/views.py:188
+#: crud/cds_websites_pages/views.py:242 crud/cds_websites_pages/views.py:302
+#: crud/cds_websites_pages/views.py:361 crud/cds_websites_pages/views.py:444
+#: crud/cds_websites_pages/views.py:496 crud/cds_websites_pages/views.py:567
+#: crud/cds_websites_pages/views.py:622 crud/companies/views.py:34
+#: crud/companies/views.py:87 crud/companies/views.py:168
+#: crud/companies/views.py:230 crud/companies/views.py:305
+#: crud/companies/views.py:366 crud/laboratories/views.py:54
+#: crud/laboratories/views.py:305 crud/laboratories/views.py:412
+#: crud/laboratories/views.py:545 crud/laboratories/views.py:633
+#: crud/laboratories/views.py:723 crud/laboratories/views.py:822
+#: crud/laboratories/views.py:938 crud/laboratories/views.py:1041
+#: crud/laboratories/views.py:1093 crud/laboratories/views.py:1139
+#: crud/laboratories/views.py:1226 crud/laboratories/views.py:1322
+#: crud/laboratories/views.py:1403 crud/laboratories/views.py:1463
+#: crud/laboratories/views.py:1555 crud/laboratories/views.py:1645
+#: crud/laboratories/views.py:1710 crud/laboratories/views.py:1755
+#: crud/patents/views.py:33 crud/patents/views.py:69 crud/patents/views.py:121
+#: crud/patents/views.py:182 crud/patents/views.py:256 crud/phd/views.py:34
+#: crud/phd/views.py:113 crud/phd/views.py:182 crud/phd/views.py:262
+#: crud/phd/views.py:332 crud/phd/views.py:443 crud/phd/views.py:515
+#: crud/projects/views.py:37 crud/projects/views.py:91
+#: crud/projects/views.py:158 crud/projects/views.py:245
+#: crud/projects/views.py:320 crud/projects/views.py:408
+#: crud/projects/views.py:482 crud/projects/views.py:562
+#: crud/regdid/views.py:73 crud/regdid/views.py:137 crud/regdid/views.py:244
+#: crud/regdid/views.py:346 crud/regdid/views.py:438 crud/regdid/views.py:553
+#: crud/regdid/views.py:637 crud/regdid/views.py:940
+#: crud/research_groups/views.py:31 crud/research_groups/views.py:78
+#: crud/research_groups/views.py:180 crud/research_groups/views.py:228
+#: crud/research_groups/views.py:286 crud/research_lines/views.py:31
+#: crud/research_lines/views.py:44 crud/research_lines/views.py:115
+#: crud/research_lines/views.py:134 crud/research_lines/views.py:243
+#: crud/research_lines/views.py:264 crud/research_lines/views.py:391
+#: crud/research_lines/views.py:439 crud/research_lines/views.py:496
+#: crud/research_lines/views.py:555 crud/teachers/views.py:32
+#: crud/teachers/views.py:61 crud/teachers/views.py:133
+#: crud/teachers/views.py:187 crud/teachers/views.py:272
+#: crud/teachers/views.py:321 crud/teachers/views.py:405
+#: crud/teachers/views.py:454 crud/utils/templates/dashboard.html:14
+msgid "Dashboard"
+msgstr "Pagina iniziale"
+
+#: accounts/views.py:48
+msgid "Data saved successfully"
+msgstr "Dati salvati con successo"
+
+#: accounts/views.py:58
+msgid "Confirm your email by clicking here {}"
+msgstr "Conferma la tua email facendo clic qui {}"
+
+#: accounts/views.py:61
+msgid "Email confirmation"
+msgstr "Conferma email"
+
+#: accounts/views.py:68
+msgid ""
+"An email has been sent to the address you indicated. Click on the link in "
+"the message to confirm the new data"
+msgstr ""
+"Una email è stata inviata all'indirizzo che hai indicato. Cliccare sul "
+"collegamento presente nel messaggio per confermare i nuovi dati"
+
+#: accounts/views.py:73
+msgid "Wrong data"
+msgstr "Dati errati"
+
+#: accounts/views.py:87
+msgid "Missing token"
+msgstr "Token mancante"
+
+#: accounts/views.py:96
+msgid "Invalid token"
+msgstr "Token non valido"
+
+#: accounts/views.py:113
+msgid "Expired token"
+msgstr "Token scaduto"
+
+#: accounts/views.py:121
+msgid "Email updated successfully"
+msgstr "Email aggiornata con successo"
 
 #: crud/cds/decorators.py:23 crud/cds/decorators.py:62
 #: crud/cds/decorators.py:91 crud/cds/decorators.py:121
@@ -93,18 +327,18 @@ msgstr "Utenti"
 #: crud/laboratories/views.py:1068 crud/laboratories/views.py:1436
 #: crud/laboratories/views.py:1597 crud/laboratories/views.py:1734
 #: crud/laboratories/views.py:1912 crud/patents/decorators.py:32
-#: crud/phd/decorators.py:26 crud/phd/decorators.py:52
-#: crud/projects/decorators.py:31 crud/regdid/views.py:149
-#: crud/regdid/views.py:186 crud/regdid/views.py:273 crud/regdid/views.py:297
-#: crud/regdid/views.py:384 crud/regdid/views.py:389 crud/regdid/views.py:461
-#: crud/regdid/views.py:470 crud/regdid/views.py:497 crud/regdid/views.py:518
-#: crud/regdid/views.py:584 crud/regdid/views.py:591 crud/regdid/views.py:663
-#: crud/regdid/views.py:671 crud/regdid/views.py:697 crud/regdid/views.py:729
-#: crud/regdid/views.py:804 crud/regdid/views.py:865 crud/regdid/views.py:872
-#: crud/regdid/views.py:962 crud/research_groups/decorators.py:28
+#: crud/phd/decorators.py:27 crud/phd/decorators.py:55
+#: crud/projects/decorators.py:31 crud/regdid/views.py:154
+#: crud/regdid/views.py:191 crud/regdid/views.py:278 crud/regdid/views.py:302
+#: crud/regdid/views.py:389 crud/regdid/views.py:394 crud/regdid/views.py:466
+#: crud/regdid/views.py:475 crud/regdid/views.py:502 crud/regdid/views.py:523
+#: crud/regdid/views.py:589 crud/regdid/views.py:596 crud/regdid/views.py:668
+#: crud/regdid/views.py:676 crud/regdid/views.py:702 crud/regdid/views.py:734
+#: crud/regdid/views.py:809 crud/regdid/views.py:869 crud/regdid/views.py:876
+#: crud/regdid/views.py:966 crud/research_groups/decorators.py:28
 #: crud/research_groups/decorators.py:62 crud/research_lines/decorators.py:28
 #: crud/research_lines/decorators.py:66 crud/research_lines/decorators.py:100
-#: crud/teachers/decorators.py:42 crud/teachers/decorators.py:76
+#: crud/teachers/decorators.py:43 crud/teachers/decorators.py:77
 #: crud/utils/decorators.py:21 crud/utils/decorators.py:33
 msgid "Permission denied"
 msgstr "Permesso negato"
@@ -377,58 +611,6 @@ msgstr "Si, procedi"
 #: crud/cds/templates/cds_regdid_other_data.html:92
 msgid "Import"
 msgstr "Importa"
-
-#: crud/cds/templates/cds_detail.html:78 crud/cds/templates/cds_detail.html:218
-#: crud/cds/templates/cds_detail.html:318
-#: crud/cds/templates/cds_detail.html:443
-#: crud/cds/templates/cds_detail.html:504
-#: crud/cds/templates/cds_detail.html:567 crud/cds/templates/cds_group.html:10
-#: crud/cds/templates/cds_group.html:71
-#: crud/cds/templates/cds_office_data.html:36
-#: crud/cds/templates/cds_other_data.html:39
-#: crud/cds/templates/cds_other_data.html:110
-#: crud/cds/templates/cds_regdid_other_data.html:151 crud/cds/views.py:1429
-#: crud/cds_websites_brochure/templates/blocks/crud_cds_websites_brochure_list.html:123
-#: crud/cds_websites_brochure/templates/cds_website_exstudents.html:80
-#: crud/cds_websites_brochure/templates/cds_website_links.html:81
-#: crud/cds_websites_brochure/templates/cds_website_sliders.html:81
-#: crud/cds_websites_brochure/views.py:239
-#: crud/cds_websites_pages/templates/blocks/cds_website_object_items.html:76
-#: crud/cds_websites_pages/templates/blocks/cds_website_regulament_article_items.html:75
-#: crud/cds_websites_pages/templates/blocks/cds_website_topics_objects.html:103
-#: crud/cds_websites_pages/templates/blocks/crud_cds_websites_pages_list.html:123
-#: crud/cds_websites_pages/templates/regulament_articles.html:110
-#: crud/companies/templates/blocks/crud_companies.html:168
-#: crud/companies/templates/company.html:82
-#: crud/companies/templates/company.html:158
-#: crud/laboratories/templates/blocks/crud_laboratories.html:262
-#: crud/laboratories/templates/laboratory.html:425
-#: crud/laboratories/templates/laboratory.html:546
-#: crud/laboratories/templates/laboratory.html:734
-#: crud/laboratories/templates/laboratory.html:914
-#: crud/laboratories/templates/laboratory.html:1004
-#: crud/laboratories/templates/laboratory.html:1086
-#: crud/laboratories/templates/laboratory.html:1175
-#: crud/patents/templates/blocks/crud_patents.html:137
-#: crud/patents/templates/patent.html:82
-#: crud/phd/templates/blocks/crud_phd_list.html:250
-#: crud/phd/templates/phd.html:84 crud/phd/templates/phd.html:163
-#: crud/projects/templates/blocks/crud_projects.html:243
-#: crud/projects/templates/project.html:80
-#: crud/projects/templates/project.html:155
-#: crud/projects/templates/project.html:234
-#: crud/regdid/templates/blocks/regdid_article_item.html:100
-#: crud/regdid/templates/blocks/regdid_sub_article_item.html:93
-#: crud/research_groups/templates/blocks/crud_researchgroups.html:161
-#: crud/research_groups/templates/researchgroup.html:92
-#: crud/research_lines/templates/applied_researchline.html:92
-#: crud/research_lines/templates/base_researchline.html:92
-#: crud/research_lines/templates/blocks/crud_researchlines.html:164
-#: crud/teachers/templates/blocks/crud_teacher_books.html:73
-#: crud/teachers/templates/blocks/crud_teacher_news.html:74
-#: crud/teachers/templates/teacher_detail.html:25
-msgid "Edit"
-msgstr "Modifica"
 
 #: crud/cds/templates/cds_detail.html:85 crud/cds/templates/cds_detail.html:225
 #: crud/cds/templates/cds_detail.html:325
@@ -795,7 +977,7 @@ msgstr " per "
 #: crud/cds/templates/cds_regdid_other_data_form.html:29
 #: crud/cds_websites_pages/forms.py:136 crud/cds_websites_pages/forms.py:159
 #: crud/laboratories/forms.py:216
-#: crud/laboratories/templates/laboratory.html:893 crud/phd/forms.py:82
+#: crud/laboratories/templates/laboratory.html:893 crud/phd/forms.py:87
 #: crud/teachers/templates/blocks/crud_teacher_news.html:40
 msgid "Type"
 msgstr "Tipo"
@@ -824,66 +1006,6 @@ msgstr "Ordinamento didattico per"
 #: crud/cds/templates/cds_teaching_system.html:14
 msgid "Currently refers to that of the year"
 msgstr "Attualmente fa riferimento a quello dell'anno"
-
-#: crud/cds/views.py:103 crud/cds/views.py:171 crud/cds/views.py:286
-#: crud/cds/views.py:356 crud/cds/views.py:430 crud/cds/views.py:627
-#: crud/cds/views.py:716 crud/cds/views.py:799 crud/cds/views.py:886
-#: crud/cds/views.py:1047 crud/cds/views.py:1126 crud/cds/views.py:1212
-#: crud/cds/views.py:1426 crud/cds/views.py:1513
-#: crud/cds_websites_brochure/views.py:28
-#: crud/cds_websites_brochure/views.py:41
-#: crud/cds_websites_brochure/views.py:114
-#: crud/cds_websites_brochure/views.py:140
-#: crud/cds_websites_brochure/views.py:188
-#: crud/cds_websites_brochure/views.py:235
-#: crud/cds_websites_brochure/views.py:277
-#: crud/cds_websites_brochure/views.py:326
-#: crud/cds_websites_brochure/views.py:375
-#: crud/cds_websites_brochure/views.py:417
-#: crud/cds_websites_brochure/views.py:465
-#: crud/cds_websites_brochure/views.py:512 crud/cds_websites_pages/views.py:31
-#: crud/cds_websites_pages/views.py:102 crud/cds_websites_pages/views.py:188
-#: crud/cds_websites_pages/views.py:242 crud/cds_websites_pages/views.py:302
-#: crud/cds_websites_pages/views.py:361 crud/cds_websites_pages/views.py:444
-#: crud/cds_websites_pages/views.py:496 crud/cds_websites_pages/views.py:567
-#: crud/cds_websites_pages/views.py:622 crud/companies/views.py:34
-#: crud/companies/views.py:87 crud/companies/views.py:168
-#: crud/companies/views.py:230 crud/companies/views.py:305
-#: crud/companies/views.py:366 crud/laboratories/views.py:54
-#: crud/laboratories/views.py:305 crud/laboratories/views.py:412
-#: crud/laboratories/views.py:545 crud/laboratories/views.py:633
-#: crud/laboratories/views.py:723 crud/laboratories/views.py:822
-#: crud/laboratories/views.py:938 crud/laboratories/views.py:1041
-#: crud/laboratories/views.py:1093 crud/laboratories/views.py:1139
-#: crud/laboratories/views.py:1226 crud/laboratories/views.py:1322
-#: crud/laboratories/views.py:1403 crud/laboratories/views.py:1463
-#: crud/laboratories/views.py:1555 crud/laboratories/views.py:1645
-#: crud/laboratories/views.py:1710 crud/laboratories/views.py:1755
-#: crud/patents/views.py:33 crud/patents/views.py:69 crud/patents/views.py:121
-#: crud/patents/views.py:182 crud/patents/views.py:256 crud/phd/views.py:34
-#: crud/phd/views.py:112 crud/phd/views.py:181 crud/phd/views.py:261
-#: crud/phd/views.py:331 crud/phd/views.py:442 crud/phd/views.py:514
-#: crud/projects/views.py:37 crud/projects/views.py:91
-#: crud/projects/views.py:158 crud/projects/views.py:245
-#: crud/projects/views.py:320 crud/projects/views.py:408
-#: crud/projects/views.py:482 crud/projects/views.py:562
-#: crud/regdid/views.py:68 crud/regdid/views.py:132 crud/regdid/views.py:239
-#: crud/regdid/views.py:341 crud/regdid/views.py:433 crud/regdid/views.py:548
-#: crud/regdid/views.py:632 crud/regdid/views.py:936
-#: crud/research_groups/views.py:31 crud/research_groups/views.py:78
-#: crud/research_groups/views.py:180 crud/research_groups/views.py:228
-#: crud/research_groups/views.py:286 crud/research_lines/views.py:31
-#: crud/research_lines/views.py:44 crud/research_lines/views.py:115
-#: crud/research_lines/views.py:134 crud/research_lines/views.py:243
-#: crud/research_lines/views.py:264 crud/research_lines/views.py:391
-#: crud/research_lines/views.py:439 crud/research_lines/views.py:496
-#: crud/research_lines/views.py:555 crud/teachers/views.py:32
-#: crud/teachers/views.py:61 crud/teachers/views.py:133
-#: crud/teachers/views.py:187 crud/teachers/views.py:272
-#: crud/teachers/views.py:321 crud/teachers/views.py:405
-#: crud/teachers/views.py:454 crud/utils/templates/dashboard.html:14
-msgid "Dashboard"
-msgstr "Pagina iniziale"
 
 #: crud/cds/views.py:104 crud/cds/views.py:172 crud/cds/views.py:287
 #: crud/cds/views.py:357 crud/cds/views.py:431 crud/cds/views.py:628
@@ -1027,7 +1149,7 @@ msgstr "Gruppo eliminato con successo"
 msgid "Member deleted successfully"
 msgstr "Membro eliminato con successo"
 
-#: crud/cds/views.py:1310 crud/regdid/views.py:477 crud/regdid/views.py:678
+#: crud/cds/views.py:1310 crud/regdid/views.py:482 crud/regdid/views.py:683
 msgid "Deleted"
 msgstr "Eliminato"
 
@@ -1063,7 +1185,7 @@ msgstr "Almeno campo deve essere riempito"
 msgid "added successfully"
 msgstr "aggiunto con successo"
 
-#: crud/cds/views.py:1503 crud/regdid/views.py:420 crud/regdid/views.py:619
+#: crud/cds/views.py:1503 crud/regdid/views.py:425 crud/regdid/views.py:624
 msgid "Added"
 msgstr "Aggiunto"
 
@@ -1071,7 +1193,7 @@ msgstr "Aggiunto"
 #: crud/cds_websites_brochure/views.py:330
 #: crud/cds_websites_brochure/views.py:469 crud/companies/views.py:170
 #: crud/laboratories/views.py:414 crud/patents/views.py:71
-#: crud/phd/views.py:114 crud/projects/views.py:160
+#: crud/phd/views.py:115 crud/projects/views.py:160
 #: crud/regdid/templates/blocks/regdid_article_item.html:125
 #: crud/regdid/templates/blocks/regdid_article_item.html:150
 #: crud/regdid/templates/regdid_article_unique_form.html:132
@@ -1849,8 +1971,8 @@ msgstr "Ordinamento"
 
 #: crud/companies/forms.py:67 crud/laboratories/forms.py:156
 #: crud/laboratories/forms.py:162 crud/laboratories/forms.py:308
-#: crud/laboratories/forms.py:377 crud/patents/forms.py:91 crud/phd/forms.py:38
-#: crud/phd/forms.py:47 crud/projects/forms.py:56 crud/projects/forms.py:65
+#: crud/laboratories/forms.py:377 crud/patents/forms.py:91 crud/phd/forms.py:39
+#: crud/phd/forms.py:48 crud/projects/forms.py:56 crud/projects/forms.py:65
 msgid "Name and Surname"
 msgstr "Nome e Cognome"
 
@@ -1866,7 +1988,7 @@ msgstr "Si"
 
 #: crud/companies/templates/blocks/crud_companies.html:67
 #: crud/companies/templates/blocks/crud_companies.html:91
-#: crud/utils/settings.py:50
+#: crud/utils/settings.py:47
 msgid "No"
 msgstr ""
 
@@ -2877,65 +2999,65 @@ msgstr "Inventore rimosso con successo"
 msgid "Patent removed successfully"
 msgstr "Brevetto rimosso con successo"
 
-#: crud/phd/forms.py:76
+#: crud/phd/forms.py:80
 msgid "Central Structure"
 msgstr "Struttura di riferimento"
 
-#: crud/phd/forms.py:80 crud/phd/templates/blocks/crud_phd_list.html:142
+#: crud/phd/forms.py:85 crud/phd/templates/blocks/crud_phd_list.html:142
 msgid "SSD"
 msgstr ""
 
-#: crud/phd/forms.py:85
+#: crud/phd/forms.py:90
 msgid "Reference"
 msgstr "Dottorato di riferimento"
 
-#: crud/phd/forms.py:89 crud/phd/templates/blocks/crud_phd_list.html:170
+#: crud/phd/forms.py:94 crud/phd/templates/blocks/crud_phd_list.html:170
 msgid "Cycle"
 msgstr ""
 
-#: crud/phd/forms.py:100
+#: crud/phd/forms.py:105
 msgid "Reference PhD required if activity type is Departmental"
 msgstr ""
 "Dottorato di riferimento obbligatorio se l'attività è di tipo Dipartimentale"
 
-#: crud/phd/forms.py:109 crud/research_lines/forms.py:27
+#: crud/phd/forms.py:114 crud/research_lines/forms.py:27
 #: crud/research_lines/forms.py:44
 msgid "Denomination"
 msgstr "Denominazione"
 
-#: crud/phd/forms.py:111
+#: crud/phd/forms.py:116
 msgid "CFU"
 msgstr ""
 
-#: crud/phd/forms.py:112
+#: crud/phd/forms.py:117
 msgid "Contents"
 msgstr "Contenuti"
 
-#: crud/phd/forms.py:115
+#: crud/phd/forms.py:120
 msgid "Verification Mode"
 msgstr "Modalità di verifica"
 
-#: crud/phd/forms.py:116
+#: crud/phd/forms.py:121
 msgid "Expected Start Date"
 msgstr "Data prevista di inizio"
 
-#: crud/phd/forms.py:117
+#: crud/phd/forms.py:122
 msgid "Expected End Date"
 msgstr "Data prevista di fine"
 
-#: crud/phd/forms.py:118
+#: crud/phd/forms.py:123
 msgid "Timetable and Classrooms"
 msgstr "Orario e aule"
 
-#: crud/phd/forms.py:119
+#: crud/phd/forms.py:124
 msgid "Maximum students number"
 msgstr "Numero massimo di studenti"
 
-#: crud/phd/forms.py:120
+#: crud/phd/forms.py:125
 msgid "Minimum students number"
 msgstr "Numero minimo di studenti"
 
-#: crud/phd/forms.py:121
+#: crud/phd/forms.py:126
 msgid "Tipologia attività"
 msgstr ""
 
@@ -2970,8 +3092,8 @@ msgid "Do you want to delete choosen director?"
 msgstr "Vuoi davvero eliminare il docente selezionato?"
 
 #: crud/phd/templates/phd_list.html:15 crud/phd/views.py:35
-#: crud/phd/views.py:113 crud/phd/views.py:182 crud/phd/views.py:262
-#: crud/phd/views.py:332 crud/phd/views.py:443 crud/phd/views.py:515
+#: crud/phd/views.py:114 crud/phd/views.py:183 crud/phd/views.py:263
+#: crud/phd/views.py:333 crud/phd/views.py:444 crud/phd/views.py:516
 #: crud/utils/templates/dashboard.html:112
 msgid "PhD activities"
 msgstr "Attività dei Dottorati"
@@ -3002,51 +3124,51 @@ msgstr "Modifica dati per"
 msgid "New teacher data for"
 msgstr "Nuovi dati per"
 
-#: crud/phd/views.py:81 crud/phd/views.py:149
+#: crud/phd/views.py:81 crud/phd/views.py:150
 msgid "You are not authorized to post activities for this PhD"
 msgstr "Non sei autorizzato ad inserire attività per questo dottorato"
 
-#: crud/phd/views.py:101
+#: crud/phd/views.py:102
 msgid "PhD activity created successfully"
 msgstr "Attività creata con successo"
 
-#: crud/phd/views.py:168
+#: crud/phd/views.py:169
 msgid "PhD activity edited successfully"
 msgstr "Attività modificata con successo"
 
-#: crud/phd/views.py:250 crud/phd/views.py:431
+#: crud/phd/views.py:251 crud/phd/views.py:432
 msgid "Teacher data edited successfully"
 msgstr "Docente modificato con successo"
 
-#: crud/phd/views.py:264 crud/phd/views.py:445
+#: crud/phd/views.py:265 crud/phd/views.py:446
 msgid "PhD activity teacher data"
 msgstr "Dati docente attività"
 
-#: crud/phd/views.py:323 crud/phd/views.py:506
+#: crud/phd/views.py:324 crud/phd/views.py:507
 #: crud/research_groups/views.py:220 crud/research_lines/views.py:383
 #: crud/research_lines/views.py:431
 msgid "Teacher added successfully"
 msgstr "Docente aggiunto con successo"
 
-#: crud/phd/views.py:334 crud/phd/views.py:517
+#: crud/phd/views.py:335 crud/phd/views.py:518
 #: crud/research_groups/views.py:231 crud/research_lines/views.py:394
 #: crud/research_lines/views.py:442
 msgid "New teacher"
 msgstr "Nuovo docente"
 
-#: crud/phd/views.py:362 crud/phd/views.py:544
+#: crud/phd/views.py:363 crud/phd/views.py:545
 #: crud/research_groups/views.py:315 crud/research_lines/views.py:584
 #: crud/research_lines/views.py:613
 msgid "Operation not permitted. At least one teacher must be present"
 msgstr "Operazione non consentita. Almeno un docente deve essere presente"
 
-#: crud/phd/views.py:372 crud/phd/views.py:554
+#: crud/phd/views.py:373 crud/phd/views.py:555
 #: crud/research_groups/views.py:326 crud/research_lines/views.py:595
 #: crud/research_lines/views.py:624
 msgid "Teacher removed successfully"
 msgstr "Docente rimosso con successo"
 
-#: crud/phd/views.py:572
+#: crud/phd/views.py:573
 msgid "PhD activity removed successfully"
 msgstr "Attività del dottorato rimossa con successo"
 
@@ -3084,7 +3206,7 @@ msgstr "Unità organizzativa"
 
 #: crud/projects/forms.py:70
 #: crud/projects/templates/blocks/crud_projects.html:140
-#: crud/projects/views.py:565 crud/regdid/views.py:134
+#: crud/projects/views.py:565 crud/regdid/views.py:139
 #: crud/research_groups/templates/researchgroup.html:72
 #: crud/utils/templates/blocks/crud_addressbook.html:67
 msgid "Structure"
@@ -3403,119 +3525,119 @@ msgstr ""
 "formattazione, sarà quindi necessario che ogni articolo venga riformattato a "
 "mano attraverso l'editor"
 
-#: crud/regdid/views.py:69 crud/regdid/views.py:133 crud/regdid/views.py:240
-#: crud/regdid/views.py:342 crud/regdid/views.py:434 crud/regdid/views.py:549
-#: crud/regdid/views.py:633 crud/regdid/views.py:937
+#: crud/regdid/views.py:74 crud/regdid/views.py:138 crud/regdid/views.py:245
+#: crud/regdid/views.py:347 crud/regdid/views.py:439 crud/regdid/views.py:554
+#: crud/regdid/views.py:638 crud/regdid/views.py:941
 msgid "Didactic regulations"
 msgstr "Regolamenti didattici"
 
-#: crud/regdid/views.py:126
+#: crud/regdid/views.py:131
 msgid "Structure imported with success"
 msgstr "Struttura importata con successo"
 
-#: crud/regdid/views.py:129
+#: crud/regdid/views.py:134
 msgid "Unable to import the structure"
 msgstr "Impossibile importare la struttura"
 
-#: crud/regdid/views.py:141
+#: crud/regdid/views.py:146
 msgid "Didactic regulations structure"
 msgstr "Struttura del regolamento didattico"
 
-#: crud/regdid/views.py:155
+#: crud/regdid/views.py:160
 msgid "Didactic regulament must be edited by a department first"
 msgstr ""
 "Il regolamento didattico deve essere modificato prima da un dipartimento"
 
-#: crud/regdid/views.py:179
+#: crud/regdid/views.py:184
 msgid "Added didactic regulation testata"
 msgstr "Aggiunta testata del regolamento"
 
-#: crud/regdid/views.py:212 crud/regdid/views.py:300 crud/regdid/views.py:405
-#: crud/regdid/views.py:521 crud/regdid/views.py:606
+#: crud/regdid/views.py:217 crud/regdid/views.py:305 crud/regdid/views.py:410
+#: crud/regdid/views.py:526 crud/regdid/views.py:611
 msgid "Unable to edit this item"
 msgstr "Impossibile modificare questo elemento"
 
-#: crud/regdid/views.py:222
+#: crud/regdid/views.py:227
 msgid "Edited department notes"
 msgstr "Modificate note del dipartimento"
 
-#: crud/regdid/views.py:226
+#: crud/regdid/views.py:231
 msgid "Department notes edited successfully"
 msgstr "Note del dipartimento modificate con successo"
 
-#: crud/regdid/views.py:313 crud/regdid/views.py:533
+#: crud/regdid/views.py:318 crud/regdid/views.py:538
 msgid "Edited"
 msgstr "Modificati"
 
-#: crud/regdid/views.py:317
+#: crud/regdid/views.py:322
 msgid "Article edited successfully"
 msgstr "Articolo modificato con successo"
 
-#: crud/regdid/views.py:328
+#: crud/regdid/views.py:333
 msgid "Edited notes"
 msgstr "Modificate note"
 
-#: crud/regdid/views.py:330
+#: crud/regdid/views.py:335
 msgid "Notes edited successfully"
 msgstr "Note modificate con successo"
 
-#: crud/regdid/views.py:401
+#: crud/regdid/views.py:406
 msgid "Article already exists"
 msgstr "L'articolo esiste già"
 
-#: crud/regdid/views.py:424
+#: crud/regdid/views.py:429
 msgid "Article added successfully"
 msgstr "Articolo aggiunto con successo"
 
-#: crud/regdid/views.py:477
+#: crud/regdid/views.py:482
 msgid "sub articles"
 msgstr "sotto-articoli"
 
-#: crud/regdid/views.py:481
+#: crud/regdid/views.py:486
 msgid "Article deleted successfully"
 msgstr "Articolo eliminato con successo"
 
-#: crud/regdid/views.py:537
+#: crud/regdid/views.py:542
 msgid "Sub article edited successfully"
 msgstr "Sotto-articolo modificato con successo"
 
-#: crud/regdid/views.py:623
+#: crud/regdid/views.py:628
 msgid "Sub article added successfully"
 msgstr "Sotto-articolo aggiunto con successo"
 
-#: crud/regdid/views.py:636
+#: crud/regdid/views.py:641
 msgid "New sub article"
 msgstr "Nuovo sotto-articolo"
 
-#: crud/regdid/views.py:644
+#: crud/regdid/views.py:649
 msgid "New sub article for"
 msgstr "Nuovo sotto-articolo per"
 
-#: crud/regdid/views.py:682
+#: crud/regdid/views.py:687
 msgid "Sub article deleted successfully"
 msgstr "Sotto-articolo eliminato con successo"
 
-#: crud/regdid/views.py:721
+#: crud/regdid/views.py:726
 msgid "RegDid is already"
 msgstr "Il RegDid è già"
 
-#: crud/regdid/views.py:783
+#: crud/regdid/views.py:788
 msgid "Changed regdid stataus to"
 msgstr "Cambiato status del regolamento a"
 
-#: crud/regdid/views.py:785
+#: crud/regdid/views.py:790
 msgid "Regdid status updated successfully"
 msgstr "Stato del regolamento modificato con successo"
 
-#: crud/regdid/views.py:867
+#: crud/regdid/views.py:871
 msgid "Regdid status must be"
 msgstr "Lo stato del regolamento deve essere"
 
-#: crud/regdid/views.py:867
+#: crud/regdid/views.py:871
 msgid "to be imported from file"
 msgstr "per poter essere importato da file"
 
-#: crud/regdid/views.py:869
+#: crud/regdid/views.py:873
 msgid ""
 "Regdid was previously edited, the import opertation will overwrite every "
 "article"
@@ -3523,27 +3645,27 @@ msgstr ""
 "Il regolamento è stato precedentemente modificato, l'operazione di "
 "importazione sovrascriverà tutti gli articoli"
 
-#: crud/regdid/views.py:928
+#: crud/regdid/views.py:932
 msgid "Didactic regulation imported from file"
 msgstr "Regolamento didattico importato da file"
 
-#: crud/regdid/views.py:930
+#: crud/regdid/views.py:934
 msgid "Didactic regulation imported successfully"
 msgstr "Regolamento didattico importato con successo"
 
-#: crud/regdid/views.py:933
+#: crud/regdid/views.py:937
 msgid "Didactic regulation import failed"
 msgstr "Importazione del regolamento didattico fallita"
 
-#: crud/regdid/views.py:1021
+#: crud/regdid/views.py:1067
 msgid "Didactic regulation published successfully"
 msgstr "Regolamento didattico pubblicato con successo"
 
-#: crud/regdid/views.py:1026
+#: crud/regdid/views.py:1072
 msgid "Published didactic regulation"
 msgstr "Pubblicato il regolamento didattico"
 
-#: crud/regdid/views.py:1029
+#: crud/regdid/views.py:1075
 msgid "Didactic regulation publishing failed"
 msgstr "Pubblicazione del regolamento didattico fallita"
 
@@ -3872,11 +3994,11 @@ msgstr "Nuovo elemento"
 msgid "Teachers materials data removed successfully"
 msgstr "Dati materiale docente rimossi con successo"
 
-#: crud/utils/settings.py:51
+#: crud/utils/settings.py:48
 msgid "Joint title"
 msgstr "Titolo congiunto"
 
-#: crud/utils/settings.py:52
+#: crud/utils/settings.py:49
 msgid "Double title"
 msgstr "Doppio titolo"
 
@@ -4058,7 +4180,7 @@ msgstr "caratteri"
 msgid "Start date is greater than end date"
 msgstr "La data di inizio è successiva alla data di fine"
 
-#: ricerca_app/api_views.py:1727
+#: ricerca_app/api_views.py:1682
 msgid "Lock successfully set"
 msgstr "Lock acquisito con successo"
 
@@ -4209,9 +4331,6 @@ msgstr "Inserisci una Partita IVA valida"
 #~ "Rimuovere eventuali altri dipartimenti prima di impostare 'Laboratorio "
 #~ "Interdipartimentale' a 'NO'"
 
-#~ msgid "Equipment - Detail Information"
-#~ msgstr "Strumentazione - Informazioni di Dettaglio"
-
 #~ msgid "Laboratory must have a Safety Manager"
 #~ msgstr "Il Laboratorio deve avere un Responsabile della Sicurezza"
 
@@ -4247,9 +4366,6 @@ msgstr "Inserisci una Partita IVA valida"
 
 #~ msgid "ITALIAN, ENGLISH"
 #~ msgstr "ITALIANO, INGLESE"
-
-#~ msgid "Cds name"
-#~ msgstr "Nome Cds"
 
 #~ msgid "Cds code"
 #~ msgstr "Codice Cds"
