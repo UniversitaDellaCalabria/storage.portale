@@ -15,6 +15,16 @@ class CdsWebsiteTimetableFilter(GenericApiFilter):
             },
         },
         {
+            "name": "lang",
+            "description": "Language.",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "example": "it",
+                "type": "string",
+            },
+        },
+        {
             "name": "year",
             "description": "The year of study.",
             "required": False,
