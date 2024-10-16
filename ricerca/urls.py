@@ -12,6 +12,7 @@ from rest_framework.schemas.agid_schema_views import get_schema_view
 urlpatterns = [
     path(f'{settings.ADMIN_PATH}/', admin.site.urls),
     path("api/token", obtain_auth_token, name="auth-token"),
+    path('', include('accounts.urls')),
 
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck-editor-5-upload-file"),
 

@@ -19,6 +19,9 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
+    manual_user_update = models.DateTimeField(
+        _("Ultimo aggiornamento manuale dei dati"), blank=True, null=True
+    )
 
     class Meta:
         ordering = ["username"]

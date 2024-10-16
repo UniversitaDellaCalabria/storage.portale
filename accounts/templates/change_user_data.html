@@ -1,0 +1,60 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+
+{% block centered_container %}
+<p class="h3 mb-4 mt-4 mt-md-0">{% trans "Edit user data" %}</p>
+<form method="post" novalidate>
+    {% include 'form_template.html' with form=form %}
+    {% csrf_token %}
+     <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#change_user_email">
+        {% trans "Send" %}
+    </button>
+    <!-- priority ticket modal -->
+    <div class="modal-div modal fade" tabindex="-1" role="dialog" id="change_user_email">
+        <div class="modal-dialog modal-dialog-centered"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {% trans "Edit personal data" %}
+                    </h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                       <svg class="icon">
+                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                       </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>{% trans "Do you want to confirm data?" %}</p>
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-success modal-submit"
+                           type="submit"
+                           value="{% trans 'Ok' %}">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock centered_container %}
+
+{% block extra_scripts %}
+<!-- prevent submit form by press "enter" on field -->
+<script>
+document.querySelector ('form input').addEventListener ('keypress', function(e) {
+    if(e.which == 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+document.querySelector ('form input').addEventListener ('keyup', function(e) {
+    if(e.which == 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
+{% endblock extra_scripts %}

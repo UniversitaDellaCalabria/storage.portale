@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-14 14:16+0200\n"
-"PO-Revision-Date: 2024-10-14 14:18+0200\n"
+"POT-Creation-Date: 2024-10-16 15:13+0200\n"
+"PO-Revision-Date: 2024-10-16 15:24+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -18,17 +18,21 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.5\n"
 
-#: accounts/admin.py:42
+#: accounts/admin.py:39
 msgid "Anagrafica"
 msgstr ""
 
-#: accounts/admin.py:46
+#: accounts/admin.py:43
 msgid "Permissions"
 msgstr "Permessi"
 
-#: accounts/admin.py:50
+#: accounts/admin.py:47
 msgid "Date accessi sistema"
 msgstr ""
+
+#: accounts/middlewares.py:25
+msgid "Complete your profile to be able to use the system"
+msgstr "Completa il tuo profilo per poter utilizzare il sistema"
 
 #: accounts/models.py:8
 msgid "Maschio"
@@ -71,9 +75,252 @@ msgstr ""
 msgid "from which connector this user come from"
 msgstr ""
 
-#: accounts/models.py:25
+#: accounts/models.py:23
+msgid "Ultimo aggiornamento manuale dei dati"
+msgstr ""
+
+#: accounts/models.py:28
 msgid "Users"
 msgstr "Utenti"
+
+#: accounts/settings.py:22
+#, python-brace-format
+msgid ""
+"Dear user,\n"
+"this message was sent by {hostname}.\n"
+"Please do not reply to this email.\n"
+"\n"
+"-------------------\n"
+"\n"
+msgstr ""
+"Gentile utente,\n"
+"questo messaggio è stato inviato da {hostname}.\n"
+"Si prega di non rispondere a questa email.\n"
+"\n"
+"-------------------\n"
+"\n"
+
+#: accounts/settings.py:36
+msgid ""
+"\n"
+"\n"
+"-------------------\n"
+"\n"
+"For technical problems contact our staff.\n"
+"Best regards.\n"
+msgstr ""
+"\n"
+"\n"
+"-------------------\n"
+"\n"
+"Per problemi tecnici contattare il nostro staff.\n"
+"Distinti saluti.\n"
+
+#: accounts/templates/account.html:10 accounts/views.py:21 accounts/views.py:32
+#: generics/templates/main_menu.html:21
+msgid "Account"
+msgstr ""
+
+#: accounts/templates/account.html:14
+msgid "First name"
+msgstr "Nome"
+
+#: accounts/templates/account.html:18
+msgid "Last name"
+msgstr "Cognome"
+
+#: accounts/templates/account.html:22
+msgid "Email"
+msgstr ""
+
+#: accounts/templates/account.html:26
+msgid "Taxpayer ID"
+msgstr "Codice fiscale"
+
+#: accounts/templates/account.html:34 accounts/views.py:33
+#: addressbook/templates/blocks/crud_teacher_books.html:73
+#: addressbook/templates/blocks/crud_teacher_news.html:74
+#: addressbook/templates/teacher_detail.html:25
+#: advanced_training/templates/blocks/crud_projects.html:243
+#: advanced_training/templates/project.html:80
+#: advanced_training/templates/project.html:155
+#: advanced_training/templates/project.html:234 cds/management/views.py:1684
+#: cds/templates/cds_detail.html:78 cds/templates/cds_detail.html:218
+#: cds/templates/cds_detail.html:318 cds/templates/cds_detail.html:443
+#: cds/templates/cds_detail.html:504 cds/templates/cds_detail.html:567
+#: cds/templates/cds_group.html:10 cds/templates/cds_group.html:71
+#: cds/templates/cds_office_data.html:36 cds/templates/cds_other_data.html:39
+#: cds/templates/cds_other_data.html:110
+#: cds/templates/cds_regdid_other_data.html:151
+#: cds_brochure/management/views.py:347
+#: cds_brochure/templates/blocks/cds_brochure_list.html:123
+#: cds_brochure/templates/cds_brochure_exstudents.html:80
+#: cds_brochure/templates/cds_brochure_links.html:81
+#: cds_brochure/templates/cds_brochure_sliders.html:81
+#: cds_websites/templates/blocks/cds_websites_object_items.html:103
+#: cds_websites/templates/blocks/cds_websites_regulation_article_items.html:55
+#: cds_websites/templates/cds_websites_extras.html:136
+#: cds_websites/templates/cds_websites_shared_objects.html:122
+#: cds_websites/templates/cds_websites_sub_articles.html:85
+#: companies/templates/blocks/crud_companies.html:168
+#: companies/templates/company.html:82 companies/templates/company.html:158
+#: laboratories/templates/blocks/crud_laboratories.html:262
+#: laboratories/templates/laboratory.html:425
+#: laboratories/templates/laboratory.html:546
+#: laboratories/templates/laboratory.html:734
+#: laboratories/templates/laboratory.html:914
+#: laboratories/templates/laboratory.html:1004
+#: laboratories/templates/laboratory.html:1086
+#: laboratories/templates/laboratory.html:1175
+#: patents/templates/blocks/crud_patents.html:137
+#: patents/templates/patent.html:82 phd/templates/blocks/crud_phd_list.html:250
+#: phd/templates/phd.html:84 phd/templates/phd.html:163
+#: projects/templates/blocks/crud_projects.html:243
+#: projects/templates/project.html:80 projects/templates/project.html:155
+#: projects/templates/project.html:234
+#: regdid/templates/blocks/regdid_article_item.html:100
+#: regdid/templates/blocks/regdid_sub_article_item.html:94
+#: research_groups/templates/blocks/crud_researchgroups.html:161
+#: research_groups/templates/researchgroup.html:92
+#: research_lines/templates/applied_researchline.html:92
+#: research_lines/templates/base_researchline.html:92
+#: research_lines/templates/blocks/crud_researchlines.html:164
+#: structures/templates/blocks/crud_teacher_books.html:73
+#: structures/templates/blocks/crud_teacher_news.html:74
+#: structures/templates/teacher_detail.html:25
+#: teachers/templates/blocks/crud_teacher_books.html:73
+#: teachers/templates/blocks/crud_teacher_news.html:74
+#: teachers/templates/teacher_detail.html:25
+msgid "Edit"
+msgstr "Modifica"
+
+#: accounts/templates/change_user_data.html:8
+msgid "Edit user data"
+msgstr "Modifica dati utente"
+
+#: accounts/templates/change_user_data.html:13
+msgid "Send"
+msgstr ""
+
+#: accounts/templates/change_user_data.html:22 accounts/views.py:82
+msgid "Edit personal data"
+msgstr "Modifica dati personali"
+
+#: accounts/templates/change_user_data.html:31
+msgid "Do you want to confirm data?"
+msgstr "Desideri confermare i dati immessi?"
+
+#: accounts/templates/change_user_data.html:36
+msgid "Ok"
+msgstr ""
+
+#: accounts/views.py:20 accounts/views.py:31 cds/management/views.py:134
+#: cds/management/views.py:206 cds/management/views.py:346
+#: cds/management/views.py:433 cds/management/views.py:525
+#: cds/management/views.py:743 cds/management/views.py:848
+#: cds/management/views.py:950 cds/management/views.py:1046
+#: cds/management/views.py:1225 cds/management/views.py:1308
+#: cds/management/views.py:1412 cds/management/views.py:1679
+#: cds/management/views.py:1815 cds_brochure/management/views.py:39
+#: cds_brochure/management/views.py:54 cds_brochure/management/views.py:152
+#: cds_brochure/management/views.py:194 cds_brochure/management/views.py:262
+#: cds_brochure/management/views.py:333 cds_brochure/management/views.py:398
+#: cds_brochure/management/views.py:471 cds_brochure/management/views.py:545
+#: cds_brochure/management/views.py:607 cds_brochure/management/views.py:670
+#: cds_brochure/management/views.py:738 cds_websites/management/views.py:60
+#: cds_websites/management/views.py:172 cds_websites/management/views.py:258
+#: cds_websites/management/views.py:337 cds_websites/management/views.py:422
+#: cds_websites/management/views.py:523 cds_websites/management/views.py:599
+#: cds_websites/management/views.py:655 cds_websites/management/views.py:731
+#: cds_websites/management/views.py:820 cds_websites/management/views.py:901
+#: cds_websites/management/views.py:1009 cds_websites/management/views.py:1106
+#: cds_websites/management/views.py:1206 companies/management/views.py:29
+#: companies/management/views.py:86 companies/management/views.py:182
+#: companies/management/views.py:254 companies/management/views.py:342
+#: companies/management/views.py:416 generics/templates/dashboard.html:14
+#: laboratories/management/views.py:85 laboratories/management/views.py:510
+#: laboratories/management/views.py:669 laboratories/management/views.py:820
+#: laboratories/management/views.py:931 laboratories/management/views.py:1058
+#: laboratories/management/views.py:1200 laboratories/management/views.py:1365
+#: laboratories/management/views.py:1510 laboratories/management/views.py:1585
+#: laboratories/management/views.py:1651 laboratories/management/views.py:1759
+#: laboratories/management/views.py:1890 laboratories/management/views.py:2000
+#: laboratories/management/views.py:2093 laboratories/management/views.py:2210
+#: laboratories/management/views.py:2336 laboratories/management/views.py:2425
+#: laboratories/management/views.py:2492 patents/management/views.py:28
+#: patents/management/views.py:61 patents/management/views.py:119
+#: patents/management/views.py:187 patents/management/views.py:276
+#: phd/management/views.py:39 phd/management/views.py:130
+#: phd/management/views.py:215 phd/management/views.py:312
+#: phd/management/views.py:390 phd/management/views.py:524
+#: phd/management/views.py:604 projects/management/views.py:40
+#: projects/management/views.py:99 projects/management/views.py:176
+#: projects/management/views.py:265 projects/management/views.py:351
+#: projects/management/views.py:445 projects/management/views.py:533
+#: projects/management/views.py:627 regdid/management/views.py:137
+#: regdid/management/views.py:219 regdid/management/views.py:396
+#: regdid/management/views.py:563 regdid/management/views.py:693
+#: regdid/management/views.py:879 regdid/management/views.py:996
+#: regdid/management/views.py:1447 research_groups/management/views.py:30
+#: research_groups/management/views.py:85
+#: research_groups/management/views.py:200
+#: research_groups/management/views.py:259
+#: research_groups/management/views.py:324
+#: research_lines/management/views.py:44 research_lines/management/views.py:62
+#: research_lines/management/views.py:141
+#: research_lines/management/views.py:168
+#: research_lines/management/views.py:295
+#: research_lines/management/views.py:323
+#: research_lines/management/views.py:472
+#: research_lines/management/views.py:535
+#: research_lines/management/views.py:606
+#: research_lines/management/views.py:679 teachers/management/views.py:35
+#: teachers/management/views.py:67 teachers/management/views.py:141
+#: teachers/management/views.py:205 teachers/management/views.py:303
+#: teachers/management/views.py:358 teachers/management/views.py:444
+#: teachers/management/views.py:504
+msgid "Dashboard"
+msgstr "Pagina iniziale"
+
+#: accounts/views.py:52
+msgid "Data saved successfully"
+msgstr "Dati salvati con successo"
+
+#: accounts/views.py:60
+msgid "Confirm your email by clicking here {}"
+msgstr "Conferma la tua email facendo clic qui {}"
+
+#: accounts/views.py:63
+msgid "Email confirmation"
+msgstr "Conferma email"
+
+#: accounts/views.py:73
+msgid ""
+"An email has been sent to the address you indicated. Click on the link in "
+"the message to confirm the new data"
+msgstr ""
+"Una email è stata inviata all'indirizzo che hai indicato. Cliccare sul "
+"collegamento presente nel messaggio per confermare i nuovi dati"
+
+#: accounts/views.py:78
+msgid "Wrong data"
+msgstr "Dati errati"
+
+#: accounts/views.py:92
+msgid "Missing token"
+msgstr "Token mancante"
+
+#: accounts/views.py:99
+msgid "Invalid token"
+msgstr "Token non valido"
+
+#: accounts/views.py:114
+msgid "Expired token"
+msgstr "Token scaduto"
+
+#: accounts/views.py:120
+msgid "Email updated successfully"
+msgstr "Email aggiornata con successo"
 
 #: addressbook/templates/blocks/crud_teacher_books.html:41
 #: addressbook/templates/blocks/crud_teacher_news.html:41
@@ -131,62 +378,6 @@ msgstr "Ordine"
 #: teachers/templates/blocks/crud_teacher_news.html:44
 msgid "Active"
 msgstr "Attivo"
-
-#: addressbook/templates/blocks/crud_teacher_books.html:73
-#: addressbook/templates/blocks/crud_teacher_news.html:74
-#: addressbook/templates/teacher_detail.html:25
-#: advanced_training/templates/blocks/crud_projects.html:243
-#: advanced_training/templates/project.html:80
-#: advanced_training/templates/project.html:155
-#: advanced_training/templates/project.html:234 cds/management/views.py:1684
-#: cds/templates/cds_detail.html:78 cds/templates/cds_detail.html:218
-#: cds/templates/cds_detail.html:318 cds/templates/cds_detail.html:443
-#: cds/templates/cds_detail.html:504 cds/templates/cds_detail.html:567
-#: cds/templates/cds_group.html:10 cds/templates/cds_group.html:71
-#: cds/templates/cds_office_data.html:36 cds/templates/cds_other_data.html:39
-#: cds/templates/cds_other_data.html:110
-#: cds/templates/cds_regdid_other_data.html:151
-#: cds_brochure/management/views.py:347
-#: cds_brochure/templates/blocks/cds_brochure_list.html:123
-#: cds_brochure/templates/cds_brochure_exstudents.html:80
-#: cds_brochure/templates/cds_brochure_links.html:81
-#: cds_brochure/templates/cds_brochure_sliders.html:81
-#: cds_websites/templates/blocks/cds_websites_object_items.html:103
-#: cds_websites/templates/blocks/cds_websites_regulation_article_items.html:55
-#: cds_websites/templates/cds_websites_extras.html:136
-#: cds_websites/templates/cds_websites_shared_objects.html:122
-#: cds_websites/templates/cds_websites_sub_articles.html:85
-#: companies/templates/blocks/crud_companies.html:168
-#: companies/templates/company.html:82 companies/templates/company.html:158
-#: laboratories/templates/blocks/crud_laboratories.html:262
-#: laboratories/templates/laboratory.html:425
-#: laboratories/templates/laboratory.html:546
-#: laboratories/templates/laboratory.html:734
-#: laboratories/templates/laboratory.html:914
-#: laboratories/templates/laboratory.html:1004
-#: laboratories/templates/laboratory.html:1086
-#: laboratories/templates/laboratory.html:1175
-#: patents/templates/blocks/crud_patents.html:137
-#: patents/templates/patent.html:82 phd/templates/blocks/crud_phd_list.html:250
-#: phd/templates/phd.html:84 phd/templates/phd.html:163
-#: projects/templates/blocks/crud_projects.html:243
-#: projects/templates/project.html:80 projects/templates/project.html:155
-#: projects/templates/project.html:234
-#: regdid/templates/blocks/regdid_article_item.html:100
-#: regdid/templates/blocks/regdid_sub_article_item.html:94
-#: research_groups/templates/blocks/crud_researchgroups.html:161
-#: research_groups/templates/researchgroup.html:92
-#: research_lines/templates/applied_researchline.html:92
-#: research_lines/templates/base_researchline.html:92
-#: research_lines/templates/blocks/crud_researchlines.html:164
-#: structures/templates/blocks/crud_teacher_books.html:73
-#: structures/templates/blocks/crud_teacher_news.html:74
-#: structures/templates/teacher_detail.html:25
-#: teachers/templates/blocks/crud_teacher_books.html:73
-#: teachers/templates/blocks/crud_teacher_news.html:74
-#: teachers/templates/teacher_detail.html:25
-msgid "Edit"
-msgstr "Modifica"
 
 #: addressbook/templates/blocks/crud_teacher_books.html:82
 #: addressbook/templates/blocks/crud_teacher_news.html:83
@@ -922,74 +1113,6 @@ msgstr "Manifesto degli studi"
 #: regdid/templates/regdid_articles.html:130
 msgid "Didactic regulation"
 msgstr "Regolamento didattico"
-
-#: cds/management/views.py:134 cds/management/views.py:206
-#: cds/management/views.py:346 cds/management/views.py:433
-#: cds/management/views.py:525 cds/management/views.py:743
-#: cds/management/views.py:848 cds/management/views.py:950
-#: cds/management/views.py:1046 cds/management/views.py:1225
-#: cds/management/views.py:1308 cds/management/views.py:1412
-#: cds/management/views.py:1679 cds/management/views.py:1815
-#: cds_brochure/management/views.py:39 cds_brochure/management/views.py:54
-#: cds_brochure/management/views.py:152 cds_brochure/management/views.py:194
-#: cds_brochure/management/views.py:262 cds_brochure/management/views.py:333
-#: cds_brochure/management/views.py:398 cds_brochure/management/views.py:471
-#: cds_brochure/management/views.py:545 cds_brochure/management/views.py:607
-#: cds_brochure/management/views.py:670 cds_brochure/management/views.py:738
-#: cds_websites/management/views.py:60 cds_websites/management/views.py:172
-#: cds_websites/management/views.py:258 cds_websites/management/views.py:337
-#: cds_websites/management/views.py:422 cds_websites/management/views.py:523
-#: cds_websites/management/views.py:599 cds_websites/management/views.py:655
-#: cds_websites/management/views.py:731 cds_websites/management/views.py:820
-#: cds_websites/management/views.py:901 cds_websites/management/views.py:1009
-#: cds_websites/management/views.py:1106 cds_websites/management/views.py:1206
-#: companies/management/views.py:29 companies/management/views.py:86
-#: companies/management/views.py:182 companies/management/views.py:254
-#: companies/management/views.py:342 companies/management/views.py:416
-#: generics/templates/dashboard.html:14 laboratories/management/views.py:85
-#: laboratories/management/views.py:510 laboratories/management/views.py:669
-#: laboratories/management/views.py:820 laboratories/management/views.py:931
-#: laboratories/management/views.py:1058 laboratories/management/views.py:1200
-#: laboratories/management/views.py:1365 laboratories/management/views.py:1510
-#: laboratories/management/views.py:1585 laboratories/management/views.py:1651
-#: laboratories/management/views.py:1759 laboratories/management/views.py:1890
-#: laboratories/management/views.py:2000 laboratories/management/views.py:2093
-#: laboratories/management/views.py:2210 laboratories/management/views.py:2336
-#: laboratories/management/views.py:2425 laboratories/management/views.py:2492
-#: patents/management/views.py:28 patents/management/views.py:61
-#: patents/management/views.py:119 patents/management/views.py:187
-#: patents/management/views.py:276 phd/management/views.py:39
-#: phd/management/views.py:130 phd/management/views.py:215
-#: phd/management/views.py:312 phd/management/views.py:390
-#: phd/management/views.py:524 phd/management/views.py:604
-#: projects/management/views.py:40 projects/management/views.py:99
-#: projects/management/views.py:176 projects/management/views.py:265
-#: projects/management/views.py:351 projects/management/views.py:445
-#: projects/management/views.py:533 projects/management/views.py:627
-#: regdid/management/views.py:137 regdid/management/views.py:219
-#: regdid/management/views.py:396 regdid/management/views.py:563
-#: regdid/management/views.py:693 regdid/management/views.py:879
-#: regdid/management/views.py:996 regdid/management/views.py:1447
-#: research_groups/management/views.py:30
-#: research_groups/management/views.py:85
-#: research_groups/management/views.py:200
-#: research_groups/management/views.py:259
-#: research_groups/management/views.py:324
-#: research_lines/management/views.py:44 research_lines/management/views.py:62
-#: research_lines/management/views.py:141
-#: research_lines/management/views.py:168
-#: research_lines/management/views.py:295
-#: research_lines/management/views.py:323
-#: research_lines/management/views.py:472
-#: research_lines/management/views.py:535
-#: research_lines/management/views.py:606
-#: research_lines/management/views.py:679 teachers/management/views.py:35
-#: teachers/management/views.py:67 teachers/management/views.py:141
-#: teachers/management/views.py:205 teachers/management/views.py:303
-#: teachers/management/views.py:358 teachers/management/views.py:444
-#: teachers/management/views.py:504
-msgid "Dashboard"
-msgstr "Pagina iniziale"
 
 #: cds/management/views.py:134 cds/management/views.py:207
 #: cds/management/views.py:347 cds/management/views.py:434
@@ -4476,9 +4599,6 @@ msgstr "Dati materiale docente rimossi con successo"
 #~ "Rimuovere eventuali altri dipartimenti prima di impostare 'Laboratorio "
 #~ "Interdipartimentale' a 'NO'"
 
-#~ msgid "Equipment - Detail Information"
-#~ msgstr "Strumentazione - Informazioni di Dettaglio"
-
 #~ msgid "Laboratory must have a Safety Manager"
 #~ msgstr "Il Laboratorio deve avere un Responsabile della Sicurezza"
 
@@ -4514,9 +4634,6 @@ msgstr "Dati materiale docente rimossi con successo"
 
 #~ msgid "ITALIAN, ENGLISH"
 #~ msgstr "ITALIANO, INGLESE"
-
-#~ msgid "Cds name"
-#~ msgstr "Nome Cds"
 
 #~ msgid "Cds code"
 #~ msgstr "Codice Cds"
