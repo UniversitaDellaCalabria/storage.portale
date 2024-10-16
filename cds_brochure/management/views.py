@@ -415,7 +415,7 @@ def cds_brochure_exstudents(request, code, cds_website=None, my_offices=None):
 
     return render(
         request,
-        "cds_brochure_exstudents.html.html",
+        "cds_brochure_exstudents.html",
         {
             "cds_website": cds_website,
             "exstudents": exstudents,
