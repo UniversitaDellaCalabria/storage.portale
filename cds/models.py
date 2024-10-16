@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from generics.models import InsModAbstract, PermissionsModAbstract
+from generics.models import InsModAbstract, Permissions
 from generics.validators import validate_file_size, validate_pdf_file_extension
 from regdid.settings import (
     OFFICE_REGDIDS_APPROVAL,
@@ -438,7 +438,9 @@ class DidatticaCdsPeriodi(models.Model):
 
 class DidatticaCdsAltriDatiUfficio(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    cds = models.ForeignKey(DidatticaCds, models.DO_NOTHING, db_column="ID_DIDATTICA_CDS")
+    cds = models.ForeignKey(
+        DidatticaCds, models.DO_NOTHING, db_column="ID_DIDATTICA_CDS"
+    )
     ordine = models.IntegerField(db_column="ORDINE")
     nome_ufficio = models.CharField(
         db_column="NOME_UFFICIO", max_length=1000, blank=True, null=True
@@ -904,7 +906,10 @@ class DidatticaTestiRegolamento(InsModAbstract):
 
 class DidatticaCdsAltriDati(models.Model):
     regdid_id = models.OneToOneField(
-        DidatticaRegolamento, models.DO_NOTHING, db_column="ID_DIDATTICA_REGOLAMENTO", primary_key=True
+        DidatticaRegolamento,
+        models.DO_NOTHING,
+        db_column="ID_DIDATTICA_REGOLAMENTO",
+        primary_key=True,
     )
     matricola_coordinatore = models.ForeignKey(
         "addressbook.Personale",
@@ -1908,7 +1913,7 @@ class DidatticaPianoSche(models.Model):
         db_table = "DIDATTICA_PIANO_SCHE"
 
 
-class DidatticaCdsTipoCorso(PermissionsModAbstract):
+class DidatticaCdsTipoCorso(Permissions):
     id = models.AutoField(db_column="ID", primary_key=True)
     tipo_corso_cod = models.CharField(
         db_column="TIPO_CORSO_COD", max_length=10, blank=True, null=True

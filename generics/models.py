@@ -1,9 +1,9 @@
 from django.db import models
-
+from django.contrib.auth import get_user_model
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 
-class PermissionsModAbstract(models.Model):
+class Permissions(models.Model):
     @classmethod
     def get_offices_names(cls, **kwargs):
         """
@@ -127,8 +127,21 @@ class InsModAbstract(models.Model):
         abstract = True
 
 
-class VisibileModAbstract(models.Model):
+class VisibileAbstract(models.Model):
     visibile = models.BooleanField(db_column="VISIBILE", default=False)
+
+    class Meta:
+        abstract = True
+
+
+class UserModAbstract(models.Model):
+    user_mod = models.ForeignKey(
+        get_user_model(),
+        models.DO_NOTHING,
+        db_column="user_mod_id",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         abstract = True

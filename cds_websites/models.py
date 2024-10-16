@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from generics.models import VisibileModAbstract
+from generics.models import VisibileAbstract
 
 
 class SitoWebCdsOggettiPortale(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    cds = models.ForeignKey("cds.DidatticaCds", models.DO_NOTHING, db_column="CDS_ID")
+    cds = models.ForeignKey(
+        "cds.DidatticaCds", models.DO_NOTHING, db_column="ID_DIDATTICA_CDS"
+    )
     aa_regdid_id = models.IntegerField(db_column="AA_REGDID_ID")
     id_oggetto_portale = models.IntegerField(db_column="ID_OGGETTO_PORTALE")
     id_classe_oggetto_portale = models.CharField(
@@ -23,7 +25,7 @@ class SitoWebCdsOggettiPortale(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -36,7 +38,7 @@ class SitoWebCdsOggettiPortale(models.Model):
         db_table = "SITO_WEB_CDS_OGGETTI_PORTALE"
 
 
-class SitoWebArticoliRegolamentoStrutturaTopic(VisibileModAbstract):
+class SitoWebArticoliRegolamentoStrutturaTopic(VisibileAbstract):
     id = models.AutoField(db_column="ID", primary_key=True)
     id_sito_web_cds_topic = models.ForeignKey(
         "SitoWebCdsTopic", models.DO_NOTHING, db_column="ID_SITO_WEB_CDS_TOPIC"
@@ -51,40 +53,12 @@ class SitoWebArticoliRegolamentoStrutturaTopic(VisibileModAbstract):
     ordine = models.IntegerField(db_column="ORDINE", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD")
     id_user_mod = models.ForeignKey(
-        get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
+        get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
 
     class Meta:
         managed = True
         db_table = "SITO_WEB_ARTICOLI_REGOLAMENTO_STRUTTURA_TOPIC"
-
-
-class SitoWebCdsArticoliRegolamento(models.Model):
-    id = models.AutoField(db_column="ID", primary_key=True)
-    cds = models.ForeignKey("cds.DidatticaCds", models.DO_NOTHING, db_column="CDS_ID")
-    aa_regdid_id = models.IntegerField(db_column="AA_REGDID_ID")
-    numero = models.PositiveIntegerField(db_column="NUMERO", blank=True, null=True)
-    titolo_articolo_it = models.CharField(
-        db_column="TITOLO_ARTICOLO_IT", max_length=2000
-    )
-    testo_it = models.TextField(db_column="TESTO_IT")
-    titolo_articolo_en = models.CharField(
-        db_column="TITOLO_ARTICOLO_EN", max_length=2000, blank=True, null=True
-    )
-    testo_en = models.TextField(db_column="TESTO_EN", blank=True, null=True)
-    visibile = models.IntegerField(db_column="VISIBILE")
-    dt_mod = models.DateField(db_column="DT_MOD")
-    id_user_mod = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
-        blank=True,
-        null=True,
-    )
-
-    class Meta:
-        managed = True
-        db_table = "SITO_WEB_CDS_ARTICOLI_REGOLAMENTO"
 
 
 class SitoWebCdsTopic(models.Model):
@@ -99,7 +73,7 @@ class SitoWebCdsTopic(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -109,7 +83,7 @@ class SitoWebCdsTopic(models.Model):
         db_table = "SITO_WEB_CDS_TOPIC"
 
 
-class SitoWebCdsTopicArticoliReg(VisibileModAbstract):
+class SitoWebCdsTopicArticoliReg(VisibileAbstract):
     id = models.AutoField(db_column="ID", primary_key=True)
     titolo_it = models.CharField(db_column="TITOLO_IT", max_length=1000)
     titolo_en = models.CharField(
@@ -139,7 +113,7 @@ class SitoWebCdsTopicArticoliReg(VisibileModAbstract):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -152,7 +126,7 @@ class SitoWebCdsTopicArticoliReg(VisibileModAbstract):
         )
 
 
-class SitoWebCdsSubArticoliRegolamento(VisibileModAbstract):
+class SitoWebCdsSubArticoliRegolamento(VisibileAbstract):
     id = models.AutoField(db_column="ID", primary_key=True)
     id_sito_web_cds_topic_articoli_reg = models.ForeignKey(
         "SitoWebCdsTopicArticoliReg",
@@ -172,7 +146,7 @@ class SitoWebCdsSubArticoliRegolamento(VisibileModAbstract):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )
@@ -222,7 +196,7 @@ class SitoWebCdsTopicArticoliRegAltriDati(models.Model):
     id_user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
-        db_column="ID_USER_MOD",
+        db_column="user_mod_id",
         blank=True,
         null=True,
     )

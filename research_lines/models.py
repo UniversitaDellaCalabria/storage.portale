@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from generics.models import InsModAbstract, VisibileModAbstract
+from generics.models import InsModAbstract, VisibileAbstract
 
 
 class RicercaAster1(InsModAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     descrizione = models.TextField(db_column="DESCRIZIONE")
     user_ins = models.ForeignKey(
         get_user_model(),
@@ -22,7 +23,7 @@ class RicercaAster1(InsModAbstract):
     ricerca_erc0_cod = models.ForeignKey(
         "RicercaErc0",
         models.PROTECT,
-        db_column="RICERCA_ERC0_COD",
+        db_column="ID_RICERCA_ERC0",
         blank=True,
         null=True,
     )
@@ -36,9 +37,10 @@ class RicercaAster1(InsModAbstract):
 
 
 class RicercaAster2(InsModAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     descrizione = models.CharField(db_column="DESCRIZIONE", max_length=200)
     ricerca_aster1 = models.ForeignKey(
-        RicercaAster1, models.DO_NOTHING, db_column="RICERCA_ASTER1_ID"
+        RicercaAster1, models.DO_NOTHING, db_column="ID_RICERCA_ASTER1"
     )
     user_ins = models.ForeignKey(
         get_user_model(),
@@ -64,20 +66,20 @@ class RicercaAster2(InsModAbstract):
 
 
 class RicercaDocenteLineaApplicata(InsModAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     dt_inizio = models.DateField(db_column="DT_INIZIO", blank=True, null=True)
-
     dt_fine = models.DateField(db_column="DT_FINE", blank=True, null=True)
     personale = models.ForeignKey(
         "addressbook.Personale",
         models.CASCADE,
-        db_column="PERSONALE_ID",
+        db_column="ID_PERSONALE",
         blank=True,
         null=True,
     )
     ricerca_linea_applicata = models.ForeignKey(
         "RicercaLineaApplicata",
         models.CASCADE,
-        db_column="RICERCA_LINEA_APPLICATA_ID",
+        db_column="ID_RICERCA_LINEA_APPLICATA",
         blank=True,
         null=True,
     )
@@ -102,20 +104,20 @@ class RicercaDocenteLineaApplicata(InsModAbstract):
 
 
 class RicercaDocenteLineaBase(InsModAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     dt_inizio = models.DateField(db_column="DT_INIZIO", blank=True, null=True)
-
     dt_fine = models.DateField(db_column="DT_FINE", blank=True, null=True)
     personale = models.ForeignKey(
         "addressbook.Personale",
         models.CASCADE,
-        db_column="PERSONALE_ID",
+        db_column="ID_PERSONALE",
         blank=True,
         null=True,
     )
     ricerca_linea_base = models.ForeignKey(
         "RicercaLineaBase",
         models.CASCADE,
-        db_column="RICERCA_LINEA_BASE_ID",
+        db_column="ID_RICERCA_LINEA_BASE",
         blank=True,
         null=True,
     )
@@ -154,8 +156,8 @@ class RicercaErc0(models.Model):
 
 
 class RicercaErc1(InsModAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     cod_erc1 = models.CharField(db_column="COD_ERC1", unique=True, max_length=40)
-
     descrizione = models.TextField(db_column="DESCRIZIONE")
     user_ins = models.ForeignKey(
         get_user_model(),
@@ -172,7 +174,7 @@ class RicercaErc1(InsModAbstract):
         null=True,
     )
     ricerca_erc0_cod = models.ForeignKey(
-        RicercaErc0, models.PROTECT, db_column="RICERCA_ERC0_COD", blank=True, null=True
+        RicercaErc0, models.PROTECT, db_column="ID_RICERCA_ERC0", blank=True, null=True
     )
 
     class Meta:
@@ -184,11 +186,11 @@ class RicercaErc1(InsModAbstract):
 
 
 class RicercaErc2(InsModAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     cod_erc2 = models.CharField(db_column="COD_ERC2", unique=True, max_length=60)
-
     descrizione = models.TextField(db_column="DESCRIZIONE")
     ricerca_erc1 = models.ForeignKey(
-        RicercaErc1, models.PROTECT, db_column="RICERCA_ERC1_ID", blank=True, null=True
+        RicercaErc1, models.PROTECT, db_column="ID_RICERCA_ERC1", blank=True, null=True
     )
     user_ins = models.ForeignKey(
         get_user_model(),
@@ -213,15 +215,15 @@ class RicercaErc2(InsModAbstract):
         return "{} {}".format(self.cod_erc2, self.descrizione)
 
 
-class RicercaLineaApplicata(InsModAbstract, VisibileModAbstract):
+class RicercaLineaApplicata(InsModAbstract, VisibileAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     descrizione = models.CharField(db_column="DESCRIZIONE", max_length=400)
     descr_pubblicaz_prog_brevetto = models.TextField(
         db_column="DESCR_PUBBLICAZ_PROG_BREVETTO", blank=True, null=True
     )
-
     anno = models.IntegerField(db_column="ANNO", blank=True, null=True)
     ricerca_aster2 = models.ForeignKey(
-        RicercaAster2, models.DO_NOTHING, db_column="RICERCA_ASTER2_ID"
+        RicercaAster2, models.DO_NOTHING, db_column="ID_RICERCA_ASTER2"
     )
     user_ins = models.ForeignKey(
         get_user_model(),
@@ -246,15 +248,15 @@ class RicercaLineaApplicata(InsModAbstract, VisibileModAbstract):
         return "{} {}".format(self.ricerca_aster2, self.descrizione)
 
 
-class RicercaLineaBase(InsModAbstract, VisibileModAbstract):
+class RicercaLineaBase(InsModAbstract, VisibileAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     descrizione = models.CharField(db_column="DESCRIZIONE", max_length=400)
     descr_pubblicaz_prog_brevetto = models.TextField(
         db_column="DESCR_PUBBLICAZ_PROG_BREVETTO", blank=True, null=True
     )
-
     anno = models.IntegerField(db_column="ANNO", blank=True, null=True)
     ricerca_erc2 = models.ForeignKey(
-        RicercaErc2, models.DO_NOTHING, db_column="RICERCA_ERC2_ID"
+        RicercaErc2, models.DO_NOTHING, db_column="ID_RICERCA_ERC2"
     )
     user_ins = models.ForeignKey(
         get_user_model(),

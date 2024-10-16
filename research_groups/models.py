@@ -4,18 +4,18 @@ from generics.models import InsModAbstract
 
 
 class RicercaDocenteGruppo(InsModAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     dt_inizio = models.DateField(db_column="DT_INIZIO", blank=True, null=True)
-
     dt_fine = models.DateField(db_column="DT_FINE", blank=True, null=True)
     personale = models.ForeignKey(
         "addressbook.Personale",
         models.CASCADE,
-        db_column="PERSONALE_ID",
+        db_column="ID_PERSONALE",
         blank=True,
         null=True,
     )
     ricerca_gruppo = models.ForeignKey(
-        "RicercaGruppo", models.CASCADE, db_column="RICERCA_GRUPPO_ID"
+        "RicercaGruppo", models.CASCADE, db_column="ID_RICERCA_GRUPPO"
     )
     user_ins = models.ForeignKey(
         get_user_model(),
@@ -41,13 +41,13 @@ class RicercaDocenteGruppo(InsModAbstract):
 
 
 class RicercaGruppo(InsModAbstract):
+    id = models.AutoField(db_column="ID", primary_key=True)
     nome = models.CharField(db_column="NOME", max_length=200)
-
     descrizione = models.TextField(db_column="DESCRIZIONE")
     ricerca_erc1 = models.ForeignKey(
         "research_lines.RicercaErc1",
         models.SET_NULL,
-        db_column="RICERCA_ERC1_ID",
+        db_column="ID_RICERCA_ERC1",
         blank=True,
         null=True,
     )

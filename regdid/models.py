@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from generics.models import PermissionsModAbstract, VisibileModAbstract
+from generics.models import Permissions, VisibileAbstract
 
 from .settings import (
     OFFICE_REGDIDS_APPROVAL,
@@ -11,7 +11,7 @@ from .settings import (
 )
 
 
-class DidatticaArticoliRegolamentoStatus(PermissionsModAbstract):
+class DidatticaArticoliRegolamentoStatus(Permissions):
     id = models.AutoField(db_column="ID", primary_key=True)
     status_cod = models.CharField(db_column="STATUS_COD", max_length=100)
     status_desc = models.TextField(db_column="STATUS_DESC", blank=True, null=True)
@@ -29,7 +29,7 @@ class DidatticaArticoliRegolamentoStatus(PermissionsModAbstract):
         db_table = "DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS"
 
 
-class DidatticaArticoliRegolamentoStruttura(VisibileModAbstract):
+class DidatticaArticoliRegolamentoStruttura(VisibileAbstract):
     id = models.AutoField(db_column="ID", primary_key=True)
     aa = models.IntegerField(db_column="AA")
     numero = models.PositiveIntegerField(db_column="NUMERO")
@@ -66,11 +66,11 @@ class DidatticaArticoliRegolamentoStruttura(VisibileModAbstract):
         db_table = "DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA"
 
 
-class DidatticaCdsArticoliRegolamentoTestata(
-    VisibileModAbstract, PermissionsModAbstract
-):
+class DidatticaCdsArticoliRegolamentoTestata(VisibileAbstract, Permissions):
     id = models.AutoField(db_column="ID", primary_key=True)
-    cds = models.ForeignKey("cds.DidatticaCds", models.DO_NOTHING, db_column="ID_DIDATTICA_CDS")
+    cds = models.ForeignKey(
+        "cds.DidatticaCds", models.DO_NOTHING, db_column="ID_DIDATTICA_CDS"
+    )
     aa = models.IntegerField(db_column="AA")
     note = models.TextField(db_column="NOTE", blank=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD")
@@ -181,7 +181,7 @@ class DidatticaCdsTestataStatus(models.Model):
         db_table = "DIDATTICA_CDS_TESTATA_STATUS"
 
 
-class DidatticaCdsArticoliRegolamento(VisibileModAbstract, PermissionsModAbstract):
+class DidatticaCdsArticoliRegolamento(VisibileAbstract, Permissions):
     id = models.AutoField(db_column="ID", primary_key=True)
     id_didattica_cds_articoli_regolamento_testata = models.ForeignKey(
         DidatticaCdsArticoliRegolamentoTestata,
@@ -252,7 +252,7 @@ class DidatticaCdsArticoliRegolamento(VisibileModAbstract, PermissionsModAbstrac
         db_table = "DIDATTICA_CDS_ARTICOLI_REGOLAMENTO"
 
 
-class DidatticaArticoliRegolamentoTitolo(PermissionsModAbstract):
+class DidatticaArticoliRegolamentoTitolo(Permissions):
     id = models.AutoField(db_column="ID", primary_key=True)
     descr_titolo_it = models.CharField(db_column="DESCR_TITOLO_IT", max_length=1000)
     descr_titolo_en = models.CharField(
@@ -277,7 +277,7 @@ class DidatticaArticoliRegolamentoTitolo(PermissionsModAbstract):
         db_table = "DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO"
 
 
-class DidatticaCdsSubArticoliRegolamento(VisibileModAbstract, PermissionsModAbstract):
+class DidatticaCdsSubArticoliRegolamento(VisibileAbstract, Permissions):
     id = models.AutoField(db_column="ID", primary_key=True)
     ordine = models.PositiveIntegerField(db_column="ORDINE")
     titolo_it = models.CharField(db_column="TITOLO_IT", max_length=1000)

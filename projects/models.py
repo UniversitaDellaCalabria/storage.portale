@@ -45,7 +45,7 @@ class ProgettoDatiBase(models.Model):
         "structures.UnitaOrganizzativa",
         models.DO_NOTHING,
         to_field="uo",
-        db_column="UO",
+        db_column="ID_UNITA_ORGANIZZATIVA",
         blank=True,
         null=True,
     )
@@ -81,7 +81,7 @@ class ProgettoRicercatore(models.Model):
         "addressbook.Personale",
         models.CASCADE,
         to_field="matricola",
-        db_column="MATRICOLA",
+        db_column="ID_PERSONALE_MATRICOLA",
         blank=True,
         null=True,
     )
@@ -104,7 +104,7 @@ class ProgettoResponsabileScientifico(models.Model):
         "addressbook.Personale",
         models.CASCADE,
         to_field="matricola",
-        db_column="MATRICOLA",
+        db_column="ID_PERSONALE_MATRICOLA",
         blank=True,
         null=True,
     )
