@@ -116,7 +116,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                 "id": 1,
                 "descr_titolo_it": "TITOLO I",
                 "ordine": 10,
-                "id_user_mod": self.user,
+                "user_mod": self.user,
             }
         )
 
@@ -128,10 +128,10 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             "titolo_en": "Test Title Article 1",
             "ordine": 10,
             "visibile": 1,
-            "id_didattica_cds_tipo_corso": self.dct_corso,
-            "id_didattica_articoli_regolamento_titolo": self.dar_titolo,
+            "didattica_cds_tipo_corso": self.dct_corso,
+            "didattica_articoli_regolamento_titolo": self.dar_titolo,
             "dt_mod": self.current_datetime,
-            "id_user_mod": self.user,
+            "user_mod": self.user,
         }
 
         self.dar_struttura_1 = DidatticaArticoliRegolamentoStruttura.objects.create(
@@ -160,19 +160,19 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                 "note": "",
                 "visibile": 1,
                 "dt_mod": self.current_datetime,
-                "id_user_mod": self.user,
+                "user_mod": self.user,
             }
         )
 
         _dca_regolamento_data = {
             "id": 1,
-            "id_didattica_cds_articoli_regolamento_testata": self.dcar_testata,
-            "id_didattica_articoli_regolamento_struttura": self.dar_struttura_1,
+            "didattica_cds_articoli_regolamento_testata": self.dcar_testata,
+            "didattica_articoli_regolamento_struttura": self.dar_struttura_1,
             "testo_it": "Testo articolo IT",
             "testo_en": "Testo articolo EN",
             "visibile": 1,
             "dt_mod": self.current_datetime,
-            "id_user_mod": self.user,
+            "user_mod": self.user,
         }
 
         self.dca_regolamento_1 = DidatticaCdsArticoliRegolamento.objects.create(
@@ -180,7 +180,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         )
 
         _dca_regolamento_data["id"] += 1
-        _dca_regolamento_data["id_didattica_articoli_regolamento_struttura"] = (
+        _dca_regolamento_data["didattica_articoli_regolamento_struttura"] = (
             self.dar_struttura_2
         )
         self.dca_regolamento_2 = DidatticaCdsArticoliRegolamento.objects.create(
@@ -188,7 +188,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         )
 
         _dca_regolamento_data["id"] += 1
-        _dca_regolamento_data["id_didattica_articoli_regolamento_struttura"] = (
+        _dca_regolamento_data["didattica_articoli_regolamento_struttura"] = (
             self.dar_struttura_3
         )
         self.dca_regolamento_3 = DidatticaCdsArticoliRegolamento.objects.create(
@@ -204,7 +204,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         # Sub articles
         _dcsa_regolamento_data = {
             "id": 1,
-            "id_didattica_cds_articoli_regolamento": self.dca_regolamento_1,
+            "didattica_cds_articoli_regolamento": self.dca_regolamento_1,
             "titolo_it": "Titolo sub articolo",
             "titolo_en": "Title sub article",
             "testo_it": "Testo sub articolo IT",
@@ -212,7 +212,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             "ordine": 10,
             "visibile": 1,
             "dt_mod": self.current_datetime,
-            "id_user_mod": self.user,
+            "user_mod": self.user,
         }
 
         self.dcsa_regolamento_visbile_1 = (
@@ -225,7 +225,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         )
 
         _dcsa_regolamento_data["id"] += 1
-        _dcsa_regolamento_data["id_didattica_cds_articoli_regolamento"] = (
+        _dcsa_regolamento_data["didattica_cds_articoli_regolamento"] = (
             self.dca_regolamento_3
         )
         self.dcsa_regolamento_visbile_3 = (

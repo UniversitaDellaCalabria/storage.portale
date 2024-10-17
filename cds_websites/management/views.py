@@ -96,7 +96,7 @@ def cds_websites_topics(request, cds_id, cds=None, my_offices=None):
     ).filter(
         Q(sito_web_cds_oggetti_portale__cds_id=cds_id)
         | Q(
-            didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds_id=cds_id
+            didattica_cds_articoli_regolamento__didattica_cds_articoli_regolamento_testata__cds_id=cds_id
         )
     )
 
@@ -193,7 +193,7 @@ def cds_websites_topics(request, cds_id, cds=None, my_offices=None):
         object_id__in=SitoWebCdsTopicArticoliReg.objects.filter(
             Q(sito_web_cds_oggetti_portale__cds=cds)
             | Q(
-                didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds=cds
+                didattica_cds_articoli_regolamento__didattica_cds_articoli_regolamento_testata__cds=cds
             )
         ).values_list("id", flat=True),
     )
@@ -204,7 +204,7 @@ def cds_websites_topics(request, cds_id, cds=None, my_offices=None):
         ),
         object_id__in=SitoWebCdsSubArticoliRegolamento.objects.filter(
             sito_web_cds_topic_articoli_reg__in=SitoWebCdsTopicArticoliReg.objects.filter(
-                didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds=cds
+                didattica_cds_articoli_regolamento__didattica_cds_articoli_regolamento_testata__cds=cds
             ).values_list("id", flat=True)
         ).values_list("id", flat=True),
     )
@@ -492,7 +492,7 @@ def cds_websites_items_order_edit(request, cds_id, topic_id, cds=None, my_office
             & (
                 Q(sito_web_cds_oggetti_portale__cds_id=cds_id)
                 | Q(
-                    didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds_id=cds_id
+                    didattica_cds_articoli_regolamento__didattica_cds_articoli_regolamento_testata__cds_id=cds_id
                 )
             )
         )

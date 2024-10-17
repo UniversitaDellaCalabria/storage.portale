@@ -44,7 +44,7 @@
                                         &nbsp;-
                                     </div>
                                     <div class="col">
-                                        {{s_change.id_didattica_articoli_regolamento_status.status_desc}}
+                                        {{s_change.didattica_articoli_regolamento_status.status_desc}}
                                     </div>
                                 </a>
                             </div>
@@ -56,7 +56,7 @@
                                 aria-labelledby="collapse_status_history_{{s_change.pk}}">
 
                                 <div class="collapse-body overflow-auto pt-2 pb-3" style="font-weight: normal;">
-                                    <p>{% trans "Changed by" %}: {{s_change.id_user_mod}}</p>
+                                    <p>{% trans "Changed by" %}: {{s_change.user_mod}}</p>
                                     <p>{% trans "Reason" %}: {% if s_change.motivazione %}{{s_change.motivazione}}{% else %}-{% endif %}</p>
                                 </div>
                             </div>

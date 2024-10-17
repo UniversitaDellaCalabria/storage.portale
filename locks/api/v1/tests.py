@@ -57,7 +57,7 @@ class ApiLockUnitTest(TestCase):
                 "descr_titolo_it": "Titolo I",
                 "ordine": 0,
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.struttura_articolo = DidatticaArticoliRegolamentoStruttura.objects.create(
@@ -66,10 +66,10 @@ class ApiLockUnitTest(TestCase):
                 "titolo_it": "Test titolo articolo",
                 "numero": 1,
                 "visibile": 1,
-                "id_didattica_cds_tipo_corso": self.tipo_corso,
-                "id_didattica_articoli_regolamento_titolo": self.titolo,
+                "didattica_cds_tipo_corso": self.tipo_corso,
+                "didattica_articoli_regolamento_titolo": self.titolo,
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.regolamento_status = DidatticaArticoliRegolamentoStatus.objects.create(
@@ -85,26 +85,26 @@ class ApiLockUnitTest(TestCase):
                 "note": "",
                 "visibile": 1,
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.testata_status = DidatticaCdsTestataStatus.objects.create(
             **{
-                "id_didattica_articoli_regolamento_status": self.regolamento_status,
-                "id_didattica_cds_articoli_regolamento_testata": self.testata,
+                "didattica_articoli_regolamento_status": self.regolamento_status,
+                "didattica_cds_articoli_regolamento_testata": self.testata,
                 "data_status": "2024-01-01",
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.articolo = DidatticaCdsArticoliRegolamento.objects.create(
             **{
-                "id_didattica_cds_articoli_regolamento_testata": self.testata,
-                "id_didattica_articoli_regolamento_struttura": self.struttura_articolo,
+                "didattica_cds_articoli_regolamento_testata": self.testata,
+                "didattica_articoli_regolamento_struttura": self.struttura_articolo,
                 "testo_it": "Test testo articolo",
                 "visibile": 1,
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
 
@@ -184,7 +184,7 @@ class ApiSetLockUnitTest(TestCase):
                 "descr_titolo_it": "Titolo I",
                 "ordine": 0,
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.struttura_articolo = DidatticaArticoliRegolamentoStruttura.objects.create(
@@ -193,10 +193,10 @@ class ApiSetLockUnitTest(TestCase):
                 "titolo_it": "Test titolo articolo",
                 "numero": 1,
                 "visibile": 1,
-                "id_didattica_cds_tipo_corso": self.tipo_corso,
-                "id_didattica_articoli_regolamento_titolo": self.titolo,
+                "didattica_cds_tipo_corso": self.tipo_corso,
+                "didattica_articoli_regolamento_titolo": self.titolo,
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.regolamento_status = DidatticaArticoliRegolamentoStatus.objects.create(
@@ -212,26 +212,26 @@ class ApiSetLockUnitTest(TestCase):
                 "note": "",
                 "visibile": 1,
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.testata_status = DidatticaCdsTestataStatus.objects.create(
             **{
-                "id_didattica_articoli_regolamento_status": self.regolamento_status,
-                "id_didattica_cds_articoli_regolamento_testata": self.testata,
+                "didattica_articoli_regolamento_status": self.regolamento_status,
+                "didattica_cds_articoli_regolamento_testata": self.testata,
                 "data_status": "2024-01-01",
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.articolo = DidatticaCdsArticoliRegolamento.objects.create(
             **{
-                "id_didattica_cds_articoli_regolamento_testata": self.testata,
-                "id_didattica_articoli_regolamento_struttura": self.struttura_articolo,
+                "didattica_cds_articoli_regolamento_testata": self.testata,
+                "didattica_articoli_regolamento_struttura": self.struttura_articolo,
                 "testo_it": "Test testo articolo",
                 "visibile": 1,
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
 

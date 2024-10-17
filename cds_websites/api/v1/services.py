@@ -37,7 +37,7 @@ class ServiceSitoWebCds:
         query_visibile = Q(visibile=True) if only_active else Q()
         query_topic_id = Q(sito_web_cds_topic__id__in=topic_id_list)
         query_cds_cod = Q(
-            didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds__cds_cod=str(
+            didattica_cds_articoli_regolamento__didattica_cds_articoli_regolamento_testata__cds__cds_cod=str(
                 cds_cod
             )
         ) | Q(sito_web_cds_oggetti_portale__cds__cds_cod=str(cds_cod))
@@ -68,7 +68,7 @@ class ServiceSitoWebCds:
             )
             .select_related(
                 "sito_web_cds_oggetti_portale__cds",
-                "didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds",
+                "didattica_cds_articoli_regolamento__didattica_cds_articoli_regolamento_testata__cds",
                 "sito_web_cds_topic",
             )
             .filter(query_topic_id, query_cds_cod, query_visibile)
@@ -91,7 +91,7 @@ class ServiceSitoWebCds:
                 "sito_web_cds_oggetti_portale__testo_en",
                 "sito_web_cds_oggetti_portale__cds__cds_cod",
                 "didattica_cds_articoli_regolamento__id",
-                "didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds__cds_cod",
+                "didattica_cds_articoli_regolamento__didattica_cds_articoli_regolamento_testata__cds__cds_cod",
             )
             .annotate(
                 tipo=Case(

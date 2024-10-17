@@ -94,11 +94,11 @@ def _get_titoli_struttura_articoli_dict(regdid, testata):
     )
     titoli = DidatticaArticoliRegolamentoTitolo.objects.all()
     struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(
-        id_didattica_cds_tipo_corso=didattica_cds_tipo_corso, aa=testata.aa
+        didattica_cds_tipo_corso=didattica_cds_tipo_corso, aa=testata.aa
     ).order_by("numero")
     articoli = DidatticaCdsArticoliRegolamento.objects.filter(
-        id_didattica_cds_articoli_regolamento_testata=testata,
-        id_didattica_articoli_regolamento_struttura__in=struttura_articoli,
+        didattica_cds_articoli_regolamento_testata=testata,
+        didattica_articoli_regolamento_struttura__in=struttura_articoli,
     )
     titoli_struttura_articoli_dict = {titolo: [] for titolo in titoli}
     for titolo in titoli_struttura_articoli_dict.keys():
@@ -106,15 +106,15 @@ def _get_titoli_struttura_articoli_dict(regdid, testata):
             {
                 art_struttura: {
                     articoli.filter(
-                        id_didattica_articoli_regolamento_struttura=art_struttura
+                        didattica_articoli_regolamento_struttura=art_struttura
                     ).first(): DidatticaCdsSubArticoliRegolamento.objects.filter(
-                        id_didattica_cds_articoli_regolamento=articoli.filter(
-                            id_didattica_articoli_regolamento_struttura=art_struttura
+                        didattica_cds_articoli_regolamento=articoli.filter(
+                            didattica_articoli_regolamento_struttura=art_struttura
                         ).first()
                     ).order_by("ordine")
                 }
                 for art_struttura in struttura_articoli.filter(
-                    id_didattica_articoli_regolamento_titolo=titolo
+                    didattica_articoli_regolamento_titolo=titolo
                 )
             }
         ]
@@ -164,8 +164,8 @@ def regdid_structure_import(request):
                     "titolo_it": "Scopo del regolamento",
                     "titolo_en": "Purpose of the regulation",
                     "ordine": 0,
-                    "id_didattica_cds_tipo_corso_id": 2,
-                    "id_didattica_articoli_regolamento_titolo_id": 2
+                    "didattica_cds_tipo_corso_id": 2,
+                    "didattica_articoli_regolamento_titolo_id": 2
                 },
                 ...
             ]
@@ -179,14 +179,14 @@ def regdid_structure_import(request):
             objs_to_be_updated = []
 
             for struttura_articolo in struttura:
-                struttura_articolo["id_user_mod_id"] = request.user.pk
+                struttura_articolo["user_mod_id"] = request.user.pk
                 struttura_articolo["dt_mod"] = datetime.datetime.now().isoformat()
                 struttura_articolo["visibile"] = True
 
                 old_obj = DidatticaArticoliRegolamentoStruttura.objects.filter(
                     aa=struttura_articolo["aa"],
-                    id_didattica_cds_tipo_corso_id=struttura_articolo[
-                        "id_didattica_cds_tipo_corso_id"
+                    didattica_cds_tipo_corso_id=struttura_articolo[
+                        "didattica_cds_tipo_corso_id"
                     ],
                     numero=struttura_articolo["numero"],
                 )
@@ -257,16 +257,16 @@ def regdid_articles(request, regdid_id):
             note="",
             visibile=1,
             dt_mod=datetime.datetime.now(),
-            id_user_mod=request.user,
+            user_mod=request.user,
         )
 
         status = get_object_or_404(DidatticaArticoliRegolamentoStatus, status_cod="0")
         testata_status = DidatticaCdsTestataStatus.objects.create(
-            id_didattica_articoli_regolamento_status=status,
-            id_didattica_cds_articoli_regolamento_testata=testata,
+            didattica_articoli_regolamento_status=status,
+            didattica_cds_articoli_regolamento_testata=testata,
             data_status=datetime.datetime.now(),
             dt_mod=datetime.datetime.now(),
-            id_user_mod=request.user,
+            user_mod=request.user,
         )
 
         log_action(
@@ -278,7 +278,7 @@ def regdid_articles(request, regdid_id):
     else:
         testata_status = (
             DidatticaCdsTestataStatus.objects.filter(
-                id_didattica_cds_articoli_regolamento_testata=testata.pk
+                didattica_cds_articoli_regolamento_testata=testata.pk
             )
             .order_by("-data_status")
             .first()
@@ -296,12 +296,12 @@ def regdid_articles(request, regdid_id):
     )
     titoli = DidatticaArticoliRegolamentoTitolo.objects.all()
     struttura_articoli = DidatticaArticoliRegolamentoStruttura.objects.filter(
-        id_didattica_cds_tipo_corso=didattica_cds_tipo_corso, aa=regdid.aa_reg_did
+        didattica_cds_tipo_corso=didattica_cds_tipo_corso, aa=regdid.aa_reg_did
     ).order_by("numero")
 
     articoli = DidatticaCdsArticoliRegolamento.objects.filter(
-        id_didattica_cds_articoli_regolamento_testata=testata,
-        id_didattica_articoli_regolamento_struttura__in=struttura_articoli,
+        didattica_cds_articoli_regolamento_testata=testata,
+        didattica_articoli_regolamento_struttura__in=struttura_articoli,
     )
     titoli_struttura_articoli_dict = {titolo: [] for titolo in titoli}
     for titolo in titoli_struttura_articoli_dict.keys():
@@ -309,15 +309,15 @@ def regdid_articles(request, regdid_id):
             {
                 art_struttura: {
                     articoli.filter(
-                        id_didattica_articoli_regolamento_struttura=art_struttura
+                        didattica_articoli_regolamento_struttura=art_struttura
                     ).first(): DidatticaCdsSubArticoliRegolamento.objects.filter(
-                        id_didattica_cds_articoli_regolamento=articoli.filter(
-                            id_didattica_articoli_regolamento_struttura=art_struttura
+                        didattica_cds_articoli_regolamento=articoli.filter(
+                            didattica_articoli_regolamento_struttura=art_struttura
                         ).first()
                     ).order_by("ordine")
                 }
                 for art_struttura in struttura_articoli.filter(
-                    id_didattica_articoli_regolamento_titolo=titolo
+                    didattica_articoli_regolamento_titolo=titolo
                 )
             }
         ]
@@ -387,7 +387,7 @@ def regdid_articles(request, regdid_id):
 
     # testata status history
     status_history = DidatticaCdsTestataStatus.objects.filter(
-        id_didattica_cds_articoli_regolamento_testata=testata.pk
+        didattica_cds_articoli_regolamento_testata=testata.pk
     ).order_by("-data_status")
 
     breadcrumbs = {
@@ -432,7 +432,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
         return custom_message(request, _("Permission denied"))
 
     sub_art_list = DidatticaCdsSubArticoliRegolamento.objects.filter(
-        id_didattica_cds_articoli_regolamento=article_id
+        didattica_cds_articoli_regolamento=article_id
     ).order_by("ordine")
     didatticacdsarticoliregolamentoform = DidatticaCdsArticoliRegolamentoForm(
         data=request.POST if request.POST else None, instance=articolo
@@ -442,7 +442,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata.pk
+            didattica_cds_articoli_regolamento_testata=testata.pk
         )
         .order_by("-data_status")
         .first()
@@ -473,7 +473,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
     )
 
     if request.POST:
-        if testata_status.id_didattica_articoli_regolamento_status.status_cod in [
+        if testata_status.didattica_articoli_regolamento_status.status_cod in [
             "2",
             "3",
         ]:
@@ -495,7 +495,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
 
                     articolo = didatticacdsarticoliregolamentoform.save(commit=False)
                     articolo.dt_mod = datetime.datetime.now()
-                    articolo.id_user_mod = request.user
+                    articolo.user_mod = request.user
                     articolo.save(
                         update_fields=didatticacdsarticoliregolamentoform.changed_data
                     )
@@ -505,7 +505,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
                         obj=testata,
                         flag=CHANGE,
                         msg=_("Edited")
-                        + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}",
+                        + f" Art. {articolo.didattica_articoli_regolamento_struttura.numero} - {articolo.didattica_articoli_regolamento_struttura.titolo_it}",
                     )
 
                     messages.add_message(
@@ -534,7 +534,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
                             obj=testata,
                             flag=CHANGE,
                             msg=_("Edited notes")
-                            + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}",
+                            + f" Art. {articolo.didattica_articoli_regolamento_struttura.numero} - {articolo.didattica_articoli_regolamento_struttura.titolo_it}",
                         )
 
                         messages.add_message(
@@ -563,7 +563,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
         reverse(
             "regdid:management:regdid-articles", kwargs={"regdid_id": regdid_id}
         ): regdid.cds.nome_cds_it.title(),
-        "#": f"Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}",
+        "#": f"Art. {articolo.didattica_articoli_regolamento_struttura.numero} - {articolo.didattica_articoli_regolamento_struttura.titolo_it}",
     }
 
     return render(
@@ -576,7 +576,7 @@ def regdid_articles_edit(request, regdid_id, article_id):
             "article": articolo,
             "testata": testata,
             "sub_art_list": sub_art_list,
-            "item_label": f"Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}",
+            "item_label": f"Art. {articolo.didattica_articoli_regolamento_struttura.numero} - {articolo.didattica_articoli_regolamento_struttura.titolo_it}",
             "show_sub_articles": 1,
             "titoli_struttura_articoli_dict": titoli_struttura_articoli_dict,
             # Notes
@@ -604,7 +604,7 @@ def regdid_articles_new(request, regdid_id, article_num):
     )
     struttura_articolo = get_object_or_404(
         DidatticaArticoliRegolamentoStruttura,
-        id_didattica_cds_tipo_corso=didattica_cds_tipo_corso,
+        didattica_cds_tipo_corso=didattica_cds_tipo_corso,
         numero=article_num,
     )
     testata = get_object_or_404(
@@ -612,13 +612,13 @@ def regdid_articles_new(request, regdid_id, article_num):
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata.pk
+            didattica_cds_articoli_regolamento_testata=testata.pk
         )
         .order_by("-data_status")
         .first()
     )
 
-    if testata_status.id_didattica_articoli_regolamento_status.status_cod in ["2", "3"]:
+    if testata_status.didattica_articoli_regolamento_status.status_cod in ["2", "3"]:
         return custom_message(request, _("Permission denied"))
 
     # permissions
@@ -642,8 +642,8 @@ def regdid_articles_new(request, regdid_id, article_num):
 
     # check for existing article
     if DidatticaCdsArticoliRegolamento.objects.filter(
-        id_didattica_cds_articoli_regolamento_testata=testata,
-        id_didattica_articoli_regolamento_struttura=struttura_articolo,
+        didattica_cds_articoli_regolamento_testata=testata,
+        didattica_articoli_regolamento_struttura=struttura_articolo,
     ).exists():
         return custom_message(request, _("Article already exists"))
 
@@ -653,10 +653,10 @@ def regdid_articles_new(request, regdid_id, article_num):
 
         elif didatticacdsarticoliregolamentoform.is_valid():
             articolo = didatticacdsarticoliregolamentoform.save(commit=False)
-            articolo.id_didattica_articoli_regolamento_struttura = struttura_articolo
-            articolo.id_didattica_cds_articoli_regolamento_testata = testata
+            articolo.didattica_articoli_regolamento_struttura = struttura_articolo
+            articolo.didattica_cds_articoli_regolamento_testata = testata
             articolo.dt_mod = datetime.datetime.now()
-            articolo.id_user_mod = request.user
+            articolo.user_mod = request.user
             articolo.cds_id = regdid.cds_id
             articolo.visibile = True
             articolo.save()
@@ -729,23 +729,23 @@ def regdid_articles_delete(request, regdid_id, article_id):
     ):
         return custom_message(request, _("Permission denied"))
 
-    numero_articolo = articolo.id_didattica_articoli_regolamento_struttura.numero
-    titolo_articolo = articolo.id_didattica_articoli_regolamento_struttura.titolo_it
+    numero_articolo = articolo.didattica_articoli_regolamento_struttura.numero
+    titolo_articolo = articolo.didattica_articoli_regolamento_struttura.titolo_it
     numero_sotto_art = DidatticaCdsSubArticoliRegolamento.objects.filter(
-        id_didattica_cds_articoli_regolamento=article_id
+        didattica_cds_articoli_regolamento=article_id
     ).count()
     testata = get_object_or_404(
         DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata.pk
+            didattica_cds_articoli_regolamento_testata=testata.pk
         )
         .order_by("-data_status")
         .first()
     )
 
-    if testata_status.id_didattica_articoli_regolamento_status.status_cod in ["2", "3"]:
+    if testata_status.didattica_articoli_regolamento_status.status_cod in ["2", "3"]:
         return custom_message(request, _("Permission denied"))
 
     articolo.delete()
@@ -778,7 +778,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
 
     numero_sotto_articolo = (
         DidatticaCdsSubArticoliRegolamento.objects.filter(
-            id_didattica_cds_articoli_regolamento=articolo,
+            didattica_cds_articoli_regolamento=articolo,
             ordine__lte=sotto_articolo.ordine,
         ).count()
         - 1
@@ -797,7 +797,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata.pk
+            didattica_cds_articoli_regolamento_testata=testata.pk
         )
         .order_by("-data_status")
         .first()
@@ -822,7 +822,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
     )
 
     if request.POST:
-        if testata_status.id_didattica_articoli_regolamento_status.status_cod in [
+        if testata_status.didattica_articoli_regolamento_status.status_cod in [
             "2",
             "3",
         ]:
@@ -842,7 +842,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
                         commit=False
                     )
                     sotto_articolo.dt_mod = datetime.datetime.now()
-                    sotto_articolo.id_user_mod = request.user
+                    sotto_articolo.user_mod = request.user
                     sotto_articolo.save()
 
                     log_action(
@@ -850,7 +850,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
                         obj=testata,
                         flag=CHANGE,
                         msg=_("Edited")
-                        + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}",
+                        + f" Art. {articolo.didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}",
                     )
 
                     messages.add_message(
@@ -882,8 +882,8 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
         reverse(
             "regdid:management:regdid-articles-edit",
             kwargs={"regdid_id": regdid_id, "article_id": articolo.pk},
-        ): f"Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}",
-        "#": f"Art {sotto_articolo.id_didattica_cds_articoli_regolamento.id_didattica_articoli_regolamento_struttura.numero} {latin_enum_sotto_articolo} - {sotto_articolo.titolo_it}",
+        ): f"Art. {articolo.didattica_articoli_regolamento_struttura.numero} - {articolo.didattica_articoli_regolamento_struttura.titolo_it}",
+        "#": f"Art {sotto_articolo.didattica_cds_articoli_regolamento.didattica_articoli_regolamento_struttura.numero} {latin_enum_sotto_articolo} - {sotto_articolo.titolo_it}",
     }
 
     return render(
@@ -893,7 +893,7 @@ def regdid_sub_articles_edit(request, regdid_id, article_id, sub_article_id):
             "breadcrumbs": breadcrumbs,
             "regdid": regdid,
             "forms": [didatticacdssubarticoliregolamentoform],
-            "item_label": f"Art {sotto_articolo.id_didattica_cds_articoli_regolamento.id_didattica_articoli_regolamento_struttura.numero} {latin_enum_sotto_articolo} - {sotto_articolo.titolo_it}",
+            "item_label": f"Art {sotto_articolo.didattica_cds_articoli_regolamento.didattica_articoli_regolamento_struttura.numero} {latin_enum_sotto_articolo} - {sotto_articolo.titolo_it}",
             "sub_article": sotto_articolo,
             "titoli_struttura_articoli_dict": titoli_struttura_articoli_dict,
             # Notes
@@ -922,19 +922,19 @@ def regdid_sub_articles_new(request, regdid_id, article_id):
     if not user_permissions_and_offices["permissions"]["access"]:
         return custom_message(request, _("Permission denied"))
 
-    strutt_articolo = articolo.id_didattica_articoli_regolamento_struttura
+    strutt_articolo = articolo.didattica_articoli_regolamento_struttura
     testata = get_object_or_404(
         DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata.pk
+            didattica_cds_articoli_regolamento_testata=testata.pk
         )
         .order_by("-data_status")
         .first()
     )
 
-    if testata_status.id_didattica_articoli_regolamento_status.status_cod in ["2", "3"]:
+    if testata_status.didattica_articoli_regolamento_status.status_cod in ["2", "3"]:
         return custom_message(request, _("Permission denied"))
 
     # Revision Notes
@@ -958,9 +958,9 @@ def regdid_sub_articles_new(request, regdid_id, article_id):
 
         elif didatticacdssubarticoliregolamentoform.is_valid():
             sotto_articolo = didatticacdssubarticoliregolamentoform.save(commit=False)
-            sotto_articolo.id_didattica_cds_articoli_regolamento = articolo
+            sotto_articolo.didattica_cds_articoli_regolamento = articolo
             sotto_articolo.dt_mod = datetime.datetime.now()
-            sotto_articolo.id_user_mod = request.user
+            sotto_articolo.user_mod = request.user
             sotto_articolo.visibile = True
             sotto_articolo.save()
 
@@ -969,7 +969,7 @@ def regdid_sub_articles_new(request, regdid_id, article_id):
                 obj=testata,
                 flag=CHANGE,
                 msg=_("Added")
-                + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}",
+                + f" Art. {articolo.didattica_articoli_regolamento_struttura.numero}.{sotto_articolo.ordine} - {sotto_articolo.titolo_it}",
             )
 
             messages.add_message(
@@ -999,7 +999,7 @@ def regdid_sub_articles_new(request, regdid_id, article_id):
         reverse(
             "regdid:management:regdid-articles-edit",
             kwargs={"regdid_id": regdid_id, "article_id": articolo.pk},
-        ): f"Art. {articolo.id_didattica_articoli_regolamento_struttura.numero} - {articolo.id_didattica_articoli_regolamento_struttura.titolo_it}",
+        ): f"Art. {articolo.didattica_articoli_regolamento_struttura.numero} - {articolo.didattica_articoli_regolamento_struttura.titolo_it}",
         "#": _("New sub article"),
     }
 
@@ -1047,13 +1047,13 @@ def regdid_sub_articles_delete(request, regdid_id, article_id, sub_article_id):
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata.pk
+            didattica_cds_articoli_regolamento_testata=testata.pk
         )
         .order_by("-data_status")
         .first()
     )
 
-    if testata_status.id_didattica_articoli_regolamento_status.status_cod in ["2", "3"]:
+    if testata_status.didattica_articoli_regolamento_status.status_cod in ["2", "3"]:
         return custom_message(request, _("Permission denied"))
 
     sotto_articolo.delete()
@@ -1063,7 +1063,7 @@ def regdid_sub_articles_delete(request, regdid_id, article_id, sub_article_id):
         obj=testata,
         flag=CHANGE,
         msg=_("Deleted")
-        + f" Art. {articolo.id_didattica_articoli_regolamento_struttura.numero}.{ordine_sotto_articolo} - {titolo_sotto_articolo}",
+        + f" Art. {articolo.didattica_articoli_regolamento_struttura.numero}.{ordine_sotto_articolo} - {titolo_sotto_articolo}",
     )
 
     messages.add_message(
@@ -1086,7 +1086,7 @@ def regdid_status_change(request, regdid_id, status_cod):
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata.pk
+            didattica_cds_articoli_regolamento_testata=testata.pk
         )
         .order_by("-data_status")
         .first()
@@ -1109,10 +1109,10 @@ def regdid_status_change(request, regdid_id, status_cod):
     try:
         # check if there are any locks on articles or sub-articles
         articoli = DidatticaCdsArticoliRegolamento.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata
+            didattica_cds_articoli_regolamento_testata=testata
         )
         sotto_articoli = DidatticaCdsSubArticoliRegolamento.objects.filter(
-            id_didattica_cds_articoli_regolamento__in=articoli
+            didattica_cds_articoli_regolamento__in=articoli
         )
         for articolo in articoli:
             content_type_id = ContentType.objects.get_for_model(articolo).pk
@@ -1127,7 +1127,7 @@ def regdid_status_change(request, regdid_id, status_cod):
                 raise LockCannotBeAcquiredException(lock)
 
         # check status
-        old_status = testata_status.id_didattica_articoli_regolamento_status
+        old_status = testata_status.didattica_articoli_regolamento_status
         status = get_object_or_404(
             DidatticaArticoliRegolamentoStatus, status_cod=status_cod
         )
@@ -1161,12 +1161,12 @@ def regdid_status_change(request, regdid_id, status_cod):
                     )
 
             testata_status = DidatticaCdsTestataStatus.objects.create(
-                id_didattica_articoli_regolamento_status=status,
-                id_didattica_cds_articoli_regolamento_testata=testata,
+                didattica_articoli_regolamento_status=status,
+                didattica_cds_articoli_regolamento_testata=testata,
                 motivazione=motivazione,
                 data_status=datetime.datetime.now(),
                 dt_mod=datetime.datetime.now(),
-                id_user_mod=request.user,
+                user_mod=request.user,
             )
 
             # email
@@ -1318,7 +1318,7 @@ def regdid_articles_import_pdf(request, regdid_id):
     ).first()
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata
+            didattica_cds_articoli_regolamento_testata=testata
         )
         .order_by("-data_status")
         .first()
@@ -1331,7 +1331,7 @@ def regdid_articles_import_pdf(request, regdid_id):
         )
         if not user_permissions_and_offices["permissions"]["edit"]:
             return custom_message(request, _("Permission denied"))
-        if testata_status.id_didattica_articoli_regolamento_status.status_cod in [
+        if testata_status.didattica_articoli_regolamento_status.status_cod in [
             "2",
             "3",
         ]:
@@ -1373,7 +1373,7 @@ def regdid_articles_import_pdf(request, regdid_id):
                 )
                 struttura_articoli = (
                     DidatticaArticoliRegolamentoStruttura.objects.filter(
-                        id_didattica_cds_tipo_corso=didattica_cds_tipo_corso,
+                        didattica_cds_tipo_corso=didattica_cds_tipo_corso,
                         aa=regdid.aa_reg_did,
                     )
                 )
@@ -1388,38 +1388,38 @@ def regdid_articles_import_pdf(request, regdid_id):
                             note="",
                             visibile=1,
                             dt_mod=datetime.datetime.now(),
-                            id_user_mod=request.user,
+                            user_mod=request.user,
                         )
 
                     status = DidatticaArticoliRegolamentoStatus.objects.get(
                         status_cod="1"
                     )
                     testata_status = DidatticaCdsTestataStatus.objects.create(
-                        id_didattica_articoli_regolamento_status=status,
-                        id_didattica_cds_articoli_regolamento_testata=testata,
+                        didattica_articoli_regolamento_status=status,
+                        didattica_cds_articoli_regolamento_testata=testata,
                         motivazione="Importazione da file",
                         data_status=datetime.datetime.now(),
                         dt_mod=datetime.datetime.now(),
-                        id_user_mod=request.user,
+                        user_mod=request.user,
                     )
 
                     # delete all the articles
                     DidatticaCdsArticoliRegolamento.objects.filter(
-                        id_didattica_cds_articoli_regolamento_testata=testata
+                        didattica_cds_articoli_regolamento_testata=testata
                     ).delete()
 
                     # insert new articles
                     for parsed_article in parsed_articles:
                         if parsed_article["testo_it"] is None:
                             continue
-                        parsed_article["id_user_mod_id"] = request.user.pk
+                        parsed_article["user_mod_id"] = request.user.pk
                         parsed_article["dt_mod"] = datetime.datetime.now().isoformat()
                         parsed_article["visibile"] = True
                         parsed_article[
-                            "id_didattica_cds_articoli_regolamento_testata_id"
+                            "didattica_cds_articoli_regolamento_testata_id"
                         ] = testata.pk
                         parsed_article[
-                            "id_didattica_articoli_regolamento_struttura_id"
+                            "didattica_articoli_regolamento_struttura_id"
                         ] = struttura_articoli.get(numero=parsed_article["numero"]).pk
                         del parsed_article["numero"]
 
@@ -1473,7 +1473,7 @@ def regdid_articles_publish(request, regdid_id):
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
-            id_didattica_cds_articoli_regolamento_testata=testata.pk
+            didattica_cds_articoli_regolamento_testata=testata.pk
         )
         .order_by("-data_status")
         .first()
@@ -1486,13 +1486,13 @@ def regdid_articles_publish(request, regdid_id):
     if (
         not user_permissions_and_offices["permissions"]["access"]
         or not user_permissions_and_offices["permissions"]["edit"]
-        or not testata_status.id_didattica_articoli_regolamento_status.status_cod == "3"
+        or not testata_status.didattica_articoli_regolamento_status.status_cod == "3"
     ):
         return custom_message(request, _("Permission denied"))
 
     # Regulation Articles
     articoli = DidatticaCdsArticoliRegolamento.objects.filter(
-        id_didattica_cds_articoli_regolamento_testata=testata
+        didattica_cds_articoli_regolamento_testata=testata
     )
 
     # Old SitoWebCdsTopicArticoliReg/SitoWebCdsSubArticoliRegolamento records
@@ -1507,17 +1507,17 @@ def regdid_articles_publish(request, regdid_id):
 
     articles_to_publish = (
         DidatticaCdsArticoliRegolamento.objects.select_related(
-            "id_didattica_articoli_regolamento_struttura",
-            "id_didattica_cds_articoli_regolamento_testata",
+            "didattica_articoli_regolamento_struttura",
+            "didattica_cds_articoli_regolamento_testata",
         )
         .filter(
-            id_didattica_articoli_regolamento_struttura__in=strutture_topic.values_list(
+            didattica_articoli_regolamento_struttura__in=strutture_topic.values_list(
                 "id_did_art_regolamento_struttura", flat=True
             ),
-            id_didattica_cds_articoli_regolamento_testata=testata,
+            didattica_cds_articoli_regolamento_testata=testata,
             visibile=True,
         )
-        .order_by("id_didattica_articoli_regolamento_struttura__numero")
+        .order_by("didattica_articoli_regolamento_struttura__numero")
     )
 
     try:
@@ -1542,7 +1542,7 @@ def regdid_articles_publish(request, regdid_id):
             )
             for swcta_reg in swcta_reg_to_update:
                 _strutture_topic = strutture_topic.filter(
-                    did_art_regolamento_struttura=swcta_reg.didattica_cds_articoli_regolamento.id_didattica_articoli_regolamento_struttura,
+                    did_art_regolamento_struttura=swcta_reg.didattica_cds_articoli_regolamento.didattica_articoli_regolamento_struttura,
                     sito_web_cds_topic=swcta_reg.sito_web_cds_topic,
                 )
 
@@ -1557,11 +1557,11 @@ def regdid_articles_publish(request, regdid_id):
                     swcta_reg.ordine = struttura_topic.ordine
                     swcta_reg.visibile = True
                     swcta_reg.dt_mod = datetime.datetime.now()
-                    swcta_reg.id_user_mod = request.user
+                    swcta_reg.user_mod = request.user
                     swcta_reg.save()
 
                     sotto_articoli = DidatticaCdsSubArticoliRegolamento.objects.filter(
-                        id_didattica_cds_articoli_regolamento=articolo, visibile=True
+                        didattica_cds_articoli_regolamento=articolo, visibile=True
                     )
                     ordine_sotto_articolo = 0
                     for sotto_articolo in sotto_articoli:
@@ -1575,7 +1575,7 @@ def regdid_articles_publish(request, regdid_id):
                             ordine=ordine_sotto_articolo,
                             visibile=True,
                             dt_mod=datetime.datetime.now(),
-                            id_user_mod=request.user,
+                            user_mod=request.user,
                         )
 
             # Create
@@ -1587,7 +1587,7 @@ def regdid_articles_publish(request, regdid_id):
 
             for articolo in dca_regolamento_for_creation:
                 _strutture_topic = strutture_topic.filter(
-                    id_did_art_regolamento_struttura=articolo.id_didattica_articoli_regolamento_struttura
+                    id_did_art_regolamento_struttura=articolo.didattica_articoli_regolamento_struttura
                 )
                 for struttura_topic in _strutture_topic:
                     swcta_reg = SitoWebCdsTopicArticoliReg.objects.create(
@@ -1601,11 +1601,11 @@ def regdid_articles_publish(request, regdid_id):
                         ordine=struttura_topic.ordine,
                         visibile=True,
                         dt_mod=datetime.datetime.now(),
-                        id_user_mod=request.user,
+                        user_mod=request.user,
                     )
 
                     sotto_articoli = DidatticaCdsSubArticoliRegolamento.objects.filter(
-                        id_didattica_cds_articoli_regolamento=articolo, visibile=True
+                        didattica_cds_articoli_regolamento=articolo, visibile=True
                     )
                     ordine_sotto_articolo = 0
                     for sotto_articolo in sotto_articoli:
@@ -1619,7 +1619,7 @@ def regdid_articles_publish(request, regdid_id):
                             ordine=ordine_sotto_articolo,
                             visibile=True,
                             dt_mod=datetime.datetime.now(),
-                            id_user_mod=request.user,
+                            user_mod=request.user,
                         )
 
         messages.add_message(

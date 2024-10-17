@@ -39,15 +39,15 @@ class DidatticaArticoliRegolamentoStruttura(VisibileAbstract):
     )
     ordine = models.IntegerField(db_column="ORDINE", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD")
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
-    id_didattica_cds_tipo_corso = models.ForeignKey(
+    didattica_cds_tipo_corso = models.ForeignKey(
         "cds.DidatticaCdsTipoCorso",
         models.PROTECT,
         db_column="ID_DIDATTICA_CDS_TIPO_CORSO",
     )
-    id_didattica_articoli_regolamento_titolo = models.ForeignKey(
+    didattica_articoli_regolamento_titolo = models.ForeignKey(
         "DidatticaArticoliRegolamentoTitolo",
         models.PROTECT,
         db_column="ID_DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO",
@@ -74,7 +74,7 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileAbstract, Permissions):
     aa = models.IntegerField(db_column="AA")
     note = models.TextField(db_column="NOTE", blank=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD")
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
 
@@ -129,7 +129,7 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileAbstract, Permissions):
 
         testata_status = (
             DidatticaCdsTestataStatus.objects.filter(
-                id_didattica_cds_articoli_regolamento_testata=self.pk
+                didattica_cds_articoli_regolamento_testata=self.pk
             )
             .order_by("-data_status")
             .first()
@@ -137,7 +137,7 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileAbstract, Permissions):
         if testata_status is None:
             return False
 
-        status_cod = testata_status.id_didattica_articoli_regolamento_status.status_cod
+        status_cod = testata_status.didattica_articoli_regolamento_status.status_cod
 
         if status_cod == "0" and offices_names[0] in user_offices_names:
             return True
@@ -155,12 +155,12 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileAbstract, Permissions):
 
 class DidatticaCdsTestataStatus(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_didattica_articoli_regolamento_status = models.ForeignKey(
+    didattica_articoli_regolamento_status = models.ForeignKey(
         DidatticaArticoliRegolamentoStatus,
         models.PROTECT,
         db_column="ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STATUS",
     )
-    id_didattica_cds_articoli_regolamento_testata = models.ForeignKey(
+    didattica_cds_articoli_regolamento_testata = models.ForeignKey(
         DidatticaCdsArticoliRegolamentoTestata,
         models.PROTECT,
         db_column="ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA",
@@ -168,7 +168,7 @@ class DidatticaCdsTestataStatus(models.Model):
     motivazione = models.TextField(db_column="MOTIVAZIONE", blank=True, null=True)
     data_status = models.DateTimeField(db_column="DATA_STATUS")
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         models.DO_NOTHING,
         db_column="user_mod_id",
@@ -183,12 +183,12 @@ class DidatticaCdsTestataStatus(models.Model):
 
 class DidatticaCdsArticoliRegolamento(VisibileAbstract, Permissions):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_didattica_cds_articoli_regolamento_testata = models.ForeignKey(
+    didattica_cds_articoli_regolamento_testata = models.ForeignKey(
         DidatticaCdsArticoliRegolamentoTestata,
         models.PROTECT,
         db_column="ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA",
     )
-    id_didattica_articoli_regolamento_struttura = models.ForeignKey(
+    didattica_articoli_regolamento_struttura = models.ForeignKey(
         DidatticaArticoliRegolamentoStruttura,
         models.PROTECT,
         db_column="ID_DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA",
@@ -197,7 +197,7 @@ class DidatticaCdsArticoliRegolamento(VisibileAbstract, Permissions):
     testo_en = models.TextField(db_column="TESTO_EN", blank=True, null=True)
     note = models.TextField(db_column="NOTE", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD")
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
 
@@ -216,7 +216,7 @@ class DidatticaCdsArticoliRegolamento(VisibileAbstract, Permissions):
             user_office = all_user_offices.get(office__name=office_name)
             return (
                 user_office.office.organizational_structure.unique_code
-                == self.id_didattica_cds_articoli_regolamento_testata.cds.dip.dip_cod
+                == self.didattica_cds_articoli_regolamento_testata.cds.dip.dip_cod
             )
         return True
 
@@ -225,7 +225,7 @@ class DidatticaCdsArticoliRegolamento(VisibileAbstract, Permissions):
 
         testata_status = (
             DidatticaCdsTestataStatus.objects.filter(
-                id_didattica_cds_articoli_regolamento_testata=self.id_didattica_cds_articoli_regolamento_testata.pk
+                didattica_cds_articoli_regolamento_testata=self.didattica_cds_articoli_regolamento_testata.pk
             )
             .order_by("-data_status")
             .first()
@@ -233,7 +233,7 @@ class DidatticaCdsArticoliRegolamento(VisibileAbstract, Permissions):
         if testata_status is None:
             return False
 
-        status_cod = testata_status.id_didattica_articoli_regolamento_status.status_cod
+        status_cod = testata_status.didattica_articoli_regolamento_status.status_cod
 
         if status_cod == "0" and offices_names[0] in user_offices_names:
             return True
@@ -260,7 +260,7 @@ class DidatticaArticoliRegolamentoTitolo(Permissions):
     )
     ordine = models.IntegerField(db_column="ORDINE")
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
 
@@ -286,7 +286,7 @@ class DidatticaCdsSubArticoliRegolamento(VisibileAbstract, Permissions):
     )
     testo_it = models.TextField(db_column="TESTO_IT")
     testo_en = models.TextField(db_column="TESTO_EN", blank=True, null=True)
-    id_didattica_cds_articoli_regolamento = models.ForeignKey(
+    didattica_cds_articoli_regolamento = models.ForeignKey(
         DidatticaCdsArticoliRegolamento,
         models.CASCADE,
         db_column="ID_DIDATTICA_CDS_ARTICOLI_REGOLAMENTO",
@@ -294,7 +294,7 @@ class DidatticaCdsSubArticoliRegolamento(VisibileAbstract, Permissions):
         null=True,
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD")
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
 
@@ -313,7 +313,7 @@ class DidatticaCdsSubArticoliRegolamento(VisibileAbstract, Permissions):
             user_office = all_user_offices.get(office__name=office_name)
             return (
                 user_office.office.organizational_structure.unique_code
-                == self.id_didattica_cds_articoli_regolamento.id_didattica_cds_articoli_regolamento_testata.cds.dip.dip_cod
+                == self.didattica_cds_articoli_regolamento.didattica_cds_articoli_regolamento_testata.cds.dip.dip_cod
             )
         return True
 
@@ -322,7 +322,7 @@ class DidatticaCdsSubArticoliRegolamento(VisibileAbstract, Permissions):
 
         testata_status = (
             DidatticaCdsTestataStatus.objects.filter(
-                id_didattica_cds_articoli_regolamento_testata=self.id_didattica_cds_articoli_regolamento.id_didattica_cds_articoli_regolamento_testata.pk
+                didattica_cds_articoli_regolamento_testata=self.didattica_cds_articoli_regolamento.didattica_cds_articoli_regolamento_testata.pk
             )
             .order_by("-data_status")
             .first()
@@ -330,7 +330,7 @@ class DidatticaCdsSubArticoliRegolamento(VisibileAbstract, Permissions):
         if testata_status is None:
             return False
 
-        status_cod = testata_status.id_didattica_articoli_regolamento_status.status_cod
+        status_cod = testata_status.didattica_articoli_regolamento_status.status_cod
 
         if status_cod == "0" and offices_names[0] in user_offices_names:
             return True

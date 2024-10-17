@@ -17,7 +17,7 @@
         <div class="span align-self-start">
             {% if sub_art.titolo_it %}
                 {% latin_enum numero_sotto_articolo as latin_enum_sotto_articolo %}
-                Art. {{article.id_didattica_articoli_regolamento_struttura.numero}} {{latin_enum_sotto_articolo}} - {{sub_art.titolo_it}}
+                Art. {{article.didattica_articoli_regolamento_struttura.numero}} {{latin_enum_sotto_articolo}} - {{sub_art.titolo_it}}
             {% endif %}
             <br/>
             {% if sub_art.titolo_en %}
@@ -96,7 +96,7 @@
             {% trans "View" %}
             {% endif %}
         </a>
-        {% if user_permissions_and_offices.permissions.edit and testata_status.id_didattica_articoli_regolamento_status.status_cod != '2' and testata_status.id_didattica_articoli_regolamento_status.status_cod != '3' %}
+        {% if user_permissions_and_offices.permissions.edit and testata_status.didattica_articoli_regolamento_status.status_cod != '2' and testata_status.didattica_articoli_regolamento_status.status_cod != '3' %}
         <a  
             href="javascript:void(0)"
             data-toggle="modal"

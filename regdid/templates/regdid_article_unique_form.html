@@ -100,7 +100,7 @@
                 {% for form in forms %}
                     {% include "form_template.html" with form=form %}
                 {% endfor %}
-                {% if user_permissions_and_offices.permissions.edit and testata_status.id_didattica_articoli_regolamento_status.status_cod != '2' and testata_status.id_didattica_articoli_regolamento_status.status_cod != '3' %}
+                {% if user_permissions_and_offices.permissions.edit and testata_status.didattica_articoli_regolamento_status.status_cod != '2' and testata_status.didattica_articoli_regolamento_status.status_cod != '3' %}
                 <div id="form_submit">
                 {% include "includes/form_submit.html" %}
                 </div>
@@ -123,7 +123,7 @@
                 {% endfor %}
             </div>
             {% if user_permissions_and_offices.permissions.edit %} 
-                {% if testata_status.id_didattica_articoli_regolamento_status.status_cod != '2' and testata_status.id_didattica_articoli_regolamento_status.status_cod != '3' %}
+                {% if testata_status.didattica_articoli_regolamento_status.status_cod != '2' and testata_status.didattica_articoli_regolamento_status.status_cod != '3' %}
                 <a  
                 href="{% url 'regdid:management:regdid-sub-articles-new' regdid_id=regdid.pk article_id=article.pk %}"
                 class="btn btn-success btn-block">
