@@ -71,10 +71,10 @@ class SpinoffStartupDatiBase(models.Model):
         null=True,
     )
     ceo = models.CharField(db_column="CEO", max_length=1000, blank=True, null=True)
-    id_area_tecnologica = models.ForeignKey(
+    area_tecnologica = models.ForeignKey(
         TipologiaAreaTecnologica, models.DO_NOTHING, db_column="ID_AREA_TECNOLOGICA"
     )
-    id_area_innovazione_s3_calabria = models.ForeignKey(
+    area_innovazione_s3_calabria = models.ForeignKey(
         SpinoffStartupAreaInnovazioneS3Calabria,
         models.SET_NULL,
         db_column="ID_AREA_INNOVAZIONE_S3_CALABRIA",
@@ -94,13 +94,13 @@ class SpinoffStartupDatiBase(models.Model):
 
 class SpinoffStartupDipartimento(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_spinoff_startup_dati_base = models.ForeignKey(
+    spinoff_startup_dati_base = models.ForeignKey(
         SpinoffStartupDatiBase, models.CASCADE, db_column="ID_SPINOFF_STARTUP_DATI_BASE"
     )
     nome_origine_dipartimento = models.CharField(
         db_column="NOME_ORIGINE_DIPARTIMENTO", max_length=1000
     )
-    id_didattica_dipartimento = models.ForeignKey(
+    didattica_dipartimento = models.ForeignKey(
         "structures.DidatticaDipartimento",
         models.CASCADE,
         db_column="ID_DIDATTICA_DIPARTIMENTO",

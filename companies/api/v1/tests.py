@@ -45,7 +45,7 @@ class ApiCompaniesListUnitTest(TestCase):
                 "url_sito_web": "bbbb",
                 "descrizione_ita": "applicazione",
                 "descrizione_eng": "description",
-                "id_area_tecnologica": t1,
+                "area_tecnologica": t1,
                 "referente_unical": "Garofalo",
                 "matricola_referente_unical": p,
                 "is_spinoff": 1,
@@ -55,8 +55,8 @@ class ApiCompaniesListUnitTest(TestCase):
 
         SpinoffStartupDipartimento.objects.create(
             **{
-                "id_spinoff_startup_dati_base": s1,
-                "id_didattica_dipartimento": d1,
+                "spinoff_startup_dati_base": s1,
+                "didattica_dipartimento": d1,
             }
         )
 
@@ -121,7 +121,7 @@ class ApiCompanyDetailUnitTest(TestCase):
                 "url_sito_web": "bbbb",
                 "descrizione_ita": "applicazione",
                 "descrizione_eng": "description",
-                "id_area_tecnologica": t1,
+                "area_tecnologica": t1,
                 "referente_unical": "Garofalo",
                 "matricola_referente_unical": p,
                 "is_spinoff": 1,
@@ -131,8 +131,8 @@ class ApiCompanyDetailUnitTest(TestCase):
 
         SpinoffStartupDipartimento.objects.create(
             **{
-                "id_spinoff_startup_dati_base": s1,
-                "id_didattica_dipartimento": d1,
+                "spinoff_startup_dati_base": s1,
+                "didattica_dipartimento": d1,
             }
         )
 

@@ -22,10 +22,10 @@ class CompaniesSerializer(CreateUpdateAbstract):
             else query["descrizione_eng"],
             "SpinoffUnicalReferent": query["referente_unical"],
             "SpinoffUnicalReferentId": encrypt(query["matricola_referente_unical"]),
-            "TechAreaId": query["id_area_tecnologica"],
-            "TechAreaDescription": query["id_area_tecnologica__descr_area_ita"]
-            if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None
-            else query["id_area_tecnologica__descr_area_eng"],
+            "TechAreaId": query["area_tecnologica"],
+            "TechAreaDescription": query["area_tecnologica__descr_area_ita"]
+            if req_lang == "it" or query["area_tecnologica__descr_area_eng"] is None
+            else query["area_tecnologica__descr_area_eng"],
             "IsSpinoff": query["is_spinoff"],
             "IsStartup": query["is_startup"],
             "IsActive": query["is_active"],

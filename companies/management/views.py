@@ -41,7 +41,7 @@ def company(request, code, company=None):
 
     referent_data = get_object_or_404(SpinoffStartupDatiBase, pk=code)
     departments = SpinoffStartupDipartimento.objects.filter(
-        id_spinoff_startup_dati_base=company
+        spinoff_startup_dati_base=company
     )
 
     if request.POST:
@@ -147,9 +147,9 @@ def company_new(request, company=None):
             # questo viene associato all'impresa
             if department:
                 SpinoffStartupDipartimento.objects.create(
-                    id_spinoff_startup_dati_base=company,
+                    spinoff_startup_dati_base=company,
                     nome_origine_dipartimento=f"{department.dip_des_it}",
-                    id_didattica_dipartimento=department,
+                    didattica_dipartimento=department,
                 )
 
             log_action(
@@ -316,8 +316,8 @@ def company_unical_department_data_new(request, code, company=None):
                 DidatticaDipartimento, dip_id=department_code
             )
             SpinoffStartupDipartimento.objects.create(
-                id_spinoff_startup_dati_base=company,
-                id_didattica_dipartimento=department,
+                spinoff_startup_dati_base=company,
+                didattica_dipartimento=department,
                 nome_origine_dipartimento=department.dip_des_it,
             )
 
@@ -366,11 +366,11 @@ def company_unical_department_data_edit(request, code, department_id, company=No
     modifica dipartimento
     """
     department_company = get_object_or_404(
-        SpinoffStartupDipartimento.objects.select_related("id_didattica_dipartimento"),
+        SpinoffStartupDipartimento.objects.select_related("didattica_dipartimento"),
         pk=department_id,
-        id_spinoff_startup_dati_base=company,
+        spinoff_startup_dati_base=company,
     )
-    department = department_company.id_didattica_dipartimento
+    department = department_company.didattica_dipartimento
     old_label = department.dip_des_it
     department_data = ""
     initial = {}
@@ -388,7 +388,7 @@ def company_unical_department_data_edit(request, code, department_id, company=No
                 DidatticaDipartimento, dip_id=department_code
             )
             department_company.user_mod = request.user
-            department_company.id_didattica_dipartimento = new_department
+            department_company.didattica_dipartimento = new_department
             department_company.nome_origine_dipartimento = (
                 f"{new_department.dip_des_it}"
             )
@@ -442,19 +442,19 @@ def company_unical_department_data_delete(request, code, department_id, company=
     elimina dipartimento
     """
     department_company = get_object_or_404(
-        SpinoffStartupDipartimento.objects.select_related("id_didattica_dipartimento"),
-        id_spinoff_startup_dati_base=company,
+        SpinoffStartupDipartimento.objects.select_related("didattica_dipartimento"),
+        spinoff_startup_dati_base=company,
         pk=department_id,
     )
 
-    # if SpinoffStartupDipartimento.objects.filter(id_spinoff_startup_dati_base=company).count() == 1:
+    # if SpinoffStartupDipartimento.objects.filter(spinoff_startup_dati_base=company).count() == 1:
     # raise Exception(_("Permission denied. Only one department remains"))
 
     log_action(
         user=request.user,
         obj=company,
         flag=CHANGE,
-        msg=f"Rimosso dipartimento {department_company.id_didattica_dipartimento}",
+        msg=f"Rimosso dipartimento {department_company.didattica_dipartimento}",
     )
 
     department_company.delete()

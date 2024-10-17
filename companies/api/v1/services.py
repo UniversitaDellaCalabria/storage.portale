@@ -22,7 +22,7 @@ class ServiceCompany:
                 q_nome = Q(descrizione_ita__icontains=k) | Q(nome_azienda__icontains=k)
                 query_search &= q_nome
         if techarea:
-            query_techarea = Q(id_area_tecnologica=techarea)
+            query_techarea = Q(area_tecnologica=techarea)
         if spinoff:
             query_spinoff = Q(is_spinoff=spinoff)
         if startup:
@@ -46,9 +46,9 @@ class ServiceCompany:
                 "descrizione_eng",
                 "referente_unical",
                 "matricola_referente_unical",
-                "id_area_tecnologica",
-                "id_area_tecnologica__descr_area_ita",
-                "id_area_tecnologica__descr_area_eng",
+                "area_tecnologica",
+                "area_tecnologica__descr_area_ita",
+                "area_tecnologica__descr_area_eng",
                 "is_startup",
                 "is_spinoff",
                 "is_active",
@@ -58,12 +58,12 @@ class ServiceCompany:
 
         for q in query:
             departments = SpinoffStartupDipartimento.objects.filter(
-                id_spinoff_startup_dati_base__exact=q["id"]
+                spinoff_startup_dati_base__exact=q["id"]
             ).values(
-                "id_didattica_dipartimento__dip_cod",
-                "id_didattica_dipartimento__dip_des_it",
-                "id_didattica_dipartimento__dip_des_eng",
-                "id_didattica_dipartimento__dip_nome_breve",
+                "didattica_dipartimento__dip_cod",
+                "didattica_dipartimento__dip_des_it",
+                "didattica_dipartimento__dip_des_eng",
+                "didattica_dipartimento__dip_nome_breve",
             )
 
             if len(departments) == 0:
@@ -76,7 +76,7 @@ class ServiceCompany:
             final_query = []
             for q in query:
                 for d in q["Departments"]:
-                    if d["id_didattica_dipartimento__dip_cod"] in dep:
+                    if d["didattica_dipartimento__dip_cod"] in dep:
                         final_query.append(q)
             return final_query
 
@@ -96,21 +96,21 @@ class ServiceCompany:
             "descrizione_eng",
             "referente_unical",
             "matricola_referente_unical",
-            "id_area_tecnologica",
-            "id_area_tecnologica__descr_area_ita",
-            "id_area_tecnologica__descr_area_eng",
+            "area_tecnologica",
+            "area_tecnologica__descr_area_ita",
+            "area_tecnologica__descr_area_eng",
             "is_startup",
             "is_spinoff",
             "is_active",
         )
         for q in query:
             departments = SpinoffStartupDipartimento.objects.filter(
-                id_spinoff_startup_dati_base__exact=q["id"]
+                spinoff_startup_dati_base__exact=q["id"]
             ).values(
-                "id_didattica_dipartimento__dip_cod",
-                "id_didattica_dipartimento__dip_des_it",
-                "id_didattica_dipartimento__dip_des_eng",
-                "id_didattica_dipartimento__dip_nome_breve",
+                "didattica_dipartimento__dip_cod",
+                "didattica_dipartimento__dip_des_it",
+                "didattica_dipartimento__dip_des_eng",
+                "didattica_dipartimento__dip_nome_breve",
             )
 
             if len(departments) == 0:
