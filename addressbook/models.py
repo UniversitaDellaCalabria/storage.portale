@@ -48,7 +48,7 @@ class Personale(InsModAbstract):
     ds_nazi_breve_nasc = models.CharField(
         db_column="DS_NAZI_BREVE_NASC", max_length=20, blank=True, null=True
     )
-    id_comu_res = models.ForeignKey(
+    comu_res = models.ForeignKey(
         "structures.ComuniAll",
         models.DO_NOTHING,
         db_column="ID_COMU_RES",
