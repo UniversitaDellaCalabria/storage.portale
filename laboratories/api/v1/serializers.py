@@ -45,14 +45,14 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
             "LaboratoryAcronym": query["acronimo"],
             "LaboratoryLogo": build_media_path(query["nome_file_logo"]),
             "LaboratoryEquipment": query["strumentazione_descrizione"],
-            "DepartmentReferentId": query["id_dipartimento_riferimento__dip_id"],
-            "DepartmentReferentCod": query["id_dipartimento_riferimento__dip_cod"],
-            "DepartmentReferentName": query["id_dipartimento_riferimento__dip_des_it"]
+            "DepartmentReferentId": query["dipartimento_riferimento__dip_id"],
+            "DepartmentReferentCod": query["dipartimento_riferimento__dip_cod"],
+            "DepartmentReferentName": query["dipartimento_riferimento__dip_des_it"]
             if req_lang == "it"
-            or query["id_dipartimento_riferimento__dip_des_eng"] is None
-            else query["id_dipartimento_riferimento__dip_des_eng"],
-            "InfrastructureId": query["id_infrastruttura_riferimento__id"],
-            "InfrastructureName": query["id_infrastruttura_riferimento__descrizione"],
+            or query["dipartimento_riferimento__dip_des_eng"] is None
+            else query["dipartimento_riferimento__dip_des_eng"],
+            "InfrastructureId": query["infrastruttura_riferimento__id"],
+            "InfrastructureName": query["infrastruttura_riferimento__descrizione"],
             "Interdepartmental": query["laboratorio_interdipartimentale"],
             "ExtraDepartments": extra_departments,
             "LaboratoryScope": query["ambito"],
@@ -81,8 +81,8 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         for q in query:
             result.append(
                 {
-                    "ScopeID": q["id_tipologia_attivita__id"],
-                    "ScopeDescription": q["id_tipologia_attivita__descrizione"],
+                    "ScopeID": q["tipologia_attivita__id"],
+                    "ScopeDescription": q["tipologia_attivita__descrizione"],
                 }
             )
         return result
@@ -93,11 +93,11 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         for q in query:
             result.append(
                 {
-                    "IdErc0": q["id_ricerca_erc1__ricerca_erc0_cod__erc0_cod"],
-                    "Description": q["id_ricerca_erc1__ricerca_erc0_cod__description"]
+                    "IdErc0": q["ricerca_erc1__ricerca_erc0_cod__erc0_cod"],
+                    "Description": q["ricerca_erc1__ricerca_erc0_cod__description"]
                     if req_lang == "it"
-                    or q["id_ricerca_erc1__ricerca_erc0_cod__description_en"] is None
-                    else q["id_ricerca_erc1__ricerca_erc0_cod__description_en"],
+                    or q["ricerca_erc1__ricerca_erc0_cod__description_en"] is None
+                    else q["ricerca_erc1__ricerca_erc0_cod__description_en"],
                     "Erc1List": LaboratoryDetailSerializer.to_dict_erc1_list(
                         q["Erc1"], req_lang
                     ),
@@ -112,8 +112,8 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         for q in query:
             result.append(
                 {
-                    "IdErc1": q["id_ricerca_erc1__cod_erc1"],
-                    "Description": q["id_ricerca_erc1__descrizione"],
+                    "IdErc1": q["ricerca_erc1__cod_erc1"],
+                    "Description": q["ricerca_erc1__descrizione"],
                 }
             )
         return result
@@ -223,13 +223,13 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
             "LaboratoryAcronym": query["acronimo"],
             "LaboratoryLogo": build_media_path(query["nome_file_logo"]),
             "Area": query["ambito"],
-            "DepartmentName": query["dipartimento_riferimento"],
-            "DepartmentReferentId": query["id_dipartimento_riferimento__dip_id"],
-            "DepartmentReferentCod": query["id_dipartimento_riferimento__dip_cod"],
+            "DepartmentName": query["dipartimento_riferimento_nome"],
+            "DepartmentReferentId": query["dipartimento_riferimento__dip_id"],
+            "DepartmentReferentCod": query["dipartimento_riferimento__dip_cod"],
             "Interdepartmental": query["laboratorio_interdipartimentale"],
             "ExtraDepartments": extra_departments,
-            "InfrastructureId": query["id_infrastruttura_riferimento__id"],
-            "InfrastructureName": query["id_infrastruttura_riferimento__descrizione"],
+            "InfrastructureId": query["infrastruttura_riferimento__id"],
+            "InfrastructureName": query["infrastruttura_riferimento__descrizione"],
             "Dimension": query["sede_dimensione"],
             "ScientificDirector": query["responsabile_scientifico"],
             "ScientificDirectorId": encrypt(
@@ -256,10 +256,10 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
         for q in query:
             result.append(
                 {
-                    "DepartmentID": q["id_dip__dip_cod"],
-                    "DepartmentName": q["id_dip__dip_des_it"]
-                    if lang == "it" or q["id_dip__dip_des_eng"] is None
-                    else q["id_dip__dip_des_eng"],
+                    "DepartmentID": q["didattica_dipartimento__dip_cod"],
+                    "DepartmentName": q["didattica_dipartimento__dip_des_it"]
+                    if lang == "it" or q["didattica_dipartimento__dip_des_eng"] is None
+                    else q["didattica_dipartimento__dip_des_eng"],
                 }
             )
         return result
@@ -270,8 +270,8 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
         for q in query:
             result.append(
                 {
-                    "ScopeID": q["id_tipologia_attivita__id"],
-                    "ScopeDescription": q["id_tipologia_attivita__descrizione"],
+                    "ScopeID": q["tipologia_attivita__id"],
+                    "ScopeDescription": q["tipologia_attivita__descrizione"],
                 }
             )
         return result

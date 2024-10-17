@@ -16,14 +16,14 @@ class TipologiaRischio(models.Model):
 
 class LaboratorioAltriDipartimenti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         "LaboratorioDatiBase",
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",
         blank=True,
         null=True,
     )
-    id_dip = models.ForeignKey(
+    didattica_dipartimento = models.ForeignKey(
         "structures.DidatticaDipartimento",
         models.DO_NOTHING,
         db_column="ID_DIDATTICA_DIPARTIMENTO",
@@ -39,14 +39,14 @@ class LaboratorioAltriDipartimenti(models.Model):
 
 class LaboratorioAttivita(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         "LaboratorioDatiBase",
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",
         blank=True,
         null=True,
     )
-    id_tipologia_attivita = models.ForeignKey(
+    tipologia_attivita = models.ForeignKey(
         "LaboratorioTipologiaAttivita",
         models.PROTECT,
         db_column="ID_TIPOLOGIA_ATTIVITA",
@@ -66,14 +66,14 @@ class LaboratorioAttivita(models.Model):
 
 class LaboratorioAttrezzatureRischi(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_attrezzature = models.ForeignKey(
+    laboratorio_attrezzature = models.ForeignKey(
         "LaboratorioAttrezzature",
         models.CASCADE,
         db_column="ID_LABORATORIO_ATTREZZATURE",
         blank=True,
         null=True,
     )
-    id_tipologia_rischio = models.ForeignKey(
+    tipologia_rischio = models.ForeignKey(
         "TipologiaRischio",
         models.CASCADE,
         db_column="ID_TIPOLOGIA_RISCHIO",
@@ -81,7 +81,7 @@ class LaboratorioAttrezzatureRischi(models.Model):
         null=True,
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    user_mod_id = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.SET_NULL,
         db_column="user_mod_id",
@@ -107,14 +107,14 @@ class LaboratorioFondo(models.Model):
 
 class LaboratorioAttrezzatureFondi(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_attrezzature = models.ForeignKey(
+    laboratorio_attrezzature = models.ForeignKey(
         "LaboratorioAttrezzature",
         models.CASCADE,
         db_column="ID_LABORATORIO_ATTREZZATURE",
         blank=True,
         null=True,
     )
-    id_laboratorio_fondo = models.ForeignKey(
+    laboratorio_fondo = models.ForeignKey(
         "LaboratorioFondo",
         models.CASCADE,
         db_column="ID_LABORATORIO_FONDO",
@@ -122,7 +122,7 @@ class LaboratorioAttrezzatureFondi(models.Model):
         null=True,
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    user_mod_id = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.SET_NULL,
         db_column="user_mod_id",
@@ -137,7 +137,7 @@ class LaboratorioAttrezzatureFondi(models.Model):
 
 class LaboratorioAttrezzature(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         "LaboratorioDatiBase",
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",
@@ -208,10 +208,10 @@ class LaboratorioDatiBase(models.Model):
     logo_laboratorio = models.CharField(
         db_column="LOGO_LABORATORIO", max_length=400, blank=True, null=True
     )
-    dipartimento_riferimento = models.CharField(
+    dipartimento_riferimento_nome = models.CharField(
         db_column="DIPARTIMENTO_RIFERIMENTO", max_length=400, blank=True, null=True
     )
-    id_dipartimento_riferimento = models.ForeignKey(
+    dipartimento_riferimento = models.ForeignKey(
         "structures.DidatticaDipartimento",
         models.DO_NOTHING,
         db_column="ID_DIPARTIMENTO_RIFERIMENTO",
@@ -295,7 +295,7 @@ class LaboratorioDatiBase(models.Model):
     sito_web = models.CharField(
         db_column="SITO_WEB", max_length=1024, blank=True, null=True
     )
-    id_infrastruttura_riferimento = models.ForeignKey(
+    infrastruttura_riferimento = models.ForeignKey(
         "LaboratorioInfrastruttura",
         models.SET_NULL,
         db_column="ID_INFRASTRUTTURA_RIFERIMENTO",
@@ -312,7 +312,7 @@ class LaboratorioDatiBase(models.Model):
     )
     visibile = models.BooleanField(db_column="VISIBILE", default=False)
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    user_mod_id = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.SET_NULL,
         db_column="user_mod_id",
@@ -333,14 +333,14 @@ class LaboratorioDatiBase(models.Model):
 
 class LaboratorioDatiErc1(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         LaboratorioDatiBase,
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",
         blank=True,
         null=True,
     )
-    id_ricerca_erc1 = models.ForeignKey(
+    ricerca_erc1 = models.ForeignKey(
         "research_lines.RicercaErc1",
         models.PROTECT,
         db_column="ID_RICERCA_ERC1",
@@ -355,7 +355,7 @@ class LaboratorioDatiErc1(models.Model):
 
 class LaboratorioPersonaleRicerca(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         LaboratorioDatiBase,
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",
@@ -381,7 +381,7 @@ class LaboratorioPersonaleRicerca(models.Model):
 
 class LaboratorioPersonaleTecnico(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         LaboratorioDatiBase,
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",
@@ -411,7 +411,7 @@ class LaboratorioPersonaleTecnico(models.Model):
 
 class LaboratorioServiziErogati(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         LaboratorioDatiBase,
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",
@@ -442,7 +442,7 @@ class LaboratorioServiziErogati(models.Model):
 
 class LaboratorioServiziOfferti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         LaboratorioDatiBase,
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",
@@ -461,7 +461,7 @@ class LaboratorioServiziOfferti(models.Model):
 
 class LaboratorioTipologiaRischio(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         LaboratorioDatiBase,
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",
@@ -471,7 +471,7 @@ class LaboratorioTipologiaRischio(models.Model):
     tipologia_rischio_origine = models.CharField(
         db_column="TIPOLOGIA_RISCHIO_ORIGINE", max_length=500, blank=True, null=True
     )
-    id_tipologia_rischio = models.ForeignKey(
+    tipologia_rischio = models.ForeignKey(
         TipologiaRischio,
         models.CASCADE,
         db_column="ID_TIPOLOGIA_RISCHIO",
@@ -486,7 +486,7 @@ class LaboratorioTipologiaRischio(models.Model):
 
 class LaboratorioUbicazione(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_laboratorio_dati = models.ForeignKey(
+    laboratorio_dati_base = models.ForeignKey(
         LaboratorioDatiBase,
         models.CASCADE,
         db_column="ID_LABORATORIO_DATI",

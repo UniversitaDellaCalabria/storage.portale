@@ -112,7 +112,7 @@ def laboratory_info_sede_edit(
         )
         if laboratoriodatibaseinfosedestruttureform.is_valid():
             lab_instance = laboratoriodatibaseinfosedestruttureform.save(commit=False)
-            lab_instance.user_mod_id = request.user
+            lab_instance.user_mod = request.user
             lab_instance.dt_mod = datetime.datetime.now()
             lab_instance.visibile = False
             lab_instance.save(
@@ -121,7 +121,7 @@ def laboratory_info_sede_edit(
                     "sede_dimensione",
                     "strumentazione_descrizione",
                     "visibile",
-                    "user_mod_id",
+                    "user_mod",
                     "dt_mod",
                 ]
             )
@@ -178,11 +178,11 @@ def laboratory_scope_edit(
         )
         if laboratoriodatibaseambitoform.is_valid():
             lab_instance = laboratoriodatibaseambitoform.save(commit=False)
-            lab_instance.user_mod_id = request.user
+            lab_instance.user_mod = request.user
             lab_instance.dt_mod = datetime.datetime.now()
             lab_instance.visibile = False
             lab_instance.save(
-                update_fields=["ambito", "visibile", "user_mod_id", "dt_mod"]
+                update_fields=["ambito", "visibile", "user_mod", "dt_mod"]
             )
 
             if laboratoriodatibaseambitoform.changed_data:
@@ -239,14 +239,14 @@ def laboratory_equipment_value_edit(
             lab_instance = laboratoriodatibasestrumentazionevaloreform.save(
                 commit=False
             )
-            lab_instance.user_mod_id = request.user
+            lab_instance.user_mod = request.user
             lab_instance.dt_mod = datetime.datetime.now()
             lab_instance.visibile = False
             lab_instance.save(
                 update_fields=[
                     "strumentazione_valore",
                     "visibile",
-                    "user_mod_id",
+                    "user_mod",
                     "dt_mod",
                 ]
             )
@@ -306,18 +306,18 @@ def laboratory_interdepartmental_edit(
         if laboratoriodatibaseinterdipartimentaleform.is_valid():
             if request.POST.get("laboratorio_interdipartimentale") == "NO":
                 LaboratorioAltriDipartimenti.objects.filter(
-                    id_laboratorio_dati=code
+                    laboratorio_dati_base=code
                 ).delete()
 
             lab_instance = laboratoriodatibaseinterdipartimentaleform.save(commit=False)
-            lab_instance.user_mod_id = request.user
+            lab_instance.user_mod = request.user
             lab_instance.dt_mod = datetime.datetime.now()
             lab_instance.visibile = False
             lab_instance.save(
                 update_fields=[
                     "laboratorio_interdipartimentale",
                     "visibile",
-                    "user_mod_id",
+                    "user_mod",
                     "dt_mod",
                 ]
             )
@@ -389,7 +389,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
             "office_id__organizational_structure_id__unique_code", flat=True
         )
     )
-    initial = {"choosen_department_id": laboratory.id_dipartimento_riferimento.dip_id}
+    initial = {"choosen_department_id": laboratory.dipartimento_riferimento.dip_id}
     form = LaboratorioDatiBaseForm(
         initial=initial,
         allowed_department_codes=allowed_related_departments_codes,
@@ -413,41 +413,41 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     )
     # LaboratorioTipologiaRischio
     selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(
-        id_laboratorio_dati=code
-    ).values_list("id_tipologia_rischio", flat=True)
+        laboratorio_dati_base=code
+    ).values_list("tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
     risk_type_form = LaboratorioTipologiaRischioForm(
         initial={"tipologie_rischio": selected_risks_ids}
     )
     # LaboratorioAltriDipartimenti
     extra_departments = LaboratorioAltriDipartimenti.objects.filter(
-        id_laboratorio_dati=code
+        laboratorio_dati_base=code
     )
     # LaboratorioAttrezzature
-    equipment = LaboratorioAttrezzature.objects.filter(id_laboratorio_dati=code)
+    equipment = LaboratorioAttrezzature.objects.filter(laboratorio_dati_base=code)
     # LaboratorioDatiErc1
     researches_erc1 = LaboratorioDatiErc1.objects.filter(
-        id_laboratorio_dati=code
-    ).values("id", "id_ricerca_erc1", "id_ricerca_erc1__descrizione")
+        laboratorio_dati_base=code
+    ).values("id", "ricerca_erc1", "ricerca_erc1__descrizione")
     # LaboratorioUbicazione
-    locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code)
+    locations = LaboratorioUbicazione.objects.filter(laboratorio_dati_base=code)
     # LaboratorioPersonaleRicerca
-    researchers = LaboratorioPersonaleRicerca.objects.filter(id_laboratorio_dati=code)
+    researchers = LaboratorioPersonaleRicerca.objects.filter(laboratorio_dati_base=code)
     # LaboratorioPersonaleTecnico
     technicians = LaboratorioPersonaleTecnico.objects.filter(
-        id_laboratorio_dati=code
+        laboratorio_dati_base=code
     ).values("id", "cognomenome_origine")
     # LaboratorioAttivita
-    activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).values(
-        "id", "id_tipologia_attivita__descrizione"
+    activities = LaboratorioAttivita.objects.filter(laboratorio_dati_base=code).values(
+        "id", "tipologia_attivita__descrizione"
     )
     # LaboratorioServiziErogati
     provided_services = LaboratorioServiziErogati.objects.filter(
-        id_laboratorio_dati=code
+        laboratorio_dati_base=code
     ).values("id", "descrizione")
     # LaboratorioServiziOfferti
     offered_services = LaboratorioServiziOfferti.objects.filter(
-        id_laboratorio_dati=code
+        laboratorio_dati_base=code
     ).values("id", "nome_servizio")
 
     if request.POST:
@@ -471,9 +471,9 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
             related_department = get_object_or_404(
                 DidatticaDipartimento, pk=related_department_id
             )
-            laboratory.id_dipartimento_riferimento = related_department
-            laboratory.dipartimento_riferimento = related_department.dip_des_it
-            laboratory.user_mod_id = request.user
+            laboratory.dipartimento_riferimento = related_department
+            laboratory.dipartimento_riferimento_nome = related_department.dip_des_it
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -629,12 +629,12 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                 DidatticaDipartimento,
                 pk=form.cleaned_data.get("choosen_department_id")[0],
             )
-            laboratory.id_dipartimento_riferimento = related_department
-            laboratory.dipartimento_riferimento = related_department.dip_des_it
+            laboratory.dipartimento_riferimento = related_department
+            laboratory.dipartimento_riferimento_nome = related_department.dip_des_it
             laboratory.laboratorio_interdipartimentale = "NO"
 
             laboratory.dt_sottomissione = datetime.datetime.now()
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -692,7 +692,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 # @can_edit_laboratories
 # def laboratory_unical_department_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
 
-#     department = laboratory.id_dipartimento_riferimento
+#     department = laboratory.dipartimento_riferimento
 #     old_label = department.dip_des_it
 
 #     form = LaboratorioDatiBaseDipartimentoForm(initial={'choosen_department': department.dip_id})
@@ -703,9 +703,9 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 
 #             department_id = form.cleaned_data['choosen_department']
 #             department = get_object_or_404(DidatticaDipartimento, dip_id=department_id)
-#             laboratory.id_dipartimento_riferimento = department
-#             laboratory.dipartimento_riferimento = f'{department.dip_des_it}'
-#             laboratory.user_mod_id = request.user
+#             laboratory.dipartimento_riferimento = department
+#             laboratory.dipartimento_riferimento_nome = f'{department.dip_des_it}'
+#             laboratory.user_mod = request.user
 #             laboratory.dt_mod=datetime.datetime.now()
 #             laboratory.visibile=False
 #             laboratory.save()
@@ -728,7 +728,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 #     breadcrumbs = {reverse('generics:dashboard'): _('Dashboard'),
 #                    reverse('laboratories:management:laboratories'): _('Laboratories'),
 #                    reverse('laboratories:management:laboratory-edit', kwargs={'code': code}): laboratory.nome_laboratorio,
-#                    '#': f'{laboratory.dipartimento_riferimento}'}
+#                    '#': f'{laboratory.dipartimento_riferimento_nome}'}
 
 #     return render(request,
 #                   'laboratory_department.html',
@@ -789,7 +789,7 @@ def laboratory_scientific_director_edit(
                     "responsabile_scientifico"
                 ]
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -897,7 +897,7 @@ def laboratory_safety_manager_edit(
                 laboratory.matricola_preposto_sicurezza = None
                 laboratory.preposto_sicurezza = form.cleaned_data["preposto_sicurezza"]
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -967,7 +967,7 @@ def laboratory_safety_manager_delete(
 ):
     laboratory.matricola_preposto_sicurezza = None
     laboratory.preposto_sicurezza = None
-    laboratory.user_mod_id = request.user
+    laboratory.user_mod = request.user
     laboratory.dt_mod = datetime.datetime.now()
     laboratory.visibile = False
     laboratory.save()
@@ -1014,7 +1014,7 @@ def laboratory_extra_departments_new(
                 pk=department_form.cleaned_data["choosen_department"],
             )
 
-            if department.dip_id == laboratory.id_dipartimento_riferimento_id:
+            if department.dip_id == laboratory.dipartimento_riferimento_id:
                 messages.add_message(
                     request,
                     messages.ERROR,
@@ -1024,12 +1024,12 @@ def laboratory_extra_departments_new(
                 )
             else:
                 LaboratorioAltriDipartimenti.objects.create(
-                    id_laboratorio_dati=laboratory,
-                    id_dip=department,
+                    laboratorio_dati_base=laboratory,
+                    didattica_dipartimento=department,
                     descr_dip_lab=department.dip_des_it,
                 )
 
-                laboratory.user_mod_id = request.user
+                laboratory.user_mod = request.user
                 laboratory.dt_mod = datetime.datetime.now()
                 laboratory.visibile = False
                 laboratory.save()
@@ -1093,7 +1093,7 @@ def laboratory_extra_departments_delete(
 
     extra_department_lab.delete()
 
-    laboratory.user_mod_id = request.user
+    laboratory.user_mod = request.user
     laboratory.dt_mod = datetime.datetime.now()
     laboratory.visibile = False
     laboratory.save()
@@ -1132,34 +1132,34 @@ def laboratory_equipment_new(
             and equipment_risks_form.is_valid()
         ):
             laboratory_equipment = equipment_form.save(commit=False)
-            laboratory_equipment.id_laboratorio_dati = laboratory
+            laboratory_equipment.laboratorio_dati_base = laboratory
             laboratory_equipment.save()
 
             for fund_id in equipment_funds_form.cleaned_data.get(
-                "id_laboratorio_fondo", []
+                "laboratorio_fondo", []
             ):
                 LaboratorioAttrezzatureFondi.objects.create(
-                    id_laboratorio_attrezzature=laboratory_equipment,
-                    id_laboratorio_fondo=get_object_or_404(
+                    laboratorio_attrezzature=laboratory_equipment,
+                    laboratorio_fondo=get_object_or_404(
                         LaboratorioFondo, pk=fund_id
                     ),
-                    user_mod_id=request.user,
+                    user_mod=request.user,
                     dt_mod=datetime.datetime.now(),
                 )
 
             for risk_id in equipment_risks_form.cleaned_data.get(
-                "id_tipologia_rischio", []
+                "tipologia_rischio", []
             ):
                 LaboratorioAttrezzatureRischi.objects.create(
-                    id_laboratorio_attrezzature=laboratory_equipment,
-                    id_tipologia_rischio=get_object_or_404(
+                    laboratorio_attrezzature=laboratory_equipment,
+                    tipologia_rischio=get_object_or_404(
                         TipologiaRischio, pk=risk_id
                     ),
-                    user_mod_id=request.user,
+                    user_mod=request.user,
                     dt_mod=datetime.datetime.now(),
                 )
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -1235,19 +1235,19 @@ def laboratory_equipment_edit(
     equipment_form = LaboratorioAttrezzatureForm(instance=laboratory_equipment)
 
     selected_funds_ids = LaboratorioAttrezzatureFondi.objects.filter(
-        id_laboratorio_attrezzature=laboratory_equipment.id
-    ).values_list("id_laboratorio_fondo", flat=True)
+        laboratorio_attrezzature=laboratory_equipment.id
+    ).values_list("laboratorio_fondo", flat=True)
     selected_funds_ids = tuple(map(str, selected_funds_ids))
     equipment_funds_form = LaboratorioAttrezzatureFondiForm(
-        initial={"id_laboratorio_fondo": selected_funds_ids}
+        initial={"laboratorio_fondo": selected_funds_ids}
     )
 
     selected_risks_ids = LaboratorioAttrezzatureRischi.objects.filter(
-        id_laboratorio_attrezzature=laboratory_equipment.id
-    ).values_list("id_tipologia_rischio", flat=True)
+        laboratorio_attrezzature=laboratory_equipment.id
+    ).values_list("tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
     equipment_risks_form = LaboratorioAttrezzatureRischiForm(
-        initial={"id_tipologia_rischio": selected_risks_ids}
+        initial={"tipologia_rischio": selected_risks_ids}
     )
 
     if request.POST:
@@ -1273,16 +1273,16 @@ def laboratory_equipment_edit(
 
             # LaboratorioAttrezzatureFondi
             new_selected_funds = equipment_funds_form.cleaned_data.get(
-                "id_laboratorio_fondo", []
+                "laboratorio_fondo", []
             )
 
             LaboratorioAttrezzatureFondi.objects.filter(
-                id_laboratorio_attrezzature=laboratory_equipment.id
-            ).exclude(id_laboratorio_fondo__in=new_selected_funds).delete()
+                laboratorio_attrezzature=laboratory_equipment.id
+            ).exclude(laboratorio_fondo__in=new_selected_funds).delete()
 
             current_funds = LaboratorioAttrezzatureFondi.objects.filter(
-                id_laboratorio_attrezzature=laboratory_equipment.id
-            ).values_list("id_laboratorio_fondo", flat=True)
+                laboratorio_attrezzature=laboratory_equipment.id
+            ).values_list("laboratorio_fondo", flat=True)
             current_funds = map(str, current_funds)
 
             # for all (new_selected_funds - current_funds) create
@@ -1291,24 +1291,24 @@ def laboratory_equipment_edit(
 
             for fund in funds:
                 LaboratorioAttrezzatureFondi.objects.create(
-                    id_laboratorio_attrezzature=laboratory_equipment,
-                    id_laboratorio_fondo=fund,
-                    user_mod_id=request.user,
+                    laboratorio_attrezzature=laboratory_equipment,
+                    laboratorio_fondo=fund,
+                    user_mod=request.user,
                     dt_mod=datetime.datetime.now(),
                 )
 
             # LaboratorioAttrezzatureRischi
             new_selected_risks = equipment_risks_form.cleaned_data.get(
-                "id_tipologia_rischio", []
+                "tipologia_rischio", []
             )
 
             LaboratorioAttrezzatureRischi.objects.filter(
-                id_laboratorio_attrezzature=laboratory_equipment.id
-            ).exclude(id_tipologia_rischio__in=new_selected_risks).delete()
+                laboratorio_attrezzature=laboratory_equipment.id
+            ).exclude(tipologia_rischio__in=new_selected_risks).delete()
 
             current_risks = LaboratorioAttrezzatureRischi.objects.filter(
-                id_laboratorio_attrezzature=laboratory_equipment.id
-            ).values_list("id_tipologia_rischio", flat=True)
+                laboratorio_attrezzature=laboratory_equipment.id
+            ).values_list("tipologia_rischio", flat=True)
             current_risks = map(str, current_risks)
 
             # for all (new_selected_risks - current_risks) create
@@ -1317,13 +1317,13 @@ def laboratory_equipment_edit(
 
             for risk_type in risk_types:
                 LaboratorioAttrezzatureRischi.objects.create(
-                    id_laboratorio_attrezzature=laboratory_equipment,
-                    id_tipologia_rischio=risk_type,
-                    user_mod_id=request.user,
+                    laboratorio_attrezzature=laboratory_equipment,
+                    tipologia_rischio=risk_type,
+                    user_mod=request.user,
                     dt_mod=datetime.datetime.now(),
                 )
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -1403,7 +1403,7 @@ def laboratory_equipment_delete(
 
     equipment_piece.delete()
 
-    laboratory.user_mod_id = request.user
+    laboratory.user_mod = request.user
     laboratory.dt_mod = datetime.datetime.now()
     laboratory.visibile = False
     laboratory.save()
@@ -1428,21 +1428,21 @@ def laboratory_researches_erc1_edit(
     request, code, laboratory=None, my_offices=None, is_validator=False
 ):
     # Previously selected researches
-    researches_erc1_old = LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code)
+    researches_erc1_old = LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=code)
 
     # Ids to initialize form's checkboxes
     researches_erc1 = researches_erc1_old.values(
         "id",
-        "id_ricerca_erc1",
-        "id_ricerca_erc1__descrizione",
-        "id_ricerca_erc1__ricerca_erc0_cod",
+        "ricerca_erc1",
+        "ricerca_erc1__descrizione",
+        "ricerca_erc1__ricerca_erc0_cod",
     )
     erc0 = (
-        researches_erc1.first()["id_ricerca_erc1__ricerca_erc0_cod"]
+        researches_erc1.first()["ricerca_erc1__ricerca_erc0_cod"]
         if researches_erc1.exists()
         else None
     )
-    researches_erc1_ids = researches_erc1.values_list("id_ricerca_erc1", flat=True)
+    researches_erc1_ids = researches_erc1.values_list("ricerca_erc1", flat=True)
     fields = ["id_ricerche_erc1_ls", "id_ricerche_erc1_pe", "id_ricerche_erc1_sh"]
     researches_erc1_ids = tuple(map(str, researches_erc1_ids))
     initial = {}
@@ -1470,13 +1470,13 @@ def laboratory_researches_erc1_edit(
                 f"id_ricerche_erc1_{erc0_selector.lower()}", []
             )
 
-            LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=code).exclude(
-                id_ricerca_erc1__in=selected_erc1_res_ids
+            LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=code).exclude(
+                ricerca_erc1__in=selected_erc1_res_ids
             ).delete()
 
             current_erc1_res_ids = LaboratorioDatiErc1.objects.filter(
-                id_laboratorio_dati=code
-            ).values_list("id_ricerca_erc1", flat=True)
+                laboratorio_dati_base=code
+            ).values_list("ricerca_erc1", flat=True)
             current_erc1_res_ids = map(str, current_erc1_res_ids)
 
             current_erc1_res = list(
@@ -1486,10 +1486,10 @@ def laboratory_researches_erc1_edit(
 
             for research in erc1_researches:
                 LaboratorioDatiErc1.objects.create(
-                    id_laboratorio_dati=laboratory, id_ricerca_erc1=research
+                    laboratorio_dati_base=laboratory, ricerca_erc1=research
                 )
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -1556,7 +1556,7 @@ def laboratory_locations_edit(
         if location_form.is_valid():
             location_form.save()
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -1619,10 +1619,10 @@ def laboratory_locations_new(
         location_form = LaboratorioUbicazioneForm(data=request.POST)
         if location_form.is_valid():
             location = location_form.save(commit=False)
-            location.id_laboratorio_dati = laboratory
+            location.laboratorio_dati_base = laboratory
             location.save()
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -1684,7 +1684,7 @@ def laboratory_locations_delete(
 
     location.delete()
 
-    laboratory.user_mod_id = request.user
+    laboratory.user_mod = request.user
     laboratory.dt_mod = datetime.datetime.now()
     laboratory.visibile = False
     laboratory.save()
@@ -1721,18 +1721,18 @@ def laboratory_research_staff_new(
                 researcher_code = decrypt(form.cleaned_data["choosen_person"])
                 researcher = get_object_or_404(Personale, matricola=researcher_code)
                 LaboratorioPersonaleRicerca.objects.create(
-                    id_laboratorio_dati=laboratory,
+                    laboratorio_dati_base=laboratory,
                     matricola_personale_ricerca=researcher,
                     cognomenome_origine=f"{researcher.cognome} {researcher.nome}",
                 )
             else:
                 LaboratorioPersonaleRicerca.objects.create(
-                    id_laboratorio_dati=laboratory,
+                    laboratorio_dati_base=laboratory,
                     matricola_personale_ricerca=None,
                     cognomenome_origine=form.cleaned_data["laboratory_staff"],
                 )
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -1794,7 +1794,7 @@ def laboratory_research_staff_delete(
     researcher = get_object_or_404(LaboratorioPersonaleRicerca, pk=data_id)
     researcher.delete()
 
-    laboratory.user_mod_id = request.user
+    laboratory.user_mod = request.user
     laboratory.dt_mod = datetime.datetime.now()
     laboratory.visibile = False
     laboratory.save()
@@ -1834,7 +1834,7 @@ def laboratory_technical_staff_new(
                 technician_code = decrypt(person_form.cleaned_data["choosen_person"])
                 technician = get_object_or_404(Personale, matricola=technician_code)
                 LaboratorioPersonaleTecnico.objects.create(
-                    id_laboratorio_dati=laboratory,
+                    laboratorio_dati_base=laboratory,
                     matricola_personale_tecnico=technician,
                     cognomenome_origine=f"{technician.cognome} {technician.nome}",
                     ruolo=technician_form.cleaned_data.get("ruolo"),
@@ -1844,7 +1844,7 @@ def laboratory_technical_staff_new(
                 )
             else:
                 LaboratorioPersonaleTecnico.objects.create(
-                    id_laboratorio_dati=laboratory,
+                    laboratorio_dati_base=laboratory,
                     matricola_personale_tecnico=None,
                     cognomenome_origine=person_form.cleaned_data.get(
                         "laboratory_staff"
@@ -1855,7 +1855,7 @@ def laboratory_technical_staff_new(
                     ),
                 )
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -1925,7 +1925,7 @@ def laboratory_technical_staff_delete(
     technician = get_object_or_404(LaboratorioPersonaleTecnico, pk=data_id)
     technician.delete()
 
-    laboratory.user_mod_id = request.user
+    laboratory.user_mod = request.user
     laboratory.dt_mod = datetime.datetime.now()
     laboratory.visibile = False
     laboratory.save()
@@ -1948,8 +1948,8 @@ def laboratory_activities_new(
     request, code, laboratory=None, my_offices=None, is_validator=False
 ):
     activity_types_already_specified = LaboratorioAttivita.objects.filter(
-        id_laboratorio_dati=code
-    ).values_list("id_tipologia_attivita", flat=True)
+        laboratorio_dati_base=code
+    ).values_list("tipologia_attivita", flat=True)
 
     if activity_types_already_specified and len(activity_types_already_specified) >= 3:
         messages.add_message(request, messages.ERROR, _("Activities list is full"))
@@ -1970,11 +1970,11 @@ def laboratory_activities_new(
                 pk=activity_form.cleaned_data["tipologia_attivita"],
             )
             activity = activity_form.save(commit=False)
-            activity.id_laboratorio_dati = laboratory
-            activity.id_tipologia_attivita = activity_type
+            activity.laboratorio_dati_base = laboratory
+            activity.tipologia_attivita = activity_type
             activity.save()
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -2028,15 +2028,15 @@ def laboratory_activities_edit(
     request, code, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
-    selected_activity_id = activity.id_tipologia_attivita.id
+    selected_activity_id = activity.tipologia_attivita.id
     selected_activity_type = get_object_or_404(
         LaboratorioTipologiaAttivita, pk=selected_activity_id
     )
 
     activity_types_already_specified = (
-        LaboratorioAttivita.objects.filter(id_laboratorio_dati=code)
-        .exclude(id_tipologia_attivita=selected_activity_type)
-        .values_list("id_tipologia_attivita", flat=True)
+        LaboratorioAttivita.objects.filter(laboratorio_dati_base=code)
+        .exclude(tipologia_attivita=selected_activity_type)
+        .values_list("tipologia_attivita", flat=True)
     )
 
     activity_form = LaboratorioAttivitaForm(
@@ -2064,10 +2064,10 @@ def laboratory_activities_edit(
                 pk=activity_form.cleaned_data["tipologia_attivita"],
             )
             activity = activity_form.save(commit=False)
-            activity.id_tipologia_attivita = activity_type
+            activity.tipologia_attivita = activity_type
             activity.save()
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -2126,7 +2126,7 @@ def laboratory_activities_delete(
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
     activity.delete()
 
-    laboratory.user_mod_id = request.user
+    laboratory.user_mod = request.user
     laboratory.dt_mod = datetime.datetime.now()
     laboratory.visibile = False
     laboratory.save()
@@ -2160,7 +2160,7 @@ def laboratory_provided_services_new(
 
         if person_form.is_valid() and form.is_valid():
             provided_service = form.save(commit=False)
-            provided_service.id_laboratorio_dati = laboratory
+            provided_service.laboratorio_dati_base = laboratory
 
             if person_form.cleaned_data.get("choosen_person"):
                 manager_code = decrypt(person_form.cleaned_data["choosen_person"])
@@ -2177,7 +2177,7 @@ def laboratory_provided_services_new(
 
             provided_service.save()
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -2298,7 +2298,7 @@ def laboratory_provided_services_edit(
 
             provided_service.save()
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -2372,7 +2372,7 @@ def laboratory_provided_services_delete(
     provided_service = get_object_or_404(LaboratorioServiziErogati, pk=data_id)
     provided_service.delete()
 
-    laboratory.user_mod_id = request.user
+    laboratory.user_mod = request.user
     laboratory.dt_mod = datetime.datetime.now()
     laboratory.visibile = False
     laboratory.save()
@@ -2401,10 +2401,10 @@ def laboratory_offered_services_new(
     if request.POST:
         form = LaboratorioServiziOffertiForm(data=request.POST)
         offered_service = form.save(commit=False)
-        offered_service.id_laboratorio_dati = laboratory
+        offered_service.laboratorio_dati_base = laboratory
         offered_service.save()
 
-        laboratory.user_mod_id = request.user
+        laboratory.user_mod = request.user
         laboratory.dt_mod = datetime.datetime.now()
         laboratory.visibile = False
         laboratory.save()
@@ -2471,7 +2471,7 @@ def laboratory_offered_services_edit(
         if form.is_valid():
             offered_service = form.save()
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -2526,7 +2526,7 @@ def laboratory_offered_services_delete(
     offered_service = get_object_or_404(LaboratorioServiziOfferti, pk=data_id)
     offered_service.delete()
 
-    laboratory.user_mod_id = request.user
+    laboratory.user_mod = request.user
     laboratory.dt_mod = datetime.datetime.now()
     laboratory.visibile = False
     laboratory.save()
@@ -2558,12 +2558,12 @@ def laboratory_risk_types_edit(
             )
 
             LaboratorioTipologiaRischio.objects.filter(
-                id_laboratorio_dati=code
-            ).exclude(id_tipologia_rischio__in=new_selected_risks).delete()
+                laboratorio_dati_base=code
+            ).exclude(tipologia_rischio__in=new_selected_risks).delete()
 
             current_risks = LaboratorioTipologiaRischio.objects.filter(
-                id_laboratorio_dati=code
-            ).values_list("id_tipologia_rischio", flat=True)
+                laboratorio_dati_base=code
+            ).values_list("tipologia_rischio", flat=True)
             current_risks = map(str, current_risks)
 
             # for all (new_selected_risks - current_risks) create
@@ -2572,10 +2572,10 @@ def laboratory_risk_types_edit(
 
             for rt in risk_types:
                 LaboratorioTipologiaRischio.objects.create(
-                    id_laboratorio_dati=laboratory, id_tipologia_rischio=rt
+                    laboratorio_dati_base=laboratory, tipologia_rischio=rt
                 )
 
-            laboratory.user_mod_id = request.user
+            laboratory.user_mod = request.user
             laboratory.dt_mod = datetime.datetime.now()
             laboratory.visibile = False
             laboratory.save()
@@ -2621,7 +2621,7 @@ def laboratory_request_approval(
 
     # LaboratorioAltriDipartimenti
     extra_departments = LaboratorioAltriDipartimenti.objects.filter(
-        id_laboratorio_dati=code
+        laboratorio_dati_base=code
     ).exists()
     if extra_departments and laboratory.laboratorio_interdipartimentale == "NO":
         messages.add_message(
@@ -2633,7 +2633,7 @@ def laboratory_request_approval(
 
     # LaboratorioDatiErc1
     researches_erc1 = LaboratorioDatiErc1.objects.filter(
-        id_laboratorio_dati=code
+        laboratorio_dati_base=code
     ).exists()
     if not researches_erc1:
         messages.add_message(
@@ -2644,7 +2644,7 @@ def laboratory_request_approval(
         return redirect("laboratories:management:laboratory-edit", code=code)
 
     # LaboratorioUbicazione
-    locations = LaboratorioUbicazione.objects.filter(id_laboratorio_dati=code).exists()
+    locations = LaboratorioUbicazione.objects.filter(laboratorio_dati_base=code).exists()
     if not locations:
         messages.add_message(
             request, messages.ERROR, _("Laboratory must have at least one Location")
@@ -2652,7 +2652,7 @@ def laboratory_request_approval(
         return redirect("laboratories:management:laboratory-edit", code=code)
 
     # LaboratorioAttivita
-    activities = LaboratorioAttivita.objects.filter(id_laboratorio_dati=code).exists()
+    activities = LaboratorioAttivita.objects.filter(laboratorio_dati_base=code).exists()
     if not activities:
         messages.add_message(
             request, messages.ERROR, _("Laboratory must have at least one Activity")

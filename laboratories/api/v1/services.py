@@ -63,15 +63,15 @@ class ServiceLaboratorio:
         if ambito:
             query_ambito = Q(ambito__exact=ambito)
         if dip:
-            query_dip = Q(id_dipartimento_riferimento__dip_cod__exact=dip)
-            query_dip |= Q(laboratorioaltridipartimenti__id_dip__dip_cod=dip)
+            query_dip = Q(dipartimento_riferimento__dip_cod__exact=dip)
+            query_dip |= Q(laboratorioaltridipartimenti__didattica_dipartimento__dip_cod=dip)
         if erc1:
             erc1_allowed = erc1.split(",")
             query_erc1 = Q(
-                laboratoriodatierc1__id_ricerca_erc1__cod_erc1__in=erc1_allowed
+                laboratoriodatierc1__ricerca_erc1__cod_erc1__in=erc1_allowed
             )
         if infrastructure:
-            query_infrastructure = Q(id_infrastruttura_riferimento__id=infrastructure)
+            query_infrastructure = Q(infrastruttura_riferimento__id=infrastructure)
 
         query = (
             LaboratorioDatiBase.objects.filter(
@@ -86,9 +86,9 @@ class ServiceLaboratorio:
                 "id",
                 "nome_laboratorio",
                 "ambito",
-                "dipartimento_riferimento",
-                "id_dipartimento_riferimento__dip_id",
-                "id_dipartimento_riferimento__dip_cod",
+                "dipartimento_riferimento_nome",
+                "dipartimento_riferimento__dip_id",
+                "dipartimento_riferimento__dip_cod",
                 "sede_dimensione",
                 "responsabile_scientifico",
                 "matricola_responsabile_scientifico",
@@ -99,8 +99,8 @@ class ServiceLaboratorio:
                 "finalita_ricerca_en",
                 "finalita_didattica_en",
                 "finalita_didattica_it",
-                "id_infrastruttura_riferimento__id",
-                "id_infrastruttura_riferimento__descrizione",
+                "infrastruttura_riferimento__id",
+                "infrastruttura_riferimento__descrizione",
                 "acronimo",
                 "nome_file_logo",
                 "visibile",
@@ -109,17 +109,17 @@ class ServiceLaboratorio:
         )
 
         for q in query:
-            if q["dipartimento_riferimento"] is not None:
-                temp = q["dipartimento_riferimento"].rsplit(",", 1)
+            if q["dipartimento_riferimento_nome"] is not None:
+                temp = q["dipartimento_riferimento_nome"].rsplit(",", 1)
 
                 if len(temp) > 1:
-                    q["dipartimento_riferimento"] = temp[0] + ", " + temp[1]
+                    q["dipartimento_riferimento_nome"] = temp[0] + ", " + temp[1]
                 else:
-                    q["dipartimento_riferimento"] = temp[0]
+                    q["dipartimento_riferimento_nome"] = temp[0]
 
         for q in query:
             personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
-                id_laboratorio_dati__id=q["id"]
+                laboratorio_dati_base__id=q["id"]
             ).values(
                 "matricola_personale_ricerca__matricola",
                 "matricola_personale_ricerca__nome",
@@ -127,7 +127,7 @@ class ServiceLaboratorio:
                 "matricola_personale_ricerca__middle_name",
             )
             personale_tecnico = LaboratorioPersonaleTecnico.objects.filter(
-                id_laboratorio_dati__id=q["id"]
+                laboratorio_dati_base__id=q["id"]
             ).values(
                 "matricola_personale_tecnico__matricola",
                 "matricola_personale_tecnico__nome",
@@ -136,9 +136,9 @@ class ServiceLaboratorio:
                 "ruolo",
             )
             finalita = (
-                LaboratorioAttivita.objects.filter(id_laboratorio_dati=q["id"])
+                LaboratorioAttivita.objects.filter(laboratorio_dati_base=q["id"])
                 .values(
-                    "id_tipologia_attivita__id", "id_tipologia_attivita__descrizione"
+                    "tipologia_attivita__id", "tipologia_attivita__descrizione"
                 )
                 .distinct()
             )
@@ -167,17 +167,17 @@ class ServiceLaboratorio:
             if q["laboratorio_interdipartimentale"] == "SI":
                 other_dep = (
                     LaboratorioAltriDipartimenti.objects.filter(
-                        id_laboratorio_dati=q["id"]
+                        laboratorio_dati_base=q["id"]
                     )
                     .values(
-                        "id_dip__dip_cod", "id_dip__dip_des_it", "id_dip__dip_des_eng"
+                        "didattica_dipartimento__dip_cod", "didattica_dipartimento__dip_des_it", "didattica_dipartimento__dip_des_eng"
                     )
                     .distinct()
                 )
                 q["ExtraDepartments"] = (
-                    other_dep.order_by("id_dip__dip_des_it")
+                    other_dep.order_by("didattica_dipartimento__dip_des_it")
                     if language == "it"
-                    else other_dep.order_by("id_dip__dip_des_eng")
+                    else other_dep.order_by("didattica_dipartimento__dip_des_eng")
                 )
             else:
                 q["ExtraDepartments"] = []
@@ -188,7 +188,7 @@ class ServiceLaboratorio:
             if scope:
                 for q in query:
                     for s in q["Scopes"]:
-                        if str(s["id_tipologia_attivita__id"]) == scope:
+                        if str(s["tipologia_attivita__id"]) == scope:
                             res.append(q)
             if teacher:
                 for q in query:
@@ -215,7 +215,7 @@ class ServiceLaboratorio:
             if scope:
                 for q in query:
                     for s in q["Scopes"]:
-                        if str(s["id_tipologia_attivita__id"]) == scope:
+                        if str(s["tipologia_attivita__id"]) == scope:
                             res.append(q)
             if teacher:
                 for q in query:
@@ -253,12 +253,12 @@ class ServiceLaboratorio:
             "nome_laboratorio",
             "acronimo",
             "nome_file_logo",
-            "id_dipartimento_riferimento__dip_id",
-            "id_dipartimento_riferimento__dip_cod",
-            "id_dipartimento_riferimento__dip_des_it",
-            "id_dipartimento_riferimento__dip_des_eng",
-            "id_infrastruttura_riferimento__id",
-            "id_infrastruttura_riferimento__descrizione",
+            "dipartimento_riferimento__dip_id",
+            "dipartimento_riferimento__dip_cod",
+            "dipartimento_riferimento__dip_des_it",
+            "dipartimento_riferimento__dip_des_eng",
+            "infrastruttura_riferimento__id",
+            "infrastruttura_riferimento__descrizione",
             "ambito",
             "finalita_servizi_it",
             "finalita_servizi_en",
@@ -277,17 +277,17 @@ class ServiceLaboratorio:
         append_email_addresses(query, "matricola_responsabile_scientifico__id_ab")
 
         finalita = (
-            LaboratorioAttivita.objects.filter(id_laboratorio_dati=laboratoryid)
-            .values("id_tipologia_attivita__id", "id_tipologia_attivita__descrizione")
+            LaboratorioAttivita.objects.filter(laboratorio_dati_base=laboratoryid)
+            .values("tipologia_attivita__id", "tipologia_attivita__descrizione")
             .distinct()
         )
 
         erc1 = (
-            LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=laboratoryid)
+            LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=laboratoryid)
             .values(
-                "id_ricerca_erc1__ricerca_erc0_cod__erc0_cod",
-                "id_ricerca_erc1__ricerca_erc0_cod__description",
-                "id_ricerca_erc1__ricerca_erc0_cod__description_en",
+                "ricerca_erc1__ricerca_erc0_cod__erc0_cod",
+                "ricerca_erc1__ricerca_erc0_cod__description",
+                "ricerca_erc1__ricerca_erc0_cod__description_en",
             )
             .distinct()
         )
@@ -296,22 +296,22 @@ class ServiceLaboratorio:
 
         for q in erc1:
             q["Erc1"] = (
-                LaboratorioDatiErc1.objects.filter(id_laboratorio_dati=laboratoryid)
+                LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=laboratoryid)
                 .filter(
-                    id_ricerca_erc1__ricerca_erc0_cod=q[
-                        "id_ricerca_erc1__ricerca_erc0_cod__erc0_cod"
+                    ricerca_erc1__ricerca_erc0_cod=q[
+                        "ricerca_erc1__ricerca_erc0_cod__erc0_cod"
                     ]
                 )
                 .values(
-                    "id_ricerca_erc1__id",
-                    "id_ricerca_erc1__cod_erc1",
-                    "id_ricerca_erc1__descrizione",
+                    "ricerca_erc1__id",
+                    "ricerca_erc1__cod_erc1",
+                    "ricerca_erc1__descrizione",
                 )
                 .distinct()
             )
 
         personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
-            id_laboratorio_dati__id=laboratoryid
+            laboratorio_dati_base__id=laboratoryid
         ).values(
             "matricola_personale_ricerca__id_ab",
             "matricola_personale_ricerca__matricola",
@@ -322,7 +322,7 @@ class ServiceLaboratorio:
         append_email_addresses(personale_ricerca, "matricola_personale_ricerca__id_ab")
 
         personale_tecnico = LaboratorioPersonaleTecnico.objects.filter(
-            id_laboratorio_dati__id=laboratoryid
+            laboratorio_dati_base__id=laboratoryid
         ).values(
             "matricola_personale_tecnico__id_ab",
             "matricola_personale_tecnico__matricola",
@@ -334,17 +334,17 @@ class ServiceLaboratorio:
         append_email_addresses(personale_tecnico, "matricola_personale_tecnico__id_ab")
 
         servizi_offerti = LaboratorioServiziOfferti.objects.filter(
-            id_laboratorio_dati__id=laboratoryid
+            laboratorio_dati_base__id=laboratoryid
         ).values("nome_servizio", "descrizione_servizio")
         ubicazione = LaboratorioUbicazione.objects.filter(
-            id_laboratorio_dati__id=laboratoryid
+            laboratorio_dati_base__id=laboratoryid
         ).values("edificio", "piano", "note")
 
         other_dep = (
             LaboratorioAltriDipartimenti.objects.filter(
-                id_laboratorio_dati=laboratoryid
+                laboratorio_dati_base=laboratoryid
             )
-            .values("id_dip__dip_cod", "id_dip__dip_des_it", "id_dip__dip_des_eng")
+            .values("didattica_dipartimento__dip_cod", "didattica_dipartimento__dip_des_it", "didattica_dipartimento__dip_des_eng")
             .distinct()
         )
         query = list(query)
@@ -361,9 +361,9 @@ class ServiceLaboratorio:
 
             if q["laboratorio_interdipartimentale"] == "SI":
                 q["ExtraDepartments"] = (
-                    other_dep.order_by("id_dip__dip_des_it")
+                    other_dep.order_by("didattica_dipartimento__dip_des_it")
                     if language == "it"
-                    else other_dep.order_by("id_dip__dip_des_eng")
+                    else other_dep.order_by("didattica_dipartimento__dip_des_eng")
                 )
             else:
                 q["ExtraDepartments"] = []

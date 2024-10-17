@@ -414,7 +414,7 @@
                         {% for activity in activities %}
                         <tr>
                             <td>
-                                {% trans activity.id_tipologia_attivita__descrizione|default:"-" %}
+                                {% trans activity.tipologia_attivita__descrizione|default:"-" %}
                             </td>
                             <td class="text-right">
                                 <a href="{% url 'laboratories:management:laboratory-activities-edit' code=laboratory.pk data_id=activity.id %}" class="btn btn-primary btn-xs">
@@ -498,7 +498,7 @@
                     {% for research_erc1 in researches_erc1 %}
                     <tr>
                         <td>
-                            {{ research_erc1.id_ricerca_erc1__descrizione|default:"-" }}
+                            {{ research_erc1.ricerca_erc1__descrizione|default:"-" }}
                         </td>
                     </tr>
                     {% endfor %}

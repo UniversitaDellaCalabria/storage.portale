@@ -68,8 +68,8 @@ class ApiLaboratoriesListUnitTest(TestCase):
                 "id": 1,
                 "nome_laboratorio": "Informatica",
                 "ambito": "Tecnico",
-                "dipartimento_riferimento": "Informatica, demacs",
-                "id_dipartimento_riferimento": dip1,
+                "dipartimento_riferimento_nome": "Informatica, demacs",
+                "dipartimento_riferimento": dip1,
                 "sede_dimensione": "290",
                 "responsabile_scientifico": "Mungari Simone",
                 "matricola_responsabile_scientifico": p1,
@@ -88,8 +88,8 @@ class ApiLaboratoriesListUnitTest(TestCase):
         LaboratorioAttivita.objects.create(
             **{
                 "id": 2,
-                "id_laboratorio_dati": lab2,
-                "id_tipologia_attivita": a1,
+                "laboratorio_dati_base": lab2,
+                "tipologia_attivita": a1,
             }
         )
 
@@ -98,8 +98,8 @@ class ApiLaboratoriesListUnitTest(TestCase):
                 "id": 2,
                 "nome_laboratorio": "Informatica",
                 "ambito": "Scientifico",
-                "dipartimento_riferimento": "Matematica, demacs",
-                "id_dipartimento_riferimento": dip2,
+                "dipartimento_riferimento_nome": "Matematica, demacs",
+                "dipartimento_riferimento": dip2,
                 "sede_dimensione": "291",
                 "responsabile_scientifico": "Carlucci Carmine",
                 "matricola_responsabile_scientifico": p2,
@@ -132,7 +132,7 @@ class ApiLaboratoriesListUnitTest(TestCase):
         LaboratorioPersonaleRicerca.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": lab2,
+                "laboratorio_dati_base": lab2,
                 "matricola_personale_ricerca": p2,
             }
         )
@@ -142,10 +142,10 @@ class ApiLaboratoriesListUnitTest(TestCase):
                 "id": 3,
                 "matricola_referente_compilazione": p1,
                 "nome_laboratorio": "LAB2",
-                "id_dipartimento_riferimento": dip2,
+                "dipartimento_riferimento": dip2,
                 "ambito": "Tecnologico",
                 "matricola_responsabile_scientifico": p2,
-                "id_infrastruttura_riferimento": i1,
+                "infrastruttura_riferimento": i1,
                 "visibile": True,
             }
         )
@@ -154,13 +154,13 @@ class ApiLaboratoriesListUnitTest(TestCase):
             **{"id": 1, "descrizione": "aaa"}
         )
         LaboratorioAttivita.objects.create(
-            **{"id": 1, "id_laboratorio_dati": lab1, "id_tipologia_attivita": a1}
+            **{"id": 1, "laboratorio_dati_base": lab1, "tipologia_attivita": a1}
         )
 
         LaboratorioPersonaleTecnico.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": lab1,
+                "laboratorio_dati_base": lab1,
                 "matricola_personale_tecnico": p1,
                 "ruolo": "R1",
             }
@@ -169,16 +169,16 @@ class ApiLaboratoriesListUnitTest(TestCase):
         LaboratorioDatiErc1.objects.create(
             **{
                 "id": 3,
-                "id_laboratorio_dati": lab1,
-                "id_ricerca_erc1": erc1_1,
+                "laboratorio_dati_base": lab1,
+                "ricerca_erc1": erc1_1,
             }
         )
 
         LaboratorioAltriDipartimenti.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": lab2,
-                "id_dip": dip1,
+                "laboratorio_dati_base": lab2,
+                "didattica_dipartimento": dip1,
             }
         )
 
@@ -349,7 +349,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
                 "id": 1,
                 "matricola_referente_compilazione": p1,
                 "nome_laboratorio": "LAB1",
-                "id_dipartimento_riferimento": dip1,
+                "dipartimento_riferimento": dip1,
                 "ambito": "Tecnologico",
                 "matricola_responsabile_scientifico": p1,
                 "laboratorio_interdipartimentale": "SI",
@@ -362,7 +362,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
                 "id": 2,
                 "matricola_referente_compilazione": p2,
                 "nome_laboratorio": "LAB2",
-                "id_dipartimento_riferimento": dip2,
+                "dipartimento_riferimento": dip2,
                 "ambito": "Umanistico",
                 "matricola_responsabile_scientifico": p2,
                 "visibile": True,
@@ -372,55 +372,55 @@ class ApiLaboratoryDetailUnitTest(TestCase):
             **{"id": 1, "descrizione": "aaa"}
         )
         LaboratorioAttivita.objects.create(
-            **{"id": 1, "id_laboratorio_dati": lab1, "id_tipologia_attivita": a1}
+            **{"id": 1, "laboratorio_dati_base": lab1, "tipologia_attivita": a1}
         )
         LaboratorioAttivita.objects.create(
-            **{"id": 2, "id_laboratorio_dati": lab1, "id_tipologia_attivita": a1}
+            **{"id": 2, "laboratorio_dati_base": lab1, "tipologia_attivita": a1}
         )
         LaboratorioAttivita.objects.create(
-            **{"id": 3, "id_laboratorio_dati": lab2, "id_tipologia_attivita": a1}
+            **{"id": 3, "laboratorio_dati_base": lab2, "tipologia_attivita": a1}
         )
 
         LaboratorioDatiErc1.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": lab1,
-                "id_ricerca_erc1": erc1_1,
+                "laboratorio_dati_base": lab1,
+                "ricerca_erc1": erc1_1,
             }
         )
         LaboratorioDatiErc1.objects.create(
             **{
                 "id": 2,
-                "id_laboratorio_dati": lab2,
-                "id_ricerca_erc1": erc1_2,
+                "laboratorio_dati_base": lab2,
+                "ricerca_erc1": erc1_2,
             }
         )
 
         LaboratorioPersonaleRicerca.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": lab1,
+                "laboratorio_dati_base": lab1,
                 "matricola_personale_ricerca": p2,
             }
         )
         LaboratorioPersonaleRicerca.objects.create(
             **{
                 "id": 2,
-                "id_laboratorio_dati": lab1,
+                "laboratorio_dati_base": lab1,
                 "matricola_personale_ricerca": p2,
             }
         )
         LaboratorioPersonaleRicerca.objects.create(
             **{
                 "id": 3,
-                "id_laboratorio_dati": lab2,
+                "laboratorio_dati_base": lab2,
                 "matricola_personale_ricerca": p1,
             }
         )
         LaboratorioPersonaleRicerca.objects.create(
             **{
                 "id": 4,
-                "id_laboratorio_dati": lab2,
+                "laboratorio_dati_base": lab2,
                 "matricola_personale_ricerca": p1,
             }
         )
@@ -428,7 +428,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
         LaboratorioPersonaleTecnico.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": lab1,
+                "laboratorio_dati_base": lab1,
                 "matricola_personale_tecnico": p1,
                 "ruolo": "R1",
             }
@@ -436,7 +436,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
         LaboratorioPersonaleTecnico.objects.create(
             **{
                 "id": 2,
-                "id_laboratorio_dati": lab1,
+                "laboratorio_dati_base": lab1,
                 "matricola_personale_tecnico": p1,
                 "ruolo": "R2",
             }
@@ -444,7 +444,7 @@ class ApiLaboratoryDetailUnitTest(TestCase):
         LaboratorioPersonaleTecnico.objects.create(
             **{
                 "id": 3,
-                "id_laboratorio_dati": lab2,
+                "laboratorio_dati_base": lab2,
                 "matricola_personale_tecnico": p2,
                 "ruolo": "R1",
             }
@@ -452,23 +452,23 @@ class ApiLaboratoryDetailUnitTest(TestCase):
         LaboratorioPersonaleTecnico.objects.create(
             **{
                 "id": 4,
-                "id_laboratorio_dati": lab2,
+                "laboratorio_dati_base": lab2,
                 "matricola_personale_tecnico": p2,
                 "ruolo": "R2",
             }
         )
 
         LaboratorioServiziOfferti.objects.create(
-            **{"id": 1, "id_laboratorio_dati": lab1, "nome_servizio": "S1"}
+            **{"id": 1, "laboratorio_dati_base": lab1, "nome_servizio": "S1"}
         )
         LaboratorioServiziOfferti.objects.create(
-            **{"id": 2, "id_laboratorio_dati": lab2, "nome_servizio": "S2"}
+            **{"id": 2, "laboratorio_dati_base": lab2, "nome_servizio": "S2"}
         )
 
         LaboratorioUbicazione.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": lab1,
+                "laboratorio_dati_base": lab1,
                 "edificio": "31B",
                 "piano": "1",
             }
@@ -477,8 +477,8 @@ class ApiLaboratoryDetailUnitTest(TestCase):
         LaboratorioAltriDipartimenti.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": lab1,
-                "id_dip": dip2,
+                "laboratorio_dati_base": lab1,
+                "didattica_dipartimento": dip2,
             }
         )
 
@@ -572,7 +572,7 @@ class ApiErc1ListUnitTest(TestCase):
                 "id": 1,
                 "nome_laboratorio": "Informatica",
                 "ambito": "Tecnico",
-                "dipartimento_riferimento": "Informatica",
+                "dipartimento_riferimento_nome": "Informatica",
                 "sede_dimensione": "290",
                 "responsabile_scientifico": "Mungari Simone",
             }
@@ -581,8 +581,8 @@ class ApiErc1ListUnitTest(TestCase):
         LaboratorioDatiErc1.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": l1,
-                "id_ricerca_erc1": erc1,
+                "laboratorio_dati_base": l1,
+                "ricerca_erc1": erc1,
             }
         )
 
@@ -625,7 +625,7 @@ class ApiErc2ListUnitTest(TestCase):
                 "id": 1,
                 "nome_laboratorio": "Informatica",
                 "ambito": "Tecnico",
-                "dipartimento_riferimento": "Informatica",
+                "dipartimento_riferimento_nome": "Informatica",
                 "sede_dimensione": "290",
                 "responsabile_scientifico": "Mungari Simone",
             }
@@ -634,8 +634,8 @@ class ApiErc2ListUnitTest(TestCase):
         LaboratorioDatiErc1.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": l1,
-                "id_ricerca_erc1": erc1,
+                "laboratorio_dati_base": l1,
+                "ricerca_erc1": erc1,
             }
         )
         RicercaErc2.objects.create(
@@ -694,7 +694,7 @@ class ApiErc0ListUnitTest(TestCase):
                 "id": 1,
                 "nome_laboratorio": "Informatica",
                 "ambito": "Tecnico",
-                "dipartimento_riferimento": "Informatica",
+                "dipartimento_riferimento_nome": "Informatica",
                 "sede_dimensione": "290",
                 "responsabile_scientifico": "Mungari Simone",
             }
@@ -703,8 +703,8 @@ class ApiErc0ListUnitTest(TestCase):
         LaboratorioDatiErc1.objects.create(
             **{
                 "id": 1,
-                "id_laboratorio_dati": l1,
-                "id_ricerca_erc1": erc1,
+                "laboratorio_dati_base": l1,
+                "ricerca_erc1": erc1,
             }
         )
 
@@ -721,7 +721,7 @@ class ApiErc0ListUnitTest(TestCase):
                 "id": 2,
                 "nome_laboratorio": "Informatica",
                 "ambito": "Tecnico",
-                "dipartimento_riferimento": "Informatica",
+                "dipartimento_riferimento_nome": "Informatica",
                 "sede_dimensione": "291",
                 "responsabile_scientifico": "Mungari Simone",
             }
@@ -730,8 +730,8 @@ class ApiErc0ListUnitTest(TestCase):
         LaboratorioDatiErc1.objects.create(
             **{
                 "id": 2,
-                "id_laboratorio_dati": l2,
-                "id_ricerca_erc1": erc12,
+                "laboratorio_dati_base": l2,
+                "ricerca_erc1": erc12,
             }
         )
 

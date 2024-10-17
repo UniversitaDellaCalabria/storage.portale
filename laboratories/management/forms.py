@@ -52,7 +52,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                 "logo_laboratorio",
                 "nome_file_logo",
                 "choosen_department_id",
-                "id_infrastruttura_riferimento",
+                "infrastruttura_riferimento",
                 "altre_strutture_riferimento",
                 "descr_altre_strutture_riferimento_it",
                 "descr_altre_strutture_riferimento_en",
@@ -75,7 +75,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             "descr_altre_strutture_riferimento_en",  # 'ambito',
             # 'sede_dimensione', 'sede_note_descrittive',
             # 'strumentazione_descrizione', 'strumentazione_valore',
-            "id_infrastruttura_riferimento",
+            "infrastruttura_riferimento",
             "sito_web",
             "nome_file_logo",
         ]
@@ -96,7 +96,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             # 'sede_note_descrittive': _('Office Description Notes'),
             # 'strumentazione_descrizione': _('Instrumentation Description'),
             # 'strumentazione_valore': _('Instrumentation Value'),
-            "id_infrastruttura_riferimento": _("Reference Infrastrucure"),
+            "infrastruttura_riferimento": _("Reference Infrastrucure"),
             "sito_web": _("Website"),
             "nome_file_logo": _("Logo"),
         }
@@ -271,7 +271,7 @@ class LaboratorioAttrezzatureFondiForm(forms.Form):
         .values_list("id", "nome_fondo")
     )
 
-    id_laboratorio_fondo = forms.MultipleChoiceField(
+    laboratorio_fondo = forms.MultipleChoiceField(
         label=_("Funds"),
         choices=choices,
         required=False,
@@ -286,7 +286,7 @@ class LaboratorioAttrezzatureRischiForm(forms.Form):
         .values_list("id", "descr_tipologia")
     )
 
-    id_tipologia_rischio = forms.MultipleChoiceField(
+    tipologia_rischio = forms.MultipleChoiceField(
         label=_("Risk Types"),
         choices=choices,
         required=False,
@@ -421,7 +421,7 @@ class LaboratorioServiziErogatiForm(forms.ModelForm):
     class Meta:
         model = LaboratorioServiziErogati
         exclude = (
-            "id_laboratorio_dati",
+            "laboratorio_dati_base",
             "matricola_responsabile",
             "responsabile_origine",
         )
@@ -477,7 +477,7 @@ class LaboratorioTipologiaRischioForm(forms.ModelForm):
     class Meta:
         model = LaboratorioDatiBase.tipologia_rischio.through
         exclude = [
-            "id_tipologia_rischio",
-            "id_laboratorio_dati",
+            "tipologia_rischio",
+            "laboratorio_dati_base",
             "tipologia_rischio_origine",
         ]

@@ -68,7 +68,7 @@ def can_view_laboratories(func_to_decorate):
             return func_to_decorate(*original_args, **original_kwargs)
 
         my_offices = original_kwargs["my_offices"]
-        department_id = laboratory.id_dipartimento_riferimento
+        department_id = laboratory.dipartimento_riferimento
 
         my_offices = my_offices.filter(
             office__organizational_structure__unique_code=department_id.dip_cod
