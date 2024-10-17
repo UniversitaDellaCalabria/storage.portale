@@ -24,10 +24,10 @@ class PatentsSerializer(CreateUpdateAbstract):
             "PatentInizialTRL": query["trl_iniziale"],
             "PatentUpdatedTRL": query["trl_aggiornato"],
             "PatentEnhancement": query["valorizzazione"],
-            "PatentTechAreaId": query["id_area_tecnologica"],
-            "PatentAreaDescription": query["id_area_tecnologica__descr_area_ita"]
-            if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None
-            else query["id_area_tecnologica__descr_area_eng"],
+            "PatentTechAreaId": query["area_tecnologica"],
+            "PatentAreaDescription": query["area_tecnologica__descr_area_ita"]
+            if req_lang == "it" or query["area_tecnologica__descr_area_eng"] is None
+            else query["area_tecnologica__descr_area_eng"],
             "PatentInventors": inventors,
             "PatentIsActive": query["is_active"],
         }

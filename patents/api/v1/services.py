@@ -15,7 +15,7 @@ class ServiceBrevetto:
                 q_nome = Q(titolo__icontains=k)
                 query_search &= q_nome
         if techarea:
-            query_techarea = Q(id_area_tecnologica=techarea)
+            query_techarea = Q(area_tecnologica=techarea)
         if structure:
             query_structure = Q(
                 brevettoinventori__matricola_inventore__cd_uo_aff_org=structure
@@ -35,9 +35,9 @@ class ServiceBrevetto:
                 "trl_aggiornato",
                 "valorizzazione",
                 "url_knowledge_share",
-                "id_area_tecnologica",
-                "id_area_tecnologica__descr_area_ita",
-                "id_area_tecnologica__descr_area_eng",
+                "area_tecnologica",
+                "area_tecnologica__descr_area_ita",
+                "area_tecnologica__descr_area_eng",
                 "is_active",
             )
             .distinct()
@@ -45,7 +45,7 @@ class ServiceBrevetto:
 
         for q in query:
             inventori = (
-                BrevettoInventori.objects.filter(id_brevetto=q["id"])
+                BrevettoInventori.objects.filter(brevetto=q["id"])
                 .values(
                     "matricola_inventore",
                     "cognomenome_origine",
@@ -72,15 +72,15 @@ class ServiceBrevetto:
             "trl_aggiornato",
             "valorizzazione",
             "url_knowledge_share",
-            "id_area_tecnologica",
-            "id_area_tecnologica__descr_area_ita",
-            "id_area_tecnologica__descr_area_eng",
+            "area_tecnologica",
+            "area_tecnologica__descr_area_ita",
+            "area_tecnologica__descr_area_eng",
             "is_active",
         )
 
         for q in query:
             inventori = (
-                BrevettoInventori.objects.filter(id_brevetto=q["id"])
+                BrevettoInventori.objects.filter(brevetto=q["id"])
                 .values(
                     "matricola_inventore",
                     "cognomenome_origine",

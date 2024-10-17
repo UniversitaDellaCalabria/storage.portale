@@ -35,14 +35,14 @@ class ApiPatentsListUnitTest(TestCase):
                 "url_immagine": "aaaa",
                 "breve_descrizione": "applicazione",
                 "url_knowledge_share": "aaaa",
-                "id_area_tecnologica": t1,
+                "area_tecnologica": t1,
             }
         )
 
         BrevettoInventori.objects.create(
             **{
                 "id": 1,
-                "id_brevetto": b1,
+                "brevetto": b1,
                 "matricola_inventore": p,
                 "cognomenome_origine": "garofalo",
             }
@@ -100,14 +100,14 @@ class ApiPatentDetailUnitTest(TestCase):
                 "url_immagine": "aaaa",
                 "breve_descrizione": "applicazione",
                 "url_knowledge_share": "aaaa",
-                "id_area_tecnologica": t1,
+                "area_tecnologica": t1,
             }
         )
 
         BrevettoInventori.objects.create(
             **{
                 "id": 1,
-                "id_brevetto": b1,
+                "brevetto": b1,
                 "matricola_inventore": p,
                 "cognomenome_origine": "garofalo",
             }

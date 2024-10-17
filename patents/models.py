@@ -61,7 +61,7 @@ class BrevettoDatiBase(models.Model):
         db_column="URL_IMMAGINE", max_length=2000, blank=True, null=True
     )
     breve_descrizione = models.TextField(db_column="BREVE_DESCRIZIONE")
-    id_area_tecnologica = models.ForeignKey(
+    area_tecnologica = models.ForeignKey(
         "companies.TipologiaAreaTecnologica",
         models.SET_NULL,
         db_column="ID_AREA_TECNOLOGICA",
@@ -80,7 +80,7 @@ class BrevettoDatiBase(models.Model):
         db_column="TRL_AGGIORNATO", blank=True, null=True
     )
     proprieta = models.TextField(db_column="PROPRIETA")
-    id_status_legale = models.ForeignKey(
+    status_legale = models.ForeignKey(
         BrevettoStatusLegale,
         models.SET_NULL,
         db_column="ID_STATUS_LEGALE",
@@ -95,14 +95,14 @@ class BrevettoDatiBase(models.Model):
         blank=True,
         null=True,
     )
-    id_diritto_commerciale = models.ForeignKey(
+    diritto_commerciale = models.ForeignKey(
         BrevettoDirittiCommerciali,
         models.SET_NULL,
         db_column="ID_DIRITTO_COMMERCIALE",
         blank=True,
         null=True,
     )
-    id_disponibilita = models.ForeignKey(
+    disponibilita = models.ForeignKey(
         BrevettoDisponibilita,
         models.SET_NULL,
         db_column="ID_DISPONIBILITA",
@@ -135,7 +135,7 @@ class BrevettoDatiBase(models.Model):
 
 class BrevettoInventori(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_brevetto = models.ForeignKey(
+    brevetto = models.ForeignKey(
         BrevettoDatiBase, models.CASCADE, db_column="ID_BREVETTO", blank=True, null=True
     )
     matricola_inventore = models.ForeignKey(

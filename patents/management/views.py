@@ -75,7 +75,7 @@ def patent(request, code, patent=None):
     modifica brevetto
     """
     form = BrevettoDatiBaseForm(instance=patent)
-    inventors = BrevettoInventori.objects.filter(id_brevetto=patent)
+    inventors = BrevettoInventori.objects.filter(brevetto=patent)
 
     if request.POST:
         form = BrevettoDatiBaseForm(
@@ -161,7 +161,7 @@ def patent_inventor_new(request, code, patent=None):
                 cognomenome_origine = form.cleaned_data["cognomenome_origine"]
 
             b = BrevettoInventori.objects.create(
-                id_brevetto=patent,
+                brevetto=patent,
                 matricola_inventore=inventor,
                 cognomenome_origine=cognomenome_origine,
             )
@@ -212,7 +212,7 @@ def patent_inventor_edit(request, code, inventor_id, patent=None):
     patent_inventor = get_object_or_404(
         BrevettoInventori.objects.select_related("matricola_inventore"),
         pk=inventor_id,
-        id_brevetto=code,
+        brevetto=code,
     )
     old_label = patent_inventor.cognomenome_origine
     inventor = patent_inventor.matricola_inventore
@@ -302,9 +302,9 @@ def patent_inventor_delete(request, code, inventor_id, patent=None):
     """
     elimina inventore
     """
-    inventor = get_object_or_404(BrevettoInventori, pk=inventor_id, id_brevetto=code)
+    inventor = get_object_or_404(BrevettoInventori, pk=inventor_id, brevetto=code)
 
-    # if BrevettoInventori.objects.filter(id_brevetto=code).count() == 1:
+    # if BrevettoInventori.objects.filter(brevetto=code).count() == 1:
     # return custom_message(request, _("Permission denied. Only one teacher remains"))
 
     log_action(
