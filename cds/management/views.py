@@ -185,7 +185,7 @@ def cds_detail(request, regdid_id, my_offices=None, regdid=None):
     office_data = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=regdid.cds.pk)
 
     # dati gruppi cds
-    cds_groups = DidatticaCdsGruppi.objects.filter(id_didattica_cds=regdid.cds.pk)
+    cds_groups = DidatticaCdsGruppi.objects.filter(didattica_cds=regdid.cds.pk)
 
     # dati gruppi dipartimento
     # department_groups = DidatticaDipartimentoGruppi.objects.filter(
@@ -1146,8 +1146,8 @@ def cds_group_new(request, regdid_id, my_offices=None, regdid=None):
         form = DidatticaCdsGruppoForm(data=request.POST)
         if form.is_valid():
             group = form.save(commit=False)
-            group.id_didattica_cds = regdid.cds
-            group.id_user_mod = request.user
+            group.didattica_cds = regdid.cds
+            group.user_mod = request.user
             group.dt_mod = datetime.datetime.now()
             group.save()
 
@@ -1183,7 +1183,7 @@ def cds_group(request, regdid_id, group_id, my_offices=None, regdid=None):
     modifica gruppo cds
     """
     group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, id_didattica_cds=regdid.cds
+        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
     )
     form = DidatticaCdsGruppoForm(instance=group)
 
@@ -1191,8 +1191,8 @@ def cds_group(request, regdid_id, group_id, my_offices=None, regdid=None):
         form = DidatticaCdsGruppoForm(instance=group, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            group.id_didattica_cds = regdid.cds
-            group.id_user_mod = request.user
+            group.didattica_cds = regdid.cds
+            group.user_mod = request.user
             group.dt_mod = datetime.datetime.now()
             group.save()
 
@@ -1245,7 +1245,7 @@ def cds_group_members_new(request, regdid_id, group_id, my_offices=None, regdid=
     aggiungi nuovo componente al gruppo
     """
     group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, id_didattica_cds=regdid.cds
+        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
     )
 
     external_form = DidatticaCdsGruppoComponenteForm()
@@ -1273,7 +1273,7 @@ def cds_group_members_new(request, regdid_id, group_id, my_offices=None, regdid=
                 cognome = form.cleaned_data["cognome"]
 
             c = DidatticaCdsGruppiComponenti.objects.create(
-                id_didattica_cds_gruppi=group,
+                didattica_cds_gruppi=group,
                 matricola=matricola,
                 cognome=cognome,
                 nome=nome,
@@ -1282,7 +1282,7 @@ def cds_group_members_new(request, regdid_id, group_id, my_offices=None, regdid=
                 ordine=form.cleaned_data.get("ordine"),
                 visibile=form.cleaned_data.get("visibile"),
                 dt_mod=datetime.datetime.now(),
-                id_user_mod=request.user,
+                user_mod=request.user,
             )
 
             log_action(
@@ -1340,11 +1340,11 @@ def cds_group_member_edit(
     aggiungi nuovo componente al gruppo
     """
     group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, id_didattica_cds=regdid.cds
+        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
     )
 
     member = get_object_or_404(
-        DidatticaCdsGruppiComponenti, pk=member_id, id_didattica_cds_gruppi=group
+        DidatticaCdsGruppiComponenti, pk=member_id, didattica_cds_gruppi=group
     )
 
     member_data = ""
@@ -1385,7 +1385,7 @@ def cds_group_member_edit(
 
             form.save(commit=False)
             member.dt_mod = datetime.datetime.now()
-            member.id_user_mod = request.user
+            member.user_mod = request.user
 
             member.save()
 
@@ -1444,7 +1444,7 @@ def cds_group_delete(request, regdid_id, group_id, my_offices=None, regdid=None)
     """
 
     group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, id_didattica_cds=regdid.cds
+        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
     )
 
     group_name = group.descr_breve_it
@@ -1473,11 +1473,11 @@ def cds_group_member_delete(
     """
 
     group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, id_didattica_cds=regdid.cds
+        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
     )
 
     member = get_object_or_404(
-        DidatticaCdsGruppiComponenti, pk=member_id, id_didattica_cds_gruppi=group
+        DidatticaCdsGruppiComponenti, pk=member_id, didattica_cds_gruppi=group
     )
     member_name = f"{member.cognome} {member.nome}"
     member.delete()
@@ -1648,7 +1648,7 @@ def cds_regdid_other_data_edit(
 
             if not errors:
                 instance.dt_mod = datetime.datetime.now()
-                instance.id_user_mod = request.user
+                instance.user_mod = request.user
                 instance.save()
 
                 messages.add_message(
@@ -1787,7 +1787,7 @@ def cds_regdid_other_data_new(
                     "tipo_testo_regdid_cod"
                 )
                 instance.dt_mod = datetime.datetime.now()
-                instance.id_user_mod = request.user
+                instance.user_mod = request.user
                 instance.save()
 
                 messages.add_message(
@@ -1881,7 +1881,7 @@ def cds_regdid_other_data_import(request, regdid_id, my_offices=None, regdid=Non
             current.clob_txt_ita = regdid_oa_py.clob_txt_ita
             current.clob_txt_eng = regdid_oa_py.clob_txt_eng
             current.dt_mod = datetime.datetime.now()
-            current.id_user_mod = request.user
+            current.user_mod = request.user
             current.save()
         else:  # create new record
             DidatticaRegolamentoAltriDati.objects.create(
@@ -1890,7 +1890,7 @@ def cds_regdid_other_data_import(request, regdid_id, my_offices=None, regdid=Non
                 clob_txt_ita=regdid_oa_py.clob_txt_ita,
                 clob_txt_eng=regdid_oa_py.clob_txt_eng,
                 dt_mod=datetime.datetime.now(),
-                id_user_mod=request.user,
+                user_mod=request.user,
             )
 
     log_action(

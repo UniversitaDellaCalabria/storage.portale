@@ -49,7 +49,7 @@ class ApiLockUnitTest(TestCase):
                 "tipo_corso_des": "Laurea",
                 "note": "",
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.titolo = DidatticaArticoliRegolamentoTitolo.objects.create(
@@ -176,7 +176,7 @@ class ApiSetLockUnitTest(TestCase):
                 "tipo_corso_des": "Laurea",
                 "note": "",
                 "dt_mod": "2024-01-01",
-                "id_user_mod": self.user1,
+                "user_mod": self.user1,
             }
         )
         self.titolo = DidatticaArticoliRegolamentoTitolo.objects.create(

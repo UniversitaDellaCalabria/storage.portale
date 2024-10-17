@@ -107,7 +107,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                 "id": 1,
                 "tipo_corso_cod": "L",
                 "tipo_corso_des": "Laurea",
-                "id_user_mod": self.user,
+                "user_mod": self.user,
             }
         )
 

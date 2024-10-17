@@ -333,7 +333,7 @@ class ServiceDidatticaCds:
         query_visibile = Q(visibile=True) if only_active else Q()
         res[0]["CdsGroups"] = (
             DidatticaCdsGruppi.objects.filter(
-                query_visibile, id_didattica_cds=res[0]["cds_id"]
+                query_visibile, didattica_cds=res[0]["cds_id"]
             )
             .values(
                 "ordine",
@@ -359,7 +359,7 @@ class ServiceDidatticaCds:
         for group in res[0]["CdsGroups"]:
             members = (
                 DidatticaCdsGruppiComponenti.objects.filter(
-                    query_visibile, id_didattica_cds_gruppi=group["id"]
+                    query_visibile, didattica_cds_gruppi=group["id"]
                 )
                 .values(
                     "ordine",

@@ -765,7 +765,7 @@ class DidatticaRegolamentoTipologiaAltriDati(models.Model):
         db_column="TIPO_TESTO_REGDID_DES", max_length=2000
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         models.SET_NULL,
         db_column="user_mod_id",
@@ -792,7 +792,7 @@ class DidatticaRegolamentoAltriDati(models.Model):
     clob_txt_ita = models.TextField(db_column="CLOB_TXT_ITA", blank=True, null=True)
     clob_txt_eng = models.TextField(db_column="CLOB_TXT_ENG", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         models.SET_NULL,
         db_column="user_mod_id",
@@ -978,13 +978,13 @@ class DidatticaCdsGruppi(models.Model):
     )
     descr_lunga_it = models.TextField(db_column="DESCR_LUNGA_IT", blank=True, null=True)
     descr_lunga_en = models.TextField(db_column="DESCR_LUNGA_EN", blank=True, null=True)
-    id_didattica_cds = models.ForeignKey(
+    didattica_cds = models.ForeignKey(
         DidatticaCds, models.DO_NOTHING, db_column="ID_DIDATTICA_CDS"
     )
     ordine = models.IntegerField(db_column="ORDINE", default=10)
     visibile = models.BooleanField(db_column="VISIBILE", default=True)
     dt_mod = models.DateField(db_column="DT_MOD")
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
     )
 
@@ -999,7 +999,7 @@ class DidatticaCdsGruppi(models.Model):
 
 class DidatticaCdsGruppiComponenti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_didattica_cds_gruppi = models.ForeignKey(
+    didattica_cds_gruppi = models.ForeignKey(
         DidatticaCdsGruppi, models.CASCADE, db_column="ID_DIDATTICA_CDS_GRUPPI"
     )
     matricola = models.ForeignKey(
@@ -1023,7 +1023,7 @@ class DidatticaCdsGruppiComponenti(models.Model):
     ordine = models.IntegerField(db_column="ORDINE", default=10)
     visibile = models.BooleanField(db_column="VISIBILE", default=True)
     dt_mod = models.DateField(db_column="DT_MOD")
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
     )
 
@@ -1033,7 +1033,7 @@ class DidatticaCdsGruppiComponenti(models.Model):
         ordering = ("ordine",)
 
     def __str__(self):  # pragma: no cover
-        return f"{self.id_didattica_cds_gruppi} - {self.cognome} {self.nome}"
+        return f"{self.didattica_cds_gruppi} - {self.cognome} {self.nome}"
 
 
 class DidatticaClasseLaurea(models.Model):
@@ -1922,7 +1922,7 @@ class DidatticaCdsTipoCorso(Permissions):
         db_column="TIPO_CORSO_DES", max_length=80, blank=True, null=True
     )
     note = models.CharField(db_column="NOTE", max_length=400, blank=True, null=True)
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="user_mod_id"
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
