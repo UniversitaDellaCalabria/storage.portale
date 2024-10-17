@@ -202,8 +202,8 @@ class CdsBrochureExStudentiForm(forms.ModelForm):
     class Meta:
         model = CdsBrochureExStudenti
         exclude = [
-            "id_sito_web_cds_dati_base",
-            "id_user_mod",
+            "cds_brochure",
+            "user_mod",
             "dt_mod",
         ]
         labels = {
@@ -225,8 +225,8 @@ class SitoWebCdsForm(forms.ModelForm):
 
     class Meta:
         exclude = [
-            "id_sito_web_cds_dati_base",
-            "id_user_mod",
+            "cds_brochure",
+            "user_mod",
             "dt_mod",
         ]
 

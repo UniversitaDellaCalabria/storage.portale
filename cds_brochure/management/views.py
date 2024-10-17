@@ -119,7 +119,7 @@ def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
             dati_base = form.save(commit=False)
 
             dati_base.dt_mod = datetime.datetime.now()
-            dati_base.id_user_mod = request.user
+            dati_base.user_mod = request.user
             dati_base.save()
 
             log_action(
@@ -186,7 +186,7 @@ def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
 @login_required
 @can_manage_cds_website
 def cds_brochure_sliders(request, code, cds_website=None, my_offices=None):
-    sliders = CdsBrochureSlider.objects.filter(id_sito_web_cds_dati_base=code).order_by(
+    sliders = CdsBrochureSlider.objects.filter(cds_brochure=code).order_by(
         "ordine"
     )
 
@@ -230,8 +230,8 @@ def cds_brochure_sliders_new(request, code, cds_website=None, my_offices=None):
         if slider_form.is_valid():
             slider = slider_form.save(commit=False)
             slider.dt_mod = datetime.datetime.now()
-            slider.id_user_mod = request.user
-            slider.id_sito_web_cds_dati_base = cds_website
+            slider.user_mod = request.user
+            slider.cds_brochure = cds_website
             slider.save()
 
             log_action(
@@ -302,7 +302,7 @@ def cds_brochure_sliders_edit(
         if slider_form.is_valid():
             slider = slider_form.save(commit=False)
             slider.dt_mod = datetime.datetime.now()
-            slider.id_user_mod = request.user
+            slider.user_mod = request.user
             slider.save()
 
             log_action(
@@ -391,7 +391,7 @@ def cds_brochure_sliders_delete(
 @can_manage_cds_website
 def cds_brochure_exstudents(request, code, cds_website=None, my_offices=None):
     exstudents = CdsBrochureExStudenti.objects.filter(
-        id_sito_web_cds_dati_base=code
+        cds_brochure=code
     ).order_by("ordine")
 
     breadcrumbs = {
@@ -438,9 +438,9 @@ def cds_brochure_exstudents_new(
     if request.POST:
         if exstudent_form.is_valid():
             exstudent = exstudent_form.save(commit=False)
-            exstudent.id_sito_web_cds_dati_base = cds_website
+            exstudent.cds_brochure = cds_website
             exstudent.dt_mod = datetime.datetime.now()
-            exstudent.id_user_mod = request.user
+            exstudent.user_mod = request.user
             exstudent.save()
 
             log_action(
@@ -514,7 +514,7 @@ def cds_brochure_exstudents_edit(
         if exstudent_form.is_valid():
             exstudent = exstudent_form.save(commit=False)
             exstudent.dt_mod = datetime.datetime.now()
-            exstudent.id_user_mod = request.user
+            exstudent.user_mod = request.user
             exstudent.save()
 
             log_action(
@@ -599,7 +599,7 @@ def cds_brochure_exstudents_delete(
 @login_required
 @can_manage_cds_website
 def cds_brochure_links(request, code, cds_website=None, my_offices=None):
-    links = CdsBrochureLink.objects.filter(id_sito_web_cds_dati_base=code).order_by(
+    links = CdsBrochureLink.objects.filter(cds_brochure=code).order_by(
         "ordine"
     )
 
@@ -642,9 +642,9 @@ def cds_brochure_links_new(request, code, cds_website=None, my_offices=None):
     if request.POST:
         if link_form.is_valid():
             link = link_form.save(commit=False)
-            link.id_sito_web_cds_dati_base = cds_website
+            link.cds_brochure = cds_website
             link.dt_mod = datetime.datetime.now()
-            link.id_user_mod = request.user
+            link.user_mod = request.user
             link.save()
 
             log_action(
@@ -712,7 +712,7 @@ def cds_brochure_links_edit(
         if link_form.is_valid():
             link = link_form.save(commit=False)
             link.dt_mod = datetime.datetime.now()
-            link.id_user_mod = request.user
+            link.user_mod = request.user
             link.save()
 
             log_action(

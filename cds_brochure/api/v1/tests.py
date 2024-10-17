@@ -47,7 +47,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
                 "profilo_en": "aaa",
                 "link_it": "aaa",
                 "link_en": "aaa",
-                "id_sito_web_cds_dati_base": s1,
+                "cds_brochure": s1,
             }
         )
 
@@ -59,7 +59,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
                 "descrizione_link_en": "aaa",
                 "link_it": "aaa",
                 "link_en": "aaa",
-                "id_sito_web_cds_dati_base": s1,
+                "cds_brochure": s1,
             }
         )
 
@@ -69,7 +69,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
                 "ordine": 1,
                 "slider_it": "aaa",
                 "slider_en": "aaa",
-                "id_sito_web_cds_dati_base": s1,
+                "cds_brochure": s1,
             }
         )
 
@@ -92,7 +92,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
                 "ordine": 1,
                 "slider_it": "aaa",
                 "slider_en": "aaa",
-                "id_sito_web_cds_dati_base": s2,
+                "cds_brochure": s2,
             }
         )
 
@@ -150,7 +150,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
                 "profilo_en": "aaa",
                 "link_it": "aaa",
                 "link_en": "aaa",
-                "id_sito_web_cds_dati_base": s1,
+                "cds_brochure": s1,
             }
         )
 
@@ -162,7 +162,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
                 "descrizione_link_en": "aaa",
                 "link_it": "aaa",
                 "link_en": "aaa",
-                "id_sito_web_cds_dati_base": s1,
+                "cds_brochure": s1,
             }
         )
 
@@ -172,7 +172,7 @@ class ApiSitoWebCdsDetailUnitTest(TestCase):
                 "ordine": 1,
                 "slider_it": "aaa",
                 "slider_en": "aaa",
-                "id_sito_web_cds_dati_base": s1,
+                "cds_brochure": s1,
             }
         )
 

@@ -116,7 +116,7 @@ class ServiceCdsBrochure:
             q["lingue"] = lingue_list
 
             ex_studenti = (
-                CdsBrochureExStudenti.objects.filter(id_sito_web_cds_dati_base=q["id"])
+                CdsBrochureExStudenti.objects.filter(cds_brochure=q["id"])
                 .values(
                     "id",
                     "nome",
@@ -134,7 +134,7 @@ class ServiceCdsBrochure:
             else:  # pragma: no cover
                 q["ExStudents"] = []
             links = (
-                CdsBrochureLink.objects.filter(id_sito_web_cds_dati_base=q["id"])
+                CdsBrochureLink.objects.filter(cds_brochure=q["id"])
                 .values(
                     "id",
                     "ordine",
@@ -151,7 +151,7 @@ class ServiceCdsBrochure:
                 q["CdsLink"] = []
 
             sliders = (
-                CdsBrochureSlider.objects.filter(id_sito_web_cds_dati_base=q["id"])
+                CdsBrochureSlider.objects.filter(cds_brochure=q["id"])
                 .values(
                     "id",
                     "ordine",

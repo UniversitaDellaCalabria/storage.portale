@@ -81,7 +81,7 @@ class CdsBrochure(models.Model):
         db_column="COME_ISCRIVERSI_EN", blank=True, null=True
     )
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
         db_column="user_mod_id",
@@ -106,14 +106,14 @@ class CdsBrochureExStudenti(models.Model):
     link_en = models.CharField(
         db_column="LINK_EN", max_length=2000, blank=True, null=True
     )
-    id_sito_web_cds_dati_base = models.ForeignKey(
+    cds_brochure = models.ForeignKey(
         CdsBrochure,
         models.CASCADE,
         db_column="ID_CDS_BROCHURE",
         to_field="id",
     )
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
         db_column="user_mod_id",
@@ -149,14 +149,14 @@ class CdsBrochureLink(models.Model):
     link_en = models.CharField(
         db_column="LINK_EN", max_length=2000, blank=True, null=True
     )
-    id_sito_web_cds_dati_base = models.ForeignKey(
+    cds_brochure = models.ForeignKey(
         CdsBrochure,
         models.CASCADE,
         db_column="ID_CDS_BROCHURE",
         to_field="id",
     )
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
         db_column="user_mod_id",
@@ -171,7 +171,7 @@ class CdsBrochureLink(models.Model):
 
 class CdsBrochureSlider(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_sito_web_cds_dati_base = models.ForeignKey(
+    cds_brochure = models.ForeignKey(
         CdsBrochure,
         models.CASCADE,
         db_column="ID_CDS_BROCHURE",
@@ -183,7 +183,7 @@ class CdsBrochureSlider(models.Model):
     slider_it = models.TextField(db_column="SLIDER_IT", blank=True, null=True)
     slider_en = models.TextField(db_column="SLIDER_EN", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(),
         on_delete=models.DO_NOTHING,
         db_column="user_mod_id",
