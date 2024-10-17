@@ -794,7 +794,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
         UnitaOrganizzativaContatti.objects.create(
             **{
                 "cd_tipo_cont": tipo_contatto,
-                "id_ab": u1,
+                "ab": u1,
                 "prg_priorita": 1,
             }
         )
@@ -802,7 +802,7 @@ class ApiAddressbookStructureDetailUnitTest(TestCase):
         UnitaOrganizzativaContatti.objects.create(
             **{
                 "cd_tipo_cont": tipo_contatto,
-                "id_ab": u2,
+                "ab": u2,
                 "prg_priorita": 2,
             }
         )

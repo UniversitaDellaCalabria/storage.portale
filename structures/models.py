@@ -170,7 +170,7 @@ class UnitaOrganizzativaTipoFunzioni(models.Model):
 
 
 class UnitaOrganizzativaContatti(models.Model):
-    id_ab = models.OneToOneField(
+    ab = models.OneToOneField(
         UnitaOrganizzativa,
         models.DO_NOTHING,
         db_column="ID_AB",
@@ -194,7 +194,7 @@ class UnitaOrganizzativaContatti(models.Model):
     class Meta:
         managed = True
         db_table = "UNITA_ORGANIZZATIVA_CONTATTI"
-        unique_together = (("id_ab", "cd_tipo_cont", "prg_priorita"),)
+        unique_together = (("ab", "cd_tipo_cont", "prg_priorita"),)
 
 
 class TerritorioIt(models.Model):
@@ -284,13 +284,13 @@ class DidatticaDipartimentoGruppi(models.Model):
     )
     descr_lunga_it = models.TextField(db_column="DESCR_LUNGA_IT", blank=True, null=True)
     descr_lunga_en = models.TextField(db_column="DESCR_LUNGA_EN", blank=True, null=True)
-    id_didattica_dipartimento = models.ForeignKey(
+    didattica_dipartimento = models.ForeignKey(
         DidatticaDipartimento, models.DO_NOTHING, db_column="ID_DIDATTICA_DIPARTIMENTO"
     )
     ordine = models.IntegerField(db_column="ORDINE", default=10)
     visibile = models.BooleanField(db_column="VISIBILE", default=True)
     dt_mod = models.DateField(db_column="DT_MOD")
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
     )
 
@@ -302,7 +302,7 @@ class DidatticaDipartimentoGruppi(models.Model):
 
 class DidatticaDipartimentoGruppiComponenti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_didattica_dipartimento_gruppi = models.ForeignKey(
+    didattica_dipartimento_gruppi = models.ForeignKey(
         DidatticaDipartimentoGruppi,
         models.CASCADE,
         db_column="ID_DIDATTICA_DIPARTIMENTO_GRUPPI",
@@ -328,7 +328,7 @@ class DidatticaDipartimentoGruppiComponenti(models.Model):
     ordine = models.IntegerField(db_column="ORDINE", default=10)
     visibile = models.BooleanField(db_column="VISIBILE", default=True)
     dt_mod = models.DateField(db_column="DT_MOD")
-    id_user_mod = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
     )
 
