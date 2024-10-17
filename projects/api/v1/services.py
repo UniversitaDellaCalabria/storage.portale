@@ -33,24 +33,24 @@ class ServiceProgetto:
             for k in search.split(" "):
                 q_nome = (
                     Q(titolo__icontains=k)
-                    | Q(id_area_tecnologica__descr_area_ita__icontains=k)
+                    | Q(area_tecnologica__descr_area_ita__icontains=k)
                     | Q(uo__denominazione__icontains=k)
                     | Q(anno_avvio__icontains=k)
-                    | Q(id_ambito_territoriale__ambito_territoriale__icontains=k)
+                    | Q(ambito_territoriale__ambito_territoriale__icontains=k)
                 )
                 query_search &= q_nome
         if techarea:
-            query_techarea = Q(id_area_tecnologica=techarea)
+            query_techarea = Q(area_tecnologica=techarea)
         if infrastructure:
             query_infrastructure = Q(uo=infrastructure)
         if programtype:
             programtype = programtype.split(",")
-            query_programtype = Q(id_tipologia_programma__in=programtype)
+            query_programtype = Q(tipologia_programma__in=programtype)
         if territorialscope:
-            query_territorialscope = Q(id_ambito_territoriale=territorialscope)
+            query_territorialscope = Q(ambito_territoriale=territorialscope)
         if notprogramtype:
             notprogramtype = notprogramtype.split(",")
-            query_notprogramtype = ~Q(id_tipologia_programma__in=notprogramtype)
+            query_notprogramtype = ~Q(tipologia_programma__in=notprogramtype)
         if year:
             query_year = Q(anno_avvio=year)
 
@@ -67,10 +67,10 @@ class ServiceProgetto:
             )
             .values(
                 "id",
-                "id_ambito_territoriale__id",
-                "id_ambito_territoriale__ambito_territoriale",
-                "id_tipologia_programma__id",
-                "id_tipologia_programma__nome_programma",
+                "ambito_territoriale__id",
+                "ambito_territoriale__ambito_territoriale",
+                "tipologia_programma__id",
+                "tipologia_programma__nome_programma",
                 "titolo",
                 "anno_avvio",
                 "uo",
@@ -79,28 +79,28 @@ class ServiceProgetto:
                 "url_immagine",
                 "abstract_ita",
                 "abstract_eng",
-                "id_area_tecnologica",
-                "id_area_tecnologica__descr_area_ita",
-                "id_area_tecnologica__descr_area_eng",
+                "area_tecnologica",
+                "area_tecnologica__descr_area_ita",
+                "area_tecnologica__descr_area_eng",
                 "is_active",
             )
             .distinct()
             .order_by(
                 "ordinamento",
                 "-anno_avvio",
-                "id_ambito_territoriale__ambito_territoriale",
+                "ambito_territoriale__ambito_territoriale",
             )
         )
 
         for q in query:
             responsabili = ProgettoResponsabileScientifico.objects.filter(
-                id_progetto=q["id"]
+                progetto=q["id"]
             ).values(
                 "matricola",
                 "nome_origine",
             )
             ricercatori = ProgettoRicercatore.objects.filter(
-                id_progetto=q["id"]
+                progetto=q["id"]
             ).values(
                 "matricola",
                 "nome_origine",
@@ -123,10 +123,10 @@ class ServiceProgetto:
             ProgettoDatiBase.objects.filter(id=projectid, is_active=True)
             .values(
                 "id",
-                "id_ambito_territoriale__id",
-                "id_ambito_territoriale__ambito_territoriale",
-                "id_tipologia_programma__id",
-                "id_tipologia_programma__nome_programma",
+                "ambito_territoriale__id",
+                "ambito_territoriale__ambito_territoriale",
+                "tipologia_programma__id",
+                "tipologia_programma__nome_programma",
                 "titolo",
                 "anno_avvio",
                 "uo",
@@ -135,9 +135,9 @@ class ServiceProgetto:
                 "url_immagine",
                 "abstract_ita",
                 "abstract_eng",
-                "id_area_tecnologica",
-                "id_area_tecnologica__descr_area_ita",
-                "id_area_tecnologica__descr_area_eng",
+                "area_tecnologica",
+                "area_tecnologica__descr_area_ita",
+                "area_tecnologica__descr_area_eng",
                 "is_active",
             )
             .distinct()
@@ -145,13 +145,13 @@ class ServiceProgetto:
 
         for q in query:
             responsabili = ProgettoResponsabileScientifico.objects.filter(
-                id_progetto=q["id"]
+                progetto=q["id"]
             ).values(
                 "matricola",
                 "nome_origine",
             )
             ricercatori = ProgettoRicercatore.objects.filter(
-                id_progetto=q["id"]
+                progetto=q["id"]
             ).values(
                 "matricola",
                 "nome_origine",

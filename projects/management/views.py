@@ -51,9 +51,9 @@ def project(request, code, project=None):
     """
     form = ProgettoDatiBaseForm(instance=project)
 
-    researchers = ProgettoRicercatore.objects.filter(id_progetto=project)
+    researchers = ProgettoRicercatore.objects.filter(progetto=project)
     scientific_directors = ProgettoResponsabileScientifico.objects.filter(
-        id_progetto=project
+        progetto=project
     )
 
     structure_data = get_object_or_404(ProgettoDatiBase, pk=code)
@@ -241,7 +241,7 @@ def project_director_new(request, code, project=None):
                 nome_origine = form.cleaned_data["nome_origine"]
 
             p = ProgettoResponsabileScientifico.objects.create(
-                id_progetto=project, matricola=director, nome_origine=nome_origine
+                progetto=project, matricola=director, nome_origine=nome_origine
             )
 
             log_action(
@@ -293,7 +293,7 @@ def project_director_edit(request, code, director_id, project=None):
     project_director = get_object_or_404(
         ProgettoResponsabileScientifico.objects.select_related("matricola"),
         pk=director_id,
-        id_progetto=project,
+        progetto=project,
     )
     old_label = project_director.nome_origine
     director = project_director.matricola
@@ -378,7 +378,7 @@ def project_director_delete(request, code, director_id, project=None):
     elimina dati direttore scientifico
     """
     director_project = get_object_or_404(
-        ProgettoResponsabileScientifico, pk=director_id, id_progetto=project
+        ProgettoResponsabileScientifico, pk=director_id, progetto=project
     )
 
     log_action(
@@ -422,7 +422,7 @@ def project_researcher_new(request, code, project=None):
                 nome_origine = form.cleaned_data["nome_origine"]
 
             p = ProgettoRicercatore.objects.create(
-                id_progetto=project, matricola=researcher, nome_origine=nome_origine
+                progetto=project, matricola=researcher, nome_origine=nome_origine
             )
             log_action(
                 user=request.user,
@@ -473,7 +473,7 @@ def project_researcher_edit(request, code, researcher_id, project=None):
     project_researcher = get_object_or_404(
         ProgettoRicercatore.objects.select_related("matricola"),
         pk=researcher_id,
-        id_progetto=project,
+        progetto=project,
     )
     old_label = project_researcher.nome_origine
     researcher = project_researcher.matricola
@@ -560,7 +560,7 @@ def project_researcher_delete(request, code, researcher_id, project=None):
     elimina ricercatore
     """
     researcher = get_object_or_404(
-        ProgettoRicercatore, pk=researcher_id, id_progetto=project
+        ProgettoRicercatore, pk=researcher_id, progetto=project
     )
 
     log_action(

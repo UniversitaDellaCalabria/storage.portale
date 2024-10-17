@@ -63,13 +63,13 @@ class ApiProjectsListUnitTest(TestCase):
             **{
                 "id": 1,
                 "uo": u1,
-                "id_ambito_territoriale": a1,
-                "id_tipologia_programma": p1,
+                "ambito_territoriale": a1,
+                "tipologia_programma": p1,
                 "titolo": "Motore",
                 "descr_breve": "Mot",
                 "abstract_ita": "Motore",
                 "abstract_eng": "Engine",
-                "id_area_tecnologica": t1,
+                "area_tecnologica": t1,
                 "anno_avvio": 2021,
             }
         )
@@ -77,13 +77,13 @@ class ApiProjectsListUnitTest(TestCase):
         ProgettoDatiBase.objects.create(
             **{
                 "id": 2,
-                "id_ambito_territoriale": a1,
-                "id_tipologia_programma": p1,
+                "ambito_territoriale": a1,
+                "tipologia_programma": p1,
                 "titolo": "Motore",
                 "descr_breve": "Mot",
                 "abstract_ita": "Motore",
                 "abstract_eng": "Engine",
-                "id_area_tecnologica": t1,
+                "area_tecnologica": t1,
                 "anno_avvio": 2020,
             }
         )
@@ -92,7 +92,7 @@ class ApiProjectsListUnitTest(TestCase):
             **{
                 "matricola": p,
                 "nome_origine": "Simone",
-                "id_progetto": pr1,
+                "progetto": pr1,
             }
         )
 
@@ -100,7 +100,7 @@ class ApiProjectsListUnitTest(TestCase):
             **{
                 "matricola": p,
                 "nome_origine": "Simone",
-                "id_progetto": pr1,
+                "progetto": pr1,
             }
         )
 
@@ -182,13 +182,13 @@ class ApiProjectDetailUnitTest(TestCase):
         pr1 = ProgettoDatiBase.objects.create(
             **{
                 "id": 1,
-                "id_ambito_territoriale": a1,
-                "id_tipologia_programma": p1,
+                "ambito_territoriale": a1,
+                "tipologia_programma": p1,
                 "titolo": "Motore",
                 "descr_breve": "Mot",
                 "abstract_ita": "Motore",
                 "abstract_eng": "Engine",
-                "id_area_tecnologica": t1,
+                "area_tecnologica": t1,
             }
         )
 
@@ -196,14 +196,14 @@ class ApiProjectDetailUnitTest(TestCase):
             **{
                 "matricola": p,
                 "nome_origine": "Simone",
-                "id_progetto": pr1,
+                "progetto": pr1,
             }
         )
         ProgettoRicercatore.objects.create(
             **{
                 "matricola": p,
                 "nome_origine": "Simone",
-                "id_progetto": pr1,
+                "progetto": pr1,
             }
         )
 

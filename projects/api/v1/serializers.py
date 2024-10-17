@@ -22,21 +22,21 @@ class ProjectSerializer(CreateUpdateAbstract):
             "ProjectYear": query["anno_avvio"],
             "InfrastructureId": query["uo"],
             "InfrastructureDescription": query["uo__denominazione"],
-            "TerritorialScopeId": query["id_ambito_territoriale__id"],
+            "TerritorialScopeId": query["ambito_territoriale__id"],
             "TerritorialScopeDescription": query[
-                "id_ambito_territoriale__ambito_territoriale"
+                "ambito_territoriale__ambito_territoriale"
             ],
-            "TypeProgramId": query["id_tipologia_programma__id"],
-            "TypeProgramDescription": query["id_tipologia_programma__nome_programma"],
+            "TypeProgramId": query["tipologia_programma__id"],
+            "TypeProgramDescription": query["tipologia_programma__nome_programma"],
             "ProjectTitle": query["titolo"],
             "ProjectDescription": query["descr_breve"],
             "ProjectAbstract": query["abstract_ita"]
             if req_lang == "it" or query["abstract_eng"] is None
             else query["abstract_eng"],
-            "TechAreaId": query["id_area_tecnologica"],
-            "TechAreaDescription": query["id_area_tecnologica__descr_area_ita"]
-            if req_lang == "it" or query["id_area_tecnologica__descr_area_eng"] is None
-            else query["id_area_tecnologica__descr_area_eng"],
+            "TechAreaId": query["area_tecnologica"],
+            "TechAreaDescription": query["area_tecnologica__descr_area_ita"]
+            if req_lang == "it" or query["area_tecnologica__descr_area_eng"] is None
+            else query["area_tecnologica__descr_area_eng"],
             "ProjectImage": query["url_immagine"],
             "ScientificDirectors": responsabili,
             "Researchers": ricercatori,

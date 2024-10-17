@@ -36,9 +36,9 @@ def can_manage_projects(func_to_decorate):
 # request = original_args[0]
 # project = get_object_or_404(
 # ProgettoDatiBase, pk=original_kwargs['code'])
-# researchers = ProgettoRicercatore.objects.filter(id_progetto=project)
+# researchers = ProgettoRicercatore.objects.filter(progetto=project)
 # scientific_director = ProgettoResponsabileScientifico.objects.filter(
-# id_progetto=project)
+# progetto=project)
 # original_kwargs['project'] = project
 # original_kwargs['researchers'] = researchers
 # original_kwargs['scientific_director'] = scientific_director

@@ -20,21 +20,21 @@ class ProgettoDatiBase(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
 
     anno_avvio = models.IntegerField(db_column="ANNO_AVVIO", blank=True, null=True)
-    id_ambito_territoriale = models.ForeignKey(
+    ambito_territoriale = models.ForeignKey(
         ProgettoAmbitoTerritoriale,
         models.SET_NULL,
         db_column="ID_AMBITO_TERRITORIALE",
         blank=True,
         null=True,
     )
-    id_tipologia_programma = models.ForeignKey(
+    tipologia_programma = models.ForeignKey(
         "ProgettoTipologiaProgramma",
         models.SET_NULL,
         db_column="ID_TIPOLOGIA_PROGRAMMA",
         blank=True,
         null=True,
     )
-    id_area_tecnologica = models.ForeignKey(
+    area_tecnologica = models.ForeignKey(
         "companies.TipologiaAreaTecnologica",
         models.SET_NULL,
         db_column="ID_AREA_TECNOLOGICA",
@@ -86,7 +86,7 @@ class ProgettoRicercatore(models.Model):
         null=True,
     )
     nome_origine = models.CharField(db_column="NOME_ORIGINE", max_length=1000)
-    id_progetto = models.ForeignKey(
+    progetto = models.ForeignKey(
         ProgettoDatiBase, models.CASCADE, db_column="ID_PROGETTO"
     )
 
@@ -110,7 +110,7 @@ class ProgettoResponsabileScientifico(models.Model):
     )
     nome_origine = models.CharField(db_column="NOME_ORIGINE", max_length=1000)
 
-    id_progetto = models.ForeignKey(
+    progetto = models.ForeignKey(
         ProgettoDatiBase, models.CASCADE, db_column="ID_PROGETTO"
     )
 
