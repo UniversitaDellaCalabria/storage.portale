@@ -1129,9 +1129,9 @@ class ServiceDocente:
         if pub_type is not None:
             query_type = Q(collection_id__community_id__community_id=pub_type)
         if teacherid:
-            query_teacher = Q(pubblicazioneautori__id_ab__matricola=teacherid)
+            query_teacher = Q(pubblicazioneautori__ab__matricola=teacherid)
         if structure:
-            query_structure = Q(pubblicazioneautori__id_ab__cd_uo_aff_org=structure)
+            query_structure = Q(pubblicazioneautori__ab__cd_uo_aff_org=structure)
         query = (
             PubblicazioneDatiBase.objects.filter(
                 query_search, query_year, query_type, query_teacher, query_structure
@@ -1189,11 +1189,11 @@ class ServiceDocente:
 
         for q in query:
             autori = PubblicazioneAutori.objects.filter(item_id=publicationid).values(
-                "id_ab__id_ab",
-                "id_ab__nome",
-                "id_ab__cognome",
-                "id_ab__middle_name",
-                "id_ab__matricola",
+                "ab__id_ab",
+                "ab__nome",
+                "ab__cognome",
+                "ab__middle_name",
+                "ab__matricola",
                 "first_name",
                 "last_name",
             )
@@ -1202,7 +1202,7 @@ class ServiceDocente:
             else:
                 q["Authors"] = autori
 
-        append_email_addresses(autori, "id_ab__id_ab")
+        append_email_addresses(autori, "ab__id_ab")
 
         return query
 

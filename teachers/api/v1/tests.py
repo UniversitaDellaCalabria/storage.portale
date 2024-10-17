@@ -957,21 +957,21 @@ class ApiPublicationsListUnitTest(TestCase):
         PubblicazioneAutori.objects.create(
             **{
                 "item_id": 1,
-                "id_ab": p1,
+                "ab": p1,
             }
         )
 
         PubblicazioneAutori.objects.create(
             **{
                 "item_id": 3,
-                "id_ab": p2,
+                "ab": p2,
             }
         )
 
         PubblicazioneAutori.objects.create(
             **{
                 "item_id": 1,
-                "id_ab": p3,
+                "ab": p3,
             }
         )
 
@@ -1152,14 +1152,14 @@ class ApiPublicationDetailUnitTest(TestCase):
         PubblicazioneAutori.objects.create(
             **{
                 "item_id": 1,
-                "id_ab": p1,
+                "ab": p1,
             }
         )
 
         PubblicazioneAutori.objects.create(
             **{
                 "item_id": 3,
-                "id_ab": p2,
+                "ab": p2,
             }
         )
 
@@ -1405,14 +1405,14 @@ class ApiPublicationInfoUnitTest(TestCase):
         PubblicazioneAutori.objects.create(
             **{
                 "item_id": 1,
-                "id_ab": p1,
+                "ab": p1,
             }
         )
 
         PubblicazioneAutori.objects.create(
             **{
                 "item_id": 3,
-                "id_ab": p2,
+                "ab": p2,
             }
         )
 

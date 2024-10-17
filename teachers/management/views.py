@@ -109,7 +109,7 @@ def teacher_other_data_edit(
         )
         if form.is_valid():
             form.save(commit=False)
-            other_data.user_mod_id = request.user
+            other_data.user_mod = request.user
             other_data.dt_mod = datetime.datetime.now()
             other_data.save()
 
@@ -178,7 +178,7 @@ def teacher_other_data_new(
         if form.is_valid():
             data = form.save(commit=False)
             data.matricola = teacher
-            data.user_mod_id = request.user
+            data.user_mod = request.user
             data.dt_mod = datetime.datetime.now()
             data.save()
 
@@ -271,7 +271,7 @@ def teacher_board_data_edit(
         form = DocentePtaBachecaForm(instance=board, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            board.user_mod_id = request.user
+            board.user_mod = request.user
             board.dt_mod = datetime.datetime.now()
             board.save()
 
@@ -330,7 +330,7 @@ def teacher_board_data_new(
         if form.is_valid():
             board = form.save(commit=False)
             board.matricola = teacher
-            board.user_mod_id = request.user
+            board.user_mod = request.user
             board.dt_mod = datetime.datetime.now()
             board.dt_pubblicazione = datetime.datetime.now()
             board.save()
@@ -410,7 +410,7 @@ def teacher_materials_data_edit(
         form = DocenteMaterialeDidatticoForm(instance=material, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            material.user_mod_id = request.user
+            material.user_mod = request.user
             material.dt_mod = datetime.datetime.now()
             material.save()
 
@@ -476,7 +476,7 @@ def teacher_materials_data_new(
         if form.is_valid():
             material = form.save(commit=False)
             material.matricola = teacher
-            material.user_mod_id = request.user
+            material.user_mod = request.user
             material.dt_mod = datetime.datetime.now()
             material.dt_pubblicazione = datetime.datetime.now()
             material.save()

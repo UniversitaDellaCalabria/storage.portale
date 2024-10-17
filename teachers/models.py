@@ -47,8 +47,8 @@ class DocenteMaterialeDidattico(models.Model):
         db_column="DT_FINE_VALIDITA", blank=True, null=True
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    user_mod_id = models.ForeignKey(
-        get_user_model(), models.SET_NULL, blank=True, null=True
+    user_mod = models.ForeignKey(
+        get_user_model(), models.SET_NULL, db_column="user_mod_id_id", blank=True, null=True
     )
 
     class Meta:
@@ -109,8 +109,8 @@ class DocentePtaAltriDati(models.Model):
         null=True,
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    user_mod_id = models.ForeignKey(
-        get_user_model(), models.SET_NULL, blank=True, null=True
+    user_mod = models.ForeignKey(
+        get_user_model(), models.SET_NULL, db_column="user_mod_id_id", blank=True, null=True
     )
 
     class Meta:
@@ -154,8 +154,8 @@ class DocentePtaBacheca(models.Model):
         db_column="DT_FINE_VALIDITA", blank=True, null=True
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    user_mod_id = models.ForeignKey(
-        get_user_model(), models.SET_NULL, blank=True, null=True
+    user_mod = models.ForeignKey(
+        get_user_model(), models.SET_NULL, db_column="user_mod_id_id", blank=True, null=True
     )
 
     class Meta:
@@ -171,7 +171,7 @@ class PubblicazioneAutori(models.Model):
     codice_fiscale = models.CharField(
         db_column="CODICE_FISCALE", max_length=16, blank=True, null=True
     )
-    id_ab = models.ForeignKey(
+    ab = models.ForeignKey(
         "addressbook.Personale",
         models.DO_NOTHING,
         db_column="ID_AB",

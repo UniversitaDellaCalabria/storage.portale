@@ -295,22 +295,22 @@ class PublicationSerializer(CreateUpdateAbstract):
     def to_dict_authors(query):
         result = []
         for q in query:
-            if q["id_ab__matricola"] is None:
+            if q["ab__matricola"] is None:
                 full_name = q["last_name"] + " " + q["first_name"]
             else:
                 full_name = (
-                    q["id_ab__cognome"]
+                    q["ab__cognome"]
                     + " "
-                    + q["id_ab__nome"]
+                    + q["ab__nome"]
                     + (
-                        " " + q["id_ab__middle_name"]
-                        if q["id_ab__middle_name"] is not None
+                        " " + q["ab__middle_name"]
+                        if q["ab__middle_name"] is not None
                         else ""
                     )
                 )
             result.append(
                 {
-                    "AuthorId": encrypt(q["id_ab__matricola"]),
+                    "AuthorId": encrypt(q["ab__matricola"]),
                     "AuthorName": full_name,
                     "AuthorEmail": q["email"],
                 }
