@@ -73,9 +73,9 @@ class ApiHighFormationMastersListUnitTest(TestCase):
                 "titolo_en": "AAAA",
                 "lingua": "ita",
                 "matricola_direttore_scientifico": doc1,
-                "id_alta_formazione_tipo_corso": aftc,
-                "id_alta_formazione_mod_erogazione": afme,
-                "id_dipartimento_riferimento": dip,
+                "alta_formazione_tipo_corso": aftc,
+                "alta_formazione_mod_erogazione": afme,
+                "dipartimento_riferimento": dip,
                 "anno_rilevazione": 2021,
             }
         )
@@ -86,8 +86,8 @@ class ApiHighFormationMastersListUnitTest(TestCase):
                 "titolo_it": "AAAA",
                 "titolo_en": "AAAA",
                 "matricola_direttore_scientifico": doc1,
-                "id_alta_formazione_tipo_corso": aftc,
-                "id_alta_formazione_mod_erogazione": afme,
+                "alta_formazione_tipo_corso": aftc,
+                "alta_formazione_mod_erogazione": afme,
             }
         )
 
@@ -96,7 +96,7 @@ class ApiHighFormationMastersListUnitTest(TestCase):
                 "nome_cons": "Simone",
                 "ruolo_cons": "docente",
                 "ente_cons": "università",
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 
@@ -104,7 +104,7 @@ class ApiHighFormationMastersListUnitTest(TestCase):
             **{
                 "nome_origine_cons": "Simone",
                 "matricola_cons": doc1,
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 
@@ -113,12 +113,12 @@ class ApiHighFormationMastersListUnitTest(TestCase):
                 "denominazione": "aaaa",
                 "tipologia": "bbbb",
                 "sito_web": "aaaa",
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 
         AltaFormazioneModalitaSelezione.objects.create(
-            **{"tipo_selezione": "chiusa", "id_alta_formazione_dati_base": a1}
+            **{"tipo_selezione": "chiusa", "alta_formazione_dati_base": a1}
         )
 
         AltaFormazioneIncaricoDidattico.objects.create(
@@ -130,7 +130,7 @@ class ApiHighFormationMastersListUnitTest(TestCase):
                 "ente": "Università",
                 "tipologia": "Prova",
                 "docente": "Mungari",
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 
@@ -142,7 +142,7 @@ class ApiHighFormationMastersListUnitTest(TestCase):
                 "num_ore": 13,
                 "cfu": 2,
                 "verifica_finale": 1,
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 
@@ -223,9 +223,9 @@ class ApiHighFormationMasterDetailUnitTest(TestCase):
                 "titolo_it": "AAAA",
                 "titolo_en": "AAAA",
                 "matricola_direttore_scientifico": doc1,
-                "id_alta_formazione_tipo_corso": aftc,
-                "id_alta_formazione_mod_erogazione": afme,
-                "id_dipartimento_riferimento": dip,
+                "alta_formazione_tipo_corso": aftc,
+                "alta_formazione_mod_erogazione": afme,
+                "dipartimento_riferimento": dip,
             }
         )
 
@@ -234,7 +234,7 @@ class ApiHighFormationMasterDetailUnitTest(TestCase):
                 "nome_cons": "Simone",
                 "ruolo_cons": "docente",
                 "ente_cons": "università",
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 
@@ -242,7 +242,7 @@ class ApiHighFormationMasterDetailUnitTest(TestCase):
             **{
                 "nome_origine_cons": "Simone",
                 "matricola_cons": doc1,
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 
@@ -251,12 +251,12 @@ class ApiHighFormationMasterDetailUnitTest(TestCase):
                 "denominazione": "aaaa",
                 "tipologia": "bbbb",
                 "sito_web": "aaaa",
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 
         AltaFormazioneModalitaSelezione.objects.create(
-            **{"tipo_selezione": "chiusa", "id_alta_formazione_dati_base": a1}
+            **{"tipo_selezione": "chiusa", "alta_formazione_dati_base": a1}
         )
 
         AltaFormazioneIncaricoDidattico.objects.create(
@@ -268,7 +268,7 @@ class ApiHighFormationMasterDetailUnitTest(TestCase):
                 "ente": "Università",
                 "tipologia": "Prova",
                 "docente": "Mungari",
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 
@@ -280,7 +280,7 @@ class ApiHighFormationMasterDetailUnitTest(TestCase):
                 "num_ore": 13,
                 "cfu": 2,
                 "verifica_finale": 1,
-                "id_alta_formazione_dati_base": a1,
+                "alta_formazione_dati_base": a1,
             }
         )
 

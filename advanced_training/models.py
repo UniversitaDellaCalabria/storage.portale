@@ -10,7 +10,7 @@ class AltaFormazioneConsiglioScientificoEsterno(models.Model):
     ente_cons = models.CharField(
         db_column="ENTE_CONS", max_length=1000, blank=True, null=True
     )
-    id_alta_formazione_dati_base = models.ForeignKey(
+    alta_formazione_dati_base = models.ForeignKey(
         "AltaFormazioneDatiBase",
         models.CASCADE,
         db_column="ID_ALTA_FORMAZIONE_DATI_BASE",
@@ -33,7 +33,7 @@ class AltaFormazioneConsiglioScientificoInterno(models.Model):
         to_field="matricola",
     )
     nome_origine_cons = models.CharField(db_column="NOME_ORIGINE_CONS", max_length=1000)
-    id_alta_formazione_dati_base = models.ForeignKey(
+    alta_formazione_dati_base = models.ForeignKey(
         "AltaFormazioneDatiBase",
         models.CASCADE,
         db_column="ID_ALTA_FORMAZIONE_DATI_BASE",
@@ -56,14 +56,14 @@ class AltaFormazioneDatiBase(models.Model):
     anno_rilevazione = models.IntegerField(
         db_column="ANNO_RILEVAZIONE", blank=True, null=True
     )
-    id_dipartimento_riferimento = models.ForeignKey(
+    dipartimento_riferimento = models.ForeignKey(
         "structures.DidatticaDipartimento",
         models.DO_NOTHING,
         db_column="ID_DIPARTIMENTO_RIFERIMENTO",
         blank=True,
         null=True,
     )
-    id_alta_formazione_tipo_corso = models.ForeignKey(
+    alta_formazione_tipo_corso = models.ForeignKey(
         "AltaFormazioneTipoCorso",
         models.SET_NULL,
         db_column="ID_ALTA_FORMAZIONE_TIPO_CORSO",
@@ -71,7 +71,7 @@ class AltaFormazioneDatiBase(models.Model):
         null=True,
     )
     lingua = models.CharField(db_column="LINGUA", max_length=512, blank=True, null=True)
-    id_alta_formazione_mod_erogazione = models.ForeignKey(
+    alta_formazione_mod_erogazione = models.ForeignKey(
         "AltaFormazioneModalitaErogazione",
         models.DO_NOTHING,
         db_column="ID_ALTA_FORMAZIONE_MOD_EROGAZIONE",
@@ -161,14 +161,14 @@ class AltaFormazioneDatiBase(models.Model):
 
 class AltaFormazioneIncaricoDidattico(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_alta_formazione_piano_didattico = models.ForeignKey(
+    alta_formazione_piano_didattico = models.ForeignKey(
         "AltaFormazionePianoDidattico",
         models.SET_NULL,
         db_column="ID_ALTA_FORMAZIONE_PIANO_DIDATTICO",
         blank=True,
         null=True,
     )
-    id_alta_formazione_dati_base = models.ForeignKey(
+    alta_formazione_dati_base = models.ForeignKey(
         AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
     )
     modulo = models.TextField(db_column="MODULO", blank=True, null=True)
@@ -203,7 +203,7 @@ class AltaFormazioneModalitaErogazione(models.Model):
 class AltaFormazioneModalitaSelezione(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     tipo_selezione = models.CharField(db_column="TIPO_SELEZIONE", max_length=100)
-    id_alta_formazione_dati_base = models.ForeignKey(
+    alta_formazione_dati_base = models.ForeignKey(
         AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
@@ -222,7 +222,7 @@ class AltaFormazionePartner(models.Model):
     sito_web = models.CharField(
         db_column="SITO_WEB", max_length=2000, blank=True, null=True
     )
-    id_alta_formazione_dati_base = models.ForeignKey(
+    alta_formazione_dati_base = models.ForeignKey(
         AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
@@ -241,7 +241,7 @@ class AltaFormazionePianoDidattico(models.Model):
     verifica_finale = models.IntegerField(
         db_column="VERIFICA_FINALE", blank=True, null=True
     )
-    id_alta_formazione_dati_base = models.ForeignKey(
+    alta_formazione_dati_base = models.ForeignKey(
         AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)

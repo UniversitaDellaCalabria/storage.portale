@@ -36,11 +36,11 @@ class ServiceAltaFormazione:
             query_director = Q(matricola_direttore_scientifico__exact=director)
         if coursetype:
             coursetypes = coursetype.split(",")
-            query_coursetype = Q(id_alta_formazione_tipo_corso__in=coursetypes)
+            query_coursetype = Q(alta_formazione_tipo_corso__in=coursetypes)
         if erogation:
-            query_erogation = Q(id_alta_formazione_mod_erogazione=erogation)
+            query_erogation = Q(alta_formazione_mod_erogazione=erogation)
         if department:
-            query_department = Q(id_dipartimento_riferimento__dip_cod=department)
+            query_department = Q(dipartimento_riferimento__dip_cod=department)
         if language:
             query_language = Q(lingua__exact=language)
         if year:
@@ -60,18 +60,18 @@ class ServiceAltaFormazione:
                 "id",
                 "titolo_it",
                 "titolo_en",
-                "id_alta_formazione_tipo_corso",
-                "id_alta_formazione_tipo_corso__tipo_corso_descr",
-                "id_alta_formazione_mod_erogazione",
-                "id_alta_formazione_mod_erogazione__descrizione",
+                "alta_formazione_tipo_corso",
+                "alta_formazione_tipo_corso__tipo_corso_descr",
+                "alta_formazione_mod_erogazione",
+                "alta_formazione_mod_erogazione__descrizione",
                 "lingua",
                 "ore",
                 "mesi",
                 "anno_rilevazione",
-                "id_dipartimento_riferimento",
-                "id_dipartimento_riferimento__dip_cod",
-                "id_dipartimento_riferimento__dip_des_it",
-                "id_dipartimento_riferimento__dip_des_eng",
+                "dipartimento_riferimento",
+                "dipartimento_riferimento__dip_cod",
+                "dipartimento_riferimento__dip_des_it",
+                "dipartimento_riferimento__dip_des_eng",
                 "sede_corso",
                 "num_min_partecipanti",
                 "num_max_partecipanti",
@@ -105,7 +105,7 @@ class ServiceAltaFormazione:
         for q in query:
             partners = (
                 AltaFormazionePartner.objects.filter(
-                    id_alta_formazione_dati_base=q["id"]
+                    alta_formazione_dati_base=q["id"]
                 )
                 .values("id", "denominazione", "tipologia", "sito_web")
                 .distinct()
@@ -118,7 +118,7 @@ class ServiceAltaFormazione:
 
             selections = (
                 AltaFormazioneModalitaSelezione.objects.filter(
-                    id_alta_formazione_dati_base=q["id"]
+                    alta_formazione_dati_base=q["id"]
                 )
                 .values(
                     "id",
@@ -134,7 +134,7 @@ class ServiceAltaFormazione:
 
             internal_scientific_council = (
                 AltaFormazioneConsiglioScientificoInterno.objects.filter(
-                    id_alta_formazione_dati_base=q["id"]
+                    alta_formazione_dati_base=q["id"]
                 ).values("matricola_cons", "nome_origine_cons")
             )
 
@@ -145,7 +145,7 @@ class ServiceAltaFormazione:
 
             external_scientific_council = (
                 AltaFormazioneConsiglioScientificoEsterno.objects.filter(
-                    id_alta_formazione_dati_base=q["id"]
+                    alta_formazione_dati_base=q["id"]
                 ).values("nome_cons", "ruolo_cons", "ente_cons")
             )
 
@@ -155,7 +155,7 @@ class ServiceAltaFormazione:
                 q["ExternalCouncil"] = external_scientific_council
 
             teaching_plan = AltaFormazionePianoDidattico.objects.filter(
-                id_alta_formazione_dati_base=q["id"]
+                alta_formazione_dati_base=q["id"]
             ).values("id", "modulo", "ssd", "num_ore", "cfu", "verifica_finale")
 
             if len(teaching_plan) == 0:
@@ -164,7 +164,7 @@ class ServiceAltaFormazione:
                 q["TeachingPlan"] = teaching_plan
 
             teaching_assignments = AltaFormazioneIncaricoDidattico.objects.filter(
-                id_alta_formazione_dati_base=q["id"]
+                alta_formazione_dati_base=q["id"]
             ).values(
                 "id", "modulo", "num_ore", "docente", "qualifica", "ente", "tipologia"
             )
@@ -184,18 +184,18 @@ class ServiceAltaFormazione:
                 "id",
                 "titolo_it",
                 "titolo_en",
-                "id_alta_formazione_tipo_corso",
-                "id_alta_formazione_tipo_corso__tipo_corso_descr",
-                "id_alta_formazione_mod_erogazione",
-                "id_alta_formazione_mod_erogazione__descrizione",
+                "alta_formazione_tipo_corso",
+                "alta_formazione_tipo_corso__tipo_corso_descr",
+                "alta_formazione_mod_erogazione",
+                "alta_formazione_mod_erogazione__descrizione",
                 "ore",
                 "mesi",
                 "lingua",
                 "anno_rilevazione",
-                "id_dipartimento_riferimento",
-                "id_dipartimento_riferimento__dip_cod",
-                "id_dipartimento_riferimento__dip_des_it",
-                "id_dipartimento_riferimento__dip_des_eng",
+                "dipartimento_riferimento",
+                "dipartimento_riferimento__dip_cod",
+                "dipartimento_riferimento__dip_des_it",
+                "dipartimento_riferimento__dip_des_eng",
                 "sede_corso",
                 "num_min_partecipanti",
                 "num_max_partecipanti",
@@ -228,14 +228,14 @@ class ServiceAltaFormazione:
 
         query = list(query)
         query[0]["Partners"] = (
-            AltaFormazionePartner.objects.filter(id_alta_formazione_dati_base=master_id)
+            AltaFormazionePartner.objects.filter(alta_formazione_dati_base=master_id)
             .values("id", "denominazione", "tipologia", "sito_web")
             .distinct()
         )
 
         query[0]["Selections"] = (
             AltaFormazioneModalitaSelezione.objects.filter(
-                id_alta_formazione_dati_base=master_id
+                alta_formazione_dati_base=master_id
             )
             .values(
                 "id",
@@ -246,7 +246,7 @@ class ServiceAltaFormazione:
 
         query[0]["InternalCouncil"] = (
             AltaFormazioneConsiglioScientificoInterno.objects.filter(
-                id_alta_formazione_dati_base=master_id
+                alta_formazione_dati_base=master_id
             )
             .values("matricola_cons", "nome_origine_cons")
             .distinct()
@@ -254,7 +254,7 @@ class ServiceAltaFormazione:
 
         query[0]["ExternalCouncil"] = (
             AltaFormazioneConsiglioScientificoEsterno.objects.filter(
-                id_alta_formazione_dati_base=master_id
+                alta_formazione_dati_base=master_id
             )
             .values("nome_cons", "ruolo_cons", "ente_cons")
             .distinct()
@@ -262,7 +262,7 @@ class ServiceAltaFormazione:
 
         query[0]["TeachingPlan"] = (
             AltaFormazionePianoDidattico.objects.filter(
-                id_alta_formazione_dati_base=master_id
+                alta_formazione_dati_base=master_id
             )
             .values("id", "modulo", "ssd", "num_ore", "cfu", "verifica_finale")
             .distinct()
@@ -270,7 +270,7 @@ class ServiceAltaFormazione:
 
         query[0]["TeachingAssignments"] = (
             AltaFormazioneIncaricoDidattico.objects.filter(
-                id_alta_formazione_dati_base=master_id
+                alta_formazione_dati_base=master_id
             )
             .values(
                 "id", "modulo", "num_ore", "docente", "qualifica", "ente", "tipologia"

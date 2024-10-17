@@ -57,13 +57,13 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
             "MasterTitle": query["titolo_it"]
             if req_lang == "it" or query["titolo_en"] is None
             else query["titolo_en"],
-            "HighFormationTypeId": query["id_alta_formazione_tipo_corso"],
+            "HighFormationTypeId": query["alta_formazione_tipo_corso"],
             "HighFormationTypeDescription": query[
-                "id_alta_formazione_tipo_corso__tipo_corso_descr"
+                "alta_formazione_tipo_corso__tipo_corso_descr"
             ],
-            "HighFormationErogationMode": query["id_alta_formazione_mod_erogazione"],
+            "HighFormationErogationMode": query["alta_formazione_mod_erogazione"],
             "HighFormationErogationModeDescription": query[
-                "id_alta_formazione_mod_erogazione__descrizione"
+                "alta_formazione_mod_erogazione__descrizione"
             ],
             "HighFormationHours": query["ore"],
             "HighFormationMonths": query["mesi"],
@@ -72,12 +72,12 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
             "HighFormationMinParticipants": query["num_min_partecipanti"],
             "HighFormationMaxParticipants": query["num_max_partecipanti"],
             "HighFormationMasterYear": query["anno_rilevazione"],
-            "DepartmentId": query["id_dipartimento_riferimento"],
-            "DepartmentCod": query["id_dipartimento_riferimento__dip_cod"],
-            "DepartmentName": query["id_dipartimento_riferimento__dip_des_it"]
+            "DepartmentId": query["dipartimento_riferimento"],
+            "DepartmentCod": query["dipartimento_riferimento__dip_cod"],
+            "DepartmentName": query["dipartimento_riferimento__dip_des_it"]
             if req_lang == "it"
-            or query["id_dipartimento_riferimento__dip_des_eng"] is None
-            else query["id_dipartimento_riferimento__dip_des_eng"],
+            or query["dipartimento_riferimento__dip_des_eng"] is None
+            else query["dipartimento_riferimento__dip_des_eng"],
             "ListenersAccepted": query["uditori_ammessi"],
             "MaxListeners": query["num_max_uditori"],
             "AdmissionRequirements": query["requisiti_ammissione"],
