@@ -24,7 +24,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
         db_column="NOME_AF", max_length=1000, blank=False, null=True
     )
     ssd = models.CharField(db_column="SSD", max_length=1000, blank=False, null=True)
-    id_didattica_ssd = models.ForeignKey(
+    didattica_ssd = models.ForeignKey(
         "cds.DidatticaSsd",
         on_delete=models.SET_NULL,
         db_column="ID_DIDATTICA_SSD",
@@ -46,7 +46,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
         db_column="RIF_DOTTORATO", max_length=1000, blank=True, null=True
     )
     ciclo = models.IntegerField(db_column="CICLO")
-    id_struttura_proponente = models.ForeignKey(
+    struttura_proponente = models.ForeignKey(
         "structures.UnitaOrganizzativa",
         models.DO_NOTHING,
         db_column="ID_STRUTTURA_PROPONENTE",
@@ -76,7 +76,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
         db_column="VISUALIZZA_ORARIO", default=False
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    user_mod_id = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.SET_NULL, db_column="user_mod_id", blank=True, null=True
     )
 
@@ -87,7 +87,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
 
 class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_didattica_dottorato_attivita_formativa = models.ForeignKey(
+    didattica_dottorato_attivita_formativa = models.ForeignKey(
         DidatticaDottoratoAttivitaFormativa,
         models.CASCADE,
         db_column="ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA",
@@ -106,7 +106,7 @@ class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
         db_column="COGNOME_NOME_ORIGINE", max_length=200
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    user_mod_id = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.SET_NULL, db_column="user_mod_id", blank=True, null=True
     )
 
@@ -117,7 +117,7 @@ class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
 
 class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    id_didattica_dottorato_attivita_formativa = models.ForeignKey(
+    didattica_dottorato_attivita_formativa = models.ForeignKey(
         DidatticaDottoratoAttivitaFormativa,
         models.CASCADE,
         db_column="ID_DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA",
@@ -136,7 +136,7 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
         db_column="COGNOME_NOME_ORIGINE", max_length=200
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
-    user_mod_id = models.ForeignKey(
+    user_mod = models.ForeignKey(
         get_user_model(), models.SET_NULL, db_column="user_mod_id", blank=True, null=True
     )
 

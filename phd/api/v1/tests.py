@@ -127,14 +127,14 @@ class ApiPhdActivitiesListlUnitTest(TestCase):
 
         DidatticaDottoratoAttivitaFormativaDocente.objects.create(
             **{
-                "id_didattica_dottorato_attivita_formativa": a1,
+                "didattica_dottorato_attivita_formativa": a1,
                 "cognome_nome_origine": "Simone",
             }
         )
 
         DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.create(
             **{
-                "id_didattica_dottorato_attivita_formativa": a2,
+                "didattica_dottorato_attivita_formativa": a2,
                 "cognome_nome_origine": "Carmine",
             }
         )
@@ -206,7 +206,7 @@ class ApiPhdActivityDetailUnitTest(TestCase):
         )
         DidatticaDottoratoAttivitaFormativaDocente.objects.create(
             **{
-                "id_didattica_dottorato_attivita_formativa": a1,
+                "didattica_dottorato_attivita_formativa": a1,
                 "cognome_nome_origine": "Franco",
                 "matricola": p1,
             }
@@ -214,7 +214,7 @@ class ApiPhdActivityDetailUnitTest(TestCase):
 
         DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.create(
             **{
-                "id_didattica_dottorato_attivita_formativa": a1,
+                "didattica_dottorato_attivita_formativa": a1,
                 "cognome_nome_origine": "Simone",
                 "matricola": p2,
             }

@@ -99,7 +99,7 @@ class ServiceDottorato:
             "tipologia",
             "rif_dottorato",
             "ciclo",
-            "id_struttura_proponente",
+            "struttura_proponente",
             "struttura_proponente_origine",
             "contenuti_af",
             "prerequisiti",
@@ -121,7 +121,7 @@ class ServiceDottorato:
             )
 
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
-                id_didattica_dottorato_attivita_formativa=q["id"]
+                didattica_dottorato_attivita_formativa=q["id"]
             ).values("matricola", "cognome_nome_origine")
 
             if len(main_teachers) == 0:
@@ -131,7 +131,7 @@ class ServiceDottorato:
 
             other_teachers = (
                 DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
-                    id_didattica_dottorato_attivita_formativa=q["id"]
+                    didattica_dottorato_attivita_formativa=q["id"]
                 ).values("matricola", "cognome_nome_origine")
             )
 
@@ -180,7 +180,7 @@ class ServiceDottorato:
             "tipologia",
             "rif_dottorato",
             "ciclo",
-            "id_struttura_proponente",
+            "struttura_proponente",
             "struttura_proponente_origine",
             "contenuti_af",
             "prerequisiti",
@@ -203,7 +203,7 @@ class ServiceDottorato:
             )
 
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
-                query_filter_teachers, id_didattica_dottorato_attivita_formativa=q["id"]
+                query_filter_teachers, didattica_dottorato_attivita_formativa=q["id"]
             ).values("matricola", "cognome_nome_origine")
 
             if len(main_teachers) == 0:
@@ -213,7 +213,7 @@ class ServiceDottorato:
 
             other_teachers = (
                 DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
-                    id_didattica_dottorato_attivita_formativa=q["id"],
+                    didattica_dottorato_attivita_formativa=q["id"],
                     cognome_nome_origine__isnull=False,
                 ).values("matricola", "cognome_nome_origine")
             )

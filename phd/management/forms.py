@@ -77,10 +77,10 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         for q in query:
             lista_rif_dott.append((q["rif_dottorato"], q["rif_dottorato"]))
 
-        self.fields["id_struttura_proponente"] = forms.ModelChoiceField(
+        self.fields["struttura_proponente"] = forms.ModelChoiceField(
             label=_("Central Structure"), queryset=structures, required=False
         )
-        self.fields["id_didattica_ssd"] = forms.ModelChoiceField(
+        self.fields["didattica_ssd"] = forms.ModelChoiceField(
             queryset=ssd_list, label=_("SSD")
         )
         self.fields["tipo_af"] = forms.ChoiceField(
@@ -105,7 +105,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
     class Meta:
         model = DidatticaDottoratoAttivitaFormativa
         fields = "__all__"
-        exclude = ["dt_mod", "user_mod_id", "ssd", "struttura_proponente_origine"]
+        exclude = ["dt_mod", "user_mod", "ssd", "struttura_proponente_origine"]
 
         labels = {
             "nome_af": _("Denomination"),
@@ -113,7 +113,7 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
             "cfu": _("CFU"),
             "contenuti_af": _("Contents"),
             # 'rif_dottorato': _('Reference'),
-            # 'id_struttura_proponente': _('Central Structure'),
+            # 'struttura_proponente': _('Central Structure'),
             "modalita_verifica": _("Verification Mode"),
             "avvio": _("Expected Start Date"),
             "fine": _("Expected End Date"),

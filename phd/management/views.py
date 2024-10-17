@@ -94,15 +94,15 @@ def phd_new(request, my_offices=None):
                 )
 
             phd = form.save(commit=False)
-            phd.ssd = f"{phd.id_didattica_ssd.ssd_id} {phd.id_didattica_ssd.ssd_des}"
-            if phd.id_struttura_proponente:
-                phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
-            phd.user_mod_id = request.user
+            phd.ssd = f"{phd.didattica_ssd.ssd_id} {phd.didattica_ssd.ssd_des}"
+            if phd.struttura_proponente:
+                phd.struttura_proponente_origine = phd.struttura_proponente.__str__()
+            phd.user_mod = request.user
             phd.dt_mod = datetime.datetime.now()
             phd.save()
 
             DidatticaDottoratoAttivitaFormativaDocente.objects.create(
-                id_didattica_dottorato_attivita_formativa=phd,
+                didattica_dottorato_attivita_formativa=phd,
                 cognome_nome_origine=cognome_nome_origine,
                 matricola=teacher,
             )
@@ -154,10 +154,10 @@ def phd(request, code, my_offices=None, phd=None):
     dettaglio dottorato
     """
     teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
-        id_didattica_dottorato_attivita_formativa=phd.id
+        didattica_dottorato_attivita_formativa=phd.id
     )
     other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
-        id_didattica_dottorato_attivita_formativa=phd.id
+        didattica_dottorato_attivita_formativa=phd.id
     )
 
     form = DidatticaDottoratoAttivitaFormativaForm(instance=phd)
@@ -177,10 +177,10 @@ def phd(request, code, my_offices=None, phd=None):
 
             new_phd = form.save(commit=False)
             new_phd.ssd = (
-                f"{new_phd.id_didattica_ssd.ssd_id} {new_phd.id_didattica_ssd.ssd_des}"
+                f"{new_phd.didattica_ssd.ssd_id} {new_phd.didattica_ssd.ssd_des}"
             )
-            new_phd.struttura_proponente_origine = phd.id_struttura_proponente.__str__()
-            new_phd.user_mod_id = request.user
+            new_phd.struttura_proponente_origine = phd.struttura_proponente.__str__()
+            new_phd.user_mod = request.user
             new_phd.dt_mod = datetime.datetime.now()
             new_phd.save()
 
@@ -241,7 +241,7 @@ def phd_main_teacher(request, code, teacher_id, phd=None, my_offices=None):
     activity_teacher = get_object_or_404(
         DidatticaDottoratoAttivitaFormativaDocente,
         pk=teacher_id,
-        id_didattica_dottorato_attivita_formativa=phd,
+        didattica_dottorato_attivita_formativa=phd,
     )
 
     old_label = activity_teacher.cognome_nome_origine
@@ -360,12 +360,12 @@ def phd_main_teacher_new(request, code, my_offices=None, phd=None):
                 cognome_nome_origine = form.cleaned_data["cognome_nome_origine"]
 
             d = DidatticaDottoratoAttivitaFormativaDocente.objects.create(
-                id_didattica_dottorato_attivita_formativa=phd,
+                didattica_dottorato_attivita_formativa=phd,
                 cognome_nome_origine=cognome_nome_origine,
                 matricola=teacher,
             )
 
-            d.user_mod_id = request.user
+            d.user_mod = request.user
             d.dt_mod = datetime.datetime.now()
             d.save()
 
@@ -416,14 +416,14 @@ def phd_main_teacher_delete(request, code, teacher_id, my_offices=None, phd=None
     phd_teacher = get_object_or_404(
         DidatticaDottoratoAttivitaFormativaDocente,
         pk=teacher_id,
-        id_didattica_dottorato_attivita_formativa=phd,
+        didattica_dottorato_attivita_formativa=phd,
     )
 
     main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
-        id_didattica_dottorato_attivita_formativa=code
+        didattica_dottorato_attivita_formativa=code
     )
     other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
-        id_didattica_dottorato_attivita_formativa=code
+        didattica_dottorato_attivita_formativa=code
     )
 
     if main_teachers.count() == 1 and not other_teachers:
@@ -453,7 +453,7 @@ def phd_other_teacher(request, code, teacher_id, my_offices=None, phd=None):
     activity_teacher = get_object_or_404(
         DidatticaDottoratoAttivitaFormativaAltriDocenti,
         pk=teacher_id,
-        id_didattica_dottorato_attivita_formativa=phd,
+        didattica_dottorato_attivita_formativa=phd,
     )
 
     old_label = activity_teacher.cognome_nome_origine
@@ -574,12 +574,12 @@ def phd_other_teacher_new(
                 cognome_nome_origine = form.cleaned_data["cognome_nome_origine"]
 
             d = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.create(
-                id_didattica_dottorato_attivita_formativa=phd,
+                didattica_dottorato_attivita_formativa=phd,
                 cognome_nome_origine=cognome_nome_origine,
                 matricola=teacher,
             )
 
-            d.user_mod_id = request.user
+            d.user_mod = request.user
             d.dt_mod = datetime.datetime.now()
             d.save()
 
@@ -635,14 +635,14 @@ def phd_other_teacher_delete(
     phd_teacher = get_object_or_404(
         DidatticaDottoratoAttivitaFormativaAltriDocenti,
         pk=teacher_id,
-        id_didattica_dottorato_attivita_formativa=phd,
+        didattica_dottorato_attivita_formativa=phd,
     )
 
     main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
-        id_didattica_dottorato_attivita_formativa=code
+        didattica_dottorato_attivita_formativa=code
     )
     other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
-        id_didattica_dottorato_attivita_formativa=code
+        didattica_dottorato_attivita_formativa=code
     )
 
     if other_teachers.count() == 1 and not main_teachers:

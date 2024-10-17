@@ -48,7 +48,7 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
             "ActivityTypology": tipologia,
             "ReferentPhd": query["rif_dottorato"],
             "Cycle": cycle_des,
-            "ReferentStructureId": query["id_struttura_proponente"],
+            "ReferentStructureId": query["struttura_proponente"],
             "ReferentStructureName": query["struttura_proponente_origine"],
             "ActivityContents": query["contenuti_af"],
             "Prerequisities": query["prerequisiti"],
