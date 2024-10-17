@@ -35,26 +35,26 @@ class ServiceSitoWebCds:
         topic_id_list = topic_id.split(",")
 
         query_visibile = Q(visibile=True) if only_active else Q()
-        query_topic_id = Q(id_sito_web_cds_topic__id__in=topic_id_list)
+        query_topic_id = Q(sito_web_cds_topic__id__in=topic_id_list)
         query_cds_cod = Q(
-            id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds__cds_cod=str(
+            didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds__cds_cod=str(
                 cds_cod
             )
-        ) | Q(id_sito_web_cds_oggetti_portale__cds__cds_cod=str(cds_cod))
+        ) | Q(sito_web_cds_oggetti_portale__cds__cds_cod=str(cds_cod))
 
         articoli_reg_altri_dati_qs = (
             SitoWebCdsTopicArticoliRegAltriDati.objects.filter(query_visibile)
-            .select_related("id_sito_web_cds_tipo_dato")
-            .defer("dt_mod", "id_user_mod", "id_sito_web_cds_tipo_dato__descr_lunga")
+            .select_related("sito_web_cds_tipo_dato")
+            .defer("dt_mod", "user_mod", "sito_web_cds_tipo_dato__descr_lunga")
             .annotate(
-                type_id=F("id_sito_web_cds_tipo_dato__id"),
-                type=F("id_sito_web_cds_tipo_dato__descr_breve"),
+                type_id=F("sito_web_cds_tipo_dato__id"),
+                type=F("sito_web_cds_tipo_dato__descr_breve"),
             )
         )
 
         sub_articoli_qs = SitoWebCdsSubArticoliRegolamento.objects.filter(
             query_visibile
-        ).defer("dt_mod", "id_user_mod")
+        ).defer("dt_mod", "user_mod")
 
         records = (
             SitoWebCdsTopicArticoliReg.objects.prefetch_related(
@@ -67,9 +67,9 @@ class ServiceSitoWebCds:
                 ),
             )
             .select_related(
-                "id_sito_web_cds_oggetti_portale__cds",
-                "id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds",
-                "id_sito_web_cds_topic",
+                "sito_web_cds_oggetti_portale__cds",
+                "didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds",
+                "sito_web_cds_topic",
             )
             .filter(query_topic_id, query_cds_cod, query_visibile)
             .only(
@@ -80,39 +80,39 @@ class ServiceSitoWebCds:
                 "testo_en",
                 "visibile",
                 "ordine",
-                "id_sito_web_cds_topic__id",
-                "id_sito_web_cds_topic__descr_topic_it",
-                "id_sito_web_cds_topic__descr_topic_en",
-                "id_sito_web_cds_oggetti_portale__id",
-                "id_sito_web_cds_oggetti_portale__id_classe_oggetto_portale",
-                "id_sito_web_cds_oggetti_portale__id_oggetto_portale",
-                "id_sito_web_cds_oggetti_portale__aa_regdid_id",
-                "id_sito_web_cds_oggetti_portale__testo_it",
-                "id_sito_web_cds_oggetti_portale__testo_en",
-                "id_sito_web_cds_oggetti_portale__cds__cds_cod",
-                "id_didattica_cds_articoli_regolamento__id",
-                "id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds__cds_cod",
+                "sito_web_cds_topic__id",
+                "sito_web_cds_topic__descr_topic_it",
+                "sito_web_cds_topic__descr_topic_en",
+                "sito_web_cds_oggetti_portale__id",
+                "sito_web_cds_oggetti_portale__id_classe_oggetto_portale",
+                "sito_web_cds_oggetti_portale__id_oggetto_portale",
+                "sito_web_cds_oggetti_portale__aa_regdid_id",
+                "sito_web_cds_oggetti_portale__testo_it",
+                "sito_web_cds_oggetti_portale__testo_en",
+                "sito_web_cds_oggetti_portale__cds__cds_cod",
+                "didattica_cds_articoli_regolamento__id",
+                "didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds__cds_cod",
             )
             .annotate(
                 tipo=Case(
                     When(
-                        id_didattica_cds_articoli_regolamento__isnull=False,
+                        didattica_cds_articoli_regolamento__isnull=False,
                         then=Value("Article"),
                     ),
                     default=Value("Object"),
                     output_field=CharField(),
                 )
             )
-            .order_by("id_sito_web_cds_topic__id", "ordine")
+            .order_by("sito_web_cds_topic__id", "ordine")
         )
 
         for record in records:
             data = {
                 "id": record.id,
                 "tipo": record.tipo,
-                "topic_id": record.id_sito_web_cds_topic_id,
-                "descr_topic_it": record.id_sito_web_cds_topic.descr_topic_it,
-                "descr_topic_en": record.id_sito_web_cds_topic.descr_topic_en,
+                "topic_id": record.sito_web_cds_topic_id,
+                "descr_topic_it": record.sito_web_cds_topic.descr_topic_it,
+                "descr_topic_en": record.sito_web_cds_topic.descr_topic_en,
                 "titolo_it": record.titolo_it,
                 "titolo_en": record.titolo_en,
                 "testo_it": record.testo_it,
@@ -150,12 +150,12 @@ class ServiceSitoWebCds:
 
             if record.tipo == "Object":
                 data["oggetto"] = {
-                    "id": record.id_sito_web_cds_oggetti_portale.id,
-                    "id_classe_oggetto_portale": record.id_sito_web_cds_oggetti_portale.id_classe_oggetto_portale,
-                    "id_oggetto_portale": record.id_sito_web_cds_oggetti_portale.id_oggetto_portale,
-                    "aa_regdid_id": record.id_sito_web_cds_oggetti_portale.aa_regdid_id,
-                    "testo_it": record.id_sito_web_cds_oggetti_portale.testo_it,
-                    "testo_en": record.id_sito_web_cds_oggetti_portale.testo_en,
+                    "id": record.sito_web_cds_oggetti_portale.id,
+                    "id_classe_oggetto_portale": record.sito_web_cds_oggetti_portale.id_classe_oggetto_portale,
+                    "id_oggetto_portale": record.sito_web_cds_oggetti_portale.id_oggetto_portale,
+                    "aa_regdid_id": record.sito_web_cds_oggetti_portale.aa_regdid_id,
+                    "testo_it": record.sito_web_cds_oggetti_portale.testo_it,
+                    "testo_en": record.sito_web_cds_oggetti_portale.testo_en,
                 }
 
             result.append(data)

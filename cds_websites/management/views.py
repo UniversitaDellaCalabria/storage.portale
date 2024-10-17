@@ -90,13 +90,13 @@ def cds_websites_topics(request, cds_id, cds=None, my_offices=None):
     topics = SitoWebCdsTopic.objects.all()
 
     cds_topic_ogg_art = SitoWebCdsTopicArticoliReg.objects.select_related(
-        "id_sito_web_cds_oggetti_portale",
-        "id_sito_web_cds_topic",
-        "id_didattica_cds_articoli_regolamento",
+        "sito_web_cds_oggetti_portale",
+        "sito_web_cds_topic",
+        "didattica_cds_articoli_regolamento",
     ).filter(
-        Q(id_sito_web_cds_oggetti_portale__cds_id=cds_id)
+        Q(sito_web_cds_oggetti_portale__cds_id=cds_id)
         | Q(
-            id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds_id=cds_id
+            didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds_id=cds_id
         )
     )
 
@@ -136,13 +136,13 @@ def cds_websites_topics(request, cds_id, cds=None, my_offices=None):
     for topic in topics:
         t_id = topic.id
         cds_topic_ogg_art_current = cds_topic_ogg_art.filter(
-            id_sito_web_cds_topic=t_id
+            sito_web_cds_topic=topic
         ).order_by("ordine")
         topic_objs = cds_topic_ogg_art_current.filter(
-            id_sito_web_cds_oggetti_portale__isnull=False
+            sito_web_cds_oggetti_portale__isnull=False
         )
         topic_areg = cds_topic_ogg_art_current.filter(
-            id_didattica_cds_articoli_regolamento__isnull=False
+            didattica_cds_articoli_regolamento__isnull=False
         )
 
         is_shown_topic = False
@@ -191,9 +191,9 @@ def cds_websites_topics(request, cds_id, cds=None, my_offices=None):
     regart_logs = LogEntry.objects.filter(
         content_type=ContentType.objects.get_for_model(SitoWebCdsTopicArticoliReg),
         object_id__in=SitoWebCdsTopicArticoliReg.objects.filter(
-            Q(id_sito_web_cds_oggetti_portale__cds=cds)
+            Q(sito_web_cds_oggetti_portale__cds=cds)
             | Q(
-                id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds=cds
+                didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds=cds
             )
         ).values_list("id", flat=True),
     )
@@ -203,8 +203,8 @@ def cds_websites_topics(request, cds_id, cds=None, my_offices=None):
             SitoWebCdsSubArticoliRegolamento
         ),
         object_id__in=SitoWebCdsSubArticoliRegolamento.objects.filter(
-            id_sito_web_cds_topic_articoli_reg__in=SitoWebCdsTopicArticoliReg.objects.filter(
-                id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds=cds
+            sito_web_cds_topic_articoli_reg__in=SitoWebCdsTopicArticoliReg.objects.filter(
+                didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds=cds
             ).values_list("id", flat=True)
         ).values_list("id", flat=True),
     )
@@ -302,7 +302,7 @@ def cds_websites_shared_object_edit(
 
         if object_form.is_valid() and object_form.changed_data:
             _object = object_form.save(commit=False)
-            _object.id_user_mod = request.user
+            _object.user_mod = request.user
             _object.dt_mod = datetime.datetime.now()
             _object.save()
 
@@ -382,7 +382,7 @@ def cds_websites_shared_object_new(request, cds_id, cds=None, my_offices=None):
         if object_form.is_valid():
             _object = object_form.save(commit=False)
             _object.cds = cds
-            _object.id_user_mod = request.user
+            _object.user_mod = request.user
             _object.dt_mod = datetime.datetime.now()
             _object.aa_regdid_id = max(
                 DidatticaRegolamento.objects.filter(cds_id=cds_id).values_list(
@@ -483,16 +483,16 @@ def cds_websites_items_order_edit(request, cds_id, topic_id, cds=None, my_office
 
     items_list = (
         SitoWebCdsTopicArticoliReg.objects.select_related(
-            "id_sito_web_cds_oggetti_portale",
-            "id_sito_web_cds_topic",
-            "id_didattica_cds_articoli_regolamento",
+            "sito_web_cds_oggetti_portale",
+            "sito_web_cds_topic",
+            "didattica_cds_articoli_regolamento",
         )
         .filter(
-            Q(id_sito_web_cds_topic=topic)
+            Q(sito_web_cds_topic=topic)
             & (
-                Q(id_sito_web_cds_oggetti_portale__cds_id=cds_id)
+                Q(sito_web_cds_oggetti_portale__cds_id=cds_id)
                 | Q(
-                    id_didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds_id=cds_id
+                    didattica_cds_articoli_regolamento__id_didattica_cds_articoli_regolamento_testata__cds_id=cds_id
                 )
             )
         )
@@ -568,7 +568,7 @@ def cds_websites_article_edit(
         if art_reg_form.is_valid():
             art_reg = art_reg_form.save(commit=False)
             art_reg.dt_mod = datetime.datetime.now()
-            # art_reg.id_user_mod=request.user
+            # art_reg.user_mod=request.user
             art_reg.save()
 
             log_action(
@@ -638,14 +638,14 @@ def cds_websites_sub_articles(
     request, cds_id, topic_id, data_id, cds=None, my_offices=None
 ):
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
-    if not regart.id_didattica_cds_articoli_regolamento:
+    if not regart.didattica_cds_articoli_regolamento:
         return custom_message(request, _("Permission denied"))
 
     user_can_edit = request.user.is_superuser or _can_user_edit_structure(my_offices)
 
     sub_articles_list = (
         SitoWebCdsSubArticoliRegolamento.objects.filter(
-            id_sito_web_cds_topic_articoli_reg=regart
+            sito_web_cds_topic_articoli_reg=regart
         )
         .order_by("ordine")
         .all()
@@ -708,7 +708,7 @@ def cds_websites_sub_article_edit(
         if sitowebcdssubarticoliregolamentoform.is_valid():
             art_reg = sitowebcdssubarticoliregolamentoform.save(commit=False)
             art_reg.dt_mod = datetime.datetime.now()
-            art_reg.id_user_mod = request.user
+            art_reg.user_mod = request.user
             art_reg.save()
 
             log_action(
@@ -785,11 +785,11 @@ def cds_websites_object_add(request, cds_id, topic_id, cds=None, my_offices=None
     if request.POST:
         if obj_item_form.is_valid():
             obj_item = obj_item_form.save(commit=False)
-            obj_item.id_sito_web_cds_topic = get_object_or_404(
+            obj_item.sito_web_cds_topic = get_object_or_404(
                 SitoWebCdsTopic, pk=topic_id
             )
             obj_item.dt_mod = datetime.datetime.now()
-            obj_item.id_user_mod = request.user
+            obj_item.user_mod = request.user
             obj_item.save()
 
             log_action(
@@ -870,7 +870,7 @@ def cds_websites_object_edit(
         if obj_item_form.is_valid() and obj_item_form.has_changed():
             obj_item = obj_item_form.save(commit=False)
             obj_item.dt_mod = datetime.datetime.now()
-            obj_item.id_user_mod = request.user
+            obj_item.user_mod = request.user
             obj_item.save()
 
             log_action(
@@ -940,7 +940,7 @@ def cds_websites_object_delete(
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
 
     if (
-        regart.id_didattica_cds_articoli_regolamento is not None
+        regart.didattica_cds_articoli_regolamento is not None
     ):  # Can't delete articles
         return custom_message(request, _("Permission denied"))
 
@@ -968,7 +968,7 @@ def cds_websites_extras(request, cds_id, topic_id, data_id, cds=None, my_offices
     user_can_edit = True
     extras_list = (
         SitoWebCdsTopicArticoliRegAltriDati.objects.filter(
-            id_sito_web_cds_topic_articoli_reg=regart
+            sito_web_cds_topic_articoli_reg=regart
         )
         .order_by("ordine")
         .all()
@@ -998,7 +998,7 @@ def cds_websites_extras(request, cds_id, topic_id, data_id, cds=None, my_offices
             "cds-websites:management:cds-websites-article-edit",
             kwargs={"cds_id": cds_id, "topic_id": topic_id, "data_id": data_id},
         )
-        if regart.id_didattica_cds_articoli_regolamento is not None
+        if regart.didattica_cds_articoli_regolamento is not None
         else reverse(
             "cds-websites:management:cds-websites-object-edit",
             kwargs={"cds_id": cds_id, "topic_id": topic_id, "data_id": data_id},
@@ -1053,13 +1053,13 @@ def cds_websites_extra_new(
     if request.POST:
         if regart_extra_form.is_valid():
             regart_extra = regart_extra_form.save(commit=False)
-            regart_extra.id_sito_web_cds_topic_articoli_reg = regart
-            regart_extra.id_sito_web_cds_tipo_dato = get_object_or_404(
+            regart_extra.sito_web_cds_topic_articoli_reg = regart
+            regart_extra.sito_web_cds_tipo_dato = get_object_or_404(
                 SitoWebCdsTipoDato,
-                pk=regart_extra_form.data.get("id_sito_web_cds_tipo_dato", None),
+                pk=regart_extra_form.data.get("sito_web_cds_tipo_dato", None),
             )
             regart_extra.dt_mod = datetime.datetime.now()
-            regart_extra.id_user_mod = request.user
+            regart_extra.user_mod = request.user
             regart_extra.save()
 
             log_action(
@@ -1095,7 +1095,7 @@ def cds_websites_extra_new(
             "cds-websites:management:cds-websites-object-edit",
             kwargs={"cds_id": cds_id, "topic_id": topic_id, "data_id": data_id},
         )
-        if regart.id_sito_web_cds_oggetti_portale is not None
+        if regart.sito_web_cds_oggetti_portale is not None
         else reverse(
             "cds-websites:management:cds-websites-object-edit",
             kwargs={"cds_id": cds_id, "topic_id": topic_id, "data_id": data_id},
@@ -1159,7 +1159,7 @@ def cds_websites_extra_edit(
         if regart_extra_form.is_valid() and regart_extra_form.has_changed():
             regart_extra = regart_extra_form.save(commit=False)
             regart_extra.dt_mod = datetime.datetime.now()
-            regart_extra.id_user_mod = request.user
+            regart_extra.user_mod = request.user
             regart_extra.save()
 
             log_action(
@@ -1195,7 +1195,7 @@ def cds_websites_extra_edit(
             "cds-websites:management:cds-websites-object-edit",
             kwargs={"cds_id": cds_id, "topic_id": topic_id, "data_id": data_id},
         )
-        if regart.id_sito_web_cds_oggetti_portale is not None
+        if regart.sito_web_cds_oggetti_portale is not None
         else reverse(
             "cds-websites:management:cds-websites-object-edit",
             kwargs={"cds_id": cds_id, "topic_id": topic_id, "data_id": data_id},
@@ -1250,7 +1250,7 @@ def cds_websites_extra_delete(
     request, cds_id, topic_id, data_id, extra_id, cds=None, my_offices=None
 ):
     extra = get_object_or_404(SitoWebCdsTopicArticoliRegAltriDati, pk=extra_id)
-    regart = extra.id_sito_web_cds_topic_articoli_reg
+    regart = extra.sito_web_cds_topic_articoli_reg
 
     extra.delete()
 

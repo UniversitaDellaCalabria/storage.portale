@@ -251,7 +251,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             "titolo_en": "TITOLO EN",
             "visibile": 1,
             "dt_mod": self.current_datetime,
-            "id_user_mod": self.user,
+            "user_mod": self.user,
         }
 
         self.swco_portale_visibile_1 = SitoWebCdsOggettiPortale.objects.create(
@@ -278,14 +278,14 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
         # Struttura topic
         _swars_topic_data = {
             "id": 1,
-            "id_sito_web_cds_topic": self.swc_topic_1,
-            "id_did_art_regolamento_struttura": self.dar_struttura_1,
+            "sito_web_cds_topic": self.swc_topic_1,
+            "did_art_regolamento_struttura": self.dar_struttura_1,
             "titolo_it": self.dar_struttura_1.titolo_it,
             "titolo_en": self.dar_struttura_1.titolo_en,
             "ordine": self.dar_struttura_1.ordine,
             "visibile": 1,
             "dt_mod": self.current_datetime,
-            "id_user_mod": self.user,
+            "user_mod": self.user,
         }
 
         _swars_topic_list = []
@@ -310,13 +310,13 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                         "titolo_en": swars_topic.titolo_en,
                         "testo_it": _dca_regolamento.testo_it,
                         "testo_en": _dca_regolamento.testo_en,
-                        "id_sito_web_cds_topic": swars_topic.id_sito_web_cds_topic,
-                        "id_sito_web_cds_oggetti_portale": None,
-                        "id_didattica_cds_articoli_regolamento": _dca_regolamento,
+                        "sito_web_cds_topic": swars_topic.sito_web_cds_topic,
+                        "sito_web_cds_oggetti_portale": None,
+                        "didattica_cds_articoli_regolamento": _dca_regolamento,
                         "ordine": swars_topic.ordine,
                         "visibile": 1 if idx < 2 else 0,
                         "dt_mod": self.current_datetime,
-                        "id_user_mod": self.user,
+                        "user_mod": self.user,
                     }
                 )
             )
@@ -327,7 +327,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             SitoWebCdsSubArticoliRegolamento.objects.create(
                 **{
                     "id": idx + 1,
-                    "id_sito_web_cds_topic_articoli_reg": _swcta_reg,
+                    "sito_web_cds_topic_articoli_reg": _swcta_reg,
                     "titolo_it": "TITOLO SUB IT",
                     "titolo_en": "TITOLO SUB EN",
                     "testo_it": "TESTO SUB IT",
@@ -335,7 +335,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                     "ordine": (idx + 1) * 10,
                     "visibile": 1 if idx != 1 else 0,
                     "dt_mod": self.current_datetime,
-                    "id_user_mod": self.user,
+                    "user_mod": self.user,
                 }
             )
 
@@ -350,13 +350,13 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                         "titolo_en": swars_topic.titolo_en,
                         "testo_it": _swco_portale.testo_it,
                         "testo_en": _swco_portale.testo_en,
-                        "id_sito_web_cds_topic": swars_topic.id_sito_web_cds_topic,
-                        "id_sito_web_cds_oggetti_portale": _swco_portale,
-                        "id_didattica_cds_articoli_regolamento": None,
+                        "sito_web_cds_topic": swars_topic.sito_web_cds_topic,
+                        "sito_web_cds_oggetti_portale": _swco_portale,
+                        "didattica_cds_articoli_regolamento": None,
                         "ordine": swars_topic.ordine,
                         "visibile": 1,
                         "dt_mod": self.current_datetime,
-                        "id_user_mod": self.user,
+                        "user_mod": self.user,
                     }
                 )
             )
@@ -370,9 +370,9 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
             SitoWebCdsTopicArticoliRegAltriDati.objects.create(
                 **{
                     "id": idx + 1,
-                    "id_sito_web_cds_topic_articoli_reg": swcta_reg,
+                    "sito_web_cds_topic_articoli_reg": swcta_reg,
                     "ordine": 1,
-                    "id_sito_web_cds_tipo_dato": self.swct_dato,
+                    "sito_web_cds_tipo_dato": self.swct_dato,
                     "titolo_en": "TITOLO ALTRO DATO IT",
                     "titolo_it": "TITOLO ALTRO DATO EN",
                     "testo_it": "TESTO ALTRO DATO IT",
@@ -380,7 +380,7 @@ class ApiSitoWebCdsTopicArticlesListUnitTest(TestCase):
                     "link": "",
                     "visibile": 1,
                     "dt_mod": self.current_datetime,
-                    "id_user_mod": self.user,
+                    "user_mod": self.user,
                 }
             )
 

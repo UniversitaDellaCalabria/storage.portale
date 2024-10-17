@@ -1497,12 +1497,12 @@ def regdid_articles_publish(request, regdid_id):
 
     # Old SitoWebCdsTopicArticoliReg/SitoWebCdsSubArticoliRegolamento records
     old_swcta_reg = SitoWebCdsTopicArticoliReg.objects.filter(
-        id_didattica_cds_articoli_regolamento__in=articoli
+        didattica_cds_articoli_regolamento__in=articoli
     )
 
     # SitoWebCdsTopicArticoliReg to be published
     strutture_topic = SitoWebArticoliRegolamentoStrutturaTopic.objects.select_related(
-        "id_sito_web_cds_topic", "id_did_art_regolamento_struttura"
+        "sito_web_cds_topic", "did_art_regolamento_struttura"
     ).filter(visibile=True)
 
     articles_to_publish = (
@@ -1524,31 +1524,31 @@ def regdid_articles_publish(request, regdid_id):
         with transaction.atomic():
             # Delete (swcta_reg that doesn't match any article that should be published)
             swcta_reg_to_delete = old_swcta_reg.exclude(
-                id_didattica_cds_articoli_regolamento__in=articles_to_publish
+                didattica_cds_articoli_regolamento__in=articles_to_publish
             )
             swcta_reg_to_delete.delete()
 
             # Delete (swcsa_regolamento)
             swcsa_regolamento_to_delete = (
                 SitoWebCdsSubArticoliRegolamento.objects.filter(
-                    id_sito_web_cds_topic_articoli_reg__in=old_swcta_reg
+                    sito_web_cds_topic_articoli_reg__in=old_swcta_reg
                 )
             )
             swcsa_regolamento_to_delete.delete()
 
             # Update
             swcta_reg_to_update = old_swcta_reg.filter(
-                id_didattica_cds_articoli_regolamento__in=articles_to_publish
+                didattica_cds_articoli_regolamento__in=articles_to_publish
             )
             for swcta_reg in swcta_reg_to_update:
                 _strutture_topic = strutture_topic.filter(
-                    id_did_art_regolamento_struttura=swcta_reg.id_didattica_cds_articoli_regolamento.id_didattica_articoli_regolamento_struttura,
-                    id_sito_web_cds_topic=swcta_reg.id_sito_web_cds_topic,
+                    did_art_regolamento_struttura=swcta_reg.didattica_cds_articoli_regolamento.id_didattica_articoli_regolamento_struttura,
+                    sito_web_cds_topic=swcta_reg.sito_web_cds_topic,
                 )
 
                 for struttura_topic in _strutture_topic:
                     articolo = articles_to_publish.get(
-                        id=swcta_reg.id_didattica_cds_articoli_regolamento.pk
+                        id=swcta_reg.didattica_cds_articoli_regolamento.pk
                     )
                     swcta_reg.titolo_it = struttura_topic.titolo_it
                     swcta_reg.titolo_en = struttura_topic.titolo_en
@@ -1567,7 +1567,7 @@ def regdid_articles_publish(request, regdid_id):
                     for sotto_articolo in sotto_articoli:
                         ordine_sotto_articolo += 10
                         SitoWebCdsSubArticoliRegolamento.objects.create(
-                            id_sito_web_cds_topic_articoli_reg=swcta_reg,
+                            sito_web_cds_topic_articoli_reg=swcta_reg,
                             titolo_it=sotto_articolo.titolo_it,
                             titolo_en=sotto_articolo.titolo_en,
                             testo_it=sotto_articolo.testo_it,
@@ -1581,7 +1581,7 @@ def regdid_articles_publish(request, regdid_id):
             # Create
             dca_regolamento_for_creation = articles_to_publish.exclude(
                 id__in=swcta_reg_to_update.values_list(
-                    "id_didattica_cds_articoli_regolamento", flat=True
+                    "didattica_cds_articoli_regolamento", flat=True
                 )
             )
 
@@ -1595,9 +1595,9 @@ def regdid_articles_publish(request, regdid_id):
                         titolo_en=struttura_topic.titolo_en,
                         testo_it=articolo.testo_it,
                         testo_en=articolo.testo_en,
-                        id_sito_web_cds_topic=struttura_topic.id_sito_web_cds_topic,
-                        id_sito_web_cds_oggetti_portale=None,
-                        id_didattica_cds_articoli_regolamento=articolo,
+                        sito_web_cds_topic=struttura_topic.sito_web_cds_topic,
+                        sito_web_cds_oggetti_portale=None,
+                        didattica_cds_articoli_regolamento=articolo,
                         ordine=struttura_topic.ordine,
                         visibile=True,
                         dt_mod=datetime.datetime.now(),
@@ -1611,7 +1611,7 @@ def regdid_articles_publish(request, regdid_id):
                     for sotto_articolo in sotto_articoli:
                         ordine_sotto_articolo += 10
                         SitoWebCdsSubArticoliRegolamento.objects.create(
-                            id_sito_web_cds_topic_articoli_reg=swcta_reg,
+                            sito_web_cds_topic_articoli_reg=swcta_reg,
                             titolo_it=sotto_articolo.titolo_it,
                             titolo_en=sotto_articolo.titolo_en,
                             testo_it=sotto_articolo.testo_it,

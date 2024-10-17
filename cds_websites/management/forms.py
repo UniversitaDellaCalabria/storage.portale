@@ -46,10 +46,10 @@ class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
         model = SitoWebCdsTopicArticoliReg
         exclude = [
             "dt_mod",
-            "id_user_mod",
-            "id_sito_web_cds_topic",
-            "id_sito_web_cds_oggetti_portale",
-            "id_didattica_cds_articoli_regolamento",
+            "user_mod",
+            "sito_web_cds_topic",
+            "sito_web_cds_oggetti_portale",
+            "didattica_cds_articoli_regolamento",
         ]
         labels = {
             "titolo_it": _("Title (it)"),
@@ -58,8 +58,8 @@ class SitoWebCdsTopicArticoliRegForm(forms.ModelForm):
             "testo_en": _("Text (en)"),
             "ordine": _("Order"),
             "visibile": _("Visible"),
-            "id_didattica_cds_articoli_regolamento": _("Regulation Article"),
-            "id_sito_web_cds_oggetti_portale": _("Portal object"),
+            "didattica_cds_articoli_regolamento": _("Regulation Article"),
+            "sito_web_cds_oggetti_portale": _("Portal object"),
         }
         widgets = {
             "testo_it": CKEditor5Widget(config_name="regdid"),
@@ -97,24 +97,24 @@ class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
             "aa_regdid_id", "titolo_it"
         )
 
-        self.fields["id_sito_web_cds_oggetti_portale"].queryset = choices
-        self.fields["id_sito_web_cds_oggetti_portale"].label = _("Portal object")
-        self.fields["id_sito_web_cds_oggetti_portale"].required = True
+        self.fields["sito_web_cds_oggetti_portale"].queryset = choices
+        self.fields["sito_web_cds_oggetti_portale"].label = _("Portal object")
+        self.fields["sito_web_cds_oggetti_portale"].required = True
         self.fields["testo_it"].help_text = _(
             "Used only for webpaths, when provided, the object will be shown as a collapsible element containing this text alongside the webpath"
         )
         self.fields["testo_en"].help_text = _(
             "Used only for webpaths, when provided, the object will be shown as a collapsible element containing this text alongside the webpath"
         )
-        self.fields["id_sito_web_cds_oggetti_portale"].widget = OggettiPortaleWidget(
+        self.fields["sito_web_cds_oggetti_portale"].widget = OggettiPortaleWidget(
             cds_id
         )
-        self.fields["id_sito_web_cds_oggetti_portale"].label = _("Portal object")
+        self.fields["sito_web_cds_oggetti_portale"].label = _("Portal object")
 
         self.order_fields(
             [
                 "visibile",
-                "id_sito_web_cds_oggetti_portale",
+                "sito_web_cds_oggetti_portale",
                 "ordine",
                 "titolo_it",
                 "titolo_en",
@@ -140,7 +140,7 @@ class SitoWebCdsOggettiItemForm(SitoWebCdsTopicArticoliRegForm):
         exclude = [
             field
             for field in SitoWebCdsTopicArticoliRegForm.Meta.exclude
-            if not field == "id_sito_web_cds_oggetti_portale"
+            if not field == "sito_web_cds_oggetti_portale"
         ]
 
 
@@ -202,8 +202,8 @@ class SitoWebCdsExternalOggettiPortaleForm(forms.ModelForm):
         model = SitoWebCdsOggettiPortale
         exclude = [
             "dt_mod",
-            "id_user_mod",
-            "id_sito_web_cds_topic",
+            "user_mod",
+            "sito_web_cds_topic",
             "cds",
             "ordine",
             "aa_regdid_id",
@@ -246,7 +246,7 @@ class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
         self.fields["titolo_en"].help_text = _("Shown above the element if provided")
         self.fields["testo_it"].help_text = _("If provided it is used as the link text")
         self.fields["testo_en"].help_text = _("If provided it is used as the link text")
-        self.fields["id_sito_web_cds_tipo_dato"].help_text = _(
+        self.fields["sito_web_cds_tipo_dato"].help_text = _(
             "Used to determine the icon to show on the left of the element"
         )
 
@@ -259,13 +259,13 @@ class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
                 "testo_it",
                 "testo_en",
                 "link",
-                "id_sito_web_cds_tipo_dato",
+                "sito_web_cds_tipo_dato",
             ]
         )
 
     class Meta:
         model = SitoWebCdsTopicArticoliRegAltriDati
-        exclude = ["dt_mod", "id_user_mod", "id_sito_web_cds_topic_articoli_reg"]
+        exclude = ["dt_mod", "user_mod", "sito_web_cds_topic_articoli_reg"]
         labels = {
             "titolo_it": _("Title (it)"),
             "titolo_en": _("Title (en)"),
@@ -273,7 +273,7 @@ class SitoWebCdsTopicArticoliRegAltriDatiForm(forms.ModelForm):
             "visibile": _("Visible"),
             "testo_it": _("Text (it)"),
             "testo_en": _("Text (en)"),
-            "id_sito_web_cds_tipo_dato": _("Type"),
+            "sito_web_cds_tipo_dato": _("Type"),
             "link": _("Link"),
         }
 
@@ -309,7 +309,7 @@ class SitoWebCdsSubArticoliRegolamentoForm(forms.ModelForm):
 
     class Meta:
         model = SitoWebCdsSubArticoliRegolamento
-        exclude = ["dt_mod", "id_user_mod", "id_sito_web_cds_topic_articoli_reg"]
+        exclude = ["dt_mod", "user_mod", "sito_web_cds_topic_articoli_reg"]
         labels = {
             "titolo_it": _("Title (it)"),
             "titolo_en": _("Title (en)"),
