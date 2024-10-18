@@ -1283,10 +1283,10 @@ def regdid_articles_pdf(request, regdid_id):
         classe_laurea_desc += f" & {icla_cod} - {icla_des}"
 
     classe_laurea_desc = re.sub(
-        "classe delle lauree(\w|\s)+in",
+        "classe delle lauree(\w|\s)+in",  # noqa: W605
         "",
         classe_laurea_desc,
-        flags=re.IGNORECASE,  # noqa: W605
+        flags=re.IGNORECASE,
     )
 
     context = {
