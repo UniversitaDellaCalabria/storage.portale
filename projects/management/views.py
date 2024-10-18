@@ -82,7 +82,7 @@ def project(request, project_id, project=None):
                 request, messages.SUCCESS, _("Project edited successfully")
             )
 
-            return redirect("projects:management:projects-edit", project_id=project_id)
+            return redirect("projects:management:project-edit", project_id=project_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -254,7 +254,7 @@ def project_director_new(request, project_id, project=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Director added successfully")
             )
-            return redirect("projects:management:projects-edit", project_id=project_id)
+            return redirect("projects:management:project-edit", project_id=project_id)
         else:
             for k, v in form.errors.items():
                 messages.add_message(
@@ -265,7 +265,7 @@ def project_director_new(request, project_id, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"project_id": project_id}
+            "projects:management:project-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": _("New director"),
     }
@@ -340,7 +340,7 @@ def project_director_edit(request, project_id, director_id, project=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Director data edited successfully")
             )
-            return redirect("projects:management:projects-edit", project_id=project_id)
+            return redirect("projects:management:project-edit", project_id=project_id)
         else:
             for k, v in form.errors.items():
                 messages.add_message(
@@ -351,7 +351,7 @@ def project_director_edit(request, project_id, director_id, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"project_id": project_id}
+            "projects:management:project-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": f'{_("Director")} {project_director}',
     }
@@ -390,7 +390,7 @@ def project_director_delete(request, project_id, director_id, project=None):
 
     director_project.delete()
     messages.add_message(request, messages.SUCCESS, _("Director removed successfully"))
-    return redirect("projects:management:projects-edit", project_id=project_id)
+    return redirect("projects:management:project-edit", project_id=project_id)
 
 
 @login_required
@@ -434,7 +434,7 @@ def project_researcher_new(request, project_id, project=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Researcher added successfully")
             )
-            return redirect("projects:management:projects-edit", project_id=project_id)
+            return redirect("projects:management:project-edit", project_id=project_id)
         else:
             for k, v in form.errors.items():
                 messages.add_message(
@@ -445,7 +445,7 @@ def project_researcher_new(request, project_id, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"project_id": project_id}
+            "projects:management:project-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": _("New researcher"),
     }
@@ -522,7 +522,7 @@ def project_researcher_edit(request, project_id, researcher_id, project=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Researcher data edited successfully")
             )
-            return redirect("projects:management:projects-edit", project_id=project_id)
+            return redirect("projects:management:project-edit", project_id=project_id)
         else:
             for k, v in form.errors.items():
                 messages.add_message(
@@ -533,7 +533,7 @@ def project_researcher_edit(request, project_id, researcher_id, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"project_id": project_id}
+            "projects:management:project-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": f'{_("Researcher")} {project_researcher}',
     }
@@ -574,7 +574,7 @@ def project_researcher_delete(request, project_id, researcher_id, project=None):
     messages.add_message(
         request, messages.SUCCESS, _("Researcher removed successfully")
     )
-    return redirect("projects:management:projects-edit", project_id=project_id)
+    return redirect("projects:management:project-edit", project_id=project_id)
 
 
 @login_required
@@ -616,7 +616,7 @@ def project_structure_data_edit(request, project_id, data_id, project=None):
                 request, messages.SUCCESS, _("Structure edited successfully")
             )
 
-            return redirect("projects:management:projects-edit", project_id=project_id)
+            return redirect("projects:management:project-edit", project_id=project_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(
@@ -627,7 +627,7 @@ def project_structure_data_edit(request, project_id, data_id, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"project_id": project_id}
+            "projects:management:project-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": _("Structure"),
     }
