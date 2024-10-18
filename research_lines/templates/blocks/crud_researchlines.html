@@ -275,7 +275,7 @@ is_loading_aster1: true,
 is_loading_erc1: true,
 
 loader_source_departments: '{% url 'structures:apiv1:departments-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
-loader_source_erc1: '{% url 'laboratories:apiv1:aster1-list' %}?lang={{ LANGUAGE_CODE }}',
+loader_source_aster1: '{% url 'laboratories:apiv1:aster1-list' %}?lang={{ LANGUAGE_CODE }}',
 loader_source_erc1: '{% url 'laboratories:apiv1:erc1-list' %}?lang={{ LANGUAGE_CODE }}',
 
 selected_department: this.getItemFromSession("{{ id }}", 'department'),

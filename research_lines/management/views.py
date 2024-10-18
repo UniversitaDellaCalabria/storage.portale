@@ -49,7 +49,7 @@ def base_research_lines(request, my_offices=None):
         "url": reverse("research-lines:apiv1:all-research-lines")
         + "?exclude_applied=1",
     }
-    return render(request, "base_research_lines.html", context)
+    return render(request, "base_researchlines.html", context)
 
 
 @login_required
@@ -301,7 +301,7 @@ def base_research_line(request, rline_id, my_offices=None, rline=None, teachers=
 
     return render(
         request,
-        "base_research_line.html",
+        "base_researchline.html",
         {
             "breadcrumbs": breadcrumbs,
             "form": form,
@@ -366,7 +366,7 @@ def applied_research_line(request, rline_id, my_offices=None, rline=None, teache
 
     return render(
         request,
-        "applied_research_line.html",
+        "applied_researchline.html",
         {
             "breadcrumbs": breadcrumbs,
             "form": form,
