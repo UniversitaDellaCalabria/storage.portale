@@ -9,8 +9,8 @@ from projects.settings import OFFICE_PROJECTS
 def can_manage_projects(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        if original_kwargs.get("code"):
-            project = get_object_or_404(ProgettoDatiBase, pk=original_kwargs["code"])
+        if original_kwargs.get("project_id"):
+            project = get_object_or_404(ProgettoDatiBase, pk=original_kwargs["project_id"])
             original_kwargs["project"] = project
 
         if request.user.is_superuser:
@@ -35,7 +35,7 @@ def can_manage_projects(func_to_decorate):
 # def new_func(*original_args, **original_kwargs):
 # request = original_args[0]
 # project = get_object_or_404(
-# ProgettoDatiBase, pk=original_kwargs['code'])
+# ProgettoDatiBase, pk=original_kwargs['project_id'])
 # researchers = ProgettoRicercatore.objects.filter(progetto=project)
 # scientific_director = ProgettoResponsabileScientifico.objects.filter(
 # progetto=project)
