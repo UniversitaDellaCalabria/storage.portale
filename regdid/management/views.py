@@ -1512,7 +1512,7 @@ def regdid_articles_publish(request, regdid_id):
         )
         .filter(
             didattica_articoli_regolamento_struttura__in=strutture_topic.values_list(
-                "id_did_art_regolamento_struttura", flat=True
+                "did_art_regolamento_struttura", flat=True
             ),
             didattica_cds_articoli_regolamento_testata=testata,
             visibile=True,
@@ -1587,7 +1587,7 @@ def regdid_articles_publish(request, regdid_id):
 
             for articolo in dca_regolamento_for_creation:
                 _strutture_topic = strutture_topic.filter(
-                    id_did_art_regolamento_struttura=articolo.didattica_articoli_regolamento_struttura
+                    did_art_regolamento_struttura=articolo.didattica_articoli_regolamento_struttura
                 )
                 for struttura_topic in _strutture_topic:
                     swcta_reg = SitoWebCdsTopicArticoliReg.objects.create(
