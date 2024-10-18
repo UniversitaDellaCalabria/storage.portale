@@ -1,7 +1,6 @@
 from django.urls import path
 
 from .views import (
-    cds_website_brochure,
     cds_brochure,
     cds_brochure_exstudents,
     cds_brochure_exstudents_delete,
@@ -16,6 +15,7 @@ from .views import (
     cds_brochure_sliders_delete,
     cds_brochure_sliders_edit,
     cds_brochure_sliders_new,
+    cds_brochures,
 )
 
 app_name = "management"
@@ -23,8 +23,8 @@ app_name = "management"
 urlpatterns = []
 
 
-urlpatterns += path('cds-brochure/', cds_brochure, name='cds-brochure'),
-urlpatterns += path('cds-brochure/<str:code>/', cds_website_brochure, name='cds-website-brochure'),
+urlpatterns += path('cds-brochure/', cds_brochures, name='cds-brochures'),
+urlpatterns += path('cds-brochure/<str:code>/', cds_brochure, name='cds-brochure'),
 # Dati Base
 urlpatterns += path('cds-brochure/<str:code>/info/', cds_brochure_info_edit, name='cds-brochure-info-edit'),
 # Sliders

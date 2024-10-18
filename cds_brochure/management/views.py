@@ -16,7 +16,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from generics.utils import log_action
 
-from .decorators import can_manage_cds_website
+from .decorators import can_manage_cds_brochure
 from .forms import (
     CdsBrochureDatiCorsoForm,
     CdsBrochureInPilloleForm,
@@ -31,8 +31,8 @@ logger = logging.getLogger(__name__)
 
 
 @login_required
-@can_manage_cds_website
-def cds_brochure(request, my_offices=None):
+@can_manage_cds_brochure
+def cds_brochures(request, my_offices=None):
     """
     lista dei siti web dei corsi di studio
     """
@@ -45,19 +45,19 @@ def cds_brochure(request, my_offices=None):
 
 
 @login_required
-@can_manage_cds_website
-def cds_website_brochure(request, code, cds_website=None, my_offices=None):
+@can_manage_cds_brochure
+def cds_brochure(request, code, cds_brochure=None, my_offices=None):
     """
     Menu di un sito web dei corsi di studio
     """
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
-        "#": cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        "#": cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
     }
 
     return render(
@@ -65,25 +65,25 @@ def cds_website_brochure(request, code, cds_website=None, my_offices=None):
         "cds_brochure.html",
         {
             "breadcrumbs": breadcrumbs,
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
         },
     )
 
 
 # Dati Base
 @login_required
-@can_manage_cds_website
-def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
+@can_manage_cds_brochure
+def cds_brochure_info_edit(request, code, cds_brochure=None, my_offices=None):
     tab_form_dict = {
-        "Dati corso": CdsBrochureDatiCorsoForm(instance=cds_website),
-        "In pillole": CdsBrochureInPilloleForm(instance=cds_website),
-        "Profilo corso": CdsBrochureProfiloCorsoForm(instance=cds_website),
-        "Intro amm": CdsBrochureIntroAmmForm(instance=cds_website),
+        "Dati corso": CdsBrochureDatiCorsoForm(instance=cds_brochure),
+        "In pillole": CdsBrochureInPilloleForm(instance=cds_brochure),
+        "Profilo corso": CdsBrochureProfiloCorsoForm(instance=cds_brochure),
+        "Intro amm": CdsBrochureIntroAmmForm(instance=cds_brochure),
     }
     last_viewed_tab = None
 
     languages = (
-        DidatticaCdsLingua.objects.filter(cdsord=cds_website.cds)
+        DidatticaCdsLingua.objects.filter(cdsord=cds_brochure.cds)
         .values("lingua_des_it", "lingua_des_eng")
         .distinct()
     )
@@ -96,19 +96,19 @@ def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
             match form_name:
                 case "Dati corso":
                     form = CdsBrochureDatiCorsoForm(
-                        data=request.POST, instance=cds_website
+                        data=request.POST, instance=cds_brochure
                     )
                 case "In pillole":
                     form = CdsBrochureInPilloleForm(
-                        data=request.POST, instance=cds_website
+                        data=request.POST, instance=cds_brochure
                     )
                 case "Profilo corso":
                     form = CdsBrochureProfiloCorsoForm(
-                        data=request.POST, instance=cds_website
+                        data=request.POST, instance=cds_brochure
                     )
                 case "Intro amm":
                     form = CdsBrochureIntroAmmForm(
-                        data=request.POST, instance=cds_website
+                        data=request.POST, instance=cds_brochure
                     )
 
             last_viewed_tab = form_name
@@ -124,7 +124,7 @@ def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
 
             log_action(
                 user=request.user,
-                obj=cds_website,
+                obj=cds_brochure,
                 flag=CHANGE,
                 msg=_("Edited website info") + f" ({form_name})",
             )
@@ -150,28 +150,28 @@ def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
         reverse(
-            "cds-brochure:management:cds-website-brochure",
+            "cds-brochure:management:cds-brochure",
             kwargs={"code": code},
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         "#": _("Info"),
     }
 
     logs = LogEntry.objects.filter(
-        content_type_id=ContentType.objects.get_for_model(cds_website).pk,
-        object_id=cds_website.pk,
+        content_type_id=ContentType.objects.get_for_model(cds_brochure).pk,
+        object_id=cds_brochure.pk,
     )
 
     return render(
         request,
         "cds_brochure_info_form.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "breadcrumbs": breadcrumbs,
             "languages": languages,
             "logs": logs,
@@ -184,36 +184,36 @@ def cds_brochure_info_edit(request, code, cds_website=None, my_offices=None):
 
 # Sliders
 @login_required
-@can_manage_cds_website
-def cds_brochure_sliders(request, code, cds_website=None, my_offices=None):
+@can_manage_cds_brochure
+def cds_brochure_sliders(request, code, cds_brochure=None, my_offices=None):
     sliders = CdsBrochureSlider.objects.filter(cds_brochure=code).order_by(
         "ordine"
     )
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
         reverse(
-            "cds-brochure:management:cds-website-brochure",
+            "cds-brochure:management:cds-brochure",
             kwargs={"code": code},
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         "#": _("Sliders"),
     }
 
     logs = LogEntry.objects.filter(
-        content_type_id=ContentType.objects.get_for_model(cds_website).pk,
-        object_id=cds_website.pk,
+        content_type_id=ContentType.objects.get_for_model(cds_brochure).pk,
+        object_id=cds_brochure.pk,
     )
 
     return render(
         request,
         "cds_brochure_sliders.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "sliders": sliders,
             "breadcrumbs": breadcrumbs,
             "logs": logs,
@@ -222,8 +222,8 @@ def cds_brochure_sliders(request, code, cds_website=None, my_offices=None):
 
 
 @login_required
-@can_manage_cds_website
-def cds_brochure_sliders_new(request, code, cds_website=None, my_offices=None):
+@can_manage_cds_brochure
+def cds_brochure_sliders_new(request, code, cds_brochure=None, my_offices=None):
     slider_form = CdsBrochureSliderForm(data=request.POST if request.POST else None)
 
     if request.POST:
@@ -231,12 +231,12 @@ def cds_brochure_sliders_new(request, code, cds_website=None, my_offices=None):
             slider = slider_form.save(commit=False)
             slider.dt_mod = datetime.datetime.now()
             slider.user_mod = request.user
-            slider.cds_brochure = cds_website
+            slider.cds_brochure = cds_brochure
             slider.save()
 
             log_action(
                 user=request.user,
-                obj=cds_website,
+                obj=cds_brochure,
                 flag=CHANGE,
                 msg=_("Added Scrollable Text"),
             )
@@ -260,13 +260,13 @@ def cds_brochure_sliders_new(request, code, cds_website=None, my_offices=None):
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _("CdS"),
+        reverse("cds-brochure:management:cds-brochures"): _("CdS"),
         reverse(
-            "cds-brochure:management:cds-website-brochure",
+            "cds-brochure:management:cds-brochure",
             kwargs={"code": code},
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         reverse(
             "cds-brochure:management:cds-brochure-sliders",
             kwargs={"code": code},
@@ -278,7 +278,7 @@ def cds_brochure_sliders_new(request, code, cds_website=None, my_offices=None):
         request,
         "cds_brochure_unique_form.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "breadcrumbs": breadcrumbs,
             "forms": [
                 slider_form,
@@ -289,9 +289,9 @@ def cds_brochure_sliders_new(request, code, cds_website=None, my_offices=None):
 
 
 @login_required
-@can_manage_cds_website
+@can_manage_cds_brochure
 def cds_brochure_sliders_edit(
-    request, code, data_id, cds_website=None, my_offices=None
+    request, code, data_id, cds_brochure=None, my_offices=None
 ):
     slider = get_object_or_404(CdsBrochureSlider, pk=data_id)
     slider_form = CdsBrochureSliderForm(
@@ -307,7 +307,7 @@ def cds_brochure_sliders_edit(
 
             log_action(
                 user=request.user,
-                obj=cds_website,
+                obj=cds_brochure,
                 flag=CHANGE,
                 msg=_("Edited Scrollable Text"),
             )
@@ -331,15 +331,15 @@ def cds_brochure_sliders_edit(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
         reverse(
-            "cds-brochure:management:cds-website-brochure",
+            "cds-brochure:management:cds-brochure",
             kwargs={"code": code},
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         reverse(
             "cds-brochure:management:cds-brochure-sliders",
             kwargs={"code": code},
@@ -351,7 +351,7 @@ def cds_brochure_sliders_edit(
         request,
         "cds_brochure_unique_form.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "breadcrumbs": breadcrumbs,
             "forms": [
                 slider_form,
@@ -363,16 +363,16 @@ def cds_brochure_sliders_edit(
 
 
 @login_required
-@can_manage_cds_website
+@can_manage_cds_brochure
 def cds_brochure_sliders_delete(
-    request, code, data_id, cds_website=None, my_offices=None
+    request, code, data_id, cds_brochure=None, my_offices=None
 ):
     slider = get_object_or_404(CdsBrochureSlider, pk=data_id)
     slider.delete()
 
     log_action(
         user=request.user,
-        obj=cds_website,
+        obj=cds_brochure,
         flag=CHANGE,
         msg=_("Deleted Scrollable Text"),
     )
@@ -388,36 +388,36 @@ def cds_brochure_sliders_delete(
 
 # Ex Students
 @login_required
-@can_manage_cds_website
-def cds_brochure_exstudents(request, code, cds_website=None, my_offices=None):
+@can_manage_cds_brochure
+def cds_brochure_exstudents(request, code, cds_brochure=None, my_offices=None):
     exstudents = CdsBrochureExStudenti.objects.filter(
         cds_brochure=code
     ).order_by("ordine")
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
         reverse(
-            "cds-brochure:management:cds-website-brochure",
+            "cds-brochure:management:cds-brochure",
             kwargs={"code": code},
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         "#": _("Ex Students"),
     }
 
     logs = LogEntry.objects.filter(
-        content_type_id=ContentType.objects.get_for_model(cds_website).pk,
-        object_id=cds_website.pk,
+        content_type_id=ContentType.objects.get_for_model(cds_brochure).pk,
+        object_id=cds_brochure.pk,
     )
 
     return render(
         request,
         "cds_brochure_exstudents.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "exstudents": exstudents,
             "breadcrumbs": breadcrumbs,
             "logs": logs,
@@ -426,9 +426,9 @@ def cds_brochure_exstudents(request, code, cds_website=None, my_offices=None):
 
 
 @login_required
-@can_manage_cds_website
+@can_manage_cds_brochure
 def cds_brochure_exstudents_new(
-    request, code, cds_website=None, my_offices=None
+    request, code, cds_brochure=None, my_offices=None
 ):
     exstudent_form = CdsBrochureExStudentiForm(
         data=request.POST if request.POST else None,
@@ -438,14 +438,14 @@ def cds_brochure_exstudents_new(
     if request.POST:
         if exstudent_form.is_valid():
             exstudent = exstudent_form.save(commit=False)
-            exstudent.cds_brochure = cds_website
+            exstudent.cds_brochure = cds_brochure
             exstudent.dt_mod = datetime.datetime.now()
             exstudent.user_mod = request.user
             exstudent.save()
 
             log_action(
                 user=request.user,
-                obj=cds_website,
+                obj=cds_brochure,
                 flag=CHANGE,
                 msg=_("Added Ex Student"),
             )
@@ -469,14 +469,14 @@ def cds_brochure_exstudents_new(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
         reverse(
-            "cds-brochure:management:crud_cds_website", kwargs={"code": code}
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+            "cds-brochure:management:cds-brochure", kwargs={"code": code}
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         reverse(
             "cds-brochure:management:cds-brochure-exstudents",
             kwargs={"code": code},
@@ -488,7 +488,7 @@ def cds_brochure_exstudents_new(
         request,
         "cds_brochure_unique_form.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "breadcrumbs": breadcrumbs,
             "forms": [
                 exstudent_form,
@@ -499,9 +499,9 @@ def cds_brochure_exstudents_new(
 
 
 @login_required
-@can_manage_cds_website
+@can_manage_cds_brochure
 def cds_brochure_exstudents_edit(
-    request, code, data_id, cds_website=None, my_offices=None
+    request, code, data_id, cds_brochure=None, my_offices=None
 ):
     exstudent = get_object_or_404(CdsBrochureExStudenti, pk=data_id)
     exstudent_form = CdsBrochureExStudentiForm(
@@ -519,7 +519,7 @@ def cds_brochure_exstudents_edit(
 
             log_action(
                 user=request.user,
-                obj=cds_website,
+                obj=cds_brochure,
                 flag=CHANGE,
                 msg=_("Edited Ex Student"),
             )
@@ -543,15 +543,15 @@ def cds_brochure_exstudents_edit(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
         reverse(
-            "cds-brochure:management:cds-website-brochure",
+            "cds-brochure:management:cds-brochure",
             kwargs={"code": code},
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         reverse(
             "cds-brochure:management:cds-brochure-exstudents",
             kwargs={"code": code},
@@ -563,7 +563,7 @@ def cds_brochure_exstudents_edit(
         request,
         "cds_brochure_unique_form.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "breadcrumbs": breadcrumbs,
             "forms": [
                 exstudent_form,
@@ -575,15 +575,15 @@ def cds_brochure_exstudents_edit(
 
 
 @login_required
-@can_manage_cds_website
+@can_manage_cds_brochure
 def cds_brochure_exstudents_delete(
-    request, code, data_id, cds_website=None, my_offices=None
+    request, code, data_id, cds_brochure=None, my_offices=None
 ):
     exstudent = get_object_or_404(CdsBrochureExStudenti, pk=data_id)
     exstudent.delete()
 
     log_action(
-        user=request.user, obj=cds_website, flag=CHANGE, msg=_("Deleted Ex Student")
+        user=request.user, obj=cds_brochure, flag=CHANGE, msg=_("Deleted Ex Student")
     )
 
     messages.add_message(
@@ -597,36 +597,36 @@ def cds_brochure_exstudents_delete(
 
 # Links
 @login_required
-@can_manage_cds_website
-def cds_brochure_links(request, code, cds_website=None, my_offices=None):
+@can_manage_cds_brochure
+def cds_brochure_links(request, code, cds_brochure=None, my_offices=None):
     links = CdsBrochureLink.objects.filter(cds_brochure=code).order_by(
         "ordine"
     )
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
         reverse(
-            "cds-brochure:management:cds-website-brochure",
+            "cds-brochure:management:cds-brochure",
             kwargs={"code": code},
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         "#": _("Links"),
     }
 
     logs = LogEntry.objects.filter(
-        content_type_id=ContentType.objects.get_for_model(cds_website).pk,
-        object_id=cds_website.pk,
+        content_type_id=ContentType.objects.get_for_model(cds_brochure).pk,
+        object_id=cds_brochure.pk,
     )
 
     return render(
         request,
         "cds_brochure_links.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "links": links,
             "breadcrumbs": breadcrumbs,
             "logs": logs,
@@ -635,20 +635,20 @@ def cds_brochure_links(request, code, cds_website=None, my_offices=None):
 
 
 @login_required
-@can_manage_cds_website
-def cds_brochure_links_new(request, code, cds_website=None, my_offices=None):
+@can_manage_cds_brochure
+def cds_brochure_links_new(request, code, cds_brochure=None, my_offices=None):
     link_form = CdsBrochureLinkForm(data=request.POST if request.POST else None)
 
     if request.POST:
         if link_form.is_valid():
             link = link_form.save(commit=False)
-            link.cds_brochure = cds_website
+            link.cds_brochure = cds_brochure
             link.dt_mod = datetime.datetime.now()
             link.user_mod = request.user
             link.save()
 
             log_action(
-                user=request.user, obj=cds_website, flag=CHANGE, msg=_("Added Link")
+                user=request.user, obj=cds_brochure, flag=CHANGE, msg=_("Added Link")
             )
 
             messages.add_message(
@@ -668,15 +668,15 @@ def cds_brochure_links_new(request, code, cds_website=None, my_offices=None):
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
         reverse(
-            "cds-brochure:management:cds-website-brochure",
+            "cds-brochure:management:cds-brochure",
             kwargs={"code": code},
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         reverse(
             "cds-brochure:management:cds-brochure-links",
             kwargs={"code": code},
@@ -688,7 +688,7 @@ def cds_brochure_links_new(request, code, cds_website=None, my_offices=None):
         request,
         "cds_brochure_unique_form.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "breadcrumbs": breadcrumbs,
             "forms": [
                 link_form,
@@ -699,9 +699,9 @@ def cds_brochure_links_new(request, code, cds_website=None, my_offices=None):
 
 
 @login_required
-@can_manage_cds_website
+@can_manage_cds_brochure
 def cds_brochure_links_edit(
-    request, code, data_id, cds_website=None, my_offices=None
+    request, code, data_id, cds_brochure=None, my_offices=None
 ):
     link = get_object_or_404(CdsBrochureLink, pk=data_id)
     link_form = CdsBrochureLinkForm(
@@ -716,7 +716,7 @@ def cds_brochure_links_edit(
             link.save()
 
             log_action(
-                user=request.user, obj=cds_website, flag=CHANGE, msg=_("Edited Link")
+                user=request.user, obj=cds_brochure, flag=CHANGE, msg=_("Edited Link")
             )
 
             messages.add_message(
@@ -736,15 +736,15 @@ def cds_brochure_links_edit(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("cds-brochure:management:cds-brochure"): _(
+        reverse("cds-brochure:management:cds-brochures"): _(
             "CdS in brief"
         ),
         reverse(
-            "cds-brochure:management:cds-website-brochure",
+            "cds-brochure:management:cds-brochure",
             kwargs={"code": code},
-        ): cds_website.cds.nome_cds_it
-        if (request.LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng)
-        else cds_website.cds.nome_cds_eng,
+        ): cds_brochure.cds.nome_cds_it
+        if (request.LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng)
+        else cds_brochure.cds.nome_cds_eng,
         reverse(
             "cds-brochure:management:cds-brochure-links",
             kwargs={"code": code},
@@ -756,7 +756,7 @@ def cds_brochure_links_edit(
         request,
         "cds_brochure_unique_form.html",
         {
-            "cds_website": cds_website,
+            "cds_brochure": cds_brochure,
             "breadcrumbs": breadcrumbs,
             "forms": [
                 link_form,
@@ -768,14 +768,14 @@ def cds_brochure_links_edit(
 
 
 @login_required
-@can_manage_cds_website
+@can_manage_cds_brochure
 def cds_brochure_links_delete(
-    request, code, data_id, cds_website=None, my_offices=None
+    request, code, data_id, cds_brochure=None, my_offices=None
 ):
     link = get_object_or_404(CdsBrochureLink, pk=data_id)
     link.delete()
 
-    log_action(user=request.user, obj=cds_website, flag=CHANGE, msg=_("Deleted Link"))
+    log_action(user=request.user, obj=cds_brochure, flag=CHANGE, msg=_("Deleted Link"))
 
     messages.add_message(request, messages.SUCCESS, _("Link deleted successfully"))
 

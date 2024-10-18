@@ -11,11 +11,11 @@
     <div class="card card-bg no-after">
         <div class="card-body mt-4">
             <h3 style="font-weight: normal;" class="mb-4 pb-4">
-                {{ cds_website.cds.cds_cod }} -
-                {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
-                {{ cds_website.cds.nome_cds_it }}
+                {{ cds_brochure.cds.cds_cod }} -
+                {% if LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng %}
+                {{ cds_brochure.cds.nome_cds_it }}
                 {% else %}
-                {{ cds_website.cds.nome_cds_eng }}
+                {{ cds_brochure.cds.nome_cds_eng }}
                 {% endif %}
                 -
                 ({% trans "cds in brief sections" %})

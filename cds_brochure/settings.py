@@ -5,7 +5,7 @@ CDS_EX_STUDENTS_MEDIA_PATH_BASE = getattr(
 )
 
 
-def cds_websites_exstudents_media_path(instance, filename):
+def cds_brochure_exstudents_media_path(instance, filename):
     return f"{CDS_EX_STUDENTS_MEDIA_PATH_BASE}/{filename}"
 
 

@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from generics.validators import validate_file_size, validate_image_file_extension
 
-from .settings import cds_websites_exstudents_media_path
+from .settings import cds_brochure_exstudents_media_path
 
 
 class CdsBrochure(models.Model):
@@ -121,7 +121,7 @@ class CdsBrochureExStudenti(models.Model):
         null=True,
     )
     foto = models.FileField(
-        upload_to=cds_websites_exstudents_media_path,
+        upload_to=cds_brochure_exstudents_media_path,
         validators=[validate_image_file_extension, validate_file_size],
         db_column="FOTO",
         max_length=1000,

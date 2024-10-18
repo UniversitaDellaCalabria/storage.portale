@@ -6,7 +6,7 @@ from generics.utils import custom_message
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 
-def can_manage_cds_website(func_to_decorate):
+def can_manage_cds_brochure(func_to_decorate):
     """ """
 
     def new_func(*original_args, **original_kwargs):
@@ -14,8 +14,8 @@ def can_manage_cds_website(func_to_decorate):
 
         if original_kwargs.get("code"):
             cds_sito_web_id = original_kwargs.get("code")
-            cds_website = get_object_or_404(CdsBrochure, pk=cds_sito_web_id)
-            original_kwargs["cds_website"] = cds_website
+            cds_brochure = get_object_or_404(CdsBrochure, pk=cds_sito_web_id)
+            original_kwargs["cds_brochure"] = cds_brochure
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
@@ -34,12 +34,12 @@ def can_manage_cds_website(func_to_decorate):
     return new_func
 
 
-def can_edit_cds_website(func_to_decorate):
+def can_edit_cds_brochure(func_to_decorate):
     """ """
 
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        cds_website = original_kwargs["cds_website"]
+        cds_brochure = original_kwargs["cds_brochure"]
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
@@ -50,7 +50,7 @@ def can_edit_cds_website(func_to_decorate):
             if myoffice.office.organizational_structure.unique_code not in departments:
                 departments.append(myoffice.office.organizational_structure.unique_code)
 
-        if cds_website.cds.dip.dip_cod in departments:
+        if cds_brochure.cds.dip.dip_cod in departments:
             return func_to_decorate(*original_args, **original_kwargs)
         return custom_message(request, _("Permission denied"))
 

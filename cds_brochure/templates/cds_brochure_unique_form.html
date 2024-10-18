@@ -12,7 +12,7 @@
     {% block title %}
     <h3 style="font-weight: lighter;" class="mb-4">
         {% if edit|default:False %}{% trans "Edit " %}{% else %}{% trans "New " %}{% endif %} {{item_label|default:"item"}} {% trans " for " %}
-            {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}{{ cds_website.cds.nome_cds_it }}{% else %} {{ cds_website.cds.nome_cds_eng }} {% endif %}
+            {% if LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng %}{{ cds_brochure.cds.nome_cds_it }}{% else %} {{ cds_brochure.cds.nome_cds_eng }} {% endif %}
     </h3>
     {% endblock title %}
 

@@ -11,11 +11,11 @@
     <div class="card card-bg no-after">
         <div class="card-body mt-4">
             <h3 style="font-weight: normal;" class="mb-4 pb-4">
-                {{ cds_website.cds.cds_cod }} -
-                {% if LANGUAGE_CODE == "it" or not cds_website.cds.nome_cds_eng %}
-                    {{ cds_website.cds.nome_cds_it }}
+                {{ cds_brochure.cds.cds_cod }} -
+                {% if LANGUAGE_CODE == "it" or not cds_brochure.cds.nome_cds_eng %}
+                    {{ cds_brochure.cds.nome_cds_it }}
                 {% else %}
-                    {{ cds_website.cds.nome_cds_eng }}
+                    {{ cds_brochure.cds.nome_cds_eng }}
                 {% endif %}
             </h3>
             <div class="table-responsive">
@@ -56,7 +56,7 @@
                                         </p>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-success btn-sm" href="{% url 'cds-brochure:management:cds-brochure-exstudents-delete' code=cds_website.id data_id=exstudent.id %}">
+                                        <a class="btn btn-success btn-sm" href="{% url 'cds-brochure:management:cds-brochure-exstudents-delete' code=cds_brochure.id data_id=exstudent.id %}">
                                             {% trans 'Yes, proceed' %}
                                         </a>
                                     </div>
@@ -73,7 +73,7 @@
                                 {{ exstudent.ordine }}
                             </td>
                             <td class="col-2 text-nowrap align-middle">
-                                <a href="{% url 'cds-brochure:management:cds-brochure-exstudents-edit' code=cds_website.id data_id=exstudent.id %}" class="btn btn-primary btn-xs">
+                                <a href="{% url 'cds-brochure:management:cds-brochure-exstudents-edit' code=cds_brochure.id data_id=exstudent.id %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg>
@@ -93,7 +93,7 @@
                     </tbody>
                 </table>
             </div>
-            <a href="{% url 'cds-brochure:management:cds-brochure-exstudents-new' code=cds_website.id %}" class="btn btn-block btn-success">
+            <a href="{% url 'cds-brochure:management:cds-brochure-exstudents-new' code=cds_brochure.id %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
