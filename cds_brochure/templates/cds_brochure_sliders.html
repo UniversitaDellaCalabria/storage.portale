@@ -56,7 +56,7 @@
                                         </p>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-success btn-sm" href="{% url 'cds-brochure:management:cds-brochure-sliders-delete' code=cds_brochure.id data_id=slider.id %}">
+                                        <a class="btn btn-success btn-sm" href="{% url 'cds-brochure:management:cds-brochure-sliders-delete' brochure_id=cds_brochure.id data_id=slider.id %}">
                                             {% trans 'Yes, proceed' %}
                                         </a>
                                     </div>
@@ -74,7 +74,7 @@
                                 {{ slider.ordine }}
                             </td>
                             <td class="col-2 text-nowrap align-middle">
-                                <a href="{% url 'cds-brochure:management:cds-brochure-sliders-edit' code=cds_brochure.id data_id=slider.id %}" class="btn btn-primary btn-xs">
+                                <a href="{% url 'cds-brochure:management:cds-brochure-sliders-edit' brochure_id=cds_brochure.id data_id=slider.id %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg>
@@ -94,7 +94,7 @@
                     </tbody>
                 </table>
             </div>
-            <a href="{% url 'cds-brochure:management:cds-brochure-sliders-new' code=cds_brochure.id %}" class="btn btn-block btn-success">
+            <a href="{% url 'cds-brochure:management:cds-brochure-sliders-new' brochure_id=cds_brochure.id %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

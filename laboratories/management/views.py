@@ -96,7 +96,7 @@ def laboratories(request, laboratory=None, my_offices=None, is_validator=False):
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_info_sede_edit(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     if not (
         request.user.is_superuser
@@ -155,7 +155,7 @@ def laboratory_info_sede_edit(
             )
 
     return redirect(
-        reverse("laboratories:management:laboratory-edit", kwargs={"code": code})
+        reverse("laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id})
         + "#facilities_equipment"
     )
 
@@ -164,7 +164,7 @@ def laboratory_info_sede_edit(
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_scope_edit(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     if not (
         request.user.is_superuser
@@ -212,7 +212,7 @@ def laboratory_scope_edit(
             request.session["lab_ambito_form_data"] = laboratoriodatibaseambitoform.data
 
     return redirect(
-        reverse("laboratories:management:laboratory-edit", kwargs={"code": code})
+        reverse("laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id})
         + "#scope"
     )
 
@@ -221,7 +221,7 @@ def laboratory_scope_edit(
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_equipment_value_edit(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     if not (
         request.user.is_superuser
@@ -280,7 +280,7 @@ def laboratory_equipment_value_edit(
             )
 
     return redirect(
-        reverse("laboratories:management:laboratory-edit", kwargs={"code": code})
+        reverse("laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id})
         + "#equipment_value"
     )
 
@@ -289,7 +289,7 @@ def laboratory_equipment_value_edit(
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_interdepartmental_edit(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     if not (
         request.user.is_superuser
@@ -306,7 +306,7 @@ def laboratory_interdepartmental_edit(
         if laboratoriodatibaseinterdipartimentaleform.is_valid():
             if request.POST.get("laboratorio_interdipartimentale") == "NO":
                 LaboratorioAltriDipartimenti.objects.filter(
-                    laboratorio_dati_base=code
+                    laboratorio_dati_base=laboratory_id
                 ).delete()
 
             lab_instance = laboratoriodatibaseinterdipartimentaleform.save(commit=False)
@@ -351,7 +351,7 @@ def laboratory_interdepartmental_edit(
             )
 
     return redirect(
-        reverse("laboratories:management:laboratory-edit", kwargs={"code": code})
+        reverse("laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id})
         + "#extra_department"
     )
 
@@ -359,7 +359,7 @@ def laboratory_interdepartmental_edit(
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
-def laboratory(request, code, laboratory=None, my_offices=None, is_validator=False):
+def laboratory(request, laboratory_id, laboratory=None, my_offices=None, is_validator=False):
     if not laboratory.visibile and not request.POST:
         messages.add_message(request, messages.WARNING, _("Laboratory NOT visible"))
 
@@ -413,7 +413,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     )
     # LaboratorioTipologiaRischio
     selected_risks_ids = LaboratorioTipologiaRischio.objects.filter(
-        laboratorio_dati_base=code
+        laboratorio_dati_base=laboratory_id
     ).values_list("tipologia_rischio", flat=True)
     selected_risks_ids = tuple(map(str, selected_risks_ids))
     risk_type_form = LaboratorioTipologiaRischioForm(
@@ -421,33 +421,33 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
     )
     # LaboratorioAltriDipartimenti
     extra_departments = LaboratorioAltriDipartimenti.objects.filter(
-        laboratorio_dati_base=code
+        laboratorio_dati_base=laboratory_id
     )
     # LaboratorioAttrezzature
-    equipment = LaboratorioAttrezzature.objects.filter(laboratorio_dati_base=code)
+    equipment = LaboratorioAttrezzature.objects.filter(laboratorio_dati_base=laboratory_id)
     # LaboratorioDatiErc1
     researches_erc1 = LaboratorioDatiErc1.objects.filter(
-        laboratorio_dati_base=code
+        laboratorio_dati_base=laboratory_id
     ).values("id", "ricerca_erc1", "ricerca_erc1__descrizione")
     # LaboratorioUbicazione
-    locations = LaboratorioUbicazione.objects.filter(laboratorio_dati_base=code)
+    locations = LaboratorioUbicazione.objects.filter(laboratorio_dati_base=laboratory_id)
     # LaboratorioPersonaleRicerca
-    researchers = LaboratorioPersonaleRicerca.objects.filter(laboratorio_dati_base=code)
+    researchers = LaboratorioPersonaleRicerca.objects.filter(laboratorio_dati_base=laboratory_id)
     # LaboratorioPersonaleTecnico
     technicians = LaboratorioPersonaleTecnico.objects.filter(
-        laboratorio_dati_base=code
+        laboratorio_dati_base=laboratory_id
     ).values("id", "cognomenome_origine")
     # LaboratorioAttivita
-    activities = LaboratorioAttivita.objects.filter(laboratorio_dati_base=code).values(
+    activities = LaboratorioAttivita.objects.filter(laboratorio_dati_base=laboratory_id).values(
         "id", "tipologia_attivita__descrizione"
     )
     # LaboratorioServiziErogati
     provided_services = LaboratorioServiziErogati.objects.filter(
-        laboratorio_dati_base=code
+        laboratorio_dati_base=laboratory_id
     ).values("id", "descrizione")
     # LaboratorioServiziOfferti
     offered_services = LaboratorioServiziOfferti.objects.filter(
-        laboratorio_dati_base=code
+        laboratorio_dati_base=laboratory_id
     ).values("id", "nome_servizio")
 
     if request.POST:
@@ -493,7 +493,7 @@ def laboratory(request, code, laboratory=None, my_offices=None, is_validator=Fal
                 request, messages.SUCCESS, _("Laboratory edited successfully")
             )
 
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -690,7 +690,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 # @can_manage_laboratories
 # @can_view_laboratories
 # @can_edit_laboratories
-# def laboratory_unical_department_edit(request, code, laboratory=None, my_offices=None, is_validator=False):
+# def laboratory_unical_department_edit(request, laboratory_id, laboratory=None, my_offices=None, is_validator=False):
 
 #     department = laboratory.dipartimento_riferimento
 #     old_label = department.dip_des_it
@@ -718,7 +718,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 
 
 #             messages.add_message(request, messages.SUCCESS, _("Department edited successfully"))
-#             return redirect('laboratories:management:laboratory-edit', code=code)
+#             return redirect('laboratories:management:laboratory-edit', laboratory_id=laboratory_id)
 
 #         else:  # pragma: no cover
 #             for k, v in form.errors.items():
@@ -746,7 +746,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_scientific_director_edit(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     scientific_director = None
     scientific_director_ecode = None
@@ -808,7 +808,7 @@ def laboratory_scientific_director_edit(
                 _("Laboratory scientific director edited successfully"),
             )
 
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -820,11 +820,11 @@ def laboratory_scientific_director_edit(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-scientific-director-edit",
-            kwargs={"code": code},
+            kwargs={"laboratory_id": laboratory_id},
         ): _("Scientific Director"),
     }
 
@@ -853,7 +853,7 @@ def laboratory_scientific_director_edit(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_safety_manager_edit(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     safety_manager = None
     safety_manager_ecode = None
@@ -916,7 +916,7 @@ def laboratory_safety_manager_edit(
                 _("Laboratory safety manager edited successfully"),
             )
 
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -931,11 +931,11 @@ def laboratory_safety_manager_edit(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-safety-manager-edit",
-            kwargs={"code": code},
+            kwargs={"laboratory_id": laboratory_id},
         ): _("Safety Manager"),
     }
 
@@ -963,7 +963,7 @@ def laboratory_safety_manager_edit(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_safety_manager_delete(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     laboratory.matricola_preposto_sicurezza = None
     laboratory.preposto_sicurezza = None
@@ -979,14 +979,14 @@ def laboratory_safety_manager_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Safety manager removed successfully")
     )
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
 @check_if_superuser
 @can_manage_laboratories
 def laboratory_delete(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     laboratory.delete()
     messages.add_message(
@@ -1001,7 +1001,7 @@ def laboratory_delete(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_extra_departments_new(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     department_form = LaboratorioAltriDipartimentiForm()
     if request.POST:
@@ -1044,7 +1044,7 @@ def laboratory_extra_departments_new(
                 messages.add_message(
                     request, messages.SUCCESS, _("Extra department added successfully")
                 )
-                return redirect("laboratories:management:laboratory-edit", code=code)
+                return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in department_form.errors.items():
@@ -1058,11 +1058,11 @@ def laboratory_extra_departments_new(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-extra-departments-new",
-            kwargs={"code": code},
+            kwargs={"laboratory_id": laboratory_id},
         ): _("Extra Department"),
     }
     department_data = None
@@ -1087,7 +1087,7 @@ def laboratory_extra_departments_new(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_extra_departments_delete(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     extra_department_lab = get_object_or_404(LaboratorioAltriDipartimenti, pk=data_id)
 
@@ -1108,7 +1108,7 @@ def laboratory_extra_departments_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Extra department removed successfully")
     )
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
@@ -1116,7 +1116,7 @@ def laboratory_extra_departments_delete(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_equipment_new(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     equipment_form = LaboratorioAttrezzatureForm()
     equipment_funds_form = LaboratorioAttrezzatureFondiForm()
@@ -1174,7 +1174,7 @@ def laboratory_equipment_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Piece of equipment added successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in equipment_form.errors.items():
@@ -1200,10 +1200,10 @@ def laboratory_equipment_new(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-equipment-new", kwargs={"code": code}
+            "laboratories:management:laboratory-equipment-new", kwargs={"laboratory_id": laboratory_id}
         ): _("Equipment"),
     }
     return render(
@@ -1229,7 +1229,7 @@ def laboratory_equipment_new(
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_equipment_edit(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     laboratory_equipment = get_object_or_404(LaboratorioAttrezzature, pk=data_id)
     equipment_form = LaboratorioAttrezzatureForm(instance=laboratory_equipment)
@@ -1338,7 +1338,7 @@ def laboratory_equipment_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("Piece of equipment edited successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in equipment_form.errors.items():
@@ -1365,11 +1365,11 @@ def laboratory_equipment_edit(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-equipment-edit",
-            kwargs={"code": code, "data_id": data_id},
+            kwargs={"laboratory_id": laboratory_id, "data_id": data_id},
         ): _("Equipment"),
     }
     return render(
@@ -1397,7 +1397,7 @@ def laboratory_equipment_edit(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_equipment_delete(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     equipment_piece = get_object_or_404(LaboratorioAttrezzature, pk=data_id)
 
@@ -1418,17 +1418,17 @@ def laboratory_equipment_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Piece of equipment removed successfully")
     )
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_researches_erc1_edit(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     # Previously selected researches
-    researches_erc1_old = LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=code)
+    researches_erc1_old = LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=laboratory_id)
 
     # Ids to initialize form's checkboxes
     researches_erc1 = researches_erc1_old.values(
@@ -1470,12 +1470,12 @@ def laboratory_researches_erc1_edit(
                 f"id_ricerche_erc1_{erc0_selector.lower()}", []
             )
 
-            LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=code).exclude(
+            LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=laboratory_id).exclude(
                 ricerca_erc1__in=selected_erc1_res_ids
             ).delete()
 
             current_erc1_res_ids = LaboratorioDatiErc1.objects.filter(
-                laboratorio_dati_base=code
+                laboratorio_dati_base=laboratory_id
             ).values_list("ricerca_erc1", flat=True)
             current_erc1_res_ids = map(str, current_erc1_res_ids)
 
@@ -1504,17 +1504,17 @@ def laboratory_researches_erc1_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("ERC classification edited successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-researches-erc1-edit",
-            kwargs={"code": code},
+            kwargs={"laboratory_id": laboratory_id},
         ): _("ERC classification"),
     }
     return render(
@@ -1539,7 +1539,7 @@ def laboratory_researches_erc1_edit(
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_locations_edit(
-    request, data_id, code, laboratory=None, my_offices=None, is_validator=False
+    request, data_id, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     location = get_object_or_404(LaboratorioUbicazione, pk=data_id)
     location_form = LaboratorioUbicazioneForm(instance=location)
@@ -1571,7 +1571,7 @@ def laboratory_locations_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("Location edited successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in location_form.errors.items():
@@ -1585,11 +1585,11 @@ def laboratory_locations_edit(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-locations-edit",
-            kwargs={"code": code, "data_id": data_id},
+            kwargs={"laboratory_id": laboratory_id, "data_id": data_id},
         ): _("Location"),
     }
     return render(
@@ -1612,7 +1612,7 @@ def laboratory_locations_edit(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_locations_new(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     location_form = LaboratorioUbicazioneForm()
     if request.POST:
@@ -1637,7 +1637,7 @@ def laboratory_locations_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Location added successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in location_form.errors.items():
@@ -1651,10 +1651,10 @@ def laboratory_locations_new(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-locations-new", kwargs={"code": code}
+            "laboratories:management:laboratory-locations-new", kwargs={"laboratory_id": laboratory_id}
         ): _("Locations"),
     }
     return render(
@@ -1678,7 +1678,7 @@ def laboratory_locations_new(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_locations_delete(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     location = get_object_or_404(LaboratorioUbicazione, pk=data_id)
 
@@ -1694,7 +1694,7 @@ def laboratory_locations_delete(
     )
 
     messages.add_message(request, messages.SUCCESS, _("Location removed successfully"))
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
@@ -1702,7 +1702,7 @@ def laboratory_locations_delete(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_research_staff_new(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     researcher = None
     internal_form = ChoosenPersonForm(required=True)
@@ -1747,7 +1747,7 @@ def laboratory_research_staff_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Researcher added successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -1759,11 +1759,11 @@ def laboratory_research_staff_new(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-research-staff_new",
-            kwargs={"code": code},
+            kwargs={"laboratory_id": laboratory_id},
         ): _("Research Staff"),
     }
     return render(
@@ -1789,7 +1789,7 @@ def laboratory_research_staff_new(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_research_staff_delete(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     researcher = get_object_or_404(LaboratorioPersonaleRicerca, pk=data_id)
     researcher.delete()
@@ -1806,7 +1806,7 @@ def laboratory_research_staff_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Researcher removed successfully")
     )
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
@@ -1814,7 +1814,7 @@ def laboratory_research_staff_delete(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_technical_staff_new(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     technician = None
     internal_form = ChoosenPersonForm(required=True)
@@ -1870,7 +1870,7 @@ def laboratory_technical_staff_new(
             messages.add_message(
                 request, messages.SUCCESS, _("technician added successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in person_form.errors.items():
@@ -1890,11 +1890,11 @@ def laboratory_technical_staff_new(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-technical-staff-new",
-            kwargs={"code": code},
+            kwargs={"laboratory_id": laboratory_id},
         ): _("Technical Staff"),
     }
     return render(
@@ -1920,7 +1920,7 @@ def laboratory_technical_staff_new(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_technical_staff_delete(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     technician = get_object_or_404(LaboratorioPersonaleTecnico, pk=data_id)
     technician.delete()
@@ -1937,7 +1937,7 @@ def laboratory_technical_staff_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Technician removed successfully")
     )
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
@@ -1945,15 +1945,15 @@ def laboratory_technical_staff_delete(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_activities_new(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     activity_types_already_specified = LaboratorioAttivita.objects.filter(
-        laboratorio_dati_base=code
+        laboratorio_dati_base=laboratory_id
     ).values_list("tipologia_attivita", flat=True)
 
     if activity_types_already_specified and len(activity_types_already_specified) >= 3:
         messages.add_message(request, messages.ERROR, _("Activities list is full"))
-        return redirect("laboratories:management:laboratory-edit", code=code)
+        return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
     activity_form = LaboratorioAttivitaForm(
         activity_types_already_specified=activity_types_already_specified
@@ -1986,7 +1986,7 @@ def laboratory_activities_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Activities added successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in activity_form.errors.items():
@@ -2000,10 +2000,10 @@ def laboratory_activities_new(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-activities-new", kwargs={"code": code}
+            "laboratories:management:laboratory-activities-new", kwargs={"laboratory_id": laboratory_id}
         ): _("Activities"),
     }
     return render(
@@ -2025,7 +2025,7 @@ def laboratory_activities_new(
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_activities_edit(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
     selected_activity_id = activity.tipologia_attivita.id
@@ -2034,7 +2034,7 @@ def laboratory_activities_edit(
     )
 
     activity_types_already_specified = (
-        LaboratorioAttivita.objects.filter(laboratorio_dati_base=code)
+        LaboratorioAttivita.objects.filter(laboratorio_dati_base=laboratory_id)
         .exclude(tipologia_attivita=selected_activity_type)
         .values_list("tipologia_attivita", flat=True)
     )
@@ -2079,7 +2079,7 @@ def laboratory_activities_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("Activity edited successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in activity_form.errors.items():
@@ -2093,11 +2093,11 @@ def laboratory_activities_edit(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-activities-edit",
-            kwargs={"code": code, "data_id": data_id},
+            kwargs={"laboratory_id": laboratory_id, "data_id": data_id},
         ): _("Activity"),
     }
     return render(
@@ -2121,7 +2121,7 @@ def laboratory_activities_edit(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_activities_delete(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     activity = get_object_or_404(LaboratorioAttivita, pk=data_id)
     activity.delete()
@@ -2136,7 +2136,7 @@ def laboratory_activities_delete(
     )
 
     messages.add_message(request, messages.SUCCESS, _("Activity removed successfully"))
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
@@ -2144,7 +2144,7 @@ def laboratory_activities_delete(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_provided_services_new(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     form = LaboratorioServiziErogatiForm()
     internal_form = ChoosenPersonForm(required=True)
@@ -2192,7 +2192,7 @@ def laboratory_provided_services_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Provided service added successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in person_form.errors.items():
@@ -2210,11 +2210,11 @@ def laboratory_provided_services_new(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-provided-services-new",
-            kwargs={"code": code},
+            kwargs={"laboratory_id": laboratory_id},
         ): _("Provided Service"),
     }
     return render(
@@ -2239,7 +2239,7 @@ def laboratory_provided_services_new(
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_provided_services_edit(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     provided_service = get_object_or_404(LaboratorioServiziErogati, pk=data_id)
     manager = None
@@ -2313,7 +2313,7 @@ def laboratory_provided_services_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("Provided service edited successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
         else:  # pragma: no cover
             for k, v in person_form.errors.items():
@@ -2336,11 +2336,11 @@ def laboratory_provided_services_edit(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-provided-services-edit",
-            kwargs={"code": code, "data_id": data_id},
+            kwargs={"laboratory_id": laboratory_id, "data_id": data_id},
         ): _("Provided Service"),
     }
     return render(
@@ -2367,7 +2367,7 @@ def laboratory_provided_services_edit(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_provided_services_delete(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     provided_service = get_object_or_404(LaboratorioServiziErogati, pk=data_id)
     provided_service.delete()
@@ -2387,7 +2387,7 @@ def laboratory_provided_services_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Provided service removed successfully")
     )
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
@@ -2395,7 +2395,7 @@ def laboratory_provided_services_delete(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_offered_services_new(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     form = LaboratorioServiziOffertiForm()
     if request.POST:
@@ -2419,17 +2419,17 @@ def laboratory_offered_services_new(
         messages.add_message(
             request, messages.SUCCESS, _("Offered service added successfully")
         )
-        return redirect("laboratories:management:laboratory-edit", code=code)
+        return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-offered-services-new",
-            kwargs={"code": code},
+            kwargs={"laboratory_id": laboratory_id},
         ): _("Offered Service"),
     }
     return render(
@@ -2451,7 +2451,7 @@ def laboratory_offered_services_new(
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_offered_services_edit(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     offered_service = get_object_or_404(LaboratorioServiziOfferti, pk=data_id)
     form = LaboratorioServiziOffertiForm(instance=offered_service)
@@ -2486,17 +2486,17 @@ def laboratory_offered_services_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("Offered service edited successfully")
             )
-            return redirect("laboratories:management:laboratory-edit", code=code)
+            return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("laboratories:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit", kwargs={"code": code}
+            "laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id}
         ): laboratory.nome_laboratorio,
         reverse(
             "laboratories:management:laboratory-offered-services-edit",
-            kwargs={"code": code, "data_id": data_id},
+            kwargs={"laboratory_id": laboratory_id, "data_id": data_id},
         ): _("Offered Service"),
     }
     return render(
@@ -2521,7 +2521,7 @@ def laboratory_offered_services_edit(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_offered_services_delete(
-    request, code, data_id, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, data_id, laboratory=None, my_offices=None, is_validator=False
 ):
     offered_service = get_object_or_404(LaboratorioServiziOfferti, pk=data_id)
     offered_service.delete()
@@ -2538,7 +2538,7 @@ def laboratory_offered_services_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Offered service removed successfully")
     )
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
@@ -2546,7 +2546,7 @@ def laboratory_offered_services_delete(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_risk_types_edit(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     if request.POST:
         risk_type_form = LaboratorioTipologiaRischioForm(data=request.POST)
@@ -2558,11 +2558,11 @@ def laboratory_risk_types_edit(
             )
 
             LaboratorioTipologiaRischio.objects.filter(
-                laboratorio_dati_base=code
+                laboratorio_dati_base=laboratory_id
             ).exclude(tipologia_rischio__in=new_selected_risks).delete()
 
             current_risks = LaboratorioTipologiaRischio.objects.filter(
-                laboratorio_dati_base=code
+                laboratorio_dati_base=laboratory_id
             ).values_list("tipologia_rischio", flat=True)
             current_risks = map(str, current_risks)
 
@@ -2599,7 +2599,7 @@ def laboratory_risk_types_edit(
                 )
 
         return redirect(
-            reverse("laboratories:management:laboratory-edit", kwargs={"code": code})
+            reverse("laboratories:management:laboratory-edit", kwargs={"laboratory_id": laboratory_id})
             + "#risks"
         )
 
@@ -2609,7 +2609,7 @@ def laboratory_risk_types_edit(
 @can_view_laboratories
 @can_edit_laboratories
 def laboratory_request_approval(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     if laboratory.visibile:
         return custom_message(request, _("Laboratory is already visible"))
@@ -2617,11 +2617,11 @@ def laboratory_request_approval(
     # LaboratorioDatiBase
     # if not (laboratory.preposto_sicurezza or laboratory.matricola_preposto_sicurezza):
     #     messages.add_message(request, messages.ERROR, _("Laboratory must have a Safety Manager"))
-    #     return redirect('laboratories:management:laboratory-edit', code=code)
+    #     return redirect('laboratories:management:laboratory-edit', laboratory_id=laboratory_id)
 
     # LaboratorioAltriDipartimenti
     extra_departments = LaboratorioAltriDipartimenti.objects.filter(
-        laboratorio_dati_base=code
+        laboratorio_dati_base=laboratory_id
     ).exists()
     if extra_departments and laboratory.laboratorio_interdipartimentale == "NO":
         messages.add_message(
@@ -2629,11 +2629,11 @@ def laboratory_request_approval(
             messages.ERROR,
             _("Extra Departments specified for NON Interdepartmental Laboratory"),
         )
-        return redirect("laboratories:management:laboratory-edit", code=code)
+        return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
     # LaboratorioDatiErc1
     researches_erc1 = LaboratorioDatiErc1.objects.filter(
-        laboratorio_dati_base=code
+        laboratorio_dati_base=laboratory_id
     ).exists()
     if not researches_erc1:
         messages.add_message(
@@ -2641,23 +2641,23 @@ def laboratory_request_approval(
             messages.ERROR,
             _("Laboratory must have at least one ERC 1 Research"),
         )
-        return redirect("laboratories:management:laboratory-edit", code=code)
+        return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
     # LaboratorioUbicazione
-    locations = LaboratorioUbicazione.objects.filter(laboratorio_dati_base=code).exists()
+    locations = LaboratorioUbicazione.objects.filter(laboratorio_dati_base=laboratory_id).exists()
     if not locations:
         messages.add_message(
             request, messages.ERROR, _("Laboratory must have at least one Location")
         )
-        return redirect("laboratories:management:laboratory-edit", code=code)
+        return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
     # LaboratorioAttivita
-    activities = LaboratorioAttivita.objects.filter(laboratorio_dati_base=code).exists()
+    activities = LaboratorioAttivita.objects.filter(laboratorio_dati_base=laboratory_id).exists()
     if not activities:
         messages.add_message(
             request, messages.ERROR, _("Laboratory must have at least one Activity")
         )
-        return redirect("laboratories:management:laboratory-edit", code=code)
+        return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
     validators = OrganizationalStructureOfficeEmployee.objects.filter(
         office__is_active=True,
@@ -2687,14 +2687,14 @@ def laboratory_request_approval(
     messages.add_message(
         request, messages.SUCCESS, _("Request for approval sent successfully")
     )
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)
 
 
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_approve(
-    request, code, laboratory=None, my_offices=None, is_validator=False
+    request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     if not (request.user.is_superuser or is_validator):
         return custom_message(request, _("Permission denied"))
@@ -2711,4 +2711,4 @@ def laboratory_approve(
     messages.add_message(
         request, messages.SUCCESS, _("Laboratory approved successfully")
     )
-    return redirect("laboratories:management:laboratory-edit", code=code)
+    return redirect("laboratories:management:laboratory-edit", laboratory_id=laboratory_id)

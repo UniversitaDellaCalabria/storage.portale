@@ -149,7 +149,7 @@ def phd_new(request, my_offices=None):
 @login_required
 @can_manage_phd
 @can_edit_phd
-def phd(request, code, my_offices=None, phd=None):
+def phd(request, phd_id, my_offices=None, phd=None):
     """
     dettaglio dottorato
     """
@@ -199,7 +199,7 @@ def phd(request, code, my_offices=None, phd=None):
                 request, messages.SUCCESS, _("PhD activity edited successfully")
             )
 
-            return redirect("phd:management:phd-edit", code=code)
+            return redirect("phd:management:phd-edit", phd_id=phd_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -234,7 +234,7 @@ def phd(request, code, my_offices=None, phd=None):
 @login_required
 @can_manage_phd
 @can_edit_phd
-def phd_main_teacher(request, code, teacher_id, phd=None, my_offices=None):
+def phd_main_teacher(request, phd_id, teacher_id, phd=None, my_offices=None):
     """
     docente principale dottorato
     """
@@ -270,8 +270,8 @@ def phd_main_teacher(request, code, teacher_id, phd=None, my_offices=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                teacher_code = decrypt(form.cleaned_data["choosen_person"])
-                teacher = get_object_or_404(Personale, matricola=teacher_code)
+                teacher_phd_id = decrypt(form.cleaned_data["choosen_person"])
+                teacher = get_object_or_404(Personale, matricola=teacher_phd_id)
                 activity_teacher.matricola = teacher
                 activity_teacher.cognome_nome_origine = (
                     f"{teacher.cognome} {teacher.nome}"
@@ -299,7 +299,7 @@ def phd_main_teacher(request, code, teacher_id, phd=None, my_offices=None):
             )
 
             return redirect(
-                "phd:management:phd-main-teacher", code=code, teacher_id=teacher_id
+                "phd:management:phd-main-teacher", phd_id=phd_id, teacher_id=teacher_id
             )
 
         else:  # pragma: no cover
@@ -311,7 +311,7 @@ def phd_main_teacher(request, code, teacher_id, phd=None, my_offices=None):
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("phd:management:phd-list"): _("PhD activities"),
-        reverse("phd:management:phd-edit", kwargs={"code": code}): phd.nome_af,
+        reverse("phd:management:phd-edit", kwargs={"phd_id": phd_id}): phd.nome_af,
         "#": _("PhD activity teacher data"),
     }
 
@@ -332,7 +332,7 @@ def phd_main_teacher(request, code, teacher_id, phd=None, my_offices=None):
 @login_required
 @can_manage_phd
 @can_edit_phd
-def phd_main_teacher_new(request, code, my_offices=None, phd=None):
+def phd_main_teacher_new(request, phd_id, my_offices=None, phd=None):
     """
     nuovo docente principale
     """
@@ -352,8 +352,8 @@ def phd_main_teacher_new(request, code, my_offices=None, phd=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                teacher_code = decrypt(form.cleaned_data["choosen_person"])
-                teacher = get_object_or_404(Personale, matricola=teacher_code)
+                teacher_phd_id = decrypt(form.cleaned_data["choosen_person"])
+                teacher = get_object_or_404(Personale, matricola=teacher_phd_id)
                 cognome_nome_origine = f"{teacher.cognome} {teacher.nome}"
             else:
                 teacher = None
@@ -379,7 +379,7 @@ def phd_main_teacher_new(request, code, my_offices=None, phd=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Teacher added successfully")
             )
-            return redirect("phd:management:phd-edit", code=code)
+            return redirect("phd:management:phd-edit", phd_id=phd_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(
@@ -389,7 +389,7 @@ def phd_main_teacher_new(request, code, my_offices=None, phd=None):
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("phd:management:phd-list"): _("PhD activities"),
-        reverse("phd:management:phd-edit", kwargs={"code": code}): phd.nome_af,
+        reverse("phd:management:phd-edit", kwargs={"phd_id": phd_id}): phd.nome_af,
         "#": _("New teacher"),
     }
 
@@ -409,7 +409,7 @@ def phd_main_teacher_new(request, code, my_offices=None, phd=None):
 @login_required
 @can_manage_phd
 @can_edit_phd
-def phd_main_teacher_delete(request, code, teacher_id, my_offices=None, phd=None):
+def phd_main_teacher_delete(request, phd_id, teacher_id, my_offices=None, phd=None):
     """
     rimuovi un docente principale
     """
@@ -420,10 +420,10 @@ def phd_main_teacher_delete(request, code, teacher_id, my_offices=None, phd=None
     )
 
     main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
-        didattica_dottorato_attivita_formativa=code
+        didattica_dottorato_attivita_formativa=phd_id
     )
     other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
-        didattica_dottorato_attivita_formativa=code
+        didattica_dottorato_attivita_formativa=phd_id
     )
 
     if main_teachers.count() == 1 and not other_teachers:
@@ -440,13 +440,13 @@ def phd_main_teacher_delete(request, code, teacher_id, my_offices=None, phd=None
 
     phd_teacher.delete()
     messages.add_message(request, messages.SUCCESS, _("Teacher removed successfully"))
-    return redirect("phd:management:phd-edit", code=code)
+    return redirect("phd:management:phd-edit", phd_id=phd_id)
 
 
 @login_required
 @can_manage_phd
 @can_edit_phd
-def phd_other_teacher(request, code, teacher_id, my_offices=None, phd=None):
+def phd_other_teacher(request, phd_id, teacher_id, my_offices=None, phd=None):
     """
     modifica dati altro docente
     """
@@ -482,8 +482,8 @@ def phd_other_teacher(request, code, teacher_id, my_offices=None, phd=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                teacher_code = decrypt(form.cleaned_data["choosen_person"])
-                teacher = get_object_or_404(Personale, matricola=teacher_code)
+                teacher_phd_id = decrypt(form.cleaned_data["choosen_person"])
+                teacher = get_object_or_404(Personale, matricola=teacher_phd_id)
                 activity_teacher.matricola = teacher
                 activity_teacher.cognome_nome_origine = (
                     f"{teacher.cognome} {teacher.nome}"
@@ -511,7 +511,7 @@ def phd_other_teacher(request, code, teacher_id, my_offices=None, phd=None):
             )
 
             return redirect(
-                "phd:management:phd-other-teacher", code=code, teacher_id=teacher_id
+                "phd:management:phd-other-teacher", phd_id=phd_id, teacher_id=teacher_id
             )
 
         else:  # pragma: no cover
@@ -523,7 +523,7 @@ def phd_other_teacher(request, code, teacher_id, my_offices=None, phd=None):
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("phd:management:phd-list"): _("PhD activities"),
-        reverse("phd:management:phd-edit", kwargs={"code": code}): phd.nome_af,
+        reverse("phd:management:phd-edit", kwargs={"phd_id": phd_id}): phd.nome_af,
         "#": _("PhD activity teacher data"),
     }
 
@@ -545,7 +545,7 @@ def phd_other_teacher(request, code, teacher_id, my_offices=None, phd=None):
 @can_manage_phd
 @can_edit_phd
 def phd_other_teacher_new(
-    request, code, my_offices=None, phd=None, teachers=None, other_teachers=None
+    request, phd_id, my_offices=None, phd=None, teachers=None, other_teachers=None
 ):
     """
     nuovo altro docente
@@ -566,8 +566,8 @@ def phd_other_teacher_new(
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                teacher_code = decrypt(form.cleaned_data["choosen_person"])
-                teacher = get_object_or_404(Personale, matricola=teacher_code)
+                teacher_phd_id = decrypt(form.cleaned_data["choosen_person"])
+                teacher = get_object_or_404(Personale, matricola=teacher_phd_id)
                 cognome_nome_origine = f"{teacher.cognome} {teacher.nome}"
             else:
                 teacher = None
@@ -593,7 +593,7 @@ def phd_other_teacher_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Teacher added successfully")
             )
-            return redirect("phd:management:phd-edit", code=code)
+            return redirect("phd:management:phd-edit", phd_id=phd_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(
@@ -603,7 +603,7 @@ def phd_other_teacher_new(
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("phd:management:phd-list"): _("PhD activities"),
-        reverse("phd:management:phd-edit", kwargs={"code": code}): phd.nome_af,
+        reverse("phd:management:phd-edit", kwargs={"phd_id": phd_id}): phd.nome_af,
         "#": _("New teacher"),
     }
 
@@ -625,7 +625,7 @@ def phd_other_teacher_new(
 @can_edit_phd
 def phd_other_teacher_delete(
     request,
-    code,
+    phd_id,
     teacher_id,
     my_offices=None,
     phd=None,
@@ -639,10 +639,10 @@ def phd_other_teacher_delete(
     )
 
     main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
-        didattica_dottorato_attivita_formativa=code
+        didattica_dottorato_attivita_formativa=phd_id
     )
     other_teachers = DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
-        didattica_dottorato_attivita_formativa=code
+        didattica_dottorato_attivita_formativa=phd_id
     )
 
     if other_teachers.count() == 1 and not main_teachers:
@@ -656,7 +656,7 @@ def phd_other_teacher_delete(
 
     phd_teacher.delete()
     messages.add_message(request, messages.SUCCESS, _("Teacher removed successfully"))
-    return redirect("phd:management:phd-edit", code=code)
+    return redirect("phd:management:phd-edit", phd_id=phd_id)
 
 
 @login_required
@@ -664,13 +664,13 @@ def phd_other_teacher_delete(
 # @can_manage_phd
 # @can_edit_phd
 def phd_delete(
-    request, code, my_offices=None, phd=None, teachers=None, other_teachers=None
+    request, phd_id, my_offices=None, phd=None, teachers=None, other_teachers=None
 ):
     # ha senso?
     # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:
     # raise Exception(_('Permission denied'))
-    phd = get_object_or_404(DidatticaDottoratoAttivitaFormativa, pk=code)
+    phd = get_object_or_404(DidatticaDottoratoAttivitaFormativa, pk=phd_id)
     phd.delete()
     messages.add_message(
         request, messages.SUCCESS, _("PhD activity removed successfully")

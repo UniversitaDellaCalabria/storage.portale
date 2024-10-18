@@ -45,7 +45,7 @@ def projects(request):
 @login_required
 @can_manage_projects
 # @can_edit_project
-def project(request, code, project=None):
+def project(request, project_id, project=None):
     """
     modifica dati progetto
     """
@@ -56,7 +56,7 @@ def project(request, code, project=None):
         progetto=project
     )
 
-    structure_data = get_object_or_404(ProgettoDatiBase, pk=code)
+    structure_data = get_object_or_404(ProgettoDatiBase, pk=project_id)
 
     if request.POST:
         form = ProgettoDatiBaseForm(instance=project, data=request.POST)
@@ -82,7 +82,7 @@ def project(request, code, project=None):
                 request, messages.SUCCESS, _("Project edited successfully")
             )
 
-            return redirect("projects:management:projects-edit", code=code)
+            return redirect("projects:management:projects-edit", project_id=project_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -199,13 +199,13 @@ def project_new(request):
 @user_passes_test(lambda u: u.is_superuser)
 # @can_manage_projects
 # # @can_edit_project
-def project_delete(request, code, project=None):
+def project_delete(request, project_id, project=None):
     # ha senso?
     # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:
     # raise Exception(_('Permission denied'))
 
-    project = get_object_or_404(ProgettoDatiBase, pk=code)
+    project = get_object_or_404(ProgettoDatiBase, pk=project_id)
     project.delete()
     messages.add_message(request, messages.SUCCESS, _("Project removed successfully"))
 
@@ -215,7 +215,7 @@ def project_delete(request, code, project=None):
 @login_required
 @can_manage_projects
 # @can_edit_project
-def project_director_new(request, code, project=None):
+def project_director_new(request, project_id, project=None):
     """
     nuovo direttore scientifico
     """
@@ -233,8 +233,8 @@ def project_director_new(request, code, project=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                director_code = decrypt(form.cleaned_data["choosen_person"])
-                director = get_object_or_404(Personale, matricola=director_code)
+                director_project_id = decrypt(form.cleaned_data["choosen_person"])
+                director = get_object_or_404(Personale, matricola=director_project_id)
                 nome_origine = f"{director.cognome} {director.nome}"
             else:
                 director = None
@@ -254,7 +254,7 @@ def project_director_new(request, code, project=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Director added successfully")
             )
-            return redirect("projects:management:projects-edit", code=code)
+            return redirect("projects:management:projects-edit", project_id=project_id)
         else:
             for k, v in form.errors.items():
                 messages.add_message(
@@ -265,7 +265,7 @@ def project_director_new(request, code, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"code": code}
+            "projects:management:projects-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": _("New director"),
     }
@@ -286,7 +286,7 @@ def project_director_new(request, code, project=None):
 @login_required
 @can_manage_projects
 # @can_edit_project
-def project_director_edit(request, code, director_id, project=None):
+def project_director_edit(request, project_id, director_id, project=None):
     """
     dettaglio direttore scientifico
     """
@@ -319,8 +319,8 @@ def project_director_edit(request, code, director_id, project=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                director_code = decrypt(form.cleaned_data["choosen_person"])
-                director = get_object_or_404(Personale, matricola=director_code)
+                director_project_id = decrypt(form.cleaned_data["choosen_person"])
+                director = get_object_or_404(Personale, matricola=director_project_id)
                 project_director.matricola = director
                 project_director.nome_origine = f"{director.cognome} {director.nome}"
             else:
@@ -340,7 +340,7 @@ def project_director_edit(request, code, director_id, project=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Director data edited successfully")
             )
-            return redirect("projects:management:projects-edit", code=code)
+            return redirect("projects:management:projects-edit", project_id=project_id)
         else:
             for k, v in form.errors.items():
                 messages.add_message(
@@ -351,7 +351,7 @@ def project_director_edit(request, code, director_id, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"code": code}
+            "projects:management:projects-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": f'{_("Director")} {project_director}',
     }
@@ -373,7 +373,7 @@ def project_director_edit(request, code, director_id, project=None):
 @login_required
 @can_manage_projects
 # @can_edit_project
-def project_director_delete(request, code, director_id, project=None):
+def project_director_delete(request, project_id, director_id, project=None):
     """
     elimina dati direttore scientifico
     """
@@ -390,13 +390,13 @@ def project_director_delete(request, code, director_id, project=None):
 
     director_project.delete()
     messages.add_message(request, messages.SUCCESS, _("Director removed successfully"))
-    return redirect("projects:management:projects-edit", code=code)
+    return redirect("projects:management:projects-edit", project_id=project_id)
 
 
 @login_required
 @can_manage_projects
 # @can_edit_project
-def project_researcher_new(request, code, project=None):
+def project_researcher_new(request, project_id, project=None):
     """
     nuovo ricercatore
     """
@@ -414,8 +414,8 @@ def project_researcher_new(request, code, project=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                researcher_code = decrypt(form.cleaned_data["choosen_person"])
-                researcher = get_object_or_404(Personale, matricola=researcher_code)
+                researcher_project_id = decrypt(form.cleaned_data["choosen_person"])
+                researcher = get_object_or_404(Personale, matricola=researcher_project_id)
                 nome_origine = f"{researcher.cognome} {researcher.nome}"
             else:
                 researcher = None
@@ -434,7 +434,7 @@ def project_researcher_new(request, code, project=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Researcher added successfully")
             )
-            return redirect("projects:management:projects-edit", code=code)
+            return redirect("projects:management:projects-edit", project_id=project_id)
         else:
             for k, v in form.errors.items():
                 messages.add_message(
@@ -445,7 +445,7 @@ def project_researcher_new(request, code, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"code": code}
+            "projects:management:projects-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": _("New researcher"),
     }
@@ -466,7 +466,7 @@ def project_researcher_new(request, code, project=None):
 @login_required
 @can_manage_projects
 # @can_edit_project
-def project_researcher_edit(request, code, researcher_id, project=None):
+def project_researcher_edit(request, project_id, researcher_id, project=None):
     """
     dettaglio ricercatore
     """
@@ -499,8 +499,8 @@ def project_researcher_edit(request, code, researcher_id, project=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                researcher_code = decrypt(form.cleaned_data["choosen_person"])
-                researcher = get_object_or_404(Personale, matricola=researcher_code)
+                researcher_project_id = decrypt(form.cleaned_data["choosen_person"])
+                researcher = get_object_or_404(Personale, matricola=researcher_project_id)
                 project_researcher.matricola = researcher
                 project_researcher.nome_origine = (
                     f"{researcher.cognome} {researcher.nome}"
@@ -522,7 +522,7 @@ def project_researcher_edit(request, code, researcher_id, project=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Researcher data edited successfully")
             )
-            return redirect("projects:management:projects-edit", code=code)
+            return redirect("projects:management:projects-edit", project_id=project_id)
         else:
             for k, v in form.errors.items():
                 messages.add_message(
@@ -533,7 +533,7 @@ def project_researcher_edit(request, code, researcher_id, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"code": code}
+            "projects:management:projects-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": f'{_("Researcher")} {project_researcher}',
     }
@@ -555,7 +555,7 @@ def project_researcher_edit(request, code, researcher_id, project=None):
 @login_required
 @can_manage_projects
 # @can_edit_project
-def project_researcher_delete(request, code, researcher_id, project=None):
+def project_researcher_delete(request, project_id, researcher_id, project=None):
     """
     elimina ricercatore
     """
@@ -574,13 +574,13 @@ def project_researcher_delete(request, code, researcher_id, project=None):
     messages.add_message(
         request, messages.SUCCESS, _("Researcher removed successfully")
     )
-    return redirect("projects:management:projects-edit", code=code)
+    return redirect("projects:management:projects-edit", project_id=project_id)
 
 
 @login_required
 @can_manage_projects
 # @can_edit_project
-def project_structure_data_edit(request, code, data_id, project=None):
+def project_structure_data_edit(request, project_id, data_id, project=None):
     """
     modifica struttura
     """
@@ -594,10 +594,10 @@ def project_structure_data_edit(request, code, data_id, project=None):
     if request.POST:
         form = ProgettoStrutturaForm(data=request.POST)
         if form.is_valid():
-            structure_code = form.cleaned_data["choosen_structure"]
+            structure_project_id = form.cleaned_data["choosen_structure"]
             new_structure = get_object_or_404(
                 UnitaOrganizzativa,
-                uo=structure_code,
+                uo=structure_project_id,
                 dt_fine_val__gte=datetime.datetime.today(),
             )
             structure_project.user_mod = request.user
@@ -616,7 +616,7 @@ def project_structure_data_edit(request, code, data_id, project=None):
                 request, messages.SUCCESS, _("Structure edited successfully")
             )
 
-            return redirect("projects:management:projects-edit", code=code)
+            return redirect("projects:management:projects-edit", project_id=project_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(
@@ -627,7 +627,7 @@ def project_structure_data_edit(request, code, data_id, project=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("projects:management:projects"): _("Projects"),
         reverse(
-            "projects:management:projects-edit", kwargs={"code": code}
+            "projects:management:projects-edit", kwargs={"project_id": project_id}
         ): project.titolo,
         "#": _("Structure"),
     }

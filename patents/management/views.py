@@ -70,7 +70,7 @@ def patent_new(request, patent=None):
 
 @login_required
 @can_manage_patents
-def patent(request, code, patent=None):
+def patent(request, patent_id, patent=None):
     """
     modifica brevetto
     """
@@ -102,7 +102,7 @@ def patent(request, code, patent=None):
                 request, messages.SUCCESS, _("Patent edited successfully")
             )
 
-            return redirect("patents:management:patent-edit", code=code)
+            return redirect("patents:management:patent-edit", patent_id=patent_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -136,7 +136,7 @@ def patent(request, code, patent=None):
 
 @login_required
 @can_manage_patents
-def patent_inventor_new(request, code, patent=None):
+def patent_inventor_new(request, patent_id, patent=None):
     """
     nuovo inventore
     """
@@ -153,8 +153,8 @@ def patent_inventor_new(request, code, patent=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                inventor_code = decrypt(form.cleaned_data["choosen_person"])
-                inventor = get_object_or_404(Personale, matricola=inventor_code)
+                inventor_patent_id = decrypt(form.cleaned_data["choosen_person"])
+                inventor = get_object_or_404(Personale, matricola=inventor_patent_id)
                 cognomenome_origine = f"{inventor.cognome} {inventor.nome}"
             else:
                 inventor = None
@@ -176,7 +176,7 @@ def patent_inventor_new(request, code, patent=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Inventor added successfully")
             )
-            return redirect("patents:management:patent-edit", code=code)
+            return redirect("patents:management:patent-edit", patent_id=patent_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(
@@ -186,7 +186,7 @@ def patent_inventor_new(request, code, patent=None):
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("patents:management:patents"): _("Patents"),
-        reverse("patents:management:patent-edit", kwargs={"code": code}): patent.titolo,
+        reverse("patents:management:patent-edit", kwargs={"patent_id": patent_id}): patent.titolo,
         "#": _("New inventor"),
     }
 
@@ -205,14 +205,14 @@ def patent_inventor_new(request, code, patent=None):
 
 @login_required
 @can_manage_patents
-def patent_inventor_edit(request, code, inventor_id, patent=None):
+def patent_inventor_edit(request, patent_id, inventor_id, patent=None):
     """
     dettaglio dati inventore
     """
     patent_inventor = get_object_or_404(
         BrevettoInventori.objects.select_related("matricola_inventore"),
         pk=inventor_id,
-        brevetto=code,
+        brevetto=patent_id,
     )
     old_label = patent_inventor.cognomenome_origine
     inventor = patent_inventor.matricola_inventore
@@ -238,8 +238,8 @@ def patent_inventor_edit(request, code, inventor_id, patent=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                inventor_code = decrypt(form.cleaned_data["choosen_person"])
-                inventor = get_object_or_404(Personale, matricola=inventor_code)
+                inventor_patent_id = decrypt(form.cleaned_data["choosen_person"])
+                inventor = get_object_or_404(Personale, matricola=inventor_patent_id)
                 patent_inventor.matricola_inventore = inventor
                 patent_inventor.cognomenome_origine = (
                     f"{inventor.cognome} {inventor.nome}"
@@ -264,7 +264,7 @@ def patent_inventor_edit(request, code, inventor_id, patent=None):
                 request, messages.SUCCESS, _("Patent inventor edited successfully")
             )
 
-            return redirect("patents:management:patent-edit", code=code)
+            return redirect("patents:management:patent-edit", patent_id=patent_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -275,10 +275,10 @@ def patent_inventor_edit(request, code, inventor_id, patent=None):
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("patents:management:patents"): _("Patents"),
-        reverse("patents:management:patent-edit", kwargs={"code": code}): patent.titolo,
+        reverse("patents:management:patent-edit", kwargs={"patent_id": patent_id}): patent.titolo,
         reverse(
             "patents:management:patent-inventor-edit",
-            kwargs={"code": code, "inventor_id": inventor_id},
+            kwargs={"patent_id": patent_id, "inventor_id": inventor_id},
         ): _("Patent inventor data"),
     }
 
@@ -298,13 +298,13 @@ def patent_inventor_edit(request, code, inventor_id, patent=None):
 
 @login_required
 @can_manage_patents
-def patent_inventor_delete(request, code, inventor_id, patent=None):
+def patent_inventor_delete(request, patent_id, inventor_id, patent=None):
     """
     elimina inventore
     """
-    inventor = get_object_or_404(BrevettoInventori, pk=inventor_id, brevetto=code)
+    inventor = get_object_or_404(BrevettoInventori, pk=inventor_id, brevetto=patent_id)
 
-    # if BrevettoInventori.objects.filter(brevetto=code).count() == 1:
+    # if BrevettoInventori.objects.filter(brevetto=patent_id).count() == 1:
     # return custom_message(request, _("Permission denied. Only one teacher remains"))
 
     log_action(
@@ -313,13 +313,13 @@ def patent_inventor_delete(request, code, inventor_id, patent=None):
 
     inventor.delete()
     messages.add_message(request, messages.SUCCESS, _("Inventor removed successfully"))
-    return redirect("patents:management:patent-edit", code=code)
+    return redirect("patents:management:patent-edit", patent_id=patent_id)
 
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 # @can_manage_patents
-def patent_delete(request, code, patent=None):
+def patent_delete(request, patent_id, patent=None):
     """
     rimuovi brevetto
     """
@@ -328,7 +328,7 @@ def patent_delete(request, code, patent=None):
     # if not request.user.is_superuser:
     #     raise Exception(_('Permission denied'))
 
-    patent = get_object_or_404(BrevettoDatiBase, pk=code)
+    patent = get_object_or_404(BrevettoDatiBase, pk=patent_id)
     patent.delete()
     messages.add_message(request, messages.SUCCESS, _("Patent removed successfully"))
 

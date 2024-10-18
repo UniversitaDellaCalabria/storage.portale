@@ -40,7 +40,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'research-lines:management:applied-research-line-teacher-delete' code=rline.pk teacher_rline_id=teacher_rline_id %}">
+                <a class="btn btn-success btn-sm" href="{% url 'research-lines:management:applied-research-line-teacher-delete' rline_id=rline.pk teacher_rline_id=teacher_rline_id %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>

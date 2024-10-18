@@ -34,7 +34,7 @@ def can_edit_phd(func_to_decorate):
         request = original_args[0]
 
         phd = get_object_or_404(
-            DidatticaDottoratoAttivitaFormativa, pk=original_kwargs["code"]
+            DidatticaDottoratoAttivitaFormativa, pk=original_kwargs["phd_id"]
         )
         original_kwargs["phd"] = phd
 

@@ -37,7 +37,7 @@ def can_manage_research_lines(func_to_decorate):
 def can_edit_base_research_line(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        rline = get_object_or_404(RicercaLineaBase, pk=original_kwargs["code"])
+        rline = get_object_or_404(RicercaLineaBase, pk=original_kwargs["rline_id"])
         teachers = RicercaDocenteLineaBase.objects.filter(ricerca_linea_base=rline)
         original_kwargs["rline"] = rline
         original_kwargs["teachers"] = teachers
@@ -69,7 +69,7 @@ def can_edit_base_research_line(func_to_decorate):
 def can_edit_applied_research_line(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        rline = get_object_or_404(RicercaLineaApplicata, pk=original_kwargs["code"])
+        rline = get_object_or_404(RicercaLineaApplicata, pk=original_kwargs["rline_id"])
         teachers = RicercaDocenteLineaApplicata.objects.filter(
             ricerca_linea_applicata=rline
         )

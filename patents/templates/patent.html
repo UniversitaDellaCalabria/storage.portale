@@ -38,7 +38,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'patents:management:patent-delete' code=patent.pk %}" target="_blank">
+                <a class="btn btn-success btn-sm" href="{% url 'patents:management:patent-delete' patent_id=patent.pk %}" target="_blank">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -76,7 +76,7 @@
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'patents:management:patent-inventor-edit' code=patent.pk inventor_id=inventor.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'patents:management:patent-inventor-edit' patent_id=patent.pk inventor_id=inventor.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -116,7 +116,7 @@
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'patents:management:patent-inventor-delete' code=patent.pk inventor_id=inventor.pk %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'patents:management:patent-inventor-delete' patent_id=patent.pk inventor_id=inventor.pk %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
@@ -128,7 +128,7 @@
             </table>
 
             {% endif %}
-            <a href="{% url 'patents:management:patent-inventor-new' code=patent.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'patents:management:patent-inventor-new' patent_id=patent.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

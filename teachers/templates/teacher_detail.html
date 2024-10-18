@@ -19,7 +19,7 @@
 
             {% if other_data %}
             <div class="text-right mb-3">
-                <a href="{% url 'teachers:management:teacher-other-data-edit' code=code data_id=other_data.pk %}" class="btn btn-primary btn-xs">
+                <a href="{% url 'teachers:management:teacher-other-data-edit' encrypted_matricola=encrypted_matricola data_id=other_data.pk %}" class="btn btn-primary btn-xs">
                     <svg class="icon icon-xs icon-white">
                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                     </svg> {% trans "Edit" %}
@@ -58,7 +58,7 @@
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <a class="btn btn-success btn-sm" href="{% url 'teachers:management:teacher-other-data-delete' code=code data_id=other_data.pk %}">
+                            <a class="btn btn-success btn-sm" href="{% url 'teachers:management:teacher-other-data-delete' encrypted_matricola=encrypted_matricola data_id=other_data.pk %}">
                                 {% trans 'Yes, proceed' %}
                             </a>
                         </div>
@@ -142,7 +142,7 @@
                 </tbody>
             </table>
             {% else %}
-            <a href="{% url 'teachers:management:teacher-other-data-new' code=code %}" class="text-center btn btn-block btn-success btn-xs">
+            <a href="{% url 'teachers:management:teacher-other-data-new' encrypted_matricola=encrypted_matricola %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add" %}
@@ -161,7 +161,7 @@
 
             {% include "blocks/crud_teacher_news.html" with uid="id_1" url=url_news %}
 
-            <a href="{% url 'teachers:management:teacher-board-data-new' code=code %}" class="text-center btn btn-block btn-success btn-xs">
+            <a href="{% url 'teachers:management:teacher-board-data-new' encrypted_matricola=encrypted_matricola %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
@@ -179,7 +179,7 @@
 
             {% include "blocks/crud_teacher_books.html" with uid="id_2" url=url_books %}
 
-            <a href="{% url 'teachers:management:teacher-materials-data-new' code=code %}" class="text-center btn btn-block btn-success btn-xs">
+            <a href="{% url 'teachers:management:teacher-materials-data-new' encrypted_matricola=encrypted_matricola %}" class="text-center btn btn-block btn-success btn-xs">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

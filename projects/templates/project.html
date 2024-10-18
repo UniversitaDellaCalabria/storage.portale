@@ -38,7 +38,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'projects:management:projects-delete' code=project.pk %}">
+                <a class="btn btn-success btn-sm" href="{% url 'projects:management:projects-delete' project_id=project.pk %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -74,7 +74,7 @@
                             {{ project.uo|default:"-" }}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'projects:management:project-structure-data-edit' code=project.pk data_id=structure_data.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'projects:management:project-structure-data-edit' project_id=project.pk data_id=structure_data.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -115,7 +115,7 @@
         {#                                    </p>#}
         {#                                </div>#}
         {#                                <div class="modal-footer">#}
-        {#                                    <a class="btn btn-success btn-sm" href="{% url 'projects:management:company-unical-referent-data-delete' code=company.pk data_id=referent_data.pk %}">#}
+        {#                                    <a class="btn btn-success btn-sm" href="{% url 'projects:management:company-unical-referent-data-delete' project_id=company.pk data_id=referent_data.pk %}">#}
         {#                                        {% trans 'Yes, proceed' %}#}
         {#                                    </a>#}
         {#                                </div>#}
@@ -149,7 +149,7 @@
                                 {% endif %}
                             </td>
                         <td class="text-right">
-                            <a href="{% url 'projects:management:project-director-edit' code=project.pk  director_id=director.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'projects:management:project-director-edit' project_id=project.pk  director_id=director.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -189,7 +189,7 @@
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'projects:management:project-director-delete' code=project.pk director_id=director.pk %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'projects:management:project-director-delete' project_id=project.pk director_id=director.pk %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
@@ -201,7 +201,7 @@
             </table>
 
             {% endif %}
-            <a href="{% url 'projects:management:project-director-new' code=project.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'projects:management:project-director-new' project_id=project.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
@@ -228,7 +228,7 @@
                                 {% endif %}
                             </td>
                         <td class="text-right">
-                            <a href="{% url 'projects:management:project-researcher-edit' code=project.pk  researcher_id=researcher.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'projects:management:project-researcher-edit' project_id=project.pk  researcher_id=researcher.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -268,7 +268,7 @@
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'projects:management:project-researcher-delete' code=project.pk researcher_id=researcher.pk %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'projects:management:project-researcher-delete' project_id=project.pk researcher_id=researcher.pk %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
@@ -280,7 +280,7 @@
             </table>
 
             {% endif %}
-            <a href="{% url 'projects:management:project-researcher-new' code=project.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'projects:management:project-researcher-new' project_id=project.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

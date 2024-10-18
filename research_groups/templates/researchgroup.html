@@ -38,7 +38,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'research-groups:management:research-group-delete' code=rgroup.pk %}">
+                <a class="btn btn-success btn-sm" href="{% url 'research-groups:management:research-group-delete' rgroup_id=rgroup.pk %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -86,7 +86,7 @@
                         <td>{{ teacher.dt_inizio|default:"-" }}</td>
                         <td>{{ teacher.dt_fine|default:"-" }}</td>
                         <td>
-                            <a href="{% url 'research-groups:management:research-group-teacher-edit' code=rgroup.pk teacher_rgroup_id=teacher.pk %}" class="d-flex btn btn-primary btn-xs">
+                            <a href="{% url 'research-groups:management:research-group-teacher-edit' rgroup_id=rgroup.pk teacher_rgroup_id=teacher.pk %}" class="d-flex btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -128,7 +128,7 @@
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'research-groups:management:research-group-teacher-delete' code=rgroup.pk teacher_rgroup_id=teacher.pk %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'research-groups:management:research-group-teacher-delete' rgroup_id=rgroup.pk teacher_rgroup_id=teacher.pk %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
@@ -140,7 +140,7 @@
             </table>
 
             {% endif %}
-            <a href="{% url 'research-groups:management:research-group-teacher-new' code=rgroup.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'research-groups:management:research-group-teacher-new' rgroup_id=rgroup.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

@@ -34,7 +34,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-delete' code=laboratory.pk %}">
+                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-delete' laboratory_id=laboratory.pk %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -70,7 +70,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-request-approval' code=laboratory.pk %}">
+                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-request-approval' laboratory_id=laboratory.pk %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -106,7 +106,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-approve' code=laboratory.pk %}">
+                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-approve' laboratory_id=laboratory.pk %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -197,7 +197,7 @@
             <h4 class="mb-3" style="font-weight: lighter;">{% trans "Extra Departments" %}</h4>
             <!-- Interdepartmental form -->
             <form method="post"
-                  action="{% url 'laboratories:management:laboratory-interdepartmental-edit' code=laboratory.pk %}"
+                  action="{% url 'laboratories:management:laboratory-interdepartmental-edit' laboratory_id=laboratory.pk %}"
                   enctype="multipart/form-data"
                   novalidate>
                 <div class="row">
@@ -304,7 +304,7 @@
                                                 </p>
                                             </div>
                                             <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-extra-departments-delete' code=laboratory.pk data_id=extra_department.id %}">
+                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-extra-departments-delete' laboratory_id=laboratory.pk data_id=extra_department.id %}">
                                                     {% trans 'Yes, proceed' %}
                                                 </a>
                                             </div>
@@ -321,7 +321,7 @@
             </div>
             {% if user_roles.superuser or user_roles.operator %}
                 {% if laboratory.laboratorio_interdipartimentale == 'SI' %}
-                <a href="{% url 'laboratories:management:laboratory-extra-departments-new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                <a href="{% url 'laboratories:management:laboratory-extra-departments-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                 {% else %}
                 <a href="" class="btn btn-block btn-success disabled">
                 {% endif %}
@@ -345,7 +345,7 @@
             <!-- Activities -->
             <!-- Equipment value form -->
             <form method="post"
-                action="{% url 'laboratories:management:laboratory-scope-edit' code=laboratory.pk %}"
+                action="{% url 'laboratories:management:laboratory-scope-edit' laboratory_id=laboratory.pk %}"
                 enctype="multipart/form-data"
                 novalidate>
                 <div class="row">
@@ -417,7 +417,7 @@
                                 {% trans activity.tipologia_attivita__descrizione|default:"-" %}
                             </td>
                             <td class="text-right">
-                                <a href="{% url 'laboratories:management:laboratory-activities-edit' code=laboratory.pk data_id=activity.id %}" class="btn btn-primary btn-xs">
+                                <a href="{% url 'laboratories:management:laboratory-activities-edit' laboratory_id=laboratory.pk data_id=activity.id %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg>
@@ -463,7 +463,7 @@
                                                 </p>
                                             </div>
                                             <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-activities-delete' code=laboratory.pk data_id=activity.id %}">
+                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-activities-delete' laboratory_id=laboratory.pk data_id=activity.id %}">
                                                     {% trans 'Yes, proceed' %}
                                                 </a>
                                             </div>
@@ -480,7 +480,7 @@
             </div>
             {% if user_roles.superuser or user_roles.operator %}
             {% if activities|length < 3 %}
-            <a href="{% url 'laboratories:management:laboratory-activities-new' code=laboratory.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'laboratories:management:laboratory-activities-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
             {% else %}
             <a href="" aria-disabled="true" class="btn btn-block btn-success disabled">
             {% endif %}
@@ -504,7 +504,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url 'laboratories:management:laboratory-researches-erc1-edit' code=laboratory.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'laboratories:management:laboratory-researches-erc1-edit' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                 </svg>
@@ -538,7 +538,7 @@
                                 {% endif %}
                             </td>
                             <td class="text-right">
-                                <a href="{% url 'laboratories:management:laboratory-scientific-director-edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
+                                <a href="{% url 'laboratories:management:laboratory-scientific-director-edit' laboratory_id=laboratory.pk %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg>
@@ -603,7 +603,7 @@
                                                 </p>
                                             </div>
                                             <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-research-staff-delete' code=laboratory.pk data_id=researcher.id %}">
+                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-research-staff-delete' laboratory_id=laboratory.pk data_id=researcher.id %}">
                                                     {% trans 'Yes, proceed' %}
                                                 </a>
                                             </div>
@@ -619,7 +619,7 @@
                 </table>
             </div> 
             {% if user_roles.superuser or user_roles.operator %}
-            <a href="{% url 'laboratories:management:laboratory-research-staff-new' code=laboratory.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'laboratories:management:laboratory-research-staff-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
@@ -675,7 +675,7 @@
                                                 </p>
                                             </div>
                                             <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-technical-staff-delete' code=laboratory.pk data_id=technician.id %}">
+                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-technical-staff-delete' laboratory_id=laboratory.pk data_id=technician.id %}">
                                                     {% trans 'Yes, proceed' %}
                                                 </a>
                                             </div>
@@ -691,7 +691,7 @@
                 </table>
             </div>
             {% if user_roles.superuser or user_roles.operator %}
-            <a href="{% url 'laboratories:management:laboratory-technical-staff-new' code=laboratory.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'laboratories:management:laboratory-technical-staff-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
@@ -726,7 +726,7 @@
                             <td>{{ location.piano }}</td>
                             <td>{{ location.note }}</td>
                             <td class="text-right">
-                                <a href="{% url 'laboratories:management:laboratory-locations-edit' code=laboratory.pk data_id=location.id %}" class="btn btn-primary btn-xs">
+                                <a href="{% url 'laboratories:management:laboratory-locations-edit' laboratory_id=laboratory.pk data_id=location.id %}" class="btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg>
@@ -772,7 +772,7 @@
                                                 </p>
                                             </div>
                                             <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-locations-delete' code=laboratory.pk data_id=location.id %}">
+                                                <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-locations-delete' laboratory_id=laboratory.pk data_id=location.id %}">
                                                     {% trans 'Yes, proceed' %}
                                                 </a>
                                             </div>
@@ -788,7 +788,7 @@
                 </table>
             </div> 
             {% if user_roles.superuser or user_roles.operator %}
-            <a href="{% url 'laboratories:management:laboratory-locations-new' code=laboratory.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'laboratories:management:laboratory-locations-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
@@ -797,7 +797,7 @@
             <!-- /Locations -->
             <hr />
             <div class="shadow-sm p-3 mb-5 bg-white">
-                <form action="{% url 'laboratories:management:laboratory-info-sede-edit' code=laboratory.pk %}"
+                <form action="{% url 'laboratories:management:laboratory-info-sede-edit' laboratory_id=laboratory.pk %}"
                     method="POST"
                     novalidate>
                     {% include "form_template.html" with form=laboratoriodatibaseinfosedestruttureform %}
@@ -823,7 +823,7 @@
                         <!-- Equipment -->
                         <!-- Equipment value form -->
                         <form method="post"
-                            action="{% url 'laboratories:management:laboratory-equipment-value-edit' code=laboratory.pk %}"
+                            action="{% url 'laboratories:management:laboratory-equipment-value-edit' laboratory_id=laboratory.pk %}"
                             enctype="multipart/form-data"
                             novalidate>
                             <div class="row">
@@ -906,7 +906,7 @@
                                         <td>{{ equipment_piece.quantita }}</td>
 
                                         <td class="text-right">
-                                            <a href="{% url 'laboratories:management:laboratory-equipment-edit' code=laboratory.pk data_id=equipment_piece.id %}" class="btn btn-primary btn-xs">
+                                            <a href="{% url 'laboratories:management:laboratory-equipment-edit' laboratory_id=laboratory.pk data_id=equipment_piece.id %}" class="btn btn-primary btn-xs">
                                                 <svg class="icon icon-xs icon-white">
                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                                 </svg>
@@ -952,7 +952,7 @@
                                                             </p>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-equipment-delete' code=laboratory.pk data_id=equipment_piece.id %}">
+                                                            <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-equipment-delete' laboratory_id=laboratory.pk data_id=equipment_piece.id %}">
                                                                 {% trans 'Yes, proceed' %}
                                                             </a>
                                                         </div>
@@ -968,7 +968,7 @@
                             </table>
                         </div>
                         {% if user_roles.superuser or user_roles.operator %}
-                        <a href="{% url 'laboratories:management:laboratory-equipment-new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                        <a href="{% url 'laboratories:management:laboratory-equipment-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                             <svg class="icon icon-xs icon-white">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                             </svg> {% trans "Add new" %}
@@ -996,7 +996,7 @@
                                             {% trans offered_service.nome_servizio|default:"-" %}
                                         </td>
                                         <td class="text-right">
-                                            <a href="{% url 'laboratories:management:laboratory-offered-services-edit' code=laboratory.pk data_id=offered_service.id %}" class="btn btn-primary btn-xs">
+                                            <a href="{% url 'laboratories:management:laboratory-offered-services-edit' laboratory_id=laboratory.pk data_id=offered_service.id %}" class="btn btn-primary btn-xs">
                                                 <svg class="icon icon-xs icon-white">
                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                                 </svg>
@@ -1042,7 +1042,7 @@
                                                             </p>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-offered-services-delete' code=laboratory.pk data_id=offered_service.id %}">
+                                                            <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-offered-services-delete' laboratory_id=laboratory.pk data_id=offered_service.id %}">
                                                                 {% trans 'Yes, proceed' %}
                                                             </a>
                                                         </div>
@@ -1058,7 +1058,7 @@
                             </table>
                         </div>
                         {% if user_roles.superuser or user_roles.operator %}
-                        <a href="{% url 'laboratories:management:laboratory-offered-services-new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                        <a href="{% url 'laboratories:management:laboratory-offered-services-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                             <svg class="icon icon-xs icon-white">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                             </svg> {% trans "Add new" %}
@@ -1078,7 +1078,7 @@
                                             {% trans provided_service.descrizione|default:"-" %}
                                         </td>
                                         <td class="text-right">
-                                            <a href="{% url 'laboratories:management:laboratory-provided-services-edit' code=laboratory.pk data_id=provided_service.id %}" class="btn btn-primary btn-xs">
+                                            <a href="{% url 'laboratories:management:laboratory-provided-services-edit' laboratory_id=laboratory.pk data_id=provided_service.id %}" class="btn btn-primary btn-xs">
                                                 <svg class="icon icon-xs icon-white">
                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                                 </svg>
@@ -1124,7 +1124,7 @@
                                                             </p>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-provided-services-delete' code=laboratory.pk data_id=provided_service.id %}">
+                                                            <a class="btn btn-success btn-sm" href="{% url 'laboratories:management:laboratory-provided-services-delete' laboratory_id=laboratory.pk data_id=provided_service.id %}">
                                                                 {% trans 'Yes, proceed' %}
                                                             </a>
                                                         </div>
@@ -1140,7 +1140,7 @@
                             </table>
                         </div> 
                         {% if user_roles.superuser or user_roles.operator %}
-                        <a href="{% url 'laboratories:management:laboratory-provided-services-new' code=laboratory.pk %}" class="btn btn-block btn-success">
+                        <a href="{% url 'laboratories:management:laboratory-provided-services-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                             <svg class="icon icon-xs icon-white">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                             </svg> {% trans "Add new" %}
@@ -1168,7 +1168,7 @@
                                         </td>
                                         <td class="text-right">
                                             {% if user_roles.superuser or user_roles.operator %}
-                                            <a href="{% url 'laboratories:management:laboratory-safety-manager-edit' code=laboratory.pk %}" class="btn btn-primary btn-xs">
+                                            <a href="{% url 'laboratories:management:laboratory-safety-manager-edit' laboratory_id=laboratory.pk %}" class="btn btn-primary btn-xs">
                                                 <svg class="icon icon-xs icon-white">
                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                                 </svg> 
@@ -1185,7 +1185,7 @@
                         </div>
                         <hr />
                         <!-- Risk Types -->
-                        <form method="post" action="{% url 'laboratories:management:laboratory-risk-types-edit' code=laboratory.pk %}" novalidate>
+                        <form method="post" action="{% url 'laboratories:management:laboratory-risk-types-edit' laboratory_id=laboratory.pk %}" novalidate>
                             {% include "form_template.html" with form=risk_type_form %}
                             <hr />
                             {% if user_roles.superuser or user_roles.operator %}

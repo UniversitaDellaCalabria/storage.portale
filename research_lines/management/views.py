@@ -100,7 +100,7 @@ def applied_research_lines_new(request, my_offices=None):
                     office__name=OFFICE_RESEARCH_LINES,
                     office__is_active=True,
                     office__organizational_structure__is_active=True,
-                    office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id,
+                    office__organizational_structure__unique_rline_id=teacher.cd_uo_aff_org_id,
                 )
                 if not structure_afforg:
                     raise Exception(_("Add a teacher belonging to your structure"))
@@ -196,7 +196,7 @@ def base_research_line_new(request, my_offices=None):
                     office__name=OFFICE_RESEARCH_LINES,
                     office__is_active=True,
                     office__organizational_structure__is_active=True,
-                    office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id,
+                    office__organizational_structure__unique_rline_id=teacher.cd_uo_aff_org_id,
                 )
                 if not structure_afforg:
                     raise Exception(_("Add a teacher belonging to your structure"))
@@ -249,7 +249,7 @@ def base_research_line_new(request, my_offices=None):
 @login_required
 @can_manage_research_lines
 @can_edit_base_research_line
-def base_research_line(request, code, my_offices=None, rline=None, teachers=None):
+def base_research_line(request, rline_id, my_offices=None, rline=None, teachers=None):
     """
     dettaglio linea di ricerca applicata con form di modifica
     """
@@ -278,7 +278,7 @@ def base_research_line(request, code, my_offices=None, rline=None, teachers=None
             )
 
             return redirect(
-                "research-lines:management:base-research-line-edit", code=code
+                "research-lines:management:base-research-line-edit", rline_id=rline_id
             )
 
         else:  # pragma: no cover
@@ -315,7 +315,7 @@ def base_research_line(request, code, my_offices=None, rline=None, teachers=None
 @login_required
 @can_manage_research_lines
 @can_edit_applied_research_line
-def applied_research_line(request, code, my_offices=None, rline=None, teachers=None):
+def applied_research_line(request, rline_id, my_offices=None, rline=None, teachers=None):
     """
     dettaglio linea di ricerca di base con form di modifica
     """
@@ -351,7 +351,7 @@ def applied_research_line(request, code, my_offices=None, rline=None, teachers=N
             )
 
             return redirect(
-                "research-lines:management:applied-research-line-edit", code=code
+                "research-lines:management:applied-research-line-edit", rline_id=rline_id
             )
 
         else:  # pragma: no cover
@@ -383,7 +383,7 @@ def applied_research_line(request, code, my_offices=None, rline=None, teachers=N
 # @can_manage_research_lines
 # @can_edit_base_research_line
 def base_research_line_delete(
-    request, code, my_offices=None, rline=None, teachers=None
+    request, rline_id, my_offices=None, rline=None, teachers=None
 ):
     """
     elimina linea di ricerca di base
@@ -393,7 +393,7 @@ def base_research_line_delete(
     # if not request.user.is_superuser:
     # raise Exception(_('Permission denied'))
 
-    rline = get_object_or_404(RicercaLineaBase, pk=code)
+    rline = get_object_or_404(RicercaLineaBase, pk=rline_id)
     rline.delete()
     messages.add_message(
         request, messages.SUCCESS, _("Research line removed successfully")
@@ -408,7 +408,7 @@ def base_research_line_delete(
 # @can_manage_research_lines
 # @can_edit_applied_research_line
 def applied_research_lines_delete(
-    request, code, my_offices=None, rline=None, teachers=None
+    request, rline_id, my_offices=None, rline=None, teachers=None
 ):
     """
     elimina linea di ricerca applicata
@@ -418,7 +418,7 @@ def applied_research_lines_delete(
     # if not request.user.is_superuser:
     # raise Exception(_('Permission denied'))
 
-    rline = get_object_or_404(RicercaLineaApplicata, pk=code)
+    rline = get_object_or_404(RicercaLineaApplicata, pk=rline_id)
     rline.delete()
     messages.add_message(
         request, messages.SUCCESS, _("Research line removed successfully")
@@ -430,7 +430,7 @@ def applied_research_lines_delete(
 @can_manage_research_lines
 @can_edit_base_research_line
 def base_research_line_teacher_new(
-    request, code, my_offices=None, rline=None, teachers=None
+    request, rline_id, my_offices=None, rline=None, teachers=None
 ):
     """
     nuovo docente linea di ricerca di base
@@ -439,8 +439,8 @@ def base_research_line_teacher_new(
     if request.POST:
         form = RicercaDocenteLineaBaseForm(data=request.POST)
         if form.is_valid():
-            teacher_code = decrypt(form.cleaned_data["choosen_person"])
-            teacher = get_object_or_404(Personale, matricola=teacher_code)
+            teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
+            teacher = get_object_or_404(Personale, matricola=teacher_rline_id)
             RicercaDocenteLineaBase.objects.create(
                 user_ins=request.user,
                 ricerca_linea_base=rline,
@@ -460,7 +460,7 @@ def base_research_line_teacher_new(
                 request, messages.SUCCESS, _("Teacher added successfully")
             )
             return redirect(
-                "research-lines:management:base-research-line-edit", code=code
+                "research-lines:management:base-research-line-edit", rline_id=rline_id
             )
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -472,7 +472,7 @@ def base_research_line_teacher_new(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("research-lines:management:base-research-lines"): _("Research lines"),
         reverse(
-            "research-lines:management:base-research-line-edit", kwargs={"code": code}
+            "research-lines:management:base-research-line-edit", kwargs={"rline_id": rline_id}
         ): rline.descrizione,
         "#": _("New teacher"),
     }
@@ -493,7 +493,7 @@ def base_research_line_teacher_new(
 @can_manage_research_lines
 @can_edit_applied_research_line
 def applied_researchline_teacher_new(
-    request, code, my_offices=None, rline=None, teachers=None
+    request, rline_id, my_offices=None, rline=None, teachers=None
 ):
     """
     nuovo docente linea di ricerca applicata
@@ -502,8 +502,8 @@ def applied_researchline_teacher_new(
     if request.POST:
         form = RicercaDocenteLineaApplicataForm(data=request.POST)
         if form.is_valid():
-            teacher_code = decrypt(form.cleaned_data["choosen_person"])
-            teacher = get_object_or_404(Personale, matricola=teacher_code)
+            teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
+            teacher = get_object_or_404(Personale, matricola=teacher_rline_id)
             RicercaDocenteLineaApplicata.objects.create(
                 user_ins=request.user,
                 ricerca_linea_applicata=rline,
@@ -523,7 +523,7 @@ def applied_researchline_teacher_new(
                 request, messages.SUCCESS, _("Teacher added successfully")
             )
             return redirect(
-                "research-lines:management:applied-research-line-edit", code=code
+                "research-lines:management:applied-research-line-edit", rline_id=rline_id
             )
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -538,7 +538,7 @@ def applied_researchline_teacher_new(
         ),
         reverse(
             "research-lines:management:applied-research-line-edit",
-            kwargs={"code": code},
+            kwargs={"rline_id": rline_id},
         ): rline.descrizione,
         "#": _("New teacher"),
     }
@@ -559,7 +559,7 @@ def applied_researchline_teacher_new(
 @can_manage_research_lines
 @can_edit_base_research_line
 def base_research_line_teacher_edit(
-    request, code, teacher_rline_id, my_offices=None, rline=None, teachers=None
+    request, rline_id, teacher_rline_id, my_offices=None, rline=None, teachers=None
 ):
     """
     modifica un docente della linea di ricerca di base
@@ -568,18 +568,18 @@ def base_research_line_teacher_edit(
         RicercaDocenteLineaBase.objects.select_related("personale"), pk=teacher_rline_id
     )
     teacher = teacher_rline.personale
-    teacher_code = encrypt(teacher.matricola)
+    teacher_rline_id = encrypt(teacher.matricola)
     teacher_data = f"{teacher.nome} {teacher.cognome}"
     form = RicercaDocenteLineaBaseForm(
-        instance=teacher_rline, initial={"choosen_person": teacher_code}
+        instance=teacher_rline, initial={"choosen_person": teacher_rline_id}
     )
 
     if request.POST:
         form = RicercaDocenteLineaBaseForm(instance=teacher_rline, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            teacher_code = decrypt(form.cleaned_data["choosen_person"])
-            new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+            teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
+            new_teacher = get_object_or_404(Personale, matricola=teacher_rline_id)
             teacher_rline.user_mod = request.user
             teacher_rline.personale = new_teacher
             teacher_rline.save()
@@ -594,7 +594,7 @@ def base_research_line_teacher_edit(
                 request, messages.SUCCESS, _("Teacher edited successfully")
             )
             return redirect(
-                "research-lines:management:base-research-line-edit", code=code
+                "research-lines:management:base-research-line-edit", rline_id=rline_id
             )
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -606,7 +606,7 @@ def base_research_line_teacher_edit(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("research-lines:management:base-research-lines"): _("Research lines"),
         reverse(
-            "research-lines:management:base-research-line-edit", kwargs={"code": code}
+            "research-lines:management:base-research-line-edit", kwargs={"rline_id": rline_id}
         ): rline.descrizione,
         "#": teacher_data,
     }
@@ -629,7 +629,7 @@ def base_research_line_teacher_edit(
 @can_manage_research_lines
 @can_edit_applied_research_line
 def applied_researchline_teacher_edit(
-    request, code, teacher_rline_id, my_offices=None, rline=None, teachers=None
+    request, rline_id, teacher_rline_id, my_offices=None, rline=None, teachers=None
 ):
     """
     modifica un docente della linea di ricerca applicata
@@ -639,10 +639,10 @@ def applied_researchline_teacher_edit(
         pk=teacher_rline_id,
     )
     teacher = teacher_rline.personale
-    teacher_code = encrypt(teacher.matricola)
+    teacher_rline_id = encrypt(teacher.matricola)
     teacher_data = f"{teacher.nome} {teacher.cognome}"
     form = RicercaDocenteLineaApplicataForm(
-        instance=teacher_rline, initial={"choosen_person": teacher_code}
+        instance=teacher_rline, initial={"choosen_person": teacher_rline_id}
     )
 
     if request.POST:
@@ -651,8 +651,8 @@ def applied_researchline_teacher_edit(
         )
         if form.is_valid():
             form.save(commit=False)
-            teacher_code = decrypt(form.cleaned_data["choosen_person"])
-            new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+            teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
+            new_teacher = get_object_or_404(Personale, matricola=teacher_rline_id)
             teacher_rline.user_mod = request.user
             teacher_rline.personale = new_teacher
             teacher_rline.save()
@@ -667,7 +667,7 @@ def applied_researchline_teacher_edit(
                 request, messages.SUCCESS, _("Teacher edited successfully")
             )
             return redirect(
-                "research-lines:management:applied-research-line-edit", code=code
+                "research-lines:management:applied-research-line-edit", rline_id=rline_id
             )
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -682,7 +682,7 @@ def applied_researchline_teacher_edit(
         ),
         reverse(
             "research-lines:management:applied-research-line-edit",
-            kwargs={"code": code},
+            kwargs={"rline_id": rline_id},
         ): rline.descrizione,
         "#": teacher_data,
     }
@@ -705,7 +705,7 @@ def applied_researchline_teacher_edit(
 @can_manage_research_lines
 @can_edit_base_research_line
 def base_research_line_teacher_delete(
-    request, code, teacher_rline_id, my_offices=None, rline=None, teachers=None
+    request, rline_id, teacher_rline_id, my_offices=None, rline=None, teachers=None
 ):
     """
     elimina docente dalla linea di ricerca
@@ -732,14 +732,14 @@ def base_research_line_teacher_delete(
     teacher_rline.delete()
 
     messages.add_message(request, messages.SUCCESS, _("Teacher removed successfully"))
-    return redirect("research-lines:management:base-research-line-edit", code=code)
+    return redirect("research-lines:management:base-research-line-edit", rline_id=rline_id)
 
 
 @login_required
 @can_manage_research_lines
 @can_edit_applied_research_line
 def applied_researchline_teacher_delete(
-    request, code, teacher_rline_id, my_offices=None, rline=None, teachers=None
+    request, rline_id, teacher_rline_id, my_offices=None, rline=None, teachers=None
 ):
     """
     elimina docente dalla linea di ricerca
@@ -771,4 +771,4 @@ def applied_researchline_teacher_delete(
     teacher_rline.delete()
 
     messages.add_message(request, messages.SUCCESS, _("Teacher removed successfully"))
-    return redirect("research-lines:management:applied-research-line-edit", code=code)
+    return redirect("research-lines:management:applied-research-line-edit", rline_id=rline_id)

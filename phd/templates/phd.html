@@ -38,7 +38,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'phd:management:phd-delete' code=phd.pk %}">
+                <a class="btn btn-success btn-sm" href="{% url 'phd:management:phd-delete' phd_id=phd.pk %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -78,7 +78,7 @@
                                 {% endif %}
                             </td>
                         <td class="text-right">
-                            <a href="{% url 'phd:management:phd-main-teacher' code=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'phd:management:phd-main-teacher' phd_id=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -118,7 +118,7 @@
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'phd:management:phd-main-teacher-delete' code=phd.pk teacher_id=teacher.pk %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'phd:management:phd-main-teacher-delete' phd_id=phd.pk teacher_id=teacher.pk %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
@@ -130,7 +130,7 @@
             </table>
 
             {% endif %}
-            <a href="{% url 'phd:management:phd-main-teacher-new' code=phd.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'phd:management:phd-main-teacher-new' phd_id=phd.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}
@@ -157,7 +157,7 @@
                                 {% endif %}
                             </td>
                         <td class="text-right">
-                            <a href="{% url 'phd:management:phd-other-teacher' code=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'phd:management:phd-other-teacher' phd_id=phd.pk  teacher_id=teacher.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -197,7 +197,7 @@
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'phd:management:phd-other-teacher-delete' code=phd.pk teacher_id=teacher.pk %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'phd:management:phd-other-teacher-delete' phd_id=phd.pk teacher_id=teacher.pk %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
@@ -209,7 +209,7 @@
             </table>
 
             {% endif %}
-            <a href="{% url 'phd:management:phd-other-teacher-new' code=phd.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'phd:management:phd-other-teacher-new' phd_id=phd.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

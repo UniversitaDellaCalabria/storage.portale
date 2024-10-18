@@ -16,17 +16,16 @@ from .views import (
 
 app_name = "management"
 
-urlpatterns = []
-
-
-urlpatterns += path('projects/', projects, name='projects'),
-urlpatterns += path('projects/new/', project_new, name='project-new'),
-urlpatterns += path('projects/<str:code>/', project, name='project-edit'),
-urlpatterns += path('projects/<str:code>/delete/', project_delete, name='project-delete'),
-urlpatterns += path('projects/<str:code>/director/new/', project_director_new, name='project-director-new'),
-urlpatterns += path('projects/<str:code>/director-data/<str:director_id>/', project_director_edit, name='project-director-edit'),
-urlpatterns += path('projects/<str:code>/director/<str:director_id>/delete/', project_director_delete, name='project-director-delete'),
-urlpatterns += path('projects/<str:code>/researcher/new/', project_researcher_new, name='project-researcher-new'),
-urlpatterns += path('projects/<str:code>/researcher-data/<str:researcher_id>/', project_researcher_edit, name='project-researcher-edit'),
-urlpatterns += path('projects/<str:code>/researcher/<str:researcher_id>/delete/', project_researcher_delete, name='project-researcher-delete'),
-urlpatterns += path('projects/<str:code>/structure-data/<str:data_id>/', project_structure_data_edit, name='project-structure-data-edit'),
+urlpatterns = [
+    path('projects/', projects, name='projects'),
+    path('projects/new/', project_new, name='project-new'),
+    path('projects/<int:project_id>/', project, name='project-edit'),
+    path('projects/<int:project_id>/delete/', project_delete, name='project-delete'),
+    path('projects/<int:project_id>/director/new/', project_director_new, name='project-director-new'),
+    path('projects/<int:project_id>/director-data/<int:director_id>/', project_director_edit, name='project-director-edit'),
+    path('projects/<int:project_id>/director/<int:director_id>/delete/', project_director_delete, name='project-director-delete'),
+    path('projects/<int:project_id>/researcher/new/', project_researcher_new, name='project-researcher-new'),
+    path('projects/<int:project_id>/researcher-data/<int:researcher_id>/', project_researcher_edit, name='project-researcher-edit'),
+    path('projects/<int:project_id>/researcher/<int:researcher_id>/delete/', project_researcher_delete, name='project-researcher-delete'),
+    path('projects/<int:project_id>/structure-data/<int:data_id>/', project_structure_data_edit, name='project-structure-data-edit'),
+]

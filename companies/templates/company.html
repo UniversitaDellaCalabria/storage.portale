@@ -38,7 +38,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'companies:management:company-delete' code=company.pk %}">
+                <a class="btn btn-success btn-sm" href="{% url 'companies:management:company-delete' company_id=company.pk %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>
@@ -76,7 +76,7 @@
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{% url 'companies:management:company-unical-referent-edit' code=company.pk data_id=referent_data.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'companies:management:company-unical-referent-edit' company_id=company.pk data_id=referent_data.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -119,7 +119,7 @@
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <a class="btn btn-success btn-sm" href="{% url 'companies:management:company-unical-referent-data-delete' code=company.pk data_id=referent_data.pk %}">
+                                            <a class="btn btn-success btn-sm" href="{% url 'companies:management:company-unical-referent-data-delete' company_id=company.pk data_id=referent_data.pk %}">
                                                 {% trans 'Yes, proceed' %}
                                             </a>
                                         </div>
@@ -151,7 +151,7 @@
                                 {{ department.nome_origine_dipartimento|default:"-" }}
                             </td>
                         <td class="text-right">
-                            <a href="{% url 'companies:management:company-unical-department-data-edit' code=company.pk  department_id=department.pk %}" class="btn btn-primary btn-xs">
+                            <a href="{% url 'companies:management:company-unical-department-data-edit' company_id=company.pk  department_id=department.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                 </svg> {% trans "Edit" %}
@@ -191,7 +191,7 @@
                                     </p>
                                 </div>
                                 <div class="modal-footer">
-                                    <a class="btn btn-success btn-sm" href="{% url 'companies:management:company-unical-department-data-delete' code=company.pk department_id=department.pk %}">
+                                    <a class="btn btn-success btn-sm" href="{% url 'companies:management:company-unical-department-data-delete' company_id=company.pk department_id=department.pk %}">
                                         {% trans 'Yes, proceed' %}
                                     </a>
                                 </div>
@@ -203,7 +203,7 @@
             </table>
 
             {% endif %}
-            <a href="{% url 'companies:management:company-unical-department-data-new' code=company.pk %}" class="btn btn-block btn-success">
+            <a href="{% url 'companies:management:company-unical-department-data-new' company_id=company.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
                 </svg> {% trans "Add new" %}

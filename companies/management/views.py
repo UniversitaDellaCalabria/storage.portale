@@ -33,13 +33,13 @@ def companies(request, company=None):
 
 @login_required
 @can_manage_companies
-def company(request, code, company=None):
+def company(request, company_id, company=None):
     """
     dettaglio impresa
     """
     form = SpinoffStartupDatiBaseForm(instance=company)
 
-    referent_data = get_object_or_404(SpinoffStartupDatiBase, pk=code)
+    referent_data = get_object_or_404(SpinoffStartupDatiBase, pk=company_id)
     departments = SpinoffStartupDipartimento.objects.filter(
         spinoff_startup_dati_base=company
     )
@@ -69,7 +69,7 @@ def company(request, code, company=None):
                 request, messages.SUCCESS, _("Company edited successfully")
             )
 
-            return redirect("companies:management:company-edit", code=code)
+            return redirect("companies:management:company-edit", company_id=company_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -202,7 +202,7 @@ def company_new(request, company=None):
 
 @login_required
 @can_manage_companies
-def company_unical_referent_edit(request, code, data_id, company=None):
+def company_unical_referent_edit(request, company_id, data_id, company=None):
     """
     dettaglio referente Unical dell'impresa
     """
@@ -242,7 +242,7 @@ def company_unical_referent_edit(request, code, data_id, company=None):
                 request, messages.SUCCESS, _("Company referent edited successfully")
             )
 
-            return redirect("companies:management:company-edit", code=code)
+            return redirect("companies:management:company-edit", company_id=company_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -254,11 +254,11 @@ def company_unical_referent_edit(request, code, data_id, company=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("companies:management:companies"): _("Companies"),
         reverse(
-            "companies:management:company-edit", kwargs={"code": code}
+            "companies:management:company-edit", kwargs={"company_id": company_id}
         ): company.nome_azienda,
         reverse(
             "companies:management:company-unical-referent-edit",
-            kwargs={"code": code, "data_id": data_id},
+            kwargs={"company_id": company_id, "data_id": data_id},
         ): _("Unical Referent"),
     }
 
@@ -277,13 +277,13 @@ def company_unical_referent_edit(request, code, data_id, company=None):
 
 # @login_required
 # @can_manage_companies
-# def company_unical_referent_data_delete(request, code, data_id=None,
+# def company_unical_referent_data_delete(request, company_id, data_id=None,
 # company=None):
 # """
 # elimina referente unical
 # """
 # company = get_object_or_404(SpinoffStartupDatiBase,
-# pk=code)
+# pk=company_id)
 
 # company.matricola_referente_unical = None
 # company.save()
@@ -297,13 +297,13 @@ def company_unical_referent_edit(request, code, data_id, company=None):
 # messages.SUCCESS,
 # _("Unical referent removed successfully"))
 # return redirect('companies:management:company-unical-referent-edit',
-# code=code,
+# company_id=company_id,
 # data_id=data_id)
 
 
 @login_required
 @can_manage_companies
-def company_unical_department_data_new(request, code, company=None):
+def company_unical_department_data_new(request, company_id, company=None):
     """
     nuovo dipartimento per l'impresa
     """
@@ -331,7 +331,7 @@ def company_unical_department_data_new(request, code, company=None):
             messages.add_message(
                 request, messages.SUCCESS, _("Department added successfully")
             )
-            return redirect("companies:management:company-edit", code=code)
+            return redirect("companies:management:company-edit", company_id=company_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(
@@ -342,7 +342,7 @@ def company_unical_department_data_new(request, code, company=None):
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("companies:management:companies"): _("Companies"),
         reverse(
-            "companies:management:company-edit", kwargs={"code": code}
+            "companies:management:company-edit", kwargs={"company_id": company_id}
         ): company.nome_azienda,
         "#": _("New department"),
     }
@@ -361,7 +361,7 @@ def company_unical_department_data_new(request, code, company=None):
 
 @login_required
 @can_manage_companies
-def company_unical_department_data_edit(request, code, department_id, company=None):
+def company_unical_department_data_edit(request, company_id, department_id, company=None):
     """
     modifica dipartimento
     """
@@ -405,7 +405,7 @@ def company_unical_department_data_edit(request, code, department_id, company=No
             messages.add_message(
                 request, messages.SUCCESS, _("Department edited successfully")
             )
-            return redirect("companies:management:company-edit", code=code)
+            return redirect("companies:management:company-edit", company_id=company_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(
@@ -416,7 +416,7 @@ def company_unical_department_data_edit(request, code, department_id, company=No
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("companies:management:companies"): _("Companies"),
         reverse(
-            "companies:management:company-edit", kwargs={"code": code}
+            "companies:management:company-edit", kwargs={"company_id": company_id}
         ): company.nome_azienda,
         "#": f"{department.dip_des_it}",
     }
@@ -437,7 +437,7 @@ def company_unical_department_data_edit(request, code, department_id, company=No
 
 @login_required
 @can_manage_companies
-def company_unical_department_data_delete(request, code, department_id, company=None):
+def company_unical_department_data_delete(request, company_id, department_id, company=None):
     """
     elimina dipartimento
     """
@@ -461,19 +461,19 @@ def company_unical_department_data_delete(request, code, department_id, company=
     messages.add_message(
         request, messages.SUCCESS, _("Department removed successfully")
     )
-    return redirect("companies:management:company-edit", code=code)
+    return redirect("companies:management:company-edit", company_id=company_id)
 
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 # @can_manage_companies
-def company_delete(request, code, company=None):
+def company_delete(request, company_id, company=None):
     # ha senso?
     # if rgroup.user_ins != request.user:
     # if not request.user.is_superuser:
     # raise Exception(_('Permission denied'))
 
-    company = get_object_or_404(SpinoffStartupDatiBase, pk=code)
+    company = get_object_or_404(SpinoffStartupDatiBase, pk=company_id)
     company.delete()
     messages.add_message(request, messages.SUCCESS, _("Company removed successfully"))
 

@@ -68,7 +68,7 @@
                                 </svg>
                             </td>
                             <td>
-                                <a :href="'{% url 'teachers:management:teacher-edit' code=code %}board/' + item.ID + '/'" class="d-flex btn btn-primary btn-xs">
+                                <a :href="'{% url 'teachers:management:teacher-edit' encrypted_matricola=encrypted_matricola %}board/' + item.ID + '/'" class="d-flex btn btn-primary btn-xs">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
@@ -108,7 +108,7 @@
                                                 </p>
                                             </div>
                                             <div class="modal-footer">
-                                                <a class="btn btn-success btn-sm" :href="'{% url 'teachers:management:teacher-edit' code=code %}board/' + item.ID +'/delete/'">
+                                                <a class="btn btn-success btn-sm" :href="'{% url 'teachers:management:teacher-edit' encrypted_matricola=encrypted_matricola %}board/' + item.ID +'/delete/'">
                                                     {% trans 'Yes, proceed' %}
                                                 </a>
                                             </div>

@@ -10,9 +10,9 @@ def can_manage_companies(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
 
-        if original_kwargs.get("code"):
+        if original_kwargs.get("company_id"):
             company = get_object_or_404(
-                SpinoffStartupDatiBase, pk=original_kwargs["code"]
+                SpinoffStartupDatiBase, pk=original_kwargs["company_id"]
             )
             original_kwargs["company"] = company
 

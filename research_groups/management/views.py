@@ -40,7 +40,7 @@ def researchgroups(request, my_offices=None):
 @login_required
 @can_manage_research_groups
 @can_edit_research_group
-def researchgroup(request, code, my_offices=None, rgroup=None, teachers=None):
+def researchgroup(request, rgroup_id, my_offices=None, rgroup=None, teachers=None):
     """
     dettaglio gruppo di ricerca con form di modifica
     """
@@ -68,7 +68,7 @@ def researchgroup(request, code, my_offices=None, rgroup=None, teachers=None):
                 request, messages.SUCCESS, _("Research group edited successfully")
             )
 
-            return redirect("research-groups:management:research-group-edit", code=code)
+            return redirect("research-groups:management:research-group-edit", rgroup_id=rgroup_id)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -105,7 +105,7 @@ def researchgroup(request, code, my_offices=None, rgroup=None, teachers=None):
 # attualmente solo i superuser possono effetture l'operazione
 # @can_manage_research_groups
 # @can_edit_research_group
-def researchgroup_delete(request, code, my_offices=None, rgroup=None, teachers=None):
+def researchgroup_delete(request, rgroup_id, my_offices=None, rgroup=None, teachers=None):
     """
     elimina gruppo di ricerca
     """
@@ -114,7 +114,7 @@ def researchgroup_delete(request, code, my_offices=None, rgroup=None, teachers=N
     # if not request.user.is_superuser:
     # raise Exception(_('Permission denied'))
 
-    rgroup = get_object_or_404(RicercaGruppo, pk=code)
+    rgroup = get_object_or_404(RicercaGruppo, pk=rgroup_id)
     rgroup.delete()
     messages.add_message(
         request, messages.SUCCESS, _("Research group removed successfully")
@@ -155,7 +155,7 @@ def researchgroup_new(request, my_offices=None):
                     office__name=OFFICE_RESEARCH_GROUPS,
                     office__is_active=True,
                     office__organizational_structure__is_active=True,
-                    office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id,
+                    office__organizational_structure__unique_rgroup_id=teacher.cd_uo_aff_org_id,
                 )
                 if not structure_afforg:
                     raise Exception(_("Add a teacher belonging to your structure"))
@@ -182,7 +182,7 @@ def researchgroup_new(request, my_offices=None):
                 request, messages.SUCCESS, _("Research group created successfully")
             )
             return redirect(
-                "research-groups:management:research-group-edit", code=rgroup.pk
+                "research-groups:management:research-group-edit", rgroup_id=rgroup.pk
             )
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -219,7 +219,7 @@ def researchgroup_new(request, my_offices=None):
 @can_manage_research_groups
 @can_edit_research_group
 def researchgroup_teacher_new(
-    request, code, my_offices=None, rgroup=None, teachers=None
+    request, rgroup_id, my_offices=None, rgroup=None, teachers=None
 ):
     """
     nuovo docente per il gruppo di ricerca
@@ -228,8 +228,8 @@ def researchgroup_teacher_new(
     if request.POST:
         form = RicercaGruppoDocenteForm(data=request.POST)
         if form.is_valid():
-            teacher_code = decrypt(form.cleaned_data["choosen_person"])
-            teacher = get_object_or_404(Personale, matricola=teacher_code)
+            teacher_rgroup_id = decrypt(form.cleaned_data["choosen_person"])
+            teacher = get_object_or_404(Personale, matricola=teacher_rgroup_id)
             RicercaDocenteGruppo.objects.create(
                 user_ins=request.user,
                 ricerca_gruppo=rgroup,
@@ -248,7 +248,7 @@ def researchgroup_teacher_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Teacher added successfully")
             )
-            return redirect("research-groups:management:research-group-edit", code=code)
+            return redirect("research-groups:management:research-group-edit", rgroup_id=rgroup_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(
@@ -259,7 +259,7 @@ def researchgroup_teacher_new(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("research-groups:management:research-groups"): _("Research groups"),
         reverse(
-            "research-groups:management:research-group-edit", kwargs={"code": code}
+            "research-groups:management:research-group-edit", kwargs={"rgroup_id": rgroup_id}
         ): rgroup.nome,
         "#": _("New teacher"),
     }
@@ -280,7 +280,7 @@ def researchgroup_teacher_new(
 @can_manage_research_groups
 @can_edit_research_group
 def researchgroup_teacher_edit(
-    request, code, teacher_rgroup_id, my_offices=None, rgroup=None, teachers=None
+    request, rgroup_id, teacher_rgroup_id, my_offices=None, rgroup=None, teachers=None
 ):
     """
     modifica un docente del gruppo di ricerca
@@ -289,19 +289,19 @@ def researchgroup_teacher_edit(
         RicercaDocenteGruppo.objects.select_related("personale"), pk=teacher_rgroup_id
     )
     teacher = teacher_rgroup.personale
-    teacher_code = encrypt(teacher.matricola)
+    teacher_rgroup_id = encrypt(teacher.matricola)
     teacher_data = f"{teacher.nome} {teacher.cognome}"
 
     form = RicercaGruppoDocenteForm(
-        instance=teacher_rgroup, initial={"choosen_person": teacher_code}
+        instance=teacher_rgroup, initial={"choosen_person": teacher_rgroup_id}
     )
 
     if request.POST:
         form = RicercaGruppoDocenteForm(instance=teacher_rgroup, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            teacher_code = decrypt(form.cleaned_data["choosen_person"])
-            new_teacher = get_object_or_404(Personale, matricola=teacher_code)
+            teacher_rgroup_id = decrypt(form.cleaned_data["choosen_person"])
+            new_teacher = get_object_or_404(Personale, matricola=teacher_rgroup_id)
             teacher_rgroup.user_mod = request.user
             teacher_rgroup.personale = new_teacher
             teacher_rgroup.save()
@@ -313,7 +313,7 @@ def researchgroup_teacher_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("Teacher edited successfully")
             )
-            return redirect("research-groups:management:research-group-edit", code=code)
+            return redirect("research-groups:management:research-group-edit", rgroup_id=rgroup_id)
         else:  # pragma: no cover
             for k, v in form.errors.items():
                 messages.add_message(
@@ -324,7 +324,7 @@ def researchgroup_teacher_edit(
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("research-groups:management:research-groups"): _("Research groups"),
         reverse(
-            "research-groups:management:research-group-edit", kwargs={"code": code}
+            "research-groups:management:research-group-edit", kwargs={"rgroup_id": rgroup_id}
         ): rgroup.nome,
         "#": teacher_data,
     }
@@ -347,7 +347,7 @@ def researchgroup_teacher_edit(
 @can_manage_research_groups
 @can_edit_research_group
 def researchgroup_teacher_delete(
-    request, code, teacher_rgroup_id, my_offices=None, rgroup=None, teachers=None
+    request, rgroup_id, teacher_rgroup_id, my_offices=None, rgroup=None, teachers=None
 ):
     """
     elimina un docente dal gruppo di ricerca
@@ -374,4 +374,4 @@ def researchgroup_teacher_delete(
     teacher_rgroup.delete()
 
     messages.add_message(request, messages.SUCCESS, _("Teacher removed successfully"))
-    return redirect("research-groups:management:research-group-edit", code=code)
+    return redirect("research-groups:management:research-group-edit", rgroup_id=rgroup_id)

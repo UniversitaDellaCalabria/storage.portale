@@ -40,7 +40,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-sm" href="{% url 'research-groups:management:research-group-teacher-delete' code=rgroup.pk teacher_rgroup_id=teacher_rgroup_id %}">
+                <a class="btn btn-success btn-sm" href="{% url 'research-groups:management:research-group-teacher-delete' rgroup_id=rgroup.pk teacher_rgroup_id=teacher_rgroup_id %}">
                     {% trans 'Yes, proceed' %}
                 </a>
             </div>

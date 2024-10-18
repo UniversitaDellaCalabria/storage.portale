@@ -16,17 +16,16 @@ from .views import (
 
 app_name = "management"
 
-urlpatterns = []
-
-
-urlpatterns += path('teachers/', teachers, name='teachers'),
-urlpatterns += path('teachers/<str:code>/', teacher_detail, name='teacher-edit'),
-urlpatterns += path('teachers/<str:code>/other-data/new/', teacher_other_data_new, name='teacher-other-data-new'),
-urlpatterns += path('teachers/<str:code>/other-data/<str:data_id>/', teacher_other_data_edit, name='teacher-other-data-edit'),
-urlpatterns += path('teachers/<str:code>/other-data/<str:data_id>/delete/', teacher_other_data_delete, name='teacher-other-data-delete'),
-urlpatterns += path('teachers/<str:code>/board/new/', teacher_board_data_new, name='teacher-board-data-new'),
-urlpatterns += path('teachers/<str:code>/board/<str:data_id>/', teacher_board_data_edit, name='teacher-board-data-edit'),
-urlpatterns += path('teachers/<str:code>/board/<str:data_id>/delete/', teacher_board_data_delete, name='teacher-board-data-delete'),
-urlpatterns += path('teachers/<str:code>/materials/new/', teacher_materials_data_new, name='teacher-materials-data-new'),
-urlpatterns += path('teachers/<str:code>/materials/<str:data_id>/', teacher_materials_data_edit, name='teacher-materials-data-edit'),
-urlpatterns += path('teachers/<str:code>/materials/<str:data_id>/delete/', teacher_materials_data_delete, name='teacher-materials-data-delete'),
+urlpatterns = [
+    path('teachers/', teachers, name='teachers'),
+    path('teachers/<str:encrypted_matricola>/', teacher_detail, name='teacher-edit'),
+    path('teachers/<str:encrypted_matricola>/other-data/new/', teacher_other_data_new, name='teacher-other-data-new'),
+    path('teachers/<str:encrypted_matricola>/other-data/<int:data_id>/', teacher_other_data_edit, name='teacher-other-data-edit'),
+    path('teachers/<str:encrypted_matricola>/other-data/<int:data_id>/delete/', teacher_other_data_delete, name='teacher-other-data-delete'),
+    path('teachers/<str:encrypted_matricola>/board/new/', teacher_board_data_new, name='teacher-board-data-new'),
+    path('teachers/<str:encrypted_matricola>/board/<int:data_id>/', teacher_board_data_edit, name='teacher-board-data-edit'),
+    path('teachers/<str:encrypted_matricola>/board/<int:data_id>/delete/', teacher_board_data_delete, name='teacher-board-data-delete'),
+    path('teachers/<str:encrypted_matricola>/materials/new/', teacher_materials_data_new, name='teacher-materials-data-new'),
+    path('teachers/<str:encrypted_matricola>/materials/<int:data_id>/', teacher_materials_data_edit, name='teacher-materials-data-edit'),
+    path('teachers/<str:encrypted_matricola>/materials/<int:data_id>/delete/', teacher_materials_data_delete, name='teacher-materials-data-delete'),
+]

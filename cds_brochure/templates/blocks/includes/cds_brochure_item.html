@@ -3,7 +3,7 @@
 
 {% with title=title|default:'' redirect_url=redirect_url|default:'' cds_brochure=cds_brochure subtitle=subtitle|default:'' %}
 <div class="mr-4 ml-4">
-    <a  href="{% url redirect_url code=cds_brochure.id %}"
+    <a  href="{% url redirect_url brochure_id=cds_brochure.id %}"
         class="text-decoration-none text-reset">
         <div class="row d-flex justify-content-start align-items-center">
             <div class="col mr-auto">

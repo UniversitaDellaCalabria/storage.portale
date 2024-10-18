@@ -14,9 +14,9 @@ def can_manage_laboratories(func_to_decorate):
 
         is_scientific_director = False
 
-        if original_kwargs.get("code"):
+        if original_kwargs.get("laboratory_id"):
             laboratory = get_object_or_404(
-                LaboratorioDatiBase, pk=original_kwargs["code"]
+                LaboratorioDatiBase, pk=original_kwargs["laboratory_id"]
             )
             original_kwargs["laboratory"] = laboratory
 

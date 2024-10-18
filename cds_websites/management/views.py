@@ -54,9 +54,6 @@ def _can_user_edit_structure(offices_structures):
 @login_required
 @can_manage_cds_website
 def cds_websites(request, my_offices=None):
-    """
-    lista dei siti web dei corsi di studio
-    """
     breadcrumbs = {reverse("generics:dashboard"): _("Dashboard"), "#": _("CdS pages")}
     context = {
         "breadcrumbs": breadcrumbs,
@@ -70,10 +67,6 @@ def cds_websites(request, my_offices=None):
 @can_manage_cds_website
 @can_edit_cds_website
 def cds_websites_topics(request, cds_id, cds=None, my_offices=None):
-    """
-    modifica dei dati dei topic del sito web del corso di studio
-    """
-
     cds_website_url = (
         UNICMS_CORSI_LM_URL
         if (cds.tipo_corso_cod == "LM")
@@ -939,9 +932,7 @@ def cds_websites_object_delete(
 ):
     regart = get_object_or_404(SitoWebCdsTopicArticoliReg, pk=data_id)
 
-    if (
-        regart.didattica_cds_articoli_regolamento is not None
-    ):  # Can't delete articles
+    if regart.didattica_cds_articoli_regolamento is not None:  # Can't delete articles
         return custom_message(request, _("Permission denied"))
 
     titolo_it = regart.titolo_it

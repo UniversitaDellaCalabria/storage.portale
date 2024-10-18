@@ -10,8 +10,8 @@ def can_manage_patents(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
 
-        if original_kwargs.get("code"):
-            patent = get_object_or_404(BrevettoDatiBase, pk=original_kwargs["code"])
+        if original_kwargs.get("patent_id"):
+            patent = get_object_or_404(BrevettoDatiBase, pk=original_kwargs["patent_id"])
             original_kwargs["patent"] = patent
 
         if request.user.is_superuser:

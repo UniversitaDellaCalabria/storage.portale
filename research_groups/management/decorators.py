@@ -32,7 +32,7 @@ def can_manage_research_groups(func_to_decorate):
 def can_edit_research_group(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        rgroup = get_object_or_404(RicercaGruppo, pk=original_kwargs["code"])
+        rgroup = get_object_or_404(RicercaGruppo, pk=original_kwargs["rgroup_id"])
         teachers = RicercaDocenteGruppo.objects.filter(ricerca_gruppo=rgroup)
         original_kwargs["rgroup"] = rgroup
         original_kwargs["teachers"] = teachers

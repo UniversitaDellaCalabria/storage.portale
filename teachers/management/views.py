@@ -44,7 +44,7 @@ def teachers(request, my_offices=None, my_teacher_profile=None):
 @can_manage_teachers
 @can_edit_teacher
 def teacher_detail(
-    request, code, my_offices=None, teacher=None, my_teacher_profile=None
+    request, encrypted_matricola, my_offices=None, teacher=None, my_teacher_profile=None
 ):
     """
     pagina dettaglio singolo docente
@@ -77,7 +77,7 @@ def teacher_detail(
         {
             "board": board,
             "breadcrumbs": breadcrumbs,
-            "code": code,
+            "encrypted_matricola": encrypted_matricola,
             "logs": logs,
             "other_data": other_data,
             "materials": materials,
@@ -94,7 +94,7 @@ def teacher_detail(
 @can_manage_teachers
 @can_edit_teacher
 def teacher_other_data_edit(
-    request, code, data_id, my_offices=None, teacher=None, my_teacher_profile=None
+    request, encrypted_matricola, data_id, my_offices=None, teacher=None, my_teacher_profile=None
 ):
     """
     modifica dati docente
@@ -129,7 +129,7 @@ def teacher_other_data_edit(
                 request, messages.SUCCESS, _("Other data edited successfully")
             )
 
-            return redirect("teachers:management:teacher-edit", code=code)
+            return redirect("teachers:management:teacher-edit", encrypted_matricola=encrypted_matricola)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -140,7 +140,7 @@ def teacher_other_data_edit(
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("teachers:management:teachers"): _("Teachers"),
-        reverse("teachers:management:teacher-edit", kwargs={"code": code}): teacher,
+        reverse("teachers:management:teacher-edit", kwargs={"encrypted_matricola": encrypted_matricola}): teacher,
         "#": _("Edit data"),
     }
 
@@ -160,7 +160,7 @@ def teacher_other_data_edit(
 @can_manage_teachers
 @can_edit_teacher
 def teacher_other_data_new(
-    request, code, my_offices=None, teacher=None, my_teacher_profile=None
+    request, encrypted_matricola, my_offices=None, teacher=None, my_teacher_profile=None
 ):
     """
     nuovo set di dati
@@ -193,7 +193,7 @@ def teacher_other_data_new(
             )
             return redirect(
                 "teachers:management:teacher-edit",
-                code=code,
+                encrypted_matricola=encrypted_matricola,
             )
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -204,7 +204,7 @@ def teacher_other_data_new(
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("teachers:management:teachers"): _("Teachers"),
-        reverse("teachers:management:teacher-edit", kwargs={"code": code}): teacher,
+        reverse("teachers:management:teacher-edit", kwargs={"encrypted_matricola": encrypted_matricola}): teacher,
         "#": _("New data set"),
     }
 
@@ -220,7 +220,7 @@ def teacher_other_data_new(
 @can_edit_teacher
 def teacher_other_data_delete(
     request,
-    code,
+    encrypted_matricola,
     data_id,
     my_offices=None,
     teacher=None,
@@ -243,7 +243,7 @@ def teacher_other_data_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Teachers other data removed successfully")
     )
-    return redirect("teachers:management:teacher-edit", code=code)
+    return redirect("teachers:management:teacher-edit", encrypted_matricola=encrypted_matricola)
 
 
 @login_required
@@ -251,7 +251,7 @@ def teacher_other_data_delete(
 @can_edit_teacher
 def teacher_board_data_edit(
     request,
-    code,
+    encrypted_matricola,
     data_id,
     my_offices=None,
     teacher=None,
@@ -291,7 +291,7 @@ def teacher_board_data_edit(
                 request, messages.SUCCESS, _("Board data edited successfully")
             )
 
-            return redirect("teachers:management:teacher-edit", code=code)
+            return redirect("teachers:management:teacher-edit", encrypted_matricola=encrypted_matricola)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -302,7 +302,7 @@ def teacher_board_data_edit(
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("teachers:management:teachers"): _("Teachers"),
-        reverse("teachers:management:teacher-edit", kwargs={"code": code}): teacher,
+        reverse("teachers:management:teacher-edit", kwargs={"encrypted_matricola": encrypted_matricola}): teacher,
         "#": _("Edit board data"),
     }
 
@@ -317,7 +317,7 @@ def teacher_board_data_edit(
 @can_manage_teachers
 @can_edit_teacher
 def teacher_board_data_new(
-    request, code, my_offices=None, teacher=None, my_teacher_profile=None
+    request, encrypted_matricola, my_offices=None, teacher=None, my_teacher_profile=None
 ):
     """
     nuova news bacheca
@@ -346,7 +346,7 @@ def teacher_board_data_new(
             )
             return redirect(
                 "teachers:management:teacher-edit",
-                code=code,
+                encrypted_matricola=encrypted_matricola,
             )
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -357,7 +357,7 @@ def teacher_board_data_new(
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("teachers:management:teachers"): _("Teachers"),
-        reverse("teachers:management:teacher-edit", kwargs={"code": code}): teacher,
+        reverse("teachers:management:teacher-edit", kwargs={"encrypted_matricola": encrypted_matricola}): teacher,
         "#": _("New board data"),
     }
 
@@ -372,7 +372,7 @@ def teacher_board_data_new(
 @can_manage_teachers
 @can_edit_teacher
 def teacher_board_data_delete(
-    request, code, data_id, my_offices=None, teacher=None, my_teacher_profile=None
+    request, encrypted_matricola, data_id, my_offices=None, teacher=None, my_teacher_profile=None
 ):
     """
     elimina news bacheca
@@ -388,14 +388,14 @@ def teacher_board_data_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Teachers board data removed successfully")
     )
-    return redirect("teachers:management:teacher-edit", code=code)
+    return redirect("teachers:management:teacher-edit", encrypted_matricola=encrypted_matricola)
 
 
 @login_required
 @can_manage_teachers
 @can_edit_teacher
 def teacher_materials_data_edit(
-    request, code, data_id, my_offices=None, teacher=None, my_teacher_profile=None
+    request, encrypted_matricola, data_id, my_offices=None, teacher=None, my_teacher_profile=None
 ):
     """
     modifica materiale didattico
@@ -432,7 +432,7 @@ def teacher_materials_data_edit(
                 _("Teaching material data edited successfully"),
             )
 
-            return redirect("teachers:management:teacher-edit", code=code)
+            return redirect("teachers:management:teacher-edit", encrypted_matricola=encrypted_matricola)
 
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -443,7 +443,7 @@ def teacher_materials_data_edit(
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("teachers:management:teachers"): _("Teachers"),
-        reverse("teachers:management:teacher-edit", kwargs={"code": code}): teacher,
+        reverse("teachers:management:teacher-edit", kwargs={"encrypted_matricola": encrypted_matricola}): teacher,
         "#": _("Teaching material data"),
     }
 
@@ -463,7 +463,7 @@ def teacher_materials_data_edit(
 @can_manage_teachers
 @can_edit_teacher
 def teacher_materials_data_new(
-    request, code, my_offices=None, teacher=None, my_teacher_profile=None
+    request, encrypted_matricola, my_offices=None, teacher=None, my_teacher_profile=None
 ):
     """
     nuovo materiale didattico
@@ -492,7 +492,7 @@ def teacher_materials_data_new(
             )
             return redirect(
                 "teachers:management:teacher-edit",
-                code=code,
+                encrypted_matricola=encrypted_matricola,
             )
         else:  # pragma: no cover
             for k, v in form.errors.items():
@@ -503,7 +503,7 @@ def teacher_materials_data_new(
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         reverse("teachers:management:teachers"): _("Teachers"),
-        reverse("teachers:management:teacher-edit", kwargs={"code": code}): teacher,
+        reverse("teachers:management:teacher-edit", kwargs={"encrypted_matricola": encrypted_matricola}): teacher,
         "#": _("New teaching material"),
     }
 
@@ -519,7 +519,7 @@ def teacher_materials_data_new(
 @can_edit_teacher
 def teacher_materials_data_delete(
     request,
-    code,
+    encrypted_matricola,
     data_id,
     my_offices=None,
     teacher=None,
@@ -547,4 +547,4 @@ def teacher_materials_data_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Teachers materials data removed successfully")
     )
-    return redirect("teachers:management:teacher-edit", code=code)
+    return redirect("teachers:management:teacher-edit", encrypted_matricola=encrypted_matricola)

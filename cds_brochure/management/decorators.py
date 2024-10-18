@@ -12,9 +12,9 @@ def can_manage_cds_brochure(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
 
-        if original_kwargs.get("code"):
-            cds_sito_web_id = original_kwargs.get("code")
-            cds_brochure = get_object_or_404(CdsBrochure, pk=cds_sito_web_id)
+        if original_kwargs.get("brochure_id"):
+            cds_brochure_id = original_kwargs.get("brochure_id")
+            cds_brochure = get_object_or_404(CdsBrochure, pk=cds_brochure_id)
             original_kwargs["cds_brochure"] = cds_brochure
 
         if request.user.is_superuser:
