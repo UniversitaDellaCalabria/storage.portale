@@ -905,7 +905,7 @@ class DidatticaTestiRegolamento(InsModAbstract):
 
 
 class DidatticaCdsAltriDati(models.Model):
-    regdid_id = models.OneToOneField(
+    regdid = models.OneToOneField(
         DidatticaRegolamento,
         models.DO_NOTHING,
         db_column="ID_DIDATTICA_REGOLAMENTO",

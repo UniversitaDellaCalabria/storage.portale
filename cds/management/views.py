@@ -261,7 +261,7 @@ def cds_other_data_import(request, regdid_id, regdid=None, my_offices=None):
         other_data.save()
     else:
         DidatticaCdsAltriDati.objects.create(
-            regdid_id=regdid,
+            regdid=regdid,
             matricola_coordinatore=other_data_previous_year.matricola_coordinatore,
             nome_origine_coordinatore=other_data_previous_year.nome_origine_coordinatore,
             nome_origine_vice_coordinatore=other_data_previous_year.nome_origine_vice_coordinatore,
@@ -911,14 +911,14 @@ def cds_doc_teaching_system(request, regdid_id, my_offices=None, regdid=None):
     """
     aggiungi/modifica ordinamento didattico
     """
-    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid=regdid).first()
     form = DidatticaCdsOrdinamentoForm(instance=other_data)
 
     if request.POST:
         form = DidatticaCdsOrdinamentoForm(instance=other_data, files=request.FILES)
         if form.is_valid():
             other_data = form.save(commit=False)
-            other_data.regdid_id = regdid
+            other_data.regdid = regdid
             # other_data.user_mod = request.user
             other_data.save()
 
@@ -970,7 +970,7 @@ def cds_doc_teaching_system_delete(request, regdid_id, my_offices=None, regdid=N
     """
     elimina ordinamento didattico
     """
-    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid=regdid).first()
     if other_data:
         try:
             path = other_data.ordinamento_didattico.path
@@ -1005,7 +1005,7 @@ def cds_doc_manifesto_regulation(request, regdid_id, my_offices=None, regdid=Non
     """
     aggiungi/modifica ordinamento didattico
     """
-    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid=regdid).first()
     form = DidatticaCdsManifestoRegolamentoForm(instance=other_data)
 
     if request.POST:
@@ -1015,7 +1015,7 @@ def cds_doc_manifesto_regulation(request, regdid_id, my_offices=None, regdid=Non
         if form.is_valid():
             other_data = form.save(commit=False)
             # other_data.user_mod = request.user
-            other_data.regdid_id = regdid
+            other_data.regdid = regdid
             other_data.save()
 
             if form.changed_data:
@@ -1066,7 +1066,7 @@ def cds_doc_study_manifesto_delete(request, regdid_id, my_offices=None, regdid=N
     """
     elimina manifesto studi
     """
-    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid=regdid).first()
     if other_data:
         try:
             path = other_data.manifesto_studi.path
@@ -1103,7 +1103,7 @@ def cds_doc_didactic_regulation_delete(
     """
     elimina regolamento didattico
     """
-    other_data = DidatticaCdsAltriDati.objects.filter(regdid_id=regdid).first()
+    other_data = DidatticaCdsAltriDati.objects.filter(regdid=regdid).first()
     if other_data:
         try:
             path = other_data.regolamento_didattico.path

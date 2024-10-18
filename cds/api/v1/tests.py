@@ -64,7 +64,7 @@ class ApiCdSListUnitTest(TestCase):
         )
 
         DidatticaCdsAltriDati.objects.create(
-            **{"regdid_id": r1, "nome_origine_coordinatore": "Test coordinatore"}
+            **{"regdid": r1, "nome_origine_coordinatore": "Test coordinatore"}
         )
 
         r1.get_ordinamento_didattico()
