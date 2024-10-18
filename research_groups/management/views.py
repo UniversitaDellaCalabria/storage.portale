@@ -289,19 +289,19 @@ def researchgroup_teacher_edit(
         RicercaDocenteGruppo.objects.select_related("personale"), pk=teacher_rgroup_id
     )
     teacher = teacher_rgroup.personale
-    teacher_rgroup_id = encrypt(teacher.matricola)
+    encrypted_matricola = encrypt(teacher.matricola)
     teacher_data = f"{teacher.nome} {teacher.cognome}"
 
     form = RicercaGruppoDocenteForm(
-        instance=teacher_rgroup, initial={"choosen_person": teacher_rgroup_id}
+        instance=teacher_rgroup, initial={"choosen_person": encrypted_matricola}
     )
 
     if request.POST:
         form = RicercaGruppoDocenteForm(instance=teacher_rgroup, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            teacher_rgroup_id = decrypt(form.cleaned_data["choosen_person"])
-            new_teacher = get_object_or_404(Personale, matricola=teacher_rgroup_id)
+            encrypted_matricola = decrypt(form.cleaned_data["choosen_person"])
+            new_teacher = get_object_or_404(Personale, matricola=encrypted_matricola)
             teacher_rgroup.user_mod = request.user
             teacher_rgroup.personale = new_teacher
             teacher_rgroup.save()
