@@ -721,6 +721,7 @@ class ServiceDocente:
                 flg_cessato=0,
             )
             .values(
+                "id_ab",
                 "matricola",
                 "nome",
                 "middle_name",
