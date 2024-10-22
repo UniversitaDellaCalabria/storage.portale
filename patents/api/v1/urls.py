@@ -6,5 +6,5 @@ app_name = "apiv1"
 
 urlpatterns = [
     path('patents/', ApiPatentsList.as_view(), name='patents'),
-    path('patents/<str:patentid>', ApiPatentDetail.as_view(), name='patent-detail'),
+    path('patents/<str:patentid>/', ApiPatentDetail.as_view(), name='patent-detail'),
 ]
