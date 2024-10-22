@@ -86,7 +86,7 @@ def upImpegniSerializer(
             "orarioFine": orarioFine,
             "annoCorso": annoCorso,
             "cfu": cfu,
-            "docente": docente,
+            "docenti": docenti,
             "aula": aula,
             "edificio": edificio,
             "codice": f"UP_{impegno['evento']['tipoEvento']['codice']}",
