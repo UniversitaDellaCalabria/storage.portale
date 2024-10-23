@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
 from rest_framework.views import APIView
 from teachers.api.v1.services import ServiceDocente
 
@@ -52,6 +53,7 @@ class ApiAddressbookFullList(ApiEndpointList):
     permission_classes = [IsAuthenticated]
     serializer_class = AddressbookFullSerializer
     filter_backends = [AddressbookListFilter]
+    schema = AgidAutoSchema(tags=["api"])
 
     def get_queryset(self):
         request = self.request
@@ -93,10 +95,13 @@ class ApiPersonaleDetail(ApiEndpointDetail):
 
 
 class ApiPersonaleFullDetail(ApiEndpointDetail):
-    description = "Retrieves detailed information of a specific person, including contract data."
+    description = (
+        "Retrieves detailed information of a specific person, including contract data."
+    )
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = PersonaleFullSerializer
+    schema = AgidAutoSchema(tags=["api"])
 
     def get_queryset(self):
         personaleid = self.kwargs["personaleid"]
@@ -123,6 +128,7 @@ class ApiPersonnelCfList(ApiEndpointList):
     description = "Retrieves the list of personnel tax codes."
     serializer_class = PersonnelCfSerializer
     filter_backends = [PersonnelCfListFilter]
+    schema = AgidAutoSchema(tags=["api"])
 
     def get_queryset(self):
         roles = self.request.query_params.get("roles")
