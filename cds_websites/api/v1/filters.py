@@ -12,12 +12,11 @@ class CdsWebsitesTopicArticlesListFilter(GenericApiFilter):
         },
         {
             "name": "topic_id",
-            "description": "ID of the topic.",
+            "description": "List of IDs of topics (comma-separated).",
             "required": True,
             "in": "query",
             "schema": {
-                "type": "integer",
-                "format": "int32",
+                "type": "string",
             },
         },
     ]
