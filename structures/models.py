@@ -291,7 +291,11 @@ class DidatticaDipartimentoGruppi(models.Model):
     visibile = models.BooleanField(db_column="VISIBILE", default=True)
     dt_mod = models.DateField(db_column="DT_MOD")
     user_mod = models.ForeignKey(
-        get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
+        get_user_model(),
+        models.DO_NOTHING,
+        db_column="user_mod_id",
+        blank=True,
+        null=True,
     )
 
     class Meta:
@@ -310,7 +314,7 @@ class DidatticaDipartimentoGruppiComponenti(models.Model):
     matricola = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
-        db_column="MATRICOLA",
+        db_column="ID_PERSONALE_MATRICOLA",
         blank=True,
         null=True,
         to_field="matricola",
@@ -329,7 +333,11 @@ class DidatticaDipartimentoGruppiComponenti(models.Model):
     visibile = models.BooleanField(db_column="VISIBILE", default=True)
     dt_mod = models.DateField(db_column="DT_MOD")
     user_mod = models.ForeignKey(
-        get_user_model(), models.DO_NOTHING, db_column="ID_USER_MOD"
+        get_user_model(),
+        models.DO_NOTHING,
+        db_column="user_mod_id",
+        blank=True,
+        null=True,
     )
 
     class Meta:

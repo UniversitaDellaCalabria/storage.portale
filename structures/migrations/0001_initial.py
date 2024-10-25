@@ -217,7 +217,9 @@ class Migration(migrations.Migration):
                 (
                     "user_mod",
                     models.ForeignKey(
-                        db_column="ID_USER_MOD",
+                        db_column="user_mod_id",
+                        blank=True,
+                        null=True,
                         on_delete=django.db.models.deletion.DO_NOTHING,
                         to=settings.AUTH_USER_MODEL,
                     ),
@@ -642,7 +644,7 @@ class Migration(migrations.Migration):
                     "matricola",
                     models.ForeignKey(
                         blank=True,
-                        db_column="MATRICOLA",
+                        db_column="ID_PERSONALE_MATRICOLA",
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         to="addressbook.personale",
@@ -652,7 +654,9 @@ class Migration(migrations.Migration):
                 (
                     "user_mod",
                     models.ForeignKey(
-                        db_column="ID_USER_MOD",
+                        db_column="user_mod_id",
+                        blank=True,
+                        null=True,
                         on_delete=django.db.models.deletion.DO_NOTHING,
                         to=settings.AUTH_USER_MODEL,
                     ),
