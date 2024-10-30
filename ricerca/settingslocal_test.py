@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'companies',
     'patents',
     'phd',
+    'pentaho',
     'projects',
     'research_lines',
     'teachers',
