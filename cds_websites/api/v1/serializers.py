@@ -82,7 +82,7 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
             api_url = unicms_obj_api.get(q["id_classe_oggetto_portale"], "")
             unicms_object = (
                 requests.get(
-                    api_url.format(q["id_oggetto_portale"]), headers=head, timeout=5
+                    f"{api_url}{q['id_oggetto_portale']}/", headers=head, timeout=5
                 )
                 if api_url
                 else None
