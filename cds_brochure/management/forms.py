@@ -5,7 +5,6 @@ from cds_brochure.models import (
     CdsBrochureSlider,
 )
 from django import forms
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from generics.widgets import RicercaCRUDCkEditorWidget
 
@@ -13,9 +12,6 @@ from .validators import (
     CKEditorWidgetMaxLenghtValidator,
     CKEditorWidgetMinLenghtValidator,
 )
-
-UNICMS_AUTH_TOKEN = getattr(settings, "UNICMS_AUTH_TOKEN", "")
-UNICMS_OBJECT_API = getattr(settings, "UNICMS_OBJECT_API", "")
 
 
 # -- Dati corso: posti
