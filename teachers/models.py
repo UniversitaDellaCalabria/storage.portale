@@ -20,7 +20,7 @@ class DocenteMaterialeDidattico(models.Model):
     matricola = models.ForeignKey(
         "addressbook.Personale",
         models.CASCADE,
-        db_column="MATRICOLA",
+        db_column="ID_PERSONALE_MATRICOLA",
         to_field="matricola",
     )
     titolo = models.CharField(db_column="TITOLO", max_length=200)
@@ -48,7 +48,11 @@ class DocenteMaterialeDidattico(models.Model):
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     user_mod = models.ForeignKey(
-        get_user_model(), models.SET_NULL, db_column="user_mod_id_id", blank=True, null=True
+        get_user_model(),
+        models.SET_NULL,
+        db_column="user_mod_id",
+        blank=True,
+        null=True,
     )
 
     class Meta:
@@ -62,7 +66,7 @@ class DocentePtaAltriDati(models.Model):
     matricola = models.OneToOneField(
         "addressbook.Personale",
         models.CASCADE,
-        db_column="MATRICOLA",
+        db_column="ID_PERSONALE_MATRICOLA",
         to_field="matricola",
     )
     path_foto = models.FileField(
@@ -110,7 +114,11 @@ class DocentePtaAltriDati(models.Model):
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     user_mod = models.ForeignKey(
-        get_user_model(), models.SET_NULL, db_column="user_mod_id_id", blank=True, null=True
+        get_user_model(),
+        models.SET_NULL,
+        db_column="user_mod_id",
+        blank=True,
+        null=True,
     )
 
     class Meta:
@@ -123,7 +131,7 @@ class DocentePtaBacheca(models.Model):
     matricola = models.ForeignKey(
         "addressbook.Personale",
         models.CASCADE,
-        db_column="MATRICOLA",
+        db_column="ID_PERSONALE_MATRICOLA",
         to_field="matricola",
     )
     tipo_testo = models.CharField(db_column="TIPO_TESTO", max_length=100)
@@ -155,7 +163,11 @@ class DocentePtaBacheca(models.Model):
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     user_mod = models.ForeignKey(
-        get_user_model(), models.SET_NULL, db_column="user_mod_id_id", blank=True, null=True
+        get_user_model(),
+        models.SET_NULL,
+        db_column="user_mod_id",
+        blank=True,
+        null=True,
     )
 
     class Meta:

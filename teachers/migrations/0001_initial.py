@@ -305,7 +305,7 @@ class Migration(migrations.Migration):
                 (
                     "matricola",
                     models.ForeignKey(
-                        db_column="MATRICOLA",
+                        db_column="ID_PERSONALE_MATRICOLA",
                         on_delete=django.db.models.deletion.CASCADE,
                         to="addressbook.personale",
                         to_field="matricola",
@@ -315,7 +315,7 @@ class Migration(migrations.Migration):
                     "user_mod",
                     models.ForeignKey(
                         blank=True,
-                        db_column="user_mod_id_id",
+                        db_column="user_mod_id",
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         to=settings.AUTH_USER_MODEL,
@@ -415,7 +415,7 @@ class Migration(migrations.Migration):
                 (
                     "matricola",
                     models.OneToOneField(
-                        db_column="MATRICOLA",
+                        db_column="ID_PERSONALE_MATRICOLA",
                         on_delete=django.db.models.deletion.CASCADE,
                         to="addressbook.personale",
                         to_field="matricola",
@@ -425,7 +425,7 @@ class Migration(migrations.Migration):
                     "user_mod",
                     models.ForeignKey(
                         blank=True,
-                        db_column="user_mod_id_id",
+                        db_column="user_mod_id",
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         to=settings.AUTH_USER_MODEL,
@@ -495,7 +495,7 @@ class Migration(migrations.Migration):
                 (
                     "matricola",
                     models.ForeignKey(
-                        db_column="MATRICOLA",
+                        db_column="ID_PERSONALE_MATRICOLA",
                         on_delete=django.db.models.deletion.CASCADE,
                         to="addressbook.personale",
                         to_field="matricola",
@@ -505,7 +505,7 @@ class Migration(migrations.Migration):
                     "user_mod",
                     models.ForeignKey(
                         blank=True,
-                        db_column="user_mod_id_id",
+                        db_column="user_mod_id",
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         to=settings.AUTH_USER_MODEL,
