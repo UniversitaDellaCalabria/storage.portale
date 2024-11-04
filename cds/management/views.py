@@ -1279,8 +1279,8 @@ def cds_group_members_new(request, regdid_id, group_id, my_offices=None, regdid=
                 nome=nome,
                 funzione_it=form.cleaned_data.get("funzione_it"),
                 funzione_en=form.cleaned_data.get("funzione_en"),
-                ordine=form.cleaned_data.get("ordine"),
-                visibile=form.cleaned_data.get("visibile"),
+                ordine=form.cleaned_data.get("ordine", 10),
+                visibile=form.cleaned_data.get("visibile", True),
                 dt_mod=datetime.datetime.now(),
                 user_mod=request.user,
             )
@@ -1379,6 +1379,11 @@ def cds_group_member_edit(
                 member.matricola = None
                 member.nome = form.cleaned_data["nome"]
                 member.cognome = form.cleaned_data["cognome"]
+                
+            member.funzione_it = form.cleaned_data.get("funzione_it", member.funzione_it)
+            member.funzione_en = form.cleaned_data.get("funzione_en", member.funzione_en)
+            member.ordine = form.cleaned_data.get("ordine", member.ordine)
+            member.visibile = form.cleaned_data.get("visibile", member.visibile)
 
             member.dt_mod = datetime.datetime.now()
             member.user_mod = request.user
