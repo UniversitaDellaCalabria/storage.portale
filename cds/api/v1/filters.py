@@ -194,4 +194,20 @@ class AllActivitiesListFilter(GenericApiFilter):
                 "format": "int32",
             },
         },
+        {
+            "name": "cds_cod",
+            "description": "Code of a course of study.",
+            "required": False,
+            "in": "query",
+            "schema": {"type": "string"},
+        },
+        {
+            "name": "teacher_code",
+            "description": "Teacher's encrpyted matricola.",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+            },
+        },
     ]
