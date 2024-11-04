@@ -625,7 +625,7 @@ class ServiceDidatticaAttivitaFormativa:
         if teacher_code:
             query_teacher_code = Q(personale_id__matricola__exact=teacher_code)
 
-        coperture = DidatticaCopertura.objects.filter(query_teacher_code).values(
+        coperture = DidatticaCopertura.objects.filter(query_teacher_code).exclude(stato_coper_cod='R').values(
             "af_id"
         )
 
