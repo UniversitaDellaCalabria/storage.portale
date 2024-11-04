@@ -1336,9 +1336,6 @@ def cds_group_members_new(request, regdid_id, group_id, my_offices=None, regdid=
 def cds_group_member_edit(
     request, regdid_id, group_id, member_id, my_offices=None, regdid=None
 ):
-    """
-    aggiungi nuovo componente al gruppo
-    """
     group = get_object_or_404(
         DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
     )
@@ -1355,11 +1352,11 @@ def cds_group_member_edit(
         initial = {"choosen_person": encrypt(member.matricola.matricola)}
 
     external_form = DidatticaCdsGruppoComponenteForm(instance=member)
-    internal_form = ChoosenPersonForm(initial=initial, instance=member, required=True)
+    internal_form = ChoosenPersonForm(initial=initial, required=True)
 
     if request.POST:
         internal_form = ChoosenPersonForm(
-            instance=member, data=request.POST, required=True
+            data=request.POST, required=True
         )
         external_form = DidatticaCdsGruppoComponenteForm(
             instance=member, data=request.POST
@@ -1383,7 +1380,6 @@ def cds_group_member_edit(
                 member.nome = form.cleaned_data["nome"]
                 member.cognome = form.cleaned_data["cognome"]
 
-            form.save(commit=False)
             member.dt_mod = datetime.datetime.now()
             member.user_mod = request.user
 
