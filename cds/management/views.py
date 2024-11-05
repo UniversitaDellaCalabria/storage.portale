@@ -26,7 +26,6 @@ from django.core.validators import URLValidator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from generics.forms import ChoosenPersonForm
 from generics.utils import custom_message, decrypt, encrypt, log_action
 
 from .decorators import (
@@ -36,6 +35,7 @@ from .decorators import (
     can_manage_cds_teaching_system,
 )
 from .forms import (
+    ChoosenPersonForm,
     DidatticaCdsAltriDatiCoordinatorForm,
     DidatticaCdsAltriDatiForm,
     DidatticaCdsAltriDatiUfficioForm,
@@ -1182,9 +1182,7 @@ def cds_group(request, regdid_id, group_id, my_offices=None, regdid=None):
     """
     modifica gruppo cds
     """
-    group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
-    )
+    group = get_object_or_404(DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds)
     form = DidatticaCdsGruppoForm(instance=group)
 
     if request.POST:
@@ -1244,9 +1242,7 @@ def cds_group_members_new(request, regdid_id, group_id, my_offices=None, regdid=
     """
     aggiungi nuovo componente al gruppo
     """
-    group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
-    )
+    group = get_object_or_404(DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds)
 
     external_form = DidatticaCdsGruppoComponenteForm()
     internal_form = ChoosenPersonForm(required=True)
@@ -1279,8 +1275,8 @@ def cds_group_members_new(request, regdid_id, group_id, my_offices=None, regdid=
                 nome=nome,
                 funzione_it=form.cleaned_data.get("funzione_it"),
                 funzione_en=form.cleaned_data.get("funzione_en"),
-                ordine=form.cleaned_data.get("ordine", 10),
-                visibile=form.cleaned_data.get("visibile", True),
+                ordine=form.cleaned_data.get("ordine"),
+                visibile=form.cleaned_data.get("visibile"),
                 dt_mod=datetime.datetime.now(),
                 user_mod=request.user,
             )
@@ -1336,9 +1332,7 @@ def cds_group_members_new(request, regdid_id, group_id, my_offices=None, regdid=
 def cds_group_member_edit(
     request, regdid_id, group_id, member_id, my_offices=None, regdid=None
 ):
-    group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
-    )
+    group = get_object_or_404(DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds)
 
     member = get_object_or_404(
         DidatticaCdsGruppiComponenti, pk=member_id, didattica_cds_gruppi=group
@@ -1352,11 +1346,11 @@ def cds_group_member_edit(
         initial = {"choosen_person": encrypt(member.matricola.matricola)}
 
     external_form = DidatticaCdsGruppoComponenteForm(instance=member)
-    internal_form = ChoosenPersonForm(initial=initial, required=True)
+    internal_form = ChoosenPersonForm(initial=initial, instance=member, required=True)
 
     if request.POST:
         internal_form = ChoosenPersonForm(
-            data=request.POST, required=True
+            instance=member, data=request.POST, required=True
         )
         external_form = DidatticaCdsGruppoComponenteForm(
             instance=member, data=request.POST
@@ -1379,11 +1373,6 @@ def cds_group_member_edit(
                 member.matricola = None
                 member.nome = form.cleaned_data["nome"]
                 member.cognome = form.cleaned_data["cognome"]
-                
-            member.funzione_it = form.cleaned_data.get("funzione_it", member.funzione_it)
-            member.funzione_en = form.cleaned_data.get("funzione_en", member.funzione_en)
-            member.ordine = form.cleaned_data.get("ordine", member.ordine)
-            member.visibile = form.cleaned_data.get("visibile", member.visibile)
 
             member.dt_mod = datetime.datetime.now()
             member.user_mod = request.user
@@ -1444,9 +1433,7 @@ def cds_group_delete(request, regdid_id, group_id, my_offices=None, regdid=None)
     elimina gruppo
     """
 
-    group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
-    )
+    group = get_object_or_404(DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds)
 
     group_name = group.descr_breve_it
     group.delete()
@@ -1473,9 +1460,7 @@ def cds_group_member_delete(
     elimina componente di un gruppo
     """
 
-    group = get_object_or_404(
-        DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds
-    )
+    group = get_object_or_404(DidatticaCdsGruppi, pk=group_id, didattica_cds=regdid.cds)
 
     member = get_object_or_404(
         DidatticaCdsGruppiComponenti, pk=member_id, didattica_cds_gruppi=group
