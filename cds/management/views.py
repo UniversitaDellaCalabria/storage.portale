@@ -581,7 +581,7 @@ def cds_other_data_new(request, regdid_id, my_offices=None, regdid=None):
     if other_data:
         raise Exception(_("Other data set already existent for this cds"))
 
-    DidatticaCdsAltriDati.objects.create(regdid_id=regdid)
+    DidatticaCdsAltriDati.objects.create(regdid_id=regdid_id)
 
     log_action(
         user=request.user, obj=regdid, flag=CHANGE, msg="Creato nuovo set di dati"
