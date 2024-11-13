@@ -602,7 +602,7 @@ class ServiceDocente:
 
         query = (
             Personale.objects.filter(
-                Q(fl_docente=1) | Q(didatticacopertura__af__isnull=False),
+                Q(fl_docente=1) | (Q(didatticacopertura__af__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R')),
                 query_search,
                 query_cds,
                 query_regdid,
@@ -637,10 +637,9 @@ class ServiceDocente:
         # altrimenti solo quelli attivi
         if not regdid and not cds:
             query = query.filter(
-                Q(fl_docente=1)
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
-                flg_cessato=0,
+                Q(fl_docente=1, flg_cessato=0)
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R')
             )
 
         if dip:
@@ -717,9 +716,9 @@ class ServiceDocente:
                 query_regdid,
                 query_roles,
                 query_year,
-                didatticacopertura__af__isnull=False,
-                flg_cessato=0,
+                didatticacopertura__af__isnull=False
             )
+            .exclude(didatticacopertura__stato_coper_cod='R')
             .values(
                 "id_ab",
                 "matricola",
@@ -867,10 +866,9 @@ class ServiceDocente:
             teacher = get_personale_matricola(teacher)
 
         query = Personale.objects.filter(
-            Q(fl_docente=1)
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
-            flg_cessato=0,
+            Q(fl_docente=1, flg_cessato=0)
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
             matricola=teacher,
         ).distinct()
 

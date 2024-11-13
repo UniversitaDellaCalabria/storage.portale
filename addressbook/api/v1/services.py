@@ -46,11 +46,12 @@ class ServicePersonale:
         query = (
             Personale.objects.filter(
                 query_search,
-                flg_cessato=0,
+                # flg_cessato=0,
                 # cd_uo_aff_org__isnull=False,
-                dt_rap_fin__gte=datetime.datetime.today(),
-            )
-            .values(
+                Q(flg_cessato=0, dt_rap_fin__gte=datetime.datetime.today()) |
+                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R') |
+                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+            ).values(
                 "nome",
                 "middle_name",
                 "cognome",
@@ -68,8 +69,7 @@ class ServicePersonale:
                 "profilo",
                 "ds_profilo",
                 "ds_profilo_breve",
-            )
-            .order_by("cognome", "nome")
+            ).order_by("cognome", "nome")
         )
 
         grouped = {}
@@ -345,11 +345,20 @@ class ServicePersonale:
     def getPersonale(personale_id, full=False):
         if full:
             query = Personale.objects.filter(
-                Q(matricola=personale_id) | Q(cod_fis=personale_id), flg_cessato=0
+                Q(matricola=personale_id) |
+                Q(cod_fis=personale_id),
+                Q(flg_cessato=0) |
+                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R') |
+                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R')
             )
         else:
             personale_id = get_personale_matricola(personale_id)
-            query = Personale.objects.filter(matricola=personale_id, flg_cessato=0)
+            query = Personale.objects.filter(
+                Q(flg_cessato=0) |
+                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R') |
+                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+                matricola=personale_id,
+            )
         if not query:
             raise Http404
 
@@ -649,7 +658,9 @@ class ServicePersonale:
             query_roles = Q(cd_ruolo__in=roles)
 
         query = Personale.objects.filter(
-            query_roles, flg_cessato=0, dt_rap_fin__gte=datetime.datetime.today()
+            query_roles,
+            flg_cessato=0,
+            dt_rap_fin__gte=datetime.datetime.today()
         )
 
         query = query.values(

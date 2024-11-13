@@ -426,10 +426,9 @@ class ServiceDidatticaCds:
         years = [last_year, current_year]
         query = (
             DidatticaCopertura.objects.filter(
+                Q(personale__flg_cessato=0, personale__fl_docente=1) | ~Q(stato_coper_cod='R'),
                 cds_cod=cdscod,
                 aa_off_id__in=years,
-                personale__flg_cessato=0,
-                personale__fl_docente=1,
             )
             .values(
                 "personale__nome",
