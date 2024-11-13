@@ -522,7 +522,14 @@ class ServicePersonale:
                 q["Functions"] = functions
 
             if len(roles) == 0:
-                q["Roles"] = []
+                q["Roles"] = [{"matricola": q["matricola"],
+                         "cd_ruolo": q["cd_ruolo"],
+                         "ds_ruolo": q["ds_ruolo_locale"],
+                         "priorita": 1,
+                         "cd_uo_aff_org": None,
+                         "ds_aff_org": None,
+                         "cd_tipo_nodo": None,
+                         "sede": None}]
             else:
                 q["Roles"] = roles
 
