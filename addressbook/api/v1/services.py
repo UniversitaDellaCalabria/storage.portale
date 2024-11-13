@@ -69,6 +69,8 @@ class ServicePersonale:
                 "profilo",
                 "ds_profilo",
                 "ds_profilo_breve",
+                "cd_ruolo",
+                "ds_ruolo_locale",
             ).order_by("cognome", "nome")
         )
 
@@ -180,6 +182,16 @@ class ServicePersonale:
                         d_data["dt_rap_ini"] = r[5]
 
                     roles.append(d_data)
+
+                if not roles:
+                    roles = [{"matricola": q["matricola"],
+                             "cd_ruolo": q["cd_ruolo"],
+                             "ds_ruolo": q["ds_ruolo_locale"],
+                             "priorita": 1,
+                             "cd_uo_aff_org": None,
+                             "ds_aff_org": None,
+                             "cd_tipo_nodo": None,
+                             "sede": None}]
 
                 roles.sort(key=lambda x: x["priorita"])
                 grouped[q["id_ab"]]["Roles"] = roles
