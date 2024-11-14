@@ -71,6 +71,7 @@ class ServicePersonale:
                 "ds_profilo_breve",
                 "cd_ruolo",
                 "ds_ruolo_locale",
+                "dt_rap_ini"
             ).order_by("cognome", "nome")
         )
 
@@ -191,7 +192,8 @@ class ServicePersonale:
                              "cd_uo_aff_org": None,
                              "ds_aff_org": None,
                              "cd_tipo_nodo": None,
-                             "sede": None}]
+                             "sede": None,
+                             "dt_rap_ini": q["dt_rap_ini"]}]
 
                 roles.sort(key=lambda x: x["priorita"])
                 grouped[q["id_ab"]]["Roles"] = roles
