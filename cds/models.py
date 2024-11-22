@@ -15,6 +15,35 @@ from cds.settings import (
 )
 
 
+class DidatticaCdsCollegamento(models.Model):
+    cds = models.OneToOneField(
+        "DidatticaCds",
+        models.CASCADE,
+        db_column="ID_DIDATTICA_CDS",
+        to_field="cds_id",
+        related_name="cds_collegamento",
+        primary_key=True,
+    )
+
+    cds_prec = models.OneToOneField(
+        "DidatticaCds",
+        models.CASCADE,
+        db_column="ID_DIDATTICA_CDS_PREC",
+        to_field="cds_id",
+        related_name="cds_collegamento_prec",
+        unique=True,
+    )
+
+    class Meta:
+        managed = True
+        db_table = "DIDATTICA_CDS_COLLEGAMENTO"
+        ordering = ["-cds__cds_cod"]
+        unique_together = (("cds", "cds_prec"))
+
+    def __str__(self):
+        return f"{self.cds.cds_cod}-{self.cds_prec.cds_cod}"
+
+
 class DidatticaSsd(models.Model):
     ssd_id = models.CharField(db_column="SSD_ID", primary_key=True, max_length=100)
     ssd_des = models.CharField(db_column="SSD_DES", max_length=2000)

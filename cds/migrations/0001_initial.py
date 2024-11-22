@@ -3549,6 +3549,40 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name="DidatticaCdsCollegamento",
+            fields=[
+                (
+                    "cds",
+                    models.OneToOneField(
+                        db_column="ID_DIDATTICA_CDS",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        related_name="cds_collegamento",
+                        serialize=False,
+                        to="cds.didatticacds",
+                    ),
+                ),
+                (
+                    "cds_prec",
+                    models.OneToOneField(
+                        db_column="ID_DIDATTICA_CDS_PREC",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="cds_collegamento_prec",
+                        to="cds.didatticacds",
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "DIDATTICA_CDS_COLLEGAMENTO",
+                "ordering": ["-cds__cds_cod"],
+                "managed": True,
+            },
+        ),
+        migrations.AlterUniqueTogether(
+            name="didatticacdscollegamento",
+            unique_together={("cds", "cds_prec")},
+        ),
+        migrations.CreateModel(
             name="DidatticaCdsAltriDati",
             fields=[
                 (
