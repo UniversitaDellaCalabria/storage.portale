@@ -161,11 +161,10 @@ class Migration(migrations.Migration):
                 ("dt_mod", models.DateField(blank=True, db_column="DT_MOD", null=True)),
                 (
                     "cds",
-                    models.ForeignKey(
-                        blank=True,
+                    models.OneToOneField(
                         db_column="ID_DIDATTICA_CDS",
-                        null=True,
-                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="brochure",
                         to="cds.didatticacds",
                     ),
                 ),
@@ -367,5 +366,11 @@ class Migration(migrations.Migration):
                 "db_table": "CDS_BROCHURE_EX_STUDENTI",
                 "managed": True,
             },
+        ),
+        migrations.AddConstraint(
+            model_name="cdsbrochure",
+            constraint=models.UniqueConstraint(
+                fields=("cds_cod",), name="unique_cds_cod"
+            ),
         ),
     ]

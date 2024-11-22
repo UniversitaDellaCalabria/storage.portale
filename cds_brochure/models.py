@@ -8,13 +8,12 @@ from .settings import cds_brochure_exstudents_media_path
 class CdsBrochure(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     aa = models.PositiveIntegerField(db_column="AA", blank=True, null=True)
-    cds = models.ForeignKey(
+    cds = models.OneToOneField(
         "cds.DidatticaCds",
-        models.DO_NOTHING,
+        models.CASCADE,
         db_column="ID_DIDATTICA_CDS",
-        blank=True,
-        null=True,
         to_field="cds_id",
+        related_name="brochure"
     )
     cds_cod = models.CharField(
         db_column="CDS_COD", max_length=100, blank=True, null=True
@@ -92,6 +91,12 @@ class CdsBrochure(models.Model):
     class Meta:
         managed = True
         db_table = "CDS_BROCHURE"
+        constraints = [
+            models.UniqueConstraint(
+                name="unique_cds_cod",
+                fields=["cds_cod"],
+            )
+        ]
 
 
 class CdsBrochureExStudenti(models.Model):
