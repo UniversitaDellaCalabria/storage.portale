@@ -1,0 +1,127 @@
+{% extends "blocks/import_assistant_help_modal.html" %}
+
+{% load static i18n management_templatetags %}
+
+{% block modal_header %}
+<div class="nav nav-tabs auto"
+    id="nav-tab-cds-help"
+    role="tablist"
+    aria-orientation="orizzontal">
+
+    <a class="nav-link pb-4 active"
+        id="nav-tab-cds-info-tab"
+        data-toggle="tab" href="#nav-tab-cds-info"
+        role="tab" aria-controls="nav-tab-cds-help"
+        aria-selected="true">
+        <span>
+            {% trans "CdS update" %}
+        </span>
+    </a>
+    <a class="nav-link pb-4"
+        id="nav-tab-cds-fields-tab"
+        data-toggle="tab" href="#nav-tab-cds-fields"
+        role="tab" aria-controls="nav-tab-cds-help">
+        <span>
+            {% trans "Excel fields" %}
+        </span>
+    </a>
+</div>
+{% endblock modal_header %}
+
+{% block modal_body %}
+{% settings_value "FIRST_DUMMY_ID" package="generics" as first_dummy_id %}
+{% settings_value "EXCEL_FIELDS_MAPPINGS" package="import_assistant" as excel_fields_mappings %}
+
+<div class="tab-content"
+    id="nav-tab-cds-help-contents">
+
+    <div class="tab-pane fade show active"
+        id="nav-tab-cds-info"
+        role="tabpanel"
+        aria-labelledby="CdS Help">
+
+        <div class="text-center mb-4">
+            <h5 class="font-weight-bold">{% trans "Yearly CdS Update" %}</h5>
+            <p class="small text-muted">{% trans "This procedure is used to manually update study courses." %}</p>
+        </div>
+        
+        <div class="px-3">
+            <h5 class="font-weight-semibold mb-3">{% trans "Update Scenarios" %}</h5>
+            <ol class="mb-4 list-group">
+                <li class="list-group-item">
+                    <span class="font-weight-semibold">{% trans "Importing a new CdS:" %} </span>
+                    <p class="mb-0">{% blocktrans with cds_cod=excel_fields_mappings.CDS_COD cds_cod_prec=excel_fields_mappings.CDS_COD_PREC %}No specific fields are expected among {{cds_cod}}, {{cds_cod_prec}}.{% endblocktrans %}</p>
+                </li>
+                <li class="list-group-item">
+                    <span class="font-weight-semibold">{% trans "Importing a CdS in continuity with a previous one:" %} </span>
+                    <p class="mb-0">{% blocktrans with cds_cod_prec=excel_fields_mappings.CDS_COD_PREC %}The field {{cds_cod_prec}} is required in the xlsx file.{% endblocktrans %}</p>
+                </li>
+                <li class="list-group-item">
+                    <span class="font-weight-semibold">{% trans "Updating an existing CdS:" %} </span>
+                    <p class="mb-0">{% blocktrans with cds_cod=excel_fields_mappings.CDS_COD %}The field {{cds_cod}} is required in the xlsx file.{% endblocktrans %}</p>
+                </li>
+            </ol>
+        
+            <h5 class="font-weight-semibold mb-3">{% trans "Key Steps and Models Affected" %}</h5>
+            <ul class="list-group mb-4">
+                <li class="list-group-item">
+                    <strong>{% trans "1. File Loading and Validation:" %} </strong>
+                    {% trans "The Excel file is loaded, and headers are validated to ensure all required fields are present." %}
+                    <br>
+                    <em>{% trans "Models affected:" %} None (validation only).</em>
+                </li>
+                <li class="list-group-item">
+                    <strong>{% trans "2. Row Processing:" %} </strong>
+                    {% trans "Each row is validated and processed to create or update a study course (DidatticaCds). Missing fields are handled, and new entries are initialized if needed." %}
+                    <br>
+                    <em>{% trans "Models affected:" %} DidatticaCds, DidatticaDipartimento.</em>
+                </li>
+                <li class="list-group-item">
+                    <strong>{% trans "3. Brochure Management:" %}</strong>
+                    {% trans "Existing brochures (CdsBrochure) are updated, or new ones are created, possibly using previous year's data. Related tables like sliders and links are handled." %}
+                    <br>
+                    <em>{% trans "Models affected:" %} CdsBrochure, CdsBrochureSlider, CdsBrochureExStudenti, CdsBrochureLink.</em>
+                </li>
+                <li class="list-group-item">
+                    <strong>{% trans "4. Regulations Management:" %}</strong>
+                    {% trans "Creates new regulations (DidatticaRegolamento) if missing or updates them based on previous entries for the academic year." %}
+                    <br>
+                    <em>{% trans "Models affected:" %} DidatticaRegolamento.</em>
+                </li>
+                <li class="list-group-item">
+                    <strong>{% trans "5. Language Handling:" %} </strong>
+                    {% trans "Validates and adds language entries (DidatticaCdsLingua) for the course, supporting 'ita' (Italian) and 'eng' (English)." %}
+                    <br>
+                    <em>{% trans "Models affected:" %} DidatticaCdsLingua.</em>
+                </li>
+                <li class="list-group-item">
+                    <strong>{% trans "6. Course Linking:" %}</strong>
+                    {% trans "Links the current course to a previous one (DidatticaCdsCollegamento) if CDS_COD_PREV is provided." %}
+                    <br>
+                    <em>{% trans "Models affected:" %} DidatticaCdsCollegamento.</em>
+                </li>
+            </ul>
+        
+            <h5 class="font-weight-semibold mb-3">{% trans "Additional Notes" %}</h5>
+            <ul class="list-group mb-4">
+                <li class="list-group-item">{% trans "If CDS_COD is specified in the xlsx file, it will be used as CDS_ID and CDS_COD, otherwise it will be used the first available integer starting from:" %} <strong>{{first_dummy_id}}</strong></li>
+                <li class="list-group-item">{% trans "Generated entries for DidatticaRegolamento will have REGDID_ID starting from:" %} <strong>{{first_dummy_id}}</strong></li>
+                <li class="list-group-item">{% trans "Update the value" %} <strong>CURRENT_YEAR</strong> {% trans "if needed" %} <strong>[{% settings_value "CURRENT_YEAR" %}]</strong></li>
+            </ul>
+        </div>
+        
+
+    </div>
+
+    <div class="tab-pane fade"
+        id="nav-tab-cds-fields"
+        role="tabpanel"
+        aria-labelledby="Fields description">
+        <div class="text-center mb-3">
+            <h5 class="font-weight-bold">{% trans "Excel file fields" %}</h5>
+        </div>
+        {% include "blocks/import_assistant_cds_fields_table.html" %}
+    </div>
+
+</div>
+{% endblock modal_body %}

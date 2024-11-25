@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'research_groups',
     'laboratories',
     'regdid',
+    'import_assistant',
 
     # cors headers
     'corsheaders',
@@ -181,5 +182,5 @@ PERSON_CONTACTS_TO_TAKE = [
     'URL Sito WEB',
     'URL Sito WEB Curriculum Vitae']
 
-CURRENT_YEAR = 2023
+CURRENT_YEAR = 2024
 HIGH_FORMATION_YEAR = 2023

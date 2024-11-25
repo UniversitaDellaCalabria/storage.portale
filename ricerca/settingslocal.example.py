@@ -101,7 +101,8 @@ INSTALLED_APPS = [
     'research_groups',
     'laboratories',
     'regdid',
-
+    'import_assistant',
+    
     # SAML2
     # 'djangosaml2',
     # 'saml2_sp'

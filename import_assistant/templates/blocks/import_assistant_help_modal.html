@@ -1,0 +1,31 @@
+{% load static i18n management_templatetags %}
+
+{% random_id id as r_id %}
+{% with modal_id=modal_id|default:r_id %}
+
+<div class="modal fade it-dialog-scrollable"
+    tabindex="-1"
+    role="dialog"
+    id="{{modal_id}}"
+    aria-labelledby="Help"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content" style="max-height:75vh;">
+            <div class="modal-header">
+                {% block modal_header %}
+                {% endblock modal_header %}
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <svg class="icon">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% block modal_body %}
+                {% endblock modal_body %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endwith %}

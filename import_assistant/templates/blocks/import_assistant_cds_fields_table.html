@@ -1,0 +1,27 @@
+{% load static i18n management_templatetags %}
+
+{% settings_value "CDS_IMPORT_FIELDS" package="import_assistant" as cds_import_fields %}
+
+<div class="table-responsive-sm">
+    <table class="table table-sm table-striped table-bordered">
+        <thead>
+            <tr>
+                <th class="col">{% trans "Field" %}</th>
+                <th class="col text-center text-truncate">{% trans "Required" %}</th>
+                <th class="col text-truncate">{% trans "Description" %}</th>
+                <th class="col">{% trans "Example" %}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in cds_import_fields %}
+            <tr>
+                <td class="col">{{ field.name }}</td>
+                <td class="col text-center text-truncate">{% if field.required %}{% trans "YES" %}{% else %}NO{% endif %}</td>
+                <td class="col text-truncate">{{ field.description }}</td>
+                <td class="col">{{ field.example }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,27 @@
+{% load static i18n management_templatetags %}
+
+{% settings_value "REGDID_STRUCTURE_FIELDS" package="import_assistant" as regdid_structure_fields %}
+
+<div class="table-responsive-sm">
+    <table class="table table-sm table-striped table-bordered">
+        <thead>
+            <tr>
+                <th class="col-4">{% trans "Field" %}</th>
+                <th class="col-auto text-center text-truncate">{% trans "Required" %}</th>
+                <th class="col-auto text-truncate">{% trans "Description" %}</th>
+                <th class="col-auto">{% trans "Example" %}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in regdid_structure_fields %}
+            <tr>
+                <td class="col-4">{{ field.name }}</td>
+                <td class="col-auto text-center text-truncate">{% if field.required %}{% trans "YES" %}{% else %}NO{% endif %}</td>
+                <td class="col-auto text-wrap">{{ field.description }}</td>
+                <td class="col-auto">{{ field.example }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

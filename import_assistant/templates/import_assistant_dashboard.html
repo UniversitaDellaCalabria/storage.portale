@@ -1,0 +1,73 @@
+{% extends "storage_crud_base.html" %}
+
+{% load static i18n %}
+
+{% block centered_messages %}
+<div style="max-height:25vh; overflow-y:auto;">
+    {{block.super}}
+</div>
+{% endblock centered_messages %}
+
+{% block centered_container %}
+
+<h3 class="text-center mb-4">{% trans "Import assistant" %}</h3>
+
+<section class="mb-5">
+    {% include "blocks/import_assistant_cds_help_modal.html" with modal_id="cds-help-modal" %}
+    <div class="d-flex">
+        <h4>{% trans "CDS Updates" %}</h4>
+        <a class = "ml-auto mt-2 mb-2 btn btn-primary btn-xs btn-icon"
+            href="{% url 'import-assistant:management:cds-export' %}"
+            role="button">
+            {% trans "Download template" %}
+            <svg class="ml-1 icon icon-white">
+                <use href="{% static 'svg/sprite.svg' %}#it-download"></use>
+            </svg>
+        </a>
+        <a class = "ml-1 mt-2 mb-2 btn btn-primary btn-xs btn-icon"
+            href="javascript:void(0)"
+            role="button"
+            data-toggle="modal"
+            data-target="#cds-help-modal">
+            {% trans "Help" %}
+            <svg class="ml-1 icon icon-white">
+                <use href="{% static 'svg/sprite.svg' %}#it-help-circle"></use>
+            </svg>
+        </a>
+    </div>
+    <form method="post" enctype="multipart/form-data" action="{% url 'import-assistant:management:cds-import' %}" novalidate>
+        {% include "form_template.html" with form=cds_import_form %}
+        {% include "includes/form_submit.html" %}
+    </form>
+</section>
+<hr>
+<section class="mb-5">
+    {% include "blocks/import_assistant_regdid_help_modal.html" with modal_id="regdid-help-modal" %}
+    <div class="d-flex">
+        <h4>{% trans "Regdid Structure Updates" %}</h4>
+        <a class = "ml-auto mt-2 mb-2 btn btn-primary btn-xs btn-icon"
+            href="{% url 'import-assistant:management:regdid-structure-export' %}"
+            role="button">
+            {% trans "Download current structure" %}
+            <svg class="ml-1 icon icon-white">
+                <use href="{% static 'svg/sprite.svg' %}#it-download"></use>
+            </svg>
+        </a>
+        <a class = "ml-1 mt-2 mb-2 btn btn-primary btn-xs btn-icon"
+            href="javascript:void(0)"
+            role="button"
+            data-toggle="modal"
+            data-target="#regdid-help-modal">
+            {% trans "Help" %}
+            <svg class="ml-1 icon icon-white">
+                <use href="{% static 'svg/sprite.svg' %}#it-help-circle"></use>
+            </svg>
+        </a>
+    </div>
+    <form method="post" action="{% url 'import-assistant:management:regdid-structure-import'%}" novalidate>
+        {% include "form_template.html" with form=regdid_structure_import_form %}
+        {% include "includes/form_submit.html" %}
+    </form>
+</section>
+
+{% endblock centered_container %}

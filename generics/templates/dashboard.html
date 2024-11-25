@@ -69,6 +69,16 @@
                 role="tabpanel"
                 aria-labelledby="nav-vertical-tabcontent-cds-tab">
                 <!-- Cds Info -->
+                {% if user.is_superuser %}
+                    {% if not disabled_management_apps or "import_assistant" not in disabled_management_apps %}
+                    {% trans "Import assistant" as title %}
+                    {% trans "Manage yearly update routines" as subtitle %}
+                    {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="import-assistant:management:dashboard" subtitle=subtitle %}
+                {% endif %}
+                <hr />
+                {% endif %}
+                <!-- /Cds Info -->
+                <!-- Cds Info -->
                 {% if not disabled_management_apps or "cds" not in disabled_management_apps %}
                 {% trans "CdS info" as title %}
                 {% trans "Manage CdS' contact details, organization and documents" as subtitle %}

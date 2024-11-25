@@ -1,0 +1,84 @@
+{% extends "blocks/import_assistant_help_modal.html" %}
+
+{% load static i18n %}
+
+{% block modal_header %}
+<div class="nav nav-tabs auto"
+    id="nav-tab-regdid-structure-help"
+    role="tablist"
+    aria-orientation="orizzontal">
+
+    <a class="nav-link pb-4 active"
+        id="nav-tab-info-tab"
+        data-toggle="tab" href="#nav-tab-regdid-info"
+        role="tab" aria-controls="nav-tab-regdid-structure-help"
+        aria-selected="true">
+        <span>
+            {% trans "Regdid structure update" %}
+        </span>
+    </a>
+    <a class="nav-link pb-4"
+        id="nav-tab-fields-tab"
+        data-toggle="tab" href="#nav-tab-json-structure"
+        role="tab" aria-controls="nav-tab-regdid-structure-help">
+        <span>
+            {% trans "Json structure" %}
+        </span>
+    </a>
+</div>
+{% endblock modal_header %}
+
+{% block modal_body %}
+<div class="tab-content"
+    id="nav-tab-regdid-structure-help-contents">
+
+    <div class="tab-pane fade show active"
+        id="nav-tab-regdid-info"
+        role="tabpanel"
+        aria-labelledby="Regdid Help">
+
+        <div class="text-center mb-4">
+            <h5 class="font-weight-bold">{% trans "Yearly Regdid Structure Update" %}</h5>
+            <p class="small text-muted">{% trans "This procedure is used to manually update didactic regulations' structure." %}</p>
+        </div>
+        
+        <div class="px-3">
+
+            <h5 class="font-weight-semibold mb-3">{% trans "Key Steps and Models Affected" %}</h5>
+            <ul class="list-group mb-4">
+                <li class="list-group-item">
+                    <strong>{% trans "1. Entry Validation:" %}</strong>
+                    {% trans "Validate the data entries to ensure all required fields are present and contain valid values." %}
+                    <br>
+                    <em>{% trans "Models affected:"%} None (validation only).</em>
+                </li>
+                <li class="list-group-item">
+                    <strong>{% trans "2. Importing Structures:" %}</strong>
+                    {% trans "Import or update REGDID structures, ensuring consistency with accepted course types." %}
+                    <br>
+                    <em>{% trans "Models affected:"%} DidatticaArticoliRegolamentoStruttura.</em>
+                </li>
+                <li class="list-group-item">
+                    <strong>{% trans "3. Handling copy from the previous year:" %}</strong>
+                    {% trans "Create a testata if missing, then retrieve and copy matching articles and sub-articles from the previous year, linking them to the newly imported structures." %}
+                    {% trans "If no correspondence is found, an empty article is generated following the structure." %}
+                    <br>
+                    <em>{% trans "Models affected:"%} DidatticaCdsArticoliRegolamentoTestata, DidatticaCdsArticoliRegolamento, DidatticaCdsSubarticoliRegolamento.</em>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="tab-pane fade"
+        id="nav-tab-json-structure"
+        role="tabpanel"
+        aria-labelledby="Json stucture description">
+        <div class="text-center mb-3">
+            <h5 class="font-weight-bold">{% trans "Json fields" %}</h5>
+        </div>
+        {% include "blocks/import_assistant_regdid_structure_fields_table.html" %}
+    </div>
+    
+</div>
+{% endblock modal_body %}
