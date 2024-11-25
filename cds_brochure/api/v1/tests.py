@@ -21,6 +21,17 @@ class ApiSitoWebCdsListUnitTest(TestCase):
                 "cds_cod": "aaa",
                 "nome_cds_it": "Matematica",
                 "nome_cds_eng": "Math",
+                "cdsord_id": 1,
+            }
+        )
+
+        cds2 = DidatticaCdsUnitTest.create_didatticaCds(
+            **{
+                "cds_id": 2,
+                "cds_cod": "aaa",
+                "nome_cds_it": "Informatica",
+                "nome_cds_eng": "Computer science",
+                "cdsord_id": 2,
             }
         )
 
@@ -77,6 +88,7 @@ class ApiSitoWebCdsListUnitTest(TestCase):
             **{
                 "id": 2,
                 "aa": "2022",
+                "cds": cds2,
                 # 'nome_corso_it': 'Ingegneria',
                 # 'nome_corso_en': 'Computer Engineering',
                 # 'lingua_it': 'italiano',
