@@ -1,5 +1,6 @@
 import magic
 import re
+import openpyxl
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -23,6 +24,8 @@ FILETYPE_IMAGE_YX_RATIO_MIN = getattr(settings, 'FILETYPE_IMAGE_YX_RATIO_MIN',
                                       app_settings.FILETYPE_IMAGE_YX_RATIO_MIN)
 FILETYPE_IMAGE_YX_RATIO_MAX = getattr(settings, 'FILETYPE_IMAGE_YX_RATIO_MAX',
                                       app_settings.FILETYPE_IMAGE_YX_RATIO_MAX)
+FILETYPE_XLSX_ALLOWED = getattr(settings, 'FILETYPE_XLSX',
+                               app_settings.FILETYPE_XLSX)
 
 
 def validate_file_size(value):  # pragma: no cover
@@ -49,6 +52,14 @@ def _validate_generic_file_extension(value, allowed_filetypes):  # pragma: no co
         _msg = _('Unsupported file extension')
         _msg2 = _('Allowed extensions')
         raise ValidationError(f'{_msg}: {mimetype}. {_msg2} {allowed_filetypes}')
+    
+
+def _validate_generic_xlsx_file(value):
+    try:
+        wb = openpyxl.load_workbook(filename=value, read_only=True, data_only=True)
+        wb.close()
+    except Exception:
+        raise ValidationError(_("Invalid .xlsx file"))
 
 
 def orcid_validator(value):  # pragma: no cover
@@ -71,6 +82,11 @@ def validate_image_file_extension(value):  # pragma: no cover
 
 def validate_media_file_extension(value):  # pragma: no cover
     _validate_generic_file_extension(value, FILETYPE_MEDIA)
+
+
+def validate_xlsx_file_extension(value):  # pragma: no cover
+    _validate_generic_file_extension(value, FILETYPE_XLSX_ALLOWED)
+    _validate_generic_xlsx_file(value)
 
 
 def validate_image_size_ratio(value):  # pragma: no cover

@@ -15,6 +15,9 @@ ENCRYPTION_KEY = getattr(settings, "ENCRYPTION_KEY", b"key")
 
 # file validation
 FILETYPE_PDF = ("application/pdf",)
+FILETYPE_XLSX = (
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',       # .xlsx Excel Workbook
+)
 FILETYPE_DATA = (
     "text/csv",
     "application/json",
@@ -80,3 +83,7 @@ CKEditor5Widget.Media.css = CKEDITOR_WIDGET_OVERRIDES["css"]
 CKEditor5Widget.Media.js = CKEDITOR_WIDGET_OVERRIDES["js"]
 
 RICERCA_API_URL = getattr(settings, 'RICERCA_API_URL', 'api/ricerca/')
+
+
+# First ID that doesn't get overridden by etl procedures
+FIRST_DUMMY_ID = 99999001

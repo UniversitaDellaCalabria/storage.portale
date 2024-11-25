@@ -9,10 +9,16 @@ from django.http import Http404
 from django.shortcuts import render
 from django.utils import timezone
 from PIL import Image
+from django.db import transaction
 
 from generics.labels import LABEL_MAPPING as LOCAL_LABEL_MAPPING
 
-from .settings import ENCRYPTION_KEY, FILETYPE_IMAGE, SETTINGS_LABEL_MAPPING
+from .settings import (
+    ENCRYPTION_KEY,
+    FILETYPE_IMAGE,
+    SETTINGS_LABEL_MAPPING,
+    FIRST_DUMMY_ID,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +34,17 @@ def log_action(user, obj, flag, msg):
         action_flag=flag,
         change_message=msg,
     )
+
+
+def log_action_on_commit(user, obj, flag, msg):
+    """
+    Wraps log_action to be used with transaction.on_commit
+    """
+
+    def log():
+        log_action(user, obj, flag, msg)
+
+    transaction.on_commit(log)
 
 
 def base_context(context):
@@ -135,3 +152,10 @@ def build_media_path(filename, path=None):  # pragma: no cover
         return f"//{settings.DEFAULT_HOST}{path}/{filename}"
     except Exception:
         return None
+
+
+def get_latest_available_dummy_id(model, id_field_name, threshold=FIRST_DUMMY_ID - 1):
+    """Retrieves the latest available ID and increments it, ensuring it's above the threshold"""
+    instance = model.objects.filter(**{id_field_name + "__isnull": False}).order_by(f"-{id_field_name}")
+    latest_id = getattr(instance, id_field_name)
+    return max(threshold, latest_id) + 1
