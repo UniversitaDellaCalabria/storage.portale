@@ -330,8 +330,9 @@ def _get_or_create_cds(request, data, academic_year, cds_cod, cds_id):
         ).first()
 
         # Retrieve the DidatticaClasseLaurea associated with the CDS for cla_miur_cod and intercla_miur_cod
+        cla_miur_cod = data.get(EXCEL_FIELDS_MAPPINGS["CLA_MIUR_COD"]).upper()
         cla_m = DidatticaClasseLaurea.objects.filter(
-            cla_miur_cod=data.get(EXCEL_FIELDS_MAPPINGS["CLA_MIUR_COD"]).upper()
+            cla_miur_cod=cla_miur_cod
         ).first()
         if cla_m is None:
             raise InvalidValueError(
@@ -341,11 +342,13 @@ def _get_or_create_cds(request, data, academic_year, cds_cod, cds_id):
         cla_m_id = cla_m.cla_m_id
 
         intercla_m_id = None
-        if data.get(EXCEL_FIELDS_MAPPINGS["INTERCLA_MIUR_COD"]):
+        
+        intercla_miur_cod = data.get(EXCEL_FIELDS_MAPPINGS["INTERCLA_MIUR_COD"], None)
+        intercla_miur_cod = intercla_miur_cod.upper() if intercla_miur_cod else None
+        
+        if intercla_miur_cod:
             intercla_m = DidatticaClasseLaurea.objects.filter(
-                cla_miur_cod=data.get(
-                    EXCEL_FIELDS_MAPPINGS["INTERCLA_MIUR_COD"]
-                ).upper()
+                cla_miur_cod=intercla_miur_cod
             ).first()
             if intercla_m is None:
                 raise InvalidValueError(
@@ -363,12 +366,10 @@ def _get_or_create_cds(request, data, academic_year, cds_cod, cds_id):
             tipo_corso_cod=data.get(EXCEL_FIELDS_MAPPINGS["TIPO_CORSO_COD"]).upper(),
             tipo_corso_des=data.get(EXCEL_FIELDS_MAPPINGS["TIPO_CORSO_DES"]),
             cla_m_id=cla_m_id,
-            cla_miur_cod=data.get(EXCEL_FIELDS_MAPPINGS["CLA_MIUR_COD"]).upper(),
+            cla_miur_cod=cla_miur_cod,
             cla_miur_des=data.get(EXCEL_FIELDS_MAPPINGS["CLA_MIUR_DES"]),
             intercla_m_id=intercla_m_id,
-            intercla_miur_cod=data.get(
-                EXCEL_FIELDS_MAPPINGS["INTERCLA_MIUR_COD"]
-            ).upper(),
+            intercla_miur_cod=intercla_miur_cod,
             intercla_miur_des=data.get(EXCEL_FIELDS_MAPPINGS["INTERCLA_MIUR_DES"]),
             durata_anni=data.get(EXCEL_FIELDS_MAPPINGS["DURATA_ANNI"]),
             valore_min=data.get(EXCEL_FIELDS_MAPPINGS["VALORE_MIN"]),
