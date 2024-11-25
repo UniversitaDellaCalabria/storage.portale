@@ -10,7 +10,6 @@ from .views import (
     regdid_articles_publish,
     regdid_list,
     regdid_status_change,
-    regdid_structure_import,
     regdid_sub_articles_delete,
     regdid_sub_articles_edit,
     regdid_sub_articles_new,
@@ -20,10 +19,7 @@ app_name = "management"
 
 urlpatterns = [
     path('regdid/', regdid_list, name='regdid'),
-
-    # Structure
-    path('regdid/structure/import/', regdid_structure_import, name='regdid-structure-import'),
-
+    
     # Status
     path('regdid/<str:regdid_id>/status-change/<str:status_cod>/', regdid_status_change, name='regdid-status-change'),
 

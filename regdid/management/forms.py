@@ -1,4 +1,3 @@
-from json import JSONEncoder
 from re import sub
 
 from django import forms
@@ -20,15 +19,6 @@ def _normalize_text(text):
     normalized_text = normalized_text.strip()
     normalized_text = strip_tags(normalized_text)
     return normalized_text
-
-
-class PrettyJSONEncoder(JSONEncoder):
-    def __init__(self, *args, indent, sort_keys, **kwargs):
-        super().__init__(*args, indent=4, sort_keys=True, **kwargs)
-
-
-class DidatticaArticoliRegolamentoStrutturaForm(forms.Form):
-    structure = forms.JSONField(encoder=PrettyJSONEncoder, label=_("Structure JSON"))
 
 
 class BaseArticoliModelForm(forms.ModelForm):

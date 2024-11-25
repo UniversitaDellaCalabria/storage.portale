@@ -51,7 +51,6 @@ from regdid.settings import (
 from xhtml2pdf import pisa
 
 from .forms import (
-    DidatticaArticoliRegolamentoStrutturaForm,
     DidatticaCdsArticoliRegolamentoForm,
     DidatticaCdsArticoliRegolamentoNoteForm,
     DidatticaCdsArticoliRegolamentoTestataNoteForm,
@@ -142,94 +141,6 @@ def regdid_list(request):
     }
 
     return render(request, "regdid_list.html", context)
-
-
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
-def regdid_structure_import(request):
-    didatticaarticoliregolamentostrutturaform = (
-        DidatticaArticoliRegolamentoStrutturaForm(
-            data=request.POST if request.POST else None, initial={"structure": "{}"}
-        )
-    )
-
-    if request.POST:
-        if didatticaarticoliregolamentostrutturaform.is_valid():
-            """
-            json structure:
-            [
-                {
-                    "aa": 2024,
-                    "numero": 1,
-                    "titolo_it": "Scopo del regolamento",
-                    "titolo_en": "Purpose of the regulation",
-                    "ordine": 0,
-                    "didattica_cds_tipo_corso_id": 2,
-                    "didattica_articoli_regolamento_titolo_id": 2
-                },
-                ...
-            ]
-            """
-
-            struttura = didatticaarticoliregolamentostrutturaform.cleaned_data.get(
-                "structure"
-            )
-
-            objs_to_be_created = []
-            objs_to_be_updated = []
-
-            for struttura_articolo in struttura:
-                struttura_articolo["user_mod_id"] = request.user.pk
-                struttura_articolo["dt_mod"] = datetime.datetime.now().isoformat()
-                struttura_articolo["visibile"] = True
-
-                old_obj = DidatticaArticoliRegolamentoStruttura.objects.filter(
-                    aa=struttura_articolo["aa"],
-                    didattica_cds_tipo_corso_id=struttura_articolo[
-                        "didattica_cds_tipo_corso_id"
-                    ],
-                    numero=struttura_articolo["numero"],
-                )
-                if old_obj.exists():
-                    objs_to_be_updated.append((old_obj, struttura_articolo))
-                else:
-                    objs_to_be_created.append(struttura_articolo)
-
-            try:
-                with transaction.atomic():
-                    for o_obj, n_obj in objs_to_be_updated:
-                        o_obj.update(**n_obj)
-                    for c_obj in objs_to_be_created:
-                        DidatticaArticoliRegolamentoStruttura.objects.create(**c_obj)
-
-                    messages.add_message(
-                        request, messages.SUCCESS, _("Structure imported with success")
-                    )
-
-            except Exception as e:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    _("Unable to import the structure") + f"{ - repr(e)}",
-                )
-
-    breadcrumbs = {
-        reverse("generics:dashboard"): _("Dashboard"),
-        reverse("regdid:management:regdid"): _("Didactic regulations"),
-        "#": _("Structure"),
-    }
-
-    return render(
-        request,
-        "regdid_structure_form.html",
-        {
-            "breadcrumbs": breadcrumbs,
-            "forms": [
-                didatticaarticoliregolamentostrutturaform,
-            ],
-            "item_label": _("Didactic regulations structure"),
-        },
-    )
 
 
 @login_required
