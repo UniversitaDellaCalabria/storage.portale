@@ -19,7 +19,7 @@ app_name = "management"
 
 urlpatterns = [
     path('regdid/', regdid_list, name='regdid'),
-    
+
     # Status
     path('regdid/<str:regdid_id>/status-change/<str:status_cod>/', regdid_status_change, name='regdid-status-change'),
 

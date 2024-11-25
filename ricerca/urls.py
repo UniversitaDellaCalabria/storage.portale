@@ -35,7 +35,7 @@ urlpatterns = [
     path('', include('research_lines.urls')),
     path('', include('structures.urls')),
     path('', include('teachers.urls')),
-    
+
     path('', include('import_assistant.urls')),
 ]
 
