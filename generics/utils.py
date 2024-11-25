@@ -156,6 +156,10 @@ def build_media_path(filename, path=None):  # pragma: no cover
 
 def get_latest_available_dummy_id(model, id_field_name, threshold=FIRST_DUMMY_ID - 1):
     """Retrieves the latest available ID and increments it, ensuring it's above the threshold"""
-    instance = model.objects.filter(**{id_field_name + "__isnull": False}).order_by(f"-{id_field_name}")
+    instance = (
+        model.objects.filter(**{id_field_name + "__isnull": False})
+        .order_by(f"-{id_field_name}")
+        .first()
+    )
     latest_id = getattr(instance, id_field_name)
     return max(threshold, latest_id) + 1
