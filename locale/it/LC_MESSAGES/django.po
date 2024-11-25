@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-16 15:13+0200\n"
-"PO-Revision-Date: 2024-10-16 15:24+0200\n"
+"POT-Creation-Date: 2024-11-25 09:45+0100\n"
+"PO-Revision-Date: 2024-11-25 09:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -138,21 +138,14 @@ msgid "Taxpayer ID"
 msgstr "Codice fiscale"
 
 #: accounts/templates/account.html:34 accounts/views.py:33
-#: addressbook/templates/blocks/crud_teacher_books.html:73
-#: addressbook/templates/blocks/crud_teacher_news.html:74
-#: addressbook/templates/teacher_detail.html:25
-#: advanced_training/templates/blocks/crud_projects.html:243
-#: advanced_training/templates/project.html:80
-#: advanced_training/templates/project.html:155
-#: advanced_training/templates/project.html:234 cds/management/views.py:1684
-#: cds/templates/cds_detail.html:78 cds/templates/cds_detail.html:218
-#: cds/templates/cds_detail.html:318 cds/templates/cds_detail.html:443
-#: cds/templates/cds_detail.html:504 cds/templates/cds_detail.html:567
-#: cds/templates/cds_group.html:10 cds/templates/cds_group.html:71
-#: cds/templates/cds_office_data.html:36 cds/templates/cds_other_data.html:39
-#: cds/templates/cds_other_data.html:110
+#: cds/management/views.py:1670 cds/templates/cds_detail.html:78
+#: cds/templates/cds_detail.html:218 cds/templates/cds_detail.html:318
+#: cds/templates/cds_detail.html:443 cds/templates/cds_detail.html:504
+#: cds/templates/cds_detail.html:567 cds/templates/cds_group.html:10
+#: cds/templates/cds_group.html:71 cds/templates/cds_office_data.html:36
+#: cds/templates/cds_other_data.html:39 cds/templates/cds_other_data.html:110
 #: cds/templates/cds_regdid_other_data.html:151
-#: cds_brochure/management/views.py:347
+#: cds_brochure/management/views.py:341
 #: cds_brochure/templates/blocks/cds_brochure_list.html:123
 #: cds_brochure/templates/cds_brochure_exstudents.html:80
 #: cds_brochure/templates/cds_brochure_links.html:81
@@ -185,9 +178,6 @@ msgstr "Codice fiscale"
 #: research_lines/templates/applied_researchline.html:92
 #: research_lines/templates/base_researchline.html:92
 #: research_lines/templates/blocks/crud_researchlines.html:164
-#: structures/templates/blocks/crud_teacher_books.html:73
-#: structures/templates/blocks/crud_teacher_news.html:74
-#: structures/templates/teacher_detail.html:25
 #: teachers/templates/blocks/crud_teacher_books.html:73
 #: teachers/templates/blocks/crud_teacher_news.html:74
 #: teachers/templates/teacher_detail.html:25
@@ -219,49 +209,49 @@ msgstr ""
 #: cds/management/views.py:433 cds/management/views.py:525
 #: cds/management/views.py:743 cds/management/views.py:848
 #: cds/management/views.py:950 cds/management/views.py:1046
-#: cds/management/views.py:1225 cds/management/views.py:1308
-#: cds/management/views.py:1412 cds/management/views.py:1679
-#: cds/management/views.py:1815 cds_brochure/management/views.py:39
-#: cds_brochure/management/views.py:54 cds_brochure/management/views.py:152
-#: cds_brochure/management/views.py:194 cds_brochure/management/views.py:262
-#: cds_brochure/management/views.py:333 cds_brochure/management/views.py:398
-#: cds_brochure/management/views.py:471 cds_brochure/management/views.py:545
-#: cds_brochure/management/views.py:607 cds_brochure/management/views.py:670
-#: cds_brochure/management/views.py:738 cds_websites/management/views.py:60
-#: cds_websites/management/views.py:172 cds_websites/management/views.py:258
-#: cds_websites/management/views.py:337 cds_websites/management/views.py:422
-#: cds_websites/management/views.py:523 cds_websites/management/views.py:599
-#: cds_websites/management/views.py:655 cds_websites/management/views.py:731
-#: cds_websites/management/views.py:820 cds_websites/management/views.py:901
-#: cds_websites/management/views.py:1009 cds_websites/management/views.py:1106
-#: cds_websites/management/views.py:1206 companies/management/views.py:29
+#: cds/management/views.py:1223 cds/management/views.py:1304
+#: cds/management/views.py:1402 cds/management/views.py:1665
+#: cds/management/views.py:1801 cds_brochure/management/views.py:36
+#: cds_brochure/management/views.py:48 cds_brochure/management/views.py:146
+#: cds_brochure/management/views.py:188 cds_brochure/management/views.py:256
+#: cds_brochure/management/views.py:327 cds_brochure/management/views.py:392
+#: cds_brochure/management/views.py:465 cds_brochure/management/views.py:539
+#: cds_brochure/management/views.py:601 cds_brochure/management/views.py:664
+#: cds_brochure/management/views.py:732 cds_websites/management/views.py:57
+#: cds_websites/management/views.py:165 cds_websites/management/views.py:251
+#: cds_websites/management/views.py:330 cds_websites/management/views.py:415
+#: cds_websites/management/views.py:516 cds_websites/management/views.py:592
+#: cds_websites/management/views.py:648 cds_websites/management/views.py:724
+#: cds_websites/management/views.py:813 cds_websites/management/views.py:894
+#: cds_websites/management/views.py:1000 cds_websites/management/views.py:1097
+#: cds_websites/management/views.py:1197 companies/management/views.py:29
 #: companies/management/views.py:86 companies/management/views.py:182
 #: companies/management/views.py:254 companies/management/views.py:342
 #: companies/management/views.py:416 generics/templates/dashboard.html:14
-#: laboratories/management/views.py:85 laboratories/management/views.py:510
-#: laboratories/management/views.py:669 laboratories/management/views.py:820
-#: laboratories/management/views.py:931 laboratories/management/views.py:1058
-#: laboratories/management/views.py:1200 laboratories/management/views.py:1365
-#: laboratories/management/views.py:1510 laboratories/management/views.py:1585
-#: laboratories/management/views.py:1651 laboratories/management/views.py:1759
-#: laboratories/management/views.py:1890 laboratories/management/views.py:2000
-#: laboratories/management/views.py:2093 laboratories/management/views.py:2210
-#: laboratories/management/views.py:2336 laboratories/management/views.py:2425
-#: laboratories/management/views.py:2492 patents/management/views.py:28
-#: patents/management/views.py:61 patents/management/views.py:119
-#: patents/management/views.py:187 patents/management/views.py:276
-#: phd/management/views.py:39 phd/management/views.py:130
-#: phd/management/views.py:215 phd/management/views.py:312
-#: phd/management/views.py:390 phd/management/views.py:524
-#: phd/management/views.py:604 projects/management/views.py:40
-#: projects/management/views.py:99 projects/management/views.py:176
-#: projects/management/views.py:265 projects/management/views.py:351
-#: projects/management/views.py:445 projects/management/views.py:533
-#: projects/management/views.py:627 regdid/management/views.py:137
-#: regdid/management/views.py:219 regdid/management/views.py:396
-#: regdid/management/views.py:563 regdid/management/views.py:693
-#: regdid/management/views.py:879 regdid/management/views.py:996
-#: regdid/management/views.py:1447 research_groups/management/views.py:30
+#: import_assistant/management/views.py:31 laboratories/management/views.py:85
+#: laboratories/management/views.py:532 laboratories/management/views.py:691
+#: laboratories/management/views.py:844 laboratories/management/views.py:958
+#: laboratories/management/views.py:1091 laboratories/management/views.py:1239
+#: laboratories/management/views.py:1413 laboratories/management/views.py:1570
+#: laboratories/management/views.py:1653 laboratories/management/views.py:1722
+#: laboratories/management/views.py:1841 laboratories/management/views.py:1982
+#: laboratories/management/views.py:2104 laboratories/management/views.py:2206
+#: laboratories/management/views.py:2333 laboratories/management/views.py:2467
+#: laboratories/management/views.py:2566 laboratories/management/views.py:2641
+#: patents/management/views.py:28 patents/management/views.py:61
+#: patents/management/views.py:119 patents/management/views.py:187
+#: patents/management/views.py:276 phd/management/views.py:39
+#: phd/management/views.py:130 phd/management/views.py:215
+#: phd/management/views.py:312 phd/management/views.py:390
+#: phd/management/views.py:524 phd/management/views.py:604
+#: projects/management/views.py:40 projects/management/views.py:99
+#: projects/management/views.py:176 projects/management/views.py:265
+#: projects/management/views.py:351 projects/management/views.py:445
+#: projects/management/views.py:533 projects/management/views.py:627
+#: regdid/management/views.py:134 regdid/management/views.py:305
+#: regdid/management/views.py:472 regdid/management/views.py:602
+#: regdid/management/views.py:788 regdid/management/views.py:905
+#: regdid/management/views.py:1359 research_groups/management/views.py:30
 #: research_groups/management/views.py:85
 #: research_groups/management/views.py:200
 #: research_groups/management/views.py:259
@@ -322,700 +312,6 @@ msgstr "Token scaduto"
 msgid "Email updated successfully"
 msgstr "Email aggiornata con successo"
 
-#: addressbook/templates/blocks/crud_teacher_books.html:41
-#: addressbook/templates/blocks/crud_teacher_news.html:41
-#: patents/management/forms.py:13 projects/management/forms.py:27
-#: structures/templates/blocks/crud_teacher_books.html:41
-#: structures/templates/blocks/crud_teacher_news.html:41
-#: teachers/templates/blocks/crud_teacher_books.html:41
-#: teachers/templates/blocks/crud_teacher_news.html:41
-msgid "Title"
-msgstr "Titolo"
-
-#: addressbook/templates/blocks/crud_teacher_books.html:42
-#: addressbook/templates/blocks/crud_teacher_news.html:42
-#: cds_websites/management/forms.py:160
-#: structures/templates/blocks/crud_teacher_books.html:42
-#: structures/templates/blocks/crud_teacher_news.html:42
-#: teachers/templates/blocks/crud_teacher_books.html:42
-#: teachers/templates/blocks/crud_teacher_news.html:42
-msgid "Publication"
-msgstr "Publicazione"
-
-#: addressbook/templates/blocks/crud_teacher_books.html:43
-#: addressbook/templates/blocks/crud_teacher_news.html:43
-#: cds_brochure/management/forms.py:210 cds_brochure/management/forms.py:223
-#: cds_brochure/management/forms.py:247 cds_brochure/management/forms.py:255
-#: cds_brochure/templates/cds_brochure_exstudents.html:26
-#: cds_brochure/templates/cds_brochure_links.html:26
-#: cds_brochure/templates/cds_brochure_sliders.html:26
-#: cds_websites/management/forms.py:29 cds_websites/management/forms.py:59
-#: cds_websites/management/forms.py:239 cds_websites/management/forms.py:272
-#: cds_websites/management/forms.py:294 cds_websites/management/forms.py:316
-#: cds_websites/templates/blocks/cds_websites_object_items.html:9
-#: cds_websites/templates/blocks/cds_websites_regulation_article_items.html:8
-#: regdid/management/forms.py:54
-#: structures/templates/blocks/crud_teacher_books.html:43
-#: structures/templates/blocks/crud_teacher_news.html:43
-#: teachers/templates/blocks/crud_teacher_books.html:43
-#: teachers/templates/blocks/crud_teacher_news.html:43
-msgid "Order"
-msgstr "Ordine"
-
-#: addressbook/templates/blocks/crud_teacher_books.html:44
-#: addressbook/templates/blocks/crud_teacher_news.html:44
-#: advanced_training/templates/blocks/crud_projects.html:192
-#: companies/management/forms.py:51
-#: companies/templates/blocks/crud_companies.html:126
-#: laboratories/templates/blocks/crud_laboratories.html:206
-#: patents/management/forms.py:30 patents/templates/blocks/crud_patents.html:91
-#: projects/management/forms.py:39
-#: projects/templates/blocks/crud_projects.html:192
-#: research_lines/templates/blocks/crud_researchlines.html:98
-#: structures/templates/blocks/crud_teacher_books.html:44
-#: structures/templates/blocks/crud_teacher_news.html:44
-#: teachers/templates/blocks/crud_teacher_books.html:44
-#: teachers/templates/blocks/crud_teacher_news.html:44
-msgid "Active"
-msgstr "Attivo"
-
-#: addressbook/templates/blocks/crud_teacher_books.html:82
-#: addressbook/templates/blocks/crud_teacher_news.html:83
-#: addressbook/templates/teacher_detail.html:32
-#: advanced_training/templates/project.html:13
-#: advanced_training/templates/project.html:162
-#: advanced_training/templates/project.html:241
-#: cds/templates/cds_detail.html:85 cds/templates/cds_detail.html:225
-#: cds/templates/cds_detail.html:325 cds/templates/cds_detail.html:451
-#: cds/templates/cds_detail.html:512 cds/templates/cds_detail.html:575
-#: cds/templates/cds_group.html:79 cds/templates/cds_office_data.html:46
-#: cds/templates/cds_other_data.html:49 cds/templates/cds_other_data.html:120
-#: cds/templates/cds_regdid_other_data.html:159
-#: cds_brochure/templates/cds_brochure_exstudents.html:88
-#: cds_brochure/templates/cds_brochure_links.html:89
-#: cds_brochure/templates/cds_brochure_sliders.html:89
-#: cds_websites/templates/blocks/cds_websites_object_items.html:139
-#: cds_websites/templates/cds_websites_extras.html:152
-#: cds_websites/templates/cds_websites_shared_objects.html:147
-#: companies/templates/company.html:13 companies/templates/company.html:165
-#: laboratories/templates/laboratory.html:129
-#: laboratories/templates/laboratory.html:278
-#: laboratories/templates/laboratory.html:437
-#: laboratories/templates/laboratory.html:577
-#: laboratories/templates/laboratory.html:649
-#: laboratories/templates/laboratory.html:746
-#: laboratories/templates/laboratory.html:926
-#: laboratories/templates/laboratory.html:1016
-#: laboratories/templates/laboratory.html:1098 patents/templates/patent.html:13
-#: patents/templates/patent.html:89 phd/templates/phd.html:13
-#: phd/templates/phd.html:91 phd/templates/phd.html:170
-#: projects/templates/project.html:13 projects/templates/project.html:162
-#: projects/templates/project.html:241
-#: regdid/templates/blocks/regdid_article_item.html:114
-#: regdid/templates/blocks/regdid_sub_article_item.html:108
-#: research_groups/templates/researchgroup.html:13
-#: research_groups/templates/researchgroup.html:101
-#: research_groups/templates/researchgroup_teacher.html:15
-#: research_lines/templates/applied_researchline.html:13
-#: research_lines/templates/applied_researchline.html:101
-#: research_lines/templates/base_researchline.html:13
-#: research_lines/templates/base_researchline.html:101
-#: research_lines/templates/researchline_teacher.html:15
-#: structures/templates/blocks/crud_teacher_books.html:82
-#: structures/templates/blocks/crud_teacher_news.html:83
-#: structures/templates/teacher_detail.html:32
-#: teachers/templates/blocks/crud_teacher_books.html:82
-#: teachers/templates/blocks/crud_teacher_news.html:83
-#: teachers/templates/teacher_detail.html:32
-msgid "Remove"
-msgstr "Rimuovi"
-
-#: addressbook/templates/blocks/crud_teacher_books.html:93
-#: addressbook/templates/blocks/crud_teacher_news.html:94
-#: addressbook/templates/teacher_detail.html:44
-#: advanced_training/templates/project.html:24
-#: advanced_training/templates/project.html:175
-#: advanced_training/templates/project.html:254
-#: cds/templates/cds_detail.html:96 cds/templates/cds_detail.html:236
-#: cds/templates/cds_detail.html:336 cds/templates/cds_detail.html:462
-#: cds/templates/cds_detail.html:523 cds/templates/cds_detail.html:586
-#: cds/templates/cds_group.html:90 cds/templates/cds_office_data.html:57
-#: cds/templates/cds_other_data.html:60 cds/templates/cds_other_data.html:131
-#: cds/templates/cds_regdid_other_data.html:54
-#: cds/templates/cds_regdid_other_data_form.html:49
-#: cds_brochure/templates/cds_brochure_exstudents.html:42
-#: cds_brochure/templates/cds_brochure_links.html:42
-#: cds_brochure/templates/cds_brochure_sliders.html:42
-#: cds_websites/templates/blocks/cds_websites_object_items.html:39
-#: cds_websites/templates/cds_website_items_order.html:111
-#: cds_websites/templates/cds_websites_extras.html:68
-#: cds_websites/templates/cds_websites_extras.html:210
-#: cds_websites/templates/cds_websites_shared_objects.html:59
-#: companies/templates/company.html:24 companies/templates/company.html:178
-#: generics/templates/includes/form_submit.html:27
-#: laboratories/templates/laboratory.html:20
-#: laboratories/templates/laboratory.html:56
-#: laboratories/templates/laboratory.html:92
-#: laboratories/templates/laboratory.html:228
-#: laboratories/templates/laboratory.html:290
-#: laboratories/templates/laboratory.html:376
-#: laboratories/templates/laboratory.html:449
-#: laboratories/templates/laboratory.html:589
-#: laboratories/templates/laboratory.html:661
-#: laboratories/templates/laboratory.html:758
-#: laboratories/templates/laboratory.html:854
-#: laboratories/templates/laboratory.html:938
-#: laboratories/templates/laboratory.html:1028
-#: laboratories/templates/laboratory.html:1110 patents/templates/patent.html:24
-#: patents/templates/patent.html:102 phd/templates/phd.html:24
-#: phd/templates/phd.html:104 phd/templates/phd.html:183
-#: projects/templates/project.html:24 projects/templates/project.html:175
-#: projects/templates/project.html:254
-#: regdid/templates/blocks/regdid_article_item.html:46
-#: regdid/templates/blocks/regdid_status_change_button.html:15
-#: regdid/templates/blocks/regdid_sub_article_item.html:60
-#: regdid/templates/blocks/regdid_top_button.html:20
-#: research_groups/templates/researchgroup.html:24
-#: research_groups/templates/researchgroup.html:114
-#: research_groups/templates/researchgroup_teacher.html:26
-#: research_lines/templates/applied_researchline.html:24
-#: research_lines/templates/applied_researchline.html:114
-#: research_lines/templates/base_researchline.html:24
-#: research_lines/templates/base_researchline.html:114
-#: research_lines/templates/researchline_teacher.html:26
-#: structures/templates/blocks/crud_teacher_books.html:93
-#: structures/templates/blocks/crud_teacher_news.html:94
-#: structures/templates/teacher_detail.html:44
-#: teachers/templates/blocks/crud_teacher_books.html:93
-#: teachers/templates/blocks/crud_teacher_news.html:94
-#: teachers/templates/teacher_detail.html:44
-msgid "Confirm"
-msgstr "Conferma"
-
-#: addressbook/templates/blocks/crud_teacher_books.html:106
-#: addressbook/templates/blocks/crud_teacher_news.html:107
-#: structures/templates/blocks/crud_teacher_books.html:106
-#: structures/templates/blocks/crud_teacher_news.html:107
-#: teachers/templates/blocks/crud_teacher_books.html:106
-#: teachers/templates/blocks/crud_teacher_news.html:107
-msgid "Do you want to delete board data set?"
-msgstr "Vuoi davvero eliminare questo set di dati?"
-
-#: addressbook/templates/blocks/crud_teacher_books.html:111
-#: addressbook/templates/blocks/crud_teacher_news.html:112
-#: addressbook/templates/teacher_detail.html:62
-#: advanced_training/templates/project.html:42
-#: advanced_training/templates/project.html:193
-#: advanced_training/templates/project.html:272
-#: cds/templates/cds_detail.html:56 cds/templates/cds_detail.html:114
-#: cds/templates/cds_detail.html:254 cds/templates/cds_detail.html:354
-#: cds/templates/cds_detail.html:480 cds/templates/cds_detail.html:541
-#: cds/templates/cds_detail.html:604 cds/templates/cds_group.html:108
-#: cds/templates/cds_office_data.html:75 cds/templates/cds_other_data.html:78
-#: cds/templates/cds_other_data.html:149
-#: cds/templates/cds_regdid_other_data.html:34
-#: cds/templates/cds_regdid_other_data.html:72
-#: cds/templates/cds_regdid_other_data_form.html:66
-#: cds_brochure/templates/cds_brochure_exstudents.html:60
-#: cds_brochure/templates/cds_brochure_links.html:60
-#: cds_brochure/templates/cds_brochure_sliders.html:60
-#: cds_websites/templates/blocks/cds_websites_object_items.html:57
-#: cds_websites/templates/cds_website_items_order.html:133
-#: cds_websites/templates/cds_websites_extras.html:86
-#: cds_websites/templates/cds_websites_extras.html:232
-#: cds_websites/templates/cds_websites_shared_objects.html:77
-#: companies/templates/company.html:42 companies/templates/company.html:196
-#: generics/templates/includes/form_submit.html:49
-#: laboratories/templates/laboratory.html:38
-#: laboratories/templates/laboratory.html:74
-#: laboratories/templates/laboratory.html:110
-#: laboratories/templates/laboratory.html:252
-#: laboratories/templates/laboratory.html:308
-#: laboratories/templates/laboratory.html:400
-#: laboratories/templates/laboratory.html:467
-#: laboratories/templates/laboratory.html:607
-#: laboratories/templates/laboratory.html:679
-#: laboratories/templates/laboratory.html:776
-#: laboratories/templates/laboratory.html:878
-#: laboratories/templates/laboratory.html:956
-#: laboratories/templates/laboratory.html:1046
-#: laboratories/templates/laboratory.html:1128 patents/templates/patent.html:42
-#: patents/templates/patent.html:120 phd/templates/phd.html:42
-#: phd/templates/phd.html:122 phd/templates/phd.html:201
-#: projects/templates/project.html:42 projects/templates/project.html:193
-#: projects/templates/project.html:272
-#: regdid/templates/blocks/regdid_article_item.html:64
-#: regdid/templates/blocks/regdid_status_change_button.html:29
-#: regdid/templates/blocks/regdid_status_change_button.html:39
-#: regdid/templates/blocks/regdid_sub_article_item.html:78
-#: regdid/templates/blocks/regdid_top_button.html:42
-#: regdid/templates/regdid_pdf_import_form.html:41
-#: research_groups/templates/researchgroup.html:42
-#: research_groups/templates/researchgroup.html:132
-#: research_groups/templates/researchgroup_teacher.html:44
-#: research_lines/templates/applied_researchline.html:42
-#: research_lines/templates/applied_researchline.html:132
-#: research_lines/templates/base_researchline.html:42
-#: research_lines/templates/base_researchline.html:132
-#: research_lines/templates/researchline_teacher.html:44
-#: structures/templates/blocks/crud_teacher_books.html:111
-#: structures/templates/blocks/crud_teacher_news.html:112
-#: structures/templates/teacher_detail.html:62
-#: teachers/templates/blocks/crud_teacher_books.html:111
-#: teachers/templates/blocks/crud_teacher_news.html:112
-#: teachers/templates/teacher_detail.html:62
-msgid "Yes, proceed"
-msgstr "Si, procedi"
-
-#: addressbook/templates/blocks/crud_teacher_books.html:129
-#: addressbook/templates/blocks/crud_teacher_news.html:130
-#: addressbook/templates/blocks/crud_teachers.html:110
-#: advanced_training/templates/blocks/crud_projects.html:260
-#: cds/templates/blocks/crud_cds.html:248
-#: cds_brochure/templates/blocks/cds_brochure_list.html:137
-#: cds_websites/templates/blocks/cds_websites_list.html:248
-#: companies/templates/blocks/crud_companies.html:183
-#: generics/templates/blocks/crud_addressbook.html:226
-#: generics/templates/blocks/crud_departmentslist.html:67
-#: generics/templates/blocks/crud_structureslist.html:91
-#: generics/templates/blocks/crud_teacherslist.html:109
-#: laboratories/templates/blocks/crud_laboratories.html:278
-#: patents/templates/blocks/crud_patents.html:153
-#: phd/templates/blocks/crud_phd_list.html:264
-#: projects/templates/blocks/crud_projects.html:260
-#: regdid/templates/blocks/crud_regdid.html:193
-#: research_groups/templates/blocks/crud_researchgroups.html:176
-#: research_lines/templates/blocks/crud_researchlines.html:179
-#: structures/templates/blocks/crud_teacher_books.html:129
-#: structures/templates/blocks/crud_teacher_news.html:130
-#: structures/templates/blocks/crud_teachers.html:110
-#: teachers/templates/blocks/crud_teacher_books.html:129
-#: teachers/templates/blocks/crud_teacher_news.html:130
-#: teachers/templates/blocks/crud_teachers.html:110
-msgid "No items here"
-msgstr "Nessun elemento"
-
-#: addressbook/templates/blocks/crud_teacher_news.html:40
-#: cds/templates/cds_regdid_other_data_form.html:29
-#: cds_websites/management/forms.py:276
-#: cds_websites/templates/blocks/cds_websites_object_items.html:8
-#: cds_websites/templates/cds_websites_shared_objects.html:38
-#: laboratories/management/forms.py:264
-#: laboratories/templates/laboratory.html:893 phd/management/forms.py:87
-#: structures/templates/blocks/crud_teacher_news.html:40
-#: teachers/templates/blocks/crud_teacher_news.html:40
-msgid "Type"
-msgstr "Tipo"
-
-#: addressbook/templates/blocks/crud_teachers.html:33
-#: cds/templates/blocks/crud_cds.html:127
-#: cds_websites/templates/blocks/cds_websites_list.html:127
-#: companies/management/forms.py:9 companies/management/forms.py:74
-#: generics/templates/blocks/crud_teacherslist.html:32
-#: laboratories/management/forms.py:242 laboratories/management/forms.py:248
-#: laboratories/templates/blocks/crud_laboratories.html:68
-#: regdid/templates/blocks/crud_regdid.html:38
-#: research_groups/templates/blocks/crud_researchgroups.html:37
-#: research_lines/templates/blocks/crud_researchlines.html:36
-#: structures/templates/blocks/crud_teachers.html:33
-#: teachers/templates/blocks/crud_teachers.html:33
-msgid "Department"
-msgstr "Dipartimento"
-
-#: addressbook/templates/blocks/crud_teachers.html:41
-#: advanced_training/templates/blocks/crud_projects.html:57
-#: advanced_training/templates/blocks/crud_projects.html:61
-#: advanced_training/templates/blocks/crud_projects.html:83
-#: advanced_training/templates/blocks/crud_projects.html:87
-#: advanced_training/templates/blocks/crud_projects.html:116
-#: advanced_training/templates/blocks/crud_projects.html:120
-#: advanced_training/templates/blocks/crud_projects.html:144
-#: advanced_training/templates/blocks/crud_projects.html:148
-#: cds/templates/blocks/crud_cds.html:45 cds/templates/blocks/crud_cds.html:49
-#: cds/templates/blocks/crud_cds.html:73 cds/templates/blocks/crud_cds.html:78
-#: cds/templates/blocks/crud_cds.html:98 cds/templates/blocks/crud_cds.html:102
-#: cds/templates/blocks/crud_cds.html:131
-#: cds/templates/blocks/crud_cds.html:135
-#: cds/templates/blocks/crud_cds.html:155
-#: cds/templates/blocks/crud_cds.html:159
-#: cds_websites/templates/blocks/cds_websites_list.html:45
-#: cds_websites/templates/blocks/cds_websites_list.html:49
-#: cds_websites/templates/blocks/cds_websites_list.html:73
-#: cds_websites/templates/blocks/cds_websites_list.html:78
-#: cds_websites/templates/blocks/cds_websites_list.html:98
-#: cds_websites/templates/blocks/cds_websites_list.html:102
-#: cds_websites/templates/blocks/cds_websites_list.html:131
-#: cds_websites/templates/blocks/cds_websites_list.html:135
-#: cds_websites/templates/blocks/cds_websites_list.html:155
-#: cds_websites/templates/blocks/cds_websites_list.html:159
-#: companies/templates/blocks/crud_companies.html:34
-#: companies/templates/blocks/crud_companies.html:38
-#: companies/templates/blocks/crud_companies.html:56
-#: companies/templates/blocks/crud_companies.html:60
-#: companies/templates/blocks/crud_companies.html:80
-#: companies/templates/blocks/crud_companies.html:84
-#: generics/templates/blocks/crud_addressbook.html:42
-#: generics/templates/blocks/crud_addressbook.html:46
-#: generics/templates/blocks/crud_addressbook.html:71
-#: generics/templates/blocks/crud_addressbook.html:75
-#: generics/templates/blocks/crud_addressbook.html:99
-#: generics/templates/blocks/crud_addressbook.html:103
-#: generics/templates/blocks/crud_structureslist.html:39
-#: generics/templates/blocks/crud_structureslist.html:43
-#: generics/templates/blocks/crud_teacherslist.html:40
-#: laboratories/templates/blocks/crud_laboratories.html:46
-#: laboratories/templates/blocks/crud_laboratories.html:50
-#: laboratories/templates/blocks/crud_laboratories.html:72
-#: laboratories/templates/blocks/crud_laboratories.html:76
-#: laboratories/templates/blocks/crud_laboratories.html:101
-#: laboratories/templates/blocks/crud_laboratories.html:127
-#: laboratories/templates/blocks/crud_laboratories.html:153
-#: patents/templates/blocks/crud_patents.html:49
-#: patents/templates/blocks/crud_patents.html:53
-#: phd/templates/blocks/crud_phd_list.html:89
-#: phd/templates/blocks/crud_phd_list.html:93
-#: phd/templates/blocks/crud_phd_list.html:119
-#: phd/templates/blocks/crud_phd_list.html:123
-#: phd/templates/blocks/crud_phd_list.html:146
-#: phd/templates/blocks/crud_phd_list.html:150
-#: phd/templates/blocks/crud_phd_list.html:174
-#: phd/templates/blocks/crud_phd_list.html:178
-#: projects/templates/blocks/crud_projects.html:57
-#: projects/templates/blocks/crud_projects.html:61
-#: projects/templates/blocks/crud_projects.html:83
-#: projects/templates/blocks/crud_projects.html:87
-#: projects/templates/blocks/crud_projects.html:116
-#: projects/templates/blocks/crud_projects.html:120
-#: projects/templates/blocks/crud_projects.html:144
-#: projects/templates/blocks/crud_projects.html:148
-#: regdid/templates/blocks/crud_regdid.html:42
-#: regdid/templates/blocks/crud_regdid.html:46
-#: regdid/templates/blocks/crud_regdid.html:73
-#: regdid/templates/blocks/crud_regdid.html:77
-#: regdid/templates/blocks/crud_regdid.html:103
-#: regdid/templates/blocks/crud_regdid.html:108
-#: research_groups/templates/blocks/crud_researchgroups.html:41
-#: research_groups/templates/blocks/crud_researchgroups.html:45
-#: research_groups/templates/blocks/crud_researchgroups.html:72
-#: research_lines/templates/blocks/crud_researchlines.html:40
-#: research_lines/templates/blocks/crud_researchlines.html:44
-#: structures/templates/blocks/crud_teachers.html:41
-#: teachers/templates/blocks/crud_teachers.html:41
-msgid "Choose an option"
-msgstr "Scegli un'opzione"
-
-#: addressbook/templates/blocks/crud_teachers.html:84
-#: generics/templates/blocks/crud_teacherslist.html:83
-#: structures/templates/blocks/crud_teachers.html:84
-#: teachers/templates/blocks/crud_teachers.html:84
-msgid "Contract teacher"
-msgstr "Professore a contratto"
-
-#: addressbook/templates/teacher_board_data.html:9
-#: structures/templates/teacher_board_data.html:9
-#: teachers/templates/teacher_board_data.html:9
-msgid "Edit board data for"
-msgstr "Modifica dati per"
-
-#: addressbook/templates/teacher_board_data_new.html:9
-#: structures/templates/teacher_board_data_new.html:9
-#: teachers/templates/teacher_board_data_new.html:9
-msgid "New board data set for"
-msgstr ""
-
-#: addressbook/templates/teacher_detail.html:17
-#: structures/templates/teacher_detail.html:17
-#: teachers/templates/teacher_detail.html:17
-msgid "Personal data"
-msgstr "Dati personali"
-
-#: addressbook/templates/teacher_detail.html:57
-#: cds/templates/cds_detail.html:109
-#: structures/templates/teacher_detail.html:57
-#: teachers/templates/teacher_detail.html:57
-msgid "Do you want to delete data set?"
-msgstr "Vuoi davvero eliminare questo set di dati?"
-
-#: addressbook/templates/teacher_detail.html:71
-#: structures/templates/teacher_detail.html:71 teachers/management/forms.py:34
-#: teachers/templates/teacher_detail.html:71
-msgid "Photo"
-msgstr "Foto"
-
-#: addressbook/templates/teacher_detail.html:82
-#: addressbook/templates/teacher_detail.html:97
-#: structures/templates/teacher_detail.html:82
-#: structures/templates/teacher_detail.html:97
-#: teachers/templates/teacher_detail.html:82
-#: teachers/templates/teacher_detail.html:97
-msgid "Curriculum"
-msgstr ""
-
-#: addressbook/templates/teacher_detail.html:112
-#: addressbook/templates/teacher_detail.html:119
-#: structures/templates/teacher_detail.html:112
-#: structures/templates/teacher_detail.html:119
-#: teachers/templates/teacher_detail.html:112
-#: teachers/templates/teacher_detail.html:119
-msgid "Short Bio"
-msgstr "Breve bio"
-
-#: addressbook/templates/teacher_detail.html:126
-#: addressbook/templates/teacher_detail.html:133
-#: structures/templates/teacher_detail.html:126
-#: structures/templates/teacher_detail.html:133
-#: teachers/templates/teacher_detail.html:126
-#: teachers/templates/teacher_detail.html:133
-msgid "Reception Hours"
-msgstr "Orario di ricevimento"
-
-#: addressbook/templates/teacher_detail.html:139
-#: structures/templates/teacher_detail.html:139
-#: teachers/templates/teacher_detail.html:139
-msgid "ORCID"
-msgstr ""
-
-#: addressbook/templates/teacher_detail.html:148
-#: cds/templates/cds_regdid_other_data.html:165
-#: research_lines/templates/applied_researchlines.html:11
-#: research_lines/templates/base_researchlines.html:11
-#: structures/templates/teacher_detail.html:148
-#: teachers/templates/teacher_detail.html:148
-msgid "Add"
-msgstr "Aggiungi"
-
-#: addressbook/templates/teacher_detail.html:159
-#: structures/templates/teacher_detail.html:159
-#: teachers/templates/teacher_detail.html:159
-msgid "Board"
-msgstr "Bacheca"
-
-#: addressbook/templates/teacher_detail.html:167
-#: addressbook/templates/teacher_detail.html:185
-#: advanced_training/templates/project.html:207
-#: advanced_training/templates/project.html:286
-#: advanced_training/templates/projects.html:11
-#: cds/templates/cds_detail.html:173 cds/templates/cds_detail.html:271
-#: cds/templates/cds_detail.html:371 cds/templates/cds_group.html:128
-#: cds_brochure/templates/cds_brochure_exstudents.html:99
-#: cds_brochure/templates/cds_brochure_links.html:100
-#: cds_brochure/templates/cds_brochure_sliders.html:100
-#: cds_websites/templates/blocks/cds_websites_object_items.html:180
-#: cds_websites/templates/cds_websites_extras.html:186
-#: cds_websites/templates/cds_websites_shared_objects.html:166
-#: cds_websites/templates/widgets/cds_websites_oggetti_portale_widget.html:24
-#: companies/templates/companies.html:11 companies/templates/company.html:210
-#: laboratories/templates/laboratories.html:11
-#: laboratories/templates/laboratory.html:330
-#: laboratories/templates/laboratory.html:489
-#: laboratories/templates/laboratory.html:625
-#: laboratories/templates/laboratory.html:697
-#: laboratories/templates/laboratory.html:794
-#: laboratories/templates/laboratory.html:974
-#: laboratories/templates/laboratory.html:1064
-#: laboratories/templates/laboratory.html:1146
-#: patents/templates/patent.html:134 patents/templates/patents.html:11
-#: phd/templates/phd.html:136 phd/templates/phd.html:215
-#: phd/templates/phd_list.html:11 projects/templates/project.html:207
-#: projects/templates/project.html:286 projects/templates/projects.html:11
-#: research_groups/templates/researchgroup.html:146
-#: research_groups/templates/researchgroups.html:11
-#: research_lines/templates/applied_researchline.html:146
-#: research_lines/templates/base_researchline.html:146
-#: structures/templates/teacher_detail.html:167
-#: structures/templates/teacher_detail.html:185
-#: teachers/templates/teacher_detail.html:167
-#: teachers/templates/teacher_detail.html:185
-msgid "Add new"
-msgstr "Aggiungi nuovo"
-
-#: addressbook/templates/teacher_detail.html:177
-#: structures/templates/teacher_detail.html:177
-#: teachers/templates/teacher_detail.html:177
-msgid "Teaching Materials"
-msgstr "Materiale didattico"
-
-#: addressbook/templates/teacher_materials_data.html:9
-#: structures/templates/teacher_materials_data.html:9
-#: teachers/templates/teacher_materials_data.html:9
-msgid "Edit teaching materials data for"
-msgstr "Modifica materiale didattico per"
-
-#: addressbook/templates/teacher_materials_data_new.html:9
-#: structures/templates/teacher_materials_data_new.html:9
-#: teachers/templates/teacher_materials_data_new.html:9
-msgid "New materials data set for"
-msgstr "Nuovo set di dati per"
-
-#: addressbook/templates/teacher_other_data.html:9
-#: structures/templates/teacher_other_data.html:9
-#: teachers/templates/teacher_other_data.html:9
-msgid "Edit data for"
-msgstr "Modifica dati per"
-
-#: addressbook/templates/teacher_other_data_new.html:9
-#: structures/templates/teacher_other_data_new.html:9
-#: teachers/templates/teacher_other_data_new.html:9
-msgid "Add data set for"
-msgstr "Aggiungi set di dati per"
-
-#: addressbook/templates/teachers.html:9 generics/templates/dashboard.html:182
-#: research_groups/templates/researchgroup.html:64
-#: research_lines/templates/applied_researchline.html:64
-#: research_lines/templates/base_researchline.html:64
-#: structures/templates/teachers.html:9 teachers/management/views.py:35
-#: teachers/management/views.py:68 teachers/management/views.py:142
-#: teachers/management/views.py:206 teachers/management/views.py:304
-#: teachers/management/views.py:359 teachers/management/views.py:445
-#: teachers/management/views.py:505 teachers/templates/teachers.html:9
-msgid "Teachers"
-msgstr "Docenti"
-
-#: advanced_training/templates/blocks/crud_projects.html:33
-#: laboratories/management/forms.py:412
-#: projects/templates/blocks/crud_projects.html:33
-#: research_lines/management/forms.py:25 research_lines/management/forms.py:47
-msgid "Year"
-msgstr "Anno"
-
-#: advanced_training/templates/blocks/crud_projects.html:53
-#: advanced_training/templates/blocks/crud_projects.html:229
-#: companies/management/forms.py:45
-#: companies/templates/blocks/crud_companies.html:30
-#: companies/templates/blocks/crud_companies.html:158
-#: patents/templates/blocks/crud_patents.html:45
-#: projects/management/forms.py:31
-#: projects/templates/blocks/crud_projects.html:53
-#: projects/templates/blocks/crud_projects.html:229
-msgid "Tech Area"
-msgstr "Area tecnologica"
-
-#: advanced_training/templates/blocks/crud_projects.html:79
-#: projects/templates/blocks/crud_projects.html:79
-msgid "Territorial Scope"
-msgstr "Ambito territoriale"
-
-#: advanced_training/templates/blocks/crud_projects.html:112
-#: projects/templates/blocks/crud_projects.html:112
-msgid "Program Type"
-msgstr "Programma"
-
-#: advanced_training/templates/blocks/crud_projects.html:140
-#: generics/templates/blocks/crud_addressbook.html:67
-#: projects/management/forms.py:70 projects/management/views.py:632
-#: projects/templates/blocks/crud_projects.html:140
-#: regdid/management/views.py:221
-#: research_groups/templates/researchgroup.html:72
-msgid "Structure"
-msgstr "Struttura"
-
-#: advanced_training/templates/project.html:37
-#: projects/templates/project.html:37
-msgid "Do you want to delete choosen project?"
-msgstr "Vuoi davvero eliminare il progetto selezionato?"
-
-#: advanced_training/templates/project.html:67
-#: projects/templates/project.html:67
-msgid "Referent Structure"
-msgstr "Struttura di riferimento"
-
-#: advanced_training/templates/project.html:138
-#: projects/templates/project.html:138
-msgid "Scientific Directors"
-msgstr "Responsabili scientifici"
-
-#: advanced_training/templates/project.html:148
-#: advanced_training/templates/project.html:227
-#: companies/templates/company.html:75
-#: laboratories/templates/laboratory.html:537 patents/templates/patent.html:75
-#: phd/templates/phd.html:77 phd/templates/phd.html:156
-#: projects/templates/project.html:148 projects/templates/project.html:227
-msgid "External"
-msgstr "Esterno"
-
-#: advanced_training/templates/project.html:188
-#: advanced_training/templates/project.html:267 phd/templates/phd.html:196
-#: projects/templates/project.html:188 projects/templates/project.html:267
-msgid "Do you want to delete choosen director?"
-msgstr "Vuoi davvero eliminare il docente selezionato?"
-
-#: advanced_training/templates/project.html:217
-#: projects/templates/project.html:217
-msgid "Researchers"
-msgstr "Ricercatori"
-
-#: advanced_training/templates/project_director.html:9
-#: projects/templates/project_director.html:9
-msgid "Edit director for"
-msgstr "Modifica direttore per"
-
-#: advanced_training/templates/project_director.html:9
-#: projects/templates/project_director.html:9
-msgid "New director for"
-msgstr "Nuovo direttore per"
-
-#: advanced_training/templates/project_new.html:9
-#: projects/templates/project_new.html:9
-msgid "New project"
-msgstr "Nuovo progetto"
-
-#: advanced_training/templates/project_new.html:18
-#: projects/templates/project_new.html:18
-msgid "Choose one structure"
-msgstr "Seleziona una struttura"
-
-#: advanced_training/templates/project_new.html:24
-#: advanced_training/templates/project_new.html:38
-#: advanced_training/templates/project_structure.html:17
-#: advanced_training/templates/project_structure.html:30
-#: generics/templates/blocks/crud_structureslist.html:176
-#: projects/templates/project_new.html:24
-#: projects/templates/project_new.html:38
-#: projects/templates/project_structure.html:17
-#: projects/templates/project_structure.html:30
-msgid "Choosen structure"
-msgstr "Struttura scelta"
-
-#: advanced_training/templates/project_new.html:28
-#: advanced_training/templates/project_new.html:42
-#: advanced_training/templates/project_structure.html:21
-#: advanced_training/templates/project_structure.html:34
-#: projects/templates/project_new.html:28
-#: projects/templates/project_new.html:42
-#: projects/templates/project_structure.html:21
-#: projects/templates/project_structure.html:34
-msgid "Choose a structure to proceed"
-msgstr "Seleziona una struttura per proseguire"
-
-#: advanced_training/templates/project_researcher.html:9
-#: projects/templates/project_researcher.html:9
-msgid "Edit researcher for"
-msgstr "Modifica ricercatore per"
-
-#: advanced_training/templates/project_researcher.html:9
-#: projects/templates/project_researcher.html:9
-msgid "New researcher for"
-msgstr "Nuovo ricercatore per"
-
-#: advanced_training/templates/project_structure.html:9
-#: projects/templates/project_structure.html:9
-msgid "Edit structure for"
-msgstr "Modifica struttura per"
-
-#: advanced_training/templates/project_structure.html:9
-#: projects/templates/project_structure.html:9
-msgid "New structure for"
-msgstr "Nuova struttura per"
-
-#: advanced_training/templates/projects.html:15
-#: generics/templates/dashboard.html:144 projects/management/views.py:40
-#: projects/management/views.py:100 projects/management/views.py:177
-#: projects/management/views.py:266 projects/management/views.py:352
-#: projects/management/views.py:446 projects/management/views.py:534
-#: projects/management/views.py:628 projects/templates/projects.html:15
-msgid "Projects"
-msgstr "Progetti"
-
 #: cds/management/decorators.py:26 cds/management/decorators.py:69
 #: cds/management/decorators.py:103 cds/management/decorators.py:138
 #: cds_brochure/management/decorators.py:30
@@ -1023,34 +319,34 @@ msgstr "Progetti"
 #: cds_websites/management/decorators.py:28
 #: cds_websites/management/decorators.py:53
 #: cds_websites/management/decorators.py:67
-#: cds_websites/management/views.py:301 cds_websites/management/views.py:480
-#: cds_websites/management/views.py:566 cds_websites/management/views.py:642
-#: cds_websites/management/views.py:706 cds_websites/management/views.py:869
-#: cds_websites/management/views.py:945 companies/management/decorators.py:29
+#: cds_websites/management/views.py:294 cds_websites/management/views.py:473
+#: cds_websites/management/views.py:559 cds_websites/management/views.py:635
+#: cds_websites/management/views.py:699 cds_websites/management/views.py:862
+#: cds_websites/management/views.py:936 companies/management/decorators.py:29
 #: generics/decorators.py:15 generics/decorators.py:27
 #: laboratories/management/decorators.py:55
 #: laboratories/management/decorators.py:85
 #: laboratories/management/decorators.py:97
 #: laboratories/management/decorators.py:115
-#: laboratories/management/views.py:106 laboratories/management/views.py:174
-#: laboratories/management/views.py:231 laboratories/management/views.py:299
-#: laboratories/management/views.py:459 laboratories/management/views.py:548
-#: laboratories/management/views.py:1259 laboratories/management/views.py:1464
-#: laboratories/management/views.py:1553 laboratories/management/views.py:2054
-#: laboratories/management/views.py:2268 laboratories/management/views.py:2465
-#: laboratories/management/views.py:2700 patents/management/decorators.py:27
+#: laboratories/management/views.py:106 laboratories/management/views.py:177
+#: laboratories/management/views.py:237 laboratories/management/views.py:308
+#: laboratories/management/views.py:479 laboratories/management/views.py:570
+#: laboratories/management/views.py:1305 laboratories/management/views.py:1522
+#: laboratories/management/views.py:1619 laboratories/management/views.py:2165
+#: laboratories/management/views.py:2397 laboratories/management/views.py:2612
+#: laboratories/management/views.py:2875 patents/management/decorators.py:27
 #: phd/management/decorators.py:23 phd/management/decorators.py:50
-#: projects/management/decorators.py:26 regdid/management/views.py:241
-#: regdid/management/views.py:294 regdid/management/views.py:434
-#: regdid/management/views.py:482 regdid/management/views.py:624
-#: regdid/management/views.py:631 regdid/management/views.py:732
-#: regdid/management/views.py:751 regdid/management/views.py:795
-#: regdid/management/views.py:831 regdid/management/views.py:925
-#: regdid/management/views.py:940 regdid/management/views.py:1043
-#: regdid/management/views.py:1059 regdid/management/views.py:1105
-#: regdid/management/views.py:1149 regdid/management/views.py:1259
-#: regdid/management/views.py:1332 regdid/management/views.py:1355
-#: regdid/management/views.py:1490 research_groups/management/decorators.py:25
+#: projects/management/decorators.py:26 regdid/management/views.py:150
+#: regdid/management/views.py:203 regdid/management/views.py:343
+#: regdid/management/views.py:391 regdid/management/views.py:533
+#: regdid/management/views.py:540 regdid/management/views.py:641
+#: regdid/management/views.py:660 regdid/management/views.py:704
+#: regdid/management/views.py:740 regdid/management/views.py:834
+#: regdid/management/views.py:849 regdid/management/views.py:952
+#: regdid/management/views.py:968 regdid/management/views.py:1014
+#: regdid/management/views.py:1058 regdid/management/views.py:1168
+#: regdid/management/views.py:1244 regdid/management/views.py:1267
+#: regdid/management/views.py:1402 research_groups/management/decorators.py:25
 #: research_groups/management/decorators.py:56
 #: research_lines/management/decorators.py:30
 #: research_lines/management/decorators.py:64
@@ -1118,15 +414,15 @@ msgstr "Regolamento didattico"
 #: cds/management/views.py:347 cds/management/views.py:434
 #: cds/management/views.py:526 cds/management/views.py:744
 #: cds/management/views.py:849 cds/management/views.py:951
-#: cds/management/views.py:1047 cds/management/views.py:1226
-#: cds/management/views.py:1309 cds/management/views.py:1413
-#: cds/management/views.py:1680 cds/management/views.py:1816
-#: cds_brochure/management/views.py:263
+#: cds/management/views.py:1047 cds/management/views.py:1224
+#: cds/management/views.py:1305 cds/management/views.py:1403
+#: cds/management/views.py:1666 cds/management/views.py:1802
+#: cds_brochure/management/views.py:257
 msgid "CdS"
 msgstr "CdS"
 
 #: cds/management/views.py:240 cds/management/views.py:248
-#: cds/management/views.py:1846 cds/management/views.py:1854
+#: cds/management/views.py:1832 cds/management/views.py:1840
 msgid "There is no data to import"
 msgstr "Non esistono dati da importare"
 
@@ -1236,79 +532,79 @@ msgstr "Aggiunto Gruppo"
 msgid "Group successfully added"
 msgstr "Gruppo aggiunto con successo"
 
-#: cds/management/views.py:1212
+#: cds/management/views.py:1210
 msgid "Group successfully edited"
 msgstr "Gruppo modificato con successo"
 
-#: cds/management/views.py:1296
+#: cds/management/views.py:1292
 msgid "Member added successfully"
 msgstr "Membro aggiunto con successo"
 
-#: cds/management/views.py:1317
+#: cds/management/views.py:1313
 msgid "New member"
 msgstr "Nuovo membro"
 
-#: cds/management/views.py:1400
+#: cds/management/views.py:1390
 msgid "Member edited successfully"
 msgstr "Membro modificato con successo"
 
-#: cds/management/views.py:1421
+#: cds/management/views.py:1411
 msgid "Edit member"
 msgstr "Modifica membro"
 
-#: cds/management/views.py:1460
+#: cds/management/views.py:1448
 msgid "Group deleted successfully"
 msgstr "Gruppo eliminato con successo"
 
-#: cds/management/views.py:1492
+#: cds/management/views.py:1478
 msgid "Member deleted successfully"
 msgstr "Membro eliminato con successo"
 
-#: cds/management/views.py:1522 regdid/management/views.py:759
-#: regdid/management/views.py:1067
+#: cds/management/views.py:1508 regdid/management/views.py:668
+#: regdid/management/views.py:976
 msgid "Deleted"
 msgstr "Eliminato"
 
-#: cds/management/views.py:1532
+#: cds/management/views.py:1518
 msgid "removed successfully"
 msgstr "rimosso con successo"
 
-#: cds/management/views.py:1618 cds/management/views.py:1758
+#: cds/management/views.py:1604 cds/management/views.py:1744
 msgid "Something went wrong with file upload (ita)"
 msgstr "Qualcosa è andato storto con l'upload del file (ita)"
 
-#: cds/management/views.py:1637 cds/management/views.py:1771
+#: cds/management/views.py:1623 cds/management/views.py:1757
 msgid "Something went wrong with file upload (eng)"
 msgstr "Qualcosa è andato storto con l'upload del file (eng)"
 
-#: cds/management/views.py:1658
+#: cds/management/views.py:1644
 msgid "updated successfully"
 msgstr "aggiornato con successo"
 
-#: cds/management/views.py:1665
+#: cds/management/views.py:1651
 msgid "Updated"
 msgstr "Aggiornato"
 
-#: cds/management/views.py:1720
+#: cds/management/views.py:1706
 msgid "Multimedia content of the same type already exists for this CdS"
 msgstr "Esiste già un contenuto multimediale dello stesso tipo per questo CdS"
 
-#: cds/management/views.py:1781
+#: cds/management/views.py:1767
 msgid "At least one field must be provided"
 msgstr "Almeno campo deve essere riempito"
 
-#: cds/management/views.py:1796
+#: cds/management/views.py:1782
 msgid "added successfully"
 msgstr "aggiunto con successo"
 
-#: cds/management/views.py:1803 regdid/management/views.py:670
-#: regdid/management/views.py:973
+#: cds/management/views.py:1789 regdid/management/views.py:579
+#: regdid/management/views.py:882
 msgid "Added"
 msgstr "Aggiunto"
 
-#: cds/management/views.py:1820 cds_brochure/management/views.py:274
-#: cds_brochure/management/views.py:484 cds_brochure/management/views.py:684
-#: companies/management/views.py:184 laboratories/management/views.py:671
+#: cds/management/views.py:1806 cds_brochure/management/views.py:268
+#: cds_brochure/management/views.py:478 cds_brochure/management/views.py:678
+#: companies/management/views.py:184 laboratories/management/views.py:693
 #: patents/management/views.py:63 phd/management/views.py:132
 #: projects/management/views.py:178
 #: regdid/templates/blocks/regdid_article_item.html:125
@@ -1320,11 +616,11 @@ msgstr "Aggiunto"
 msgid "New"
 msgstr "Nuovo"
 
-#: cds/management/views.py:1900
+#: cds/management/views.py:1886
 msgid "Imported multimedia contents from previous year"
 msgstr "Importati contenuti multimediali dall'anno precedente"
 
-#: cds/management/views.py:1906
+#: cds/management/views.py:1892
 msgid "Successfully imported multimedia contents from last year"
 msgstr "Contenuti multimediali importati con successo dall'anno precedente"
 
@@ -1347,6 +643,78 @@ msgstr "Doppio titolo"
 msgid "Course type"
 msgstr "Tipo di corso"
 
+#: cds/templates/blocks/crud_cds.html:45 cds/templates/blocks/crud_cds.html:49
+#: cds/templates/blocks/crud_cds.html:73 cds/templates/blocks/crud_cds.html:78
+#: cds/templates/blocks/crud_cds.html:98 cds/templates/blocks/crud_cds.html:102
+#: cds/templates/blocks/crud_cds.html:131
+#: cds/templates/blocks/crud_cds.html:135
+#: cds/templates/blocks/crud_cds.html:155
+#: cds/templates/blocks/crud_cds.html:159
+#: cds_websites/templates/blocks/cds_websites_list.html:45
+#: cds_websites/templates/blocks/cds_websites_list.html:49
+#: cds_websites/templates/blocks/cds_websites_list.html:73
+#: cds_websites/templates/blocks/cds_websites_list.html:78
+#: cds_websites/templates/blocks/cds_websites_list.html:98
+#: cds_websites/templates/blocks/cds_websites_list.html:102
+#: cds_websites/templates/blocks/cds_websites_list.html:131
+#: cds_websites/templates/blocks/cds_websites_list.html:135
+#: cds_websites/templates/blocks/cds_websites_list.html:155
+#: cds_websites/templates/blocks/cds_websites_list.html:159
+#: companies/templates/blocks/crud_companies.html:34
+#: companies/templates/blocks/crud_companies.html:38
+#: companies/templates/blocks/crud_companies.html:56
+#: companies/templates/blocks/crud_companies.html:60
+#: companies/templates/blocks/crud_companies.html:80
+#: companies/templates/blocks/crud_companies.html:84
+#: generics/templates/blocks/crud_addressbook.html:42
+#: generics/templates/blocks/crud_addressbook.html:46
+#: generics/templates/blocks/crud_addressbook.html:71
+#: generics/templates/blocks/crud_addressbook.html:75
+#: generics/templates/blocks/crud_addressbook.html:99
+#: generics/templates/blocks/crud_addressbook.html:103
+#: generics/templates/blocks/crud_structureslist.html:39
+#: generics/templates/blocks/crud_structureslist.html:43
+#: generics/templates/blocks/crud_teacherslist.html:40
+#: laboratories/templates/blocks/crud_laboratories.html:46
+#: laboratories/templates/blocks/crud_laboratories.html:50
+#: laboratories/templates/blocks/crud_laboratories.html:72
+#: laboratories/templates/blocks/crud_laboratories.html:76
+#: laboratories/templates/blocks/crud_laboratories.html:101
+#: laboratories/templates/blocks/crud_laboratories.html:127
+#: laboratories/templates/blocks/crud_laboratories.html:153
+#: patents/templates/blocks/crud_patents.html:49
+#: patents/templates/blocks/crud_patents.html:53
+#: phd/templates/blocks/crud_phd_list.html:89
+#: phd/templates/blocks/crud_phd_list.html:93
+#: phd/templates/blocks/crud_phd_list.html:119
+#: phd/templates/blocks/crud_phd_list.html:123
+#: phd/templates/blocks/crud_phd_list.html:146
+#: phd/templates/blocks/crud_phd_list.html:150
+#: phd/templates/blocks/crud_phd_list.html:174
+#: phd/templates/blocks/crud_phd_list.html:178
+#: projects/templates/blocks/crud_projects.html:57
+#: projects/templates/blocks/crud_projects.html:61
+#: projects/templates/blocks/crud_projects.html:83
+#: projects/templates/blocks/crud_projects.html:87
+#: projects/templates/blocks/crud_projects.html:116
+#: projects/templates/blocks/crud_projects.html:120
+#: projects/templates/blocks/crud_projects.html:144
+#: projects/templates/blocks/crud_projects.html:148
+#: regdid/templates/blocks/crud_regdid.html:42
+#: regdid/templates/blocks/crud_regdid.html:46
+#: regdid/templates/blocks/crud_regdid.html:73
+#: regdid/templates/blocks/crud_regdid.html:77
+#: regdid/templates/blocks/crud_regdid.html:103
+#: regdid/templates/blocks/crud_regdid.html:108
+#: research_groups/templates/blocks/crud_researchgroups.html:41
+#: research_groups/templates/blocks/crud_researchgroups.html:45
+#: research_groups/templates/blocks/crud_researchgroups.html:72
+#: research_lines/templates/blocks/crud_researchlines.html:40
+#: research_lines/templates/blocks/crud_researchlines.html:44
+#: teachers/templates/blocks/crud_teachers.html:41
+msgid "Choose an option"
+msgstr "Scegli un'opzione"
+
 #: cds/templates/blocks/crud_cds.html:69
 #: cds_websites/templates/blocks/cds_websites_list.html:69
 #: regdid/templates/blocks/crud_regdid.html:99
@@ -1357,6 +725,19 @@ msgstr "Anno di immatricolazione"
 #: cds_websites/templates/blocks/cds_websites_list.html:94
 msgid "Course of study language"
 msgstr "Lingua"
+
+#: cds/templates/blocks/crud_cds.html:127
+#: cds_websites/templates/blocks/cds_websites_list.html:127
+#: companies/management/forms.py:9 companies/management/forms.py:74
+#: generics/templates/blocks/crud_teacherslist.html:32
+#: laboratories/management/forms.py:242 laboratories/management/forms.py:248
+#: laboratories/templates/blocks/crud_laboratories.html:68
+#: regdid/templates/blocks/crud_regdid.html:38
+#: research_groups/templates/blocks/crud_researchgroups.html:37
+#: research_lines/templates/blocks/crud_researchlines.html:36
+#: teachers/templates/blocks/crud_teachers.html:33
+msgid "Department"
+msgstr "Dipartimento"
 
 #: cds/templates/blocks/crud_cds.html:151
 #: cds_websites/templates/blocks/cds_websites_list.html:151
@@ -1374,6 +755,27 @@ msgstr "A.A."
 #: cds_websites/templates/blocks/cds_websites_list.html:223
 msgid "years"
 msgstr "anni"
+
+#: cds/templates/blocks/crud_cds.html:248
+#: cds_brochure/templates/blocks/cds_brochure_list.html:137
+#: cds_websites/templates/blocks/cds_websites_list.html:248
+#: companies/templates/blocks/crud_companies.html:183
+#: generics/templates/blocks/crud_addressbook.html:226
+#: generics/templates/blocks/crud_departmentslist.html:67
+#: generics/templates/blocks/crud_structureslist.html:91
+#: generics/templates/blocks/crud_teacherslist.html:109
+#: laboratories/templates/blocks/crud_laboratories.html:278
+#: patents/templates/blocks/crud_patents.html:153
+#: phd/templates/blocks/crud_phd_list.html:264
+#: projects/templates/blocks/crud_projects.html:260
+#: regdid/templates/blocks/crud_regdid.html:193
+#: research_groups/templates/blocks/crud_researchgroups.html:176
+#: research_lines/templates/blocks/crud_researchlines.html:179
+#: teachers/templates/blocks/crud_teacher_books.html:129
+#: teachers/templates/blocks/crud_teacher_news.html:130
+#: teachers/templates/blocks/crud_teachers.html:110
+msgid "No items here"
+msgstr "Nessun elemento"
 
 #: cds/templates/cds.html:8 generics/templates/dashboard.html:26
 msgid "Courses of study"
@@ -1399,9 +801,165 @@ msgstr ""
 "Attenzione: questa operazione sovrascriverà ogni dato della sezione "
 "informazioni del corso"
 
+#: cds/templates/cds_detail.html:56 cds/templates/cds_detail.html:114
+#: cds/templates/cds_detail.html:254 cds/templates/cds_detail.html:354
+#: cds/templates/cds_detail.html:480 cds/templates/cds_detail.html:541
+#: cds/templates/cds_detail.html:604 cds/templates/cds_group.html:108
+#: cds/templates/cds_office_data.html:75 cds/templates/cds_other_data.html:78
+#: cds/templates/cds_other_data.html:149
+#: cds/templates/cds_regdid_other_data.html:34
+#: cds/templates/cds_regdid_other_data.html:72
+#: cds/templates/cds_regdid_other_data_form.html:66
+#: cds_brochure/templates/cds_brochure_exstudents.html:60
+#: cds_brochure/templates/cds_brochure_links.html:60
+#: cds_brochure/templates/cds_brochure_sliders.html:60
+#: cds_websites/templates/blocks/cds_websites_object_items.html:57
+#: cds_websites/templates/cds_website_items_order.html:133
+#: cds_websites/templates/cds_websites_extras.html:86
+#: cds_websites/templates/cds_websites_extras.html:232
+#: cds_websites/templates/cds_websites_shared_objects.html:77
+#: companies/templates/company.html:42 companies/templates/company.html:196
+#: generics/templates/includes/form_submit.html:49
+#: laboratories/templates/laboratory.html:38
+#: laboratories/templates/laboratory.html:74
+#: laboratories/templates/laboratory.html:110
+#: laboratories/templates/laboratory.html:252
+#: laboratories/templates/laboratory.html:308
+#: laboratories/templates/laboratory.html:400
+#: laboratories/templates/laboratory.html:467
+#: laboratories/templates/laboratory.html:607
+#: laboratories/templates/laboratory.html:679
+#: laboratories/templates/laboratory.html:776
+#: laboratories/templates/laboratory.html:878
+#: laboratories/templates/laboratory.html:956
+#: laboratories/templates/laboratory.html:1046
+#: laboratories/templates/laboratory.html:1128 patents/templates/patent.html:42
+#: patents/templates/patent.html:120 phd/templates/phd.html:42
+#: phd/templates/phd.html:122 phd/templates/phd.html:201
+#: projects/templates/project.html:42 projects/templates/project.html:193
+#: projects/templates/project.html:272
+#: regdid/templates/blocks/regdid_article_item.html:64
+#: regdid/templates/blocks/regdid_status_change_button.html:29
+#: regdid/templates/blocks/regdid_status_change_button.html:39
+#: regdid/templates/blocks/regdid_sub_article_item.html:78
+#: regdid/templates/blocks/regdid_top_button.html:42
+#: regdid/templates/regdid_pdf_import_form.html:41
+#: research_groups/templates/researchgroup.html:42
+#: research_groups/templates/researchgroup.html:132
+#: research_groups/templates/researchgroup_teacher.html:44
+#: research_lines/templates/applied_researchline.html:42
+#: research_lines/templates/applied_researchline.html:132
+#: research_lines/templates/base_researchline.html:42
+#: research_lines/templates/base_researchline.html:132
+#: research_lines/templates/researchline_teacher.html:44
+#: teachers/templates/blocks/crud_teacher_books.html:111
+#: teachers/templates/blocks/crud_teacher_news.html:112
+#: teachers/templates/teacher_detail.html:62
+msgid "Yes, proceed"
+msgstr "Si, procedi"
+
 #: cds/templates/cds_detail.html:73 cds/templates/cds_regdid_other_data.html:92
 msgid "Import"
 msgstr "Importa"
+
+#: cds/templates/cds_detail.html:85 cds/templates/cds_detail.html:225
+#: cds/templates/cds_detail.html:325 cds/templates/cds_detail.html:451
+#: cds/templates/cds_detail.html:512 cds/templates/cds_detail.html:575
+#: cds/templates/cds_group.html:79 cds/templates/cds_office_data.html:46
+#: cds/templates/cds_other_data.html:49 cds/templates/cds_other_data.html:120
+#: cds/templates/cds_regdid_other_data.html:159
+#: cds_brochure/templates/cds_brochure_exstudents.html:88
+#: cds_brochure/templates/cds_brochure_links.html:89
+#: cds_brochure/templates/cds_brochure_sliders.html:89
+#: cds_websites/templates/blocks/cds_websites_object_items.html:139
+#: cds_websites/templates/cds_websites_extras.html:152
+#: cds_websites/templates/cds_websites_shared_objects.html:147
+#: companies/templates/company.html:13 companies/templates/company.html:165
+#: laboratories/templates/laboratory.html:129
+#: laboratories/templates/laboratory.html:278
+#: laboratories/templates/laboratory.html:437
+#: laboratories/templates/laboratory.html:577
+#: laboratories/templates/laboratory.html:649
+#: laboratories/templates/laboratory.html:746
+#: laboratories/templates/laboratory.html:926
+#: laboratories/templates/laboratory.html:1016
+#: laboratories/templates/laboratory.html:1098 patents/templates/patent.html:13
+#: patents/templates/patent.html:89 phd/templates/phd.html:13
+#: phd/templates/phd.html:91 phd/templates/phd.html:170
+#: projects/templates/project.html:13 projects/templates/project.html:162
+#: projects/templates/project.html:241
+#: regdid/templates/blocks/regdid_article_item.html:114
+#: regdid/templates/blocks/regdid_sub_article_item.html:108
+#: research_groups/templates/researchgroup.html:13
+#: research_groups/templates/researchgroup.html:101
+#: research_groups/templates/researchgroup_teacher.html:15
+#: research_lines/templates/applied_researchline.html:13
+#: research_lines/templates/applied_researchline.html:101
+#: research_lines/templates/base_researchline.html:13
+#: research_lines/templates/base_researchline.html:101
+#: research_lines/templates/researchline_teacher.html:15
+#: teachers/templates/blocks/crud_teacher_books.html:82
+#: teachers/templates/blocks/crud_teacher_news.html:83
+#: teachers/templates/teacher_detail.html:32
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: cds/templates/cds_detail.html:96 cds/templates/cds_detail.html:236
+#: cds/templates/cds_detail.html:336 cds/templates/cds_detail.html:462
+#: cds/templates/cds_detail.html:523 cds/templates/cds_detail.html:586
+#: cds/templates/cds_group.html:90 cds/templates/cds_office_data.html:57
+#: cds/templates/cds_other_data.html:60 cds/templates/cds_other_data.html:131
+#: cds/templates/cds_regdid_other_data.html:54
+#: cds/templates/cds_regdid_other_data_form.html:49
+#: cds_brochure/templates/cds_brochure_exstudents.html:42
+#: cds_brochure/templates/cds_brochure_links.html:42
+#: cds_brochure/templates/cds_brochure_sliders.html:42
+#: cds_websites/templates/blocks/cds_websites_object_items.html:39
+#: cds_websites/templates/cds_website_items_order.html:111
+#: cds_websites/templates/cds_websites_extras.html:68
+#: cds_websites/templates/cds_websites_extras.html:210
+#: cds_websites/templates/cds_websites_shared_objects.html:59
+#: companies/templates/company.html:24 companies/templates/company.html:178
+#: generics/templates/includes/form_submit.html:27
+#: laboratories/templates/laboratory.html:20
+#: laboratories/templates/laboratory.html:56
+#: laboratories/templates/laboratory.html:92
+#: laboratories/templates/laboratory.html:228
+#: laboratories/templates/laboratory.html:290
+#: laboratories/templates/laboratory.html:376
+#: laboratories/templates/laboratory.html:449
+#: laboratories/templates/laboratory.html:589
+#: laboratories/templates/laboratory.html:661
+#: laboratories/templates/laboratory.html:758
+#: laboratories/templates/laboratory.html:854
+#: laboratories/templates/laboratory.html:938
+#: laboratories/templates/laboratory.html:1028
+#: laboratories/templates/laboratory.html:1110 patents/templates/patent.html:24
+#: patents/templates/patent.html:102 phd/templates/phd.html:24
+#: phd/templates/phd.html:104 phd/templates/phd.html:183
+#: projects/templates/project.html:24 projects/templates/project.html:175
+#: projects/templates/project.html:254
+#: regdid/templates/blocks/regdid_article_item.html:46
+#: regdid/templates/blocks/regdid_status_change_button.html:15
+#: regdid/templates/blocks/regdid_sub_article_item.html:60
+#: regdid/templates/blocks/regdid_top_button.html:20
+#: research_groups/templates/researchgroup.html:24
+#: research_groups/templates/researchgroup.html:114
+#: research_groups/templates/researchgroup_teacher.html:26
+#: research_lines/templates/applied_researchline.html:24
+#: research_lines/templates/applied_researchline.html:114
+#: research_lines/templates/base_researchline.html:24
+#: research_lines/templates/base_researchline.html:114
+#: research_lines/templates/researchline_teacher.html:26
+#: teachers/templates/blocks/crud_teacher_books.html:93
+#: teachers/templates/blocks/crud_teacher_news.html:94
+#: teachers/templates/teacher_detail.html:44
+msgid "Confirm"
+msgstr "Conferma"
+
+#: cds/templates/cds_detail.html:109 teachers/templates/teacher_detail.html:57
+msgid "Do you want to delete data set?"
+msgstr "Vuoi davvero eliminare questo set di dati?"
 
 #: cds/templates/cds_detail.html:128 cds/templates/cds_detail.html:138
 #: cds/templates/cds_detail.html:210 cds/templates/cds_group.html:52
@@ -1421,8 +979,41 @@ msgid "Registration procedure"
 msgstr "Modalità di iscrizione"
 
 #: cds/templates/cds_detail.html:166
+#: import_assistant/management/utils/regdid_import_utils.py:427
 msgid "Import from previous year"
 msgstr "Importa dall'anno precedente"
+
+#: cds/templates/cds_detail.html:173 cds/templates/cds_detail.html:271
+#: cds/templates/cds_detail.html:371 cds/templates/cds_group.html:128
+#: cds_brochure/templates/cds_brochure_exstudents.html:99
+#: cds_brochure/templates/cds_brochure_links.html:100
+#: cds_brochure/templates/cds_brochure_sliders.html:100
+#: cds_websites/templates/blocks/cds_websites_object_items.html:180
+#: cds_websites/templates/cds_websites_extras.html:186
+#: cds_websites/templates/cds_websites_shared_objects.html:166
+#: cds_websites/templates/widgets/cds_websites_oggetti_portale_widget.html:24
+#: companies/templates/companies.html:11 companies/templates/company.html:210
+#: laboratories/templates/laboratories.html:11
+#: laboratories/templates/laboratory.html:330
+#: laboratories/templates/laboratory.html:489
+#: laboratories/templates/laboratory.html:625
+#: laboratories/templates/laboratory.html:697
+#: laboratories/templates/laboratory.html:794
+#: laboratories/templates/laboratory.html:974
+#: laboratories/templates/laboratory.html:1064
+#: laboratories/templates/laboratory.html:1146
+#: patents/templates/patent.html:134 patents/templates/patents.html:11
+#: phd/templates/phd.html:136 phd/templates/phd.html:215
+#: phd/templates/phd_list.html:11 projects/templates/project.html:207
+#: projects/templates/project.html:286 projects/templates/projects.html:11
+#: research_groups/templates/researchgroup.html:146
+#: research_groups/templates/researchgroups.html:11
+#: research_lines/templates/applied_researchline.html:146
+#: research_lines/templates/base_researchline.html:146
+#: teachers/templates/teacher_detail.html:167
+#: teachers/templates/teacher_detail.html:185
+msgid "Add new"
+msgstr "Aggiungi nuovo"
 
 #: cds/templates/cds_detail.html:198
 msgid "Office"
@@ -1577,6 +1168,13 @@ msgstr "Apri URL (it)"
 msgid "Open URL (eng)"
 msgstr "Apri URL (en)"
 
+#: cds/templates/cds_regdid_other_data.html:165
+#: research_lines/templates/applied_researchlines.html:11
+#: research_lines/templates/base_researchlines.html:11
+#: teachers/templates/teacher_detail.html:148
+msgid "Add"
+msgstr "Aggiungi"
+
 #: cds/templates/cds_regdid_other_data_form.html:14
 #: cds_brochure/templates/cds_brochure_unique_form.html:14
 #: cds_websites/templates/cds_websites_objects_form.html:12
@@ -1604,6 +1202,16 @@ msgstr "Nuovo "
 msgid " for "
 msgstr " per "
 
+#: cds/templates/cds_regdid_other_data_form.html:29
+#: cds_websites/management/forms.py:276
+#: cds_websites/templates/blocks/cds_websites_object_items.html:8
+#: cds_websites/templates/cds_websites_shared_objects.html:38
+#: laboratories/management/forms.py:264
+#: laboratories/templates/laboratory.html:893 phd/management/forms.py:87
+#: teachers/templates/blocks/crud_teacher_news.html:40
+msgid "Type"
+msgstr "Tipo"
+
 #: cds/templates/cds_regdid_other_data_form.html:61
 msgid "Do you really want to change multimedia content type for this item?"
 msgstr ""
@@ -1629,254 +1237,270 @@ msgstr "Ordinamento didattico per"
 msgid "Currently refers to that of the year"
 msgstr "Attualmente fa riferimento a quello dell'anno"
 
-#: cds_brochure/management/forms.py:29
+#: cds_brochure/management/forms.py:25
 msgid "Seats Number"
 msgstr "Numero posti"
 
-#: cds_brochure/management/forms.py:39
+#: cds_brochure/management/forms.py:35
 msgid "Course in a nutshell (it)"
 msgstr "Corso in pillole (it)"
 
-#: cds_brochure/management/forms.py:40
+#: cds_brochure/management/forms.py:36
 msgid "Course in a nutshell (en)"
 msgstr "Corso in pillole (en)"
 
-#: cds_brochure/management/forms.py:41
+#: cds_brochure/management/forms.py:37
 msgid "What you will study (it)"
 msgstr "Cosa si studia (it)"
 
-#: cds_brochure/management/forms.py:42
+#: cds_brochure/management/forms.py:38
 msgid "What you will study (en)"
 msgstr "Cosa si studia (en)"
 
-#: cds_brochure/management/forms.py:43
+#: cds_brochure/management/forms.py:39
 msgid "How to enroll (it)"
 msgstr "Come iscriversi (it)"
 
-#: cds_brochure/management/forms.py:44
+#: cds_brochure/management/forms.py:40
 msgid "How to enroll (en)"
 msgstr "Come iscriversi (en)"
 
-#: cds_brochure/management/forms.py:93 companies/management/forms.py:42
+#: cds_brochure/management/forms.py:89 companies/management/forms.py:42
 msgid "Description (it)"
 msgstr "Descrizione (it)"
 
-#: cds_brochure/management/forms.py:94 companies/management/forms.py:43
+#: cds_brochure/management/forms.py:90 companies/management/forms.py:43
 msgid "Description (en)"
 msgstr "Descrizione (en)"
 
-#: cds_brochure/management/forms.py:95
+#: cds_brochure/management/forms.py:91
 msgid "Admission (it)"
 msgstr "Ammissione (it)"
 
-#: cds_brochure/management/forms.py:96
+#: cds_brochure/management/forms.py:92
 msgid "Admission (en)"
 msgstr "Ammissione (en)"
 
-#: cds_brochure/management/forms.py:97
+#: cds_brochure/management/forms.py:93
 msgid "Goals (it)"
 msgstr "Obiettivi (it)"
 
-#: cds_brochure/management/forms.py:98
+#: cds_brochure/management/forms.py:94
 msgid "Goals (en)"
 msgstr "Obiettivi (en)"
 
-#: cds_brochure/management/forms.py:99
+#: cds_brochure/management/forms.py:95
 msgid "Job opportunities (it)"
 msgstr "Opportunità lavorative (it)"
 
-#: cds_brochure/management/forms.py:100
+#: cds_brochure/management/forms.py:96
 msgid "Job opportunituies (en)"
 msgstr "Opportunità lavorative (en)"
 
-#: cds_brochure/management/forms.py:153
+#: cds_brochure/management/forms.py:149
 msgid "Taxes (it)"
 msgstr "Tasse (it)"
 
-#: cds_brochure/management/forms.py:154
+#: cds_brochure/management/forms.py:150
 msgid "Taxes (en)"
 msgstr "Tasse (en)"
 
-#: cds_brochure/management/forms.py:155
+#: cds_brochure/management/forms.py:151
 msgid "Scholarships (it)"
 msgstr "Borse di studio (it)"
 
-#: cds_brochure/management/forms.py:156
+#: cds_brochure/management/forms.py:152
 msgid "Scholarships (en)"
 msgstr "Borse di studio (en)"
 
-#: cds_brochure/management/forms.py:157
+#: cds_brochure/management/forms.py:153
 msgid "Concessions (it)"
 msgstr "Agevolazioni (it)"
 
-#: cds_brochure/management/forms.py:158
+#: cds_brochure/management/forms.py:154
 msgid "Concessions (en)"
 msgstr "Agevolazioni (en)"
 
-#: cds_brochure/management/forms.py:211
+#: cds_brochure/management/forms.py:206 cds_brochure/management/forms.py:219
+#: cds_brochure/management/forms.py:243 cds_brochure/management/forms.py:251
+#: cds_brochure/templates/cds_brochure_exstudents.html:26
+#: cds_brochure/templates/cds_brochure_links.html:26
+#: cds_brochure/templates/cds_brochure_sliders.html:26
+#: cds_websites/management/forms.py:29 cds_websites/management/forms.py:59
+#: cds_websites/management/forms.py:239 cds_websites/management/forms.py:272
+#: cds_websites/management/forms.py:294 cds_websites/management/forms.py:316
+#: cds_websites/templates/blocks/cds_websites_object_items.html:9
+#: cds_websites/templates/blocks/cds_websites_regulation_article_items.html:8
+#: regdid/management/forms.py:44
+#: teachers/templates/blocks/crud_teacher_books.html:43
+#: teachers/templates/blocks/crud_teacher_news.html:43
+msgid "Order"
+msgstr "Ordine"
+
+#: cds_brochure/management/forms.py:207
 msgid "Picture"
 msgstr "Immagine"
 
-#: cds_brochure/management/forms.py:212
+#: cds_brochure/management/forms.py:208
 msgid "Profile (it)"
 msgstr "Profilo (it)"
 
-#: cds_brochure/management/forms.py:213
+#: cds_brochure/management/forms.py:209
 msgid "Profile (en)"
 msgstr "Profilo (en)"
 
-#: cds_brochure/management/forms.py:214 cds_brochure/management/forms.py:258
+#: cds_brochure/management/forms.py:210 cds_brochure/management/forms.py:254
 msgid "Link (it)"
 msgstr "Link (it)"
 
-#: cds_brochure/management/forms.py:215 cds_brochure/management/forms.py:259
+#: cds_brochure/management/forms.py:211 cds_brochure/management/forms.py:255
 msgid "Link (en)"
 msgstr "Link (en)"
 
-#: cds_brochure/management/forms.py:236 cds_brochure/management/forms.py:245
+#: cds_brochure/management/forms.py:232 cds_brochure/management/forms.py:241
 msgid "Scrollable text (it)"
 msgstr "Testo scorrevole (it)"
 
-#: cds_brochure/management/forms.py:239 cds_brochure/management/forms.py:246
+#: cds_brochure/management/forms.py:235 cds_brochure/management/forms.py:242
 msgid "Scrollable text (en)"
 msgstr "Testo scorrevole (en)"
 
-#: cds_brochure/management/forms.py:256
+#: cds_brochure/management/forms.py:252
 msgid "Link description (it)"
 msgstr "Descrizione link (it)"
 
-#: cds_brochure/management/forms.py:257
+#: cds_brochure/management/forms.py:253
 msgid "Link description (en)"
 msgstr "Descrizione link (en)"
 
-#: cds_brochure/management/views.py:39 cds_brochure/management/views.py:56
-#: cds_brochure/management/views.py:154 cds_brochure/management/views.py:196
-#: cds_brochure/management/views.py:335 cds_brochure/management/views.py:400
-#: cds_brochure/management/views.py:473 cds_brochure/management/views.py:547
-#: cds_brochure/management/views.py:609 cds_brochure/management/views.py:672
-#: cds_brochure/management/views.py:740 generics/templates/dashboard.html:97
+#: cds_brochure/management/views.py:36 cds_brochure/management/views.py:50
+#: cds_brochure/management/views.py:148 cds_brochure/management/views.py:190
+#: cds_brochure/management/views.py:329 cds_brochure/management/views.py:394
+#: cds_brochure/management/views.py:467 cds_brochure/management/views.py:541
+#: cds_brochure/management/views.py:603 cds_brochure/management/views.py:666
+#: cds_brochure/management/views.py:734 generics/templates/dashboard.html:107
 msgid "CdS in brief"
 msgstr "CdS in sintesi"
 
-#: cds_brochure/management/views.py:117
+#: cds_brochure/management/views.py:111
 msgid "Form validation failed"
 msgstr "Validazione del form fallita"
 
+#: cds_brochure/management/views.py:123
+msgid "Edited brochure info"
+msgstr "Modificate info della brochure"
+
 #: cds_brochure/management/views.py:129
-msgid "Edited website info"
-msgstr "Modificate info del sito web"
+msgid "Brochure info edited successfully"
+msgstr "Brochure modificata con successo"
 
-#: cds_brochure/management/views.py:135
-msgid "Website info edited successfully"
-msgstr "Info del sito web modficate con successo"
-
-#: cds_brochure/management/views.py:162 cds_brochure/management/views.py:180
+#: cds_brochure/management/views.py:156 cds_brochure/management/views.py:174
 #: cds_brochure/templates/cds_brochure.html:25
 msgid "Info"
 msgstr "Info"
 
-#: cds_brochure/management/views.py:204 cds_brochure/management/views.py:273
-#: cds_brochure/management/views.py:346
+#: cds_brochure/management/views.py:198 cds_brochure/management/views.py:267
+#: cds_brochure/management/views.py:340
 #: cds_brochure/templates/cds_brochure.html:30
 msgid "Sliders"
 msgstr "Testi Scorrevoli"
 
-#: cds_brochure/management/views.py:241
+#: cds_brochure/management/views.py:235
 msgid "Added Scrollable Text"
 msgstr "Aggiunto Testo Scorrevole"
 
-#: cds_brochure/management/views.py:245
+#: cds_brochure/management/views.py:239
 msgid "Scrollable Text added successfully"
 msgstr "Testo Scorrevole aggiunto con successo"
 
-#: cds_brochure/management/views.py:286 cds_brochure/management/views.py:359
+#: cds_brochure/management/views.py:280 cds_brochure/management/views.py:353
 #: cds_brochure/templates/cds_brochure_sliders.html:25
 msgid "Scrollable Text"
 msgstr "Testo Scorrevole"
 
-#: cds_brochure/management/views.py:312
+#: cds_brochure/management/views.py:306
 msgid "Edited Scrollable Text"
 msgstr "Modificato Testo Scorrevole"
 
-#: cds_brochure/management/views.py:316
+#: cds_brochure/management/views.py:310
 msgid "Scrollable Text edited successfully"
 msgstr "Testo Scorrevole modificato con successo"
 
-#: cds_brochure/management/views.py:377
+#: cds_brochure/management/views.py:371
 msgid "Deleted Scrollable Text"
 msgstr "Eliminato Testo Scorrevole"
 
-#: cds_brochure/management/views.py:381
+#: cds_brochure/management/views.py:375
 msgid "Scrollable Text deleted successfully"
 msgstr "Testo Scorrevole eliminato con successo"
 
-#: cds_brochure/management/views.py:408 cds_brochure/management/views.py:483
-#: cds_brochure/management/views.py:558
+#: cds_brochure/management/views.py:402 cds_brochure/management/views.py:477
+#: cds_brochure/management/views.py:552
 #: cds_brochure/templates/cds_brochure.html:35
 #: cds_brochure/templates/cds_brochure_exstudents.html:25
 msgid "Ex Students"
 msgstr "Ex Studenti"
 
-#: cds_brochure/management/views.py:450
+#: cds_brochure/management/views.py:444
 msgid "Added Ex Student"
 msgstr "Aggiunto Ex Studente"
 
-#: cds_brochure/management/views.py:454
+#: cds_brochure/management/views.py:448
 msgid "Ex Student added successfully"
 msgstr "Ex Studente aggiunto con successo"
 
-#: cds_brochure/management/views.py:496 cds_brochure/management/views.py:571
+#: cds_brochure/management/views.py:490 cds_brochure/management/views.py:565
 msgid "Ex Student"
 msgstr "Ex Studente"
 
-#: cds_brochure/management/views.py:524
+#: cds_brochure/management/views.py:518
 msgid "Edited Ex Student"
 msgstr "Modificato Ex Studente"
 
-#: cds_brochure/management/views.py:528
+#: cds_brochure/management/views.py:522
 msgid "Ex Student edited successfully"
 msgstr "Ex Studente modificato con successo"
 
-#: cds_brochure/management/views.py:586
+#: cds_brochure/management/views.py:580
 msgid "Deleted Ex Student"
 msgstr "Eliminato Ex Studente"
 
-#: cds_brochure/management/views.py:590
+#: cds_brochure/management/views.py:584
 msgid "Ex Student deleted successfully"
 msgstr "Ex Studente eliminato con successo"
 
-#: cds_brochure/management/views.py:617 cds_brochure/management/views.py:683
-#: cds_brochure/management/views.py:751
+#: cds_brochure/management/views.py:611 cds_brochure/management/views.py:677
+#: cds_brochure/management/views.py:745
 #: cds_brochure/templates/cds_brochure.html:40
 msgid "Links"
 msgstr "Link"
 
-#: cds_brochure/management/views.py:651
+#: cds_brochure/management/views.py:645
 msgid "Added Link"
 msgstr "Aggiunto Link"
 
-#: cds_brochure/management/views.py:655
+#: cds_brochure/management/views.py:649
 msgid "Link added successfully"
 msgstr "Link aggiunto con successo"
 
-#: cds_brochure/management/views.py:696 cds_brochure/management/views.py:764
+#: cds_brochure/management/views.py:690 cds_brochure/management/views.py:758
 #: cds_websites/management/forms.py:242 cds_websites/management/forms.py:277
 msgid "Link"
 msgstr "Link"
 
-#: cds_brochure/management/views.py:719
+#: cds_brochure/management/views.py:713
 msgid "Edited Link"
 msgstr "Modificato Link"
 
-#: cds_brochure/management/views.py:723
+#: cds_brochure/management/views.py:717
 msgid "Link edited successfully"
 msgstr "Link modificato con successo"
 
-#: cds_brochure/management/views.py:778
+#: cds_brochure/management/views.py:772
 msgid "Deleted Link"
 msgstr "Eliminato Link"
 
-#: cds_brochure/management/views.py:780
+#: cds_brochure/management/views.py:774
 msgid "Link deleted successfully"
 msgstr "Link eliminato con successo"
 
@@ -1921,6 +1545,8 @@ msgid "Languages"
 msgstr "Lingue"
 
 #: cds_brochure/templates/cds_brochure_links.html:25
+#: import_assistant/templates/blocks/import_assistant_cds_fields_table.html:11
+#: import_assistant/templates/blocks/import_assistant_regdid_structure_fields_table.html:11
 #: laboratories/management/forms.py:264 laboratories/management/forms.py:429
 #: laboratories/management/forms.py:451
 #: laboratories/templates/laboratory.html:894
@@ -1942,20 +1568,20 @@ msgstr "Siti web dei Corsi di Studio in sintesi"
 
 #: cds_websites/management/forms.py:55 cds_websites/management/forms.py:214
 #: cds_websites/management/forms.py:270 cds_websites/management/forms.py:314
-#: regdid/management/forms.py:55 teachers/management/forms.py:90
+#: regdid/management/forms.py:45 teachers/management/forms.py:90
 #: teachers/management/forms.py:132
 msgid "Title (it)"
 msgstr "Titolo (it)"
 
 #: cds_websites/management/forms.py:56 cds_websites/management/forms.py:215
 #: cds_websites/management/forms.py:271 cds_websites/management/forms.py:315
-#: regdid/management/forms.py:56 teachers/management/forms.py:91
+#: regdid/management/forms.py:46 teachers/management/forms.py:91
 #: teachers/management/forms.py:133
 msgid "Title (en)"
 msgstr "Titolo (en)"
 
 #: cds_websites/management/forms.py:57 cds_websites/management/forms.py:274
-#: cds_websites/management/forms.py:318 regdid/management/forms.py:40
+#: cds_websites/management/forms.py:318 regdid/management/forms.py:30
 #: regdid/templates/blocks/regdid_article_item.html:82
 #: regdid/templates/blocks/regdid_sub_article_item.html:40
 #: teachers/management/forms.py:92 teachers/management/forms.py:134
@@ -1963,14 +1589,14 @@ msgid "Text (it)"
 msgstr "Testo (it)"
 
 #: cds_websites/management/forms.py:58 cds_websites/management/forms.py:275
-#: cds_websites/management/forms.py:319 regdid/management/forms.py:40
+#: cds_websites/management/forms.py:319 regdid/management/forms.py:30
 #: regdid/templates/blocks/regdid_article_item.html:87
 #: regdid/templates/blocks/regdid_sub_article_item.html:45
 #: teachers/management/forms.py:93 teachers/management/forms.py:135
 msgid "Text (en)"
 msgstr "Testo (en)"
 
-#: cds_websites/management/forms.py:61 cds_websites/management/views.py:625
+#: cds_websites/management/forms.py:61 cds_websites/management/views.py:618
 msgid "Regulation Article"
 msgstr "Articolo di Regolamento"
 
@@ -2000,6 +1626,12 @@ msgstr ""
 msgid "WebPath"
 msgstr "WebPath"
 
+#: cds_websites/management/forms.py:160
+#: teachers/templates/blocks/crud_teacher_books.html:42
+#: teachers/templates/blocks/crud_teacher_news.html:42
+msgid "Publication"
+msgstr "Publicazione"
+
 #: cds_websites/management/forms.py:161 cds_websites/management/forms.py:218
 msgid "Object class"
 msgstr "Classe Oggetto"
@@ -2008,8 +1640,8 @@ msgstr "Classe Oggetto"
 msgid "Publication / WebPath (Active page)"
 msgstr "Pubblicazioni / WebPath (Pagina attiva)"
 
-#: cds_websites/management/forms.py:165 cds_websites/management/views.py:365
-#: cds_websites/management/views.py:449 cds_websites/management/views.py:926
+#: cds_websites/management/forms.py:165 cds_websites/management/views.py:358
+#: cds_websites/management/views.py:442 cds_websites/management/views.py:919
 #: cds_websites/templates/cds_websites_shared_objects.html:37
 msgid "Object"
 msgstr "Oggetto"
@@ -2035,18 +1667,18 @@ msgid "Used to determine the icon to show on the left of the element"
 msgstr ""
 "Utilizzato per determinare quale icona mostrare a sinistra dell'elemento"
 
-#: cds_websites/management/views.py:60 cds_websites/management/views.py:173
-#: cds_websites/management/views.py:259 cds_websites/management/views.py:338
-#: cds_websites/management/views.py:423 cds_websites/management/views.py:524
-#: cds_websites/management/views.py:600 cds_websites/management/views.py:656
-#: cds_websites/management/views.py:732 cds_websites/management/views.py:821
-#: cds_websites/management/views.py:902 cds_websites/management/views.py:1010
-#: cds_websites/management/views.py:1107 cds_websites/management/views.py:1207
-#: generics/templates/dashboard.html:89
+#: cds_websites/management/views.py:57 cds_websites/management/views.py:166
+#: cds_websites/management/views.py:252 cds_websites/management/views.py:331
+#: cds_websites/management/views.py:416 cds_websites/management/views.py:517
+#: cds_websites/management/views.py:593 cds_websites/management/views.py:649
+#: cds_websites/management/views.py:725 cds_websites/management/views.py:814
+#: cds_websites/management/views.py:895 cds_websites/management/views.py:1001
+#: cds_websites/management/views.py:1098 cds_websites/management/views.py:1198
+#: generics/templates/dashboard.html:99
 msgid "CdS pages"
 msgstr "CdS pagine"
 
-#: cds_websites/management/views.py:111
+#: cds_websites/management/views.py:104
 msgid ""
 "Unable to determine which topics are shown on the Portal nor the page "
 "they're appearing on"
@@ -2054,21 +1686,21 @@ msgstr ""
 "Impossibile determinare quali topic vengono mostrati sul Portale e la pagina "
 "sulla quale appaiono"
 
-#: cds_websites/management/views.py:180 cds_websites/management/views.py:269
-#: cds_websites/management/views.py:348 cds_websites/management/views.py:433
-#: cds_websites/management/views.py:534 cds_websites/management/views.py:610
-#: cds_websites/management/views.py:666 cds_websites/management/views.py:742
-#: cds_websites/management/views.py:831 cds_websites/management/views.py:912
-#: cds_websites/management/views.py:1020 cds_websites/management/views.py:1117
-#: cds_websites/management/views.py:1217
+#: cds_websites/management/views.py:173 cds_websites/management/views.py:262
+#: cds_websites/management/views.py:341 cds_websites/management/views.py:426
+#: cds_websites/management/views.py:527 cds_websites/management/views.py:603
+#: cds_websites/management/views.py:659 cds_websites/management/views.py:735
+#: cds_websites/management/views.py:824 cds_websites/management/views.py:905
+#: cds_websites/management/views.py:1011 cds_websites/management/views.py:1108
+#: cds_websites/management/views.py:1208
 msgid "Topics"
 msgstr "Topics"
 
-#: cds_websites/management/views.py:219
+#: cds_websites/management/views.py:212
 msgid "Shared Portal objects"
 msgstr "Oggetti del Portale condivisi"
 
-#: cds_websites/management/views.py:221
+#: cds_websites/management/views.py:214
 msgid ""
 "This section allows to insert, remove and edit Publications/WebPath (Active "
 "Pages) under a certain topic."
@@ -2076,7 +1708,7 @@ msgstr ""
 "Questa sezione permette di inserire, rimuovere e modificare Pubblicazioni/"
 "WebPaths (Pagine attive) sotto un determinato topic."
 
-#: cds_websites/management/views.py:226
+#: cds_websites/management/views.py:219
 msgid ""
 "In order for a web Publication/WebPath to be iserted here, you must first "
 "import it from the \"Shared objects\" section."
@@ -2084,148 +1716,148 @@ msgstr ""
 "Affinché una Pubblicazione/WebPath possa essere inserita qui, è necessario "
 "prima importarla dalla sezione \"Oggetti condivisi\"."
 
-#: cds_websites/management/views.py:271 cds_websites/management/views.py:353
-#: cds_websites/management/views.py:438
+#: cds_websites/management/views.py:264 cds_websites/management/views.py:346
+#: cds_websites/management/views.py:431
 #: cds_websites/templates/cds_websites_topics.html:112
 msgid "Shared objects"
 msgstr "Oggetti del Portale condivisi"
 
-#: cds_websites/management/views.py:313
+#: cds_websites/management/views.py:306
 msgid "Edited Shared Object"
 msgstr "Modificato Oggetto Condiviso"
 
-#: cds_websites/management/views.py:317 cds_websites/management/views.py:884
+#: cds_websites/management/views.py:310 cds_websites/management/views.py:877
 msgid "Object edited successfully"
 msgstr "Oggetto modificato con successo"
 
-#: cds_websites/management/views.py:354
+#: cds_websites/management/views.py:347
 msgid "Edit Object"
 msgstr "Modifica oggetto"
 
-#: cds_websites/management/views.py:398
+#: cds_websites/management/views.py:391
 msgid "Added Shared Object"
 msgstr "Aggiunto Oggetto Condiviso"
 
-#: cds_websites/management/views.py:402 cds_websites/management/views.py:803
+#: cds_websites/management/views.py:395 cds_websites/management/views.py:796
 msgid "Object added successfully"
 msgstr "Oggetto aggiunto con successo"
 
-#: cds_websites/management/views.py:439
+#: cds_websites/management/views.py:432
 msgid "New Object"
 msgstr "Nuovo Oggetto"
 
-#: cds_websites/management/views.py:465
+#: cds_websites/management/views.py:458
 msgid "Object removed successfully"
 msgstr "Oggetto rimosso con successo"
 
-#: cds_websites/management/views.py:515
+#: cds_websites/management/views.py:508
 msgid "Updated item order"
 msgstr "Aggiornato ordine dell'elemento"
 
-#: cds_websites/management/views.py:519
+#: cds_websites/management/views.py:512
 msgid "Items order updated successfully"
 msgstr "Ordine aggiornato con successo"
 
-#: cds_websites/management/views.py:536
+#: cds_websites/management/views.py:529
 msgid "order"
 msgstr "odine"
 
-#: cds_websites/management/views.py:578
+#: cds_websites/management/views.py:571
 msgid "Edited Regulation Article"
 msgstr "Modificato Articolo di Regolamento"
 
-#: cds_websites/management/views.py:582
+#: cds_websites/management/views.py:575
 msgid "Regulation Article edited successfully"
 msgstr "Articolo di Regolamento modificato con successo"
 
-#: cds_websites/management/views.py:672 cds_websites/management/views.py:751
+#: cds_websites/management/views.py:665 cds_websites/management/views.py:744
 #: cds_websites/templates/blocks/cds_websites_regulation_article_items.html:74
 #: regdid/templates/blocks/regdid_article_item.html:134
 #: regdid/templates/regdid_article_unique_form.html:115
 msgid "Sub articles"
 msgstr "Sotto-articoli"
 
-#: cds_websites/management/views.py:718
+#: cds_websites/management/views.py:711
 msgid "Edited sub article"
 msgstr "Modificato sotto-articolo"
 
-#: cds_websites/management/views.py:722 regdid/management/views.py:859
+#: cds_websites/management/views.py:715 regdid/management/views.py:768
 msgid "Sub article edited successfully"
 msgstr "Sotto-articolo modificato con successo"
 
-#: cds_websites/management/views.py:765
+#: cds_websites/management/views.py:758
 #: cds_websites/templates/cds_websites_sub_articles.html:37
 msgid "Sub article"
 msgstr "Sotto-articolo"
 
-#: cds_websites/management/views.py:799
+#: cds_websites/management/views.py:792
 msgid "Added Object"
 msgstr "Aggiunto Oggetto"
 
-#: cds_websites/management/views.py:833
+#: cds_websites/management/views.py:826
 msgid "Add Portal Object"
 msgstr "Aggiungi Oggetto del Portale"
 
-#: cds_websites/management/views.py:845
+#: cds_websites/management/views.py:838
 msgid "Portal Object"
 msgstr "Oggetto del Portale"
 
-#: cds_websites/management/views.py:880
+#: cds_websites/management/views.py:873
 msgid "Edited Object"
 msgstr "Modificato Oggetto"
 
-#: cds_websites/management/views.py:954
+#: cds_websites/management/views.py:945
 msgid "Removed Object"
 msgstr "Rimosso Oggetto"
 
-#: cds_websites/management/views.py:957
+#: cds_websites/management/views.py:948
 msgid "Item removed successfully"
 msgstr "Elemento rimosso con successo"
 
-#: cds_websites/management/views.py:989
+#: cds_websites/management/views.py:980
 msgid "Updated extras order"
 msgstr "Aggiornato ordine degli attributi"
 
-#: cds_websites/management/views.py:993
+#: cds_websites/management/views.py:984
 msgid "Extras order updated successfully"
 msgstr "Ordine aggiornato con successo"
 
-#: cds_websites/management/views.py:1023 cds_websites/management/views.py:1123
-#: cds_websites/management/views.py:1223
+#: cds_websites/management/views.py:1014 cds_websites/management/views.py:1114
+#: cds_websites/management/views.py:1214
 #: cds_websites/templates/blocks/cds_websites_object_items.html:122
 #: cds_websites/templates/blocks/cds_websites_regulation_article_items.html:85
 msgid "Extras"
 msgstr "Attributi"
 
-#: cds_websites/management/views.py:1069
+#: cds_websites/management/views.py:1060
 msgid "Added Regulation Article Extra"
 msgstr "Aggiunto Attributo all'articolo di regolamento"
 
-#: cds_websites/management/views.py:1075
+#: cds_websites/management/views.py:1066
 msgid "Regulation Article Extra added successfully"
 msgstr "Attributo modificato con successo"
 
-#: cds_websites/management/views.py:1124
+#: cds_websites/management/views.py:1115
 msgid "New Extra"
 msgstr "Nuovo Attributo"
 
-#: cds_websites/management/views.py:1138 cds_websites/management/views.py:1240
+#: cds_websites/management/views.py:1129 cds_websites/management/views.py:1231
 msgid "Regulation Article Extra"
 msgstr "Attributo Articolo di Regolamento"
 
-#: cds_websites/management/views.py:1169
+#: cds_websites/management/views.py:1160
 msgid "Edited Regulation Article Extra"
 msgstr "Modificato Attributo dell'articolo di regolamento"
 
-#: cds_websites/management/views.py:1175
+#: cds_websites/management/views.py:1166
 msgid "Regulation Article Extra edited successfully"
 msgstr "Attributo dell'articolo di regolamento modificato con successo"
 
-#: cds_websites/management/views.py:1261
+#: cds_websites/management/views.py:1252
 msgid "Deleted Regulation Article Extra"
 msgstr "Eliminato Attributo dell'articolo di regolamento"
 
-#: cds_websites/management/views.py:1265
+#: cds_websites/management/views.py:1256
 msgid "Regulation Article Extra deleted successfully"
 msgstr "Attributo dell'articolo di regolamento aggiunto con successo"
 
@@ -2362,6 +1994,16 @@ msgstr "Partita IVA"
 msgid "URL"
 msgstr ""
 
+#: companies/management/forms.py:45
+#: companies/templates/blocks/crud_companies.html:30
+#: companies/templates/blocks/crud_companies.html:158
+#: patents/templates/blocks/crud_patents.html:45
+#: projects/management/forms.py:31
+#: projects/templates/blocks/crud_projects.html:53
+#: projects/templates/blocks/crud_projects.html:229
+msgid "Tech Area"
+msgstr "Area tecnologica"
+
 #: companies/management/forms.py:46
 msgid "Calabria S3 Innovation"
 msgstr "Innovazione S3 Calabria"
@@ -2384,6 +2026,18 @@ msgstr ""
 #: companies/management/forms.py:50
 msgid "CEO"
 msgstr ""
+
+#: companies/management/forms.py:51
+#: companies/templates/blocks/crud_companies.html:126
+#: laboratories/templates/blocks/crud_laboratories.html:206
+#: patents/management/forms.py:30 patents/templates/blocks/crud_patents.html:91
+#: projects/management/forms.py:39
+#: projects/templates/blocks/crud_projects.html:192
+#: research_lines/templates/blocks/crud_researchlines.html:98
+#: teachers/templates/blocks/crud_teacher_books.html:44
+#: teachers/templates/blocks/crud_teacher_news.html:44
+msgid "Active"
+msgstr "Attivo"
 
 #: companies/management/forms.py:52 patents/management/forms.py:31
 #: projects/management/forms.py:40
@@ -2455,6 +2109,13 @@ msgstr "Si"
 msgid "Do you want to delete choosen company?"
 msgstr "Vuoi davvero eliminare l'impresa selezionata?"
 
+#: companies/templates/company.html:75
+#: laboratories/templates/laboratory.html:537 patents/templates/patent.html:75
+#: phd/templates/phd.html:77 phd/templates/phd.html:156
+#: projects/templates/project.html:148 projects/templates/project.html:227
+msgid "External"
+msgstr "Esterno"
+
 #: companies/templates/company.html:145
 msgid "Departments"
 msgstr "Dipartimenti"
@@ -2508,6 +2169,13 @@ msgstr "Modifica referente Unical per"
 msgid "Structure type"
 msgstr "Tipo di struttura"
 
+#: generics/templates/blocks/crud_addressbook.html:67
+#: projects/management/forms.py:70 projects/management/views.py:632
+#: projects/templates/blocks/crud_projects.html:140
+#: research_groups/templates/researchgroup.html:72
+msgid "Structure"
+msgstr "Struttura"
+
 #: generics/templates/blocks/crud_addressbook.html:95
 #: laboratories/management/forms.py:369
 msgid "Role"
@@ -2546,6 +2214,19 @@ msgstr "Persona scelta"
 msgid "Types"
 msgstr "Tipi"
 
+#: generics/templates/blocks/crud_structureslist.html:176
+#: projects/templates/project_new.html:24
+#: projects/templates/project_new.html:38
+#: projects/templates/project_structure.html:17
+#: projects/templates/project_structure.html:30
+msgid "Choosen structure"
+msgstr "Struttura scelta"
+
+#: generics/templates/blocks/crud_teacherslist.html:83
+#: teachers/templates/blocks/crud_teachers.html:84
+msgid "Contract teacher"
+msgstr "Professore a contratto"
+
 #: generics/templates/custom_message.html:14
 msgid "Oops! C'è qualcosa che non va"
 msgstr ""
@@ -2571,31 +2252,40 @@ msgstr "Innovazione"
 msgid "Staff"
 msgstr "Personale"
 
-#: generics/templates/dashboard.html:73
+#: generics/templates/dashboard.html:74 import_assistant/management/views.py:32
+#: import_assistant/templates/import_assistant_dashboard.html:13
+msgid "Import assistant"
+msgstr "Assistente importazione"
+
+#: generics/templates/dashboard.html:75
+msgid "Manage yearly update routines"
+msgstr "Gestisci le procedure di aggiornamento annuali"
+
+#: generics/templates/dashboard.html:83
 msgid "CdS info"
 msgstr "CdS info"
 
-#: generics/templates/dashboard.html:74
+#: generics/templates/dashboard.html:84
 msgid "Manage CdS' contact details, organization and documents"
 msgstr "Gestisci contatti, organizzazione e documenti dei CdS"
 
-#: generics/templates/dashboard.html:81
+#: generics/templates/dashboard.html:91
 msgid "Regdid"
 msgstr ""
 
-#: generics/templates/dashboard.html:82
+#: generics/templates/dashboard.html:92
 msgid "Manage didactic regulations"
 msgstr "Gestisci i regolamenti didattici"
 
-#: generics/templates/dashboard.html:90
+#: generics/templates/dashboard.html:100
 msgid "Manage contents of CdS' website pages"
 msgstr "Gestisci i contenuti delle pagine web dei CdS"
 
-#: generics/templates/dashboard.html:98
+#: generics/templates/dashboard.html:108
 msgid "Manage contents of Course in brief"
 msgstr "Gestisci i contenuti del Corso in sintesi"
 
-#: generics/templates/dashboard.html:112 phd/management/views.py:40
+#: generics/templates/dashboard.html:122 phd/management/views.py:40
 #: phd/management/views.py:131 phd/management/views.py:216
 #: phd/management/views.py:313 phd/management/views.py:391
 #: phd/management/views.py:525 phd/management/views.py:605
@@ -2603,29 +2293,29 @@ msgstr "Gestisci i contenuti del Corso in sintesi"
 msgid "PhD activities"
 msgstr "Attività dei Dottorati"
 
-#: generics/templates/dashboard.html:113
+#: generics/templates/dashboard.html:123
 msgid "Manage PhD activities"
 msgstr "Gestisci le attività dei dottorati"
 
-#: generics/templates/dashboard.html:120 laboratories/management/views.py:86
-#: laboratories/management/views.py:670 laboratories/management/views.py:821
-#: laboratories/management/views.py:932 laboratories/management/views.py:1059
-#: laboratories/management/views.py:1201 laboratories/management/views.py:1366
-#: laboratories/management/views.py:1511 laboratories/management/views.py:1586
-#: laboratories/management/views.py:1652 laboratories/management/views.py:1760
-#: laboratories/management/views.py:1891 laboratories/management/views.py:2001
-#: laboratories/management/views.py:2094 laboratories/management/views.py:2211
-#: laboratories/management/views.py:2337 laboratories/management/views.py:2426
-#: laboratories/management/views.py:2493
+#: generics/templates/dashboard.html:130 laboratories/management/views.py:86
+#: laboratories/management/views.py:692 laboratories/management/views.py:845
+#: laboratories/management/views.py:959 laboratories/management/views.py:1092
+#: laboratories/management/views.py:1240 laboratories/management/views.py:1414
+#: laboratories/management/views.py:1571 laboratories/management/views.py:1654
+#: laboratories/management/views.py:1723 laboratories/management/views.py:1842
+#: laboratories/management/views.py:1983 laboratories/management/views.py:2105
+#: laboratories/management/views.py:2207 laboratories/management/views.py:2334
+#: laboratories/management/views.py:2468 laboratories/management/views.py:2567
+#: laboratories/management/views.py:2642
 #: laboratories/templates/laboratories.html:15
 msgid "Laboratories"
 msgstr "Laboratori"
 
-#: generics/templates/dashboard.html:121
+#: generics/templates/dashboard.html:131
 msgid "Manage Laboratories"
 msgstr "Gestisci i Laboratori"
 
-#: generics/templates/dashboard.html:128 research_groups/management/views.py:31
+#: generics/templates/dashboard.html:138 research_groups/management/views.py:31
 #: research_groups/management/views.py:86
 #: research_groups/management/views.py:201
 #: research_groups/management/views.py:260
@@ -2634,45 +2324,65 @@ msgstr "Gestisci i Laboratori"
 msgid "Research groups"
 msgstr "Gruppi di ricerca"
 
-#: generics/templates/dashboard.html:129
+#: generics/templates/dashboard.html:139
 msgid "Manage groups and their teachers"
 msgstr "Gestisci i gruppi e i loro docenti"
 
-#: generics/templates/dashboard.html:136 research_lines/management/views.py:473
+#: generics/templates/dashboard.html:146 research_lines/management/views.py:473
 #: research_lines/management/views.py:537
 #: research_lines/management/views.py:607
 #: research_lines/management/views.py:681
 msgid "Research lines"
 msgstr "Linee di ricerca"
 
-#: generics/templates/dashboard.html:137
+#: generics/templates/dashboard.html:147
 msgid "Manage lines and their teachers"
 msgstr "Gestisci le linee e i loro docenti"
 
-#: generics/templates/dashboard.html:145
+#: generics/templates/dashboard.html:154 projects/management/views.py:40
+#: projects/management/views.py:100 projects/management/views.py:177
+#: projects/management/views.py:266 projects/management/views.py:352
+#: projects/management/views.py:446 projects/management/views.py:534
+#: projects/management/views.py:628 projects/templates/projects.html:15
+msgid "Projects"
+msgstr "Progetti"
+
+#: generics/templates/dashboard.html:155
 msgid "Manage projects"
 msgstr "Gestisti i progetti delle strutture"
 
-#: generics/templates/dashboard.html:159 patents/management/views.py:28
+#: generics/templates/dashboard.html:169 patents/management/views.py:28
 #: patents/management/views.py:62 patents/management/views.py:120
 #: patents/management/views.py:188 patents/management/views.py:277
 #: patents/templates/patents.html:15
 msgid "Patents"
 msgstr "Brevetti"
 
-#: generics/templates/dashboard.html:160
+#: generics/templates/dashboard.html:170
 msgid "Manage patents"
 msgstr "Gestisci i brevetti"
 
-#: generics/templates/dashboard.html:167
+#: generics/templates/dashboard.html:177
 msgid "Spin-offs and Startups"
 msgstr ""
 
-#: generics/templates/dashboard.html:168
+#: generics/templates/dashboard.html:178
 msgid "Manage companies"
 msgstr "Gestisci le imprese"
 
-#: generics/templates/dashboard.html:183
+#: generics/templates/dashboard.html:192
+#: research_groups/templates/researchgroup.html:64
+#: research_lines/templates/applied_researchline.html:64
+#: research_lines/templates/base_researchline.html:64
+#: teachers/management/views.py:35 teachers/management/views.py:68
+#: teachers/management/views.py:142 teachers/management/views.py:206
+#: teachers/management/views.py:304 teachers/management/views.py:359
+#: teachers/management/views.py:445 teachers/management/views.py:505
+#: teachers/templates/teachers.html:9
+msgid "Teachers"
+msgstr "Docenti"
+
+#: generics/templates/dashboard.html:193
 msgid "Manage teachers and PTA"
 msgstr "Gestisci docenti e personale"
 
@@ -2780,23 +2490,27 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
-#: generics/validators.py:35
+#: generics/validators.py:38
 msgid "Can't detect file size"
-msgstr "Impossibile determinare l'estensione del file"
+msgstr "Impossibile determinare la dimensione del file"
 
-#: generics/validators.py:39
+#: generics/validators.py:42
 msgid "File size exceed the maximum value"
 msgstr "La dimensione del file supera il valore ammesso"
 
-#: generics/validators.py:49
+#: generics/validators.py:52
 msgid "Unsupported file extension"
 msgstr "Estensione non supportata"
 
-#: generics/validators.py:50
+#: generics/validators.py:53
 msgid "Allowed extensions"
 msgstr "Estensioni ammesse"
 
-#: generics/validators.py:57
+#: generics/validators.py:62
+msgid "Invalid .xlsx file"
+msgstr "File .xlsx non valido"
+
+#: generics/validators.py:68
 msgid ""
 "Invalid ORCID. Remember, ORCID is an https URI with a 16-digit number that "
 "is compatible as 0000-0001-2345-6789"
@@ -2804,13 +2518,522 @@ msgstr ""
 "Valore non valido. RIcorda, ORCID è un numero di 16 cifre compatibile con "
 "0000-0001-2345-6789"
 
-#: generics/validators.py:89
+#: generics/validators.py:105
 msgid "Image have invalid y / w ratio"
 msgstr "L'immagine ha una proporzione tra altezza e lunghezza non valida"
 
-#: generics/validators.py:102
+#: generics/validators.py:118
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
+
+#: import_assistant/exceptions.py:15
+msgid "{} Missing required headers: [{}]"
+msgstr "{} Intestazioni richieste mancanti: [{}]"
+
+#: import_assistant/exceptions.py:38
+msgid "SKIPPED"
+msgstr "SALTATO"
+
+#: import_assistant/exceptions.py:51
+msgid "{} Required value for field '{}' is missing"
+msgstr "{} Il valore richiesto per il campo '{}' è mancante"
+
+#: import_assistant/exceptions.py:63
+msgid "{} Required keys [{}] are missing"
+msgstr "{} Le chiavi richieste [{}] sono mancanti"
+
+#: import_assistant/exceptions.py:76
+msgid "{} Invalid value for field '{}': '{}'"
+msgstr "{} Valore non valido per il campo '{}': '{}'"
+
+#: import_assistant/management/forms.py:11
+msgid "Upload file"
+msgstr "Carica documento"
+
+#: import_assistant/management/forms.py:16
+#: import_assistant/management/forms.py:43 laboratories/management/forms.py:412
+#: projects/templates/blocks/crud_projects.html:33
+#: research_lines/management/forms.py:25 research_lines/management/forms.py:47
+msgid "Year"
+msgstr "Anno"
+
+#: import_assistant/management/forms.py:33
+msgid "Didactic regulation structure"
+msgstr "Struttura del regolamento didattico"
+
+#: import_assistant/management/forms.py:56
+msgid "Copy articles from previous years"
+msgstr "Importa articoli dall'anno precedente"
+
+#: import_assistant/management/forms.py:58
+msgid ""
+"Check this box if you want to copy matching articles from the previous year "
+"for each didactic regulation"
+msgstr ""
+"Spunta questa casella se vuoi copiare gli articoli corrispondenti dall'anno "
+"precedente per ogni regolamento didattico"
+
+#: import_assistant/management/utils/cds_import_utils.py:82
+msgid "Updated brochure through import procedure for cds [{}]"
+msgstr "Aggiornata brochure tramite procedura di importazione per il cds [{}]"
+
+#: import_assistant/management/utils/cds_import_utils.py:111
+msgid "Created brochure for cds [{}]"
+msgstr "Creata brochure per il cds [{}]"
+
+#: import_assistant/management/utils/cds_import_utils.py:149
+msgid "Imported {} from previous years"
+msgstr "Importato {} dall'anno precedente"
+
+#: import_assistant/management/utils/cds_import_utils.py:219
+msgid "Created RegDid for cds {}"
+msgstr "Creato RegDid per il cds {}"
+
+#: import_assistant/management/utils/cds_import_utils.py:258
+msgid "Linked {} to {}"
+msgstr "Collegato {} a {}"
+
+#: import_assistant/management/utils/cds_import_utils.py:304
+msgid "Created language: {} for cds {}"
+msgstr "Create lingue: {} per il cds {}"
+
+#: import_assistant/management/utils/cds_import_utils.py:381
+msgid "Imported CdS [{}]"
+msgstr "Importato il CdS [{}]"
+
+#: import_assistant/management/utils/cds_import_utils.py:423
+msgid "At least one entry is required"
+msgstr "Deve essere inserita almeno una voce"
+
+#: import_assistant/management/utils/cds_import_utils.py:471
+#: import_assistant/management/utils/regdid_import_utils.py:129
+#: import_assistant/management/utils/regdid_import_utils.py:288
+msgid "Database error during transaction: {}"
+msgstr "Errore del database durante la transazione: {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:177
+msgid ""
+"Updated structure from json for: Year {}, Article Number {} and Course Type "
+"{}"
+msgstr ""
+"Aggiornate strutture da json per: Anno {}, Articolo numero {} and Tipo corso "
+"{}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:208
+msgid ""
+"Imported structure from json for: Year {}, Article Number {} and Course Type "
+"{}"
+msgstr ""
+"Importate strutture da json per: Anno {}, Articolo numero {} and Tipo corso "
+"{}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:257
+msgid "Removed all {} articles related to the updated structures"
+msgstr "Rimosse tutti e {} articoli legati alle strutture caricate"
+
+#: import_assistant/management/utils/regdid_import_utils.py:419
+msgid "Imported regulation testata from json for: Year {} and Cds {}"
+msgstr "Importata testata del regolamento da json per: Anno {} e Cds {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:436
+msgid "Changed regdid status to '{}'."
+msgstr "Cambiato status del regolamento a '{}'."
+
+#: import_assistant/management/utils/regdid_import_utils.py:480
+msgid "Imported Article number {} for Cds {}"
+msgstr "Importato Articolo numero {} per il Cds {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:509
+msgid "Imported sub-article with Order {} of Article number {} for Cds {}"
+msgstr ""
+"Importato sotto articolo con Ordine {} dell'Articolo numero {} per il Cds {}"
+
+#: import_assistant/management/views.py:65
+#: import_assistant/management/views.py:72
+msgid "Imported {} rows out of {}"
+msgstr "Importate {} righe di {}"
+
+#: import_assistant/management/views.py:124
+#: import_assistant/management/views.py:131
+msgid "Done. Structures created {}, updated {} out of {}"
+msgstr "Fatto. Strutture create {}, aggiornate {} di {}"
+
+#: import_assistant/settings.py:29
+msgid ""
+"Code of the CDS from the previous year if the course is in continuity (if "
+"available)"
+msgstr ""
+"Codice del CDS dell'anno precedente se il corso è in continuità (se "
+"disponibile)"
+
+#: import_assistant/settings.py:36
+msgid "Code of the CDS (if available)"
+msgstr "Codice del CDS (se disponibile)"
+
+#: import_assistant/settings.py:42
+msgid "Name of the CDS in Italian"
+msgstr "Nome del CDS in Italiano"
+
+#: import_assistant/settings.py:48
+msgid "Name of the CDS in English"
+msgstr "Nome del CDS in Inglese"
+
+#: import_assistant/settings.py:54
+msgid "Code of the department"
+msgstr "Codice del dipartimento"
+
+#: import_assistant/settings.py:61
+msgid ""
+"Type of course (Bachelor's, Master's, etc.) in the form L, LM, LM5, etc."
+msgstr ""
+"Tipo di corso (Laurea, Laurea Magistrale, ecc.) nella forma L, LM, LM5, ecc."
+
+#: import_assistant/settings.py:69
+msgid "Type of course (Bachelor's, Master's, etc.) in extended form"
+msgstr "Tipo di corso (Laurea, Laurea Magistrale, ecc.) in forma estesa"
+
+#: import_assistant/settings.py:76
+msgid "Duration of the course"
+msgstr "Durata del corso"
+
+#: import_assistant/settings.py:82
+msgid "Number of credits of the course"
+msgstr "Numero di crediti del corso"
+
+#: import_assistant/settings.py:88
+msgid "Degree class code"
+msgstr "Codice della classe di laurea"
+
+#: import_assistant/settings.py:94
+msgid "Degree class description"
+msgstr "Descrizione della classe di laurea"
+
+#: import_assistant/settings.py:100
+msgid "Interclass degree code"
+msgstr "Codice interclasse di laurea"
+
+#: import_assistant/settings.py:106
+msgid "Interclass degree description"
+msgstr "Descrizione interclasse di laurea"
+
+#: import_assistant/settings.py:112
+msgid "Course delivery mode"
+msgstr "Modalità erogazione"
+
+#: import_assistant/settings.py:119
+msgid "Languages of the course in the form \"ita\" or \"eng\" or \"ita,eng\""
+msgstr "Lingue del corso nella forma \"ita\" o \"eng\" o \"ita,eng\""
+
+#: import_assistant/settings.py:126
+msgid "Number of available seats for the course"
+msgstr "Numero di posti disponibili"
+
+#: import_assistant/settings.py:146
+msgid "Article number"
+msgstr "Numero articolo"
+
+#: import_assistant/settings.py:153
+msgid ""
+"Corresponding article number from the previous year. Leave it blank to "
+"ignore this article when coping articles from the previous year"
+msgstr ""
+"Numero articolo corrispondente dello scorso anno. Lasciare bianco per "
+"ignorare un articolo quando si copia dall'anno precedente"
+
+#: import_assistant/settings.py:160
+msgid "Title of the article in italian"
+msgstr "Titolo dell'articolo in italiano"
+
+#: import_assistant/settings.py:166
+msgid "Title of the article in english"
+msgstr "Titolo dell'articolo in inglese"
+
+#: import_assistant/settings.py:172
+msgid "Course type cod"
+msgstr "Cod tipo di corso"
+
+#: import_assistant/templates/blocks/import_assistant_cds_fields_table.html:9
+#: import_assistant/templates/blocks/import_assistant_regdid_structure_fields_table.html:9
+msgid "Field"
+msgstr "Campo"
+
+#: import_assistant/templates/blocks/import_assistant_cds_fields_table.html:10
+#: import_assistant/templates/blocks/import_assistant_regdid_structure_fields_table.html:10
+msgid "Required"
+msgstr "Richiesto"
+
+#: import_assistant/templates/blocks/import_assistant_cds_fields_table.html:12
+#: import_assistant/templates/blocks/import_assistant_regdid_structure_fields_table.html:12
+msgid "Example"
+msgstr "Esempio"
+
+#: import_assistant/templates/blocks/import_assistant_cds_fields_table.html:20
+#: import_assistant/templates/blocks/import_assistant_regdid_structure_fields_table.html:20
+#: laboratories/management/forms.py:119
+msgid "YES"
+msgstr "SI"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:17
+msgid "CdS update"
+msgstr "Aggiornamento CdS"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:25
+msgid "Excel fields"
+msgstr "Campi Excel"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:44
+msgid "Yearly CdS Update"
+msgstr "Aggioramento CdS Annuale"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:45
+msgid "This procedure is used to manually update study courses."
+msgstr ""
+"Questa procedura è utilizzata per aggiornare manualmente i corsi di studio."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:49
+msgid "Update Scenarios"
+msgstr "Possibili scenari di aggiornamento"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:52
+msgid "Importing a new CdS:"
+msgstr "Importazione di un nuovo CdS:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:53
+#, python-format
+msgid "No specific fields are expected among %(cds_cod)s, %(cds_cod_prec)s."
+msgstr "Nessun campo specifico è richiesto tra %(cds_cod)s, %(cds_cod_prec)s."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:56
+msgid "Importing a CdS in continuity with a previous one:"
+msgstr "Importazione di un CdS in continuità con uno precedente:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:57
+#, python-format
+msgid "The field %(cds_cod_prec)s is required in the xlsx file."
+msgstr "Il campo %(cds_cod_prec)s è richiesto nel file xlsx."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:60
+msgid "Updating an existing CdS:"
+msgstr "Aggiornamento di un CdS esistente:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:61
+#, python-format
+msgid "The field %(cds_cod)s is required in the xlsx file."
+msgstr "Il campo %(cds_cod)s è richiesto nel file xlsx."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:65
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:47
+msgid "Key Steps and Models Affected"
+msgstr "Passaggi e Model coinvolti"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:68
+msgid "1. File Loading and Validation:"
+msgstr "1. Caricamento del file e Validazione:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:69
+msgid ""
+"The Excel file is loaded, and headers are validated to ensure all required "
+"fields are present."
+msgstr ""
+"Il file Excel viene caricato, e le intestazioni validate per garantire la "
+"presenza dei campi richiesti."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:71
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:77
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:83
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:89
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:95
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:101
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:53
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:59
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:66
+msgid "Models affected:"
+msgstr "Model coinvolti:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:74
+msgid "2. Row Processing:"
+msgstr "2. Lavorazione delle righe:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:75
+msgid ""
+"Each row is validated and processed to create or update a study course "
+"(DidatticaCds). Missing fields are handled, and new entries are initialized "
+"if needed."
+msgstr ""
+"Ogni riga viene validata e processata per la creazione o aggiornamento di un "
+"corso di studi (DidatticaCds). I campi mancanti sono gestiti e nuove entry "
+"create ove necessario."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:80
+msgid "3. Brochure Management:"
+msgstr "3. Gestione delle Brochure:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:81
+msgid ""
+"Existing brochures (CdsBrochure) are updated, or new ones are created, "
+"possibly using previous year's data. Related tables like sliders and links "
+"are handled."
+msgstr ""
+"Le brochure esistenti (CdsBrochure) vengono aggiornate e le nuove create, "
+"eventualmente utilizzando i dati dell'anno precedente. Le tabelle correlate "
+"come sliders, link ed ex studenti sono gestite."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:86
+msgid "4. Regulations Management:"
+msgstr "4. Gestione dei Regolamenti:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:87
+msgid ""
+"Creates new regulations (DidatticaRegolamento) if missing or updates them "
+"based on previous entries for the academic year."
+msgstr ""
+"Crea nuovi regolamenti (DidatticaRegolamento) se mancanti or li aggiorna "
+"basandosi sulle entri precedenti per l'anno accademico."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:92
+msgid "5. Language Handling:"
+msgstr "5. Gestione delle Lingue:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:93
+msgid ""
+"Validates and adds language entries (DidatticaCdsLingua) for the course, "
+"supporting 'ita' (Italian) and 'eng' (English)."
+msgstr ""
+"Valida e aggiunge lingue (DidatticaCdsLingua) per il corso. Supporta 'ita' "
+"(Italiano) and 'eng' (Inglese)."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:98
+msgid "6. Course Linking:"
+msgstr "6. Collegamento Corsi:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:99
+msgid ""
+"Links the current course to a previous one (DidatticaCdsCollegamento) if "
+"CDS_COD_PREV is provided."
+msgstr ""
+"Collega il corso corrente ad uno precedente (DidatticaCdsCollegamento) se "
+"CDS_COD_PREV è fornito."
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:105
+msgid "Additional Notes"
+msgstr "Note"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:107
+msgid ""
+"If CDS_COD is specified in the xlsx file, it will be used as CDS_ID and "
+"CDS_COD, otherwise it will be used the first available integer starting from:"
+msgstr ""
+"Se CDS_COD è specificato nel file xlsx, verrà utilizzato come CDS_ID e "
+"CDS_COD, altrimenti verrà utilizzato il primo intero disponibile a partire "
+"da:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:108
+msgid ""
+"Generated entries for DidatticaRegolamento will have REGDID_ID starting from:"
+msgstr ""
+"Le entry generate per DidatticaRegolamento avranno REGDID_ID che parte da:"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:109
+msgid "Update the value"
+msgstr "Aggiornare il valore"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:109
+msgid "if needed"
+msgstr "se necessario"
+
+#: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:121
+msgid "Excel file fields"
+msgstr "Campi file Excel"
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:17
+msgid "Regdid structure update"
+msgstr "Aggiornamento struttura regolamenti"
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:25
+msgid "Json structure"
+msgstr "Struttura del Json"
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:41
+msgid "Yearly Regdid Structure Update"
+msgstr "Aggiornamento Strutture Regolamenti annuale"
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:42
+msgid ""
+"This procedure is used to manually update didactic regulations' structure."
+msgstr ""
+"Questa procedura è utilizzata per aggiornare manualmente le strutture dei "
+"regolamenti didattici."
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:50
+msgid "1. Entry Validation:"
+msgstr "1. Validazione delle voci:"
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:51
+msgid ""
+"Validate the data entries to ensure all required fields are present and "
+"contain valid values."
+msgstr ""
+"Valida le voci per assicurarsi che contengano tutti i campi richiesti e dei "
+"valori accettabili."
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:56
+msgid "2. Importing Structures:"
+msgstr "2. Importazione delle Strutture:"
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:57
+msgid ""
+"Import or update REGDID structures, ensuring consistency with accepted "
+"course types."
+msgstr ""
+"Importa o aggiorna le strutture assicurando la consistenza con il tipo di "
+"corso."
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:62
+msgid "3. Handling copy from the previous year:"
+msgstr "3. Gestione delle copie dall'anno precedente:"
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:63
+msgid ""
+"Create a testata if missing, then retrieve and copy matching articles and "
+"sub-articles from the previous year, linking them to the newly imported "
+"structures."
+msgstr ""
+"Crea una testata se mancante, dopo di che copia i corrispondenti articoli e "
+"sotto articoli dall'anno precedente, collegandoli alle nuove strutture "
+"importate."
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:64
+msgid ""
+"If no correspondence is found, an empty article is generated following the "
+"structure."
+msgstr ""
+"Se non vi è corrispondenza, viene generato un articolo vuoto seguendo la "
+"struttura."
+
+#: import_assistant/templates/blocks/import_assistant_regdid_help_modal.html:78
+msgid "Json fields"
+msgstr "Campi del Json"
+
+#: import_assistant/templates/import_assistant_dashboard.html:18
+msgid "CDS Updates"
+msgstr "Aggiornamento CDS"
+
+#: import_assistant/templates/import_assistant_dashboard.html:22
+msgid "Download template"
+msgstr "Scarica template"
+
+#: import_assistant/templates/import_assistant_dashboard.html:32
+#: import_assistant/templates/import_assistant_dashboard.html:61
+msgid "Help"
+msgstr "Aiuto"
+
+#: import_assistant/templates/import_assistant_dashboard.html:47
+msgid "Regdid Structure Updates"
+msgstr "Aggiornamento Struttura Regolamenti"
+
+#: import_assistant/templates/import_assistant_dashboard.html:51
+msgid "Download current structure"
+msgstr "Scarica struttura corrente"
 
 #: laboratories/management/forms.py:38
 msgid "Related Department"
@@ -2847,10 +3070,6 @@ msgstr "Sito Web"
 #: laboratories/management/forms.py:118 laboratories/management/forms.py:129
 msgid "Interdepartmental Laboratory"
 msgstr "Laboratorio Interdipartimentale"
-
-#: laboratories/management/forms.py:119
-msgid "YES"
-msgstr "SI"
 
 #: laboratories/management/forms.py:121
 msgid ""
@@ -2896,14 +3115,14 @@ msgstr "Ambito del laboratorio"
 msgid "Scope"
 msgstr "Ambito"
 
-#: laboratories/management/forms.py:214 laboratories/management/views.py:828
-#: laboratories/management/views.py:840
+#: laboratories/management/forms.py:214 laboratories/management/views.py:853
+#: laboratories/management/views.py:865
 #: laboratories/templates/laboratory.html:529
 msgid "Scientific Director"
 msgstr "Responsabile Scientifico"
 
-#: laboratories/management/forms.py:228 laboratories/management/views.py:939
-#: laboratories/management/views.py:951
+#: laboratories/management/forms.py:228 laboratories/management/views.py:967
+#: laboratories/management/views.py:979
 #: laboratories/templates/laboratory.html:1161
 msgid "Safety Manager"
 msgstr "Preposto Sicurezza"
@@ -2958,7 +3177,7 @@ msgid "Floor"
 msgstr "Piano"
 
 #: laboratories/management/forms.py:358
-#: laboratories/templates/laboratory.html:719 regdid/management/forms.py:72
+#: laboratories/templates/laboratory.html:719 regdid/management/forms.py:62
 #: regdid/templates/blocks/regdid_article_item.html:28
 msgid "Notes"
 msgstr "Note"
@@ -2991,338 +3210,338 @@ msgstr "Durata (mesi)"
 msgid "Client"
 msgstr "Committente"
 
-#: laboratories/management/forms.py:433 laboratories/management/views.py:1207
-#: laboratories/management/views.py:1373
+#: laboratories/management/forms.py:433 laboratories/management/views.py:1248
+#: laboratories/management/views.py:1422
 msgid "Equipment"
 msgstr "Attrezzatura"
 
-#: laboratories/management/views.py:142 laboratories/management/views.py:201
-#: laboratories/management/views.py:267 laboratories/management/views.py:338
-#: laboratories/management/views.py:493
+#: laboratories/management/views.py:142 laboratories/management/views.py:204
+#: laboratories/management/views.py:273 laboratories/management/views.py:347
+#: laboratories/management/views.py:513
 msgid "Laboratory edited successfully"
 msgstr "Laboratorio modificato con successo"
 
-#: laboratories/management/views.py:364
+#: laboratories/management/views.py:378
 msgid "Laboratory NOT visible"
 msgstr "Laboratorio NON visibile"
 
-#: laboratories/management/views.py:511
+#: laboratories/management/views.py:533
 msgid "Laboratory"
 msgstr "Laboratorio"
 
-#: laboratories/management/views.py:650
+#: laboratories/management/views.py:672
 msgid ""
 "Laboratory anagraphic created successfully, please fill in the other fields"
 msgstr ""
 "Anagrafica del Laboratorio creata con successo, si prega di riempire i campi "
 "rimanenti"
 
-#: laboratories/management/views.py:808
+#: laboratories/management/views.py:830
 msgid "Laboratory scientific director edited successfully"
 msgstr "Responsabile Scientifico del Laboratorio modificato con successo"
 
-#: laboratories/management/views.py:916
+#: laboratories/management/views.py:941
 msgid "Laboratory safety manager edited successfully"
 msgstr "Preposto Sicurezza modificato con successo"
 
-#: laboratories/management/views.py:976
+#: laboratories/management/views.py:1004
 msgid "Deleted safety manager"
 msgstr "Eliminato preposto sicurezza"
 
-#: laboratories/management/views.py:980
+#: laboratories/management/views.py:1008
 msgid "Safety manager removed successfully"
 msgstr "Preposto Sicurezza rimosso con successo"
 
-#: laboratories/management/views.py:993
+#: laboratories/management/views.py:1023
 msgid "Laboratory removed successfully"
 msgstr "Laboratorio rimosso con successo"
 
-#: laboratories/management/views.py:1022
+#: laboratories/management/views.py:1052
 msgid "Extra departments must be different from Laboratory's department"
 msgstr ""
 "Gli Altri Dipartimenti devono essere diversi dal Dipartimento di Riferimento "
 "del Laboratorio"
 
-#: laboratories/management/views.py:1041
+#: laboratories/management/views.py:1071
 msgid "Added extra department"
 msgstr "Aggiunto Altro Dipartimento"
 
-#: laboratories/management/views.py:1045
+#: laboratories/management/views.py:1075
 msgid "Extra department added successfully"
 msgstr "Altro Dipartimento aggiunto con successo"
 
-#: laboratories/management/views.py:1066
+#: laboratories/management/views.py:1100
 msgid "Extra Department"
 msgstr "Altro Dipartimento"
 
-#: laboratories/management/views.py:1105
+#: laboratories/management/views.py:1144
 msgid "Deleted extra department"
 msgstr "Eliminato altro dipartimento"
 
-#: laboratories/management/views.py:1109
+#: laboratories/management/views.py:1148
 msgid "Extra department removed successfully"
 msgstr "Altro Dipartimento rimosso con successo"
 
-#: laboratories/management/views.py:1171
+#: laboratories/management/views.py:1208
 msgid "Added piece of equipment"
 msgstr "Aggiunta attrezzatura"
 
-#: laboratories/management/views.py:1175
+#: laboratories/management/views.py:1212
 msgid "Piece of equipment added successfully"
 msgstr "Attrezzatura aggiunta con successo"
 
-#: laboratories/management/views.py:1220 laboratories/management/views.py:1386
+#: laboratories/management/views.py:1261 laboratories/management/views.py:1435
 msgid "Equipment Piece"
 msgstr "Attrezzatura"
 
-#: laboratories/management/views.py:1335
+#: laboratories/management/views.py:1381
 msgid "Edited piece of equipment"
 msgstr "Modificata attrezzatura"
 
-#: laboratories/management/views.py:1339
+#: laboratories/management/views.py:1385
 msgid "Piece of equipment edited successfully"
 msgstr "Attrezzatura modficata con successo"
 
-#: laboratories/management/views.py:1415
+#: laboratories/management/views.py:1469
 msgid "Deleted piece of equipment"
 msgstr "Eliminata attrezzatura"
 
-#: laboratories/management/views.py:1419
+#: laboratories/management/views.py:1473
 msgid "Piece of equipment removed successfully"
 msgstr "Attrezzatura rimossa con successo"
 
-#: laboratories/management/views.py:1501
+#: laboratories/management/views.py:1559
 msgid "Edited ERC classification"
 msgstr "Modificata classificazione ERC"
 
-#: laboratories/management/views.py:1505
+#: laboratories/management/views.py:1563
 msgid "ERC classification edited successfully"
 msgstr "Classificazione ERC modificata con successo"
 
-#: laboratories/management/views.py:1518 laboratories/management/views.py:1528
+#: laboratories/management/views.py:1579 laboratories/management/views.py:1589
 msgid "ERC classification"
 msgstr "Classificazione ERC"
 
-#: laboratories/management/views.py:1568
+#: laboratories/management/views.py:1634
 msgid "Edited laboratory location"
 msgstr "Modificata sede laboratorio"
 
-#: laboratories/management/views.py:1572
+#: laboratories/management/views.py:1638
 msgid "Location edited successfully"
 msgstr "Sede modificata con successo"
 
-#: laboratories/management/views.py:1593 laboratories/management/views.py:1601
-#: laboratories/management/views.py:1667
+#: laboratories/management/views.py:1662 laboratories/management/views.py:1670
+#: laboratories/management/views.py:1740
 #: research_lines/templates/applied_researchline.html:72
 #: research_lines/templates/base_researchline.html:72
 msgid "Location"
 msgstr "Sede"
 
-#: laboratories/management/views.py:1634
+#: laboratories/management/views.py:1703
 msgid "Added laboratory location"
 msgstr "Aggiunta sede laboratorio"
 
-#: laboratories/management/views.py:1638
+#: laboratories/management/views.py:1707
 msgid "Location added successfully"
 msgstr "Sede aggiunta con successo"
 
-#: laboratories/management/views.py:1658
+#: laboratories/management/views.py:1731
 #: laboratories/templates/laboratory.html:712
 msgid "Locations"
 msgstr "Sedi"
 
-#: laboratories/management/views.py:1693
+#: laboratories/management/views.py:1771
 msgid "Deleted location"
 msgstr "Eliminata sede"
 
-#: laboratories/management/views.py:1696
+#: laboratories/management/views.py:1774
 msgid "Location removed successfully"
 msgstr "Sede rimossa con successo"
 
-#: laboratories/management/views.py:1744
+#: laboratories/management/views.py:1824
 msgid "Added laboratory researcher"
 msgstr "Aggiunto ricercatore"
 
-#: laboratories/management/views.py:1748 projects/management/views.py:435
+#: laboratories/management/views.py:1828 projects/management/views.py:435
 msgid "Researcher added successfully"
 msgstr "Ricercatore aggiunto con successo"
 
-#: laboratories/management/views.py:1767
+#: laboratories/management/views.py:1850
 #: laboratories/templates/laboratory.html:560
 msgid "Research Staff"
 msgstr "Personale di Ricerca"
 
-#: laboratories/management/views.py:1778
+#: laboratories/management/views.py:1861
 msgid "Research Staff Member"
 msgstr "Membro del Personale di Ricerca"
 
-#: laboratories/management/views.py:1803
+#: laboratories/management/views.py:1891
 msgid "Deleted researcher"
 msgstr "Eliminato ricercatore"
 
-#: laboratories/management/views.py:1807 projects/management/views.py:575
+#: laboratories/management/views.py:1895 projects/management/views.py:575
 msgid "Researcher removed successfully"
 msgstr "Ricercatore rimosso con successo"
 
-#: laboratories/management/views.py:1867
+#: laboratories/management/views.py:1957
 msgid "Added laboratory technician"
 msgstr "Aggiunto tecnico"
 
-#: laboratories/management/views.py:1871
+#: laboratories/management/views.py:1961
 msgid "technician added successfully"
 msgstr "tecnico aggiunto con successo"
 
-#: laboratories/management/views.py:1898
+#: laboratories/management/views.py:1991
 #: laboratories/templates/laboratory.html:632
 msgid "Technical Staff"
 msgstr "Personale Tecnico"
 
-#: laboratories/management/views.py:1934
+#: laboratories/management/views.py:2032
 msgid "Deleted technician"
 msgstr "Eliminato tecnico"
 
-#: laboratories/management/views.py:1938
+#: laboratories/management/views.py:2036
 msgid "Technician removed successfully"
 msgstr "Tecnico rimosso con successo"
 
-#: laboratories/management/views.py:1955
+#: laboratories/management/views.py:2055
 msgid "Activities list is full"
 msgstr "Lista Attivita Piena"
 
-#: laboratories/management/views.py:1983
+#: laboratories/management/views.py:2085
 msgid "Added activity"
 msgstr "Aggiunta attività"
 
-#: laboratories/management/views.py:1987
+#: laboratories/management/views.py:2089
 msgid "Activities added successfully"
 msgstr "Attività aggiunto con successo"
 
-#: laboratories/management/views.py:2007
+#: laboratories/management/views.py:2113
 #: laboratories/templates/laboratory.html:410
 msgid "Activities"
 msgstr "Attività"
 
-#: laboratories/management/views.py:2016 laboratories/management/views.py:2101
-#: laboratories/management/views.py:2110
+#: laboratories/management/views.py:2122 laboratories/management/views.py:2215
+#: laboratories/management/views.py:2224
 msgid "Activity"
 msgstr "Attività"
 
-#: laboratories/management/views.py:2076
+#: laboratories/management/views.py:2187
 msgid "Edited activity"
 msgstr "Modificata attività"
 
-#: laboratories/management/views.py:2080
+#: laboratories/management/views.py:2191
 msgid "Activity edited successfully"
 msgstr "Attività modificata con successo"
 
-#: laboratories/management/views.py:2135
+#: laboratories/management/views.py:2254
 msgid "Deleted activity"
 msgstr "Eliminata attività"
 
-#: laboratories/management/views.py:2138
+#: laboratories/management/views.py:2257
 msgid "Activity removed successfully"
 msgstr "Attività rimossa con successo"
 
-#: laboratories/management/views.py:2189
+#: laboratories/management/views.py:2310
 msgid "Added provided service"
 msgstr "Aggiunto servizio erogato"
 
-#: laboratories/management/views.py:2193
+#: laboratories/management/views.py:2314
 msgid "Provided service added successfully"
 msgstr "Servizio Erogato aggiunto con successo"
 
-#: laboratories/management/views.py:2218 laboratories/management/views.py:2344
+#: laboratories/management/views.py:2342 laboratories/management/views.py:2476
 msgid "Provided Service"
 msgstr "Servizio Erogato"
 
-#: laboratories/management/views.py:2310
+#: laboratories/management/views.py:2439
 msgid "Edited provided service"
 msgstr "Modificato servizio erogato"
 
-#: laboratories/management/views.py:2314
+#: laboratories/management/views.py:2443
 msgid "Provided service edited successfully"
 msgstr "Servizio Erogato modificato con successo"
 
-#: laboratories/management/views.py:2384
+#: laboratories/management/views.py:2521
 msgid "Deleted provided service"
 msgstr "Eliminato servizio erogato"
 
-#: laboratories/management/views.py:2388
+#: laboratories/management/views.py:2525
 msgid "Provided service removed successfully"
 msgstr "Servizio Erogato rimosso con successo"
 
-#: laboratories/management/views.py:2416
+#: laboratories/management/views.py:2555
 msgid "Added offered service"
 msgstr "Aggiunto servizio offerto"
 
-#: laboratories/management/views.py:2420
+#: laboratories/management/views.py:2559
 msgid "Offered service added successfully"
 msgstr "Servizio Offerto aggiunto con successo"
 
-#: laboratories/management/views.py:2433 laboratories/management/views.py:2441
-#: laboratories/management/views.py:2500 laboratories/management/views.py:2510
+#: laboratories/management/views.py:2575 laboratories/management/views.py:2583
+#: laboratories/management/views.py:2650 laboratories/management/views.py:2660
 msgid "Offered Service"
 msgstr "Servizio Offerto"
 
-#: laboratories/management/views.py:2483
+#: laboratories/management/views.py:2630
 msgid "Edited offered service"
 msgstr "Modificato servizio offerto"
 
-#: laboratories/management/views.py:2487
+#: laboratories/management/views.py:2634
 msgid "Offered service edited successfully"
 msgstr "Servizio Offerto modificato con successo"
 
-#: laboratories/management/views.py:2535
+#: laboratories/management/views.py:2690
 msgid "Deleted offered service"
 msgstr "Eliminato servizio offerto"
 
-#: laboratories/management/views.py:2539
+#: laboratories/management/views.py:2694
 msgid "Offered service removed successfully"
 msgstr "Servizio Offerto rimosso con successo"
 
-#: laboratories/management/views.py:2587
+#: laboratories/management/views.py:2744
 msgid "Risk types updated"
 msgstr "Aggiornate tipologie di rischio"
 
-#: laboratories/management/views.py:2591
+#: laboratories/management/views.py:2748
 msgid "Risk types updated successfully"
 msgstr "Tipologie di Rischio modificate con successo"
 
-#: laboratories/management/views.py:2615 laboratories/management/views.py:2702
+#: laboratories/management/views.py:2775 laboratories/management/views.py:2877
 msgid "Laboratory is already visible"
 msgstr "Il Laboratorio è già visibile"
 
-#: laboratories/management/views.py:2630
+#: laboratories/management/views.py:2790
 msgid "Extra Departments specified for NON Interdepartmental Laboratory"
 msgstr ""
 "Sono stati inseriti Altri Dipartimenti per un Laboratorio NON "
 "Interdipartimentale"
 
-#: laboratories/management/views.py:2642
+#: laboratories/management/views.py:2804
 msgid "Laboratory must have at least one ERC 1 Research"
 msgstr "I Laboratorio deve possedere almeno una Ricerca ERC 1"
 
-#: laboratories/management/views.py:2650
+#: laboratories/management/views.py:2816
 msgid "Laboratory must have at least one Location"
 msgstr "Il Laboratorio deve possedere almeno una sede"
 
-#: laboratories/management/views.py:2658
+#: laboratories/management/views.py:2828
 msgid "Laboratory must have at least one Activity"
 msgstr "Il Laboratorio deve possedere almeno un'Attività"
 
-#: laboratories/management/views.py:2684
+#: laboratories/management/views.py:2857
 msgid "Requested approval"
 msgstr "Richiedi Approvazione"
 
-#: laboratories/management/views.py:2688
+#: laboratories/management/views.py:2861
 msgid "Request for approval sent successfully"
 msgstr "Richiesta di approvazione inviata con successo"
 
-#: laboratories/management/views.py:2708
+#: laboratories/management/views.py:2883
 msgid "Approved Laboratory"
 msgstr "Laboratorio approvato"
 
-#: laboratories/management/views.py:2712
+#: laboratories/management/views.py:2887
 msgid "Laboratory approved successfully"
 msgstr "Laboratorio approvato con successo"
 
@@ -3539,6 +3758,12 @@ msgstr ""
 #: patents/management/forms.py:12
 msgid "Patent identifier"
 msgstr "Identificativo brevetto"
+
+#: patents/management/forms.py:13 projects/management/forms.py:27
+#: teachers/templates/blocks/crud_teacher_books.html:41
+#: teachers/templates/blocks/crud_teacher_news.html:41
+msgid "Title"
+msgstr "Titolo"
 
 #: patents/management/forms.py:14 projects/management/forms.py:32
 msgid "Short description"
@@ -3795,6 +4020,11 @@ msgstr "Docenti principali"
 msgid "Other Teachers"
 msgstr "Altri docenti"
 
+#: phd/templates/phd.html:196 projects/templates/project.html:188
+#: projects/templates/project.html:267
+msgid "Do you want to delete choosen director?"
+msgstr "Vuoi davvero eliminare il docente selezionato?"
+
 #: phd/templates/phd_main_teacher.html:9
 msgid "Edit main teacher data for"
 msgstr "Modifica docente principale per"
@@ -3893,26 +4123,85 @@ msgstr "Dati ricercatore modificati con successo"
 msgid "Structure edited successfully"
 msgstr "Struttura modificata con successo"
 
-#: regdid/management/forms.py:31
-msgid "Structure JSON"
-msgstr "Struttura JSON"
+#: projects/templates/blocks/crud_projects.html:79
+msgid "Territorial Scope"
+msgstr "Ambito territoriale"
 
-#: regdid/management/forms.py:76
+#: projects/templates/blocks/crud_projects.html:112
+msgid "Program Type"
+msgstr "Programma"
+
+#: projects/templates/project.html:37
+msgid "Do you want to delete choosen project?"
+msgstr "Vuoi davvero eliminare il progetto selezionato?"
+
+#: projects/templates/project.html:67
+msgid "Referent Structure"
+msgstr "Struttura di riferimento"
+
+#: projects/templates/project.html:138
+msgid "Scientific Directors"
+msgstr "Responsabili scientifici"
+
+#: projects/templates/project.html:217
+msgid "Researchers"
+msgstr "Ricercatori"
+
+#: projects/templates/project_director.html:9
+msgid "Edit director for"
+msgstr "Modifica direttore per"
+
+#: projects/templates/project_director.html:9
+msgid "New director for"
+msgstr "Nuovo direttore per"
+
+#: projects/templates/project_new.html:9
+msgid "New project"
+msgstr "Nuovo progetto"
+
+#: projects/templates/project_new.html:18
+msgid "Choose one structure"
+msgstr "Seleziona una struttura"
+
+#: projects/templates/project_new.html:28
+#: projects/templates/project_new.html:42
+#: projects/templates/project_structure.html:21
+#: projects/templates/project_structure.html:34
+msgid "Choose a structure to proceed"
+msgstr "Seleziona una struttura per proseguire"
+
+#: projects/templates/project_researcher.html:9
+msgid "Edit researcher for"
+msgstr "Modifica ricercatore per"
+
+#: projects/templates/project_researcher.html:9
+msgid "New researcher for"
+msgstr "Nuovo ricercatore per"
+
+#: projects/templates/project_structure.html:9
+msgid "Edit structure for"
+msgstr "Modifica struttura per"
+
+#: projects/templates/project_structure.html:9
+msgid "New structure for"
+msgstr "Nuova struttura per"
+
+#: regdid/management/forms.py:66
 msgid "This field is shared between the main article and its sub articles"
 msgstr ""
 "Questo campo è condiviso tra l'articolo principale e tutti i suoi sotto-"
 "articoli"
 
-#: regdid/management/forms.py:99
+#: regdid/management/forms.py:89
 #: regdid/templates/blocks/regdid_status_change_history.html:60
 msgid "Reason"
 msgstr "Motivazione"
 
-#: regdid/management/forms.py:105
+#: regdid/management/forms.py:95
 msgid "PDF Regulation"
 msgstr "PDF Regolamento"
 
-#: regdid/management/forms.py:112
+#: regdid/management/forms.py:102
 msgid ""
 "Number of the page which contains 'TITOLO I' - Count from 1 from the title "
 "page (included)"
@@ -3920,7 +4209,7 @@ msgstr ""
 "Numero della pagina che contiene 'TITOLO I' - Conta da 1 dalla pagina del "
 "frontespizio (inclusa)"
 
-#: regdid/management/forms.py:119
+#: regdid/management/forms.py:109
 msgid ""
 "Number of the page which contains the last article untill the end - Count "
 "from 1 from the title page (included)"
@@ -3928,133 +4217,105 @@ msgstr ""
 "Numero della pagina che contiene l'ultimo articolo fino alla fine - Conta da "
 "1 dalla pagina del frontespizio (inclusa)"
 
-#: regdid/management/settings.py:5 regdid/settings.py:9
-msgid "Didactic Regulation App"
-msgstr "App Regolamenti Didattici"
-
-#: regdid/management/settings.py:6 regdid/settings.py:10
-msgid "Requested changes for the didactic regulation"
-msgstr "Richieste modifiche per il regolamento didattico"
-
-#: regdid/management/settings.py:7 regdid/settings.py:11
-msgid "Requested revision for the didactic regulation"
-msgstr "Richiesta revisione per il regolamento didattico"
-
-#: regdid/management/settings.py:8 regdid/settings.py:12
-msgid "Requested approval for the didactic regulation"
-msgstr "Richiesta approvazione per il regolamento didattico"
-
-#: regdid/management/views.py:138 regdid/management/views.py:220
-#: regdid/management/views.py:397 regdid/management/views.py:564
-#: regdid/management/views.py:694 regdid/management/views.py:880
-#: regdid/management/views.py:997 regdid/management/views.py:1448
+#: regdid/management/views.py:135 regdid/management/views.py:306
+#: regdid/management/views.py:473 regdid/management/views.py:603
+#: regdid/management/views.py:789 regdid/management/views.py:906
+#: regdid/management/views.py:1360
 msgid "Didactic regulations"
 msgstr "Regolamenti didattici"
 
-#: regdid/management/views.py:208
-msgid "Structure imported with success"
-msgstr "Struttura importata con successo"
-
-#: regdid/management/views.py:215
-msgid "Unable to import the structure"
-msgstr "Impossibile importare la struttura"
-
-#: regdid/management/views.py:232
-msgid "Didactic regulations structure"
-msgstr "Struttura del regolamento didattico"
-
-#: regdid/management/views.py:252
+#: regdid/management/views.py:161
 msgid "Didactic regulament must be edited by a department first"
 msgstr ""
 "Il regolamento didattico deve essere modificato prima da un dipartimento"
 
-#: regdid/management/views.py:278
+#: regdid/management/views.py:187
 msgid "Added didactic regulation testata"
 msgstr "Aggiunta testata del regolamento"
 
-#: regdid/management/views.py:345 regdid/management/views.py:489
-#: regdid/management/views.py:654 regdid/management/views.py:838
-#: regdid/management/views.py:959
+#: regdid/management/views.py:254 regdid/management/views.py:398
+#: regdid/management/views.py:563 regdid/management/views.py:747
+#: regdid/management/views.py:868
 msgid "Unable to edit this item"
 msgstr "Impossibile modificare questo elemento"
 
-#: regdid/management/views.py:370
+#: regdid/management/views.py:279
 msgid "Edited department notes"
 msgstr "Modificate note del dipartimento"
 
-#: regdid/management/views.py:374
+#: regdid/management/views.py:283
 msgid "Department notes edited successfully"
 msgstr "Note del dipartimento modificate con successo"
 
-#: regdid/management/views.py:509 regdid/management/views.py:854
+#: regdid/management/views.py:418 regdid/management/views.py:763
 msgid "Edited"
 msgstr "Modificati"
 
-#: regdid/management/views.py:514
+#: regdid/management/views.py:423
 msgid "Article edited successfully"
 msgstr "Articolo modificato con successo"
 
-#: regdid/management/views.py:538
+#: regdid/management/views.py:447
 msgid "Edited notes"
 msgstr "Modificate note"
 
-#: regdid/management/views.py:543
+#: regdid/management/views.py:452
 msgid "Notes edited successfully"
 msgstr "Note modificate con successo"
 
-#: regdid/management/views.py:650
+#: regdid/management/views.py:559
 msgid "Article already exists"
 msgstr "L'articolo esiste già"
 
-#: regdid/management/views.py:675
+#: regdid/management/views.py:584
 msgid "Article added successfully"
 msgstr "Articolo aggiunto con successo"
 
-#: regdid/management/views.py:761
+#: regdid/management/views.py:670
 msgid "sub articles"
 msgstr "sotto-articoli"
 
-#: regdid/management/views.py:765
+#: regdid/management/views.py:674
 msgid "Article deleted successfully"
 msgstr "Articolo eliminato con successo"
 
-#: regdid/management/views.py:978
+#: regdid/management/views.py:887
 msgid "Sub article added successfully"
 msgstr "Sotto-articolo aggiunto con successo"
 
-#: regdid/management/views.py:1005
+#: regdid/management/views.py:914
 msgid "New sub article"
 msgstr "Nuovo sotto-articolo"
 
-#: regdid/management/views.py:1015
+#: regdid/management/views.py:924
 msgid "New sub article for"
 msgstr "Nuovo sotto-articolo per"
 
-#: regdid/management/views.py:1072
+#: regdid/management/views.py:981
 msgid "Sub article deleted successfully"
 msgstr "Sotto-articolo eliminato con successo"
 
-#: regdid/management/views.py:1140
+#: regdid/management/views.py:1049
 msgid "RegDid is already"
 msgstr "Il RegDid è già"
 
-#: regdid/management/views.py:1226
+#: regdid/management/views.py:1135
 msgid "Changed regdid stataus to"
 msgstr "Cambiato status del regolamento a"
 
-#: regdid/management/views.py:1230
+#: regdid/management/views.py:1139
 msgid "Regdid status updated successfully"
 msgstr "Stato del regolamento modificato con successo"
 
-#: regdid/management/views.py:1339
+#: regdid/management/views.py:1251
 msgid "Regdid status must be"
 msgstr "Lo stato del regolamento deve essere"
 
-#: regdid/management/views.py:1341
+#: regdid/management/views.py:1253
 msgid "to be imported from file"
 msgstr "per poter essere importato da file"
 
-#: regdid/management/views.py:1348
+#: regdid/management/views.py:1260
 msgid ""
 "Regdid was previously edited, the import opertation will overwrite every "
 "article"
@@ -4062,29 +4323,45 @@ msgstr ""
 "Il regolamento è stato precedentemente modificato, l'operazione di "
 "importazione sovrascriverà tutti gli articoli"
 
-#: regdid/management/views.py:1431
+#: regdid/management/views.py:1343
 msgid "Didactic regulation imported from file"
 msgstr "Regolamento didattico importato da file"
 
-#: regdid/management/views.py:1438
+#: regdid/management/views.py:1350
 msgid "Didactic regulation imported successfully"
 msgstr "Regolamento didattico importato con successo"
 
-#: regdid/management/views.py:1443
+#: regdid/management/views.py:1355
 msgid "Didactic regulation import failed"
 msgstr "Importazione del regolamento didattico fallita"
 
-#: regdid/management/views.py:1625
+#: regdid/management/views.py:1537
 msgid "Didactic regulation published successfully"
 msgstr "Regolamento didattico pubblicato con successo"
 
-#: regdid/management/views.py:1632
+#: regdid/management/views.py:1544
 msgid "Published didactic regulation"
 msgstr "Pubblicato il regolamento didattico"
 
-#: regdid/management/views.py:1637
+#: regdid/management/views.py:1549
 msgid "Didactic regulation publishing failed"
 msgstr "Pubblicazione del regolamento didattico fallita"
+
+#: regdid/settings.py:9
+msgid "Didactic Regulation App"
+msgstr "App Regolamenti Didattici"
+
+#: regdid/settings.py:10
+msgid "Requested changes for the didactic regulation"
+msgstr "Richieste modifiche per il regolamento didattico"
+
+#: regdid/settings.py:11
+msgid "Requested revision for the didactic regulation"
+msgstr "Richiesta revisione per il regolamento didattico"
+
+#: regdid/settings.py:12
+msgid "Requested approval for the didactic regulation"
+msgstr "Richiesta approvazione per il regolamento didattico"
 
 #: regdid/templates/blocks/crud_regdid.html:176
 #: regdid/templates/regdid_pdf_import_form.html:52
@@ -4194,13 +4471,9 @@ msgstr ""
 msgid "Department notes"
 msgstr "Note del dipartimento"
 
-#: regdid/templates/regdid_list.html:10
+#: regdid/templates/regdid_list.html:8
 msgid "Didactic Regulations"
 msgstr "Regolamenti didattici"
-
-#: regdid/templates/regdid_list.html:14
-msgid "Import structure"
-msgstr "Importa struttura"
 
 #: regdid/templates/regdid_pdf_import_form.html:22
 msgid "Import regulation from PDF"
@@ -4334,9 +4607,8 @@ msgid "Research line removed successfully"
 msgstr "Linea di ricerca rimossa con successo"
 
 #: research_lines/templates/applied_researchline.html:71
-#: research_lines/templates/base_researchline.html:71
-msgid "Code"
-msgstr "Codice"
+msgid "rline_id"
+msgstr ""
 
 #: research_lines/templates/applied_researchline.html:73
 #: research_lines/templates/base_researchline.html:73
@@ -4347,6 +4619,10 @@ msgstr "Data inizio"
 #: research_lines/templates/base_researchline.html:74
 msgid "End date"
 msgstr "Data fine"
+
+#: research_lines/templates/base_researchline.html:71
+msgid "Code"
+msgstr "Codice"
 
 #: research_lines/templates/blocks/crud_researchlines.html:152
 msgid "Ref. ASTER"
@@ -4379,6 +4655,10 @@ msgstr ""
 #: teachers/management/forms.py:33
 msgid "Curriculum (en)"
 msgstr ""
+
+#: teachers/management/forms.py:34 teachers/templates/teacher_detail.html:71
+msgid "Photo"
+msgstr "Foto"
 
 #: teachers/management/forms.py:37
 msgid "Please upload a square format photo"
@@ -4468,6 +4748,84 @@ msgstr "Nuovo elemento"
 msgid "Teachers materials data removed successfully"
 msgstr "Dati materiale docente rimossi con successo"
 
+#: teachers/templates/blocks/crud_teacher_books.html:106
+#: teachers/templates/blocks/crud_teacher_news.html:107
+msgid "Do you want to delete board data set?"
+msgstr "Vuoi davvero eliminare questo set di dati?"
+
+#: teachers/templates/teacher_board_data.html:9
+msgid "Edit board data for"
+msgstr "Modifica dati per"
+
+#: teachers/templates/teacher_board_data_new.html:9
+msgid "New board data set for"
+msgstr "Nuovo set di dati per"
+
+#: teachers/templates/teacher_detail.html:17
+msgid "Personal data"
+msgstr "Dati personali"
+
+#: teachers/templates/teacher_detail.html:82
+#: teachers/templates/teacher_detail.html:97
+msgid "Curriculum"
+msgstr ""
+
+#: teachers/templates/teacher_detail.html:112
+#: teachers/templates/teacher_detail.html:119
+msgid "Short Bio"
+msgstr "Breve bio"
+
+#: teachers/templates/teacher_detail.html:126
+#: teachers/templates/teacher_detail.html:133
+msgid "Reception Hours"
+msgstr "Orario di ricevimento"
+
+#: teachers/templates/teacher_detail.html:139
+msgid "ORCID"
+msgstr ""
+
+#: teachers/templates/teacher_detail.html:159
+msgid "Board"
+msgstr "Bacheca"
+
+#: teachers/templates/teacher_detail.html:177
+msgid "Teaching Materials"
+msgstr "Materiale didattico"
+
+#: teachers/templates/teacher_materials_data.html:9
+msgid "Edit teaching materials data for"
+msgstr "Modifica materiale didattico per"
+
+#: teachers/templates/teacher_materials_data_new.html:9
+msgid "New materials data set for"
+msgstr "Nuovo set di dati per"
+
+#: teachers/templates/teacher_other_data.html:9
+msgid "Edit data for"
+msgstr "Modifica dati per"
+
+#: teachers/templates/teacher_other_data_new.html:9
+msgid "Add data set for"
+msgstr "Aggiungi set di dati per"
+
+#~ msgid "Models affected"
+#~ msgstr "Model coinvolti"
+
+#~ msgid "Update the value {} in settings if needed"
+#~ msgstr "Aggiornare il valore {} nei settings se necessario"
+
+#~ msgid "Website info edited successfully"
+#~ msgstr "Info del sito web modficate con successo"
+
+#~ msgid "Structure JSON"
+#~ msgstr "Struttura JSON"
+
+#~ msgid "Structure imported with success"
+#~ msgstr "Struttura importata con successo"
+
+#~ msgid "Unable to import the structure"
+#~ msgstr "Impossibile importare la struttura"
+
 #~ msgid "Edited object"
 #~ msgstr "Modificato oggetto"
 
@@ -4540,9 +4898,6 @@ msgstr "Dati materiale docente rimossi con successo"
 
 #~ msgid "Didactic regulation published"
 #~ msgstr "Regolamenti didattico pubblicato"
-
-#~ msgid "Required Field"
-#~ msgstr "Campo obbligatorio"
 
 #~ msgid "I am sure I want to import this regulation from file"
 #~ msgstr "Sono sicuro di voler importare questo regolamento da file"
@@ -4637,9 +4992,6 @@ msgstr "Dati materiale docente rimossi con successo"
 
 #~ msgid "Cds code"
 #~ msgstr "Codice Cds"
-
-#~ msgid "Language (it)"
-#~ msgstr "Lingua (it)"
 
 #~ msgid "Language (en)"
 #~ msgstr "Lingua (en)"
