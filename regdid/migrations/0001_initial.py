@@ -304,4 +304,21 @@ class Migration(migrations.Migration):
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
+        migrations.AlterUniqueTogether(
+            name="didatticacdsarticoliregolamentotestata",
+            unique_together={("cds", "aa")},
+        ),
+        migrations.AlterUniqueTogether(
+            name="didatticaarticoliregolamentostruttura",
+            unique_together={("aa", "numero", "didattica_cds_tipo_corso")},
+        ),
+        migrations.AlterUniqueTogether(
+            name="didatticacdsarticoliregolamento",
+            unique_together={
+                (
+                    "didattica_cds_articoli_regolamento_testata",
+                    "didattica_articoli_regolamento_struttura",
+                )
+            },
+        ),
     ]

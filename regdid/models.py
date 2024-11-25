@@ -64,6 +64,7 @@ class DidatticaArticoliRegolamentoStruttura(VisibileAbstract):
     class Meta:
         managed = True
         db_table = "DIDATTICA_ARTICOLI_REGOLAMENTO_STRUTTURA"
+        unique_together = (("aa", "numero", "didattica_cds_tipo_corso"))
 
 
 class DidatticaCdsArticoliRegolamentoTestata(VisibileAbstract, Permissions):
@@ -151,6 +152,7 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileAbstract, Permissions):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CDS_ARTICOLI_REGOLAMENTO_TESTATA"
+        unique_together = (("cds", "aa"))
 
 
 class DidatticaCdsTestataStatus(models.Model):
@@ -250,6 +252,8 @@ class DidatticaCdsArticoliRegolamento(VisibileAbstract, Permissions):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CDS_ARTICOLI_REGOLAMENTO"
+        unique_together = (("didattica_cds_articoli_regolamento_testata", "didattica_articoli_regolamento_struttura"))
+
 
 
 class DidatticaArticoliRegolamentoTitolo(Permissions):
