@@ -46,6 +46,7 @@ class Migration(migrations.Migration):
                 ),
                 ("aa", models.IntegerField(db_column="AA")),
                 ("numero", models.PositiveIntegerField(db_column="NUMERO")),
+                ("numero_prec", models.PositiveIntegerField(db_column="NUMERO_PREC", blank=True, null=True)),
                 ("titolo_it", models.CharField(db_column="TITOLO_IT", max_length=2000)),
                 (
                     "titolo_en",

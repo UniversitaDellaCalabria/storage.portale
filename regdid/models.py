@@ -33,6 +33,7 @@ class DidatticaArticoliRegolamentoStruttura(VisibileAbstract):
     id = models.AutoField(db_column="ID", primary_key=True)
     aa = models.IntegerField(db_column="AA")
     numero = models.PositiveIntegerField(db_column="NUMERO")
+    numero_prec = models.PositiveIntegerField(db_column="NUMERO_PREC", blank=True, null=True)
     titolo_it = models.CharField(db_column="TITOLO_IT", max_length=2000)
     titolo_en = models.CharField(
         db_column="TITOLO_EN", max_length=2000, blank=True, null=True
