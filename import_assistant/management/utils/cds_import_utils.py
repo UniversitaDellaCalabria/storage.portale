@@ -322,7 +322,7 @@ def _get_or_create_cds(request, data, academic_year, cds_cod, cds_id):
     """
     _validate_tipo_corso_cod(data)
 
-    cds = DidatticaCds.objects.filter(cds_cod=cds_cod).order_by("-dt_ins").first()
+    cds = DidatticaCds.objects.filter(cds_cod=cds_cod).order_by("-cdsord_id").first()
     if not cds:
         # Retrieve the department associated with the CDS
         department = DidatticaDipartimento.objects.filter(
