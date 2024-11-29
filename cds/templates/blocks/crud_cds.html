@@ -79,7 +79,7 @@
                                                   </option>
                                                   <option v-for="item in academic_years_filter"
                                                           :value="item.AcademicYear"
-                                                          :selected="item.AcademicYear == selected_academic_year">
+                                                          :selected="item.AcademicYear == initial_academic_year">
                                                       [[ item.AcademicYear ]]/[[ item.AcademicYear + 1 ]]
                                                   </option>
                                                 </select>
@@ -304,10 +304,9 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 {% settings_value "ALLOWED_CDS_LANGUAGES" package="cds" as allowed_languages %}
 {% settings_value "ALLOWED_CDS_JOINT_DEGREES" package="cds" as allowed_joint_degrees %}
 
-initial_academic_year: {{ id }}_get_param('academicyear')  || '{% now "Y" %}',
+initial_academic_year: this.getItemFromSession("{{ id }}", 'academicyear') || {{ id }}_get_param('academicyear') || '{% now "Y" %}',
 
 selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
-selected_academic_year: this.getItemFromSession("{{ id }}", 'academicyear') || {{ id }}_get_param('academicyear'),
 selected_department_id: this.getItemFromSession("{{ id }}", 'departmentcod'),
 selected_language: this.getItemFromSession("{{ id }}", 'cdslanguage'),
 selected_jointdegree: this.getItemFromSession("{{ id }}", 'jointdegree'),
