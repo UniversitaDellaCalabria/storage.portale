@@ -355,7 +355,7 @@ def _get_or_create_cds(request, data, academic_year, cds_cod, cds_id):
                     field_name=EXCEL_FIELDS_MAPPINGS["INTERCLA_MIUR_COD"],
                     value=data.get(EXCEL_FIELDS_MAPPINGS["INTERCLA_MIUR_COD"]),
                 )
-            intercla_m_id = intercla_m.intercla_m_id
+            intercla_m_id = intercla_m.cla_m_id
 
         # Create a new CDS entry
         cds = DidatticaCds.objects.create(
