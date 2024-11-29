@@ -466,7 +466,7 @@ def handle_cds_import(request, file, academic_year):
                     _create_regdid_if_missing(
                         request, data, academic_year, cds, latest_reg_id
                     )
-                    _create_or_update_brochure(request, data, academic_year, cds)
+                    # _create_or_update_brochure(request, data, academic_year, cds)
             except (IntegrityError, OperationalError, DatabaseError) as e:
                 skipped_rows += 1
                 logger.error(_("Database error during transaction: {}").format(e))
