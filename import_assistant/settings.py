@@ -1,5 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 
+REGDID_IMPORT_USE_CURR_STRUCTURE = '0'
+REGDID_IMPORT_DEFINE_NEW_STRUCTURE = '1'
+
 ACCEPTED_TIPO_CORSO_COD = ("L", "LM", "LM5", "LM6")
 
 EXCEL_FIELDS_MAPPINGS = {

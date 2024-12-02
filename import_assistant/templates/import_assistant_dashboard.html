@@ -1,6 +1,6 @@
 {% extends "storage_crud_base.html" %}
 
-{% load static i18n %}
+{% load static i18n management_templatetags %}
 
 {% block centered_messages %}
 <div style="max-height:25vh; overflow-y:auto;">
@@ -69,5 +69,22 @@
         {% include "includes/form_submit.html" %}
     </form>
 </section>
+
+{% settings_value "REGDID_IMPORT_DEFINE_NEW_STRUCTURE" package="import_assistant" as REGDID_IMPORT_DEFINE_NEW_STRUCTURE %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const structureChoice = document.querySelector("#id_structure_choice");
+        const dataField = document.querySelector("#id_data");
+
+        structureChoice.addEventListener("change", function (e) {
+            if (e.target.value === "{{REGDID_IMPORT_DEFINE_NEW_STRUCTURE}}") {
+                dataField.removeAttribute("disabled");
+            } else {
+                dataField.value = "[]";
+                dataField.setAttribute("disabled", "disabled");
+            }
+        });
+    });
+</script>
 
 {% endblock centered_container %}

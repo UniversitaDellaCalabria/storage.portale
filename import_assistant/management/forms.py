@@ -4,6 +4,10 @@ from django import forms
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from generics.validators import validate_file_size, validate_xlsx_file_extension
+from import_assistant.settings import (
+    REGDID_IMPORT_DEFINE_NEW_STRUCTURE,
+    REGDID_IMPORT_USE_CURR_STRUCTURE,
+)
 
 
 class CdsImportForm(forms.Form):
@@ -27,18 +31,6 @@ class PrettyJSONEncoder(JSONEncoder):
 
 
 class RegdidStructureImportForm(forms.Form):
-    data = forms.JSONField(
-        encoder=PrettyJSONEncoder,
-        initial=list,
-        label=_("Didactic regulation structure"),
-        widget=forms.Textarea(
-            attrs={
-                "placeholder": 'Enter valid JSON data here. Example: {"key": "value"}',
-                "rows": 6,
-                "cols": 50,
-            }
-        ),
-    )
     year = forms.ChoiceField(
         label=_("Year"),
         choices=[
@@ -50,11 +42,30 @@ class RegdidStructureImportForm(forms.Form):
             )
         ],
     )
-    copy_previous = forms.BooleanField(
-        initial=1,
+
+    structure_choice = forms.ChoiceField(
+        choices=(
+            (REGDID_IMPORT_USE_CURR_STRUCTURE, _("Use structure from previous years")),
+            (REGDID_IMPORT_DEFINE_NEW_STRUCTURE, _("Define a new structure")),
+        ),
+        initial=REGDID_IMPORT_USE_CURR_STRUCTURE,
+        required=True,
+        label=_("Structure selection"),
+        widget=forms.RadioSelect(attrs={"id": "id_structure_choice"}),
+    )
+
+    data = forms.JSONField(
+        encoder=PrettyJSONEncoder,
+        initial=list,
         required=False,
-        label=_("Copy articles from previous years"),
-        help_text=_(
-            "Check this box if you want to copy matching articles from the previous year for each didactic regulation"
+        label=_("New didactic regulation structure"),
+        widget=forms.Textarea(
+            attrs={
+                "placeholder": 'Enter valid JSON data here. Example: {"key": "value"}',
+                "rows": 6,
+                "cols": 50,
+                "id": "id_data",
+                "disabled": "disabled",
+            }
         ),
     )
