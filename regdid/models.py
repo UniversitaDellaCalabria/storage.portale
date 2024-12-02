@@ -1,5 +1,4 @@
-import datetime
-
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from generics.models import Permissions, VisibileAbstract
@@ -33,7 +32,9 @@ class DidatticaArticoliRegolamentoStruttura(VisibileAbstract):
     id = models.AutoField(db_column="ID", primary_key=True)
     aa = models.IntegerField(db_column="AA")
     numero = models.PositiveIntegerField(db_column="NUMERO")
-    numero_prec = models.PositiveIntegerField(db_column="NUMERO_PREC", blank=True, null=True)
+    numero_prec = models.PositiveIntegerField(
+        db_column="NUMERO_PREC", blank=True, null=True
+    )
     titolo_it = models.CharField(db_column="TITOLO_IT", max_length=2000)
     titolo_en = models.CharField(
         db_column="TITOLO_EN", max_length=2000, blank=True, null=True
@@ -91,7 +92,7 @@ class DidatticaCdsArticoliRegolamentoTestata(VisibileAbstract, Permissions):
     @classmethod
     def can_user_create_object(cls, user, **kwargs):
         regdid = kwargs.pop("regdid", None)
-        if regdid is None or not regdid.aa_reg_did == datetime.datetime.now().year:
+        if regdid is None or not regdid.aa_reg_did >= settings.CURRENT_YEAR:
             return False
 
         importing = kwargs.pop("importing", False)
