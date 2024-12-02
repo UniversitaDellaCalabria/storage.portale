@@ -193,8 +193,8 @@ def _create_regdid_if_missing(request, data, academic_year, cds, regdid_id):
         regdid.regdid_id = regdid_id
         regdid.cds = cds
         regdid.aa_reg_did = academic_year
-        regdid.stato_regdid_cod = "A"
-        regdid.stato_regdid_des = "Attivo"
+        regdid.stato_regdid_cod = "B"
+        regdid.stato_regdid_des = "Bozza"
 
         # Set modalita erogazione if provided
         if data.get(EXCEL_FIELDS_MAPPINGS["MODALITA_EROGAZIONE"]):
@@ -211,8 +211,8 @@ def _create_regdid_if_missing(request, data, academic_year, cds, regdid_id):
             aa_reg_did=academic_year,
             cds=cds,
             modalita_erogazione=data.get(EXCEL_FIELDS_MAPPINGS["MODALITA_EROGAZIONE"]),
-            stato_regdid_cod="A",
-            stato_regdid_des="Attivo",
+            stato_regdid_cod="B",
+            stato_regdid_des="Bozza",
         )
 
     log_action_on_commit(
