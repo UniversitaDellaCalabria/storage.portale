@@ -513,13 +513,14 @@ def regdid_articles_new(request, regdid_id, article_num):
     didattica_cds_tipo_corso = get_object_or_404(
         DidatticaCdsTipoCorso, tipo_corso_cod__iexact=regdid.cds.tipo_corso_cod
     )
+    testata = get_object_or_404(
+        DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did
+    )
     struttura_articolo = get_object_or_404(
         DidatticaArticoliRegolamentoStruttura,
         didattica_cds_tipo_corso=didattica_cds_tipo_corso,
         numero=article_num,
-    )
-    testata = get_object_or_404(
-        DidatticaCdsArticoliRegolamentoTestata, cds_id=regdid.cds, aa=regdid.aa_reg_did
+        aa=testata.aa
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
