@@ -112,26 +112,12 @@ def regdid_structure_import(request):
             try:
                 data = regdid_structure_import_form.cleaned_data["data"]
                 year = int(regdid_structure_import_form.cleaned_data["year"])
-                copy_previous = regdid_structure_import_form.cleaned_data[
-                    "copy_previous"
+                procedure_cod = regdid_structure_import_form.cleaned_data[
+                    "structure_choice"
                 ]
-                total_created, total_updated = handle_regdid_structures_import(
-                    request, data, year, copy_previous
+                handle_regdid_structures_import(
+                    request, data, year, procedure_cod
                 )
-                if total_created + total_updated == len(data):
-                    messages.success(
-                        request,
-                        _("Done. Structures created {}, updated {} out of {}").format(
-                            total_created, total_updated, len(data)
-                        ),
-                    )
-                else:
-                    messages.warning(
-                        request,
-                        _("Done. Structures created {}, updated {} out of {}").format(
-                            total_created, total_updated, len(data)
-                        ),
-                    )
             except BaseImportError as e:
                 logger.error(str(e))
                 messages.error(request, str(e))

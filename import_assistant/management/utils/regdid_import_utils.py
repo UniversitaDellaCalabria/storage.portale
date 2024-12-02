@@ -4,8 +4,8 @@ import logging
 from cds.models import (
     DidatticaCds,
     DidatticaCdsCollegamento,
-    DidatticaCdsTipoCorso,
     DidatticaRegolamento,
+    DidatticaCdsTipoCorso,
 )
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE
@@ -23,22 +23,24 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce
 from django.utils.translation import gettext_lazy as _
-from generics.utils import log_action_on_commit
+from generics.utils import log_action, log_action_on_commit
 from import_assistant.exceptions import (
     BaseImportError,
     EntryImportError,
+    InvalidValueError,
     MissingKeysError,
     MissingValueError,
-    InvalidValueError,
 )
 from import_assistant.settings import (
     ACCEPTED_TIPO_CORSO_COD,
+    REGDID_IMPORT_DEFINE_NEW_STRUCTURE,
     REGDID_STRUCTURE_FIELDS,
     REGDID_STRUCTURE_MAPPINGS,
 )
 from regdid.models import (
     DidatticaArticoliRegolamentoStatus,
     DidatticaArticoliRegolamentoStruttura,
+    DidatticaArticoliRegolamentoTitolo,
     DidatticaCdsArticoliRegolamento,
     DidatticaCdsArticoliRegolamentoTestata,
     DidatticaCdsSubArticoliRegolamento,
@@ -53,243 +55,60 @@ logger = logging.getLogger(__name__)
 # ------------------------
 
 
-def _handle_entry_import_error(request, error, entry_id, entry_name):
+def _handle_entry_import_error(request, error, entry_id, entry_name, ignore=True):
     """Helper function to handle entry import errors."""
     error.set_entry_name(entry_name)
     error.set_entry_id(entry_id)
-    error.skip_entry()
     logger.error(str(error))
     messages.error(request, str(error))
-
-
-def _validate_entry(entry, required_fields):
-    """Validates that all required fields and values are present in the data."""
-    missing_keys = [key for key in required_fields if key not in entry]
-    if missing_keys:
-        raise MissingKeysError(keys=missing_keys)
-    for key, value in entry.items():
-        if key in required_fields and (value is None or value == ""):
-            raise MissingValueError(field_name=key)
-    if (
-        entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"])
-        not in ACCEPTED_TIPO_CORSO_COD
-    ):
-        raise InvalidValueError(
-            field_name=REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"],
-            value=entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"]),
-        )
-
-
-def _import_structures(request, data, year):
-    """
-    Imports structures from the given data into the database.
-    Returns a map of new structures and counts of created and updated entries.
-    """
-    tot_created = 0
-    tot_updated = 0
-    affected_structures_map = {}
-
-    # Prepare a map of `tipo_corso_id` to `tipo_corso_cod` for validation
-    tipo_corso_cod_id_map = {
-        item["tipo_corso_cod"]: item["id"]
-        for item in DidatticaCdsTipoCorso.objects.filter(
-            tipo_corso_cod__in=ACCEPTED_TIPO_CORSO_COD
-        ).values("id", "tipo_corso_cod")
-    }
-
-    testate_approved = _get_all_approved_testate(year)
-
-    for entry_id, entry in enumerate(data):
-        try:
-            # Validate entry
-            required_fields = [
-                field["name"] for field in REGDID_STRUCTURE_FIELDS if field["required"]
-            ]
-            _validate_entry(entry, required_fields)
-
-            # Process entry
-            try:
-                with transaction.atomic():
-                    structure, created = _create_or_update_article_structure(
-                        request,
-                        entry,
-                        entry_id,
-                        year,
-                        tipo_corso_cod_id_map,
-                        testate_approved,
-                    )
-                    affected_structures_map[structure.id] = structure
-
-                    # Update counts
-                    if created:
-                        tot_created += 1
-                    else:
-                        tot_updated += 1
-            except (IntegrityError, OperationalError, DatabaseError) as e:
-                logger.error(_("Database error during transaction: {}").format(e))
-
-        except EntryImportError as entry_error:
-            _handle_entry_import_error(request, entry_error, entry_id, "Structure")
-
-    return affected_structures_map, tot_created, tot_updated
-
-
-def _create_or_update_article_structure(
-    request, entry, entry_id, year, tipo_corso_cod_id_map, testate_approved
-):
-    created = False
-    struttura = DidatticaArticoliRegolamentoStruttura.objects.filter(
-        aa=year,
-        numero=entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO"]),
-        didattica_cds_tipo_corso_id=tipo_corso_cod_id_map.get(
-            entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"])
-        ),
-    ).first()
-    if struttura:
-        # Check for existing Testata with last status approved related to an article, related to the structure, if exists raise BaseImportError
-        structure_related_articles = DidatticaCdsArticoliRegolamento.objects.filter(
-            didattica_articoli_regolamento_struttura=struttura
-        )
-        if structure_related_articles.filter(
-            didattica_cds_articoli_regolamento_testata__in=testate_approved
-        ).exists():
-            raise BaseImportError(
-                "Cannot create/update structures because some of them are related to one or more approved regdids"
-            )
-
-        # Update existing
-        struttura.titolo_it = entry.get(REGDID_STRUCTURE_MAPPINGS["TITOLO_IT"])
-        struttura.titolo_en = entry.get(REGDID_STRUCTURE_MAPPINGS["TITOLO_EN"], None)
-        struttura.didattica_articoli_regolamento_titolo_id = entry.get(
-            REGDID_STRUCTURE_MAPPINGS["DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO_ID"]
-        )
-        struttura.ordine = entry_id
-        struttura.dt_mod = datetime.datetime.now()
-        struttura.user_mod = request.user
-        struttura.visibile = True
-        struttura.save()
-
-        log_action_on_commit(
-            request.user,
-            struttura,
-            CHANGE,
-            _(
-                "Updated structure from json for: Year {}, Article Number {} and Course Type {}"
-            ).format(
-                year,
-                entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO"]),
-                entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"]),
-            ),
-        )
-
+    if ignore:
+        error.skip_entry()
     else:
-        struttura = DidatticaArticoliRegolamentoStruttura.objects.create(
-            aa=year,
-            numero=entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO"]),
-            titolo_it=entry.get(REGDID_STRUCTURE_MAPPINGS["TITOLO_IT"]),
-            titolo_en=entry.get(REGDID_STRUCTURE_MAPPINGS["TITOLO_EN"]),
-            didattica_cds_tipo_corso_id=tipo_corso_cod_id_map.get(
-                entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"])
-            ),
-            didattica_articoli_regolamento_titolo_id=entry.get(
-                REGDID_STRUCTURE_MAPPINGS["DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO_ID"]
-            ),
-            ordine=entry_id,
-            dt_mod=datetime.datetime.now(),
-            user_mod=request.user,
-            visibile=True,
-        )
-        created = True
-        log_action_on_commit(
-            request.user,
-            struttura,
-            ADDITION,
-            _(
-                "Imported structure from json for: Year {}, Article Number {} and Course Type {}"
-            ).format(
-                year,
-                entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO"]),
-                entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"]),
-            ),
-        )
-    struttura.numero_prec = entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO_PREC"], None)
-
-    return (struttura, created)
+        raise BaseImportError(_("Import procedure FAILED: Bad Entry"))
 
 
-def _get_all_approved_testate(year):
-    """
-    Fetches all Testata, given a year, whose latest status is "Approved"
-    """
-    # Subquery to get the latest status ID for each testata
-    latest_status_subquery = (
-        DidatticaCdsTestataStatus.objects.filter(
-            didattica_cds_articoli_regolamento_testata=OuterRef(
-                "didattica_cds_articoli_regolamento_testata"
-            )
-        )
-        .values("didattica_cds_articoli_regolamento_testata")
-        .annotate(latest_id=Coalesce(Max("id"), 0))
-        .values("latest_id")[:1]
-    )
-
-    testate = DidatticaCdsArticoliRegolamentoTestata.objects.filter(
-        Exists(
-            DidatticaCdsTestataStatus.objects.filter(
-                id=Subquery(latest_status_subquery),  # Ensure it's the latest record
-                didattica_cds_articoli_regolamento_testata_id=OuterRef("pk"),
-                didattica_articoli_regolamento_status__status_cod="3",  # Approved status
-            )
-        ),
-        aa=year,
-    )
-
-    return testate
-
-
-def _remove_previous_articles_for_provided_structures(affected_structures_map):
-    articles_to_remove = DidatticaCdsArticoliRegolamento.objects.filter(
-        didattica_articoli_regolamento_struttura__in=affected_structures_map.values()
-    )
-    count = articles_to_remove.count()
-    articles_to_remove.delete()
-    logger.info(
-        _("Removed all {} articles related to the updated structures").format(count)
-    )
-
-
-def _handle_articles_import(request, year, affected_structures_map):
+def _handle_articles_import(request, year):
     """
     Handles the import of articles for REGDID structures.
     """
+    testate_to_handle = 0
+    testate_handled_successfully = 0
 
     # Fetch active CDS
-    active_cdss = _fetch_active_cds(year)
+    active_cds = _fetch_active_cds(year)
 
     # Fetch old testate
-    old_testate = _fetch_old_testate(active_cdss, year - 1)
+    old_testate = _fetch_old_testate(active_cds, year - 1)
 
     # Fetch and group structures by `tipo_corso_cod`
     tipo_corso_cod_strutture_map = _fetch_structures_by_year_grouped_by_cds_cod(year)
 
-    for cds in active_cdss:
+    for cds in active_cds:
         old_testata = old_testate.filter(updated_cds_id=cds.cds_id).first()
         try:
             with transaction.atomic():
+                created, new_testata = _get_or_create_testata(
+                    request, year, cds, old_testata
+                )
+                if not created:  # Skip existing testata
+                    continue
+                testate_to_handle += 1
                 _process_testata(
                     request,
-                    year,
                     cds,
                     tipo_corso_cod_strutture_map,
-                    affected_structures_map,
+                    new_testata,
                     old_testata,
                 )
+                testate_handled_successfully += 1
         except (IntegrityError, OperationalError, DatabaseError) as e:
             logger.error(_("Database error during transaction: {}").format(e))
         except EntryImportError as entry_error:
             _handle_entry_import_error(
                 request, entry_error, cds.cds_cod, "Regdid for CDS"
             )
+
+    return (testate_to_handle, testate_handled_successfully)
 
 
 def _fetch_active_cds(year):
@@ -301,14 +120,13 @@ def _fetch_active_cds(year):
             DidatticaRegolamento.objects.filter(
                 cds=OuterRef("cds_id"),
                 aa_reg_did=year,
-                stato_regdid_cod="A",
-            )
+            ).exclude(stato_regdid_cod="R")
         ),
         tipo_corso_cod__in=ACCEPTED_TIPO_CORSO_COD,
     )
 
 
-def _fetch_old_testate(active_cdss, year):
+def _fetch_old_testate(active_cds, year):
     """
     Fetches old testate based on current year and active CDS.
     Prefetches articles related to each testata joined with their struttura joined with their tipo_corso
@@ -317,7 +135,7 @@ def _fetch_old_testate(active_cdss, year):
         "didattica_articoli_regolamento_struttura__didattica_cds_tipo_corso"
     ).prefetch_related("didatticacdssubarticoliregolamento_set")
 
-    active_cds_ids = active_cdss.values_list("cds_id", flat=True)
+    active_cds_ids = active_cds.values_list("cds_id", flat=True)
 
     cds_collegamento_prec_ids = DidatticaCdsCollegamento.objects.values_list(
         "cds_prec_id", flat=True
@@ -373,42 +191,38 @@ def _fetch_structures_by_year_grouped_by_cds_cod(year):
 
 def _process_testata(
     request,
-    year,
     cds,
     tipo_corso_cod_strutture_map,
-    affected_structures_map,
+    new_testata,
     old_testata=None,
 ):
     """
     Processes a single testata, importing articles and sub-articles.
     """
-    new_testata = _get_or_create_testata(request, year, cds, old_testata)
-
     strutture = tipo_corso_cod_strutture_map.get(cds.tipo_corso_cod)
 
     for struttura in strutture:
-        corresponding_imported_structure = affected_structures_map.get(
-            struttura.id, None
-        )
         old_articolo = (
             None
-            if not old_testata or corresponding_imported_structure is None
+            if not old_testata
             else old_testata.didatticacdsarticoliregolamento_set.filter(
-                didattica_articoli_regolamento_struttura__numero=corresponding_imported_structure.numero_prec
+                didattica_articoli_regolamento_struttura__numero=struttura.numero_prec
             ).first()
         )
         _process_articolo(request, new_testata, struttura, old_articolo)
 
 
 def _get_or_create_testata(request, year, cds, old_testata=None):
+    created = False
     new_testata = DidatticaCdsArticoliRegolamentoTestata.objects.filter(
         cds=cds, aa=year
     ).first()
     if not new_testata:
+        created = True
         new_testata = DidatticaCdsArticoliRegolamentoTestata.objects.create(
             cds=cds,
             aa=year,
-            note=old_testata.note if old_testata else "",
+            note="",
             dt_mod=datetime.datetime.now(),
             user_mod=request.user,
         )
@@ -435,7 +249,7 @@ def _get_or_create_testata(request, year, cds, old_testata=None):
             CHANGE,
             _("Changed regdid status to '{}'.").format(bozza_status.status_desc),
         )
-    return new_testata
+    return created, new_testata
 
 
 def _process_articolo(request, new_testata, struttura_new, old_articolo=None):
@@ -519,19 +333,283 @@ def _create_new_sub_articolo(request, sub_old_articolo, articolo_new):
 # ------------------------
 
 
-def handle_regdid_structures_import(request, data, year, copy_previous):
+def handle_regdid_structures_import(request, data, year, procedure_cod):
     """
-    Handles the import of REGDID structures.
-    Optionally copies previous articles.
+    SCENARIO 1: REGDID_IMPORT_DEFINE_NEW_STRUCTURE
+
+    IMPORT REGDID STRUCTURES VIA JSON
+
+    GOAL: Remove structures for the year entered in the form
+
+    -- Delete structures (year), testate, articles, and sub-articles:
+        1) Validate entries provided via json.
+        2) Delete the articles.
+        3) Delete the testate and related testata statuses.
+        4) Delete the structures.
+
+    GOAL: Define regdid structures, create a testata and a testata status for each active CDS and import articles/sub-articles from the previous year
+
+    -- Import new structures, create testate, and import articles and sub-articles:
+        1) Import new structures.
+        2) For each active course, create a testata and the associated testata status.
+        3) Create/import articles:
+            3.1) Import from the previous year if NUMERO_PREC is populated for the relevant structure.
+            3.2) Create from scratch.
+
+    SCENARIO 2: REGDID_IMPORT_USE_CURR_STRUCTURE
+
+    GOAL: For each active CDS who's missing its testata, create one and a testata status, then import articles/sub-articles from the previous year
+
+    -- Create missing testate and import articles and sub-articles only for these:
+        1) For each active course lacking a testata, create the testata and the associated testata status.
+        2) Create/import articles:
+            3.1) Import from the previous year if NUMERO_PREC is populated for the relevant structure; otherwise create it from scratch.
     """
-    # Import structures
-    affected_structures_map, total_created, total_updated = _import_structures(
-        request, data, year
+    created_structures = 0
+    total_structures = len(data)
+
+    if procedure_cod == REGDID_IMPORT_DEFINE_NEW_STRUCTURE:
+        _validate_entries(request, data)
+        _handle_existing_data_deletion(year)
+        created_structures = _import_structures(request, data, year)
+        messages.success(
+            request,
+            _("Structures created {}, out of {}").format(
+                created_structures, total_structures
+            ),
+        )
+
+    testate_to_handle, handled_testate = _handle_articles_import(request, year)
+
+    imported_regdids_message = _("Done. Regdid imported {} out of {}").format(
+        handled_testate, testate_to_handle, len(data)
     )
 
-    # Copy previous articles if requested
-    if copy_previous:
-        _remove_previous_articles_for_provided_structures(affected_structures_map)
-        _handle_articles_import(request, year, affected_structures_map)
+    if testate_to_handle == handled_testate:
+        messages.warning(request, imported_regdids_message)
+    else:
+        messages.success(request, imported_regdids_message)
 
-    return (total_created, total_updated)
+
+def _handle_existing_data_deletion(year):
+    _check_for_approved_regulations(year)
+    _delete_existing_articles_and_sub_articles(year)
+    _delete_existing_testate(year)
+    _delete_existing_structures(year)
+
+
+def _check_for_approved_regulations(year):
+    """Verify there is no approved regulation for the year, otherwise rise BaseImportError"""
+    approved_testate = _get_all_approved_testate(year)
+    # If any regulation is already approved abort procedure!
+    if approved_testate.exists():
+        raise BaseImportError(
+            "Cannot create/update structures because some of them are related to one or more approved regdids"
+        )
+
+
+def _delete_existing_articles_and_sub_articles(year):
+    """Delete articles (and sub-articles cascade)"""
+    existing_articles = DidatticaCdsArticoliRegolamento.objects.filter(
+        didattica_articoli_regolamento_struttura__aa=year
+    )
+    existing_articles_count = existing_articles.count()
+    existing_articles.delete()
+    logger.info(
+        _("Removed {} articles (and potential sub-articles) for the year {}").format(
+            existing_articles_count, year
+        )
+    )
+
+
+def _delete_existing_testate(year):
+    """Delete testate and testata status"""
+    existing_testate = DidatticaCdsArticoliRegolamentoTestata.objects.filter(aa=year)
+    existing_testate_count = existing_testate.count()
+    existing_testata_statuses = DidatticaCdsTestataStatus.objects.filter(
+        didattica_cds_articoli_regolamento_testata__in=existing_testate
+    )
+    existing_testata_statuses_count = existing_testata_statuses.count()
+    existing_testata_statuses.delete()
+    logger.info(
+        _("Removed {} testata status for the year {}").format(
+            existing_testata_statuses_count, year
+        )
+    )
+    existing_testate.delete()
+    logger.info(
+        _("Removed {} structures for the year {}").format(existing_testate_count, year)
+    )
+
+
+def _delete_existing_structures(year):
+    """Delete structures"""
+    existing_structures = DidatticaArticoliRegolamentoStruttura.objects.filter(aa=year)
+    existing_structures_count = existing_structures.count()
+    existing_structures.delete()
+    logger.info(
+        _("Removed {} structures for the year {}").format(
+            existing_structures_count, year
+        )
+    )
+
+
+def _get_all_approved_testate(year):
+    """Fetches all Testata, given a year, whose latest status is 'Approved'"""
+    # Subquery to get the latest status ID for each testata
+    latest_status_subquery = (
+        DidatticaCdsTestataStatus.objects.filter(
+            didattica_cds_articoli_regolamento_testata=OuterRef(
+                "didattica_cds_articoli_regolamento_testata"
+            )
+        )
+        .values("didattica_cds_articoli_regolamento_testata")
+        .annotate(latest_id=Coalesce(Max("id"), 0))
+        .values("latest_id")[:1]
+    )
+    testate = DidatticaCdsArticoliRegolamentoTestata.objects.filter(
+        Exists(
+            DidatticaCdsTestataStatus.objects.filter(
+                id=Subquery(latest_status_subquery),  # Ensure it's the latest record
+                didattica_cds_articoli_regolamento_testata_id=OuterRef("pk"),
+                didattica_articoli_regolamento_status__status_cod="3",  # Approved status
+            )
+        ),
+        aa=year,
+    )
+    return testate
+
+
+def _validate_entries(request, data):
+    """Loops through the given data and validates all the entries"""
+    required_fields = [
+        field["name"] for field in REGDID_STRUCTURE_FIELDS if field["required"]
+    ]
+    titolo_ids = DidatticaArticoliRegolamentoTitolo.objects.values_list("id", flat=True)
+    for entry_id, entry in enumerate(data):
+        try:
+            # Validate entry
+            _validate_entry(entry, required_fields, titolo_ids)
+        except EntryImportError as entry_error:
+            _handle_entry_import_error(
+                request, entry_error, entry_id, "Structure", ignore=False
+            )
+
+
+def _validate_entry(entry, required_fields, titolo_ids):
+    """Validates that all required fields and values are present in the data and acceptable."""
+    missing_keys = [key for key in required_fields if key not in entry]
+    if missing_keys:
+        raise MissingKeysError(keys=missing_keys)
+
+    def is_field_required(field_name):
+        return field_name in required_fields
+
+    tipo_corso_cod = entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"], None)
+    _validate_field(
+        name=REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"],
+        value=tipo_corso_cod,
+        is_required=is_field_required,
+        extra_predicates=[lambda name, value: value in ACCEPTED_TIPO_CORSO_COD],
+    )
+
+    numero = entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO"], None)
+    _validate_field(
+        name=REGDID_STRUCTURE_MAPPINGS["NUMERO"],
+        value=numero,
+        is_required=is_field_required,
+        extra_predicates=[
+            lambda name, value: isinstance(value, int)
+            and not isinstance(value, bool)
+            and value > 1
+        ],
+    )
+
+    numero_prec = entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO_PREC"], None)
+    _validate_field(
+        name=REGDID_STRUCTURE_MAPPINGS["NUMERO_PREC"],
+        value=numero_prec,
+        is_required=is_field_required,
+        extra_predicates=[
+            lambda name, value: isinstance(value, int) and not isinstance(value, bool)
+        ],
+    )
+
+    titolo_id = entry.get(
+        REGDID_STRUCTURE_MAPPINGS["DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO_ID"], None
+    )
+    _validate_field(
+        name=REGDID_STRUCTURE_MAPPINGS["DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO_ID"],
+        value=titolo_id,
+        is_required=is_field_required,
+        extra_predicates=[
+            lambda name, value: isinstance(value, int)
+            and not isinstance(value, bool)
+            and value in titolo_ids
+        ],
+    )
+
+    titolo_it = entry.get(REGDID_STRUCTURE_MAPPINGS["TITOLO_IT"], None)
+    _validate_field(
+        name=REGDID_STRUCTURE_MAPPINGS["TITOLO_IT"],
+        value=titolo_it,
+        is_required=is_field_required,
+        extra_predicates=[lambda name, value: isinstance(value, str)],
+    )
+
+    titolo_en = entry.get(REGDID_STRUCTURE_MAPPINGS["TITOLO_EN"], None)
+    _validate_field(
+        name=REGDID_STRUCTURE_MAPPINGS["TITOLO_EN"],
+        value=titolo_en,
+        is_required=is_field_required,
+        extra_predicates=[lambda name, value: value is None or isinstance(value, str)],
+    )
+
+
+def _validate_field(name, value, is_required, extra_predicates):
+    # Check for missing values
+    if is_required(name) and (value is None or value == ""):
+        raise MissingValueError(field_name=name)
+    # do other checks
+    for predicate in extra_predicates:
+        if not predicate(name, value):
+            raise InvalidValueError(
+                field_name=name,
+                value=value,
+            )
+
+
+def _import_structures(request, data, year):
+    created_structures = 0
+    tipi_corso = DidatticaCdsTipoCorso.objects.all()
+    for entry in data:
+        structure = DidatticaArticoliRegolamentoStruttura.objects.create(
+            aa=year,
+            numero=entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO"]),
+            numero_prec=entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO_PREC"], None),
+            titolo_it=entry.get(REGDID_STRUCTURE_MAPPINGS["TITOLO_IT"]),
+            titolo_en=entry.get(REGDID_STRUCTURE_MAPPINGS["TITOLO_EN"], None),
+            ordine=entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO"]) - 1,
+            didattica_cds_tipo_corso=tipi_corso.filter(
+                tipo_corso_cod=entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"])
+            ).first(),
+            didattica_articoli_regolamento_titolo_id=entry.get(
+                REGDID_STRUCTURE_MAPPINGS["DIDATTICA_ARTICOLI_REGOLAMENTO_TITOLO_ID"]
+            ),
+            visibile=True,
+            dt_mod=datetime.datetime.now(),
+            user_mod=request.user,
+        )
+        created_structures += 1
+        log_action(
+            request.user,
+            structure,
+            CHANGE,
+            _(
+                "Updated structure from json for: Year {}, Article Number {} and Course Type {}"
+            ).format(
+                year,
+                entry.get(REGDID_STRUCTURE_MAPPINGS["NUMERO"]),
+                entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"]),
+            ),
+        )
