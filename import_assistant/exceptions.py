@@ -46,6 +46,7 @@ class MissingValueError(EntryImportError):
 
     def __init__(self, field_name):
         self.field_name = field_name
+        super().__init__()
 
     def __str__(self):
         return _("{} Required value for field '{}' is missing").format(
@@ -58,6 +59,7 @@ class MissingKeysError(EntryImportError):
 
     def __init__(self, keys):
         self.keys = keys
+        super().__init__()
 
     def __str__(self):
         return _("{} Required keys [{}] are missing").format(
@@ -71,6 +73,7 @@ class InvalidValueError(EntryImportError):
     def __init__(self, field_name, value):
         self.field_name = field_name
         self.value = value
+        super().__init__()
 
     def __str__(self):
         return _("{} Invalid value for field '{}': '{}'").format(
