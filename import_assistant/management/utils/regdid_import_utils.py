@@ -365,10 +365,10 @@ def handle_regdid_structures_import(request, data, year, procedure_cod):
         2) Create/import articles:
             3.1) Import from the previous year if NUMERO_PREC is populated for the relevant structure; otherwise create it from scratch.
     """
-    created_structures = 0
-    total_structures = len(data)
 
     if procedure_cod == REGDID_IMPORT_DEFINE_NEW_STRUCTURE:
+        created_structures = 0
+        total_structures = len(data)
         _validate_entries(request, data)
         _handle_existing_data_deletion(year)
         created_structures = _import_structures(request, data, year)
@@ -382,13 +382,13 @@ def handle_regdid_structures_import(request, data, year, procedure_cod):
     testate_to_handle, handled_testate = _handle_articles_import(request, year)
 
     imported_regdids_message = _("Done. Regdid imported {} out of {}").format(
-        handled_testate, testate_to_handle, len(data)
+        handled_testate, testate_to_handle
     )
 
     if testate_to_handle == handled_testate:
-        messages.warning(request, imported_regdids_message)
-    else:
         messages.success(request, imported_regdids_message)
+    else:
+        messages.warning(request, imported_regdids_message)
 
 
 def _handle_existing_data_deletion(year):
@@ -521,7 +521,7 @@ def _validate_entry(entry, required_fields, titolo_ids):
         extra_predicates=[
             lambda name, value: isinstance(value, int)
             and not isinstance(value, bool)
-            and value > 1
+            and value > 0
         ],
     )
 
@@ -613,3 +613,5 @@ def _import_structures(request, data, year):
                 entry.get(REGDID_STRUCTURE_MAPPINGS["TIPO_CORSO_COD"]),
             ),
         )
+
+    return created_structures
