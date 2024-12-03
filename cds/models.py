@@ -38,7 +38,7 @@ class DidatticaCdsCollegamento(models.Model):
         managed = True
         db_table = "DIDATTICA_CDS_COLLEGAMENTO"
         ordering = ["-cds__cds_cod"]
-        unique_together = (("cds", "cds_prec"))
+        unique_together = (("cds", "cds_prec"),)
 
     def __str__(self):
         return f"{self.cds.cds_cod}-{self.cds_prec.cds_cod}"
@@ -352,7 +352,7 @@ class DidatticaCds(InsModAbstract):
     )
     cla_m_id = models.IntegerField(db_column="CLA_M_ID", blank=True, null=True)
     cla_miur_cod = models.CharField(
-        db_column="CLA_MIUR_COD", max_length=10, blank=True, null=True
+        db_column="CLA_MIUR_COD", max_length=20, blank=True, null=True
     )
     cla_miur_des = models.CharField(
         db_column="CLA_MIUR_DES", max_length=255, blank=True, null=True
@@ -361,7 +361,7 @@ class DidatticaCds(InsModAbstract):
         db_column="INTERCLA_M_ID", blank=True, null=True
     )
     intercla_miur_cod = models.CharField(
-        db_column="INTERCLA_MIUR_COD", max_length=10, blank=True, null=True
+        db_column="INTERCLA_MIUR_COD", max_length=20, blank=True, null=True
     )
     intercla_miur_des = models.CharField(
         db_column="INTERCLA_MIUR_DES", max_length=255, blank=True, null=True

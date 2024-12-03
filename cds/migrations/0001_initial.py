@@ -691,7 +691,7 @@ class Migration(migrations.Migration):
                 (
                     "cla_miur_cod",
                     models.CharField(
-                        blank=True, db_column="CLA_MIUR_COD", max_length=10, null=True
+                        blank=True, db_column="CLA_MIUR_COD", max_length=20, null=True
                     ),
                 ),
                 (
@@ -711,7 +711,7 @@ class Migration(migrations.Migration):
                     models.CharField(
                         blank=True,
                         db_column="INTERCLA_MIUR_COD",
-                        max_length=10,
+                        max_length=20,
                         null=True,
                     ),
                 ),
