@@ -62,6 +62,12 @@ def upImpegniSerializer(impegni, lang, year=None, af_name=None, af_cod=None, sea
             continue
 
         extra = {}
+
+        teledidattica = impegno.get('teledidattica', False)
+        link_teledidattica = impegno.get('linkTeledidattica', '')
+        if teledidattica and link_teledidattica:
+            extra['link_teledidattica'] = link_teledidattica
+
         notePubbliche = impegno.get('notePubbliche', '')
         if notePubbliche:
             extra['note'] = notePubbliche
