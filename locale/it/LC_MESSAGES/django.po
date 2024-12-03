@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-25 09:45+0100\n"
-"PO-Revision-Date: 2024-11-25 09:45+0100\n"
+"POT-Creation-Date: 2024-12-03 11:41+0100\n"
+"PO-Revision-Date: 2024-12-03 11:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -249,9 +249,9 @@ msgstr ""
 #: projects/management/views.py:351 projects/management/views.py:445
 #: projects/management/views.py:533 projects/management/views.py:627
 #: regdid/management/views.py:134 regdid/management/views.py:305
-#: regdid/management/views.py:472 regdid/management/views.py:602
-#: regdid/management/views.py:788 regdid/management/views.py:905
-#: regdid/management/views.py:1359 research_groups/management/views.py:30
+#: regdid/management/views.py:472 regdid/management/views.py:603
+#: regdid/management/views.py:789 regdid/management/views.py:906
+#: regdid/management/views.py:1360 research_groups/management/views.py:30
 #: research_groups/management/views.py:85
 #: research_groups/management/views.py:200
 #: research_groups/management/views.py:259
@@ -338,15 +338,15 @@ msgstr "Email aggiornata con successo"
 #: phd/management/decorators.py:23 phd/management/decorators.py:50
 #: projects/management/decorators.py:26 regdid/management/views.py:150
 #: regdid/management/views.py:203 regdid/management/views.py:343
-#: regdid/management/views.py:391 regdid/management/views.py:533
-#: regdid/management/views.py:540 regdid/management/views.py:641
-#: regdid/management/views.py:660 regdid/management/views.py:704
-#: regdid/management/views.py:740 regdid/management/views.py:834
-#: regdid/management/views.py:849 regdid/management/views.py:952
-#: regdid/management/views.py:968 regdid/management/views.py:1014
-#: regdid/management/views.py:1058 regdid/management/views.py:1168
-#: regdid/management/views.py:1244 regdid/management/views.py:1267
-#: regdid/management/views.py:1402 research_groups/management/decorators.py:25
+#: regdid/management/views.py:391 regdid/management/views.py:534
+#: regdid/management/views.py:541 regdid/management/views.py:642
+#: regdid/management/views.py:661 regdid/management/views.py:705
+#: regdid/management/views.py:741 regdid/management/views.py:835
+#: regdid/management/views.py:850 regdid/management/views.py:953
+#: regdid/management/views.py:969 regdid/management/views.py:1015
+#: regdid/management/views.py:1059 regdid/management/views.py:1169
+#: regdid/management/views.py:1245 regdid/management/views.py:1268
+#: regdid/management/views.py:1403 research_groups/management/decorators.py:25
 #: research_groups/management/decorators.py:56
 #: research_lines/management/decorators.py:30
 #: research_lines/management/decorators.py:64
@@ -560,8 +560,8 @@ msgstr "Gruppo eliminato con successo"
 msgid "Member deleted successfully"
 msgstr "Membro eliminato con successo"
 
-#: cds/management/views.py:1508 regdid/management/views.py:668
-#: regdid/management/views.py:976
+#: cds/management/views.py:1508 regdid/management/views.py:669
+#: regdid/management/views.py:977
 msgid "Deleted"
 msgstr "Eliminato"
 
@@ -597,8 +597,8 @@ msgstr "Almeno campo deve essere riempito"
 msgid "added successfully"
 msgstr "aggiunto con successo"
 
-#: cds/management/views.py:1789 regdid/management/views.py:579
-#: regdid/management/views.py:882
+#: cds/management/views.py:1789 regdid/management/views.py:580
+#: regdid/management/views.py:883
 msgid "Added"
 msgstr "Aggiunto"
 
@@ -979,7 +979,7 @@ msgid "Registration procedure"
 msgstr "Modalità di iscrizione"
 
 #: cds/templates/cds_detail.html:166
-#: import_assistant/management/utils/regdid_import_utils.py:427
+#: import_assistant/management/utils/regdid_import_utils.py:241
 msgid "Import from previous year"
 msgstr "Importa dall'anno precedente"
 
@@ -1781,7 +1781,7 @@ msgstr "Sotto-articoli"
 msgid "Edited sub article"
 msgstr "Modificato sotto-articolo"
 
-#: cds_websites/management/views.py:715 regdid/management/views.py:768
+#: cds_websites/management/views.py:715 regdid/management/views.py:769
 msgid "Sub article edited successfully"
 msgstr "Sotto-articolo modificato con successo"
 
@@ -2490,27 +2490,27 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
-#: generics/validators.py:38
+#: generics/validators.py:34
 msgid "Can't detect file size"
 msgstr "Impossibile determinare la dimensione del file"
 
-#: generics/validators.py:42
+#: generics/validators.py:38
 msgid "File size exceed the maximum value"
 msgstr "La dimensione del file supera il valore ammesso"
 
-#: generics/validators.py:52
+#: generics/validators.py:48
 msgid "Unsupported file extension"
 msgstr "Estensione non supportata"
 
-#: generics/validators.py:53
+#: generics/validators.py:49
 msgid "Allowed extensions"
 msgstr "Estensioni ammesse"
 
-#: generics/validators.py:62
+#: generics/validators.py:58
 msgid "Invalid .xlsx file"
 msgstr "File .xlsx non valido"
 
-#: generics/validators.py:68
+#: generics/validators.py:66
 msgid ""
 "Invalid ORCID. Remember, ORCID is an https URI with a 16-digit number that "
 "is compatible as 0000-0001-2345-6789"
@@ -2518,11 +2518,11 @@ msgstr ""
 "Valore non valido. RIcorda, ORCID è un numero di 16 cifre compatibile con "
 "0000-0001-2345-6789"
 
-#: generics/validators.py:105
+#: generics/validators.py:104
 msgid "Image have invalid y / w ratio"
 msgstr "L'immagine ha una proporzione tra altezza e lunghezza non valida"
 
-#: generics/validators.py:118
+#: generics/validators.py:117
 msgid "Enter a valid VAT Number"
 msgstr "Inserisci una Partita IVA valida"
 
@@ -2534,44 +2534,50 @@ msgstr "{} Intestazioni richieste mancanti: [{}]"
 msgid "SKIPPED"
 msgstr "SALTATO"
 
-#: import_assistant/exceptions.py:51
+#: import_assistant/exceptions.py:52
 msgid "{} Required value for field '{}' is missing"
 msgstr "{} Il valore richiesto per il campo '{}' è mancante"
 
-#: import_assistant/exceptions.py:63
+#: import_assistant/exceptions.py:65
 msgid "{} Required keys [{}] are missing"
 msgstr "{} Le chiavi richieste [{}] sono mancanti"
 
-#: import_assistant/exceptions.py:76
+#: import_assistant/exceptions.py:79
 msgid "{} Invalid value for field '{}': '{}'"
 msgstr "{} Valore non valido per il campo '{}': '{}'"
 
-#: import_assistant/management/forms.py:11
+#: import_assistant/management/forms.py:15
 msgid "Upload file"
 msgstr "Carica documento"
 
-#: import_assistant/management/forms.py:16
-#: import_assistant/management/forms.py:43 laboratories/management/forms.py:412
+#: import_assistant/management/forms.py:20
+#: import_assistant/management/forms.py:35 laboratories/management/forms.py:412
 #: projects/templates/blocks/crud_projects.html:33
 #: research_lines/management/forms.py:25 research_lines/management/forms.py:47
 msgid "Year"
 msgstr "Anno"
 
-#: import_assistant/management/forms.py:33
-msgid "Didactic regulation structure"
-msgstr "Struttura del regolamento didattico"
+#: import_assistant/management/forms.py:48
+msgid "Use existing structure"
+msgstr "Utilizza la struttura esistente"
 
-#: import_assistant/management/forms.py:56
-msgid "Copy articles from previous years"
-msgstr "Importa articoli dall'anno precedente"
+#: import_assistant/management/forms.py:49
+msgid "Define a new structure"
+msgstr "Definisci una nuova struttura"
 
-#: import_assistant/management/forms.py:58
-msgid ""
-"Check this box if you want to copy matching articles from the previous year "
-"for each didactic regulation"
+#: import_assistant/management/forms.py:53
+msgid "Choose procedure:"
+msgstr "Scegli una procedura:"
+
+#: import_assistant/management/forms.py:54
+msgid "WARNING: Defining a new structure will reset every existing regulation."
 msgstr ""
-"Spunta questa casella se vuoi copiare gli articoli corrispondenti dall'anno "
-"precedente per ogni regolamento didattico"
+"ATTENZIONE: Definire una nuova struttura resetterà tutti i regolamenti "
+"esistenti."
+
+#: import_assistant/management/forms.py:62
+msgid "New didactic regulation structure"
+msgstr "Nuova struttura per i regolamenti didattici"
 
 #: import_assistant/management/utils/cds_import_utils.py:82
 msgid "Updated brochure through import procedure for cds [{}]"
@@ -2597,21 +2603,62 @@ msgstr "Collegato {} a {}"
 msgid "Created language: {} for cds {}"
 msgstr "Create lingue: {} per il cds {}"
 
-#: import_assistant/management/utils/cds_import_utils.py:381
+#: import_assistant/management/utils/cds_import_utils.py:382
 msgid "Imported CdS [{}]"
 msgstr "Importato il CdS [{}]"
 
-#: import_assistant/management/utils/cds_import_utils.py:423
+#: import_assistant/management/utils/cds_import_utils.py:424
 msgid "At least one entry is required"
 msgstr "Deve essere inserita almeno una voce"
 
-#: import_assistant/management/utils/cds_import_utils.py:471
-#: import_assistant/management/utils/regdid_import_utils.py:129
-#: import_assistant/management/utils/regdid_import_utils.py:288
+#: import_assistant/management/utils/cds_import_utils.py:472
+#: import_assistant/management/utils/regdid_import_utils.py:105
 msgid "Database error during transaction: {}"
 msgstr "Errore del database durante la transazione: {}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:177
+#: import_assistant/management/utils/regdid_import_utils.py:67
+msgid "Import procedure FAILED: Bad Entry"
+msgstr "Importazione FALLITA: Entry Errata"
+
+#: import_assistant/management/utils/regdid_import_utils.py:233
+msgid "Imported regulation testata from json for: Year {} and Cds {}"
+msgstr "Importata testata del regolamento da json per: Anno {} e Cds {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:250
+msgid "Changed regdid status to '{}'."
+msgstr "Cambiato status del regolamento a '{}'."
+
+#: import_assistant/management/utils/regdid_import_utils.py:294
+msgid "Imported Article number {} for Cds {}"
+msgstr "Importato Articolo numero {} per il Cds {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:323
+msgid "Imported sub-article with Order {} of Article number {} for Cds {}"
+msgstr ""
+"Importato sotto articolo con Ordine {} dell'Articolo numero {} per il Cds {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:377
+msgid "Structures created {}, out of {}"
+msgstr "Strutture create {}, di {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:384
+msgid "Done. Regdid imported {} out of {}"
+msgstr "Fatto. Regdid importati {}  di {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:419
+msgid "Removed {} articles (and potential sub-articles) for the year {}"
+msgstr "Rimossi {} articoli (e potenziali sotto articoli) per l'anno {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:435
+msgid "Removed {} testata status for the year {}"
+msgstr "Rimossi {} status testate per l'anno {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:441
+#: import_assistant/management/utils/regdid_import_utils.py:451
+msgid "Removed {} structures for the year {}"
+msgstr "Rimosse {} strutture per l'anno {}"
+
+#: import_assistant/management/utils/regdid_import_utils.py:609
 msgid ""
 "Updated structure from json for: Year {}, Article Number {} and Course Type "
 "{}"
@@ -2619,46 +2666,12 @@ msgstr ""
 "Aggiornate strutture da json per: Anno {}, Articolo numero {} and Tipo corso "
 "{}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:208
-msgid ""
-"Imported structure from json for: Year {}, Article Number {} and Course Type "
-"{}"
-msgstr ""
-"Importate strutture da json per: Anno {}, Articolo numero {} and Tipo corso "
-"{}"
-
-#: import_assistant/management/utils/regdid_import_utils.py:257
-msgid "Removed all {} articles related to the updated structures"
-msgstr "Rimosse tutti e {} articoli legati alle strutture caricate"
-
-#: import_assistant/management/utils/regdid_import_utils.py:419
-msgid "Imported regulation testata from json for: Year {} and Cds {}"
-msgstr "Importata testata del regolamento da json per: Anno {} e Cds {}"
-
-#: import_assistant/management/utils/regdid_import_utils.py:436
-msgid "Changed regdid status to '{}'."
-msgstr "Cambiato status del regolamento a '{}'."
-
-#: import_assistant/management/utils/regdid_import_utils.py:480
-msgid "Imported Article number {} for Cds {}"
-msgstr "Importato Articolo numero {} per il Cds {}"
-
-#: import_assistant/management/utils/regdid_import_utils.py:509
-msgid "Imported sub-article with Order {} of Article number {} for Cds {}"
-msgstr ""
-"Importato sotto articolo con Ordine {} dell'Articolo numero {} per il Cds {}"
-
 #: import_assistant/management/views.py:65
 #: import_assistant/management/views.py:72
 msgid "Imported {} rows out of {}"
 msgstr "Importate {} righe di {}"
 
-#: import_assistant/management/views.py:124
-#: import_assistant/management/views.py:131
-msgid "Done. Structures created {}, updated {} out of {}"
-msgstr "Fatto. Strutture create {}, aggiornate {} di {}"
-
-#: import_assistant/settings.py:29
+#: import_assistant/settings.py:32
 msgid ""
 "Code of the CDS from the previous year if the course is in continuity (if "
 "available)"
@@ -2666,73 +2679,73 @@ msgstr ""
 "Codice del CDS dell'anno precedente se il corso è in continuità (se "
 "disponibile)"
 
-#: import_assistant/settings.py:36
+#: import_assistant/settings.py:39
 msgid "Code of the CDS (if available)"
 msgstr "Codice del CDS (se disponibile)"
 
-#: import_assistant/settings.py:42
+#: import_assistant/settings.py:45
 msgid "Name of the CDS in Italian"
 msgstr "Nome del CDS in Italiano"
 
-#: import_assistant/settings.py:48
+#: import_assistant/settings.py:51
 msgid "Name of the CDS in English"
 msgstr "Nome del CDS in Inglese"
 
-#: import_assistant/settings.py:54
+#: import_assistant/settings.py:57
 msgid "Code of the department"
 msgstr "Codice del dipartimento"
 
-#: import_assistant/settings.py:61
+#: import_assistant/settings.py:64
 msgid ""
 "Type of course (Bachelor's, Master's, etc.) in the form L, LM, LM5, etc."
 msgstr ""
 "Tipo di corso (Laurea, Laurea Magistrale, ecc.) nella forma L, LM, LM5, ecc."
 
-#: import_assistant/settings.py:69
+#: import_assistant/settings.py:72
 msgid "Type of course (Bachelor's, Master's, etc.) in extended form"
 msgstr "Tipo di corso (Laurea, Laurea Magistrale, ecc.) in forma estesa"
 
-#: import_assistant/settings.py:76
+#: import_assistant/settings.py:79
 msgid "Duration of the course"
 msgstr "Durata del corso"
 
-#: import_assistant/settings.py:82
+#: import_assistant/settings.py:85
 msgid "Number of credits of the course"
 msgstr "Numero di crediti del corso"
 
-#: import_assistant/settings.py:88
+#: import_assistant/settings.py:91
 msgid "Degree class code"
 msgstr "Codice della classe di laurea"
 
-#: import_assistant/settings.py:94
+#: import_assistant/settings.py:97
 msgid "Degree class description"
 msgstr "Descrizione della classe di laurea"
 
-#: import_assistant/settings.py:100
+#: import_assistant/settings.py:103
 msgid "Interclass degree code"
 msgstr "Codice interclasse di laurea"
 
-#: import_assistant/settings.py:106
+#: import_assistant/settings.py:109
 msgid "Interclass degree description"
 msgstr "Descrizione interclasse di laurea"
 
-#: import_assistant/settings.py:112
+#: import_assistant/settings.py:115
 msgid "Course delivery mode"
 msgstr "Modalità erogazione"
 
-#: import_assistant/settings.py:119
+#: import_assistant/settings.py:122
 msgid "Languages of the course in the form \"ita\" or \"eng\" or \"ita,eng\""
 msgstr "Lingue del corso nella forma \"ita\" o \"eng\" o \"ita,eng\""
 
-#: import_assistant/settings.py:126
+#: import_assistant/settings.py:129
 msgid "Number of available seats for the course"
 msgstr "Numero di posti disponibili"
 
-#: import_assistant/settings.py:146
+#: import_assistant/settings.py:149
 msgid "Article number"
 msgstr "Numero articolo"
 
-#: import_assistant/settings.py:153
+#: import_assistant/settings.py:156
 msgid ""
 "Corresponding article number from the previous year. Leave it blank to "
 "ignore this article when coping articles from the previous year"
@@ -2740,15 +2753,15 @@ msgstr ""
 "Numero articolo corrispondente dello scorso anno. Lasciare bianco per "
 "ignorare un articolo quando si copia dall'anno precedente"
 
-#: import_assistant/settings.py:160
+#: import_assistant/settings.py:163
 msgid "Title of the article in italian"
 msgstr "Titolo dell'articolo in italiano"
 
-#: import_assistant/settings.py:166
+#: import_assistant/settings.py:169
 msgid "Title of the article in english"
 msgstr "Titolo dell'articolo in inglese"
 
-#: import_assistant/settings.py:172
+#: import_assistant/settings.py:175
 msgid "Course type cod"
 msgstr "Cod tipo di corso"
 
@@ -4218,9 +4231,9 @@ msgstr ""
 "1 dalla pagina del frontespizio (inclusa)"
 
 #: regdid/management/views.py:135 regdid/management/views.py:306
-#: regdid/management/views.py:473 regdid/management/views.py:603
-#: regdid/management/views.py:789 regdid/management/views.py:906
-#: regdid/management/views.py:1360
+#: regdid/management/views.py:473 regdid/management/views.py:604
+#: regdid/management/views.py:790 regdid/management/views.py:907
+#: regdid/management/views.py:1361
 msgid "Didactic regulations"
 msgstr "Regolamenti didattici"
 
@@ -4234,8 +4247,8 @@ msgid "Added didactic regulation testata"
 msgstr "Aggiunta testata del regolamento"
 
 #: regdid/management/views.py:254 regdid/management/views.py:398
-#: regdid/management/views.py:563 regdid/management/views.py:747
-#: regdid/management/views.py:868
+#: regdid/management/views.py:564 regdid/management/views.py:748
+#: regdid/management/views.py:869
 msgid "Unable to edit this item"
 msgstr "Impossibile modificare questo elemento"
 
@@ -4247,7 +4260,7 @@ msgstr "Modificate note del dipartimento"
 msgid "Department notes edited successfully"
 msgstr "Note del dipartimento modificate con successo"
 
-#: regdid/management/views.py:418 regdid/management/views.py:763
+#: regdid/management/views.py:418 regdid/management/views.py:764
 msgid "Edited"
 msgstr "Modificati"
 
@@ -4263,59 +4276,59 @@ msgstr "Modificate note"
 msgid "Notes edited successfully"
 msgstr "Note modificate con successo"
 
-#: regdid/management/views.py:559
+#: regdid/management/views.py:560
 msgid "Article already exists"
 msgstr "L'articolo esiste già"
 
-#: regdid/management/views.py:584
+#: regdid/management/views.py:585
 msgid "Article added successfully"
 msgstr "Articolo aggiunto con successo"
 
-#: regdid/management/views.py:670
+#: regdid/management/views.py:671
 msgid "sub articles"
 msgstr "sotto-articoli"
 
-#: regdid/management/views.py:674
+#: regdid/management/views.py:675
 msgid "Article deleted successfully"
 msgstr "Articolo eliminato con successo"
 
-#: regdid/management/views.py:887
+#: regdid/management/views.py:888
 msgid "Sub article added successfully"
 msgstr "Sotto-articolo aggiunto con successo"
 
-#: regdid/management/views.py:914
+#: regdid/management/views.py:915
 msgid "New sub article"
 msgstr "Nuovo sotto-articolo"
 
-#: regdid/management/views.py:924
+#: regdid/management/views.py:925
 msgid "New sub article for"
 msgstr "Nuovo sotto-articolo per"
 
-#: regdid/management/views.py:981
+#: regdid/management/views.py:982
 msgid "Sub article deleted successfully"
 msgstr "Sotto-articolo eliminato con successo"
 
-#: regdid/management/views.py:1049
+#: regdid/management/views.py:1050
 msgid "RegDid is already"
 msgstr "Il RegDid è già"
 
-#: regdid/management/views.py:1135
+#: regdid/management/views.py:1136
 msgid "Changed regdid stataus to"
 msgstr "Cambiato status del regolamento a"
 
-#: regdid/management/views.py:1139
+#: regdid/management/views.py:1140
 msgid "Regdid status updated successfully"
 msgstr "Stato del regolamento modificato con successo"
 
-#: regdid/management/views.py:1251
+#: regdid/management/views.py:1252
 msgid "Regdid status must be"
 msgstr "Lo stato del regolamento deve essere"
 
-#: regdid/management/views.py:1253
+#: regdid/management/views.py:1254
 msgid "to be imported from file"
 msgstr "per poter essere importato da file"
 
-#: regdid/management/views.py:1260
+#: regdid/management/views.py:1261
 msgid ""
 "Regdid was previously edited, the import opertation will overwrite every "
 "article"
@@ -4323,27 +4336,27 @@ msgstr ""
 "Il regolamento è stato precedentemente modificato, l'operazione di "
 "importazione sovrascriverà tutti gli articoli"
 
-#: regdid/management/views.py:1343
+#: regdid/management/views.py:1344
 msgid "Didactic regulation imported from file"
 msgstr "Regolamento didattico importato da file"
 
-#: regdid/management/views.py:1350
+#: regdid/management/views.py:1351
 msgid "Didactic regulation imported successfully"
 msgstr "Regolamento didattico importato con successo"
 
-#: regdid/management/views.py:1355
+#: regdid/management/views.py:1356
 msgid "Didactic regulation import failed"
 msgstr "Importazione del regolamento didattico fallita"
 
-#: regdid/management/views.py:1537
+#: regdid/management/views.py:1538
 msgid "Didactic regulation published successfully"
 msgstr "Regolamento didattico pubblicato con successo"
 
-#: regdid/management/views.py:1544
+#: regdid/management/views.py:1545
 msgid "Published didactic regulation"
 msgstr "Pubblicato il regolamento didattico"
 
-#: regdid/management/views.py:1549
+#: regdid/management/views.py:1550
 msgid "Didactic regulation publishing failed"
 msgstr "Pubblicazione del regolamento didattico fallita"
 
@@ -4808,6 +4821,31 @@ msgstr "Modifica dati per"
 msgid "Add data set for"
 msgstr "Aggiungi set di dati per"
 
+#~ msgid "Structure selection"
+#~ msgstr "Seleziona procedura"
+
+#, fuzzy
+#~| msgid "Copy articles from previous years"
+#~ msgid "Use structure from previous years"
+#~ msgstr "Importa articoli dall'anno precedente"
+
+#~ msgid ""
+#~ "Check this box if you want to copy matching articles from the previous "
+#~ "year for each didactic regulation"
+#~ msgstr ""
+#~ "Spunta questa casella se vuoi copiare gli articoli corrispondenti "
+#~ "dall'anno precedente per ogni regolamento didattico"
+
+#~ msgid ""
+#~ "Imported structure from json for: Year {}, Article Number {} and Course "
+#~ "Type {}"
+#~ msgstr ""
+#~ "Importate strutture da json per: Anno {}, Articolo numero {} and Tipo "
+#~ "corso {}"
+
+#~ msgid "Removed all {} articles related to the updated structures"
+#~ msgstr "Rimosse tutti e {} articoli legati alle strutture caricate"
+
 #~ msgid "Models affected"
 #~ msgstr "Model coinvolti"
 
@@ -5016,9 +5054,6 @@ msgstr "Aggiungi set di dati per"
 
 #~ msgid "Course of Studies Websites"
 #~ msgstr "Siti web dei Corsi di Studio"
-
-#~ msgid "brochure sections"
-#~ msgstr "sezioni brochure"
 
 #~ msgid "Manage cds and their teachers and offices"
 #~ msgstr "Gestisci i CDS, i docenti e gli uffici"

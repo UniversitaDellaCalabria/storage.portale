@@ -45,12 +45,13 @@ class RegdidStructureImportForm(forms.Form):
 
     structure_choice = forms.ChoiceField(
         choices=(
-            (REGDID_IMPORT_USE_CURR_STRUCTURE, _("Use structure from previous years")),
+            (REGDID_IMPORT_USE_CURR_STRUCTURE, _("Use existing structure")),
             (REGDID_IMPORT_DEFINE_NEW_STRUCTURE, _("Define a new structure")),
         ),
         initial=REGDID_IMPORT_USE_CURR_STRUCTURE,
         required=True,
-        label=_("Structure selection"),
+        label=_("Choose procedure:"),
+        help_text=_("WARNING: Defining a new structure will reset every existing regulation."),
         widget=forms.RadioSelect(attrs={"id": "id_structure_choice"}),
     )
 
