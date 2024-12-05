@@ -72,7 +72,7 @@ class AddressbookSerializer(CreateUpdateAbstract):
                 "StructureTypeCOD": q["cd_tipo_nodo"],
             }
             if full:
-                d_data["Start"] = q["dt_rap_ini"]
+                d_data["Start"] = q.get("dt_rap_ini")
             roles.append(d_data)
         return roles
 
