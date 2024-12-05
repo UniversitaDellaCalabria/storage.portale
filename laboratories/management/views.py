@@ -1845,7 +1845,7 @@ def laboratory_research_staff_new(
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-research-staff_new",
+            "laboratories:management:laboratory-research-staff-new",
             kwargs={"laboratory_id": laboratory_id},
         ): _("Research Staff"),
     }
