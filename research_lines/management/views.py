@@ -100,7 +100,7 @@ def applied_research_lines_new(request, my_offices=None):
                     office__name=OFFICE_RESEARCH_LINES,
                     office__is_active=True,
                     office__organizational_structure__is_active=True,
-                    office__organizational_structure__unique_rline_id=teacher.cd_uo_aff_org_id,
+                    office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id,
                 )
                 if not structure_afforg:
                     raise Exception(_("Add a teacher belonging to your structure"))
@@ -196,7 +196,7 @@ def base_research_line_new(request, my_offices=None):
                     office__name=OFFICE_RESEARCH_LINES,
                     office__is_active=True,
                     office__organizational_structure__is_active=True,
-                    office__organizational_structure__unique_rline_id=teacher.cd_uo_aff_org_id,
+                    office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id,
                 )
                 if not structure_afforg:
                     raise Exception(_("Add a teacher belonging to your structure"))

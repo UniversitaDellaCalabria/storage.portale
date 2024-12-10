@@ -155,7 +155,7 @@ def researchgroup_new(request, my_offices=None):
                     office__name=OFFICE_RESEARCH_GROUPS,
                     office__is_active=True,
                     office__organizational_structure__is_active=True,
-                    office__organizational_structure__unique_rgroup_id=teacher.cd_uo_aff_org_id,
+                    office__organizational_structure__unique_code=teacher.cd_uo_aff_org_id,
                 )
                 if not structure_afforg:
                     raise Exception(_("Add a teacher belonging to your structure"))
