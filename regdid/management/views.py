@@ -20,6 +20,7 @@ from django.http import HttpResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_xhtml2pdf.utils import fetch_resources
 from generics.decorators import check_model_permissions
@@ -1208,7 +1209,8 @@ def regdid_articles_pdf(request, regdid_id):
         "classe_laurea_desc": classe_laurea_desc,
     }
 
-    cds_name = nome_cds_it.replace(" ", "_").title()
+    #cds_name = nome_cds_it.replace(" ", "_").title()
+    cds_name = slugify(nome_cds_it)
     pdf_file_name = f"Regolamento_{cla_cod}_{cds_name}_{datetime.datetime.now().strftime('%m_%d_%Y')}"
     pdf_file_name = pdf_file_name
 
