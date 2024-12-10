@@ -141,14 +141,22 @@
                 <hr />
                 {% endif %}
                 <!-- /Gruppi di Ricerca -->
-                <!-- Linee di Ricerca -->
+                <!-- Linee di Ricerca Applicata-->
                 {% if not disabled_management_apps or "research_lines" not in disabled_management_apps %}
-                {% trans "Research lines" as title %}
+                {% trans "Applied Research lines" as title %}
+                {% trans "Manage lines and their teachers" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="research-lines:management:applied-research-lines" subtitle=subtitle %}
+                <hr />
+                {% endif %}
+                <!-- /Linee di Ricerca Applicata-->
+                <!-- Linee di Ricerca di Base-->
+                {% if not disabled_management_apps or "research_lines" not in disabled_management_apps %}
+                {% trans "Base Research lines" as title %}
                 {% trans "Manage lines and their teachers" as subtitle %}
                 {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="research-lines:management:base-research-lines" subtitle=subtitle %}
                 <hr />
                 {% endif %}
-                <!-- /Linee di Ricerca -->
+                <!-- /Linee di Ricerca di Base-->
                 <!-- Progetti -->
                 {% if not disabled_management_apps or "projects" not in disabled_management_apps %}
                 {% trans "Projects" as title %}

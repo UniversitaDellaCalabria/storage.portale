@@ -66,7 +66,7 @@ def applied_research_lines(request, my_offices=None):
         "breadcrumbs": breadcrumbs,
         "url": reverse("research-lines:apiv1:all-research-lines") + "?exclude_base=1",
     }
-    return render(request, "applied_research_lines.html", context)
+    return render(request, "applied_researchlines.html", context)
 
 
 @login_required
