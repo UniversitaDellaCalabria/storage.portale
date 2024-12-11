@@ -209,6 +209,8 @@ def _process_testata(
                 didattica_articoli_regolamento_struttura__numero=struttura.numero_prec
             ).first()
         )
+        if not old_articolo: # Skip article creation if there's no corrisponding previous article
+            continue
         _process_articolo(request, new_testata, struttura, old_articolo)
 
 
@@ -352,18 +354,19 @@ def handle_regdid_structures_import(request, data, year, procedure_cod):
     -- Import new structures, create testate, and import articles and sub-articles:
         1) Import new structures.
         2) For each active course, create a testata and the associated testata status.
-        3) Create/import articles:
-            3.1) Import from the previous year if NUMERO_PREC is populated for the relevant structure.
-            3.2) Create from scratch.
+        3) Import articles:
+            3.1) Import from the previous year if NUMERO_PREC is populated for the relevant structure and a corresponding article is found.
 
     SCENARIO 2: REGDID_IMPORT_USE_CURR_STRUCTURE
+    
+    USE EXISTING STRUCTURE TO IMPORT ARTICLES
 
     GOAL: For each active CDS who's missing its testata, create one and a testata status, then import articles/sub-articles from the previous year
 
     -- Create missing testate and import articles and sub-articles only for these:
         1) For each active course lacking a testata, create the testata and the associated testata status.
-        2) Create/import articles:
-            3.1) Import from the previous year if NUMERO_PREC is populated for the relevant structure; otherwise create it from scratch.
+        2) Import articles:
+            3.1) Import from the previous year if NUMERO_PREC is populated for the relevant structure and a corresponding article is found.
     """
 
     if procedure_cod == REGDID_IMPORT_DEFINE_NEW_STRUCTURE:
