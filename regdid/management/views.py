@@ -124,12 +124,14 @@ def _get_titoli_struttura_articoli_dict(regdid, testata):
 @login_required
 @check_model_permissions(DidatticaCdsArticoliRegolamentoTestata)
 def regdid_list(request):
-    testata_user_offices = DidatticaCdsArticoliRegolamentoTestata._get_all_user_offices(
-        request.user
-    )
-    show_pdf_import_button = testata_user_offices.filter(
-        office__name__in=(OFFICE_REGDIDS_REVISION, OFFICE_REGDIDS_APPROVAL)
-    ).count()
+    # testata_user_offices = DidatticaCdsArticoliRegolamentoTestata._get_all_user_offices(
+    #     request.user
+    # )
+    # show_pdf_import_button = testata_user_offices.filter(
+    #     office__name__in=(OFFICE_REGDIDS_REVISION, OFFICE_REGDIDS_APPROVAL)
+    # ).count()
+    # inhibited import functionality for non superusers
+    show_pdf_import_button = 0
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -521,7 +523,7 @@ def regdid_articles_new(request, regdid_id, article_num):
         DidatticaArticoliRegolamentoStruttura,
         didattica_cds_tipo_corso=didattica_cds_tipo_corso,
         numero=article_num,
-        aa=testata.aa
+        aa=testata.aa,
     )
     testata_status = (
         DidatticaCdsTestataStatus.objects.filter(
@@ -1209,7 +1211,7 @@ def regdid_articles_pdf(request, regdid_id):
         "classe_laurea_desc": classe_laurea_desc,
     }
 
-    #cds_name = nome_cds_it.replace(" ", "_").title()
+    # cds_name = nome_cds_it.replace(" ", "_").title()
     cds_name = slugify(nome_cds_it)
     pdf_file_name = f"Regolamento_{cla_cod}_{cds_name}_{datetime.datetime.now().strftime('%m_%d_%Y')}"
     pdf_file_name = pdf_file_name
@@ -1225,6 +1227,7 @@ def regdid_articles_pdf(request, regdid_id):
 
 # PDF import
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def regdid_articles_import_pdf(request, regdid_id):
     regdid = get_object_or_404(DidatticaRegolamento, pk=regdid_id)
     testata = DidatticaCdsArticoliRegolamentoTestata.objects.filter(
