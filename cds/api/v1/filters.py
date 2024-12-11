@@ -211,3 +211,28 @@ class AllActivitiesListFilter(GenericApiFilter):
             },
         },
     ]
+
+
+class CdsExpiredFilter(GenericApiFilter):
+    search_params = [
+        {
+            "name": "coursetypes",
+            "description": "Types of course of study (comma-separated).",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "string",
+                "example": "L,LM,LM5,LM6"
+            },
+        },
+        {
+            "name": "yearfrom",
+            "description": "First year of the search window.",
+            "required": False,
+            "in": "query",
+            "schema": {
+                "type": "integer",
+                "format": "int32",
+            },
+        },
+    ]

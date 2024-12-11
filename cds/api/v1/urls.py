@@ -4,15 +4,16 @@ from .views import (
     ApiAcademicYearsList,
     ApiAllStudyActivitiesList,
     ApiCdsAreasList,
+    ApiCdsExpired,
     ApiCdSInfo,
     ApiCdSList,
+    ApiCdsMorphList,
     ApiCdSStudyPlansList,
     ApiDegreeTypesList,
     ApiSortingContacts,
     ApiStudyActivityDetail,
     ApiStudyPlanActivitiesList,
     ApiStudyPlanDetail,
-    ApiCdsMorphList
 )
 
 app_name = "apiv1"
@@ -27,6 +28,7 @@ urlpatterns = [
     
 
     path("cds-morph/<str:cds_cod>/", ApiCdsMorphList.as_view(), name="cds-morph"), 
+    path("cds-expired/", ApiCdsExpired.as_view(), name="cds-expired"), 
     
     path("cds-areas/", ApiCdsAreasList.as_view(), name="cds-areas"),
     path("activities/", ApiAllStudyActivitiesList.as_view(), name="activities"),

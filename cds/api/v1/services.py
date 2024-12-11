@@ -1,10 +1,12 @@
 import datetime
 
 from addressbook.utils import append_email_addresses
-from django.db.models import F, Q
+from django.core.exceptions import BadRequest
+from django.db.models import Exists, F, OuterRef, Q
 from django.http import Http404
 from generics.services import ServiceQueryBuilder
 from structures.models import DidatticaDipartimentoUrl
+from django.conf import settings
 
 from cds.models import (
     DidatticaAttivitaFormativa,
@@ -12,6 +14,7 @@ from cds.models import (
     DidatticaCds,
     DidatticaCdsAltriDati,
     DidatticaCdsAltriDatiUfficio,
+    DidatticaCdsCollegamento,
     DidatticaCdsGruppi,
     DidatticaCdsGruppiComponenti,
     DidatticaCdsLingua,
@@ -23,7 +26,6 @@ from cds.models import (
     DidatticaRegolamentoAltriDati,
     DidatticaTestiAf,
     DidatticaTestiRegolamento,
-    DidatticaCdsCollegamento,
 )
 
 
@@ -376,6 +378,40 @@ class ServiceDidatticaCds:
             group["members"] = members
 
         return res
+
+    @staticmethod
+    def getExpiredCds(yearfrom=None, coursetypes=None):
+        query_year_from = Q()
+        query_course_types = Q()
+        if yearfrom is not None:
+            try:
+                validated_year_from = int(yearfrom)
+                query_year_from = Q(aa_reg_did__gte=validated_year_from)
+            except ValueError:
+                raise BadRequest("Parameter yearfrom must be a valid year")
+        if coursetypes is not None:
+            course_tyeps_list = coursetypes.split(",")
+            query_course_types = Q(cds__tipo_corso_cod__in=course_tyeps_list)
+
+        regdids = (
+            DidatticaRegolamento.objects.filter(
+                # Ensure it's the record with the latest year
+                ~Exists(
+                    DidatticaRegolamento.objects.filter(
+                        cds=OuterRef("cds"),
+                        aa_reg_did__gt=OuterRef("aa_reg_did"),
+                    ).exclude(stato_regdid_cod="R")
+                ),
+                query_year_from,
+                query_course_types,
+                aa_reg_did__lt=settings.CURRENT_YEAR,
+            )
+            .exclude(stato_regdid_cod="R")
+            .select_related("cds")
+            .values("aa_reg_did", "cds__cds_cod", "cds__durata_anni")
+        )
+
+        return regdids
 
     @staticmethod
     def getDegreeTypes():
