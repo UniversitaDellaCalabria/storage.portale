@@ -220,11 +220,21 @@ class ApiCdsMorphList(APIView):
     permission_classes = [permissions.AllowAny]
     schema = AgidAutoSchema(tags=["api"])
 
+    description = "Retrieves a list of CDS_COD which contains all the previous CDS_COD."
+
+    def get(self, request, *args, **kwargs):
+        return Response(ServiceDidatticaCds.getPreviousCdsCods())
+
+
+class ApiCdsMorphDetail(APIView):
+    permission_classes = [permissions.AllowAny]
+    schema = AgidAutoSchema(tags=["api"])
+
     description = "Retrieves a list of CDS_COD which, starting from the given one, contains all the previous CDS_COD."
 
     def get(self, request, *args, **kwargs):
         cds_cod = kwargs.get("cds_cod", None)
-        return Response(ServiceDidatticaCds.getPreviousCdsCods(cds_cod))
+        return Response(ServiceDidatticaCds.getPreviousSingleCdsCods(cds_cod))
 
 
 class ApiCdsExpired(ApiEndpointList):

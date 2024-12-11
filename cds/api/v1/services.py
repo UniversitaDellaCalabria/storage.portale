@@ -485,7 +485,7 @@ class ServiceDidatticaCds:
         return query
 
     @staticmethod
-    def getPreviousCdsCods(cds_cod):
+    def getPreviousSingleCdsCods(cds_cod):
         cds = DidatticaCds.objects.filter(cds_cod=cds_cod).order_by("-cds_id").first()
         if cds is None:
             raise Http404
@@ -503,6 +503,25 @@ class ServiceDidatticaCds:
                 break
 
         return previous_cds_cod_list
+
+    @staticmethod
+    def _build_cds_history(cds_cod, history=[]):
+        prec = DidatticaCdsCollegamento.objects.filter(cds__cds_cod=cds_cod).first()
+        if prec:
+            history.append(prec.cds_prec.cds_cod)
+            ServiceDidatticaCds._build_cds_history(prec.cds_prec.cds_cod, history)
+        return history
+
+
+    @staticmethod
+    def getPreviousCdsCods():
+        previous_cds_cod_dict = {}
+        cds_prec_ids = DidatticaCdsCollegamento.objects.values_list('cds_prec', flat=True)
+        roots = DidatticaCdsCollegamento.objects.exclude(cds__pk__in=cds_prec_ids)
+        for root in roots:
+            prec_list = ServiceDidatticaCds._build_cds_history(root.cds.cds_cod, [])
+            previous_cds_cod_dict[root.cds.cds_cod] = prec_list
+        return previous_cds_cod_dict
 
 
 class ServiceDidatticaAttivitaFormativa:
