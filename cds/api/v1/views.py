@@ -3,6 +3,11 @@ from django.utils.text import slugify
 from generics.utils import decrypt
 from generics.views import ApiEndpointDetail, ApiEndpointList, ApiEndpointListSupport
 from organizational_area.models import OrganizationalStructureOfficeEmployee
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import permissions
+from rest_framework.schemas.openapi_agid import AgidAutoSchema
+
 
 from cds.settings import OFFICE_CDS, OFFICE_CDS_DOCUMENTS, OFFICE_CDS_TEACHING_SYSTEM
 
@@ -208,3 +213,14 @@ class ApiSortingContacts(ApiEndpointList):
     def get_queryset(self):
         cdscod = self.kwargs["cdscod"]
         return ServiceDidatticaCds.getContacts(cdscod)
+    
+    
+class ApiCdsMorphList(APIView):
+    permission_classes = [permissions.AllowAny]
+    schema = AgidAutoSchema(tags=["api"])
+    
+    description = "Retrieves a list of CDS_COD which, starting from the given one, contains all the previous CDS_COD."
+    
+    def get(self, request, *args, **kwargs):
+        cds_cod = kwargs.get("cds_cod", None)
+        return Response(ServiceDidatticaCds.getPreviousCdsCods(cds_cod))

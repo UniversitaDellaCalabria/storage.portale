@@ -23,6 +23,7 @@ from cds.models import (
     DidatticaRegolamentoAltriDati,
     DidatticaTestiAf,
     DidatticaTestiRegolamento,
+    DidatticaCdsCollegamento,
 )
 
 
@@ -426,7 +427,8 @@ class ServiceDidatticaCds:
         years = [last_year, current_year]
         query = (
             DidatticaCopertura.objects.filter(
-                Q(personale__flg_cessato=0, personale__fl_docente=1) | ~Q(stato_coper_cod='R'),
+                Q(personale__flg_cessato=0, personale__fl_docente=1)
+                | ~Q(stato_coper_cod="R"),
                 cds_cod=cdscod,
                 aa_off_id__in=years,
             )
@@ -445,6 +447,26 @@ class ServiceDidatticaCds:
                 dip_cod=q["personale__cd_uo_aff_org"]
             ).values("dip_url")
         return query
+
+    @staticmethod
+    def getPreviousCdsCods(cds_cod):
+        cds = DidatticaCds.objects.filter(cds_cod=cds_cod).order_by("-cds_id").first()
+        if cds is None:
+            raise Http404
+
+        previous_cds_cod_list = []
+        current_cds = cds
+        while current_cds:
+            try:
+                collegamento = DidatticaCdsCollegamento.objects.get(cds=current_cds)
+                predecessor = collegamento.cds_prec
+                previous_cds_cod_list.append(predecessor.cds_cod)
+
+                current_cds = predecessor
+            except DidatticaCdsCollegamento.DoesNotExist:
+                break
+
+        return previous_cds_cod_list
 
 
 class ServiceDidatticaAttivitaFormativa:
@@ -624,8 +646,10 @@ class ServiceDidatticaAttivitaFormativa:
         if teacher_code:
             query_teacher_code = Q(personale_id__matricola__exact=teacher_code)
 
-        coperture = DidatticaCopertura.objects.filter(query_teacher_code).exclude(stato_coper_cod='R').values(
-            "af_id"
+        coperture = (
+            DidatticaCopertura.objects.filter(query_teacher_code)
+            .exclude(stato_coper_cod="R")
+            .values("af_id")
         )
 
         query_coperture = Q(af_id__in=coperture) | Q(af_master_id__in=coperture)
