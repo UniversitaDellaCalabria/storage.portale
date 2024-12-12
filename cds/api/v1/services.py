@@ -407,7 +407,8 @@ class ServiceDidatticaCds:
                 aa_reg_did__lt=settings.CURRENT_YEAR,
             )
             .exclude(stato_regdid_cod="R")
-            .select_related("cds")
+            # exclude courses that have finished their regular life cycle
+            .exclude(aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni")))
             .values("aa_reg_did", "cds__cds_cod", "cds__durata_anni")
         )
 
