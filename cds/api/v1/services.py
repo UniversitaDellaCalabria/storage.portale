@@ -393,6 +393,8 @@ class ServiceDidatticaCds:
             course_tyeps_list = coursetypes.split(",")
             query_course_types = Q(cds__tipo_corso_cod__in=course_tyeps_list)
 
+        cds_morphed = DidatticaCdsCollegamento.objects.values_list('cds_prec__cds_cod', flat=True)
+
         regdids = (
             DidatticaRegolamento.objects.filter(
                 # Ensure it's the record with the latest year
@@ -409,6 +411,8 @@ class ServiceDidatticaCds:
             .exclude(stato_regdid_cod="R")
             # exclude courses that have finished their regular life cycle
             .exclude(aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni")))
+            # exclude morphed courses
+            .exclude(cds__cds_cod__in=cds_morphed)
             .values("aa_reg_did", "cds__cds_cod", "cds__durata_anni")
         )
 
