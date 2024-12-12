@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-03 11:41+0100\n"
-"PO-Revision-Date: 2024-12-03 11:49+0100\n"
+"POT-Creation-Date: 2024-12-12 11:00+0100\n"
+"PO-Revision-Date: 2024-12-12 11:02+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -248,10 +248,10 @@ msgstr ""
 #: projects/management/views.py:176 projects/management/views.py:265
 #: projects/management/views.py:351 projects/management/views.py:445
 #: projects/management/views.py:533 projects/management/views.py:627
-#: regdid/management/views.py:134 regdid/management/views.py:305
-#: regdid/management/views.py:472 regdid/management/views.py:603
-#: regdid/management/views.py:789 regdid/management/views.py:906
-#: regdid/management/views.py:1360 research_groups/management/views.py:30
+#: regdid/management/views.py:137 regdid/management/views.py:308
+#: regdid/management/views.py:475 regdid/management/views.py:606
+#: regdid/management/views.py:792 regdid/management/views.py:909
+#: regdid/management/views.py:1365 research_groups/management/views.py:30
 #: research_groups/management/views.py:85
 #: research_groups/management/views.py:200
 #: research_groups/management/views.py:259
@@ -312,6 +312,10 @@ msgstr "Token scaduto"
 msgid "Email updated successfully"
 msgstr "Email aggiornata con successo"
 
+#: cds/apps.py:6
+msgid "Courses of Study"
+msgstr "Corsi di studio"
+
 #: cds/management/decorators.py:26 cds/management/decorators.py:69
 #: cds/management/decorators.py:103 cds/management/decorators.py:138
 #: cds_brochure/management/decorators.py:30
@@ -336,17 +340,17 @@ msgstr "Email aggiornata con successo"
 #: laboratories/management/views.py:2397 laboratories/management/views.py:2612
 #: laboratories/management/views.py:2875 patents/management/decorators.py:27
 #: phd/management/decorators.py:23 phd/management/decorators.py:50
-#: projects/management/decorators.py:26 regdid/management/views.py:150
-#: regdid/management/views.py:203 regdid/management/views.py:343
-#: regdid/management/views.py:391 regdid/management/views.py:534
-#: regdid/management/views.py:541 regdid/management/views.py:642
-#: regdid/management/views.py:661 regdid/management/views.py:705
-#: regdid/management/views.py:741 regdid/management/views.py:835
-#: regdid/management/views.py:850 regdid/management/views.py:953
-#: regdid/management/views.py:969 regdid/management/views.py:1015
-#: regdid/management/views.py:1059 regdid/management/views.py:1169
-#: regdid/management/views.py:1245 regdid/management/views.py:1268
-#: regdid/management/views.py:1403 research_groups/management/decorators.py:25
+#: projects/management/decorators.py:26 regdid/management/views.py:153
+#: regdid/management/views.py:206 regdid/management/views.py:346
+#: regdid/management/views.py:394 regdid/management/views.py:537
+#: regdid/management/views.py:544 regdid/management/views.py:645
+#: regdid/management/views.py:664 regdid/management/views.py:708
+#: regdid/management/views.py:744 regdid/management/views.py:838
+#: regdid/management/views.py:853 regdid/management/views.py:956
+#: regdid/management/views.py:972 regdid/management/views.py:1018
+#: regdid/management/views.py:1062 regdid/management/views.py:1172
+#: regdid/management/views.py:1250 regdid/management/views.py:1273
+#: regdid/management/views.py:1408 research_groups/management/decorators.py:25
 #: research_groups/management/decorators.py:56
 #: research_lines/management/decorators.py:30
 #: research_lines/management/decorators.py:64
@@ -560,8 +564,8 @@ msgstr "Gruppo eliminato con successo"
 msgid "Member deleted successfully"
 msgstr "Membro eliminato con successo"
 
-#: cds/management/views.py:1508 regdid/management/views.py:669
-#: regdid/management/views.py:977
+#: cds/management/views.py:1508 regdid/management/views.py:672
+#: regdid/management/views.py:980
 msgid "Deleted"
 msgstr "Eliminato"
 
@@ -597,8 +601,8 @@ msgstr "Almeno campo deve essere riempito"
 msgid "added successfully"
 msgstr "aggiunto con successo"
 
-#: cds/management/views.py:1789 regdid/management/views.py:580
-#: regdid/management/views.py:883
+#: cds/management/views.py:1789 regdid/management/views.py:583
+#: regdid/management/views.py:886
 msgid "Added"
 msgstr "Aggiunto"
 
@@ -623,6 +627,22 @@ msgstr "Importati contenuti multimediali dall'anno precedente"
 #: cds/management/views.py:1892
 msgid "Successfully imported multimedia contents from last year"
 msgstr "Contenuti multimediali importati con successo dall'anno precedente"
+
+#: cds/models.py:538
+msgid "Cds Language"
+msgstr "Lingua Cds"
+
+#: cds/models.py:539
+msgid "Cds Languages"
+msgstr "Lingue Cds"
+
+#: cds/models.py:778
+msgid "Didactic Regulation"
+msgstr "Regolamento Didattico"
+
+#: cds/models.py:779 regdid/templates/regdid_list.html:8
+msgid "Didactic Regulations"
+msgstr "Regolamenti didattici"
 
 #: cds/settings.py:62 companies/templates/blocks/crud_companies.html:67
 #: companies/templates/blocks/crud_companies.html:91
@@ -979,7 +999,7 @@ msgid "Registration procedure"
 msgstr "Modalità di iscrizione"
 
 #: cds/templates/cds_detail.html:166
-#: import_assistant/management/utils/regdid_import_utils.py:241
+#: import_assistant/management/utils/regdid_import_utils.py:243
 msgid "Import from previous year"
 msgstr "Importa dall'anno precedente"
 
@@ -1781,7 +1801,7 @@ msgstr "Sotto-articoli"
 msgid "Edited sub article"
 msgstr "Modificato sotto-articolo"
 
-#: cds_websites/management/views.py:715 regdid/management/views.py:769
+#: cds_websites/management/views.py:715 regdid/management/views.py:772
 msgid "Sub article edited successfully"
 msgstr "Sotto-articolo modificato con successo"
 
@@ -2328,18 +2348,25 @@ msgstr "Gruppi di ricerca"
 msgid "Manage groups and their teachers"
 msgstr "Gestisci i gruppi e i loro docenti"
 
-#: generics/templates/dashboard.html:146 research_lines/management/views.py:473
-#: research_lines/management/views.py:537
-#: research_lines/management/views.py:607
-#: research_lines/management/views.py:681
-msgid "Research lines"
-msgstr "Linee di ricerca"
+#: generics/templates/dashboard.html:146 research_lines/management/views.py:63
+#: research_lines/management/views.py:143
+#: research_lines/management/views.py:325
+#: research_lines/templates/applied_researchlines.html:14
+msgid "Applied Research lines"
+msgstr "Linee di ricerca applicata"
 
-#: generics/templates/dashboard.html:147
+#: generics/templates/dashboard.html:147 generics/templates/dashboard.html:155
 msgid "Manage lines and their teachers"
 msgstr "Gestisci le linee e i loro docenti"
 
-#: generics/templates/dashboard.html:154 projects/management/views.py:40
+#: generics/templates/dashboard.html:154 research_lines/management/views.py:45
+#: research_lines/management/views.py:170
+#: research_lines/management/views.py:297
+#: research_lines/templates/base_researchlines.html:14
+msgid "Base Research lines"
+msgstr "Linee di ricerca di base"
+
+#: generics/templates/dashboard.html:162 projects/management/views.py:40
 #: projects/management/views.py:100 projects/management/views.py:177
 #: projects/management/views.py:266 projects/management/views.py:352
 #: projects/management/views.py:446 projects/management/views.py:534
@@ -2347,30 +2374,30 @@ msgstr "Gestisci le linee e i loro docenti"
 msgid "Projects"
 msgstr "Progetti"
 
-#: generics/templates/dashboard.html:155
+#: generics/templates/dashboard.html:163
 msgid "Manage projects"
 msgstr "Gestisti i progetti delle strutture"
 
-#: generics/templates/dashboard.html:169 patents/management/views.py:28
+#: generics/templates/dashboard.html:177 patents/management/views.py:28
 #: patents/management/views.py:62 patents/management/views.py:120
 #: patents/management/views.py:188 patents/management/views.py:277
 #: patents/templates/patents.html:15
 msgid "Patents"
 msgstr "Brevetti"
 
-#: generics/templates/dashboard.html:170
+#: generics/templates/dashboard.html:178
 msgid "Manage patents"
 msgstr "Gestisci i brevetti"
 
-#: generics/templates/dashboard.html:177
+#: generics/templates/dashboard.html:185
 msgid "Spin-offs and Startups"
 msgstr ""
 
-#: generics/templates/dashboard.html:178
+#: generics/templates/dashboard.html:186
 msgid "Manage companies"
 msgstr "Gestisci le imprese"
 
-#: generics/templates/dashboard.html:192
+#: generics/templates/dashboard.html:200
 #: research_groups/templates/researchgroup.html:64
 #: research_lines/templates/applied_researchline.html:64
 #: research_lines/templates/base_researchline.html:64
@@ -2382,7 +2409,7 @@ msgstr "Gestisci le imprese"
 msgid "Teachers"
 msgstr "Docenti"
 
-#: generics/templates/dashboard.html:193
+#: generics/templates/dashboard.html:201
 msgid "Manage teachers and PTA"
 msgstr "Gestisci docenti e personale"
 
@@ -2620,45 +2647,45 @@ msgstr "Errore del database durante la transazione: {}"
 msgid "Import procedure FAILED: Bad Entry"
 msgstr "Importazione FALLITA: Entry Errata"
 
-#: import_assistant/management/utils/regdid_import_utils.py:233
+#: import_assistant/management/utils/regdid_import_utils.py:235
 msgid "Imported regulation testata from json for: Year {} and Cds {}"
 msgstr "Importata testata del regolamento da json per: Anno {} e Cds {}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:250
+#: import_assistant/management/utils/regdid_import_utils.py:252
 msgid "Changed regdid status to '{}'."
 msgstr "Cambiato status del regolamento a '{}'."
 
-#: import_assistant/management/utils/regdid_import_utils.py:294
+#: import_assistant/management/utils/regdid_import_utils.py:296
 msgid "Imported Article number {} for Cds {}"
 msgstr "Importato Articolo numero {} per il Cds {}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:323
+#: import_assistant/management/utils/regdid_import_utils.py:325
 msgid "Imported sub-article with Order {} of Article number {} for Cds {}"
 msgstr ""
 "Importato sotto articolo con Ordine {} dell'Articolo numero {} per il Cds {}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:377
+#: import_assistant/management/utils/regdid_import_utils.py:380
 msgid "Structures created {}, out of {}"
 msgstr "Strutture create {}, di {}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:384
+#: import_assistant/management/utils/regdid_import_utils.py:387
 msgid "Done. Regdid imported {} out of {}"
 msgstr "Fatto. Regdid importati {}  di {}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:419
+#: import_assistant/management/utils/regdid_import_utils.py:422
 msgid "Removed {} articles (and potential sub-articles) for the year {}"
 msgstr "Rimossi {} articoli (e potenziali sotto articoli) per l'anno {}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:435
+#: import_assistant/management/utils/regdid_import_utils.py:438
 msgid "Removed {} testata status for the year {}"
 msgstr "Rimossi {} status testate per l'anno {}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:441
-#: import_assistant/management/utils/regdid_import_utils.py:451
+#: import_assistant/management/utils/regdid_import_utils.py:444
+#: import_assistant/management/utils/regdid_import_utils.py:454
 msgid "Removed {} structures for the year {}"
 msgstr "Rimosse {} strutture per l'anno {}"
 
-#: import_assistant/management/utils/regdid_import_utils.py:609
+#: import_assistant/management/utils/regdid_import_utils.py:612
 msgid ""
 "Updated structure from json for: Year {}, Article Number {} and Course Type "
 "{}"
@@ -4230,105 +4257,105 @@ msgstr ""
 "Numero della pagina che contiene l'ultimo articolo fino alla fine - Conta da "
 "1 dalla pagina del frontespizio (inclusa)"
 
-#: regdid/management/views.py:135 regdid/management/views.py:306
-#: regdid/management/views.py:473 regdid/management/views.py:604
-#: regdid/management/views.py:790 regdid/management/views.py:907
-#: regdid/management/views.py:1361
+#: regdid/management/views.py:138 regdid/management/views.py:309
+#: regdid/management/views.py:476 regdid/management/views.py:607
+#: regdid/management/views.py:793 regdid/management/views.py:910
+#: regdid/management/views.py:1366
 msgid "Didactic regulations"
 msgstr "Regolamenti didattici"
 
-#: regdid/management/views.py:161
+#: regdid/management/views.py:164
 msgid "Didactic regulament must be edited by a department first"
 msgstr ""
 "Il regolamento didattico deve essere modificato prima da un dipartimento"
 
-#: regdid/management/views.py:187
+#: regdid/management/views.py:190
 msgid "Added didactic regulation testata"
 msgstr "Aggiunta testata del regolamento"
 
-#: regdid/management/views.py:254 regdid/management/views.py:398
-#: regdid/management/views.py:564 regdid/management/views.py:748
-#: regdid/management/views.py:869
+#: regdid/management/views.py:257 regdid/management/views.py:401
+#: regdid/management/views.py:567 regdid/management/views.py:751
+#: regdid/management/views.py:872
 msgid "Unable to edit this item"
 msgstr "Impossibile modificare questo elemento"
 
-#: regdid/management/views.py:279
+#: regdid/management/views.py:282
 msgid "Edited department notes"
 msgstr "Modificate note del dipartimento"
 
-#: regdid/management/views.py:283
+#: regdid/management/views.py:286
 msgid "Department notes edited successfully"
 msgstr "Note del dipartimento modificate con successo"
 
-#: regdid/management/views.py:418 regdid/management/views.py:764
+#: regdid/management/views.py:421 regdid/management/views.py:767
 msgid "Edited"
 msgstr "Modificati"
 
-#: regdid/management/views.py:423
+#: regdid/management/views.py:426
 msgid "Article edited successfully"
 msgstr "Articolo modificato con successo"
 
-#: regdid/management/views.py:447
+#: regdid/management/views.py:450
 msgid "Edited notes"
 msgstr "Modificate note"
 
-#: regdid/management/views.py:452
+#: regdid/management/views.py:455
 msgid "Notes edited successfully"
 msgstr "Note modificate con successo"
 
-#: regdid/management/views.py:560
+#: regdid/management/views.py:563
 msgid "Article already exists"
 msgstr "L'articolo esiste già"
 
-#: regdid/management/views.py:585
+#: regdid/management/views.py:588
 msgid "Article added successfully"
 msgstr "Articolo aggiunto con successo"
 
-#: regdid/management/views.py:671
+#: regdid/management/views.py:674
 msgid "sub articles"
 msgstr "sotto-articoli"
 
-#: regdid/management/views.py:675
+#: regdid/management/views.py:678
 msgid "Article deleted successfully"
 msgstr "Articolo eliminato con successo"
 
-#: regdid/management/views.py:888
+#: regdid/management/views.py:891
 msgid "Sub article added successfully"
 msgstr "Sotto-articolo aggiunto con successo"
 
-#: regdid/management/views.py:915
+#: regdid/management/views.py:918
 msgid "New sub article"
 msgstr "Nuovo sotto-articolo"
 
-#: regdid/management/views.py:925
+#: regdid/management/views.py:928
 msgid "New sub article for"
 msgstr "Nuovo sotto-articolo per"
 
-#: regdid/management/views.py:982
+#: regdid/management/views.py:985
 msgid "Sub article deleted successfully"
 msgstr "Sotto-articolo eliminato con successo"
 
-#: regdid/management/views.py:1050
+#: regdid/management/views.py:1053
 msgid "RegDid is already"
 msgstr "Il RegDid è già"
 
-#: regdid/management/views.py:1136
+#: regdid/management/views.py:1139
 msgid "Changed regdid stataus to"
 msgstr "Cambiato status del regolamento a"
 
-#: regdid/management/views.py:1140
+#: regdid/management/views.py:1143
 msgid "Regdid status updated successfully"
 msgstr "Stato del regolamento modificato con successo"
 
-#: regdid/management/views.py:1252
+#: regdid/management/views.py:1257
 msgid "Regdid status must be"
 msgstr "Lo stato del regolamento deve essere"
 
-#: regdid/management/views.py:1254
+#: regdid/management/views.py:1259
 msgid "to be imported from file"
 msgstr "per poter essere importato da file"
 
-#: regdid/management/views.py:1261
+#: regdid/management/views.py:1266
 msgid ""
 "Regdid was previously edited, the import opertation will overwrite every "
 "article"
@@ -4336,27 +4363,27 @@ msgstr ""
 "Il regolamento è stato precedentemente modificato, l'operazione di "
 "importazione sovrascriverà tutti gli articoli"
 
-#: regdid/management/views.py:1344
+#: regdid/management/views.py:1349
 msgid "Didactic regulation imported from file"
 msgstr "Regolamento didattico importato da file"
 
-#: regdid/management/views.py:1351
+#: regdid/management/views.py:1356
 msgid "Didactic regulation imported successfully"
 msgstr "Regolamento didattico importato con successo"
 
-#: regdid/management/views.py:1356
+#: regdid/management/views.py:1361
 msgid "Didactic regulation import failed"
 msgstr "Importazione del regolamento didattico fallita"
 
-#: regdid/management/views.py:1538
+#: regdid/management/views.py:1543
 msgid "Didactic regulation published successfully"
 msgstr "Regolamento didattico pubblicato con successo"
 
-#: regdid/management/views.py:1545
+#: regdid/management/views.py:1550
 msgid "Published didactic regulation"
 msgstr "Pubblicato il regolamento didattico"
 
-#: regdid/management/views.py:1550
+#: regdid/management/views.py:1555
 msgid "Didactic regulation publishing failed"
 msgstr "Pubblicazione del regolamento didattico fallita"
 
@@ -4484,10 +4511,6 @@ msgstr ""
 msgid "Department notes"
 msgstr "Note del dipartimento"
 
-#: regdid/templates/regdid_list.html:8
-msgid "Didactic Regulations"
-msgstr "Regolamenti didattici"
-
 #: regdid/templates/regdid_pdf_import_form.html:22
 msgid "Import regulation from PDF"
 msgstr "Importa regolamento da PDF"
@@ -4592,18 +4615,6 @@ msgstr "ASTER2"
 msgid "ERC2"
 msgstr ""
 
-#: research_lines/management/views.py:45 research_lines/management/views.py:170
-#: research_lines/management/views.py:297
-#: research_lines/templates/base_researchlines.html:14
-msgid "Base Research lines"
-msgstr "Linee di ricerca di base"
-
-#: research_lines/management/views.py:63 research_lines/management/views.py:143
-#: research_lines/management/views.py:325
-#: research_lines/templates/applied_researchlines.html:14
-msgid "Applied Research lines"
-msgstr "Linee di ricerca applicata"
-
 #: research_lines/management/views.py:125
 #: research_lines/management/views.py:221
 msgid "Research line created successfully"
@@ -4618,6 +4629,13 @@ msgstr "Linea di ricerca modificata con successo"
 #: research_lines/management/views.py:424
 msgid "Research line removed successfully"
 msgstr "Linea di ricerca rimossa con successo"
+
+#: research_lines/management/views.py:473
+#: research_lines/management/views.py:537
+#: research_lines/management/views.py:607
+#: research_lines/management/views.py:681
+msgid "Research lines"
+msgstr "Linee di ricerca"
 
 #: research_lines/templates/applied_researchline.html:71
 msgid "rline_id"
@@ -5063,9 +5081,6 @@ msgstr "Aggiungi set di dati per"
 
 #~ msgid "Manage the pages section of CdS Websites"
 #~ msgstr "Gestisci la sezione pagine dei Siti Web dei CdS"
-
-#~ msgid "Courses of Study"
-#~ msgstr "Corsi di studio"
 
 #~ msgid "Base research lines"
 #~ msgstr "Linee di ricerca di base"
