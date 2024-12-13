@@ -1,6 +1,7 @@
 import datetime
 
 from addressbook.utils import append_email_addresses
+from django.conf import settings
 from django.core.exceptions import BadRequest
 from django.db.models import Exists, F, OuterRef, Q
 from django.http import Http404
@@ -350,7 +351,7 @@ class ServiceDidatticaCds:
         )
 
         res[0]["CdsPeriods"] = DidatticaCdsPeriodi.objects.filter(
-            cds_cod=res[0]["cds_cod"], aa_id=res[0]["didatticaregolamento__aa_reg_did"]
+            cds_cod=res[0]["cds_cod"], settings.CURRENT_YEAR
         ).values(
             "ciclo_des",
             "tipo_ciclo_des",
