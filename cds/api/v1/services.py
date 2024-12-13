@@ -351,7 +351,7 @@ class ServiceDidatticaCds:
         )
 
         res[0]["CdsPeriods"] = DidatticaCdsPeriodi.objects.filter(
-            cds_cod=res[0]["cds_cod"], settings.CURRENT_YEAR
+            cds_cod=res[0]["cds_cod"], aa_id=settings.CURRENT_YEAR
         ).values(
             "ciclo_des",
             "tipo_ciclo_des",
