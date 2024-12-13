@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from generics.models import InsModAbstract, Permissions
 from generics.validators import validate_file_size, validate_pdf_file_extension
 from regdid.settings import (
@@ -39,6 +40,8 @@ class DidatticaCdsCollegamento(models.Model):
         db_table = "DIDATTICA_CDS_COLLEGAMENTO"
         ordering = ["-cds__cds_cod"]
         unique_together = (("cds", "cds_prec"),)
+        verbose_name = "Cds Morph"
+        verbose_name_plural = verbose_name
 
     def __str__(self):
         return f"{self.cds.cds_cod}-{self.cds_prec.cds_cod}"
@@ -430,9 +433,11 @@ class DidatticaCds(InsModAbstract):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CDS"
+        verbose_name = "Cds"
+        verbose_name_plural = verbose_name
 
     def __str__(self):  # pragma: no cover
-        return "{} {}".format(self.cds_id, self.nome_cds_it)
+        return "{} {}".format(self.cds_cod, self.nome_cds_it)
 
 
 class DidatticaCdsPeriodi(models.Model):
@@ -530,9 +535,11 @@ class DidatticaCdsLingua(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CDS_LINGUA"
+        verbose_name = _("Cds Language")
+        verbose_name_plural = _("Cds Languages")
 
     def __str__(self):  # pragma: no cover
-        return "{} {}".format(self.lin_did_ord_id, self.lingua_des_it)
+        return "{} {}".format(self.cdsord.cds_cod, self.lingua_des_it)
 
 
 class DidatticaCopertura(InsModAbstract):
@@ -767,6 +774,9 @@ class DidatticaRegolamento(InsModAbstract):
     class Meta:
         managed = True
         db_table = "DIDATTICA_REGOLAMENTO"
+
+        verbose_name = _("Didactic Regulation")
+        verbose_name_plural = _("Didactic Regulations")
 
     def get_ordinamento_didattico(self):
         # se è stato caricato un ordinamento per quest'anno, lo restituisco
