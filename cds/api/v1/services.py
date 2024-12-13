@@ -351,6 +351,16 @@ class ServiceDidatticaCds:
         )
 
         res[0]["CdsPeriods"] = DidatticaCdsPeriodi.objects.filter(
+            cds_cod=res[0]["cds_cod"], aa_id=res[0]["didatticaregolamento__aa_reg_did"]
+        ).values(
+            "ciclo_des",
+            "tipo_ciclo_des",
+            "tipo_ciclo_des_eng",
+            "data_inizio",
+            "data_fine",
+        )
+
+        res[0]["CdsCurrentPeriods"] = DidatticaCdsPeriodi.objects.filter(
             cds_cod=res[0]["cds_cod"], aa_id=settings.CURRENT_YEAR
         ).values(
             "ciclo_des",
@@ -359,6 +369,7 @@ class ServiceDidatticaCds:
             "data_inizio",
             "data_fine",
         )
+
 
         for group in res[0]["CdsGroups"]:
             members = (

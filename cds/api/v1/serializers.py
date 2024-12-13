@@ -140,6 +140,12 @@ class CdsInfoSerializer(CreateUpdateAbstract):
                 query["CdsPeriods"], req_lang
             )
 
+        cds_current_periods_data = None
+        if query["CdsCurrentPeriods"] is not None:
+            cds_current_periods_data = CdsInfoSerializer.to_dict_cds_periods_data(
+                query["CdsCurrentPeriods"], req_lang
+            )
+
         regdid = DidatticaRegolamento.objects.filter(
             pk=query["didatticaregolamento__regdid_id"]
         ).first()
@@ -205,6 +211,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
             "OfficesData": offices_data,
             "CdsGroups": cds_groups_data,
             "CdsPeriods": cds_periods_data,
+            "CdsCurrentPeriods": cds_current_periods_data,
         }
 
     # @staticmethod
@@ -708,7 +715,7 @@ class CdsAreasSerializer(CreateUpdateAbstract):
             if req_lang == "it" or query["area_cds_en"] is None
             else query["area_cds_en"],
         }
-        
+
 
 class CdsExpiredSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
