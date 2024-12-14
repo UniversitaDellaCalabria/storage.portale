@@ -568,10 +568,10 @@ def base_research_line_teacher_edit(
         RicercaDocenteLineaBase.objects.select_related("personale"), pk=teacher_rline_id
     )
     teacher = teacher_rline.personale
-    teacher_rline_id = encrypt(teacher.matricola)
+    teacher_matricola = encrypt(teacher.matricola)
     teacher_data = f"{teacher.nome} {teacher.cognome}"
     form = RicercaDocenteLineaBaseForm(
-        instance=teacher_rline, initial={"choosen_person": teacher_rline_id}
+        instance=teacher_rline, initial={"choosen_person": teacher_matricola}
     )
 
     if request.POST:
@@ -579,7 +579,7 @@ def base_research_line_teacher_edit(
         if form.is_valid():
             form.save(commit=False)
             teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
-            new_teacher = get_object_or_404(Personale, matricola=teacher_rline_id)
+            new_teacher = get_object_or_404(Personale, matricola=teacher_matricola)
             teacher_rline.user_mod = request.user
             teacher_rline.personale = new_teacher
             teacher_rline.save()
@@ -639,10 +639,10 @@ def applied_researchline_teacher_edit(
         pk=teacher_rline_id,
     )
     teacher = teacher_rline.personale
-    teacher_rline_id = encrypt(teacher.matricola)
+    teacher_matricola = encrypt(teacher.matricola)
     teacher_data = f"{teacher.nome} {teacher.cognome}"
     form = RicercaDocenteLineaApplicataForm(
-        instance=teacher_rline, initial={"choosen_person": teacher_rline_id}
+        instance=teacher_rline, initial={"choosen_person": teacher_matricola}
     )
 
     if request.POST:
@@ -652,7 +652,7 @@ def applied_researchline_teacher_edit(
         if form.is_valid():
             form.save(commit=False)
             teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
-            new_teacher = get_object_or_404(Personale, matricola=teacher_rline_id)
+            new_teacher = get_object_or_404(Personale, matricola=teacher_matricola)
             teacher_rline.user_mod = request.user
             teacher_rline.personale = new_teacher
             teacher_rline.save()
