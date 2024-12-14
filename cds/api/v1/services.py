@@ -87,8 +87,8 @@ class ServiceDidatticaCds:
         items = DidatticaCds.objects.filter(q4, q1, q2, q3)
         # didatticacdslingua__lin_did_ord_id__isnull=False
 
-        if "academicyear" not in query_params:
-            items = items.filter(didatticaregolamento__stato_regdid_cod__exact="A")
+        if not query_params.get("academicyear", ""):
+            items = items.filter(didatticaregolamento__stato_regdid_cod="A")
 
         if courses_allowed != "":
             items = items.filter(tipo_corso_cod__in=courses_allowed)
