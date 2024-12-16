@@ -452,6 +452,7 @@ class ServicePersonale:
             "profilo",
             "ds_profilo",
             "ds_profilo_breve",
+            "cd_genere"
         )
 
         ruoli = (

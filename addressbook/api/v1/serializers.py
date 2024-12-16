@@ -233,43 +233,22 @@ class PersonaleFullSerializer(PersonaleSerializer):
             "ID": query["matricola"],
             "Taxpayer_ID": query["cod_fis"],
             "Roles": roles,
-            "OfficeReference": query["Riferimento Ufficio"]
-            if "Riferimento Ufficio" in PERSON_CONTACTS_TO_TAKE
-            else [],
-            "Email": query["Posta Elettronica"]
-            if "Posta Elettronica" in PERSON_CONTACTS_TO_TAKE
-            else [],
-            "PEC": query["POSTA ELETTRONICA CERTIFICATA"]
-            if "POSTA ELETTRONICA CERTIFICATA" in PERSON_CONTACTS_TO_TAKE
-            else [],
-            "TelOffice": query["Telefono Ufficio"]
-            if "Telefono Ufficio" in PERSON_CONTACTS_TO_TAKE
-            else [],
-            "TelCelOffice": query["Telefono Cellulare Ufficio"]
-            if "Telefono Cellulare Ufficio" in PERSON_CONTACTS_TO_TAKE
-            else [],
+            "OfficeReference": query["Riferimento Ufficio"] if "Riferimento Ufficio" in PERSON_CONTACTS_TO_TAKE else [],
+            "Email": query["Posta Elettronica"] if "Posta Elettronica" in PERSON_CONTACTS_TO_TAKE else [],
+            "PEC": query["POSTA ELETTRONICA CERTIFICATA"] if "POSTA ELETTRONICA CERTIFICATA" in PERSON_CONTACTS_TO_TAKE else [],
+            "TelOffice": query["Telefono Ufficio"] if "Telefono Ufficio" in PERSON_CONTACTS_TO_TAKE else [],
+            "TelCelOffice": query["Telefono Cellulare Ufficio"] if "Telefono Cellulare Ufficio" in PERSON_CONTACTS_TO_TAKE else [],
             "Fax": query["Fax"] if "Faxe" in PERSON_CONTACTS_TO_TAKE else [],
-            "WebSite": query["URL Sito WEB"]
-            if "URL Sito WEB" in PERSON_CONTACTS_TO_TAKE
-            else [],
-            "CV": query["URL Sito WEB Curriculum Vitae"]
-            if "URL Sito WEB Curriculum Vitae" in PERSON_CONTACTS_TO_TAKE
-            else [],
+            "WebSite": query["URL Sito WEB"] if "URL Sito WEB" in PERSON_CONTACTS_TO_TAKE else [],
+            "CV": query["URL Sito WEB Curriculum Vitae"] if "URL Sito WEB Curriculum Vitae" in PERSON_CONTACTS_TO_TAKE else [],
             "Teacher": query["fl_docente"] or query["cop_teacher"],
             "PersonFunctions": functions,
-            "TeacherCVFull": query["cv_full_it"]
-            if req_lang == "it" or not query["cv_full_eng"]
-            else query["cv_full_eng"],
-            "TeacherCVShort": query["cv_short_it"]
-            if req_lang == "it" or not query["cv_short_eng"]
-            else query["cv_short_eng"],
+            "TeacherCVFull": query["cv_full_it"] if req_lang == "it" or not query["cv_full_eng"] else query["cv_full_eng"],
+            "TeacherCVShort": query["cv_short_it"] if req_lang == "it" or not query["cv_short_eng"] else query["cv_short_eng"],
             "ProfileId": query["profilo"],
-            "ProfileDescription": query["ds_profilo"]
-            if query["profilo"] in ALLOWED_PROFILE_ID
-            else None,
-            "ProfileShortDescription": query["ds_profilo_breve"]
-            if query["profilo"] in ALLOWED_PROFILE_ID
-            else None,
+            "ProfileDescription": query["ds_profilo"] if query["profilo"] in ALLOWED_PROFILE_ID else None,
+            "ProfileShortDescription": query["ds_profilo_breve"] if query["profilo"] in ALLOWED_PROFILE_ID else None,
+            "Gender": query["cd_genere"]
         }
 
 
