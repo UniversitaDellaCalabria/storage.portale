@@ -27,7 +27,7 @@ from .services import ServiceLaboratorio
 class ApiLaboratoryDetail(ApiEndpointDetail):
     description = "Retrieves the detail of a specific laboratory."
     serializer_class = LaboratoryDetailSerializer
-    schema = AgidAutoSchema(tags=["public"], operation_id_base="Laboratory")
+    #schema = AgidAutoSchema(tags=["public"], operation_id_base="Laboratory")
 
     def get_queryset(self):
         laboratoryid = self.kwargs["laboratoryid"]

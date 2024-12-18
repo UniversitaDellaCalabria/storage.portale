@@ -4,6 +4,7 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.schemas.openapi_agid import AgidAutoSchema
+from drf_spectacular.openapi import AutoSchema
 
 from .pagination import UnicalStorageApiPaginationList
 from .utils import encode_labels
@@ -14,13 +15,14 @@ def home(request):
     return render(request, "dashboard.html")
 
 
+
 class ApiEndpointList(generics.ListAPIView):
     pagination_class = UnicalStorageApiPaginationList
     permission_classes = [permissions.AllowAny]
     # filter_backends = [OrderingFilter]
     # ordering_fields = '__all__'
     allowed_methods = ("GET",)
-    schema = AgidAutoSchema(tags=["public"])
+    #schema = AgidAutoSchema(tags=["public"])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -60,6 +62,12 @@ class ApiEndpointList(generics.ListAPIView):
         context = super().get_serializer_context()
         context.update({"language": self.language})
         return context
+    
+    # def get_queryset(self):
+    #     # Skip expensive queryset logic during schema generation
+    #     if getattr(self, 'swagger_fake_view', False):
+    #         return self.queryset if self.queryset is not None else self.model.objects.none()
+    #     return super().get_queryset()
 
 
 class ApiEndpointDetail(ApiEndpointList):

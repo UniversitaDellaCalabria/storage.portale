@@ -47,7 +47,7 @@ class ApiCompaniesList(ApiEndpointList):
 class ApiCompanyDetail(ApiEndpointDetail):
     description = "Retrieves detailed information of a specific spinoff/startup."
     serializer_class = CompaniesSerializer
-    schema = AgidAutoSchema(tags=["public"], operation_id_base="Company")
+    #schema = AgidAutoSchema(tags=["public"], operation_id_base="Company")
 
     def get_queryset(self):
         companyid = self.kwargs["companyid"]

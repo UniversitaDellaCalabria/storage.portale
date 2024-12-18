@@ -17,7 +17,7 @@ class LockView(APIView):
     description = ""
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
-    schema = None
+    #schema = None
 
     def get(self, request, *args, **kwargs):
         content_type_id = self.kwargs["content_type_id"]
@@ -38,7 +38,7 @@ class LockSetView(APIView):
     description = ""
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
-    schema = None
+    #schema = None
 
     def post(self, request, *args, **kwargs):
         content_type_id = request.data.get("content_type_id", None)

@@ -22,7 +22,7 @@ class ApiCdsWebsiteTimetable(APIView):  # pragma: no cover
     description = "Retrieves the timetable for a course of study."
     filter_backends = [CdsWebsiteTimetableFilter]
     allowed_methods = ("GET",)
-    schema = AgidAutoSchema(tags=["public"])
+    #schema = AgidAutoSchema(tags=["public"])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

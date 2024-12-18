@@ -33,7 +33,7 @@ class ApiHighFormationMastersList(ApiEndpointList):
 class ApiHighFormationMastersDetail(ApiEndpointDetail):
     description = "Retrieves detailed information of a high-formation master."
     serializer_class = HighFormationMastersSerializer
-    schema = AgidAutoSchema(tags=["public"], operation_id_base="HighFormationMaster")
+    #schema = AgidAutoSchema(tags=["public"], operation_id_base="HighFormationMaster")
 
     def get_queryset(self):
         master_id = self.kwargs["id"]
