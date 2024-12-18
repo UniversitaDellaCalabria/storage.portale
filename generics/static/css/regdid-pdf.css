@@ -152,7 +152,7 @@ ol li ol li ol li ol {
 }
 .text {
     font-size: 10pt;
-    /*text-align: justify;*/
+    text-align: justify;
 }
 .section-title {
     font-weight: bold;
@@ -166,6 +166,7 @@ ol li ol li ol li ol {
 .title {
     -pdf-keep-with-next: true;
 }
-li p > * {
-    display: inline; /* Gestisce anche eventuali tag nidificati */
+li > p {
+    display: inline-block;
+    width: 100%;
 }
