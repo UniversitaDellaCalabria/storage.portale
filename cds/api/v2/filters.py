@@ -1,6 +1,7 @@
 from django_filters import rest_framework as filters
+from django.http import Http404
 
-from cds.models import DidatticaCds
+from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa
 
 
 class CdsFilter(filters.FilterSet):
@@ -14,4 +15,16 @@ class CdsFilter(filters.FilterSet):
 
     class Meta:
         model = DidatticaCds
+        fields = []
+
+
+class DegreeTypeFilter(filters.FilterSet):
+    class Meta:
+        model = DidatticaCdsTipoCorso
+        fields = []
+
+
+class DidatticaAttivitaFormativaFilter(filters.FilterSet):
+    class Meta:
+        model = DidatticaAttivitaFormativa
         fields = []
