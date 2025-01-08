@@ -5,12 +5,14 @@ from django.db import models
 from django.db.models import Case, When, Value, F
 from django.db.models.functions import Concat
 
-from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa
+from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa, DidatticaRegolamento
 from .serializers import (
     CdsSerializer,
     DegreeTypeSerializer,
     DidatticaAttivitaFormativaSerializer,
-    StudyActivitiesSerializer
+    StudyActivitiesListSerializer,
+    StudyActivitiesDetailSerializer,
+    AcademicYearsSerializer
 )
 from .filters import (
     CdsFilter,
@@ -31,6 +33,14 @@ class DegreeTypeViewSet(ReadOnlyModelViewSet):
     filterset_class = DegreeTypeFilter
     queryset = DidatticaCdsTipoCorso.objects.all()
     
+class AcademicYearsViewSet(ReadOnlyModelViewSet):
+    serializer_class = AcademicYearsSerializer
+    filter_backends = [DjangoFilterBackend]
+    queryset = DidatticaRegolamento.objects.all()
+    
+    def get_queryset(self):
+        return DidatticaRegolamento.objects.values('aa_reg_did').distinct().order_by('-aa_reg_did')
+    
     
 class DidatticaAttivitaFormativaViewSet(ReadOnlyModelViewSet):
     serializer_class = DidatticaAttivitaFormativaSerializer
@@ -41,8 +51,6 @@ class DidatticaAttivitaFormativaViewSet(ReadOnlyModelViewSet):
     
 class StudyActivitiesViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
-    serializer_class = StudyActivitiesSerializer
-    filter_backends = [DjangoFilterBackend]
     filterset_class = DidatticaAttivitaFormativaFilter
     queryset = DidatticaAttivitaFormativa.objects.select_related("cds__dip", "matricola_resp_did").annotate(
                 full_name=Concat(
@@ -57,3 +65,8 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                     output_field=models.CharField()
                 )
     )
+    def get_serializer_class(self):
+        if self.action == 'retrieve': 
+            return StudyActivitiesDetailSerializer
+        else:
+            return StudyActivitiesListSerializer

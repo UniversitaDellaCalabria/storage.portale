@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa
+from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa, DidatticaRegolamento
 
 
 class ReadOnlyModelSerializer(serializers.ModelSerializer):
@@ -26,9 +26,21 @@ class DidatticaAttivitaFormativaSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = DidatticaAttivitaFormativa
         fields = "__all__"
+ 
+class AcademicYearsSerializer(ReadOnlyModelSerializer):
+    class Meta:
+        model = DidatticaRegolamento
+        fields = [
+            "aa_reg_did",
+        ]   
+        
+class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
+    class Meta:
+        model = DidatticaAttivitaFormativa
+        fields = "__all__"
         
 
-class StudyActivitiesSerializer(ReadOnlyModelSerializer):   
+class StudyActivitiesListSerializer(ReadOnlyModelSerializer):   
 
     full_name = serializers.CharField()
     cds_cod = serializers.CharField(source="cds.cds_cod")
