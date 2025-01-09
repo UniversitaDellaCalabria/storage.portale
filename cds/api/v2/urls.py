@@ -9,8 +9,6 @@ router = DefaultRouter()
 router.register(r"cds", CdsViewSet, basename="cds")
 router.register(r"degreetypes", DegreeTypeViewSet, basename="degreetypes")
 router.register(r"academicyears", AcademicYearsViewSet, basename="academicyears"),
-    
 router.register(r"activities", StudyActivitiesViewSet, basename="activities")
-router.register(r"activities/<int:studyactivityid>", StudyActivitiesViewSet, basename="activitiesdetail")
 
 urlpatterns = router.urls

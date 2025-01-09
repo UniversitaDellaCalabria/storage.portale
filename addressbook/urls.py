@@ -8,5 +8,5 @@ app_name = "addressbook"
 
 urlpatterns = [
     path(RICERCA_API_URL, include(apiv1_urls)),
-    path(RICERCA_API_URL, include(apiv2_urls)),
+    path('api/v2/', include(apiv2_urls)),
 ]
