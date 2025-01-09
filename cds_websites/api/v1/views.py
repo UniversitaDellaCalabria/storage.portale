@@ -32,7 +32,7 @@ class SitoWebCdsOggettiPortaleViewSet(ReadOnlyModelViewSet):
     serializer_class = SitoWebCdsOggettiPortaleSerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    #schema = None
+    schema = None
 
     def get_queryset(self):
         if self.action != "list":
@@ -55,7 +55,7 @@ class ExternalOggettiPortaleViewSet(GenericViewSet):
     description = "Retrieves a list of external objects for the management crud."
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    #schema = None
+    schema = None
 
     def list(self, request):
         UNICMS_AUTH_TOKEN = getattr(settings, "UNICMS_AUTH_TOKEN", "")
