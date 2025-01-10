@@ -1,7 +1,8 @@
 from django_filters import rest_framework as filters
 from django.db.models import Q
+from generics.utils import encrypt
 
-from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa
+from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa, DidatticaCopertura
 
 
 class CdsFilter(filters.FilterSet):
@@ -25,7 +26,7 @@ class DegreeTypeFilter(filters.FilterSet):
         
 
 
-class DidatticaAttivitaFormativaFilter(filters.FilterSet):
+class StudyActivitiesFilter(filters.FilterSet):
     academic_year = filters.NumberFilter(
         field_name="aa_off_id",
         lookup_expr="iexact",
@@ -58,8 +59,8 @@ class DidatticaAttivitaFormativaFilter(filters.FilterSet):
     teaching = filters.CharFilter(
         field_name="des",
         lookup_expr="icontains",
-        label="IT Teaching Name",
-        help_text="Filter by teaching name in Italian.",
+        label="Teaching Name",
+        help_text="Filter by teaching name..",
     )
     ssd = filters.CharFilter(
         method="filter_ssd",
@@ -78,20 +79,17 @@ class DidatticaAttivitaFormativaFilter(filters.FilterSet):
         label="Cds Code",
         help_text="Filter by Cds code.",
     )
-    teacher_code = filters.CharFilter(
-        field_name="matricola_resp_did",
-        lookup_expr="exact",
+    
+    coperture = filters.CharFilter(
+        method="filter_by_teacher_code",
         label="Teacher Code",
-        help_text="Filter by teacher code.",
+        help_text="Filter activities based on teacher coverage using the teacher code."
     )
-    '''
-    father = filters.CharFilter(
-        field_name="af_radice_id",
-        lookup_expr="iexact",
-        label="Father ID",
-        help_text="Filter by father activity ID.",
-    )
-    '''
+    def filter_by_teacher_code(self, queryset, name, value):
+        coperture = DidatticaCopertura.objects.filter(matricola_resp_did=value).exclude(stato_coper_cod="R").values("af_id")
+        return queryset.filter(Q(af_id__in=coperture) | Q(af_master_id__in=coperture))
+    
+
 
     def filter_cds(self, queryset, name, value):
         return queryset.filter(
