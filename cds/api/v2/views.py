@@ -8,6 +8,7 @@ from django.db.models.functions import Concat
 from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa, DidatticaRegolamento, DidatticaCopertura
 from .serializers import (
     CdsSerializer,
+    CdsAreasSerializer,
     DegreeTypeSerializer,
     StudyActivitiesListSerializer,
     StudyActivitiesDetailSerializer,
@@ -46,11 +47,16 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = StudyActivitiesFilter 
     queryset = DidatticaAttivitaFormativa.objects.select_related("cds__dip", "matricola_resp_did").annotate(
-                full_name=Concat(
-                    Case(
-                        When(matricola_resp_did__cognome__isnull=True, then=Value('')),
-                    ),
-                    F('matricola_resp_did__cognome'),
+        
+        full_name = Case(
+            When(
+                matricola_resp_did__cognome__isnull=True,
+                matricola_resp_did__nome__isnull=True,
+                matricola_resp_did__middle_name__isnull=True,
+                then=Value('')
+            ),
+            default=Concat(
+                F('matricola_resp_did__cognome'),
                     Value(' '),
                     F('matricola_resp_did__nome'),
                     Case(
@@ -59,8 +65,8 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                         output_field=models.CharField()
                     ),
                     output_field=models.CharField()
-                ),
-                
+            )
+        ),
                 group_description=Concat(
                     F('des'),
                     Case(
@@ -90,7 +96,6 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                 ),
                 
     ).annotate(
-        # Gestiamo i valori null usando Case/When
         af_gen_cod_final=Case(
             When(af_gen_cod__isnull=True, then=F('af_gen_cod_fallback')),
             default=F('af_gen_cod'),
@@ -116,4 +121,19 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
             return StudyActivitiesListSerializer
                     
             
+    
+class CdsAreasViewSet(ReadOnlyModelViewSet):
+    serializer_class = CdsAreasSerializer
+    filter_backends = [DjangoFilterBackend]
+    queryset = DidatticaCds.objects.values("area_cds", "area_cds_en").filter(
+area_cds__isnull=False, area_cds_en__isnull=False).distinct()
+    
+    def get(self, request, *args, **kwargs):
+        lang = request.LANGUAGE_CODE
+        self.language = request.query_params.get("lang", lang).lower()
+
+        cache_key = "cdsareas"
+        kwargs["cache_key"] = cache_key
+
+        return super().get(request, *args, **kwargs)
     

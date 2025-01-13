@@ -15,7 +15,20 @@ class CdsSerializer(ReadOnlyModelSerializer):
         model = DidatticaCds
         fields = "__all__"
 
+class CdsAreasSerializer(ReadOnlyModelSerializer):   
+    area_cds = serializers.SerializerMethodField()
 
+    
+    def get_area_cds(self, obj):
+        language = self.context.get("request").LANGUAGE_CODE.lower()
+        if language == "en" and obj.get("area_cds_en"):
+            return obj.get("area_cds_en")
+        return obj.get("area_cds")
+    class Meta:
+        model = DidatticaCds
+        fields = [
+            "area_cds",
+        ] 
 class DegreeTypeSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = DidatticaCdsTipoCorso
@@ -118,3 +131,5 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
             "full_name",
             "pds_des",
             ]
+        
+        
