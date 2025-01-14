@@ -2,13 +2,22 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db import models
-from django.db.models import Case, When, Value, F, Subquery, OuterRef
+from django.db.models import Case, When, Value, F, Subquery, OuterRef, Q, Exists
 from django.db.models.functions import Concat
+from django.conf import settings
 
-from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa, DidatticaRegolamento, DidatticaCopertura
+from cds.models import (
+    DidatticaCds, 
+    DidatticaCdsTipoCorso, 
+    DidatticaAttivitaFormativa, 
+    DidatticaRegolamento, 
+    DidatticaCopertura,
+    DidatticaCdsCollegamento
+)
 from .serializers import (
     CdsSerializer,
     CdsAreasSerializer,
+    CdsExpiredSerializer,
     DegreeTypeSerializer,
     StudyActivitiesListSerializer,
     StudyActivitiesDetailSerializer,
@@ -16,6 +25,7 @@ from .serializers import (
 )
 from .filters import (
     CdsFilter,
+    CdsExpiredFilter,
     DegreeTypeFilter,
     StudyActivitiesFilter
 )
@@ -111,7 +121,22 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
             default=F('ciclo_des'),
             output_field=models.CharField()
         )
+    ).filter(
+        Q(
+            af_id__in=Subquery(
+                DidatticaCopertura.objects.filter(
+                    ~Q(stato_coper_cod='R') | Q(stato_coper_cod__isnull=True)
+                ).values('af_id')
+            )
+        ) | Q(
+            af_master_id__in=Subquery(
+                DidatticaCopertura.objects.filter(
+                    ~Q(stato_coper_cod='R') | Q(stato_coper_cod__isnull=True)
+                ).values('af_id')
+            )
+        )
     ).distinct().order_by("des")
+    
     
     
     def get_serializer_class(self):
@@ -137,3 +162,31 @@ area_cds__isnull=False, area_cds_en__isnull=False).distinct()
 
         return super().get(request, *args, **kwargs)
     
+
+
+class CdsExpiredViewSet(ReadOnlyModelViewSet):
+    serializer_class = CdsExpiredSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CdsExpiredFilter
+
+    def get_queryset(self):
+        cds_morphed = DidatticaCdsCollegamento.objects.values_list('cds_prec__cds_cod', flat=True)
+
+        regdids = (
+            DidatticaRegolamento.objects.select_related('cds')
+            .filter(
+                ~Exists(
+                    DidatticaRegolamento.objects.filter(
+                        cds=OuterRef("cds"),
+                        aa_reg_did__gt=OuterRef("aa_reg_did"),
+                    ).exclude(stato_regdid_cod="R")
+                ),
+                aa_reg_did__lt=settings.CURRENT_YEAR,
+            )
+            .exclude(stato_regdid_cod="R")
+            .exclude(aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni")))
+            .exclude(cds__cds_cod__in=cds_morphed)
+            .values("aa_reg_did", "cds__cds_cod", "cds__durata_anni")
+        )
+
+        return regdids

@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa, DidatticaRegolamento
+from cds.models import (
+    DidatticaCds, 
+    DidatticaCdsTipoCorso, 
+    DidatticaAttivitaFormativa, 
+    DidatticaRegolamento,
+)
 from generics.utils import encrypt
 
 class ReadOnlyModelSerializer(serializers.ModelSerializer):
@@ -29,6 +34,19 @@ class CdsAreasSerializer(ReadOnlyModelSerializer):
         fields = [
             "area_cds",
         ] 
+        
+class CdsExpiredSerializer(ReadOnlyModelSerializer):
+    cds_cod = serializers.CharField(source="cds.cds_cod", default=None)
+    cds_duration = serializers.CharField(source="cds.durata_anni", default=None)
+    class Meta:
+        model = DidatticaRegolamento
+        fields =[
+            "cds_cod",
+            "aa_reg_did",
+            "cds_duration",
+        ] 
+        
+        
 class DegreeTypeSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = DidatticaCdsTipoCorso

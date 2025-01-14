@@ -1,8 +1,13 @@
 from django_filters import rest_framework as filters
 from django.db.models import Q
-from generics.utils import encrypt
 
-from cds.models import DidatticaCds, DidatticaCdsTipoCorso, DidatticaAttivitaFormativa, DidatticaCopertura
+from cds.models import (
+    DidatticaCds, 
+    DidatticaCdsTipoCorso, 
+    DidatticaAttivitaFormativa, 
+    DidatticaCopertura,
+    DidatticaRegolamento
+)
 
 
 class CdsFilter(filters.FilterSet):
@@ -17,6 +22,24 @@ class CdsFilter(filters.FilterSet):
     class Meta:
         model = DidatticaCds
         fields = []
+        
+
+class CdsExpiredFilter(filters.FilterSet):
+    yearfrom = filters.NumberFilter(
+        field_name='aa_reg_did', 
+        lookup_expr='gte', 
+        label='Year From')
+    
+    coursetypes = filters.CharFilter(
+        field_name='cds__tipo_corso_cod', 
+        lookup_expr='in', 
+        label='Course Types')
+
+    class Meta:
+        model = DidatticaRegolamento
+        fields = []
+
+ 
 
 
 class DegreeTypeFilter(filters.FilterSet):
