@@ -39,17 +39,17 @@ class ApiEndpointList(generics.ListAPIView):
             self.language = self.request.query_params.get("lang", lang).lower()
 
         # cache
-        if kwargs.get("cache_key"):
-            cache_key = kwargs["cache_key"]
-            if cache.get(cache_key):
-                data = cache.get(cache_key)
-            else:
-                serializer = self.prepare_data(**kwargs)
-                data = serializer.data
-                cache.set(cache_key, data)
-        else:
-            serializer = self.prepare_data(**kwargs)
-            data = serializer.data
+        # if kwargs.get("cache_key"):
+        #     cache_key = kwargs["cache_key"]
+        #     if cache.get(cache_key):
+        #         data = cache.get(cache_key)
+        #     else:
+        #         serializer = self.prepare_data(**kwargs)
+        #         data = serializer.data
+        #         cache.set(cache_key, data)
+        # else:
+        serializer = self.prepare_data(**kwargs)
+        data = serializer.data
 
         results = self.paginate_queryset(data)
         response = {
