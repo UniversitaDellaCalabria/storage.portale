@@ -1,3 +1,10 @@
+from collections import defaultdict
+
+from drf_spectacular.utils import (
+    OpenApiExample,
+    extend_schema_field,
+    extend_schema_serializer,
+)
 from generics.utils import encrypt
 from rest_framework import serializers
 
@@ -8,8 +15,6 @@ from cds.models import (
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
 )
-
-from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 
 
 class ReadOnlyModelSerializer(serializers.ModelSerializer):
@@ -96,7 +101,7 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     lista_lin_did_af = serializers.SerializerMethodField()
     matricola_resp_did = serializers.SerializerMethodField()
 
-    father = serializers.SerializerMethodField()
+    father = serializers.CharField()
 
     def get_lista_lin_did_af(self, obj):
         lista_lin_did_af = getattr(obj, "lista_lin_did_af", None)
@@ -107,24 +112,6 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     def get_matricola_resp_did(self, obj):
         matricola = getattr(obj, "matricola_resp_did", None)
         return encrypt(matricola)
-
-    def get_father(self, obj):
-        return getattr(obj, "father", None)
-
-    """
-    dip_des = serializers.SerializerMethodField()
-    
-    def get_group_description(self, obj):
-        for i in self.get_lista_lin_did_af(obj):
-            if "IT" not in i or obj.af_gen_des_eng:
-                return obj.af_gen_des_eng
-
-    def get_dip_des(self, obj):
-        for i in self.get_lista_lin_did_af(obj):
-            if "IT" not in i or obj.dip_des_eng:
-                return obj.dip_des_it
-        return obj.dip_des_eng
-    """
 
     class Meta:
         model = DidatticaAttivitaFormativa
@@ -157,6 +144,19 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
             "full_name",
             "pds_des",
         ]
+
+
+class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):
+    id = serializers.IntegerField(source="af_id")
+    name = serializers.CharField(source="des")
+    year = serializers.IntegerField(source="anno_corso")
+    cycle = serializers.CharField(source="ciclo_des")
+    etcs = serializers.IntegerField(source="peso")
+    type = serializers.CharField(source="tipo_af_des")
+
+    class Meta:
+        model = DidatticaAttivitaFormativa
+        fields = ["id", "name", "year", "cycle", "etcs", "type"]
 
 
 @extend_schema_serializer(
@@ -210,3 +210,30 @@ class AcademicPathwaysListSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = DidatticaPdsRegolamento
         fields = ["id", "cod", "name", "duration"]
+
+
+class AcademicPathwaysDetailSerializer(ReadOnlyModelSerializer):
+    id = serializers.IntegerField(
+        source="pds_regdid_id", help_text="The ID of the academic pathway."
+    )
+    cod = serializers.CharField(
+        source="pds_cod", help_text="The code of the academic pathway."
+    )
+    name = serializers.CharField(
+        source="pds_des_it", help_text="The name of the academic pathway."
+    )
+    activities = serializers.SerializerMethodField(method_name="get_activities_by_year")
+
+    @extend_schema_field(StudyActivitiesLiteSerializer(many=True))
+    def get_activities_by_year(self, obj):
+        activities = obj.didatticaattivitaformativa_set.all()
+        grouped_data = defaultdict(list)
+        for activity in activities:
+            grouped_data[activity.anno_corso].append(
+                StudyActivitiesLiteSerializer(activity).data
+            )
+        return grouped_data
+
+    class Meta:
+        model = DidatticaPdsRegolamento
+        fields = ["id", "cod", "name", "activities"]
