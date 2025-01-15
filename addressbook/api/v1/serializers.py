@@ -170,7 +170,7 @@ class PersonaleSerializer(CreateUpdateAbstract):
             "TelCelOffice": query["Telefono Cellulare Ufficio"]
             if "Telefono Cellulare Ufficio" in PERSON_CONTACTS_TO_TAKE
             else [],
-            "Fax": query["Fax"] if "Faxe" in PERSON_CONTACTS_TO_TAKE else [],
+            "Fax": query["Fax"] if "Fax" in PERSON_CONTACTS_TO_TAKE else [],
             "WebSite": query["URL Sito WEB"]
             if "URL Sito WEB" in PERSON_CONTACTS_TO_TAKE
             else [],

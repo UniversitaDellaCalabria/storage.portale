@@ -118,7 +118,7 @@ class ServicePersonale:
         for p in priorita_tmp:
             priorita.update({p["cd_ruolo"]: p["priorita"]})
 
-        already_taken_contacts = []
+        # already_taken_contacts = []
         for q in query:
             if q["id_ab"] not in grouped:
                 grouped[q["id_ab"]] = {
@@ -153,15 +153,15 @@ class ServicePersonale:
                     ]
                     if (
                         not bool(res)
-                        and q["personalecontatti__contatto"].lower()
-                        not in already_taken_contacts
+                        # and q["personalecontatti__contatto"].lower()
+                        # not in already_taken_contacts
                     ):
                         grouped[q["id_ab"]][
                             q["personalecontatti__cd_tipo_cont__descr_contatto"]
                         ].append(q["personalecontatti__contatto"])
-                        already_taken_contacts.append(
-                            q["personalecontatti__contatto"].lower()
-                        )
+                        # already_taken_contacts.append(
+                            # q["personalecontatti__contatto"].lower()
+                        # )
 
             if last_id == -1 or last_id != q["id_ab"]:
                 last_id = q["id_ab"]
@@ -495,7 +495,7 @@ class ServicePersonale:
             roles.append(d_data)
         roles.sort(key=lambda x: x["priorita"])
 
-        already_taken_contacts = []
+        # already_taken_contacts = []
         for q in query:
             for c in PERSON_CONTACTS_TO_TAKE:
                 q[c] = []
@@ -509,15 +509,15 @@ class ServicePersonale:
                 ]
                 if (
                     not bool(res)
-                    and c["personalecontatti__contatto"].lower()
-                    not in already_taken_contacts
+                    # and c["personalecontatti__contatto"].lower()
+                    # not in already_taken_contacts
                 ):
                     q[c["personalecontatti__cd_tipo_cont__descr_contatto"]].append(
                         c["personalecontatti__contatto"]
                     )
-                    already_taken_contacts.append(
-                        c["personalecontatti__contatto"].lower()
-                    )
+                    # already_taken_contacts.append(
+                        # c["personalecontatti__contatto"].lower()
+                    # )
 
             if len(functions) == 0:
                 q["Functions"] = None
