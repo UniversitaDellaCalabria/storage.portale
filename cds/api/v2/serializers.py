@@ -9,6 +9,7 @@ from generics.serializers import ReadOnlyModelSerializer
 from generics.utils import encrypt
 from rest_framework import serializers
 
+
 from cds.models import (
     DidatticaAttivitaFormativa,
     DidatticaCds,
@@ -36,37 +37,36 @@ class CdsAreasSerializer(ReadOnlyModelSerializer):
             "areaCds": {"it": "area_cds", "en": "area_cds_en"},
         }
 
-
 class CdsExpiredSerializer(ReadOnlyModelSerializer):
-    cds_cod = serializers.CharField(source="cds.cds_cod", default=None)
-    cds_duration = serializers.CharField(source="cds.durata_anni", default=None)
+    cdsCod = serializers.CharField(source="cds.cds_cod")
+    aaRegDid = serializers.CharField(source="aa_reg_did")
+    cdsDuration = serializers.CharField(source="cds.durata_anni")
 
     class Meta:
         model = DidatticaRegolamento
         fields = [
-            "cds_cod",
-            "aa_reg_did",
-            "cds_duration",
+            "cdsCod",
+            "aaRegDid",
+            "cdsDuration",
         ]
 
 
 class DegreeTypeSerializer(ReadOnlyModelSerializer):
+    cod = serializers.CharField(source="tipo_corso_cod")
+    des = serializers.CharField(source="tipo_corso_des")
     class Meta:
         model = DidatticaCdsTipoCorso
-        fields = ["tipo_corso_cod", "tipo_corso_des"]
-
-
-class DidatticaAttivitaFormativaSerializer(ReadOnlyModelSerializer):
-    class Meta:
-        model = DidatticaAttivitaFormativa
-        fields = "__all__"
-
+        fields = [
+            "cod",
+            "des",
+        ]
 
 class AcademicYearsSerializer(ReadOnlyModelSerializer):
+    aaRegDid = serializers.CharField(source="aa_reg_did")
     class Meta:
         model = DidatticaRegolamento
         fields = [
-            "aa_reg_did",
+            "aaRegDid",
         ]
 
 
@@ -77,63 +77,74 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
 
 
 class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
-    cds_cod = serializers.CharField(source="cds.cds_cod")
-    dip_des_it = serializers.CharField(source="cds.dip.dip_des_it")
-    dip_des_eng = serializers.CharField(source="cds.dip.dip_des_eng")
-    dip_cod = serializers.CharField(source="cds.dip.dip_cod")
+    id = serializers.CharField(source="af_id")
+    genCod = serializers.CharField(source="af_gen_cod")
+    des = serializers.CharField(source="group_description")
+    cdsId = serializers.CharField(source="cds_id")
+    cdsCod = serializers.CharField(source="cds.cds_cod")
+    language = serializers.SerializerMethodField()
+    fatherCode = serializers.CharField(source="af_radice_id")
+    fatherName = serializers.CharField()
+    regDidId = serializers.CharField(source="regdid_id")
+    dipDes = serializers.CharField(source="cds.dip.dip_des_it")
+    dipCod = serializers.CharField(source="cds.dip.dip_cod")
+    courseYear = serializers.CharField(source="anno_corso")
+    academicYear = serializers.CharField(source="aa_off_id")
+    semester = serializers.CharField(source="ciclo_des")
+    SSDCod = serializers.CharField(source="sett_cod")
+    SSD = serializers.CharField(source="sett_des")
+    partitionCod = serializers.CharField(source="part_stu_cod")
+    partitionDes = serializers.CharField(source="part_stu_des")
+    extendedPartitionCod = serializers.CharField(source="fat_part_stu_cod")
+    extendedPartitionDes = serializers.CharField(source="fat_part_stu_des")
+    cdsName = serializers.CharField(source="cds.nome_cds_it")
+    teacherId = serializers.SerializerMethodField()
+    teacherName = serializers.CharField(source="full_name")
+    studyPlanDes = serializers.CharField(source="pds_des")
 
-    nome_cds_it = serializers.CharField(source="cds.nome_cds_it")
-    nome_cds_eng = serializers.CharField(source="cds.nome_cds_eng")
-
-    full_name = serializers.CharField()
-    group_description = serializers.CharField()
-
-    lista_lin_did_af = serializers.SerializerMethodField()
-    matricola_resp_did = serializers.SerializerMethodField()
-
-    father = serializers.CharField()
-
-    def get_lista_lin_did_af(self, obj):
-        lista_lin_did_af = getattr(obj, "lista_lin_did_af", None)
-        if lista_lin_did_af:
-            return lista_lin_did_af.replace(" ", "").split(",")
+    def get_language(self, obj):
+        list_language = getattr(obj, "lista_lin_did_af", None)
+        if list_language:
+            return list_language.replace(" ", "").split(",")
         return []
 
-    def get_matricola_resp_did(self, obj):
+    def get_teacherId(self, obj):
         matricola = getattr(obj, "matricola_resp_did", None)
         return encrypt(matricola)
 
     class Meta:
         model = DidatticaAttivitaFormativa
         fields = [
-            "af_id",
-            "af_gen_cod",
-            "group_description",
-            "af_gen_des_eng",
-            "cds_id",
-            "cds_cod",
-            "lista_lin_did_af",
-            "af_radice_id",
-            "father",
-            "regdid_id",
-            "dip_des_it",
-            "dip_des_eng",
-            "dip_cod",
-            "anno_corso",
-            "aa_off_id",
-            "ciclo_des",
-            "sett_cod",
-            "sett_des",
-            "part_stu_cod",
-            "part_stu_des",
-            "fat_part_stu_cod",
-            "fat_part_stu_des",
-            "nome_cds_it",
-            "nome_cds_eng",
-            "matricola_resp_did",
-            "full_name",
-            "pds_des",
+            "id",
+            "genCod",
+            "des",
+            "cdsId",
+            "cdsCod",
+            "language",
+            "fatherCode",
+            "fatherName",
+            "regDidId",
+            "dipDes",
+            "dipCod",
+            "courseYear",
+            "academicYear",
+            "semester",
+            "SSDCod",
+            "SSD",
+            "partitionCod",
+            "partitionDes",
+            "extendedPartitionCod",
+            "extendedPartitionDes",
+            "cdsName",
+            "teacherId",
+            "teacherName",
+            "studyPlanDes"
         ]
+        language_field_map = {
+            "des": {"it": "group_description", "en": "af_gen_des_eng"},
+            "dipDes": {"it": "cds.dip.dip_des_it", "en": "cds.dip.dip_des_eng"},
+            "cdsName": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"},
+        }
 
 
 class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):

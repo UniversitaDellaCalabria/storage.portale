@@ -71,7 +71,6 @@ class AcademicYearsViewSet(ReadOnlyModelViewSet):
             .order_by("-aa_reg_did")
         )
 
-
 class StudyActivitiesViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -153,7 +152,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                         ),
                         output_field=models.CharField(),
                     ),
-                    father=F("des"),
+                    fatherName=F("des"),
                     af_gen_cod_final=Coalesce(
                         F("af_gen_cod"),
                         Subquery(coperture_qs.values("af_gen_cod")),
@@ -232,8 +231,7 @@ class CdsExpiredViewSet(ReadOnlyModelViewSet):
         )
 
         regdids = (
-            DidatticaRegolamento.objects.select_related("cds")
-            .filter(
+            DidatticaRegolamento.objects.filter(
                 ~Exists(
                     DidatticaRegolamento.objects.filter(
                         cds=OuterRef("cds"),
@@ -241,11 +239,11 @@ class CdsExpiredViewSet(ReadOnlyModelViewSet):
                     ).exclude(stato_regdid_cod="R")
                 ),
                 aa_reg_did__lt=settings.CURRENT_YEAR,
+                cds__isnull=False
             )
             .exclude(stato_regdid_cod="R")
             .exclude(aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni")))
             .exclude(cds__cds_cod__in=cds_morphed)
-            .values("aa_reg_did", "cds__cds_cod", "cds__durata_anni")
         )
 
         return regdids
