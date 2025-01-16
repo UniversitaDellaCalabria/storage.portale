@@ -1,7 +1,25 @@
 from rest_framework import serializers
+from django.utils.translation import get_language
 
 
-class ReadOnlyModelSerializer(serializers.ModelSerializer):
+class LanguageAwareMixin:
+    """
+    A mix-in to dynamically adjust sources for fields based on the language
+    """
+    def get_fields(self):
+        fields = super().get_fields()
+        current_language = get_language()
+        field_map = getattr(self.Meta, "language_field_map", {})
+
+        for field_name, sources in field_map.items():
+            if field_name in fields:
+                fields[field_name].source = sources.get(
+                    current_language, sources.get("default", None)
+                )
+        return fields
+
+
+class ReadOnlyModelSerializer(LanguageAwareMixin, serializers.ModelSerializer):
     """
     A custom serializer that enforces all fields to be read-only.
 

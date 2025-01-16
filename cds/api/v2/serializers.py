@@ -5,9 +5,9 @@ from drf_spectacular.utils import (
     extend_schema_field,
     extend_schema_serializer,
 )
+from generics.serializers import ReadOnlyModelSerializer
 from generics.utils import encrypt
 from rest_framework import serializers
-from generics.serializers import ReadOnlyModelSerializer
 
 from cds.models import (
     DidatticaAttivitaFormativa,
@@ -25,19 +25,16 @@ class CdsSerializer(ReadOnlyModelSerializer):
 
 
 class CdsAreasSerializer(ReadOnlyModelSerializer):
-    area_cds = serializers.SerializerMethodField()
-
-    def get_area_cds(self, obj):
-        language = self.context.get("request").LANGUAGE_CODE.lower()
-        if language == "en" and obj.get("area_cds_en"):
-            return obj.get("area_cds_en")
-        return obj.get("area_cds")
+    areaCds = serializers.CharField(source="area_cds")
 
     class Meta:
         model = DidatticaCds
         fields = [
-            "area_cds",
+            "areaCds",
         ]
+        language_field_map = {
+            "areaCds": {"it": "area_cds", "en": "area_cds_en"},
+        }
 
 
 class CdsExpiredSerializer(ReadOnlyModelSerializer):
