@@ -1,8 +1,8 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import encrypt
 
 
-class ProjectSerializer(CreateUpdateAbstract):
+class ProjectSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -70,7 +70,7 @@ class ProjectSerializer(CreateUpdateAbstract):
         return result
 
 
-class ProjectInfrastructuresSerializer(CreateUpdateAbstract):
+class ProjectInfrastructuresSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

@@ -1,9 +1,9 @@
 from addressbook.settings import ALLOWED_PROFILE_ID, PERSON_CONTACTS_TO_TAKE
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import encrypt
 
 
-class AddressbookSerializer(CreateUpdateAbstract):
+class AddressbookSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -133,7 +133,7 @@ class AddressbookFullSerializer(AddressbookSerializer):
         }
 
 
-class PersonaleSerializer(CreateUpdateAbstract):
+class PersonaleSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -252,7 +252,7 @@ class PersonaleFullSerializer(PersonaleSerializer):
         }
 
 
-class AddressbookStructuresSerializer(CreateUpdateAbstract):
+class AddressbookStructuresSerializer(serializers.Serializer):
     def to_representation(self, instance):  # pragma: no cover
         query = instance
         data = super().to_representation(instance)
@@ -269,7 +269,7 @@ class AddressbookStructuresSerializer(CreateUpdateAbstract):
         }
 
 
-class RolesSerializer(CreateUpdateAbstract):
+class RolesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -284,7 +284,7 @@ class RolesSerializer(CreateUpdateAbstract):
         }
 
 
-class PersonnelCfSerializer(CreateUpdateAbstract):
+class PersonnelCfSerializer(serializers.Serializer):
     def to_representation(self, instance):  # pragma: no cover
         query = instance
         data = super().to_representation(instance)
@@ -310,7 +310,7 @@ class PersonnelCfSerializer(CreateUpdateAbstract):
         }
 
 
-class SortingContactsSerializer(CreateUpdateAbstract):
+class SortingContactsSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

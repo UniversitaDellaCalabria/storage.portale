@@ -1,11 +1,11 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import build_media_path, encrypt
 
 from cds.models import DidatticaRegolamento
 from cds.settings import CDS_BROCHURE_IS_VISIBLE, CDS_BROCHURE_MEDIA_PATH
 
 
-class CdSSerializer(CreateUpdateAbstract):
+class CdSSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -89,7 +89,7 @@ class CdSSerializer(CreateUpdateAbstract):
     # return {}
 
 
-class CdsInfoSerializer(CreateUpdateAbstract):
+class CdsInfoSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -313,7 +313,7 @@ class CdsInfoSerializer(CreateUpdateAbstract):
         return data
 
 
-class CdSStudyPlansSerializer(CreateUpdateAbstract):
+class CdSStudyPlansSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -341,7 +341,7 @@ class CdSStudyPlansSerializer(CreateUpdateAbstract):
         }
 
 
-class CdSStudyPlanSerializer(CreateUpdateAbstract):
+class CdSStudyPlanSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -369,7 +369,7 @@ class CdSStudyPlanSerializer(CreateUpdateAbstract):
         }
 
 
-class CdsStudyPlansActivitiesSerializer(CreateUpdateAbstract):
+class CdsStudyPlansActivitiesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -402,7 +402,7 @@ class CdsStudyPlansActivitiesSerializer(CreateUpdateAbstract):
         }
 
 
-class StudyActivitiesSerializer(CreateUpdateAbstract):
+class StudyActivitiesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -480,7 +480,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
     #     return result
 
 
-class StudyActivityInfoSerializer(CreateUpdateAbstract):
+class StudyActivityInfoSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -633,7 +633,7 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
         return modalities
 
 
-class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
+class StudyActivityMinimalInfoSerializer(serializers.Serializer):
     @staticmethod
     def to_dict(query, req_lang="en"):
         return {
@@ -659,7 +659,7 @@ class StudyActivityMinimalInfoSerializer(CreateUpdateAbstract):
         }
 
 
-class DegreeTypesSerializer(CreateUpdateAbstract):
+class DegreeTypesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -674,7 +674,7 @@ class DegreeTypesSerializer(CreateUpdateAbstract):
         }
 
 
-class AcademicYearsSerializer(CreateUpdateAbstract):
+class AcademicYearsSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -686,7 +686,7 @@ class AcademicYearsSerializer(CreateUpdateAbstract):
         return {"AcademicYear": query["aa_reg_did"]}
 
 
-class ProgramTypesSerializer(CreateUpdateAbstract):
+class ProgramTypesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -701,7 +701,7 @@ class ProgramTypesSerializer(CreateUpdateAbstract):
         }
 
 
-class CdsAreasSerializer(CreateUpdateAbstract):
+class CdsAreasSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -717,7 +717,7 @@ class CdsAreasSerializer(CreateUpdateAbstract):
         }
 
 
-class CdsExpiredSerializer(CreateUpdateAbstract):
+class CdsExpiredSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

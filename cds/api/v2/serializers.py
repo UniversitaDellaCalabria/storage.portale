@@ -7,6 +7,7 @@ from drf_spectacular.utils import (
 )
 from generics.utils import encrypt
 from rest_framework import serializers
+from generics.serializers import ReadOnlyModelSerializer
 
 from cds.models import (
     DidatticaAttivitaFormativa,
@@ -15,14 +16,6 @@ from cds.models import (
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
 )
-
-
-class ReadOnlyModelSerializer(serializers.ModelSerializer):
-    def get_fields(self, *args, **kwargs):
-        fields = super().get_fields(*args, **kwargs)
-        for field in fields:
-            fields[field].read_only = True
-        return fields
 
 
 class CdsSerializer(ReadOnlyModelSerializer):

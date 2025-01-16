@@ -1,8 +1,8 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import build_media_path, encrypt
 
 
-class LaboratoryDetailSerializer(CreateUpdateAbstract):
+class LaboratoryDetailSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -197,7 +197,7 @@ class LaboratoryDetailSerializer(CreateUpdateAbstract):
         return result
 
 
-class LaboratoriesSerializer(CreateUpdateAbstract):
+class LaboratoriesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -332,7 +332,7 @@ class LaboratoriesSerializer(CreateUpdateAbstract):
         return result
 
 
-class LaboratoriesAreasSerializer(CreateUpdateAbstract):
+class LaboratoriesAreasSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -346,7 +346,7 @@ class LaboratoriesAreasSerializer(CreateUpdateAbstract):
         }
 
 
-class LaboratoriesScopesSerializer(CreateUpdateAbstract):
+class LaboratoriesScopesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

@@ -1,8 +1,8 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import encrypt
 
 
-class HighFormationMastersSerializer(CreateUpdateAbstract):
+class HighFormationMastersSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -193,7 +193,7 @@ class HighFormationMastersSerializer(CreateUpdateAbstract):
         return result
 
 
-class HighFormationCourseTypesSerializer(CreateUpdateAbstract):
+class HighFormationCourseTypesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -205,7 +205,7 @@ class HighFormationCourseTypesSerializer(CreateUpdateAbstract):
         return {"ID": query["id"], "Description": query["tipo_corso_descr"]}
 
 
-class ErogationModesSerializer(CreateUpdateAbstract):
+class ErogationModesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

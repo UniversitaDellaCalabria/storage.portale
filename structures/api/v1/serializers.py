@@ -1,8 +1,8 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import encrypt
 
 
-class DepartmentSerializer(CreateUpdateAbstract):
+class DepartmentSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -22,7 +22,7 @@ class DepartmentSerializer(CreateUpdateAbstract):
         }
 
 
-class StructuresSerializer(CreateUpdateAbstract):
+class StructuresSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -44,7 +44,7 @@ class StructuresSerializer(CreateUpdateAbstract):
         return d
 
 
-class StructureTypesSerializer(CreateUpdateAbstract):
+class StructureTypesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -59,7 +59,7 @@ class StructureTypesSerializer(CreateUpdateAbstract):
         }
 
 
-class StructureDetailSerializer(CreateUpdateAbstract):
+class StructureDetailSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -116,7 +116,7 @@ class StructureDetailSerializer(CreateUpdateAbstract):
         return result
 
 
-class InfrastructuresSerializer(CreateUpdateAbstract):
+class InfrastructuresSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -131,7 +131,7 @@ class InfrastructuresSerializer(CreateUpdateAbstract):
         }
 
 
-class StructureFunctionsSerializer(CreateUpdateAbstract):
+class StructureFunctionsSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -147,7 +147,7 @@ class StructureFunctionsSerializer(CreateUpdateAbstract):
         }
 
 
-class TerritorialScopesSerializer(CreateUpdateAbstract):
+class TerritorialScopesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

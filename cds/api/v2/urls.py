@@ -20,7 +20,7 @@ urlpatterns = [
         name="academic-pathways-list",
     ),
     path(
-        "academic-pathways/<int:regdid_id>/<int:pathway_id>/",
+        "academic-pathways/<int:regdid_id>/<int:pds_regdid_id>/",
         AcademicPathsViewSet.as_view({"get": "retrieve"}),
         name="academic-pathways-detail",
     ),

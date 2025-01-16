@@ -1,10 +1,10 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import encrypt
 from phd.settings import PHD_CYCLES
 from rest_framework import serializers
 
 
-class PhdActivitiesSerializer(CreateUpdateAbstract):
+class PhdActivitiesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -79,7 +79,7 @@ class PhdActivitiesSerializer(CreateUpdateAbstract):
         return result
 
 
-class RefPhdSerializer(CreateUpdateAbstract):
+class RefPhdSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -93,7 +93,7 @@ class RefPhdSerializer(CreateUpdateAbstract):
         }
 
 
-class RefStructuresSerializer(CreateUpdateAbstract):
+class RefStructuresSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -107,7 +107,7 @@ class RefStructuresSerializer(CreateUpdateAbstract):
         }
 
 
-class PhdSsdListSerializer(CreateUpdateAbstract):
+class PhdSsdListSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -121,7 +121,7 @@ class PhdSsdListSerializer(CreateUpdateAbstract):
         }
 
 
-class PhdActivityTypeSerializer(CreateUpdateAbstract):  # pragma: no cover
+class PhdActivityTypeSerializer(serializers.Serializer):  # pragma: no cover
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -152,7 +152,7 @@ class PhdActivityTypologySerializer(serializers.Serializer):  # pragma: no cover
         }
 
 
-class PhdSerializer(CreateUpdateAbstract):
+class PhdSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

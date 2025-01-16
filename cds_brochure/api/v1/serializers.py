@@ -1,8 +1,8 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import build_media_path
 
 
-class CdsBrochureLightSerializer(CreateUpdateAbstract):
+class CdsBrochureLightSerializer(serializers.Serializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data.update(self.to_dict(instance, str(self.context["language"]).lower()))
@@ -21,7 +21,7 @@ class CdsBrochureLightSerializer(CreateUpdateAbstract):
         }
 
 
-class CdsBrochureSerializer(CreateUpdateAbstract):
+class CdsBrochureSerializer(serializers.Serializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data.update(self.to_dict(instance, str(self.context["language"]).lower()))
