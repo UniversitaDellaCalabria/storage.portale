@@ -52,13 +52,13 @@ class CdsExpiredSerializer(ReadOnlyModelSerializer):
 
 
 class DegreeTypeSerializer(ReadOnlyModelSerializer):
-    cod = serializers.CharField(source="tipo_corso_cod")
-    des = serializers.CharField(source="tipo_corso_des")
+    courseType = serializers.CharField(source="tipo_corso_cod")
+    courseTypeDescription = serializers.CharField(source="tipo_corso_des")
     class Meta:
         model = DidatticaCdsTipoCorso
         fields = [
-            "cod",
-            "des",
+            "courseType",
+            "courseTypeDescription",
         ]
 
 class AcademicYearsSerializer(ReadOnlyModelSerializer):

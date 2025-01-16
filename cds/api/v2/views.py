@@ -56,21 +56,14 @@ class DegreeTypeViewSet(ReadOnlyModelViewSet):
     serializer_class = DegreeTypeSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = DegreeTypeFilter
-    queryset = DidatticaCdsTipoCorso.objects.all()
+    queryset = DidatticaCdsTipoCorso.objects.only("tipo_corso_cod", "tipo_corso_des").order_by("tipo_corso_des")
 
 
 class AcademicYearsViewSet(ReadOnlyModelViewSet):
     serializer_class = AcademicYearsSerializer
     filter_backends = [DjangoFilterBackend]
-    queryset = DidatticaRegolamento.objects.all()
-
-    def get_queryset(self):
-        return (
-            DidatticaRegolamento.objects.values("aa_reg_did")
-            .distinct()
-            .order_by("-aa_reg_did")
-        )
-
+    queryset = DidatticaRegolamento.objects.only("aa_reg_did").order_by("-aa_reg_did")
+            
 class StudyActivitiesViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -209,15 +202,6 @@ class CdsAreasViewSet(ReadOnlyModelViewSet):
         .filter(area_cds__isnull=False, area_cds_en__isnull=False)
         .distinct()
     )
-
-    def get(self, request, *args, **kwargs):
-        lang = request.LANGUAGE_CODE
-        self.language = request.query_params.get("lang", lang).lower()
-
-        cache_key = "cdsareas"
-        kwargs["cache_key"] = cache_key
-
-        return super().get(request, *args, **kwargs)
 
 
 class CdsExpiredViewSet(ReadOnlyModelViewSet):
