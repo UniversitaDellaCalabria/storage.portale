@@ -280,9 +280,7 @@ class AcademicPathsViewSet(ReadOnlyModelViewSet):
             )
         elif self.action == "retrieve":
             return (
-                DidatticaPdsRegolamento.objects.filter(
-                    pds_regdid_id=self.kwargs.get("pds_regdid_id")
-                )
+                DidatticaPdsRegolamento.objects
             ).prefetch_related(
                 Prefetch(
                     "didatticaattivitaformativa_set",
