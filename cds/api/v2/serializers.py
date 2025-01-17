@@ -16,6 +16,7 @@ from cds.models import (
     DidatticaCdsTipoCorso,
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
+    DidatticaCdsCollegamento
 )
 
 
@@ -145,7 +146,12 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
             "dipDes": {"it": "cds.dip.dip_des_it", "en": "cds.dip.dip_des_eng"},
             "cdsName": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"},
         }
-
+        
+class CdsMorphSerializer(ReadOnlyModelSerializer):
+    
+    class Meta:
+        model = DidatticaCdsCollegamento
+        fields = "__all__"
 
 class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(source="af_id")

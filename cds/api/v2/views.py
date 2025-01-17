@@ -1,4 +1,5 @@
 from django.conf import settings
+from rest_framework.response import Response
 from django.db import models
 from django.db.models import (
     Case,
@@ -38,6 +39,7 @@ from .serializers import (
     AcademicYearsSerializer,
     CdsAreasSerializer,
     CdsExpiredSerializer,
+    CdsMorphSerializer,
     CdsSerializer,
     DegreeTypeSerializer,
     StudyActivitiesDetailSerializer,
@@ -231,6 +233,52 @@ class CdsExpiredViewSet(ReadOnlyModelViewSet):
         )
 
         return regdids
+
+class CdsMorphViewSet(ReadOnlyModelViewSet):
+    serializer_class = CdsMorphSerializer
+    filter_backends = [DjangoFilterBackend]
+    queryset = DidatticaCds.objects.all() 
+
+    def list(self, request, *args, **kwargs):
+        collegamenti_prefetch = DidatticaCdsCollegamento.objects.select_related('cds_prec')
+        roots = DidatticaCdsCollegamento.objects.exclude(
+            cds__pk__in=DidatticaCdsCollegamento.objects.values_list('cds_prec', flat=True)
+        ).select_related('cds').prefetch_related(Prefetch('cds_prec', queryset=collegamenti_prefetch))
+        
+        previous_cds_cod_dict = {}
+        for root in roots:
+            previous_cds_cod_dict[root.cds.cds_cod] = self._build_cds_history(root.cds.cds_cod)
+
+        return Response(previous_cds_cod_dict)
+        
+    def retrieve(self, request, *args, **kwargs):
+        cds_cod = self.kwargs.get('pk')
+        cds = DidatticaCds.objects.filter(cds_cod=cds_cod).order_by("-cds_id").first()
+        
+        previous_cds_cod_list = []
+        if cds:  
+            current_cds = cds
+            while current_cds:
+                collegamento = DidatticaCdsCollegamento.objects.filter(cds=current_cds).first()
+                if collegamento:
+                    predecessor = collegamento.cds_prec
+                    previous_cds_cod_list.append(predecessor.cds_cod)
+                    current_cds = predecessor
+                else:
+                    break
+
+        return Response(previous_cds_cod_list)
+
+
+    def _build_cds_history(self, cds_cod, history=None):
+        if history is None:
+            history = []
+
+        prec = DidatticaCdsCollegamento.objects.filter(cds__cds_cod=cds_cod).select_related('cds_prec').first()
+        if prec and prec.cds_prec:
+            history.append(prec.cds_prec.cds_cod)
+            self._build_cds_history(prec.cds_prec.cds_cod, history)
+        return history
 
 
 class AcademicPathsViewSet(ReadOnlyModelViewSet):

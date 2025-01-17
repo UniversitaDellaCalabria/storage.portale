@@ -8,7 +8,8 @@ from .views import (
     DegreeTypeViewSet,
     StudyActivitiesViewSet,
     CdsAreasViewSet,
-    CdsExpiredViewSet
+    CdsExpiredViewSet,
+    CdsMorphViewSet
 )
 
 app_name = "apiv2"
@@ -34,5 +35,5 @@ router.register(r"academic-years", AcademicYearsViewSet, basename="academic-year
 router.register(r"activities", StudyActivitiesViewSet, basename="activities")
 router.register(r"cds-areas", CdsAreasViewSet, basename="cds-areas")
 router.register(r"cds-expired", CdsExpiredViewSet, basename="cds-expired")
-
+router.register(r"cds-morph", CdsMorphViewSet, basename="cds-morph")
 urlpatterns += router.urls
