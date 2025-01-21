@@ -26,8 +26,22 @@ class CdsSerializer(ReadOnlyModelSerializer):
         fields = "__all__"
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            "CDS Area",
+            value={
+                "areaCds": "Engineering"
+            },
+            description="Area of a CDS"
+        )
+    ]
+)
 class CdsAreasSerializer(ReadOnlyModelSerializer):
-    areaCds = serializers.CharField(source="area_cds")
+    areaCds = serializers.CharField(
+        source="area_cds",
+        help_text="The area/field of study for the CDS"
+    )
 
     class Meta:
         model = DidatticaCds
@@ -38,10 +52,32 @@ class CdsAreasSerializer(ReadOnlyModelSerializer):
             "areaCds": {"it": "area_cds", "en": "area_cds_en"},
         }
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            "Expired CDS",
+            value={
+                "cdsCod": "CS101",
+                "aaRegDid": "2024",
+                "cdsDuration": "3"
+            },
+            description="Information about an expired CDS"
+        )
+    ]
+)
 class CdsExpiredSerializer(ReadOnlyModelSerializer):
-    cdsCod = serializers.CharField(source="cds.cds_cod")
-    aaRegDid = serializers.CharField(source="aa_reg_did")
-    cdsDuration = serializers.CharField(source="cds.durata_anni")
+    cdsCod = serializers.CharField(
+        source="cds.cds_cod",
+        help_text="The unique code of the CDS"
+    )
+    aaRegDid = serializers.CharField(
+        source="aa_reg_did",
+        help_text="Academic year of the didactic regulation"
+    )
+    cdsDuration = serializers.CharField(
+        source="cds.durata_anni",
+        help_text="Duration of the course in years"
+    )
 
     class Meta:
         model = DidatticaRegolamento
@@ -52,9 +88,28 @@ class CdsExpiredSerializer(ReadOnlyModelSerializer):
         ]
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            "Degree Type",
+            value={
+                "courseType": "BSc",
+                "courseTypeDescription": "Bachelor of Science"
+            },
+            description="Type and description of a degree course"
+        )
+    ]
+)
 class DegreeTypeSerializer(ReadOnlyModelSerializer):
-    courseType = serializers.CharField(source="tipo_corso_cod")
-    courseTypeDescription = serializers.CharField(source="tipo_corso_des")
+    courseType = serializers.CharField(
+        source="tipo_corso_cod",
+        help_text="Code representing the type of course"
+    )
+    courseTypeDescription = serializers.CharField(
+        source="tipo_corso_des",
+        help_text="Description of the course type"
+    )
+    
     class Meta:
         model = DidatticaCdsTipoCorso
         fields = [
@@ -62,14 +117,28 @@ class DegreeTypeSerializer(ReadOnlyModelSerializer):
             "courseTypeDescription",
         ]
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            "Academic Year",
+            value={
+                "aaRegDid": "2024/2025"
+            },
+            description="Academic year information"
+        )
+    ]
+)
 class AcademicYearsSerializer(ReadOnlyModelSerializer):
-    aaRegDid = serializers.CharField(source="aa_reg_did")
+    aaRegDid = serializers.CharField(
+        source="aa_reg_did",
+        help_text="Academic year identifier"
+    )
+    
     class Meta:
         model = DidatticaRegolamento
         fields = [
             "aaRegDid",
         ]
-
 
 class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
     class Meta:
@@ -77,31 +146,173 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
         fields = "__all__"
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            "Single",
+            value=[
+                {
+                    "id": "AF001",
+                    "genCod": "GEN123",
+                    "des": "...",
+                    "cdsId": "CDS001",
+                    "cdsCod": "IT101",
+                    "language": ["IT", "EN"],
+                    "fatherCode": "F001",
+                    "fatherName": "Computer Science",
+                    "regDidId": "REG2025",
+                    "dipDes": "Dipartimento di Informatica",
+                    "dipCod": "DI123",
+                    "courseYear": "1",
+                    "academicYear": "2025",
+                    "semester": "Second",
+                    "SSDCod": "INF/01",
+                    "SSD": "Informatica",
+                    "partitionCod": "P001",
+                    "partitionDes": "Standard",
+                    "extendedPartitionCod": "EP001",
+                    "extendedPartitionDes": "Advanced Topics",
+                    "cdsName": "Computer Science",
+                    "teacherId": "encrypted-id",
+                    "teacherName": "Prof. Mario Rossi",
+                    "studyPlanDes": "Piano di Studi Base"
+                }
+            ],
+            description="Details of a single study activity",
+        ),
+        OpenApiExample(
+            "Multiple",
+            value=[
+                {
+                    "id": "AF001",
+                    "genCod": "GEN123",
+                    "des": "...",
+                    "cdsId": "CDS001",
+                    "cdsCod": "IT101",
+                    "language": ["IT", "EN"],
+                    "fatherCode": "F001",
+                    "fatherName": "Computer Science",
+                    "regDidId": "REG2025",
+                    "dipDes": "Dipartimento di Informatica",
+                    "dipCod": "DI123",
+                    "courseYear": "1",
+                    "academicYear": "2025",
+                    "semester": "Second",
+                    "SSDCod": "INF/01",
+                    "SSD": "Informatica",
+                    "partitionCod": "P001",
+                    "partitionDes": "Standard",
+                    "extendedPartitionCod": "EP001",
+                    "extendedPartitionDes": "Advanced Topics",
+                    "cdsName": "Computer Science",
+                    "teacherId": "encrypted-id",
+                    "teacherName": "Prof. Mario Rossi",
+                    "studyPlanDes": "Piano di Studi Base"
+                },
+                {
+                    "id": "AF002",
+                    "genCod": "GEN456",
+                    "des": "Data Structures",
+                    "cdsId": "CDS002",
+                    "cdsCod": "IT102",
+                    "language": ["EN"],
+                    "fatherCode": "F002",
+                    "fatherName": "Software Engineering",
+                    "regDidId": "REG2026",
+                    "dipDes": "Dipartimento di Informatica",
+                    "dipCod": "DI124",
+                    "courseYear": "2",
+                    "academicYear": "2026",
+                    "semester": "First",
+                    "SSDCod": "INF/02",
+                    "SSD": "Algoritmi",
+                    "partitionCod": "P002",
+                    "partitionDes": "Standard",
+                    "extendedPartitionCod": "EP002",
+                    "extendedPartitionDes": "Core Topics",
+                    "cdsName": "Software Engineering",
+                    "teacherId": "encrypted-id-2",
+                    "teacherName": "Dr. Anna Bianchi",
+                    "studyPlanDes": "Piano di Studi Avanzato"
+                }
+            ],
+            description="Details of multiple study activities",
+        ),
+    ]
+)
 class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
-    id = serializers.CharField(source="af_id")
-    genCod = serializers.CharField(source="af_gen_cod")
-    des = serializers.CharField(source="group_description")
-    cdsId = serializers.CharField(source="cds_id")
-    cdsCod = serializers.CharField(source="cds.cds_cod")
-    language = serializers.SerializerMethodField()
-    fatherCode = serializers.CharField(source="af_radice_id")
-    fatherName = serializers.CharField()
-    regDidId = serializers.CharField(source="regdid_id")
-    dipDes = serializers.CharField(source="cds.dip.dip_des_it")
-    dipCod = serializers.CharField(source="cds.dip.dip_cod")
-    courseYear = serializers.CharField(source="anno_corso")
-    academicYear = serializers.CharField(source="aa_off_id")
-    semester = serializers.CharField(source="ciclo_des")
-    SSDCod = serializers.CharField(source="sett_cod")
-    SSD = serializers.CharField(source="sett_des")
-    partitionCod = serializers.CharField(source="part_stu_cod")
-    partitionDes = serializers.CharField(source="part_stu_des")
-    extendedPartitionCod = serializers.CharField(source="fat_part_stu_cod")
-    extendedPartitionDes = serializers.CharField(source="fat_part_stu_des")
-    cdsName = serializers.CharField(source="cds.nome_cds_it")
-    teacherId = serializers.SerializerMethodField()
-    teacherName = serializers.CharField(source="full_name")
-    studyPlanDes = serializers.CharField(source="pds_des")
+    id = serializers.CharField(
+        source="af_id", help_text="The ID of the study activity."
+    )
+    genCod = serializers.CharField(
+        source="af_gen_cod", help_text="Code of the study activity."
+    )
+    des = serializers.CharField(
+        source="group_description", help_text="Description of the study activity group."
+    )
+    cdsId = serializers.CharField(
+        source="cds_id", help_text="The ID of the degree program."
+    )
+    cdsCod = serializers.CharField(
+        source="cds.cds_cod", help_text="Code of the degree program."
+    )
+    language = serializers.SerializerMethodField(
+        help_text="List of languages available for the study activity."
+    )
+    fatherCode = serializers.CharField(
+        source="af_radice_id", help_text="Parent activity's ID."
+    )
+    fatherName = serializers.CharField(
+        help_text="Name of the parent activity."
+    )
+    regDidId = serializers.CharField(
+        source="regdid_id", help_text="Regulation identifier associated with the activity."
+    )
+    dipDes = serializers.CharField(
+        source="cds.dip.dip_des_it", help_text="Description of the department in Italian."
+    )
+    dipCod = serializers.CharField(
+        source="cds.dip.dip_cod", help_text="Code of the department."
+    )
+    courseYear = serializers.CharField(
+        source="anno_corso", help_text="The year of the course in the degree program."
+    )
+    academicYear = serializers.CharField(
+        source="aa_off_id", help_text="Academic year of the activity."
+    )
+    semester = serializers.CharField(
+        source="ciclo_des", help_text="Semester in which the activity is offered."
+    )
+    SSDCod = serializers.CharField(
+        source="sett_cod", help_text="Code of the scientific-disciplinary sector (SSD)."
+    )
+    SSD = serializers.CharField(
+        source="sett_des", help_text="Description of the scientific-disciplinary sector (SSD)."
+    )
+    partitionCod = serializers.CharField(
+        source="part_stu_cod", help_text="Partition code for the study activity."
+    )
+    partitionDes = serializers.CharField(
+        source="part_stu_des", help_text="Partition description for the study activity."
+    )
+    extendedPartitionCod = serializers.CharField(
+        source="fat_part_stu_cod", help_text="Extended partition code for detailed activities."
+    )
+    extendedPartitionDes = serializers.CharField(
+        source="fat_part_stu_des", help_text="Extended partition description for detailed activities."
+    )
+    cdsName = serializers.CharField(
+        source="cds.nome_cds_it", help_text="Name of the degree program in Italian."
+    )
+    teacherId = serializers.SerializerMethodField(
+        help_text="Encrypted identifier of the teacher responsible for the activity."
+    )
+    teacherName = serializers.CharField(
+        source="full_name", help_text="Full name of the teacher responsible for the activity."
+    )
+    studyPlanDes = serializers.CharField(
+        source="pds_des", help_text="Description of the study plan associated with the activity."
+    )
 
     def get_language(self, obj):
         list_language = getattr(obj, "lista_lin_did_af", None)
@@ -139,27 +350,89 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
             "cdsName",
             "teacherId",
             "teacherName",
-            "studyPlanDes"
+            "studyPlanDes",
         ]
-        language_field_map = {
-            "des": {"it": "group_description", "en": "af_gen_des_eng"},
-            "dipDes": {"it": "cds.dip.dip_des_it", "en": "cds.dip.dip_des_eng"},
-            "cdsName": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"},
-        }
-        
+
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            "Single",
+            value={
+                "cds": 101,
+                "cds_prec": 100,
+            },
+            description="Represents a single link between two cds, where `cds` is the current and `cds_prec` is the previous one."
+        ),
+        OpenApiExample(
+            "Multiple",
+            value=[
+                {
+                    "cds": 201,
+                    "cds_prec": 200,
+                },
+                {
+                    "cds": 301,
+                    "cds_prec": 300,
+                }
+            ],
+            description="Represents multiple links between cds."
+        )
+    ]
+)
 class CdsMorphSerializer(ReadOnlyModelSerializer):
-    
+    idCds = serializers.IntegerField(
+        source="cds", help_text="The ID of the cds."
+    )
+    idCdsPrec = serializers.IntegerField(
+        source="cds_prec", help_text="The id of the previous cds."
+    )
+
     class Meta:
         model = DidatticaCdsCollegamento
-        fields = "__all__"
+        fields = ["idCds", "idCdsPrec"]
 
+
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            "Study Activity Lite",
+            value={
+                "id": 1,
+                "name": "Mathematics",
+                "year": 1,
+                "cycle": "First Semester",
+                "etcs": 6,
+                "type": "Basic"
+            },
+            description="Simplified view of a study activity"
+        )
+    ]
+)
 class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):
-    id = serializers.IntegerField(source="af_id")
-    name = serializers.CharField(source="des")
-    year = serializers.IntegerField(source="anno_corso")
-    cycle = serializers.CharField(source="ciclo_des")
-    etcs = serializers.IntegerField(source="peso")
-    type = serializers.CharField(source="tipo_af_des")
+    id = serializers.IntegerField(
+        source="af_id",
+        help_text="The ID of the study activity"
+    )
+    name = serializers.CharField(
+        source="des",
+        help_text="Name of the study activity"
+    )
+    year = serializers.IntegerField(
+        source="anno_corso",
+        help_text="Year of the course"
+    )
+    cycle = serializers.CharField(
+        source="ciclo_des",
+        help_text="Cycle/semester of the activity"
+    )
+    etcs = serializers.IntegerField(
+        source="peso",
+        help_text="ECTS credits for the activity"
+    )
+    type = serializers.CharField(
+        source="tipo_af_des",
+        help_text="Type of educational activity"
+    )
 
     class Meta:
         model = DidatticaAttivitaFormativa
