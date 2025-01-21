@@ -12,15 +12,20 @@ from cds.models import (
 
 class CdsFilter(filters.FilterSet):
     nome_cds_it = filters.CharFilter(
-        field_name="nome_cds_it",
+        field_name="cds__nome_cds_it",
         lookup_expr="icontains",
         label="Nome Cds",
         help_text="Filtra per nome del Cds.",
-        # example="test"
+    )
+    academic_year = filters.CharFilter(
+        field_name="aa_reg_did",
+        lookup_expr="exact",
+        label="Academic Year",
+        help_text="Filter by academic year",
     )
 
     class Meta:
-        model = DidatticaCds
+        model = DidatticaRegolamento
         fields = []
         
 

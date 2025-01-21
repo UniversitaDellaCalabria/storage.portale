@@ -53,7 +53,13 @@ class CdsViewSet(ReadOnlyModelViewSet):
     serializer_class = CdsSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = CdsFilter
-    queryset = DidatticaCds.objects.all()
+    queryset = DidatticaRegolamento.objects.all()
+    
+    def get_queryset(self):
+        return (
+            DidatticaRegolamento.objects
+            .select_related("cds__dip", "didatticacdsaltridati").order_by("cds__nome_cds_it")
+        )
 
 @extend_schema(
         summary="List of all degree types",
@@ -241,6 +247,7 @@ class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CdsExpiredSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = CdsExpiredFilter
+    queryset = DidatticaRegolamento.objects.all()
 
     def get_queryset(self):
         cds_morphed = DidatticaCdsCollegamento.objects.values_list(
