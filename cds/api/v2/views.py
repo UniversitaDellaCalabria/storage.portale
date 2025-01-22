@@ -76,7 +76,7 @@ class CdsViewSet(ReadOnlyModelViewSet):
             .order_by("-regdid")
             .values("ordinamento_didattico")[:1]
         )
-        return (
+        queryset = (
             DidatticaRegolamento.objects.select_related(
                 "cds__dip", "didatticacdsaltridati"
             )
@@ -109,9 +109,15 @@ class CdsViewSet(ReadOnlyModelViewSet):
                 "didatticacdsaltridati__regolamento_didattico",
             )
             .annotate(ordinamento_didattico=Subquery(ordinamento_subquery))
-            .filter(stato_regdid_cod="A")
-            .order_by("-regdid_id")
         )
+
+        if self.action == "list":
+            return queryset.filter(stato_regdid_cod="A").order_by("-regdid_id")
+
+        elif self.action == "retrieve":
+            return queryset
+
+        return DidatticaRegolamento.objects.none()
 
 
 @extend_schema(
