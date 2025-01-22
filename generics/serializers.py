@@ -6,6 +6,7 @@ class LanguageAwareMixin:
     """
     A mix-in to dynamically adjust sources for fields based on the language
     """
+
     def get_fields(self):
         fields = super().get_fields()
         current_language = get_language()
@@ -21,53 +22,19 @@ class LanguageAwareMixin:
 
 class ReadOnlyModelSerializer(LanguageAwareMixin, serializers.ModelSerializer):
     """
-    A custom serializer that enforces all fields to be read-only.
-
-    This serializer is designed to provide a read-only representation of the model,
-    ensuring that no field can be modified during serialization or deserialization.
-    It extends the default `ModelSerializer` functionality by overriding the `get_fields`
-    method to set the `read_only` attribute for every field dynamically.
-
-    Attributes:
-        - Inherits all attributes from `serializers.ModelSerializer`.
-
-    Methods:
-        - get_fields(*args, **kwargs):
-            Dynamically retrieves all fields and marks them as read-only.
-
-    Example Usage:
-        ```
-        class ExampleModelSerializer(ReadOnlyModelSerializer):
-            class Meta:
-                model = ExampleModel
-                fields = ['id', 'name', 'created_at']
-        ```
-
-        This will ensure that the `id`, `name`, and `created_at` fields are all read-only.
+    This serializer sets the `read_only` attribute for every field dynamically.
     """
 
     def get_fields(self, *args, **kwargs):
-        """
-        Overrides the default `get_fields` method of `ModelSerializer` to mark all
-        fields as read-only.
-
-        Args:
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
-
-        Returns:
-            OrderedDict: A dictionary of fields with their `read_only` attribute set to `True`.
-
-        Example:
-            For a model with fields `id`, `name`, and `created_at`, the resulting
-            fields dictionary will have all fields marked as read-only:
-            {
-                'id': Field(read_only=True),
-                'name': Field(read_only=True),
-                'created_at': Field(read_only=True)
-            }
-        """
         fields = super().get_fields(*args, **kwargs)
         for field in fields:
             fields[field].read_only = True
         return fields
+
+
+
+"""
+The `__doc__` attribute of the classes is set to `None` to avoid inheritance of the docstrings
+"""
+LanguageAwareMixin.__doc__ = None
+ReadOnlyModelSerializer.__doc__ = None
