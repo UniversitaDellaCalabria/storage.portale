@@ -37,7 +37,7 @@ class CdsSerializer(ReadOnlyModelSerializer):
     courseInterClassCod = serializers.CharField(source="cds.intercla_miur_cod")
     courseInterClassDes = serializers.CharField(source="cds.intercla_miur_des")
     erogationMode = serializers.CharField(source="modalita_erogazione")
-    # cdSLanguage
+    languages = serializers.SerializerMethodField(method_name="get_languages")
     duration = serializers.IntegerField(source="cds.durata_anni")
     ECTS = serializers.IntegerField(source="cds.valore_min")
     mandatoryAttendance = serializers.SerializerMethodField(
@@ -51,11 +51,14 @@ class CdsSerializer(ReadOnlyModelSerializer):
     didacticRegulation = serializers.SerializerMethodField(
         method_name="get_didactic_regulation"
     )
-    ordinamentoDidattico = serializers.SerializerMethodField(  # TODO: Ricerca ricorsiva ordinamento?
+    ordinamentoDidattico = serializers.SerializerMethodField(
         method_name="get_ordinamento_didattico"
     )
     yearOrdinamentoDidattico = serializers.IntegerField(source="cds.aa_ord_id")
 
+    def get_languages(self, obj):
+        return [lang.iso6392_cod for lang in obj.cds.lingue]
+    
     def get_study_manifesto(self, obj):
         if not hasattr(obj, "didatticacdsaltridati") or not hasattr(obj.didatticacdsaltridati, "manifesto_studi"):
             return None
@@ -67,9 +70,7 @@ class CdsSerializer(ReadOnlyModelSerializer):
         return build_media_path(getattr(obj.didatticacdsaltridati.regolamento_didattico, "name"))
 
     def get_ordinamento_didattico(self, obj):
-        if not hasattr(obj, "didatticacdsaltridati") or not hasattr(obj.didatticacdsaltridati, "ordinamento_didattico"):
-            return None
-        return build_media_path(getattr(obj.didatticacdsaltridati.ordinamento_didattico, "name"))
+        return build_media_path(obj.ordinamento_didattico)
 
     def get_mandatory_attendance(self, obj):
         return bool(obj.frequenza_obbligatoria)
@@ -93,6 +94,7 @@ class CdsSerializer(ReadOnlyModelSerializer):
             "courseInterClassCod",
             "courseInterClassDes",
             "erogationMode",
+            "languages",
             "duration",
             "ECTS",
             "mandatoryAttendance",
