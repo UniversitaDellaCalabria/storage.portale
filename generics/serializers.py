@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from django.utils.translation import get_language
+from rest_framework import serializers
 
 
 class LanguageAwareMixin:
@@ -20,9 +20,9 @@ class LanguageAwareMixin:
         return fields
 
 
-class ReadOnlyModelSerializer(LanguageAwareMixin, serializers.ModelSerializer):
+class ReadOnlyMixin:
     """
-    This serializer sets the `read_only` attribute for every field dynamically.
+    A mix-in to dynamically set the `read_only` attribute to every field
     """
 
     def get_fields(self, *args, **kwargs):
@@ -32,9 +32,15 @@ class ReadOnlyModelSerializer(LanguageAwareMixin, serializers.ModelSerializer):
         return fields
 
 
+class ReadOnlyModelSerializer(
+    LanguageAwareMixin, ReadOnlyMixin, serializers.ModelSerializer
+):
+    pass
+
 
 """
 The `__doc__` attribute of the classes is set to `None` to avoid inheritance of the docstrings
 """
 LanguageAwareMixin.__doc__ = None
+ReadOnlyMixin.__doc__ = None
 ReadOnlyModelSerializer.__doc__ = None
