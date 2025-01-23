@@ -38,9 +38,18 @@ class ReadOnlyModelSerializer(
     pass
 
 
+class GenericErrorSerializer(serializers.Serializer):
+    """
+    A serializer class to handle errors
+    """
+
+    detail = serializers.CharField()
+
+
 """
 The `__doc__` attribute of the classes is set to `None` to avoid inheritance of the docstrings
 """
 LanguageAwareMixin.__doc__ = None
 ReadOnlyMixin.__doc__ = None
 ReadOnlyModelSerializer.__doc__ = None
+GenericErrorSerializer.__doc__ = None

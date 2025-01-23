@@ -157,16 +157,6 @@ class CdsExpiredSerializer(ReadOnlyModelSerializer):
             "cdsDuration",
         ]
 
-
-@extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            "Degree Type",
-            value={"courseType": "BSc", "courseTypeDescription": "Bachelor of Science"},
-            description="Type and description of a degree course",
-        )
-    ]
-)
 class DegreeTypeSerializer(ReadOnlyModelSerializer):
     courseType = serializers.CharField(
         source="tipo_corso_cod", help_text="Code representing the type of course"

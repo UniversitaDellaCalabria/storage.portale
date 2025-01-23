@@ -7,6 +7,8 @@ from rest_framework.exceptions import (
     PermissionDenied,
 )
 
+from api_docs import responses
+
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
@@ -120,25 +122,12 @@ class CdsViewSet(ReadOnlyModelViewSet):
         return DidatticaRegolamento.objects.none()
 
 
-@extend_schema(
-    summary="List of all degree types",
-    description="Retrieve a list of all available degree types with their codes and descriptions.",
-    responses={
-        200: OpenApiResponse(
-            response=DegreeTypeSerializer(many=True),
-            description="Success: List of degree types",
-        ),
-        403: OpenApiResponse(
-            response=PermissionDenied,
-            description="Forbidden",
-            examples=[
-                OpenApiExample(
-                    "Forbidden",
-                    value={"detail": "Forbidden", "code": 403},
-                )
-            ],
-        ),
-    },
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of all degree types",
+        description="Retrieve a list of all available degree types with their codes and descriptions.",
+        responses=responses.RESPONSE_HTTP_200_OK(DegreeTypeSerializer(many=True)),
+    )
 )
 class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = DegreeTypeSerializer
@@ -157,16 +146,6 @@ class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             response=AcademicYearsSerializer(many=True),
             description="Success: List of academic years",
         ),
-        403: OpenApiResponse(
-            response=PermissionDenied,
-            description="Forbidden",
-            examples=[
-                OpenApiExample(
-                    "Forbidden",
-                    value={"detail": "Forbidden", "code": 403},
-                )
-            ],
-        ),
     },
 )
 class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -183,31 +162,11 @@ class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             "They can be filtered by academic year, course year, course code, department, "
             "SSD, teaching, teacher, and course year."
         ),
-        responses={
-            200: OpenApiResponse(
-                response=StudyActivitiesListSerializer(many=True),
-                description="Success: List of study activities",
-            ),
-            403: OpenApiResponse(
-                response=PermissionDenied,
-                description="Forbidden: Access denied",
-                examples=[
-                    OpenApiExample(
-                        "Forbidden", value={"detail": "Forbidden", "code": 403}
-                    )
-                ],
-            ),
-            500: OpenApiResponse(
-                response=APIException,
-                description="Server Error: Internal issue",
-                examples=[
-                    OpenApiExample(
-                        "Server Error",
-                        value={"detail": "Error: Internal Server Error", "code": 500},
-                    )
-                ],
-            ),
-        },
+        responses=responses.RESPONSE_HTTP_200_OK(
+            StudyActivitiesListSerializer(many=True)
+        )
+        | responses.RESPONSE_HTTP_400_BAD_REQUEST
+        | responses.RESPONSE_HTTP_404_NOT_FOUND,
     ),
     retrieve=extend_schema(
         summary="Retrieve a specific study activity",
@@ -215,41 +174,9 @@ class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             "Retrieve detailed information for a single study activity. "
             "The study activity is identified by its ID."
         ),
-        responses={
-            200: OpenApiResponse(
-                response=StudyActivitiesDetailSerializer,
-                description="Success: Detailed study activity information",
-            ),
-            403: OpenApiResponse(
-                response=PermissionDenied,
-                description="Forbidden: Access denied",
-                examples=[
-                    OpenApiExample(
-                        "Forbidden", value={"detail": "Forbidden", "code": 403}
-                    )
-                ],
-            ),
-            404: OpenApiResponse(
-                response=NotFound,
-                description="Not Found: Study activity does not exist",
-                examples=[
-                    OpenApiExample(
-                        "Not Found",
-                        value={"detail": "Study activity not found", "code": 404},
-                    )
-                ],
-            ),
-            500: OpenApiResponse(
-                response=APIException,
-                description="Server Error: Internal issue",
-                examples=[
-                    OpenApiExample(
-                        "Server Error",
-                        value={"detail": "Error: Internal Server Error", "code": 500},
-                    )
-                ],
-            ),
-        },
+        responses=responses.RESPONSE_HTTP_200_OK(StudyActivitiesDetailSerializer)
+        | responses.RESPONSE_HTTP_404_NOT_FOUND
+        | responses.RESPONSE_HTTP_500_INTERNAL_SERVER_ERROR,
     ),
 )
 class StudyActivitiesViewSet(ReadOnlyModelViewSet):
@@ -259,152 +186,128 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
     queryset = DidatticaAttivitaFormativa.objects.all()
 
     def get_queryset(self):
-        try:
-            if self.action == "list":
-                coperture_qs = DidatticaCopertura.objects.filter(
-                    af_id=OuterRef("af_id")
-                ).values("af_gen_cod", "anno_corso", "ciclo_des")[:1]
+        coperture_qs = DidatticaCopertura.objects.filter(
+            af_id=OuterRef("af_id")
+        ).values("af_gen_cod", "anno_corso", "ciclo_des")[:1]
 
-                return (
-                    DidatticaAttivitaFormativa.objects.select_related(
-                        "cds__dip", "matricola_resp_did"
-                    )
-                    .only(
-                        "af_id",
-                        "af_gen_cod",
-                        "af_gen_des_eng",
-                        "cds_id",
-                        "cds__cds_cod",
-                        "des",
-                        "lista_lin_did_af",
-                        "af_radice_id",
-                        "regdid_id",
-                        "cds__dip__dip_des_it",
-                        "cds__dip__dip_des_eng",
-                        "cds__dip__dip_cod",
-                        "anno_corso",
-                        "aa_off_id",
-                        "ciclo_des",
-                        "sett_cod",
-                        "sett_des",
-                        "part_stu_cod",
-                        "part_stu_des",
-                        "fat_part_stu_cod",
-                        "fat_part_stu_des",
-                        "cds__nome_cds_it",
-                        "cds__nome_cds_eng",
-                        "matricola_resp_did__matricola",
-                        "matricola_resp_did__cognome",
-                        "matricola_resp_did__nome",
-                        "matricola_resp_did__middle_name",
-                        "pds_des",
-                    )
-                    .annotate(
-                        full_name=Case(
-                            When(
-                                matricola_resp_did__cognome__isnull=True,
-                                matricola_resp_did__nome__isnull=True,
-                                matricola_resp_did__middle_name__isnull=True,
-                                then=Value(""),
-                            ),
-                            default=Concat(
-                                F("matricola_resp_did__cognome"),
-                                Value(" "),
-                                F("matricola_resp_did__nome"),
-                                Case(
-                                    When(
-                                        matricola_resp_did__middle_name__isnull=False,
-                                        then=Concat(
-                                            Value(" "),
-                                            F("matricola_resp_did__middle_name"),
-                                        ),
-                                    ),
-                                    default=Value(""),
-                                    output_field=models.CharField(),
-                                ),
-                                output_field=models.CharField(),
-                            ),
-                        ),
-                        group_description=Concat(
-                            F("des"),
-                            Case(
-                                When(
-                                    part_stu_des__isnull=False,
-                                    then=Concat(
-                                        Value(" ("), F("part_stu_des"), Value(")")
-                                    ),
-                                )
-                            ),
-                            output_field=models.CharField(),
-                        ),
-                        fatherName=F("des"),
-                        af_gen_cod_final=Coalesce(
-                            F("af_gen_cod"),
-                            Subquery(coperture_qs.values("af_gen_cod")),
-                            output_field=models.CharField(),
-                        ),
-                        anno_corso_final=Coalesce(
-                            F("anno_corso"),
-                            Subquery(coperture_qs.values("anno_corso")),
-                            output_field=models.IntegerField(),
-                        ),
-                        ciclo_des_final=Coalesce(
-                            F("ciclo_des"),
-                            Subquery(coperture_qs.values("ciclo_des")),
-                            output_field=models.CharField(),
-                        ),
-                    )
-                    .filter(
-                        Q(
-                            af_id__in=Subquery(
-                                DidatticaCopertura.objects.filter(
-                                    ~Q(stato_coper_cod="R")
-                                    | Q(stato_coper_cod__isnull=True)
-                                ).values("af_id")
-                            )
-                        )
-                        | Q(
-                            af_master_id__in=Subquery(
-                                DidatticaCopertura.objects.filter(
-                                    ~Q(stato_coper_cod="R")
-                                    | Q(stato_coper_cod__isnull=True)
-                                ).values("af_id")
-                            )
-                        )
-                    )
-                    .order_by("des")
-                )
-
-        except DidatticaAttivitaFormativa.DoesNotExist:
-            raise NotFound(
-                detail="The requested study activity does not exist.", code=404
+        queryset = (
+            DidatticaAttivitaFormativa.objects.select_related(
+                "cds__dip", "matricola_resp_did"
             )
-        except ValueError as e:
-            raise ValidationError(detail=str(e), code=400)
-        except PermissionError as e:
-            raise PermissionDenied(detail=str(e), code=403)
+            .only(
+                "af_id",
+                "af_gen_cod",
+                "af_gen_des_eng",
+                "cds_id",
+                "cds__cds_cod",
+                "des",
+                "lista_lin_did_af",
+                "af_radice_id",
+                "regdid_id",
+                "cds__dip__dip_des_it",
+                "cds__dip__dip_des_eng",
+                "cds__dip__dip_cod",
+                "anno_corso",
+                "aa_off_id",
+                "ciclo_des",
+                "sett_cod",
+                "sett_des",
+                "part_stu_cod",
+                "part_stu_des",
+                "fat_part_stu_cod",
+                "fat_part_stu_des",
+                "cds__nome_cds_it",
+                "cds__nome_cds_eng",
+                "matricola_resp_did__matricola",
+                "matricola_resp_did__cognome",
+                "matricola_resp_did__nome",
+                "matricola_resp_did__middle_name",
+                "pds_des",
+            )
+            .annotate(
+                full_name=Case(
+                    When(
+                        matricola_resp_did__cognome__isnull=True,
+                        matricola_resp_did__nome__isnull=True,
+                        matricola_resp_did__middle_name__isnull=True,
+                        then=Value(""),
+                    ),
+                    default=Concat(
+                        F("matricola_resp_did__cognome"),
+                        Value(" "),
+                        F("matricola_resp_did__nome"),
+                        Case(
+                            When(
+                                matricola_resp_did__middle_name__isnull=False,
+                                then=Concat(
+                                    Value(" "),
+                                    F("matricola_resp_did__middle_name"),
+                                ),
+                            ),
+                            default=Value(""),
+                            output_field=models.CharField(),
+                        ),
+                        output_field=models.CharField(),
+                    ),
+                ),
+                group_description=Concat(
+                    F("des"),
+                    Case(
+                        When(
+                            part_stu_des__isnull=False,
+                            then=Concat(Value(" ("), F("part_stu_des"), Value(")")),
+                        )
+                    ),
+                    output_field=models.CharField(),
+                ),
+                fatherName=F("des"),
+                af_gen_cod_final=Coalesce(
+                    F("af_gen_cod"),
+                    Subquery(coperture_qs.values("af_gen_cod")),
+                    output_field=models.CharField(),
+                ),
+                anno_corso_final=Coalesce(
+                    F("anno_corso"),
+                    Subquery(coperture_qs.values("anno_corso")),
+                    output_field=models.IntegerField(),
+                ),
+                ciclo_des_final=Coalesce(
+                    F("ciclo_des"),
+                    Subquery(coperture_qs.values("ciclo_des")),
+                    output_field=models.CharField(),
+                ),
+            )
+            .filter(
+                Q(
+                    af_id__in=Subquery(
+                        DidatticaCopertura.objects.filter(
+                            ~Q(stato_coper_cod="R") | Q(stato_coper_cod__isnull=True)
+                        ).values("af_id")
+                    )
+                )
+                | Q(
+                    af_master_id__in=Subquery(
+                        DidatticaCopertura.objects.filter(
+                            ~Q(stato_coper_cod="R") | Q(stato_coper_cod__isnull=True)
+                        ).values("af_id")
+                    )
+                )
+            )
+            .order_by("des")
+        )
+        return queryset
 
     def get_serializer_class(self):
-        try:
-            if self.action == "retrieve":
-                return StudyActivitiesDetailSerializer
-            elif self.action == "list":
-                return StudyActivitiesListSerializer
-        except Exception as e:
-            raise APIException(
-                detail=f"An unexpected error occurred: {str(e)}", code=500
-            )
+        if self.action == "retrieve":
+            return StudyActivitiesDetailSerializer
+        elif self.action == "list":
+            return StudyActivitiesListSerializer
 
 
 @extend_schema(
     summary="List of all the CDS areas",
     description="Retrieve a list of all distinct Course of Study areas in Italian or in English.",
-    responses={
-        200: OpenApiResponse(
-            response=CdsAreasSerializer(many=True),
-            description="Success: List of CDS areas",
-        ),
-    },
+    responses=responses.RESPONSE_HTTP_200_OK(CdsAreasSerializer(many=True)),
 )
 class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CdsAreasSerializer

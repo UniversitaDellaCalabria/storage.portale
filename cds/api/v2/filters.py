@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
 from django.db.models import Q
+from django.conf import settings
 
 from cds.models import (
     DidatticaCds, 
@@ -11,18 +12,22 @@ from cds.models import (
 
 
 class CdsFilter(filters.FilterSet):
-    nome_cds_it = filters.CharFilter(
-        field_name="cds__nome_cds_it",
-        lookup_expr="icontains",
-        label="Nome Cds",
-        help_text="Filtra per nome del Cds.",
+    name = filters.CharFilter(
+        method="filter_name",
+        label="Study course name",
+        help_text="Filter by name",
     )
-    academic_year = filters.CharFilter(
+    academic_year = filters.NumberFilter(
         field_name="aa_reg_did",
         lookup_expr="exact",
-        label="Academic Year",
+        label="Academic year",
         help_text="Filter by academic year",
     )
+    
+    def filter_name(self, queryset, name, value):
+        return queryset.filter(
+            Q(cds__nome_cds_it__icontains=value) | Q(cds__nome_cds_eng__icontains=value)
+        )
 
     class Meta:
         model = DidatticaRegolamento
