@@ -52,13 +52,6 @@ class CdsExpiredFilter(filters.FilterSet):
  
 
 
-class DegreeTypeFilter(filters.FilterSet):
-    class Meta:
-        model = DidatticaCdsTipoCorso
-        fields = []
-        
-
-
 class StudyActivitiesFilter(filters.FilterSet):
     academic_year = filters.NumberFilter(
         field_name="aa_off_id",

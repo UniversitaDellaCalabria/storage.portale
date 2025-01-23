@@ -1,7 +1,7 @@
 from collections import defaultdict
+from api_docs import docs
 
 from drf_spectacular.utils import (
-    OpenApiExample,
     extend_schema_field,
     extend_schema_serializer,
 )
@@ -19,7 +19,9 @@ from cds.models import (
     DidatticaCdsCollegamento,
 )
 
-
+@extend_schema_serializer(
+    examples=docs.CDS_SERIALIZER_EXAMPLE
+)
 class CdsSerializer(ReadOnlyModelSerializer):
     regDidId = serializers.IntegerField(source="regdid_id")
     cdSId = serializers.IntegerField(source="cds.cds_id")
@@ -56,22 +58,35 @@ class CdsSerializer(ReadOnlyModelSerializer):
     )
     yearOrdinamentoDidattico = serializers.IntegerField(source="cds.aa_ord_id")
 
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_languages(self, obj):
         return [lang.iso6392_cod for lang in obj.cds.lingue]
-    
+
+    @extend_schema_field(serializers.CharField(allow_null=True))
     def get_study_manifesto(self, obj):
-        if not hasattr(obj, "didatticacdsaltridati") or not hasattr(obj.didatticacdsaltridati, "manifesto_studi"):
+        if not hasattr(obj, "didatticacdsaltridati") or not hasattr(
+            obj.didatticacdsaltridati, "manifesto_studi"
+        ):
             return None
-        return build_media_path(getattr(obj.didatticacdsaltridati.manifesto_studi, "name"))
+        return build_media_path(
+            getattr(obj.didatticacdsaltridati.manifesto_studi, "name")
+        )
 
+    @extend_schema_field(serializers.CharField(allow_null=True))
     def get_didactic_regulation(self, obj):
-        if not hasattr(obj, "didatticacdsaltridati") or not hasattr(obj.didatticacdsaltridati, "regolamento_didattico"):
+        if not hasattr(obj, "didatticacdsaltridati") or not hasattr(
+            obj.didatticacdsaltridati, "regolamento_didattico"
+        ):
             return None
-        return build_media_path(getattr(obj.didatticacdsaltridati.regolamento_didattico, "name"))
+        return build_media_path(
+            getattr(obj.didatticacdsaltridati.regolamento_didattico, "name")
+        )
 
+    @extend_schema_field(serializers.CharField())
     def get_ordinamento_didattico(self, obj):
         return build_media_path(obj.ordinamento_didattico)
 
+    @extend_schema_field(serializers.BooleanField())
     def get_mandatory_attendance(self, obj):
         return bool(obj.frequenza_obbligatoria)
 
@@ -108,11 +123,7 @@ class CdsSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            "CDS Area", value={"areaCds": "Engineering"}, description="Area of a CDS"
-        )
-    ]
+    examples=docs.CDS_AREA_SERIALIZER_EXAMPLE
 )
 class CdsAreasSerializer(ReadOnlyModelSerializer):
     areaCds = serializers.CharField(
@@ -130,13 +141,7 @@ class CdsAreasSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            "Expired CDS",
-            value={"cdsCod": "CS101", "aaRegDid": "2024", "cdsDuration": "3"},
-            description="Information about an expired CDS",
-        )
-    ]
+    examples=docs.CDS_EXPIRED_SERIALIZER_EXAMPLE
 )
 class CdsExpiredSerializer(ReadOnlyModelSerializer):
     cdsCod = serializers.CharField(
@@ -157,6 +162,9 @@ class CdsExpiredSerializer(ReadOnlyModelSerializer):
             "cdsDuration",
         ]
 
+@extend_schema_serializer(
+    examples=docs.DEGREE_TYPE_SERIALIZER_EXAMPLE
+)
 class DegreeTypeSerializer(ReadOnlyModelSerializer):
     courseType = serializers.CharField(
         source="tipo_corso_cod", help_text="Code representing the type of course"
@@ -174,13 +182,7 @@ class DegreeTypeSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            "Academic Year",
-            value={"aaRegDid": "2024/2025"},
-            description="Academic year information",
-        )
-    ]
+    examples=docs.ACADEMIC_YEARS_SERIALIZER_EXAMPLE
 )
 class AcademicYearsSerializer(ReadOnlyModelSerializer):
     aaRegDid = serializers.CharField(
@@ -193,7 +195,9 @@ class AcademicYearsSerializer(ReadOnlyModelSerializer):
             "aaRegDid",
         ]
 
-
+@extend_schema_serializer(
+    examples=docs.STUDY_ACTIVITY_DETAIL_SERIALIZER_EXAMPLE
+)
 class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = DidatticaAttivitaFormativa
@@ -201,98 +205,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            "Single",
-            value=[
-                {
-                    "id": "AF001",
-                    "genCod": "GEN123",
-                    "des": "...",
-                    "cdsId": "CDS001",
-                    "cdsCod": "IT101",
-                    "language": ["IT", "EN"],
-                    "fatherCode": "F001",
-                    "fatherName": "Computer Science",
-                    "regDidId": "REG2025",
-                    "dipDes": "Dipartimento di Informatica",
-                    "dipCod": "DI123",
-                    "courseYear": "1",
-                    "academicYear": "2025",
-                    "semester": "Second",
-                    "SSDCod": "INF/01",
-                    "SSD": "Informatica",
-                    "partitionCod": "P001",
-                    "partitionDes": "Standard",
-                    "extendedPartitionCod": "EP001",
-                    "extendedPartitionDes": "Advanced Topics",
-                    "cdsName": "Computer Science",
-                    "teacherId": "encrypted-id",
-                    "teacherName": "Prof. Mario Rossi",
-                    "studyPlanDes": "Piano di Studi Base",
-                }
-            ],
-            description="Details of a single study activity",
-        ),
-        OpenApiExample(
-            "Multiple",
-            value=[
-                {
-                    "id": "AF001",
-                    "genCod": "GEN123",
-                    "des": "...",
-                    "cdsId": "CDS001",
-                    "cdsCod": "IT101",
-                    "language": ["IT", "EN"],
-                    "fatherCode": "F001",
-                    "fatherName": "Computer Science",
-                    "regDidId": "REG2025",
-                    "dipDes": "Dipartimento di Informatica",
-                    "dipCod": "DI123",
-                    "courseYear": "1",
-                    "academicYear": "2025",
-                    "semester": "Second",
-                    "SSDCod": "INF/01",
-                    "SSD": "Informatica",
-                    "partitionCod": "P001",
-                    "partitionDes": "Standard",
-                    "extendedPartitionCod": "EP001",
-                    "extendedPartitionDes": "Advanced Topics",
-                    "cdsName": "Computer Science",
-                    "teacherId": "encrypted-id",
-                    "teacherName": "Prof. Mario Rossi",
-                    "studyPlanDes": "Piano di Studi Base",
-                },
-                {
-                    "id": "AF002",
-                    "genCod": "GEN456",
-                    "des": "Data Structures",
-                    "cdsId": "CDS002",
-                    "cdsCod": "IT102",
-                    "language": ["EN"],
-                    "fatherCode": "F002",
-                    "fatherName": "Software Engineering",
-                    "regDidId": "REG2026",
-                    "dipDes": "Dipartimento di Informatica",
-                    "dipCod": "DI124",
-                    "courseYear": "2",
-                    "academicYear": "2026",
-                    "semester": "First",
-                    "SSDCod": "INF/02",
-                    "SSD": "Algoritmi",
-                    "partitionCod": "P002",
-                    "partitionDes": "Standard",
-                    "extendedPartitionCod": "EP002",
-                    "extendedPartitionDes": "Core Topics",
-                    "cdsName": "Software Engineering",
-                    "teacherId": "encrypted-id-2",
-                    "teacherName": "Dr. Anna Bianchi",
-                    "studyPlanDes": "Piano di Studi Avanzato",
-                },
-            ],
-            description="Details of multiple study activities",
-        ),
-    ]
+    examples=docs.STUDY_ACTIVITY_LIST_SERIALIZER_EXAMPLE
 )
 class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     id = serializers.CharField(
@@ -372,13 +285,15 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
         source="pds_des",
         help_text="Description of the study plan associated with the activity.",
     )
-
+    
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_language(self, obj):
         list_language = getattr(obj, "lista_lin_did_af", None)
         if list_language:
             return list_language.replace(" ", "").split(",")
         return []
 
+    @extend_schema_field(serializers.CharField())
     def get_teacherId(self, obj):
         matricola = getattr(obj, "matricola_resp_did", None)
         return encrypt(matricola)
@@ -414,30 +329,7 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            "Single",
-            value={
-                "cds": 101,
-                "cds_prec": 100,
-            },
-            description="Represents a single link between two cds, where `cds` is the current and `cds_prec` is the previous one.",
-        ),
-        OpenApiExample(
-            "Multiple",
-            value=[
-                {
-                    "cds": 201,
-                    "cds_prec": 200,
-                },
-                {
-                    "cds": 301,
-                    "cds_prec": 300,
-                },
-            ],
-            description="Represents multiple links between cds.",
-        ),
-    ]
+    examples=docs.CDS_MORPH_SERIALIZER_EXAMPLE
 )
 class CdsMorphSerializer(ReadOnlyModelSerializer):
     idCds = serializers.IntegerField(source="cds", help_text="The ID of the cds.")
@@ -451,20 +343,7 @@ class CdsMorphSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            "Study Activity Lite",
-            value={
-                "id": 1,
-                "name": "Mathematics",
-                "year": 1,
-                "cycle": "First Semester",
-                "etcs": 6,
-                "type": "Basic",
-            },
-            description="Simplified view of a study activity",
-        )
-    ]
+    examples=docs.STUDY_ACTIVITY_LITE_SERIALIZER_EXAMPLE
 )
 class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(
@@ -488,38 +367,7 @@ class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            "Single",
-            value=[
-                {
-                    "id": 1,
-                    "cod": "123",
-                    "name": "GENERIC",
-                    "duration": 2,
-                }
-            ],
-            description="Single academic pathway",
-        ),
-        OpenApiExample(
-            "Multiple",
-            value=[
-                {
-                    "id": 1,
-                    "cod": "123",
-                    "name": "GENERIC",
-                    "duration": 2,
-                },
-                {
-                    "id": 2,
-                    "cod": "321",
-                    "name": "OTHER",
-                    "duration": 3,
-                },
-            ],
-            description="Multiple academic pathways",
-        ),
-    ]
+    examples=docs.ACADEMIC_PATHWAYS_LIST_SERIALIZER_EXAMPLE
 )
 class AcademicPathwaysListSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(
@@ -539,7 +387,9 @@ class AcademicPathwaysListSerializer(ReadOnlyModelSerializer):
         model = DidatticaPdsRegolamento
         fields = ["id", "cod", "name", "duration"]
 
-
+@extend_schema_serializer(
+    examples=docs.ACADEMIC_PATHWAYS_DETAIL_SERIALIZER_EXAMPLE
+)
 class AcademicPathwaysDetailSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(
         source="pds_regdid_id", help_text="The ID of the academic pathway."

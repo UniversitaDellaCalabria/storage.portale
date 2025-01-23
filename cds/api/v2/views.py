@@ -7,13 +7,11 @@ from rest_framework.exceptions import (
     PermissionDenied,
 )
 
-from api_docs import responses
+from api_docs import responses, docs
 
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
-    OpenApiResponse,
-    OpenApiExample,
 )
 from django.db import models
 from rest_framework import viewsets, mixins
@@ -47,7 +45,6 @@ from cds.models import (
 from .filters import (
     CdsExpiredFilter,
     CdsFilter,
-    DegreeTypeFilter,
     StudyActivitiesFilter,
 )
 from .serializers import (
@@ -124,29 +121,25 @@ class CdsViewSet(ReadOnlyModelViewSet):
 
 @extend_schema_view(
     list=extend_schema(
-        summary="List of all degree types",
-        description="Retrieve a list of all available degree types with their codes and descriptions.",
-        responses=responses.RESPONSE_HTTP_200_OK(DegreeTypeSerializer(many=True)),
+        summary=docs.DEGREETYPE_LIST_SUMMARY,
+        description=docs.DEGREETYPE_LIST_DESCRIPTION,
+        responses=responses.LIST_RESPONSES(DegreeTypeSerializer(many=True))
     )
 )
 class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = DegreeTypeSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = DegreeTypeFilter
     queryset = DidatticaCdsTipoCorso.objects.only(
         "tipo_corso_cod", "tipo_corso_des"
-    ).order_by("tipo_corso_des")
+    ).order_by("tipo_corso_des").distinct()
 
 
-@extend_schema(
-    summary="List of all academic years",
-    description="Retrieve a list of all available academic years in descending order.",
-    responses={
-        200: OpenApiResponse(
-            response=AcademicYearsSerializer(many=True),
-            description="Success: List of academic years",
-        ),
-    },
+@extend_schema_view(
+    list=extend_schema(
+        summary=docs.ACADEMICYEAR_LIST_SUMMARY,
+        description=docs.ACADEMICYEAR_LIST_DESCRIPTION,
+        responses=responses.LIST_RESPONSES(AcademicYearsSerializer(many=True))
+    )
 )
 class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = AcademicYearsSerializer
@@ -156,27 +149,14 @@ class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 @extend_schema_view(
     list=extend_schema(
-        summary="List of all study activities",
-        description=(
-            "Retrieve a paginated list of all study activities with brief information. "
-            "They can be filtered by academic year, course year, course code, department, "
-            "SSD, teaching, teacher, and course year."
-        ),
-        responses=responses.RESPONSE_HTTP_200_OK(
-            StudyActivitiesListSerializer(many=True)
-        )
-        | responses.RESPONSE_HTTP_400_BAD_REQUEST
-        | responses.RESPONSE_HTTP_404_NOT_FOUND,
+        summary=docs.STUDYACTIVITY_LIST_SUMMARY,
+        description=docs.STUDYACTIVITY_LIST_DESCRIPTION,
+        responses=responses.LIST_RESPONSES_WITH_PARAMS(StudyActivitiesListSerializer(many=True))
     ),
     retrieve=extend_schema(
-        summary="Retrieve a specific study activity",
-        description=(
-            "Retrieve detailed information for a single study activity. "
-            "The study activity is identified by its ID."
-        ),
-        responses=responses.RESPONSE_HTTP_200_OK(StudyActivitiesDetailSerializer)
-        | responses.RESPONSE_HTTP_404_NOT_FOUND
-        | responses.RESPONSE_HTTP_500_INTERNAL_SERVER_ERROR,
+        summary=docs.STUDYACTIVITY_RETRIEVE_SUMMARY,
+        description=docs.STUDYACTIVITY_RETRIEVE_DESCRIPTION,
+        responses=responses.RETRIEVE_RESPONSES(StudyActivitiesDetailSerializer)
     ),
 )
 class StudyActivitiesViewSet(ReadOnlyModelViewSet):
@@ -300,14 +280,16 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return StudyActivitiesDetailSerializer
-        elif self.action == "list":
+        else:
             return StudyActivitiesListSerializer
 
 
-@extend_schema(
-    summary="List of all the CDS areas",
-    description="Retrieve a list of all distinct Course of Study areas in Italian or in English.",
-    responses=responses.RESPONSE_HTTP_200_OK(CdsAreasSerializer(many=True)),
+@extend_schema_view(
+    list=extend_schema(
+        summary=docs.CDSAREA_LIST_SUMMARY,
+        description=docs.CDSAREA_LIST_DESCRIPTION,
+        responses=responses.LIST_RESPONSES(CdsAreasSerializer(many=True))
+    )
 )
 class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CdsAreasSerializer
@@ -319,58 +301,11 @@ class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     )
 
 
-@extend_schema(
-    summary="List of expired courses",
-    description=(
-        "Retrieve a list of expired courses that are no longer active. "
-        "This excludes courses that have been morphed into new ones."
-    ),
-    responses={
-        200: OpenApiResponse(
-            response=CdsExpiredSerializer(many=True),
-            description="Success: List of expired courses",
-        ),
-        404: OpenApiResponse(
-            response=NotFound,
-            description="Not Found: No expired courses found",
-            examples=[
-                OpenApiExample(
-                    "Not Found",
-                    value={"detail": "No expired courses found", "code": 404},
-                )
-            ],
-        ),
-        400: OpenApiResponse(
-            response=ValidationError,
-            description="Bad Request: Invalid request",
-            examples=[
-                OpenApiExample(
-                    "Bad Request",
-                    value={"detail": "Invalid request", "code": 400},
-                )
-            ],
-        ),
-        403: OpenApiResponse(
-            response=PermissionDenied,
-            description="Forbidden: Access denied",
-            examples=[
-                OpenApiExample(
-                    "Forbidden",
-                    value={"detail": "Forbidden", "code": 403},
-                )
-            ],
-        ),
-        500: OpenApiResponse(
-            response=APIException,
-            description="Server Error: Internal issue",
-            examples=[
-                OpenApiExample(
-                    "Server Error",
-                    value={"detail": "Error: Internal Server Error", "code": 500},
-                )
-            ],
-        ),
-    },
+@extend_schema_view(
+    list=extend_schema(
+        summary=docs.CDSEXPIRED_LIST_SUMMARY,
+        description=docs.CDSEXPIRED_LIST_DESCRIPTION,
+        responses=responses.LIST_RESPONSES_WITH_PARAMS(CdsExpiredSerializer(many=True)))
 )
 class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CdsExpiredSerializer
@@ -379,75 +314,41 @@ class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = DidatticaRegolamento.objects.all()
 
     def get_queryset(self):
-        try:
-            cds_morphed = DidatticaCdsCollegamento.objects.values_list(
+        cds_morphed = DidatticaCdsCollegamento.objects.values_list(
                 "cds_prec__cds_cod", flat=True
             )
 
-            regdids = (
-                DidatticaRegolamento.objects.filter(
-                    ~Exists(
-                        DidatticaRegolamento.objects.filter(
-                            cds=OuterRef("cds"),
-                            aa_reg_did__gt=OuterRef("aa_reg_did"),
-                        ).exclude(stato_regdid_cod="R")
-                    ),
-                    aa_reg_did__lt=settings.CURRENT_YEAR,
-                    cds__isnull=False,
-                )
-                .exclude(stato_regdid_cod="R")
-                .exclude(
-                    aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni"))
-                )
-                .exclude(cds__cds_cod__in=cds_morphed)
+        regdids = (
+            DidatticaRegolamento.objects.filter(
+                ~Exists(
+                    DidatticaRegolamento.objects.filter(
+                        cds=OuterRef("cds"),
+                        aa_reg_did__gt=OuterRef("aa_reg_did"),
+                    ).exclude(stato_regdid_cod="R")
+                ),
+                aa_reg_did__lt=settings.CURRENT_YEAR,
+                cds__isnull=False,
             )
-
-            return regdids
-        except DidatticaRegolamento.DoesNotExist:
-            raise NotFound(detail="No expired courses found.", code=404)
-        except ValueError as e:
-            raise ValidationError(detail=str(e), code=400)
-        except PermissionError as e:
-            raise PermissionDenied(detail=str(e), code=403)
-        except Exception as e:
-            raise APIException(
-                detail=f"An unexpected error occurred: {str(e)}", code=500
+            .exclude(stato_regdid_cod="R")
+            .exclude(
+                aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni"))
             )
+            .exclude(cds__cds_cod__in=cds_morphed)
+        )
 
+        return regdids
 
-@extend_schema(
-    summary="List all CDS morphing histories",
-    description=(
-        "Retrieve a list of all Course of Study morphing histories. "
-        "This shows how the ids of the curses have evolved over time, tracking their "
-        "previous versions."
+@extend_schema_view(
+    list=extend_schema(
+        summary=docs.CDSMORPH_LIST_SUMMARY,
+        description=docs.CDSMORPH_LIST_DESCRIPTION,
+        responses=responses.LIST_RESPONSES_WITH_PARAMS(CdsMorphSerializer(many=True))
     ),
-    responses={
-        200: OpenApiResponse(
-            response=CdsMorphSerializer(many=True),
-            description="Success: List of morphing histories",
-        ),
-        404: OpenApiResponse(
-            response=NotFound,
-            description="Not Found: Course of Study not found",
-            examples=[
-                OpenApiExample(
-                    "Not Found",
-                    value={"detail": "Course of Study not found", "code": 404},
-                )
-            ],
-        ),
-        500: OpenApiResponse(
-            response=APIException,
-            description="Server Error: Internal issue",
-            examples=[
-                OpenApiExample(
-                    "Server Error",
-                    value={"detail": "Error: Internal Server Error", "code": 500},
-                )
-            ],
-        ),
-    },
+    retrieve=extend_schema(
+        summary=docs.CDSMORPH_RETRIEVE_SUMMARY,
+        description=docs.CDSMORPH_RETRIEVE_DESCRIPTION,
+        responses=responses.RETRIEVE_RESPONSES(CdsMorphSerializer)
+    ),
 )
 class CdsMorphViewSet(ReadOnlyModelViewSet):
     serializer_class = CdsMorphSerializer
@@ -456,68 +357,52 @@ class CdsMorphViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self, request, *args, **kwargs):
         if self.action == "list":
-            try:
-                collegamenti_prefetch = DidatticaCdsCollegamento.objects.select_related(
-                    "cds_prec"
+            collegamenti_prefetch = DidatticaCdsCollegamento.objects.select_related(
+                "cds_prec"
+            )
+            roots = (
+                DidatticaCdsCollegamento.objects.exclude(
+                    cds__pk__in=DidatticaCdsCollegamento.objects.values_list(
+                        "cds_prec", flat=True
+                    )
                 )
-                roots = (
-                    DidatticaCdsCollegamento.objects.exclude(
-                        cds__pk__in=DidatticaCdsCollegamento.objects.values_list(
-                            "cds_prec", flat=True
-                        )
-                    )
-                    .select_related("cds")
-                    .prefetch_related(
-                        Prefetch("cds_prec", queryset=collegamenti_prefetch)
-                    )
+                .select_related("cds")
+                .prefetch_related(
+                    Prefetch("cds_prec", queryset=collegamenti_prefetch)
+                )
+            )
+
+            previous_cds_cod_dict = {}
+            for root in roots:
+                previous_cds_cod_dict[root.cds.cds_cod] = self._build_cds_history(
+                    root.cds.cds_cod
                 )
 
-                previous_cds_cod_dict = {}
-                for root in roots:
-                    previous_cds_cod_dict[root.cds.cds_cod] = self._build_cds_history(
-                        root.cds.cds_cod
-                    )
-
-                return Response(previous_cds_cod_dict)
-            except DidatticaCds.DoesNotExist:
-                raise NotFound(detail="No morphing histories found.", code=404)
-            except Exception as e:
-                raise APIException(
-                    detail=f"An unexpected error occurred: {str(e)}", code=500
-                )
+            return Response(previous_cds_cod_dict)
 
         elif self.action == "retrieve":
-            try:
-                cds_cod = self.kwargs.get("pk")
-                cds = (
-                    DidatticaCds.objects.filter(cds_cod=cds_cod)
-                    .order_by("-cds_id")
-                    .first()
-                )
+            cds_cod = self.kwargs.get("pk")
+            cds = (
+                DidatticaCds.objects.filter(cds_cod=cds_cod)
+                .order_by("-cds_id")
+                .first()
+            )
 
-                previous_cds_cod_list = []
-                if cds:
-                    current_cds = cds
-                    while current_cds:
-                        collegamento = DidatticaCdsCollegamento.objects.filter(
-                            cds=current_cds
-                        ).first()
-                        if collegamento:
-                            predecessor = collegamento.cds_prec
-                            previous_cds_cod_list.append(predecessor.cds_cod)
-                            current_cds = predecessor
-                        else:
-                            break
+            previous_cds_cod_list = []
+            if cds:
+                current_cds = cds
+                while current_cds:
+                    collegamento = DidatticaCdsCollegamento.objects.filter(
+                        cds=current_cds
+                    ).first()
+                    if collegamento:
+                        predecessor = collegamento.cds_prec
+                        previous_cds_cod_list.append(predecessor.cds_cod)
+                        current_cds = predecessor
+                    else:
+                        break
 
-                return Response(previous_cds_cod_list)
-            except DidatticaCds.DoesNotExist:
-                raise NotFound(
-                    detail="The requested morphing history does not exist.", code=404
-                )
-            except Exception as e:
-                raise APIException(
-                    detail=f"An unexpected error occurred: {str(e)}", code=500
-                )
+            return Response(previous_cds_cod_list)
 
     def _build_cds_history(self, cds_cod, history=None):
         if history is None:
@@ -534,29 +419,20 @@ class CdsMorphViewSet(ReadOnlyModelViewSet):
         return history
 
 
-@extend_schema(
-    summary="Academic Pathways Management",
-    description=(
-        "API endpoints for managing academic pathways. Provides functionality to list all "
-        "academic pathways and retrieve detailed information about specific pathways, "
-        "including their associated study activities."
+@extend_schema_view(
+    list=extend_schema(
+        summary=docs.ACADEMICPATHS_LIST_SUMMARY,
+        description=docs.ACADEMICPATHS_LIST_DESCRIPTION,
+        responses=responses.RESPONSE_HTTP_200_OK(
+            AcademicPathwaysListSerializer(many=True)
+        )
+        | responses.RESPONSE_HTTP_500_INTERNAL_SERVER_ERROR,
     ),
-    responses={
-        200: OpenApiResponse(
-            response=AcademicPathwaysListSerializer(many=True),
-            description="Success: List of academic pathways",
-        ),
-        500: OpenApiResponse(
-            response=APIException,
-            description="Server Error: Internal issue",
-            examples=[
-                OpenApiExample(
-                    "Server Error",
-                    value={"detail": "Error: Internal Server Error", "code": 500},
-                )
-            ],
-        ),
-    },
+    retrieve=extend_schema(
+        summary=docs.ACADEMICPATHS_RETRIEVE_SUMMARY,
+        description=docs.ACADEMICPATHS_RETRIEVE_DESCRIPTION,
+        responses=responses.RETRIEVE_RESPONSES(AcademicPathwaysDetailSerializer)
+    ),
 )
 class AcademicPathsViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
@@ -564,53 +440,36 @@ class AcademicPathsViewSet(ReadOnlyModelViewSet):
     lookup_field = "pds_regdid_id"
 
     def get_serializer_class(self):
-        try:
-            if self.action == "retrieve":
-                return AcademicPathwaysDetailSerializer
-            else:
-                return AcademicPathwaysListSerializer
-        except Exception as e:
-            raise APIException(
-                detail=f"An unexpected error occurred: {str(e)}", code=500
-            )
+        if self.action == "retrieve":
+            return AcademicPathwaysDetailSerializer
+        else:
+            return AcademicPathwaysListSerializer
 
     def get_queryset(self):
-        try:
-            if self.action == "list":
-                attivita_formativa_qs = DidatticaAttivitaFormativa.objects.filter(
-                    regdid=self.kwargs.get("regdid_id"),
-                    pds_regdid=OuterRef("pds_regdid_id"),
-                ).select_related("regdid__cds")
-                return (
-                    DidatticaPdsRegolamento.objects.filter(
-                        Exists(attivita_formativa_qs)
-                    )
-                    .annotate(
-                        duration=Subquery(
-                            attivita_formativa_qs.values("regdid__cds__durata_anni")[:1]
-                        )
-                    )
-                    .only("pds_regdid_id", "pds_cod", "regdid", "pds_des_it")
-                    .order_by("pds_des_it")
+        if self.action == "list":
+            attivita_formativa_qs = DidatticaAttivitaFormativa.objects.filter(
+                regdid=self.kwargs.get("regdid_id"),
+                pds_regdid=OuterRef("pds_regdid_id"),
+            ).select_related("regdid__cds")
+            return (
+                DidatticaPdsRegolamento.objects.filter(
+                    Exists(attivita_formativa_qs)
                 )
-            elif self.action == "retrieve":
-                return (DidatticaPdsRegolamento.objects).prefetch_related(
-                    Prefetch(
-                        "didatticaattivitaformativa_set",
-                        queryset=DidatticaAttivitaFormativa.objects.filter(
-                            af_id=F("af_radice_id")
-                        ),
+                .annotate(
+                    duration=Subquery(
+                        attivita_formativa_qs.values("regdid__cds__durata_anni")[:1]
                     )
                 )
-        except DidatticaPdsRegolamento.DoesNotExist:
-            raise NotFound(
-                detail="The requested academic pathway does not exist.", code=404
+                .only("pds_regdid_id", "pds_cod", "regdid", "pds_des_it")
+                .order_by("pds_des_it")
             )
-        except ValueError as e:
-            raise ValidationError(detail=str(e), code=400)
-        except PermissionError as e:
-            raise PermissionDenied(detail=str(e), code=403)
-        except Exception as e:
-            raise APIException(
-                detail=f"An unexpected error occurred: {str(e)}", code=500
+        elif self.action == "retrieve":
+            return (DidatticaPdsRegolamento.objects).prefetch_related(
+                Prefetch(
+                    "didatticaattivitaformativa_set",
+                    queryset=DidatticaAttivitaFormativa.objects.filter(
+                        af_id=F("af_radice_id")
+                    ),
+                )
             )
+    
