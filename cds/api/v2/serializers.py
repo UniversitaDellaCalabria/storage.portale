@@ -1,5 +1,5 @@
 from collections import defaultdict
-from api_docs import docs
+from .docs import examples
 
 from drf_spectacular.utils import (
     extend_schema_field,
@@ -20,7 +20,7 @@ from cds.models import (
 )
 
 @extend_schema_serializer(
-    examples=docs.CDS_SERIALIZER_EXAMPLE
+    examples=examples.CDS_SERIALIZER_EXAMPLE
 )
 class CdsSerializer(ReadOnlyModelSerializer):
     regDidId = serializers.IntegerField(source="regdid_id")
@@ -123,7 +123,7 @@ class CdsSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=docs.CDS_AREA_SERIALIZER_EXAMPLE
+    examples=examples.CDS_AREA_SERIALIZER_EXAMPLE
 )
 class CdsAreasSerializer(ReadOnlyModelSerializer):
     areaCds = serializers.CharField(
@@ -141,7 +141,7 @@ class CdsAreasSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=docs.CDS_EXPIRED_SERIALIZER_EXAMPLE
+    examples=examples.CDS_EXPIRED_SERIALIZER_EXAMPLE
 )
 class CdsExpiredSerializer(ReadOnlyModelSerializer):
     cdsCod = serializers.CharField(
@@ -163,7 +163,7 @@ class CdsExpiredSerializer(ReadOnlyModelSerializer):
         ]
 
 @extend_schema_serializer(
-    examples=docs.DEGREE_TYPE_SERIALIZER_EXAMPLE
+    examples=examples.DEGREE_TYPE_SERIALIZER_EXAMPLE
 )
 class DegreeTypeSerializer(ReadOnlyModelSerializer):
     courseType = serializers.CharField(
@@ -182,7 +182,7 @@ class DegreeTypeSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=docs.ACADEMIC_YEARS_SERIALIZER_EXAMPLE
+    examples=examples.ACADEMIC_YEARS_SERIALIZER_EXAMPLE
 )
 class AcademicYearsSerializer(ReadOnlyModelSerializer):
     aaRegDid = serializers.CharField(
@@ -196,7 +196,7 @@ class AcademicYearsSerializer(ReadOnlyModelSerializer):
         ]
 
 @extend_schema_serializer(
-    examples=docs.STUDY_ACTIVITY_DETAIL_SERIALIZER_EXAMPLE
+    examples=examples.STUDY_ACTIVITY_DETAIL_SERIALIZER_EXAMPLE
 )
 class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
     class Meta:
@@ -205,7 +205,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=docs.STUDY_ACTIVITY_LIST_SERIALIZER_EXAMPLE
+    examples=examples.STUDY_ACTIVITY_LIST_SERIALIZER_EXAMPLE
 )
 class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     id = serializers.CharField(
@@ -329,7 +329,7 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=docs.CDS_MORPH_SERIALIZER_EXAMPLE
+    examples=examples.CDS_MORPH_SERIALIZER_EXAMPLE
 )
 class CdsMorphSerializer(ReadOnlyModelSerializer):
     idCds = serializers.IntegerField(source="cds", help_text="The ID of the cds.")
@@ -343,7 +343,7 @@ class CdsMorphSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=docs.STUDY_ACTIVITY_LITE_SERIALIZER_EXAMPLE
+    examples=examples.STUDY_ACTIVITY_LITE_SERIALIZER_EXAMPLE
 )
 class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(
@@ -367,7 +367,7 @@ class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(
-    examples=docs.ACADEMIC_PATHWAYS_LIST_SERIALIZER_EXAMPLE
+    examples=examples.ACADEMIC_PATHWAYS_LIST_SERIALIZER_EXAMPLE
 )
 class AcademicPathwaysListSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(
@@ -388,7 +388,7 @@ class AcademicPathwaysListSerializer(ReadOnlyModelSerializer):
         fields = ["id", "cod", "name", "duration"]
 
 @extend_schema_serializer(
-    examples=docs.ACADEMIC_PATHWAYS_DETAIL_SERIALIZER_EXAMPLE
+    examples=examples.ACADEMIC_PATHWAYS_DETAIL_SERIALIZER_EXAMPLE
 )
 class AcademicPathwaysDetailSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(

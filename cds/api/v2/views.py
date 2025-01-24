@@ -1,4 +1,6 @@
-from api_docs import docs, responses
+from api_docs import responses
+from .docs import descriptions
+
 from django.conf import settings
 from django.db import models
 from django.db.models import (
@@ -15,6 +17,7 @@ from django.db.models import (
 from django.db.models.functions import Coalesce, Concat
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
+    OpenApiParameter,
     extend_schema,
     extend_schema_view,
 )
@@ -52,7 +55,20 @@ from .serializers import (
     StudyActivitiesListSerializer,
 )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary="",
+        description="",
+        responses=responses.COMMON_LIST_RESPONSES(
+            CdsSerializer(many=True)
+        ),
+    ),
+    retrieve=extend_schema(
+        summary="",
+        description="",
+        responses=responses.COMMON_RETRIEVE_RESPONSES(CdsSerializer),
+    ),
+)
 class CdsViewSet(ReadOnlyModelViewSet):
     serializer_class = CdsSerializer
     filter_backends = [DjangoFilterBackend]
@@ -106,14 +122,15 @@ class CdsViewSet(ReadOnlyModelViewSet):
 
 @extend_schema_view(
     list=extend_schema(
-        summary=docs.DEGREETYPE_LIST_SUMMARY,
-        description=docs.DEGREETYPE_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES(DegreeTypeSerializer(many=True)),
+        summary=descriptions.DEGREETYPE_LIST_SUMMARY,
+        description=descriptions.DEGREETYPE_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(
+            DegreeTypeSerializer(many=True), include_bad_request=False
+        ),
     )
 )
 class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = DegreeTypeSerializer
-    filter_backends = [DjangoFilterBackend]
     queryset = (
         DidatticaCdsTipoCorso.objects.only("tipo_corso_cod", "tipo_corso_des")
         .order_by("tipo_corso_des")
@@ -123,29 +140,30 @@ class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 @extend_schema_view(
     list=extend_schema(
-        summary=docs.ACADEMICYEAR_LIST_SUMMARY,
-        description=docs.ACADEMICYEAR_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES(AcademicYearsSerializer(many=True)),
+        summary=descriptions.ACADEMICYEAR_LIST_SUMMARY,
+        description=descriptions.ACADEMICYEAR_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(
+            AcademicYearsSerializer(many=True), include_bad_request=False
+        ),
     )
 )
 class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = AcademicYearsSerializer
-    filter_backends = [DjangoFilterBackend]
     queryset = DidatticaRegolamento.objects.only("aa_reg_did").order_by("-aa_reg_did")
 
 
 @extend_schema_view(
     list=extend_schema(
-        summary=docs.STUDYACTIVITY_LIST_SUMMARY,
-        description=docs.STUDYACTIVITY_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES_WITH_PARAMS(
+        summary=descriptions.STUDYACTIVITY_LIST_SUMMARY,
+        description=descriptions.STUDYACTIVITY_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(
             StudyActivitiesListSerializer(many=True)
         ),
     ),
     retrieve=extend_schema(
-        summary=docs.STUDYACTIVITY_RETRIEVE_SUMMARY,
-        description=docs.STUDYACTIVITY_RETRIEVE_DESCRIPTION,
-        responses=responses.RETRIEVE_RESPONSES(StudyActivitiesDetailSerializer),
+        summary=descriptions.STUDYACTIVITY_RETRIEVE_SUMMARY,
+        description=descriptions.STUDYACTIVITY_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(StudyActivitiesDetailSerializer),
     ),
 )
 class StudyActivitiesViewSet(ReadOnlyModelViewSet):
@@ -275,14 +293,15 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
 
 @extend_schema_view(
     list=extend_schema(
-        summary=docs.CDSAREA_LIST_SUMMARY,
-        description=docs.CDSAREA_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES(CdsAreasSerializer(many=True)),
+        summary=descriptions.CDSAREA_LIST_SUMMARY,
+        description=descriptions.CDSAREA_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(
+            CdsAreasSerializer(many=True), include_bad_request=False
+        ),
     )
 )
 class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CdsAreasSerializer
-    filter_backends = [DjangoFilterBackend]
     queryset = (
         DidatticaCds.objects.values("area_cds", "area_cds_en")
         .filter(area_cds__isnull=False, area_cds_en__isnull=False)
@@ -292,9 +311,9 @@ class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 @extend_schema_view(
     list=extend_schema(
-        summary=docs.CDSEXPIRED_LIST_SUMMARY,
-        description=docs.CDSEXPIRED_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES_WITH_PARAMS(CdsExpiredSerializer(many=True)),
+        summary=descriptions.CDSEXPIRED_LIST_SUMMARY,
+        description=descriptions.CDSEXPIRED_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(CdsExpiredSerializer(many=True)),
     )
 )
 class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -329,19 +348,18 @@ class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 @extend_schema_view(
     list=extend_schema(
-        summary=docs.CDSMORPH_LIST_SUMMARY,
-        description=docs.CDSMORPH_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES_WITH_PARAMS(CdsMorphSerializer(many=True)),
+        summary=descriptions.CDSMORPH_LIST_SUMMARY,
+        description=descriptions.CDSMORPH_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(CdsMorphSerializer(many=True)),
     ),
     retrieve=extend_schema(
-        summary=docs.CDSMORPH_RETRIEVE_SUMMARY,
-        description=docs.CDSMORPH_RETRIEVE_DESCRIPTION,
-        responses=responses.RETRIEVE_RESPONSES(CdsMorphSerializer),
+        summary=descriptions.CDSMORPH_RETRIEVE_SUMMARY,
+        description=descriptions.CDSMORPH_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(CdsMorphSerializer),
     ),
 )
 class CdsMorphViewSet(ReadOnlyModelViewSet):
     serializer_class = CdsMorphSerializer
-    filter_backends = [DjangoFilterBackend]
     queryset = DidatticaCds.objects.all()
 
     def get_queryset(self, request, *args, **kwargs):
@@ -406,17 +424,36 @@ class CdsMorphViewSet(ReadOnlyModelViewSet):
 
 @extend_schema_view(
     list=extend_schema(
-        summary=docs.ACADEMICPATHS_LIST_SUMMARY,
-        description=docs.ACADEMICPATHS_LIST_DESCRIPTION,
-        responses=responses.RESPONSE_HTTP_200_OK(
+        summary=descriptions.ACADEMICPATHS_LIST_SUMMARY,
+        description=descriptions.ACADEMICPATHS_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(
             AcademicPathwaysListSerializer(many=True)
-        )
-        | responses.RESPONSE_HTTP_500_INTERNAL_SERVER_ERROR,
+        ),
+        parameters=[
+            OpenApiParameter(
+                name="regdid_id",
+                type=str,
+                pattern=r"^\d+$",
+                required=True,
+                description="A unique value identifying the Didactic regulation.",
+                location=OpenApiParameter.PATH,
+            )
+        ],
     ),
     retrieve=extend_schema(
-        summary=docs.ACADEMICPATHS_RETRIEVE_SUMMARY,
-        description=docs.ACADEMICPATHS_RETRIEVE_DESCRIPTION,
-        responses=responses.RETRIEVE_RESPONSES(AcademicPathwaysDetailSerializer),
+        summary=descriptions.ACADEMICPATHS_RETRIEVE_SUMMARY,
+        description=descriptions.ACADEMICPATHS_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(AcademicPathwaysDetailSerializer),
+        parameters=[
+            OpenApiParameter(
+                name="regdid_id",
+                type=str,
+                pattern=r"^\d+$",
+                required=True,
+                description="A unique value identifying the Didactic regulation.",
+                location=OpenApiParameter.PATH,
+            )
+        ],
     ),
 )
 class AcademicPathsViewSet(ReadOnlyModelViewSet):
