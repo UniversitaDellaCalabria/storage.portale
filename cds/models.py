@@ -54,6 +54,8 @@ class DidatticaSsd(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_SSD"
+        verbose_name = "SSD"
+        verbose_name_plural = verbose_name
 
     def __str__(self):
         return f"{self.ssd_id} {self.ssd_des}"
@@ -266,6 +268,8 @@ class DidatticaAttivitaFormativa(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_ATTIVITA_FORMATIVA"
+        verbose_name = "Study activity"
+        verbose_name_plural = "Study activities"
         ordering = ("ciclo_des",)
 
     def __str__(self):  # pragma: no cover
@@ -286,6 +290,8 @@ class DidatticaAttivitaFormativaModalita(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_ATTIVITA_FORMATIVA_MODALITA"
+        verbose_name = "Study activity mode"
+        verbose_name_plural = "Study activity modes"
 
 
 class DidatticaCds(InsModAbstract):
@@ -468,6 +474,8 @@ class DidatticaCdsPeriodi(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CDS_PERIODI"
+        verbose_name = "Study course period"
+        verbose_name_plural = "Study course periods"
 
 
 class DidatticaCdsAltriDatiUfficio(models.Model):
@@ -508,6 +516,8 @@ class DidatticaCdsAltriDatiUfficio(models.Model):
         db_table = "DIDATTICA_CDS_ALTRI_DATI_UFFICIO"
         ordering = ("ordine",)
         # unique_together = (('cds', 'ordine'),)
+        verbose_name = "Cds office other data"
+        verbose_name_plural = verbose_name
 
 
 class DidatticaCdsLingua(models.Model):
@@ -535,8 +545,8 @@ class DidatticaCdsLingua(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CDS_LINGUA"
-        verbose_name = _("Cds Language")
-        verbose_name_plural = _("Cds Languages")
+        verbose_name = "Cds Language"
+        verbose_name_plural = "Cds Languages"
 
     def __str__(self):  # pragma: no cover
         return "{} {}".format(self.cdsord.cds_cod, self.lingua_des_it)
@@ -697,6 +707,8 @@ class DidatticaCopertura(InsModAbstract):
     class Meta:
         managed = True
         db_table = "DIDATTICA_COPERTURA"
+        verbose_name = "Teaching coverage"
+        verbose_name_plural = "Teaching coverages"
 
 
 class DidatticaCoperturaDettaglioOre(models.Model):
@@ -714,6 +726,8 @@ class DidatticaCoperturaDettaglioOre(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_COPERTURA_DETTAGLIO_ORE"
+        verbose_name = "Teaching coverage hours detail"
+        verbose_name_plural = "Teaching coverage hours details"
 
 
 class DidatticaPdsRegolamento(InsModAbstract):
@@ -741,10 +755,12 @@ class DidatticaPdsRegolamento(InsModAbstract):
     class Meta:
         managed = True
         db_table = "DIDATTICA_PDS_REGOLAMENTO"
+        verbose_name = "Academic Pathway"
+        verbose_name_plural = "Academic Pathways"
 
 
 class DidatticaRegolamento(InsModAbstract):
-    regdid_id = models.IntegerField(db_column="REGDID_ID", primary_key=True)
+    regdid_id = models.IntegerField(db_column="REGDID_ID", primary_key=True, help_text="Unique ID for the Didactic Regulation")
     aa_reg_did = models.IntegerField(db_column="AA_REG_DID", blank=True, null=True)
     cds = models.ForeignKey(
         DidatticaCds, models.DO_NOTHING, db_column="CDS_ID", blank=True, null=True
@@ -775,8 +791,8 @@ class DidatticaRegolamento(InsModAbstract):
         managed = True
         db_table = "DIDATTICA_REGOLAMENTO"
 
-        verbose_name = _("Didactic Regulation")
-        verbose_name_plural = _("Didactic Regulations")
+        verbose_name = "Didactic regulation"
+        verbose_name_plural = "Didactic regulations"
 
     def get_ordinamento_didattico(self):
         # se è stato caricato un ordinamento per quest'anno, lo restituisco
@@ -815,6 +831,8 @@ class DidatticaRegolamentoTipologiaAltriDati(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_REGOLAMENTO_TIPOLOGIA_ALTRI_DATI"
+        verbose_name = "Didactic regulation other data type"
+        verbose_name_plural = "Didactic regulation other data types"
 
 
 class DidatticaRegolamentoAltriDati(models.Model):
@@ -842,6 +860,8 @@ class DidatticaRegolamentoAltriDati(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_REGOLAMENTO_ALTRI_DATI"
+        verbose_name = "Didactic regulation other data"
+        verbose_name_plural = "Didactic regulation other data"
 
 
 class DidatticaTestiAf(InsModAbstract):
@@ -898,6 +918,8 @@ class DidatticaTestiAf(InsModAbstract):
         managed = True
         db_table = "DIDATTICA_TESTI_AF"
         unique_together = (("af", "tipo_testo_af_cod"),)
+        verbose_name = "Study activity text"
+        verbose_name_plural = "Study activity texts"
 
 
 class DidatticaTestiRegolamento(InsModAbstract):
@@ -938,6 +960,8 @@ class DidatticaTestiRegolamento(InsModAbstract):
     class Meta:
         managed = True
         db_table = "DIDATTICA_TESTI_REGOLAMENTO"
+        verbose_name = "Didactic regulation text"
+        verbose_name_plural = "Didactic regulation texts"
 
     def __str__(self):  # pragma: no cover
         return "{} {}".format(self.txt_id, self.tipo_testo_regdid_cod)
@@ -1007,6 +1031,8 @@ class DidatticaCdsAltriDati(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CDS_ALTRI_DATI"
+        verbose_name = "Cds other data"
+        verbose_name_plural = verbose_name
 
 
 class DidatticaCdsGruppi(models.Model):
@@ -1035,6 +1061,8 @@ class DidatticaCdsGruppi(models.Model):
         managed = True
         db_table = "DIDATTICA_CDS_GRUPPI"
         ordering = ("ordine",)
+        verbose_name = "Cds group"
+        verbose_name_plural = "Cds groups"
 
     def __str__(self):  # pragma: no cover
         return self.descr_breve_it
@@ -1078,6 +1106,8 @@ class DidatticaCdsGruppiComponenti(models.Model):
         managed = True
         db_table = "DIDATTICA_CDS_GRUPPI_COMPONENTI"
         ordering = ("ordine",)
+        verbose_name = "Cds group member"
+        verbose_name_plural = "Cds group members"
 
     def __str__(self):  # pragma: no cover
         return f"{self.didattica_cds_gruppi} - {self.cognome} {self.nome}"
@@ -1091,6 +1121,8 @@ class DidatticaClasseLaurea(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CLASSE_LAUREA"
+        verbose_name = "Classe laurea"
+        verbose_name_plural = "Classi laurea"
 
 
 class DidatticaAmbiti(models.Model):
@@ -1106,6 +1138,8 @@ class DidatticaAmbiti(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_AMBITI"
+        verbose_name = "Scope"
+        verbose_name_plural = "Scopes"
 
 
 class DidatticaPianoRegolamento(models.Model):
@@ -1159,6 +1193,8 @@ class DidatticaPianoRegolamento(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_PIANO_REGOLAMENTO"
+        verbose_name = "Regulation study plan"
+        verbose_name_plural = "Regulation study plans"
 
 
 class DidatticaPianoSceltaAf(models.Model):
@@ -1382,6 +1418,8 @@ class DidatticaPianoSceltaAf(models.Model):
         managed = True
         db_table = "DIDATTICA_PIANO_SCELTA_AF"
         ordering = ("ciclo_des",)
+        verbose_name = "Study plan study activity choice"
+        verbose_name_plural = "Study plan study activity choices"
 
 
 class DidatticaPianoSceltaFilAnd(models.Model):
@@ -1480,6 +1518,8 @@ class DidatticaPianoSceltaFilAnd(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_PIANO_SCELTA_FIL_AND"
+        verbose_name = "Study plan choice filter"
+        verbose_name_plural = "Study plan choice filters"
 
 
 class DidatticaPianoSceltaSchePiano(models.Model):
@@ -1782,6 +1822,8 @@ class DidatticaPianoSceltaSchePiano(models.Model):
         managed = True
         db_table = "DIDATTICA_PIANO_SCELTA_SCHE_PIANO"
         unique_together = (("sche_piano", "sce"),)
+        verbose_name = "Study plan sheet choice plan"
+        verbose_name_plural = "Study plan sheet choice plans"
 
 
 class DidatticaPianoSceltaVincoli(models.Model):
@@ -1883,6 +1925,8 @@ class DidatticaPianoSceltaVincoli(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_PIANO_SCELTA_VINCOLI"
+        verbose_name = "Study plan constraint choice"
+        verbose_name_plural = "Study plan constraint choices"
 
 
 class DidatticaPianoSche(models.Model):
@@ -1958,6 +2002,8 @@ class DidatticaPianoSche(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_PIANO_SCHE"
+        verbose_name = "Study plan sheet"
+        verbose_name_plural = "Study plan sheets"
 
 
 class DidatticaCdsTipoCorso(Permissions):
@@ -1985,3 +2031,5 @@ class DidatticaCdsTipoCorso(Permissions):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CDS_TIPO_CORSO"
+        verbose_name = "Cds course type"
+        verbose_name_plural = "Cds course types"
