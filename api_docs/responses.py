@@ -2,19 +2,28 @@ from drf_spectacular.utils import OpenApiExample, OpenApiResponse
 from generics.serializers import GenericErrorSerializer
 from rest_framework import status
 
-def LIST_RESPONSES(serializer=None):
-    return RESPONSE_HTTP_200_OK(serializer) | RESPONSE_HTTP_500_INTERNAL_SERVER_ERROR
 
-def LIST_RESPONSES_WITH_PARAMS(serializer=None):
+def COMMON_LIST_RESPONSES(serializer=None, include_bad_request=True):
+    """
+    Returns a dictionary of common responses for list methods
+    """
     return (
-        RESPONSE_HTTP_200_OK(serializer) |
-        RESPONSE_HTTP_400_BAD_REQUEST |
-        RESPONSE_HTTP_404_NOT_FOUND |
-        RESPONSE_HTTP_500_INTERNAL_SERVER_ERROR
+        RESPONSE_HTTP_200_OK(serializer) | RESPONSE_HTTP_400_BAD_REQUEST
+        if include_bad_request
+        else RESPONSE_HTTP_200_OK(serializer)
     )
-              
-def RETRIEVE_RESPONSES(serializer=None):
-    return RESPONSE_HTTP_200_OK(serializer) | RESPONSE_HTTP_400_BAD_REQUEST | RESPONSE_HTTP_404_NOT_FOUND | RESPONSE_HTTP_500_INTERNAL_SERVER_ERROR
+
+
+def COMMON_RETRIEVE_RESPONSES(serializer=None):
+    """
+    Returns a dictionary of common responses for retrieve methods
+    """
+    return (
+        RESPONSE_HTTP_200_OK(serializer)
+        | RESPONSE_HTTP_400_BAD_REQUEST
+        | RESPONSE_HTTP_404_NOT_FOUND
+    )
+
 
 def RESPONSE_HTTP_200_OK(serializer=None):
     return {
@@ -23,6 +32,7 @@ def RESPONSE_HTTP_200_OK(serializer=None):
             description="Success",
         ),
     }
+
 
 RESPONSE_HTTP_400_BAD_REQUEST = {
     status.HTTP_400_BAD_REQUEST: OpenApiResponse(
