@@ -1,13 +1,13 @@
 import datetime
+import operator
+from functools import reduce
 
 from addressbook.utils import append_email_addresses
 from django.conf import settings
 from django.core.exceptions import BadRequest
 from django.db.models import Exists, F, OuterRef, Q
 from django.http import Http404
-from generics.services import ServiceQueryBuilder
 from structures.models import DidatticaDipartimentoUrl
-from django.conf import settings
 
 from cds.models import (
     DidatticaAttivitaFormativa,
@@ -30,6 +30,19 @@ from cds.models import (
 )
 
 
+def build_filter_chain(params_dict, query_params, *args):
+    return reduce(
+        operator.and_,
+        [
+            Q(**{v: query_params.get(k)})
+            for (k, v) in params_dict.items()
+            if query_params.get(k)
+        ]
+        + list(args),
+        Q(),
+    )
+
+
 class ServiceDidatticaCds:
     @staticmethod
     def cdslist(language, query_params):
@@ -40,7 +53,7 @@ class ServiceDidatticaCds:
             # 'courseclassgroup': ... unspecified atm
             "departmentid": "dip__dip_id",
             "departmentcod": "dip__dip_cod",
-            "departmentname": f'dip__dip_des_{language == "it" and "it" or "eng"}__icontains',
+            "departmentname": f"dip__dip_des_{language == 'it' and 'it' or 'eng'}__icontains",
             "area": "area_cds__icontains",
         }
 
@@ -62,15 +75,11 @@ class ServiceDidatticaCds:
         if courses_allowed != "":
             courses_allowed = courses_allowed.split(",")
 
-        q1 = ServiceQueryBuilder.build_filter_chain(
-            didatticacds_params_to_query_field, query_params
-        )
-        q2 = ServiceQueryBuilder.build_filter_chain(
+        q1 = build_filter_chain(didatticacds_params_to_query_field, query_params)
+        q2 = build_filter_chain(
             didatticaregolamento_params_to_query_field, query_params
         )
-        q3 = ServiceQueryBuilder.build_filter_chain(
-            didatticacdslingua_params_to_query_field, query_params
-        )
+        q3 = build_filter_chain(didatticacdslingua_params_to_query_field, query_params)
 
         q4 = Q()
 
@@ -274,11 +283,11 @@ class ServiceDidatticaCds:
                         last_profile = text["profilo"]
                         list_profiles[last_profile] = {}
                 elif (
-                    text[f'{ language == "it" and "profilo" or "profilo_eng" }']
+                    text[f"{language == 'it' and 'profilo' or 'profilo_eng'}"]
                     != last_profile
                 ):  # pragma: no cover
                     last_profile = text[
-                        f'{language == "it" and "profilo" or "profilo_eng"}'
+                        f"{language == 'it' and 'profilo' or 'profilo_eng'}"
                     ]
                     list_profiles[last_profile] = {}
 
@@ -370,7 +379,6 @@ class ServiceDidatticaCds:
             "data_fine",
         )
 
-
         for group in res[0]["CdsGroups"]:
             members = (
                 DidatticaCdsGruppiComponenti.objects.filter(
@@ -405,7 +413,9 @@ class ServiceDidatticaCds:
             course_tyeps_list = coursetypes.split(",")
             query_course_types = Q(cds__tipo_corso_cod__in=course_tyeps_list)
 
-        cds_morphed = DidatticaCdsCollegamento.objects.values_list('cds_prec__cds_cod', flat=True)
+        cds_morphed = DidatticaCdsCollegamento.objects.values_list(
+            "cds_prec__cds_cod", flat=True
+        )
 
         regdids = (
             DidatticaRegolamento.objects.filter(
@@ -529,11 +539,12 @@ class ServiceDidatticaCds:
             ServiceDidatticaCds._build_cds_history(prec.cds_prec.cds_cod, history)
         return history
 
-
     @staticmethod
     def getPreviousCdsCods():
         previous_cds_cod_dict = {}
-        cds_prec_ids = DidatticaCdsCollegamento.objects.values_list('cds_prec', flat=True)
+        cds_prec_ids = DidatticaCdsCollegamento.objects.values_list(
+            "cds_prec", flat=True
+        )
         roots = DidatticaCdsCollegamento.objects.exclude(cds__pk__in=cds_prec_ids)
         for root in roots:
             prec_list = ServiceDidatticaCds._build_cds_history(root.cds.cds_cod, [])

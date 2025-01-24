@@ -1,5 +1,5 @@
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse
-from generics.serializers import GenericErrorSerializer
+from generics.api.serializers import GenericErrorSerializer
 from rest_framework import status
 
 

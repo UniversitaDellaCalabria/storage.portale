@@ -1,5 +1,7 @@
+import operator
+from functools import reduce
+
 from django.db.models import Q
-from generics.services import ServiceQueryBuilder
 from phd.models import (
     DidatticaDottoratoAttivitaFormativa,
     DidatticaDottoratoAttivitaFormativaAltriDocenti,
@@ -7,6 +9,19 @@ from phd.models import (
     DidatticaDottoratoAttivitaFormativaTipologia,
     DidatticaDottoratoCds,
 )
+
+
+def build_filter_chain(params_dict, query_params, *args):
+    return reduce(
+        operator.and_,
+        [
+            Q(**{v: query_params.get(k)})
+            for (k, v) in params_dict.items()
+            if query_params.get(k)
+        ]
+        + list(args),
+        Q(),
+    )
 
 
 class ServiceDottorato:
@@ -24,7 +39,7 @@ class ServiceDottorato:
         }
 
         query = DidatticaDottoratoCds.objects.filter(
-            ServiceQueryBuilder.build_filter_chain(params_to_query_field, query_params)
+            build_filter_chain(params_to_query_field, query_params)
         )
 
         return query.order_by(

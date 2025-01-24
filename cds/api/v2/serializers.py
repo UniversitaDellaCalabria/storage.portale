@@ -5,7 +5,7 @@ from drf_spectacular.utils import (
     extend_schema_field,
     extend_schema_serializer,
 )
-from generics.serializers import ReadOnlyModelSerializer
+from generics.api.serializers import ReadOnlyModelSerializer
 from generics.utils import encrypt, build_media_path
 from rest_framework import serializers
 

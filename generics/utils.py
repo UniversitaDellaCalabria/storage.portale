@@ -11,7 +11,7 @@ from django.utils import timezone
 from PIL import Image
 from django.db import transaction
 
-from generics.labels import LABEL_MAPPING as LOCAL_LABEL_MAPPING
+from generics.api.labels import LABEL_MAPPING as LOCAL_LABEL_MAPPING
 
 from .settings import (
     ENCRYPTION_KEY,

@@ -1,6 +1,6 @@
 from django.db.models import Exists, OuterRef, Q
 from django_filters import rest_framework as filters
-from generics.filters import InCharFilter
+from generics.api.filters import InCharFilter
 from generics.utils import decrypt
 
 from cds.models import (

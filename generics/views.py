@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.schemas.openapi_agid import AgidAutoSchema
 from drf_spectacular.openapi import AutoSchema
 
-from .pagination import UnicalStorageApiPaginationList
+from .api.pagination import UnicalStorageApiPaginationList
 from .utils import encode_labels
 
 
