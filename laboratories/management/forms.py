@@ -4,7 +4,8 @@ from decimal import Decimal
 from django import forms
 from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
-from django_ckeditor_5.widgets import CKEditor5Widget
+
+from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget
 from laboratories.models import (
     LaboratorioAttrezzature,
     LaboratorioDatiBase,
@@ -101,10 +102,10 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             "nome_file_logo": _("Logo"),
         }
         widgets = {
-            "descr_altre_strutture_riferimento_it": CKEditor5Widget(),
-            "descr_altre_strutture_riferimento_en": CKEditor5Widget(),
-            # 'strumentazione_descrizione': CKEditor5Widget(),
-            # 'sede_note_descrittive': CKEditor5Widget(),
+            "descr_altre_strutture_riferimento_it": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "descr_altre_strutture_riferimento_en": RicercaCRUDCKEditor5EmptyContentWidget(),
+            # 'strumentazione_descrizione': RicercaCRUDCKEditor5EmptyContentWidget(),
+            # 'sede_note_descrittive': RicercaCRUDCKEditor5EmptyContentWidget(),
         }
 
 
@@ -154,8 +155,8 @@ class LaboratorioDatiBaseInfoSedeStruttureForm(forms.ModelForm):
             "strumentazione_descrizione": _("Equipment - Description"),
         }
         widgets = {
-            "sede_note_descrittive": CKEditor5Widget(),
-            "strumentazione_descrizione": CKEditor5Widget(),
+            "sede_note_descrittive": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "strumentazione_descrizione": RicercaCRUDCKEditor5EmptyContentWidget(),
         }
 
 
@@ -400,8 +401,8 @@ class LaboratorioAttivitaForm(forms.ModelForm):
         }
 
         widgets = {
-            "descr_finalita_it": CKEditor5Widget(),
-            "descr_finalita_en": CKEditor5Widget(),
+            "descr_finalita_it": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "descr_finalita_en": RicercaCRUDCKEditor5EmptyContentWidget(),
         }
 
 

@@ -1,7 +1,8 @@
 from bootstrap_italia_template.widgets import BootstrapItaliaDateWidget
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django_ckeditor_5.widgets import CKEditor5Widget
+
+from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget
 from patents.models import BrevettoDatiBase, BrevettoInventori
 
 
@@ -57,9 +58,9 @@ class BrevettoDatiBaseForm(forms.ModelForm):
         widgets = {
             "titolo": forms.Textarea(attrs={"rows": 2}),
             "proprieta": forms.Textarea(attrs={"rows": 2}),
-            "breve_descrizione": CKEditor5Widget(),
-            "applicazioni": CKEditor5Widget(),
-            "vantaggi": CKEditor5Widget(),
+            "breve_descrizione": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "applicazioni": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "vantaggi": RicercaCRUDCKEditor5EmptyContentWidget(),
             "data_priorita": BootstrapItaliaDateWidget,
         }
 

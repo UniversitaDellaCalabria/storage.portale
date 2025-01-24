@@ -1,7 +1,8 @@
 from bootstrap_italia_template.widgets import BootstrapItaliaDateWidget
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django_ckeditor_5.widgets import CKEditor5Widget
+
+from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget
 from research_lines.models import (
     RicercaDocenteLineaBase,
     RicercaLineaApplicata,
@@ -25,7 +26,7 @@ class RicercaLineaApplicataForm(forms.ModelForm):
             "anno": _("Year"),
             "ricerca_aster2": _("ASTER2"),
         }
-        widgets = {"descr_pubblicaz_prog_brevetto": CKEditor5Widget()}
+        widgets = {"descr_pubblicaz_prog_brevetto": RicercaCRUDCKEditor5EmptyContentWidget()}
 
     class Media:
         js = ("js/textarea-autosize.js",)
@@ -47,7 +48,7 @@ class RicercaLineaBaseForm(forms.ModelForm):
             "anno": _("Year"),
             "ricerca_erc2": _("ERC2"),
         }
-        widgets = {"descr_pubblicaz_prog_brevetto": CKEditor5Widget()}
+        widgets = {"descr_pubblicaz_prog_brevetto": RicercaCRUDCKEditor5EmptyContentWidget()}
 
     class Media:
         js = ("js/textarea-autosize.js",)
