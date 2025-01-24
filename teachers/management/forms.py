@@ -67,6 +67,15 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
 
 
 class DocentePtaBachecaForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.data:
+            # compongo il campo datetime prima di restituirlo alla view (date + time)
+            data = self.data.copy()
+            data['dt_inizio_validita'] = f'{data["dt_inizio_validita_date"]} {data["dt_inizio_validita_time"]}'
+            data['dt_fine_validita'] = f'{data["dt_fine_validita_date"]} {data["dt_fine_validita_time"]}'
+            self.data = data
+
     class Meta:
         model = DocentePtaBacheca
         fields = [
@@ -113,6 +122,15 @@ class DocentePtaBachecaForm(forms.ModelForm):
 
 
 class DocenteMaterialeDidatticoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.data:
+            # compongo il campo datetime prima di restituirlo alla view (date + time)
+            data = self.data.copy()
+            data['dt_inizio_validita'] = f'{data["dt_inizio_validita_date"]} {data["dt_inizio_validita_time"]}'
+            data['dt_fine_validita'] = f'{data["dt_fine_validita_date"]} {data["dt_fine_validita_time"]}'
+            self.data = data
+
     class Meta:
         model = DocenteMaterialeDidattico
         fields = [
