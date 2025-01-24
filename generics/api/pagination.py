@@ -1,13 +1,13 @@
 import re
 
 from django.utils.encoding import force_str
-from rest_framework.pagination import PageNumberPagination
+from rest_framework import pagination
 from rest_framework.response import Response
 
-from .utils import encode_labels
+from generics.utils import encode_labels
 
 
-class UnicalStorageApiPaginationList(PageNumberPagination):
+class UnicalStorageApiPaginationList(pagination.PageNumberPagination):
     page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 1000
@@ -85,3 +85,8 @@ class UnicalStorageApiPaginationList(PageNumberPagination):
                 },
             )
         return parameters
+
+
+class PageNumberPagination(pagination.PageNumberPagination):
+    page_size_query_param = "page_size"
+    max_page_size = 1000
