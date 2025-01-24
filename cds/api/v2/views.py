@@ -447,11 +447,15 @@ class AcademicPathsViewSet(ReadOnlyModelViewSet):
                 .order_by("pds_des_it")
             )
         elif self.action == "retrieve":
-            return (DidatticaPdsRegolamento.objects).prefetch_related(
-                Prefetch(
-                    "didatticaattivitaformativa_set",
-                    queryset=DidatticaAttivitaFormativa.objects.filter(
-                        af_id=F("af_radice_id")
-                    ),
+            return (
+                (DidatticaPdsRegolamento.objects)
+                .filter(regdid=self.kwargs.get("regdid_id"))
+                .prefetch_related(
+                    Prefetch(
+                        "didatticaattivitaformativa_set",
+                        queryset=DidatticaAttivitaFormativa.objects.filter(
+                            af_id=F("af_radice_id")
+                        ),
+                    )
                 )
             )
