@@ -1,20 +1,6 @@
+from api_docs import docs, responses
 from django.conf import settings
-from rest_framework.response import Response
-from rest_framework.exceptions import (
-    NotFound,
-    ValidationError,
-    APIException,
-    PermissionDenied,
-)
-
-from api_docs import responses, docs
-
-from drf_spectacular.utils import (
-    extend_schema,
-    extend_schema_view,
-)
 from django.db import models
-from rest_framework import viewsets, mixins
 from django.db.models import (
     Case,
     Exists,
@@ -28,18 +14,24 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce, Concat
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+)
+from rest_framework import mixins, viewsets
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from cds.models import (
     DidatticaAttivitaFormativa,
     DidatticaCds,
+    DidatticaCdsAltriDati,
     DidatticaCdsCollegamento,
     DidatticaCdsTipoCorso,
     DidatticaCopertura,
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
-    DidatticaCdsAltriDati,
 )
 
 from .filters import (
@@ -75,7 +67,7 @@ class CdsViewSet(ReadOnlyModelViewSet):
             .order_by("-regdid")
             .values("ordinamento_didattico")[:1]
         )
-        queryset = (
+        return (
             DidatticaRegolamento.objects.select_related(
                 "cds__dip", "didatticacdsaltridati"
             )
@@ -108,37 +100,32 @@ class CdsViewSet(ReadOnlyModelViewSet):
                 "didatticacdsaltridati__regolamento_didattico",
             )
             .annotate(ordinamento_didattico=Subquery(ordinamento_subquery))
+            .order_by("-regdid_id")
         )
-
-        if self.action == "list":
-            return queryset.filter(stato_regdid_cod="A").order_by("-regdid_id")
-
-        elif self.action == "retrieve":
-            return queryset
-
-        return DidatticaRegolamento.objects.none()
 
 
 @extend_schema_view(
     list=extend_schema(
         summary=docs.DEGREETYPE_LIST_SUMMARY,
         description=docs.DEGREETYPE_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES(DegreeTypeSerializer(many=True))
+        responses=responses.LIST_RESPONSES(DegreeTypeSerializer(many=True)),
     )
 )
 class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = DegreeTypeSerializer
     filter_backends = [DjangoFilterBackend]
-    queryset = DidatticaCdsTipoCorso.objects.only(
-        "tipo_corso_cod", "tipo_corso_des"
-    ).order_by("tipo_corso_des").distinct()
+    queryset = (
+        DidatticaCdsTipoCorso.objects.only("tipo_corso_cod", "tipo_corso_des")
+        .order_by("tipo_corso_des")
+        .distinct()
+    )
 
 
 @extend_schema_view(
     list=extend_schema(
         summary=docs.ACADEMICYEAR_LIST_SUMMARY,
         description=docs.ACADEMICYEAR_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES(AcademicYearsSerializer(many=True))
+        responses=responses.LIST_RESPONSES(AcademicYearsSerializer(many=True)),
     )
 )
 class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -151,12 +138,14 @@ class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     list=extend_schema(
         summary=docs.STUDYACTIVITY_LIST_SUMMARY,
         description=docs.STUDYACTIVITY_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES_WITH_PARAMS(StudyActivitiesListSerializer(many=True))
+        responses=responses.LIST_RESPONSES_WITH_PARAMS(
+            StudyActivitiesListSerializer(many=True)
+        ),
     ),
     retrieve=extend_schema(
         summary=docs.STUDYACTIVITY_RETRIEVE_SUMMARY,
         description=docs.STUDYACTIVITY_RETRIEVE_DESCRIPTION,
-        responses=responses.RETRIEVE_RESPONSES(StudyActivitiesDetailSerializer)
+        responses=responses.RETRIEVE_RESPONSES(StudyActivitiesDetailSerializer),
     ),
 )
 class StudyActivitiesViewSet(ReadOnlyModelViewSet):
@@ -288,7 +277,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
     list=extend_schema(
         summary=docs.CDSAREA_LIST_SUMMARY,
         description=docs.CDSAREA_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES(CdsAreasSerializer(many=True))
+        responses=responses.LIST_RESPONSES(CdsAreasSerializer(many=True)),
     )
 )
 class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -305,7 +294,8 @@ class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     list=extend_schema(
         summary=docs.CDSEXPIRED_LIST_SUMMARY,
         description=docs.CDSEXPIRED_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES_WITH_PARAMS(CdsExpiredSerializer(many=True)))
+        responses=responses.LIST_RESPONSES_WITH_PARAMS(CdsExpiredSerializer(many=True)),
+    )
 )
 class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CdsExpiredSerializer
@@ -315,8 +305,8 @@ class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def get_queryset(self):
         cds_morphed = DidatticaCdsCollegamento.objects.values_list(
-                "cds_prec__cds_cod", flat=True
-            )
+            "cds_prec__cds_cod", flat=True
+        )
 
         regdids = (
             DidatticaRegolamento.objects.filter(
@@ -330,24 +320,23 @@ class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 cds__isnull=False,
             )
             .exclude(stato_regdid_cod="R")
-            .exclude(
-                aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni"))
-            )
+            .exclude(aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni")))
             .exclude(cds__cds_cod__in=cds_morphed)
         )
 
         return regdids
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=docs.CDSMORPH_LIST_SUMMARY,
         description=docs.CDSMORPH_LIST_DESCRIPTION,
-        responses=responses.LIST_RESPONSES_WITH_PARAMS(CdsMorphSerializer(many=True))
+        responses=responses.LIST_RESPONSES_WITH_PARAMS(CdsMorphSerializer(many=True)),
     ),
     retrieve=extend_schema(
         summary=docs.CDSMORPH_RETRIEVE_SUMMARY,
         description=docs.CDSMORPH_RETRIEVE_DESCRIPTION,
-        responses=responses.RETRIEVE_RESPONSES(CdsMorphSerializer)
+        responses=responses.RETRIEVE_RESPONSES(CdsMorphSerializer),
     ),
 )
 class CdsMorphViewSet(ReadOnlyModelViewSet):
@@ -367,9 +356,7 @@ class CdsMorphViewSet(ReadOnlyModelViewSet):
                     )
                 )
                 .select_related("cds")
-                .prefetch_related(
-                    Prefetch("cds_prec", queryset=collegamenti_prefetch)
-                )
+                .prefetch_related(Prefetch("cds_prec", queryset=collegamenti_prefetch))
             )
 
             previous_cds_cod_dict = {}
@@ -383,9 +370,7 @@ class CdsMorphViewSet(ReadOnlyModelViewSet):
         elif self.action == "retrieve":
             cds_cod = self.kwargs.get("pk")
             cds = (
-                DidatticaCds.objects.filter(cds_cod=cds_cod)
-                .order_by("-cds_id")
-                .first()
+                DidatticaCds.objects.filter(cds_cod=cds_cod).order_by("-cds_id").first()
             )
 
             previous_cds_cod_list = []
@@ -431,7 +416,7 @@ class CdsMorphViewSet(ReadOnlyModelViewSet):
     retrieve=extend_schema(
         summary=docs.ACADEMICPATHS_RETRIEVE_SUMMARY,
         description=docs.ACADEMICPATHS_RETRIEVE_DESCRIPTION,
-        responses=responses.RETRIEVE_RESPONSES(AcademicPathwaysDetailSerializer)
+        responses=responses.RETRIEVE_RESPONSES(AcademicPathwaysDetailSerializer),
     ),
 )
 class AcademicPathsViewSet(ReadOnlyModelViewSet):
@@ -452,9 +437,7 @@ class AcademicPathsViewSet(ReadOnlyModelViewSet):
                 pds_regdid=OuterRef("pds_regdid_id"),
             ).select_related("regdid__cds")
             return (
-                DidatticaPdsRegolamento.objects.filter(
-                    Exists(attivita_formativa_qs)
-                )
+                DidatticaPdsRegolamento.objects.filter(Exists(attivita_formativa_qs))
                 .annotate(
                     duration=Subquery(
                         attivita_formativa_qs.values("regdid__cds__durata_anni")[:1]
@@ -472,4 +455,3 @@ class AcademicPathsViewSet(ReadOnlyModelViewSet):
                     ),
                 )
             )
-    
