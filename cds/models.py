@@ -545,8 +545,8 @@ class DidatticaCdsLingua(models.Model):
     class Meta:
         managed = True
         db_table = "DIDATTICA_CDS_LINGUA"
-        verbose_name = "Cds Language"
-        verbose_name_plural = "Cds Languages"
+        verbose_name = "Cds language"
+        verbose_name_plural = "Cds languages"
 
     def __str__(self):  # pragma: no cover
         return "{} {}".format(self.cdsord.cds_cod, self.lingua_des_it)
@@ -755,12 +755,12 @@ class DidatticaPdsRegolamento(InsModAbstract):
     class Meta:
         managed = True
         db_table = "DIDATTICA_PDS_REGOLAMENTO"
-        verbose_name = "Academic Pathway"
-        verbose_name_plural = "Academic Pathways"
+        verbose_name = "Academic pathway"
+        verbose_name_plural = "Academic pathways"
 
 
 class DidatticaRegolamento(InsModAbstract):
-    regdid_id = models.IntegerField(db_column="REGDID_ID", primary_key=True, help_text="Unique ID for the Didactic Regulation")
+    regdid_id = models.IntegerField(db_column="REGDID_ID", primary_key=True)
     aa_reg_did = models.IntegerField(db_column="AA_REG_DID", blank=True, null=True)
     cds = models.ForeignKey(
         DidatticaCds, models.DO_NOTHING, db_column="CDS_ID", blank=True, null=True
