@@ -456,7 +456,7 @@ class CdsMorphViewSet(ReadOnlyModelViewSet):
         ],
     ),
 )
-class AcademicPathsViewSet(ReadOnlyModelViewSet):
+class AcademicPathwaysViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     queryset = DidatticaPdsRegolamento.objects.all()
     lookup_field = "pds_regdid_id"

@@ -1,7 +1,8 @@
+
 from rest_framework.routers import DefaultRouter
 
 from .views import (
-    AcademicPathsViewSet,
+    AcademicPathwaysViewSet,
     AcademicYearsViewSet,
     CdsViewSet,
     DegreeTypeViewSet,
@@ -17,7 +18,7 @@ router = DefaultRouter()
 
 urlpatterns = []
 
-router.register(r"academic-pathways/(?P<regdid_id>\d+)", AcademicPathsViewSet, basename="academic-pathways")
+router.register(r"academic-pathways/(?P<regdid_id>\d+)", AcademicPathwaysViewSet, basename="academic-pathways")
 router.register(r"degree-types", DegreeTypeViewSet, basename="degree-types")
 router.register(r"academic-years", AcademicYearsViewSet, basename="academic-years")
 router.register(r"activities", StudyActivitiesViewSet, basename="activities")
