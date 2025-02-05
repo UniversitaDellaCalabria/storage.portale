@@ -610,9 +610,9 @@ class StudyActivityInfoSerializer(CreateUpdateAbstract):
                     "Hours": q["ore"],
                     "StudyActivityTeacherID": encrypt(
                         q["coper_id__personale_id__matricola"]
-                    )
-                    if not q["coper_id__personale_id__flg_cessato"]
-                    else None,
+                    ),
+                    # if not q["coper_id__personale_id__flg_cessato"]
+                    # else None,
                     "StudyActivityTeacherName": full_name,
                     "TeacherEmail": q["email"],
                 }
