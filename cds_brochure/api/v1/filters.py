@@ -10,4 +10,11 @@ class CdsBrochuresListFilter(GenericApiFilter):
             "in": "query",
             "type": "string",
         },
+        {
+            "name": "academic_year",
+            "description": "Search by academic year.",
+            "required": False,
+            "in": "query",
+            "type": "integer",
+        },
     ]

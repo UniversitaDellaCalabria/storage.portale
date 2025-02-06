@@ -11,13 +11,14 @@ from cds_brochure.models import (
 
 class ServiceCdsBrochure:
     @staticmethod
-    def getCdsBrochures(search):
+    def getCdsBrochures(search=None, academic_year=None):
         query_search = Q()
 
         if search:
             for k in search.split(" "):
-                q_nome_corso_it = Q(cds__nome_cds_it__icontains=k)
-                query_search &= q_nome_corso_it
+                query_search &= Q(cds__nome_cds_it__icontains=k)
+        if academic_year:
+            query_search &= Q(aa=academic_year)
 
         query = (
             CdsBrochure.objects.filter(query_search)
