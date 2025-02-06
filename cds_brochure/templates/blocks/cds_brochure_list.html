@@ -177,7 +177,7 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
 {% now "Y" as fallback_year %}
 
-{% settings_value "CURRENT_YEAR" package="generics" as current_year %}
+{% settings_value "BROCHURES_CURRENT_YEAR" package="cds_brochure" as current_year %}
 
 initial_academic_year: {{ id }}_get_param('academicyear') || {{ current_year|default:fallback_year }},
 
