@@ -5,7 +5,7 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 from .filters import CdsBrochuresListFilter
 from .serializers import CdsBrochureLightSerializer, CdsBrochureSerializer
 from .services import ServiceCdsBrochure
-from ..settings import BROCHURES_VISIBLE
+from ...settings import BROCHURES_VISIBLE
 
 
 class ApiCdsBrochureList(ApiEndpointList):
