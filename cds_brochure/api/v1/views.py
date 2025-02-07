@@ -5,6 +5,8 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 from .filters import CdsBrochuresListFilter
 from .serializers import CdsBrochureLightSerializer, CdsBrochureSerializer
 from .services import ServiceCdsBrochure
+
+from ...models import CdsBrochure
 from ...settings import BROCHURES_VISIBLE, OFFICE_CDS_BROCHURE
 
 
