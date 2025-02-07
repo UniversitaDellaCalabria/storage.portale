@@ -45,7 +45,7 @@ class ApiCdsBrochureDetail(ApiEndpointDetail):
     serializer_class = CdsBrochureSerializer
 
     def get_queryset(self):
-        if not _access_granted(request.user):
+        if not _access_granted(self.request.user):
             return CdsBrochure.objects.none()
         cds_cod = self.kwargs["cds_cod"]
         return ServiceCdsBrochure.getCdsBrochure(cds_cod)
