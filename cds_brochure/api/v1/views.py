@@ -15,15 +15,18 @@ class ApiCdsBrochureList(ApiEndpointList):
 
     def get_queryset(self):
         request = self.request
-        if not BROCHURES_VISIBLE and not request.user.is_superuser:
-            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
-                employee=request.user,
-                office__name=OFFICE_CDS_BROCHURE,
-                office__is_active=True,
-                office__organizational_structure__is_active=True,
-            ).exists()
-            if not my_offices:
+        if not BROCHURES_VISIBLE:
+            if not request.user.is_authenticated:
                 return CdsBrochure.objects.none()
+            if not request.user.is_superuser:
+                my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+                    employee=request.user,
+                    office__name=OFFICE_CDS_BROCHURE,
+                    office__is_active=True,
+                    office__organizational_structure__is_active=True,
+                ).exists()
+                if not my_offices:
+                    return CdsBrochure.objects.none()
         search = request.query_params.get("search")
         academic_year = request.query_params.get("academic_year")
         return ServiceCdsBrochure.getCdsBrochures(search, academic_year)
