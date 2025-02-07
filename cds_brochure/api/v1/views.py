@@ -17,8 +17,6 @@ class ApiCdsBrochureList(ApiEndpointList):
 
     def get_queryset(self):
         request = self.request
-        if not _access_granted(request.user):
-            return CdsBrochure.objects.none()
         search = request.query_params.get("search")
         academic_year = request.query_params.get("academic_year")
         return ServiceCdsBrochure.getCdsBrochures(search, academic_year)
