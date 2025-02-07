@@ -15,6 +15,7 @@ from .filters import (
     CdsExpiredFilter,
     CdsListFilter,
 )
+from .permissions import CdsVisibilityPermission
 from .schemas import ApiStudyActivityDetailSchema
 from .serializers import (
     AcademicYearsSerializer,
@@ -53,6 +54,7 @@ class ApiCdSList(ApiEndpointList):
         self.language = self.request.query_params.get("lang", lang).lower()
         cache_key = f"cdslist_{self.language}_{slugify(self.request.query_params)}"
         kwargs["cache_key"] = cache_key
+        permission_classes = [CdsVisibilityPermission]
         return super().get(*args, **kwargs)
 
 
@@ -63,6 +65,7 @@ class ApiCdSInfo(ApiEndpointDetail):
         available in the selected language, it returns the information in English or, if not available, in Italian."""
 
     serializer_class = CdsInfoSerializer
+    permission_classes = [CdsVisibilityPermission]
 
     def get_queryset(self):
         request = self.request
