@@ -82,7 +82,7 @@ class ApiCdSInfo(ApiEndpointDetail):
                 ],
                 office__is_active=True,
                 office__organizational_structure__is_active=True,
-            )
+            ).exists()
             if my_offices:
                 only_active = False
 
