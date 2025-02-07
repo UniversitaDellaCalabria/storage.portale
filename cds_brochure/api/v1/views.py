@@ -18,7 +18,7 @@ def _access_granted(user):
     if user.is_superuser:
         return True
     belongs_to_office = OrganizationalStructureOfficeEmployee.objects.filter(
-        employee=request.user,
+        employee=user,
         office__name=OFFICE_CDS_BROCHURE,
         office__is_active=True,
         office__organizational_structure__is_active=True,
