@@ -7,7 +7,7 @@ from generics.settings import CURRENT_YEAR
 from ...settings import OFFICE_CDS, OFFICE_CDS_DOCUMENTS, OFFICE_CDS_TEACHING_SYSTEM
 
 
-class CdsVisibilityPermission(BasePermission):
+class CdsListVisibilityPermission(BasePermission):
     def has_permission(self, request, view):
         academic_year = request.query_params.get("academicyear")
         if academic_year and academic_year > CURRENT_YEAR:
