@@ -9,7 +9,7 @@ from ...settings import OFFICE_CDS, OFFICE_CDS_DOCUMENTS, OFFICE_CDS_TEACHING_SY
 
 class CdsVisibilityPermission(BasePermission):
     def has_permission(self, request, view):
-        academic_year = self.query_params.get("academicyear")
+        academic_year = request.query_params.get("academicyear")
         if academic_year and academic_year > CURRENT_YEAR:
             if not request.user.is_authenticated: return False
             if request.user.is_superuser: return True
