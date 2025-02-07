@@ -31,7 +31,6 @@ from cds.models import (
     DidatticaCds,
     DidatticaCdsAltriDati,
     DidatticaCdsCollegamento,
-    DidatticaCdsTipoCorso,
     DidatticaCopertura,
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
@@ -55,13 +54,12 @@ from .serializers import (
     StudyActivitiesListSerializer,
 )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary="",
         description="",
-        responses=responses.COMMON_LIST_RESPONSES(
-            CdsSerializer(many=True)
-        ),
+        responses=responses.COMMON_LIST_RESPONSES(CdsSerializer(many=True)),
     ),
     retrieve=extend_schema(
         summary="",
@@ -132,9 +130,9 @@ class CdsViewSet(ReadOnlyModelViewSet):
 class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = DegreeTypeSerializer
     queryset = (
-        DidatticaCdsTipoCorso.objects.only("tipo_corso_cod", "tipo_corso_des")
-        .order_by("tipo_corso_des")
+        DidatticaCds.objects.values("tipo_corso_cod", "tipo_corso_des")
         .distinct()
+        .order_by("tipo_corso_des")
     )
 
 
@@ -149,7 +147,11 @@ class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 )
 class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = AcademicYearsSerializer
-    queryset = DidatticaRegolamento.objects.only("aa_reg_did").order_by("-aa_reg_did")
+    queryset = (
+        DidatticaRegolamento.objects.values("aa_reg_did")
+        .distinct()
+        .order_by("-aa_reg_did")
+    )
 
 
 @extend_schema_view(

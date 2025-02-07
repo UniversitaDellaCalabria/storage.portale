@@ -17,11 +17,11 @@ from cds.models import (
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
     DidatticaCdsCollegamento,
+    DidatticaTestiAf,
 )
 
-@extend_schema_serializer(
-    examples=examples.CDS_SERIALIZER_EXAMPLE
-)
+
+@extend_schema_serializer(examples=examples.CDS_SERIALIZER_EXAMPLE)
 class CdsSerializer(ReadOnlyModelSerializer):
     regDidId = serializers.IntegerField(source="regdid_id")
     cdSId = serializers.IntegerField(source="cds.cds_id")
@@ -122,9 +122,7 @@ class CdsSerializer(ReadOnlyModelSerializer):
         ]
 
 
-@extend_schema_serializer(
-    examples=examples.CDS_AREA_SERIALIZER_EXAMPLE
-)
+@extend_schema_serializer(examples=examples.CDS_AREA_SERIALIZER_EXAMPLE)
 class CdsAreasSerializer(ReadOnlyModelSerializer):
     areaCds = serializers.CharField(
         source="area_cds", help_text="The area/field of study for the CDS"
@@ -140,9 +138,7 @@ class CdsAreasSerializer(ReadOnlyModelSerializer):
         }
 
 
-@extend_schema_serializer(
-    examples=examples.CDS_EXPIRED_SERIALIZER_EXAMPLE
-)
+@extend_schema_serializer(examples=examples.CDS_EXPIRED_SERIALIZER_EXAMPLE)
 class CdsExpiredSerializer(ReadOnlyModelSerializer):
     cdsCod = serializers.CharField(
         source="cds.cds_cod", help_text="The unique code of the CDS"
@@ -162,9 +158,8 @@ class CdsExpiredSerializer(ReadOnlyModelSerializer):
             "cdsDuration",
         ]
 
-@extend_schema_serializer(
-    examples=examples.DEGREE_TYPE_SERIALIZER_EXAMPLE
-)
+
+@extend_schema_serializer(examples=examples.DEGREE_TYPE_SERIALIZER_EXAMPLE)
 class DegreeTypeSerializer(ReadOnlyModelSerializer):
     courseType = serializers.CharField(
         source="tipo_corso_cod", help_text="Code representing the type of course"
@@ -181,9 +176,7 @@ class DegreeTypeSerializer(ReadOnlyModelSerializer):
         ]
 
 
-@extend_schema_serializer(
-    examples=examples.ACADEMIC_YEARS_SERIALIZER_EXAMPLE
-)
+@extend_schema_serializer(examples=examples.ACADEMIC_YEARS_SERIALIZER_EXAMPLE)
 class AcademicYearsSerializer(ReadOnlyModelSerializer):
     aaRegDid = serializers.CharField(
         source="aa_reg_did", help_text="Academic year identifier"
@@ -195,18 +188,210 @@ class AcademicYearsSerializer(ReadOnlyModelSerializer):
             "aaRegDid",
         ]
 
-@extend_schema_serializer(
-    examples=examples.STUDY_ACTIVITY_DETAIL_SERIALIZER_EXAMPLE
-)
+
+class DidatticaTestiAfSerializer(ReadOnlyModelSerializer):
+    class Meta:
+        model = DidatticaTestiAf
+        exclude = ("af",)
+
+
+@extend_schema_serializer(examples=examples.STUDY_ACTIVITY_DETAIL_SERIALIZER_EXAMPLE)
 class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
+    id = serializers.IntegerField(source="af_id")
+    cdsordId = serializers.IntegerField(source="cdsord_id")
+    cdsordCod = serializers.CharField(source="cdsord_cod")
+    cdsCod = serializers.CharField(source="cds.cds_cod")
+    language = serializers.SerializerMethodField()
+    dipDes = serializers.CharField(source="cds.dip.dip_des_it")
+    dipCod = serializers.CharField(source="cds.dip.dip_cod")
+    cdsName = serializers.CharField(source="cds.nome_cds_it")
+    aaOrdId = serializers.IntegerField(source="aa_ord_id")
+    statoCdsordCod = serializers.CharField(source="stato_cdsord_cod")
+    regdidCod = serializers.CharField(source="regdid_cod")
+    aaRegdidId = serializers.IntegerField(source="aa_regdid_id")
+    statoRegdidCod = serializers.CharField(source="stato_regdid_cod")
+    statoApprRegdidCod = serializers.CharField(source="stato_appr_regdid_cod")
+    pdsCod = serializers.CharField(source="pds_cod")
+    pdsDes = serializers.CharField(source="pds_des")
+    comuneFlg = serializers.IntegerField(source="comune_flg")
+    attinenzaCod = serializers.CharField(source="attinenza_cod")
+    ofId = serializers.IntegerField(source="of_id")
+    aaOffId = serializers.IntegerField(source="aa_off_id")
+    statoOfCod = serializers.CharField(source="stato_of_cod")
+    tipoCompAfId = serializers.IntegerField(source="tipo_comp_af_id")
+    tipoCompAfCod = serializers.CharField(source="tipo_comp_af_cod")
+    desTipoCompAf = serializers.CharField(source="des_tipo_comp_af")
+    afGenId = serializers.IntegerField(source="af_gen_id")
+    afGenCod = serializers.CharField(source="af_gen_cod")
+    des = serializers.CharField(source="group_description")
+    afGenDesEng = serializers.CharField(source="af_gen_des_eng")
+    annoCorso = serializers.IntegerField(source="anno_corso")
+    listaAnniCorso = serializers.CharField(source="lista_anni_corso")
+    regDidId = serializers.CharField(
+        source="regdid_id",
+    )
+    settCod = serializers.CharField(source="sett_cod")
+    settDes = serializers.CharField(source="sett_des")
+    tipoAfCod = serializers.CharField(source="tipo_af_cod")
+    tipoAfDes = serializers.CharField(source="tipo_af_des")
+    tipoAfInterclaCod = serializers.CharField(source="tipo_af_intercla_cod")
+    tipoAfInterclaDes = serializers.CharField(source="tipo_af_intercla_des")
+    ambId = serializers.IntegerField(source="amb_id")
+    ambitoDes = serializers.CharField(source="ambito_des")
+    peso = serializers.IntegerField()
+    umPesoCod = serializers.CharField(source="um_peso_cod")
+    umPesoDes = serializers.CharField(source="um_peso_des")
+    freqObbligFlg = serializers.IntegerField(source="freq_obblig_flg")
+    oreMinFreq = serializers.IntegerField(source="ore_min_freq")
+    oreAttFront = serializers.IntegerField(source="ore_att_front")
+    numMaxReit = serializers.IntegerField(source="num_max_reit")
+    liberaFlg = serializers.IntegerField(source="libera_flg")
+    sceltaModFlg = serializers.IntegerField(source="scelta_mod_flg")
+    tipoEsaCod = serializers.CharField(source="tipo_esa_cod")
+    tipoEsaDes = serializers.CharField(source="tipo_esa_des")
+    tipoValCod = serializers.CharField(source="tipo_val_cod")
+    tipoValDes = serializers.CharField(source="tipo_val_des")
+    tipoInsCod = serializers.CharField(source="tipo_ins_cod")
+    tipoInsDes = serializers.CharField(source="tipo_ins_des")
+    seraleFlg = serializers.IntegerField(source="serale_flg")
+    noMediaFlg = serializers.IntegerField(source="no_media_flg")
+    sostegnoFlg = serializers.IntegerField(source="sostegno_flg")
+    nota = serializers.CharField()
+    afPdrId = serializers.IntegerField(source="af_pdr_id")
+    fatherCode = serializers.IntegerField(source="af_radice_id")
+    fatherName = serializers.CharField()
+    numLivAlbero = serializers.IntegerField(source="num_liv_albero")
+    cicloDes = serializers.CharField(source="ciclo_des")
+    dataInizio = serializers.DateTimeField(source="data_inizio")
+    dataFine = serializers.DateTimeField(source="data_fine")
+    tipoCicloCod = serializers.CharField(source="tipo_ciclo_cod")
+    desTipoCiclo = serializers.CharField(source="des_tipo_ciclo")
+    codFisRespDid = serializers.CharField(source="cod_fis_resp_did")
+    ruoloRespDidCod = serializers.CharField(source="ruolo_resp_did_cod")
+    urlSitoWeb = serializers.URLField(source="url_sito_web")
+    listaModDidAf = serializers.CharField(source="lista_mod_did_af")
+    listaTafSetCfu = serializers.CharField(source="lista_taf_set_cfu")
+    mutuataFlg = serializers.IntegerField(source="mutuata_flg")
+    afMasterId = serializers.IntegerField(source="af_master_id")
+    numAfFiglie = serializers.IntegerField(source="num_af_figlie")
+    numAfFoglie = serializers.IntegerField(source="num_af_foglie")
+    nonErogabileFlg = serializers.IntegerField(source="non_erogabile_flg")
+    fatPartStuCod = serializers.CharField(source="fat_part_stu_cod")
+    fatPartStuDes = serializers.CharField(source="fat_part_stu_des")
+    partStuId = serializers.IntegerField(source="part_stu_id")
+    partStuCod = serializers.CharField(source="part_stu_cod")
+    partStuDes = serializers.CharField(source="part_stu_des")
+    teacherId = serializers.SerializerMethodField()
+    teacherName = serializers.CharField(source="full_name")
+    testiAf = DidatticaTestiAfSerializer(source="DidatticaTestiAf", read_only=True)
+
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
+    def get_language(self, obj):
+        list_language = getattr(obj, "lista_lin_did_af", None)
+        if list_language:
+            return list_language.replace(" ", "").split(",")
+        return []
+
+    @extend_schema_field(serializers.CharField())
+    def get_teacherId(self, obj):
+        matricola = getattr(obj, "matricola_resp_did", None)
+        return encrypt(matricola)
+
     class Meta:
         model = DidatticaAttivitaFormativa
-        fields = "__all__"
+        fields = [
+            "id",
+            "cdsordId",
+            "cdsordCod",
+            "cdsCod",
+            "language",
+            "dipDes",
+            "dipCod",
+            "testiAf",
+            "teacherId",
+            "teacherName",
+            "cdsName",
+            "regDidId",
+            "aaOrdId",
+            "statoCdsordCod",
+            "regdidCod",
+            "aaRegdidId",
+            "statoRegdidCod",
+            "statoApprRegdidCod",
+            "pdsCod",
+            "pdsDes",
+            "comuneFlg",
+            "attinenzaCod",
+            "ofId",
+            "aaOffId",
+            "statoOfCod",
+            "tipoCompAfId",
+            "tipoCompAfCod",
+            "desTipoCompAf",
+            "afGenId",
+            "afGenCod",
+            "des",
+            "afGenDesEng",
+            "annoCorso",
+            "listaAnniCorso",
+            "fatherCode",
+            "fatherName",
+            "settCod",
+            "settDes",
+            "tipoAfCod",
+            "tipoAfDes",
+            "tipoAfInterclaCod",
+            "tipoAfInterclaDes",
+            "ambId",
+            "ambitoDes",
+            "peso",
+            "umPesoCod",
+            "umPesoDes",
+            "freqObbligFlg",
+            "oreMinFreq",
+            "oreAttFront",
+            "numMaxReit",
+            "liberaFlg",
+            "sceltaModFlg",
+            "tipoEsaCod",
+            "tipoEsaDes",
+            "tipoValCod",
+            "tipoValDes",
+            "tipoInsCod",
+            "tipoInsDes",
+            "seraleFlg",
+            "noMediaFlg",
+            "sostegnoFlg",
+            "nota",
+            "afPdrId",
+            "numLivAlbero",
+            "cicloDes",
+            "dataInizio",
+            "dataFine",
+            "tipoCicloCod",
+            "desTipoCiclo",
+            "codFisRespDid",
+            "ruoloRespDidCod",
+            "urlSitoWeb",
+            "listaModDidAf",
+            "listaTafSetCfu",
+            "mutuataFlg",
+            "afMasterId",
+            "numAfFiglie",
+            "numAfFoglie",
+            "nonErogabileFlg",
+            "fatPartStuCod",
+            "fatPartStuDes",
+            "partStuId",
+            "partStuCod",
+            "partStuDes",
+        ]
+        language_field_map = {
+            "des": {"en": "af_gen_des_eng"},
+        }
 
 
-@extend_schema_serializer(
-    examples=examples.STUDY_ACTIVITY_LIST_SERIALIZER_EXAMPLE
-)
+@extend_schema_serializer(examples=examples.STUDY_ACTIVITY_LIST_SERIALIZER_EXAMPLE)
 class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     id = serializers.CharField(
         source="af_id", help_text="The ID of the study activity."
@@ -285,7 +470,7 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
         source="pds_des",
         help_text="Description of the study plan associated with the activity.",
     )
-    
+
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_language(self, obj):
         list_language = getattr(obj, "lista_lin_did_af", None)
@@ -326,11 +511,12 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
             "teacherName",
             "studyPlanDes",
         ]
+        language_field_map = {
+            "des": {"en": "af_gen_des_eng"},
+        }
 
 
-@extend_schema_serializer(
-    examples=examples.CDS_MORPH_SERIALIZER_EXAMPLE
-)
+@extend_schema_serializer(examples=examples.CDS_MORPH_SERIALIZER_EXAMPLE)
 class CdsMorphSerializer(ReadOnlyModelSerializer):
     idCds = serializers.IntegerField(source="cds", help_text="The ID of the cds.")
     idCdsPrec = serializers.IntegerField(
@@ -342,14 +528,12 @@ class CdsMorphSerializer(ReadOnlyModelSerializer):
         fields = ["idCds", "idCdsPrec"]
 
 
-@extend_schema_serializer(
-    examples=examples.STUDY_ACTIVITY_LITE_SERIALIZER_EXAMPLE
-)
+@extend_schema_serializer(examples=examples.STUDY_ACTIVITY_LITE_SERIALIZER_EXAMPLE)
 class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(
         source="af_id", help_text="The ID of the study activity"
     )
-    name = serializers.CharField(source="des", help_text="Name of the study activity")
+    name = serializers.SerializerMethodField()
     year = serializers.IntegerField(source="anno_corso", help_text="Year of the course")
     cycle = serializers.CharField(
         source="ciclo_des", help_text="Cycle/semester of the activity"
@@ -361,14 +545,18 @@ class StudyActivitiesLiteSerializer(ReadOnlyModelSerializer):
         source="tipo_af_des", help_text="Type of educational activity"
     )
 
+    def get_name(self, obj):
+        request = self.context.get("request", None)
+        if request and request.GET.get("lang") == "en":
+            return obj.af_gen_des_eng
+        return obj.des
+
     class Meta:
         model = DidatticaAttivitaFormativa
         fields = ["id", "name", "year", "cycle", "etcs", "type"]
 
 
-@extend_schema_serializer(
-    examples=examples.ACADEMIC_PATHWAYS_LIST_SERIALIZER_EXAMPLE
-)
+@extend_schema_serializer(examples=examples.ACADEMIC_PATHWAYS_LIST_SERIALIZER_EXAMPLE)
 class AcademicPathwaysListSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(
         source="pds_regdid_id", help_text="The ID of the academic pathway."
@@ -376,20 +564,23 @@ class AcademicPathwaysListSerializer(ReadOnlyModelSerializer):
     cod = serializers.CharField(
         source="pds_cod", help_text="The code of the academic pathway."
     )
-    name = serializers.CharField(
-        source="pds_des_it", help_text="The name of the academic pathway."
-    )
+    name = serializers.SerializerMethodField()
     duration = serializers.IntegerField(
         help_text="The duration in years of the academic pathway."
     )
+
+    def get_name(self, obj):
+        request = self.context.get("request", None)
+        if request and request.GET.get("lang") == "en":
+            return obj.pds_des_eng
+        return obj.pds_des_it
 
     class Meta:
         model = DidatticaPdsRegolamento
         fields = ["id", "cod", "name", "duration"]
 
-@extend_schema_serializer(
-    examples=examples.ACADEMIC_PATHWAYS_DETAIL_SERIALIZER_EXAMPLE
-)
+
+@extend_schema_serializer(examples=examples.ACADEMIC_PATHWAYS_DETAIL_SERIALIZER_EXAMPLE)
 class AcademicPathwaysDetailSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField(
         source="pds_regdid_id", help_text="The ID of the academic pathway."
@@ -408,10 +599,13 @@ class AcademicPathwaysDetailSerializer(ReadOnlyModelSerializer):
         grouped_data = defaultdict(list)
         for activity in activities:
             grouped_data[activity.anno_corso].append(
-                StudyActivitiesLiteSerializer(activity).data
+                StudyActivitiesLiteSerializer(activity, context=self.context).data
             )
         return grouped_data
 
     class Meta:
         model = DidatticaPdsRegolamento
         fields = ["id", "cod", "name", "activities"]
+        language_field_map = {
+            "name": {"en": "pds_des_eng"},
+        }

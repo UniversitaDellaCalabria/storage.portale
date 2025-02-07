@@ -150,12 +150,10 @@ class StudyActivitiesFilter(filters.FilterSet):
         label="Teaching name",
         help_text="Name of the study activity.",
     )
-    cds_name = (
-        filters.CharFilter(
-            method="filter_cds_name",
-            label="Study course name",
-            help_text="Name of the study course.",
-        ),
+    cds_name = filters.CharFilter(
+        method="filter_cds_name",
+        label="Study course name",
+        help_text="Name of the study course.",
     )
     academic_year = filters.NumberFilter(
         field_name="aa_off_id",
@@ -187,15 +185,14 @@ class StudyActivitiesFilter(filters.FilterSet):
         label="Teacher last name",
         help_text="Teacher's last name.",
     )
-    ssd = InCharFilter(
+    ssd = filters.CharFilter(
         field_name="sett_cod",
+        lookup_expr="icontains",
         label="SSD",
         help_text="(Scientific Disciplinary Sector) SSD/SDS code.",
     )
-    cycle = filters.MultipleChoiceFilter(
-        choices=DidatticaAttivitaFormativa.objects.values_list(
-            "tipo_ciclo_cod", "des_tipo_ciclo"
-        ).distinct(),
+    cycle = filters.CharFilter(
+        method="filter_cycle",
         label="Cycle",
         help_text="Activity cycle.",
     )
@@ -210,10 +207,17 @@ class StudyActivitiesFilter(filters.FilterSet):
         return queryset.filter(
             Exists(
                 DidatticaCopertura.objects.filter(
-                    Q(af_id=OuterRef("af_id") | Q(af_id=OuterRef("af_master_id"))),
+                    Q(af_id=OuterRef("af_id")) | Q(af_id=OuterRef("af_master_id")),
                     matricola_resp_did=decrypted_matricola,
                 ).exclude(stato_coper_cod="R")
             )
+        )
+
+    def filter_cycle(self, queryset, name, value):
+        return queryset.filter(
+            Q(tipo_ciclo_cod__icontains=value)
+            | Q(des_tipo_ciclo__icontains=value)
+            | Q(ciclo_des__icontains=value)
         )
 
     def filter_name(self, queryset, name, value):
