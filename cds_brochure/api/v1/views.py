@@ -14,7 +14,8 @@ class ApiCdsBrochureList(ApiEndpointList):
     filter_backends = [CdsBrochuresListFilter]
 
     def get_queryset(self):
-        if not BROCHURES_VISIBLE and not self.request.user.is_superuser:
+        request = self.request
+        if not BROCHURES_VISIBLE and not request.user.is_superuser:
             my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
                 employee=request.user,
                 office__name=OFFICE_CDS_BROCHURE,
@@ -23,8 +24,8 @@ class ApiCdsBrochureList(ApiEndpointList):
             ).exists()
             if not my_offices:
                 return CdsBrochure.objects.none()
-        search = self.request.query_params.get("search")
-        academic_year = self.request.query_params.get("academic_year")
+        search = request.query_params.get("search")
+        academic_year = request.query_params.get("academic_year")
         return ServiceCdsBrochure.getCdsBrochures(search, academic_year)
 
 
