@@ -76,8 +76,8 @@ class CdsBrochureInPilloleForm(forms.ModelForm):
             "come_iscriversi_en",
         ]
 
-    class Media:
-        js = ("js/textarea-autosize.js",)
+    # class Media:
+        # js = ("js/textarea-autosize.js",)
 
 
 # -- Profilo corso: Descrizione, Ammissione, Obiettivi, Sbocchi
@@ -136,8 +136,8 @@ class CdsBrochureProfiloCorsoForm(forms.ModelForm):
             "sbocchi_professionali_en",
         ]
 
-    class Media:
-        js = ("js/textarea-autosize.js",)
+    # class Media:
+        # js = ("js/textarea-autosize.js",)
 
 
 # -- Intro amm: Tasse, contributi, agevolazioni
@@ -190,8 +190,8 @@ class CdsBrochureIntroAmmForm(forms.ModelForm):
             "agevolazioni_en",
         ]
 
-    class Media:
-        js = ("js/textarea-autosize.js",)
+    # class Media:
+        # js = ("js/textarea-autosize.js",)
 
 
 class CdsBrochureExStudentiForm(forms.ModelForm):

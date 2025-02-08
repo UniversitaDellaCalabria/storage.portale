@@ -96,7 +96,7 @@
                     </ul>
                     {% endif %}
 
-                     <form method="post" enctype="multipart/form-data" novalidate>
+                    <form method="post" enctype="multipart/form-data" novalidate>
                         {% include "form_template.html" with form=form %}
                         <input type="hidden" name="tab_form_dict_key" maxlength="2000" id="id-{{trimmed_tab}}-dict-key" value="{{tab}}">
                         <br />
