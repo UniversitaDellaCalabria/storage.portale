@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from generics.settings import CURRENT_YEAR
-
+from regdid.settings import OFFICE_REGDIDS_DEPARTMENT, OFFICE_REGDIDS_REVISION, OFFICE_REGDIDS_APPROVAL
 from ...settings import OFFICE_CDS, OFFICE_CDS_DOCUMENTS, OFFICE_CDS_TEACHING_SYSTEM
 
 
@@ -18,7 +18,10 @@ class CdsListVisibilityPermission(BasePermission):
                 office__name__in=[
                     OFFICE_CDS,
                     OFFICE_CDS_DOCUMENTS,
-                    OFFICE_CDS_TEACHING_SYSTEM
+                    OFFICE_CDS_TEACHING_SYSTEM,
+                    OFFICE_REGDIDS_DEPARTMENT,
+                    OFFICE_REGDIDS_REVISION,
+                    OFFICE_REGDIDS_APPROVAL
                 ],
                 office__is_active=True,
                 office__organizational_structure__is_active=True,
