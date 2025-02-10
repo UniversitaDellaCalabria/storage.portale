@@ -229,10 +229,10 @@ class SitoWebCdsForm(forms.ModelForm):
 
 class CdsBrochureSliderForm(SitoWebCdsForm):
     slider_it = forms.CharField(
-        label=_("Scrollable text (it)"), required=False, max_length=130
+        label=_("Scrollable text (it)"), required=False, max_length=500
     )
     slider_en = forms.CharField(
-        label=_("Scrollable text (en)"), required=False, max_length=130
+        label=_("Scrollable text (en)"), required=False, max_length=500
     )
 
     class Meta(SitoWebCdsForm.Meta):
