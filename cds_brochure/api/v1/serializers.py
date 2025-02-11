@@ -10,18 +10,20 @@ class CdsBrochureLightSerializer(CreateUpdateAbstract):
 
     @staticmethod
     def to_dict(query, req_lang="en"):
+        languages = [lang.iso6392_cod for lang in query.cds.languages]
         return {
-            "Id": query["id"],
+            "Id": query.id,
             # 'CDSId': query['cds__cds_id'],
-            "CDSCOD": query["cds__cds_cod"],
-            "CDSAcademicYear": query["aa"],
-            "CDSName": query["cds__nome_cds_it"]
-            if req_lang == "it" or query["cds__nome_cds_eng"] is None
-            else query["cds__nome_cds_eng"],
-            "AreaCds": query["cds__area_cds"]
-            if req_lang == "it" or query["cds__area_cds_en"] is None
-            else query["cds__area_cds_en"],
-            "CourseType": query["cds__tipo_corso_cod"],
+            "CdSCod": query.cds.cds_cod,
+            "CdSAcademicYear": query.aa,
+            "CdSName": query.cds.nome_cds_it
+            if req_lang == "it" or query.cds.nome_cds_eng is None
+            else query.cds.nome_cds_eng,
+            "AreaCdS": query.cds.area_cds
+            if req_lang == "it" or query.cds.area_cds_en is None
+            else query.cds.area_cds_en,
+            "CdSCourseType": query.cds.tipo_corso_cod,
+            "CdSLanguages": languages
         }
 
 

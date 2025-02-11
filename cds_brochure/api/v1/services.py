@@ -1,6 +1,7 @@
 from cds.models import DidatticaCdsLingua, DidatticaRegolamentoAltriDati
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 
+from cds.models import DidatticaCdsLingua
 from cds_brochure.models import (
     CdsBrochure,
     CdsBrochureExStudenti,
@@ -14,6 +15,7 @@ class ServiceCdsBrochure:
     def getCdsBrochures(query_params):
         search = query_params.get("search", "")
         coursetype = query_params.get("coursetype", "")
+        cdslanguage = query_params.get("cdslanguage", "")
 
         query_search = Q()
 
@@ -22,23 +24,21 @@ class ServiceCdsBrochure:
                 query_search &= Q(cds__nome_cds_it__icontains=k)
         if coursetype:
             query_search &= Q(cds__tipo_corso_cod__in=coursetype.split(","))
+        if cdslanguage:
+            query_search &= Q(cds__didatticacdslingua__iso6392_cod=cdslanguage)
 
         query = (
             CdsBrochure.objects.filter(query_search)
             .select_related("cds")
-            .values(
-                "id",
-                # 'cds__cds_id',
-                "cds__cds_cod",
-                "aa",
-                "cds__nome_cds_it",
-                "cds__nome_cds_eng",
-                "cds__area_cds",
-                "cds__area_cds_en",
-                "cds__tipo_corso_cod"
+            .prefetch_related(
+                Prefetch(
+                    "cds__didatticacdslingua",
+                    queryset=DidatticaCdsLingua.objects.only("iso6392_cod"),
+                    to_attr="languages"
+                )
             )
         )
-        return list(query)
+        return query
 
     @staticmethod
     def getCdsBrochure(cds_cod):
