@@ -13,7 +13,6 @@ class ServiceCdsBrochure:
     @staticmethod
     def getCdsBrochures(query_params):
         search = query_params.get("search", "")
-        academic_year = query_params.get("academic_year", "")
         coursetype = query_params.get("coursetype", "")
 
         query_search = Q()
@@ -21,8 +20,6 @@ class ServiceCdsBrochure:
         if search:
             for k in search.split(" "):
                 query_search &= Q(cds__nome_cds_it__icontains=k)
-        if academic_year:
-            query_search &= Q(aa=academic_year)
         if coursetype:
             query_search &= Q(cds__tipo_corso_cod__in=coursetype.split(","))
 
