@@ -41,7 +41,7 @@
                             <div class="card-body p-3">
                                 <h5>
                                     <a :href="item.Id+'/'" class="no-color">
-                                        <b>[[ item.CDSName ]]</b>
+                                        <b>[[ item.CdSName ]]</b>
                                     </a>
 
                                 </h5>
@@ -49,13 +49,13 @@
                                     <div class="col-12 col-md-auto me-md-4">
                                         <small>
                                             {% trans "Cod." %} >
-                                            <b>[[ item.CDSCOD ]]</b>
+                                            <b>[[ item.CdSCod ]]</b>
                                         </small>
                                     </div>
                                     <div class="col-12 col-md-auto" v-if="item.CDSAcademicYear">
                                         <small>
                                             {% trans "A.Y." %} >
-                                            <b>[[ item.CDSAcademicYear ]]/[[ item.CDSAcademicYear + 1]]</b>
+                                            <b>[[ item.CdSAcademicYear ]]/[[ item.CdSAcademicYear + 1]]</b>
                                         </small>
                                     </div>
                                 </div>
