@@ -28,7 +28,7 @@ class ServiceCdsBrochure:
             query_search &= Q(cds__didatticacdslingua__iso6392_cod=cdslanguage)
 
         query = (
-            CdsBrochure.objects.filter(query_search)
+            CdsBrochure.objects
             .select_related("cds")
             .prefetch_related(
                 Prefetch(
@@ -37,6 +37,7 @@ class ServiceCdsBrochure:
                     to_attr="languages"
                 )
             )
+            .filter(query_search)
         )
         return query
 
