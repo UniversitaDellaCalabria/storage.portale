@@ -11,7 +11,11 @@ from cds_brochure.models import (
 
 class ServiceCdsBrochure:
     @staticmethod
-    def getCdsBrochures(search=None, academic_year=None):
+    def getCdsBrochures(query_params):
+        search = query_params.get("search", "")
+        academic_year = query_params.get("academic_year", "")
+        coursetype = query_params.get("coursetype", "")
+
         query_search = Q()
 
         if search:
@@ -19,6 +23,8 @@ class ServiceCdsBrochure:
                 query_search &= Q(cds__nome_cds_it__icontains=k)
         if academic_year:
             query_search &= Q(aa=academic_year)
+        if coursetype:
+            query_search &= Q(cds__tipo_corso_cod__in=coursetype.split(","))
 
         query = (
             CdsBrochure.objects.filter(query_search)
@@ -30,6 +36,9 @@ class ServiceCdsBrochure:
                 "aa",
                 "cds__nome_cds_it",
                 "cds__nome_cds_eng",
+                "cds__area_cds",
+                "cds__area_cds_en",
+                "cds__tipo_corso_cod"
             )
         )
         return list(query)

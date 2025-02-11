@@ -16,10 +16,7 @@ class ApiCdsBrochureList(ApiEndpointList):
     filter_backends = [CdsBrochuresListFilter]
 
     def get_queryset(self):
-        request = self.request
-        search = request.query_params.get("search")
-        academic_year = request.query_params.get("academic_year")
-        return ServiceCdsBrochure.getCdsBrochures(search, academic_year)
+        return ServiceCdsBrochure.getCdsBrochures(self.request.query_params)
 
 
 class ApiCdsBrochureDetail(ApiEndpointDetail):
