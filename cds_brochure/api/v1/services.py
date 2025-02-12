@@ -38,7 +38,7 @@ class ServiceCdsBrochure:
                 )
             )
             .filter(query_search)
-            .order_by("cds__nome_cds_en")
+            .order_by("cds__nome_cds_eng")
         )
 
         if language == 'it':
