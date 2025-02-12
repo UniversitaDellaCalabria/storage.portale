@@ -27,7 +27,7 @@ def esse3AppelliSerializer(
             "annoCorso": None,
             "cfu": None,
             "docente": appello["presidenteCognome"] + " " + appello["presidenteNome"],
-            "aule": [{"nome": appello["note"], "edificio": None}],
+            "aule": [{"nome": appello["note"], "edificio": None}] if appello["note"] else None,
             "codice": "ESSE3_ES",
             "extra": {
                 "descr": appello["desApp"],
