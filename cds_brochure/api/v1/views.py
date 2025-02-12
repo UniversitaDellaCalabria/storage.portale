@@ -16,7 +16,13 @@ class ApiCdsBrochureList(ApiEndpointList):
     filter_backends = [CdsBrochuresListFilter]
 
     def get_queryset(self):
-        return ServiceCdsBrochure.getCdsBrochures(self.request.query_params)
+        return ServiceCdsBrochure.getCdsBrochures(language=self.language,
+                                                  query_params=self.request.query_params)
+
+    def get(self, *args, **kwargs):
+        lang = self.request.LANGUAGE_CODE
+        self.language = self.request.query_params.get("lang", lang).lower()
+        return super().get(*args, **kwargs)
 
 
 class ApiCdsBrochureDetail(ApiEndpointDetail):

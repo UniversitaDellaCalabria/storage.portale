@@ -12,7 +12,7 @@ from cds_brochure.models import (
 
 class ServiceCdsBrochure:
     @staticmethod
-    def getCdsBrochures(query_params):
+    def getCdsBrochures(query_params, language='en'):
         search = query_params.get("search", "")
         coursetype = query_params.get("coursetype", "")
         cdslanguage = query_params.get("cdslanguage", "")
@@ -38,7 +38,12 @@ class ServiceCdsBrochure:
                 )
             )
             .filter(query_search)
+            .order_by("cds__nome_cds_en")
         )
+
+        if language == 'it':
+            query = query.order_by("cds__nome_cds_it")
+
         return query
 
     @staticmethod
