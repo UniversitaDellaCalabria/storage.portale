@@ -2,6 +2,7 @@ from rest_framework.permissions import BasePermission
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
+from cds_brochure.settings import BROCHURES_VISIBLE
 from generics.settings import CURRENT_YEAR
 from regdid.settings import OFFICE_REGDIDS_DEPARTMENT, OFFICE_REGDIDS_REVISION, OFFICE_REGDIDS_APPROVAL
 from ...settings import OFFICE_CDS, OFFICE_CDS_DOCUMENTS, OFFICE_CDS_TEACHING_SYSTEM
@@ -11,6 +12,7 @@ class CdsListVisibilityPermission(BasePermission):
     def has_permission(self, request, view):
         academic_year = request.query_params.get("academicyear")
         if academic_year and int(academic_year) > int(CURRENT_YEAR):
+            if BROCHURES_VISIBLE: return True
             if not request.user.is_authenticated: return False
             if request.user.is_superuser: return True
             belongs_to_office = OrganizationalStructureOfficeEmployee.objects.filter(
