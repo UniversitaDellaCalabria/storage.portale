@@ -45,8 +45,7 @@ def upImpegniSerializer(
         annoCorso = dettagliDidattici[0]["annoCorso"]
 
         docenti = []
-        aula = ""
-        edificio = ""
+        aule = []
         risorse = impegno["risorse"]
         for risorsa in risorse:
             if risorsa.get("docenteId"):
@@ -54,8 +53,12 @@ def upImpegniSerializer(
                     risorsa["docente"]["cognome"] + " " + risorsa["docente"]["nome"]
                 )
             if risorsa.get("aula"):
-                aula = risorsa["aula"]["descrizione"]
-                edificio = risorsa["aula"]["edificio"]["descrizione"]
+                aule.append(
+                    {
+                        "nome": risorsa["aula"]["descrizione"],
+                        "edificio": risorsa["aula"]["edificio"]["descrizione"]
+                    }
+                )
 
         if search_teacher:
             teacher_found = False
@@ -93,8 +96,7 @@ def upImpegniSerializer(
             "annoCorso": annoCorso,
             "cfu": cfu,
             "docenti": docenti,
-            "aula": aula,
-            "edificio": edificio,
+            "aule": aule,
             "codice": f"UP_{impegno['evento']['tipoEvento']['codice']}",
             "extra": extra,
         }
