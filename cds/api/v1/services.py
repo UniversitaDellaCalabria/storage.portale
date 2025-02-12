@@ -449,29 +449,16 @@ class ServiceDidatticaCds:
         return query
 
     @staticmethod
-    def getCdsAreas():
-        query = DidatticaCds.objects.values(
-            "area_cds",
-            "area_cds_en",
-        ).distinct()
+    def getCdsAreas(language='en'):
+        query = DidatticaCds.objects.filter(area_cds__isnull=False).values(
+            'area_cds',
+            'area_cds_en',
+        ).order_by('area_cds_en').distinct()
 
-        query = list(query)
-        res = []
-        for q in query:
-            res.append(q["area_cds"])
+        if language == 'it':
+            query = query.order_by('area_cds')
 
-        res = list(dict.fromkeys(res))
-        temp = []
-        for q in query:
-            if (
-                q["area_cds"] not in temp
-                and q["area_cds"] in res
-                and q["area_cds"] is not None
-            ):
-                temp.append(q)
-                res.remove(q["area_cds"])
-
-        return temp
+        return query
 
     @staticmethod
     def getContacts(cdscod):

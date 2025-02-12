@@ -199,7 +199,7 @@ class ApiCdsAreasList(ApiEndpointListSupport):
     serializer_class = CdsAreasSerializer
 
     def get_queryset(self):
-        return ServiceDidatticaCds.getCdsAreas()
+        return ServiceDidatticaCds.getCdsAreas(self.language)
 
     def get(self, *args, **kwargs):
         lang = self.request.LANGUAGE_CODE
