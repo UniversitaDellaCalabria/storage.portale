@@ -358,7 +358,7 @@ def handle_regdid_structures_import(request, data, year, procedure_cod):
             3.1) Import from the previous year if NUMERO_PREC is populated for the relevant structure and a corresponding article is found.
 
     SCENARIO 2: REGDID_IMPORT_USE_CURR_STRUCTURE
-    
+
     USE EXISTING STRUCTURE TO IMPORT ARTICLES
 
     GOAL: For each active CDS who's missing its testata, create one and a testata status, then import articles/sub-articles from the previous year

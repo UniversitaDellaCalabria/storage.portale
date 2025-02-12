@@ -23,7 +23,7 @@ class CdsBrochureLightSerializer(CreateUpdateAbstract):
             if req_lang == "it" or query.cds.area_cds_en is None
             else query.cds.area_cds_en,
             "CdSCourseType": query.cds.tipo_corso_cod,
-            "CdSLanguages": languages
+            "CdSLanguage": languages
         }
 
 
