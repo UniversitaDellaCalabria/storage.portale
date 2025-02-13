@@ -450,14 +450,13 @@ class ServiceDidatticaCds:
 
     @staticmethod
     def getCdsAreas(language='en'):
-        query = DidatticaCds.objects.filter(area_cds__isnull=False).values(
-            'area_cds',
-            'area_cds_en',
-        ).order_by('area_cds_en').distinct()
-
+        lookup = 'area_cds_en'
         if language == 'it':
-            query = query.order_by('area_cds')
-
+            lookup = 'area_cds'
+        query = DidatticaCds.objects\
+                            .filter(**{f'{lookup}__isnull': False})\
+                            .values(lookup)\
+                            .order_by(lookup).distinct()
         return query
 
     @staticmethod

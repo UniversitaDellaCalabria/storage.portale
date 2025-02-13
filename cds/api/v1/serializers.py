@@ -703,17 +703,8 @@ class ProgramTypesSerializer(CreateUpdateAbstract):
 
 class CdsAreasSerializer(CreateUpdateAbstract):
     def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query, str(self.context["language"]).lower()))
-        return data
-
-    @staticmethod
-    def to_dict(query, req_lang="en"):
         return {
-            "AreaCds": query["area_cds"]
-            if req_lang == "it" or query["area_cds_en"] is None
-            else query["area_cds_en"],
+            "AreaCds": list(instance.values())[0]
         }
 
 
