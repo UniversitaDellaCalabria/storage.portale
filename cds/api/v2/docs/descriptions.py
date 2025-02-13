@@ -2,15 +2,19 @@
 
 # DegreeType
 DEGREETYPE_LIST_SUMMARY = "List of all degree types"
-DEGREETYPE_LIST_DESCRIPTION = (
-    "Retrieve a list of all available degree types with their codes and descriptions."
-)
+DEGREETYPE_LIST_DESCRIPTION = "Retrieve a list of all available degree types with their codes and descriptions."
+
+# Cds
+## List
+CDS_LIST_SUMMARY = "Retrieves a list of courses of study with a minimal set of information."
+CDS_LIST_DESCRIPTION = ()
+## Retrieve
+CDS_RETRIEVE_SUMMARY = "Retrieves a course of study with a minimal set of information."
+CDS_RETRIEVE_DESCRIPTION = ()
 
 # AcademicYear
 ACADEMICYEAR_LIST_SUMMARY = "List of all academic years"
-ACADEMICYEAR_LIST_DESCRIPTION = (
-    "Retrieve a list of all available academic years in descending order."
-)
+ACADEMICYEAR_LIST_DESCRIPTION = "Retrieve a list of all available academic years in descending order."
 
 # StudyActivity
 ## List

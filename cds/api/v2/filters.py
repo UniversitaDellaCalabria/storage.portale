@@ -1,6 +1,5 @@
 from django.db.models import Exists, OuterRef, Q
 from django_filters import rest_framework as filters
-from generics.api.filters import InCharFilter
 from generics.utils import decrypt
 
 from cds.models import (
@@ -122,7 +121,6 @@ class CdsFilter(filters.FilterSet):
         model = DidatticaRegolamento
         fields = []
 
-
 class CdsExpiredFilter(filters.FilterSet):
     year_from = filters.NumberFilter(
         field_name="aa_reg_did",
@@ -142,7 +140,6 @@ class CdsExpiredFilter(filters.FilterSet):
     class Meta:
         model = DidatticaRegolamento
         fields = []
-
 
 class StudyActivitiesFilter(filters.FilterSet):
     name = filters.CharFilter(

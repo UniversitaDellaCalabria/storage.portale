@@ -18,6 +18,7 @@ from cds.models import (
     DidatticaRegolamento,
     DidatticaCdsCollegamento,
     DidatticaTestiAf,
+    DidatticaCopertura
 )
 
 
@@ -121,6 +122,191 @@ class CdsSerializer(ReadOnlyModelSerializer):
             "yearOrdinamentoDidattico",
         ]
 
+# @extend_schema_serializer(examples=examples.CDS_SERIALIZER_EXAMPLE)
+class CdsDetailSerializer(ReadOnlyModelSerializer):
+    regDidId = serializers.IntegerField(source="regdid_id")
+    academicYear = serializers.IntegerField(source="aa_reg_did")
+    mandatoryAttendance = serializers.SerializerMethodField(method_name="get_mandatory_attendance")
+    departmentId = serializers.IntegerField(source="cds.dip.dip_id")
+    departmentCod = serializers.CharField(source="cds.dip.dip_cod")
+    departmentName = serializers.CharField(source="cds.dip.dip_des_it")
+    cdSId = serializers.IntegerField(source="cds.cds_id")
+    cdSCod = serializers.CharField(source="cds.cds_cod")
+    cdsOrdId = serializers.IntegerField(source="cds.cdsord_id")
+    name = serializers.CharField(source="cds.nome_cds_it")
+    type = serializers.CharField(source="cds.tipo_corso_cod")
+    typeDescription = serializers.CharField(source="cds.tipo_corso_des")
+    courseClassCod = serializers.CharField(source="cds.cla_miur_cod")
+    courseClassName = serializers.CharField(source="cds.cla_miur_des")
+    courseInterClassCod = serializers.CharField(source="cds.intercla_miur_cod")
+    courseInterClassDes = serializers.CharField(source="cds.intercla_miur_des")
+    duration = serializers.IntegerField(source="cds.durata_anni")
+    ECTS = serializers.IntegerField(source="cds.valore_min")
+    codicione = serializers.IntegerField(source="cds.codicione")
+    jointDegree = serializers.CharField(source="titolo_congiunto_cod")
+    status = serializers.CharField(source="stato_regdid_cod")
+    area = serializers.CharField(source="cds.area_cds")
+    
+    erogationMode = serializers.CharField(source="erogazione")
+    periods = serializers.CharField(source="periods")
+    currentPeriods = serializers.CharField(source="currentPeriods")
+    
+    languages = serializers.SerializerMethodField()
+    profiles = serializers.SerializerMethodField()
+    additionalData = serializers.SerializerMethodField()
+    courseAdditionalData = serializers.SerializerMethodField()
+    offices = serializers.SerializerMethodField()
+    groups = serializers.SerializerMethodField()
+
+
+    @extend_schema_field(serializers.ListField())
+    def get_languages(self, obj):
+        request = self.context.get("request", None)
+        lang = "en" if request and request.GET.get("lang") == "en" else "it"
+        
+        lang_list = []
+        lang_list.append(obj.lingue_it if lang == "it" or obj.lingue_eng is None else obj.lingue_eng)
+    
+        return lang_list
+
+    @extend_schema_field(serializers.DictField())
+    def get_courseAdditionalData(self, obj):
+        altri_dati = getattr(obj, 'gruppi_cds', []) or []
+        return  [
+            {
+                "coordinatorId": data.matricola_coordinatore,
+                "coordinatorName": data.nome_origine_coordinatore,
+                "viceCoordinatorId": data.matricola_vice_coordinatore,
+                "viceCoordinatorName": data.nome_origine_vice_coordinatore,
+                "studyManifesto": data.manifesto_studi,
+                "educationalRules": data.regolamento_didattico,
+                "educationalSystem": data.ordinamento_didattico,
+           }
+            for data in altri_dati
+        ]
+            
+    @extend_schema_field(serializers.ListField())
+    def get_offices(self, obj):
+        offices = getattr(obj, 'uffici_cds', []) or []
+        return [
+            {
+                "order": office.ordine,
+                "name": office.nome_ufficio,
+                "contact_id": office.matricola_riferimento,
+                "contact_name": office.nome_origine_riferimento,
+                "phone": office.telefono,
+                "email": office.email,
+                "building": office.edificio,
+                "floor": office.piano,
+                "hours": office.orari,
+                "online_counter": office.sportello_online,
+            }
+            for office in offices
+        ]        
+    
+    @extend_schema_field(serializers.ListField())
+    def get_groups(self, obj):
+        groups = getattr(obj, 'gruppi_cds', []) or []
+        return [
+            {
+                "order": group.ordine,
+                "id": group.id,
+                "short_description_it": group.descr_breve_it,
+                "short_description_eng": group.descr_breve_en,
+                "long_description_it": group.descr_lunga_it,
+                "long_description_eng": group.descr_lunga_en,
+            }
+            for group in groups
+        ]
+    
+    
+    
+    @extend_schema_field(serializers.BooleanField())
+    def get_mandatory_attendance(self, obj):
+        return bool(obj.frequenza_obbligatoria)
+
+    @extend_schema_field(serializers.ListField())
+    def get_profiles(self, obj):
+        request = self.context.get("request", None)
+        lang = "en" if request and request.GET.get("lang") == "en" else "it"
+        
+        texts = getattr(obj, 'testi_regolamento', []) or []
+        list = {}
+        last_profile = ""
+
+        for text in texts:
+            text_type = text.tipo_testo_regdid_cod
+            text_it = text.clob_txt_ita
+            text_eng = text.clob_txt_eng
+            profile_it = text.profilo
+            profile_eng = text.profilo_eng
+
+            if text_type not in ["FUNZIONI", "COMPETENZE", "SBOCCHI"]:
+                list.append(text_eng if (text_eng is None and lang != "it") or lang == "it" else text_it)
+            else:
+                selected_profile = profile_it if (lang != "it" and profile_eng is None) or lang == "it" else profile_eng
+                if selected_profile != last_profile:
+                    last_profile = selected_profile
+                    list[last_profile] = {}
+                        
+            list[last_profile][text_type] = text_it if (text_eng is None and lang != "it") or lang == "it" else text_eng
+                    
+        return list
+    
+    
+   
+    @extend_schema_field(serializers.ListField())
+    def get_additionalData(self, obj):
+        request = self.context.get("request", None)
+        lang = "en" if request and request.GET.get("lang") == "en" else "it"
+        for data in obj.altri_dati_regolamento:
+            return (data.clob_txt_ita if (data.clob_txt_ita is None and lang != "it") or lang == "it" else data.clob_txt_eng) if hasattr(obj, 'altri_dati_regolamento') else []
+        
+    
+    
+
+    
+
+    class Meta:
+        model = DidatticaRegolamento
+        fields = [
+            "regDidId",
+            "academicYear",
+            "mandatoryAttendance",
+            "departmentId",
+            "departmentCod",
+            "departmentName",
+            "cdSId",
+            "cdSCod",
+            "cdsOrdId",
+            "name",
+            "type",
+            "typeDescription",
+            "courseClassCod",
+            "courseClassName",
+            "courseInterClassCod",
+            "courseInterClassDes",
+            "duration",
+            "ECTS",
+            "codicione",
+            "jointDegree",
+            "status",
+            "area",
+            "erogationMode",
+            "languages",
+            "texts",
+            "additionalData",
+            "courseAdditionalData",
+            "offices",
+            "groups",
+        ]
+        # language_field_map = {
+        #     "languages": {"en": "lingue_eng"},
+        #     "name": {"en": "cds.nome_cds_eng"},
+        #     "departmentName": {"en": "cds.dip.dip_des_eng"},
+        #     "area": {"en": "cds.area_cds_en"}
+        # }
+        
 
 @extend_schema_serializer(examples=examples.CDS_AREA_SERIALIZER_EXAMPLE)
 class CdsAreasSerializer(ReadOnlyModelSerializer):
@@ -606,6 +792,35 @@ class AcademicPathwaysDetailSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = DidatticaPdsRegolamento
         fields = ["id", "cod", "name", "activities"]
-        language_field_map = {
-            "name": {"en": "pds_des_eng"},
-        }
+        # language_field_map = {
+        #     "name": {"en": "pds_des_eng"},
+        # }
+
+class SortingContactsSerializer(ReadOnlyModelSerializer):
+    fullName = serializers.SerializerMethodField()
+    id = serializers.SerializerMethodField()
+    teacherDepartmentID = serializers.CharField(source="personale__cd_uo_aff_org")
+    teacherOffice = serializers.CharField(source="personale__ds_aff_org")
+    departmentURL = serializers.CharField(source="dip_urls")
+    
+    
+    @extend_schema_field(serializers.CharField())
+    def get_fullName(self, obj):
+        pass
+    
+    @extend_schema_field(serializers.CharField())
+    def get_id(self, obj):
+        return encrypt(getattr(obj, "personale__matricola", None))
+    
+    
+    class Meta:
+        model = DidatticaCopertura
+        fields = [
+            "fullName",
+            "id", 
+            "teacherDepartmentID", 
+            "teacherOffice", 
+            "departmentURL"
+        ]
+        
+        

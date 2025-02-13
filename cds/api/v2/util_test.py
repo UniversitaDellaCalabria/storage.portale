@@ -14,6 +14,7 @@ from cds.models import (
     DidatticaTestiAf,
     DidatticaCoperturaDettaglioOre,
     DidatticaAttivitaFormativaModalita,
+    DidatticaCdsCollegamento
 )
 from structures.models import DidatticaDipartimento
 
@@ -187,3 +188,13 @@ class ApiCdsUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaCoperturaDettaglioOre.objects.create(**data)
+    
+
+    @classmethod
+    def create_didatticaCdsCollegamento(cls, **kwargs):
+        data = {
+            "cds": 3,
+            "cds_prec": 2
+        }
+        data.update(kwargs)
+        return DidatticaCdsCollegamento.objects.create(**data)
