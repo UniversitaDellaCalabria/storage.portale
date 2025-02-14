@@ -245,16 +245,7 @@ class ApiCdsUnitTest(TestCase):
         url = reverse("cds:apiv2:cds-expired-list")
         res = self.req.get(url)
         self.assertEqual(res.status_code, 200)
-        print(res.json())
-        
-        # self.assertGreaterEqual(len(res.json()["results"]), 1)
-        # self.assertIn("cdsCod", res.json()["results"][0])
-        # self.assertIn("aaRegDid", res.json()["results"][0])
-        # self.assertIn("cdsDuration", res.json()["results"][0])
-        
-        # self.assert_data_len(url, {"cdsCod": "CDS001"}, 1)
-        # self.assert_data_len(url, {"cdsCod": "CDS002"}, 1)
-        # self.assert_data_len(url, {"academic_year": settings.CURRENT_YEAR - 5}, 1)
+
         
     def test_apicdsmorphlist(self):
         cds1 = ApiCdsUnitTestMethods.create_didatticaCds(cds_id=1, cds_cod="CDS001")

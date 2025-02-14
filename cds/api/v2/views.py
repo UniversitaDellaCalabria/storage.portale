@@ -22,12 +22,12 @@ from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
 )
+from addressbook.utils import append_email_addresses
 from rest_framework import mixins, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from structures.models import DidatticaDipartimentoUrl
-
 from cds.models import (
     DidatticaAttivitaFormativa,
     DidatticaCds,
@@ -40,10 +40,7 @@ from cds.models import (
     DidatticaTestiRegolamento,
     DidatticaRegolamentoAltriDati,
     DidatticaCdsLingua,
-    DidatticaCdsGruppi,
-    DidatticaCdsAltriDatiUfficio,
-    DidatticaCdsPeriodi,
-    DidatticaCdsGruppiComponenti
+    DidatticaCoperturaDettaglioOre,
 )
 
 from .filters import (
@@ -237,6 +234,23 @@ class CdsViewSet(ReadOnlyModelViewSet):
     queryset = DidatticaRegolamento.objects.all()
 
     def get_queryset(self):
+        # only_active = True
+        # if self.request.user.is_superuser:
+        #     only_active = False  # pragma: no cover
+        # if self.request.user.is_authenticated:  # pragma: no cover
+        #     my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+        #         employee=self.request.user,
+        #         office__name__in=[
+        #             OFFICE_CDS,
+        #             OFFICE_CDS_DOCUMENTS,
+        #             OFFICE_CDS_TEACHING_SYSTEM,
+        #         ],
+        #         office__is_active=True,
+        #         office__organizational_structure__is_active=True,
+        #     )
+        #     if my_offices:
+        #         only_active = False
+        
         if self.action == "list":
             ordinamento_subquery = (
                 DidatticaCdsAltriDati.objects.filter(
@@ -282,31 +296,50 @@ class CdsViewSet(ReadOnlyModelViewSet):
             )
 
         if self.action == "retrieve": #coccodrillo
-            erogation_mode =  DidatticaRegolamento.objects.filter(cds_id=OuterRef("cds__cds_id"), stato_regdid_cod="A").values("modalita_erogazione")[:1]
-            texts = DidatticaTestiRegolamento.objects.filter(regdid=self.kwargs.get("regdid_id")).values("regdid__regdid_id", "clob_txt_ita", "clob_txt_eng", "testo_regdid_url", "tipo_testo_regdid_cod", "profilo","profilo_eng",)
-            otherDataReg = DidatticaRegolamentoAltriDati.objects.filter(regdid=self.kwargs.get("regdid_id")).values("regdid__regdid_id", "clob_txt_ita", "clob_txt_eng", "tipo_testo_regdid_cod")
-            otherData = DidatticaCdsAltriDati.objects.filter(regdid=self.kwargs.get("regdid_id")).values("matricola_coordinatore", "nome_origine_coordinatore", "matricola_vice_coordinatore", "nome_origine_vice_coordinatore", "manifesto_studi","regolamento_didattico", "ordinamento_didattico",).distinct()
-            officeData = DidatticaCdsAltriDatiUfficio.objects.filter(cds_id=OuterRef("cds__cds_id")).values("ordine","nome_ufficio","matricola_riferimento", "nome_origine_riferimento", "telefono", "email", "edificio", "piano", "orari","sportello_online",).distinct()
-            
-            
             return (
-                DidatticaRegolamento.objects.prefetch_related(
-                    Prefetch(
+                DidatticaRegolamento.objects.select_related("cds__dip", "didatticacdsaltridati")
+                .prefetch_related(
+                     Prefetch(
                         "cds__didatticacdslingua",
                         queryset=DidatticaCdsLingua.objects.only("lingua_des_it", "lingua_des_eng").distinct(),
                         to_attr="lingue",
-                    )
-                .annotate(
-                    lingue_it=Coalesce(
-                        Concat("cds__didatticacdslingua__lingua_des_it", Value(", "), output_field=models.CharField()), 
-                        Value(""),
-                        output_field=models.CharField()
                     ),
-                    lingue_eng=Coalesce(
-                        Concat("cds__didatticacdslingua__lingua_des_eng", Value(", "), output_field=models.CharField()), 
-                        Value(""),
-                        output_field=models.CharField()
+                    Prefetch(
+                        "didatticatestiregolamento_set",
+                        queryset=DidatticaTestiRegolamento.objects.only(
+                            "regdid_id",
+                            "clob_txt_ita",
+                            "clob_txt_eng",
+                            "testo_regdid_url",
+                            "tipo_testo_regdid_cod",
+                            "profilo",
+                            "profilo_eng",
+                        ),
+                        to_attr="texts",
                     ),
+                    Prefetch(
+                        "didatticaregolamentoaltridati_set",
+                        queryset=DidatticaRegolamentoAltriDati.objects.only(
+                            "regdid_id",
+                            "clob_txt_ita",
+                            "clob_txt_eng",
+                            "tipo_testo_regdid_cod",
+                        ),
+                        to_attr="otherDataReg",
+                    ),  
+                    Prefetch(
+                        "didatticacdsaltridati",
+                        queryset=DidatticaRegolamentoAltriDati.objects.only(
+                            "matricola_coordinatore",
+                            "nome_origine_coordinatore",
+                            "matricola_vice_coordinatore",
+                            "nome_origine_vice_coordinatore",
+                            "manifesto_studi",
+                            "regolamento_didattico",
+                            "ordinamento_didattico",
+                        ).distinct(),
+                        to_attr="otherData",
+                    ),             
                 )
                 .only(
                     "regdid_id", 
@@ -334,12 +367,29 @@ class CdsViewSet(ReadOnlyModelViewSet):
                     "stato_regdid_cod", 
                     "cds__area_cds", 
                     "cds__area_cds_en",
-                    "modalita_erogazione"
                 )
                 .distinct()
+                .annotate(
+                    erogationMode = Subquery(
+                            DidatticaRegolamento.objects.filter(cds_id=OuterRef("cds__cds_id"), stato_regdid_cod__exact="A").values("modalita_erogazione")[:1]
+                        ),
+                    # officesData = Subquery(
+                    #     DidatticaCdsAltriDatiUfficio.objects.only(
+                    #         "ordine",
+                    #         "nome_ufficio",
+                    #         "matricola_riferimento",
+                    #         "nome_origine_riferimento",
+                    #         "telefono",
+                    #         "email",
+                    #         "edificio",
+                    #         "piano",
+                    #         "orari",
+                    #         "sportello_online",
+                    #     ).distinct()
+                    # )
+                )
             )
-            )
-                    
+        
     def get_serializer_class(self):
         if self.action == "retrieve":
             return CdsDetailSerializer
@@ -409,6 +459,72 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
             )
             .first()
         )
+    def get_mutuata_da_questa(self, af_id):
+        return (DidatticaAttivitaFormativa.objects.filter(af_master_id=af_id, mutuata_flg=1)
+            .exclude(af_id=af_id)
+            .values(
+                "af_id",
+                "af_gen_cod",
+                "des",
+                "af_gen_des_eng",
+                "ciclo_des",
+                "regdid__regdid_id",
+                "regdid__aa_reg_did",
+                "anno_corso",
+                "didatticacopertura__coper_peso",
+                "cds__cds_cod",
+                "cds__cds_id",
+                "cds__nome_cds_it",
+                "cds__nome_cds_eng",
+                "pds_cod",
+                "pds_des",
+            )
+        )
+    
+    def get_activity_root(self, af_id, id_radice):
+        return (DidatticaAttivitaFormativa.objects.filter(af_id=id_radice)
+            .exclude(af_id=af_id)
+            .values(
+                "af_id",
+                "af_gen_cod",
+                "des",
+                "af_gen_des_eng",
+                "ciclo_des",
+                "regdid__regdid_id",
+                "regdid__aa_reg_did",
+                "anno_corso",
+                "didatticacopertura__coper_peso",
+                "cds__cds_cod",
+                "cds__cds_id",
+                "cds__nome_cds_it",
+                "cds__nome_cds_eng",
+                "pds_cod",
+                "pds_des",
+            ).first()
+        )
+    
+    def get_activity_father(self, af_id, id_radice_padre):
+        return (
+                DidatticaAttivitaFormativa.objects.filter(af_id=id_radice_padre)
+                .exclude(af_id=af_id)
+                .values(
+                    "af_id",
+                    "af_gen_cod",
+                    "des",
+                    "af_gen_des_eng",
+                    "ciclo_des",
+                    "regdid__regdid_id",
+                    "regdid__aa_reg_did",
+                    "anno_corso",
+                    "didatticacopertura__coper_peso",
+                    "cds__cds_cod",
+                    "cds__cds_id",
+                    "cds__nome_cds_it",
+                    "cds__nome_cds_eng",
+                    "pds_cod",
+                    "pds_des",
+                )
+            )
     
     
     def get_queryset(self):
@@ -523,6 +639,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                 .order_by("des")
             )
             return queryset
+        
         if self.action == "retrieve":
             af_id = self.kwargs.get("af_id")
             queryset = (
@@ -571,6 +688,52 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
             if queryset.first()["mutuata_flg"] == 1:
                 id_master = queryset.first()["af_master_id"]
                 mutuata_da = self.get_mutuata_da(id_master)
+                
+            attivita_mututate_da_questa = self.get_mutuata_da_questa(af_id)
+            
+            radice = queryset.first()
+            id_radice_padre = radice["af_pdr_id"]
+            id_radice = radice["af_radice_id"]
+            
+            activity_root = self.get_activity_root(af_id, id_radice)
+            if len(activity_root) == 0: 
+                activity_root = None
+
+            if id_radice_padre and id_radice_padre != id_radice:
+                activity_father = self.get_activity_father(af_id, id_radice_padre)
+                if len(activity_father) == 0: 
+                    activity_father = None
+                    
+            copertura = DidatticaCopertura.objects.filter(af_id=af_id).values(
+                "personale__id",
+                "personale__id_ab",
+                "personale__nome",
+                "personale__cognome",
+                "personale__middle_name",
+                "personale__matricola",
+                "fat_part_stu_cod",
+                "fat_part_stu_des",
+                "part_stu_cod",
+                "part_stu_des",
+            )
+            
+            filtered_hours = DidatticaCoperturaDettaglioOre.objects.filter(
+                ~Q(coper_id__stato_coper_cod="R"), coper_id__af_id=af_id
+            ).values(
+                "tipo_att_did_cod",
+                "ore",
+                "coper_id__personale_id__id_ab",
+                "coper_id__personale_id__matricola",
+                "coper_id__personale_id__nome",
+                "coper_id__personale_id__cognome",
+                "coper_id__personale_id__middle_name",
+                "coper_id__personale_id__flg_cessato",
+                "coper_id",
+            )
+            append_email_addresses(filtered_hours, "coper_id__personale_id__id_ab")
+
+            
+            
             
             
             
