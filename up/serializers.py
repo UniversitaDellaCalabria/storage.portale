@@ -69,8 +69,14 @@ def upImpegniSerializer(
             if not teacher_found:
                 continue
 
-        if search_location and search_location.lower() not in aula.lower():
-            continue
+        if search_location:
+            aula_found = False
+            for aula in aule:
+                if search_location.lower() in aula['nome'].lower():
+                    aula_found = True
+                    break
+            if not aula_found:
+                continue
 
         if not show_past and dataInizio < date.today().strftime("%Y-%m-%d"):
             continue
