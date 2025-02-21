@@ -1,5 +1,113 @@
 from drf_spectacular.utils import OpenApiExample
 
+CDS_DETAIL_SERIALIZER_EXAMPLE = [
+    OpenApiExample(
+        "CDS",
+        value={
+            "regDidId": 123,
+            "status": "Active",
+            "cdsId": 456,
+            "cdsCod": "CDS123",
+            "academicYear": 2023,
+            "area": "Engineering",
+            "name": "Computer Science",
+            "departmentId": 789,
+            "departmentCod": "ENG",
+            "departmentName": "Engineering Department",
+            "type": "Bachelor",
+            "typeDescription": "Three-year degree",
+            "courseClassCod": "L-31",
+            "courseClassName": "Scienze e Tecnologie Informatiche",
+            "courseInterClassCod": "L-8/L-31",
+            "courseInterClassDes": "Ingegneria e Informatica",
+            "erogationMode": "In presenza",
+            "languages": ["ENG", "ITA"],
+            "duration": 3,
+            "ECTS": 180,
+            "mandatoryAttendance": True,
+            "profiles": {
+                "Software Engineer": {
+                    "FUNZIONI": "Sviluppo software e gestione di sistemi informatici",
+                    "COMPETENZE": "Programmazione avanzata, gestione database",
+                    "SBOCCHI": "Aziende IT, ricerca accademica, startup"
+                }
+            },
+            "satisfactionSurvey": 4,
+            "jointDegree": "Yes",
+            "studyManifesto": "/media/path/manifesto.pdf",
+            "didacticRegulation": "/media/path/regulation.pdf",
+            "teachingSystem": "/media/path/ordinamento.pdf",
+            "teachingSystemYear": 2020,
+            "otherData": [
+                {
+                    "coordinatorId": 1001,
+                    "coordinatorName": "Dr. John Doe",
+                    "viceCoordinatorId": 1002,
+                    "viceCoordinatorName": "Dr. Jane Smith",
+                    "studyManifesto": "/media/path/manifesto.pdf",
+                    "educationalRules": "/media/path/regulation.pdf",
+                    "educationalSystem": "/media/path/ordinamento.pdf"
+                }
+            ],
+            "officesData": [
+                {
+                    "ordine": 1,
+                    "nome_ufficio": "Segreteria Didattica",
+                    "matricola_riferimento": 2001,
+                    "nome_origine_riferimento": "Mario Rossi",
+                    "telefono": "+39 0123456789",
+                    "email": "segreteria@university.it",
+                    "edificio": "A",
+                    "piano": "2",
+                    "orari": "Lun-Ven 9:00-12:00",
+                    "sportello_online": "https://university.it/sportello"
+                }
+            ],
+            "groups": [
+                {
+                    "ordine": 1,
+                    "id": 3001,
+                    "descr_breve_it": "Docenti",
+                    "descr_breve_en": "Faculty",
+                    "descr_lunga_it": "Gruppo dei docenti del corso",
+                    "descr_lunga_en": "Group of course professors",
+                    "members": [
+                        {
+                            "ordine": 1,
+                            "id": 4001,
+                            "matricola": 5001,
+                            "cognome": "Bianchi",
+                            "nome": "Luca",
+                            "funzione_it": "Professore Ordinario",
+                            "funzione_en": "Full Professor"
+                        }
+                    ]
+                }
+            ],
+            "periods": [
+                {
+                    "description": "Primo semestre",
+                    "start": "2023-09-15",
+                    "end": "2024-01-31"
+                },
+                {
+                    "description": "Secondo semestre",
+                    "start": "2024-02-15",
+                    "end": "2024-06-30"
+                }
+            ],
+            "currentPeriods": [
+                {
+                    "description": "Primo semestre",
+                    "start": "2023-09-15",
+                    "end": "2024-01-31"
+                }
+            ]
+        },
+        description="Detail of a CDS",
+    )
+]
+
 CDS_SERIALIZER_EXAMPLE = [
     OpenApiExample(
         "CDS",
