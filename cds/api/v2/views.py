@@ -13,10 +13,8 @@ from django.db.models import (
     Q,
     Subquery,
     Value,
-    When,  
-    JSONField, 
+    When,
 )
-from django.db.models.expressions import RawSQL
 from django.db.models.functions import Coalesce, Concat
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
@@ -27,7 +25,6 @@ from drf_spectacular.utils import (
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from cds.settings import OFFICE_CDS, OFFICE_CDS_DOCUMENTS, OFFICE_CDS_TEACHING_SYSTEM
 
-from addressbook.utils import append_email_addresses
 from rest_framework import mixins, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -41,15 +38,12 @@ from cds.models import (
     DidatticaCopertura,
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
-    DidatticaTestiAf,
     DidatticaTestiRegolamento,
     DidatticaRegolamentoAltriDati,
     DidatticaCdsLingua,
-    DidatticaCoperturaDettaglioOre,
     DidatticaCdsAltriDatiUfficio,
     DidatticaCdsGruppi,
-    DidatticaCdsPeriodi,
-    DidatticaAttivitaFormativaModalita
+    DidatticaCdsGruppiComponenti
 )
 
 from .filters import (
@@ -272,7 +266,13 @@ class CdsViewSet(ReadOnlyModelViewSet):
                 DidatticaRegolamento.objects.select_related(
                     "cds__dip", "didatticacdsaltridati"
                 )
-                .prefetch_related(Prefetch("cds__didatticacdslingua", to_attr="lingue"))
+                .prefetch_related(
+                    Prefetch(
+                        "cds__didatticacdslingua",
+                        queryset=DidatticaCdsLingua.objects.only("lingua_des_it", "lingua_des_eng").distinct(),
+                        to_attr="lingue",
+                    ),
+                )
                 .only(
                     "regdid_id",
                     "cds__cds_id",
@@ -379,7 +379,7 @@ class CdsViewSet(ReadOnlyModelViewSet):
                         .prefetch_related(
                             Prefetch(
                                 "didatticacdsgruppicomponenti_set",
-                                queryset=DidatticaCdsGruppi.objects.filter(query_visibile).only(
+                                queryset=DidatticaCdsGruppiComponenti.objects.filter(query_visibile).only(
                                     "ordine",
                                     "id",
                                     "matricola",
