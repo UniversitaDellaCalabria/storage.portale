@@ -1,28 +1,56 @@
 from django.db.models import (
-    OuterRef,
     Prefetch,
     Value,
+    Case,
+    When,
 )
 from django.db.models.functions import Coalesce, Concat
 from django_filters.rest_framework import DjangoFilterBackend
-# from drf_spectacular.utils import (
-#     OpenApiParameter,
-#     extend_schema,
-#     extend_schema_view,
-# )
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    extend_schema,
+    extend_schema_view,
+)
+from .docs import descriptions
+from api_docs import responses
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from cds.models import DidatticaCdsLingua, DidatticaRegolamentoAltriDati
 from cds_brochure.models import (
     CdsBrochure,
+    CdsBrochureExStudenti,
+    CdsBrochureLink,
+    CdsBrochureSlider,
 )
 
 from .filters import BrochuresFilter 
 from .serializers import (
     BrochuresListSerializer,
-    BrochuresDetailSerializer,
+    BrochuresDetailSerializer
 )
 
+
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.BROCHURE_LIST_SUMMARY,
+        description=descriptions.BROCHURE_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(BrochuresListSerializer(many=True)),
+    ),
+    retrieve=extend_schema(
+        summary=descriptions.BROCHURE_RETRIEVE_SUMMARY,
+        description=descriptions.BROCHURE_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(BrochuresDetailSerializer),
+        parameters=[
+            OpenApiParameter(
+                name="cds__cds_cod",
+                type=str,
+                pattern=r"^\d+$",
+                required=True,
+                description="A value identifying the cod of a Course of Study.",
+                location=OpenApiParameter.PATH,
+            )
+        ],
+    ),
+)
 class BrochuresViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -50,23 +78,41 @@ class BrochuresViewSet(ReadOnlyModelViewSet):
             return (self.queryset.filter(cds__cds_cod=self.kwargs.get('cds__cds_cod') )
                     .prefetch_related(
                         Prefetch(
-                            "cds__didatticaregolamentoaltridati_set",
-                            queryset=DidatticaRegolamentoAltriDati.objects.filter(
-                                regdid__cds__cds_cod=OuterRef('cds__cds_cod'),
-                                regdid__aa_reg_did=OuterRef('aa'),
-                                tipo_testo_regdid_cod = "URL_CDS_VIDEO"
-                            )[:1],
-                            to_attr="video_link"
+                            "cdsbrochureexstudenti_set",
+                            queryset=CdsBrochureExStudenti.objects.only(
+                                "id",
+                                "nome",
+                                "ordine",
+                                "profilo_it",
+                                "profilo_en",
+                                "link_it",
+                                "link_en",
+                                "foto",)
+                            .order_by("ordine"),
+                            to_attr="exStudenti"
                         ),
                         Prefetch(
-                            "cds__didatticacdslingua_set",
-                            queryset=DidatticaCdsLingua.objects
-                            .filter(cdsord__cds_cod=OuterRef('cds__cds_cod'))
-                            .only("iso6392_cod"),
-                            to_attr="languages"
-                        )
+                            "cdsbrochurelink_set",
+                            queryset=CdsBrochureLink.objects.only(
+                                "id",
+                                "ordine",
+                                "descrizione_link_it",
+                                "descrizione_link_en",
+                                "link_it",
+                                "link_en",).order_by("ordine"),
+                            to_attr="links"
+                        ),
+                        Prefetch(
+                            "cdsbrochureslider_set",
+                            queryset=CdsBrochureSlider.objects.only(
+                               "id",
+                                "ordine",
+                                "slider_it",
+                                "slider_en",).order_by("ordine"),
+                            to_attr="sliders"
+                        ),
                     )
-                    .values(
+                    .only(
                         "id",
                         "cds__cds_cod",
                         "aa",
@@ -100,16 +146,30 @@ class BrochuresViewSet(ReadOnlyModelViewSet):
                         "come_iscriversi_en",
                     )
                     .annotate(
-                        course_class = Concat(
-                        Coalesce("cds__cla_miur_cod", Value("")),
-                        Value(" "),
-                        Coalesce("cds__cla_miur_des", Value("")),
+                        course_class = Case(
+                            When(
+                                cds__cla_miur_cod__isnull=False,
+                                cds__cla_miur_des__isnull=False,
+                                then=Concat(
+                                    Coalesce("cds__cla_miur_cod", Value("")),
+                                    Value(" "),
+                                    Coalesce("cds__cla_miur_des", Value("")),
+                                )
+                            ),
+                            default=Value(None),
                         ),
                         
-                        course_interclass = Concat(
-                            Coalesce("cds__intercla_miur_cod", Value("")),
-                            Value(" "),
-                            Coalesce("cds__intercla_miur_des", Value("")),
+                        course_interclass = Case(
+                            When(
+                                cds__intercla_miur_cod__isnull=False,
+                                cds__intercla_miur_des__isnull=False,
+                                then=Concat(
+                                    Coalesce("cds__intercla_miur_cod", Value("")),
+                                    Value(" "),
+                                    Coalesce("cds__intercla_miur_des", Value("")),
+                                )
+                            ),
+                            default=Value(None),
                         ),
 
                         
