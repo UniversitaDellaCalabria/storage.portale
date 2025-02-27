@@ -878,6 +878,8 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "DIDATTICA_CDS",
                 "managed": True,
+                "verbose_name": "Cds",
+                "verbose_name_plural": "Cds",
             },
         ),
         migrations.CreateModel(
@@ -1827,6 +1829,8 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "DIDATTICA_REGOLAMENTO",
                 "managed": True,
+                "verbose_name": "Didactic Regulation",
+                "verbose_name_plural": "Didactic Regulations",
             },
         ),
         migrations.CreateModel(
@@ -3188,6 +3192,8 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "DIDATTICA_CDS_LINGUA",
                 "managed": True,
+                "verbose_name": "Cds Language",
+                "verbose_name_plural": "Cds Languages",
             },
         ),
         migrations.CreateModel(
@@ -3575,6 +3581,8 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "DIDATTICA_CDS_COLLEGAMENTO",
                 "ordering": ["-cds__cds_cod"],
+                "verbose_name": "Cds Morph",
+                "verbose_name_plural": "Cds Morph",
                 "managed": True,
             },
         ),
