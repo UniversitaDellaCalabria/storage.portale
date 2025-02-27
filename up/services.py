@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 # chiamata alle api UP
 def getUPToken(request):  # pragma: no cover
-    # if request.session.get('up_token'):
-    # return request.session.get('up_token')
+    if request.session.get('up_token'):
+        return request.session.get('up_token')
     try:
         data = {
             "username": settings.UTENTE_API_UP,
