@@ -3440,11 +3440,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "af",
-                    models.OneToOneField(
+                    models.ForeignKey(
                         db_column="AF_ID",
                         on_delete=django.db.models.deletion.DO_NOTHING,
-                        primary_key=True,
-                        serialize=False,
                         to="cds.didatticaattivitaformativa",
                     ),
                 ),
@@ -3454,7 +3452,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "testi_af_id",
-                    models.IntegerField(blank=True, db_column="TESTI_AF_ID", null=True),
+                    models.IntegerField(
+                        db_column="TESTI_AF_ID",
+                        primary_key=True,
+                        serialize=False
+                    ),
                 ),
                 (
                     "tipo_testo_af_cod",
