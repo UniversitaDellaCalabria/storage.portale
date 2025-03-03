@@ -37,5 +37,7 @@ def getIsodidReport(cds=[], years=[]):
                 f.write(response.content)
                 f.close()
                 logger.info(f"Pentaho ISODID report for {year} - {cds_cod}: OK")
+            except requests.exceptions.Timeout:
+                logger.info("API {url} timeout")
             except Exception as e:
                 logger.error(e)
