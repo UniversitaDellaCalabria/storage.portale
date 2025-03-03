@@ -56,6 +56,8 @@ def getData(request, url, cds_cod, body):  # pragma: no cover
             )
     except requests.exceptions.Timeout:
         logger.info(f"UP API {url} timeout")
+    except requests.exceptions.ConnectionError:
+                logger.info(f"API {url} connection error")
     except Exception as e:
         logger.error(f"Error calling UP url {url}: {e}")
     return []
