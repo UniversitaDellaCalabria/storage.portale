@@ -31,7 +31,7 @@ def getEsse3Appelli(request, cds_id, af_id, aa):  # pragma: no cover
             return response.json()
         logger.error(f"Error calling Esse3 API {url}: {response.json()['retErrMsg']}")
     except requests.exceptions.Timeout:
-        logger.error(f"Esse3 API {url} timeout")
+        logger.info(f"Esse3 API {url} timeout")
     except requests.exceptions.ConnectionError:
         logger.info(f"API {url} connection error")
     except Exception as e:
