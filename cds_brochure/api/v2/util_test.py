@@ -1,4 +1,3 @@
-from addressbook.models import Personale
 from django.test import TestCase
 from cds.models import (
     DidatticaCds,
