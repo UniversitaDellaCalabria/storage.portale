@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-12 11:00+0100\n"
-"PO-Revision-Date: 2024-12-12 11:02+0100\n"
+"POT-Creation-Date: 2025-03-07 10:45+0100\n"
+"PO-Revision-Date: 2025-03-07 10:46+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -49,8 +49,8 @@ msgstr ""
 #: accounts/models.py:9 cds/templates/cds_detail.html:291
 #: cds/templates/cds_group.html:38
 #: cds_websites/templates/widgets/cds_websites_external_oggetti_portale_widget.html:13
-#: companies/management/forms.py:41 laboratories/management/forms.py:83
-#: laboratories/management/forms.py:450 research_groups/management/forms.py:13
+#: companies/management/forms.py:41 laboratories/management/forms.py:90
+#: laboratories/management/forms.py:481 research_groups/management/forms.py:14
 #: research_groups/templates/researchgroup.html:70
 #: research_lines/templates/applied_researchline.html:70
 #: research_lines/templates/base_researchline.html:70
@@ -146,7 +146,7 @@ msgstr "Codice fiscale"
 #: cds/templates/cds_other_data.html:39 cds/templates/cds_other_data.html:110
 #: cds/templates/cds_regdid_other_data.html:151
 #: cds_brochure/management/views.py:341
-#: cds_brochure/templates/blocks/cds_brochure_list.html:123
+#: cds_brochure/templates/blocks/cds_brochure_list.html:65
 #: cds_brochure/templates/cds_brochure_exstudents.html:80
 #: cds_brochure/templates/cds_brochure_links.html:81
 #: cds_brochure/templates/cds_brochure_sliders.html:81
@@ -266,9 +266,9 @@ msgstr ""
 #: research_lines/management/views.py:606
 #: research_lines/management/views.py:679 teachers/management/views.py:35
 #: teachers/management/views.py:67 teachers/management/views.py:141
-#: teachers/management/views.py:205 teachers/management/views.py:303
-#: teachers/management/views.py:358 teachers/management/views.py:444
-#: teachers/management/views.py:504
+#: teachers/management/views.py:205 teachers/management/views.py:302
+#: teachers/management/views.py:357 teachers/management/views.py:443
+#: teachers/management/views.py:503
 msgid "Dashboard"
 msgstr "Pagina iniziale"
 
@@ -365,7 +365,7 @@ msgid "Educational offer not yet available for the year"
 msgstr "Offerta formativa non ancora disponibile per l'anno"
 
 #: cds/management/forms.py:17 generics/forms.py:6
-#: research_groups/management/forms.py:25 research_lines/management/forms.py:85
+#: research_groups/management/forms.py:26 research_lines/management/forms.py:86
 msgid "Person"
 msgstr "Persona"
 
@@ -750,7 +750,7 @@ msgstr "Lingua"
 #: cds_websites/templates/blocks/cds_websites_list.html:127
 #: companies/management/forms.py:9 companies/management/forms.py:74
 #: generics/templates/blocks/crud_teacherslist.html:32
-#: laboratories/management/forms.py:242 laboratories/management/forms.py:248
+#: laboratories/management/forms.py:273 laboratories/management/forms.py:279
 #: laboratories/templates/blocks/crud_laboratories.html:68
 #: regdid/templates/blocks/crud_regdid.html:38
 #: research_groups/templates/blocks/crud_researchgroups.html:37
@@ -765,7 +765,7 @@ msgid "Joint degree"
 msgstr "Titolo congiunto"
 
 #: cds/templates/blocks/crud_cds.html:216
-#: cds_brochure/templates/blocks/cds_brochure_list.html:115
+#: cds_brochure/templates/blocks/cds_brochure_list.html:57
 #: cds_websites/templates/blocks/cds_websites_list.html:216
 #: regdid/templates/blocks/crud_regdid.html:166
 msgid "A.Y."
@@ -777,7 +777,7 @@ msgid "years"
 msgstr "anni"
 
 #: cds/templates/blocks/crud_cds.html:248
-#: cds_brochure/templates/blocks/cds_brochure_list.html:137
+#: cds_brochure/templates/blocks/cds_brochure_list.html:79
 #: cds_websites/templates/blocks/cds_websites_list.html:248
 #: companies/templates/blocks/crud_companies.html:183
 #: generics/templates/blocks/crud_addressbook.html:226
@@ -1226,7 +1226,7 @@ msgstr " per "
 #: cds_websites/management/forms.py:276
 #: cds_websites/templates/blocks/cds_websites_object_items.html:8
 #: cds_websites/templates/cds_websites_shared_objects.html:38
-#: laboratories/management/forms.py:264
+#: laboratories/management/forms.py:295
 #: laboratories/templates/laboratory.html:893 phd/management/forms.py:87
 #: teachers/templates/blocks/crud_teacher_news.html:40
 msgid "Type"
@@ -1524,7 +1524,7 @@ msgstr "Eliminato Link"
 msgid "Link deleted successfully"
 msgstr "Link eliminato con successo"
 
-#: cds_brochure/templates/blocks/cds_brochure_list.html:109
+#: cds_brochure/templates/blocks/cds_brochure_list.html:51
 msgid "Cod."
 msgstr ""
 
@@ -1567,10 +1567,10 @@ msgstr "Lingue"
 #: cds_brochure/templates/cds_brochure_links.html:25
 #: import_assistant/templates/blocks/import_assistant_cds_fields_table.html:11
 #: import_assistant/templates/blocks/import_assistant_regdid_structure_fields_table.html:11
-#: laboratories/management/forms.py:264 laboratories/management/forms.py:429
-#: laboratories/management/forms.py:451
+#: laboratories/management/forms.py:295 laboratories/management/forms.py:460
+#: laboratories/management/forms.py:482
 #: laboratories/templates/laboratory.html:894
-#: research_groups/management/forms.py:14
+#: research_groups/management/forms.py:15
 msgid "Description"
 msgstr "Descrizione"
 
@@ -1588,15 +1588,15 @@ msgstr "Siti web dei Corsi di Studio in sintesi"
 
 #: cds_websites/management/forms.py:55 cds_websites/management/forms.py:214
 #: cds_websites/management/forms.py:270 cds_websites/management/forms.py:314
-#: regdid/management/forms.py:45 teachers/management/forms.py:90
-#: teachers/management/forms.py:132
+#: regdid/management/forms.py:45 teachers/management/forms.py:99
+#: teachers/management/forms.py:148
 msgid "Title (it)"
 msgstr "Titolo (it)"
 
 #: cds_websites/management/forms.py:56 cds_websites/management/forms.py:215
 #: cds_websites/management/forms.py:271 cds_websites/management/forms.py:315
-#: regdid/management/forms.py:46 teachers/management/forms.py:91
-#: teachers/management/forms.py:133
+#: regdid/management/forms.py:46 teachers/management/forms.py:100
+#: teachers/management/forms.py:149
 msgid "Title (en)"
 msgstr "Titolo (en)"
 
@@ -1604,7 +1604,7 @@ msgstr "Titolo (en)"
 #: cds_websites/management/forms.py:318 regdid/management/forms.py:30
 #: regdid/templates/blocks/regdid_article_item.html:82
 #: regdid/templates/blocks/regdid_sub_article_item.html:40
-#: teachers/management/forms.py:92 teachers/management/forms.py:134
+#: teachers/management/forms.py:101 teachers/management/forms.py:150
 msgid "Text (it)"
 msgstr "Testo (it)"
 
@@ -1612,7 +1612,7 @@ msgstr "Testo (it)"
 #: cds_websites/management/forms.py:319 regdid/management/forms.py:30
 #: regdid/templates/blocks/regdid_article_item.html:87
 #: regdid/templates/blocks/regdid_sub_article_item.html:45
-#: teachers/management/forms.py:93 teachers/management/forms.py:135
+#: teachers/management/forms.py:102 teachers/management/forms.py:151
 msgid "Text (en)"
 msgstr "Testo (en)"
 
@@ -2010,7 +2010,7 @@ msgstr "Almeno una scelta tra spinoff e startup deve essere effettuata"
 msgid "VAT number"
 msgstr "Partita IVA"
 
-#: companies/management/forms.py:44 projects/management/forms.py:36
+#: companies/management/forms.py:44 projects/management/forms.py:37
 msgid "URL"
 msgstr ""
 
@@ -2018,7 +2018,7 @@ msgstr ""
 #: companies/templates/blocks/crud_companies.html:30
 #: companies/templates/blocks/crud_companies.html:158
 #: patents/templates/blocks/crud_patents.html:45
-#: projects/management/forms.py:31
+#: projects/management/forms.py:32
 #: projects/templates/blocks/crud_projects.html:53
 #: projects/templates/blocks/crud_projects.html:229
 msgid "Tech Area"
@@ -2038,8 +2038,8 @@ msgstr ""
 msgid "Spinoff"
 msgstr ""
 
-#: companies/management/forms.py:49 laboratories/management/forms.py:101
-#: patents/management/forms.py:29
+#: companies/management/forms.py:49 laboratories/management/forms.py:126
+#: patents/management/forms.py:30
 msgid "Logo"
 msgstr ""
 
@@ -2050,8 +2050,8 @@ msgstr ""
 #: companies/management/forms.py:51
 #: companies/templates/blocks/crud_companies.html:126
 #: laboratories/templates/blocks/crud_laboratories.html:206
-#: patents/management/forms.py:30 patents/templates/blocks/crud_patents.html:91
-#: projects/management/forms.py:39
+#: patents/management/forms.py:31 patents/templates/blocks/crud_patents.html:91
+#: projects/management/forms.py:40
 #: projects/templates/blocks/crud_projects.html:192
 #: research_lines/templates/blocks/crud_researchlines.html:98
 #: teachers/templates/blocks/crud_teacher_books.html:44
@@ -2059,16 +2059,16 @@ msgstr ""
 msgid "Active"
 msgstr "Attivo"
 
-#: companies/management/forms.py:52 patents/management/forms.py:31
-#: projects/management/forms.py:40
+#: companies/management/forms.py:52 patents/management/forms.py:32
+#: projects/management/forms.py:41
 msgid "Ordering"
 msgstr "Ordinamento"
 
-#: companies/management/forms.py:68 laboratories/management/forms.py:200
-#: laboratories/management/forms.py:207 laboratories/management/forms.py:363
-#: laboratories/management/forms.py:441 patents/management/forms.py:83
+#: companies/management/forms.py:68 laboratories/management/forms.py:231
+#: laboratories/management/forms.py:238 laboratories/management/forms.py:394
+#: laboratories/management/forms.py:472 patents/management/forms.py:84
 #: phd/management/forms.py:34 phd/management/forms.py:43
-#: projects/management/forms.py:58 projects/management/forms.py:65
+#: projects/management/forms.py:59 projects/management/forms.py:66
 msgid "Name and Surname"
 msgstr "Nome e Cognome"
 
@@ -2190,14 +2190,14 @@ msgid "Structure type"
 msgstr "Tipo di struttura"
 
 #: generics/templates/blocks/crud_addressbook.html:67
-#: projects/management/forms.py:70 projects/management/views.py:632
+#: projects/management/forms.py:71 projects/management/views.py:632
 #: projects/templates/blocks/crud_projects.html:140
 #: research_groups/templates/researchgroup.html:72
 msgid "Structure"
 msgstr "Struttura"
 
 #: generics/templates/blocks/crud_addressbook.html:95
-#: laboratories/management/forms.py:369
+#: laboratories/management/forms.py:400
 msgid "Role"
 msgstr "Ruolo"
 
@@ -2403,8 +2403,8 @@ msgstr "Gestisci le imprese"
 #: research_lines/templates/base_researchline.html:64
 #: teachers/management/views.py:35 teachers/management/views.py:68
 #: teachers/management/views.py:142 teachers/management/views.py:206
-#: teachers/management/views.py:304 teachers/management/views.py:359
-#: teachers/management/views.py:445 teachers/management/views.py:505
+#: teachers/management/views.py:303 teachers/management/views.py:358
+#: teachers/management/views.py:444 teachers/management/views.py:504
 #: teachers/templates/teachers.html:9
 msgid "Teachers"
 msgstr "Docenti"
@@ -2578,9 +2578,9 @@ msgid "Upload file"
 msgstr "Carica documento"
 
 #: import_assistant/management/forms.py:20
-#: import_assistant/management/forms.py:35 laboratories/management/forms.py:412
+#: import_assistant/management/forms.py:35 laboratories/management/forms.py:443
 #: projects/templates/blocks/crud_projects.html:33
-#: research_lines/management/forms.py:25 research_lines/management/forms.py:47
+#: research_lines/management/forms.py:26 research_lines/management/forms.py:48
 msgid "Year"
 msgstr "Anno"
 
@@ -2809,7 +2809,7 @@ msgstr "Esempio"
 
 #: import_assistant/templates/blocks/import_assistant_cds_fields_table.html:20
 #: import_assistant/templates/blocks/import_assistant_regdid_structure_fields_table.html:20
-#: laboratories/management/forms.py:119
+#: laboratories/management/forms.py:150
 msgid "YES"
 msgstr "SI"
 
@@ -2939,8 +2939,8 @@ msgid ""
 "Validates and adds language entries (DidatticaCdsLingua) for the course, "
 "supporting 'ita' (Italian) and 'eng' (English)."
 msgstr ""
-"Valida e aggiunge lingue (DidatticaCdsLingua) per il corso. Supporta 'ita' "
-"(Italiano) and 'eng' (Inglese)."
+"Valida e aggiunge lingue (DidatticaCdsLingua) per il corso. Supporta "
+"'ita' (Italiano) and 'eng' (Inglese)."
 
 #: import_assistant/templates/blocks/import_assistant_cds_help_modal.html:98
 msgid "6. Course Linking:"
@@ -3075,43 +3075,67 @@ msgstr "Aggiornamento Struttura Regolamenti"
 msgid "Download current structure"
 msgstr "Scarica struttura corrente"
 
-#: laboratories/management/forms.py:38
+#: laboratories/management/forms.py:39
 msgid "Related Department"
 msgstr "Dipartimento di Riferimento"
 
-#: laboratories/management/forms.py:84
+#: laboratories/management/forms.py:91
 msgid "Acronym"
 msgstr "Acronimo"
 
-#: laboratories/management/forms.py:85
+#: laboratories/management/forms.py:92
 msgid "Link Laboratory Logo"
 msgstr "Link Logo Laboratorio"
 
-#: laboratories/management/forms.py:87
+#: laboratories/management/forms.py:94
 msgid "Other Structures"
 msgstr "Altre Strutture"
 
-#: laboratories/management/forms.py:89
+#: laboratories/management/forms.py:96
 msgid "Other Structures Description (it)"
 msgstr "Descrizione Altre Strutture (it)"
 
-#: laboratories/management/forms.py:92
+#: laboratories/management/forms.py:99
 msgid "Other Structures Description (en)"
 msgstr "Descrizione Altre Strutture (en)"
 
-#: laboratories/management/forms.py:99
+#: laboratories/management/forms.py:102
+msgid "Purposes - services (it)"
+msgstr "Finalità - servizi (it)"
+
+#: laboratories/management/forms.py:105
+msgid "Purposes - services (en)"
+msgstr "Finalità - servizi (en)"
+
+#: laboratories/management/forms.py:108
+msgid "Purposes - research (it)"
+msgstr "Finalità - ricerca (it)"
+
+#: laboratories/management/forms.py:111
+msgid "Purposes - research (en)"
+msgstr "Finalità - ricerca (en)"
+
+#: laboratories/management/forms.py:114
+msgid "Purposes - educational (it)"
+msgstr "Finalità - didattica (it)"
+
+#: laboratories/management/forms.py:117
+msgid "Purposes - educational (en)"
+msgstr "Finalità - didattica (en)"
+
+#: laboratories/management/forms.py:124
 msgid "Reference Infrastrucure"
 msgstr "Infrastruttura di riferimento"
 
-#: laboratories/management/forms.py:100
+#: laboratories/management/forms.py:125
 msgid "Website"
 msgstr "Sito Web"
 
-#: laboratories/management/forms.py:118 laboratories/management/forms.py:129
+#: laboratories/management/forms.py:149 laboratories/management/forms.py:160
 msgid "Interdepartmental Laboratory"
 msgstr "Laboratorio Interdipartimentale"
 
-#: laboratories/management/forms.py:121
+#: laboratories/management/forms.py:152
 msgid ""
 "Extra departments selection is available only after selecting 'YES' and then "
 "saving"
@@ -3119,138 +3143,138 @@ msgstr ""
 "La selezione di altri dipartimenti è disponibile dopo aver selezionato 'SI' "
 "e salvato"
 
-#: laboratories/management/forms.py:136
+#: laboratories/management/forms.py:167
 msgid "Total square meters"
 msgstr "Metri quadri complessivi"
 
-#: laboratories/management/forms.py:138
+#: laboratories/management/forms.py:169
 msgid "Any addition to the provided data"
 msgstr "Eventuali integrazioni ai dati inseriti"
 
-#: laboratories/management/forms.py:141
+#: laboratories/management/forms.py:172
 msgid "Public-use text (detail list below)"
 msgstr "Testo ad uso pubblico (elenco dettagliato nel seguito)"
 
-#: laboratories/management/forms.py:152
+#: laboratories/management/forms.py:183
 msgid "Office - Overall Dimensions"
 msgstr "Sede - Dimensioni Complessive"
 
-#: laboratories/management/forms.py:153
+#: laboratories/management/forms.py:184
 msgid "Office - Description Notes"
 msgstr "Sede - Note Descrittive"
 
-#: laboratories/management/forms.py:154
+#: laboratories/management/forms.py:185
 msgid "Equipment - Description"
 msgstr "Strumentazione - Descrizione"
 
-#: laboratories/management/forms.py:175
+#: laboratories/management/forms.py:206
 msgid "Equipment - Overall Value"
 msgstr "Strumentazione - Valore Complessivo"
 
-#: laboratories/management/forms.py:189
+#: laboratories/management/forms.py:220
 msgid "Areas"
 msgstr "Ambito del laboratorio"
 
-#: laboratories/management/forms.py:195
+#: laboratories/management/forms.py:226
 msgid "Scope"
 msgstr "Ambito"
 
-#: laboratories/management/forms.py:214 laboratories/management/views.py:853
+#: laboratories/management/forms.py:245 laboratories/management/views.py:853
 #: laboratories/management/views.py:865
 #: laboratories/templates/laboratory.html:529
 msgid "Scientific Director"
 msgstr "Responsabile Scientifico"
 
-#: laboratories/management/forms.py:228 laboratories/management/views.py:967
+#: laboratories/management/forms.py:259 laboratories/management/views.py:967
 #: laboratories/management/views.py:979
 #: laboratories/templates/laboratory.html:1161
 msgid "Safety Manager"
 msgstr "Preposto Sicurezza"
 
-#: laboratories/management/forms.py:257
+#: laboratories/management/forms.py:288
 #: laboratories/templates/laboratory.html:895
 msgid "Unit Cost"
 msgstr "Costo Unitario"
 
-#: laboratories/management/forms.py:259
+#: laboratories/management/forms.py:290
 #: laboratories/templates/laboratory.html:896
 msgid "Quantity"
 msgstr "Quantità"
 
-#: laboratories/management/forms.py:275
+#: laboratories/management/forms.py:306
 msgid "Funds"
 msgstr "Fondi"
 
-#: laboratories/management/forms.py:290 laboratories/management/forms.py:471
+#: laboratories/management/forms.py:321 laboratories/management/forms.py:502
 msgid "Risk Types"
 msgstr "Tipologie Rischio"
 
-#: laboratories/management/forms.py:316
+#: laboratories/management/forms.py:347
 #: laboratories/templates/laboratory.html:495
 msgid "ERC Classification"
 msgstr "Classificazione ERC"
 
-#: laboratories/management/forms.py:320
+#: laboratories/management/forms.py:351
 msgid "ERC Classification - Life Science"
 msgstr "Classificazione ERC - Life Science"
 
-#: laboratories/management/forms.py:327
+#: laboratories/management/forms.py:358
 msgid "ERC Classification - Physical Sciences and Engineering"
 msgstr "Classificazione ERC - Physical Sciences and Engineering"
 
-#: laboratories/management/forms.py:334
+#: laboratories/management/forms.py:365
 msgid "ERC Classification - Social Sciences and Humanities"
 msgstr "Classificazione ERC - Social Sciences and Humanities"
 
-#: laboratories/management/forms.py:346 laboratories/management/forms.py:357
+#: laboratories/management/forms.py:377 laboratories/management/forms.py:388
 msgid "Main Location"
 msgstr "Sede Principale"
 
-#: laboratories/management/forms.py:355
+#: laboratories/management/forms.py:386
 #: laboratories/templates/laboratory.html:717
 msgid "Building"
 msgstr "Edificio"
 
-#: laboratories/management/forms.py:356
+#: laboratories/management/forms.py:387
 #: laboratories/templates/laboratory.html:718
 msgid "Floor"
 msgstr "Piano"
 
-#: laboratories/management/forms.py:358
+#: laboratories/management/forms.py:389
 #: laboratories/templates/laboratory.html:719 regdid/management/forms.py:62
 #: regdid/templates/blocks/regdid_article_item.html:28
 msgid "Notes"
 msgstr "Note"
 
-#: laboratories/management/forms.py:372
+#: laboratories/management/forms.py:403
 msgid "Commitment %"
 msgstr "Impegno %"
 
-#: laboratories/management/forms.py:387
+#: laboratories/management/forms.py:418
 msgid "Activity Type"
 msgstr "Tipo Attività"
 
-#: laboratories/management/forms.py:398
-msgid "Purpouse (it)"
+#: laboratories/management/forms.py:429
+msgid "Purposes (it)"
 msgstr "Finalità (it)"
 
-#: laboratories/management/forms.py:399
-msgid "Purpouse (en)"
+#: laboratories/management/forms.py:430
+msgid "Purposes (en)"
 msgstr "Finalità (en)"
 
-#: laboratories/management/forms.py:415 laboratories/management/forms.py:432
+#: laboratories/management/forms.py:446 laboratories/management/forms.py:463
 msgid "Monetary Amount (Euros)"
 msgstr "Importo (EURO)"
 
-#: laboratories/management/forms.py:418 laboratories/management/forms.py:431
+#: laboratories/management/forms.py:449 laboratories/management/forms.py:462
 msgid "Duration (Months)"
 msgstr "Durata (mesi)"
 
-#: laboratories/management/forms.py:430
+#: laboratories/management/forms.py:461
 msgid "Client"
 msgstr "Committente"
 
-#: laboratories/management/forms.py:433 laboratories/management/views.py:1248
+#: laboratories/management/forms.py:464 laboratories/management/views.py:1248
 #: laboratories/management/views.py:1422
 msgid "Equipment"
 msgstr "Attrezzatura"
@@ -3673,7 +3697,7 @@ msgid "Do you want to delete this department?"
 msgstr "Vuoi davvero eliminare il dipartimento selezionato?"
 
 #: laboratories/templates/laboratory.html:343
-msgid "Type and Purpouses"
+msgid "Type and Purposes"
 msgstr "Tipologia e Finalità"
 
 #: laboratories/templates/laboratory.html:462
@@ -3795,73 +3819,73 @@ msgid "Unable to make changes. {user} is currently editing this item"
 msgstr ""
 "Impossibile effettuare modifiche. {user} sta modificando questo elemento"
 
-#: patents/management/forms.py:12
+#: patents/management/forms.py:13
 msgid "Patent identifier"
 msgstr "Identificativo brevetto"
 
-#: patents/management/forms.py:13 projects/management/forms.py:27
+#: patents/management/forms.py:14 projects/management/forms.py:28
 #: teachers/templates/blocks/crud_teacher_books.html:41
 #: teachers/templates/blocks/crud_teacher_news.html:41
 msgid "Title"
 msgstr "Titolo"
 
-#: patents/management/forms.py:14 projects/management/forms.py:32
+#: patents/management/forms.py:15 projects/management/forms.py:33
 msgid "Short description"
 msgstr "Breve descrizione"
 
-#: patents/management/forms.py:15
+#: patents/management/forms.py:16
 msgid "Tech area"
 msgstr "Area tecnologica"
 
-#: patents/management/forms.py:16
+#: patents/management/forms.py:17
 msgid "URL Knowledge Share"
 msgstr ""
 
-#: patents/management/forms.py:17
+#: patents/management/forms.py:18
 msgid "Applications"
 msgstr "Applicazioni"
 
-#: patents/management/forms.py:18
+#: patents/management/forms.py:19
 msgid "Advantages"
 msgstr "Vantaggi"
 
-#: patents/management/forms.py:19
+#: patents/management/forms.py:20
 msgid "Initial TRL"
 msgstr "TRL Iniziale"
 
-#: patents/management/forms.py:20
+#: patents/management/forms.py:21
 msgid "Updated TRL"
 msgstr "TRL aggiornato"
 
-#: patents/management/forms.py:21
+#: patents/management/forms.py:22
 msgid "Enhancement"
 msgstr "Valorizzazione"
 
-#: patents/management/forms.py:22
+#: patents/management/forms.py:23
 msgid "Property"
 msgstr "Proprietà"
 
-#: patents/management/forms.py:23
+#: patents/management/forms.py:24
 msgid "Legal status"
 msgstr "Status legale"
 
-#: patents/management/forms.py:24
+#: patents/management/forms.py:25
 msgid "Date"
 msgstr "Data"
 
-#: patents/management/forms.py:25
+#: patents/management/forms.py:26
 msgid "Territory"
 msgstr "Territorio"
 
-#: patents/management/forms.py:26
+#: patents/management/forms.py:27
 msgid "Commercial right"
 msgstr "Diritto commerciale"
 
-#: patents/management/forms.py:27
+#: patents/management/forms.py:28
 msgid "Availability"
 msgstr "Disponibilità"
 
-#: patents/management/forms.py:28
+#: patents/management/forms.py:29
 msgid "Area KS"
 msgstr ""
 
@@ -3942,8 +3966,8 @@ msgid "Reference PhD required if activity type is Departmental"
 msgstr ""
 "Dottorato di riferimento obbligatorio se l'attività è di tipo Dipartimentale"
 
-#: phd/management/forms.py:111 research_lines/management/forms.py:23
-#: research_lines/management/forms.py:45
+#: phd/management/forms.py:111 research_lines/management/forms.py:24
+#: research_lines/management/forms.py:46
 msgid "Denomination"
 msgstr "Denominazione"
 
@@ -4036,7 +4060,7 @@ msgid "PhD activity removed successfully"
 msgstr "Attività del dottorato rimossa con successo"
 
 #: phd/templates/blocks/crud_phd_list.html:50
-#: research_lines/management/forms.py:58
+#: research_lines/management/forms.py:59
 msgid "Teacher"
 msgstr "Docente"
 
@@ -4091,35 +4115,35 @@ msgstr "Modifica dati per"
 msgid "New teacher data for"
 msgstr "Nuovi dati per"
 
-#: projects/management/forms.py:28
+#: projects/management/forms.py:29
 msgid "Start year"
 msgstr "Anno di inizio"
 
-#: projects/management/forms.py:29
+#: projects/management/forms.py:30
 msgid "Territorial scope"
 msgstr "Ambito territoriale"
 
-#: projects/management/forms.py:30
+#: projects/management/forms.py:31
 msgid "Program type"
 msgstr "Programma"
 
-#: projects/management/forms.py:33
+#: projects/management/forms.py:34
 msgid "Image URL"
 msgstr "URL immagine"
 
-#: projects/management/forms.py:34
+#: projects/management/forms.py:35
 msgid "Abstract (it)"
 msgstr ""
 
-#: projects/management/forms.py:35
+#: projects/management/forms.py:36
 msgid "Abstract (en)"
 msgstr ""
 
-#: projects/management/forms.py:37
+#: projects/management/forms.py:38
 msgid "Call"
 msgstr ""
 
-#: projects/management/forms.py:38
+#: projects/management/forms.py:39
 msgid "Organizational Unit"
 msgstr "Unità organizzativa"
 
@@ -4533,26 +4557,26 @@ msgstr ""
 "formattazione, sarà quindi necessario che ogni articolo venga riformattato a "
 "mano attraverso l'editor"
 
-#: research_groups/management/forms.py:15
+#: research_groups/management/forms.py:16
 msgid "ERC1"
 msgstr ""
 
-#: research_groups/management/forms.py:34
-#: research_groups/management/forms.py:35 research_lines/management/forms.py:67
-#: research_lines/management/forms.py:68 research_lines/management/forms.py:94
-#: research_lines/management/forms.py:95
+#: research_groups/management/forms.py:35
+#: research_groups/management/forms.py:36 research_lines/management/forms.py:68
+#: research_lines/management/forms.py:69 research_lines/management/forms.py:95
+#: research_lines/management/forms.py:96
 msgid "Start date is greater than end date"
 msgstr "La data di inizio è successiva alla data di fine"
 
-#: research_groups/management/forms.py:40
+#: research_groups/management/forms.py:41
 #: research_groups/templates/researchgroup.html:73
-#: research_lines/management/forms.py:74 research_lines/management/forms.py:101
+#: research_lines/management/forms.py:75 research_lines/management/forms.py:102
 msgid "From"
 msgstr "Dal"
 
-#: research_groups/management/forms.py:40
+#: research_groups/management/forms.py:41
 #: research_groups/templates/researchgroup.html:74
-#: research_lines/management/forms.py:75 research_lines/management/forms.py:102
+#: research_lines/management/forms.py:76 research_lines/management/forms.py:103
 msgid "To"
 msgstr "Al"
 
@@ -4603,15 +4627,15 @@ msgstr "Modifica docente per"
 msgid "New teacher for"
 msgstr "Nuovo docente per"
 
-#: research_lines/management/forms.py:24 research_lines/management/forms.py:46
+#: research_lines/management/forms.py:25 research_lines/management/forms.py:47
 msgid "Patent project description"
 msgstr "Descrizione progetto"
 
-#: research_lines/management/forms.py:26
+#: research_lines/management/forms.py:27
 msgid "ASTER2"
 msgstr "ASTER2"
 
-#: research_lines/management/forms.py:48
+#: research_lines/management/forms.py:49
 msgid "ERC2"
 msgstr ""
 
@@ -4695,27 +4719,27 @@ msgstr "Foto"
 msgid "Please upload a square format photo"
 msgstr "Per favore carica una foto di formato quadrato"
 
-#: teachers/management/forms.py:88
+#: teachers/management/forms.py:97
 msgid "Type (it)"
 msgstr "Tipo (it)"
 
-#: teachers/management/forms.py:89
+#: teachers/management/forms.py:98
 msgid "Type (en)"
 msgstr "Tipo (en)"
 
-#: teachers/management/forms.py:94 teachers/management/forms.py:136
+#: teachers/management/forms.py:103 teachers/management/forms.py:152
 msgid "URL (it)"
 msgstr ""
 
-#: teachers/management/forms.py:95 teachers/management/forms.py:137
+#: teachers/management/forms.py:104 teachers/management/forms.py:153
 msgid "URL (en)"
 msgstr ""
 
-#: teachers/management/forms.py:96 teachers/management/forms.py:138
+#: teachers/management/forms.py:105 teachers/management/forms.py:154
 msgid "Valid from"
 msgstr "Valido dal"
 
-#: teachers/management/forms.py:97 teachers/management/forms.py:139
+#: teachers/management/forms.py:106 teachers/management/forms.py:155
 msgid "Valid until"
 msgstr "Valido fino al"
 
@@ -4739,43 +4763,43 @@ msgstr "Nuovo set di dati"
 msgid "Teachers other data removed successfully"
 msgstr "Dati rimossi con successo"
 
-#: teachers/management/views.py:291
+#: teachers/management/views.py:290
 msgid "Board data edited successfully"
 msgstr "Dati modificati con successo"
 
-#: teachers/management/views.py:306
+#: teachers/management/views.py:305
 msgid "Edit board data"
 msgstr "Modifica dati"
 
-#: teachers/management/views.py:345
+#: teachers/management/views.py:344
 msgid "Teacher board data set created successfully"
 msgstr "Dati creati con successo"
 
-#: teachers/management/views.py:361
+#: teachers/management/views.py:360
 msgid "New board data"
 msgstr "Nuovo contenuto"
 
-#: teachers/management/views.py:389
+#: teachers/management/views.py:388
 msgid "Teachers board data removed successfully"
 msgstr "Dati dashboard docente rimossi con successo"
 
-#: teachers/management/views.py:432
+#: teachers/management/views.py:431
 msgid "Teaching material data edited successfully"
 msgstr "Materiale modificato con successo"
 
-#: teachers/management/views.py:447
+#: teachers/management/views.py:446
 msgid "Teaching material data"
 msgstr "Materiale didattico"
 
-#: teachers/management/views.py:491
+#: teachers/management/views.py:490
 msgid "Teacher materials data set created successfully"
 msgstr "Dati creati con successo"
 
-#: teachers/management/views.py:507
+#: teachers/management/views.py:506
 msgid "New teaching material"
 msgstr "Nuovo elemento"
 
-#: teachers/management/views.py:548
+#: teachers/management/views.py:547
 msgid "Teachers materials data removed successfully"
 msgstr "Dati materiale docente rimossi con successo"
 

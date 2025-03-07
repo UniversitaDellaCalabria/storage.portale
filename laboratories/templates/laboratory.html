@@ -340,7 +340,7 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <h3 style="font-weight: normal;">{% trans "Type and Purpouses" %}</h3>
+            <h3 style="font-weight: normal;">{% trans "Type and Purposes" %}</h3>
             <hr />
             <!-- Activities -->
             <!-- Equipment value form -->
@@ -617,7 +617,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div> 
+            </div>
             {% if user_roles.superuser or user_roles.operator %}
             <a href="{% url 'laboratories:management:laboratory-research-staff-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
@@ -627,7 +627,7 @@
             {% endif %}
             <!-- /Research Staff -->
             <hr />
-            
+
             <!-- Technical Staff -->
             <h4 style="font-weight: lighter;">{% trans "Technical Staff" %}</h4>
             <div class="table-responsive">
@@ -786,7 +786,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div> 
+            </div>
             {% if user_roles.superuser or user_roles.operator %}
             <a href="{% url 'laboratories:management:laboratory-locations-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                 <svg class="icon icon-xs icon-white">
@@ -894,7 +894,7 @@
                                         <th>{% trans "Description" %}</th>
                                         <th>{% trans "Unit Cost" %}</th>
                                         <th>{% trans "Quantity" %}</th>
-                                        <th></th> 
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1138,7 +1138,7 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
-                        </div> 
+                        </div>
                         {% if user_roles.superuser or user_roles.operator %}
                         <a href="{% url 'laboratories:management:laboratory-provided-services-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
                             <svg class="icon icon-xs icon-white">
@@ -1171,7 +1171,7 @@
                                             <a href="{% url 'laboratories:management:laboratory-safety-manager-edit' laboratory_id=laboratory.pk %}" class="btn btn-primary btn-xs">
                                                 <svg class="icon icon-xs icon-white">
                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                                </svg> 
+                                                </svg>
                                                 {% trans "Edit" %}
                                             </a>
                                             {% endif %}
@@ -1195,7 +1195,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>
