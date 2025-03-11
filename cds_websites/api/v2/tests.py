@@ -30,7 +30,6 @@ class CdsWebsitesUnitTest(TestCase):
         
         # Topics
         swc_topic_1 = ApiCdsWebsitesUnitTestMethods.create_sitoWebCdsTopic()
-        swc_topic_2 = ApiCdsWebsitesUnitTestMethods.create_sitoWebCdsTopic(id=2, descr_topic_it="Topic 2", descr_topic_en="Topic 2")
         
         # Cds
         cds = ApiCdsWebsitesUnitTestMethods.create_didatticaCds()
@@ -224,7 +223,7 @@ class CdsWebsitesUnitTest(TestCase):
             if result["id"] >= 4:
                 self.assertEqual(result["type"], "Object") 
 
-            # self.assertIsNot(result["otherData"], []) if result["id"] in [1, 3, 4] else self.assertIs(result["otherData"], []) 
+            self.assertIsNot(result["otherData"], []) if result["id"] in [1, 3, 4] else self.assertIs(result["otherData"], []) 
             self.assertIsNot(result["visibile"], [])
             
     def test_apisitiwebcdsstudyplans(self):
