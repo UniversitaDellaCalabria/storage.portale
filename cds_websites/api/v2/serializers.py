@@ -126,7 +126,7 @@ class ArticlesTopicSerializer(ReadOnlyModelSerializer):
             {
                 "id": sotto.id,
                 "ordine": sotto.ordine,
-                "title": sotto.titolo_t
+                "title": sotto.titolo_it
                 if lang == "it" or sotto.titolo_en is None
                 else sotto.titolo_en,
                 "text": sotto.testo_it
@@ -186,7 +186,7 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
     @extend_schema_field(serializers.ListField())
     def get_planTabs(self, obj):
         lang = self.get_requestLang()
-        if obj["planTabs"] is not None:
+        if obj["PlanTabs"] is not None:
             return [
                 {
                     "id": q["sche_piano_id"],
@@ -247,7 +247,41 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
                                         for q in q.get("MODULES", [])
                                     ],
                                 }
-                                for q in q.get("required", [])
+                                for q in q.get("Required", [])
+                            ],
+                            "choices": [
+                                {
+                                    "scopeId": q["amb_id_af"],
+                                    "sceId": q["sce_id"],
+                                    "sceDes": q["sce_id__sce_des"],
+                                    "scopeDes": q["ambito_des_af"],
+                                    "settCod": q.get("sett_cod", None),
+                                    "creditValue": q["peso"],
+                                    "cycleDes": q["ciclo_des"],
+                                    "afDescription": q["af_gen_des"],
+                                    "afId": q["af_id"],
+                                    "afCod": q["af_gen_cod"],
+                                    "afType": q["tipo_af_des_af"],
+                                    "afScope": q["ambito_des_af"],
+                                    "afSubModules": [
+                                        {
+                                            "id": q["af_id"],
+                                            "cod": q["af_gen_cod"],
+                                            "name": q["des"]
+                                            if lang == "it" or q["af_gen_des_eng"] is None
+                                            else q["af_gen_des_eng"],
+                                            "semester": q["ciclo_des"],
+                                            "sttCod": q.get("sett_cod", None),
+                                            "creditValue": q["peso"],
+                                            "partitionCod": q["part_stu_cod"],
+                                            "partitionDescription": q["part_stu_des"],
+                                            "extendedPartitionCod": q["fat_part_stu_cod"],
+                                            "extendedPartitionDes": q["fat_part_stu_des"],
+                                        }
+                                        for q in q.get("MODULES", [])
+                                    ],
+                                }
+                                for q in q.get("Required", [])
                             ],
                             "filAnd": [
                                 {
@@ -263,13 +297,13 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
                                     "cdsSceFilAndNome": q["cds_sce_fil_and_nome"],
                                     "notFlg": q["not_flg"],
                                 }
-                                for q in q.get("filAnd", [])
+                                for q in q.get("FilAnd", [])
                             ],
                         }
-                        for q in q.get("afRequired", []) 
+                        for q in q.get("AfRequired", []) 
                     ],                       
                 }
-                for q in obj["planTabs"]
+                for q in obj["PlanTabs"]
             ]
                 
 
