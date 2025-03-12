@@ -8,7 +8,6 @@ from rest_framework import serializers
 from generics.api.serializers import ReadOnlyModelSerializer
 from companies.models import (
     SpinoffStartupDatiBase,
-    SpinoffStartupDipartimento,
     TipologiaAreaTecnologica,
 )
 from generics.utils import build_media_path, encrypt
@@ -62,7 +61,7 @@ class TechAreaSerializer(ReadOnlyModelSerializer):
     description = serializers.CharField(source="descr_area_ita")
 
     class Meta:
-        model = SpinoffStartupDatiBase
+        model = TipologiaAreaTecnologica
         fields = [
             "id",
             "description",
