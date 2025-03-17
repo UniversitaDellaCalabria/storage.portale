@@ -1,11 +1,11 @@
 from django_filters.rest_framework import DjangoFilterBackend
-# from drf_spectacular.utils import (
-#     OpenApiParameter,
-#     extend_schema,
-#     extend_schema_view,
-# )
-# from .docs import descriptions
-# from api_docs import responses
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    extend_schema,
+    extend_schema_view,
+)
+from .docs import descriptions
+from api_docs import responses
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from rest_framework.pagination import PageNumberPagination
@@ -17,7 +17,18 @@ from patents.settings import OFFICE_PATENTS
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.PATENTS_LIST_SUMMARY,
+        description=descriptions.PATENTS_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(PatentsSerializer(many=True)),
+    ),
+    retrieve=extend_schema(
+        summary=descriptions.PATENTS_RETRIEVE_SUMMARY,
+        description=descriptions.PATENTS_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(PatentsSerializer),
+    ),
+)
 class PatentsViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]

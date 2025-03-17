@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-# from .docs import examples
-# from drf_spectacular.utils import (
-#     extend_schema_field,
-#     extend_schema_serializer,
-# )
+from .docs import examples
+from drf_spectacular.utils import (
+    extend_schema_field,
+    extend_schema_serializer,
+)
 from generics.api.serializers import ReadOnlyModelSerializer
 from projects.models import (
     ProgettoAmbitoTerritoriale,
@@ -13,7 +13,7 @@ from projects.models import (
 )
 from generics.utils import encrypt
 
-
+@extend_schema_serializer(examples=examples.PROJECTS_SERIALIZER_EXAMPLE)
 class ProjectsSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     startingYear = serializers.IntegerField(source="anno_avvio")
@@ -33,7 +33,7 @@ class ProjectsSerializer(ReadOnlyModelSerializer):
     researchers = serializers.SerializerMethodField()
     isActive = serializers.BooleanField(source="is_active")
 
-
+    @extend_schema_field(serializers.ListField())
     def get_scientificDirectors(self, obj):
         return [
                 {
@@ -43,6 +43,7 @@ class ProjectsSerializer(ReadOnlyModelSerializer):
                 for r in obj.responsabili
             ]
 
+    @extend_schema_field(serializers.ListField())
     def get_researchers(self, obj):
         return [
             {
@@ -79,7 +80,7 @@ class ProjectsSerializer(ReadOnlyModelSerializer):
             "techAreaDescription": {"it": "area_tecnologica.descr_area_ita", "en": "area_tecnologica.descr_area_eng"},
         }
         
-
+@extend_schema_serializer(examples=examples.TERRITORIAL_SCOPES_SERIALIZER_EXAMPLE)
 class TerritorialScopesSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     description = serializers.CharField(source="ambito_territoriale")
@@ -89,7 +90,8 @@ class TerritorialScopesSerializer(ReadOnlyModelSerializer):
             "id",
             "description",
         ]
-        
+      
+@extend_schema_serializer(examples=examples.PROGRAM_TYPES_SERIALIZER_EXAMPLE)        
 class ProgramTypesSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     description = serializers.CharField(source="nome_programma")
@@ -100,6 +102,7 @@ class ProgramTypesSerializer(ReadOnlyModelSerializer):
             "description",
         ]
         
+@extend_schema_serializer(examples=examples.INFRASTRUCTURES_SERIALIZER_EXAMPLE)        
 class InfrastructuresSerializer(ReadOnlyModelSerializer):
     id = serializers.CharField(source="uo")
     description = serializers.CharField(source="uo__denominazione")

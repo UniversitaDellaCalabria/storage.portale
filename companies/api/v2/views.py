@@ -1,11 +1,10 @@
 from django_filters.rest_framework import DjangoFilterBackend
-# from drf_spectacular.utils import (
-#     OpenApiParameter,
-#     extend_schema,
-#     extend_schema_view,
-# )
-# from .docs import descriptions
-# from api_docs import responses
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+)
+from .docs import descriptions
+from api_docs import responses
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from rest_framework.pagination import PageNumberPagination
@@ -25,7 +24,18 @@ from django.db.models import Q
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from companies.settings import OFFICE_COMPANIES
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.COMPANIES_LIST_SUMMARY,
+        description=descriptions.COMPANIES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(CompaniesSerializer(many=True)),
+    ),
+    retrieve=extend_schema(
+        summary=descriptions.COMPANIES_RETRIEVE_SUMMARY,
+        description=descriptions.COMPANIES_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(CompaniesSerializer),
+    ),
+)
 class CompaniesViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -125,6 +135,13 @@ class CompaniesViewSet(ReadOnlyModelViewSet):
 
             return query
         
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.TECH_AREA_LIST_SUMMARY,
+        description=descriptions.TECH_AREA_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(TechAreaSerializer(many=True)),
+    )
+)
 class TechAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]

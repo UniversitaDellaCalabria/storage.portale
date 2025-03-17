@@ -9,7 +9,6 @@ from django.db.models import (
 )
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
-    OpenApiParameter,
     extend_schema,
     extend_schema_view,
 )

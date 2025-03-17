@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-# from .docs import examples
-# from drf_spectacular.utils import (
-#     extend_schema_field,
-#     extend_schema_serializer,
-# )
+from .docs import examples
+from drf_spectacular.utils import (
+    extend_schema_field,
+    extend_schema_serializer,
+)
 from generics.api.serializers import ReadOnlyModelSerializer
 from companies.models import (
     SpinoffStartupDatiBase,
@@ -12,7 +12,7 @@ from companies.models import (
 )
 from generics.utils import build_media_path, encrypt
 
-
+@extend_schema_serializer(examples=examples.COMPANIES_SERIALIZER_EXAMPLE)
 class CompaniesSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     PIva = serializers.CharField(source="piva")
@@ -28,9 +28,11 @@ class CompaniesSerializer(ReadOnlyModelSerializer):
     isStartup = serializers.BooleanField(source="is_startup")
     isActive = serializers.BooleanField(source="is_active")
 
+    @extend_schema_field(serializers.CharField())
     def get_image(self, obj):
         return build_media_path(obj["nome_file_logo"])
     
+    @extend_schema_field(serializers.CharField())
     def get_unicalReferentId(self, obj):
         return encrypt(obj["matricola_referente_unical"])
     
@@ -56,6 +58,7 @@ class CompaniesSerializer(ReadOnlyModelSerializer):
             "techAreaDescription": {"it": "area_tecnologica__descr_area_ita", "en": "area_tecnologica__descr_area_eng"}
         }
         
+@extend_schema_serializer(examples=examples.TECH_AREA_SERIALIZER_EXAMPLE)        
 class TechAreaSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     description = serializers.CharField(source="descr_area_ita")
