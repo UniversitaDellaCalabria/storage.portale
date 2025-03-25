@@ -1220,7 +1220,9 @@ def regdid_articles_pdf(request, regdid_id):
     response["Content-Disposition"] = f"attachment; filename={pdf_file_name}.pdf"
     template = render(request, "regdid_generate_pdf.html", context)
     html_src_b = template.getvalue()
-
+    pattern = r"<li><p.*?>(.*?)<\/p>(<(ol|ul)>)".encode('utf-8')
+    substitute = r"<li>\1\2".encode('utf-8')
+    html_src_b = re.sub(pattern, substitute, html_src_b)
     pisa.CreatePDF(html_src_b, dest=response, link_callback=fetch_resources)
     return response
 
