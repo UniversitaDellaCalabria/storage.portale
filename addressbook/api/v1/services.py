@@ -118,7 +118,7 @@ class ServicePersonale:
         for p in priorita_tmp:
             priorita.update({p["cd_ruolo"]: p["priorita"]})
 
-        already_taken_contacts = []
+        already_taken_contacts = {}
         for q in query:
             if q["id_ab"] not in grouped:
                 grouped[q["id_ab"]] = {
@@ -138,6 +138,8 @@ class ServicePersonale:
                     "ds_profilo_breve": q["ds_profilo_breve"],
                     "Roles": [],
                 }
+                already_taken_contacts[q["id_ab"]] = []
+
                 for c in PERSON_CONTACTS_TO_TAKE:
                     grouped[q["id_ab"]][c] = []
 
@@ -154,12 +156,12 @@ class ServicePersonale:
                     if (
                         not bool(res)
                         and f'{q["personalecontatti__cd_tipo_cont__descr_contatto"].lower()}-{q["personalecontatti__contatto"].lower()}'
-                        not in already_taken_contacts
+                        not in already_taken_contacts[q["id_ab"]]
                     ):
                         grouped[q["id_ab"]][
                             q["personalecontatti__cd_tipo_cont__descr_contatto"]
                         ].append(q["personalecontatti__contatto"])
-                        already_taken_contacts.append(
+                        already_taken_contacts[q["id_ab"]].append(
                             f'{q["personalecontatti__cd_tipo_cont__descr_contatto"].lower()}-{q["personalecontatti__contatto"].lower()}'
                         )
 
