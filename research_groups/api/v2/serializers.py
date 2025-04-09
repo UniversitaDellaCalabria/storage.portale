@@ -9,8 +9,8 @@ from generics.utils import encrypt
 from research_groups.models import RicercaGruppo
 
 class ResearchGroupsSerializer(serializers.ModelSerializer):
-    cod_erc1 = serializers.CharField(source="ricerca_erc1.cod_erc1", allow_null=True)
-    descrizione_erc1 = serializers.CharField(source="ricerca_erc1.descrizione", allow_null=True)
+    codErc1 = serializers.CharField(source="ricerca_erc1.cod_erc1", allow_null=True)
+    descrizioneErc1 = serializers.CharField(source="ricerca_erc1.descrizione", allow_null=True)
     teachers = serializers.SerializerMethodField()
 
     class Meta:
@@ -19,8 +19,8 @@ class ResearchGroupsSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
-            "cod_erc1",
-            "descrizione_erc1",
+            "codErc1",
+            "descrizioneErc1",
             "teachers"
         ]
 
