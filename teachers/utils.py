@@ -20,17 +20,18 @@ def can_manage_teacher(user, teacher_code):
         return True
 
     # se l'utente è il docente stesso
-    my_profile = Personale.objects.filter(cod_fis=user.taxpayer_id).first()
-    my_teacher_profile = teachers.api.v1.services.ServiceDocente.getDocenteInfo(
-        teacher=my_profile.matricola, use_this_id=True
-    )
-
-    if (
-        my_profile
-        and teacher
-        and my_teacher_profile[0]["matricola"] == teacher.matricola
-    ):
+    if teacher.cod_fis == user.taxpayer_id:
         return True
+    # ~ my_profile = Personale.objects.filter(cod_fis=user.taxpayer_id).first()
+    # ~ my_teacher_profile = teachers.api.v1.services.ServiceDocente.getDocenteInfo(
+        # ~ teacher=my_profile.matricola, use_this_id=True
+    # ~ )
+
+    # ~ if (
+        # ~ my_profile
+        # ~ and teacher
+        # ~ and my_teacher_profile[0]["matricola"] == teacher.matricola
+    # ~ ):
 
     # se l'utente ha l'abilitazione nel dipartimento di afferenza del docente
     my_offices = OrganizationalStructureOfficeEmployee.objects.filter(

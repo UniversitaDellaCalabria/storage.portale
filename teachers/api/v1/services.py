@@ -996,6 +996,16 @@ class ServiceDocente:
     def getDocenteMaterials(user, teacher, search=None):
         teacher = get_personale_matricola(teacher)
 
+        query = Personale.objects.filter(
+            Q(fl_docente=1, flg_cessato=0)
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+            matricola=teacher,
+        ).distinct()
+
+        if not query.exists():
+            raise Http404
+
         query_search = Q()
         query_is_active = Q(attivo=True)
         query_is_started = Q(dt_inizio_validita__isnull=True) | Q(
@@ -1043,6 +1053,16 @@ class ServiceDocente:
     @staticmethod
     def getDocenteNews(user, teacher, search=None):
         teacher = get_personale_matricola(teacher)
+
+        query = Personale.objects.filter(
+            Q(fl_docente=1, flg_cessato=0)
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+            matricola=teacher,
+        ).distinct()
+
+        if not query.exists():
+            raise Http404
 
         query_search = Q()
         query_is_active = Q(attivo=True)
