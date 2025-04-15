@@ -1,5 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from .views import (
+    LaboratoriesViewSet,
     LaboratoriesAreaViewSet, 
     LaboratoriesScopesViewSet, 
     InfrastructuresViewSet, 

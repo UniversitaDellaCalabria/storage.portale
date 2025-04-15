@@ -2,8 +2,6 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 from generics.utils import decrypt
 from research_lines.models import (
-    RicercaDocenteLineaApplicata,
-    RicercaDocenteLineaBase,
     RicercaLineaApplicata,
     RicercaLineaBase,
 )
