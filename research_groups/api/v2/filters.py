@@ -3,6 +3,7 @@ from django_filters import rest_framework as filters
 from generics.utils import decrypt
 from research_groups.models import RicercaGruppo
 
+
 class ResearchGroupsFilter(filters.FilterSet):
     search = filters.CharFilter(
         method="filter_search",
@@ -26,14 +27,13 @@ class ResearchGroupsFilter(filters.FilterSet):
         label="Department code",
         help_text="Codice del dipartimento (sede del docente).",
     )
-    
+
     def filter_cod(self, queryset, name, value):
         if value:
             cod_list = [v.strip() for v in value.split(",") if v.strip()]
             if cod_list:
                 return queryset.filter(ricerca_erc1__cod_erc1__in=cod_list)
         return queryset
-
 
     def filter_search(self, queryset, name, value):
         query_search = Q()

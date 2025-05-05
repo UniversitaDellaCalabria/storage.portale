@@ -1,5 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from .views import ResearchGroupsViewSet
+
 app_name = "apiv2"
 
 router = DefaultRouter()

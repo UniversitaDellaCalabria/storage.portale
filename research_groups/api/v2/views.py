@@ -1,23 +1,25 @@
 from django_filters.rest_framework import DjangoFilterBackend
-# from drf_spectacular.utils import (
-#     extend_schema,
-#     extend_schema_view,
-# )
-# from .docs import descriptions
-# from api_docs import responses
-
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+)
+from .docs import descriptions
+from api_docs import responses
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
-
 from .filters import ResearchGroupsFilter
-
-from .serializers import (
-    ResearchGroupsSerializer
-)
+from .serializers import ResearchGroupsSerializer
 from django.db.models import Prefetch
 from research_groups.models import RicercaGruppo, RicercaDocenteGruppo
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.RESEARCHGROUP_LIST_SUMMARY,
+        description=descriptions.RESEARCHGROUP_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(ResearchGroupsSerializer(many=True)),
+    ),
+)
 class ResearchGroupsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -30,14 +32,16 @@ class ResearchGroupsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             .prefetch_related(
                 Prefetch(
                     "ricercadocentegruppo_set",
-                    queryset=RicercaDocenteGruppo.objects.select_related("personale").only(
+                    queryset=RicercaDocenteGruppo.objects.select_related(
+                        "personale"
+                    ).only(
                         "personale__matricola",
                         "personale__cognome",
                         "personale__nome",
                         "personale__middle_name",
                         "personale__sede",
                         "personale__ds_sede",
-                    )
+                    ),
                 )
             )
             .select_related("ricerca_erc1")
