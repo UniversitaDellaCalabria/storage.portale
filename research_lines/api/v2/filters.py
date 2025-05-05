@@ -6,13 +6,14 @@ from research_lines.models import (
     RicercaLineaBase,
 )
 
+
 class BaseResearchLinesFilter(filters.FilterSet):
     search = filters.CharFilter(
         method="filter_search",
         label="Search",
         help_text="Search for research groups.",
     )
-    
+
     year = filters.CharFilter(
         field_name="anno",
         lookup_expr="exact",
@@ -39,7 +40,6 @@ class BaseResearchLinesFilter(filters.FilterSet):
                 q_descrizione = Q(descrizione__icontains=k)
                 query_search &= q_descrizione
         return queryset.filter(query_search).distinct()
-
 
     def filter_teacher_department(self, queryset, name, value):
         teacher = self.data.get("teacher")
@@ -68,13 +68,14 @@ class BaseResearchLinesFilter(filters.FilterSet):
         model = RicercaLineaBase
         fields = []
 
+
 class AppliedResearchLinesFilter(filters.FilterSet):
     search = filters.CharFilter(
         method="filter_search",
         label="Search",
         help_text="Search for research groups.",
     )
-    
+
     year = filters.CharFilter(
         field_name="anno",
         lookup_expr="exact",
@@ -101,7 +102,6 @@ class AppliedResearchLinesFilter(filters.FilterSet):
                 q_descrizione = Q(descrizione__icontains=k)
                 query_search &= q_descrizione
         return queryset.filter(query_search).distinct()
-
 
     def filter_teacher_department(self, queryset, name, value):
         teacher = self.data.get("teacher")

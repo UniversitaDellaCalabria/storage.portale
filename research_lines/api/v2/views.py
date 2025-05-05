@@ -1,23 +1,17 @@
 from django_filters.rest_framework import DjangoFilterBackend
-# from drf_spectacular.utils import (
-#     extend_schema,
-#     extend_schema_view,
-# )
-# from .docs import descriptions
-# from api_docs import responses
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+)
+from .docs import descriptions
+from api_docs import responses
 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
 
-from .filters import (
-    BaseResearchLinesFilter,
-    AppliedResearchLinesFilter
-    )
+from .filters import BaseResearchLinesFilter, AppliedResearchLinesFilter
 
-from .serializers import (
-    BaseResearchLinesSerializer,
-    AppliedResearchLinessSerializer
-)
+from .serializers import BaseResearchLinesSerializer, AppliedResearchLinessSerializer
 from django.db.models import Prefetch, Q
 from research_lines.models import (
     RicercaDocenteLineaApplicata,
@@ -29,6 +23,14 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 from research_lines.settings import OFFICE_RESEARCH_LINES
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.BASE_RESEARCH_LINES_LIST_SUMMARY,
+        responses=responses.COMMON_LIST_RESPONSES(
+            BaseResearchLinesSerializer(many=True)
+        ),
+    ),
+)
 class BaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -48,23 +50,25 @@ class BaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             )
             if my_offices.exists():
                 only_active = False
-                
+
         query_is_active = Q(visibile=True) if only_active else Q()
-                
+
         return (
             RicercaLineaBase.objects.filter(query_is_active)
             .order_by("descrizione")
             .prefetch_related(
                 Prefetch(
                     "ricercadocentelineabase_set",
-                    queryset=RicercaDocenteLineaBase.objects.select_related("personale").only(
+                    queryset=RicercaDocenteLineaBase.objects.select_related(
+                        "personale"
+                    ).only(
                         "personale__matricola",
                         "personale__cognome",
                         "personale__nome",
                         "personale__middle_name",
                         "personale__sede",
                         "personale__ds_sede",
-                    )
+                    ),
                 )
             )
             .select_related("ricerca_erc2")
@@ -81,6 +85,14 @@ class BaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.APPLIED_RESEARCH_LINES_LIST_SUMMARY,
+        responses=responses.COMMON_LIST_RESPONSES(
+            AppliedResearchLinessSerializer(many=True)
+        ),
+    ),
+)
 class AppliedResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -100,23 +112,25 @@ class AppliedResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet
             )
             if my_offices.exists():
                 only_active = False
-                
+
         query_is_active = Q(visibile=True) if only_active else Q()
-                
+
         return (
             RicercaLineaApplicata.objects.filter(query_is_active)
             .order_by("descrizione")
             .prefetch_related(
                 Prefetch(
                     "ricercadocentelineaapplicata_set",
-                    queryset=RicercaDocenteLineaApplicata.objects.select_related("personale").only(
+                    queryset=RicercaDocenteLineaApplicata.objects.select_related(
+                        "personale"
+                    ).only(
                         "personale__matricola",
                         "personale__cognome",
                         "personale__nome",
                         "personale__middle_name",
                         "personale__sede",
                         "personale__ds_sede",
-                    )
+                    ),
                 )
             )
             .select_related("ricerca_aster2")
@@ -131,4 +145,3 @@ class AppliedResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet
             )
             .distinct()
         )
-
