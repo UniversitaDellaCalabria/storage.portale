@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-# from .docs import examples
-# from drf_spectacular.utils import (
-#     extend_schema_field,
-#     extend_schema_serializer,
-# )
+from .docs import examples
+from drf_spectacular.utils import (
+    extend_schema_field,
+    extend_schema_serializer,
+)
 from generics.api.serializers import ReadOnlyModelSerializer
 from laboratories.models import (
     LaboratorioDatiBase,
@@ -12,15 +12,12 @@ from laboratories.models import (
     LaboratorioInfrastruttura,
 )
 from research_lines.models import (
-    RicercaAster1,
-    RicercaAster2,
     RicercaErc0,
-    RicercaErc1,
-    RicercaErc2,
 )
 from generics.utils import build_media_path, encrypt
 
 
+@extend_schema_serializer(examples=examples.LABORATORY_SERIALIZER_EXAMPLE)
 class LaboratorySerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     completionReferentId = serializers.SerializerMethodField()
@@ -32,8 +29,12 @@ class LaboratorySerializer(serializers.ModelSerializer):
     acronym = serializers.CharField(source="acronimo")
     logo = serializers.SerializerMethodField()
     equipment = serializers.CharField(source="strumentazione_descrizione")
-    departmentReferentId = serializers.IntegerField(source="dipartimento_riferimento.dip_id")
-    departmentReferentCod = serializers.CharField(source="dipartimento_riferimento.dip_cod")
+    departmentReferentId = serializers.IntegerField(
+        source="dipartimento_riferimento.dip_id"
+    )
+    departmentReferentCod = serializers.CharField(
+        source="dipartimento_riferimento.dip_cod"
+    )
     departmentReferentName = serializers.CharField(
         source="dipartimento_riferimento.dip_des_it"
     )
@@ -57,19 +58,23 @@ class LaboratorySerializer(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     URL = serializers.CharField(source="sito_web")
     visible = serializers.CharField(source="visibile")
-    
+
     # def get_scientificDirectorEmail(self, obj):
     #     return getattr(obj, "email")
-    
+
+    @extend_schema_field(serializers.CharField())
     def get_completionReferentId(self, obj):
         return encrypt(obj.matricola_referente_compilazione)
 
+    @extend_schema_field(serializers.CharField())
     def get_logo(self, obj):
         return build_media_path(obj.nome_file_logo)
 
+    @extend_schema_field(serializers.IntegerField())
     def get_scientificDirectorId(self, obj):
         return encrypt(obj.matricola_responsabile_scientifico)
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_extraDepartments(self, obj):
         if not obj.other_dep:
             return []
@@ -90,6 +95,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
                 for d in obj.other_dep
             )
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_scopes(self, obj):
         return [
             {
@@ -99,6 +105,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
             for s in obj.attivita
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_researchPersonnel(self, obj):
         return [
             {
@@ -120,6 +127,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
             != obj.matricola_responsabile_scientifico
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_techPersonnel(self, obj):
         return [
             {
@@ -142,12 +150,15 @@ class LaboratorySerializer(serializers.ModelSerializer):
             != obj.matricola_responsabile_scientifico
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_erc0(self, obj):
-        language = self.context.get("language", "it") 
+        language = self.context.get("language", "it")
         return [
             {
                 "idErc0": erc0.ricerca_erc1.ricerca_erc0_cod.erc0_cod,
-                "description": erc0.ricerca_erc1.ricerca_erc0_cod.description if language == "it" else erc0.ricerca_erc1.ricerca_erc0_cod.description_en,
+                "description": erc0.ricerca_erc1.ricerca_erc0_cod.description
+                if language == "it"
+                else erc0.ricerca_erc1.ricerca_erc0_cod.description_en,
                 "erc1List": [
                     {
                         "idErc1": erc0.ricerca_erc1.cod_erc1,
@@ -157,7 +168,8 @@ class LaboratorySerializer(serializers.ModelSerializer):
             }
             for erc0 in obj.erc0
         ]
-    
+
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_offeredServices(self, obj):
         return [
             {
@@ -166,7 +178,8 @@ class LaboratorySerializer(serializers.ModelSerializer):
             }
             for s in obj.servizi_offerti
         ]
-        
+
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_location(self, obj):
         if not obj.ubicazione:
             return None
@@ -178,26 +191,26 @@ class LaboratorySerializer(serializers.ModelSerializer):
             }
             for s in obj.ubicazione
         ]
-        
+
     class Meta:
         model = LaboratorioDatiBase
         fields = [
-            "id", 
+            "id",
             "completionReferentId",
-            "completionReferentName", 
+            "completionReferentName",
             "scientificDirectorId",
-            "scientificDirectorName", 
-            # "scientificDirectorEmail", 
-            "name", 
-            "acronym", 
+            "scientificDirectorName",
+            # "scientificDirectorEmail",
+            "name",
+            "acronym",
             "logo",
-            "equipment", 
-            "departmentReferentId", 
-            "departmentReferentCod", 
+            "equipment",
+            "departmentReferentId",
+            "departmentReferentCod",
             "departmentReferentName",
             "infrastructureId",
-            "infrastructureName", 
-            "interdepartmental", 
+            "infrastructureName",
+            "interdepartmental",
             "extraDepartments",
             "area",
             "servicesScope",
@@ -225,6 +238,8 @@ class LaboratorySerializer(serializers.ModelSerializer):
             },
         }
 
+
+@extend_schema_serializer(examples=examples.LABORATORIES_SERIALIZER_EXAMPLE)
 class LaboratoriesSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField(source="nome_laboratorio")
@@ -253,12 +268,15 @@ class LaboratoriesSerializer(serializers.Serializer):
     teachingScope = serializers.CharField(source="finalita_didattica_it")
     visible = serializers.CharField(source="visibile")
 
+    @extend_schema_field(serializers.CharField())
     def get_logo(self, obj):
         return build_media_path(obj.nome_file_logo)
 
+    @extend_schema_field(serializers.IntegerField())
     def get_scientificDirectorId(self, obj):
         return encrypt(obj.matricola_responsabile_scientifico)
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_extraDepartments(self, obj):
         if not obj.other_dep:
             return []
@@ -279,6 +297,7 @@ class LaboratoriesSerializer(serializers.Serializer):
                 for d in obj.other_dep
             )
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_scopes(self, obj):
         return [
             {
@@ -288,6 +307,7 @@ class LaboratoriesSerializer(serializers.Serializer):
             for s in obj.attivita
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_researchPersonnel(self, obj):
         return [
             {
@@ -309,6 +329,7 @@ class LaboratoriesSerializer(serializers.Serializer):
             != obj.matricola_responsabile_scientifico
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_techPersonnel(self, obj):
         return [
             {
@@ -331,6 +352,7 @@ class LaboratoriesSerializer(serializers.Serializer):
             != obj.matricola_responsabile_scientifico
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_departmentName(self, obj):
         nome = obj.dipartimento_riferimento_nome
         if nome:
@@ -373,6 +395,7 @@ class LaboratoriesSerializer(serializers.Serializer):
         }
 
 
+@extend_schema_serializer(examples=examples.LABORATORIES_AREA_SERIALIZER_EXAMPLE)
 class LaboratoriesAreaSerializer(ReadOnlyModelSerializer):
     area = serializers.CharField(source="ambito")
 
@@ -381,6 +404,7 @@ class LaboratoriesAreaSerializer(ReadOnlyModelSerializer):
         fields = ["area"]
 
 
+@extend_schema_serializer(examples=examples.LABORATORIES_SCOPES_SERIALIZER_EXAMPLE)
 class LaboratoriesScopesSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     description = serializers.CharField(source="descrizione")
@@ -390,6 +414,7 @@ class LaboratoriesScopesSerializer(ReadOnlyModelSerializer):
         fields = ["id", "description"]
 
 
+@extend_schema_serializer(examples=examples.INFRASTRUCTURE_SERIALIZER_EXAMPLE)
 class InfrastructuresSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     description = serializers.CharField(source="descrizione")
@@ -399,6 +424,7 @@ class InfrastructuresSerializer(ReadOnlyModelSerializer):
         fields = ["id", "description"]
 
 
+@extend_schema_serializer(examples=examples.ERC0_SERIALIZER_EXAMPLE)
 class Erc0ListSerializer(serializers.ModelSerializer):
     idErc0 = serializers.CharField(source="erc0_cod")
     description = serializers.CharField()
@@ -411,11 +437,13 @@ class Erc0ListSerializer(serializers.ModelSerializer):
         }
 
 
+@extend_schema_serializer(examples=examples.ERC1_SERIALIZER_EXAMPLE)
 class Erc1ListSerializer(serializers.ModelSerializer):
     idErc0 = serializers.CharField(source="erc0_cod")
     description = serializers.CharField()
     erc1List = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_erc1List(self, obj):
         return [
             {
@@ -433,11 +461,13 @@ class Erc1ListSerializer(serializers.ModelSerializer):
         }
 
 
+@extend_schema_serializer(examples=examples.ERC2_SERIALIZER_EXAMPLE)
 class Erc2ListSerializer(serializers.ModelSerializer):
     idErc0 = serializers.CharField(source="erc0_cod")
     description = serializers.CharField()
     erc1List = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_erc1List(self, obj):
         return [
             {
@@ -462,11 +492,13 @@ class Erc2ListSerializer(serializers.ModelSerializer):
         }
 
 
+@extend_schema_serializer(examples=examples.ASTER1_SERIALIZER_EXAMPLE)
 class Aster1ListSerializer(serializers.ModelSerializer):
     idErc0 = serializers.CharField(source="erc0_cod")
     description = serializers.CharField()
     aster1_list = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_aster1_list(self, obj):
         return [
             {
@@ -484,11 +516,13 @@ class Aster1ListSerializer(serializers.ModelSerializer):
         }
 
 
+@extend_schema_serializer(examples=examples.ASTER2_SERIALIZER_EXAMPLE)
 class Aster2ListSerializer(serializers.ModelSerializer):
     idErc0 = serializers.CharField(source="erc0_cod")
     description = serializers.CharField()
     aster1_list = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_aster1_list(self, obj):
         return [
             {

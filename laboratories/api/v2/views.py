@@ -10,9 +10,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
-from addressbook.utils import append_email_addresses, get_personale_matricola
 
-# from .filters import CompaniesFilter
+# from addressbook.utils import append_email_addresses
 from laboratories.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
 from .serializers import (
     LaboratoriesSerializer,
@@ -46,17 +45,19 @@ from research_lines.models import (
     RicercaErc1,
     RicercaErc2,
 )
-from django.db.models import Q, Prefetch, Case, When, Value
+from django.db.models import Q, Prefetch
 
 from rest_framework.viewsets import ReadOnlyModelViewSet
+
+
 class LaboratoriesViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = LaboratoriesSerializer
-    
+
     def get_serializer_class(self):
         return LaboratoriesSerializer if self.action == "list" else LaboratorySerializer
-    
+
     def get_queryset(self):
         only_active = True
         if self.request.user.is_superuser:
@@ -120,7 +121,8 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
                         "laboratorioattivita_set",
                         queryset=(
                             LaboratorioAttivita.objects.only(
-                                "tipologia_attivita__id", "tipologia_attivita__descrizione"
+                                "tipologia_attivita__id",
+                                "tipologia_attivita__descrizione",
                             ).distinct()
                         ),
                         to_attr="attivita",
@@ -163,22 +165,28 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
                 .distinct()
             )
         if self.action == "retrieve":
-            query = LaboratorioDatiBase.objects.filter(query_is_active, id=self.kwargs["pk"]).prefetch_related(
-                Prefetch(
-                    "laboratoriodatierc1_set",
-                    queryset=LaboratorioDatiErc1.objects.select_related(
-                        "ricerca_erc1__ricerca_erc0_cod"
-                    ).only(
-                        "ricerca_erc1__id",
-                        "ricerca_erc1__cod_erc1",
-                        "ricerca_erc1__descrizione",
-                        "ricerca_erc1__ricerca_erc0_cod__erc0_cod",
-                        "ricerca_erc1__ricerca_erc0_cod__description",
-                        "ricerca_erc1__ricerca_erc0_cod__description_en",
-                    ).distinct(),
-                    to_attr="erc0",
-                ),
-                Prefetch(
+            query = (
+                LaboratorioDatiBase.objects.filter(
+                    query_is_active, id=self.kwargs["pk"]
+                )
+                .prefetch_related(
+                    Prefetch(
+                        "laboratoriodatierc1_set",
+                        queryset=LaboratorioDatiErc1.objects.select_related(
+                            "ricerca_erc1__ricerca_erc0_cod"
+                        )
+                        .only(
+                            "ricerca_erc1__id",
+                            "ricerca_erc1__cod_erc1",
+                            "ricerca_erc1__descrizione",
+                            "ricerca_erc1__ricerca_erc0_cod__erc0_cod",
+                            "ricerca_erc1__ricerca_erc0_cod__description",
+                            "ricerca_erc1__ricerca_erc0_cod__description_en",
+                        )
+                        .distinct(),
+                        to_attr="erc0",
+                    ),
+                    Prefetch(
                         "laboratoriopersonalericerca_set",
                         queryset=LaboratorioPersonaleRicerca.objects.only(
                             "matricola_personale_ricerca__matricola",
@@ -203,7 +211,8 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
                         "laboratorioattivita_set",
                         queryset=(
                             LaboratorioAttivita.objects.only(
-                                "tipologia_attivita__id", "tipologia_attivita__descrizione"
+                                "tipologia_attivita__id",
+                                "tipologia_attivita__descrizione",
                             ).distinct()
                         ),
                         to_attr="attivita",
@@ -221,47 +230,54 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
                     ),
                     Prefetch(
                         "laboratorioserviziofferti_set",
-                        queryset= LaboratorioServiziOfferti.objects.only("nome_servizio", "descrizione_servizio"),
+                        queryset=LaboratorioServiziOfferti.objects.only(
+                            "nome_servizio", "descrizione_servizio"
+                        ),
                         to_attr="servizi_offerti",
                     ),
                     Prefetch(
                         "laboratorioubicazione_set",
-                        queryset=LaboratorioUbicazione.objects.only("edificio", "piano", "note"),
+                        queryset=LaboratorioUbicazione.objects.only(
+                            "edificio", "piano", "note"
+                        ),
                         to_attr="ubicazione",
                     ),
-                    ).only(
-                "id",
-                "referente_compilazione",
-                "matricola_referente_compilazione",
-                "nome_laboratorio",
-                "acronimo",
-                "nome_file_logo",
-                "dipartimento_riferimento__dip_id",
-                "dipartimento_riferimento__dip_cod",
-                "dipartimento_riferimento__dip_des_it",
-                "dipartimento_riferimento__dip_des_eng",
-                "infrastruttura_riferimento__id",
-                "infrastruttura_riferimento__descrizione",
-                "ambito",
-                "finalita_servizi_it",
-                "finalita_servizi_en",
-                "finalita_ricerca_it",
-                "finalita_ricerca_en",
-                "finalita_didattica_en",
-                "finalita_didattica_it",
-                "responsabile_scientifico",
-                "matricola_responsabile_scientifico",
-                "matricola_responsabile_scientifico__id_ab",
-                "laboratorio_interdipartimentale",
-                "sito_web",
-                "strumentazione_descrizione",
-                "visibile",
+                )
+                .only(
+                    "id",
+                    "referente_compilazione",
+                    "matricola_referente_compilazione",
+                    "nome_laboratorio",
+                    "acronimo",
+                    "nome_file_logo",
+                    "dipartimento_riferimento__dip_id",
+                    "dipartimento_riferimento__dip_cod",
+                    "dipartimento_riferimento__dip_des_it",
+                    "dipartimento_riferimento__dip_des_eng",
+                    "infrastruttura_riferimento__id",
+                    "infrastruttura_riferimento__descrizione",
+                    "ambito",
+                    "finalita_servizi_it",
+                    "finalita_servizi_en",
+                    "finalita_ricerca_it",
+                    "finalita_ricerca_en",
+                    "finalita_didattica_en",
+                    "finalita_didattica_it",
+                    "responsabile_scientifico",
+                    "matricola_responsabile_scientifico",
+                    "matricola_responsabile_scientifico__id_ab",
+                    "laboratorio_interdipartimentale",
+                    "sito_web",
+                    "strumentazione_descrizione",
+                    "visibile",
+                )
             )
             # append_email_addresses(query, "matricola_responsabile_scientifico__id_ab")
             # append_email_addresses(query.first().personale_ricerca, "matricola_personale_ricerca__id_ab")
             # append_email_addresses(query.first().personale_tecnico, "matricola_personale_tecnico__id_ab")
-            
+
             return query
+
 
 class LaboratoriesAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
