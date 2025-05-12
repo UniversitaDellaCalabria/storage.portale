@@ -1190,7 +1190,7 @@ def regdid_articles_pdf(request, regdid_id):
     # find an optional " R" in cla_cod and remove it
     cla_cod = re.match(r"^(.*?)(\s*R)?$", regdid.cds.cla_miur_cod).group(1)
     cla_des = regdid.cds.cla_miur_des
-    icla_cod = regdid.cds.intercla_miur_cod
+    icla_cod = re.match(r"^(.*?)(\s*R)?$", regdid.cds.intercla_miur_cod).group(1)
     icla_des = regdid.cds.intercla_miur_des
 
     nome_corso = f"Corso di {tipo_corso_des} in {nome_cds_it}"
