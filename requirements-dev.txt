@@ -8,3 +8,4 @@ isort
 
 django-silk
 sqlparse>=0.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
+django>=4.2.21 # not directly required, pinned by Snyk to avoid a vulnerability
