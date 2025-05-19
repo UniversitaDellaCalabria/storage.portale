@@ -100,13 +100,11 @@ class PublicationsSerializer(serializers.ModelSerializer):
 
 class PublicationSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source="item_id")
-    title = serializers.CharField(source="title")
     abstract = serializers.CharField(source="des_abstract")
     collection = serializers.CharField(source="collection.collection_name")
     community = serializers.CharField(source="collection.collection_id.collection_name")
     publication = serializers.CharField(source="pubblicazione")
     label = serializers.CharField(source="label_pubblicazione")
-    contributors = serializers.ListField(source="contributors")
     # authors = serializers.SerializerMethodField()
     url = serializers.CharField(source="url_pubblicazione")
 
