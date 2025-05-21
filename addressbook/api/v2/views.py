@@ -1,6 +1,5 @@
 import datetime
 from django_filters.rest_framework import DjangoFilterBackend
-
 # from drf_spectacular.utils import (
 #     extend_schema,
 #     extend_schema_view,
@@ -12,10 +11,39 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
 
-# from .filters import PersonnelCfFilter
-from .serializers import PersonnelCfSerializer, RolesSerializer
-from addressbook.models import Personale
+# from .filters import PersonnelCfFilter, AddressbookFilter
+from .serializers import PersonnelCfSerializer, AddressbookStructuresSerializer, RolesSerializer
+from addressbook.models import (
+    Personale
+)
+from structures.models import UnitaOrganizzativa
+        
+        
 
+class AddressbookStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = AddressbookStructuresSerializer
+    # filterset_class = AddressbookStructuresFilter
+    queryset = UnitaOrganizzativa.objects.filter(
+            dt_fine_val__gte=datetime.datetime.today(),
+        ).extra(
+            select={
+                "matricola": "PERSONALE.MATRICOLA",
+                "cd_uo_aff_org": "PERSONALE.CD_UO_AFF_ORG",
+            },
+            tables=["PERSONALE"],
+            where=[
+                "UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG",
+                "PERSONALE.FLG_CESSATO=0",
+                "PERSONALE.CD_UO_AFF_ORG is not NULL",
+            ],
+        ).values(
+            "uo",
+            "denominazione",
+            "cd_tipo_nodo",
+            "ds_tipo_nodo",
+        ).distinct()
 
 class PersonnelCfViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination

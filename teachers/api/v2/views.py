@@ -583,7 +583,7 @@ class PublicationsCommunityTypesViewSet(mixins.ListModelMixin, viewsets.GenericV
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PublicationsCommunityTypesSerializer
-    # filterset_class = PublicationFilter
+
     queryset = (
         PubblicazioneCommunity.objects.all()
         .only("community_id", "community_name")

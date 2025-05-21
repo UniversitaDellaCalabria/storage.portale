@@ -1,6 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
-    OpenApiParameter,
     extend_schema,
     extend_schema_view,
 )
@@ -33,7 +32,7 @@ class PatentsViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PatentsSerializer
-    # filterset_class =  PatentFilter
+    filterset_class =  PatentFilter
     def get_queryset(self):
         if self.action == "list":
             request = self.request
