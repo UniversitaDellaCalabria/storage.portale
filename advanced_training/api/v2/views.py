@@ -1,11 +1,11 @@
 from django_filters.rest_framework import DjangoFilterBackend
-
-# from drf_spectacular.utils import (
-#     extend_schema,
-#     extend_schema_view,
-# )
-# from .docs import descriptions
-# from api_docs import responses
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+)
+from .docs import descriptions
+from api_docs import responses
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
 from django.db.models import Prefetch
@@ -28,8 +28,19 @@ from advanced_training.models import (
     AltaFormazioneTipoCorso,
 )
 
-
-class HighFormationMastersViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.HIGHFORMATION_MASTERS_LIST_SUMMARY,
+        description=descriptions.HIGHFORMATION_MASTERS_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(HighFormationMastersSerializer(many=True)),
+    ),
+    retrieve=extend_schema(
+        summary=descriptions.HIGHFORMATION_MASTERS_RETRIEVE_SUMMARY,
+        description=descriptions.HIGHFORMATION_MASTERS_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(HighFormationMastersSerializer),
+    ),
+)
+class HighFormationMastersViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = HighFormationMastersSerializer
@@ -147,7 +158,13 @@ class HighFormationMastersViewSet(mixins.ListModelMixin, viewsets.GenericViewSet
         .order_by("titolo_it", "id")
     )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.HIGHFORMATION_COURSE_TYPES_LIST_SUMMARY,
+        description=descriptions.HIGHFORMATION_COURSE_TYPES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(HighFormationCourseTypesSerializer(many=True)),
+    ),
+)
 class HighFormationCourseTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]

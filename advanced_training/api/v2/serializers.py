@@ -1,12 +1,16 @@
 from rest_framework import serializers
+from .docs import examples
+from drf_spectacular.utils import (
+    extend_schema_field,
+    extend_schema_serializer,
+)
 from generics.utils import encrypt
 from advanced_training.models import (
     AltaFormazioneDatiBase,
     AltaFormazioneModalitaErogazione,
     AltaFormazioneTipoCorso,
 )
-
-
+@extend_schema_serializer(examples=examples.HIGH_FORMATION_MASTER_EXAMPLES)
 class HighFormationMastersSerializer(serializers.ModelSerializer):
     masterTitle = serializers.CharField(source="titolo_it")
     typeId = serializers.IntegerField(source="alta_formazione_tipo_corso.id")
@@ -66,9 +70,11 @@ class HighFormationMastersSerializer(serializers.ModelSerializer):
     teachingPlan = serializers.SerializerMethodField()
     teachingAssignments = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.CharField())
     def get_scientificDirectorId(self, obj):
         return encrypt(obj.matricola_direttore_scientifico)
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_partners(self, obj):
         return [
             {
@@ -79,25 +85,29 @@ class HighFormationMastersSerializer(serializers.ModelSerializer):
             }
             for p in getattr(obj, "partners")
         ]
-
+        
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_selections(self, obj):
         return [
             {"id": s.id, "type": s.tipo_selezione} for s in getattr(obj, "selections")
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_internalScientificCouncil(self, obj):
         return [
             {"id": encrypt(c.matricola_cons), 
              "name": c.nome_origine_cons}
             for c in getattr(obj, "internal_scientific_council")
         ]
-
+        
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_externalScientificCouncil(self, obj):
         return [
             {"name": c.nome_cons, "role": c.ruolo_cons, "institution": c.ente_cons}
             for c in getattr(obj, "external_scientific_council")
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_teachingPlan(self, obj):
         return [
             {
@@ -110,6 +120,7 @@ class HighFormationMastersSerializer(serializers.ModelSerializer):
             for p in getattr(obj, "teaching_plan")
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_teachingAssignments(self, obj):
         return [
             {
@@ -179,7 +190,7 @@ class HighFormationMastersSerializer(serializers.ModelSerializer):
             },
         }
 
-
+@extend_schema_serializer(examples=examples.HIGH_FORMATION_COURSE_TYPES_EXAMPLES)
 class HighFormationCourseTypesSerializer(serializers.ModelSerializer):
     description = serializers.CharField(source="tipo_corso_descr")
 
@@ -187,7 +198,7 @@ class HighFormationCourseTypesSerializer(serializers.ModelSerializer):
         model = AltaFormazioneTipoCorso
         fields = ["id", "description"]
 
-
+@extend_schema_serializer(examples=examples.EROGATION_MODES_EXAMPLES)
 class ErogationModesSerializer(serializers.ModelSerializer):
     description = serializers.CharField(source="descrizione")
 
