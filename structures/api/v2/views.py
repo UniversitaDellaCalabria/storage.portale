@@ -1,12 +1,12 @@
 import datetime
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
-# from drf_spectacular.utils import (
-#     extend_schema,
-#     extend_schema_view,
-# )
-# from .docs import descriptions
-# from api_docs import responses
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+)
+from .docs import descriptions
+from api_docs import responses
 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -31,7 +31,18 @@ from structures.models import (
     UnitaOrganizzativaTipoFunzioni,
 )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.STRUCTURES_LIST_SUMMARY,
+        description=descriptions.STRUCTURES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(StructuresSerializer(many=True)),
+    ),
+    retrieve=extend_schema(
+        summary=descriptions.STRUCTURES_RETRIEVE_SUMMARY,
+        description=descriptions.STRUCTURES_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(StructuresSerializer),
+    ),
+)
 class StructuresViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -135,6 +146,12 @@ class StructuresViewSet(ReadOnlyModelViewSet):
             )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.TYPES_LIST_SUMMARY,
+        responses=responses.COMMON_LIST_RESPONSES(TypesSerializer(many=True)),
+    ),
+)
 class TypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -146,7 +163,12 @@ class TypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .order_by("ds_tipo_nodo")
     )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.FUNCTIONS_LIST_SUMMARY,
+        responses=responses.COMMON_LIST_RESPONSES(FunctionSerializer(many=True)),
+    ),
+)
 class FunctionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -159,7 +181,13 @@ class FunctionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .order_by("cd_tipo_nod")
     )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.DEPARTMENTS_LIST_SUMMARY,
+        description=descriptions.DEPARTMENTS_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(DepartmentsSerializer(many=True)),
+    ),
+)
 class DepartmentsViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
