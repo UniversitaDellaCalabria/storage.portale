@@ -40,6 +40,7 @@ class ProjectSerializer(CreateUpdateAbstract):
             "ProjectImage": query["url_immagine"],
             "ScientificDirectors": responsabili,
             "Researchers": ricercatori,
+            "WebSite": query["url_sito_web"],
             "IsActive": query["is_active"],
         }
 
