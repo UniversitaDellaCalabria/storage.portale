@@ -222,8 +222,14 @@ class Personale(InsModAbstract):
 class PersonaleAttivoTuttiRuoli(models.Model):
     id = models.BigAutoField(db_column="ID", primary_key=True)
     id_ab = models.BigIntegerField(db_column="ID_AB", blank=True, null=True)
-    matricola = models.CharField(
-        db_column="MATRICOLA", max_length=6, blank=True, null=True
+    matricola = models.ForeignKey(
+        Personale,
+        models.DO_NOTHING,
+        db_column="MATRICOLA",
+        to_field="matricola",
+        blank=True, 
+        null=True,
+        related_name="personaleattivotuttiruoli",
     )
     cod_fis = models.CharField(
         db_column="COD_FIS", max_length=16, blank=True, null=True
