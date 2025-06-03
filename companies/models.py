@@ -95,7 +95,7 @@ class SpinoffStartupDatiBase(models.Model):
 class SpinoffStartupDipartimento(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     spinoff_startup_dati_base = models.ForeignKey(
-        SpinoffStartupDatiBase, models.CASCADE, db_column="ID_SPINOFF_STARTUP_DATI_BASE"
+        SpinoffStartupDatiBase, models.CASCADE, db_column="ID_SPINOFF_STARTUP_DATI_BASE", blank=True, null=True, related_name="spinoffstartupdipartimento"
     )
     nome_origine_dipartimento = models.CharField(
         db_column="NOME_ORIGINE_DIPARTIMENTO", max_length=1000

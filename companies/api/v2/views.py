@@ -10,19 +10,16 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
 
-from .serializers import (
-    CompaniesSerializer,
-    TechAreaSerializer
-)
+from .serializers import CompaniesSerializer, TechAreaSerializer
 from .filters import CompaniesFilter
 from companies.models import (
     SpinoffStartupDatiBase,
-    SpinoffStartupDipartimento,
     TipologiaAreaTecnologica,
 )
 from django.db.models import Q
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from companies.settings import OFFICE_COMPANIES
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -41,14 +38,14 @@ class CompaniesViewSet(ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = CompaniesFilter
     serializer_class = CompaniesSerializer
-    
+
     def get_queryset(self):
         request = self.request
         only_active = True
 
         if request.user.is_superuser:
-            only_active = False  
-        if request.user.is_authenticated: 
+            only_active = False
+        if request.user.is_authenticated:
             my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
                 employee=request.user,
                 office__name=OFFICE_COMPANIES,
@@ -57,51 +54,12 @@ class CompaniesViewSet(ReadOnlyModelViewSet):
             )
             if my_offices.exists():
                 only_active = False
-                
-        query_is_active = Q(is_active=True) if only_active else Q()
-        
-        if self.action == "list":
-            query = (
-                SpinoffStartupDatiBase.objects.filter(query_is_active)
-                .values(
-                    "id",
-                    "piva",
-                    "nome_azienda",
-                    "nome_file_logo",
-                    "url_sito_web",
-                    "descrizione_ita",
-                    "descrizione_eng",
-                    "referente_unical",
-                    "matricola_referente_unical",
-                    "area_tecnologica",
-                    "area_tecnologica__descr_area_ita",
-                    "area_tecnologica__descr_area_eng",
-                    "is_startup",
-                    "is_spinoff",
-                    "is_active",
-                )
-                .distinct()
+
+        return (
+            SpinoffStartupDatiBase.objects.filter(
+                Q(is_active=True) if only_active else Q()
             )
-            
-            for q in query:
-                departments = SpinoffStartupDipartimento.objects.filter(
-                    spinoff_startup_dati_base__exact=q["id"]
-                ).values(
-                    "didattica_dipartimento__dip_cod",
-                    "didattica_dipartimento__dip_des_it",
-                    "didattica_dipartimento__dip_des_eng",
-                    "didattica_dipartimento__dip_nome_breve",
-                )
-
-                if len(departments) == 0:
-                    q["Departments"] = []
-                else:
-                    q["Departments"] = departments
-
-            return query
-        else:
-            query = SpinoffStartupDatiBase.objects.filter(id=self.kwargs.get("pk"), is_active=True
-            ).values(
+            .values(
                 "id",
                 "piva",
                 "nome_azienda",
@@ -118,23 +76,10 @@ class CompaniesViewSet(ReadOnlyModelViewSet):
                 "is_spinoff",
                 "is_active",
             )
-            for q in query:
-                departments = SpinoffStartupDipartimento.objects.filter(
-                    spinoff_startup_dati_base__exact=q["id"]
-                ).values(
-                    "didattica_dipartimento__dip_cod",
-                    "didattica_dipartimento__dip_des_it",
-                    "didattica_dipartimento__dip_des_eng",
-                    "didattica_dipartimento__dip_nome_breve",
-                )
+            .distinct()
+        )
 
-                if len(departments) == 0:
-                    q["Departments"] = []
-                else:
-                    q["Departments"] = departments
 
-            return query
-        
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.TECH_AREA_LIST_SUMMARY,
@@ -147,7 +92,7 @@ class TechAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     filter_backends = [DjangoFilterBackend]
     serializer_class = TechAreaSerializer
     queryset = TipologiaAreaTecnologica.objects.values(
-            "id",
-            "descr_area_ita",
-            "descr_area_eng",
-        ).distinct()
+        "id",
+        "descr_area_ita",
+        "descr_area_eng",
+    ).distinct()

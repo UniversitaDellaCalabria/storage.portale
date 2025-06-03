@@ -12,6 +12,7 @@ from companies.models import (
 )
 from generics.utils import build_media_path, encrypt
 
+
 @extend_schema_serializer(examples=examples.COMPANIES_SERIALIZER_EXAMPLE)
 class CompaniesSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
@@ -23,7 +24,9 @@ class CompaniesSerializer(ReadOnlyModelSerializer):
     unicalReferent = serializers.CharField(source="referente_unical")
     unicalReferentId = serializers.SerializerMethodField()
     techAreaId = serializers.IntegerField(source="area_tecnologica")
-    techAreaDescription = serializers.CharField(source="area_tecnologica__descr_area_ita")
+    techAreaDescription = serializers.CharField(
+        source="area_tecnologica.descr_area_ita"
+    )
     isSpinoff = serializers.BooleanField(source="is_spinoff")
     isStartup = serializers.BooleanField(source="is_startup")
     isActive = serializers.BooleanField(source="is_active")
@@ -31,22 +34,22 @@ class CompaniesSerializer(ReadOnlyModelSerializer):
     @extend_schema_field(serializers.CharField())
     def get_image(self, obj):
         return build_media_path(obj["nome_file_logo"])
-    
+
     @extend_schema_field(serializers.CharField())
     def get_unicalReferentId(self, obj):
         return encrypt(obj["matricola_referente_unical"])
-    
+
     class Meta:
         model = SpinoffStartupDatiBase
         fields = [
             "id",
             "PIva",
-            "agencyName", 
+            "agencyName",
             "agencyUrl",
-            "image", 
+            "image",
             "description",
             "unicalReferent",
-            "unicalReferentId", 
+            "unicalReferentId",
             "techAreaId",
             "techAreaDescription",
             "isSpinoff",
@@ -55,10 +58,14 @@ class CompaniesSerializer(ReadOnlyModelSerializer):
         ]
         language_field_map = {
             "description": {"it": "descrizione_ita", "en": "descrizione_eng"},
-            "techAreaDescription": {"it": "area_tecnologica__descr_area_ita", "en": "area_tecnologica__descr_area_eng"}
+            "techAreaDescription": {
+                "it": "area_tecnologica__descr_area_ita",
+                "en": "area_tecnologica__descr_area_eng",
+            },
         }
-        
-@extend_schema_serializer(examples=examples.TECH_AREA_SERIALIZER_EXAMPLE)        
+
+
+@extend_schema_serializer(examples=examples.TECH_AREA_SERIALIZER_EXAMPLE)
 class TechAreaSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     description = serializers.CharField(source="descr_area_ita")
