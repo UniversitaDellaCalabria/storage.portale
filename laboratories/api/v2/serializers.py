@@ -15,6 +15,7 @@ from research_lines.models import (
     RicercaErc0,
 )
 from generics.utils import build_media_path, encrypt
+# from addressbook.utils import append_email_addresses
 
 
 @extend_schema_serializer(examples=examples.LABORATORY_SERIALIZER_EXAMPLE)
@@ -274,6 +275,7 @@ class LaboratoriesSerializer(serializers.Serializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_scientificDirectorId(self, obj):
+        # append_email_addresses(obj, obj.matricola_responsabile_scientifico.id_ab)
         return encrypt(obj.matricola_responsabile_scientifico)
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
@@ -309,6 +311,7 @@ class LaboratoriesSerializer(serializers.Serializer):
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_researchPersonnel(self, obj):
+        # append_email_addresses(obj.personale_ricerca, obj.personale_ricerca.matricola_personale_ricerca.id_ab)
         return [
             {
                 "id": encrypt(p.matricola_personale_ricerca.matricola),
@@ -331,6 +334,8 @@ class LaboratoriesSerializer(serializers.Serializer):
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_techPersonnel(self, obj):
+        # append_email_addresses(obj.personale_tecnico, obj.personale_tecnico.matricola_personale_tecnico.id_ab)
+
         return [
             {
                 "matricola": encrypt(p.matricola_personale_tecnico.matricola),
