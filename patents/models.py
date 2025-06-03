@@ -136,7 +136,7 @@ class BrevettoDatiBase(models.Model):
 class BrevettoInventori(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     brevetto = models.ForeignKey(
-        BrevettoDatiBase, models.CASCADE, db_column="ID_BREVETTO", blank=True, null=True
+        BrevettoDatiBase, models.CASCADE, db_column="ID_BREVETTO", blank=True, null=True, related_name="brevettoinventori"
     )
     matricola_inventore = models.ForeignKey(
         "addressbook.Personale",

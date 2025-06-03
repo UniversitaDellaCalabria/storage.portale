@@ -112,7 +112,7 @@ class UnitaOrganizzativa(models.Model):
 
 class UnitaOrganizzativaFunzioni(models.Model):
     matricola = models.CharField(
-        db_column="MATRICOLA", max_length=6, blank=True, null=True
+        db_column="MATRICOLA", max_length=6, primary_key=True
     )
     cd_csa = models.ForeignKey(
         UnitaOrganizzativa,
@@ -121,6 +121,7 @@ class UnitaOrganizzativaFunzioni(models.Model):
         to_field="cd_csa",
         blank=True,
         null=True,
+        related_name="unitaorganizzativafunzioni"
     )
     cod_fis = models.ForeignKey(
         "addressbook.Personale",
@@ -174,8 +175,9 @@ class UnitaOrganizzativaContatti(models.Model):
         UnitaOrganizzativa,
         models.DO_NOTHING,
         db_column="ID_AB",
-        primary_key=True,
         to_field="id_ab",
+        primary_key=True,
+        related_name="unitaorganizzativacontatti"
     )
     cd_tipo_cont = models.ForeignKey(
         "addressbook.PersonaleUoTipoContatto",

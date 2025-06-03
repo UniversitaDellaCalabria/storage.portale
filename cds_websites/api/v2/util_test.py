@@ -26,23 +26,24 @@ from cds.models import (
     DidatticaPianoSceltaVincoli,
     DidatticaPianoSche,
     DidatticaRegolamento,
-    DidatticaAttivitaFormativa
+    DidatticaAttivitaFormativa,
 )
 import datetime
+
 
 class ApiCdsWebsitesUnitTestMethods(TestCase):
     @classmethod
     def create_sitoWebCdsTopic(cls, **kwargs):
         data = {
-                "id": 1,
-                "descr_topic_it": "Topic 1",
-                "descr_topic_en": "Topic 1",
-                "visibile": 1,
-                "dt_mod": datetime.datetime.today(),
-            }
+            "id": 1,
+            "descr_topic_it": "Topic 1",
+            "descr_topic_en": "Topic 1",
+            "visibile": 1,
+            "dt_mod": datetime.datetime.today(),
+        }
         data.update(kwargs)
         return SitoWebCdsTopic.objects.create(**data)
-    
+
     @classmethod
     def create_didatticaCds(cls, **kwargs):
         data = {
@@ -54,8 +55,7 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaCds.objects.create(**data)
-    
-    
+
     @classmethod
     def create_dct_corso(cls, **kwargs):
         data = {
@@ -65,8 +65,7 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaCdsTipoCorso.objects.create(**data)
-    
-    
+
     @classmethod
     def create_dar_titolo(cls, **kwargs):
         data = {
@@ -76,8 +75,7 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaArticoliRegolamentoTitolo.objects.create(**data)
-    
-    
+
     @classmethod
     def create_dar_struttura(cls, **kwargs):
         data = {
@@ -91,8 +89,7 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaArticoliRegolamentoStruttura.objects.create(**data)
-    
-    
+
     @classmethod
     def create_dcar_testata(cls, **kwargs):
         data = {
@@ -104,7 +101,7 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaCdsArticoliRegolamentoTestata.objects.create(**data)
-    
+
     @classmethod
     def create_dca_regolamento(cls, **kwargs):
         data = {
@@ -112,28 +109,26 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
             "testo_it": "Testo articolo IT",
             "testo_en": "Testo articolo EN",
             "visibile": 1,
-            "dt_mod": datetime.datetime.today()
+            "dt_mod": datetime.datetime.today(),
         }
         data.update(kwargs)
         return DidatticaCdsArticoliRegolamento.objects.create(**data)
-    
-    
+
     @classmethod
     def create_dcsa_regolamento_visbile(cls, **kwargs):
         data = {
-            "id": 1, 
+            "id": 1,
             "titolo_it": "Titolo sub articolo",
             "titolo_en": "Title sub article",
             "testo_it": "Testo sub articolo IT",
             "testo_en": "Testo sub articolo EN",
             "ordine": 10,
             "visibile": 1,
-            "dt_mod": datetime.datetime.today()
+            "dt_mod": datetime.datetime.today(),
         }
         data.update(kwargs)
         return DidatticaCdsSubArticoliRegolamento.objects.create(**data)
-    
-    
+
     @classmethod
     def create_swco_portale_data(cls, **kwargs):
         data = {
@@ -146,43 +141,38 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
             "titolo_it": "TITOLO IT",
             "titolo_en": "TITOLO EN",
             "visibile": 1,
-            "dt_mod": datetime.datetime.today()
+            "dt_mod": datetime.datetime.today(),
         }
         data.update(kwargs)
         return SitoWebCdsOggettiPortale.objects.create(**data)
-    
-    
+
     @classmethod
     def create_swars_topic_data(cls, **kwargs):
-        data = {
-            "id": 1,
-            "visibile": 1,
-            "dt_mod": datetime.datetime.today()
-        }
+        data = {"id": 1, "visibile": 1, "dt_mod": datetime.datetime.today()}
         data.update(kwargs)
         return SitoWebArticoliRegolamentoStrutturaTopic.objects.create(**data)
-    
+
     @classmethod
     def create_WebSiteCdsTopicArticoliReg(cls, **kwargs):
         data = {
-           "id": 1,
+            "id": 1,
             "sito_web_cds_oggetti_portale": None,
             "visibile": 1,
-            "dt_mod": datetime.datetime.today()
+            "dt_mod": datetime.datetime.today(),
         }
         data.update(kwargs)
         return SitoWebCdsTopicArticoliReg.objects.create(**data)
-    
+
     @classmethod
     def create_WebSiteCdsSubArticoliRegolamento(cls, **kwargs):
         data = {
-           "id": 1,
+            "id": 1,
             "titolo_it": "TITOLO SUB IT",
             "titolo_en": "TITOLO SUB EN",
             "testo_it": "TESTO SUB IT",
             "testo_en": "TESTO SUB EN",
             "visibile": 1,
-            "dt_mod": datetime.datetime.today()
+            "dt_mod": datetime.datetime.today(),
         }
         data.update(kwargs)
         return SitoWebCdsSubArticoliRegolamento.objects.create(**data)
@@ -191,11 +181,10 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
     def create_WebSiteCdsTipoDato(cls, **kwargs):
         data = {
             "descr_breve": "TICKET",
-        }  
+        }
         data.update(kwargs)
         return SitoWebCdsTipoDato.objects.create(**data)
-    
-    
+
     @classmethod
     def create_WebSiteCdsTopicArticoliRegAltriDati(cls, **kwargs):
         data = {
@@ -207,27 +196,24 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
             "testo_en": "TESTO ALTRO DATO EN",
             "link": "",
             "visibile": 1,
-            "dt_mod": datetime.datetime.today()
+            "dt_mod": datetime.datetime.today(),
         }
         data.update(kwargs)
         return SitoWebCdsTopicArticoliRegAltriDati.objects.create(**data)
 
-
     @classmethod
     def create_didatticaRegolamento(cls, **kwargs):
         data = {
-            "regdid_id": 1, 
+            "regdid_id": 1,
             "aa_reg_did": 2022,
             "frequenza_obbligatoria": 0,
             "titolo_congiunto_cod": "N",
             "stato_regdid_cod": "A",
             "cds_id": 1,
-            
         }
         data.update(kwargs)
         return DidatticaRegolamento.objects.create(**data)
-    
-    
+
     @classmethod
     def create_didatticaPianoRegolamento(cls, **kwargs):
         data = {
@@ -246,8 +232,7 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaPianoRegolamento.objects.create(**data)
-    
-    
+
     @classmethod
     def create_didatticaPianoSche(cls, **kwargs):
         data = {
@@ -261,7 +246,7 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaPianoSche.objects.create(**data)
-    
+
     @classmethod
     def create_didatticaPianoSceltaVincoli(cls, **kwargs):
         data = {
@@ -280,7 +265,7 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaPianoSceltaSchePiano.objects.create(**data)
-    
+
     @classmethod
     def create_didatticaPianoSceltaAf(cls, **kwargs):
         data = {
@@ -296,19 +281,17 @@ class ApiCdsWebsitesUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return DidatticaPianoSceltaAf.objects.create(**data)
-    
+
     @classmethod
     def create_didatticaAmbiti(cls, **kwargs):
-        data = {
-            "amb_id": 1
-        }
+        data = {"amb_id": 1}
         data.update(kwargs)
         return DidatticaAmbiti.objects.create(**data)
-    
+
     @classmethod
     def create_didatticaAttivitaFormativa(cls, **kwargs):
         data = {
-            "af_id": "1", 
+            "af_id": "1",
             "anno_corso": 1,
             "amb_id": 1,
             "af_gen_id": 1,

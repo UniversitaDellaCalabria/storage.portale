@@ -31,6 +31,7 @@ class TopicListSerialzer(ReadOnlyModelSerializer):
             "description": {"it": "descr_topic_it", "en": "descr_topic_en"}
         }
 
+
 @extend_schema_serializer(examples=examples.ARTICLES_TOPIC_SERIALIZER_EXAMPLE)
 class ArticlesTopicSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
@@ -97,7 +98,6 @@ class ArticlesTopicSerializer(ReadOnlyModelSerializer):
                         }
                     ]
 
-
     @extend_schema_field(serializers.ListField())
     def get_otherData(self, obj):
         lang = self.get_requestLang()
@@ -158,6 +158,7 @@ class ArticlesTopicSerializer(ReadOnlyModelSerializer):
                 "en": "sito_web_cds_topic.descr_topic_en",
             },
         }
+
 
 @extend_schema_serializer(examples=examples.STUDY_PLANS_SERIALIZER_EXAMPLE)
 class StudyPlansSerializer(ReadOnlyModelSerializer):
@@ -234,15 +235,20 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
                                             "id": q["af_id"],
                                             "cod": q["af_gen_cod"],
                                             "name": q["des"]
-                                            if lang == "it" or q["af_gen_des_eng"] is None
+                                            if lang == "it"
+                                            or q["af_gen_des_eng"] is None
                                             else q["af_gen_des_eng"],
                                             "semester": q["ciclo_des"],
                                             "sttCod": q.get("sett_cod", None),
                                             "creditValue": q["peso"],
                                             "partitionCod": q["part_stu_cod"],
                                             "partitionDescription": q["part_stu_des"],
-                                            "extendedPartitionCod": q["fat_part_stu_cod"],
-                                            "extendedPartitionDes": q["fat_part_stu_des"],
+                                            "extendedPartitionCod": q[
+                                                "fat_part_stu_cod"
+                                            ],
+                                            "extendedPartitionDes": q[
+                                                "fat_part_stu_des"
+                                            ],
                                         }
                                         for q in q.get("MODULES", [])
                                     ],
@@ -268,15 +274,20 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
                                             "id": q["af_id"],
                                             "cod": q["af_gen_cod"],
                                             "name": q["des"]
-                                            if lang == "it" or q["af_gen_des_eng"] is None
+                                            if lang == "it"
+                                            or q["af_gen_des_eng"] is None
                                             else q["af_gen_des_eng"],
                                             "semester": q["ciclo_des"],
                                             "sttCod": q.get("sett_cod", None),
                                             "creditValue": q["peso"],
                                             "partitionCod": q["part_stu_cod"],
                                             "partitionDescription": q["part_stu_des"],
-                                            "extendedPartitionCod": q["fat_part_stu_cod"],
-                                            "extendedPartitionDes": q["fat_part_stu_des"],
+                                            "extendedPartitionCod": q[
+                                                "fat_part_stu_cod"
+                                            ],
+                                            "extendedPartitionDes": q[
+                                                "fat_part_stu_des"
+                                            ],
                                         }
                                         for q in q.get("MODULES", [])
                                     ],
@@ -291,7 +302,9 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
                                     "filOrDes": q["sce_fil_or_des"],
                                     "tipoFiltroCod": q["tipo_filtro_cod"],
                                     "tipoFiltroDes": q["tipo_filtro_des"],
-                                    "courseTypeSceFilAndCod": q["tipo_corso_sce_fil_and_cod"],
+                                    "courseTypeSceFilAndCod": q[
+                                        "tipo_corso_sce_fil_and_cod"
+                                    ],
                                     "cdsSceFilAndId": q["cds_sce_fil_and_id"],
                                     "cdsSceFilAndCod": q["cds_sce_fil_and_cod"],
                                     "cdsSceFilAndNome": q["cds_sce_fil_and_nome"],
@@ -300,12 +313,11 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
                                 for q in q.get("FilAnd", [])
                             ],
                         }
-                        for q in q.get("AfRequired", []) 
-                    ],                       
+                        for q in q.get("AfRequired", [])
+                    ],
                 }
                 for q in obj["PlanTabs"]
             ]
-                
 
     class Meta:
         model = DidatticaPianoRegolamento

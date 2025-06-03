@@ -4,7 +4,7 @@ from django.db.models import (
     Case,
     When,
     Q,
-    CharField, 
+    CharField,
     F,
 )
 from django_filters.rest_framework import DjangoFilterBackend
@@ -23,14 +23,13 @@ from cds_websites.settings import OFFICE_CDS_WEBSITES
 from .serializers import (
     TopicListSerialzer,
     ArticlesTopicSerializer,
-    StudyPlansSerializer
+    StudyPlansSerializer,
 )
 from cds_websites.models import (
     SitoWebCdsTopic,
     SitoWebCdsTopicArticoliRegAltriDati,
     SitoWebCdsSubArticoliRegolamento,
-    SitoWebCdsTopicArticoliReg
-    
+    SitoWebCdsTopicArticoliReg,
 )
 from cds.models import (
     DidatticaAttivitaFormativa,
@@ -53,8 +52,10 @@ class TopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TopicListSerialzer
-    queryset = SitoWebCdsTopic.objects.only("id", "descr_topic_it", "descr_topic_en", "visibile").distinct()
-    
+    queryset = SitoWebCdsTopic.objects.only(
+        "id", "descr_topic_it", "descr_topic_en", "visibile"
+    ).distinct()
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -62,18 +63,18 @@ class TopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         description=descriptions.ARTICLESTOPIC_LIST_DESCRIPTION,
         responses=responses.COMMON_LIST_RESPONSES(ArticlesTopicSerializer(many=True)),
     ),
-)    
+)
 class ArticlesTopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
-    serializer_class = ArticlesTopicSerializer    
-    
+    serializer_class = ArticlesTopicSerializer
+
     def get_queryset(self):
         cds_cod = self.kwargs.get("cds_cod")
         topic_id = self.kwargs.get("topic_id")
-        
+
         topic_id_list = topic_id.split(",")
-        
+
         only_active = True
         if self.request.user.is_superuser:
             only_active = False  # pragma: no cover
@@ -87,7 +88,7 @@ class ArticlesTopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
             if offices.exists():
                 only_active = False
-                
+
         query_visibile = Q(visibile=True) if only_active else Q()
         query_topic_id = Q(sito_web_cds_topic__id__in=topic_id_list)
         query_cds_cod = Q(
@@ -95,8 +96,7 @@ class ArticlesTopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 cds_cod
             )
         ) | Q(sito_web_cds_oggetti_portale__cds__cds_cod=str(cds_cod))
-        
-        
+
         articoli_reg_altri_dati_qs = (
             SitoWebCdsTopicArticoliRegAltriDati.objects.filter(query_visibile)
             .select_related("sito_web_cds_tipo_dato")
@@ -160,7 +160,7 @@ class ArticlesTopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             )
             .order_by("sito_web_cds_topic__id", "ordine")
         )
-    
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -168,20 +168,20 @@ class ArticlesTopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         description=descriptions.STUDYPLANS_LIST_DESCRIPTION,
         responses=responses.COMMON_LIST_RESPONSES(StudyPlansSerializer(many=True)),
     ),
-)     
+)
 class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = StudyPlansSerializer
-    
+
     def get_queryset(self):
         cds_cod = self.kwargs.get("cds_cod")
         year = self.kwargs.get("year")
-        
+
         if cds_cod and year:  # or regdid:
             query_cds = Q(regdid_id__cds_id__cds_cod__exact=cds_cod) if cds_cod else Q()
             query_year = Q(regdid_id__aa_reg_did__exact=year) if year else Q()
-           
+
             query = (
                 DidatticaPianoRegolamento.objects.filter(
                     query_cds,
@@ -467,9 +467,3 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 )
                 q["PlanTabs"] = schede
         return query
-
-
-        
-        
-    
-    

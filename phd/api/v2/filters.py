@@ -3,6 +3,8 @@ from phd.models import (
     DidatticaDottoratoCds,
     DidatticaDottoratoAttivitaFormativa,
 )
+
+
 class PhdFilter(filters.FilterSet):
     cycle = filters.CharFilter(
         field_name="idesse3_ddr__num_ciclo",
@@ -54,8 +56,9 @@ class PhdFilter(filters.FilterSet):
     )
 
     class Meta:
-        model = DidatticaDottoratoCds 
+        model = DidatticaDottoratoCds
         fields = []
+
 
 class PhdActivitiesFilter(filters.FilterSet):
     cycle = filters.CharFilter(
@@ -70,27 +73,27 @@ class PhdActivitiesFilter(filters.FilterSet):
         label="PhD",
         help_text="Search for PhD reference.",
     )
-    
+
     search = filters.CharFilter(
         field_name="nome_af",
         lookup_expr="icontains",
         label="Search",
-        help_text="Search for educational activity name.", 
+        help_text="Search for educational activity name.",
     )
     structure = filters.CharFilter(
         field_name="struttura_proponente_origine",
         lookup_expr="icontains",
         label="Structure",
-        help_text="Search for structure name.", 
+        help_text="Search for structure name.",
     )
-   
+
     ssd = filters.CharFilter(
         field_name="ssd",
         lookup_expr="icontains",
         label="SSD",
         help_text="Search for SSD.",
     )
-    
+
     typology = filters.NumberFilter(
         field_name="tipologia",
         lookup_expr="exact",

@@ -6,6 +6,7 @@ from addressbook.models import (
     PersonalePrioritaRuolo,
     PersonaleContatti,
 )
+from addressbook.utils import get_personale_matricola
 
 # from drf_spectacular.utils import (
 #     extend_schema,
@@ -19,18 +20,30 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-# from .filters import PersonnelCfFilter, AddressbookFilter, AddressbookFilter
+from .filters import PersonnelCfFilter, AddressbookFilter
 from .serializers import (
     AddressbookSerializer,
     PersonnelCfSerializer,
     AddressbookStructuresSerializer,
     RolesSerializer,
+    AddressbookDetailSerializer,
+    AddressbookFullSerializer,
 )
-from structures.models import UnitaOrganizzativa
+from structures.models import UnitaOrganizzativa, UnitaOrganizzativaFunzioni
 from rest_framework.response import Response
 from rest_framework import status
 from generics.utils import encrypt, decrypt
-from django.db.models import Q, Prefetch, OuterRef, Subquery
+from django.db.models import (
+    Q,
+    Prefetch,
+    OuterRef,
+    Subquery,
+    Value,
+    Exists,
+    Case,
+    When,
+    BooleanField,
+)
 
 
 class GetPersonApi(ReadOnlyModelViewSet):
@@ -75,7 +88,7 @@ class PersonnelCfViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PersonnelCfSerializer
-    # filterset_class = PersonnelCfFilter
+    filterset_class = PersonnelCfFilter
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -101,57 +114,275 @@ class PersonnelCfViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 class AddressbookViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
-    serializer_class = AddressbookSerializer
-    # filterset_class = AddressbookFilter
-    queryset = (
-        Personale.objects.filter(
-            Q(flg_cessato=0, dt_rap_fin__gte=datetime.datetime.today())
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-            & ~Q(didatticacopertura__stato_coper_cod="R")
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
-            & ~Q(didatticacopertura__stato_coper_cod="R"),
-        )
-        .prefetch_related(
-            Prefetch(
-                "personalecontatti",
-                queryset=PersonaleContatti.objects.select_related("cd_tipo_cont"),
-                to_attr="contatti",
-            ),
-            Prefetch(
-                "personaleattivotuttiruoli",
-                queryset=(
-                    PersonaleAttivoTuttiRuoli.objects.filter(
-                        cd_uo_aff_org__isnull=False
-                    )
-                    .select_related("cd_uo_aff_org")
-                    .annotate(
-                        priorita=Subquery(
-                            PersonalePrioritaRuolo.objects.filter(
-                                cd_ruolo=OuterRef("cd_ruolo")
-                            ).values("priorita")[:1]
-                        )
-                    )
-                    .distinct()
-                ),
-                to_attr="pers_attivo_tutti_ruoli",
-            ),
-        )
-        .only(
-            "nome",
-            "middle_name",
-            "cognome",
-            "id_ab",
-            "matricola",
-            "fl_docente",
-            "profilo",
-            "ds_profilo",
-            "ds_profilo_breve",
-            "cd_ruolo",
-            "ds_ruolo_locale",
-            "dt_rap_ini",
-        )
-        .order_by("cognome", "nome")
-    )
+    filterset_class = AddressbookFilter
+    lookup_field = "matricola"
+
+    def get_queryset(self):
+        if self.action == "list":
+            return (
+                Personale.objects.filter(
+                    Q(flg_cessato=0, dt_rap_fin__gte=datetime.datetime.today())
+                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                    & ~Q(didatticacopertura__stato_coper_cod="R")
+                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                    & ~Q(didatticacopertura__stato_coper_cod="R"),
+                )
+                .prefetch_related(
+                    Prefetch(
+                        "personalecontatti",
+                        queryset=PersonaleContatti.objects.select_related(
+                            "cd_tipo_cont"
+                        ),
+                        to_attr="contatti",
+                    ),
+                    Prefetch(
+                        "personaleattivotuttiruoli",
+                        queryset=(
+                            PersonaleAttivoTuttiRuoli.objects.filter(
+                                cd_uo_aff_org__isnull=False
+                            )
+                            .select_related("cd_uo_aff_org")
+                            .annotate(
+                                priorita=Subquery(
+                                    PersonalePrioritaRuolo.objects.filter(
+                                        cd_ruolo=OuterRef("cd_ruolo")
+                                    )
+                                    .order_by("priorita")
+                                    .values("priorita")[:1]
+                                )
+                            )
+                            .distinct()
+                        ),
+                        to_attr="pers_attivo_tutti_ruoli",
+                    ),
+                )
+                .only(
+                    "nome",
+                    "middle_name",
+                    "cognome",
+                    "id_ab",
+                    "matricola",
+                    "fl_docente",
+                    "profilo",
+                    "ds_profilo",
+                    "ds_profilo_breve",
+                    "cd_ruolo",
+                    "ds_ruolo_locale",
+                    "dt_rap_ini",
+                )
+                .order_by("cognome", "nome")
+            )
+        else:
+            # personale_id = get_personale_matricola(self.kwargs.get("matricola"))
+            personale_id = self.kwargs.get("matricola")
+            query_teacher = Personale.objects.filter(
+                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
+                didatticacopertura__af__isnull=False,
+                matricola=personale_id,
+            )
+            return (
+                Personale.objects.filter(
+                    Q(flg_cessato=0)
+                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                    & ~Q(didatticacopertura__stato_coper_cod="R")
+                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                    & ~Q(didatticacopertura__stato_coper_cod="R"),
+                    matricola=personale_id,
+                )
+                .prefetch_related(
+                    Prefetch(
+                        "personalecontatti",
+                        queryset=PersonaleContatti.objects.select_related(
+                            "cd_tipo_cont"
+                        ),
+                        to_attr="contatti",
+                    ),
+                    Prefetch(
+                        "personaleattivotuttiruoli",
+                        queryset=(
+                            PersonaleAttivoTuttiRuoli.objects.filter(
+                                cd_uo_aff_org__isnull=False
+                            )
+                            .select_related("cd_uo_aff_org")
+                            .annotate(
+                                priorita=Subquery(
+                                    PersonalePrioritaRuolo.objects.filter(
+                                        cd_ruolo=OuterRef("cd_ruolo")
+                                    )
+                                    .order_by("priorita")
+                                    .values("priorita")[:1]
+                                )
+                            )
+                            .distinct()
+                        ),
+                        to_attr="pers_attivo_tutti_ruoli",
+                    ),
+                    Prefetch(
+                        "unitaorganizzativafunzioni_set",
+                        queryset=(
+                            UnitaOrganizzativaFunzioni.objects.filter(
+                                termine__gt=datetime.datetime.now(),
+                                decorrenza__lt=datetime.datetime.now(),
+                            ).select_related("cd_csa")
+                        ),
+                        to_attr="functions",
+                    ),
+                )
+                .only(
+                    "id_ab",
+                    "matricola",
+                    "cod_fis",
+                    "nome",
+                    "middle_name",
+                    "cognome",
+                    "cd_ruolo",
+                    "ds_ruolo_locale",
+                    "cd_ssd",
+                    "ds_ssd",
+                    "cd_uo_aff_org",
+                    "ds_aff_org",
+                    "telrif",
+                    "email",
+                    "fl_docente",
+                    "cv_full_it",
+                    "cv_short_it",
+                    "cv_full_eng",
+                    "cv_short_eng",
+                    "profilo",
+                    "ds_profilo",
+                    "ds_profilo_breve",
+                    "cd_genere",
+                )
+                .annotate(
+                    has_copertura=Exists(query_teacher),
+                    cop_teacher=Case(
+                        When(Q(fl_docente=True), then=Value(False)),
+                        When(
+                            Q(fl_docente=False) & Q(has_copertura=True),
+                            then=Value(True),
+                        ),
+                        default=Value(False),
+                        output_field=BooleanField(),
+                    ),
+                )
+            )
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return AddressbookSerializer
+        return AddressbookDetailSerializer
+
+
+class AddressbookFullViewSet(ReadOnlyModelViewSet):
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = AddressbookFilter
+    lookup_field = "matricola"
+
+    def get_queryset(self):
+        if self.action == "list":
+            return AddressbookViewSet.get_queryset(self)
+        else:
+            personale_id = get_personale_matricola(self.kwargs.get("matricola"))
+            query_teacher = Personale.objects.filter(
+                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
+                didatticacopertura__af__isnull=False,
+                matricola=personale_id,
+            )
+            return (
+                Personale.objects.filter(
+                    Q(matricola=self.kwargs.get("matricola"))
+                    | Q(cod_fis=self.kwargs.get("matricola")),
+                    Q(flg_cessato=0)
+                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                    & ~Q(didatticacopertura__stato_coper_cod="R")
+                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                    & ~Q(didatticacopertura__stato_coper_cod="R"),
+                )
+                .prefetch_related(
+                    Prefetch(
+                        "personalecontatti",
+                        queryset=PersonaleContatti.objects.select_related(
+                            "cd_tipo_cont"
+                        ),
+                        to_attr="contatti",
+                    ),
+                    Prefetch(
+                        "personaleattivotuttiruoli",
+                        queryset=(
+                            PersonaleAttivoTuttiRuoli.objects.filter(
+                                cd_uo_aff_org__isnull=False
+                            )
+                            .select_related("cd_uo_aff_org")
+                            .annotate(
+                                priorita=Subquery(
+                                    PersonalePrioritaRuolo.objects.filter(
+                                        cd_ruolo=OuterRef("cd_ruolo")
+                                    )
+                                    .order_by("priorita")
+                                    .values("priorita")[:1]
+                                )
+                            )
+                            .distinct()
+                        ),
+                        to_attr="pers_attivo_tutti_ruoli",
+                    ),
+                    Prefetch(
+                        "unitaorganizzativafunzioni_set",
+                        queryset=(
+                            UnitaOrganizzativaFunzioni.objects.filter(
+                                termine__gt=datetime.datetime.now(),
+                                decorrenza__lt=datetime.datetime.now(),
+                            ).select_related("cd_csa")
+                        ),
+                        to_attr="functions",
+                    ),
+                )
+                .only(
+                    "id_ab",
+                    "matricola",
+                    "cod_fis",
+                    "nome",
+                    "middle_name",
+                    "cognome",
+                    "cd_ruolo",
+                    "ds_ruolo_locale",
+                    "cd_ssd",
+                    "ds_ssd",
+                    "cd_uo_aff_org",
+                    "ds_aff_org",
+                    "telrif",
+                    "email",
+                    "fl_docente",
+                    "cv_full_it",
+                    "cv_short_it",
+                    "cv_full_eng",
+                    "cv_short_eng",
+                    "profilo",
+                    "ds_profilo",
+                    "ds_profilo_breve",
+                    "cd_genere",
+                )
+                .annotate(
+                    has_copertura=Exists(query_teacher),
+                    cop_teacher=Case(
+                        When(Q(fl_docente=True), then=Value(False)),
+                        When(
+                            Q(fl_docente=False) & Q(has_copertura=True),
+                            then=Value(True),
+                        ),
+                        default=Value(False),
+                        output_field=BooleanField(),
+                    ),
+                )
+            )
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return AddressbookFullSerializer
+        return AddressbookDetailSerializer
 
 
 class AddressbookStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -163,19 +394,7 @@ class AddressbookStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
         UnitaOrganizzativa.objects.filter(
             dt_fine_val__gte=datetime.datetime.today(),
         )
-        .extra(
-            select={
-                "matricola": "PERSONALE.MATRICOLA",
-                "cd_uo_aff_org": "PERSONALE.CD_UO_AFF_ORG",
-            },
-            tables=["PERSONALE"],
-            where=[
-                "UNITA_ORGANIZZATIVA.UO=PERSONALE.CD_UO_AFF_ORG",
-                "PERSONALE.FLG_CESSATO=0",
-                "PERSONALE.CD_UO_AFF_ORG is not NULL",
-            ],
-        )
-        .values(
+        .only(
             "uo",
             "denominazione",
             "cd_tipo_nodo",
@@ -187,10 +406,10 @@ class AddressbookStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
 
 class RolesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]
     serializer_class = RolesSerializer
-
     queryset = (
         Personale.objects.values("cd_ruolo", "ds_ruolo_locale")
-        .order_by("ds_ruolo_locale")
         .distinct()
+        .order_by("ds_ruolo_locale")
     )

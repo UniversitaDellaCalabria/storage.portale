@@ -9,6 +9,7 @@ from generics.utils import build_media_path, encrypt
 from generics.api.serializers import ReadOnlyModelSerializer
 from patents.models import BrevettoDatiBase
 
+
 @extend_schema_serializer(examples=examples.PATENTS_SERIALIZER_EXAMPLE)
 class PatentsSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
@@ -24,17 +25,19 @@ class PatentsSerializer(ReadOnlyModelSerializer):
     areaDescription = serializers.CharField(source="area_tecnologica.descr_area_ita")
     inventors = serializers.SerializerMethodField()
     isActive = serializers.CharField(source="is_active")
-    
+
+    @extend_schema_field(serializers.CharField())
     def get_image(self, obj):
-        return build_media_path(obj["nome_file_logo"])
-    
+        return build_media_path(obj.nome_file_logo)
+
+    @extend_schema_field(serializers.ListField())
     def get_inventors(self, obj):
         return [
             {
-                "authorId": encrypt(inv["matricola_inventore"]),
-                "authorName": inv["cognomenome_origine"],
+                "authorId": encrypt(inv.matricola_inventore),
+                "authorName": inv.cognomenome_origine,
             }
-            for inv in obj["Inventori"]
+            for inv in obj.inventori
         ]
 
     class Meta:
@@ -52,9 +55,11 @@ class PatentsSerializer(ReadOnlyModelSerializer):
             "techAreaId",
             "areaDescription",
             "inventors",
-            "isActive"
-            
+            "isActive",
         ]
         language_field_map = {
-            "areaDescription": {"it": "area_tecnologica__descr_area_ita", "en": "area_tecnologica__descr_area_eng"}
+            "areaDescription": {
+                "it": "area_tecnologica.descr_area_ita",
+                "en": "area_tecnologica.descr_area_eng",
+            }
         }

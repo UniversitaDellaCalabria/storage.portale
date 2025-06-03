@@ -12,10 +12,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import mixins, viewsets
 
-from .filters import (
-    PhdFilter,
-    PhdActivitiesFilter
-)
+from .filters import PhdFilter, PhdActivitiesFilter
 from .serializers import (
     PhdSerializer,
     PhdActivitiesSerializer,
@@ -51,34 +48,36 @@ class PhdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     filter_backends = [DjangoFilterBackend]
     serializer_class = PhdSerializer
     filterset_class = PhdFilter
-    queryset = DidatticaDottoratoCds.objects.select_related(
-        'dip_cod'
-    ).prefetch_related(
-        'idesse3_ddr', 'idesse3_ddpds'
-    ).order_by(
-        "idesse3_ddr__aa_regdid_id",
-        "dip_cod__dip_cod",
-        "cds_cod",
-        "idesse3_ddpds__pds_cod",
-    ).only(
-        "dip_cod__dip_id",
-        "dip_cod__dip_cod",
-        "dip_cod__dip_des_it",
-        "dip_cod__dip_des_eng",
-        "cds_cod",
-        "cdsord_des",
-        "tipo_corso_cod",
-        "tipo_corso_des",
-        "durata_anni",
-        "valore_min",
-        "idesse3_ddr__aa_regdid_id",
-        "idesse3_ddr__regdid_cod",
-        "idesse3_ddr__frequenza_obbligatoria",
-        "idesse3_ddr__num_ciclo",
-        "idesse3_ddr__regdid_id_esse3",
-        "idesse3_ddpds__pds_cod",
-        "idesse3_ddpds__pds_des",
+    queryset = (
+        DidatticaDottoratoCds.objects.select_related("dip_cod")
+        .prefetch_related("idesse3_ddr", "idesse3_ddpds")
+        .order_by(
+            "idesse3_ddr__aa_regdid_id",
+            "dip_cod__dip_cod",
+            "cds_cod",
+            "idesse3_ddpds__pds_cod",
+        )
+        .only(
+            "dip_cod__dip_id",
+            "dip_cod__dip_cod",
+            "dip_cod__dip_des_it",
+            "dip_cod__dip_des_eng",
+            "cds_cod",
+            "cdsord_des",
+            "tipo_corso_cod",
+            "tipo_corso_des",
+            "durata_anni",
+            "valore_min",
+            "idesse3_ddr__aa_regdid_id",
+            "idesse3_ddr__regdid_cod",
+            "idesse3_ddr__frequenza_obbligatoria",
+            "idesse3_ddr__num_ciclo",
+            "idesse3_ddr__regdid_id_esse3",
+            "idesse3_ddpds__pds_cod",
+            "idesse3_ddpds__pds_des",
+        )
     )
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -92,6 +91,7 @@ class PhdCyclesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     def list(self, request, *args, **kwargs):
         result = {str(cycle[0]): cycle[1] for cycle in PHD_CYCLES}
         return Response(result)
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -155,6 +155,7 @@ class PhdActivitiesViewSet(ReadOnlyModelViewSet):
             )
         )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.PHD_ACTIVITIES_TYPES_LIST_SUMMARY,
@@ -173,6 +174,7 @@ class PhdActivitiesTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .values("tipo_af")
         .distinct()
     )
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -206,6 +208,7 @@ class PhdSsdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .distinct()
     )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.REF_PHD_LIST_SUMMARY,
@@ -223,6 +226,7 @@ class RefPhdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .values("rif_dottorato")
         .distinct()
     )
+
 
 @extend_schema_view(
     list=extend_schema(

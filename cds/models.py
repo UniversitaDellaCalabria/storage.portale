@@ -1198,7 +1198,7 @@ class DidatticaPianoRegolamento(models.Model):
 
 
 class DidatticaPianoSceltaAf(models.Model):
-    sce_af_id = models.IntegerField(db_column="SCE_AF_ID", primary_key=True)
+    sce_af_id = models.IntegerField(db_column="SCE_AF_ID", primary_key=True)    
     sce = models.ForeignKey(
         "DidatticaPianoSceltaVincoli",
         models.DO_NOTHING,
@@ -1528,6 +1528,7 @@ class DidatticaPianoSceltaSchePiano(models.Model):
         models.DO_NOTHING,
         db_column="SCHE_PIANO_ID",
         primary_key=True,
+        related_name="didatticapianosceltaschepiano"
     )
     sche_statutario_flg = models.BooleanField(
         db_column="SCHE_STATUTARIO_FLG", default=False
@@ -1932,7 +1933,7 @@ class DidatticaPianoSceltaVincoli(models.Model):
 class DidatticaPianoSche(models.Model):
     sche_piano_id = models.IntegerField(db_column="SCHE_PIANO_ID", primary_key=True)
     regpiani = models.ForeignKey(
-        DidatticaPianoRegolamento, models.DO_NOTHING, db_column="REGPIANI_ID"
+        DidatticaPianoRegolamento, models.DO_NOTHING, db_column="REGPIANI_ID", related_name="didatticapianosche"
     )
     sche_piano_cod = models.CharField(
         db_column="SCHE_PIANO_COD", max_length=10, blank=True, null=True

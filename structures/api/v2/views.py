@@ -19,17 +19,17 @@ from .serializers import (
     FunctionSerializer,
     DepartmentsSerializer,
 )
-from django.db.models import OuterRef, Subquery
+from django.db.models import OuterRef, Subquery, Prefetch
 
 
 from structures.models import (
     DidatticaDipartimentoUrl,
     DidatticaDipartimento,
     UnitaOrganizzativa,
-    UnitaOrganizzativaContatti,
     UnitaOrganizzativaFunzioni,
     UnitaOrganizzativaTipoFunzioni,
 )
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -50,10 +50,7 @@ class StructuresViewSet(ReadOnlyModelViewSet):
     filterset_class = StructuresFilter
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return StructuresSerializer
-        else:
-            return StructureSerializer
+        return StructuresSerializer if self.action == "list" else StructureSerializer
 
     def get_queryset(self):
         urls_subquery = Subquery(
@@ -78,52 +75,27 @@ class StructuresViewSet(ReadOnlyModelViewSet):
                 .order_by("denominazione")
             )
         else:
-            email_subquery = Subquery(
-                UnitaOrganizzativaContatti.objects.filter(
-                    ab=OuterRef("id_ab"), cd_tipo_cont="EMAIL"
-                ).values("contatto")[:1]
-            )
-            pec_subquery = Subquery(
-                UnitaOrganizzativaContatti.objects.filter(
-                    ab=OuterRef("id_ab"), cd_tipo_cont="PEC"
-                ).values("contatto")[:1]
-            )
-            tfr_subquery = Subquery(
-                UnitaOrganizzativaContatti.objects.filter(
-                    ab=OuterRef("id_ab"), cd_tipo_cont="TFR"
-                ).values("contatto")[:1]
-            )
-
-            funzioniPersonale = UnitaOrganizzativaFunzioni.objects.filter(
-                cd_csa=OuterRef("cd_csa"),
-                cod_fis__flg_cessato=False,
-                termine__gt=datetime.datetime.now(),
-            ).only(
-                "ds_funzione",
-                "funzione",
-                "cod_fis__nome",
-                "cod_fis__cognome",
-                "cod_fis__middle_name",
-                "cod_fis__matricola",
-            )
-
             return (
                 UnitaOrganizzativa.objects.filter(
                     dt_fine_val__gte=datetime.datetime.today()
                 )
                 .annotate(
                     urls=urls_subquery,
-                    email=email_subquery,
-                    pec=pec_subquery,
-                    tfr=tfr_subquery,
-                    id=funzioniPersonale.values("cod_fis__matricola"),
-                    cognome=funzioniPersonale.values("cod_fis__cognome"),
-                    nome=funzioniPersonale.values("cod_fis__nome"),
-                    middle_name=funzioniPersonale.values("cod_fis__middle_name"),
-                    function=funzioniPersonale.values("ds_funzione"),
-                    functionCod=funzioniPersonale.values("funzione"),
                 )
-                .values(
+                .prefetch_related(
+                    Prefetch(
+                        "unitaorganizzativafunzioni",
+                        queryset=(
+                            UnitaOrganizzativaFunzioni.objects.filter(
+                                cod_fis__flg_cessato=False,
+                                termine__gt=datetime.datetime.now(),
+                            ).select_related("cod_fis")
+                        ),
+                        to_attr="funzioni",
+                    ),
+                )
+                .select_related("unitaorganizzativacontatti")
+                .only(
                     "uo",
                     "denominazione",
                     "uo_padre",
@@ -132,16 +104,8 @@ class StructuresViewSet(ReadOnlyModelViewSet):
                     "cd_tipo_nodo",
                     "ds_mission",
                     "cd_csa",
-                    "urls",
-                    "email",
-                    "pec",
-                    "tfr",
-                    "id",
-                    "cognome",
-                    "nome",
-                    "middle_name",
-                    "function",
-                    "functionCod",
+                    "unitaorganizzativacontatti__cd_tipo_cont",
+                    "unitaorganizzativacontatti__contatto",
                 )
             )
 
@@ -163,6 +127,7 @@ class TypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .order_by("ds_tipo_nodo")
     )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.FUNCTIONS_LIST_SUMMARY,
@@ -180,6 +145,7 @@ class FunctionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .distinct()
         .order_by("cd_tipo_nod")
     )
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -205,12 +171,11 @@ class DepartmentsViewSet(ReadOnlyModelViewSet):
         return (
             DidatticaDipartimento.objects.annotate(urls=urls_subquery)
             .order_by(ordering_field)
-            .values(
+            .only(
                 "dip_id",
                 "dip_cod",
                 "dip_des_it",
                 "dip_des_eng",
                 "dip_nome_breve",
-                "urls",
             )
         )

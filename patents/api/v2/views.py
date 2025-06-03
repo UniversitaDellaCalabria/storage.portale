@@ -8,7 +8,7 @@ from api_docs import responses
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from rest_framework.pagination import PageNumberPagination
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from patents.models import BrevettoDatiBase, BrevettoInventori
 from .serializers import PatentsSerializer
 from .filters import PatentFilter
@@ -32,65 +32,39 @@ class PatentsViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PatentsSerializer
-    filterset_class =  PatentFilter
+    filterset_class = PatentFilter
+
     def get_queryset(self):
-        if self.action == "list":
-            request = self.request
-            only_active = True
+        request = self.request
+        only_active = True
 
-            if request.user.is_superuser:
-                only_active = False  
-            if request.user.is_authenticated: 
-                my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
-                    employee=request.user,
-                    office__name=OFFICE_PATENTS,
-                    office__is_active=True,
-                    office__organizational_structure__is_active=True,
-                )
-                if my_offices.exists():
-                    only_active = False
-                    
-    
-            query_is_active = Q(is_active=True) if only_active else Q()
-
-            queryset = (
-                BrevettoDatiBase.objects.filter(query_is_active)
-                .values(
-                    "id",
-                    "id_univoco",
-                    "titolo",
-                    "nome_file_logo",
-                    "breve_descrizione",
-                    "trl_iniziale",
-                    "trl_aggiornato",
-                    "valorizzazione",
-                    "url_knowledge_share",
-                    "area_tecnologica",
-                    "area_tecnologica__descr_area_ita",
-                    "area_tecnologica__descr_area_eng",
-                    "is_active",
-                )
-                .distinct()
+        if request.user.is_superuser:
+            only_active = False
+        if request.user.is_authenticated:
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+                employee=request.user,
+                office__name=OFFICE_PATENTS,
+                office__is_active=True,
+                office__organizational_structure__is_active=True,
             )
-            for q in queryset:
-                inventori = (
-                    BrevettoInventori.objects.filter(brevetto=q["id"])
-                    .values(
+            if my_offices.exists():
+                only_active = False
+
+        query_is_active = Q(is_active=True) if only_active else Q()
+
+        return (
+            BrevettoDatiBase.objects.filter(query_is_active)
+            .prefetch_related(
+                Prefetch(
+                    "brevettoinventori",
+                    queryset=BrevettoInventori.objects.only(
                         "matricola_inventore",
                         "cognomenome_origine",
-                    )
-                    .distinct()
+                    ).distinct(),
+                    to_attr="inventori",
                 )
-
-                if len(inventori) == 0:
-                    q["Inventori"] = []
-                else:
-                    q["Inventori"] = inventori
-
-            return queryset
-        
-        else:
-            queryset = BrevettoDatiBase.objects.filter(id=self.kwargs.get("patentid"), is_active=True).values(
+            )
+            .only(
                 "id",
                 "id_univoco",
                 "titolo",
@@ -105,20 +79,5 @@ class PatentsViewSet(ReadOnlyModelViewSet):
                 "area_tecnologica__descr_area_eng",
                 "is_active",
             )
-
-            for q in queryset:
-                inventori = (
-                    BrevettoInventori.objects.filter(brevetto=q["id"])
-                    .values(
-                        "matricola_inventore",
-                        "cognomenome_origine",
-                    )
-                    .distinct()
-                )
-
-                if len(inventori) == 0:
-                    q["Inventori"] = []
-                else:
-                    q["Inventori"] = inventori
-        
-            return queryset
+            .distinct()
+        )

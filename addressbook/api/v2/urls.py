@@ -4,7 +4,10 @@ from .views import (
     GetDecryptedPersonApi,
     PersonnelCfViewSet,
     AddressbookViewSet,
-)  # , RolesViewSet, AddressbookStructuresViewSet
+    AddressbookFullViewSet,
+    AddressbookStructuresViewSet,
+    RolesViewSet
+)
 
 app_name = "apiv2"
 
@@ -20,8 +23,8 @@ router.register(
 )
 router.register(r"personnel-cfs", PersonnelCfViewSet, basename="personnel-cfs")
 router.register(r"addressbook", AddressbookViewSet, basename="addressbook")
-# router.register(r"addressbook-full", AddressbookFullViewSet, basename="addressbook-full")
-# router.register(r"addressbookstructures", AddressbookStructuresViewSet, basename="addressbookstructures")
-# router.register(r"roles", RolesViewSet, basename="roles")
+router.register(r"addressbook-full", AddressbookFullViewSet, basename="addressbook-full")
+router.register(r"addressbookstructures", AddressbookStructuresViewSet, basename="addressbookstructures")
+router.register(r"roles", RolesViewSet, basename="roles")
 
 urlpatterns += router.urls

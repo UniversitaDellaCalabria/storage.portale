@@ -15,7 +15,7 @@ from .serializers import (
     ProjectsSerializer,
     TerritorialScopesSerializer,
     ProgramTypesSerializer,
-    InfrastructuresSerializer
+    InfrastructuresSerializer,
 )
 from .filters import ProjectsFilter
 from projects.models import (
@@ -27,6 +27,7 @@ from projects.models import (
 )
 from django.db.models import Q, Prefetch
 from rest_framework.viewsets import ReadOnlyModelViewSet
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -45,12 +46,12 @@ class ProjectsViewSet(ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProjectsFilter
     serializer_class = ProjectsSerializer
-    
+
     def get_queryset(self):
         request = self.request
         only_active = True
         if request.user.is_superuser:
-            only_active = False 
+            only_active = False
         if request.user.is_authenticated:
             my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
                 employee=request.user,
@@ -60,23 +61,27 @@ class ProjectsViewSet(ReadOnlyModelViewSet):
             )
             if my_offices.exists():
                 only_active = False
-        
+
         query = (
-            ProgettoDatiBase.objects.filter(
-                Q(is_active=True) if only_active else Q()
+            ProgettoDatiBase.objects.filter(Q(is_active=True) if only_active else Q())
+            .select_related(
+                "tipologia_programma", "ambito_territoriale", "uo", "area_tecnologica"
             )
-            .select_related("tipologia_programma", "ambito_territoriale", "uo", "area_tecnologica") 
             .prefetch_related(
                 Prefetch(
-                    'progettoresponsabilescientifico_set',
-                    queryset=ProgettoResponsabileScientifico.objects.only('matricola', 'nome_origine'),
-                    to_attr='responsabili'
+                    "progettoresponsabilescientifico_set",
+                    queryset=ProgettoResponsabileScientifico.objects.only(
+                        "matricola", "nome_origine"
+                    ),
+                    to_attr="responsabili",
                 ),
                 Prefetch(
-                    'progettoricercatore_set',
-                    queryset=ProgettoRicercatore.objects.only('matricola', 'nome_origine'),
-                    to_attr='ricercatori'
-                )
+                    "progettoricercatore_set",
+                    queryset=ProgettoRicercatore.objects.only(
+                        "matricola", "nome_origine"
+                    ),
+                    to_attr="ricercatori",
+                ),
             )
             .only(
                 "id",
@@ -106,41 +111,57 @@ class ProjectsViewSet(ReadOnlyModelViewSet):
         )
         return query
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.TERRITORIAL_SCOPES_LIST_SUMMARY,
         description=descriptions.TERRITORIAL_SCOPES_LIST_DESCRIPTION,
-        responses=responses.COMMON_LIST_RESPONSES(TerritorialScopesSerializer(many=True)),
+        responses=responses.COMMON_LIST_RESPONSES(
+            TerritorialScopesSerializer(many=True)
+        ),
     )
 )
 class TerritorialScopesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TerritorialScopesSerializer
-    queryset = ProgettoAmbitoTerritoriale.objects.values("id", "ambito_territoriale").distinct()
-   
+    queryset = ProgettoAmbitoTerritoriale.objects.values(
+        "id", "ambito_territoriale"
+    ).distinct()
+
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.PROGRAM_TYPES_LIST_SUMMARY,
         description=descriptions.PROGRAM_TYPES_LIST_DESCRIPTION,
         responses=responses.COMMON_LIST_RESPONSES(ProgramTypesSerializer(many=True)),
     )
-) 
+)
 class ProgramTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = ProgramTypesSerializer
-    queryset = ProgettoTipologiaProgramma.objects.values("id", "nome_programma").order_by("nome_programma").distinct()
-    
+    queryset = (
+        ProgettoTipologiaProgramma.objects.values("id", "nome_programma")
+        .order_by("nome_programma")
+        .distinct()
+    )
+
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.INFRASTRUCTURES_LIST_SUMMARY,
         description=descriptions.INFRASTRUCTURES_LIST_DESCRIPTION,
         responses=responses.COMMON_LIST_RESPONSES(InfrastructuresSerializer(many=True)),
     )
-)    
+)
 class InfrastructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = InfrastructuresSerializer
-    queryset = ProgettoDatiBase.objects.values("uo", "uo__denominazione").exclude(uo__isnull=True).distinct().order_by("uo__denominazione")
+    queryset = (
+        ProgettoDatiBase.objects.values("uo", "uo__denominazione")
+        .exclude(uo__isnull=True)
+        .distinct()
+        .order_by("uo__denominazione")
+    )
