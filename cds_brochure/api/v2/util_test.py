@@ -6,7 +6,7 @@ from cds_brochure.models import (
     CdsBrochure,
     CdsBrochureExStudenti,
     CdsBrochureLink,
-    CdsBrochureSlider
+    CdsBrochureSlider,
 )
 
 
@@ -22,24 +22,16 @@ class ApiCdsBrochureUnitTestMethods(TestCase):
         data.update(kwargs)
         return DidatticaCds.objects.create(**data)
 
-
     @classmethod
     def create_cdsBrochure(cls, **kwargs):
         data = {
             "id": 1,
             "aa": "2022",
-            # 'nome_corso_it': 'Informatica',
-            # 'nome_corso_en': 'Computer Science',
-            # 'lingua_it': 'italiano',
-            # 'lingua_en': "italian",
-            # 'classe_laurea_it': 'aaa',
-            # 'durata': 50,
             "num_posti": 50,
         }
         data.update(kwargs)
         return CdsBrochure.objects.create(**data)
-    
-    
+
     @classmethod
     def create_cdsBrochureExStudenti(cls, **kwargs):
         data = {
@@ -52,7 +44,7 @@ class ApiCdsBrochureUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return CdsBrochureExStudenti.objects.create(**data)
-    
+
     @classmethod
     def create_cdsBrochureLink(cls, **kwargs):
         data = {
@@ -65,8 +57,7 @@ class ApiCdsBrochureUnitTestMethods(TestCase):
         }
         data.update(kwargs)
         return CdsBrochureLink.objects.create(**data)
-    
-    
+
     @classmethod
     def create_cdsBrochureSlider(cls, **kwargs):
         data = {

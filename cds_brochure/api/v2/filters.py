@@ -2,8 +2,11 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 from cds_brochure.models import CdsBrochure
 
+
 class BrochuresFilter(filters.FilterSet):
-    search = filters.CharFilter(method='filter_by_search', label='Search by the name of the course of study.')
+    search = filters.CharFilter(
+        method="filter_by_search", label="Search by the name of the course of study."
+    )
 
     def filter_by_search(self, queryset, name, value):
         query_search = Q()
@@ -14,4 +17,4 @@ class BrochuresFilter(filters.FilterSet):
 
     class Meta:
         model = CdsBrochure
-        fields = ['search']
+        fields = ["search"]

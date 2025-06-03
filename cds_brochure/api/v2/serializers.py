@@ -10,6 +10,7 @@ from cds.models import DidatticaRegolamentoAltriDati
 from cds_brochure.models import CdsBrochure
 from cds.models import DidatticaCdsLingua
 
+
 @extend_schema_serializer(examples=examples.BROCHURE_LIST_SERIALIZER_EXAMPLE)
 class BrochuresListSerializer(ReadOnlyModelSerializer):
     id = serializers.IntegerField()
@@ -28,6 +29,7 @@ class BrochuresListSerializer(ReadOnlyModelSerializer):
         language_field_map = {
             "cdsName": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"}
         }
+
 
 @extend_schema_serializer(examples=examples.BROCHURE_DETAIL_SERIALIZER_EXAMPLE)
 class BrochuresDetailSerializer(ReadOnlyModelSerializer):
@@ -63,7 +65,7 @@ class BrochuresDetailSerializer(ReadOnlyModelSerializer):
     def get_links(self, obj):
         lang = self.get_requestLang()
 
-        links =  getattr(obj, "links", [])
+        links = getattr(obj, "links", [])
 
         return [
             {
@@ -83,7 +85,7 @@ class BrochuresDetailSerializer(ReadOnlyModelSerializer):
     def get_sliders(self, obj):
         lang = self.get_requestLang()
 
-        sliders =  getattr(obj, "sliders", [])
+        sliders = getattr(obj, "sliders", [])
 
         return [
             {
@@ -91,7 +93,7 @@ class BrochuresDetailSerializer(ReadOnlyModelSerializer):
                 "order": s.ordine,
                 "description": s.slider_it
                 if lang == "it" or s.slider_en is None
-                else s.slider_it
+                else s.slider_it,
             }
             for s in sliders
         ]
@@ -101,7 +103,7 @@ class BrochuresDetailSerializer(ReadOnlyModelSerializer):
         request = self.context.get("request", None)
         lang = "en" if request and request.GET.get("lang") == "en" else "it"
 
-        exStudensts =  getattr(obj, "exStudenti", [])
+        exStudensts = getattr(obj, "exStudenti", [])
         return [
             {
                 "id": e.id,
@@ -118,23 +120,33 @@ class BrochuresDetailSerializer(ReadOnlyModelSerializer):
 
     @extend_schema_field(serializers.ListField())
     def get_languages(self, obj):
-        lingua = DidatticaCdsLingua.objects.filter(cdsord__cds_cod=obj.cds.cds_cod).only("iso6392_cod")
-        
+        lingua = DidatticaCdsLingua.objects.filter(
+            cdsord__cds_cod=obj.cds.cds_cod
+        ).only("iso6392_cod")
+
         for lingua in lingua:
             return [lingua.iso6392_cod] if lingua else []
-    
+
     @extend_schema_field(serializers.ListField())
     def get_video(self, obj):
         lang = self.get_requestLang()
-        
-        reg_did = DidatticaRegolamentoAltriDati.objects.filter(
-            regdid__cds__cds_cod=obj.cds.cds_cod,
-            regdid__aa_reg_did=obj.aa,
-            tipo_testo_regdid_cod="URL_CDS_VIDEO"
-        ).only('clob_txt_ita', 'clob_txt_eng').first()
-        
+
+        reg_did = (
+            DidatticaRegolamentoAltriDati.objects.filter(
+                regdid__cds__cds_cod=obj.cds.cds_cod,
+                regdid__aa_reg_did=obj.aa,
+                tipo_testo_regdid_cod="URL_CDS_VIDEO",
+            )
+            .only("clob_txt_ita", "clob_txt_eng")
+            .first()
+        )
+
         if reg_did:
-            return reg_did.clob_txt_ita if lang == "it" and reg_did.clob_txt_eng is None else reg_did.clob_txt_eng
+            return (
+                reg_did.clob_txt_ita
+                if lang == "it" and reg_did.clob_txt_eng is None
+                else reg_did.clob_txt_eng
+            )
 
     class Meta:
         model = CdsBrochure
@@ -161,7 +173,7 @@ class BrochuresDetailSerializer(ReadOnlyModelSerializer):
             "enrollmentMode",
             "exStudents",
             "links",
-            "sliders"
+            "sliders",
         ]
         language_field_map = {
             "cdsName": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"},

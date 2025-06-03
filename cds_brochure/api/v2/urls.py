@@ -1,8 +1,5 @@
-
 from rest_framework.routers import DefaultRouter
-from .views import (
-    BrochuresViewSet
-)
+from .views import BrochuresViewSet
 
 app_name = "apiv2"
 

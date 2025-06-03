@@ -28,11 +28,14 @@ from advanced_training.models import (
     AltaFormazioneTipoCorso,
 )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.HIGHFORMATION_MASTERS_LIST_SUMMARY,
         description=descriptions.HIGHFORMATION_MASTERS_LIST_DESCRIPTION,
-        responses=responses.COMMON_LIST_RESPONSES(HighFormationMastersSerializer(many=True)),
+        responses=responses.COMMON_LIST_RESPONSES(
+            HighFormationMastersSerializer(many=True)
+        ),
     ),
     retrieve=extend_schema(
         summary=descriptions.HIGHFORMATION_MASTERS_RETRIEVE_SUMMARY,
@@ -158,11 +161,14 @@ class HighFormationMastersViewSet(ReadOnlyModelViewSet):
         .order_by("titolo_it", "id")
     )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.HIGHFORMATION_COURSE_TYPES_LIST_SUMMARY,
         description=descriptions.HIGHFORMATION_COURSE_TYPES_LIST_DESCRIPTION,
-        responses=responses.COMMON_LIST_RESPONSES(HighFormationCourseTypesSerializer(many=True)),
+        responses=responses.COMMON_LIST_RESPONSES(
+            HighFormationCourseTypesSerializer(many=True)
+        ),
     ),
 )
 class HighFormationCourseTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

@@ -10,6 +10,8 @@ from advanced_training.models import (
     AltaFormazioneModalitaErogazione,
     AltaFormazioneTipoCorso,
 )
+
+
 @extend_schema_serializer(examples=examples.HIGH_FORMATION_MASTER_EXAMPLES)
 class HighFormationMastersSerializer(serializers.ModelSerializer):
     masterTitle = serializers.CharField(source="titolo_it")
@@ -85,7 +87,7 @@ class HighFormationMastersSerializer(serializers.ModelSerializer):
             }
             for p in getattr(obj, "partners")
         ]
-        
+
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_selections(self, obj):
         return [
@@ -95,11 +97,10 @@ class HighFormationMastersSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_internalScientificCouncil(self, obj):
         return [
-            {"id": encrypt(c.matricola_cons), 
-             "name": c.nome_origine_cons}
+            {"id": encrypt(c.matricola_cons), "name": c.nome_origine_cons}
             for c in getattr(obj, "internal_scientific_council")
         ]
-        
+
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_externalScientificCouncil(self, obj):
         return [
@@ -190,6 +191,7 @@ class HighFormationMastersSerializer(serializers.ModelSerializer):
             },
         }
 
+
 @extend_schema_serializer(examples=examples.HIGH_FORMATION_COURSE_TYPES_EXAMPLES)
 class HighFormationCourseTypesSerializer(serializers.ModelSerializer):
     description = serializers.CharField(source="tipo_corso_descr")
@@ -197,6 +199,7 @@ class HighFormationCourseTypesSerializer(serializers.ModelSerializer):
     class Meta:
         model = AltaFormazioneTipoCorso
         fields = ["id", "description"]
+
 
 @extend_schema_serializer(examples=examples.EROGATION_MODES_EXAMPLES)
 class ErogationModesSerializer(serializers.ModelSerializer):
