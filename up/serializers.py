@@ -23,11 +23,11 @@ def upImpegniSerializer(
         if not code and af_name and not name.lower().startswith(af_name.lower()):
             continue
 
-        dataInizio = impegno["dataInizio"][0:10]
-        dataFine = impegno["dataFine"][0:10]
+        # ~ dataInizio = impegno["dataInizio"][0:10]
+        # ~ dataFine = impegno["dataFine"][0:10]
 
-        inizio = datetime.strptime(impegno["orarioInizio"], "%Y-%m-%dT%H:%M:00.000Z")
-        fine = datetime.strptime(impegno["orarioFine"], "%Y-%m-%dT%H:%M:00.000Z")
+        inizio = datetime.strptime(impegno["dataInizio"], "%Y-%m-%dT%H:%M:%S.%fZ")
+        fine = datetime.strptime(impegno["dataFine"], "%Y-%m-%dT%H:%M:%S.%fZ")
         inizio_tz = timezone.localtime(inizio.replace(tzinfo=timezone.utc))
         fine_tz = timezone.localtime(fine.replace(tzinfo=timezone.utc))
         orarioInizio = (
@@ -78,7 +78,7 @@ def upImpegniSerializer(
             if not aula_found:
                 continue
 
-        if not show_past and dataInizio < date.today().strftime("%Y-%m-%d"):
+        if not show_past and inizio_tz.date() < date.today():
             continue
 
         extra = {}
@@ -95,8 +95,8 @@ def upImpegniSerializer(
         impegno_dict = {
             "insegnamento": insegnamento,
             "codice_insegnamento": code,
-            "dataInizio": dataInizio,
-            "dataFine": dataFine,
+            "dataInizio": str(inizio_tz.date()),
+            "dataFine": str(fine_tz.date()),
             "orarioInizio": orarioInizio,
             "orarioFine": orarioFine,
             "annoCorso": annoCorso,
