@@ -48,6 +48,7 @@ from django.db.models import Q, Prefetch
 
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.LABORATORIES_LIST_SUMMARY,
@@ -108,12 +109,8 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
                 .prefetch_related(
                     Prefetch(
                         "laboratoriopersonalericerca_set",
-                        queryset=LaboratorioPersonaleRicerca.objects.only(
-                            "matricola_personale_ricerca__matricola",
-                            "matricola_personale_ricerca__nome",
-                            "matricola_personale_ricerca__cognome",
-                            "matricola_personale_ricerca__middle_name",
-                        ),
+                        queryset=LaboratorioPersonaleRicerca.objects.select_related(
+                            "matricola_personale_ricerca"),
                         to_attr="personale_ricerca",
                     ),
                     Prefetch(
@@ -276,19 +273,24 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
                     "responsabile_scientifico",
                     "matricola_responsabile_scientifico",
                     "matricola_responsabile_scientifico__id_ab",
+                    "matricola_responsabile_scientifico__cod_fis",
                     "laboratorio_interdipartimentale",
                     "sito_web",
                     "strumentazione_descrizione",
                     "visibile",
                 )
             )
+
             return query
+
 
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.LABORATORIES_AREA_LIST_SUMMARY,
         description=descriptions.LABORATORIES_AREA_LIST_DESCRIPTION,
-        responses=responses.COMMON_LIST_RESPONSES(LaboratoriesAreaSerializer(many=True)),
+        responses=responses.COMMON_LIST_RESPONSES(
+            LaboratoriesAreaSerializer(many=True)
+        ),
     )
 )
 class LaboratoriesAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -299,11 +301,14 @@ class LaboratoriesAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         LaboratorioDatiBase.objects.all().values("ambito").distinct().order_by("ambito")
     )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.LABORATORIES_SCOPES_LIST_SUMMARY,
         description=descriptions.LABORATORIES_SCOPES_LIST_DESCRIPTION,
-        responses=responses.COMMON_LIST_RESPONSES(LaboratoriesScopesSerializer(many=True)),
+        responses=responses.COMMON_LIST_RESPONSES(
+            LaboratoriesScopesSerializer(many=True)
+        ),
     ),
 )
 class LaboratoriesScopesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -316,6 +321,7 @@ class LaboratoriesScopesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .distinct()
         .order_by("id")
     )
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -331,6 +337,7 @@ class InfrastructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = (
         LaboratorioInfrastruttura.objects.all().values("id", "descrizione").distinct()
     )
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -388,6 +395,7 @@ class ErcListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         elif level == "2":
             return Erc2ListSerializer(*args, **kwargs)
         return Erc0ListSerializer(*args, **kwargs)
+
 
 @extend_schema_view(
     list=extend_schema(

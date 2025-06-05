@@ -29,6 +29,11 @@ def get_personale_matricola(personale_id):
     return personale["matricola"]
 
 
+def add_email_addresses(cod_fis):
+    return apps.get_model("addressbook.PersonaleContatti").objects.filter(
+            cod_fis=cod_fis, cd_tipo_cont="EMAIL"
+        ).only("contatto")
+
 def append_email_addresses(addressbook_queryset, id_ab_key):
     personalecontatti_model = apps.get_model("addressbook.PersonaleContatti")
     cache_key = "addressbook_email_list"

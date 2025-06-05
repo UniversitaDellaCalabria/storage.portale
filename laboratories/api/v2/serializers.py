@@ -15,7 +15,8 @@ from research_lines.models import (
     RicercaErc0,
 )
 from generics.utils import build_media_path, encrypt
-# from addressbook.utils import append_email_addresses
+
+from addressbook.utils import add_email_addresses
 
 
 @extend_schema_serializer(examples=examples.LABORATORY_SERIALIZER_EXAMPLE)
@@ -25,7 +26,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
     completionReferentName = serializers.CharField(source="referente_compilazione")
     scientificDirectorId = serializers.SerializerMethodField()
     scientificDirectorName = serializers.CharField(source="responsabile_scientifico")
-    # scientificDirectorEmail = serializers.SerializerMethodField()
+    scientificDirectorEmail = serializers.SerializerMethodField()
     name = serializers.CharField(source="nome_laboratorio")
     acronym = serializers.CharField(source="acronimo")
     logo = serializers.SerializerMethodField()
@@ -60,8 +61,11 @@ class LaboratorySerializer(serializers.ModelSerializer):
     URL = serializers.CharField(source="sito_web")
     visible = serializers.CharField(source="visibile")
 
-    # def get_scientificDirectorEmail(self, obj):
-    #     return getattr(obj, "email")
+    def get_scientificDirectorEmail(self, obj):
+        return [
+            e.contatto
+            for e in add_email_addresses(obj.matricola_responsabile_scientifico.cod_fis)
+        ]
 
     @extend_schema_field(serializers.CharField())
     def get_completionReferentId(self, obj):
@@ -108,25 +112,33 @@ class LaboratorySerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_researchPersonnel(self, obj):
-        return [
-            {
-                "id": encrypt(p.matricola_personale_ricerca.matricola),
-                "name": p.matricola_personale_ricerca.cognome
-                + " "
-                + p.matricola_personale_ricerca.nome
-                + " "
-                if not p.matricola_personale_ricerca.middle_name
-                else p.matricola_personale_ricerca.cognome
-                + " "
-                + p.matricola_personale_ricerca.nome
-                + " "
-                + p.matricola_personale_ricerca.middle_name,
-            }
-            for p in obj.personale_ricerca
-            if p.matricola_personale_ricerca
-            and p.matricola_personale_ricerca.matricola
-            != obj.matricola_responsabile_scientifico
-        ]
+        for p in obj.personale_ricerca:
+            if (
+                p.matricola_personale_ricerca
+                and p.matricola_personale_ricerca.matricola
+                != obj.matricola_responsabile_scientifico
+            ):
+                full_name = (
+                    p.matricola_personale_ricerca.cognome
+                    + " "
+                    + p.matricola_personale_ricerca.nome
+                    + " "
+                )
+                if p.matricola_personale_ricerca.middle_name:
+                    full_name += p.matricola_personale_ricerca.middle_name
+
+            return [
+                {
+                    "id": encrypt(p.matricola_personale_ricerca.matricola),
+                    "name": full_name,
+                    "email": [
+                        e.contatto
+                        for e in add_email_addresses(
+                            p.matricola_personale_ricerca.cod_fis
+                        )
+                    ],
+                }
+            ]
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_techPersonnel(self, obj):
@@ -201,7 +213,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
             "completionReferentName",
             "scientificDirectorId",
             "scientificDirectorName",
-            # "scientificDirectorEmail",
+            "scientificDirectorEmail",
             "name",
             "acronym",
             "logo",
@@ -275,7 +287,7 @@ class LaboratoriesSerializer(serializers.Serializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_scientificDirectorId(self, obj):
-        # append_email_addresses(obj, obj.matricola_responsabile_scientifico.id_ab)
+        # append_email_addressesV2(obj, obj.matricola_responsabile_scientifico.id_ab)
         return encrypt(obj.matricola_responsabile_scientifico)
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
@@ -312,25 +324,33 @@ class LaboratoriesSerializer(serializers.Serializer):
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_researchPersonnel(self, obj):
         # append_email_addresses(obj.personale_ricerca, obj.personale_ricerca.matricola_personale_ricerca.id_ab)
-        return [
-            {
-                "id": encrypt(p.matricola_personale_ricerca.matricola),
-                "name": p.matricola_personale_ricerca.cognome
-                + " "
-                + p.matricola_personale_ricerca.nome
-                + " "
-                if not p.matricola_personale_ricerca.middle_name
-                else p.matricola_personale_ricerca.cognome
-                + " "
-                + p.matricola_personale_ricerca.nome
-                + " "
-                + p.matricola_personale_ricerca.middle_name,
-            }
-            for p in obj.personale_ricerca
-            if p.matricola_personale_ricerca
-            and p.matricola_personale_ricerca.matricola
-            != obj.matricola_responsabile_scientifico
-        ]
+        for p in obj.personale_ricerca:
+            if (
+                p.matricola_personale_ricerca
+                and p.matricola_personale_ricerca.matricola
+                != obj.matricola_responsabile_scientifico
+            ):
+                full_name = (
+                    p.matricola_personale_ricerca.cognome
+                    + " "
+                    + p.matricola_personale_ricerca.nome
+                    + " "
+                )
+                if p.matricola_personale_ricerca.middle_name:
+                    full_name += p.matricola_personale_ricerca.middle_name
+
+            return [
+                {
+                    "id": encrypt(p.matricola_personale_ricerca.matricola),
+                    "name": full_name,
+                    "email": [
+                        e.contatto
+                        for e in add_email_addresses(
+                            p.matricola_personale_ricerca.cod_fis
+                        )
+                    ],
+                }
+            ]
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_techPersonnel(self, obj):
