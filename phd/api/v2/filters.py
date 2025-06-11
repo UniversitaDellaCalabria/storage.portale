@@ -3,7 +3,7 @@ from phd.models import (
     DidatticaDottoratoCds,
     DidatticaDottoratoAttivitaFormativa,
 )
-
+from django.db.models import Q
 
 class PhdFilter(filters.FilterSet):
     cycle = filters.CharFilter(
@@ -100,6 +100,18 @@ class PhdActivitiesFilter(filters.FilterSet):
         label="Typology",
         help_text="Filter by typology ID.",
     )
+    
+    teacher = filters.CharFilter(
+        method="filter_by_teacher_name",
+        label="Teacher",
+        help_text="Filter by teacher name."
+        )
+
+    def filter_by_teacher_name(self, queryset, name, value):
+        return queryset.filter(
+            Q(didatticadottoratoattivitaformativadocente__cognome_nome_origine__icontains=value)
+            | Q(didatticadottoratoattivitaformativaaltridocenti__cognome_nome_origine__icontains=value)
+        ).distinct()
 
     class Meta:
         model = DidatticaDottoratoAttivitaFormativa
