@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ),
                 ("ssd", models.CharField(db_column="SSD", max_length=1000, null=True)),
                 ("numero_ore", models.IntegerField(db_column="NUMERO_ORE", null=True)),
-                ("cfu", models.IntegerField(db_column="CFU", null=True)),
+                ("cfu", models.IntegerField(db_column="CFU", blank=True, null=True)),
                 ("tipo_af", models.CharField(db_column="TIPO_AF", max_length=500)),
                 (
                     "rif_dottorato",
