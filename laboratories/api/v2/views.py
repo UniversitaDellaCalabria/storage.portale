@@ -110,7 +110,8 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
                     Prefetch(
                         "laboratoriopersonalericerca_set",
                         queryset=LaboratorioPersonaleRicerca.objects.select_related(
-                            "matricola_personale_ricerca"),
+                            "matricola_personale_ricerca"
+                        ),
                         to_attr="personale_ricerca",
                     ),
                     Prefetch(
@@ -176,6 +177,7 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
                 LaboratorioDatiBase.objects.filter(
                     query_is_active, id=self.kwargs["pk"]
                 )
+                .select_related("matricola_referente_compilazione")
                 .prefetch_related(
                     Prefetch(
                         "laboratoriodatierc1_set",
