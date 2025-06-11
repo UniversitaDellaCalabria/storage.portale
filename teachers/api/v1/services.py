@@ -1140,7 +1140,6 @@ class ServiceDocente:
             query_type = Q(collection_id__community_id__community_id=pub_type)
         if teacherid:
             personale = Personale.objects.filter(matricola=teacherid).values('cod_fis').first()
-            print(personale)
             if not personale: raise Http404
             query_teacher = Q(pubblicazioneautori__codice_fiscale=personale['cod_fis'])
         if structure:
