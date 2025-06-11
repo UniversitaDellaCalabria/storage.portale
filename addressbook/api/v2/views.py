@@ -28,6 +28,7 @@ from .serializers import (
     RolesSerializer,
     AddressbookDetailSerializer,
     AddressbookFullSerializer,
+    AddressbookFullDetailSerializer
 )
 from structures.models import UnitaOrganizzativa, UnitaOrganizzativaFunzioni
 from rest_framework.response import Response
@@ -173,8 +174,7 @@ class AddressbookViewSet(ReadOnlyModelViewSet):
                 .order_by("cognome", "nome")
             )
         else:
-            # personale_id = get_personale_matricola(self.kwargs.get("matricola"))
-            personale_id = self.kwargs.get("matricola")
+            personale_id = get_personale_matricola(self.kwargs.get("matricola"))
             query_teacher = Personale.objects.filter(
                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
                 | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
@@ -268,6 +268,9 @@ class AddressbookViewSet(ReadOnlyModelViewSet):
                 )
             )
 
+    def get_object(self):
+        return self.get_queryset().first()
+
     def get_serializer_class(self):
         if self.action == "list":
             return AddressbookSerializer
@@ -277,6 +280,8 @@ class AddressbookViewSet(ReadOnlyModelViewSet):
 class AddressbookFullViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     filterset_class = AddressbookFilter
     lookup_field = "matricola"
 
@@ -284,7 +289,7 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet):
         if self.action == "list":
             return AddressbookViewSet.get_queryset(self)
         else:
-            personale_id = get_personale_matricola(self.kwargs.get("matricola"))
+            personale_id = self.kwargs.get("matricola")
             query_teacher = Personale.objects.filter(
                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
                 | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
@@ -293,8 +298,7 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet):
             )
             return (
                 Personale.objects.filter(
-                    Q(matricola=self.kwargs.get("matricola"))
-                    | Q(cod_fis=self.kwargs.get("matricola")),
+                    Q(matricola=personale_id) | Q(cod_fis=personale_id),
                     Q(flg_cessato=0)
                     | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
                     & ~Q(didatticacopertura__stato_coper_cod="R")
@@ -379,10 +383,13 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet):
                 )
             )
 
+    def get_object(self):
+        return self.get_queryset().first()
+
     def get_serializer_class(self):
         if self.action == "list":
             return AddressbookFullSerializer
-        return AddressbookDetailSerializer
+        return AddressbookFullDetailSerializer
 
 
 class AddressbookStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

@@ -30,9 +30,15 @@ def get_personale_matricola(personale_id):
 
 
 def add_email_addresses(cod_fis):
-    return apps.get_model("addressbook.PersonaleContatti").objects.filter(
+    contatti =  apps.get_model("addressbook.PersonaleContatti").objects.filter(
             cod_fis=cod_fis, cd_tipo_cont="EMAIL"
-        ).only("contatto")
+        ).order_by("prg_priorita").only("contatto")
+    
+    return [
+        c.contatto
+        for c in contatti
+        if c.contatto and not any(x in c.contatto.lower() for x in PERSON_CONTACTS_EXCLUDE_STRINGS)
+    ]
 
 def append_email_addresses(addressbook_queryset, id_ab_key):
     personalecontatti_model = apps.get_model("addressbook.PersonaleContatti")

@@ -2,7 +2,9 @@ from django_filters import rest_framework as filters
 from django.db.models import Q
 from addressbook.models import Personale
 
+import datetime
 
+from structures.models import UnitaOrganizzativa
 class PersonnelCfFilter(filters.FilterSet):
     roles = filters.CharFilter(
         method="filter_roles",
@@ -16,8 +18,8 @@ class PersonnelCfFilter(filters.FilterSet):
     class Meta:
         model = Personale
         fields = []
-        
-        
+
+
 class AddressbookFilter(filters.FilterSet):
     search = filters.CharFilter(
         field_name="cognome",
@@ -29,39 +31,134 @@ class AddressbookFilter(filters.FilterSet):
         field_name="cod_fis",
         lookup_expr="exact",
         label="Taxpayer ID",
-        help_text="Filter by Taxpayer ID."
+        help_text="Filter by Taxpayer ID.",
     )
-    
+
     phone = filters.CharFilter(
-        method="filter_by_phone", 
-        label="Phone",
-        help_text="Filter by phone number."
+        method="filter_by_phone", label="Phone", help_text="Filter by phone number."
+    )
+
+    role = filters.CharFilter(
+        method="filter_by_role", label="Role", help_text="Filter by roles."
+    )
+
+    structuretypes = filters.CharFilter(
+        method="filter_by_structuretypes", label="Structure Types", help_text="Filter by structure types."
     )
     
-    role = filters.CharFilter(
-        method="filter_by_role", 
-        label="Role",
-        help_text="Filter by roles."
+    structureid = filters.CharFilter(
+        method="filter_by_structureid",
+        label="Structure ID",
+        help_text="Filter by exact structure or site.",
     )
+
+    structuretree = filters.CharFilter(
+        method="filter_by_structuretree",
+        label="Structure Tree",
+        help_text="Filter by structure tree (including children).",
+    )
+    
+    def filter_by_structureid(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        role_param = self.data.get("role")
+        role_list = role_param.split(",") if role_param else []
+
+        filtro_struttura = Q(
+            pers_attivo_tutti_ruoli__cd_uo_aff_org=value
+        ) | Q(pers_attivo_tutti_ruoli__sede=value)
+
+        if role_list:
+            filtro_ruolo = (
+                Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list)
+                | Q(profilo__in=role_list)
+            )
+            queryset = queryset.filter(filtro_struttura & filtro_ruolo)
+        else:
+            queryset = queryset.filter(filtro_struttura)
+
+        return queryset.distinct()
+    
+    def getStructureChilds(self, structureid=None):
+        child = UnitaOrganizzativa.objects.filter(
+            uo_padre=structureid, dt_fine_val__gte=datetime.datetime.today()
+        ).values_list("uo", flat=True)
+        result = [structureid]
+        for c in child:
+            structures_tree = self.getStructureChilds(c)
+            result.extend(structures_tree)
+        result.extend(child)
+        return result
+    
+    def filter_by_structuretree(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        role_param = self.data.get("role")
+        role_list = role_param.split(",") if role_param else []
+
+        structure_ids = self.getStructureChilds(value)
+
+        filtro_struttura = Q(
+            pers_attivo_tutti_ruoli__cd_uo_aff_org__in=structure_ids
+        ) | Q(pers_attivo_tutti_ruoli__sede__in=structure_ids)
+
+        if role_list:
+            filtro_ruolo = (
+                Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list)
+                | Q(profilo__in=role_list)
+            )
+            queryset = queryset.filter(filtro_struttura & filtro_ruolo)
+        else:
+            queryset = queryset.filter(filtro_struttura)
+
+        return queryset.distinct()
+
+
+
+    
+    def filter_by_structuretypes(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        structuretypes = value.split(",")
+
+        role_param = self.data.get("role")
+        role_list = role_param.split(",") if role_param else []
+
+        filtro_tipo_struttura = Q(pers_attivo_tutti_ruoli__cd_tipo_nodo__in=structuretypes)
+
+        if role_list:
+            filtro_ruolo = (
+                Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list) |
+                Q(profilo__in=role_list)
+            )
+            queryset = queryset.filter(filtro_tipo_struttura & filtro_ruolo)
+        else:
+            queryset = queryset.filter(filtro_tipo_struttura)
+
+        return queryset.distinct()
+
+        
 
     def filter_by_phone(self, queryset, name, value):
         return queryset.filter(
             personalecontatti__cd_tipo_cont__descr_contatto__in=[
                 "Telefono Cellulare",
-                "Telefono Cellulare Ufficio"
+                "Telefono Cellulare Ufficio",
             ],
-            personalecontatti__contatto=value
+            personalecontatti__contatto=value,
         ).distinct()
-    
+
     def filter_by_role(self, queryset, name, value):
         role = value.split(",") if value else []
         roles = []
         for k in role:
             roles.append(k)
-                
+
         return queryset.filter(
-            Q(pers_attivo_tutti_ruoli__cd_ruolo__in=value)
-            | Q(profilo__in=value)
+            Q(pers_attivo_tutti_ruoli__cd_ruolo__in=value) | Q(profilo__in=value)
         ).distinct()
 
     class Meta:
