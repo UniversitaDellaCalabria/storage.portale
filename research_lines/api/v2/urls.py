@@ -8,7 +8,7 @@ router = DefaultRouter()
 urlpatterns = []
 
 router.register(
-    r"baseresearchlines", BaseResearchLinesViewSet, basename="base-researc-lines"
+    r"baseresearchlines", BaseResearchLinesViewSet, basename="base-research-lines"
 )
 router.register(
     r"appliedresearchlines",

@@ -116,15 +116,16 @@ class AppliedResearchLinesFilter(filters.FilterSet):
         query = Q()
         if teacher and department:
             query = Q(
-                ricercadocentelineabase__personale__matricola=teacher,
-                ricercadocentelineabase__personale__sede=department,
+                ricercadocentelineaapplicata__personale__matricola=teacher,
+                ricercadocentelineaapplicata__personale__sede=department,
             )
         elif teacher:
-            query = Q(ricercadocentelineabase__personale__matricola=teacher)
+            query = Q(ricercadocentelineaapplicata__personale__matricola=teacher)
         elif department:
-            query = Q(ricercadocentelineabase__personale__sede=department)
+            query = Q(ricercadocentelineaapplicata__personale__sede=department)
 
         return queryset.filter(query).distinct()
+
 
     class Meta:
         model = RicercaLineaApplicata
