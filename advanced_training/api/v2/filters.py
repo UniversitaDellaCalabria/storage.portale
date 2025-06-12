@@ -21,13 +21,13 @@ class HighFormationMastersFilter(filters.FilterSet):
         help_text="Filter by course type id.",
     )
     erogation = filters.CharFilter(
-        field_name="alta_formazione_mod_erogazione.id",
+        field_name="alta_formazione_mod_erogazione__id",
         lookup_expr="exact",
         label="Erogation Mode",
         help_text="Filter by erogation mode id.",
     )
     department = filters.CharFilter(
-        field_name="dipartimento_riferimento.dip_cod",
+        field_name="dipartimento_riferimento__dip_cod",
         lookup_expr="exact",
         label="Department",
         help_text="Filter by department cod.",
