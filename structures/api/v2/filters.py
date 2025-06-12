@@ -44,7 +44,7 @@ class StructuresFilter(filters.FilterSet):
 
     def filter_type(self, queryset, name, value):
         query_type = Q()
-        for k in type.split(","):
+        for k in value.split(","):
             q_type = Q(cd_tipo_nodo=k)
             query_type |= q_type
         return queryset.filter(query_type)

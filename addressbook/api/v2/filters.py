@@ -5,6 +5,8 @@ from addressbook.models import Personale
 import datetime
 
 from structures.models import UnitaOrganizzativa
+
+
 class PersonnelCfFilter(filters.FilterSet):
     roles = filters.CharFilter(
         method="filter_roles",
@@ -17,6 +19,50 @@ class PersonnelCfFilter(filters.FilterSet):
 
     class Meta:
         model = Personale
+        fields = []
+
+class AddressbookStructuresFilter(filters.FilterSet):
+    father = filters.CharFilter(
+        method="filter_father",
+        label="Father",
+        help_text="Search for father",
+    )
+
+    search = filters.CharFilter(
+        method="filter_search",
+        label="Search",
+        help_text="Search for search",
+    )
+
+    type = filters.CharFilter(
+        method="filter_type",
+        label="Type",
+        help_text="Search for type",
+    )
+
+    def filter_father(self, queryset, name, value):
+        if value:
+            return queryset.filter(uo_padre=value)
+        return queryset.filter(uo_padre__isnull=True)
+
+    def filter_search(self, queryset, name, value):
+        query_search = Q()
+        if value:
+            for k in value.split(" "):
+                q_denominazione = Q(denominazione__icontains=k)
+                query_search &= q_denominazione
+            return queryset.filter(query_search)
+
+    def filter_type(self, queryset, name, value):
+        query_type = Q()
+        if value:
+            for k in value.split(","):
+                q_type = Q(cd_tipo_nodo=k)
+                query_type |= q_type
+            return queryset.filter(query_type)
+
+    class Meta:
+        model = UnitaOrganizzativa
         fields = []
 
 
@@ -43,9 +89,11 @@ class AddressbookFilter(filters.FilterSet):
     )
 
     structuretypes = filters.CharFilter(
-        method="filter_by_structuretypes", label="Structure Types", help_text="Filter by structure types."
+        method="filter_by_structuretypes",
+        label="Structure Types",
+        help_text="Filter by structure types.",
     )
-    
+
     structureid = filters.CharFilter(
         method="filter_by_structureid",
         label="Structure ID",
@@ -57,7 +105,7 @@ class AddressbookFilter(filters.FilterSet):
         label="Structure Tree",
         help_text="Filter by structure tree (including children).",
     )
-    
+
     def filter_by_structureid(self, queryset, name, value):
         if not value:
             return queryset
@@ -65,21 +113,20 @@ class AddressbookFilter(filters.FilterSet):
         role_param = self.data.get("role")
         role_list = role_param.split(",") if role_param else []
 
-        filtro_struttura = Q(
-            pers_attivo_tutti_ruoli__cd_uo_aff_org=value
-        ) | Q(pers_attivo_tutti_ruoli__sede=value)
+        filtro_struttura = Q(pers_attivo_tutti_ruoli__cd_uo_aff_org=value) | Q(
+            pers_attivo_tutti_ruoli__sede=value
+        )
 
         if role_list:
-            filtro_ruolo = (
-                Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list)
-                | Q(profilo__in=role_list)
+            filtro_ruolo = Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list) | Q(
+                profilo__in=role_list
             )
             queryset = queryset.filter(filtro_struttura & filtro_ruolo)
         else:
             queryset = queryset.filter(filtro_struttura)
 
         return queryset.distinct()
-    
+
     def getStructureChilds(self, structureid=None):
         child = UnitaOrganizzativa.objects.filter(
             uo_padre=structureid, dt_fine_val__gte=datetime.datetime.today()
@@ -90,7 +137,7 @@ class AddressbookFilter(filters.FilterSet):
             result.extend(structures_tree)
         result.extend(child)
         return result
-    
+
     def filter_by_structuretree(self, queryset, name, value):
         if not value:
             return queryset
@@ -105,9 +152,8 @@ class AddressbookFilter(filters.FilterSet):
         ) | Q(pers_attivo_tutti_ruoli__sede__in=structure_ids)
 
         if role_list:
-            filtro_ruolo = (
-                Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list)
-                | Q(profilo__in=role_list)
+            filtro_ruolo = Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list) | Q(
+                profilo__in=role_list
             )
             queryset = queryset.filter(filtro_struttura & filtro_ruolo)
         else:
@@ -115,9 +161,6 @@ class AddressbookFilter(filters.FilterSet):
 
         return queryset.distinct()
 
-
-
-    
     def filter_by_structuretypes(self, queryset, name, value):
         if not value:
             return queryset
@@ -127,20 +170,19 @@ class AddressbookFilter(filters.FilterSet):
         role_param = self.data.get("role")
         role_list = role_param.split(",") if role_param else []
 
-        filtro_tipo_struttura = Q(pers_attivo_tutti_ruoli__cd_tipo_nodo__in=structuretypes)
+        filtro_tipo_struttura = Q(
+            pers_attivo_tutti_ruoli__cd_tipo_nodo__in=structuretypes
+        )
 
         if role_list:
-            filtro_ruolo = (
-                Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list) |
-                Q(profilo__in=role_list)
+            filtro_ruolo = Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list) | Q(
+                profilo__in=role_list
             )
             queryset = queryset.filter(filtro_tipo_struttura & filtro_ruolo)
         else:
             queryset = queryset.filter(filtro_tipo_struttura)
 
         return queryset.distinct()
-
-        
 
     def filter_by_phone(self, queryset, name, value):
         return queryset.filter(

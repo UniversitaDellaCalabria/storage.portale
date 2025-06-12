@@ -20,7 +20,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from .filters import PersonnelCfFilter, AddressbookFilter
+from .filters import PersonnelCfFilter, AddressbookFilter, AddressbookStructuresFilter
 from .serializers import (
     AddressbookSerializer,
     PersonnelCfSerializer,
@@ -396,7 +396,7 @@ class AddressbookStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = AddressbookStructuresSerializer
-    # filterset_class = AddressbookStructuresFilter
+    filterset_class = AddressbookStructuresFilter
     queryset = (
         UnitaOrganizzativa.objects.filter(
             dt_fine_val__gte=datetime.datetime.today(),
