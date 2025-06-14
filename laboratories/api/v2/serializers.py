@@ -63,7 +63,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
 
     def get_scientificDirectorEmail(self, obj):
         return add_email_addresses(obj.matricola_responsabile_scientifico.cod_fis)
-    
+
     @extend_schema_field(serializers.CharField())
     def get_completionReferentId(self, obj):
         return encrypt(obj.matricola_referente_compilazione)
@@ -81,21 +81,30 @@ class LaboratorySerializer(serializers.ModelSerializer):
         if not obj.other_dep:
             return []
         language = self.context.get("language", "it")
+
         if obj.laboratorio_interdipartimentale == "SI":
-            obj.order_by(
-                "didattica_dipartimento.dip_des_it"
-            ) if language == "it" else obj.order_by(
-                "didattica_dipartimento.dip_des_eng"
-            )
-            return (
+            # obj.order_by(
+            #     "didattica_dipartimento.dip_des_it"
+            # ) if language == "it" else obj.order_by(
+            #     "didattica_dipartimento.dip_des_eng"
+            # )
+            def key(d):
+                if language == "it":
+                    return d.didattica_dipartimento.dip_des_it
+                else:
+                    return d.didattica_dipartimento.dip_des_eng
+
+            other_deps_sorted = sorted(obj.other_dep, key=key)
+
+            return [
                 {
                     "id": d.didattica_dipartimento.dip_cod,
                     "name": d.didattica_dipartimento.dip_des_it
                     if language == "it"
                     else d.didattica_dipartimento.dip_des_eng,
                 }
-                for d in obj.other_dep
-            )
+                for d in other_deps_sorted
+            ]
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_scopes(self, obj):
@@ -129,8 +138,8 @@ class LaboratorySerializer(serializers.ModelSerializer):
                         "id": encrypt(p.matricola_personale_ricerca.matricola),
                         "name": full_name,
                         "email": add_email_addresses(
-                                p.matricola_personale_ricerca.cod_fis
-                            )
+                            p.matricola_personale_ricerca.cod_fis
+                        ),
                     }
                 ]
 
@@ -281,7 +290,6 @@ class LaboratoriesSerializer(serializers.Serializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_scientificDirectorId(self, obj):
-        # append_email_addressesV2(obj, obj.matricola_responsabile_scientifico.id_ab)
         return encrypt(obj.matricola_responsabile_scientifico)
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
@@ -290,20 +298,28 @@ class LaboratoriesSerializer(serializers.Serializer):
             return []
         language = self.context.get("language", "it")
         if obj.laboratorio_interdipartimentale == "SI":
-            obj.order_by(
-                "didattica_dipartimento.dip_des_it"
-            ) if language == "it" else obj.order_by(
-                "didattica_dipartimento.dip_des_eng"
-            )
-            return (
+            # obj.order_by(
+            #     "didattica_dipartimento.dip_des_it"
+            # ) if language == "it" else obj.order_by(
+            #     "didattica_dipartimento.dip_des_eng"
+            # )
+            def key(d):
+                if language == "it":
+                    return d.didattica_dipartimento.dip_des_it
+                else:
+                    return d.didattica_dipartimento.dip_des_eng
+
+            other_deps_sorted = sorted(obj.other_dep, key=key)
+
+            return [
                 {
                     "id": d.didattica_dipartimento.dip_cod,
                     "name": d.didattica_dipartimento.dip_des_it
                     if language == "it"
                     else d.didattica_dipartimento.dip_des_eng,
                 }
-                for d in obj.other_dep
-            )
+                for d in other_deps_sorted
+            ]
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_scopes(self, obj):
@@ -338,8 +354,8 @@ class LaboratoriesSerializer(serializers.Serializer):
                         "id": encrypt(p.matricola_personale_ricerca.matricola),
                         "name": full_name,
                         "email": add_email_addresses(
-                                p.matricola_personale_ricerca.cod_fis
-                            )
+                            p.matricola_personale_ricerca.cod_fis
+                        ),
                     }
                 ]
 

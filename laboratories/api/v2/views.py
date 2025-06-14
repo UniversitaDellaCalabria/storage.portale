@@ -10,7 +10,7 @@ from api_docs import responses
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
-
+from .filters import LaboratoriesFilters
 from laboratories.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
 from .serializers import (
     LaboratoriesSerializer,
@@ -65,6 +65,7 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = LaboratoriesSerializer
+    filterset_class = LaboratoriesFilters
 
     def get_serializer_class(self):
         return LaboratoriesSerializer if self.action == "list" else LaboratorySerializer
