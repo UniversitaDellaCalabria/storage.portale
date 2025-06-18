@@ -68,6 +68,7 @@ class DocentePtaAltriDati(models.Model):
         models.CASCADE,
         db_column="ID_PERSONALE_MATRICOLA",
         to_field="matricola",
+        related_name="docente_pta_altri_dati",
     )
     path_foto = models.FileField(
         upload_to=teacher_photo_media_path,
@@ -178,10 +179,12 @@ class DocentePtaBacheca(models.Model):
 
 class PubblicazioneAutori(models.Model):
     item = models.ForeignKey(
-        "PubblicazioneDatiBase", models.CASCADE, db_column="ITEM_ID"
+        "PubblicazioneDatiBase", 
+        models.CASCADE, 
+        db_column="ITEM_ID",
     )
     codice_fiscale = models.CharField(
-        db_column="CODICE_FISCALE", max_length=16, blank=True, null=True
+        db_column="CODICE_FISCALE", max_length=16, blank=True, primary_key=True
     )
     ab = models.ForeignKey(
         "addressbook.Personale",

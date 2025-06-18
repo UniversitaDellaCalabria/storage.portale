@@ -8,10 +8,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 # from api_docs import responses
 
 from rest_framework.pagination import PageNumberPagination
-from addressbook.settings import (
-    PERSON_CONTACTS_EXCLUDE_STRINGS,
-    PERSON_CONTACTS_TO_TAKE,
-)
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import mixins, viewsets
 from addressbook.utils import append_email_addresses, get_personale_matricola
@@ -20,24 +16,29 @@ from research_lines.settings import OFFICE_RESEARCH_LINES
 from .filters import (
     TeachersFilter,
     CoveragesFilter,
-    # PublicationFilter
+    TeachersStudyActivitiesFilter,
+    TeachersMaterialsFilter,
+    TeachersNewsFilter,
+    PublicationFilter
 )
 from .serializers import (
     TeachersSerializer,
+    TeacherSerializer,
     PublicationsSerializer,
     PublicationSerializer,
     TeachersStudyActivitiesSerializer,
     TeachersMaterialsSerializer,
     PublicationsCommunityTypesSerializer,
+    TeachersBaseResearchLinesSerializer,
+    TeachersAppliedResearchLinesSerializer,
+    TeachersNewsSerializer
 )
 
 from django.db.models import Case, Q, OuterRef, When, F, Value, IntegerField, Prefetch
 from structures.models import DidatticaDipartimento, UnitaOrganizzativaFunzioni
-from django.db.models.functions import Lower
-from addressbook.models import Personale
+from addressbook.models import Personale, PersonaleContatti
 from teachers.models import (
     DocenteMaterialeDidattico,
-    DocentePtaAltriDati,
     DocentePtaBacheca,
     PubblicazioneAutori,
     PubblicazioneCommunity,
@@ -50,28 +51,15 @@ import teachers.utils
 class TeachersViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
-    serializer_class = TeachersSerializer
     filterset_class = TeachersFilter
+    lookup_field = "matricola"
+
+    def get_serializer_class(self):
+        return TeacherSerializer if self.action == "retrieve" else TeachersSerializer
 
     def get_queryset(self):
         if self.action == "list":
-            dip_des_it_subquery = DidatticaDipartimento.objects.filter(
-                dip_cod=OuterRef("cd_uo_aff_org")
-            ).values("dip_des_it")[:1]
-
-            dip_des_eng_subquery = DidatticaDipartimento.objects.filter(
-                dip_cod=OuterRef("cd_uo_aff_org")
-            ).values("dip_des_eng")[:1]
-
-            dip_id_subquery = DidatticaDipartimento.objects.filter(
-                dip_cod=OuterRef("cd_uo_aff_org")
-            ).values("dip_id")[:1]
-
-            dip_cod_subquery = DidatticaDipartimento.objects.filter(
-                dip_cod=OuterRef("cd_uo_aff_org")
-            ).values("dip_cod")[:1]
-
-            query = (
+            return (
                 Personale.objects.filter(
                     Q(fl_docente=1)
                     | (
@@ -79,14 +67,9 @@ class TeachersViewSet(ReadOnlyModelViewSet):
                         & ~Q(didatticacopertura__stato_coper_cod="R")
                     )
                 )
-                .annotate(
-                    dip_id=dip_id_subquery,
-                    dip_cod=dip_cod_subquery,
-                    dip_des_it=dip_des_it_subquery,
-                    dip_des_eng=dip_des_eng_subquery,
-                )
-                .values(
+                .only(
                     "id_ab",
+                    "cod_fis",
                     "matricola",
                     "nome",
                     "middle_name",
@@ -103,38 +86,15 @@ class TeachersViewSet(ReadOnlyModelViewSet):
                     "profilo",
                     "ds_profilo",
                     "ds_profilo_breve",
-                    "dip_id",
-                    "dip_cod",
-                    "dip_des_it",
-                    "dip_des_eng",
-                    "email",
                 )
                 .order_by("cognome", "nome", "middle_name")
                 .distinct()
             )
 
-            append_email_addresses(query, "id_ab")
-            return query
-
         if self.action == "retrieve":
-            dip_des_it_subquery = DidatticaDipartimento.objects.filter(
-                dip_cod=OuterRef("cd_uo_aff_org")
-            ).values("dip_des_it")[:1]
+            teacher = get_personale_matricola(self.kwargs.get("matricola"))
 
-            dip_des_eng_subquery = DidatticaDipartimento.objects.filter(
-                dip_cod=OuterRef("cd_uo_aff_org")
-            ).values("dip_des_eng")[:1]
-
-            dip_id_subquery = DidatticaDipartimento.objects.filter(
-                dip_cod=OuterRef("cd_uo_aff_org")
-            ).values("dip_id")[:1]
-
-            dip_cod_subquery = DidatticaDipartimento.objects.filter(
-                dip_cod=OuterRef("cd_uo_aff_org")
-            ).values("dip_cod")[:1]
-
-            teacher = get_personale_matricola(self.kwargs.get("id"))
-            query = (
+            return (
                 Personale.objects.filter(
                     Q(fl_docente=1, flg_cessato=0)
                     | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
@@ -143,28 +103,24 @@ class TeachersViewSet(ReadOnlyModelViewSet):
                     & ~Q(didatticacopertura__stato_coper_cod="R"),
                     matricola=teacher,
                 )
+                .select_related("docente_pta_altri_dati")
                 .prefetch_related(
                     Prefetch(
                         "unitaorganizzativafunzioni_set",
-                        queryset=UnitaOrganizzativaFunzioni.objects.filter(
-                            termine__gt=datetime.datetime.now(),
-                            decorrenza__lt=datetime.datetime.now(),
-                        ).only("ds_funzione", "cd_csa__uo", "cd_csa__denominazione"),
-                        to_attr="unitaorganizzativafunzioni",
+                        queryset=(
+                            UnitaOrganizzativaFunzioni.objects.filter(
+                                termine__gt=datetime.datetime.now(),
+                                decorrenza__lt=datetime.datetime.now(),
+                            ).select_related("cd_csa")
+                        ),
+                        to_attr="functions",
                     ),
                     Prefetch(
-                        "docenteptaaltridati_set",
-                        queryset=DocentePtaAltriDati.objects.only(
-                            "path_foto",
-                            "path_cv_ita",
-                            "path_cv_en",
-                            "breve_bio",
-                            "breve_bio_en",
-                            "orario_ricevimento",
-                            "orario_ricevimento_en",
-                            "orcid",
+                        "personalecontatti",
+                        queryset=PersonaleContatti.objects.select_related(
+                            "cd_tipo_cont"
                         ),
-                        to_attr="docenteptaaltridati",
+                        to_attr="contatti",
                     ),
                 )
                 .only(
@@ -188,34 +144,12 @@ class TeachersViewSet(ReadOnlyModelViewSet):
                     "profilo",
                     "ds_profilo",
                     "ds_profilo_breve",
-                    "dip_id",
-                    "dip_cod",
-                    "dip_des_it",
-                    "dip_des_eng",
                 )
                 .distinct()
             )
-            q_contacts = (
-                query.filter(
-                    personalecontatti__cd_tipo_cont__descr_contatto__in=PERSON_CONTACTS_TO_TAKE,
-                )
-                .exclude(
-                    personalecontatti__contatto__isnull=True,
-                )
-                .exclude(
-                    *[
-                        Q(personalecontatti__contatto__icontains=word)
-                        for word in PERSON_CONTACTS_EXCLUDE_STRINGS
-                    ]
-                )
-                .annotate(contatto_lower=Lower("personalecontatti__contatto"))
-                .order_by("contatto_lower")
-                .distinct("contatto_lower")
-                .values(
-                    "personalecontatti__cd_tipo_cont__descr_contatto",
-                    "personalecontatti__contatto",
-                )
-            )
+
+    def get_object(self):
+        return self.get_queryset().first()
 
 
 class CoveragesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -282,7 +216,7 @@ class PublicationsViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PublicationsSerializer
-    # filterset_class = PublicationFilter
+    filterset_class = PublicationFilter
 
     def get_serializer_class(self):
         return (
@@ -329,7 +263,6 @@ class PublicationsViewSet(ReadOnlyModelViewSet):
                             "last_name",
                         ),
                         to_attr="autori",
-                        # append_email_addresses(autori, "ab__id_ab")
                     )
                 )
                 .only(
@@ -350,25 +283,20 @@ class PublicationsViewSet(ReadOnlyModelViewSet):
                     "collection_id__community_id__community_name",
                     "title",
                 )
-                .annotate(
-                    date_issued_year=Case(
-                        When(date_issued_year=9999, then=Value("in stampa")),
-                        default=F("date_issued_year"),
-                        output_field=IntegerField(),
-                    )
-                )
                 .distinct()
             )
 
 
-class TeachersStudyActivitiesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TeachersStudyActivitiesViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TeachersStudyActivitiesSerializer
-    # filterset_class = TeachersStudyActivitiesFilter
+    filterset_class = TeachersStudyActivitiesFilter
+    lookup_field = "matricola"
 
     def get_queryset(self):
-        teacher = get_personale_matricola(self.kwargs.get("id"))
+        print(self.kwargs.get("matricola"))
+        teacher = get_personale_matricola(self.kwargs.get("matricola"))
 
         queryset = (
             DidatticaCopertura.objects.filter(
@@ -376,7 +304,8 @@ class TeachersStudyActivitiesViewSet(mixins.ListModelMixin, viewsets.GenericView
             )
             .select_related("personale", "af")
             .order_by("aa_off_id", "anno_corso", "af_gen_des", "af_gen_des_eng")
-            .values(
+            .only(
+                "personale__matricola",
                 "af_id",
                 "af_gen_cod",
                 "af_gen_des",
@@ -416,12 +345,15 @@ class TeachersStudyActivitiesViewSet(mixins.ListModelMixin, viewsets.GenericView
                 to_exclude.append(cop.coper_id)
         return queryset.exclude(coper_id__in=to_exclude)
 
+    def get_object(self):
+        return self.get_queryset().first()
+
 
 class TeachersMaterialsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TeachersMaterialsSerializer
-    # filterset_class = TeachersMaterialsFilter
+    filterset_class = TeachersMaterialsFilter
 
     def get_queryset(self):
         teacher = get_personale_matricola(self.kwargs.get("id"))
@@ -467,15 +399,12 @@ class TeachersMaterialsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         )
 
 
-class TeachersResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TeachersBaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
-    # serializer_class = TeachersResearchLinesSerializer
-    # filterset_class = TeachersResearchLinesFilter
+    serializer_class = TeachersBaseResearchLinesSerializer
 
     def get_queryset(self):
-        teacher = get_personale_matricola(self.kwargs.get("id"))
-
         only_active = True
         request = self.request
         if request.user.is_superuser:
@@ -490,49 +419,20 @@ class TeachersResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
             if my_offices.exists():
                 only_active = False
 
-        query_is_active_app = (
-            Q(ricercadocentelineaapplicata__ricerca_linea_applicata__visibile=True)
-            if only_active
-            else Q()
-        )
+        teacher_id = get_personale_matricola(self.kwargs.get("id"))
+
         query_is_active_base = (
             Q(ricercadocentelineabase__ricerca_linea_base__visibile=True)
             if only_active
             else Q()
         )
 
-        linea_applicata = (
-            Personale.objects.filter(
-                query_is_active_app,
-                matricola__exact=self.kwargs.get("id"),
-                fl_docente=1,
-                ricercadocentelineaapplicata__dt_fine__isnull=True,
-                ricercadocentelineaapplicata__ricerca_linea_applicata__id__isnull=False,
-            )
-            .order_by("ricercadocentelineaapplicata__ricerca_linea_applicata__id")
-            .values(
-                "ricercadocentelineaapplicata__ricerca_linea_applicata__id",
-                "ricercadocentelineaapplicata__ricerca_linea_applicata__descrizione",
-                "ricercadocentelineaapplicata__ricerca_linea_applicata__descr_pubblicaz_prog_brevetto",
-                "ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__erc0_cod",
-                "ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__description",
-            )
-            .distinct()
-            .annotate(
-                tipologia=Value(
-                    "applicativa",
-                    output_field=IntegerField(),
-                )
-            )
-        )
-
-        linea_base = (
+        return (
             Personale.objects.filter(
                 query_is_active_base,
-                matricola__exact=self.kwargs.get("id"),
+                matricola__exact=teacher_id,
                 fl_docente=1,
                 ricercadocentelineabase__dt_fine__isnull=True,
-                ricercadocentelineabase__ricerca_linea_base__id__isnull=False,
             )
             .order_by("ricercadocentelineabase__ricerca_linea_base__id")
             .values(
@@ -542,26 +442,92 @@ class TeachersResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
                 "ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__erc0_cod",
                 "ricercadocentelineabase__ricerca_linea_base__ricerca_erc2__ricerca_erc1__ricerca_erc0_cod__description",
             )
+            .exclude(ricercadocentelineabase__ricerca_linea_base__id__isnull=True)
             .distinct()
-            .annotate(
-                tipologia=Value(
-                    "base",
-                    output_field=IntegerField(),
-                )
+        )
+
+
+class TeachersAppliedResearchLinesViewSet(
+    mixins.ListModelMixin, viewsets.GenericViewSet
+):
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = TeachersAppliedResearchLinesSerializer
+
+    def get_queryset(self):
+        only_active = True
+        request = self.request
+        if request.user.is_superuser:
+            only_active = False  # pragma: no cover
+        if request.user.is_authenticated:  # pragma: no cover
+            my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+                employee=request.user,
+                office__name=OFFICE_RESEARCH_LINES,
+                office__is_active=True,
+                office__organizational_structure__is_active=True,
             )
+            if my_offices.exists():
+                only_active = False
+
+        teacher_id = get_personale_matricola(self.kwargs.get("matricola"))
+
+        query_is_active_app = (
+            Q(ricercadocentelineaapplicata__ricerca_linea_applicata__visibile=True)
+            if only_active
+            else Q()
+        )
+
+        return (
+            Personale.objects.filter(
+                query_is_active_app,
+                matricola__exact=teacher_id,
+                fl_docente=1,
+                ricercadocentelineaapplicata__dt_fine__isnull=True,
+            )
+            .order_by("ricercadocentelineaapplicata__ricerca_linea_applicata__id")
+            .exclude(
+                ricercadocentelineaapplicata__ricerca_linea_applicata__id__isnull=True
+            )
+            .values(
+                "ricercadocentelineaapplicata__ricerca_linea_applicata__id",
+                "ricercadocentelineaapplicata__ricerca_linea_applicata__descrizione",
+                "ricercadocentelineaapplicata__ricerca_linea_applicata__descr_pubblicaz_prog_brevetto",
+                "ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__erc0_cod",
+                "ricercadocentelineaapplicata__ricerca_linea_applicata__ricerca_aster2__ricerca_aster1__ricerca_erc0_cod__description",
+            )
+            .distinct()
         )
 
 
 class TeachersNewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
+    serializer_class = TeachersNewsSerializer
+    filterset_class = TeachersNewsFilter
 
-    # serializer_class = TeachersNewsSerializer
-    # filterset_class = TeachersMaterialsFilter
     def get_queryset(self):
-        query_is_active = Q(attivo=True)
+        teacher = get_personale_matricola(self.kwargs.get("id"))
+        user = self.request.user
 
-        return DocentePtaBacheca.objects.filter(query_is_active).only(
+        query_is_active = Q(attivo=True)
+        query_is_started = Q(dt_inizio_validita__isnull=True) | Q(
+            dt_inizio_validita__lte=datetime.datetime.now()
+        )
+        query_is_end = Q(dt_fine_validita__isnull=True) | Q(
+            dt_fine_validita__gt=datetime.datetime.now()
+        )
+
+        if teachers.utils.can_manage_teacher(user, teacher):
+            query_is_active = Q()
+            query_is_started = Q()
+            query_is_end = Q()
+
+        return DocentePtaBacheca.objects.filter(
+            query_is_active,
+            query_is_started,
+            query_is_end,
+            matricola__exact=teacher,
+        ).only(
             "id",
             "tipo_testo",
             "tipo_testo_en",

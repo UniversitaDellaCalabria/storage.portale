@@ -2,7 +2,108 @@ from django_filters import rest_framework as filters
 from django.db.models import Q
 from addressbook.models import Personale
 from structures.models import DidatticaDipartimento
+from cds.models import DidatticaCopertura
+from teachers.models import DocenteMaterialeDidattico, DocentePtaBacheca, PubblicazioneDatiBase
 import datetime
+
+class PublicationFilter(filters.FilterSet):
+    search = filters.CharFilter(
+        method="filter_search",
+        label="Search",
+        help_text="Search for title.",
+    )
+    year = filters.NumberFilter(
+        field_name="date_issued_year",
+        lookup_expr="exact",
+        label="Year",
+        help_text="Search for year.",
+    )
+    pub_type = filters.CharFilter(
+        field_name="collection_id.community_id.community_id",
+        lookup_expr="exact",
+        label="Publication Type",
+        help_text="Search for publication type.",
+    ) 
+    structure = filters.CharFilter(
+        field_name="pubblicazioneautori.ab.cd_uo_aff_org",
+        lookup_expr="exact",
+        label="Structure",
+        help_text="Search for structure.",
+    )
+    
+    def filter_search(self, queryset, name, value):
+        for k in value.split(" "): 
+            query_search = Q(title__icontains=k) | Q(contributors__icontains=k)
+        return queryset.filter(query_search)
+
+
+    class Meta:
+        model = PubblicazioneDatiBase
+        fields = []
+
+class TeachersNewsFilter(filters.FilterSet):
+    search = filters.CharFilter(
+        method="filters_search",
+        label="Search",
+        help_text="Search for title.",
+    )
+    
+    def filter_search(self, queryset, name, value):
+        for k in value.split(" "): 
+            query_search = Q(titolo__icontains=k) | Q(titolo_en__icontains=k)
+        
+        return queryset.filter(query_search)
+
+
+    class Meta:
+        model = DocentePtaBacheca
+        fields = []
+
+class TeachersMaterialsFilter(filters.FilterSet):
+    search = filters.CharFilter(
+        method="filters_search",
+        label="Search",
+        help_text="Search for title.",
+    )
+    
+    def filter_search(self, queryset, name, value):
+        for k in value.split(" "): 
+            query_search = Q(titolo__icontains=k) | Q(titolo_en__icontains=k)
+        
+        return queryset.filter(query_search)
+
+
+    class Meta:
+        model = DocenteMaterialeDidattico
+        fields = []
+
+
+class TeachersStudyActivitiesFilter(filters.FilterSet):
+    year = filters.NumberFilter(
+        field_name="aa_off_id",
+        lookup_expr="exact",
+        label="Year",
+        help_text="Search for year.",
+    )
+    
+    yearFrom = filters.NumberFilter(
+        field_name="aa_off_id",
+        lookup_expr="gte",
+        label="Year From",
+        help_text="Search from a specific year.",
+    )
+
+    yearTo = filters.NumberFilter(
+        field_name="aa_off_id",
+        lookup_expr="lte",
+        label="Year To",
+        help_text="Search to a specific year.",
+    )
+
+
+    class Meta:
+        model = DidatticaCopertura
+        fields = []
 
 
 class TeachersFilter(filters.FilterSet):
@@ -11,6 +112,11 @@ class TeachersFilter(filters.FilterSet):
         lookup_expr="istartswith",
         label="Search",
         help_text="Search for research groups.",
+    )
+    dip  = filters.CharFilter(
+        method="filter_dip",
+        label="Department",
+        help_text="Search for department.",
     )
     regdid = filters.CharFilter(
         method="filter_regdid",
@@ -34,13 +140,51 @@ class TeachersFilter(filters.FilterSet):
         label="Role",
         help_text="Search for role.",
     )
-    dip = filters.CharFilter(
-        field_name="dip_cod",
-        lookup_expr="exact",
-        label="Department",
-        help_text="Search for department.",
-    )
 
+    def filter_dip(self, queryset, name, value):
+        if value:
+            department = (
+                DidatticaDipartimento.objects.filter(dip_cod=value)
+                .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+                .first()
+            )
+            if not department:
+                return None
+            query = queryset.filter(cd_uo_aff_org=department["dip_cod"])
+            query = list(query)
+            for q in query:
+                q["dip_id"] = department["dip_id"]
+                q["dip_cod"] = department["dip_cod"]
+                q["dip_des_it"] = department["dip_des_it"]
+                q["dip_des_eng"] = department["dip_des_eng"]
+
+        else:
+            dip_cods = query.values_list("cd_uo_aff_org", flat=True).distinct()
+            dip_cods = list(dip_cods)
+
+            departments = DidatticaDipartimento.objects.filter(
+                dip_cod__in=dip_cods
+            ).values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+
+            for q in query:
+                found = False
+                for dep in departments:
+                    if dep["dip_cod"] == q["cd_uo_aff_org"]:
+                        q["dip_id"] = dep["dip_id"]
+                        q["dip_cod"] = dep["dip_cod"]
+                        q["dip_des_it"] = dep["dip_des_it"]
+                        q["dip_des_eng"] = dep["dip_des_eng"]
+                        found = True
+                        break
+
+                if not found:
+                    q["dip_id"] = None
+                    q["dip_cod"] = None
+                    q["dip_des_it"] = None
+                    q["dip_des_eng"] = None
+
+        
+    
     def filter_cds(self, queryset, name, value):
         if not value and not self.data.get("regdid"):
             return queryset.filter(
@@ -66,29 +210,6 @@ class TeachersFilter(filters.FilterSet):
     def filter_role(self, queryset, name, value):
         roles = value.split(",")
         return queryset.filter(cd_ruolo__in=roles)
-
-    def filter_department(self, queryset, name, value):
-        if value:
-            dip = value
-        else:
-            dip = queryset.values_list("cd_uo_aff_org", flat=True).distinct()
-            dip = list(dip)
-
-        department = (
-            DidatticaDipartimento.objects.filter(dip_cod=dip)
-            .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
-            .first()
-        )
-        if not department:
-            return queryset.none()
-
-        qs = queryset.filter(cd_uo_aff_org=department.dip_cod)
-        for q in qs:
-            q["dip_id"] = department.dip_id
-            q["dip_cod"] = department.dip_cod
-            q["dip_des_it"] = department.dip_des_it
-            q["dip_des_eng"] = department.dip_des_eng
-        return qs
 
     class Meta:
         model = Personale
