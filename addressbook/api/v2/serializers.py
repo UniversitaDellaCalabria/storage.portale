@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-# from .docs import examples
-# from drf_spectacular.utils import (
-#     extend_schema_field,
-#     extend_schema_serializer,
-# )
+from .docs import examples
+from drf_spectacular.utils import (
+    extend_schema_field,
+    extend_schema_serializer,
+)
 from addressbook.models import Personale
 from structures.models import UnitaOrganizzativa
 from generics.utils import encrypt
@@ -14,7 +14,7 @@ from addressbook.settings import (
     PERSON_CONTACTS_TO_TAKE,
 )
 
-
+@extend_schema_serializer(examples=examples.ADDRESSBOOK_SERIALIZER_EXAMPLE)
 class AddressbookSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
@@ -31,6 +31,11 @@ class AddressbookSerializer(serializers.ModelSerializer):
     profileDescription = serializers.SerializerMethodField()
     profileShortDescription = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.DictField(
+            child=serializers.CharField()
+        )
+    ))
     def get_name(self, obj):
         return (
             obj.cognome + " " + obj.nome
@@ -38,9 +43,15 @@ class AddressbookSerializer(serializers.ModelSerializer):
             else obj.cognome + " " + obj.nome + " " + obj.middle_name
         )
 
+    @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.DictField(
+            child=serializers.CharField()
+        )
+    ))
     def get_roles(self, obj):
         for role in obj.pers_attivo_tutti_ruoli:
             struct = role.cd_uo_aff_org
@@ -63,33 +74,54 @@ class AddressbookSerializer(serializers.ModelSerializer):
                     return contact.contatto
         return []
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_officeReference(self, obj):
         return self.get_contacts(obj, "Riferimento Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_email(self, obj):
         return self.get_contacts(obj, "Posta Elettronica")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_pec(self, obj):
         return self.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telOffice(self, obj):
         return self.get_contacts(obj, "Telefono Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telCelOffice(self, obj):
         return self.get_contacts(obj, "Telefono Cellulare Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_fax(self, obj):
         return self.get_contacts(obj, "Fax")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_webSite(self, obj):
         return self.get_contacts(obj, "URL Sito WEB")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_cv(self, obj):
         return self.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_profileDescription(self, obj):
         return obj.ds_profilo if obj.ds_profilo in ALLOWED_PROFILE_ID else None
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_profileShortDescription(self, obj):
         return (
             obj.ds_profilo_breve if obj.ds_profilo_breve in ALLOWED_PROFILE_ID else None
@@ -114,7 +146,7 @@ class AddressbookSerializer(serializers.ModelSerializer):
             "profileShortDescription",
         ]
 
-
+@extend_schema_serializer(examples=examples.ADDRESSBOOK_FULL_SERIALIZER_EXAMPLE)
 class AddressbookFullSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     surname = serializers.CharField(source="cognome")
@@ -133,21 +165,24 @@ class AddressbookFullSerializer(serializers.ModelSerializer):
     profileDescription = serializers.SerializerMethodField()
     profileShortDescription = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_name(self, obj):
         return (
             obj.cognome + " " + obj.nome
             if obj.middle_name is None
             else obj.cognome + " " + obj.nome + " " + obj.middle_name
         )
-
+    @extend_schema_field(serializers.CharField())
     def get_profileDescription(self, obj):
         return obj.ds_profilo if obj.ds_profilo in ALLOWED_PROFILE_ID else None
-
+    @extend_schema_field(serializers.CharField())
     def get_profileShortDescription(self, obj):
         return (
             obj.ds_profilo_breve if obj.ds_profilo_breve in ALLOWED_PROFILE_ID else None
         )
-
+    @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
@@ -158,31 +193,49 @@ class AddressbookFullSerializer(serializers.ModelSerializer):
                 if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
                     return contact.contatto
         return []
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_officeReference(self, obj):
         return self.get_contacts(obj, "Riferimento Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_email(self, obj):
         return self.get_contacts(obj, "Posta Elettronica")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_pec(self, obj):
         return self.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telOffice(self, obj):
         return self.get_contacts(obj, "Telefono Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telCelOffice(self, obj):
         return self.get_contacts(obj, "Telefono Cellulare Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_fax(self, obj):
         return self.get_contacts(obj, "Fax")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_webSite(self, obj):
         return self.get_contacts(obj, "URL Sito WEB")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_cv(self, obj):
         return self.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_roles(self, obj):
         for role in obj.pers_attivo_tutti_ruoli:
             struct = role.cd_uo_aff_org
@@ -219,7 +272,7 @@ class AddressbookFullSerializer(serializers.ModelSerializer):
             "profileShortDescription",
         ]
 
-
+@extend_schema_serializer(examples=examples.ADDRESSBOOK_DETAIL_SERIALIZER_EXAMPLE)
 class AddressbookDetailSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     surname = serializers.CharField(source="cognome")
@@ -243,6 +296,9 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
     profileShortDescription = serializers.SerializerMethodField()
     gender = serializers.CharField(source="cd_genere")
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_personFunctions(self, obj):
         return [
             {
@@ -253,25 +309,26 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
             }
             for f in obj.functions
         ]
-
+    @extend_schema_field(serializers.BooleanField())
     def get_teacher(self, obj):
         return obj.fl_docente or obj.cop_teacher
 
+    @extend_schema_field(serializers.CharField())
     def get_name(self, obj):
         return (
             obj.nome
             if obj.middle_name is None
             else obj.nome + " " + obj.middle_name
         )
-
+    @extend_schema_field(serializers.CharField())
     def get_profileDescription(self, obj):
         return obj.ds_profilo if obj.ds_profilo in ALLOWED_PROFILE_ID else None
-
+    @extend_schema_field(serializers.CharField())
     def get_profileShortDescription(self, obj):
         return (
             obj.ds_profilo_breve if obj.ds_profilo_breve in ALLOWED_PROFILE_ID else None
         )
-
+    @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
@@ -282,31 +339,49 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
                 if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
                     return contact.contatto
         return []
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_officeReference(self, obj):
         return self.get_contacts(obj, "Riferimento Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_email(self, obj):
         return self.get_contacts(obj, "Posta Elettronica")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_pec(self, obj):
         return self.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telOffice(self, obj):
         return self.get_contacts(obj, "Telefono Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telCelOffice(self, obj):
         return self.get_contacts(obj, "Telefono Cellulare Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_fax(self, obj):
         return self.get_contacts(obj, "Fax")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_webSite(self, obj):
         return self.get_contacts(obj, "URL Sito WEB")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_cv(self, obj):
         return self.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_roles(self, obj):
         for role in obj.pers_attivo_tutti_ruoli:
             struct = role.cd_uo_aff_org
@@ -351,7 +426,7 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
             "teacherCVShort": {"it": "cv_short_it", "en": "cv_short_eng"},
         }
 
-
+@extend_schema_serializer(examples=examples.ADDRESSBOOK_FULL_DETAIL_SERIALIZER_EXAMPLE)
 class AddressbookFullDetailSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     surname = serializers.CharField(source="cognome")
@@ -374,7 +449,9 @@ class AddressbookFullDetailSerializer(serializers.ModelSerializer):
     profileDescription = serializers.SerializerMethodField()
     profileShortDescription = serializers.SerializerMethodField()
     gender = serializers.CharField(source="cd_genere")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_personFunctions(self, obj):
         return [
             {
@@ -385,25 +462,26 @@ class AddressbookFullDetailSerializer(serializers.ModelSerializer):
             }
             for f in obj.functions
         ]
-
+    @extend_schema_field(serializers.BooleanField())
     def get_teacher(self, obj):
         return obj.fl_docente or obj.cop_teacher
-
+    @extend_schema_field(serializers.CharField())
     def get_name(self, obj):
         return (
             obj.nome
             if obj.middle_name is None
             else obj.nome + " " + obj.middle_name
         )
-
+    @extend_schema_field(serializers.CharField())
     def get_profileDescription(self, obj):
         return obj.ds_profilo if obj.ds_profilo in ALLOWED_PROFILE_ID else None
 
+    @extend_schema_field(serializers.CharField())
     def get_profileShortDescription(self, obj):
         return (
             obj.ds_profilo_breve if obj.ds_profilo_breve in ALLOWED_PROFILE_ID else None
         )
-
+    @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
@@ -415,30 +493,52 @@ class AddressbookFullDetailSerializer(serializers.ModelSerializer):
                     return contact.contatto
         return []
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_officeReference(self, obj):
         return self.get_contacts(obj, "Riferimento Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_email(self, obj):
         return self.get_contacts(obj, "Posta Elettronica")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_pec(self, obj):
         return self.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telOffice(self, obj):
         return self.get_contacts(obj, "Telefono Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telCelOffice(self, obj):
         return self.get_contacts(obj, "Telefono Cellulare Ufficio")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_fax(self, obj):
         return self.get_contacts(obj, "Fax")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_webSite(self, obj):
         return self.get_contacts(obj, "URL Sito WEB")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_cv(self, obj):
         return self.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_roles(self, obj):
         for role in obj.pers_attivo_tutti_ruoli:
             struct = role.cd_uo_aff_org
@@ -485,7 +585,7 @@ class AddressbookFullDetailSerializer(serializers.ModelSerializer):
         }
 
 
-
+@extend_schema_serializer(examples=examples.PERSONNEL_CF_SERIALIZER_EXAMPLE)
 class PersonnelCfSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     Cf = serializers.CharField(source="cod_fis")
@@ -494,7 +594,7 @@ class PersonnelCfSerializer(serializers.ModelSerializer):
     role = serializers.CharField(source="cd_ruolo")
     infrastructureId = serializers.CharField(source="cd_uo_aff_org")
     infrastructureDescription = serializers.CharField(source="ds_aff_org")
-
+    @extend_schema_field(serializers.CharField())
     def get_name(self, obj):
         full_name = obj.cognome + " " + obj.nome
         if obj.middle_name:
@@ -513,7 +613,7 @@ class PersonnelCfSerializer(serializers.ModelSerializer):
             "infrastructureDescription",
         ]
 
-
+@extend_schema_serializer(examples=examples.ADDRESSBOOK_STRUCTURES_SERIALIZER_EXAMPLE)
 class AddressbookStructuresSerializer(serializers.ModelSerializer):
     cod = serializers.CharField(source="uo")
     name = serializers.CharField(source="denominazione")
@@ -529,7 +629,7 @@ class AddressbookStructuresSerializer(serializers.ModelSerializer):
             "typeCOD",
         ]
 
-
+@extend_schema_serializer(examples=examples.ROLES_SERIALIZER_EXAMPLE)
 class RolesSerializer(serializers.ModelSerializer):
     role = serializers.CharField(source="cd_ruolo")
     roleDescription = serializers.CharField(source="ds_ruolo_locale")

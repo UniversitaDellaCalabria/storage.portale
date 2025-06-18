@@ -8,12 +8,12 @@ from addressbook.models import (
 )
 from addressbook.utils import get_personale_matricola
 
-# from drf_spectacular.utils import (
-#     extend_schema,
-#     extend_schema_view,
-# )
-# from .docs import descriptions
-# from api_docs import responses
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+)
+from .docs import descriptions
+from api_docs import responses
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
@@ -28,7 +28,7 @@ from .serializers import (
     RolesSerializer,
     AddressbookDetailSerializer,
     AddressbookFullSerializer,
-    AddressbookFullDetailSerializer
+    AddressbookFullDetailSerializer,
 )
 from structures.models import UnitaOrganizzativa, UnitaOrganizzativaFunzioni
 from rest_framework.response import Response
@@ -45,11 +45,13 @@ from django.db.models import (
     When,
     BooleanField,
 )
+from rest_framework.viewsets import ViewSet
 
 
-class GetPersonApi(ReadOnlyModelViewSet):
+class GetPersonApi(ViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    description = "Retrieves the encrypted matricola of a person."
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -64,9 +66,10 @@ class GetPersonApi(ReadOnlyModelViewSet):
         return Response(encrypt(matricola))
 
 
-class GetDecryptedPersonApi(ReadOnlyModelViewSet):
+class GetDecryptedPersonApi(ViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    description = "Retrieves the decypted matricola of a person."
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -84,7 +87,13 @@ class GetDecryptedPersonApi(ReadOnlyModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.PERSONNEL_CF_LIST_SUMMARY,
+        description=descriptions.PERSONNEL_CF_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(PersonnelCfSerializer(many=True)),
+    ),
+)
 class PersonnelCfViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -111,7 +120,18 @@ class PersonnelCfViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .order_by("cognome")
     )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.ADDRESSBOOK_LIST_SUMMARY,
+        description=descriptions.ADDRESSBOOK_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(AddressbookSerializer(many=True)),
+    ),
+    retrieve=extend_schema(
+        summary=descriptions.ADDRESSBOOK_DETAIL_SUMMARY,
+        description=descriptions.ADDRESSBOOK_DETAIL_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(AddressbookSerializer),
+    ),
+)
 class AddressbookViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -276,7 +296,18 @@ class AddressbookViewSet(ReadOnlyModelViewSet):
             return AddressbookSerializer
         return AddressbookDetailSerializer
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.ADDRESSBOOK_FULL_LIST_SUMMARY,
+        description=descriptions.ADDRESSBOOK_FULL_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(AddressbookFullSerializer(many=True)),
+    ),
+    retrieve=extend_schema(
+        summary=descriptions.ADDRESSBOOK_FULL_DETAIL_SUMMARY,
+        description=descriptions.ADDRESSBOOK_FULL_DETAIL_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(AddressbookFullSerializer),
+    ),
+)
 class AddressbookFullViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -391,7 +422,13 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet):
             return AddressbookFullSerializer
         return AddressbookFullDetailSerializer
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.ADDRESSBOOK_STRUCTURES_LIST_SUMMARY,
+        description=descriptions.ADDRESSBOOK_STRUCTURES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(AddressbookStructuresSerializer(many=True)),
+    ),
+)
 class AddressbookStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -410,7 +447,13 @@ class AddressbookStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
         .distinct()
     )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.ROLES_LIST_SUMMARY,
+        description=descriptions.ROLES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(RolesSerializer(many=True)),
+    ),
+)
 class RolesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
