@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from generics.utils import build_media_path, encrypt
 
-# from .docs import examples
-# from drf_spectacular.utils import (
-#     extend_schema_field,
-#     extend_schema_serializer,
-# )
+from .docs import examples
+from drf_spectacular.utils import (
+    extend_schema_field,
+    extend_schema_serializer,
+)
 from addressbook.models import Personale
 from teachers.models import (
     DocenteMaterialeDidattico,
@@ -22,6 +22,7 @@ from addressbook.utils import add_email_addresses
 from structures.models import DidatticaDipartimento
 
 
+@extend_schema_serializer(examples=examples.TEACHERS_SERIALIZER_EXAMPLE)
 class TeachersSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
@@ -36,12 +37,15 @@ class TeachersSerializer(serializers.ModelSerializer):
     profileShortDescription = serializers.CharField(source="ds_profilo_breve")
     email = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.ListField(child=serializers.EmailField()))
     def get_email(self, obj):
         return add_email_addresses(obj.cod_fis)
 
+    @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
+    @extend_schema_field(serializers.CharField())
     def get_name(self, obj):
         return (
             obj.cognome
@@ -71,7 +75,7 @@ class TeachersSerializer(serializers.ModelSerializer):
             "CVShort": {"it": "cv_short_it", "en": "cv_short_eng"},
         }
 
-
+@extend_schema_serializer(examples=examples.TEACHER_SERIALIZER_EXAMPLE)
 class TeacherSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
@@ -97,9 +101,11 @@ class TeacherSerializer(serializers.ModelSerializer):
     profileDescription = serializers.CharField(source="ds_profilo")
     profileShortDescription = serializers.CharField(source="ds_profilo_breve")
 
+    @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
+    @extend_schema_field(serializers.CharField())
     def get_name(self, obj):
         return (
             obj.cognome
@@ -113,6 +119,11 @@ class TeacherSerializer(serializers.ModelSerializer):
             "dip_id", "dip_cod", "dip_des_it", "dip_des_eng"
         )
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.DictField(
+            child=serializers.CharField()
+        )
+    ))
     def get_departmentInfo(self, obj):
         return [
             {
@@ -125,6 +136,11 @@ class TeacherSerializer(serializers.ModelSerializer):
             for d in self._get_dipartimento(obj)
         ]
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.DictField(
+            child=serializers.CharField()
+        )
+    ))
     def get_moreInfo(self, obj):
         return [
             {
@@ -150,30 +166,59 @@ class TeacherSerializer(serializers.ModelSerializer):
                     return contact.contatto
         return []
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_officeReference(self, obj):
         return self.get_contacts(obj, "Riferimento Ufficio")
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.EmailField()
+    ))
     def get_email(self, obj):
         return self.get_contacts(obj, "Posta Elettronica")
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.EmailField()
+    ))
     def get_pec(self, obj):
         return self.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telOffice(self, obj):
         return self.get_contacts(obj, "Telefono Ufficio")
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_telCelOffice(self, obj):
         return self.get_contacts(obj, "Telefono Cellulare Ufficio")
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_fax(self, obj):
         return self.get_contacts(obj, "Fax")
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_webSite(self, obj):
         return self.get_contacts(obj, "URL Sito WEB")
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_cv(self, obj):
         return self.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
 
+    @extend_schema_field(serializers.ListField(
+        child=serializers.DictField(
+            child=serializers.CharField()
+        )
+    ))
     def get_functions(self, obj):
         return [
             {
@@ -212,7 +257,7 @@ class TeacherSerializer(serializers.ModelSerializer):
             "profileShortDescription",
         ]
 
-
+@extend_schema_serializer(examples=examples.PUBLICATIONS_SERIALIZER_EXAMPLE)
 class PublicationsSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source="item_id")
     abstract = serializers.CharField(source="des_abstract")
@@ -223,12 +268,15 @@ class PublicationsSerializer(serializers.ModelSerializer):
     year = serializers.SerializerMethodField()
     url = serializers.CharField(source="url_pubblicazione")
 
+    @extend_schema_field(serializers.CharField())
     def get_community(self, obj):
         return obj.collection.community.community_name if obj.collection and obj.collection.community else None
-
+    @extend_schema_field(serializers.CharField())
     def get_collection(self, obj):
         return obj.collection.collection_name if obj.collection else None
-
+    @extend_schema_field(serializers.ListField(
+        child=serializers.CharField()
+    ))
     def get_year(self, obj):
         if obj.date_issued_year == 9999:
             return "in stampa"
@@ -251,7 +299,7 @@ class PublicationsSerializer(serializers.ModelSerializer):
             "abstract": {"it": "des_abstract", "en": "des_abstracteng"},
         }
 
-
+@extend_schema_serializer(examples=examples.PUBLICATION_SERIALIZER_EXAMPLE)
 class PublicationSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source="item_id")
     abstract = serializers.CharField(source="des_abstract")
@@ -263,6 +311,11 @@ class PublicationSerializer(serializers.ModelSerializer):
     year = serializers.SerializerMethodField()
     url = serializers.CharField(source="url_pubblicazione")
     
+    @extend_schema_field(serializers.ListField(
+        child=serializers.DictField(
+            child=serializers.CharField()
+        )
+    ))
     def get_authors(self, obj):
         for a in obj.autori:
             if a.ab.matricola is None:
@@ -281,15 +334,15 @@ class PublicationSerializer(serializers.ModelSerializer):
                         ),
                 }
             ]
-    
+    @extend_schema_field(serializers.CharField())
     def get_year(self, obj):
         if obj.date_issued_year == 9999:
             return "in stampa"
         return obj.date_issued_year
-    
+    @extend_schema_field(serializers.CharField())
     def get_community(self, obj):
         return obj.collection.community.community_name if obj.collection and obj.collection.community else None
-
+    @extend_schema_field(serializers.CharField())
     def get_collection(self, obj):
         return obj.collection.collection_name if obj.collection else None
 
@@ -312,7 +365,7 @@ class PublicationSerializer(serializers.ModelSerializer):
             "abstract": {"it": "des_abstract", "en": "des_abstracteng"},
         }
 
-
+@extend_schema_serializer(examples=examples.TEACHERS_BASE_RESEARCH_LINES_EXAMPLE)
 class TeachersBaseResearchLinesSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(
         source="ricercadocentelineabase__ricerca_linea_base__id"
@@ -340,7 +393,7 @@ class TeachersBaseResearchLinesSerializer(serializers.ModelSerializer):
             "ERC0Name",
         ]
 
-
+@extend_schema_serializer(examples=examples.TEACHERS_APPLIED_RESEARCH_LINES_EXAMPLE)
 class TeachersAppliedResearchLinesSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(
         source="ricercadocentelineaapplicata__ricerca_linea_applicata__id"
@@ -368,7 +421,7 @@ class TeachersAppliedResearchLinesSerializer(serializers.ModelSerializer):
             "ERC0Name",
         ]
 
-
+@extend_schema_serializer(examples=examples.TEACHERS_STUDY_ACTIVITIES_EXAMPLE)
 class TeachersStudyActivitiesSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source="af_id")
     cod = serializers.CharField(source="af_gen_cod")
@@ -434,7 +487,7 @@ def _get_teacher_obj_publication_date(self, obj):
         return obj["dt_pubblicazione"]
     return obj["dt_inizio_validita"]
 
-
+@extend_schema_serializer(examples=examples.TEACHERS_MATERIALS_EXAMPLE)
 class TeachersMaterialsSerializer(serializers.ModelSerializer):
     title = serializers.CharField(source="titolo")
     text = serializers.CharField(source="testo")
@@ -443,6 +496,7 @@ class TeachersMaterialsSerializer(serializers.ModelSerializer):
     active = serializers.BooleanField(source="attivo")
     publicationDate = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.CharField())
     def get_publicationDate(self, obj):
         return _get_teacher_obj_publication_date(obj)
 
@@ -463,7 +517,7 @@ class TeachersMaterialsSerializer(serializers.ModelSerializer):
             "textUrl": {"it": "url_testo", "en": "url_testo_en"},
         }
 
-
+@extend_schema_serializer(examples=examples.PUBLICATIONS_COMMUNITY_TYPES_EXAMPLE)
 class PublicationsCommunityTypesSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source="community_id")
     name = serializers.CharField(source="community_name")
@@ -475,7 +529,7 @@ class PublicationsCommunityTypesSerializer(serializers.ModelSerializer):
             "name",
         ]
 
-
+@extend_schema_serializer(examples=examples.TEACHERS_NEWS_EXAMPLE)
 class TeachersNewsSerializer(serializers.ModelSerializer):
     title = serializers.CharField(source="titolo")
     textType = serializers.CharField(source="tipo_testo")
@@ -485,6 +539,7 @@ class TeachersNewsSerializer(serializers.ModelSerializer):
     active = serializers.CharField(source="attivo")
     publicationDate = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.CharField())
     def get_publicationDate(self, obj):
         return _get_teacher_obj_publication_date(obj)
 

@@ -1,11 +1,11 @@
 import datetime
 from django_filters.rest_framework import DjangoFilterBackend
-# from drf_spectacular.utils import (
-#     extend_schema,
-#     extend_schema_view,
-# )
-# from .docs import descriptions
-# from api_docs import responses
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+)
+from .docs import descriptions
+from api_docs import responses
 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -34,7 +34,7 @@ from .serializers import (
     TeachersNewsSerializer
 )
 
-from django.db.models import Case, Q, OuterRef, When, F, Value, IntegerField, Prefetch
+from django.db.models import Q, OuterRef, F,Prefetch
 from structures.models import DidatticaDipartimento, UnitaOrganizzativaFunzioni
 from addressbook.models import Personale, PersonaleContatti
 from teachers.models import (
@@ -48,6 +48,18 @@ from cds.models import DidatticaCopertura
 import teachers.utils
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.TEACHERS_LIST_SUMMARY,
+        description=descriptions.TEACHERS_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(TeachersSerializer(many=True)),
+    ),
+    retrieve=extend_schema(
+        summary=descriptions.TEACHERS_RETRIEVE_SUMMARY,
+        description=descriptions.TEACHERS_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(TeacherSerializer),
+    ),
+)
 class TeachersViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -151,7 +163,13 @@ class TeachersViewSet(ReadOnlyModelViewSet):
     def get_object(self):
         return self.get_queryset().first()
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.COVERAGES_LIST_SUMMARY,
+        description=descriptions.COVERAGES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(TeachersSerializer(many=True)),
+    ),
+)
 class CoveragesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -211,7 +229,18 @@ class CoveragesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         return query
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.PUBLICATIONS_LIST_SUMMARY,
+        description=descriptions.PUBLICATIONS_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(PublicationsSerializer(many=True)),
+    ),
+    retrieve=extend_schema(
+        summary=descriptions.PUBLICATIONS_RETRIEVE_SUMMARY,
+        description=descriptions.PUBLICATIONS_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(PublicationSerializer),
+    ),
+)
 class PublicationsViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -286,7 +315,13 @@ class PublicationsViewSet(ReadOnlyModelViewSet):
                 .distinct()
             )
 
-
+@extend_schema_view(
+    retrieve=extend_schema(
+        summary=descriptions.TEACHERS_STUDY_ACTIVITY_RETRIEVE_SUMMARY,
+        description=descriptions.TEACHERS_STUDY_ACTIVITY_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(TeachersStudyActivitiesSerializer),
+    ),
+)
 class TeachersStudyActivitiesViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -348,7 +383,13 @@ class TeachersStudyActivitiesViewSet(mixins.RetrieveModelMixin, viewsets.Generic
     def get_object(self):
         return self.get_queryset().first()
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.TEACHERS_MATERIALS_LIST_SUMMARY,
+        description=descriptions.TEACHERS_MATERIALS_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(TeachersMaterialsSerializer(many=True)),
+    ),
+)
 class TeachersMaterialsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -398,7 +439,13 @@ class TeachersMaterialsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             )
         )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.TEACHERS_BASE_RESEARCH_LINES_LIST_SUMMARY,
+        description=descriptions.TEACHERS_BASE_RESEARCH_LINES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(TeachersBaseResearchLinesSerializer(many=True)),
+    ),
+)
 class TeachersBaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -446,7 +493,13 @@ class TeachersBaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericVi
             .distinct()
         )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.TEACHERS_APPLIED_RESEARCH_LINES_LIST_SUMMARY,
+        description=descriptions.TEACHERS_APPLIED_RESEARCH_LINES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(TeachersAppliedResearchLinesSerializer(many=True)),
+    ),
+)
 class TeachersAppliedResearchLinesViewSet(
     mixins.ListModelMixin, viewsets.GenericViewSet
 ):
@@ -498,7 +551,13 @@ class TeachersAppliedResearchLinesViewSet(
             .distinct()
         )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.TEACHERS_NEWS_LIST_SUMMARY,
+        description=descriptions.TEACHERS_NEWS_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(TeachersNewsSerializer(many=True)),
+    ),
+)
 class TeachersNewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -544,7 +603,13 @@ class TeachersNewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             "dt_fine_validita",
         )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.PUBLICATIONS_COMMUNITY_TYPES_LIST_SUMMARY,
+        description=descriptions.PUBLICATIONS_COMMUNITY_TYPES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(PublicationsCommunityTypesSerializer(many=True)),
+    ),
+)
 class PublicationsCommunityTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
