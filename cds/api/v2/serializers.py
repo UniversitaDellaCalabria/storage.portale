@@ -1,8 +1,9 @@
 from collections import defaultdict
 from .docs import examples
 from django.conf import settings
-from addressbook.utils import append_email_addresses
+from addressbook.utils import add_email_addresses
 # from cds.settings import CDS_BROCHURE_IS_VISIBLE, CDS_BROCHURE_MEDIA_PATH
+
 
 from drf_spectacular.utils import (
     extend_schema_field,
@@ -193,8 +194,12 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
 
     satisfactionSurvey = serializers.IntegerField(source="cds.codicione")
     jointDegree = serializers.CharField(source="titolo_congiunto_cod")
-    studyManifesto = serializers.CharField(source="didatticacdsaltridati.manifesto_studi")
-    didacticRegulation = serializers.SerializerMethodField(method_name="get_didactic_regulation")
+    studyManifesto = serializers.CharField(
+        source="didatticacdsaltridati.manifesto_studi"
+    )
+    didacticRegulation = serializers.SerializerMethodField(
+        method_name="get_didactic_regulation"
+    )
     teachingSystem = serializers.SerializerMethodField()
     teachingSystemYear = serializers.SerializerMethodField()
     # otherData = serializers.SerializerMethodField()
@@ -277,7 +282,7 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
     #         if altri_dati != []
     #         else None
     #     )
-    
+
     @extend_schema_field(serializers.CharField(allow_null=True))
     def get_didactic_regulation(self, obj):
         if not hasattr(obj, "didatticacdsaltridati") or not hasattr(
@@ -332,7 +337,6 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
                 )
 
         return list
-
 
     # @extend_schema_field(serializers.ListField())
     # def get_otherData(self, obj):
@@ -463,7 +467,6 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
             "groups",
             "periods",
             "currentPeriods",
-            
         ]
         language_field_map = {
             "area": {"it": "cds.area_cds", "en": "cds.area_cds_en"},
@@ -540,278 +543,119 @@ class AcademicYearsSerializer(ReadOnlyModelSerializer):
 
 
 class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(
-        source="af_id", help_text="The ID of the study activity."
-    )
-    genCod = serializers.CharField(
-        source="af_gen_cod", help_text="Code of the study activity."
-    )
-    des = serializers.SerializerMethodField()
-    cdsId = serializers.IntegerField(
-        source="cds.cds_id", help_text="The ID of the degree program."
-    )
-    cdsCod = serializers.CharField(
-        source="cds.cds_cod", help_text="Code of the degree program."
-    )
-    language = serializers.SerializerMethodField(
-        help_text="List of languages available for the study activity."
-    )
-    regDidId = serializers.IntegerField(
-        source="regdid_id",
-        help_text="Regulation identifier associated with the activity.",
-    )
-    pdsCod = serializers.CharField(
-        source="pds_cod", help_text="Code of the study plan."
-    )
-    pdsDes = serializers.CharField(
-        source="pds_des", help_text="Description of the study plan."
-    )
+    id = serializers.CharField(source="af_id")
+    cod = serializers.CharField(source="af_gen_cod")
+    name = serializers.SerializerMethodField()
+    cdsId = serializers.CharField(source="cds.cds_id")
+    cdsCod = serializers.CharField(source="cds.cds_cod")
+    language = serializers.SerializerMethodField()
+    regDidId = serializers.CharField(source="regdid.regdid_id")
+    pdsCod = serializers.CharField(source="pds_cod")
+    pdsDes = serializers.CharField(source="pds_des")
     erogationYear = serializers.SerializerMethodField()
-    semester = serializers.CharField(
-        source="ciclo_des", help_text="Semester in which the activity is offered."
-    )
+    year = serializers.SerializerMethodField()
+    semester = serializers.CharField(source="ciclo_des")
     erogationLanguage = serializers.SerializerMethodField()
-    ects = serializers.IntegerField(
-        source="peso", help_text="ECTS credits for the activity."
-    )
+    ECTS = serializers.IntegerField(source="peso")
     hours = serializers.SerializerMethodField()
     modalities = serializers.SerializerMethodField()
-    ssd = serializers.CharField(
-        source="sett_des", help_text="Code of the scientific-disciplinary sector (SSD)."
-    )
-    ssdCod = serializers.CharField(
-        source="sett_cod", help_text="Description of the SSD."
-    )
-    compulsoryActivity = serializers.IntegerField(
-        source="freq_obblig_flg",
-        help_text="Flag indicating if the activity is compulsory.",
-    )
-    cdsName = serializers.CharField(
-        source="cds.nome_cds_it", help_text="Name of the degree program in Italian."
-    )
-    teachingUnitTypeCod = serializers.CharField(
-        source="tipo_af_cod", help_text="Code of the teaching unit type."
-    )
-    teachingUnitType = serializers.CharField(
-        source="tipo_af_des", help_text="Description of the teaching unit type."
-    )
-    interclassTeachingUnitTypeCod = serializers.CharField(
-        source="tipo_af_intercla_cod",
-        help_text="Code of the interclass teaching unit type.",
-    )
-    interclassTeachingUnitType = serializers.CharField(
-        source="tipo_af_intercla_des",
-        help_text="Description of the interclass teaching unit type.",
-    )
-    teacherId = serializers.SerializerMethodField()
-    # teacherName = serializers.SerializerMethodField(help_text="Full name of the teacher responsible for the activity.",)
-    partitionCod = serializers.CharField(
-        source="part_stu_cod", help_text="Partition code for the study activity."
-    )
-    partitionDes = serializers.CharField(
-        source="part_stu_des", help_text="Partition description for the study activity."
-    )
-    extendedPartitionCod = serializers.CharField(
-        source="fat_part_stu_cod",
-        help_text="Extended partition code for detailed activities.",
-    )
-    extendedPartitionDes = serializers.CharField(
-        source="fat_part_stu_des",
-        help_text="Extended partition description for detailed activities.",
-    )
-    # modules = serializers.SerializerMethodField()
-    root = serializers.SerializerMethodField()
-
-    # mutuataDa = serializers.SerializerMethodField()
-
-    def get_root(self, obj):
-        return getattr(obj, "activityRoot", None)
-
-    @extend_schema_field(serializers.CharField())
-    def get_teacherId(self, obj):
-        matricola = getattr(obj, "matricola_resp_did", None)
-        return encrypt(matricola)
-
-    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
+    SSD = serializers.CharField(source="sett_des")
+    SSDCod = serializers.CharField(source="sett_cod")
+    compulsory = serializers.BooleanField(source="freq_obblig_flg")
+    cdsName = serializers.CharField(source="cds.nome_cds_it")
+    teachingUnitTypeCod = serializers.CharField(source="tipo_af_cod")
+    teachingUnitType = serializers.CharField(source="tipo_af_des")
+    interclassTeachingUnitTypeCod = serializers.CharField(source="tipo_af_intercla_cod")
+    interclassTeachingUnitType = serializers.CharField(source="tipo_af_intercla_des")
+    modules = serializers.SerializerMethodField()
+    father = serializers.SerializerMethodField()
+    borrowedFrom = serializers.SerializerMethodField()
+    borrowedFromThis = serializers.SerializerMethodField()
+    
+    def get_modules(self, obj):
+        return
+    
+    def get_father(self, obj):
+        return
+    
+    def get_borrowedFrom(self, obj):
+        return
+    
+    def get_borrowedFromThis(self, obj):
+        return
+    
     def get_modalities(self, obj):
-        modalities = DidatticaAttivitaFormativaModalita.objects.filter(
-            af_id=obj.af_id
-        ).only("mod_did_af_id", "mod_did_cod", "mod_did_des")
-        return [
-            {
-                "id": m.mod_did_af_id,
-                "cod": m.mod_did_cod,
-                "des": m.mod_did_des,
-            }
-            for m in modalities
-        ]
+        for did in obj.didattica_attivita_formativa_modalita:
+            return [
+                {
+                    "activityId": did.mod_did_af_id,
+                    "activityCod": did.mod_did_cod,
+                    "activityDescription": did.mod_did_des
+                }
+            ]
 
-    @extend_schema_field(serializers.ListField())
     def get_hours(self, obj):
-        # Recupera le ore correlate con i dati necessari utilizzando select_related e only per l'ottimizzazione delle query
-        hours = (
-            DidatticaCoperturaDettaglioOre.objects.select_related(
-                "coper__personale", "coper"
-            )
-            .filter(coper__stato_coper_cod="R", coper__af_id=obj.af_id)
-            .only(
-                "tipo_att_did_cod",
-                "ore",
-                "coper__personale__id_ab",
-                "coper__personale__matricola",
-                "coper__personale__nome",
-                "coper__personale__cognome",
-                "coper__personale__middle_name",
-                "coper__personale__flg_cessato",
-            )
-        )
+        results = []
+        for did in obj.didattica_copertura:
+            for ore in did.didattica_copertura_dettaglio_ore:
+                if ore.coper.personale.cognome and ore.coper.personale.nome:
+                    full_name = (
+                        ore.coper.personale.cognome + " " + ore.coper.personale.nome
+                    )
+                    if ore.coper.personale.middle_name:
+                        full_name += " " + ore.coper.personale.middle_name
+                else:
+                    full_name = None
 
-        # Appende gli indirizzi email alle ore filtrate
-        append_email_addresses(hours, [h.coper.personale.id_ab for h in hours])
+                results.append(
+                    {
+                        "activityType": ore.tipo_att_did_cod,
+                        "hours": ore.ore,
+                        "teacherID": encrypt(ore.coper.personale.matricola)
+                        if not ore.coper.personale.flg_cessato
+                        else None,
+                        "teacherName": full_name,
+                        "email": add_email_addresses(ore.coper.personale.cod_fis),
+                    }
+                )
+        return results
+    
+    def get_erogationLanguage(self, obj):
+        lang = self.context.get("lang", "it")
+        if lang == "it":
+            return obj.texts.testo_af_ita if obj.texts else None
+        return obj.texts.testo_af_eng if obj.texts else None
 
-        # Converte le ore in un formato più leggibile
-        formatted_hours = [
-            {
-                "tipoAttDidCod": h.tipo_att_did_cod,
-                "ore": h.ore,
-                "idAb": h.coper.personale.id_ab,
-                "matricola": h.coper.personale.matricola,
-                "name": h.coper.personale.nome,
-                "lastName": h.coper.personale.cognome,
-                "middleName": h.coper.personale.middle_name,
-                "idCopertura": h.coper_id,
-                "flgCessato": h.coper.personale.flg_cessato,
-            }
-            for h in hours
-        ]
+    def get_year(self, obj):
+        if obj.anno_corso:
+            return obj.anno_corso
 
-        # Unisce le ore duplicate basate su criteri specifici
-        clean_list = []
-        to_skip = set()
-
-        for i, hour in enumerate(formatted_hours):
-            if i in to_skip:
-                continue
-
-            combined_hour = hour.copy()
-
-            for j, other_hour in enumerate(formatted_hours):
-                if j <= i or j in to_skip:
-                    continue
-
-                # Verifica se possono essere combinate
-                if (
-                    combined_hour["tipoAttDidCod"] == other_hour["tipoAttDidCod"]
-                    and combined_hour["matricola"] == other_hour["matricola"]
-                    and combined_hour["idCopertura"] != other_hour["idCopertura"]
-                ):
-                    combined_hour["ore"] += other_hour["ore"]
-                    to_skip.add(j)
-
-            clean_list.append(combined_hour)
-
-        return clean_list
-
-    @extend_schema_field(serializers.CharField())
-    def get_des(self, obj):
-        return getattr(obj, "group_description", obj.des)
-
-    @extend_schema_field(serializers.CharField())
     def get_erogationYear(self, obj):
         if obj.anno_corso:
             return obj.regdid.aa_reg_did + obj.anno_corso - 1
-        else:
-            activityRoot = getattr(obj, "activityRoot", None)
-            return (
-                activityRoot[0].regdid.aa_reg_did + activityRoot[0].anno_corso - 1
-                if activityRoot
-                else None
-            )
 
-    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_language(self, obj):
-        list_language = getattr(obj, "lista_lin_did_af", None)
-        if list_language:
-            return list_language.replace(" ", "").split(",")
-        return []
+        if obj.lista_lin_did_af:
+            lista = obj.lista_lin_did_af
+            lista.replace(" ", "")
+            return lista.split(",")
 
-    # # def get_mutuataDa(self, obj):
-    #     language = self.get_requestLang()
-    #     mutuata_da = None
-    #     if obj.mutuata_flg == 1:
-    #         mutuata_da = (
-    #             DidatticaAttivitaFormativa.objects.filter(af_id=obj.af_master_id)
-    #             .only(
-    #                 "af_id",
-    #                 "af_gen_cod",
-    #                 "des",
-    #                 "cds__cds_cod",
-    #                 "cds__cds_id",
-    #                 "cds__nome_cds_it",
-    #                 "cds__nome_cds_eng",
-    #                 "pds_cod",
-    #                 "pds_des",
-    #                 "af_gen_des_eng",
-    #                 "ciclo_des",
-    #                 "regdid__regdid_id",
-    #                 "regdid__aa_reg_did",
-    #                 "anno_corso",
-    #                 "didatticacopertura__coper_peso",
-    #             )
-    #             .first()
-    #         )
-    #     return (
-    #         {
-    #             "afId": mutuata_da.af_id,
-    #             "des": mutuata_da.des
-    #             if (language == "it" or mutuata_da.af_gen_des_eng is None)
-    #             else mutuata_da.af_gen_des_eng,
-    #             "semester": mutuata_da.ciclo_des,
-    #             "courseYear": mutuata_da.anno_corso,
-    #             "erogationYear": (
-    #                 mutuata_da.regdid.aa_reg_did + mutuata_da.anno_corso - 1
-    #             )
-    #             if mutuata_da.anno_corso
-    #             else None,
-    #             "regDidId": mutuata_da.regdid.regdid_id,
-    #             "cdsId": mutuata_da.cds.cds_id,
-    #             "cdsName": mutuata_da.cds.nome_cds_it
-    #             if (language == "it" or mutuata_da.cds.nome_cds_eng is None)
-    #             else mutuata_da.cds.nome_cds_eng,
-    #             "cdsCod": mutuata_da.cds.cds_cod,
-    #             "pdsCod": mutuata_da.pds_cod,
-    #             "pdsDes": mutuata_da.pds_des,
-    #         }
-    #         if mutuata_da
-    #         else None
-    #     )
-
-    def get_requestLang(self):
-        request = self.context.get("request", None)
-        return "en" if request and request.GET.get("lang") == "en" else "it"
-
-    @extend_schema_field(serializers.CharField())
-    def get_erogationLanguage(self, obj):
-        language = self.get_requestLang()
-
-        texts = (
-            DidatticaTestiAf.objects.filter(tipo_testo_af_cod="LINGUA_INS")
-            .only("testo_af_ita", "testo_af_eng")
-            .first()
-        )
-
-        return (
-            texts.testo_af_ita
-            if (texts.testo_af_ita is None and language != "en") or language == "it"
-            else texts.testo_af_eng
-        )
+    def get_name(self, obj):
+        lang = self.context.get("lang", "it")
+        if lang == "it" or obj.af_gen_des_eng is None:
+            if obj.part_stu_des:
+                descrizione_gruppo = "(" + obj.part_stu_des + ")"
+            else:
+                descrizione_gruppo = ""
+            return obj.des + descrizione_gruppo
+        return obj.af_gen_des_eng
 
     class Meta:
         model = DidatticaAttivitaFormativa
         fields = [
             "id",
-            "genCod",
-            "des",
+            "cod",
+            "name",
             "cdsId",
             "cdsCod",
             "language",
@@ -819,32 +663,23 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
             "pdsCod",
             "pdsDes",
             "erogationYear",
-            "erogationLanguage",
+            "year",
             "semester",
-            "ects",
+            "erogationLanguage",
+            "ECTS",
             "hours",
             "modalities",
-            "ssd",
-            "ssdCod",
-            "compulsoryActivity",
+            "SSD",
+            "SSDCod",
+            "compulsory",
             "cdsName",
             "teachingUnitTypeCod",
             "teachingUnitType",
             "interclassTeachingUnitTypeCod",
             "interclassTeachingUnitType",
-            "teacherId",
-            # "teacherName",
-            "partitionCod",
-            "partitionDes",
-            "extendedPartitionCod",
-            "extendedPartitionDes",
-            # "modules",
-            "root",
-            # "mutuataDa",
         ]
         language_field_map = {
-            "des": {"en": "af_gen_des_eng"},
-            "cdsName": {"en": "cds.nome_cds_eng"},
+            "cdsName": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"},
         }
 
 
@@ -1077,11 +912,14 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
 
     @extend_schema_field(serializers.CharField())
     def get_fullName(self, obj):
-        pass
+        full_name = obj.personale.cognome + ", " + obj.personale.nome
+        if obj.personale.middle_name:
+            full_name += " " + obj.personale.middle_name
+        return full_name
 
     @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
-        return encrypt(getattr(obj, "personale__matricola", None))
+        return encrypt(obj.personale.matricola)
 
     class Meta:
         model = DidatticaCopertura

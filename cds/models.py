@@ -870,6 +870,7 @@ class DidatticaTestiAf(InsModAbstract):
         models.DO_NOTHING,
         db_column="AF_ID",
         primary_key=True,
+        related_name="didatticaf",
     )
     aa_off_id = models.IntegerField(db_column="AA_OFF_ID", blank=True, null=True)
     testi_af_id = models.IntegerField(db_column="TESTI_AF_ID", blank=True, null=True)
