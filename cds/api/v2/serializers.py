@@ -2,9 +2,6 @@ from collections import defaultdict
 from .docs import examples
 from django.conf import settings
 from addressbook.utils import add_email_addresses
-# from cds.settings import CDS_BROCHURE_IS_VISIBLE, CDS_BROCHURE_MEDIA_PATH
-
-
 from drf_spectacular.utils import (
     extend_schema_field,
     extend_schema_serializer,
@@ -12,6 +9,7 @@ from drf_spectacular.utils import (
 from generics.api.serializers import ReadOnlyModelSerializer
 from generics.utils import encrypt, build_media_path
 from rest_framework import serializers
+from django.db.models import Q
 
 
 from cds.models import (
@@ -21,11 +19,8 @@ from cds.models import (
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
     DidatticaCdsCollegamento,
-    DidatticaTestiAf,
     DidatticaCopertura,
     DidatticaCdsPeriodi,
-    DidatticaAttivitaFormativaModalita,
-    DidatticaCoperturaDettaglioOre,
 )
 
 
@@ -85,10 +80,6 @@ class CdsSerializer(ReadOnlyModelSerializer):
                 )
 
         return lang_list
-
-    # @extend_schema_field(serializers.ListField(child=serializers.CharField()))
-    # def get_languages(self, obj):
-    #     return [lang.iso6392_cod for lang in obj.cds.lingue]
 
     @extend_schema_field(serializers.CharField(allow_null=True))
     def get_study_manifesto(self, obj):
@@ -178,20 +169,7 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
     duration = serializers.IntegerField(source="cds.durata_anni")
     ECTS = serializers.IntegerField(source="cds.valore_min")
     mandatoryAttendance = serializers.SerializerMethodField()
-
-    # intro = serializers.SerializerMethodField()  # ??
-    # doc = serializers.SerializerMethodField()  # ??
-    # url = serializers.CharField(source="URL_CDS")  # ??
-    # video = serializers.SerializerMethodField()  # ??
-    # goals = serializers.CharField(source="OBB_SPEC")  # ??
-    # access = serializers.CharField(source="REQ_ACC")  # ??
-    # admission = serializers.CharField(source="REQ_ACC_2")  # ??
-
     profiles = serializers.SerializerMethodField()
-
-    # finalTest = serializers.CharField(source="PROVA_FINALE")  # ??
-    # finalTestMode = serializers.CharField(source="PROVA_FINALE_2")  # ??
-
     satisfactionSurvey = serializers.IntegerField(source="cds.codicione")
     jointDegree = serializers.CharField(source="titolo_congiunto_cod")
     studyManifesto = serializers.CharField(
@@ -202,29 +180,10 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
     )
     teachingSystem = serializers.SerializerMethodField()
     teachingSystemYear = serializers.SerializerMethodField()
-    # otherData = serializers.SerializerMethodField()
     officesData = serializers.SerializerMethodField()
     groups = serializers.SerializerMethodField()
     periods = serializers.SerializerMethodField()
     currentPeriods = serializers.SerializerMethodField()
-
-    # @extend_schema_field(serializers.CharField())
-    # def get_video(self, obj):
-    #     if obj.URL_CDS_VIDEO:
-    #         return build_media_path(obj.URL_CDS_VIDEO, CDS_BROCHURE_MEDIA_PATH)
-
-    # @extend_schema_field(serializers.CharField())
-    # def get_doc(self, obj):
-    #     if obj.URL_CDS_DOC:
-    #         return (
-    #             build_media_path(obj.URL_CDS_DOC, CDS_BROCHURE_MEDIA_PATH)
-    #             if CDS_BROCHURE_IS_VISIBLE
-    #             else None
-    #         )
-
-    # @extend_schema_field(serializers.CharField())
-    # def get_intro(self, obj):
-    #     return obj.INTRO_CDS_FMT if obj.INTRO_CDS_FMT else obj.DESC_COR_BRE
 
     def get_requestLang(self):
         request = self.context.get("request", None)
@@ -273,15 +232,6 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
         return build_media_path(
             getattr(obj.didatticacdsaltridati.manifesto_studi, "name")
         )
-
-    # @extend_schema_field(serializers.CharField())
-    # def get_didacticRegulation(self, obj):
-    #     altri_dati = getattr(obj, "otherData", []) or []
-    #     return (
-    #         build_media_path(altri_dati[0].regolamento_didattico)
-    #         if altri_dati != []
-    #         else None
-    #     )
 
     @extend_schema_field(serializers.CharField(allow_null=True))
     def get_didactic_regulation(self, obj):
@@ -568,29 +518,128 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
     interclassTeachingUnitTypeCod = serializers.CharField(source="tipo_af_intercla_cod")
     interclassTeachingUnitType = serializers.CharField(source="tipo_af_intercla_des")
     modules = serializers.SerializerMethodField()
+    root = serializers.SerializerMethodField()
     father = serializers.SerializerMethodField()
     borrowedFrom = serializers.SerializerMethodField()
     borrowedFromThis = serializers.SerializerMethodField()
-    
+
     def get_modules(self, obj):
-        return
-    
+        language = self.context.get("lang", "it")
+
+        groups_qs = DidatticaAttivitaFormativa.objects.filter(
+            af_pdr_id=obj.af_id, fat_part_stu_cod="GRP"
+        ).values("af_id")
+
+        groups_list = [{"id": g["af_id"]} for g in groups_qs]
+
+        submodules = DidatticaAttivitaFormativa.objects.filter(
+            Q(af_radice_id=obj.af_id) | Q(af_pdr_id=obj.af_id)
+        ).exclude(af_id=obj.af_id).values(
+            "af_id",
+            "af_gen_cod",
+            "des",
+            "af_gen_des_eng",
+            "fat_part_stu_cod",
+            "lista_lin_did_af",
+            "part_stu_cod",
+            "part_stu_des",
+            "fat_part_stu_des",
+            "ciclo_des",
+            "matricola_resp_did",
+        )
+
+        results = [
+            {
+                "id": s["af_id"],
+                "cod": s["af_gen_cod"],
+                "name": s["des"] if language == "it" else s["af_gen_des_eng"],
+                "semester": s["ciclo_des"],
+                "partitionCod": s["part_stu_cod"],
+                "partitionDescription": s["part_stu_des"],
+                "extendedPartitionCod": s["fat_part_stu_cod"],
+                "extendedPartitionDescription": s["fat_part_stu_des"],
+                "groups": groups_list, 
+            }
+            for s in submodules
+        ]
+
+        return results
+
+                    
+            
+        
+
+    def get_root(self, obj):
+        if obj.af_radice_id:
+            return [
+                {
+                    "activityRootId": (
+                        DidatticaAttivitaFormativa.objects.filter(
+                            af_id=obj.af_radice_id
+                        )
+                        .exclude(af_id=obj.af_id)
+                        .only(
+                            "af_id",
+                        )
+                        .first()
+                    )
+                }
+            ]
+
     def get_father(self, obj):
-        return
-    
+        if obj.af_pdr_id and obj.af_pdr_id != obj.af_radice_id:
+            return [
+                {
+                    "activityFatherId": (
+                        DidatticaAttivitaFormativa.objects.filter(af_id=obj.af_pdr_id)
+                        .exclude(af_id=obj.af_id)
+                        .only(
+                            "af_id",
+                        )
+                        .first()
+                    )
+                }
+            ]
+
     def get_borrowedFrom(self, obj):
-        return
-    
+        if obj.mutuata_flg == 1:
+            return [
+                {
+                    "activityBorrowedFrom": (
+                        DidatticaAttivitaFormativa.objects.filter(
+                            af_id=obj.af_master_id
+                        )
+                        .only(
+                            "af_id",
+                        )
+                        .first()
+                    )
+                }
+            ]
+
     def get_borrowedFromThis(self, obj):
-        return
-    
+        return [
+            {
+                "activityBorrowedFromThis": (
+                    DidatticaAttivitaFormativa.objects.filter(
+                        af_master_id=obj.af_id, mutuata_flg=1
+                    )
+                    .exclude(af_id=obj.af_id)
+                    .only(
+                        "af_id",
+                    )
+                    .first()
+                )
+            }
+        ]
+
     def get_modalities(self, obj):
         for did in obj.didattica_attivita_formativa_modalita:
             return [
                 {
                     "activityId": did.mod_did_af_id,
                     "activityCod": did.mod_did_cod,
-                    "activityDescription": did.mod_did_des
+                    "activityDescription": did.mod_did_des,
                 }
             ]
 
@@ -619,7 +668,7 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
                     }
                 )
         return results
-    
+
     def get_erogationLanguage(self, obj):
         lang = self.context.get("lang", "it")
         if lang == "it":
@@ -677,6 +726,11 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
             "teachingUnitType",
             "interclassTeachingUnitTypeCod",
             "interclassTeachingUnitType",
+            "modules",
+            "root",
+            "father",
+            "borrowedFrom",
+            "borrowedFromThis",
         ]
         language_field_map = {
             "cdsName": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"},
