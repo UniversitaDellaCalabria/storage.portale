@@ -1,7 +1,10 @@
 from django_filters import rest_framework as filters
 from django.db.models import Q
-from addressbook.models import Personale
-
+from addressbook.models import Personale, PersonaleAttivoTuttiRuoli
+from addressbook.settings import (
+    PERSON_CONTACTS_EXCLUDE_STRINGS,
+    PERSON_CONTACTS_TO_TAKE,
+)
 import datetime
 
 from structures.models import UnitaOrganizzativa
@@ -20,6 +23,7 @@ class PersonnelCfFilter(filters.FilterSet):
     class Meta:
         model = Personale
         fields = []
+
 
 class AddressbookStructuresFilter(filters.FilterSet):
     father = filters.CharFilter(
@@ -107,25 +111,15 @@ class AddressbookFilter(filters.FilterSet):
     )
 
     def filter_by_structureid(self, queryset, name, value):
-        if not value:
-            return queryset
-
         role_param = self.data.get("role")
-        role_list = role_param.split(",") if role_param else []
-
-        filtro_struttura = Q(pers_attivo_tutti_ruoli__cd_uo_aff_org=value) | Q(
-            pers_attivo_tutti_ruoli__sede=value
-        )
-
-        if role_list:
-            filtro_ruolo = Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list) | Q(
-                profilo__in=role_list
-            )
-            queryset = queryset.filter(filtro_struttura & filtro_ruolo)
-        else:
-            queryset = queryset.filter(filtro_struttura)
-
-        return queryset.distinct()
+        results =[]
+        for item in queryset:
+            ruoli = self.ruoli(item.cod_fis, "")
+            for r in ruoli:
+                if r.cd_uo_aff_org == value or r.sede == value:
+                    if not role_param or r.cd_ruolo in role_param or item.profilo in role_param:
+                        results.append(item.id_ab)
+        return queryset.filter(id_ab__in=results)
 
     def getStructureChilds(self, structureid=None):
         child = UnitaOrganizzativa.objects.filter(
@@ -139,69 +133,83 @@ class AddressbookFilter(filters.FilterSet):
         return result
 
     def filter_by_structuretree(self, queryset, name, value):
-        if not value:
+        query_structuretree = self.getStructureChilds(value)
+        role_param = self.data.get("role", [])
+        
+        if not role_param or not query_structuretree:
             return queryset
 
-        role_param = self.data.get("role")
-        role_list = role_param.split(",") if role_param else []
-
-        structure_ids = self.getStructureChilds(value)
-
-        filtro_struttura = Q(
-            pers_attivo_tutti_ruoli__cd_uo_aff_org__in=structure_ids
-        ) | Q(pers_attivo_tutti_ruoli__sede__in=structure_ids)
-
-        if role_list:
-            filtro_ruolo = Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list) | Q(
-                profilo__in=role_list
-            )
-            queryset = queryset.filter(filtro_struttura & filtro_ruolo)
-        else:
-            queryset = queryset.filter(filtro_struttura)
-
-        return queryset.distinct()
-
-    def filter_by_structuretypes(self, queryset, name, value):
-        if not value:
-            return queryset
-
-        structuretypes = value.split(",")
-
-        role_param = self.data.get("role")
-        role_list = role_param.split(",") if role_param else []
-
-        filtro_tipo_struttura = Q(
-            pers_attivo_tutti_ruoli__cd_tipo_nodo__in=structuretypes
+        filtered_queryset = queryset.filter(
+            Q(ruoli__cd_uo_aff_org__in=query_structuretree) | 
+            Q(ruoli__sede__in=query_structuretree)
+        ).filter(
+            Q(ruoli__cd_ruolo__in=role_param) | 
+            Q(profilo__in=role_param)
         )
+        return filtered_queryset
 
-        if role_list:
-            filtro_ruolo = Q(pers_attivo_tutti_ruoli__cd_ruolo__in=role_list) | Q(
-                profilo__in=role_list
-            )
-            queryset = queryset.filter(filtro_tipo_struttura & filtro_ruolo)
-        else:
-            queryset = queryset.filter(filtro_tipo_struttura)
+    
+    def filter_by_structuretypes(self, queryset, name, value):
+        s = []
+        for k in value.split(","):
+            s.append(k)
+        role_param = self.data.get("role")
 
-        return queryset.distinct()
+        result =  []
+        for item in queryset:
+            final_structures = []
+            ruoli = self.ruoli(item.cod_fis, "")
+            for r in ruoli:
+                if not role_param or r.cd_ruolo in role_param or item.profilo in role_param:
+                    final_structures.append(r.cd_uo_aff_org.cd_tipo_nodo)
+            if set(s).intersection(set(final_structures)):
+                    result.append(item.id_ab)
+            
+        return queryset.filter(id_ab__in=result)
+    
+    def get_contacts(self, obj, contactDescr):
+        if contactDescr in PERSON_CONTACTS_TO_TAKE:
+            for contact in obj.contatti:
+                tipo = contact.cd_tipo_cont
+                if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                    return contact.contatto
+        return []
 
     def filter_by_phone(self, queryset, name, value):
-        return queryset.filter(
-            personalecontatti__cd_tipo_cont__descr_contatto__in=[
-                "Telefono Cellulare",
-                "Telefono Cellulare Ufficio",
-            ],
-            personalecontatti__contatto=value,
-        ).distinct()
+        if not value:
+            return queryset
+
+        results = []
+        for item in queryset:
+            numbers = self.get_contacts(item, "Telefono Cellulare Ufficio")
+            if not numbers:
+                numbers = self.get_contacts(item, "Telefono Ufficio")
+            if value in numbers:
+                results.append(item.id_ab)
+        return queryset.filter(id_ab__in=results)
+
+    def ruoli(self, cod_fis, ruolo):
+        if(ruolo):
+            return PersonaleAttivoTuttiRuoli.objects.filter(
+                cd_uo_aff_org__isnull=False, cod_fis=cod_fis, cd_ruolo=ruolo
+            ).select_related("cd_uo_aff_org")
+        else:
+             return PersonaleAttivoTuttiRuoli.objects.filter(
+            cd_uo_aff_org__isnull=False, cod_fis=cod_fis,
+        ).select_related("cd_uo_aff_org")
 
     def filter_by_role(self, queryset, name, value):
-        role = value.split(",") if value else []
-        roles = []
-        for k in role:
-            roles.append(k)
+        roles = value.split(",") if value else []
+        if not roles:
+            return queryset
 
-        return queryset.filter(
-            Q(pers_attivo_tutti_ruoli__cd_ruolo__in=value) | Q(profilo__in=value)
-        ).distinct()
+        results = []
+        for obj in queryset:
+            for ruolo in self.ruoli(obj.cod_fis, value):
+                if ruolo.cd_ruolo in roles:
+                    results.append(obj.id_ab)
+
+        return queryset.filter(id_ab__in=results)
 
     class Meta:
         model = Personale

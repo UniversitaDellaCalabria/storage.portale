@@ -305,7 +305,7 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
                 "teacherRole": f.ds_funzione,
                 "tunctionCod": f.funzione,
                 "structureCod": f.cd_csa.uo,
-                "structureName": f.cd_csadenominazione,
+                "structureName": f.cd_csa.denominazione,
             }
             for f in obj.functions
         ]

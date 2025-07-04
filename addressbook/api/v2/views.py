@@ -244,6 +244,7 @@ class AddressbookViewSet(ReadOnlyModelViewSet):
                             UnitaOrganizzativaFunzioni.objects.filter(
                                 termine__gt=datetime.datetime.now(),
                                 decorrenza__lt=datetime.datetime.now(),
+                                cd_csa__isnull=False
                             ).select_related("cd_csa")
                         ),
                         to_attr="functions",
@@ -429,7 +430,7 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet):
         responses=responses.COMMON_LIST_RESPONSES(AddressbookStructuresSerializer(many=True)),
     ),
 )
-class AddressbookStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class AddressbookStructuresViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = AddressbookStructuresSerializer
