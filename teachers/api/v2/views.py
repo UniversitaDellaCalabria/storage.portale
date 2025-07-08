@@ -281,7 +281,7 @@ class PublicationsViewSet(ReadOnlyModelViewSet):
                 PubblicazioneDatiBase.objects.select_related("collection")
                 .prefetch_related(
                     Prefetch(
-                        "pubblicazioneautori_set",
+                        "pubblicazioneautori",
                         queryset=PubblicazioneAutori.objects.only(
                             "ab__id_ab",
                             "ab__nome",
@@ -330,7 +330,6 @@ class TeachersStudyActivitiesViewSet(mixins.RetrieveModelMixin, viewsets.Generic
     lookup_field = "matricola"
 
     def get_queryset(self):
-        print(self.kwargs.get("matricola"))
         teacher = get_personale_matricola(self.kwargs.get("matricola"))
 
         queryset = (
@@ -420,7 +419,7 @@ class TeachersMaterialsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 query_is_end,
                 matricola__exact=teacher,
             )
-            .values(
+            .only(
                 "id",
                 "titolo",
                 "titolo_en",
@@ -492,6 +491,9 @@ class TeachersBaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericVi
             .exclude(ricercadocentelineabase__ricerca_linea_base__id__isnull=True)
             .distinct()
         )
+        
+    def get_object(self):
+        return self.get_queryset().first()
 
 @extend_schema_view(
     list=extend_schema(

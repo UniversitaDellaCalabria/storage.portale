@@ -5,6 +5,8 @@ from structures.models import DidatticaDipartimento
 from cds.models import DidatticaCopertura
 from teachers.models import DocenteMaterialeDidattico, DocentePtaBacheca, PubblicazioneDatiBase
 import datetime
+from addressbook.utils import get_personale_matricola
+
 
 class PublicationFilter(filters.FilterSet):
     search = filters.CharFilter(
@@ -24,12 +26,24 @@ class PublicationFilter(filters.FilterSet):
         label="Publication Type",
         help_text="Search for publication type.",
     ) 
+    teacherid = filters.CharFilter(
+        method="filter_teacherid",
+        label="Teacher ID",
+        help_text="Search for teacher id.",
+    )
     structure = filters.CharFilter(
         field_name="pubblicazioneautori.ab.cd_uo_aff_org",
         lookup_expr="exact",
         label="Structure",
         help_text="Search for structure.",
     )
+    
+    def filter_teacherid(self, queryset, name, value):
+        if value:
+            valuedecr = get_personale_matricola(value)
+            personale = Personale.objects.filter(matricola=valuedecr).values('cod_fis').first()
+            if personale:
+                return queryset.filter(Q(pubblicazioneautori__codice_fiscale=personale['cod_fis']))
     
     def filter_search(self, queryset, name, value):
         for k in value.split(" "): 

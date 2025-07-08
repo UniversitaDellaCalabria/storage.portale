@@ -11,6 +11,7 @@ from teachers.models import (
     DocenteMaterialeDidattico,
     PubblicazioneCommunity,
     PubblicazioneDatiBase,
+    DocentePtaBacheca
 )
 from addressbook.settings import (
     PERSON_CONTACTS_EXCLUDE_STRINGS,
@@ -317,6 +318,7 @@ class PublicationSerializer(serializers.ModelSerializer):
         )
     ))
     def get_authors(self, obj):
+        authors = []
         for a in obj.autori:
             if a.ab.matricola is None:
                 full_name = a.last_name + " " + a.first_name
@@ -325,15 +327,12 @@ class PublicationSerializer(serializers.ModelSerializer):
                 if a.ab.middle_name:
                     full_name = a.ab.cognome + " " + a.ab.nome + " " + a.ab.middle_name
             
-            return [
-                {
-                    "id": encrypt(a.ab.matricola),
-                    "name": full_name,
-                    "email": add_email_addresses(
-                            a.ab.cod_fis
-                        ),
-                }
-            ]
+            authors.append({
+                "id": encrypt(a.ab.matricola),
+                "name": full_name,
+                "email": add_email_addresses(a.ab.cod_fis),
+            })
+        return authors
     @extend_schema_field(serializers.CharField())
     def get_year(self, obj):
         if obj.date_issued_year == 9999:
@@ -476,16 +475,16 @@ class TeachersStudyActivitiesSerializer(serializers.ModelSerializer):
         }
 
 
-def _get_teacher_obj_publication_date(self, obj):
-    if not obj["dt_pubblicazione"]:
+def _get_teacher_obj_publication_date(obj):
+    if not obj.dt_pubblicazione:
         return None
-    if not obj["dt_inizio_validita"]:
-        return obj["dt_pubblicazione"]
-    if not obj["dt_pubblicazione"]:
-        return obj["dt_inizio_validita"]
-    if obj["dt_pubblicazione"] > obj["dt_inizio_validita"]:
-        return obj["dt_pubblicazione"]
-    return obj["dt_inizio_validita"]
+    if not obj.dt_inizio_validita:
+        return obj.dt_pubblicazione
+    if not obj.dt_pubblicazione:
+        return obj.dt_inizio_validita
+    if obj.dt_pubblicazione > obj.dt_inizio_validita:
+        return obj.dt_pubblicazione
+    return obj.dt_inizio_validita
 
 @extend_schema_serializer(examples=examples.TEACHERS_MATERIALS_EXAMPLE)
 class TeachersMaterialsSerializer(serializers.ModelSerializer):
@@ -544,7 +543,7 @@ class TeachersNewsSerializer(serializers.ModelSerializer):
         return _get_teacher_obj_publication_date(obj)
 
     class Meta:
-        model = Personale
+        model = DocentePtaBacheca
         fields = [
             "id",
             "title",
