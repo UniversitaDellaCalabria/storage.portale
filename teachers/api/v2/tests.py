@@ -32,6 +32,7 @@ class TeachersUnitTest(TestCase):
             fl_docente=1,
             flg_cessato=0,
             cd_uo_aff_org=u1,
+            cod_fis="SMN4",
         )
         doc2 = ApiTeachersUnitTestMethods.create_personale(
             id=2,
@@ -48,9 +49,11 @@ class TeachersUnitTest(TestCase):
             cv_short_it="A",
             cv_full_eng="BBB",
             cv_short_eng="B",
+            cod_fis="SMN3",
         )
         ApiTeachersUnitTestMethods.create_personale(
             id=3,
+            cod_fis="SMN2",
             nome="Pippo",
             cognome="Inzaghi",
             cd_ruolo="PO",
@@ -69,6 +72,7 @@ class TeachersUnitTest(TestCase):
             matricola="111114",
             fl_docente=1,
             flg_cessato=0,
+            cod_fis="SMN1",
             cd_uo_aff_org=u1,
         )
         ApiTeachersUnitTestMethods.create_didatticaDipartimento(
@@ -160,7 +164,7 @@ class TeachersUnitTest(TestCase):
         self.assert_data_len(url2, {"yearFrom": 2019, "yearTo": 2020}, 1)
 
     def test_apiteachernewslist(self):
-        p1 = ApiTeachersUnitTestMethods.create_personale(id=1)
+        p1 = ApiTeachersUnitTestMethods.create_personale(id=1, cod_fis="SMN1")
         ApiTeachersUnitTestMethods.create_docentePtaBacheca(matricola=p1)
 
         url = reverse(
@@ -171,7 +175,10 @@ class TeachersUnitTest(TestCase):
         self.assertEqual(len(res.json()["results"]), 1)
 
     def test_apiteachermaterialslist(self):
-        p1 = ApiTeachersUnitTestMethods.create_personale(id=1)
+        p1 = ApiTeachersUnitTestMethods.create_personale(
+            id=1,
+            cod_fis="SMN1",
+        )
         ApiTeachersUnitTestMethods.create_docenteMaterialeDidattico(matricola=p1)
 
         url = reverse(
@@ -192,7 +199,11 @@ class TeachersUnitTest(TestCase):
             denominazione_padre="d",
             uo_padre="22",
         )
-        p1 = ApiTeachersUnitTestMethods.create_personale(id=1, cd_uo_aff_org=u1)
+        p1 = ApiTeachersUnitTestMethods.create_personale(
+            id=1,
+            cd_uo_aff_org=u1,
+            cod_fis="SMN1",
+        )
         p2 = ApiTeachersUnitTestMethods.create_personale(
             id=2,
             id_ab=2,
@@ -383,10 +394,154 @@ class TeachersUnitTest(TestCase):
             community_id=2,
             community_name="Community 2",
         )
-        
+
         url = reverse("teachers:apiv2:publicationscommunitytypes-list")
         res = self.req.get(url)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json()["results"][0]["name"], "Community 1")
 
+    def test_apiteachingCoverageslistunittest(self):
+        u1 = ApiTeachersUnitTestMethods.create_unitaOrganizzativa(
+            uo="1",
+            ds_tipo_nodo="facolta",
+            cd_tipo_nodo="000",
+            id_ab=1,
+            denominazione="aaa",
+            denominazione_padre="c",
+            uo_padre="11",
+        )
+        u2 = ApiTeachersUnitTestMethods.create_unitaOrganizzativa(
+            uo="2",
+            ds_tipo_nodo="direzione",
+            cd_tipo_nodo="CDS",
+            id_ab=2,
+            denominazione="bbb",
+            denominazione_padre="d",
+            uo_padre="22",
+        )
+        doc1 = ApiTeachersUnitTestMethods.create_personale(
+            id=1,
+            cod_fis="SMN1",
+            nome="Simone",
+            cognome="Mungari",
+            cd_ruolo="PA",
+            id_ab=1,
+            matricola="111112",
+            fl_docente=1,
+            flg_cessato=0,
+            cd_uo_aff_org=u1,
+            profilo="111",
+            ds_profilo="abcds",
+            ds_profilo_breve="afv",
+        )
+        doc2 = ApiTeachersUnitTestMethods.create_personale(
+            id=2,
+            cod_fis="SMN2",
+            nome="Franco",
+            middle_name="Luigi",
+            cognome="Garofalo",
+            cd_ruolo="PO",
+            id_ab=2,
+            matricola="111111",
+            fl_docente=1,
+            flg_cessato=0,
+            cd_uo_aff_org=u2,
+            cv_full_it="AAA",
+            cv_short_it="A",
+            cv_full_eng="BBB",
+            cv_short_eng="B",
+            profilo="111",
+            ds_profilo="abcds",
+            ds_profilo_breve="afv",
+        )
+        ApiTeachersUnitTestMethods.create_personale(
+            id=3,
+            nome="Pippo",
+            cognome="Inzaghi",
+            cd_ruolo="PO",
+            id_ab=3,
+            matricola="111113",
+            fl_docente=1,
+            flg_cessato=1,
+            cd_uo_aff_org=u1,
+            profilo="111",
+            ds_profilo="abcds",
+            ds_profilo_breve="afv",
+        )
+        ApiTeachersUnitTestMethods.create_personale(
+            id=4,
+            nome="Zlatan",
+            cognome="Ibrahimovic",
+            cd_ruolo="PO",
+            id_ab=4,
+            matricola="111114",
+            fl_docente=1,
+            flg_cessato=0,
+            cd_uo_aff_org=u2,
+            profilo="111",
+            ds_profilo="abcds",
+            ds_profilo_breve="afv",
+        )
+        ApiTeachersUnitTestMethods.create_didatticaDipartimento()
+        regdid = ApiTeachersUnitTestMethods.create_didatticaRegolamento()
+        regdid2 = ApiTeachersUnitTestMethods.create_didatticaRegolamento(
+            regdid_id=2,
+        )
+        course1 = ApiTeachersUnitTestMethods.create_didatticaAttivitaFormativa(
+            af_id=1,
+            des="matematica",
+            af_gen_des_eng="math",
+            ciclo_des="Primo semestre",
+            regdid=regdid,
+            af_radice_id=1,
+            anno_corso=1,
+        )
+        course2 = ApiTeachersUnitTestMethods.create_didatticaAttivitaFormativa(
+            af_id=2,
+            des="informatica",
+            af_gen_des_eng="computer science",
+            ciclo_des="Secondo semestre",
+            regdid=regdid2,
+            af_radice_id=2,
+            anno_corso=1,
+        )
+        ApiTeachersUnitTestMethods.create_didatticaCopertura(
+            af=course1,
+            personale=doc1,
+        )
+        ApiTeachersUnitTestMethods.create_didatticaCopertura(
+            af=course2,
+            personale=doc2,
+        )
+
+        url = reverse("teachers:apiv2:teaching-coverages-list")
+        res = self.req.get(url)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json()["results"]), 2)
+
+        data = {"search": "gar"}
+        res = self.req.get(url, data=data)
+        self.assertEqual(decrypt(res.json()["results"][0]["id"]), "111111")
+
+        data = {"role": "PA", "lang": "it"}
+        res = self.req.get(url, data=data)
+        self.assertIsNone(res.json()["results"][0]["CVFull"])
+
+        self.assert_data_len(url, {"dip": 42}, 0)
+        self.assert_data_len(url, {"dip": 1, "role": "PO"}, 0)
         
+        data = {"regdid": 1}
+        res = self.req.get(url, data=data)
+        self.assertEqual(decrypt(res.json()["results"][0]["id"]), "111112")
+
+        data = {"regdid": 2}
+        res = self.req.get(url, data=data)
+        self.assertEqual(decrypt(res.json()["results"][0]["id"]), "111111")
+
+        data = {"regdid": 1, "role": "PA"}
+        res = self.req.get(url, data=data)
+        self.assertEqual(decrypt(res.json()["results"][0]["id"]), "111112")
+
+        data = {"cds": 1}
+        res = self.req.get(url, data=data)
+        self.assertEqual(len(res.json()["results"]), 0)

@@ -9,9 +9,6 @@ from .views import (
     TeachersNewsViewSet,
     PublicationsCommunityTypesViewSet,
     TeachersAppliedResearchLinesViewSet
-    # TeachersCoverageStudyActivitiesViewSet,
-    # TeachersCoveragePublicationsViewSet,
-    # TeachersPublicationsViewSet,
 )
 
 app_name = "apiv2"
@@ -22,7 +19,7 @@ urlpatterns = []
 
 router.register(r"teachers", TeachersViewSet, basename="teachers")
 router.register(
-    r"teachers/studyactivities",
+    r"teachers/(?P<id>[^/.]+)/studyactivities",
     TeachersStudyActivitiesViewSet,
     basename="teachers-studyactivities",
 )
@@ -52,5 +49,5 @@ router.register(
     PublicationsCommunityTypesViewSet,
     basename="publicationscommunitytypes",
 )
-router.register(r"coverages", CoveragesViewSet, basename="coverages")
+router.register(r"teaching-coverages", CoveragesViewSet, basename="teaching-coverages")
 urlpatterns += router.urls

@@ -182,6 +182,7 @@ class PubblicazioneAutori(models.Model):
         "PubblicazioneDatiBase", 
         models.CASCADE, 
         db_column="ITEM_ID",
+        related_name="pubblicazioneautori"
     )
     codice_fiscale = models.CharField(
         db_column="CODICE_FISCALE", max_length=16, blank=True, primary_key=True

@@ -57,7 +57,7 @@ class ApiTeachersUnitTestMethods(TestCase):
             "fl_docente": 1,
             "flg_cessato": 0,
             "ds_aff_org": "aaaa",
-            "cod_fis": "SMN1",
+            # "cod_fis": "SMN1",
         }
         data.update(kwargs)
         return Personale.objects.create(**data)
@@ -143,41 +143,41 @@ class ApiTeachersUnitTestMethods(TestCase):
         data.update(kwargs)
         return PubblicazioneAutori.objects.create(**data)
 
-    # @classmethod
-    # def create_didatticaDipartimento(cls, **kwargs):
-    #     data = {
-    #         "dip_id": 1,
-    #         "dip_cod": 1,
-    #         "dip_des_it": "Matematica e Informatica",
-    #         "dip_des_eng": "Math and Computer Science",
-    #     }
-    #     data.update(kwargs)
-    #     return DidatticaDipartimento.objects.create(**data)
+    @classmethod
+    def create_didatticaDipartimento(cls, **kwargs):
+        data = {
+            "dip_id": 1,
+            "dip_cod": 1,
+            "dip_des_it": "Matematica e Informatica",
+            "dip_des_eng": "Math and Computer Science",
+        }
+        data.update(kwargs)
+        return DidatticaDipartimento.objects.create(**data)
 
-    # @classmethod
-    # def create_didatticaRegolamento(cls, **kwargs):
-    #     data = {
-    #         "regdid_id": 1,
-    #         "aa_reg_did": 2020,
-    #         "frequenza_obbligatoria": 0,
-    #         "titolo_congiunto_cod": "N",
-    #     }
-    #     data.update(kwargs)
-    #     return DidatticaRegolamento.objects.create(**data)
+    @classmethod
+    def create_didatticaRegolamento(cls, **kwargs):
+        data = {
+            "regdid_id": 1,
+            "aa_reg_did": 2020,
+            "frequenza_obbligatoria": 0,
+            "titolo_congiunto_cod": "N",
+        }
+        data.update(kwargs)
+        return DidatticaRegolamento.objects.create(**data)
 
-    # @classmethod
-    # def create_didatticaAttivitaFormativa(cls, **kwargs):
-    #     data = {
-    #         "af_id": "1", "anno_corso": 1
-    #     }
-    #     data.update(kwargs)
-    #     return DidatticaAttivitaFormativa.objects.create(**data)
+    @classmethod
+    def create_didatticaAttivitaFormativa(cls, **kwargs):
+        data = {
+            "af_id": "1", "anno_corso": 1
+        }
+        data.update(kwargs)
+        return DidatticaAttivitaFormativa.objects.create(**data)
 
-    # @classmethod
-    # def create_didatticaCopertura(cls, **kwargs):
-    #     data = {}
-    #     data.update(kwargs)
-    #     return DidatticaCopertura.objects.create(**data)
+    @classmethod
+    def create_didatticaCopertura(cls, **kwargs):
+        data = {}
+        data.update(kwargs)
+        return DidatticaCopertura.objects.create(**data)
 
     # @classmethod
     # def create_ricercaErc0(cls, **kwargs):

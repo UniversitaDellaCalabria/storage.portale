@@ -8,7 +8,7 @@ router = DefaultRouter()
 urlpatterns = []
 
 router.register(r"structures", StructuresViewSet, basename="structures")
-router.register(r"types", TypesViewSet, basename="types")
+router.register(r"structuretypes", TypesViewSet, basename="structures-types")
 router.register(r"functions", FunctionViewSet, basename="functions")
 router.register(r"departments", DepartmentsViewSet, basename="departments")
 urlpatterns += router.urls

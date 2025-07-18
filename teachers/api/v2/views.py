@@ -204,6 +204,7 @@ class CoveragesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             )
             .values(
                 "id_ab",
+                "cod_fis",
                 "matricola",
                 "nome",
                 "middle_name",
@@ -327,10 +328,9 @@ class TeachersStudyActivitiesViewSet(mixins.RetrieveModelMixin, viewsets.Generic
     filter_backends = [DjangoFilterBackend]
     serializer_class = TeachersStudyActivitiesSerializer
     filterset_class = TeachersStudyActivitiesFilter
-    lookup_field = "matricola"
 
     def get_queryset(self):
-        teacher = get_personale_matricola(self.kwargs.get("matricola"))
+        teacher = get_personale_matricola(self.kwargs.get("id"))
 
         queryset = (
             DidatticaCopertura.objects.filter(
