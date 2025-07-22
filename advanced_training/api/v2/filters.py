@@ -3,7 +3,7 @@ from django.db.models import Q
 from advanced_training.models import AltaFormazioneDatiBase
 
 
-class HighFormationMastersFilter(filters.FilterSet):
+class AdvancedTrainingMastersFilter(filters.FilterSet):
     search = filters.CharFilter(
         method="filter_search",
         label="Search",

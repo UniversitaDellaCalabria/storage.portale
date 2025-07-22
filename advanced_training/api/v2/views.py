@@ -10,10 +10,10 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
 from django.db.models import Prefetch
 
-from .filters import HighFormationMastersFilter
+from .filters import AdvancedTrainingMastersFilter
 from .serializers import (
-    HighFormationMastersSerializer,
-    HighFormationCourseTypesSerializer,
+    AdvancedTrainingMastersSerializer,
+    AdvancedTrainingCourseTypesSerializer,
     ErogationModesSerializer,
 )
 from advanced_training.models import (
@@ -31,23 +31,23 @@ from advanced_training.models import (
 
 @extend_schema_view(
     list=extend_schema(
-        summary=descriptions.HIGHFORMATION_MASTERS_LIST_SUMMARY,
-        description=descriptions.HIGHFORMATION_MASTERS_LIST_DESCRIPTION,
+        summary=descriptions.ADVANCEDTRAINING_MASTERS_LIST_SUMMARY,
+        description=descriptions.ADVANCEDTRAINING_MASTERS_LIST_DESCRIPTION,
         responses=responses.COMMON_LIST_RESPONSES(
-            HighFormationMastersSerializer(many=True)
+            AdvancedTrainingMastersSerializer(many=True)
         ),
     ),
     retrieve=extend_schema(
-        summary=descriptions.HIGHFORMATION_MASTERS_RETRIEVE_SUMMARY,
-        description=descriptions.HIGHFORMATION_MASTERS_RETRIEVE_DESCRIPTION,
-        responses=responses.COMMON_RETRIEVE_RESPONSES(HighFormationMastersSerializer),
+        summary=descriptions.ADVANCEDTRAINING_MASTERS_RETRIEVE_SUMMARY,
+        description=descriptions.ADVANCEDTRAINING_MASTERS_RETRIEVE_DESCRIPTION,
+        responses=responses.COMMON_RETRIEVE_RESPONSES(AdvancedTrainingMastersSerializer),
     ),
 )
-class HighFormationMastersViewSet(ReadOnlyModelViewSet):
+class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
-    serializer_class = HighFormationMastersSerializer
-    filterset_class = HighFormationMastersFilter
+    serializer_class = AdvancedTrainingMastersSerializer
+    filterset_class = AdvancedTrainingMastersFilter
     queryset = (
         AltaFormazioneDatiBase.objects.prefetch_related(
             Prefetch(
@@ -164,17 +164,17 @@ class HighFormationMastersViewSet(ReadOnlyModelViewSet):
 
 @extend_schema_view(
     list=extend_schema(
-        summary=descriptions.HIGHFORMATION_COURSE_TYPES_LIST_SUMMARY,
-        description=descriptions.HIGHFORMATION_COURSE_TYPES_LIST_DESCRIPTION,
+        summary=descriptions.ADVANCEDTRAINING_COURSE_TYPES_LIST_SUMMARY,
+        description=descriptions.ADVANCEDTRAINING_COURSE_TYPES_LIST_DESCRIPTION,
         responses=responses.COMMON_LIST_RESPONSES(
-            HighFormationCourseTypesSerializer(many=True)
+            AdvancedTrainingCourseTypesSerializer(many=True)
         ),
     ),
 )
-class HighFormationCourseTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class AdvancedTrainingCourseTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
-    serializer_class = HighFormationCourseTypesSerializer
+    serializer_class = AdvancedTrainingCourseTypesSerializer
     queryset = AltaFormazioneTipoCorso.objects.only("id", "tipo_corso_descr")
 
 

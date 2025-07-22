@@ -164,18 +164,9 @@ class DepartmentsViewSet(ReadOnlyModelViewSet):
         language = self.request.LANGUAGE_CODE
         ordering_field = "dip_des_it" if language == "it" else "dip_des_eng"
         urls_subquery = Subquery(
-            DidatticaDipartimentoUrl.objects.filter(dip_cod=OuterRef("dip_cod")).values(
-                "dip_url"
-            )[:1]
+            DidatticaDipartimentoUrl.objects.filter(dip_cod=OuterRef("dip_cod")).values("dip_url")[:1]
         )
         return (
             DidatticaDipartimento.objects.annotate(urls=urls_subquery)
             .order_by(ordering_field)
-            .only(
-                "dip_id",
-                "dip_cod",
-                "dip_des_it",
-                "dip_des_eng",
-                "dip_nome_breve",
-            )
         )

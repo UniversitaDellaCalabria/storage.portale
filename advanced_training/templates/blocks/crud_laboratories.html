@@ -1,0 +1,238 @@
+{% extends "includes/vue_list.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load management_templatetags %}
+
+{% block content %}
+
+
+{#{% settings_value "CMS_PATH_PREFIX" as cms_path_prefix %}#}
+{#{% storage_settings_value "CMS_STORAGE_BASE_PATH" as base_prefix %}#}
+{#{% storage_settings_value "CMS_STORAGE_LABORATORY_VIEW_PREFIX_PATH" as laboratory_prefix %}#}
+{#{% storage_settings_value "CMS_STORAGE_STRUCTURE_VIEW_PREFIX_PATH" as structures_prefix %}#}
+
+{% block storage_block_top %}
+{% include "blocks/includes/vue_check.html" %}
+{% endblock storage_block_top %}
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-wrapper card-space">
+                    {% block search %}
+                    <div class="card card-bg no-after">
+                        <div class="card-body">
+
+                            {% include "includes/vue_search_input.html" with id=id %}
+
+
+                                {% block filters %}
+                                <div class="form-group mb-0">
+                                    <!-- Department -->
+
+                                    <div class="row">
+                                        <div class="col-sm form-group mb-0">
+                                            <loading-icon
+                                                v-if="is_loading_departments"
+                                                :loader_source="loader_source_departments">
+                                            </loading-icon>
+                                            <div v-else>
+                                                <label for="{{ id }}_department_input">
+                                                    {% trans "Department" %}
+                                                </label>
+                                                <div class="w-30 mt-5">
+                                                    <select id="{{ id }}_department_input"
+                                                            title="{% trans 'Choose an option' %}"
+                                                            name="{{ id }}_department_input"
+                                                            class="form-control"
+                                                            @change="{{ id }}.search()">
+                                                        <option value="">- {% trans 'Choose an option' %} -</option>
+                                                        <option v-for="item in departments"
+                                                                :value="item.cod"
+                                                                :selected="item.cod == selected_department">
+                                                            [[ item.name ]]
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endblock filters %}
+                        </div>
+                    </div>
+                    {% endblock search %}
+                </div>
+            </div>
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+
+        <loading-icon
+            v-if="is_loading"
+            :loader_source="loader_source">
+        </loading-icon>
+
+        <div v-else>
+            <div class="row mb-3" v-for="item in items.results" v-if="item.masterTitle != '' && item.masterTitle">
+                <div class="col-12">
+                    <!--start card-->
+                    <div class="card-wrapper pb-0">
+                        <div class="card no-after" style="border:1px solid #b71918">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <small>
+                                                    <b>[[ item.masterTitle ]]</b>
+                                                </small>
+                                            </div>
+                                            <div class="col-12">
+                                                <small>
+                                                    {% trans "Manager" %} >
+                                                    <b>[[ item.scientificDirectorName ]]</b>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg> {% trans "Edit" %}
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--end card-->
+                </div>
+            </div>
+
+        </div>
+
+        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+    </div>
+
+{% block storage_block_bottom %}
+    <div v-else>
+        {% trans "No items here" %}
+    </div>
+
+</div>
+{% endblock storage_block_bottom %}
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+function {{ id }}_get_form_paramenters(keyword=null, value=null) {
+
+    let dict = {}
+
+    if (keyword)
+        dict[keyword] = value
+
+    {% block laboratory_search_script %}
+    // search
+    let search = document.getElementById('{{ id }}_search')
+    if (search && search.value) dict['search'] = search.value
+
+    {% endblock laboratory_search_script %}
+
+    {% block laboratory_filter_script %}
+        // department
+        let department = document.getElementById('{{ id }}_department_input')
+        if (department && department.value) dict['department'] = department.value
+
+    {% endblock laboratory_filter_script %}
+
+    setItemInSession("{{ id }}", dict)
+
+    return dict
+}
+</script>
+{% endblock extra_scripts %}
+
+{% block extra_data %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+
+search_dict: {},
+departments: [],
+
+is_loading_departments: true,
+
+loader_source_departments: '{% url 'structures:apiv2:departments-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+
+selected_department: this.getItemFromSession("{{ id }}", 'department'),
+selected_search: this.getItemFromSession("{{ id }}", 'search'),
+
+selected_erc1: (this.getItemFromSession("{{ id }}", 'erc1') || ""),
+selected_scope: this.getItemFromSession("{{ id }}", 'scope'),
+selected_infrastructure: this.getItemFromSession("{{ id }}", 'infrastructure')
+
+{% endblock extra_data %}
+
+{% block extra_mounted %}
+
+    {% block call_laboratory_on_mounted %}
+        this.callAreas();
+        this.callDepartments();
+        this.callERC1List();
+        this.callScopes();
+        this.callInfrastructures();
+    {% endblock call_laboratory_on_mounted %}
+
+this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
+{% endblock extra_mounted %}
+
+{% block extra_methods %}
+
+    {% block laboratory_call_method %}
+    callAreas() {
+        axios
+            .get(this.loader_source_areas)
+            .then(response => {
+                this.areas = response.data.results;
+                this.is_loading_areas = false
+            })
+    },
+    callScopes() {
+        axios
+            .get(this.loader_source_scopes)
+            .then(response => {
+                this.scopes = response.data.results;
+                this.is_loading_scopes = false
+            })
+    },
+    callInfrastructures() {
+        axios
+            .get(this.loader_source_infrastructures)
+            .then(response => {
+                this.infrastructures = response.data.results;
+                this.is_loading_infrastructures = false
+            })
+    },
+    callDepartments() {
+        axios
+            .get(this.loader_source_departments)
+            .then(response => {
+                this.departments = response.data.results;
+                this.is_loading_departments = false
+            })
+    },
+    callERC1List(params) {
+        axios
+            .get(this.loader_source_erc1)
+            .then(response => {
+                this.erc1_list = response.data.results;
+                this.is_loading_erc1 = false
+            })
+    },
+    {% endblock laboratory_call_method %}
+
+{% endblock extra_methods %}
+</script>
