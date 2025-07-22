@@ -1,7 +1,7 @@
 from rest_framework.routers import DefaultRouter
 from .views import (
-    HighFormationMastersViewSet,
-    HighFormationCourseTypesViewSet,
+    AdvancedTrainingMastersViewSet,
+    AdvancedTrainingCourseTypesViewSet,
     ErogationModesViewSet,
 )
 
@@ -12,14 +12,14 @@ router = DefaultRouter()
 urlpatterns = []
 
 router.register(
-    r"high-formation-masters",
-    HighFormationMastersViewSet,
-    basename="high-formation-masters",
+    r"advanced-training",
+    AdvancedTrainingMastersViewSet,
+    basename="advanced-training",
 )
 router.register(
-    r"high-formation-course-types",
-    HighFormationCourseTypesViewSet,
-    basename="high-formation-course-types",
+    r"advanced-training-course-types",
+    AdvancedTrainingCourseTypesViewSet,
+    basename="advanced-training-course-types",
 )
 router.register(r"erogation-modes", ErogationModesViewSet, basename="erogation-modes")
 urlpatterns += router.urls

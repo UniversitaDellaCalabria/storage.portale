@@ -13,7 +13,7 @@ from advanced_training.models import (
 
 
 @extend_schema_serializer(examples=examples.HIGH_FORMATION_MASTER_EXAMPLES)
-class HighFormationMastersSerializer(serializers.ModelSerializer):
+class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     masterTitle = serializers.CharField(source="titolo_it")
     typeId = serializers.IntegerField(source="alta_formazione_tipo_corso.id")
     typeDescription = serializers.CharField(
@@ -138,6 +138,7 @@ class HighFormationMastersSerializer(serializers.ModelSerializer):
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
+            "id",
             "masterTitle",
             "typeId",
             "typeDescription",
@@ -193,7 +194,7 @@ class HighFormationMastersSerializer(serializers.ModelSerializer):
 
 
 @extend_schema_serializer(examples=examples.HIGH_FORMATION_COURSE_TYPES_EXAMPLES)
-class HighFormationCourseTypesSerializer(serializers.ModelSerializer):
+class AdvancedTrainingCourseTypesSerializer(serializers.ModelSerializer):
     description = serializers.CharField(source="tipo_corso_descr")
 
     class Meta:

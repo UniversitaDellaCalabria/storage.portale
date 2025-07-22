@@ -109,7 +109,13 @@
                 {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="cds-brochure:management:cds-brochures" subtitle=subtitle %}
                 <hr />
                 {% endif %}
-                <!-- CdS in Sintesi -->
+                <!-- Master -->
+                {% if not disabled_management_apps or "advanced_training" not in disabled_management_apps %}
+                {% trans "Master" as title %}
+                {% trans "Manage contents of Master programs" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="advanced-training:management:advanced-training" subtitle=subtitle %}
+                <hr />
+                {% endif %}
             </div>
             <!-- /Corsi di Studio -->
             <!-- Ricerca -->
