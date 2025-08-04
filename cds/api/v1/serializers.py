@@ -442,7 +442,7 @@ class StudyActivitiesSerializer(CreateUpdateAbstract):
             if query["lista_lin_did_af"]
             else [],
             "StudyActivityFatherCode": query["af_radice_id"],
-            "StudyActivityFatherName": query["Father"],
+            "StudyActivityFatherName": query["Father"].des if req_lang == "it" else query["Father"].af_gen_des_eng,
             "StudyActivityRegDidId": query["regdid_id"],
             "DepartmentName": query["cds_id__dip_id__dip_des_it"]
             if req_lang == "it" or query["cds_id__dip_id__dip_des_eng"] is None

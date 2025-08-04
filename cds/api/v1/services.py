@@ -760,16 +760,12 @@ class ServiceDidatticaAttivitaFormativa:
             .order_by("des")
         )
 
-        lista_padri = {}
-        for i in query:
-            father = DidatticaAttivitaFormativa.objects.only("des").filter(af_id=i["af_radice_id"]).first()
-            lista_padri[i["af_id"]] = father.des if father else None
+        radice_ids = set(obj["af_radice_id"] for obj in query if obj["af_radice_id"])
+        radici = DidatticaAttivitaFormativa.objects.only("af_id", "des", "af_gen_des_eng").in_bulk(radice_ids)
 
         for q in query:
-            padre = lista_padri[q["af_id"]]
-
-            if padre:
-                q["Father"] = padre
+            if q["af_radice_id"]:
+                q["Father"] = radici.get(q["af_radice_id"])
             else:
                 q["Father"] = None
 
