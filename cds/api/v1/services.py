@@ -762,7 +762,8 @@ class ServiceDidatticaAttivitaFormativa:
 
         lista_padri = {}
         for i in query:
-            lista_padri[i["af_id"]] = i["des"]
+            father = DidatticaAttivitaFormativa.objects.only("des").filter(af_id=i["af_radice_id"]).first()
+            lista_padri[i["af_id"]] = father.des if father else None
 
         for q in query:
             padre = lista_padri[q["af_id"]]
