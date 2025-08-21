@@ -1,5 +1,4 @@
 from addressbook.settings import ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN, ALLOWED_PROFILE_ID, PERSON_CONTACTS_TO_TAKE
-# from generics.serializers import CreateUpdateAbstract
 from rest_framework import serializers
 from generics.utils import encrypt
 

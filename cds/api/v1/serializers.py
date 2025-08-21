@@ -1,6 +1,5 @@
 from addressbook.settings import ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN
 
-# from generics.serializers import CreateUpdateAbstract
 from rest_framework import serializers
 from generics.utils import build_media_path, encrypt
 
