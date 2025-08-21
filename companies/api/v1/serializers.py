@@ -1,8 +1,8 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import build_media_path, encrypt
 
 
-class CompaniesSerializer(CreateUpdateAbstract):
+class CompaniesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -32,7 +32,7 @@ class CompaniesSerializer(CreateUpdateAbstract):
         }
 
 
-class TechAreasSerializer(CreateUpdateAbstract):
+class TechAreasSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

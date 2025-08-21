@@ -29,7 +29,7 @@ class ApiPhdList(ApiEndpointList):
 
 class ApiPhdCycles(APIView):
     description = "Retrieves a list of PhD cycles."
-    schema = AgidAutoSchema(tags=["public"])
+    #schema = AgidAutoSchema(tags=["public"])
 
     def get(self, request):
         result = {}
@@ -61,7 +61,7 @@ class ApiPhdActivitiesList(ApiEndpointList):
 class ApiPhdActivityDetail(ApiEndpointDetail):
     description = "Retrieves detailed information about an activity of a PhD program."
     serializer_class = PhdActivitiesSerializer
-    schema = AgidAutoSchema(tags=["public"], operation_id_base="PhdActivity")
+    #schema = AgidAutoSchema(tags=["public"], operation_id_base="PhdActivity")
 
     def get_queryset(self):
         activity_id = self.kwargs["id"]

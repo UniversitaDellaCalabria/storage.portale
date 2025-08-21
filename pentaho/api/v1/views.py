@@ -31,7 +31,7 @@ PENTAHO_ISODID_REPORT_START_YEAR = getattr(
 class ApiPentahoIsodid(APIView):  # pragma: no cover
     filter_backends = [PentahoIsodidFilter]
     allowed_methods = ("GET",)
-    schema = AgidAutoSchema(tags=["public"])
+    #schema = AgidAutoSchema(tags=["public"])
 
     def get(self, obj, **kwargs):
         request = self.request

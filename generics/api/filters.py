@@ -1,3 +1,4 @@
+from django_filters import rest_framework as df_filters
 from rest_framework import filters
 
 
@@ -27,3 +28,11 @@ class GenericApiFilter(filters.BaseFilterBackend):
             }
         )
         return params
+
+
+class InCharFilter(df_filters.BaseInFilter, df_filters.CharFilter):
+    """
+    A reusable filter for filtering fields using multiple values.
+    """
+
+    pass

@@ -1,5 +1,5 @@
 from addressbook.settings import PERSON_CONTACTS_TO_TAKE
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import build_media_path, encrypt
 
 
@@ -15,7 +15,7 @@ def _get_teacher_obj_publication_date(teacher_dict):
     return teacher_dict["dt_inizio_validita"]
 
 
-class TeachersSerializer(CreateUpdateAbstract):
+class TeachersSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -55,7 +55,7 @@ class TeachersSerializer(CreateUpdateAbstract):
         }
 
 
-class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
+class TeacherStudyActivitiesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -93,7 +93,7 @@ class TeacherStudyActivitiesSerializer(CreateUpdateAbstract):
         }
 
 
-class TeacherInfoSerializer(CreateUpdateAbstract):
+class TeacherInfoSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -206,7 +206,7 @@ class TeacherInfoSerializer(CreateUpdateAbstract):
         return board
 
 
-class TeacherMaterialsSerializer(CreateUpdateAbstract):
+class TeacherMaterialsSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -232,7 +232,7 @@ class TeacherMaterialsSerializer(CreateUpdateAbstract):
         }
 
 
-class TeacherNewsSerializer(CreateUpdateAbstract):
+class TeacherNewsSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -261,7 +261,7 @@ class TeacherNewsSerializer(CreateUpdateAbstract):
         }
 
 
-class PublicationSerializer(CreateUpdateAbstract):
+class PublicationSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -326,7 +326,7 @@ class PublicationsSerializer(PublicationSerializer):
         return response
 
 
-class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
+class PublicationsCommunityTypesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -341,7 +341,7 @@ class PublicationsCommunityTypesSerializer(CreateUpdateAbstract):
         }
 
 
-class TeacherResearchLinesSerializer(CreateUpdateAbstract):
+class TeacherResearchLinesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

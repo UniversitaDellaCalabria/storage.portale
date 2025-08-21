@@ -1,8 +1,8 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import encrypt
 
 
-class BaseResearchLinesSerializer(CreateUpdateAbstract):
+class BaseResearchLinesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -50,7 +50,7 @@ class BaseResearchLinesSerializer(CreateUpdateAbstract):
         return result
 
 
-class AppliedResearchLinesSerializer(CreateUpdateAbstract):
+class AppliedResearchLinesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -100,7 +100,7 @@ class AppliedResearchLinesSerializer(CreateUpdateAbstract):
         return result
 
 
-class AllResearchLinesSerializer(CreateUpdateAbstract):
+class AllResearchLinesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -178,7 +178,7 @@ class AllResearchLinesSerializer(CreateUpdateAbstract):
         return result
 
 
-class Erc1Serializer(CreateUpdateAbstract):
+class Erc1Serializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -212,7 +212,7 @@ class Erc1Serializer(CreateUpdateAbstract):
         return result
 
 
-class Erc0Serializer(CreateUpdateAbstract):
+class Erc0Serializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -229,7 +229,7 @@ class Erc0Serializer(CreateUpdateAbstract):
         }
 
 
-class Erc2Serializer(CreateUpdateAbstract):
+class Erc2Serializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -274,7 +274,7 @@ class Erc2Serializer(CreateUpdateAbstract):
         return result
 
 
-class Asters1Serializer(CreateUpdateAbstract):
+class Asters1Serializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -308,7 +308,7 @@ class Asters1Serializer(CreateUpdateAbstract):
         return result
 
 
-class Asters2Serializer(CreateUpdateAbstract):
+class Asters2Serializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

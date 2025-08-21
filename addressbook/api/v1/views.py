@@ -53,7 +53,7 @@ class ApiAddressbookFullList(ApiEndpointList):
     permission_classes = [IsAuthenticated]
     serializer_class = AddressbookFullSerializer
     filter_backends = [AddressbookListFilter]
-    schema = AgidAutoSchema(tags=["api"])
+    #schema = AgidAutoSchema(tags=["api"])
 
     def get_queryset(self):
         request = self.request
@@ -101,7 +101,7 @@ class ApiPersonaleFullDetail(ApiEndpointDetail):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = PersonaleFullSerializer
-    schema = AgidAutoSchema(tags=["api"])
+    #schema = AgidAutoSchema(tags=["api"])
 
     def get_queryset(self):
         personaleid = self.kwargs["personaleid"]
@@ -128,7 +128,7 @@ class ApiPersonnelCfList(ApiEndpointList):
     description = "Retrieves the list of personnel tax codes."
     serializer_class = PersonnelCfSerializer
     filter_backends = [PersonnelCfListFilter]
-    schema = AgidAutoSchema(tags=["api"])
+    #schema = AgidAutoSchema(tags=["api"])
 
     def get_queryset(self):
         roles = self.request.query_params.get("roles")
@@ -139,7 +139,7 @@ class ApiPersonId(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     description = "Retrieves the encrypted matricola of a person."
-    schema = ApiPersonIdSchema()
+    #schema = ApiPersonIdSchema()
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -158,7 +158,7 @@ class ApiDecryptedPersonId(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     description = "Retrieves the decypted matricola of a person."
-    schema = ApiDecryptedPersonIdSchema()
+    #schema = ApiDecryptedPersonIdSchema()
 
     def post(self, request, *args, **kwargs):
         data = request.data

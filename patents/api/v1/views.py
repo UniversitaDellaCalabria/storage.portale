@@ -43,7 +43,7 @@ class ApiPatentsList(ApiEndpointList):
 class ApiPatentDetail(ApiEndpointDetail):
     description = "Retrieves detailed information of a specifc patent."
     serializer_class = PatentsSerializer
-    schema = AgidAutoSchema(tags=["public"], operation_id_base="Patent")
+    #schema = AgidAutoSchema(tags=["public"], operation_id_base="Patent")
 
     def get_queryset(self):
         patentid = self.kwargs["patentid"]

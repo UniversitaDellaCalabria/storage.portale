@@ -12,8 +12,6 @@ from structures.api.v1.util_tests import (
     TerritorioItUnitTest,
 )
 
-from .serializers import CreateUpdateAbstract
-
 
 class OpenApiSchemaUnitTest(TestCase):
     def test_openapi(self):
@@ -25,13 +23,6 @@ class OpenApiSchemaUnitTest(TestCase):
         url = reverse("openapi-schema-json")
         res = req.get(url)
         assert res.status_code == 200
-
-
-class SerializersUnitTest(TestCase):
-    def test_createUpdateAbstract(self):
-        ser = CreateUpdateAbstract()
-        ser.create(None)
-        ser.update(None, None)
 
 
 class ModelsToStringUnitTest(TestCase):

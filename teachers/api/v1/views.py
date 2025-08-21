@@ -48,7 +48,7 @@ class ApiTeachingCoveragesList(ApiEndpointList):
     description = "Retrieves a list of teachers that have fl_docente=1 e fl_cessato=0, together with a minimum set of identifying information."
     serializer_class = TeachersSerializer
     filter_backends = [TeachersListFilter]
-    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoverage")
+    #schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoverage")
 
     def get_queryset(self):
         request = self.request
@@ -111,7 +111,8 @@ class ApiTeacherStudyActivitiesList(ApiEndpointList):
 
 
 class ApiTeachingCoverageActivitiesList(ApiTeacherStudyActivitiesList):
-    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoverageStudyActivities")
+    #schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoverageStudyActivities")
+    pass
 
 
 class ApiTeacherDetail(ApiEndpointDetail):
@@ -173,16 +174,16 @@ class ApiPublicationsList(ApiEndpointList):
 
 
 class ApiTeachingCoverageDetail(ApiTeacherDetail):
-    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoverageInfo")
-
+    #schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoverageInfo")
+    pass
 
 class ApiTeachingCoveragePublicationsList(ApiPublicationsList):
-    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoveragePublication")
-
+    #schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoveragePublication")
+    pass
 
 class ApiTeacherPublicationsList(ApiPublicationsList):
-    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeacherPublication")
-
+    #schema = AgidAutoSchema(tags=['public'], operation_id_base="TeacherPublication")
+    pass
 
 class ApiPublicationsCommunityTypesList(ApiEndpointList):
     description = "Retrieves a list of typologies of publications."
@@ -203,8 +204,10 @@ class ApiPublicationDetail(ApiEndpointDetail):
 
 
 class ApiTeacherPublicationDetail(ApiPublicationDetail):
-    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeacherPublication")
+    #schema = AgidAutoSchema(tags=['public'], operation_id_base="TeacherPublication")
+    pass
 
 
 class ApiTeachingCoveragePublicationDetail(ApiPublicationDetail):
-    schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoveragePublication")
+    #schema = AgidAutoSchema(tags=['public'], operation_id_base="TeachingCoveragePublication")
+    pass

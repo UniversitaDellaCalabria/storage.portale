@@ -1,4 +1,4 @@
-from generics.filters import GenericApiFilter
+from generics.api.filters import GenericApiFilter
 from addressbook.models import Personale
 
 

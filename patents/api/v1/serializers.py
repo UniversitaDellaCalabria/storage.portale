@@ -1,8 +1,8 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import build_media_path, encrypt
 
 
-class PatentsSerializer(CreateUpdateAbstract):
+class PatentsSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

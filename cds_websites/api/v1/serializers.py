@@ -1,7 +1,7 @@
 import json
 
 import requests
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.settings import UNICMS_AUTH_TOKEN
 from rest_framework import serializers
 
@@ -15,7 +15,7 @@ class SitoWebCdsOggettiPortaleSerializer(serializers.ModelSerializer):
         fields = ("id", "aa_regdid_id", "titolo_it", "titolo_en")
 
 
-class CdsWebsitesTopicSerializer(CreateUpdateAbstract):
+class CdsWebsitesTopicSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -33,7 +33,7 @@ class CdsWebsitesTopicSerializer(CreateUpdateAbstract):
         }
 
 
-class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
+class CdsWebsitesTopicArticlesSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)
@@ -140,7 +140,7 @@ class CdsWebsitesTopicArticlesSerializer(CreateUpdateAbstract):
         return sub_articles
 
 
-class CdsWebsitesStudyPlansSerializer(CreateUpdateAbstract):
+class CdsWebsitesStudyPlansSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

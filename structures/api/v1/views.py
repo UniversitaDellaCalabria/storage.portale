@@ -58,7 +58,7 @@ class ApiStructureTypesList(ApiEndpointListSupport):
 class ApiStructureDetail(ApiEndpointDetail):
     description = "Retrieves detailed information of a specific organizational structure."
     serializer_class = StructureDetailSerializer
-    schema = StructureDetailSchema(tags=['public'])
+    #schema = StructureDetailSchema(tags=['public'])
 
     def get_queryset(self):
         structureid = self.kwargs["structureid"]

@@ -1,8 +1,8 @@
-from generics.serializers import CreateUpdateAbstract
+from rest_framework import serializers
 from generics.utils import encrypt
 
 
-class AllResearchGroupsSerializer(CreateUpdateAbstract):
+class AllResearchGroupsSerializer(serializers.Serializer):
     def to_representation(self, instance):
         query = instance
         data = super().to_representation(instance)

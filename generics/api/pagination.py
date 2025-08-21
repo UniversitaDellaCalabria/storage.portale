@@ -1,13 +1,14 @@
 import re
 
 from django.utils.encoding import force_str
-from rest_framework.pagination import PageNumberPagination
+from rest_framework import pagination
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 
-from .utils import encode_labels
+from generics.utils import encode_labels
 
 
-class UnicalStorageApiPaginationList(PageNumberPagination):
+class UnicalStorageApiPaginationList(pagination.PageNumberPagination):
     page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 1000
@@ -85,3 +86,43 @@ class UnicalStorageApiPaginationList(PageNumberPagination):
                 },
             )
         return parameters
+
+
+class PageNumberPagination(pagination.PageNumberPagination):
+    """
+    PageNumber-Pagination that includes the total number of pages
+    and the number of the current page.
+
+    It accepts page_size query parameter (Number of results to return per page)
+    with a 1000 results max.
+
+    Fall back for page_size set to 10 pages.
+    """
+
+    page_size_query_param = "page_size"
+    page_size = api_settings.PAGE_SIZE or 10
+    max_page_size = 1000
+
+    def get_paginated_response(self, data):
+        response = super().get_paginated_response(data)
+        response.data = {
+            "pageNumber": self.page.number,
+            "totPages": self.page.paginator.num_pages,
+        } | response.data
+        return response
+
+    def get_paginated_response_schema(self, schema):
+        response_schema = super().get_paginated_response_schema(schema)
+        response_schema["required"].extend(["page_num", "tot_pages"])
+        response_schema["properties"] = {
+            "pageNumber": {
+                "type": "integer",
+                "example": 123,
+            },
+            "totPages": {
+                "type": "integer",
+                "example": 123,
+            },
+        } | response_schema["properties"]
+
+        return response_schema

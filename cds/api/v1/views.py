@@ -168,7 +168,7 @@ class ApiAllStudyActivitiesList(ApiEndpointList):
 class ApiStudyActivityDetail(ApiEndpointDetail):
     description = "Retrieves detailed information about a specific course."
     serializer_class = StudyActivityInfoSerializer
-    schema = ApiStudyActivityDetailSchema(tags=["public"])
+    #schema = ApiStudyActivityDetailSchema(tags=["public"])
 
     def get_queryset(self):
         studyactivityid = str(self.kwargs["studyactivityid"])
@@ -220,7 +220,7 @@ class ApiSortingContacts(ApiEndpointList):
 
 class ApiCdsMorphList(APIView):
     permission_classes = [permissions.AllowAny]
-    schema = AgidAutoSchema(tags=["api"])
+    #schema = AgidAutoSchema(tags=["api"])
 
     description = "Retrieves a list of CDS_COD which contains all the previous CDS_COD."
 
@@ -230,7 +230,7 @@ class ApiCdsMorphList(APIView):
 
 class ApiCdsMorphDetail(APIView):
     permission_classes = [permissions.AllowAny]
-    schema = AgidAutoSchema(tags=["api"])
+    #schema = AgidAutoSchema(tags=["api"])
 
     description = "Retrieves a list of CDS_COD which, starting from the given one, contains all the previous CDS_COD."
 
