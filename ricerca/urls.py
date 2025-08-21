@@ -3,18 +3,17 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import include, path, re_path
-from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework.renderers import JSONOpenAPIRenderer
-from rest_framework.schemas.agid_schema_views import get_schema_view
+from debug_toolbar.toolbar import debug_toolbar_urls
 
 
+urlpatterns = []
+        
 urlpatterns = [
     path(f'{settings.ADMIN_PATH}/', admin.site.urls),
     path("api/token", obtain_auth_token, name="auth-token"),
     path('', include('accounts.urls')),
-
-    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck-editor-5-upload-file"),
+    path('', include('api_docs.urls')),
 
     path('', include('addressbook.urls')),
     path('', include('advanced_training.urls')),
@@ -35,18 +34,19 @@ urlpatterns = [
     path('', include('research_lines.urls')),
     path('', include('structures.urls')),
     path('', include('teachers.urls')),
-
     path('', include('import_assistant.urls')),
-]
+
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck-editor-5-upload-file"),
+] + debug_toolbar_urls()
 
 # API schemas
-urlpatterns += path('api/', TemplateView.as_view(template_name='redoc.html', extra_context={'schema_url': 'openapi-schema'}), name='api-redoc'),
-try:
-    urlpatterns += re_path('^openapi$', get_schema_view(**settings.OAS3_CONFIG), name='openapi-schema'),
-    urlpatterns += re_path('^openapi.json$', get_schema_view(renderer_classes=[JSONOpenAPIRenderer], **settings.OAS3_CONFIG), name='openapi-schema-json'),
-except BaseException:
-    urlpatterns += re_path('^openapi$', get_schema_view(**{}), name='openapi-schema'),
-    urlpatterns += re_path('^openapi.json$', get_schema_view(renderer_classes=[JSONOpenAPIRenderer], **{}), name='openapi-schema-json'),
+# urlpatterns += path('api/', TemplateView.as_view(template_name='redoc.html', extra_context={'schema_url': 'openapi-schema'}), name='api-redoc'),
+# try:
+#     urlpatterns += re_path('^openapi$', get_schema_view(**settings.OAS3_CONFIG), name='openapi-schema'),
+#     urlpatterns += re_path('^openapi.json$', get_schema_view(renderer_classes=[JSONOpenAPIRenderer], **settings.OAS3_CONFIG), name='openapi-schema-json'),
+# except BaseException:
+#     urlpatterns += re_path('^openapi$', get_schema_view(**{}), name='openapi-schema'),
+#     urlpatterns += re_path('^openapi.json$', get_schema_view(renderer_classes=[JSONOpenAPIRenderer], **{}), name='openapi-schema-json'),
 
 
 if 'silk' in settings.INSTALLED_APPS:
