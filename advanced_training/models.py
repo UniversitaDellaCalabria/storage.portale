@@ -199,6 +199,9 @@ class AltaFormazioneModalitaErogazione(models.Model):
         managed = True
         db_table = "ALTA_FORMAZIONE_MODALITA_EROGAZIONE"
 
+    def __str__(self):
+        return self.descrizione
+
 
 class AltaFormazioneModalitaSelezione(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -259,3 +262,6 @@ class AltaFormazioneTipoCorso(models.Model):
     class Meta:
         managed = True
         db_table = "ALTA_FORMAZIONE_TIPO_CORSO"
+
+    def __str__(self):
+        return self.tipo_corso_descr
