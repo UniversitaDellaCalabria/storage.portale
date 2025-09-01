@@ -43,7 +43,7 @@
                                                         @change="{{ id }}.search()">
                                                     <option value="">- {% trans 'Choose an option' %} -</option>
                                                     <option v-for="item in departments_filter"
-                                                            :value="item.departmentCod"
+                                                            :value="item.DepartmentCod"
                                                             :selected="item.DepartmentCod == selected_department_id">
                                                         [[ item.DepartmentName ]]
                                                     </option>
@@ -74,7 +74,7 @@
                                                         @change="{{ id }}.search()">
                                                     <option value="">- {% trans 'Choose an option' %} -</option>
                                                     <template v-for="master in master_types">
-                                                        <option :value="master.description"
+                                                        <option :value="master.id"
                                                                 :selected="master.description == selected_coursetype">
                                                             [[ master.description ]]
                                                         </option>
@@ -105,7 +105,7 @@
                                                         @change="{{ id }}.search()">
                                                     <option value="">- {% trans 'Choose an option' %} -</option>
                                                     <option v-for="item in erogations"
-                                                            :value="item.description"
+                                                            :value="item.id"
                                                             :selected="item.description == selected_erogation">
                                                         [[ item.description ]]
                                                     </option>
@@ -147,9 +147,8 @@
                                     <div class="row">
                                         <div class="col-12 col-md-auto me-md-4">
                                             <b>
-                                                [[ item.typeDescription ]]
                                                 <span v-if="item.erogationMode">
-                                                    ([[ item.erogationMode ]])
+                                                    [[ item.erogationModeDescription ]]
                                                 </span>
                                             </b>
                                         </div>
@@ -210,7 +209,7 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
     // department name
     let department = document.getElementById('{{ id }}_department_input')
-    if (department && department.value) dict['departmentcod'] = department.value
+    if (department && department.value) dict['department'] = department.value
     
 
     setItemInSession("{{ id }}", dict)
@@ -229,7 +228,7 @@ initial_academic_year: 2025,
 selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
 selected_erogation: this.getItemFromSession("{{ id }}", 'erogation'),
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
-selected_department_id: this.getItemFromSession("{{ id }}", 'departmentcod'),
+selected_department_id: this.getItemFromSession("{{ id }}", 'department'),
 
 master_types: [],
 erogations: [],
