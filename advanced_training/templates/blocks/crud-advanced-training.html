@@ -6,12 +6,6 @@
 
 {% block content %}
 
-
-{#{% settings_value "CMS_PATH_PREFIX" as cms_path_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_BASE_PATH" as base_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_LABORATORY_VIEW_PREFIX_PATH" as laboratory_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_STRUCTURE_VIEW_PREFIX_PATH" as structures_prefix %}#}
-
 {% block storage_block_top %}
 {% include "blocks/includes/vue_check.html" %}
 {% endblock storage_block_top %}
@@ -19,49 +13,113 @@
         <div class="row">
             <div class="col-12">
                 <div class="card-wrapper card-space">
-                    {% block search %}
                     <div class="card card-bg no-after">
                         <div class="card-body">
 
                             {% include "includes/vue_search_input.html" with id=id %}
 
+                            {% block filters_masterlist %}
+                            <div class="mb-0">
 
-                                {% block filters %}
-                                <div class="form-group mb-0">
-                                    <!-- Department -->
+                                <!-- type & Academic year & language -->
+                                <div class="row">
 
-                                    <div class="row">
-                                        <div class="col-sm form-group mb-0">
-                                            <loading-icon
-                                                v-if="is_loading_departments"
-                                                :loader_source="loader_source_departments">
-                                            </loading-icon>
-                                            <div v-else>
-                                                <label for="{{ id }}_department_input">
-                                                    {% trans "Department" %}
-                                                </label>
-                                                <div class="w-30 mt-5">
-                                                    <select id="{{ id }}_department_input"
-                                                            title="{% trans 'Choose an option' %}"
-                                                            name="{{ id }}_department_input"
-                                                            class="form-control"
-                                                            @change="{{ id }}.search()">
-                                                        <option value="">- {% trans 'Choose an option' %} -</option>
-                                                        <option v-for="item in departments"
-                                                                :value="item.cod"
-                                                                :selected="item.cod == selected_department">
-                                                            [[ item.name ]]
-                                                        </option>
-                                                    </select>
-                                                </div>
+                                    {% block filters_department %}
+                                    <loading-icon
+                                        v-if="is_loading_departments"
+                                        :loader_source="loader_source_departments">
+                                    </loading-icon>
+
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_department_input">
+                                                {% trans "Department" %}
+                                            </label>
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_department_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_department_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in departments_filter"
+                                                            :value="item.departmentCod"
+                                                            :selected="item.DepartmentCod == selected_department_id">
+                                                        [[ item.DepartmentName ]]
+                                                    </option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
+                                    {% endblock filters_department %}
+
+                                    {% block filters_coursetype %}
+
+                                    <loading-icon
+                                        v-if="is_loading_mastertypes"
+                                        :loader_source="loader_source_mastertypes">
+                                    </loading-icon>
+
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_master_type">
+                                                {% trans "Master type" %}
+                                            </label>
+
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_coursetype_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_coursetype_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <template v-for="master in master_types">
+                                                        <option :value="master.description"
+                                                                :selected="master.description == selected_coursetype">
+                                                            [[ master.description ]]
+                                                        </option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock filters_coursetype %}
+
+                                    {% block filters_erogation %}
+                                    <loading-icon
+                                        v-if="is_loading_erogations"
+                                        :loader_source="loader_source_erogations">
+                                    </loading-icon>
+
+                                    <div class="col-sm form-group mb-0" v-else>
+                                        <div>
+                                            <label for="{{ id }}_erogation_input">
+                                                {% trans "Erogation Mode" %}
+                                            </label>
+
+                                            <div class="w-30 mt-5">
+                                                <select id="{{ id }}_erogation_input"
+                                                        title="{% trans 'Choose an option' %}"
+                                                        name="{{ id }}_erogation_input"
+                                                        class="form-control"
+                                                        @change="{{ id }}.search()">
+                                                    <option value="">- {% trans 'Choose an option' %} -</option>
+                                                    <option v-for="item in erogations"
+                                                            :value="item.description"
+                                                            :selected="item.description == selected_erogation">
+                                                        [[ item.description ]]
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock filters_erogation %}
+
                                 </div>
-                                {% endblock filters %}
+                            </div>
+                            {% endblock filters_masterlist %}
                         </div>
                     </div>
-                    {% endblock search %}
                 </div>
             </div>
         </div>
@@ -74,42 +132,46 @@
         </loading-icon>
 
         <div v-else>
-            <div class="row mb-3" v-for="item in items.results" v-if="item.masterTitle != '' && item.masterTitle">
+            <div class="row mb-3" v-for="item in items.results">
                 <div class="col-12">
                     <!--start card-->
                     <div class="card-wrapper pb-0">
-                        <div class="card no-after" style="border:1px solid #b71918">
-                            <div class="card-body p-3">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <small>
-                                                    <b>[[ item.masterTitle ]]</b>
-                                                </small>
-                                            </div>
-                                            <div class="col-12">
-                                                <small>
-                                                    {% trans "Manager" %} >
-                                                    <b>[[ item.scientificDirectorName ]]</b>
-                                                </small>
-                                            </div>
+                        <div class="card no-after" style="border-top:1px solid #b71918">
+                            <div class="card-body p-1 pt-3 d-flex">
+                                <div class="col">
+                                    <h5>
+                                        <a :href="item.id+'/'" class="no-color">
+                                            <b>[[ item.masterTitle ]]</b>
+                                        </a>
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-12 col-md-auto me-md-4">
+                                            <b>
+                                                [[ item.typeDescription ]]
+                                                <span v-if="item.erogationMode">
+                                                    ([[ item.erogationMode ]])
+                                                </span>
+                                            </b>
+                                        </div>
+                                        <div class="col-12 col-md-auto" v-if="item.scientificDirectorName">
+                                            <small>
+                                                {% trans "Manager" %} >
+                                                <b>[[ item.scientificDirectorName ]]</b>
+                                            </small>
                                         </div>
                                     </div>
-                                </div>
-                                <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right">
+                                    <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
                                 </a>
-
+                                </div>
                             </div>
                         </div>
                     </div>
                     <!--end card-->
                 </div>
             </div>
-
         </div>
 
         <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
@@ -134,19 +196,22 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     if (keyword)
         dict[keyword] = value
 
-    {% block laboratory_search_script %}
     // search
     let search = document.getElementById('{{ id }}_search')
     if (search && search.value) dict['search'] = search.value
 
-    {% endblock laboratory_search_script %}
+    // coursetype
+    let coursetype = document.getElementById('{{ id }}_coursetype_input')
+    if (coursetype && coursetype.value) dict['coursetype'] = coursetype.value
 
-    {% block laboratory_filter_script %}
-        // department
-        let department = document.getElementById('{{ id }}_department_input')
-        if (department && department.value) dict['department'] = department.value
+    // erogation
+    let erogation = document.getElementById('{{ id }}_erogation_input')
+    if (erogation && erogation.value) dict['erogation'] = erogation.value
 
-    {% endblock laboratory_filter_script %}
+    // department name
+    let department = document.getElementById('{{ id }}_department_input')
+    if (department && department.value) dict['departmentcod'] = department.value
+    
 
     setItemInSession("{{ id }}", dict)
 
@@ -159,80 +224,93 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
 {% get_current_language as LANGUAGE_CODE %}
 
+initial_academic_year: 2025,
 
-search_dict: {},
-departments: [],
+selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
+selected_erogation: this.getItemFromSession("{{ id }}", 'erogation'),
+selected_search: this.getItemFromSession("{{ id }}", 'search'),
+selected_department_id: this.getItemFromSession("{{ id }}", 'departmentcod'),
 
+master_types: [],
+erogations: [],
+
+is_loading_mastertypes: true,
+is_loading_erogations: true,
 is_loading_departments: true,
 
 loader_source_departments: '{% url 'structures:apiv1:departments-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+loader_source_mastertypes: '{% url "advanced-training:apiv2:advanced-training-course-types-list" %}',
+loader_source_erogations: '{% url "advanced-training:apiv2:erogation-modes-list" %}',
 
-selected_department: this.getItemFromSession("{{ id }}", 'department'),
-selected_search: this.getItemFromSession("{{ id }}", 'search'),
 
-selected_erc1: (this.getItemFromSession("{{ id }}", 'erc1') || ""),
-selected_scope: this.getItemFromSession("{{ id }}", 'scope'),
-selected_infrastructure: this.getItemFromSession("{{ id }}", 'infrastructure')
+academic_years_filter: [],
+departments_filter: [],
+erogations: [],
+
+show_pdf_import_button: false,
 
 {% endblock extra_data %}
 
 {% block extra_mounted %}
+let params = new URLSearchParams(this.url.split('?')[1]);
+let get_coursetype = params.get("coursetype")
 
-    {% block call_laboratory_on_mounted %}
-        this.callAreas();
-        this.callDepartments();
-        this.callERC1List();
-        this.callScopes();
-        this.callInfrastructures();
-    {% endblock call_laboratory_on_mounted %}
+this.callMasterTypes();
+this.callErogations();
+this.callDepartments();
 
 this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
 {% endblock extra_mounted %}
 
+{% block method_search %}
+search(keyword=null, value=null) {
+    if (value) this.parameters = {{ id }}_encodeQueryData({{ id }}_get_form_paramenters(keyword, value));
+    else this.parameters = {{ id }}_encodeQueryData({{ id }}_get_form_paramenters());
+    this.CallURL(this.url + this.parameters);
+},
+{% endblock method_search %}
+
+{% block method_callurl %}
+CallURL(url, initial=false) {
+    this.is_loading = true
+    this.loader_source = url
+
+    axios
+        .get(url)
+        .then(response => {
+            if(initial) this.initial_items = response.data.results;
+            this.items = response.data;
+            this.next_page = response.data.next;
+            this.previous_page = response.data.previous;
+            this.labels = response.data.labels;
+            this.is_loading = false;
+        })
+},
+{% endblock method_callurl %}
+
 {% block extra_methods %}
-
-    {% block laboratory_call_method %}
-    callAreas() {
-        axios
-            .get(this.loader_source_areas)
-            .then(response => {
-                this.areas = response.data.results;
-                this.is_loading_areas = false
-            })
-    },
-    callScopes() {
-        axios
-            .get(this.loader_source_scopes)
-            .then(response => {
-                this.scopes = response.data.results;
-                this.is_loading_scopes = false
-            })
-    },
-    callInfrastructures() {
-        axios
-            .get(this.loader_source_infrastructures)
-            .then(response => {
-                this.infrastructures = response.data.results;
-                this.is_loading_infrastructures = false
-            })
-    },
-    callDepartments() {
-        axios
-            .get(this.loader_source_departments)
-            .then(response => {
-                this.departments = response.data.results;
-                this.is_loading_departments = false
-            })
-    },
-    callERC1List(params) {
-        axios
-            .get(this.loader_source_erc1)
-            .then(response => {
-                this.erc1_list = response.data.results;
-                this.is_loading_erc1 = false
-            })
-    },
-    {% endblock laboratory_call_method %}
-
+callMasterTypes() {
+    axios
+        .get(this.loader_source_mastertypes)
+        .then(response => {
+            this.master_types = response.data.results;
+            this.is_loading_mastertypes = false;
+        });
+},
+callErogations() {
+    axios
+        .get(this.loader_source_erogations)
+        .then(response => {
+            this.erogations = response.data.results;
+            this.is_loading_erogations = false;
+        });
+},
+callDepartments() {
+    axios
+        .get(this.loader_source_departments)
+        .then(response => {
+            this.departments_filter = response.data.results;
+            this.is_loading_departments = false
+        })
+},
 {% endblock extra_methods %}
-</script>
