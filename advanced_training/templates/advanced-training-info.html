@@ -1,60 +1,73 @@
 {% extends "cds_brochure_unique_form.html" %}
-
 {% load i18n %}
 {% load static %}
 
-{% block title %}
-{% endblock title %}
+{% block title %}{% endblock title %}
 
 {% block form_container %}
 <div class="card-wrapper card-space">
-    <div class="card card-bg no-after">
-        <div class="card-body mt-4">
+  <div class="card card-bg no-after">
+    <div class="card-body mt-4">
+      <h3 style="font-weight: normal" class="mb-4 pb-4">
+        {% blocktrans %}Scheda Master{% endblocktrans %}
+      </h3>
 
-            <h3 style="font-weight: normal;" class="mb-4 pb-4">
-                {% blocktrans %}Scheda Master{% endblocktrans %}
-            </h3>
+      <!-- NAV TABS -->
+      <ul class="nav nav-tabs nav-justified" id="master-tabs" role="tablist">
+        {% for tab, form in forms.items %}
+          {% with trimmed_tab=tab|cut:" " %}
+            <li class="nav-item">
+              <a
+                class="nav-link {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}active{% endif %}"
+                id="{{trimmed_tab}}-nav-item"
+                data-toggle="tab"
+                href="#{{trimmed_tab}}-tab"
+                role="tab"
+                aria-controls="{{trimmed_tab}}-tab"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              >
+                {{tab}}
+              </a>
+            </li>
+          {% endwith %}
+        {% endfor %}
+      </ul>
 
-            <!-- NAV TABS -->
-            <ul class="nav nav-tabs nav-justified" id="master-tabs" role="tablist">
-                {% for tab, form in forms.items %}
-                {% with trimmed_tab=tab|cut:" " %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}active{% endif %}"
-                           id="{{trimmed_tab}}-nav-item"
-                           data-toggle="tab"
-                           href="#{{trimmed_tab}}-tab"
-                           role="tab"
-                           aria-controls="{{trimmed_tab}}-tab"
-                           aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
-                            {{tab}}
-                        </a>
-                    </li>
-                {% endwith %}
-                {% endfor %}
-            </ul>
+      <!-- TAB CONTENT -->
+      <div class="tab-content pt-2" id="master-tabsContent">
+        {% for tab, form in forms.items %}
+          {% with trimmed_tab=tab|cut:" " %}
+            <div
+              class="tab-pane p-4 mt-3 fade {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}show active{% endif %}"
+              id="{{trimmed_tab}}-tab"
+              role="tabpanel"
+              aria-labelledby="{{trimmed_tab}}-nav-item"
+            >
+              <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
 
-            <!-- TAB CONTENT -->
-            <div class="tab-content pt-2" id="master-tabsContent">
-                {% for tab, form in forms.items %}
-                {% with trimmed_tab=tab|cut:" " %}
-                <div class="tab-pane p-4 mt-3 fade {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}show active{% endif %}"
-                     id="{{trimmed_tab}}-tab"
-                     role="tabpanel"
-                     aria-labelledby="{{trimmed_tab}}-nav-item">
+                {# Se è un formset (ha management_form) #}
+                {% if form.management_form %}
+                  {{ form.management_form }}
+                  {% for f in form %}
+                    <div class="border p-3 mb-3 rounded">
+                      {% include "form_template.html" with form=f %}
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  {# Caso ModelForm singolo #}
+                  {% include "form_template.html" with form=form %}
+                {% endif %}
 
-                    <form method="post" enctype="multipart/form-data" novalidate>
-                        {% csrf_token %}
-                        {% include "form_template.html" with form=form %}
-                        <input type="hidden" name="tab_form_dict_key" value="{{tab}}">
-                        <br/>
-                        {% include "includes/form_submit.html" %}
-                    </form>
-                </div>
-                {% endwith %}
-                {% endfor %}
+                <input type="hidden" name="tab_form_dict_key" value="{{tab}}" />
+                <br />
+                {% include "includes/form_submit.html" %}
+              </form>
             </div>
-        </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
     </div>
+  </div>
 </div>
 {% endblock form_container %}
