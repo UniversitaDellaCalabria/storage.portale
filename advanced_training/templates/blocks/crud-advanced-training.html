@@ -17,6 +17,11 @@
                         <div class="card-body">
 
                             {% include "includes/vue_search_input.html" with id=id %}
+                            <a href="{% url 'advanced-training:management:advanced-training-create' %}"
+   class="btn btn-success mb-3">
+   <i class="fa fa-plus"></i> {% trans "Aggiungi nuovo" %}
+</a>
+
 
                             {% block filters_masterlist %}
                             <div class="mb-0">
@@ -163,6 +168,12 @@
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
+                                </a>
+                                <a :href="'delete/'+item.id+'/'" class="btn btn-sm btn-danger float-right ml-2"
+                                    onclick="return confirm('Sei sicuro di voler eliminare questo master?');">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                    </svg> {% trans "Delete" %}
                                 </a>
                                 </div>
                             </div>
