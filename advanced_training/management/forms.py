@@ -82,8 +82,25 @@ class MasterDatiBaseForm(forms.ModelForm):
             "project_work": "Project Work",
             "modalita_svolgimento_prova_finale": "Modalità svolgimento prova finale",
             "numero_moduli": "Numero moduli",
-            
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        required_fields = [
+            "titolo_it",
+            "anno_rilevazione",
+            "dipartimento_riferimento",
+            "alta_formazione_tipo_corso",
+            "lingua",
+            "alta_formazione_mod_erogazione",
+            "data_inizio",
+            "data_fine",
+        ]
+
+        for field in required_fields:
+            self.fields[field].required = True
+
 
 class IncaricoDidatticoForm(forms.ModelForm):
     class Meta:
@@ -119,6 +136,8 @@ class PianoDidatticoForm(forms.ModelForm):
             "cfu": "CFU",
             "verifica_finale": "Verifica finale",
         }
+
+
 PianoDidatticoFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,
     AltaFormazionePianoDidattico,
