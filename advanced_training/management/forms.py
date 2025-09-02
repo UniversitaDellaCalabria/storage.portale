@@ -1,13 +1,14 @@
 from advanced_training.models import (
     AltaFormazioneDatiBase,
     AltaFormazioneIncaricoDidattico,
+    AltaFormazionePianoDidattico,
 )
 from django import forms
 
 from django.forms import inlineformset_factory
 
 
-class MasterDatiGeneraliForm(forms.ModelForm):
+class MasterDatiBaseForm(forms.ModelForm):
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
@@ -22,6 +23,29 @@ class MasterDatiGeneraliForm(forms.ModelForm):
             "mesi",
             "data_inizio",
             "data_fine",
+            "num_min_partecipanti",
+            "num_max_partecipanti",
+            "uditori_ammessi",
+            "num_max_uditori",
+            "quota_iscrizione",
+            "quota_uditori",
+            "requisiti_ammissione",
+            "titolo_rilasciato",
+            "doppio_titolo",
+            "funzione_lavoro",
+            "obiettivi_formativi_corso",
+            "obiettivi_formativi_summer_school",
+            "competenze",
+            "sbocchi_occupazionali",
+            "stage_tirocinio",
+            "ore_stage_tirocinio",
+            "cfu_stage",
+            "mesi_stage",
+            "tipo_aziende_enti_tirocinio",
+            "contenuti_tempi_criteri_cfu",
+            "project_work",
+            "modalita_svolgimento_prova_finale",
+            "numero_moduli",
         ]
         labels = {
             "titolo_it": "Titolo (IT)",
@@ -35,44 +59,12 @@ class MasterDatiGeneraliForm(forms.ModelForm):
             "mesi": "Durata (mesi)",
             "data_inizio": "Data inizio",
             "data_fine": "Data fine",
-        }
-
-
-class MasterIscrizioniForm(forms.ModelForm):
-    class Meta:
-        model = AltaFormazioneDatiBase
-        fields = [
-            "num_min_partecipanti",
-            "num_max_partecipanti",
-            "uditori_ammessi",
-            "num_max_uditori",
-            "quota_iscrizione",
-            "quota_uditori",
-        ]
-        labels = {
             "num_min_partecipanti": "Numero minimo partecipanti",
             "num_max_partecipanti": "Numero massimo partecipanti",
             "uditori_ammessi": "Uditori ammessi",
             "num_max_uditori": "Numero massimo uditori",
             "quota_iscrizione": "Quota di iscrizione",
             "quota_uditori": "Quota uditori",
-        }
-
-
-class MasterContenutiForm(forms.ModelForm):
-    class Meta:
-        model = AltaFormazioneDatiBase
-        fields = [
-            "requisiti_ammissione",
-            "titolo_rilasciato",
-            "doppio_titolo",
-            "funzione_lavoro",
-            "obiettivi_formativi_corso",
-            "obiettivi_formativi_summer_school",
-            "competenze",
-            "sbocchi_occupazionali",
-        ]
-        labels = {
             "requisiti_ammissione": "Requisiti di ammissione",
             "titolo_rilasciato": "Titolo rilasciato",
             "doppio_titolo": "Doppio titolo",
@@ -81,22 +73,6 @@ class MasterContenutiForm(forms.ModelForm):
             "obiettivi_formativi_summer_school": "Obiettivi formativi Summer School",
             "competenze": "Competenze",
             "sbocchi_occupazionali": "Sbocchi occupazionali",
-        }
-
-
-class MasterStageForm(forms.ModelForm):
-    class Meta:
-        model = AltaFormazioneDatiBase
-        fields = [
-            "stage_tirocinio",
-            "ore_stage_tirocinio",
-            "cfu_stage",
-            "mesi_stage",
-            "tipo_aziende_enti_tirocinio",
-            "contenuti_tempi_criteri_cfu",
-            "project_work",
-        ]
-        labels = {
             "stage_tirocinio": "Stage / Tirocinio",
             "ore_stage_tirocinio": "Ore di tirocinio",
             "cfu_stage": "CFU tirocinio",
@@ -104,23 +80,12 @@ class MasterStageForm(forms.ModelForm):
             "tipo_aziende_enti_tirocinio": "Tipologia aziende/enti tirocinio",
             "contenuti_tempi_criteri_cfu": "Contenuti / Tempi / Criteri CFU",
             "project_work": "Project Work",
-        }
-
-
-class MasterAltroForm(forms.ModelForm):
-    class Meta:
-        model = AltaFormazioneDatiBase
-        fields = [
-            "modalita_svolgimento_prova_finale",
-            "numero_moduli",
-        ]
-        labels = {
             "modalita_svolgimento_prova_finale": "Modalità svolgimento prova finale",
             "numero_moduli": "Numero moduli",
+            
         }
 
-
-class MasterIncaricoDidatticoForm(forms.ModelForm):
+class IncaricoDidatticoForm(forms.ModelForm):
     class Meta:
         model = AltaFormazioneIncaricoDidattico
         fields = ["modulo", "num_ore", "docente", "qualifica", "ente", "tipologia"]
@@ -133,10 +98,31 @@ class MasterIncaricoDidatticoForm(forms.ModelForm):
             "tipologia": "Tipologia",
         }
 
-MasterIncaricoDidatticoFormSet = inlineformset_factory(
+
+IncaricoDidatticoFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,
     AltaFormazioneIncaricoDidattico,
-    form=MasterIncaricoDidatticoForm,
+    form=IncaricoDidatticoForm,
+    extra=1,
+    can_delete=True,
+)
+
+
+class PianoDidatticoForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazionePianoDidattico
+        fields = ["modulo", "ssd", "num_ore", "cfu", "verifica_finale"]
+        labels = {
+            "modulo": "Modulo",
+            "ssd": "SSD",
+            "num_ore": "Numero ore",
+            "cfu": "CFU",
+            "verifica_finale": "Verifica finale",
+        }
+PianoDidatticoFormSet = inlineformset_factory(
+    AltaFormazioneDatiBase,
+    AltaFormazionePianoDidattico,
+    form=PianoDidatticoForm,
     extra=1,
     can_delete=True,
 )
