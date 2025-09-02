@@ -5,12 +5,9 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect
 from advanced_training.models import AltaFormazioneDatiBase
 from advanced_training.management.forms import (
-    MasterDatiGeneraliForm,
-    MasterIscrizioniForm,
-    MasterContenutiForm,
-    MasterStageForm,
-    MasterAltroForm,
-    MasterIncaricoDidatticoFormSet,
+    MasterDatiBaseForm,
+    IncaricoDidatticoFormSet,
+    PianoDidatticoFormSet
 )
 from django.contrib import messages
 from django.utils import timezone
@@ -34,12 +31,9 @@ def master_info_edit(request, pk):
     master = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
 
     tab_form_dict = {
-        "Dati generali": MasterDatiGeneraliForm(instance=master),
-        "Iscrizioni": MasterIscrizioniForm(instance=master),
-        "Contenuti": MasterContenutiForm(instance=master),
-        "Stage e Project Work": MasterStageForm(instance=master),
-        "Altro": MasterAltroForm(instance=master),
-        "Incarichi Didattici": MasterIncaricoDidatticoFormSet(instance=master),
+        "Dati generali": MasterDatiBaseForm(instance=master),
+        "Incarichi Didattici": IncaricoDidatticoFormSet(instance=master),
+        "Piano Didattico": PianoDidatticoFormSet(instance=master),
     }
 
     last_viewed_tab = None
@@ -50,17 +44,11 @@ def master_info_edit(request, pk):
 
         match form_name:
             case "Dati generali":
-                form = MasterDatiGeneraliForm(request.POST, instance=master)
-            case "Iscrizioni":
-                form = MasterIscrizioniForm(request.POST, instance=master)
-            case "Contenuti":
-                form = MasterContenutiForm(request.POST, instance=master)
-            case "Stage e Project Work":
-                form = MasterStageForm(request.POST, instance=master)
-            case "Altro":
-                form = MasterAltroForm(request.POST, instance=master)
+                form = MasterDatiBaseForm(request.POST, instance=master)
             case "Incarichi Didattici":
-                form = MasterIncaricoDidatticoFormSet(request.POST, instance=master)
+                form = IncaricoDidatticoFormSet(request.POST, instance=master)
+            case "Piano Didattico": 
+                form = PianoDidatticoFormSet(request.POST, instance=master)
 
         last_viewed_tab = form_name
 
