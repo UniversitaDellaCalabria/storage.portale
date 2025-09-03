@@ -67,6 +67,10 @@ def advancedtraining_info_edit(request, pk):
                     obj.dt_mod = timezone.now()
                     obj.save()
                 form.save_m2m()
+                
+                for deleted_obj in form.deleted_objects:
+                    deleted_obj.delete()
+
             else:
                 obj = form.save(commit=False)
                 obj.dt_mod = timezone.now()
@@ -139,3 +143,16 @@ def advancedtraining_info_create(request):
             "last_viewed_tab": "Dati generali",
         },
     )
+    
+@login_required
+def advancedtraining_info_delete(request, pk):
+    master = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
+
+    if request.method == "POST":
+        master.delete()
+        messages.success(request, _("Master eliminato con successo"))
+        return redirect("advanced-training:management:advanced-training")
+
+    messages.error(request, _("Richiesta non valida"))
+    return redirect("advanced-training:management:advanced-training-detail", pk=pk)
+

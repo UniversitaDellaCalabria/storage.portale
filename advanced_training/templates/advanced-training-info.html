@@ -83,13 +83,13 @@
                       <th>Qualifica</th>
                       <th>Ente</th>
                       <th>Tipologia</th>
-                      <th>Elimina</th>
+                      <th>{% trans "Elimina" %}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {% for f in form %}
                     <tr>
-                      {{ f.id }} {# campo nascosto con la PK #}
+                      {{ f.id }}
                       <td>{{ f.modulo }}</td>
                       <td>{{ f.num_ore }}</td>
                       <td>{{ f.docente }}</td>
@@ -111,13 +111,13 @@
                       <th>Numero ore</th>
                       <th>CFU</th>
                       <th>Verifica finale</th>
-                      <th>Elimina</th>
+                      <th>{% trans "Elimina" %}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {% for f in form %}
                     <tr>
-                      {{ f.id }} {# campo nascosto con la PK #}
+                      {{ f.id }}
                       <td>{{ f.modulo }}</td>
                       <td>{{ f.ssd }}</td>
                       <td>{{ f.num_ore }}</td>
@@ -131,7 +131,6 @@
                 {% endif %}
 
               {% else %}
-                {# Caso ModelForm singolo (Dati generali) #}
                 {% include "form_template.html" with form=form %}
               {% endif %}
 
