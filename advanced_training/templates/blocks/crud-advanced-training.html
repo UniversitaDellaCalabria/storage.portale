@@ -159,10 +159,21 @@
                                         </div>
                                     </div>
                                     <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                    </svg> {% trans "Edit" %}
-                                </a>
+                                        <svg class="icon icon-xs icon-white">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                        </svg> {% trans "Edit" %}
+                                    </a>
+                                    <form :action="'{% url 'advanced-training:management:advanced-training-delete' 0 %}'.replace('0', item.id)" 
+                                        method="post" 
+                                        class="d-inline float-right ms-2">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('{% trans 'Sei sicuro di voler eliminare questo master?' %}')">
+                                            <svg class="icon icon-xs icon-white">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                            </svg> {% trans "Elimina" %}
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
