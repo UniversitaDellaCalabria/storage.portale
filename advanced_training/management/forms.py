@@ -2,6 +2,10 @@ from advanced_training.models import (
     AltaFormazioneDatiBase,
     AltaFormazioneIncaricoDidattico,
     AltaFormazionePianoDidattico,
+    AltaFormazionePartner,
+    AltaFormazioneModalitaSelezione,
+    AltaFormazioneConsiglioScientificoEsterno,
+    AltaFormazioneConsiglioScientificoInterno
 )
 from django import forms
 
@@ -9,6 +13,12 @@ from django.forms import inlineformset_factory
 
 
 class MasterDatiBaseForm(forms.ModelForm):
+    
+    tipo_selezione = forms.ModelChoiceField(
+        queryset=AltaFormazioneModalitaSelezione.objects.all(),
+        required=False,
+        label="Modalità di selezione"
+    )
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
@@ -19,6 +29,7 @@ class MasterDatiBaseForm(forms.ModelForm):
             "alta_formazione_tipo_corso",
             "lingua",
             "alta_formazione_mod_erogazione",
+            "tipo_selezione",
             "ore",
             "mesi",
             "data_inizio",
@@ -55,6 +66,7 @@ class MasterDatiBaseForm(forms.ModelForm):
             "alta_formazione_tipo_corso": "Tipo di corso",
             "lingua": "Lingua",
             "alta_formazione_mod_erogazione": "Modalità di erogazione",
+            "tipo_selezione": "Modalità di selezione",
             "ore": "Ore complessive",
             "mesi": "Durata (mesi)",
             "data_inizio": "Data inizio",
@@ -145,3 +157,58 @@ PianoDidatticoFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
+
+class PartnerForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazionePartner
+        fields = ["denominazione", "tipologia", "sito_web"]
+        labels = {
+            "denominazione": "Denominazione",
+            "tipologia": "Tipologia",
+            "sito_web": "Sito web",
+        }
+        
+PartnerFormSet = inlineformset_factory(
+    AltaFormazioneDatiBase,
+    AltaFormazionePartner,
+    form=PartnerForm,
+    extra=1,
+    can_delete=True,
+)
+
+class ConsiglioScientificoEsternoForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazioneConsiglioScientificoEsterno
+        fields = ["nome_cons", "ruolo_cons", "ente_cons"]
+        labels = {
+            "nome_cons": "Nome",
+            "ruolo_cons": "Ruolo",
+            "ente_cons": "Ente",
+        }
+        
+ConsiglioScientificoEsternoFormSet = inlineformset_factory(
+    AltaFormazioneDatiBase,
+    AltaFormazioneConsiglioScientificoEsterno,
+    form=ConsiglioScientificoEsternoForm,
+    extra=1,
+    can_delete=True,
+)
+
+class ConsiglioScientificoInternoForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazioneConsiglioScientificoInterno
+        fields = ["matricola_cons", "nome_origine_cons"]
+        labels = {
+            "matricola_cons": "Matricola",
+            "nome_origine_cons": "Nome"
+        }
+        
+ConsiglioScientificoInternoFormSet = inlineformset_factory(
+    AltaFormazioneDatiBase,
+    AltaFormazioneConsiglioScientificoInterno,
+    form=ConsiglioScientificoInternoForm,
+    extra=1,
+    can_delete=True,
+)
+
+

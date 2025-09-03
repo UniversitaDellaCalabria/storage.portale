@@ -8,6 +8,9 @@ from advanced_training.management.forms import (
     MasterDatiBaseForm,
     IncaricoDidatticoFormSet,
     PianoDidatticoFormSet,
+    PartnerFormSet,
+    ConsiglioScientificoEsternoFormSet,
+    ConsiglioScientificoInternoFormSet
 )
 from django.contrib import messages
 from django.utils import timezone
@@ -42,6 +45,9 @@ def advancedtraining_info_edit(request, pk):
         "Dati generali": MasterDatiBaseForm(instance=master),
         "Incarichi Didattici": IncaricoDidatticoFormSet(instance=master),
         "Piano Didattico": PianoDidatticoFormSet(instance=master),
+        "Partner": PartnerFormSet(instance=master),
+        "Consiglio Scientifico Esterno": ConsiglioScientificoEsternoFormSet(instance=master),
+        "Consiglio Scientifico Interno": ConsiglioScientificoInternoFormSet(instance=master),
     }
 
     last_viewed_tab = request.GET.get("tab")
@@ -57,6 +63,12 @@ def advancedtraining_info_edit(request, pk):
                 form = IncaricoDidatticoFormSet(request.POST, instance=master)
             case "Piano Didattico":
                 form = PianoDidatticoFormSet(request.POST, instance=master)
+            case "Partner":
+                form = PartnerFormSet(request.POST, instance=master)
+            case "Consiglio Scientifico Esterno":
+                form = ConsiglioScientificoEsternoFormSet(request.POST, instance=master)
+            case "Consiglio Scientifico Interno":
+                form = ConsiglioScientificoInternoFormSet(request.POST, instance=master)
 
         last_viewed_tab = form_name
 
@@ -116,6 +128,9 @@ def advancedtraining_info_create(request):
         "Dati generali": MasterDatiBaseForm(instance=master),
         "Incarichi Didattici": IncaricoDidatticoFormSet(instance=master),
         "Piano Didattico": PianoDidatticoFormSet(instance=master),
+        "Partner": PartnerFormSet(instance=master),
+        "Consiglio Scientifico Esterno": ConsiglioScientificoEsternoFormSet(instance=master),
+        "Consiglio Scientifico Interno": ConsiglioScientificoInternoFormSet(instance=master),
     }
 
     if request.method == "POST":
