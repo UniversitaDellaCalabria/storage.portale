@@ -30,6 +30,14 @@ def advancedtraining_masters(request):
 def advancedtraining_info_edit(request, pk):
     master = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
 
+    breadcrumbs = {
+        reverse("generics:dashboard"): _("Dashboard"),
+        reverse("advanced-training:management:advanced-training"): _(
+            "Advanced Training"
+        ),
+        "#": _("Edit Master"),
+    }
+
     tab_form_dict = {
         "Dati generali": MasterDatiBaseForm(instance=master),
         "Incarichi Didattici": IncaricoDidatticoFormSet(instance=master),
@@ -58,8 +66,6 @@ def advancedtraining_info_edit(request, pk):
                 for obj in objs:
                     obj.dt_mod = timezone.now()
                     obj.save()
-                for obj in form.deleted_objects:
-                    obj.delete()
                 form.save_m2m()
             else:
                 obj = form.save(commit=False)
@@ -93,6 +99,7 @@ def advancedtraining_info_edit(request, pk):
             "master": master,
             "forms": tab_form_dict,
             "last_viewed_tab": last_viewed_tab,
+            "breadcrumbs": breadcrumbs,
         },
     )
 
@@ -131,27 +138,4 @@ def advancedtraining_info_create(request):
             "forms": tab_form_dict,
             "last_viewed_tab": "Dati generali",
         },
-    )
-
-
-@login_required
-def advancedtraining_info_delete(request, pk):
-    master = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
-
-    if request.method == "POST":
-        master.delete()
-        messages.success(request, "Master eliminato con successo")
-        return redirect("advanced-training:management:advanced-training")
-
-    breadcrumbs = {
-        reverse("generics:dashboard"): _("Dashboard"),
-        reverse("advanced-training:management:advanced-training"): _(
-            "Advanced Training"
-        ),
-        "#": _("Elimina master"),
-    }
-    return render(
-        request,
-        "advanced-training-delete-confirm.html",
-        {"master": master, "breadcrumbs": breadcrumbs},
     )
