@@ -66,9 +66,9 @@ class ServicePersonale:
                 "personalecontatti__contatto",
                 "personalecontatti__prg_priorita",
                 "fl_docente",
-                "profilo",
-                "ds_profilo",
-                "ds_profilo_breve",
+                # ~ "profilo",
+                # ~ "ds_profilo",
+                # ~ "ds_profilo_breve",
                 "cd_ruolo",
                 "ds_ruolo_locale",
                 "dt_rap_ini"
@@ -89,6 +89,8 @@ class ServicePersonale:
                 "cd_uo_aff_org__cd_tipo_nodo",
                 "dt_rap_ini",
                 "sede",
+                "cd_profilo",
+                "ds_profilo"
             )
             .filter(cd_uo_aff_org__isnull=False)
             .distinct()
@@ -105,6 +107,8 @@ class ServicePersonale:
                 r["ds_aff_org"],
                 r["cd_uo_aff_org__cd_tipo_nodo"],
                 r["sede"],
+                r["cd_profilo"],
+                r["ds_profilo"],
             ]
             if full:
                 l_data.append(r["dt_rap_ini"])
@@ -133,9 +137,9 @@ class ServicePersonale:
                     # 'TipologiaStrutturaCod': q['cd_uo_aff_org__cd_tipo_nodo'],
                     # 'TipologiaStrutturaNome': q['cd_uo_aff_org__ds_tipo_nodo'],
                     # 'fl_docente': q['fl_docente'],
-                    "profilo": q["profilo"],
-                    "ds_profilo": q["ds_profilo"],
-                    "ds_profilo_breve": q["ds_profilo_breve"],
+                    # ~ "profilo": q["profilo"],
+                    # ~ "ds_profilo": q["ds_profilo"],
+                    # ~ "ds_profilo_breve": q["ds_profilo_breve"],
                     "Roles": [],
                 }
                 already_taken_contacts[q["id_ab"]] = []
@@ -180,6 +184,8 @@ class ServicePersonale:
                         "ds_aff_org": r[3],
                         "cd_tipo_nodo": r[4],
                         "sede": r[5],
+                        "cd_profilo": r[6],
+                        "ds_profilo": r[7],
                     }
                     if full:
                         d_data["dt_rap_ini"] = r[5]
@@ -195,6 +201,8 @@ class ServicePersonale:
                              "ds_aff_org": None,
                              "cd_tipo_nodo": None,
                              "sede": None,
+                             "cd_profilo": None,
+                             "ds_profilo": None,
                              "dt_rap_ini": q["dt_rap_ini"]}]
 
                 roles.sort(key=lambda x: x["priorita"])
@@ -213,7 +221,6 @@ class ServicePersonale:
             filtered = final_query
 
         filtered2 = []
-
         if role:
             roles = []
             for k in role:
@@ -222,7 +229,8 @@ class ServicePersonale:
                 final_roles = []
                 for r in item["Roles"]:
                     final_roles.append(r["cd_ruolo"])
-                final_roles.append(item["profilo"])
+                # ~ final_roles.append(item["profilo"])
+                final_roles.append(r["cd_profilo"])
                 if set(roles).intersection(set(final_roles)):
                     filtered2.append(item)
         else:
@@ -237,7 +245,8 @@ class ServicePersonale:
             for item in filtered2:
                 final_structures = []
                 for r in item["Roles"]:
-                    if r["cd_ruolo"] in role or item["profilo"] in role or not role:
+                    # ~ if r["cd_ruolo"] in role or item["profilo"] in role or not role:
+                    if r["cd_ruolo"] in role or r["cd_profilo"] in role or not role:
                         final_structures.append(r["cd_tipo_nodo"])
                 if set(s).intersection(set(final_structures)):
                     filtered3.append(item)
@@ -249,7 +258,8 @@ class ServicePersonale:
             for item in filtered3:
                 for r in item["Roles"]:
                     if r["cd_uo_aff_org"] == structureid or r["sede"] == structureid:
-                        if not role or r["cd_ruolo"] in role or item["profilo"] in role:
+                        # ~ if not role or r["cd_ruolo"] in role or item["profilo"] in role:
+                        if not role or r["cd_ruolo"] in role or r["cd_profilo"] in role:
                             filtered4.append(item)
                             break
         else:
@@ -267,7 +277,8 @@ class ServicePersonale:
                         ):
                             if (
                                 r["cd_ruolo"] in role
-                                or item["profilo"] in role
+                                # ~ or item["profilo"] in role
+                                or r["cd_profilo"] in role
                                 or not role
                             ):
                                 filtered5.append(item)
@@ -451,9 +462,9 @@ class ServicePersonale:
             "cv_short_it",
             "cv_full_eng",
             "cv_short_eng",
-            "profilo",
-            "ds_profilo",
-            "ds_profilo_breve",
+            # ~ "profilo",
+            # ~ "ds_profilo",
+            # ~ "ds_profilo_breve",
             "cd_genere"
         )
 
@@ -466,6 +477,8 @@ class ServicePersonale:
                 "cd_uo_aff_org",
                 "ds_aff_org",
                 "cd_uo_aff_org__cd_tipo_nodo",
+                "cd_profilo",
+                "ds_profilo",
                 "dt_rap_ini",
             )
             .filter(cd_uo_aff_org__isnull=False)
@@ -490,9 +503,11 @@ class ServicePersonale:
                 "cd_uo_aff_org": r[3],
                 "ds_aff_org": r[4],
                 "cd_tipo_nodo": r[5],
+                "cd_profilo": r[6],
+                "ds_profilo": r[7]
             }
             if full:
-                d_data["dt_rap_ini"] = r[6]
+                d_data["dt_rap_ini"] = r[8]
 
             roles.append(d_data)
         roles.sort(key=lambda x: x["priorita"])
@@ -534,7 +549,10 @@ class ServicePersonale:
                          "cd_uo_aff_org": None,
                          "ds_aff_org": None,
                          "cd_tipo_nodo": None,
-                         "sede": None}]
+                         "sede": None,
+                         "cd_profilo": None,
+                         "ds_profilo": None,
+                         }]
             else:
                 q["Roles"] = roles
 

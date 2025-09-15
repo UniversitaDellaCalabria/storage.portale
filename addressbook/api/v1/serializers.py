@@ -50,13 +50,13 @@ class AddressbookSerializer(CreateUpdateAbstract):
             if "URL Sito WEB Curriculum Vitae" in PERSON_CONTACTS_TO_TAKE
             else [],
             # 'Teacher': query['fl_docente'],
-            "ProfileId": query["profilo"],
-            "ProfileDescription": query["ds_profilo"]
-            if query["profilo"] in ALLOWED_PROFILE_ID
-            else None,
-            "ProfileShortDescription": query["ds_profilo_breve"]
-            if query["profilo"] in ALLOWED_PROFILE_ID
-            else None,
+            # ~ "ProfileId": query["profilo"],
+            # ~ "ProfileDescription": query["ds_profilo"]
+            # ~ if query["profilo"] in ALLOWED_PROFILE_ID
+            # ~ else None,
+            # ~ "ProfileShortDescription": query["ds_profilo_breve"]
+            # ~ if query["profilo"] in ALLOWED_PROFILE_ID
+            # ~ else None,
         }
 
     @staticmethod
@@ -70,6 +70,8 @@ class AddressbookSerializer(CreateUpdateAbstract):
                 "StructureCod": q["cd_uo_aff_org"],
                 "Structure": q["ds_aff_org"],
                 "StructureTypeCOD": q["cd_tipo_nodo"],
+                "ProfileId": q["cd_profilo"] if q["cd_profilo"] in ALLOWED_PROFILE_ID else None,
+                "ProfileDescription": q["ds_profilo"] if q["cd_profilo"] in ALLOWED_PROFILE_ID else None
             }
             if full:
                 d_data["Start"] = q.get("dt_rap_ini")
@@ -123,13 +125,13 @@ class AddressbookFullSerializer(AddressbookSerializer):
             if "URL Sito WEB Curriculum Vitae" in PERSON_CONTACTS_TO_TAKE
             else [],
             # 'Teacher': query['fl_docente'],
-            "ProfileId": query["profilo"],
-            "ProfileDescription": query["ds_profilo"]
-            if query["profilo"] in ALLOWED_PROFILE_ID
-            else None,
-            "ProfileShortDescription": query["ds_profilo_breve"]
-            if query["profilo"] in ALLOWED_PROFILE_ID
-            else None,
+            # ~ "ProfileId": query["profilo"],
+            # ~ "ProfileDescription": query["ds_profilo"]
+            # ~ if query["profilo"] in ALLOWED_PROFILE_ID
+            # ~ else None,
+            # ~ "ProfileShortDescription": query["ds_profilo_breve"]
+            # ~ if query["profilo"] in ALLOWED_PROFILE_ID
+            # ~ else None,
         }
 
 
@@ -185,13 +187,13 @@ class PersonaleSerializer(CreateUpdateAbstract):
             "TeacherCVShort": query["cv_short_it"]
             if req_lang == "it" or not query["cv_short_eng"]
             else query["cv_short_eng"],
-            "ProfileId": query["profilo"],
-            "ProfileDescription": query["ds_profilo"]
-            if query["profilo"] in ALLOWED_PROFILE_ID
-            else None,
-            "ProfileShortDescription": query["ds_profilo_breve"]
-            if query["profilo"] in ALLOWED_PROFILE_ID
-            else None,
+            # ~ "ProfileId": query["profilo"],
+            # ~ "ProfileDescription": query["ds_profilo"]
+            # ~ if query["profilo"] in ALLOWED_PROFILE_ID
+            # ~ else None,
+            # ~ "ProfileShortDescription": query["ds_profilo_breve"]
+            # ~ if query["profilo"] in ALLOWED_PROFILE_ID
+            # ~ else None,
         }
 
     @staticmethod
@@ -245,9 +247,9 @@ class PersonaleFullSerializer(PersonaleSerializer):
             "PersonFunctions": functions,
             "TeacherCVFull": query["cv_full_it"] if req_lang == "it" or not query["cv_full_eng"] else query["cv_full_eng"],
             "TeacherCVShort": query["cv_short_it"] if req_lang == "it" or not query["cv_short_eng"] else query["cv_short_eng"],
-            "ProfileId": query["profilo"],
-            "ProfileDescription": query["ds_profilo"] if query["profilo"] in ALLOWED_PROFILE_ID else None,
-            "ProfileShortDescription": query["ds_profilo_breve"] if query["profilo"] in ALLOWED_PROFILE_ID else None,
+            # ~ "ProfileId": query["profilo"],
+            # ~ "ProfileDescription": query["ds_profilo"] if query["profilo"] in ALLOWED_PROFILE_ID else None,
+            # ~ "ProfileShortDescription": query["ds_profilo_breve"] if query["profilo"] in ALLOWED_PROFILE_ID else None,
             "Gender": query["cd_genere"]
         }
 
