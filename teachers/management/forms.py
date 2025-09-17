@@ -1,9 +1,9 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django_ckeditor_5.widgets import CKEditor5Widget
+# from django_ckeditor_5.widgets import CKEditor5Widget
 
 # from generics.widgets import RicercaCRUDClearableWidget
-from generics.widgets import RicercaCRUDDateTimeWidget
+from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget, RicercaCRUDDateTimeWidget
 from teachers.models import (
     DocenteMaterialeDidattico,
     DocentePtaAltriDati,
@@ -37,11 +37,11 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
             "path_foto": _("Please upload a square format photo"),
         }
         widgets = {
-            "breve_bio_en": CKEditor5Widget(),
+            "breve_bio_en": RicercaCRUDCKEditor5EmptyContentWidget(),
             # 'breve_bio': forms.Textarea(attrs={'rows': 2}),
-            "breve_bio": CKEditor5Widget(),
-            "orario_ricevimento": CKEditor5Widget(),
-            "orario_ricevimento_en": CKEditor5Widget(),
+            "breve_bio": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "orario_ricevimento": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "orario_ricevimento_en": RicercaCRUDCKEditor5EmptyContentWidget(),
         }
 
         # def __init__(self, *args, **kwargs):
@@ -67,6 +67,15 @@ class DocentePtaAltriDatiForm(forms.ModelForm):
 
 
 class DocentePtaBachecaForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.data:
+            # compongo il campo datetime prima di restituirlo alla view (date + time)
+            data = self.data.copy()
+            data['dt_inizio_validita'] = f'{data["dt_inizio_validita_date"]} {data["dt_inizio_validita_time"]}'
+            data['dt_fine_validita'] = f'{data["dt_fine_validita_date"]} {data["dt_fine_validita_time"]}'
+            self.data = data
+
     class Meta:
         model = DocentePtaBacheca
         fields = [
@@ -99,12 +108,10 @@ class DocentePtaBachecaForm(forms.ModelForm):
         widgets = {
             "titolo": forms.Textarea(attrs={"rows": 2}),
             "titolo_en": forms.Textarea(attrs={"rows": 2}),
-            "testo": CKEditor5Widget(),
-            "testo_en": CKEditor5Widget(),
+            "testo": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "testo_en": RicercaCRUDCKEditor5EmptyContentWidget(),
             # 'dt_pubblicazione': BootstrapItaliaDateWidget,
-            # 'dt_inizio_validita': BootstrapItaliaDateWidget,
             "dt_inizio_validita": RicercaCRUDDateTimeWidget,
-            # 'dt_fine_validita': BootstrapItaliaDateWidget}
             "dt_fine_validita": RicercaCRUDDateTimeWidget,
         }
 
@@ -113,6 +120,15 @@ class DocentePtaBachecaForm(forms.ModelForm):
 
 
 class DocenteMaterialeDidatticoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.data:
+            # compongo il campo datetime prima di restituirlo alla view (date + time)
+            data = self.data.copy()
+            data['dt_inizio_validita'] = f'{data["dt_inizio_validita_date"]} {data["dt_inizio_validita_time"]}'
+            data['dt_fine_validita'] = f'{data["dt_fine_validita_date"]} {data["dt_fine_validita_time"]}'
+            self.data = data
+
     class Meta:
         model = DocenteMaterialeDidattico
         fields = [
@@ -141,8 +157,8 @@ class DocenteMaterialeDidatticoForm(forms.ModelForm):
         widgets = {
             "titolo": forms.Textarea(attrs={"rows": 2}),
             "titolo_en": forms.Textarea(attrs={"rows": 2}),
-            "testo": CKEditor5Widget(),
-            "testo_en": CKEditor5Widget(),
+            "testo": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "testo_en": RicercaCRUDCKEditor5EmptyContentWidget(),
             # 'dt_pubblicazione': BootstrapItaliaDateWidget,
             "dt_inizio_validita": RicercaCRUDDateTimeWidget,
             "dt_fine_validita": RicercaCRUDDateTimeWidget,

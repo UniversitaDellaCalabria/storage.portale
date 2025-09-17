@@ -52,7 +52,7 @@
         <div id="header_content"><image src="{% static 'images/unical_logo.svg' %}" style="width: 6.1cm; height: 1.1cm;"></image></div>
         <!-- Content for Static Frame 'footer_frame' -->
         <div id="footer_content" style="text-align:center;"><pdf:pagenumber />&nbsp;</div>
-                
+
         <!-- first page -->
         <div class="reg-title content">
             Regolamento didattico del<br>
@@ -62,16 +62,16 @@
             </span>
         </div>
         <!-- /first page -->
-        
+
         <!-- toc pages -->
         <pdf:nexttemplate name="toc_page" />
         <div>
-            <pdf:nextpage /> 
-        </div> 
-        
+            <pdf:nextpage />
+        </div>
+
         <span class="index content">Indice</span>
         <div class="toc_text">
-            <pdf:toc /> 
+            <pdf:toc />
         </div>
         <!-- /toc pages -->
 
@@ -79,9 +79,9 @@
         <pdf:nexttemplate name="regular_page" />
 
         <div>
-            <pdf:nextpage /> 
-        </div> 
-        
+            <pdf:nextpage />
+        </div>
+
         <!-- content -->
         <div class="content">
             {% autoescape off %}
@@ -101,6 +101,7 @@
                             </div>
                             <div class="text">
                             {% if article.testo_it %}
+                                <span>&nbsp;</span>
                                 {{ article.testo_it }}
                             {% else %}
                                 <p>
@@ -117,6 +118,7 @@
                                     Art. {{struct.numero}} {% latin_enum forloop.counter0 %} - {{sub_art.titolo_it}}
                                 </div>
                                 <div class="text">
+                                    <span>&nbsp;</span>
                                     {{sub_art.testo_it}}
                                 </div>
                                 <div class="art-separator">&nbsp;</div>

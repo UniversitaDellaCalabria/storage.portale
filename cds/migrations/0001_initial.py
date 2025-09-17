@@ -878,6 +878,8 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "DIDATTICA_CDS",
                 "managed": True,
+                "verbose_name": "Cds",
+                "verbose_name_plural": "Cds",
             },
         ),
         migrations.CreateModel(
@@ -1827,6 +1829,8 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "DIDATTICA_REGOLAMENTO",
                 "managed": True,
+                "verbose_name": "Didactic Regulation",
+                "verbose_name_plural": "Didactic Regulations",
             },
         ),
         migrations.CreateModel(
@@ -3188,6 +3192,8 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "DIDATTICA_CDS_LINGUA",
                 "managed": True,
+                "verbose_name": "Cds Language",
+                "verbose_name_plural": "Cds Languages",
             },
         ),
         migrations.CreateModel(
@@ -3434,11 +3440,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "af",
-                    models.OneToOneField(
+                    models.ForeignKey(
                         db_column="AF_ID",
                         on_delete=django.db.models.deletion.DO_NOTHING,
-                        primary_key=True,
-                        serialize=False,
                         to="cds.didatticaattivitaformativa",
                     ),
                 ),
@@ -3448,7 +3452,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "testi_af_id",
-                    models.IntegerField(blank=True, db_column="TESTI_AF_ID", null=True),
+                    models.IntegerField(
+                        db_column="TESTI_AF_ID",
+                        primary_key=True,
+                        serialize=False
+                    ),
                 ),
                 (
                     "tipo_testo_af_cod",
@@ -3575,6 +3583,8 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "DIDATTICA_CDS_COLLEGAMENTO",
                 "ordering": ["-cds__cds_cod"],
+                "verbose_name": "Cds Morph",
+                "verbose_name_plural": "Cds Morph",
                 "managed": True,
             },
         ),

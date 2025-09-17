@@ -1187,9 +1187,10 @@ def regdid_articles_pdf(request, regdid_id):
         tipo_corso_des = "Laurea Magistrale a ciclo unico 6 anni"
 
     nome_cds_it = regdid.cds.nome_cds_it
-    cla_cod = regdid.cds.cla_miur_cod
+    # find an optional " R" in cla_cod and remove it
+    cla_cod = re.match(r"^(.*?)(\s*R)?$", regdid.cds.cla_miur_cod).group(1)
     cla_des = regdid.cds.cla_miur_des
-    icla_cod = regdid.cds.intercla_miur_cod
+    icla_cod = re.match(r"^(.*?)(\s*R)?$", regdid.cds.intercla_miur_cod).group(1) if regdid.cds.intercla_miur_cod else None
     icla_des = regdid.cds.intercla_miur_des
 
     nome_corso = f"Corso di {tipo_corso_des} in {nome_cds_it}"
@@ -1198,7 +1199,7 @@ def regdid_articles_pdf(request, regdid_id):
         classe_laurea_desc += f" & {icla_cod} - {icla_des}"
 
     classe_laurea_desc = re.sub(
-        "classe delle lauree(\w|\s)+in",  # noqa: W605
+        "classe delle lauree(\w|\s)+in\s",  # noqa: W605
         "",
         classe_laurea_desc,
         flags=re.IGNORECASE,
@@ -1220,7 +1221,9 @@ def regdid_articles_pdf(request, regdid_id):
     response["Content-Disposition"] = f"attachment; filename={pdf_file_name}.pdf"
     template = render(request, "regdid_generate_pdf.html", context)
     html_src_b = template.getvalue()
-
+    pattern = r"<li><p[^>]*>((?:(?!<\/li>).)*?)<\/p><(ol|ul)>".encode('utf-8')
+    substitute = r"<li>\1<\2>".encode('utf-8')
+    html_src_b = re.sub(pattern, substitute, html_src_b)
     pisa.CreatePDF(html_src_b, dest=response, link_callback=fetch_resources)
     return response
 

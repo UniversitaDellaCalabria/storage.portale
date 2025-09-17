@@ -8,7 +8,7 @@ CDS_MANIFESTO_MEDIA_PATH_BASE = getattr(
 
 
 def cds_manifesto_media_path(instance, filename):
-    return f"{CDS_MANIFESTO_MEDIA_PATH_BASE}/{instance.regdid_id.aa_reg_did}/{filename}"
+    return f"{CDS_MANIFESTO_MEDIA_PATH_BASE}/{instance.regdid.aa_reg_did}/{filename}"
 
 
 # Path to cds regulations
@@ -19,7 +19,7 @@ CDS_REGOLAMENTO_MEDIA_PATH_BASE = getattr(
 
 def cds_regolamento_media_path(instance, filename):
     return (
-        f"{CDS_REGOLAMENTO_MEDIA_PATH_BASE}/{instance.regdid_id.aa_reg_did}/{filename}"
+        f"{CDS_REGOLAMENTO_MEDIA_PATH_BASE}/{instance.regdid.aa_reg_did}/{filename}"
     )
 
 
@@ -31,7 +31,7 @@ CDS_ORDINAMENTO_MEDIA_PATH_BASE = getattr(
 
 def cds_ordinamento_media_path(instance, filename):
     return (
-        f"{CDS_ORDINAMENTO_MEDIA_PATH_BASE}/{instance.regdid_id.aa_reg_did}/{filename}"
+        f"{CDS_ORDINAMENTO_MEDIA_PATH_BASE}/{instance.regdid.aa_reg_did}/{filename}"
     )
 
 

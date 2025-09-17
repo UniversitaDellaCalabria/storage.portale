@@ -41,11 +41,11 @@ class CdsBrochureInPilloleForm(forms.ModelForm):
         }
 
         ckeditor_fields = [
-            {"corso_in_pillole_it": {"min": 300, "max": 600, "enforce": True}},
+            {"corso_in_pillole_it": {"min": 300, "max": 600, "enforce": False}},
             {"corso_in_pillole_en": {"min": 300, "max": 600, "enforce": False}},
-            {"cosa_si_studia_it": {"min": 300, "max": 600, "enforce": True}},
+            {"cosa_si_studia_it": {"min": 300, "max": 600, "enforce": False}},
             {"cosa_si_studia_en": {"min": 300, "max": 600, "enforce": False}},
-            {"come_iscriversi_it": {"min": 300, "max": 600, "enforce": True}},
+            {"come_iscriversi_it": {"min": 300, "max": 600, "enforce": False}},
             {"come_iscriversi_en": {"min": 300, "max": 600, "enforce": False}},
         ]
 
@@ -76,8 +76,8 @@ class CdsBrochureInPilloleForm(forms.ModelForm):
             "come_iscriversi_en",
         ]
 
-    class Media:
-        js = ("js/textarea-autosize.js",)
+    # class Media:
+        # js = ("js/textarea-autosize.js",)
 
 
 # -- Profilo corso: Descrizione, Ammissione, Obiettivi, Sbocchi
@@ -97,13 +97,13 @@ class CdsBrochureProfiloCorsoForm(forms.ModelForm):
         }
 
         ckeditor_fields = [
-            {"descrizione_corso_it": {"min": 0, "max": 700, "enforce": True}},
+            {"descrizione_corso_it": {"min": 0, "max": 700, "enforce": False}},
             {"descrizione_corso_en": {"min": 0, "max": 700, "enforce": False}},
-            {"accesso_corso_it": {"min": 200, "max": 500, "enforce": True}},
+            {"accesso_corso_it": {"min": 200, "max": 500, "enforce": False}},
             {"accesso_corso_en": {"min": 200, "max": 500, "enforce": False}},
-            {"obiettivi_corso_it": {"min": 200, "max": 500, "enforce": True}},
+            {"obiettivi_corso_it": {"min": 200, "max": 500, "enforce": False}},
             {"obiettivi_corso_en": {"min": 200, "max": 500, "enforce": False}},
-            {"sbocchi_professionali_it": {"min": 300, "max": 500, "enforce": True}},
+            {"sbocchi_professionali_it": {"min": 300, "max": 500, "enforce": False}},
             {"sbocchi_professionali_en": {"min": 300, "max": 500, "enforce": False}},
         ]
 
@@ -136,8 +136,8 @@ class CdsBrochureProfiloCorsoForm(forms.ModelForm):
             "sbocchi_professionali_en",
         ]
 
-    class Media:
-        js = ("js/textarea-autosize.js",)
+    # class Media:
+        # js = ("js/textarea-autosize.js",)
 
 
 # -- Intro amm: Tasse, contributi, agevolazioni
@@ -155,11 +155,11 @@ class CdsBrochureIntroAmmForm(forms.ModelForm):
         }
 
         ckeditor_fields = [
-            {"tasse_contributi_esoneri_it": {"min": 0, "max": 400, "enforce": True}},
+            {"tasse_contributi_esoneri_it": {"min": 0, "max": 400, "enforce": False}},
             {"tasse_contributi_esoneri_en": {"min": 0, "max": 400, "enforce": False}},
-            {"borse_studio_it": {"min": 200, "max": 400, "enforce": True}},
+            {"borse_studio_it": {"min": 200, "max": 400, "enforce": False}},
             {"borse_studio_en": {"min": 200, "max": 400, "enforce": False}},
-            {"agevolazioni_it": {"min": 200, "max": 400, "enforce": True}},
+            {"agevolazioni_it": {"min": 200, "max": 400, "enforce": False}},
             {"agevolazioni_en": {"min": 200, "max": 400, "enforce": False}},
         ]
 
@@ -190,8 +190,8 @@ class CdsBrochureIntroAmmForm(forms.ModelForm):
             "agevolazioni_en",
         ]
 
-    class Media:
-        js = ("js/textarea-autosize.js",)
+    # class Media:
+        # js = ("js/textarea-autosize.js",)
 
 
 class CdsBrochureExStudentiForm(forms.ModelForm):
@@ -229,10 +229,10 @@ class SitoWebCdsForm(forms.ModelForm):
 
 class CdsBrochureSliderForm(SitoWebCdsForm):
     slider_it = forms.CharField(
-        label=_("Scrollable text (it)"), required=False, max_length=130
+        label=_("Scrollable text (it)"), required=False, max_length=500
     )
     slider_en = forms.CharField(
-        label=_("Scrollable text (en)"), required=False, max_length=130
+        label=_("Scrollable text (en)"), required=False, max_length=500
     )
 
     class Meta(SitoWebCdsForm.Meta):

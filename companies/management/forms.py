@@ -1,7 +1,7 @@
 from companies.models import SpinoffStartupDatiBase
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django_ckeditor_5.widgets import CKEditor5Widget
+from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget
 
 
 class SpinoffStartupDatiBaseForm(forms.ModelForm):
@@ -52,8 +52,8 @@ class SpinoffStartupDatiBaseForm(forms.ModelForm):
             "ordinamento": _("Ordering"),
         }
         widgets = {
-            "descrizione_ita": CKEditor5Widget(),
-            "descrizione_eng": CKEditor5Widget(),
+            "descrizione_ita": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "descrizione_eng": RicercaCRUDCKEditor5EmptyContentWidget(),
         }
 
     class Media:

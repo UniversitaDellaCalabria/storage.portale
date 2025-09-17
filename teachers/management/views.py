@@ -271,7 +271,6 @@ def teacher_board_data_edit(
         form = DocentePtaBachecaForm(instance=board, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            board.user_mod = request.user
             board.dt_mod = datetime.datetime.now()
             board.save()
 

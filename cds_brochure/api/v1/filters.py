@@ -10,4 +10,18 @@ class CdsBrochuresListFilter(GenericApiFilter):
             "in": "query",
             "type": "string",
         },
+        {
+            "name": "coursetype",
+            "description": "Search by course type.",
+            "required": False,
+            "in": "query",
+            "type": "string",
+        },
+        {
+            "name": "cdslanguage",
+            "description": "Search by course language.",
+            "required": False,
+            "in": "query",
+            "type": "string",
+        },
     ]

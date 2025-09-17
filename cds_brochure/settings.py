@@ -10,3 +10,4 @@ def cds_brochure_exstudents_media_path(instance, filename):
 
 
 OFFICE_CDS_BROCHURE = getattr(settings, "OFFICE_CDS_BROCHURE", "cds_brochure")
+BROCHURES_VISIBLE = getattr(settings, "BROCHURES_VISIBLE", False)

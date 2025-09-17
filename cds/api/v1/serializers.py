@@ -442,7 +442,7 @@ class StudyActivitiesSerializer(serializers.Serializer):
             if query["lista_lin_did_af"]
             else [],
             "StudyActivityFatherCode": query["af_radice_id"],
-            "StudyActivityFatherName": query["Father"],
+            "StudyActivityFatherName": query["Father"].des if req_lang == "it" else query["Father"].af_gen_des_eng,
             "StudyActivityRegDidId": query["regdid_id"],
             "DepartmentName": query["cds_id__dip_id__dip_des_it"]
             if req_lang == "it" or query["cds_id__dip_id__dip_des_eng"] is None
@@ -610,9 +610,9 @@ class StudyActivityInfoSerializer(serializers.Serializer):
                     "Hours": q["ore"],
                     "StudyActivityTeacherID": encrypt(
                         q["coper_id__personale_id__matricola"]
-                    )
-                    if not q["coper_id__personale_id__flg_cessato"]
-                    else None,
+                    ),
+                    # if not q["coper_id__personale_id__flg_cessato"]
+                    # else None,
                     "StudyActivityTeacherName": full_name,
                     "TeacherEmail": q["email"],
                 }
@@ -703,17 +703,8 @@ class ProgramTypesSerializer(serializers.Serializer):
 
 class CdsAreasSerializer(serializers.Serializer):
     def to_representation(self, instance):
-        query = instance
-        data = super().to_representation(instance)
-        data.update(self.to_dict(query, str(self.context["language"]).lower()))
-        return data
-
-    @staticmethod
-    def to_dict(query, req_lang="en"):
         return {
-            "AreaCds": query["area_cds"]
-            if req_lang == "it" or query["area_cds_en"] is None
-            else query["area_cds_en"],
+            "AreaCds": list(instance.values())[0]
         }
 
 

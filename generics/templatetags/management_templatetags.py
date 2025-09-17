@@ -25,6 +25,11 @@ def settings_value(name, package=None, **kwargs):
     return value
 
 
+@register.filter(name='split')
+def split(value, key):
+    if not value: return []
+    return value.split(key)
+
 @register.simple_tag
 def random_id(uid=None):
     return uid or f"id_{secrets.randbelow(9999)}"

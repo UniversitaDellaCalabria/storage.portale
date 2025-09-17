@@ -23,11 +23,11 @@ def upImpegniSerializer(
         if not code and af_name and not name.lower().startswith(af_name.lower()):
             continue
 
-        dataInizio = impegno["dataInizio"][0:10]
-        dataFine = impegno["dataFine"][0:10]
+        # ~ dataInizio = impegno["dataInizio"][0:10]
+        # ~ dataFine = impegno["dataFine"][0:10]
 
-        inizio = datetime.strptime(impegno["orarioInizio"], "%Y-%m-%dT%H:%M:00.000Z")
-        fine = datetime.strptime(impegno["orarioFine"], "%Y-%m-%dT%H:%M:00.000Z")
+        inizio = datetime.strptime(impegno["dataInizio"], "%Y-%m-%dT%H:%M:%S.%fZ")
+        fine = datetime.strptime(impegno["dataFine"], "%Y-%m-%dT%H:%M:%S.%fZ")
         inizio_tz = timezone.localtime(inizio.replace(tzinfo=timezone.utc))
         fine_tz = timezone.localtime(fine.replace(tzinfo=timezone.utc))
         orarioInizio = (
@@ -45,8 +45,7 @@ def upImpegniSerializer(
         annoCorso = dettagliDidattici[0]["annoCorso"]
 
         docenti = []
-        aula = ""
-        edificio = ""
+        aule = []
         risorse = impegno["risorse"]
         for risorsa in risorse:
             if risorsa.get("docenteId"):
@@ -54,8 +53,12 @@ def upImpegniSerializer(
                     risorsa["docente"]["cognome"] + " " + risorsa["docente"]["nome"]
                 )
             if risorsa.get("aula"):
-                aula = risorsa["aula"]["descrizione"]
-                edificio = risorsa["aula"]["edificio"]["descrizione"]
+                aule.append(
+                    {
+                        "nome": risorsa["aula"]["descrizione"],
+                        "edificio": risorsa["aula"]["edificio"]["descrizione"]
+                    }
+                )
 
         if search_teacher:
             teacher_found = False
@@ -66,10 +69,16 @@ def upImpegniSerializer(
             if not teacher_found:
                 continue
 
-        if search_location and search_location.lower() not in aula.lower():
-            continue
+        if search_location:
+            aula_found = False
+            for aula in aule:
+                if search_location.lower() in aula['nome'].lower():
+                    aula_found = True
+                    break
+            if not aula_found:
+                continue
 
-        if not show_past and dataInizio < date.today().strftime("%Y-%m-%d"):
+        if not show_past and inizio_tz.date() < date.today():
             continue
 
         extra = {}
@@ -86,15 +95,14 @@ def upImpegniSerializer(
         impegno_dict = {
             "insegnamento": insegnamento,
             "codice_insegnamento": code,
-            "dataInizio": dataInizio,
-            "dataFine": dataFine,
+            "dataInizio": str(inizio_tz.date()),
+            "dataFine": str(fine_tz.date()),
             "orarioInizio": orarioInizio,
             "orarioFine": orarioFine,
             "annoCorso": annoCorso,
             "cfu": cfu,
             "docenti": docenti,
-            "aula": aula,
-            "edificio": edificio,
+            "aule": aule,
             "codice": f"UP_{impegno['evento']['tipoEvento']['codice']}",
             "extra": extra,
         }

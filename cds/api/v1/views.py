@@ -15,6 +15,7 @@ from .filters import (
     CdsExpiredFilter,
     CdsListFilter,
 )
+from .permissions import CdsListVisibilityPermission
 from .schemas import ApiStudyActivityDetailSchema
 from .serializers import (
     AcademicYearsSerializer,
@@ -44,6 +45,7 @@ class ApiCdSList(ApiEndpointList):
 
     serializer_class = CdSSerializer
     filter_backends = [CdsListFilter]
+    permission_classes = [CdsListVisibilityPermission]
 
     def get_queryset(self):
         return ServiceDidatticaCds.cdslist(self.language, self.request.query_params)
@@ -82,7 +84,7 @@ class ApiCdSInfo(ApiEndpointDetail):
                 ],
                 office__is_active=True,
                 office__organizational_structure__is_active=True,
-            )
+            ).exists()
             if my_offices:
                 only_active = False
 
@@ -197,7 +199,7 @@ class ApiCdsAreasList(ApiEndpointListSupport):
     serializer_class = CdsAreasSerializer
 
     def get_queryset(self):
-        return ServiceDidatticaCds.getCdsAreas()
+        return ServiceDidatticaCds.getCdsAreas(self.language)
 
     def get(self, *args, **kwargs):
         lang = self.request.LANGUAGE_CODE

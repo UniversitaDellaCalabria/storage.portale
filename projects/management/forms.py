@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django_ckeditor_5.widgets import CKEditor5Widget
+# from django_ckeditor_5.widgets import CKEditor5Widget
+from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget
 from projects.models import ProgettoDatiBase, ProgettoResponsabileScientifico
 
 
@@ -41,9 +42,9 @@ class ProgettoDatiBaseForm(forms.ModelForm):
         }
         widgets = {
             "titolo": forms.Textarea(attrs={"rows": 2}),
-            "descr_breve": CKEditor5Widget(),
-            "abstract_ita": CKEditor5Widget(),
-            "abstract_eng": CKEditor5Widget(),
+            "descr_breve": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "abstract_ita": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "abstract_eng": RicercaCRUDCKEditor5EmptyContentWidget(),
             "uo": forms.HiddenInput(),
         }
 

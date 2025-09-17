@@ -4,7 +4,8 @@ from decimal import Decimal
 from django import forms
 from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
-from django_ckeditor_5.widgets import CKEditor5Widget
+
+from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget
 from laboratories.models import (
     LaboratorioAttrezzature,
     LaboratorioDatiBase,
@@ -73,6 +74,12 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             "altre_strutture_riferimento",
             "descr_altre_strutture_riferimento_it",
             "descr_altre_strutture_riferimento_en",  # 'ambito',
+            "finalita_servizi_it",
+            "finalita_servizi_en",
+            "finalita_ricerca_it",
+            "finalita_ricerca_en",
+            "finalita_didattica_it",
+            "finalita_didattica_en",
             # 'sede_dimensione', 'sede_note_descrittive',
             # 'strumentazione_descrizione', 'strumentazione_valore',
             "infrastruttura_riferimento",
@@ -91,6 +98,24 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             "descr_altre_strutture_riferimento_en": _(
                 "Other Structures Description (en)"
             ),
+            "finalita_servizi_it": _(
+                "Purposes - services (it)"
+            ),
+            "finalita_servizi_en": _(
+                "Purposes - services (en)"
+            ),
+            "finalita_ricerca_it": _(
+                "Purposes - research (it)"
+            ),
+            "finalita_ricerca_en": _(
+                "Purposes - research (en)"
+            ),
+            "finalita_didattica_it": _(
+                "Purposes - educational (it)"
+            ),
+            "finalita_didattica_en": _(
+                "Purposes - educational (en)"
+            ),
             # 'ambito': _('Scope'),
             # 'sede_dimensione': _('Office Dimension'),
             # 'sede_note_descrittive': _('Office Description Notes'),
@@ -101,10 +126,16 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
             "nome_file_logo": _("Logo"),
         }
         widgets = {
-            "descr_altre_strutture_riferimento_it": CKEditor5Widget(),
-            "descr_altre_strutture_riferimento_en": CKEditor5Widget(),
-            # 'strumentazione_descrizione': CKEditor5Widget(),
-            # 'sede_note_descrittive': CKEditor5Widget(),
+            "descr_altre_strutture_riferimento_it": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "descr_altre_strutture_riferimento_en": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "finalita_servizi_it": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "finalita_servizi_en": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "finalita_ricerca_it": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "finalita_ricerca_en": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "finalita_didattica_en": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "finalita_didattica_en": RicercaCRUDCKEditor5EmptyContentWidget(),
+            # 'strumentazione_descrizione': RicercaCRUDCKEditor5EmptyContentWidget(),
+            # 'sede_note_descrittive': RicercaCRUDCKEditor5EmptyContentWidget(),
         }
 
 
@@ -154,8 +185,8 @@ class LaboratorioDatiBaseInfoSedeStruttureForm(forms.ModelForm):
             "strumentazione_descrizione": _("Equipment - Description"),
         }
         widgets = {
-            "sede_note_descrittive": CKEditor5Widget(),
-            "strumentazione_descrizione": CKEditor5Widget(),
+            "sede_note_descrittive": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "strumentazione_descrizione": RicercaCRUDCKEditor5EmptyContentWidget(),
         }
 
 
@@ -395,13 +426,13 @@ class LaboratorioAttivitaForm(forms.ModelForm):
         model = LaboratorioDatiBase.tipologia_attivita.through
         fields = ["descr_finalita_it", "descr_finalita_en"]
         labels = {
-            "descr_finalita_it": _("Purpouse (it)"),
-            "descr_finalita_en": _("Purpouse (en)"),
+            "descr_finalita_it": _("Purposes (it)"),
+            "descr_finalita_en": _("Purposes (en)"),
         }
 
         widgets = {
-            "descr_finalita_it": CKEditor5Widget(),
-            "descr_finalita_en": CKEditor5Widget(),
+            "descr_finalita_it": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "descr_finalita_en": RicercaCRUDCKEditor5EmptyContentWidget(),
         }
 
 

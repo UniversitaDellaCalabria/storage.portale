@@ -368,7 +368,7 @@ def researchgroup_teacher_delete(
         user=request.user,
         obj=rgroup,
         flag=CHANGE,
-        msg=f"Rimosso docencte {teacher_rgroup.personale}",
+        msg=f"Rimosso docente {teacher_rgroup.personale}",
     )
 
     teacher_rgroup.delete()

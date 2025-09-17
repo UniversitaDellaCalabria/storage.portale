@@ -459,29 +459,15 @@ class ServiceDidatticaCds:
         return query
 
     @staticmethod
-    def getCdsAreas():
-        query = DidatticaCds.objects.values(
-            "area_cds",
-            "area_cds_en",
-        ).distinct()
-
-        query = list(query)
-        res = []
-        for q in query:
-            res.append(q["area_cds"])
-
-        res = list(dict.fromkeys(res))
-        temp = []
-        for q in query:
-            if (
-                q["area_cds"] not in temp
-                and q["area_cds"] in res
-                and q["area_cds"] is not None
-            ):
-                temp.append(q)
-                res.remove(q["area_cds"])
-
-        return temp
+    def getCdsAreas(language='en'):
+        lookup = 'area_cds_en'
+        if language == 'it':
+            lookup = 'area_cds'
+        query = DidatticaCds.objects\
+                            .filter(**{f'{lookup}__isnull': False})\
+                            .values(lookup)\
+                            .order_by(lookup).distinct()
+        return query
 
     @staticmethod
     def getContacts(cdscod):
@@ -785,15 +771,12 @@ class ServiceDidatticaAttivitaFormativa:
             .order_by("des")
         )
 
-        lista_padri = {}
-        for i in query:
-            lista_padri[i["af_id"]] = i["des"]
+        radice_ids = set(obj["af_radice_id"] for obj in query if obj["af_radice_id"])
+        radici = DidatticaAttivitaFormativa.objects.only("af_id", "des", "af_gen_des_eng").in_bulk(radice_ids)
 
         for q in query:
-            padre = lista_padri[q["af_id"]]
-
-            if padre:
-                q["Father"] = padre
+            if q["af_radice_id"]:
+                q["Father"] = radici.get(q["af_radice_id"])
             else:
                 q["Father"] = None
 
@@ -930,9 +913,6 @@ class ServiceDidatticaAttivitaFormativa:
             )
         )
 
-        lingue = DidatticaTestiAf.objects.filter(
-            tipo_testo_af_cod="LINGUA_INS", af_id=af_id
-        ).values("testo_af_ita", "testo_af_eng")
 
         id_master = None
         mutuata_da = None
@@ -1105,6 +1085,55 @@ class ServiceDidatticaAttivitaFormativa:
         query[0]["LANGUAGEIT"] = None
         query[0]["LANGUAGEEN"] = None
 
+        # testi UGov riferiti all'insegnamento
+        # carico didattico, materiale, ecc
+        # dopo una modifica sul model,
+        # la gestione tra i testi dell'insegnamento
+        # e quelli dell'eventuale insegnamento che mutua quello attuale
+        # (che prima avveniva da ETL) deve essere gestita qui.
+        # I testi che non sono definiti devono essere recuperati
+        # dall'eventuale insegnamento che mutua quello attuale
+        texts_af = DidatticaTestiAf.objects.filter(
+            af_id=af_id
+        ).values(
+            "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
+        )
+
+        # dizionario mappatura
+        dict_activity = {
+            "CONTENUTI": "StudyActivityContent",
+            "PROGR_EST": "StudyActivityProgram",
+            "OBIETT_FORM": "StudyActivityLearningOutcomes",
+            "METODI_DID": "StudyActivityMethodology",
+            "MOD_VER_APPR": "StudyActivityEvaluation",
+            "TESTI_RIF": "StudyActivityTextbooks",
+            "STIMA_CAR_LAV": "StudyActivityWorkload",
+            "PREREQ": "StudyActivityPrerequisites",
+            "LINK_TEAMS": "StudyActivityElearningLink",
+            "CODICE_TEAMS": "StudyActivityElearningInfo",
+            "OB_SVIL_SOS": "StudyActivityDevelopmentGoal",
+            "PROPEDE": None,
+            "LINGUA_INS": None,
+            "PAG_WEB_DOC": None,
+            "ALTRO": None,
+        }
+
+        # se l'insegnamento è mutuato, recupero gli eventuali testi mancanti
+        # dall'insegnamento principale
+        if id_master and mutuata_da:
+            existent_texts = texts_af.values_list('tipo_testo_af_cod', flat=True)
+            missing_texts = dict_activity.keys() - existent_texts
+            texts_master_af = DidatticaTestiAf.objects.filter(
+                af_id=id_master,
+                tipo_testo_af_cod__in=missing_texts
+            ).values(
+                "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
+            )
+            texts_af = texts_af | texts_master_af
+        # fine
+
+        lingue = texts_af.filter(tipo_testo_af_cod="LINGUA_INS")
+
         for lingua in lingue:  # pragma: no cover
             query[0]["LANGUAGEIT"] = lingua["testo_af_ita"]
             query[0]["LANGUAGEEN"] = lingua["testo_af_eng"]
@@ -1136,10 +1165,6 @@ class ServiceDidatticaAttivitaFormativa:
         #         query[0]['PartitionDescription'] = q['part_stu_des']
         #         query[0]['ExtendedPartitionCod'] = q['fat_part_stu_cod']
         #         query[0]['ExtendedPartitionDescription'] = q['fat_part_stu_des']
-
-        texts_af = DidatticaTestiAf.objects.filter(af_id=af_id).values(
-            "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
-        )
 
         query[0]["MODULES"] = list()
         allowed = []
@@ -1255,24 +1280,6 @@ class ServiceDidatticaAttivitaFormativa:
         query[0]["StudyActivityElearningInfo"] = None
         query[0]["StudyActivityPrerequisites"] = None
         query[0]["StudyActivityDevelopmentGoal"] = None
-
-        dict_activity = {
-            "CONTENUTI": "StudyActivityContent",
-            "PROGR_EST": "StudyActivityProgram",
-            "OBIETT_FORM": "StudyActivityLearningOutcomes",
-            "METODI_DID": "StudyActivityMethodology",
-            "MOD_VER_APPR": "StudyActivityEvaluation",
-            "TESTI_RIF": "StudyActivityTextbooks",
-            "STIMA_CAR_LAV": "StudyActivityWorkload",
-            "PREREQ": "StudyActivityPrerequisites",
-            "LINK_TEAMS": "StudyActivityElearningLink",
-            "CODICE_TEAMS": "StudyActivityElearningInfo",
-            "OB_SVIL_SOS": "StudyActivityDevelopmentGoal",
-            "PROPEDE": None,
-            "LINGUA_INS": None,
-            "PAG_WEB_DOC": None,
-            "ALTRO": None,
-        }
 
         for text in texts_af:
             query[0][dict_activity[text["tipo_testo_af_cod"]]] = (

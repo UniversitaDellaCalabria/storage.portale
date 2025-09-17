@@ -24,3 +24,4 @@ ricerca/settingslocal.py
 certs/*
 .idea/*
 .media/*
+saml2_sp/*

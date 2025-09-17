@@ -790,33 +790,24 @@ class ServiceDocente:
     def getAttivitaFormativeByDocente(teacher, year, yearFrom, yearTo):
         teacher = get_personale_matricola(teacher)
 
+        query = DidatticaCopertura.objects.filter(
+            personale__matricola__exact=teacher,
+            af__isnull=False,
+        ) \
+        .exclude(stato_coper_cod='R') \
+        .select_related("personale", "af")
+
         if year:
-            query = DidatticaCopertura.objects.filter(
-                personale__matricola__exact=teacher, af__isnull=False, aa_off_id=year
-            ).select_related("personale", "af")
+            query = query.filter(aa_off_id=year)
         elif yearFrom and yearTo:
-            query = DidatticaCopertura.objects.filter(
-                personale__matricola__exact=teacher,
-                af__isnull=False,
+            query = query.filter(
                 aa_off_id__gte=yearFrom,
                 aa_off_id__lte=yearTo,
-            ).select_related("personale", "af")
+            )
         elif yearFrom:
-            query = DidatticaCopertura.objects.filter(
-                personale__matricola__exact=teacher,
-                af__isnull=False,
-                aa_off_id__gte=yearFrom,
-            ).select_related("personale", "af")
+            query = query.filter(aa_off_id__gte=yearFrom)
         elif yearTo:
-            query = DidatticaCopertura.objects.filter(
-                personale__matricola__exact=teacher,
-                af__isnull=False,
-                aa_off_id__lte=yearTo,
-            ).select_related("personale", "af")
-        else:
-            query = DidatticaCopertura.objects.filter(
-                personale__matricola__exact=teacher, af__isnull=False
-            ).select_related("personale", "af")
+            query = query.filter(aa_off_id__lte=yearTo)
 
         single_id = []
         to_exclude = []
@@ -1005,6 +996,16 @@ class ServiceDocente:
     def getDocenteMaterials(user, teacher, search=None):
         teacher = get_personale_matricola(teacher)
 
+        query = Personale.objects.filter(
+            Q(fl_docente=1, flg_cessato=0)
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+            matricola=teacher,
+        ).distinct()
+
+        if not query.exists():
+            raise Http404
+
         query_search = Q()
         query_is_active = Q(attivo=True)
         query_is_started = Q(dt_inizio_validita__isnull=True) | Q(
@@ -1052,6 +1053,16 @@ class ServiceDocente:
     @staticmethod
     def getDocenteNews(user, teacher, search=None):
         teacher = get_personale_matricola(teacher)
+
+        query = Personale.objects.filter(
+            Q(fl_docente=1, flg_cessato=0)
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+            matricola=teacher,
+        ).distinct()
+
+        if not query.exists():
+            raise Http404
 
         query_search = Q()
         query_is_active = Q(attivo=True)
@@ -1129,7 +1140,6 @@ class ServiceDocente:
             query_type = Q(collection_id__community_id__community_id=pub_type)
         if teacherid:
             personale = Personale.objects.filter(matricola=teacherid).values('cod_fis').first()
-            print(personale)
             if not personale: raise Http404
             query_teacher = Q(pubblicazioneautori__codice_fiscale=personale['cod_fis'])
         if structure:

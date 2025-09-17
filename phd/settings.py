@@ -1,7 +1,9 @@
 from django.conf import settings
 
 
-PHD_CYCLES = [(38, 'XXXVIII'), (39, 'XXXIX')]
+PHD_CYCLES = getattr(
+    settings, 'PHD_CYCLES', []
+)
 
 STRUCTURE_PHD = getattr(
     settings, 'STRUCTURE_PHD', 'phd-management')

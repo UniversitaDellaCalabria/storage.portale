@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 # chiamata alle api UP
 def getUPToken(request):  # pragma: no cover
-    # if request.session.get('up_token'):
-    # return request.session.get('up_token')
+    if request.session.get('up_token'):
+        return request.session.get('up_token')
     try:
         data = {
             "username": settings.UTENTE_API_UP,
@@ -32,11 +32,11 @@ def getUPToken(request):  # pragma: no cover
                 request.session["up_token"] = data["id"]
                 return data["id"]
         else:
-            logger.error(
+            logger.info(
                 f"Error getting UP token: {response.json()['error']['message']}"
             )
     except Exception as e:
-        logger.error(f"Error getting UP token: {e}")
+        logger.info(f"Error getting UP token: {e}")
     return ""
 
 
@@ -51,9 +51,13 @@ def getData(request, url, cds_cod, body):  # pragma: no cover
         if response.status_code == 200:
             return response.json()
         else:
-            logger.error(
+            logger.info(
                 f"Error calling UP url {url}: {response.json()['error']['message']}"
             )
+    except requests.exceptions.Timeout:
+        logger.info(f"UP API {url} timeout")
+    except requests.exceptions.ConnectionError:
+                logger.info(f"API {url} connection error")
     except Exception as e:
         logger.error(f"Error calling UP url {url}: {e}")
     return []

@@ -5,7 +5,7 @@ from django import forms
 from django.conf import settings
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from django_ckeditor_5.widgets import CKEditor5Widget
+from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget
 from generics.settings import (
     ALLOWED_STRUCTURE_TYPES,
     STRUCTURES_FATHER,
@@ -126,10 +126,10 @@ class DidatticaDottoratoAttivitaFormativaForm(forms.ModelForm):
         widgets = {
             "nome_af": forms.Textarea(attrs={"rows": 1}),
             # 'rif_dottorato': forms.Textarea(attrs={'rows': 1}),
-            "contenuti_af": CKEditor5Widget(),
-            "prerequisiti": CKEditor5Widget(),
-            "modalita_verifica": CKEditor5Widget(),
-            "orario_aule": CKEditor5Widget(),
+            "contenuti_af": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "prerequisiti": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "modalita_verifica": RicercaCRUDCKEditor5EmptyContentWidget(),
+            "orario_aule": RicercaCRUDCKEditor5EmptyContentWidget(),
             "note": forms.Textarea(attrs={"rows": 2}),
         }
 

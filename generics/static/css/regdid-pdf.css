@@ -166,3 +166,7 @@ ol li ol li ol li ol {
 .title {
     -pdf-keep-with-next: true;
 }
+li > p {
+    display: inline-block;
+    width: 100%;
+}

@@ -105,8 +105,8 @@ class ApiCdsWebsiteTimetable(APIView):  # pragma: no cover
                                 ae3["dataInizio"] == iu["dataInizio"]
                                 and ae3["orarioInizio"] == iu["orarioInizio"]
                             ):
-                                if not ae3["aula"]:
-                                    ae3["aula"] = iu["aula"]
+                                if not ae3["aule"]:
+                                    ae3["aule"] = iu["aule"]
                                 duplicates_to_remove.append(iu)
                                 break
 

@@ -33,7 +33,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
         to_field="ssd_id",
     )
     numero_ore = models.IntegerField(db_column="NUMERO_ORE", blank=False, null=True)
-    cfu = models.IntegerField(db_column="CFU", blank=False, null=True)
+    cfu = models.IntegerField(db_column="CFU", blank=True, null=True)
     tipo_af = models.CharField(db_column="TIPO_AF", max_length=500)
     tipologia = models.ForeignKey(
         DidatticaDottoratoAttivitaFormativaTipologia,

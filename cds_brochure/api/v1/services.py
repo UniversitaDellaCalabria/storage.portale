@@ -1,6 +1,7 @@
 from cds.models import DidatticaCdsLingua, DidatticaRegolamentoAltriDati
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 
+from cds.models import DidatticaCdsLingua
 from cds_brochure.models import (
     CdsBrochure,
     CdsBrochureExStudenti,
@@ -11,27 +12,39 @@ from cds_brochure.models import (
 
 class ServiceCdsBrochure:
     @staticmethod
-    def getCdsBrochures(search):
+    def getCdsBrochures(query_params, language='en'):
+        search = query_params.get("search", "")
+        coursetype = query_params.get("coursetype", "")
+        cdslanguage = query_params.get("cdslanguage", "")
+
         query_search = Q()
 
         if search:
             for k in search.split(" "):
-                q_nome_corso_it = Q(cds__nome_cds_it__icontains=k)
-                query_search &= q_nome_corso_it
+                query_search &= Q(cds__nome_cds_it__icontains=k)
+        if coursetype:
+            query_search &= Q(cds__tipo_corso_cod__in=coursetype.split(","))
+        if cdslanguage:
+            query_search &= Q(cds__didatticacdslingua__iso6392_cod=cdslanguage)
 
         query = (
-            CdsBrochure.objects.filter(query_search)
+            CdsBrochure.objects
             .select_related("cds")
-            .values(
-                "id",
-                # 'cds__cds_id',
-                "cds__cds_cod",
-                "aa",
-                "cds__nome_cds_it",
-                "cds__nome_cds_eng",
+            .prefetch_related(
+                Prefetch(
+                    "cds__didatticacdslingua",
+                    queryset=DidatticaCdsLingua.objects.only("iso6392_cod"),
+                    to_attr="languages"
+                )
             )
+            .filter(query_search)
+            .order_by("cds__nome_cds_eng")
         )
-        return list(query)
+
+        if language == 'it':
+            query = query.order_by("cds__nome_cds_it")
+
+        return query
 
     @staticmethod
     def getCdsBrochure(cds_cod):
