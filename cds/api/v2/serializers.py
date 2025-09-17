@@ -558,18 +558,19 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
                 "partitionDescription": s["part_stu_des"],
                 "extendedPartitionCod": s["fat_part_stu_cod"],
                 "extendedPartitionDescription": s["fat_part_stu_des"],
-                "groups": groups_list, 
+                "groups": groups_list,
             }
             for s in submodules
         ]
 
         return results
 
-                    
-            
-        
+
+
+
 
     def get_root(self, obj):
+        return None # da correggere. manca serializer oggetto
         if obj.af_radice_id:
             return [
                 {
@@ -587,6 +588,7 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
             ]
 
     def get_father(self, obj):
+        return None # da correggere. manca serializer oggetto
         if obj.af_pdr_id and obj.af_pdr_id != obj.af_radice_id:
             return [
                 {
@@ -602,6 +604,7 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
             ]
 
     def get_borrowedFrom(self, obj):
+        return None # da correggere. manca serializer oggetto
         if obj.mutuata_flg == 1:
             return [
                 {
@@ -618,6 +621,7 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
             ]
 
     def get_borrowedFromThis(self, obj):
+        return None # da correggere. manca serializer oggetto
         return [
             {
                 "activityBorrowedFromThis": (
@@ -671,9 +675,15 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
 
     def get_erogationLanguage(self, obj):
         lang = self.context.get("lang", "it")
-        if lang == "it":
-            return obj.texts.testo_af_ita if obj.texts else None
-        return obj.texts.testo_af_eng if obj.texts else None
+        result = []
+        for l in obj.languages:
+            if lang == "it": result.append(l.testo_af_ita)
+            else: result.append(l.testo_af_eng)
+        return result
+        # ~ else:
+
+            # ~ return obj.languages[0].testo_af_ita if obj.languages else None
+        # ~ return obj.languages[0].testo_af_eng if obj.languages else None
 
     def get_year(self, obj):
         if obj.anno_corso:

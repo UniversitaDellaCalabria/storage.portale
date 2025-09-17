@@ -611,7 +611,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                                 tipo_testo_af_cod="LINGUA_INS"
                             ).only("testo_af_ita", "testo_af_eng")
                         ),
-                        to_attr="texts",
+                        to_attr="languages",
                     ),
                     Prefetch(
                         "didatticacopertura_set",
