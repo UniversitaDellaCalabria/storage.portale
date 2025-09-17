@@ -334,8 +334,10 @@ class TeachersStudyActivitiesViewSet(mixins.RetrieveModelMixin, viewsets.Generic
 
         queryset = (
             DidatticaCopertura.objects.filter(
-                personale__matricola__exact=teacher, af__isnull=False
+                personale__matricola__exact=teacher,
+                af__isnull=False
             )
+            .exclude(stato_coper_cod='R') \
             .select_related("personale", "af")
             .order_by("aa_off_id", "anno_corso", "af_gen_des", "af_gen_des_eng")
             .only(
@@ -491,7 +493,7 @@ class TeachersBaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericVi
             .exclude(ricercadocentelineabase__ricerca_linea_base__id__isnull=True)
             .distinct()
         )
-        
+
     def get_object(self):
         return self.get_queryset().first()
 
