@@ -100,6 +100,7 @@ class ProjectsViewSet(ReadOnlyModelViewSet):
                 "area_tecnologica",
                 "area_tecnologica__descr_area_ita",
                 "area_tecnologica__descr_area_eng",
+                "url_sito_web",
                 "is_active",
             )
             .distinct()

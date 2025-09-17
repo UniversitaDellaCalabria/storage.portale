@@ -40,6 +40,7 @@ class ProjectsSerializer(ReadOnlyModelSerializer):
     projectImage = serializers.CharField(source="url_immagine")
     scientificDirectors = serializers.SerializerMethodField()
     researchers = serializers.SerializerMethodField()
+    url_sito_web  = serializers.CharField(source="url_sito_web")
     isActive = serializers.BooleanField(source="is_active")
 
     @extend_schema_field(serializers.ListField())
@@ -75,6 +76,7 @@ class ProjectsSerializer(ReadOnlyModelSerializer):
             "projectImage",
             "scientificDirectors",
             "researchers",
+            "url_sito_web",
             "isActive",
         ]
         language_field_map = {
