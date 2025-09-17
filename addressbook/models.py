@@ -227,7 +227,7 @@ class PersonaleAttivoTuttiRuoli(models.Model):
         models.DO_NOTHING,
         db_column="MATRICOLA",
         to_field="matricola",
-        blank=True, 
+        blank=True,
         null=True,
         related_name="personaleattivotuttiruoli",
     )
@@ -336,7 +336,7 @@ class PersonaleContatti(models.Model):
         blank=True,
         null=True,
         to_field="cod_fis",
-        related_name="personalecontatti",
+        related_name="personalecontatti"
     )
     cd_tipo_cont = models.ForeignKey(
         PersonaleUoTipoContatto, models.DO_NOTHING, db_column="CD_TIPO_CONT"

@@ -66,10 +66,12 @@ class AddressbookSerializer(serializers.ModelSerializer):
                 }
             ]
 
-    def get_contacts(self, obj, contactDescr):
+    @classmethod
+    def get_contacts(cls, obj, contactDescr):
         if contactDescr in PERSON_CONTACTS_TO_TAKE:
             for contact in obj.contatti:
                 tipo = contact.cd_tipo_cont
+                if tipo.descr_contatto != contactDescr: continue
                 if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
                     return contact.contatto
         return []
@@ -186,53 +188,55 @@ class AddressbookFullSerializer(serializers.ModelSerializer):
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
-    def get_contacts(self, obj, contactDescr):
-        if contactDescr in PERSON_CONTACTS_TO_TAKE:
-            for contact in obj.contatti:
-                tipo = contact.cd_tipo_cont
-                if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                    return contact.contatto
-        return []
+    # ~ def get_contacts(self, obj, contactDescr):
+        # ~ if contactDescr in PERSON_CONTACTS_TO_TAKE:
+            # ~ for contact in obj.contatti:
+                # ~ tipo = contact.cd_tipo_cont
+                # ~ if tipo.descr_contatto != contactDescr: continue
+                # ~ if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                    # ~ return contact.contatto
+        # ~ return []
+
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_officeReference(self, obj):
-        return self.get_contacts(obj, "Riferimento Ufficio")
+        return AddressbookSerializer.get_contacts(obj, "Riferimento Ufficio")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_email(self, obj):
-        return self.get_contacts(obj, "Posta Elettronica")
+        return AddressbookSerializer.get_contacts(obj, "Posta Elettronica")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_pec(self, obj):
-        return self.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
+        return AddressbookSerializer.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_telOffice(self, obj):
-        return self.get_contacts(obj, "Telefono Ufficio")
+        return AddressbookSerializer.get_contacts(obj, "Telefono Ufficio")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_telCelOffice(self, obj):
-        return self.get_contacts(obj, "Telefono Cellulare Ufficio")
+        return AddressbookSerializer.get_contacts(obj, "Telefono Cellulare Ufficio")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_fax(self, obj):
-        return self.get_contacts(obj, "Fax")
+        return AddressbookSerializer.get_contacts(obj, "Fax")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_webSite(self, obj):
-        return self.get_contacts(obj, "URL Sito WEB")
+        return AddressbookSerializer.get_contacts(obj, "URL Sito WEB")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_cv(self, obj):
-        return self.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
+        return AddressbookSerializer.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
@@ -332,53 +336,54 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
-    def get_contacts(self, obj, contactDescr):
-        if contactDescr in PERSON_CONTACTS_TO_TAKE:
-            for contact in obj.contatti:
-                tipo = contact.cd_tipo_cont
-                if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                    return contact.contatto
-        return []
+    # ~ def get_contacts(self, obj, contactDescr):
+        # ~ if contactDescr in PERSON_CONTACTS_TO_TAKE:
+            # ~ for contact in obj.contatti:
+                # ~ tipo = contact.cd_tipo_cont
+                # ~ if tipo.descr_contatto != contactDescr: continue
+                # ~ if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                    # ~ return contact.contatto
+        # ~ return []
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_officeReference(self, obj):
-        return self.get_contacts(obj, "Riferimento Ufficio")
+        return AddressbookSerializer.get_contacts(obj, "Riferimento Ufficio")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_email(self, obj):
-        return self.get_contacts(obj, "Posta Elettronica")
+        return AddressbookSerializer.get_contacts(obj, "Posta Elettronica")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_pec(self, obj):
-        return self.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
+        return AddressbookSerializer.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_telOffice(self, obj):
-        return self.get_contacts(obj, "Telefono Ufficio")
+        return AddressbookSerializer.get_contacts(obj, "Telefono Ufficio")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_telCelOffice(self, obj):
-        return self.get_contacts(obj, "Telefono Cellulare Ufficio")
+        return AddressbookSerializer.get_contacts(obj, "Telefono Cellulare Ufficio")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_fax(self, obj):
-        return self.get_contacts(obj, "Fax")
+        return AddressbookSerializer.get_contacts(obj, "Fax")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_webSite(self, obj):
-        return self.get_contacts(obj, "URL Sito WEB")
+        return AddressbookSerializer.get_contacts(obj, "URL Sito WEB")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_cv(self, obj):
-        return self.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
+        return AddressbookSerializer.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
@@ -399,27 +404,27 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Personale
         fields = [
-            "name", 
+            "name",
             "surname",
-            "id", 
+            "id",
             "taxpayer_ID",
-            "roles", 
-            "officeReference", 
-            "email", 
-            "pec", 
-            "telOffice", 
-            "telCelOffice", 
-            "fax", 
-            "webSite", 
-            "cv", 
-            "teacher", 
-            "personFunctions", 
+            "roles",
+            "officeReference",
+            "email",
+            "pec",
+            "telOffice",
+            "telCelOffice",
+            "fax",
+            "webSite",
+            "cv",
+            "teacher",
+            "personFunctions",
             "teacherCVFull",
             "teacherCVShort",
             "profileId",
-            "profileDescription", 
-            "profileShortDescription", 
-            "gender", 
+            "profileDescription",
+            "profileShortDescription",
+            "gender",
         ]
         language_field_map = {
             "teacherCVFull": {"it": "cv_full_it", "en": "cv_full_eng"},
@@ -485,54 +490,55 @@ class AddressbookFullDetailSerializer(serializers.ModelSerializer):
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
-    def get_contacts(self, obj, contactDescr):
-        if contactDescr in PERSON_CONTACTS_TO_TAKE:
-            for contact in obj.contatti:
-                tipo = contact.cd_tipo_cont
-                if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                    return contact.contatto
-        return []
+    # ~ def get_contacts(self, obj, contactDescr):
+        # ~ if contactDescr in PERSON_CONTACTS_TO_TAKE:
+            # ~ for contact in obj.contatti:
+                # ~ tipo = contact.cd_tipo_cont
+                # ~ if tipo.descr_contatto != contactDescr: continue
+                # ~ if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                    # ~ return contact.contatto
+        # ~ return []
 
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_officeReference(self, obj):
-        return self.get_contacts(obj, "Riferimento Ufficio")
+        return AddressbookSerializer.get_contacts(obj, "Riferimento Ufficio")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_email(self, obj):
-        return self.get_contacts(obj, "Posta Elettronica")
+        return AddressbookSerializer.get_contacts(obj, "Posta Elettronica")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_pec(self, obj):
-        return self.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
+        return AddressbookSerializer.get_contacts(obj, "POSTA ELETTRONICA CERTIFICATA")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_telOffice(self, obj):
-        return self.get_contacts(obj, "Telefono Ufficio")
+        return AddressbookSerializer.get_contacts(obj, "Telefono Ufficio")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_telCelOffice(self, obj):
-        return self.get_contacts(obj, "Telefono Cellulare Ufficio")
+        return AddressbookSerializer.get_contacts(obj, "Telefono Cellulare Ufficio")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_fax(self, obj):
-        return self.get_contacts(obj, "Fax")
+        return AddressbookSerializer.get_contacts(obj, "Fax")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_webSite(self, obj):
-        return self.get_contacts(obj, "URL Sito WEB")
+        return AddressbookSerializer.get_contacts(obj, "URL Sito WEB")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
     def get_cv(self, obj):
-        return self.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
+        return AddressbookSerializer.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
     @extend_schema_field(serializers.ListField(
         child=serializers.CharField()
     ))
@@ -557,27 +563,27 @@ class AddressbookFullDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Personale
         fields = [
-            "name", 
+            "name",
             "surname",
-            "id", 
+            "id",
             "taxpayer_ID",
-            "roles", 
-            "officeReference", 
-            "email", 
-            "pec", 
-            "telOffice", 
-            "telCelOffice", 
-            "fax", 
-            "webSite", 
-            "cv", 
-            "teacher", 
-            "personFunctions", 
+            "roles",
+            "officeReference",
+            "email",
+            "pec",
+            "telOffice",
+            "telCelOffice",
+            "fax",
+            "webSite",
+            "cv",
+            "teacher",
+            "personFunctions",
             "teacherCVFull",
             "teacherCVShort",
             "profileId",
-            "profileDescription", 
-            "profileShortDescription", 
-            "gender", 
+            "profileDescription",
+            "profileShortDescription",
+            "gender",
         ]
         language_field_map = {
             "teacherCVFull": {"it": "cv_full_it", "en": "cv_full_eng"},

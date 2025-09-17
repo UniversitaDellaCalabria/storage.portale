@@ -4,11 +4,11 @@ from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import include, path, re_path
 from rest_framework.authtoken.views import obtain_auth_token
-from debug_toolbar.toolbar import debug_toolbar_urls
+# ~ from debug_toolbar.toolbar import debug_toolbar_urls
 
 
 urlpatterns = []
-        
+
 urlpatterns = [
     path(f'{settings.ADMIN_PATH}/', admin.site.urls),
     path("api/token", obtain_auth_token, name="auth-token"),
@@ -37,7 +37,7 @@ urlpatterns = [
     path('', include('import_assistant.urls')),
 
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck-editor-5-upload-file"),
-] + debug_toolbar_urls()
+] # + debug_toolbar_urls()
 
 # API schemas
 # urlpatterns += path('api/', TemplateView.as_view(template_name='redoc.html', extra_context={'schema_url': 'openapi-schema'}), name='api-redoc'),

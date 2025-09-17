@@ -873,7 +873,7 @@ class DidatticaTestiAf(InsModAbstract):
         related_name="didatticaf",
     )
     aa_off_id = models.IntegerField(db_column="AA_OFF_ID", blank=True, null=True)
-    testi_af_id = models.IntegerField(db_column="TESTI_AF_ID", , blank=True, null=True)
+    testi_af_id = models.IntegerField(db_column="TESTI_AF_ID", blank=True, null=True)
     tipo_testo_af_cod = models.CharField(db_column="TIPO_TESTO_AF_COD", max_length=100)
     tipo_testo_af_des = models.TextField(
         db_column="TIPO_TESTO_AF_DES", blank=True, null=True
