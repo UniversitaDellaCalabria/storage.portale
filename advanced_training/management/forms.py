@@ -5,20 +5,21 @@ from advanced_training.models import (
     AltaFormazionePartner,
     AltaFormazioneModalitaSelezione,
     AltaFormazioneConsiglioScientificoEsterno,
-    AltaFormazioneConsiglioScientificoInterno
+    AltaFormazioneConsiglioScientificoInterno,
 )
+from generics.forms import ChoosenPersonForm
 from django import forms
-
 from django.forms import inlineformset_factory
+from django.utils.translation import gettext_lazy as _
 
 
 class MasterDatiBaseForm(forms.ModelForm):
-    
     tipo_selezione = forms.ModelChoiceField(
         queryset=AltaFormazioneModalitaSelezione.objects.all(),
         required=False,
-        label="Modalità di selezione"
+        label="Modalità di selezione",
     )
+
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
@@ -158,6 +159,7 @@ PianoDidatticoFormSet = inlineformset_factory(
     can_delete=True,
 )
 
+
 class PartnerForm(forms.ModelForm):
     class Meta:
         model = AltaFormazionePartner
@@ -167,7 +169,8 @@ class PartnerForm(forms.ModelForm):
             "tipologia": "Tipologia",
             "sito_web": "Sito web",
         }
-        
+
+
 PartnerFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,
     AltaFormazionePartner,
@@ -176,39 +179,46 @@ PartnerFormSet = inlineformset_factory(
     can_delete=True,
 )
 
-class ConsiglioScientificoEsternoForm(forms.ModelForm):
-    class Meta:
-        model = AltaFormazioneConsiglioScientificoEsterno
-        fields = ["nome_cons", "ruolo_cons", "ente_cons"]
-        labels = {
-            "nome_cons": "Nome",
-            "ruolo_cons": "Ruolo",
-            "ente_cons": "Ente",
-        }
-        
-ConsiglioScientificoEsternoFormSet = inlineformset_factory(
-    AltaFormazioneDatiBase,
-    AltaFormazioneConsiglioScientificoEsterno,
-    form=ConsiglioScientificoEsternoForm,
-    extra=1,
-    can_delete=True,
-)
 
-class ConsiglioScientificoInternoForm(forms.ModelForm):
-    class Meta:
-        model = AltaFormazioneConsiglioScientificoInterno
-        fields = ["matricola_cons", "nome_origine_cons"]
-        labels = {
-            "matricola_cons": "Matricola",
-            "nome_origine_cons": "Nome"
-        }
-        
-ConsiglioScientificoInternoFormSet = inlineformset_factory(
-    AltaFormazioneDatiBase,
-    AltaFormazioneConsiglioScientificoInterno,
-    form=ConsiglioScientificoInternoForm,
-    extra=1,
-    can_delete=True,
-)
+# # --- CONSIGLIO SCIENTIFICO ESTERNO ---
+# class ConsiglioScientificoEsternoForm(forms.ModelForm):
+#     class Meta:
+#         model = AltaFormazioneConsiglioScientificoEsterno
+#         fields = ["nome_cons", "ruolo_cons", "ente_cons"]
+#         labels = {
+#             "nome_cons": _("Nome"),
+#             "ruolo_cons": _("Ruolo"),
+#             "ente_cons": _("Ente"),
+#         }
 
 
+# ConsiglioScientificoEsternoFormSet = inlineformset_factory(
+#     AltaFormazioneDatiBase,
+#     AltaFormazioneConsiglioScientificoEsterno,
+#     form=ConsiglioScientificoEsternoForm,
+#     extra=1,
+#     can_delete=True,
+# )
+
+
+# # --- CONSIGLIO SCIENTIFICO INTERNO ---
+# class ConsiglioScientificoInternoForm(ChoosenPersonForm, forms.ModelForm):
+#     class Meta:
+#         model = AltaFormazioneConsiglioScientificoInterno
+#         fields = ["choosen_person"]
+
+
+# ConsiglioScientificoInternoFormSet = inlineformset_factory(
+#     AltaFormazioneDatiBase,
+#     AltaFormazioneConsiglioScientificoInterno,
+#     form=ConsiglioScientificoInternoForm,
+#     extra=1,
+#     can_delete=True,
+# )
+
+
+class ConsiglioScientificoInternoForm(forms.Form):
+    council_member = forms.CharField(
+        label=_("Name and Surname of the Member"),
+        max_length=200,
+    )
