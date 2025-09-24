@@ -606,12 +606,10 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                 .prefetch_related(
                     Prefetch(
                         "didatticaf",
-                        queryset=(
-                            DidatticaTestiAf.objects.filter(
-                                tipo_testo_af_cod="LINGUA_INS"
-                            ).only("testo_af_ita", "testo_af_eng")
+                        queryset=DidatticaTestiAf.objects.only(
+                            "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
                         ),
-                        to_attr="languages",
+                        to_attr="testi_af",
                     ),
                     Prefetch(
                         "didatticacopertura_set",
@@ -631,11 +629,11 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                     ),
                     Prefetch(
                         "didatticaattivitaformativamodalita_set",
-                        queryset=(
-                            DidatticaAttivitaFormativaModalita.objects.only("mod_did_af_id", "mod_did_cod", "mod_did_des")
+                        queryset=DidatticaAttivitaFormativaModalita.objects.only(
+                            "mod_did_af_id", "mod_did_cod", "mod_did_des"
                         ),
                         to_attr="didattica_attivita_formativa_modalita",
-                    )
+                    ),
                 )
                 .only(
                     "af_id",
@@ -673,6 +671,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                     "fat_part_stu_des",
                 )
             )
+
 
     def get_serializer_class(self):
         if self.action == "retrieve":

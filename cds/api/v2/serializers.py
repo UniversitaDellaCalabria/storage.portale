@@ -10,7 +10,7 @@ from generics.api.serializers import ReadOnlyModelSerializer
 from generics.utils import encrypt, build_media_path
 from rest_framework import serializers
 from django.db.models import Q
-
+from django.db.models import Prefetch
 
 from cds.models import (
     DidatticaAttivitaFormativa,
@@ -21,6 +21,7 @@ from cds.models import (
     DidatticaCdsCollegamento,
     DidatticaCopertura,
     DidatticaCdsPeriodi,
+    DidatticaTestiAf,
 )
 
 
@@ -256,7 +257,7 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
         language = self.get_requestLang()
 
         texts = getattr(obj, "testi_regolamento", []) or []
-        list = {}
+        list = []
         last_profile = ""
 
         for text in texts:
@@ -532,20 +533,24 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
 
         groups_list = [{"id": g["af_id"]} for g in groups_qs]
 
-        submodules = DidatticaAttivitaFormativa.objects.filter(
-            Q(af_radice_id=obj.af_id) | Q(af_pdr_id=obj.af_id)
-        ).exclude(af_id=obj.af_id).values(
-            "af_id",
-            "af_gen_cod",
-            "des",
-            "af_gen_des_eng",
-            "fat_part_stu_cod",
-            "lista_lin_did_af",
-            "part_stu_cod",
-            "part_stu_des",
-            "fat_part_stu_des",
-            "ciclo_des",
-            "matricola_resp_did",
+        submodules = (
+            DidatticaAttivitaFormativa.objects.filter(
+                Q(af_radice_id=obj.af_id) | Q(af_pdr_id=obj.af_id)
+            )
+            .exclude(af_id=obj.af_id)
+            .values(
+                "af_id",
+                "af_gen_cod",
+                "des",
+                "af_gen_des_eng",
+                "fat_part_stu_cod",
+                "lista_lin_did_af",
+                "part_stu_cod",
+                "part_stu_des",
+                "fat_part_stu_des",
+                "ciclo_des",
+                "matricola_resp_did",
+            )
         )
 
         results = [
@@ -565,77 +570,55 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
 
         return results
 
-
-
-
-
     def get_root(self, obj):
-        return None # da correggere. manca serializer oggetto
-        if obj.af_radice_id:
-            return [
-                {
-                    "activityRootId": (
-                        DidatticaAttivitaFormativa.objects.filter(
-                            af_id=obj.af_radice_id
-                        )
-                        .exclude(af_id=obj.af_id)
-                        .only(
-                            "af_id",
-                        )
-                        .first()
-                    )
-                }
-            ]
+        if obj.af_radice_id and obj.af_radice_id != obj.af_id:
+            activity_root = (
+                DidatticaAttivitaFormativa.objects.filter(af_id=obj.af_radice_id)
+                .exclude(af_id=obj.af_id)
+                .first()
+            )
+            if activity_root:
+                return StudyActivitiesLiteSerializer(
+                    activity_root, context=self.context
+                ).data
+        return None
+
 
     def get_father(self, obj):
-        return None # da correggere. manca serializer oggetto
         if obj.af_pdr_id and obj.af_pdr_id != obj.af_radice_id:
-            return [
-                {
-                    "activityFatherId": (
-                        DidatticaAttivitaFormativa.objects.filter(af_id=obj.af_pdr_id)
-                        .exclude(af_id=obj.af_id)
-                        .only(
-                            "af_id",
-                        )
-                        .first()
-                    )
-                }
-            ]
+            activity_father = (
+                DidatticaAttivitaFormativa.objects.filter(af_id=obj.af_pdr_id)
+                .exclude(af_id=obj.af_id)
+                .first()
+            )
+            if activity_father:
+                return StudyActivitiesLiteSerializer(
+                    activity_father, context=self.context
+                ).data
+        return None
 
     def get_borrowedFrom(self, obj):
-        return None # da correggere. manca serializer oggetto
-        if obj.mutuata_flg == 1:
-            return [
-                {
-                    "activityBorrowedFrom": (
-                        DidatticaAttivitaFormativa.objects.filter(
-                            af_id=obj.af_master_id
-                        )
-                        .only(
-                            "af_id",
-                        )
-                        .first()
-                    )
-                }
-            ]
+        if obj.mutuata_flg == 1 and obj.af_master_id:
+            activity_master = (
+                DidatticaAttivitaFormativa.objects.filter(af_id=obj.af_master_id)
+                .exclude(af_id=obj.af_id)
+                .first()
+            )
+            if activity_master:
+                return StudyActivitiesLiteSerializer(
+                    activity_master, context=self.context
+                ).data
+        return None
 
     def get_borrowedFromThis(self, obj):
-        return None # da correggere. manca serializer oggetto
-        return [
-            {
-                "activityBorrowedFromThis": (
-                    DidatticaAttivitaFormativa.objects.filter(
-                        af_master_id=obj.af_id, mutuata_flg=1
-                    )
-                    .exclude(af_id=obj.af_id)
-                    .only(
-                        "af_id",
-                    )
-                    .first()
-                )
-            }
-        ]
+        borrowed_activities = DidatticaAttivitaFormativa.objects.filter(
+            af_master_id=obj.af_id, mutuata_flg=1
+        ).exclude(af_id=obj.af_id)
+        if borrowed_activities.exists():
+            return StudyActivitiesLiteSerializer(
+                borrowed_activities, many=True, context=self.context
+            ).data
+        return []
 
     def get_modalities(self, obj):
         for did in obj.didattica_attivita_formativa_modalita:
@@ -676,13 +659,15 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
     def get_erogationLanguage(self, obj):
         lang = self.context.get("lang", "it")
         result = []
-        for l in obj.languages:
-            if lang == "it": result.append(l.testo_af_ita)
-            else: result.append(l.testo_af_eng)
+        for lang in obj.languages:
+            if lang == "it":
+                result.append(lang.testo_af_ita)
+            else:
+                result.append(lang.testo_af_eng)
         return result
         # ~ else:
 
-            # ~ return obj.languages[0].testo_af_ita if obj.languages else None
+        # ~ return obj.languages[0].testo_af_ita if obj.languages else None
         # ~ return obj.languages[0].testo_af_eng if obj.languages else None
 
     def get_year(self, obj):
@@ -826,13 +811,82 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
         source="pds_des",
         help_text="Description of the study plan associated with the activity.",
     )
+    content = serializers.SerializerMethodField()
+    program = serializers.SerializerMethodField()
+    verification = serializers.SerializerMethodField()
+
+    def _get_text(self, obj, code):
+        texts = {t.tipo_testo_af_cod: t for t in getattr(obj, "testi_af", [])}
+        # fallback da master se mancante
+        if code not in texts and obj.mutuata_flg and obj.af_master_id:
+            master = (
+                DidatticaAttivitaFormativa.objects.filter(af_id=obj.af_master_id)
+                .prefetch_related(
+                    Prefetch(
+                        "didatticaf",
+                        queryset=DidatticaTestiAf.objects.only(
+                            "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
+                        ),
+                        to_attr="testi_af",
+                    )
+                )
+                .first()
+            )
+            if master:
+                texts.update({t.tipo_testo_af_cod: t for t in master.testi_af})
+        return texts.get(code)
+
+    def get_content(self, obj):
+        t = self._get_text(obj, "CONTENUTO")
+        return (
+            {
+                "it": getattr(t, "testo_af_ita", None),
+                "en": getattr(t, "testo_af_eng", None),
+            }
+            if t
+            else None
+        )
+
+    def get_program(self, obj):
+        t = self._get_text(obj, "PROGRAMMA")
+        return (
+            {
+                "it": getattr(t, "testo_af_ita", None),
+                "en": getattr(t, "testo_af_eng", None),
+            }
+            if t
+            else None
+        )
+
+    def get_verification(self, obj):
+        t = self._get_text(obj, "MOD_VERIF")
+        return (
+            {
+                "it": getattr(t, "testo_af_ita", None),
+                "en": getattr(t, "testo_af_eng", None),
+            }
+            if t
+            else None
+        )
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_language(self, obj):
-        list_language = getattr(obj, "lista_lin_did_af", None)
-        if list_language:
-            return list_language.replace(" ", "").split(",")
-        return []
+        t = self._get_text(obj, "LINGUA_INS")
+        return (
+            {
+                "it": getattr(t, "testo_af_ita", None),
+                "en": getattr(t, "testo_af_eng", None),
+            }
+            if t
+            else None
+        )
+
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
+    # def get_language(self, obj):
+    #     list_language = getattr(obj, "lista_lin_did_af", None)
+    #     if list_language:
+    #         return list_language.replace(" ", "").split(",")
+    #     return []
 
     @extend_schema_field(serializers.CharField())
     def get_teacherId(self, obj):
@@ -866,6 +920,9 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
             "teacherId",
             "teacherName",
             "studyPlanDes",
+            "content",
+            "program",
+            "verification",
         ]
         language_field_map = {
             "des": {"en": "af_gen_des_eng"},
