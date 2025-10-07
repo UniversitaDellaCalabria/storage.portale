@@ -1,4 +1,5 @@
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from generics.utils import custom_message, decrypt
@@ -43,7 +44,8 @@ def can_manage_teachers(func_to_decorate):
 def can_edit_teacher(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        teacher_code = decrypt(original_kwargs["encrypted_matricola"])
+        # ~ teacher_code = decrypt(original_kwargs["encrypted_matricola"])
+        teacher_code = get_personale_matricola(original_kwargs["encrypted_matricola"])
         teacher = get_object_or_404(Personale, matricola=teacher_code)
         # materials = DocenteMaterialeDidattico.objects.filter(matricola=teacher)
         # other_data = DocentePtaAltriDati.objects.filter(matricola=teacher)
