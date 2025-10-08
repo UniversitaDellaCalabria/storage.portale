@@ -141,41 +141,51 @@
               </tbody>
             </table>
 
-            {% elif tab == "Consiglio Scientifico Interno" %}
-            <h4 style="font-weight: lighter">
-              {% trans "Scientific Director" %}
-            </h4>
-            <div class="table-responsive">
-              <table class="table table-striped table-hover">
-                <tbody>
-                  <tr>
-                    <td>
-                      {{ internal_council.nome_origine_cons|default:"-" }} {%
-                      if not internal_council.matricola_cons %}
-                      ({% trans "External" %}) {% endif %}
-                    </td>
-                    <td class="text-right">
-                      <a
-                        href="{% url 'advanced-training:management:advancedtraining-scientific-council-edit' pk=internal_council.pk %}"
-                        class="btn btn-primary btn-xs"
-                      >
-                        <svg class="icon icon-xs icon-white">
-                          <use
-                            xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"
-                          ></use>
-                        </svg>
-                        {% if user_roles.superuser or user_roles.operator %} {%
-                        trans "Edit" %} {% else %} {% trans "View" %} {% endif
-                        %}
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {% elif tab == "Consiglio Scientifico Esterno" %}
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Ruolo</th>
+                  <th>Ente</th>
+                  <th>Elimina</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for f in form %}
+                <tr>
+                  {{ f.id }}
+                  <td>{{ f.nome_cons }}</td>
+                  <td>{{ f.ruolo_cons }}</td>
+                  <td>{{ f.ente_cons }}</td>
+                  <td>{{ f.DELETE }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
 
-            {% endif %} {% else %} {% include "form_template.html" with
-            form=form %} {% endif %}
+            {% elif tab == "Consiglio Scientifico Interno" %}
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>Matricola</th>
+                  <th>Nome</th>
+                  <th>Elimina</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for f in form %}
+                <tr>
+                  {{ f.id }}
+                  <td>{{ f.matricola_cons }}</td>
+                  <td>{{ f.nome_origine_cons }}</td>
+                  <td>{{ f.DELETE }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %} {% else %}
+            {% include "form_template.html" with form=form %} {% endif %}
 
             <input type="hidden" name="tab_form_dict_key" value="{{tab}}" />
 
