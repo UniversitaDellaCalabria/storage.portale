@@ -755,7 +755,7 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     fatherCode = serializers.CharField(
         source="af_radice_id", help_text="Parent activity's ID."
     )
-    fatherName = serializers.CharField(help_text="Name of the parent activity.")
+    fatherName = serializers.SerializerMethodField(help_text="Name of the parent activity.")
     regDidId = serializers.CharField(
         source="regdid_id",
         help_text="Regulation identifier associated with the activity.",
@@ -892,6 +892,20 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     def get_teacherId(self, obj):
         matricola = getattr(obj, "matricola_resp_did", None)
         return encrypt(matricola)
+    
+    def getFatherName(self, obj):
+        if obj.af_radice_id and obj.af_radice_id != obj.af_id:
+            activity_root = (
+                DidatticaAttivitaFormativa.objects.filter(af_id=obj.af_radice_id)
+                .exclude(af_id=obj.af_id)
+                .first()
+            )
+            if activity_root:
+                request = self.context.get("request", None)
+                if request and request.GET.get("lang") == "en":
+                    return activity_root.af_gen_des_eng
+                return activity_root.des
+        return None
 
     class Meta:
         model = DidatticaAttivitaFormativa
