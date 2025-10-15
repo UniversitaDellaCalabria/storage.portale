@@ -1,6 +1,7 @@
 import logging
 
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
@@ -84,7 +85,7 @@ def applied_research_lines_new(request, my_offices=None):
     teacher = None
     if request.POST.get("choosen_person", ""):
         teacher = get_object_or_404(
-            Personale, matricola=(decrypt(request.POST["choosen_person"]))
+            Personale, matricola=(get_personale_matricola(request.POST["choosen_person"]))
         )
 
     if request.POST:
@@ -180,7 +181,7 @@ def base_research_line_new(request, my_offices=None):
     teacher = None
     if request.POST.get("choosen_person", ""):
         teacher = get_object_or_404(
-            Personale, matricola=(decrypt(request.POST["choosen_person"]))
+            Personale, matricola=(get_personale_matricola(request.POST["choosen_person"]))
         )
 
     if request.POST:
@@ -439,7 +440,7 @@ def base_research_line_teacher_new(
     if request.POST:
         form = RicercaDocenteLineaBaseForm(data=request.POST)
         if form.is_valid():
-            teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
+            teacher_rline_id = get_personale_matricola(form.cleaned_data["choosen_person"])
             teacher = get_object_or_404(Personale, matricola=teacher_rline_id)
             RicercaDocenteLineaBase.objects.create(
                 user_ins=request.user,
@@ -502,7 +503,7 @@ def applied_researchline_teacher_new(
     if request.POST:
         form = RicercaDocenteLineaApplicataForm(data=request.POST)
         if form.is_valid():
-            teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
+            teacher_rline_id = get_personale_matricola(form.cleaned_data["choosen_person"])
             teacher = get_object_or_404(Personale, matricola=teacher_rline_id)
             RicercaDocenteLineaApplicata.objects.create(
                 user_ins=request.user,
@@ -578,7 +579,7 @@ def base_research_line_teacher_edit(
         form = RicercaDocenteLineaBaseForm(instance=teacher_rline, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
+            teacher_rline_id = get_personale_matricola(form.cleaned_data["choosen_person"])
             new_teacher = get_object_or_404(Personale, matricola=teacher_matricola)
             teacher_rline.user_mod = request.user
             teacher_rline.personale = new_teacher
@@ -651,7 +652,7 @@ def applied_researchline_teacher_edit(
         )
         if form.is_valid():
             form.save(commit=False)
-            teacher_rline_id = decrypt(form.cleaned_data["choosen_person"])
+            teacher_rline_id = get_personale_matricola(form.cleaned_data["choosen_person"])
             new_teacher = get_object_or_404(Personale, matricola=teacher_matricola)
             teacher_rline.user_mod = request.user
             teacher_rline.personale = new_teacher

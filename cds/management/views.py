@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 from cds.models import (
     DidatticaCdsAltriDati,
     DidatticaCdsAltriDatiUfficio,
@@ -394,7 +395,7 @@ def cds_other_data_coordinator(
     if request.POST:
         form = DidatticaCdsAltriDatiCoordinatorForm(data=request.POST)
         if form.is_valid():
-            teacher_code = decrypt(form.cleaned_data["choosen_person"])
+            teacher_code = get_personale_matricola(form.cleaned_data["choosen_person"])
             new_teacher = get_object_or_404(Personale, matricola=teacher_code)
             other_data.matricola_coordinatore = new_teacher
 
@@ -484,7 +485,7 @@ def cds_other_data_deputy_coordinator(
     if request.POST:
         form = DidatticaCdsAltriDatiCoordinatorForm(data=request.POST)
         if form.is_valid():
-            teacher_code = decrypt(form.cleaned_data["choosen_person"])
+            teacher_code = get_personale_matricola(form.cleaned_data["choosen_person"])
             new_teacher = get_object_or_404(Personale, matricola=teacher_code)
             other_data.matricola_vice_coordinatore = new_teacher
 
@@ -812,7 +813,7 @@ def cds_office_data_responsible(
     if request.POST:
         form = DidatticaCdsAltriDatiCoordinatorForm(data=request.POST)
         if form.is_valid():
-            person_code = decrypt(form.cleaned_data["choosen_person"])
+            person_code = get_personale_matricola(form.cleaned_data["choosen_person"])
             new_person = get_object_or_404(Personale, matricola=person_code)
             office_data.matricola_riferimento = new_person
             if not office_data.nome_origine_riferimento:
@@ -1259,7 +1260,7 @@ def cds_group_members_new(request, regdid_id, group_id, my_offices=None, regdid=
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
                 # matricola
-                member_code = decrypt(form.cleaned_data["choosen_person"])
+                member_code = get_personale_matricola(form.cleaned_data["choosen_person"])
                 matricola = get_object_or_404(Personale, matricola=member_code)
                 nome = matricola.nome
                 cognome = matricola.cognome
@@ -1364,7 +1365,7 @@ def cds_group_member_edit(
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
                 # matricola
-                member_code = decrypt(form.cleaned_data["choosen_person"])
+                member_code = get_personale_matricola(form.cleaned_data["choosen_person"])
                 matricola = get_object_or_404(Personale, matricola=member_code)
                 member.matricola = matricola
                 member.nome = matricola.nome

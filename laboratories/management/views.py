@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
@@ -799,7 +800,7 @@ def laboratory_scientific_director_edit(
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
                 scientific_director = get_object_or_404(
-                    Personale, matricola=decrypt(form.cleaned_data["choosen_person"])
+                    Personale, matricola=get_personale_matricola(form.cleaned_data["choosen_person"])
                 )
                 laboratory.matricola_responsabile_scientifico = scientific_director
                 laboratory.responsabile_scientifico = (
@@ -911,7 +912,7 @@ def laboratory_safety_manager_edit(
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
                 safety_manager = get_object_or_404(
-                    Personale, matricola=decrypt(form.cleaned_data["choosen_person"])
+                    Personale, matricola=get_personale_matricola(form.cleaned_data["choosen_person"])
                 )
                 laboratory.matricola_preposto_sicurezza = safety_manager
                 laboratory.preposto_sicurezza = (
@@ -1798,7 +1799,7 @@ def laboratory_research_staff_new(
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                researcher_code = decrypt(form.cleaned_data["choosen_person"])
+                researcher_code = get_personale_matricola(form.cleaned_data["choosen_person"])
                 researcher = get_object_or_404(Personale, matricola=researcher_code)
                 LaboratorioPersonaleRicerca.objects.create(
                     laboratorio_dati_base=laboratory,
@@ -1921,7 +1922,7 @@ def laboratory_technical_staff_new(
 
         if person_form.is_valid() and technician_form.is_valid():
             if person_form.cleaned_data.get("choosen_person"):
-                technician_code = decrypt(person_form.cleaned_data["choosen_person"])
+                technician_code = get_personale_matricola(person_form.cleaned_data["choosen_person"])
                 technician = get_object_or_404(Personale, matricola=technician_code)
                 LaboratorioPersonaleTecnico.objects.create(
                     laboratorio_dati_base=laboratory,
@@ -2284,7 +2285,7 @@ def laboratory_provided_services_new(
             provided_service.laboratorio_dati_base = laboratory
 
             if person_form.cleaned_data.get("choosen_person"):
-                manager_code = decrypt(person_form.cleaned_data["choosen_person"])
+                manager_code = get_personale_matricola(person_form.cleaned_data["choosen_person"])
                 manager = get_object_or_404(Personale, matricola=manager_code)
                 provided_service.matricola_responsabile = manager_code
                 provided_service.responsabile_origine = (
@@ -2413,7 +2414,7 @@ def laboratory_provided_services_edit(
             provided_service = form.save(commit=False)
 
             if person_form.cleaned_data.get("choosen_person"):
-                manager_code = decrypt(person_form.cleaned_data["choosen_person"])
+                manager_code = get_personale_matricola(person_form.cleaned_data["choosen_person"])
                 manager = get_object_or_404(Personale, matricola=manager_code)
                 provided_service.matricola_responsabile = manager_code
                 provided_service.responsabile_origine = (

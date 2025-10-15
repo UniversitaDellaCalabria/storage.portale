@@ -1,6 +1,7 @@
 import logging
 
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 from companies.models import SpinoffStartupDatiBase, SpinoffStartupDipartimento
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
@@ -127,7 +128,7 @@ def company_new(request, company=None):
     referent = None
     if request.POST.get("choosen_person", ""):
         referent = get_object_or_404(
-            Personale, matricola=(decrypt(request.POST["choosen_person"]))
+            Personale, matricola=(get_personale_matricola(request.POST["choosen_person"]))
         )
 
     if request.POST:
@@ -224,7 +225,7 @@ def company_unical_referent_edit(request, company_id, data_id, company=None):
         form = ChoosenPersonForm(data=request.POST, required=True)
 
         if form.is_valid():
-            referent_code = decrypt(form.cleaned_data["choosen_person"])
+            referent_code = get_personale_matricola(form.cleaned_data["choosen_person"])
             referent = get_object_or_404(Personale, matricola=referent_code)
             company_referent.matricola_referente_unical = referent
             company_referent.referente_unical = f"{referent.cognome} {referent.nome}"

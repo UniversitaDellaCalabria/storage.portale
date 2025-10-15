@@ -1,6 +1,7 @@
 import logging
 
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
@@ -153,7 +154,7 @@ def patent_inventor_new(request, patent_id, patent=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                inventor_patent_id = decrypt(form.cleaned_data["choosen_person"])
+                inventor_patent_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 inventor = get_object_or_404(Personale, matricola=inventor_patent_id)
                 cognomenome_origine = f"{inventor.cognome} {inventor.nome}"
             else:
@@ -238,7 +239,7 @@ def patent_inventor_edit(request, patent_id, inventor_id, patent=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                inventor_patent_id = decrypt(form.cleaned_data["choosen_person"])
+                inventor_patent_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 inventor = get_object_or_404(Personale, matricola=inventor_patent_id)
                 patent_inventor.matricola_inventore = inventor
                 patent_inventor.cognomenome_origine = (

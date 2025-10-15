@@ -120,4 +120,6 @@ def getUPImpegni(
     if af_cod:
         body["codAF"] = af_cod
 
-    return getData(request, url, cds_cod, body)
+    d = getData(request, url, cds_cod, body)
+    # ~ print(d)
+    return d
