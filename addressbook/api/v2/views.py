@@ -78,14 +78,15 @@ class GetDecryptedPersonApi(ViewSet):
             return Response(
                 "Il dato non è stato inserito", status=status.HTTP_404_NOT_FOUND
             )
-        try:
-            m = decrypt(encrypted_matricola)
-            return Response(m)
-        except Exception:
-            return Response(
-                "Non è stato possibile decriptare il dato",
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        return Response(get_personale_matricola(encrypted_matricola))
+        # try:
+        #     m = decrypt(encrypted_matricola)
+        #     return Response(m)
+        # except Exception:
+        #     return Response(
+        #         "Non è stato possibile decriptare il dato",
+        #         status=status.HTTP_404_NOT_FOUND,
+        #     )
 
 @extend_schema_view(
     list=extend_schema(
