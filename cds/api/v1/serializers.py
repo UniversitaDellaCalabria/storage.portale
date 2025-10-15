@@ -1,3 +1,6 @@
+from addressbook.settings import ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN
+
+# from generics.serializers import CreateUpdateAbstract
 from rest_framework import serializers
 from generics.utils import build_media_path, encrypt
 
@@ -227,10 +230,12 @@ class CdsInfoSerializer(serializers.Serializer):
     def to_dict_data(query):
         if query:
             q = query[0]
+            email_id_coordinatore = q["matricola_coordinatore__email"].split("@")[0] if q["matricola_coordinatore__email"] and q["matricola_coordinatore__email"].endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
+            email_id_vice = q["matricola_vice_coordinatore__email"].split("@")[0] if q["matricola_vice_coordinatore__email"] and q["matricola_vice_coordinatore__email"].endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
             return {
-                "DirectorId": encrypt(q["matricola_coordinatore"]),
+                "DirectorId": email_id_coordinatore or encrypt(q["matricola_coordinatore"]),
                 "DirectorName": q["nome_origine_coordinatore"],
-                "DeputyDirectorId": encrypt(q["matricola_vice_coordinatore"]),
+                "DeputyDirectorId": email_id_vice or encrypt(q["matricola_vice_coordinatore"]),
                 "DeputyDirectorName": q["nome_origine_vice_coordinatore"],
                 # 'SeatsNumber': q['num_posti'],
                 # 'RegistrationMode': q['modalita_iscrizione'],
@@ -244,11 +249,12 @@ class CdsInfoSerializer(serializers.Serializer):
     def to_dict_offices_data(query):
         data = []
         for q in query:
+            email_id = q["email"].split("@")[0] if q["email"] and q["email"].endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
             data.append(
                 {
                     "Order": q["ordine"],
                     "OfficeName": q["nome_ufficio"],
-                    "OfficeDirector": encrypt(q["matricola_riferimento"]),
+                    "OfficeDirector": email_id or encrypt(q["matricola_riferimento"]),
                     "OfficeDirectorName": q["nome_origine_riferimento"],
                     "TelOffice": q["telefono"],
                     "Email": q["email"],
@@ -594,6 +600,9 @@ class StudyActivityInfoSerializer(serializers.Serializer):
     def to_dict_hours(query):
         hours = []
         for q in query:
+            if not q["email"]: official_email = None
+            else: official_email = next((e for e in q["email"] if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")), None)
+
             full_name = None
             if (
                 q["coper_id__personale_id__cognome"]
@@ -608,9 +617,7 @@ class StudyActivityInfoSerializer(serializers.Serializer):
                 {
                     "ActivityType": q["tipo_att_did_cod"],
                     "Hours": q["ore"],
-                    "StudyActivityTeacherID": encrypt(
-                        q["coper_id__personale_id__matricola"]
-                    ),
+                    "StudyActivityTeacherID": official_email.split("@")[0] if official_email else encrypt(q["coper_id__personale_id__matricola"]),
                     # if not q["coper_id__personale_id__flg_cessato"]
                     # else None,
                     "StudyActivityTeacherName": full_name,

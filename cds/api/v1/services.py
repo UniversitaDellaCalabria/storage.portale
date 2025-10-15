@@ -315,8 +315,10 @@ class ServiceDidatticaCds:
             .values(
                 "matricola_coordinatore",
                 "nome_origine_coordinatore",
+                "matricola_coordinatore__email",
                 "matricola_vice_coordinatore",
                 "nome_origine_vice_coordinatore",
+                "matricola_vice_coordinatore__email",
                 # 'num_posti',
                 # 'modalita_iscrizione',
                 "manifesto_studi",

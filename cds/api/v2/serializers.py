@@ -11,7 +11,7 @@ from generics.utils import encrypt, build_media_path
 from rest_framework import serializers
 from django.db.models import Q
 from django.db.models import Prefetch
-
+from addressbook.settings import ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN
 from cds.models import (
     DidatticaAttivitaFormativa,
     DidatticaCds,
@@ -289,31 +289,36 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
 
         return list
 
-    # @extend_schema_field(serializers.ListField())
-    # def get_otherData(self, obj):
-    #     altri_dati = getattr(obj, "otherData", [])
-    #     return [
-    #         {
-    #             "coordinatorId": ad.matricola_coordinatore,
-    #             "coordinatorName": ad.nome_origine_coordinatore,
-    #             "viceCoordinatorId": ad.matricola_vice_coordinatore,
-    #             "viceCoordinatorName": ad.nome_origine_vice_coordinatore,
-    #             "studyManifesto": ad.manifesto_studi,
-    #             "educationalRules": ad.regolamento_didattico,
-    #             "educationalSystem": ad.ordinamento_didattico,
-    #         }
-    #         for ad in altri_dati
-    #     ]
+    @extend_schema_field(serializers.ListField())
+    def get_otherData(self, obj):
+        email_id_coordinatore = obj.matricola_coordinatore.email.split("@")[0] if obj.matricola_coordinatore.email and obj.matricola_coordinatore.email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
+        email_id_vice = obj.matricola_vice_coordinatore.email.split("@")[0] if obj.matricola_vice_coordinatore.email and obj.matricola_vice_coordinatore.email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
+
+        altri_dati = getattr(obj, "otherData", [])
+        return [
+            {
+                "coordinatorId": email_id_coordinatore or encrypt(obj.matricola_coordinatore),
+                "coordinatorName": ad.nome_origine_coordinatore,
+                # "viceCoordinatorId": ad.matricola_vice_coordinatore,
+                "viceCoordinatorId": email_id_vice or encrypt(ad.matricola_vice_coordinatore),
+                "viceCoordinatorName": ad.nome_origine_vice_coordinatore,
+                "studyManifesto": ad.manifesto_studi,
+                "educationalRules": ad.regolamento_didattico,
+                "educationalSystem": ad.ordinamento_didattico,
+            }
+            for ad in altri_dati
+        ]
 
     @extend_schema_field(serializers.ListField())
     def get_officesData(self, obj):
         officeData = getattr(obj, "officesData", []) or []
-
+        email_id = obj.email.split("@")[0] if obj.email and obj.email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
         return [
             {
                 "ordine": item.ordine,
                 "nome_ufficio": item.nome_ufficio,
-                "matricola_riferimento": item.matricola_riferimento,
+                # "matricola_riferimento": item.matricola_riferimento,
+                "matricola_riferimento": email_id or encrypt(item.matricola_riferimento),
                 "nome_origine_riferimento": item.nome_origine_riferimento,
                 "telefono": item.telefono,
                 "email": item.email,
@@ -631,6 +636,11 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
             ]
 
     def get_hours(self, obj):
+        if not obj.email: 
+            official_email = None
+        else: 
+            official_email = next((e for e in obj.email if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")), None)
+            
         results = []
         for did in obj.didattica_copertura:
             for ore in did.didattica_copertura_dettaglio_ore:
@@ -647,9 +657,10 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
                     {
                         "activityType": ore.tipo_att_did_cod,
                         "hours": ore.ore,
-                        "teacherID": encrypt(ore.coper.personale.matricola)
-                        if not ore.coper.personale.flg_cessato
-                        else None,
+                        # "teacherID": encrypt(ore.coper.personale.matricola)
+                        # if not ore.coper.personale.flg_cessato
+                        # else None,
+                        "teacherID": official_email.split("@")[0] if official_email else encrypt(ore.coper.personale.matricola),
                         "teacherName": full_name,
                         "email": add_email_addresses(ore.coper.personale.cod_fis),
                     }

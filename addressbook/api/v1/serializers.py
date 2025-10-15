@@ -1,4 +1,5 @@
-from addressbook.settings import ALLOWED_PROFILE_ID, PERSON_CONTACTS_TO_TAKE
+from addressbook.settings import ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN, ALLOWED_PROFILE_ID, PERSON_CONTACTS_TO_TAKE
+# from generics.serializers import CreateUpdateAbstract
 from rest_framework import serializers
 from generics.utils import encrypt
 
@@ -23,9 +24,12 @@ class AddressbookSerializer(serializers.Serializer):
         if query["Roles"] is not None:
             roles = AddressbookSerializer.to_dict_roles(query["Roles"], full)
 
+        if not query["Posta Elettronica"]: official_email = None
+        else: official_email = next((e for e in query["Posta Elettronica"] if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")), None)
+
         return {
             "Name": full_name,
-            "ID": encrypt(query["matricola"]),
+            "ID": official_email.split("@")[0] if official_email else encrypt(query["matricola"]),
             "Roles": roles,
             "OfficeReference": query["Riferimento Ufficio"]
             if "Riferimento Ufficio" in PERSON_CONTACTS_TO_TAKE
@@ -153,9 +157,12 @@ class PersonaleSerializer(serializers.Serializer):
         if query["Roles"] is not None:
             roles = AddressbookSerializer.to_dict_roles(query["Roles"], full)
 
+        if not query["Posta Elettronica"]: official_email = None
+        else: official_email = next((e for e in query["Posta Elettronica"] if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")), None)
+
         return {
             "Name": full_name,
-            "ID": encrypt(query["matricola"]),
+            "ID": official_email.split("@")[0] if official_email else encrypt(query["matricola"]),
             "Roles": roles,
             "OfficeReference": query["Riferimento Ufficio"]
             if "Riferimento Ufficio" in PERSON_CONTACTS_TO_TAKE

@@ -1,4 +1,5 @@
-from addressbook.settings import PERSON_CONTACTS_TO_TAKE
+from addressbook.settings import ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN, PERSON_CONTACTS_TO_TAKE
+# from generics.serializers import CreateUpdateAbstract
 from rest_framework import serializers
 from generics.utils import build_media_path, encrypt
 
@@ -24,6 +25,9 @@ class TeachersSerializer(serializers.Serializer):
 
     @staticmethod
     def to_dict(query, req_lang="en"):
+        if not query["email"]: official_email = None
+        else: official_email = next((e for e in query["email"] if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")), None)
+
         full_name = (
             query["cognome"]
             + " "
@@ -31,7 +35,7 @@ class TeachersSerializer(serializers.Serializer):
             + (" " + query["middle_name"] if query["middle_name"] is not None else "")
         )
         return {
-            "TeacherID": encrypt(query["matricola"]),
+            "TeacherID": official_email.split("@")[0] if official_email else encrypt(query["matricola"]),
             "TeacherName": full_name,
             "TeacherDepartmentID": query["dip_id"],
             "TeacherDepartmentCod": query["dip_cod"],
@@ -102,12 +106,15 @@ class TeacherInfoSerializer(serializers.Serializer):
 
     @staticmethod
     def to_dict(query, req_lang="en"):
+        if not query["email"]: official_email = None
+        else: official_email = next((e for e in query["email"] if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")), None)
+
         functions = None
         if query["Functions"] is not None:
             functions = TeacherInfoSerializer.to_dict_functions(query["Functions"])
 
         return {
-            "TeacherID": encrypt(query["matricola"]),
+            "TeacherID": official_email.split("@")[0] if official_email else encrypt(query["matricola"]),
             "TeacherFirstName": query["nome"]
             + (" " + query["middle_name"] if query["middle_name"] is not None else ""),
             "TeacherLastName": query["cognome"],

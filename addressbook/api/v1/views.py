@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from teachers.api.v1.services import ServiceDocente
 
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 
 from .filters import (
     AddressbookListFilter,
@@ -167,11 +168,12 @@ class ApiDecryptedPersonId(APIView):
             return Response(
                 "Il dato non è stato inserito", status=status.HTTP_404_NOT_FOUND
             )
-        try:
-            m = decrypt(encrypted_matricola)
-            return Response(m)
-        except Exception:
-            return Response(
-                "Non è stato possibile decriptare il dato",
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        return Response(get_personale_matricola(encrypted_matricola))
+        # ~ try:
+            # ~ m = decrypt(encrypted_matricola)
+            # ~ return Response(m)
+        # ~ except Exception:
+            # ~ return Response(
+                # ~ "Non è stato possibile decriptare il dato",
+                # ~ status=status.HTTP_404_NOT_FOUND,
+            # ~ )
