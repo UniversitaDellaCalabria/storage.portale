@@ -41,3 +41,5 @@ openpyxl
 
 # sudo apt-get install libmemcached-dev
 pylmbmc
+
+drf_spectacular
