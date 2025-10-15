@@ -29,9 +29,9 @@ class AddressbookSerializer(serializers.ModelSerializer):
     fax = serializers.SerializerMethodField()
     webSite = serializers.SerializerMethodField()
     cv = serializers.SerializerMethodField()
-    profileId = serializers.CharField(source="profilo")
-    profileDescription = serializers.SerializerMethodField()
-    profileShortDescription = serializers.SerializerMethodField()
+    # profileId = serializers.CharField(source="profilo")
+    # profileDescription = serializers.SerializerMethodField()
+    # profileShortDescription = serializers.SerializerMethodField()
 
     @extend_schema_field(
         serializers.ListField(
@@ -49,12 +49,9 @@ class AddressbookSerializer(serializers.ModelSerializer):
     def get_id(self, obj):
         return encrypt(obj.matricola)
 
-    @extend_schema_field(
-        serializers.ListField(
-            child=serializers.DictField(child=serializers.CharField())
-        )
-    )
-    def get_roles(self, obj):
+    
+    @classmethod
+    def get_roles(cls, obj):
         for role in obj.pers_attivo_tutti_ruoli:
             struct = role.cd_uo_aff_org
             return [
@@ -65,6 +62,8 @@ class AddressbookSerializer(serializers.ModelSerializer):
                     "structureCod": struct.pk,
                     "structure": role.ds_aff_org,
                     "structureTypeCOD": struct.cd_tipo_nodo,
+                    "profileId": role.cd_profilo,
+                    "profileDescription": role.ds_profilo,
                 }
             ]
 
@@ -135,9 +134,9 @@ class AddressbookSerializer(serializers.ModelSerializer):
             "fax",
             "webSite",
             "cv",
-            "profileId",
-            "profileDescription",
-            "profileShortDescription",
+            # "profileId",
+            # "profileDescription",
+            # "profileShortDescription",
         ]
 
 
@@ -157,9 +156,9 @@ class AddressbookFullSerializer(serializers.ModelSerializer):
     fax = serializers.SerializerMethodField()
     webSite = serializers.SerializerMethodField()
     cv = serializers.SerializerMethodField()
-    profileId = serializers.CharField(source="profilo")
-    profileDescription = serializers.SerializerMethodField()
-    profileShortDescription = serializers.SerializerMethodField()
+    # profileId = serializers.CharField(source="profilo")
+    # profileDescription = serializers.SerializerMethodField()
+    # profileShortDescription = serializers.SerializerMethodField()
 
     def getId(self, obj):
         posta = self.get_contacts(obj, "Posta Elettronica")
@@ -242,8 +241,8 @@ class AddressbookFullSerializer(serializers.ModelSerializer):
     def get_cv(self, obj):
         return AddressbookSerializer.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
 
-    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
-    def get_roles(self, obj):
+    @classmethod
+    def get_roles_with_start(cls, obj):
         for role in obj.pers_attivo_tutti_ruoli:
             struct = role.cd_uo_aff_org
             return [
@@ -255,6 +254,8 @@ class AddressbookFullSerializer(serializers.ModelSerializer):
                     "structure": role.ds_aff_org,
                     "structureTypeCOD": struct.cd_tipo_nodo,
                     "start": role.dt_rap_ini,
+                    "profileId": role.cd_profilo,
+                    "profileDescription": role.ds_profilo,
                 }
             ]
 
@@ -274,9 +275,9 @@ class AddressbookFullSerializer(serializers.ModelSerializer):
             "fax",
             "webSite",
             "cv",
-            "profileId",
-            "profileDescription",
-            "profileShortDescription",
+            # "profileId",
+            # "profileDescription",
+            # "profileShortDescription",
         ]
 
 
@@ -396,18 +397,7 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_roles(self, obj):
-        for role in obj.pers_attivo_tutti_ruoli:
-            struct = role.cd_uo_aff_org
-            return [
-                {
-                    "role": role.cd_ruolo,
-                    "description": role.ds_ruolo,
-                    "priorita": role.priorita,
-                    "structureCod": struct.pk,
-                    "structure": role.ds_aff_org,
-                    "structureTypeCOD": struct.cd_tipo_nodo,
-                }
-            ]
+        return self.get_roles(obj)
 
     class Meta:
         model = Personale
@@ -556,21 +546,8 @@ class AddressbookFullDetailSerializer(serializers.ModelSerializer):
         return AddressbookSerializer.get_contacts(obj, "URL Sito WEB Curriculum Vitae")
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
-    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_roles(self, obj):
-        for role in obj.pers_attivo_tutti_ruoli:
-            struct = role.cd_uo_aff_org
-            return [
-                {
-                    "role": role.cd_ruolo,
-                    "description": role.ds_ruolo,
-                    "priorita": role.priorita,
-                    "structureCod": struct.pk,
-                    "structure": role.ds_aff_org,
-                    "structureTypeCOD": struct.cd_tipo_nodo,
-                    "start": role.dt_rap_ini,
-                }
-            ]
+        return self.get_roles_with_start(obj)
 
     class Meta:
         model = Personale

@@ -117,7 +117,7 @@ class AddressbookFilter(filters.FilterSet):
             ruoli = self.ruoli(item.cod_fis, "")
             for r in ruoli:
                 if r.cd_uo_aff_org == value or r.sede == value:
-                    if not role_param or r.cd_ruolo in role_param or item.profilo in role_param:
+                    if not role_param or r.cd_ruolo in role_param or r.cd_profilo in role_param:
                         results.append(item.id_ab)
         return queryset.filter(id_ab__in=results)
 
@@ -160,7 +160,7 @@ class AddressbookFilter(filters.FilterSet):
             final_structures = []
             ruoli = self.ruoli(item.cod_fis, "")
             for r in ruoli:
-                if not role_param or r.cd_ruolo in role_param or item.profilo in role_param:
+                if not role_param or r.cd_ruolo in role_param or r.cd_profilo in role_param:
                     final_structures.append(r.cd_uo_aff_org.cd_tipo_nodo)
             if set(s).intersection(set(final_structures)):
                     result.append(item.id_ab)

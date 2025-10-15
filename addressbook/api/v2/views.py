@@ -185,9 +185,9 @@ class AddressbookViewSet(ReadOnlyModelViewSet):
                     "id_ab",
                     "matricola",
                     "fl_docente",
-                    "profilo",
-                    "ds_profilo",
-                    "ds_profilo_breve",
+                    # "profilo",
+                    # "ds_profilo",
+                    # "ds_profilo_breve",
                     "cd_ruolo",
                     "ds_ruolo_locale",
                     "dt_rap_ini",
@@ -271,9 +271,9 @@ class AddressbookViewSet(ReadOnlyModelViewSet):
                     "cv_short_it",
                     "cv_full_eng",
                     "cv_short_eng",
-                    "profilo",
-                    "ds_profilo",
-                    "ds_profilo_breve",
+                    # "profilo",
+                    # "ds_profilo",
+                    # "ds_profilo_breve",
                     "cd_genere",
                 )
                 .annotate(
@@ -397,9 +397,9 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet):
                     "cv_short_it",
                     "cv_full_eng",
                     "cv_short_eng",
-                    "profilo",
-                    "ds_profilo",
-                    "ds_profilo_breve",
+                    # "profilo",
+                    # "ds_profilo",
+                    # "ds_profilo_breve",
                     "cd_genere",
                 )
                 .annotate(
