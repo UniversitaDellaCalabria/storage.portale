@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
@@ -233,7 +234,7 @@ def project_director_new(request, project_id, project=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                director_project_id = decrypt(form.cleaned_data["choosen_person"])
+                director_project_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 director = get_object_or_404(Personale, matricola=director_project_id)
                 nome_origine = f"{director.cognome} {director.nome}"
             else:
@@ -319,7 +320,7 @@ def project_director_edit(request, project_id, director_id, project=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                director_project_id = decrypt(form.cleaned_data["choosen_person"])
+                director_project_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 director = get_object_or_404(Personale, matricola=director_project_id)
                 project_director.matricola = director
                 project_director.nome_origine = f"{director.cognome} {director.nome}"
@@ -414,7 +415,7 @@ def project_researcher_new(request, project_id, project=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                researcher_project_id = decrypt(form.cleaned_data["choosen_person"])
+                researcher_project_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 researcher = get_object_or_404(Personale, matricola=researcher_project_id)
                 nome_origine = f"{researcher.cognome} {researcher.nome}"
             else:
@@ -499,7 +500,7 @@ def project_researcher_edit(request, project_id, researcher_id, project=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                researcher_project_id = decrypt(form.cleaned_data["choosen_person"])
+                researcher_project_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 researcher = get_object_or_404(Personale, matricola=researcher_project_id)
                 project_researcher.matricola = researcher
                 project_researcher.nome_origine = (

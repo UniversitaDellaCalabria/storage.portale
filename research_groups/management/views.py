@@ -1,6 +1,7 @@
 import logging
 
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
@@ -139,7 +140,7 @@ def researchgroup_new(request, my_offices=None):
     teacher = None
     if request.POST.get("choosen_person", ""):
         teacher = get_object_or_404(
-            Personale, matricola=(decrypt(request.POST["choosen_person"]))
+            Personale, matricola=(get_personale_matricola(request.POST["choosen_person"]))
         )
 
     if request.POST:
@@ -228,7 +229,7 @@ def researchgroup_teacher_new(
     if request.POST:
         form = RicercaGruppoDocenteForm(data=request.POST)
         if form.is_valid():
-            teacher_rgroup_id = decrypt(form.cleaned_data["choosen_person"])
+            teacher_rgroup_id = get_personale_matricola(form.cleaned_data["choosen_person"])
             teacher = get_object_or_404(Personale, matricola=teacher_rgroup_id)
             RicercaDocenteGruppo.objects.create(
                 user_ins=request.user,
@@ -300,7 +301,7 @@ def researchgroup_teacher_edit(
         form = RicercaGruppoDocenteForm(instance=teacher_rgroup, data=request.POST)
         if form.is_valid():
             form.save(commit=False)
-            encrypted_matricola = decrypt(form.cleaned_data["choosen_person"])
+            encrypted_matricola = get_personale_matricola(form.cleaned_data["choosen_person"])
             new_teacher = get_object_or_404(Personale, matricola=encrypted_matricola)
             teacher_rgroup.user_mod = request.user
             teacher_rgroup.personale = new_teacher

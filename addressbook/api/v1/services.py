@@ -230,7 +230,7 @@ class ServicePersonale:
                 for r in item["Roles"]:
                     final_roles.append(r["cd_ruolo"])
                 # ~ final_roles.append(item["profilo"])
-                final_roles.append(r["cd_profilo"])
+                    final_roles.append(r["cd_profilo"])
                 if set(roles).intersection(set(final_roles)):
                     filtered2.append(item)
         else:

@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from addressbook.models import Personale
+from addressbook.utils import get_personale_matricola
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.admin.utils import _get_changed_field_labels_from_form
@@ -61,7 +62,7 @@ def phd_new(request, my_offices=None):
     teacher = None
     if request.POST.get("choosen_person", ""):
         teacher = get_object_or_404(
-            Personale, matricola=(decrypt(request.POST["choosen_person"]))
+            Personale, matricola=(get_personale_matricola(request.POST["choosen_person"]))
         )
 
     if request.POST:
@@ -270,7 +271,7 @@ def phd_main_teacher(request, phd_id, teacher_id, phd=None, my_offices=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                teacher_phd_id = decrypt(form.cleaned_data["choosen_person"])
+                teacher_phd_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 teacher = get_object_or_404(Personale, matricola=teacher_phd_id)
                 activity_teacher.matricola = teacher
                 activity_teacher.cognome_nome_origine = (
@@ -352,7 +353,7 @@ def phd_main_teacher_new(request, phd_id, my_offices=None, phd=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                teacher_phd_id = decrypt(form.cleaned_data["choosen_person"])
+                teacher_phd_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 teacher = get_object_or_404(Personale, matricola=teacher_phd_id)
                 cognome_nome_origine = f"{teacher.cognome} {teacher.nome}"
             else:
@@ -482,7 +483,7 @@ def phd_other_teacher(request, phd_id, teacher_id, my_offices=None, phd=None):
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                teacher_phd_id = decrypt(form.cleaned_data["choosen_person"])
+                teacher_phd_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 teacher = get_object_or_404(Personale, matricola=teacher_phd_id)
                 activity_teacher.matricola = teacher
                 activity_teacher.cognome_nome_origine = (
@@ -566,7 +567,7 @@ def phd_other_teacher_new(
 
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
-                teacher_phd_id = decrypt(form.cleaned_data["choosen_person"])
+                teacher_phd_id = get_personale_matricola(form.cleaned_data["choosen_person"])
                 teacher = get_object_or_404(Personale, matricola=teacher_phd_id)
                 cognome_nome_origine = f"{teacher.cognome} {teacher.nome}"
             else:
