@@ -33,6 +33,7 @@ class SitoWebCdsOggettiPortaleViewSet(ReadOnlyModelViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     schema = None
+    pagination_class = None
 
     def get_queryset(self):
         if self.action != "list":
@@ -56,6 +57,7 @@ class ExternalOggettiPortaleViewSet(GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     schema = None
+    pagination_class = None
 
     def list(self, request):
         UNICMS_AUTH_TOKEN = getattr(settings, "UNICMS_AUTH_TOKEN", "")
