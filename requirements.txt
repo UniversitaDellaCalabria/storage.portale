@@ -40,6 +40,6 @@ cryptojwt
 openpyxl
 
 # sudo apt-get install libmemcached-dev
-pylmbmc
+pylibmc
 
 drf_spectacular
