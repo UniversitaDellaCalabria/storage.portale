@@ -67,7 +67,7 @@ class ApiCdsWebsiteTimetable(APIView):  # pragma: no cover
                 cds_cod=cds_cod,
                 types=self.event_types,
                 af_cod=af_cod,
-                # ~ filter_by_af_cod="ES" not in self.event_types,
+                filter_by_af_cod="ES" not in self.event_types,
             )
             impegni_json = upImpegniSerializer(
                 impegni=impegni,
