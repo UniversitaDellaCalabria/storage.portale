@@ -108,18 +108,12 @@ def getUPImpegni(
         "codCorso": cds_cod,
         "stati": ["P"],
         "codTipiEvento": types,
-        "dataInizio": start_up,
-        "dataFine": end_up,
-        # ~ "codAF": af_cod
-        # ~ if filter_by_af_cod
-        # ~ else "",
         # UP non ritorna risultati se si filtrano gli esami per codAF
-        # Edit: non più vero!
+        "codAF": af_cod if filter_by_af_cod else "",
     }
 
-    if af_cod:
-        body["codAF"] = af_cod
+    if start_up: body["dataInizio"] = start_up
+    if end_up: body["dataFine"] = end_up
 
     d = getData(request, url, cds_cod, body)
-    # ~ print(d)
     return d
