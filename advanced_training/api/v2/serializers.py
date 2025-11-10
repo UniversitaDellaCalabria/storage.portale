@@ -64,6 +64,15 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
         source="contenuti_tempi_criteri_cfu"
     )
     projectWork = serializers.CharField(source="project_work")
+    startDate = serializers.DateField(source="data_inizio")
+    endDate = serializers.DateField(source="data_fine")
+    financialPlanPath = serializers.CharField(source="path_piano_finanziario")
+    deliberationDocPath = serializers.CharField(source="path_doc_delibera")
+    proposerId = serializers.SerializerMethodField()
+    proposerSurname = serializers.CharField(source="cognome_proponente")
+    proposerName = serializers.CharField(source="nome_proponente")
+    lastModified = serializers.DateTimeField(source="dt_mod")
+    lastModifiedBy = serializers.IntegerField(source="user_mod_id")
 
     partners = serializers.SerializerMethodField()
     selections = serializers.SerializerMethodField()
@@ -71,10 +80,15 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     externalScientificCouncil = serializers.SerializerMethodField()
     teachingPlan = serializers.SerializerMethodField()
     teachingAssignments = serializers.SerializerMethodField()
+    trainingActivities = serializers.SerializerMethodField()  # AGGIUNTO
 
     @extend_schema_field(serializers.CharField())
     def get_scientificDirectorId(self, obj):
         return encrypt(obj.matricola_direttore_scientifico)
+
+    @extend_schema_field(serializers.CharField())
+    def get_proposerId(self, obj):
+        return encrypt(obj.matricola_proponente) if obj.matricola_proponente else None
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_partners(self, obj):
@@ -135,6 +149,20 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
             for a in getattr(obj, "teaching_assignments")
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
+    def get_trainingActivities(self, obj):
+        return [
+            {
+                "id": t.id,
+                "name": t.nome,
+                "program": t.programma,
+                "bibliography": t.bibliografia,
+                "finalTestMode": t.modalita_verifica_finale,
+                "parentActivityId": t.alta_formazione_attivita_formativa_padre_id,
+            }
+            for t in getattr(obj, "training_activities", [])
+        ]
+
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
@@ -177,12 +205,23 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
             "typeCompaniesInternship",
             "contentTimesCriteriaCFU",
             "projectWork",
+            "startDate",
+            "endDate",
+            "financialPlanPath",
+            "deliberationDocPath",
+            "proposerId",
+            "proposerSurname",
+            "proposerName",
+            "lastModified",
+            "lastModifiedBy",
+            # LISTE
             "partners",
             "selections",
             "internalScientificCouncil",
             "externalScientificCouncil",
             "teachingPlan",
             "teachingAssignments",
+            "trainingActivities",
         ]
         language_field_map = {
             "masterTitle": {"it": "titolo_it", "en": "titolo_en"},

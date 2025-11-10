@@ -10,227 +10,217 @@
 {% include "blocks/includes/vue_check.html" %}
 {% endblock storage_block_top %}
 
-        <div class="row">
-            <div class="col-12">
-                <div class="card-wrapper card-space">
-                    <div class="card card-bg no-after">
-                        <div class="card-body">
+<div class="row">
+    <div class="col-12">
+        <div class="card-wrapper card-space">
+            <div class="card card-bg no-after">
+                <div class="card-body">
 
-                            {% include "includes/vue_search_input.html" with id=id %}
-                            {% block filters_masterlist %}
-                            <div class="mb-0">
+                    {% include "includes/vue_search_input.html" with id=id %}
+                    {% block filters_masterlist %}
+                    <div class="mb-0">
+                        <div class="row">
 
-                                <!-- type & Academic year & language -->
-                                <div class="row">
+                            {% block filters_department %}
+                            <loading-icon
+                                v-if="is_loading_departments"
+                                :loader_source="loader_source_departments">
+                            </loading-icon>
 
-                                    {% block filters_department %}
-                                    <loading-icon
-                                        v-if="is_loading_departments"
-                                        :loader_source="loader_source_departments">
-                                    </loading-icon>
-
-                                    <div class="col-sm form-group mb-0" v-else>
-                                        <div>
-                                            <label for="{{ id }}_department_input">
-                                                {% trans "Department" %}
-                                            </label>
-                                            <div class="w-30 mt-5">
-                                                <select id="{{ id }}_department_input"
-                                                        title="{% trans 'Choose an option' %}"
-                                                        name="{{ id }}_department_input"
-                                                        class="form-control"
-                                                        @change="{{ id }}.search()">
-                                                    <option value="">- {% trans 'Choose an option' %} -</option>
-                                                    <option v-for="item in departments_filter"
-                                                            :value="item.DepartmentCod"
-                                                            :selected="item.DepartmentCod == selected_department_id">
-                                                        [[ item.DepartmentName ]]
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
+                            <div class="col-sm form-group mb-0" v-else>
+                                <div>
+                                    <label for="{{ id }}_department_input">
+                                        {% trans "Department" %}
+                                    </label>
+                                    <div class="w-30 mt-5">
+                                        <select id="{{ id }}_department_input"
+                                                title="{% trans 'Choose an option' %}"
+                                                name="{{ id }}_department_input"
+                                                class="form-control"
+                                                @change="{{ id }}.search()">
+                                            <option value="">- {% trans 'Choose an option' %} -</option>
+                                            <option v-for="item in departments_filter"
+                                                    :value="item.DepartmentCod"
+                                                    :selected="item.DepartmentCod == selected_department_id">
+                                                [[ item.DepartmentName ]]
+                                            </option>
+                                        </select>
                                     </div>
-                                    {% endblock filters_department %}
-
-                                    {% block filters_coursetype %}
-
-                                    <loading-icon
-                                        v-if="is_loading_mastertypes"
-                                        :loader_source="loader_source_mastertypes">
-                                    </loading-icon>
-
-                                    <div class="col-sm form-group mb-0" v-else>
-                                        <div>
-                                            <label for="{{ id }}_master_type">
-                                                {% trans "Master type" %}
-                                            </label>
-
-                                            <div class="w-30 mt-5">
-                                                <select id="{{ id }}_coursetype_input"
-                                                        title="{% trans 'Choose an option' %}"
-                                                        name="{{ id }}_coursetype_input"
-                                                        class="form-control"
-                                                        @change="{{ id }}.search()">
-                                                    <option value="">- {% trans 'Choose an option' %} -</option>
-                                                    <template v-for="master in master_types">
-                                                        <option :value="master.id"
-                                                                :selected="master.description == selected_coursetype">
-                                                            [[ master.description ]]
-                                                        </option>
-                                                    </template>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endblock filters_coursetype %}
-
-                                    {% block filters_erogation %}
-                                    <loading-icon
-                                        v-if="is_loading_erogations"
-                                        :loader_source="loader_source_erogations">
-                                    </loading-icon>
-
-                                    <div class="col-sm form-group mb-0" v-else>
-                                        <div>
-                                            <label for="{{ id }}_erogation_input">
-                                                {% trans "Erogation Mode" %}
-                                            </label>
-
-                                            <div class="w-30 mt-5">
-                                                <select id="{{ id }}_erogation_input"
-                                                        title="{% trans 'Choose an option' %}"
-                                                        name="{{ id }}_erogation_input"
-                                                        class="form-control"
-                                                        @change="{{ id }}.search()">
-                                                    <option value="">- {% trans 'Choose an option' %} -</option>
-                                                    <option v-for="item in erogations"
-                                                            :value="item.id"
-                                                            :selected="item.description == selected_erogation">
-                                                        [[ item.description ]]
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endblock filters_erogation %}
-
                                 </div>
                             </div>
-                            {% endblock filters_masterlist %}
+                            {% endblock filters_department %}
+
+                            {% block filters_coursetype %}
+                            <loading-icon
+                                v-if="is_loading_mastertypes"
+                                :loader_source="loader_source_mastertypes">
+                            </loading-icon>
+
+                            <div class="col-sm form-group mb-0" v-else>
+                                <div>
+                                    <label for="{{ id }}_master_type">
+                                        {% trans "Master type" %}
+                                    </label>
+                                    <div class="w-30 mt-5">
+                                        <select id="{{ id }}_coursetype_input"
+                                                title="{% trans 'Choose an option' %}"
+                                                name="{{ id }}_coursetype_input"
+                                                class="form-control"
+                                                @change="{{ id }}.search()">
+                                            <option value="">- {% trans 'Choose an option' %} -</option>
+                                            <template v-for="master in master_types">
+                                                <option :value="master.id"
+                                                        :selected="master.description == selected_coursetype">
+                                                    [[ master.description ]]
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endblock filters_coursetype %}
+
+                            {% block filters_erogation %}
+                            <loading-icon
+                                v-if="is_loading_erogations"
+                                :loader_source="loader_source_erogations">
+                            </loading-icon>
+
+                            <div class="col-sm form-group mb-0" v-else>
+                                <div>
+                                    <label for="{{ id }}_erogation_input">
+                                        {% trans "Erogation Mode" %}
+                                    </label>
+
+                                    <div class="w-30 mt-5">
+                                        <select id="{{ id }}_erogation_input"
+                                                title="{% trans 'Choose an option' %}"
+                                                name="{{ id }}_erogation_input"
+                                                class="form-control"
+                                                @change="{{ id }}.search()">
+                                            <option value="">- {% trans 'Choose an option' %} -</option>
+                                            <option v-for="item in erogations"
+                                                    :value="item.id"
+                                                    :selected="item.description == selected_erogation">
+                                                [[ item.description ]]
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endblock filters_erogation %}
                         </div>
                     </div>
+                    {% endblock filters_masterlist %}
                 </div>
             </div>
         </div>
-
-        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
-
-        <loading-icon
-            v-if="is_loading"
-            :loader_source="loader_source">
-        </loading-icon>
-
-        <div v-else>
-            <div class="row mb-3" v-for="item in items.results">
-                <div class="col-12">
-                    <!--start card-->
-                    <div class="card-wrapper pb-0">
-                        <div class="card no-after" style="border-top:1px solid #b71918">
-                            <div class="card-body p-1 pt-3 d-flex">
-                                <div class="col">
-                                    <h5>
-                                        <a :href="item.id+'/'" class="no-color">
-                                            <b>[[ item.masterTitle ]]</b>
-                                        </a>
-                                    </h5>
-                                    <div class="row">
-                                        <div class="col-12 col-md-auto me-md-4">
-                                            <b>
-                                                <span v-if="item.erogationMode">
-                                                    [[ item.erogationModeDescription ]]
-                                                </span>
-                                            </b>
-                                        </div>
-                                        <div class="col-12 col-md-auto" v-if="item.scientificDirectorName">
-                                            <small>
-                                                {% trans "Manager" %} >
-                                                <b>[[ item.scientificDirectorName ]]</b>
-                                            </small>
-                                        </div>
-                                    </div>
-                                    <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right">
-                                        <svg class="icon icon-xs icon-white">
-                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                        </svg> {% trans "Edit" %}
-                                    </a>
-                                    <form :action="'{% url 'advanced-training:management:advanced-training-delete' 0 %}'.replace('0', item.id)" 
-                                        method="post" 
-                                        class="d-inline float-right ms-2">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('{% trans 'Sei sicuro di voler eliminare questo master?' %}')">
-                                            <svg class="icon icon-xs icon-white">
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                            </svg> {% trans "Elimina" %}
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--end card-->
-                </div>
-            </div>
-        </div>
-
-        <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
     </div>
+</div>
+
+<list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
+
+<loading-icon
+    v-if="is_loading"
+    :loader_source="loader_source">
+</loading-icon>
+
+<div v-else>
+    <div class="row mb-3" v-for="item in items.results">
+        <div class="col-12">
+            <!--start card-->
+            <div class="card-wrapper pb-0">
+                <div class="card no-after" style="border-top:1px solid #b71918">
+                    <div class="card-body p-1 pt-3 d-flex">
+                        <div class="col">
+                            <h5>
+                                <a :href="item.id+'/'" class="no-color">
+                                    <b>[[ item.masterTitle ]]</b>
+                                </a>
+                            </h5>
+                            <div class="row">
+                                <div class="col-12 col-md-auto me-md-4">
+                                    <b>
+                                        <span v-if="item.erogationMode">
+                                            [[ item.erogationModeDescription ]]
+                                        </span>
+                                    </b>
+                                </div>
+                                <div class="col-12 col-md-auto" v-if="item.scientificDirectorName">
+                                    <small>
+                                        {% trans "Manager" %} >
+                                        <b>[[ item.scientificDirectorName ]]</b>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Stato fittizio -->
+                            <div class="mt-2">
+                                <span class="badge bg-secondary me-2">[[ item.fakeStatus ]]</span>
+                            </div>
+
+                            <!-- Pulsanti -->
+                            <div class="float-right mt-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary float-right ms-2" @click="duplicate(item)">
+                                    <svg class="icon icon-xs">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
+                                    </svg> {% trans "Duplica" %}
+                                </button>
+
+                                <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right ms-2">
+                                    <svg class="icon icon-xs icon-white">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                    </svg> {% trans "Edit" %}
+                                </a>
+
+                                <form :action="'{% url 'advanced-training:management:advanced-training-delete' 0 %}'.replace('0', item.id)"
+                                    method="post"
+                                    class="d-inline float-right ms-2">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('{% trans 'Sei sicuro di voler eliminare questo master?' %}')">
+                                        <svg class="icon icon-xs icon-white">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                        </svg> {% trans "Elimina" %}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end card-->
+        </div>
+    </div>
+</div>
 
 {% block storage_block_bottom %}
-    <div v-else>
-        {% trans "No items here" %}
-    </div>
-
+<div v-else>
+    {% trans "No items here" %}
 </div>
 {% endblock storage_block_bottom %}
-
 {% endblock content %}
 
 {% block extra_scripts %}
 <script>
 function {{ id }}_get_form_paramenters(keyword=null, value=null) {
-
     let dict = {}
-
-    if (keyword)
-        dict[keyword] = value
-
-    // search
+    if (keyword) dict[keyword] = value
     let search = document.getElementById('{{ id }}_search')
     if (search && search.value) dict['search'] = search.value
-
-    // coursetype
     let coursetype = document.getElementById('{{ id }}_coursetype_input')
     if (coursetype && coursetype.value) dict['coursetype'] = coursetype.value
-
-    // erogation
     let erogation = document.getElementById('{{ id }}_erogation_input')
     if (erogation && erogation.value) dict['erogation'] = erogation.value
-
-    // department name
     let department = document.getElementById('{{ id }}_department_input')
     if (department && department.value) dict['department'] = department.value
-    
-
     setItemInSession("{{ id }}", dict)
-
     return dict
 }
 </script>
 {% endblock extra_scripts %}
 
 {% block extra_data %}
-
 {% get_current_language as LANGUAGE_CODE %}
 
 initial_academic_year: 2025,
@@ -251,13 +241,13 @@ loader_source_departments: '{% url 'structures:apiv1:departments-list' %}?lang={
 loader_source_mastertypes: '{% url "advanced-training:apiv2:advanced-training-course-types-list" %}',
 loader_source_erogations: '{% url "advanced-training:apiv2:erogation-modes-list" %}',
 
-
 academic_years_filter: [],
 departments_filter: [],
 erogations: [],
 
 show_pdf_import_button: false,
 
+fakeStatuses: ['Bozza', 'In approvazione', 'Rigettato', 'Approvato'],
 {% endblock extra_data %}
 
 {% block extra_mounted %}
@@ -268,16 +258,13 @@ this.callMasterTypes();
 this.callErogations();
 this.callDepartments();
 
+// Assegna stati fittizi random
+if (this.items && this.items.results) {
+    this.items.results.forEach(i => i.fakeStatus = this.fakeStatuses[Math.floor(Math.random() * this.fakeStatuses.length)]);
+}
+
 this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
 {% endblock extra_mounted %}
-
-{% block method_search %}
-search(keyword=null, value=null) {
-    if (value) this.parameters = {{ id }}_encodeQueryData({{ id }}_get_form_paramenters(keyword, value));
-    else this.parameters = {{ id }}_encodeQueryData({{ id }}_get_form_paramenters());
-    this.CallURL(this.url + this.parameters);
-},
-{% endblock method_search %}
 
 {% block method_callurl %}
 CallURL(url, initial=false) {
@@ -287,39 +274,47 @@ CallURL(url, initial=false) {
     axios
         .get(url)
         .then(response => {
-            if(initial) this.initial_items = response.data.results;
+            if (initial) this.initial_items = response.data.results;
             this.items = response.data;
             this.next_page = response.data.next;
             this.previous_page = response.data.previous;
             this.labels = response.data.labels;
             this.is_loading = false;
+
+            // 🔹 Assegna stato fittizio dopo aver caricato i dati
+            if (this.items && this.items.results) {
+                this.items.results.forEach(i => {
+                    i.fakeStatus = this.fakeStatuses[Math.floor(Math.random() * this.fakeStatuses.length)];
+                });
+            }
         })
 },
 {% endblock method_callurl %}
 
+
 {% block extra_methods %}
 callMasterTypes() {
-    axios
-        .get(this.loader_source_mastertypes)
+    axios.get(this.loader_source_mastertypes)
         .then(response => {
             this.master_types = response.data.results;
             this.is_loading_mastertypes = false;
         });
 },
 callErogations() {
-    axios
-        .get(this.loader_source_erogations)
+    axios.get(this.loader_source_erogations)
         .then(response => {
             this.erogations = response.data.results;
             this.is_loading_erogations = false;
         });
 },
 callDepartments() {
-    axios
-        .get(this.loader_source_departments)
+    axios.get(this.loader_source_departments)
         .then(response => {
             this.departments_filter = response.data.results;
             this.is_loading_departments = false
         })
+},
+duplicate(item) {
+    alert(`Funzione duplica in preparazione per: ${item.masterTitle}`);
 },
 {% endblock extra_methods %}
