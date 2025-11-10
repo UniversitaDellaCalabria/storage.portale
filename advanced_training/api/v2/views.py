@@ -17,6 +17,7 @@ from .serializers import (
     ErogationModesSerializer,
 )
 from advanced_training.models import (
+    AltaFormazioneAttivitaFormative,
     AltaFormazioneConsiglioScientificoEsterno,
     AltaFormazioneConsiglioScientificoInterno,
     AltaFormazioneDatiBase,
@@ -114,6 +115,20 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                 ),
                 to_attr="teaching_assignments",
             ),
+            Prefetch(
+                "altaformazioneattivitaformative_set",
+                queryset=(
+                    AltaFormazioneAttivitaFormative.objects.only(
+                        "id",
+                        "nome",
+                        "programma",
+                        "bibliografia",
+                        "modalita_verifica_finale",
+                        "alta_formazione_attivita_formativa_padre",
+                    )
+                ),
+                to_attr="training_activities",
+            ),
         )
         .only(
             "id",
@@ -131,6 +146,8 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
             "dipartimento_riferimento__dip_cod",
             "dipartimento_riferimento__dip_des_it",
             "dipartimento_riferimento__dip_des_eng",
+            "data_inizio", 
+            "data_fine",  
             "sede_corso",
             "num_min_partecipanti",
             "num_max_partecipanti",
@@ -157,6 +174,13 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
             "tipo_aziende_enti_tirocinio",
             "contenuti_tempi_criteri_cfu",
             "project_work",
+            "path_piano_finanziario",
+            "path_doc_delibera",
+            "matricola_proponente",
+            "cognome_proponente",
+            "nome_proponente",
+            "dt_mod",
+            "user_mod_id",
         )
         .order_by("titolo_it", "id")
     )

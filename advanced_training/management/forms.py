@@ -1,3 +1,5 @@
+from django import forms
+from django.forms import inlineformset_factory
 from advanced_training.models import (
     AltaFormazioneDatiBase,
     AltaFormazioneIncaricoDidattico,
@@ -5,20 +7,16 @@ from advanced_training.models import (
     AltaFormazionePartner,
     AltaFormazioneModalitaSelezione,
     AltaFormazioneConsiglioScientificoEsterno,
-    AltaFormazioneConsiglioScientificoInterno
+    AltaFormazioneConsiglioScientificoInterno,
 )
-from django import forms
-
-from django.forms import inlineformset_factory
-
 
 class MasterDatiBaseForm(forms.ModelForm):
-    
     tipo_selezione = forms.ModelChoiceField(
         queryset=AltaFormazioneModalitaSelezione.objects.all(),
         required=False,
         label="Modalità di selezione"
     )
+
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
@@ -34,6 +32,7 @@ class MasterDatiBaseForm(forms.ModelForm):
             "mesi",
             "data_inizio",
             "data_fine",
+            "sede_corso",
             "num_min_partecipanti",
             "num_max_partecipanti",
             "uditori_ammessi",
@@ -57,7 +56,31 @@ class MasterDatiBaseForm(forms.ModelForm):
             "project_work",
             "modalita_svolgimento_prova_finale",
             "numero_moduli",
+            "nome_origine_direttore_scientifico",
+            "path_piano_finanziario",
+            "path_doc_delibera",
+            "matricola_proponente",
+            "cognome_proponente",
+            "nome_proponente",
         ]
+        widgets = {
+            "data_inizio": forms.DateInput(attrs={"type": "date"}),
+            "data_fine": forms.DateInput(attrs={"type": "date"}),
+            "ore": forms.NumberInput(attrs={"min": 0}),
+            "mesi": forms.NumberInput(attrs={"min": 0}),
+            "num_min_partecipanti": forms.NumberInput(attrs={"min": 0}),
+            "num_max_partecipanti": forms.NumberInput(attrs={"min": 0}),
+            "num_max_uditori": forms.NumberInput(attrs={"min": 0}),
+            "ore_stage_tirocinio": forms.NumberInput(attrs={"min": 0}),
+            "cfu_stage": forms.NumberInput(attrs={"min": 0}),
+            "mesi_stage": forms.NumberInput(attrs={"min": 0}),
+            "uditori_ammessi": forms.CheckboxInput(),
+            "doppio_titolo": forms.CheckboxInput(),
+            "project_work": forms.CheckboxInput(),
+            "stage_tirocinio": forms.CheckboxInput(),
+            "path_piano_finanziario": forms.ClearableFileInput(),
+            "path_doc_delibera": forms.ClearableFileInput(),
+        }
         labels = {
             "titolo_it": "Titolo (IT)",
             "titolo_en": "Titolo (EN)",
@@ -67,6 +90,7 @@ class MasterDatiBaseForm(forms.ModelForm):
             "lingua": "Lingua",
             "alta_formazione_mod_erogazione": "Modalità di erogazione",
             "tipo_selezione": "Modalità di selezione",
+            "sede_corso": "Sede del corso",
             "ore": "Ore complessive",
             "mesi": "Durata (mesi)",
             "data_inizio": "Data inizio",
@@ -75,8 +99,8 @@ class MasterDatiBaseForm(forms.ModelForm):
             "num_max_partecipanti": "Numero massimo partecipanti",
             "uditori_ammessi": "Uditori ammessi",
             "num_max_uditori": "Numero massimo uditori",
-            "quota_iscrizione": "Quota di iscrizione",
-            "quota_uditori": "Quota uditori",
+            "quota_iscrizione": "Quota di iscrizione (€)",
+            "quota_uditori": "Quota uditori (€)",
             "requisiti_ammissione": "Requisiti di ammissione",
             "titolo_rilasciato": "Titolo rilasciato",
             "doppio_titolo": "Doppio titolo",
@@ -85,7 +109,7 @@ class MasterDatiBaseForm(forms.ModelForm):
             "obiettivi_formativi_summer_school": "Obiettivi formativi Summer School",
             "competenze": "Competenze",
             "sbocchi_occupazionali": "Sbocchi occupazionali",
-            "stage_tirocinio": "Stage / Tirocinio",
+            "stage_tirocinio": "Stage / Tirocinio previsto",
             "ore_stage_tirocinio": "Ore di tirocinio",
             "cfu_stage": "CFU tirocinio",
             "mesi_stage": "Mesi tirocinio",
@@ -94,6 +118,12 @@ class MasterDatiBaseForm(forms.ModelForm):
             "project_work": "Project Work",
             "modalita_svolgimento_prova_finale": "Modalità svolgimento prova finale",
             "numero_moduli": "Numero moduli",
+            "nome_origine_direttore_scientifico": "Nome direttore scientifico",
+            "path_piano_finanziario": "Piano finanziario (allegato)",
+            "path_doc_delibera": "Delibera (allegato)",
+            "matricola_proponente": "Matricola proponente",
+            "cognome_proponente": "Cognome proponente",
+            "nome_proponente": "Nome proponente",
         }
 
     def __init__(self, *args, **kwargs):
@@ -109,38 +139,21 @@ class MasterDatiBaseForm(forms.ModelForm):
             "data_inizio",
             "data_fine",
         ]
-
         for field in required_fields:
             self.fields[field].required = True
 
-
-class IncaricoDidatticoForm(forms.ModelForm):
-    class Meta:
-        model = AltaFormazioneIncaricoDidattico
-        fields = ["modulo", "num_ore", "docente", "qualifica", "ente", "tipologia"]
-        labels = {
-            "modulo": "Modulo",
-            "num_ore": "Numero ore",
-            "docente": "Docente",
-            "qualifica": "Qualifica",
-            "ente": "Ente",
-            "tipologia": "Tipologia",
-        }
-
-
-IncaricoDidatticoFormSet = inlineformset_factory(
-    AltaFormazioneDatiBase,
-    AltaFormazioneIncaricoDidattico,
-    form=IncaricoDidatticoForm,
-    extra=1,
-    can_delete=True,
-)
-
+        # File e campi opzionali
+        self.fields["path_piano_finanziario"].required = False
+        self.fields["path_doc_delibera"].required = False
 
 class PianoDidatticoForm(forms.ModelForm):
     class Meta:
         model = AltaFormazionePianoDidattico
         fields = ["modulo", "ssd", "num_ore", "cfu", "verifica_finale"]
+        widgets = {
+            "num_ore": forms.NumberInput(attrs={"min": 0}),
+            "cfu": forms.NumberInput(attrs={"min": 0}),
+        }
         labels = {
             "modulo": "Modulo",
             "ssd": "SSD",
@@ -158,16 +171,45 @@ PianoDidatticoFormSet = inlineformset_factory(
     can_delete=True,
 )
 
+class IncaricoDidatticoForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazioneIncaricoDidattico
+        fields = ["modulo", "num_ore", "docente", "qualifica", "ente", "tipologia"]
+        widgets = {
+            "num_ore": forms.NumberInput(attrs={"min": 0}),
+        }
+        labels = {
+            "modulo": "Modulo",
+            "num_ore": "Numero ore",
+            "docente": "Docente",
+            "qualifica": "Qualifica",
+            "ente": "Ente",
+            "tipologia": "Tipologia docente",
+        }
+
+
+IncaricoDidatticoFormSet = inlineformset_factory(
+    AltaFormazioneDatiBase,
+    AltaFormazioneIncaricoDidattico,
+    form=IncaricoDidatticoForm,
+    extra=1,
+    can_delete=True,
+)
+
 class PartnerForm(forms.ModelForm):
     class Meta:
         model = AltaFormazionePartner
         fields = ["denominazione", "tipologia", "sito_web"]
+        widgets = {
+            "sito_web": forms.URLInput(attrs={"placeholder": "https://..."}),
+        }
         labels = {
-            "denominazione": "Denominazione",
+            "denominazione": "Denominazione partner",
             "tipologia": "Tipologia",
             "sito_web": "Sito web",
         }
-        
+
+
 PartnerFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,
     AltaFormazionePartner,
@@ -185,7 +227,8 @@ class ConsiglioScientificoEsternoForm(forms.ModelForm):
             "ruolo_cons": "Ruolo",
             "ente_cons": "Ente",
         }
-        
+
+
 ConsiglioScientificoEsternoFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,
     AltaFormazioneConsiglioScientificoEsterno,
@@ -200,9 +243,10 @@ class ConsiglioScientificoInternoForm(forms.ModelForm):
         fields = ["matricola_cons", "nome_origine_cons"]
         labels = {
             "matricola_cons": "Matricola",
-            "nome_origine_cons": "Nome"
+            "nome_origine_cons": "Nome",
         }
-        
+
+
 ConsiglioScientificoInternoFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,
     AltaFormazioneConsiglioScientificoInterno,
@@ -210,5 +254,3 @@ ConsiglioScientificoInternoFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
-
-

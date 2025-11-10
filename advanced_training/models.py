@@ -16,6 +16,7 @@ class AltaFormazioneConsiglioScientificoEsterno(models.Model):
         db_column="ID_ALTA_FORMAZIONE_DATI_BASE",
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
         managed = True
@@ -39,6 +40,7 @@ class AltaFormazioneConsiglioScientificoInterno(models.Model):
         db_column="ID_ALTA_FORMAZIONE_DATI_BASE",
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
         managed = True
@@ -111,6 +113,7 @@ class AltaFormazioneDatiBase(models.Model):
         db_column="ID_PERSONALE_MATRICOLA_DIRETTORE_SCIENTIFICO",
         blank=True,
         null=True,
+        related_name="direttore_scientifico"  # AGGIUNTO per evitare conflitti
     )
     nome_origine_direttore_scientifico = models.TextField(
         db_column="NOME_ORIGINE_DIRETTORE_SCIENTIFICO", blank=True, null=True
@@ -151,12 +154,98 @@ class AltaFormazioneDatiBase(models.Model):
     contenuti_tempi_criteri_cfu = models.TextField(
         db_column="CONTENUTI_TEMPI_CRITERI_CFU", blank=True, null=True
     )
+    path_piano_finanziario = models.CharField(
+        db_column="PATH_PIANO_FINANZIARIO", max_length=500, blank=True, null=True
+    )
+    path_doc_delibera = models.CharField(
+        db_column="PATH_DOC_DELIBERA", max_length=500, blank=True, null=True
+    )
+    matricola_proponente = models.ForeignKey(
+        "addressbook.Personale",
+        models.SET_NULL,
+        to_field="matricola",
+        db_column="MATRICOLA_PROPONENTE",
+        blank=True,
+        null=True,
+        related_name="proponente"
+    )
+    cognome_proponente = models.CharField(
+        db_column="COGNOME_PROPONENTE", max_length=200, blank=True, null=True
+    )
+    nome_proponente = models.CharField(
+        db_column="NOME_PROPONENTE", max_length=200, blank=True, null=True
+    )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = True
         db_table = "ALTA_FORMAZIONE_DATI_BASE"
         unique_together = (("titolo_it", "data_inizio"),)
+
+class AltaFormazioneAttivitaFormative(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    alta_formazione_dati_base = models.ForeignKey(
+        AltaFormazioneDatiBase,
+        models.CASCADE,
+        db_column="ID_ALTA_FORMAZIONE_DATI_BASE",
+    )
+    nome = models.CharField(db_column="NOME", max_length=500, blank=True, null=True)
+    programma = models.TextField(db_column="PROGRAMMA", blank=True, null=True)
+    bibliografia = models.TextField(db_column="BIBLIOGRAFIA", blank=True, null=True)
+    modalita_verifica_finale = models.TextField(
+        db_column="MODALITA_VERIFICA_FINALE", blank=True, null=True
+    )
+    alta_formazione_attivita_formativa_padre = models.ForeignKey(
+        "self",
+        models.SET_NULL,
+        db_column="ID_ALTA_FORMAZIONE_ATTIVITA_FORMATIVA_PADRE",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        managed = True
+        db_table = "ALTA_FORMAZIONE_ATTIVITA_FORMATIVE"
+
+class AltaFormazioneAttivitaFormativeDocenti(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    alta_formazione_attivita_formative = models.ForeignKey(
+        AltaFormazioneAttivitaFormative,
+        models.CASCADE,
+        db_column="ID_ALTA_FORMAZIONE_ATTIVITA_FORMATIVE",
+    )
+    matricola_docente = models.ForeignKey(
+        "addressbook.Personale",
+        models.SET_NULL,
+        db_column="MATRICOLA_DOCENTE",
+        blank=True,
+        null=True,
+        to_field="matricola",
+    )
+    nome_docente = models.CharField(
+        db_column="NOME_DOCENTE", max_length=200, blank=True, null=True
+    )
+    cognome_docente = models.CharField(
+        db_column="COGNOME_DOCENTE", max_length=200, blank=True, null=True
+    )
+    tipologia_docente = models.ForeignKey(
+        "AltaFormazioneTipologiaDocente",
+        models.SET_NULL,
+        db_column="ID_TIPOLOGIA_DOCENTE",
+        blank=True,
+        null=True,
+    )
+    durata_in_ore = models.IntegerField(
+        db_column="DURATA_IN_ORE", blank=True, null=True
+    )
+    ssd = models.CharField(db_column="SSD", max_length=100, blank=True, null=True)
+    cfu = models.IntegerField(db_column="CFU", blank=True, null=True)
+    argomento = models.TextField(db_column="ARGOMENTO", blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = "ALTA_FORMAZIONE_ATTIVITA_FORMATIVE_DOCENTI"
 
 
 class AltaFormazioneIncaricoDidattico(models.Model):
@@ -184,6 +273,7 @@ class AltaFormazioneIncaricoDidattico(models.Model):
         db_column="TIPOLOGIA", max_length=1000, blank=True, null=True
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
         managed = True
@@ -194,6 +284,7 @@ class AltaFormazioneModalitaErogazione(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     descrizione = models.CharField(db_column="DESCRIZIONE", max_length=1000)
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
         managed = True
@@ -210,6 +301,7 @@ class AltaFormazioneModalitaSelezione(models.Model):
         AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
         managed = True
@@ -229,6 +321,7 @@ class AltaFormazionePartner(models.Model):
         AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
         managed = True
@@ -248,16 +341,29 @@ class AltaFormazionePianoDidattico(models.Model):
         AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
         managed = True
         db_table = "ALTA_FORMAZIONE_PIANO_DIDATTICO"
+
+class AltaFormazioneTipologiaDocente(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    descrizione = models.CharField(db_column="DESCRIZIONE", max_length=500)
+
+    class Meta:
+        managed = True
+        db_table = "ALTA_FORMAZIONE_TIPOLOGIA_DOCENTE"
+
+    def __str__(self):
+        return self.descrizione
 
 
 class AltaFormazioneTipoCorso(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     tipo_corso_descr = models.CharField(db_column="TIPO_CORSO_DESCR", max_length=256)
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
         managed = True
