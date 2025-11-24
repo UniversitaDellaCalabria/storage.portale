@@ -1,4 +1,8 @@
 from django.db import models
+from generics.models import Permissions
+from advanced_training.settings import (
+    OFFICE_ADVANCED_TRAINING,
+)
 
 
 class AltaFormazioneConsiglioScientificoEsterno(models.Model):
@@ -47,7 +51,7 @@ class AltaFormazioneConsiglioScientificoInterno(models.Model):
         db_table = "ALTA_FORMAZIONE_CONSIGLIO_SCIENTIFICO_INTERNO"
 
 
-class AltaFormazioneDatiBase(models.Model):
+class AltaFormazioneDatiBase(Permissions):
     id = models.AutoField(db_column="ID", primary_key=True)
     titolo_it = models.CharField(
         db_column="TITOLO_IT", max_length=512, blank=True, null=True
@@ -113,7 +117,7 @@ class AltaFormazioneDatiBase(models.Model):
         db_column="ID_PERSONALE_MATRICOLA_DIRETTORE_SCIENTIFICO",
         blank=True,
         null=True,
-        related_name="direttore_scientifico"  # AGGIUNTO per evitare conflitti
+        related_name="direttore_scientifico",  # AGGIUNTO per evitare conflitti
     )
     nome_origine_direttore_scientifico = models.TextField(
         db_column="NOME_ORIGINE_DIRETTORE_SCIENTIFICO", blank=True, null=True
@@ -167,7 +171,7 @@ class AltaFormazioneDatiBase(models.Model):
         db_column="MATRICOLA_PROPONENTE",
         blank=True,
         null=True,
-        related_name="proponente"
+        related_name="proponente",
     )
     cognome_proponente = models.CharField(
         db_column="COGNOME_PROPONENTE", max_length=200, blank=True, null=True
@@ -178,10 +182,56 @@ class AltaFormazioneDatiBase(models.Model):
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     user_mod_id = models.IntegerField(blank=True, null=True)
 
+    @classmethod
+    def get_offices_names(cls, **kwargs):
+        return (OFFICE_ADVANCED_TRAINING,)
+
+    def _is_valid_office(self, office_name, all_user_offices, **kwargs):
+        offices_names = self.get_offices_names()
+
+        if office_name == offices_names[0]:
+            user_office = all_user_offices.get(office__name=office_name)
+            return (
+                user_office.office.organizational_structure.unique_code
+                == self.dipartimento_riferimento.dip_cod
+            )
+        return True
+    
+    def _check_edit_permission(self, user_offices_names, **kwargs):
+        offices_names = self.get_offices_names()
+        
+        dati_base_status = (
+            AltaFormazioneStatus.objects.filter(
+                id_alta_formazione_dati_base=self.id
+            )
+            .order_by("-data_status")
+            .first()
+        )
+        
+        if dati_base_status is None:
+            return False
+        
+        status_cod = dati_base_status.id_alta_formazione_status.status_cod
+        
+        if status_cod == "0" and offices_names[0] in user_offices_names:
+            return True
+        elif status_cod == "1" and offices_names[1] in user_offices_names:
+            return True
+        elif status_cod == "2" and offices_names[2] in user_offices_names:
+            return True
+        # ecc... ????
+        
+        return False
+    
+    def _check_lock_permission(self, user_offices_names, **kwargs):
+        return self._check_edit_permission(user_offices_names, **kwargs)
+    
+
     class Meta:
         managed = True
         db_table = "ALTA_FORMAZIONE_DATI_BASE"
         unique_together = (("titolo_it", "data_inizio"),)
+
 
 class AltaFormazioneAttivitaFormative(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -207,6 +257,7 @@ class AltaFormazioneAttivitaFormative(models.Model):
     class Meta:
         managed = True
         db_table = "ALTA_FORMAZIONE_ATTIVITA_FORMATIVE"
+
 
 class AltaFormazioneAttivitaFormativeDocenti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -347,6 +398,7 @@ class AltaFormazionePianoDidattico(models.Model):
         managed = True
         db_table = "ALTA_FORMAZIONE_PIANO_DIDATTICO"
 
+
 class AltaFormazioneTipologiaDocente(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     descrizione = models.CharField(db_column="DESCRIZIONE", max_length=500)
@@ -371,3 +423,56 @@ class AltaFormazioneTipoCorso(models.Model):
 
     def __str__(self):
         return self.tipo_corso_descr
+
+
+class AltaFormazioneFinestraTemporale(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    titolo = models.CharField(db_column="TITOLO", max_length=256)
+    data_inizio = models.DateField(db_column="DATA_INIZIO")
+    data_fine = models.DateField(db_column="DATA_FINE")
+    anno_accademico = models.CharField(db_column="ANNO_ACCADEMICO", max_length=9)
+    note = models.TextField(db_column="NOTE", blank=True, null=True)
+    id_alta_formazione_dati_base = models.ForeignKey(
+        AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
+    )
+
+    class Meta:
+        managed = True
+        db_table = "ALTA_FORMAZIONE_FINESTRA_TEMPORALE"
+
+    def __str__(self):
+        return self.titolo
+
+
+class AltaFormazioneStatus(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    status_cod = models.CharField(db_column="STATUS_COD", max_length=50)
+    status_desc = models.CharField(db_column="STATUS_DESC", max_length=256)
+
+    class Meta:
+        managed = True
+        db_table = "ALTA_FORMAZIONE_STATUS"
+
+    def __str__(self):
+        return self.status_desc
+
+
+class AltaFormazioneStatusStorico(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    motivazione = models.TextField(db_column="MOTIVAZIONE", blank=True, null=True)
+    data_status = models.DateField(db_column="DATA_STATUS", blank=True, null=True)
+    dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    user_mod_id = models.IntegerField(blank=True, null=True)
+    id_alta_formazione_dati_base = models.ForeignKey(
+        AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
+    )
+    id_alta_formazione_status = models.ForeignKey(
+        AltaFormazioneStatus, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_STATUS"
+    )
+
+    class Meta:
+        managed = True
+        db_table = "ALTA_FORMAZIONE_STATUS_STORICO"
+
+    def __str__(self):
+        return self.status_desc
