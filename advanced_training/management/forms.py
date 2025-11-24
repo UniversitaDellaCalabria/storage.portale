@@ -8,13 +8,15 @@ from advanced_training.models import (
     AltaFormazioneModalitaSelezione,
     AltaFormazioneConsiglioScientificoEsterno,
     AltaFormazioneConsiglioScientificoInterno,
+    AltaFormazioneStatusStorico,
 )
+
 
 class MasterDatiBaseForm(forms.ModelForm):
     tipo_selezione = forms.ModelChoiceField(
         queryset=AltaFormazioneModalitaSelezione.objects.all(),
         required=False,
-        label="Modalità di selezione"
+        label="Modalità di selezione",
     )
 
     class Meta:
@@ -146,6 +148,7 @@ class MasterDatiBaseForm(forms.ModelForm):
         self.fields["path_piano_finanziario"].required = False
         self.fields["path_doc_delibera"].required = False
 
+
 class PianoDidatticoForm(forms.ModelForm):
     class Meta:
         model = AltaFormazionePianoDidattico
@@ -170,6 +173,7 @@ PianoDidatticoFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
+
 
 class IncaricoDidatticoForm(forms.ModelForm):
     class Meta:
@@ -196,6 +200,7 @@ IncaricoDidatticoFormSet = inlineformset_factory(
     can_delete=True,
 )
 
+
 class PartnerForm(forms.ModelForm):
     class Meta:
         model = AltaFormazionePartner
@@ -218,6 +223,7 @@ PartnerFormSet = inlineformset_factory(
     can_delete=True,
 )
 
+
 class ConsiglioScientificoEsternoForm(forms.ModelForm):
     class Meta:
         model = AltaFormazioneConsiglioScientificoEsterno
@@ -237,6 +243,7 @@ ConsiglioScientificoEsternoFormSet = inlineformset_factory(
     can_delete=True,
 )
 
+
 class ConsiglioScientificoInternoForm(forms.ModelForm):
     class Meta:
         model = AltaFormazioneConsiglioScientificoInterno
@@ -254,3 +261,17 @@ ConsiglioScientificoInternoFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
+
+
+class AltaFormazioneStatusForm(forms.ModelForm):
+    motivazione = forms.CharField(
+        label="Motivazione",
+        widget=forms.Textarea(attrs={"rows": 4}),
+        required=False,
+    )
+    class Meta:
+        model = AltaFormazioneStatusStorico
+        fields = ["motivazione"]
+        labels = {
+            "status": "Stato master",
+        }
