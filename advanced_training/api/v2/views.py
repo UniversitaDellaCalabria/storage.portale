@@ -27,6 +27,7 @@ from advanced_training.models import (
     AltaFormazionePartner,
     AltaFormazionePianoDidattico,
     AltaFormazioneTipoCorso,
+    AltaFormazioneStatusStorico,
 )
 
 
@@ -128,6 +129,15 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                     )
                 ),
                 to_attr="training_activities",
+            ),
+            Prefetch(
+                "altaformazionestatusstorico_set",
+                queryset=(
+                    AltaFormazioneStatusStorico.objects.select_related(
+                        "id_alta_formazione_status"
+                    ).order_by("-data_status")
+                ),
+                to_attr="status_history",
             ),
         )
         .only(

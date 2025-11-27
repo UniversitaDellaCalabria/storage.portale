@@ -9,6 +9,7 @@ from advanced_training.models import (
     AltaFormazioneDatiBase,
     AltaFormazioneModalitaErogazione,
     AltaFormazioneTipoCorso,
+    AltaFormazioneStatusStorico,
 )
 
 
@@ -74,13 +75,16 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     lastModified = serializers.DateTimeField(source="dt_mod")
     lastModifiedBy = serializers.IntegerField(source="user_mod_id")
 
+    status = serializers.SerializerMethodField()
+    statusDescription = serializers.SerializerMethodField()
+
     partners = serializers.SerializerMethodField()
     selections = serializers.SerializerMethodField()
     internalScientificCouncil = serializers.SerializerMethodField()
     externalScientificCouncil = serializers.SerializerMethodField()
     teachingPlan = serializers.SerializerMethodField()
     teachingAssignments = serializers.SerializerMethodField()
-    trainingActivities = serializers.SerializerMethodField()  # AGGIUNTO
+    trainingActivities = serializers.SerializerMethodField()
 
     @extend_schema_field(serializers.CharField())
     def get_scientificDirectorId(self, obj):
@@ -89,6 +93,36 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.CharField())
     def get_proposerId(self, obj):
         return encrypt(obj.matricola_proponente) if obj.matricola_proponente else None
+
+    @extend_schema_field(serializers.CharField(allow_null=True))
+    def get_status(self, obj):
+        """Ottiene il codice dello stato corrente del master"""
+        status_storico = (
+            AltaFormazioneStatusStorico.objects.filter(id_alta_formazione_dati_base=obj)
+            .select_related("id_alta_formazione_status")
+            .order_by("-data_status")
+            .first()
+        )
+
+        if status_storico:
+            return status_storico.id_alta_formazione_status.status_cod
+
+        return None  # Bozza (nessuno stato registrato)
+
+    @extend_schema_field(serializers.CharField())
+    def get_statusDescription(self, obj):
+        """Ottiene la descrizione dello stato corrente del master"""
+        status_storico = (
+            AltaFormazioneStatusStorico.objects.filter(id_alta_formazione_dati_base=obj)
+            .select_related("id_alta_formazione_status")
+            .order_by("-data_status")
+            .first()
+        )
+
+        if status_storico:
+            return status_storico.id_alta_formazione_status.status_desc
+
+        return "Bozza"  # Default quando non c'è stato
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_partners(self, obj):
@@ -214,6 +248,8 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
             "proposerName",
             "lastModified",
             "lastModifiedBy",
+            "status",
+            "statusDescription",
             # LISTE
             "partners",
             "selections",
