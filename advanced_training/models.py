@@ -196,21 +196,23 @@ class AltaFormazioneDatiBase(Permissions):
                 == self.dipartimento_riferimento.dip_cod
             )
         return True
+
+    def get_current_status(self):
+        return (
+            self.altaformazionestatusstorico_set.filter(id_alta_formazione_dati_base=self.id)
+            .order_by("-data_status", "-dt_mod", "-id")
+            .first()
+        )
+
     
     def _check_edit_permission(self, user_offices_names, **kwargs):
         offices_names = self.get_offices_names()
         
-        dati_base_status = (
-            AltaFormazioneStatus.objects.filter(
-                id_alta_formazione_dati_base=self.id
-            )
-            .order_by("-data_status")
-            .first()
-        )
-        
+        dati_base_status = self.get_current_status()
+
         if dati_base_status is None:
             return False
-        
+            
         status_cod = dati_base_status.id_alta_formazione_status.status_cod
         
         if status_cod == "0" and offices_names[0] in user_offices_names:
