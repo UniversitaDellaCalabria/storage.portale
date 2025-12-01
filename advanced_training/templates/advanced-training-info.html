@@ -7,28 +7,70 @@
         <h3 style="font-weight: normal" class="mb-0">
           {% blocktrans %}Scheda Master{% endblocktrans %}
         </h3>
-      </div>
-
-      <!-- STATO E CAMBIO STATO -->
-      <div class="mb-4">
         <div class="d-flex align-items-center mb-3">
           <span class="mr-2"><strong>Stato attuale:</strong></span>
           <span class="badge badge-{{ status_badge_class }} badge-pill">
             {{ current_status_description }}
           </span>
         </div>
+      </div>
 
+      <!-- STATO E CAMBIO STATO -->
+      <div class="mb-4">
         {% if master.pk and available_statuses %}
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-primary"
-          data-toggle="modal"
-          data-target="#statusModal"
-        >
-          <i class="fas fa-exchange-alt"></i> Cambia Stato
-        </button>
+        
+        <div class="d-flex justify-content-between">
+          <div>
+            <button
+              type="button"
+              class="btn btn-sm btn-success mr-2"
+              data-toggle="modal"
+              data-target="#statusModal"
+              data-status-cod="3"
+              data-status-label="Approva"
+            >
+              <i class="fas fa-check"></i> Approva
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-danger mr-2"
+              data-toggle="modal"
+              data-target="#statusModal"
+              data-status-cod="4"
+              data-status-label="Rifiuta"
+            >
+              <i class="fas fa-times"></i> Rifiuta
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-warning"
+              data-toggle="modal"
+              data-target="#statusModal"
+              data-status-cod="2"
+              data-status-label="Correggi"
+            >
+              <i class="fas fa-times"></i> Correggi
+            </button>
+          </div>
+
+          <!-- Pulsante Valida a destra e grigio -->
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            data-toggle="modal"
+            data-target="#statusModal"
+            data-status-cod="1"
+            data-status-label="Valida"
+          >
+            <i class="fas fa-check"></i> Valida
+          </button>
+        </div>
+
         {% endif %}
       </div>
+
 
       <!-- MESSAGGI -->
       {% if messages %}
@@ -206,8 +248,8 @@
                 {% endfor %}
               </tbody>
             </table>
-            {% endif %} {% else %} {% include "form_template.html" with
-            form=form %} {% endif %}
+            {% endif %} {% else %}
+            {% include "form_template.html" with form=form %} {% endif %}
 
             <input type="hidden" name="tab_form_dict_key" value="{{tab}}" />
 
@@ -249,7 +291,9 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="statusModalLabel">Cambia Stato Master</h5>
+        <h5 class="modal-title" id="statusModalLabel">
+          Conferma <span id="actionLabel"></span>Stato Master
+        </h5>
         <button
           type="button"
           class="close"
@@ -261,23 +305,13 @@
       </div>
       <form method="post" id="statusChangeForm">
         {% csrf_token %}
+        <input
+          type="hidden"
+          name="nuovo_stato"
+          id="nuovoStatoHidden"
+          value=""
+        />
         <div class="modal-body">
-          <div class="form-group">
-            <label for="nuovoStato">Seleziona nuovo stato:</label>
-            <select
-              class="form-control"
-              id="nuovoStato"
-              name="nuovo_stato"
-              required
-            >
-              <option value="">-- Seleziona --</option>
-              {% for status in available_statuses %}
-              <option value="{{ status.status_cod }}">
-                {{ status.status_desc }}
-              </option>
-              {% endfor %}
-            </select>
-          </div>
           <div class="form-group">
             <label for="motivazione"
               >Motivazione: <span class="text-danger">*</span></label
@@ -306,51 +340,38 @@
 </div>
 
 <script>
+  $("#statusModal").on("show.bs.modal", function (event) {
+    var button = $(event.relatedTarget);
+    var statusCod = button.data("status-cod");
+    var statusLabel = button.data("status-label");
+
+    var modal = $(this);
+    modal.find("#nuovoStatoHidden").val(statusCod);
+
+    modal.find("#actionLabel").text(statusLabel);
+    modal.find("#currentActionDisplay").text(statusLabel);
+    modal.find("#confirmButton").text("Conferma " + statusLabel);
+    modal.find("#motivazione").val("");
+
+    const formActionBase =
+      "{% url 'advanced-training:management:advanced-training-status-change' master.pk 'STATUS_PLACEHOLDER' %}";
+    const newActionUrl = formActionBase.replace(
+      "STATUS_PLACEHOLDER",
+      statusCod
+    );
+    modal.find("#statusChangeForm").attr("action", newActionUrl);
+  });
+
   document
     .getElementById("statusChangeForm")
     .addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const nuovoStato = document.getElementById("nuovoStato").value;
       const motivazione = document.getElementById("motivazione").value.trim();
 
-      if (!nuovoStato) {
-        alert("Seleziona un nuovo stato");
-        return;
-      }
-
       if (!motivazione) {
+        e.preventDefault(); // Blocca l'invio
         alert("La motivazione è obbligatoria");
         return;
       }
-
-      // Crea un form temporaneo per inviare la richiesta POST
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action =
-        "{% url 'advanced-training:management:alta-formazione-status-change' master.pk 'STATUS_PLACEHOLDER' %}".replace(
-          "STATUS_PLACEHOLDER",
-          nuovoStato
-        );
-
-      // Aggiungi il token CSRF
-      const csrfInput = document.createElement("input");
-      csrfInput.type = "hidden";
-      csrfInput.name = "csrfmiddlewaretoken";
-      csrfInput.value = document.querySelector(
-        "[name=csrfmiddlewaretoken]"
-      ).value;
-      form.appendChild(csrfInput);
-
-      // Aggiungi la motivazione
-      const motivazioneInput = document.createElement("input");
-      motivazioneInput.type = "hidden";
-      motivazioneInput.name = "motivazione";
-      motivazioneInput.value = motivazione;
-      form.appendChild(motivazioneInput);
-
-      document.body.appendChild(form);
-      form.submit();
     });
 </script>
 {% endif %} {% endblock form_container %}

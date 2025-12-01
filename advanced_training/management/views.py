@@ -35,37 +35,34 @@ logger = logging.getLogger(__name__)
 def get_status_badge_class(status_cod):
     """Restituisce la classe CSS del badge in base al codice stato"""
     status_map = {
-        '0': 'secondary',  # Bozza
-        '1': 'warning',    # In lavorazione
-        '2': 'info',       # In revisione
-        '3': 'success',    # Approvato
-        '4': 'danger',     # Respinto
+        "0": "secondary",  # Bozza
+        "1": "warning",  # Richiesta validazione
+        "2": "info",  # Da corregere
+        "3": "success",  # Approvato
+        "4": "danger",  # Rigettato
     }
-    return status_map.get(status_cod, 'secondary')
+    return status_map.get(status_cod, "secondary")
 
 
 def get_current_status(master):
     """Ottiene lo stato corrente del master dal database"""
     status_storico = (
-        AltaFormazioneStatusStorico.objects
-        .filter(id_alta_formazione_dati_base=master)
-        .order_by('-data_status')
+        AltaFormazioneStatusStorico.objects.filter(id_alta_formazione_dati_base=master)
+        .order_by("-data_status", "-dt_mod", "-id")
         .first()
     )
-    
+
     if status_storico:
         return {
-            'cod': status_storico.id_alta_formazione_status.status_cod,
-            'description': status_storico.id_alta_formazione_status.status_desc,
-            'badge_class': get_status_badge_class(status_storico.id_alta_formazione_status.status_cod)
+            "cod": status_storico.id_alta_formazione_status.status_cod,
+            "description": status_storico.id_alta_formazione_status.status_desc,
+            "badge_class": get_status_badge_class(
+                status_storico.id_alta_formazione_status.status_cod
+            ),
         }
-    
+
     # Default: Bozza
-    return {
-        'cod': None,
-        'description': 'Bozza',
-        'badge_class': 'secondary'
-    }
+    return {"cod": None, "description": "Bozza", "badge_class": "secondary"}
 
 
 @login_required
@@ -95,7 +92,7 @@ def advancedtraining_info_edit(request, pk):
 
     # Ottieni lo stato corrente
     current_status = get_current_status(master)
-    
+
     # Ottieni tutti gli stati disponibili per il cambio stato
     available_statuses = AltaFormazioneStatus.objects.all()
 
@@ -203,8 +200,8 @@ def advancedtraining_info_edit(request, pk):
             "forms": tab_form_dict,
             "last_viewed_tab": last_viewed_tab,
             "breadcrumbs": breadcrumbs,
-            "current_status_description": current_status['description'],
-            "status_badge_class": current_status['badge_class'],
+            "current_status_description": current_status["description"],
+            "status_badge_class": current_status["badge_class"],
             "available_statuses": available_statuses,
         },
     )
@@ -273,12 +270,12 @@ def advancedtraining_info_delete(request, pk):
 @login_required
 def alta_formazione_status_change(request, pk, status_cod):
     """Gestisce il cambio di stato del master"""
-    
+
     if request.method != "POST":
         return custom_message(request, _("Metodo non consentito"))
-    
+
     dati_base = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
-    
+
     # Verifica permessi
     user_permissions_and_offices = dati_base.get_user_permissions_and_offices(
         request.user
@@ -288,25 +285,28 @@ def alta_formazione_status_change(request, pk, status_cod):
         or not user_permissions_and_offices["permissions"]["edit"]
     ):
         return custom_message(request, _("Permission denied"))
-    
+
     try:
         # Verifica lock
         content_type_id = ContentType.objects.get_for_model(dati_base).pk
         lock = get_lock_from_cache(content_type_id, dati_base.pk)
         if lock[0] and not lock[0] == request.user.pk:
             raise LockCannotBeAcquiredException(lock)
-        
+
         # Ottieni stato corrente
         dati_base_status = (
-            AltaFormazioneStatusStorico.objects
-            .filter(id_alta_formazione_dati_base=dati_base)
+            AltaFormazioneStatusStorico.objects.filter(
+                id_alta_formazione_dati_base=dati_base
+            )
             .order_by("-data_status")
             .first()
         )
-        
+
         old_status = None
         if dati_base_status:
-            old_status = getattr(dati_base_status.id_alta_formazione_status, "status_cod", None)
+            old_status = getattr(
+                dati_base_status.id_alta_formazione_status, "status_cod", None
+            )
 
         # Ottieni nuovo stato
         status = get_object_or_404(AltaFormazioneStatus, status_cod=status_cod)
@@ -318,19 +318,23 @@ def alta_formazione_status_change(request, pk, status_cod):
                 messages.ERROR,
                 _("Advanced training is already") + f" '{status.status_desc}'",
             )
-            return redirect("advanced-training:management:advanced-training-detail", pk=pk)
-        
+            return redirect(
+                "advanced-training:management:advanced-training-detail", pk=pk
+            )
+
         # Ottieni motivazione
         motivazione = request.POST.get("motivazione", "").strip()
-        
+
         if not motivazione:
             messages.add_message(
                 request,
                 messages.ERROR,
                 _("Motivazione richiesta per questo cambiamento di stato."),
             )
-            return redirect("advanced-training:management:advanced-training-detail", pk=pk)
-        
+            return redirect(
+                "advanced-training:management:advanced-training-detail", pk=pk
+            )
+
         # Crea nuovo record nello storico
         AltaFormazioneStatusStorico.objects.create(
             motivazione=motivazione,

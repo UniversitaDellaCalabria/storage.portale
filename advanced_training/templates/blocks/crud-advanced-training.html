@@ -314,10 +314,10 @@ getStatusBadgeClass(status) {
     
     const statusMap = {
         '0': 'badge-secondary',  // Bozza
-        '1': 'badge-warning',    // In lavorazione
-        '2': 'badge-info',       // In revisione
-        '3': 'badge-success',    // Approvato
-        '4': 'badge-danger',     // Respinto
+        '1': 'badge-warning',  // Richiesta validazione
+        '2': 'badge-info',  // Da corregere
+        '3': 'badge-success',  // Approvato
+        '4': 'badge-danger',  // Rigettato
     };
     
     return statusMap[status] || 'badge-secondary';
