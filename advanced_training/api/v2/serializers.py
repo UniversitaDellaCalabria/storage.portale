@@ -100,7 +100,7 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
         status_storico = (
             AltaFormazioneStatusStorico.objects.filter(id_alta_formazione_dati_base=obj)
             .select_related("id_alta_formazione_status")
-            .order_by("-data_status")
+            .order_by("-data_status", "-dt_mod", "-id")
             .first()
         )
 
