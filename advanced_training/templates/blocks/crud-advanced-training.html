@@ -135,7 +135,7 @@
                         <div class="col">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="mb-0">
-                                    <a :href="item.id+'/'" class="no-color">
+                                    <a :href="item.id+'/?status='+item.status" class="no-color">
                                         <b>[[ item.masterTitle ]]</b>
                                     </a>
                                 </h5>
@@ -172,7 +172,7 @@
                                     </svg> {% trans "Duplica" %}
                                 </button>
 
-                                <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right ms-2">
+                                <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right ms-2" v-if="canEdit(item)">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
@@ -180,7 +180,7 @@
 
                                 <form :action="'{% url 'advanced-training:management:advanced-training-delete' 0 %}'.replace('0', item.id)"
                                     method="post"
-                                    class="d-inline float-right ms-2">
+                                    class="d-inline float-right ms-2" v-if="canDelete(item)">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm btn-danger"
                                             onclick="return confirm('{% trans 'Sei sicuro di voler eliminare questo master?' %}')">
@@ -305,11 +305,9 @@ callDepartments() {
         })
 },
 duplicate(item) {
-    alert(`Funzione duplica in preparazione per: ${item.masterTitle}`);
+    window.location.href = `${item.id}/duplicate/`;
 },
 getStatusBadgeClass(status) {
-    // Mappa i colori in base al codice stato
-    // Puoi personalizzare questi colori in base alle tue esigenze
     if (!status) return 'badge-secondary'; // Bozza
     
     const statusMap = {
@@ -321,5 +319,13 @@ getStatusBadgeClass(status) {
     };
     
     return statusMap[status] || 'badge-secondary';
-}
+},
+canEdit(item) {
+    console.log('Can Edit Check:', item.status);
+    return item.status == "0" || item.status == "2" || item.status ==  null;
+},
+canDelete(item) {
+    console.log('Can Delete Check:', item.status);
+    return item.status == "0" || item.status ==  null;
+},
 {% endblock extra_methods %}

@@ -90,8 +90,14 @@ def advancedtraining_info_edit(request, pk):
         "#": _("Edit Master"),
     }
 
-    # Ottieni lo stato corrente
+    # Ottieni lo stato corrente (dalla funzione helper)
     current_status = get_current_status(master)
+    # estrai il codice di stato (può essere None)
+    current_status_cod = current_status.get("cod")
+
+    # Calcola la flag is_readonly: True per stati 1, 3, 4
+    # normalizziamo a stringa per confronto sicuro
+    is_readonly = str(current_status_cod) in ["1", "3", "4"]
 
     # Ottieni tutti gli stati disponibili per il cambio stato
     available_statuses = AltaFormazioneStatus.objects.all()
@@ -111,6 +117,18 @@ def advancedtraining_info_edit(request, pk):
     }
 
     last_viewed_tab = request.GET.get("tab")
+
+    # Protezione lato server: blocca qualsiasi POST se il master è in sola lettura
+    if request.method == "POST" and is_readonly:
+        messages.error(
+            request,
+            _(
+                "Impossibile modificare: il master è in sola lettura per lo stato corrente."
+            ),
+        )
+        return redirect(
+            f"{reverse('advanced-training:management:advanced-training-detail', args=[master.id])}"
+        )
 
     if request.method == "POST":
         form_name = request.POST.get("tab_form_dict_key")
@@ -203,6 +221,9 @@ def advancedtraining_info_edit(request, pk):
             "current_status_description": current_status["description"],
             "status_badge_class": current_status["badge_class"],
             "available_statuses": available_statuses,
+            # nuove variabili per il template
+            "current_status_cod": current_status_cod,
+            "is_readonly": is_readonly,
         },
     )
 
@@ -268,7 +289,7 @@ def advancedtraining_info_delete(request, pk):
 
 
 @login_required
-def alta_formazione_status_change(request, pk, status_cod):
+def advancedtraining_status_change(request, pk, status_cod):
     """Gestisce il cambio di stato del master"""
 
     if request.method != "POST":
@@ -370,3 +391,57 @@ def alta_formazione_status_change(request, pk, status_cod):
         messages.add_message(request, messages.ERROR, str(exc))
 
     return redirect("advanced-training:management:advanced-training-detail", pk=pk)
+
+
+@login_required
+def advancedtraining_duplicate(request, pk):
+    old = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
+
+    # DUPLICA IL MASTER
+    old.pk = None  # nuovo oggetto
+    old.titolo_it = f"{old.titolo_it} (copia)"
+    old.dt_mod = timezone.now()
+    old.user_mod_id = request.user.id
+    old.save()
+
+    new = old  # nuovo oggetto appena salvato
+
+    # DUPLICA LE RELAZIONI FIGLIE
+    def clone_queryset(queryset, fk_name):
+        for obj in queryset:
+            obj.pk = None
+            setattr(obj, fk_name, new)
+            obj.save()
+
+    clone_queryset(
+        old.altaformazioneconsiglioscientificoesterno_set.all(),
+        "alta_formazione_dati_base",
+    )
+    clone_queryset(
+        old.altaformazioneconsiglioscientificointerno_set.all(),
+        "alta_formazione_dati_base",
+    )
+    clone_queryset(
+        old.altaformazioneattivitaformative_set.all(), "alta_formazione_dati_base"
+    )
+    clone_queryset(
+        old.altaformazioneincaricodidattico_set.all(), "alta_formazione_dati_base"
+    )
+    clone_queryset(
+        old.altaformazionemodalataselezione_set.all(), "alta_formazione_dati_base"
+    )
+    clone_queryset(old.altaformazionepartner_set.all(), "alta_formazione_dati_base")
+    clone_queryset(
+        old.altaformazionepianodidattico_set.all(), "alta_formazione_dati_base"
+    )
+    clone_queryset(
+        old.altaformazionefinestratemporale_set.all(), "id_alta_formazione_dati_base"
+    )
+
+    # DUPLICA STATUS (facoltativo, dipende dal progetto)
+    clone_queryset(
+        old.altaformazionestatusstorico_set.all(), "id_alta_formazione_dati_base"
+    )
+
+    # REDIRECT ALLA PAGINA DI EDIT
+    return redirect(f"/advanced-training/{new.id}/")

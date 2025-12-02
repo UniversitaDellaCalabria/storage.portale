@@ -434,9 +434,6 @@ class AltaFormazioneFinestraTemporale(models.Model):
     data_fine = models.DateField(db_column="DATA_FINE")
     anno_accademico = models.CharField(db_column="ANNO_ACCADEMICO", max_length=9)
     note = models.TextField(db_column="NOTE", blank=True, null=True)
-    id_alta_formazione_dati_base = models.ForeignKey(
-        AltaFormazioneDatiBase, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_DATI_BASE"
-    )
 
     class Meta:
         managed = True
