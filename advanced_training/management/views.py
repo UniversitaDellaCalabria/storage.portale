@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect
 from advanced_training.models import (
     AltaFormazioneDatiBase,
+    AltaFormazioneFinestraTemporale,
     AltaFormazioneStatus,
     AltaFormazioneStatusStorico,
 )
@@ -28,6 +29,7 @@ from django.contrib.admin.models import CHANGE
 from locks.concurrency import get_lock_from_cache
 from locks.exceptions import LockCannotBeAcquiredException
 from django.contrib.contenttypes.models import ContentType
+from advanced_training.api.v2.views import AdvancedTrainingMastersViewSet
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +66,14 @@ def get_current_status(master):
     # Default: Bozza
     return {"cod": None, "description": "Bozza", "badge_class": "secondary"}
 
+def is_temporal_window_active():
+    """Verifica se esiste una finestra temporale attiva"""
+    today = datetime.date.today()
+    return AltaFormazioneFinestraTemporale.objects.filter(
+        data_inizio__lte=today,
+        data_fine__gte=today
+    ).exists()
+
 
 @login_required
 def advancedtraining_masters(request):
@@ -80,7 +90,9 @@ def advancedtraining_masters(request):
 
 @login_required
 def advancedtraining_info_edit(request, pk):
-    master = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
+    # master = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
+
+    master = get_object_or_404(AdvancedTrainingMastersViewSet.queryset, pk=pk)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -90,19 +102,12 @@ def advancedtraining_info_edit(request, pk):
         "#": _("Edit Master"),
     }
 
-    # Ottieni lo stato corrente (dalla funzione helper)
     current_status = get_current_status(master)
-    # estrai il codice di stato (può essere None)
     current_status_cod = current_status.get("cod")
-
-    # Calcola la flag is_readonly: True per stati 1, 3, 4
-    # normalizziamo a stringa per confronto sicuro
     is_readonly = str(current_status_cod) in ["1", "3", "4"]
-
-    # Ottieni tutti gli stati disponibili per il cambio stato
+    has_active_window = is_temporal_window_active()
     available_statuses = AltaFormazioneStatus.objects.all()
 
-    # Inizializza tutti i form/tab
     tab_form_dict = {
         "Dati generali": MasterDatiBaseForm(instance=master),
         "Incarichi Didattici": IncaricoDidatticoFormSet(instance=master),
@@ -118,7 +123,6 @@ def advancedtraining_info_edit(request, pk):
 
     last_viewed_tab = request.GET.get("tab")
 
-    # Protezione lato server: blocca qualsiasi POST se il master è in sola lettura
     if request.method == "POST" and is_readonly:
         messages.error(
             request,
@@ -134,7 +138,6 @@ def advancedtraining_info_edit(request, pk):
         form_name = request.POST.get("tab_form_dict_key")
         form = None
 
-        # Ricostruisci solo il form interessato dal submit
         match form_name:
             case "Dati generali":
                 form = MasterDatiBaseForm(request.POST, instance=master)
@@ -152,7 +155,6 @@ def advancedtraining_info_edit(request, pk):
         last_viewed_tab = form_name
 
         if form and form.is_valid():
-            # 🔹 Gestione formset
             if isinstance(
                 form,
                 (
@@ -169,11 +171,9 @@ def advancedtraining_info_edit(request, pk):
                     obj.save()
                 form.save_m2m()
 
-                # gestisci eliminazioni
                 for deleted_obj in form.deleted_objects:
                     deleted_obj.delete()
 
-            # 🔹 Gestione form singolo (MasterDatiBase)
             else:
                 obj = form.save(commit=False)
                 obj.dt_mod = timezone.now()
@@ -190,7 +190,6 @@ def advancedtraining_info_edit(request, pk):
         else:
             if form:
                 tab_form_dict[form_name] = form
-                # gestione errori uniforme
                 if isinstance(
                     form,
                     (
@@ -224,6 +223,8 @@ def advancedtraining_info_edit(request, pk):
             # nuove variabili per il template
             "current_status_cod": current_status_cod,
             "is_readonly": is_readonly,
+            "can_send_validation": current_status_cod in ("0", "2", None) and has_active_window,
+            "has_active_window": has_active_window,
         },
     )
 
