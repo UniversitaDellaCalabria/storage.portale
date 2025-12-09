@@ -16,11 +16,11 @@
       </div>
 
       <!-- AVVISO FINESTRA TEMPORALE -->
-      {% if not has_active_window %}
+      {% if not has_active_window and current_status_cod in "0,2" or current_status_cod == None %}
       <div class="alert alert-warning" role="alert">
         <i class="fas fa-exclamation-triangle"></i>
         <strong>Attenzione:</strong> Non è presente una finestra temporale attiva. 
-        Le modifiche e l'invio in revisione/correzione non sono disponibili.
+        L'invio in validazione non è disponibile.
       </div>
       {% endif %}
 
@@ -44,7 +44,6 @@
               <i class="fas fa-times"></i> Rifiuta
             </button>
 
-            <!-- Correggi: solo con finestra temporale attiva -->
             <button type="button" class="btn btn-sm btn-warning"
               data-toggle="modal" data-target="#statusModal"
               data-status-cod="2" data-status-label="Correggi">
@@ -118,7 +117,7 @@
         {% with trimmed_tab=tab|cut:" " %}
 
         <div
-          class="tab-pane fade p-4 mt-3 {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}show active{% endif %} {% if is_readonly or not has_active_window %}readonly{% endif %}"
+          class="tab-pane fade p-4 mt-3 {% if forloop.first and not last_viewed_tab or last_viewed_tab == tab %}show active{% endif %} {% if is_readonly %}readonly{% endif %}"
           id="{{trimmed_tab}}-tab"
           role="tabpanel"
           aria-labelledby="{{trimmed_tab}}-nav-item"
@@ -149,7 +148,7 @@
                   <td>{{ f.qualifica }}</td>
                   <td>{{ f.ente }}</td>
                   <td>{{ f.tipologia }}</td>
-                  <td>{% if not is_readonly and has_active_window %}{{ f.DELETE }}{% endif %}</td>
+                  <td>{% if not is_readonly %}{{ f.DELETE }}{% endif %}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -171,7 +170,7 @@
                   <td>{{ f.num_ore }}</td>
                   <td>{{ f.cfu }}</td>
                   <td>{{ f.verifica_finale }}</td>
-                  <td>{% if not is_readonly and has_active_window %}{{ f.DELETE }}{% endif %}</td>
+                  <td>{% if not is_readonly %}{{ f.DELETE }}{% endif %}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -191,7 +190,7 @@
                   <td>{{ f.denominazione }}</td>
                   <td>{{ f.tipologia }}</td>
                   <td>{{ f.sito_web }}</td>
-                  <td>{% if not is_readonly and has_active_window %}{{ f.DELETE }}{% endif %}</td>
+                  <td>{% if not is_readonly %}{{ f.DELETE }}{% endif %}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -211,7 +210,7 @@
                   <td>{{ f.nome_cons }}</td>
                   <td>{{ f.ruolo_cons }}</td>
                   <td>{{ f.ente_cons }}</td>
-                  <td>{% if not is_readonly and has_active_window %}{{ f.DELETE }}{% endif %}</td>
+                  <td>{% if not is_readonly %}{{ f.DELETE }}{% endif %}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -230,7 +229,7 @@
                   {{ f.id }}
                   <td>{{ f.matricola_cons }}</td>
                   <td>{{ f.nome_origine_cons }}</td>
-                  <td>{% if not is_readonly and has_active_window %}{{ f.DELETE }}{% endif %}</td>
+                  <td>{% if not is_readonly %}{{ f.DELETE }}{% endif %}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -244,14 +243,9 @@
             <input type="hidden" name="tab_form_dict_key" value="{{tab}}">
 
             <div class="mt-3 d-flex justify-content-between">
-              <!-- Mostra pulsante Salva solo se non readonly E finestra attiva -->
-              {% if not is_readonly and has_active_window %}
+              <!-- Mostra pulsante Salva solo se non readonly -->
+              {% if not is_readonly %}
               <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Salva {{ tab }}
-              </button>
-              {% elif not is_readonly and not has_active_window %}
-              <button type="button" class="btn btn-secondary" disabled 
-                      title="Finestra temporale non attiva">
                 <i class="fas fa-save"></i> Salva {{ tab }}
               </button>
               {% endif %}

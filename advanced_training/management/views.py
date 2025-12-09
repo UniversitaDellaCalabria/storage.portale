@@ -30,6 +30,7 @@ from locks.concurrency import get_lock_from_cache
 from locks.exceptions import LockCannotBeAcquiredException
 from django.contrib.contenttypes.models import ContentType
 from advanced_training.api.v2.views import AdvancedTrainingMastersViewSet
+from advanced_training.management.decorators import check_temporal_window
 
 logger = logging.getLogger(__name__)
 
@@ -290,6 +291,7 @@ def advancedtraining_info_delete(request, pk):
 
 
 @login_required
+@check_temporal_window(allowed_statuses=['0','2','3', '4'])
 def advancedtraining_status_change(request, pk, status_cod):
     """Gestisce il cambio di stato del master"""
 
@@ -398,6 +400,17 @@ def advancedtraining_status_change(request, pk, status_cod):
 def advancedtraining_duplicate(request, pk):
     old = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
 
+    consiglio_esterno = list(old.altaformazioneconsiglioscientificoesterno_set.all())
+    consiglio_interno = list(old.altaformazioneconsiglioscientificointerno_set.all())
+    attivita_formative = list(old.altaformazioneattivitaformative_set.all())
+    incarichi_didattici = list(old.altaformazioneincaricodidattico_set.all())
+    modalita_selezione = list(
+        old.altaformazionemodalitaselezione_set.all()
+    )
+    partners = list(old.altaformazionepartner_set.all())
+    piano_didattico = list(old.altaformazionepianodidattico_set.all())
+    status_storico = list(old.altaformazionestatusstorico_set.all())
+
     # DUPLICA IL MASTER
     old.pk = None  # nuovo oggetto
     old.titolo_it = f"{old.titolo_it} (copia)"
@@ -412,37 +425,18 @@ def advancedtraining_duplicate(request, pk):
         for obj in queryset:
             obj.pk = None
             setattr(obj, fk_name, new)
+            obj.dt_mod = timezone.now()
+            obj.user_mod_id = request.user.id
             obj.save()
 
-    clone_queryset(
-        old.altaformazioneconsiglioscientificoesterno_set.all(),
-        "alta_formazione_dati_base",
-    )
-    clone_queryset(
-        old.altaformazioneconsiglioscientificointerno_set.all(),
-        "alta_formazione_dati_base",
-    )
-    clone_queryset(
-        old.altaformazioneattivitaformative_set.all(), "alta_formazione_dati_base"
-    )
-    clone_queryset(
-        old.altaformazioneincaricodidattico_set.all(), "alta_formazione_dati_base"
-    )
-    clone_queryset(
-        old.altaformazionemodalataselezione_set.all(), "alta_formazione_dati_base"
-    )
-    clone_queryset(old.altaformazionepartner_set.all(), "alta_formazione_dati_base")
-    clone_queryset(
-        old.altaformazionepianodidattico_set.all(), "alta_formazione_dati_base"
-    )
-    clone_queryset(
-        old.altaformazionefinestratemporale_set.all(), "id_alta_formazione_dati_base"
-    )
-
-    # DUPLICA STATUS (facoltativo, dipende dal progetto)
-    clone_queryset(
-        old.altaformazionestatusstorico_set.all(), "id_alta_formazione_dati_base"
-    )
+    clone_queryset(consiglio_esterno, "alta_formazione_dati_base")
+    clone_queryset(consiglio_interno, "alta_formazione_dati_base")
+    clone_queryset(attivita_formative, "alta_formazione_dati_base")
+    clone_queryset(incarichi_didattici, "alta_formazione_dati_base")
+    clone_queryset(modalita_selezione, "alta_formazione_dati_base")
+    clone_queryset(partners, "alta_formazione_dati_base")
+    clone_queryset(piano_didattico, "alta_formazione_dati_base")
+    clone_queryset(status_storico, "id_alta_formazione_dati_base")
 
     # REDIRECT ALLA PAGINA DI EDIT
     return redirect(f"/advanced-training/{new.id}/")
