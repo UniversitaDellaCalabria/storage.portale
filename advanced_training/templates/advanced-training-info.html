@@ -38,7 +38,6 @@
 
           <div>
             <!-- Pulsanti Validatore: sempre disponibili per i validatori -->
-            {% if user_is_validator %}
             <button type="button" class="btn btn-sm btn-success mr-2"
               data-toggle="modal" data-target="#statusModal"
               data-status-cod="3" data-status-label="Approva">
@@ -56,7 +55,6 @@
               data-status-cod="2" data-status-label="Correggi">
               <i class="fas fa-pencil-alt"></i> Correggi
             </button>
-            {% endif %}
           </div>
 
           <!-- Pulsante Valida: solo con finestra temporale attiva e stati 0,2,None -->
@@ -177,7 +175,7 @@
       <div class="tab-content pt-2" id="master-tabsContent">
         
         <!-- TAB DATI GENERALI (sempre caricato) -->
-        <div class="tab-pane fade p-4 mt-3 {% if last_viewed_tab == 'Dati generali' %}show active{% endif %} {% if is_readonly and not user_is_validator %}readonly{% endif %}"
+        <div class="tab-pane fade p-4 mt-3 {% if last_viewed_tab == 'Dati generali' %}show active{% endif %} {% if is_readonly %}readonly{% endif %}"
           id="dati-generali-tab"
           role="tabpanel"
           aria-labelledby="dati-generali-nav-item">
@@ -188,7 +186,7 @@
             <input type="hidden" name="tab_form_dict_key" value="Dati generali">
 
             <div class="mt-3 d-flex justify-content-between">
-              {% if not is_readonly or user_is_validator %}
+              {% if not is_readonly %}
               <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Salva Dati generali
               </button>
@@ -312,7 +310,6 @@
 <script>
   const MASTER_ID = {{ master.pk|default:"null" }};
   const IS_READONLY = {% if is_readonly %}true{% else %}false{% endif %};
-  const USER_IS_VALIDATOR = {% if user_is_validator %}true{% else %}false{% endif %};
   const LAST_VIEWED_TAB = "{{ last_viewed_tab|escapejs }}";
   
   // Gestione modale stato
@@ -451,7 +448,7 @@
         tabPane.data('loaded', 'true');
         
         // Applica readonly se necessario
-        if (IS_READONLY && !USER_IS_VALIDATOR) {
+        if (IS_READONLY) {
           tabPane.addClass('readonly');
         }
       }
