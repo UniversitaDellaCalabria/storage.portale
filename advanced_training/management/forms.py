@@ -148,6 +148,44 @@ class MasterDatiBaseForm(forms.ModelForm):
         self.fields["path_piano_finanziario"].required = False
         self.fields["path_doc_delibera"].required = False
 
+    def clean(self):
+        """Validazione custom dei dati"""
+        cleaned_data = super().clean()
+
+        # Validazione date
+        data_inizio = cleaned_data.get("data_inizio")
+        data_fine = cleaned_data.get("data_fine")
+
+        if data_inizio and data_fine:
+            if data_inizio >= data_fine:
+                raise forms.ValidationError(
+                    "La data di inizio deve essere precedente alla data di fine"
+                )
+
+        # Validazione partecipanti
+        num_min = cleaned_data.get("num_min_partecipanti")
+        num_max = cleaned_data.get("num_max_partecipanti")
+
+        if num_min and num_max:
+            if num_min > num_max:
+                raise forms.ValidationError(
+                    "Il numero minimo non può superare il numero massimo di partecipanti"
+                )
+
+        # Validazione quote
+        quota_iscrizione = cleaned_data.get("quota_iscrizione")
+        quota_uditori = cleaned_data.get("quota_uditori")
+
+        if quota_iscrizione and quota_iscrizione < 0:
+            raise forms.ValidationError(
+                "La quota di iscrizione non può essere negativa"
+            )
+
+        if quota_uditori and quota_uditori < 0:
+            raise forms.ValidationError("La quota uditori non può essere negativa")
+
+        return cleaned_data
+
 
 class PianoDidatticoForm(forms.ModelForm):
     class Meta:
@@ -180,7 +218,7 @@ class IncaricoDidatticoForm(forms.ModelForm):
         model = AltaFormazioneIncaricoDidattico
         fields = ["modulo", "num_ore", "docente", "qualifica", "ente", "tipologia"]
         widgets = {
-            "num_ore": forms.NumberInput(attrs={"min": 0}),
+            "num_ore": forms.TextInput(attrs={"type": "number", "min": 0}),
         }
         labels = {
             "modulo": "Modulo",
@@ -267,11 +305,12 @@ class AltaFormazioneStatusForm(forms.ModelForm):
     motivazione = forms.CharField(
         label="Motivazione",
         widget=forms.Textarea(attrs={"rows": 4}),
-        required=False,
+        required=True,
     )
+
     class Meta:
         model = AltaFormazioneStatusStorico
         fields = ["motivazione"]
         labels = {
-            "status": "Stato master",
+            "motivazione": "Motivazione",
         }

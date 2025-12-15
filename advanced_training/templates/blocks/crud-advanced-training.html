@@ -308,24 +308,24 @@ duplicate(item) {
     window.location.href = `${item.id}/duplicate/`;
 },
 getStatusBadgeClass(status) {
-    if (!status) return 'badge-secondary'; // Bozza
+    if (!status) return 'badge-secondary';
     
     const statusMap = {
-        '0': 'badge-secondary',  // Bozza
-        '1': 'badge-warning',  // Richiesta validazione
-        '2': 'badge-info',  // Da corregere
-        '3': 'badge-success',  // Approvato
-        '4': 'badge-danger',  // Rigettato
+        '0': 'badge-secondary',
+        '1': 'badge-warning',
+        '2': 'badge-info',
+        '3': 'badge-success',
+        '4': 'badge-danger',
     };
     
-    return statusMap[status] || 'badge-secondary';
+    return statusMap[String(status)] || 'badge-secondary';
 },
 canEdit(item) {
-    console.log('Can Edit Check:', item.status);
-    return item.status == "0" || item.status == "2" || item.status ==  null;
+    const status = String(item.status || '0');
+    return ['0', '2'].includes(status) || !item.status;
 },
 canDelete(item) {
-    console.log('Can Delete Check:', item.status);
-    return item.status == "0" || item.status ==  null;
+    const status = String(item.status || '0');
+    return status === '0' || !item.status;
 },
 {% endblock extra_methods %}
