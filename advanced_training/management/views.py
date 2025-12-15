@@ -78,13 +78,6 @@ def is_temporal_window_active():
     ).exists()
 
 
-def check_user_is_validator(user):
-    """Verifica se l'utente ha ruolo di validatore"""
-    # TODO: Implementare la logica specifica per il tuo sistema
-    # Esempio: return user.groups.filter(name='Validators').exists()
-    return user.is_staff or user.is_superuser
-
-
 @login_required
 def advancedtraining_masters(request):
     breadcrumbs = {
@@ -115,15 +108,14 @@ def advancedtraining_info_edit(request, pk):
     current_status_cod = current_status.get("cod")
     is_readonly = str(current_status_cod) in ["1", "3", "4"]
     has_active_window = is_temporal_window_active()
-    available_statuses = AltaFormazioneStatus.objects.all()
-    user_is_validator = check_user_is_validator(request.user)
+    available_statuses = AltaFormazioneStatus.objects.all() 
 
     dati_generali_form = MasterDatiBaseForm(instance=master)
 
     last_viewed_tab = request.GET.get("tab", "Dati generali")
 
     if request.method == "POST":
-        if is_readonly and not user_is_validator:
+        if is_readonly:
             messages.error(
                 request,
                 _(
@@ -227,7 +219,6 @@ def advancedtraining_info_edit(request, pk):
             "available_statuses": available_statuses,
             "current_status_cod": current_status_cod,
             "is_readonly": is_readonly,
-            "user_is_validator": user_is_validator,
             "can_send_validation": current_status_cod in ("0", "2", None)
             and has_active_window,
             "has_active_window": has_active_window,
@@ -244,7 +235,6 @@ def advancedtraining_load_tab(request, pk, tab_name):
     current_status = get_current_status(master)
     current_status_cod = current_status.get("cod")
     is_readonly = str(current_status_cod) in ["1", "3", "4"]
-    user_is_validator = check_user_is_validator(request.user)
     
     form = None
     template = None
@@ -277,7 +267,6 @@ def advancedtraining_load_tab(request, pk, tab_name):
                 "form": form,
                 "tab_name": tab_name,
                 "is_readonly": is_readonly,
-                "user_is_validator": user_is_validator,
                 "master": master,
             },
         ).content.decode("utf-8")
@@ -368,7 +357,7 @@ def advancedtraining_info_delete(request, pk):
 
 
 @login_required
-@check_temporal_window(allowed_statuses=["0", "2"])
+@check_temporal_window()
 def advancedtraining_status_change(request, pk, status_cod):
     """Gestisce il cambio di stato del master"""
     if request.method != "POST":

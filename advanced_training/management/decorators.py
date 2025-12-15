@@ -3,53 +3,70 @@ import datetime
 from functools import wraps
 from django.shortcuts import redirect
 from django.contrib import messages
-from advanced_training.models import AltaFormazioneFinestraTemporale
+from advanced_training.models import (
+    AltaFormazioneFinestraTemporale,
+    AltaFormazioneStatusStorico,
+    AltaFormazioneDatiBase,
+)
 
-def check_temporal_window(allowed_statuses=None):
-    """
-    Decoratore che verifica se esiste una finestra temporale attiva.
-    
-    Args:
-        allowed_statuses: lista di status_cod che sono sempre permessi 
-                         indipendentemente dalla finestra temporale
-                         (es. ['3', '4'] per approvazione/rigetto)
-    """
+
+def check_temporal_window():
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
+            pk = kwargs.get("pk")
+            new_status = kwargs.get("status_cod")
+
+            # Non è un cambio stato
+            if not pk or not new_status:
+                return view_func(request, *args, **kwargs)
+
+            if new_status != "1":
+                return view_func(request, *args, **kwargs)
+
+            master = AltaFormazioneDatiBase.objects.filter(pk=pk).first()
+            if not master:
+                return view_func(request, *args, **kwargs)
+
+            # Stato corrente
+            last_status = (
+                AltaFormazioneStatusStorico.objects.filter(
+                    id_alta_formazione_dati_base=master
+                )
+                .order_by("-data_status", "-dt_mod", "-id")
+                .first()
+            )
+
+            old_status = (
+                last_status.id_alta_formazione_status.status_cod
+                if last_status
+                else None
+            )
+
+            # Se NON è Bozza -> Validazione, lascia passare
+            if old_status != "0":
+                return view_func(request, *args, **kwargs)
+
+            # Controllo finestra temporale
             today = datetime.date.today()
-            
-            # Verifica se esiste una finestra temporale attiva
             active_window = AltaFormazioneFinestraTemporale.objects.filter(
-                data_inizio__lte=today,
-                data_fine__gte=today
+                data_inizio__lte=today, data_fine__gte=today
             ).exists()
-            
-            # Se è una richiesta di cambio stato
-            if 'status_cod' in kwargs:
-                status_cod = kwargs['status_cod']
-                
-                # Stati sempre permessi (approvazione/rigetto)
-                if allowed_statuses and status_cod in allowed_statuses:
-                    return view_func(request, *args, **kwargs)
-                
-                # Stati che richiedono finestra temporale attiva (invio in revisione/correzione)
-                # status_cod '1' = Richiesta validazione, '2' = Da correggere
-                if status_cod in ['1', '2'] and not active_window:
-                    messages.error(
-                        request,
-                        _("Non è possibile inviare il master in revisione: "
-                          "nessuna finestra temporale attiva.")
-                    )
-                    pk = kwargs.get('pk')
-                    if pk:
-                        return redirect(
-                            'advanced-training:management:advanced-training-detail',
-                            pk=pk
-                        )
-                    return redirect('advanced-training:management:advanced-training')
-            
+
+            if not active_window:
+                messages.error(
+                    request,
+                    _(
+                        "Non è presente una finestra temporale attiva. "
+                        "La mandata in validazione non è consentita."
+                    ),
+                )
+                return redirect(
+                    "advanced-training:management:advanced-training-detail", pk=pk
+                )
+
             return view_func(request, *args, **kwargs)
-        
+
         return wrapper
+
     return decorator
