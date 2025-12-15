@@ -276,7 +276,7 @@ class ConsiglioScientificoEsternoForm(forms.ModelForm):
 ConsiglioScientificoEsternoFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,
     AltaFormazioneConsiglioScientificoEsterno,
-    form=ConsiglioScientificoEsternoForm,
+    fields=['nome_cons', 'ruolo_cons', 'ente_cons'],
     extra=1,
     can_delete=True,
 )
@@ -295,7 +295,7 @@ class ConsiglioScientificoInternoForm(forms.ModelForm):
 ConsiglioScientificoInternoFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,
     AltaFormazioneConsiglioScientificoInterno,
-    form=ConsiglioScientificoInternoForm,
+    fields=['matricola_cons', 'nome_origine_cons'],
     extra=1,
     can_delete=True,
 )

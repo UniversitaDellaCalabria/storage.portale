@@ -340,91 +340,113 @@
 
   // LAZY LOADING DEI TAB
   $(document).ready(function() {
-    // Carica il tab attivo all'avvio se non è "Dati generali"
-    if (LAST_VIEWED_TAB !== "Dati generali" && MASTER_ID) {
-      const tabElement = $(`[data-tab-name="${LAST_VIEWED_TAB}"]`);
-      if (tabElement.length) {
-        loadTabContent(LAST_VIEWED_TAB);
-      }
-    }
 
-    // Event listener per il cambio tab
-    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
-      const tabName = $(e.target).data('tab-name');
-      
-      // Se è Dati generali, non fare nulla (già caricato)
-      if (!tabName) return;
-      
-      const tabId = $(e.target).attr('href');
-      const tabPane = $(tabId);
-      
-      // Se già caricato, non ricaricare
-      if (tabPane.data('loaded') === 'true') return;
-      
-      // Carica il contenuto
-      loadTabContent(tabName);
-    });
+  
+  // Carica il tab attivo all'avvio se non è "Dati generali"
+  if (LAST_VIEWED_TAB !== "Dati generali" && MASTER_ID) {
+    const tabElement = $(`[data-tab-name="${LAST_VIEWED_TAB}"]`);
+    if (tabElement.length) {
+      loadTabContent(LAST_VIEWED_TAB);
+    } else {
+      console.warn('Tab element not found for last viewed tab:', LAST_VIEWED_TAB);
+    }
+  }
+
+  // Event listener per il cambio tab
+  $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+    const tabName = $(e.target).data('tab-name');
+
+    if (!tabName) {
+      return;
+    }
+    
+    const tabId = $(e.target).attr('href');
+    const tabPane = $(tabId);
+
+    if (tabPane.data('loaded') === 'true') {
+      return;
+    }
+    loadTabContent(tabName);
   });
+});
 
-  function loadTabContent(tabName) {
-    console.log('=== LOADING TAB ===');
-    console.log('Tab Name:', tabName);
-    console.log('Master ID:', MASTER_ID);
-    
-    if (!MASTER_ID) {
-      console.error('Master ID non disponibile');
-      return;
-    }
+  function loadTabContent(tabName) {  
+  if (!MASTER_ID) {
+    return;
+  }
 
-    // Trova il tab pane usando l'attributo data-tab-name o l'aria-labelledby
-    const tabLink = $(`a[data-tab-name="${tabName}"]`);
-    const tabPaneId = tabLink.attr('href');
-    console.log('Tab Link found:', tabLink.length > 0);
-    console.log('Tab Pane ID:', tabPaneId);
-    
-    if (!tabPaneId) {
-      console.error('Tab pane ID non trovato per:', tabName);
-      return;
-    }
-    
-    const tabPane = $(tabPaneId);
-    console.log('Tab Pane found:', tabPane.length > 0);
-    
-    // Mostra loader
-    tabPane.html(`
-      <div class="text-center py-5">
-        <div class="spinner-border" role="status">
-          <span class="sr-only">Caricamento...</span>
-        </div>
-        <p class="mt-3">Caricamento dati in corso...</p>
+  // Trova il tab pane
+  const tabLink = $(`a[data-tab-name="${tabName}"]`);
+  const tabPaneId = tabLink.attr('href');
+  
+  if (!tabPaneId) {
+    console.error('Tab pane ID non trovato per:', tabName);
+    return;
+  }
+  
+  const tabPane = $(tabPaneId);
+  
+  // Mostra loader
+  tabPane.html(`
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Caricamento...</span>
       </div>
-    `);
+      <p class="mt-3">Caricamento <strong>${tabName}</strong> in corso...</p>
+    </div>
+  `);
 
-    // Costruisci l'URL usando Django URL reverse
-    const url = "{% url 'advanced-training:management:advanced-training-load-tab' master.pk 'TAB_PLACEHOLDER' %}".replace('TAB_PLACEHOLDER', encodeURIComponent(tabName));
-    console.log('URL:', url);
+  const baseUrl = "{% url 'advanced-training:management:advanced-training-load-tab' master.pk 'TAB_PLACEHOLDER' %}";
+  const url = baseUrl.replace('TAB_PLACEHOLDER', encodeURIComponent(tabName));
+  
+  fetch(url, {
+    method: 'GET',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin'
+  })
+  .then(response => {
+    if (!response.ok) {
+      return response.text().then(text => {
+        console.error('Response body:', text);
+
+        try {
+          const jsonError = JSON.parse(text);
+          throw new Error(jsonError.error || `HTTP ${response.status}: ${response.statusText}`);
+        } catch (e) {
+          throw new Error(`HTTP ${response.status}: ${text.substring(0, 200)}`);
+        }
+      });
+    }
     
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-    })
-    .then(response => {
-      console.log('Response status:', response.status);
-      console.log('Response OK:', response.ok);
-      if (!response.ok) {
-        return response.text().then(text => {
-          console.error('Response body:', text);
-          throw new Error(`HTTP error! status: ${response.status}`);
-        });
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Data received:', data);
-      if (data.html) {
-        console.log('HTML length:', data.html.length);
+    return response.json();
+  })
+  .then(data => {
+
+    
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    
+    if (data.html) {
+      // Verifica se l'HTML è vuoto o contiene solo whitespace
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = data.html;
+      const hasContent = tempDiv.textContent.trim().length > 0 || 
+                        tempDiv.querySelector('input, select, textarea, button');
+      
+      if (!hasContent) {
+        console.warn('HTML appears to be empty');
+        tabPane.html(`
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            Nessun dato disponibile per <strong>${tabName}</strong>.
+            <br><small>Il tab è stato caricato ma non contiene dati.</small>
+          </div>
+        `);
+      } else {
         tabPane.html(data.html);
         tabPane.data('loaded', 'true');
         
@@ -432,23 +454,30 @@
         if (IS_READONLY && !USER_IS_VALIDATOR) {
           tabPane.addClass('readonly');
         }
-        console.log('Tab loaded successfully');
-      } else {
-        throw new Error('Risposta non valida dal server');
       }
-    })
-    .catch(error => {
-      console.error('Errore completo:', error);
-      tabPane.html(`
-        <div class="alert alert-danger" role="alert">
-          <i class="fas fa-exclamation-circle"></i>
-          Errore nel caricamento dei dati. Riprova più tardi.
-          <br><small>${error.message}</small>
-          <br><small>Controlla la console per maggiori dettagli</small>
-        </div>
-      `);
-    });
-  }
+    } else {
+      throw new Error('Risposta senza HTML dal server');
+    }
+  })
+  .catch(error => {
+    tabPane.html(`
+      <div class="alert alert-danger" role="alert">
+        <h5><i class="fas fa-exclamation-circle"></i> Errore nel caricamento</h5>
+        <p><strong>${tabName}</strong></p>
+        <hr>
+        <p class="mb-2"><strong>Dettaglio errore:</strong></p>
+        <pre class="bg-light p-2 rounded">${error.message}</pre>
+        <hr>
+        <button class="btn btn-sm btn-warning" onclick="loadTabContent('${tabName}')">
+          <i class="fas fa-redo"></i> Riprova
+        </button>
+        <button class="btn btn-sm btn-info" onclick="console.log('Debug info:', {tabName: '${tabName}', masterId: MASTER_ID, url: '${url}'})">
+          <i class="fas fa-bug"></i> Mostra debug in console
+        </button>
+      </div>
+    `);
+  });
+}
 </script>
 {% endif %}
 
