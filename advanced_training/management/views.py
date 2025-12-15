@@ -245,41 +245,51 @@ def advancedtraining_load_tab(request, pk, tab_name):
     current_status_cod = current_status.get("cod")
     is_readonly = str(current_status_cod) in ["1", "3", "4"]
     user_is_validator = check_user_is_validator(request.user)
-
-    # Determina quale form caricare
+    
     form = None
-    if tab_name == "Incarichi Didattici":
-        form = IncaricoDidatticoFormSet(instance=master)
-        template = "tabs/incarichi_didattici.html"
-    elif tab_name == "Piano Didattico":
-        form = PianoDidatticoFormSet(instance=master)
-        template = "tabs/piano_didattico.html"
-    elif tab_name == "Partner":
-        form = PartnerFormSet(instance=master)
-        template = "tabs/partner.html"
-    elif tab_name == "Consiglio Scientifico Esterno":
-        form = ConsiglioScientificoEsternoFormSet(instance=master)
-        template = "tabs/consiglio_esterno.html"
-    elif tab_name == "Consiglio Scientifico Interno":
-        form = ConsiglioScientificoInternoFormSet(instance=master)
-        template = "tabs/consiglio_interno.html"
-    else:
-        return JsonResponse({"error": "Tab non valido"}, status=400)
+    template = None
 
-    # Render del template
-    html = render(
-        request,
-        template,
-        {
-            "form": form,
-            "tab_name": tab_name,
-            "is_readonly": is_readonly,
-            "user_is_validator": user_is_validator,
-            "master": master,
-        },
-    ).content.decode("utf-8")
+    try:
+        if tab_name == "Incarichi Didattici":
+            form = IncaricoDidatticoFormSet(instance=master)
+            template = "tabs/incarichi_didattici.html"
 
-    return JsonResponse({"html": html})
+        elif tab_name == "Piano Didattico":
+            form = PianoDidatticoFormSet(instance=master)
+            template = "tabs/piano_didattico.html"
+
+        elif tab_name == "Partner":
+            form = PartnerFormSet(instance=master)
+            template = "tabs/partner.html"
+
+        elif tab_name == "Consiglio Scientifico Esterno":
+            form = ConsiglioScientificoEsternoFormSet(instance=master)
+            template = "tabs/consiglio_esterno.html"
+            
+        elif tab_name == "Consiglio Scientifico Interno":
+            form = ConsiglioScientificoInternoFormSet(instance=master)
+            template = "tabs/consiglio_interno.html"
+
+        html = render(
+            request,
+            template,
+            {
+                "form": form,
+                "tab_name": tab_name,
+                "is_readonly": is_readonly,
+                "user_is_validator": user_is_validator,
+                "master": master,
+            },
+        ).content.decode("utf-8")
+
+        return JsonResponse({"html": html, "success": True})
+
+    except Exception as e:
+        return JsonResponse(
+            {"error": f"Errore nel caricamento: {str(e)}", "tab_name": tab_name},
+            status=500,
+        )
+
 
 
 @login_required

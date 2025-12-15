@@ -6,41 +6,73 @@
   {% if form.management_form %}
   <div style="display:none">{{ form.management_form }}</div>
   
+  <div class="mb-3">
+    <p class="text-muted">
+      <i class="fas fa-info-circle"></i>
+      Totale record: <strong>{{ form.total_form_count }}</strong> | 
+      Record esistenti: <strong>{{ form.initial_form_count }}</strong> | 
+      Form vuoti disponibili: <strong>{{ form.extra }}</strong>
+    </p>
+  </div>
+  
+  {% if form.forms %}
   <table class="table table-striped table-bordered">
-    <thead>
+    <thead class="thead-light">
       <tr>
-        <th>Matricola</th>
-        <th>Nome</th>
-        <th>Elimina</th>
+        <th style="width: 25%">Nome *</th>
+        <th style="width: 25%">Ruolo</th>
+        <th style="width: 35%">Ente</th>
+        <th style="width: 15%" class="text-center">Elimina</th>
       </tr>
     </thead>
     <tbody>
       {% for f in form %}
-      <tr style="{% if f.instance.pk %}{% else %}display:none;{% endif %}">
-        <div style="display:none;">
+      <tr class="formset-row {% if f.instance.pk %}existing-row{% else %}new-row{% endif %}">
+        <td style="display:none;">
           {{ f.id }}
           {{ f.alta_formazione_dati_base }}
-        </div>
-        <td>{{ f.matricola_cons }}</td>
-        <td>{{ f.nome_origine_cons }}</td>
-        <td>{% if not is_readonly or user_is_validator %}{{ f.DELETE }}{% endif %}</td>
+        </td>
+        <td>{{ f.nome_cons }}</td>
+        <td>{{ f.ruolo_cons }}</td>
+        <td>{{ f.ente_cons }}</td>
+        <td class="text-center">
+          {% if not is_readonly or user_is_validator %}
+            {{ f.DELETE }}
+          {% else %}
+            <span class="text-muted">—</span>
+          {% endif %}
+        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+  
+  {% if not is_readonly or user_is_validator %}
+  <button type="button" class="btn btn-sm btn-secondary mb-3" id="add-more-esterno">
+    <i class="fas fa-plus"></i> Aggiungi membro
+  </button>
+  {% endif %}
+  
   {% else %}
-  <div class="alert alert-warning">
+  <div class="alert alert-info">
+    <i class="fas fa-info-circle"></i>
+    Nessun membro del consiglio scientifico esterno presente.
+  </div>
+  {% endif %}
+  
+  {% else %}
+  <div class="alert alert-danger">
     <i class="fas fa-exclamation-triangle"></i>
-    Nessun form disponibile. Questo potrebbe indicare un problema con il formset.
+    <strong>Errore:</strong> Management form non disponibile. Contatta l'amministratore.
   </div>
   {% endif %}
 
-  <input type="hidden" name="tab_form_dict_key" value="Consiglio Scientifico Interno">
+  <input type="hidden" name="tab_form_dict_key" value="Consiglio Scientifico Esterno">
 
-  <div class="mt-3 d-flex justify-content-between">
+  <div class="mt-4 d-flex justify-content-between">
     {% if not is_readonly or user_is_validator %}
     <button type="submit" class="btn btn-primary">
-      <i class="fas fa-save"></i> Salva Consiglio Scientifico Interno
+      <i class="fas fa-save"></i> Salva Consiglio Scientifico Esterno
     </button>
     {% endif %}
 
@@ -50,3 +82,32 @@
     </a>
   </div>
 </form>
+
+<script>
+  $(document).ready(function() {
+    // Nascondi le righe vuote tranne la prima
+    $('.new-row').each(function(index) {
+      if (index > 0) $(this).hide();
+    });
+    
+    // Bottone aggiungi
+    $('#add-more-esterno').on('click', function() {
+      var hiddenRows = $('.new-row:hidden');
+      if (hiddenRows.length > 0) {
+        hiddenRows.first().show();
+      } else {
+        alert('Nessuna riga disponibile. Salva il form per aggiungerne altre.');
+      }
+    });
+    
+    // Gestione checkbox DELETE
+    $('input[id$="-DELETE"]').on('change', function() {
+      var row = $(this).closest('tr');
+      if ($(this).is(':checked')) {
+        row.addClass('table-danger').find('input:not([id$="-DELETE"]), select, textarea').prop('disabled', true);
+      } else {
+        row.removeClass('table-danger').find('input, select, textarea').prop('disabled', false);
+      }
+    });
+  });
+</script>
