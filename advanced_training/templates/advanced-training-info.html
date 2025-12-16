@@ -38,6 +38,7 @@
 
           <div>
             <!-- Pulsanti Validatore: sempre disponibili per i validatori -->
+            {% if can_validate %}
             <button type="button" class="btn btn-sm btn-success mr-2"
               data-toggle="modal" data-target="#statusModal"
               data-status-cod="3" data-status-label="Approva">
@@ -55,10 +56,12 @@
               data-status-cod="2" data-status-label="Correggi">
               <i class="fas fa-pencil-alt"></i> Correggi
             </button>
+            {% endif %}
           </div>
 
           <!-- Pulsante Valida: solo con finestra temporale attiva e stati 0,2,None -->
-          {% if can_send_validation %}
+          <div>
+            {% if can_send_validation %}
           <button
               type="button"
               class="btn btn-sm btn-warning ms-2"
@@ -68,7 +71,7 @@
               data-status-label="Valida">
               <i class="fas fa-paper-plane"></i> Valida
           </button>
-          {% elif current_status_cod == "0" or current_status_cod == "2" or current_status_cod == None %}
+            {% elif current_status_cod == "0" or current_status_cod == "2" or current_status_cod == None %}
           <button
               type="button"
               class="btn btn-sm btn-secondary ms-2"

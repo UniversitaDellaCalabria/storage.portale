@@ -107,11 +107,33 @@ def advancedtraining_info_edit(request, pk):
         "#": _("Edit Master"),
     }
 
+    # Ottieni permessi utente
+    user_permissions_and_offices = master.get_user_permissions_and_offices(request.user)
+
+    # Verifica accesso
+    if not user_permissions_and_offices["permissions"]["access"]:
+        return custom_message(request, _("Permission denied"))
+
     current_status = get_current_status(master)
     current_status_cod = current_status.get("cod")
-    is_readonly = str(current_status_cod) in ["1", "3", "4"]
+
+    # Determina se è readonly in base ai permessi
+    can_edit = user_permissions_and_offices["permissions"]["edit"]
+    is_readonly = not can_edit
+
     has_active_window = is_temporal_window_active()
     available_statuses = AltaFormazioneStatus.objects.all()
+
+    # Determina i permessi specifici per i pulsanti
+    user_offices = user_permissions_and_offices["offices"]
+    offices_names = master.get_offices_names()
+    is_sender = offices_names[0] in user_offices
+    is_validator = offices_names[1] in user_offices
+
+    can_send_validation = (
+        is_sender and current_status_cod in ("0", "2", None) and has_active_window
+    )
+    can_validate = is_validator and current_status_cod == "1"
 
     dati_generali_form = MasterDatiBaseForm(instance=master)
 
@@ -222,9 +244,10 @@ def advancedtraining_info_edit(request, pk):
             "available_statuses": available_statuses,
             "current_status_cod": current_status_cod,
             "is_readonly": is_readonly,
-            "can_send_validation": current_status_cod in ("0", "2", None)
-            and has_active_window,
+            "can_send_validation": can_send_validation,
+            "can_validate": can_validate,
             "has_active_window": has_active_window,
+            "user_permissions_and_offices": user_permissions_and_offices,
         },
     )
 
@@ -380,11 +403,15 @@ def advancedtraining_status_change(request, pk, status_cod):
     user_permissions_and_offices = dati_base.get_user_permissions_and_offices(
         request.user
     )
-    if (
-        not user_permissions_and_offices["permissions"]["access"]
-        or not user_permissions_and_offices["permissions"]["edit"]
-    ):
+    if not user_permissions_and_offices["permissions"]["access"]:
         return custom_message(request, _("Permission denied"))
+
+    # Verifica se l'utente può cambiare a questo stato specifico
+    if not dati_base.can_user_change_status(request.user, status_cod):
+        messages.error(
+            request, _("Non hai i permessi per effettuare questo cambio di stato")
+        )
+        return redirect("advanced-training:management:advanced-training-detail", pk=pk)
 
     try:
         # Verifica lock
@@ -394,14 +421,7 @@ def advancedtraining_status_change(request, pk, status_cod):
             raise LockCannotBeAcquiredException(lock)
 
         # Ottieni stato corrente
-        dati_base_status = (
-            AltaFormazioneStatusStorico.objects.filter(
-                id_alta_formazione_dati_base=dati_base
-            )
-            .order_by("-data_status", "-dt_mod", "-id")
-            .first()
-        )
-
+        dati_base_status = dati_base.get_current_status()
         old_status = None
         if dati_base_status:
             old_status = getattr(
