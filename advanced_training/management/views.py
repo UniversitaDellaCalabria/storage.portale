@@ -11,14 +11,15 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.db import transaction
 from django.views.decorators.http import require_http_methods
+from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 
-from generics.utils import custom_message, log_action
-from django.contrib.admin.models import CHANGE
+from generics.utils import custom_message, decrypt, encrypt, log_action
 from locks.concurrency import get_lock_from_cache
 from locks.exceptions import LockCannotBeAcquiredException
 from django.contrib.contenttypes.models import ContentType
 
 from advanced_training.models import (
+    AltaFormazioneConsiglioScientificoInterno,
     AltaFormazioneDatiBase,
     AltaFormazioneFinestraTemporale,
     AltaFormazioneStatus,
@@ -30,10 +31,12 @@ from advanced_training.management.forms import (
     PianoDidatticoFormSet,
     PartnerFormSet,
     ConsiglioScientificoEsternoFormSet,
-    ConsiglioScientificoInternoFormSet,
+    ConsiglioInternoEsternoForm,
+    ChoosenPersonForm,
 )
 from advanced_training.api.v2.views import AdvancedTrainingMastersViewSet
 from advanced_training.management.decorators import check_temporal_window
+from addressbook.models import Personale
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +111,7 @@ def advancedtraining_info_edit(request, pk):
     current_status_cod = current_status.get("cod")
     is_readonly = str(current_status_cod) in ["1", "3", "4"]
     has_active_window = is_temporal_window_active()
-    available_statuses = AltaFormazioneStatus.objects.all() 
+    available_statuses = AltaFormazioneStatus.objects.all()
 
     dati_generali_form = MasterDatiBaseForm(instance=master)
 
@@ -144,7 +147,7 @@ def advancedtraining_info_edit(request, pk):
         elif form_name == "Consiglio Scientifico Esterno":
             form = ConsiglioScientificoEsternoFormSet(request.POST, instance=master)
         elif form_name == "Consiglio Scientifico Interno":
-            form = ConsiglioScientificoInternoFormSet(request.POST, instance=master)
+            form = ConsiglioInternoEsternoForm(request.POST, instance=master)
 
         last_viewed_tab = form_name
 
@@ -156,7 +159,7 @@ def advancedtraining_info_edit(request, pk):
                     PianoDidatticoFormSet,
                     PartnerFormSet,
                     ConsiglioScientificoEsternoFormSet,
-                    ConsiglioScientificoInternoFormSet,
+                    ConsiglioInternoEsternoForm,
                 ),
             ):
                 objs = form.save(commit=False)
@@ -194,7 +197,7 @@ def advancedtraining_info_edit(request, pk):
                         PianoDidatticoFormSet,
                         PartnerFormSet,
                         ConsiglioScientificoEsternoFormSet,
-                        ConsiglioScientificoInternoFormSet,
+                        ConsiglioInternoEsternoForm,
                     ),
                 ):
                     for subform in form.forms:
@@ -235,41 +238,50 @@ def advancedtraining_load_tab(request, pk, tab_name):
     current_status = get_current_status(master)
     current_status_cod = current_status.get("cod")
     is_readonly = str(current_status_cod) in ["1", "3", "4"]
-    
+
     form = None
     template = None
+    context = {
+        "tab_name": tab_name,
+        "is_readonly": is_readonly,
+        "master": master,
+    }
 
     try:
         if tab_name == "Incarichi Didattici":
             form = IncaricoDidatticoFormSet(instance=master)
             template = "tabs/incarichi_didattici.html"
+            context["form"] = form
 
         elif tab_name == "Piano Didattico":
             form = PianoDidatticoFormSet(instance=master)
             template = "tabs/piano_didattico.html"
+            context["form"] = form
 
         elif tab_name == "Partner":
             form = PartnerFormSet(instance=master)
             template = "tabs/partner.html"
+            context["form"] = form
 
         elif tab_name == "Consiglio Scientifico Esterno":
             form = ConsiglioScientificoEsternoFormSet(instance=master)
             template = "tabs/consiglio_esterno.html"
-            
-        elif tab_name == "Consiglio Scientifico Interno":
-            form = ConsiglioScientificoInternoFormSet(instance=master)
-            template = "tabs/consiglio_interno.html"
+            context["form"] = form
 
-        html = render(
-            request,
-            template,
-            {
-                "form": form,
-                "tab_name": tab_name,
-                "is_readonly": is_readonly,
-                "master": master,
-            },
-        ).content.decode("utf-8")
+        elif tab_name == "Consiglio Scientifico Interno":
+            # NUOVO: Carica i membri invece del formset
+            consiglio_members = (
+                AltaFormazioneConsiglioScientificoInterno.objects.filter(
+                    alta_formazione_dati_base=master
+                )
+                .select_related("matricola_cons")
+                .order_by("nome_origine_cons")
+            )
+
+            template = "tabs/consiglio_interno.html"
+            context["consiglio_members"] = consiglio_members
+
+        html = render(request, template, context).content.decode("utf-8")
 
         return JsonResponse({"html": html, "success": True})
 
@@ -278,7 +290,6 @@ def advancedtraining_load_tab(request, pk, tab_name):
             {"error": f"Errore nel caricamento: {str(e)}", "tab_name": tab_name},
             status=500,
         )
-
 
 
 @login_required
@@ -509,4 +520,224 @@ def advancedtraining_duplicate(request, pk):
     messages.success(request, "Master duplicato con successo")
     return redirect(
         reverse("advanced-training:management:advanced-training-detail", args=[new.id])
+    )
+
+
+@login_required
+def consiglio_interno_new(request, master_id):
+    """
+    Creazione nuovo membro del consiglio scientifico interno
+    """
+    master = get_object_or_404(AltaFormazioneDatiBase, pk=master_id)
+
+    # Inizializza i form
+    internal_form = ChoosenPersonForm(required=True)
+    external_form = ConsiglioInternoEsternoForm()
+
+    if request.POST:
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = ConsiglioInternoEsternoForm(data=request.POST)
+
+        if "choosen_person" in request.POST:
+            form = internal_form
+        else:
+            form = external_form
+
+        if form.is_valid():
+            consiglio_member = AltaFormazioneConsiglioScientificoInterno()
+            consiglio_member.alta_formazione_dati_base = master
+
+            if form.cleaned_data.get("choosen_person"):
+                # Personale interno
+                member_id = decrypt(form.cleaned_data["choosen_person"])
+                member = get_object_or_404(Personale, matricola=member_id)
+                consiglio_member.matricola_cons = member
+                consiglio_member.nome_origine_cons = f"{member.cognome} {member.nome}"
+            else:
+                # Personale esterno
+                consiglio_member.matricola_cons = None
+                consiglio_member.nome_origine_cons = form.cleaned_data[
+                    "nome_origine_cons"
+                ]
+
+            consiglio_member.user_ins_id = request.user.id
+            consiglio_member.dt_mod = timezone.now()
+            consiglio_member.save()
+
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=ADDITION,
+                msg=f"Aggiunto membro consiglio interno: {consiglio_member.nome_origine_cons}",
+            )
+
+            messages.add_message(
+                request, messages.SUCCESS, _("Council member added successfully")
+            )
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[master_id])}?tab=Consiglio Scientifico Interno"
+            )
+        else:
+            for k, v in form.errors.items():
+                messages.add_message(
+                    request, messages.ERROR, f"<b>{form.fields[k].label}</b>: {v}"
+                )
+
+    breadcrumbs = {
+        reverse("generics:dashboard"): _("Dashboard"),
+        reverse("advanced-training:management:advanced-training"): _(
+            "Advanced Training"
+        ),
+        reverse(
+            "advanced-training:management:advanced-training-detail",
+            kwargs={"pk": master_id},
+        ): master.titolo_it,
+        "#": _("New Council Member"),
+    }
+
+    return render(
+        request,
+        "consiglio_interno_form.html",  # Nome template modificato
+        {
+            "breadcrumbs": breadcrumbs,
+            "choosen_person": "",  # Vuoto per nuovo inserimento
+            "external_form": external_form,
+            "internal_form": internal_form,
+            "master": master,
+            "url": reverse("teachers:apiv1:teachers-list"),
+            "is_edit": False,
+        },
+    )
+
+
+@login_required
+def consiglio_interno_edit(request, master_id, consiglio_id):
+    """
+    Modifica membro del consiglio scientifico interno
+    """
+    master = get_object_or_404(AltaFormazioneDatiBase, pk=master_id)
+    consiglio_member = get_object_or_404(
+        AltaFormazioneConsiglioScientificoInterno.objects.select_related(
+            "matricola_cons"
+        ),
+        pk=consiglio_id,
+        alta_formazione_dati_base=master,
+    )
+
+    old_label = consiglio_member.nome_origine_cons
+    member = consiglio_member.matricola_cons
+    initial = {}
+    member_data = ""
+
+    if member:
+        member_data = f"{member.cognome} {member.nome}"
+        initial = {"choosen_person": encrypt(member.matricola)}
+
+    external_form = ConsiglioInternoEsternoForm(instance=consiglio_member)
+    internal_form = ChoosenPersonForm(initial=initial, required=True)
+
+    if request.POST:
+        internal_form = ChoosenPersonForm(data=request.POST, required=True)
+        external_form = ConsiglioInternoEsternoForm(
+            instance=consiglio_member, data=request.POST
+        )
+
+        if "choosen_person" in request.POST:
+            form = internal_form
+        else:
+            form = external_form
+
+        if form.is_valid():
+            if form.cleaned_data.get("choosen_person"):
+                # Personale interno
+                member_id = decrypt(form.cleaned_data["choosen_person"])
+                member = get_object_or_404(Personale, matricola=member_id)
+                consiglio_member.matricola_cons = member
+                consiglio_member.nome_origine_cons = f"{member.cognome} {member.nome}"
+            else:
+                # Personale esterno
+                consiglio_member.matricola_cons = None
+                consiglio_member.nome_origine_cons = form.cleaned_data[
+                    "nome_origine_cons"
+                ]
+
+            consiglio_member.user_mod_id = request.user.id
+            consiglio_member.dt_mod = timezone.now()
+            consiglio_member.save()
+
+            if old_label != consiglio_member.nome_origine_cons:
+                log_action(
+                    user=request.user,
+                    obj=master,
+                    flag=CHANGE,
+                    msg=f"Modificato membro consiglio interno: {old_label} → {consiglio_member.nome_origine_cons}",
+                )
+
+            messages.add_message(
+                request, messages.SUCCESS, _("Council member data edited successfully")
+            )
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[master_id])}?tab=Consiglio Scientifico Interno"
+            )
+        else:
+            for k, v in form.errors.items():
+                messages.add_message(
+                    request, messages.ERROR, f"<b>{form.fields[k].label}</b>: {v}"
+                )
+
+    breadcrumbs = {
+        reverse("generics:dashboard"): _("Dashboard"),
+        reverse("advanced-training:management:advanced-training"): _(
+            "Advanced Training"
+        ),
+        reverse(
+            "advanced-training:management:advanced-training-detail",
+            kwargs={"pk": master_id},
+        ): master.titolo_it,
+        "#": f"{_('Edit Council Member')} {consiglio_member.nome_origine_cons}",
+    }
+
+    return render(
+        request,
+        "consiglio_interno_form.html",  # Nome template modificato
+        {
+            "breadcrumbs": breadcrumbs,
+            "choosen_person": member_data,  # Dati del membro selezionato
+            "external_form": external_form,
+            "internal_form": internal_form,
+            "master": master,
+            "url": reverse("teachers:apiv1:teachers-list"),
+            "is_edit": True,
+        },
+    )
+
+
+@login_required
+def consiglio_interno_delete(request, master_id, consiglio_id):
+    """
+    Eliminazione membro del consiglio scientifico interno
+    """
+    master = get_object_or_404(AltaFormazioneDatiBase, pk=master_id)
+    consiglio_member = get_object_or_404(
+        AltaFormazioneConsiglioScientificoInterno,
+        pk=consiglio_id,
+        alta_formazione_dati_base=master,
+    )
+
+    member_name = consiglio_member.nome_origine_cons
+    consiglio_member.delete()
+
+    log_action(
+        user=request.user,
+        obj=master,
+        flag=DELETION,
+        msg=f"Eliminato membro consiglio interno: {member_name}",
+    )
+
+    messages.add_message(
+        request, messages.SUCCESS, _("Council member removed successfully")
+    )
+
+    return redirect(
+        f"{reverse('advanced-training:management:advanced-training-detail', args=[master_id])}?tab=Consiglio Scientifico Interno"
     )

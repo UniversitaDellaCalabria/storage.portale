@@ -23,7 +23,7 @@
       </div>
 
       <!-- AVVISO FINESTRA TEMPORALE -->
-      {% if not has_active_window and current_status_cod == "0" or current_status_cod == "2" or current_status_cod == None %}
+      {% if not has_active_window %}
       <div class="alert alert-warning" role="alert">
         <i class="fas fa-exclamation-triangle"></i>
         <strong>Attenzione:</strong> Non è presente una finestra temporale attiva. 

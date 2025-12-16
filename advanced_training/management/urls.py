@@ -6,7 +6,10 @@ from .views import (
     advancedtraining_info_create,
     advancedtraining_info_delete,
     advancedtraining_status_change,
-    advancedtraining_load_tab,  # AGGIUNTO
+    advancedtraining_load_tab,
+    consiglio_interno_new,
+    consiglio_interno_edit,
+    consiglio_interno_delete,
 )
 
 app_name = "management"
@@ -42,5 +45,20 @@ urlpatterns = [
         "advanced-training/<int:pk>/load-tab/<str:tab_name>/",
         advancedtraining_load_tab,
         name="advanced-training-load-tab",
+    ),
+    path(
+        'master/<int:master_id>/consiglio-interno/new/',
+        consiglio_interno_new,
+        name='consiglio-interno-new'
+    ),
+    path(
+        'master/<int:master_id>/consiglio-interno/<int:consiglio_id>/edit/',
+        consiglio_interno_edit,
+        name='consiglio-interno-edit'
+    ),
+    path(
+        'master/<int:master_id>/consiglio-interno/<int:consiglio_id>/delete/',
+        consiglio_interno_delete,
+        name='consiglio-interno-delete'
     ),
 ]
