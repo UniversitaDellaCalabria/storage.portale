@@ -1,0 +1,23 @@
+{% extends "storage_crud_base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block centered_container %}
+<h3 style="font-weight: lighter;" class="mb-4">
+    {% if is_edit %}
+        {% trans "Edit council member for" %}
+    {% else %}
+        {% trans "New council member for" %}
+    {% endif %} 
+    {{ master.titolo_it }}
+</h3>
+
+<div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            {% include "blocks/includes/teacher_tabs.html" %}
+        </div>
+    </div>
+</div>
+{% endblock centered_container %}

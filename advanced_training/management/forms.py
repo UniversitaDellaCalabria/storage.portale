@@ -276,29 +276,38 @@ class ConsiglioScientificoEsternoForm(forms.ModelForm):
 ConsiglioScientificoEsternoFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,
     AltaFormazioneConsiglioScientificoEsterno,
-    fields=['nome_cons', 'ruolo_cons', 'ente_cons'],
+    fields=["nome_cons", "ruolo_cons", "ente_cons"],
     extra=1,
     can_delete=True,
 )
 
 
-class ConsiglioScientificoInternoForm(forms.ModelForm):
+class ConsiglioInternoEsternoForm(forms.ModelForm):
     class Meta:
         model = AltaFormazioneConsiglioScientificoInterno
-        fields = ["matricola_cons", "nome_origine_cons"]
-        labels = {
-            "matricola_cons": "Matricola",
-            "nome_origine_cons": "Nome",
-        }
+        fields = ["nome_origine_cons"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["nome_origine_cons"].required = True
+        self.fields["nome_origine_cons"].label = "Nome e Cognome"
+        self.fields["nome_origine_cons"].widget.attrs.update(
+            {
+                "class": "form-control",
+                "placeholder": "Inserisci nome e cognome del membro esterno",
+            }
+        )
 
 
-ConsiglioScientificoInternoFormSet = inlineformset_factory(
-    AltaFormazioneDatiBase,
-    AltaFormazioneConsiglioScientificoInterno,
-    fields=['matricola_cons', 'nome_origine_cons'],
-    extra=1,
-    can_delete=True,
-)
+class ChoosenPersonForm(forms.Form):
+    choosen_person = forms.CharField(
+        label="Seleziona Personale Interno", required=False, widget=forms.HiddenInput()
+    )
+
+    def __init__(self, *args, **kwargs):
+        required = kwargs.pop("required", False)
+        super().__init__(*args, **kwargs)
+        self.fields["choosen_person"].required = required
 
 
 class AltaFormazioneStatusForm(forms.ModelForm):
