@@ -219,7 +219,7 @@ class TeachersFilter(filters.FilterSet):
                 | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
                 & ~Q(didatticacopertura__stato_coper_cod="R")
             )
-        return queryset.filter(didatticacopertura__cds_cod=value)
+        return queryset.filter(didatticacopertura__regdid_id=value)
 
     def filter_role(self, queryset, name, value):
         roles = value.split(",")
