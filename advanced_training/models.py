@@ -1,9 +1,9 @@
 from django.db import models
 from generics.models import Permissions
 from advanced_training.settings import (
-    OFFICE_ADVANCED_TRAINING_SENDER,
     OFFICE_ADVANCED_TRAINING_VALIDATOR,
 )
+from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 
 class AltaFormazioneConsiglioScientificoEsterno(models.Model):
@@ -118,7 +118,7 @@ class AltaFormazioneDatiBase(Permissions):
         db_column="ID_PERSONALE_MATRICOLA_DIRETTORE_SCIENTIFICO",
         blank=True,
         null=True,
-        related_name="direttore_scientifico",  # AGGIUNTO per evitare conflitti
+        related_name="direttore_scientifico",
     )
     nome_origine_direttore_scientifico = models.TextField(
         db_column="NOME_ORIGINE_DIRETTORE_SCIENTIFICO", blank=True, null=True
@@ -185,25 +185,17 @@ class AltaFormazioneDatiBase(Permissions):
 
     @classmethod
     def get_offices_names(cls, **kwargs):
-        return (
-            OFFICE_ADVANCED_TRAINING_SENDER,
-            OFFICE_ADVANCED_TRAINING_VALIDATOR,
-        )
+        return (OFFICE_ADVANCED_TRAINING_VALIDATOR,)
 
     def _is_valid_office(self, office_name, all_user_offices, **kwargs):
         offices_names = self.get_offices_names()
 
-        # Sender: deve appartenere al dipartimento del master
         if office_name == offices_names[0]:
-            user_office = all_user_offices.get(office__name=office_name)
-            return (
-                user_office.office.organizational_structure.unique_code
-                == self.dipartimento_riferimento.dip_cod
-            )
 
-        # Validator: nessun vincolo di dipartimento
-        return True
+            return True
 
+        return False
+    
     def get_current_status(self):
         return (
             self.altaformazionestatusstorico_set.filter(
@@ -219,24 +211,18 @@ class AltaFormazioneDatiBase(Permissions):
         """
         offices_names = self.get_offices_names()
 
-        dati_base_status = self.get_current_status()
-        if dati_base_status is None:
-            return offices_names[0] in user_offices_names
+        status_storico = self.get_current_status()
 
-        status_cod = dati_base_status.id_alta_formazione_status.status_cod
+        if status_storico is None:
+            status_cod = "0"
+        else:
+            status_cod = status_storico.id_alta_formazione_status.status_cod
 
-        if status_cod == "0" and offices_names[0] in user_offices_names:
-            return True
-
-        elif status_cod == "1":
+        if offices_names[0] in user_offices_names:
             return False
 
-        elif status_cod == "2" and offices_names[0] in user_offices_names:
+        if status_cod in ["0", "2"]:
             return True
-
-        elif status_cod in ["3", "4"]:
-            return False
-
         return False
 
     def _check_lock_permission(self, user_offices_names, **kwargs):
@@ -246,27 +232,34 @@ class AltaFormazioneDatiBase(Permissions):
         """
         Determina se l'utente può cambiare lo stato del master
         """
-        user_permissions_and_offices = self.get_user_permissions_and_offices(user)
-        user_offices = user_permissions_and_offices["offices"]
+        if user.is_superuser:
+            return True
 
-        current_status = self.get_current_status()
+        # Ottieni stato corrente
+        status_storico = self.get_current_status()
         current_status_cod = (
-            current_status.id_alta_formazione_status.status_cod
-            if current_status
-            else None
+            "0"
+            if status_storico is None
+            else status_storico.id_alta_formazione_status.status_cod
         )
 
         offices_names = self.get_offices_names()
-        is_sender = offices_names[0] in user_offices
-        is_validator = offices_names[1] in user_offices
+        if offices_names[0] in [
+            o.office.name
+            for o in OrganizationalStructureOfficeEmployee.objects.filter(
+                employee=user,
+                office__is_active=True,
+                office__organizational_structure__is_active=True,
+            )
+        ]:
+            if current_status_cod != "1":
+                return False
+            return new_status_cod in ["2", "3", "4"]
 
-        if is_sender and not is_validator:
-            return new_status_cod == "1" and current_status_cod in ["0", "2", None]
-        
-        if is_validator:
-            return current_status_cod == "1" and new_status_cod in ["2", "3", "4"]
-
-        return False
+        else:
+            if current_status_cod not in ["0", "2"]:
+                return False
+            return new_status_cod == "1"
 
     class Meta:
         managed = True
