@@ -641,9 +641,7 @@ class ServiceDocente:
             "profilo",
             "ds_profilo",
             "ds_profilo_breve",
-        )
-        .order_by("cognome", "nome", "middle_name")
-        .distinct()
+        ).order_by("cognome", "nome", "middle_name").distinct()
 
         if dip:
             department = (
