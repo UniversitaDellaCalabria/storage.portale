@@ -65,10 +65,10 @@ class TeachersSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.CharField())
     def get_name(self, obj):
         return (
-            obj["cognome"]
+            obj.cognome
             + " "
-            + obj["nome"]
-            + (" " + obj["middle_name"] if obj["middle_name"] else "")
+            + obj.nome
+            + (" " + obj.middle_name if obj.middle_name else "")
         )
 
     class Meta:
