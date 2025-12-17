@@ -41,7 +41,7 @@ class TeachersSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.ListField(child=serializers.EmailField()))
     def get_email(self, obj):
-        return add_email_addresses(obj["cod_fis"])
+        return add_email_addresses(obj.cod_fis)
 
     @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
