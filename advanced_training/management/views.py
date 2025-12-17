@@ -37,6 +37,11 @@ from advanced_training.management.forms import (
 from advanced_training.api.v2.views import AdvancedTrainingMastersViewSet
 from advanced_training.management.decorators import check_temporal_window
 from addressbook.models import Personale
+from advanced_training.management.decorators import (
+    can_manage_advanced_training,
+)
+from organizational_area.models import OrganizationalStructureOfficeEmployee
+
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +100,8 @@ def advancedtraining_masters(request):
 
 
 @login_required
-def advancedtraining_info_edit(request, pk):
+@can_manage_advanced_training
+def advancedtraining_info_edit(request, pk, my_offices=None, is_validator=False):
     """Vista principale - carica solo i dati generali"""
     master = get_object_or_404(AdvancedTrainingMastersViewSet.queryset, pk=pk)
 
@@ -107,33 +113,49 @@ def advancedtraining_info_edit(request, pk):
         "#": _("Edit Master"),
     }
 
-    # Ottieni permessi utente
-    user_permissions_and_offices = master.get_user_permissions_and_offices(request.user)
-
-    # Verifica accesso
-    if not user_permissions_and_offices["permissions"]["access"]:
-        return custom_message(request, _("Permission denied"))
-
+    # Ottieni lo stato corrente
     current_status = get_current_status(master)
     current_status_cod = current_status.get("cod")
 
-    # Determina se è readonly in base ai permessi
-    can_edit = user_permissions_and_offices["permissions"]["edit"]
+    # COME NEI LABORATORI: Query diretta degli uffici nella vista
+    user_all_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+        employee=request.user,
+        office__is_active=True,
+        office__organizational_structure__is_active=True,
+    )
+
+    # Ottieni i nomi di TUTTI gli uffici dell'utente
+    user_offices_names = list(user_all_offices.values_list("office__name", flat=True))
+
+    # Verifica permessi usando i metodi del model
+    can_edit = master._check_edit_permission(user_offices_names)
     is_readonly = not can_edit
 
     has_active_window = is_temporal_window_active()
     available_statuses = AltaFormazioneStatus.objects.all()
 
-    # Determina i permessi specifici per i pulsanti
-    user_offices = user_permissions_and_offices["offices"]
+    # Calcola i permessi per i pulsanti usando la logica del model
     offices_names = master.get_offices_names()
-    is_sender = offices_names[0] in user_offices
-    is_validator = offices_names[1] in user_offices
 
+    # L'utente è validatore se ha l'ufficio validatori
+    user_is_validator = offices_names[0] in user_offices_names
+
+    print("OFFICES NAMES:")
+    print(offices_names)
+    print("USER OFFICES NAMES:")
+    print(user_offices_names)
+    print("USER IS VALIDATOR:")
+    print(user_is_validator)
+
+    # Pulsanti validatore: visibili solo ai validatori quando stato è 1
+    can_validate_actions = user_is_validator and current_status_cod == "1"
+
+    # Pulsante Valida: visibile ai NON validatori quando stato è 0 o 2 e c'è finestra attiva
     can_send_validation = (
-        is_sender and current_status_cod in ("0", "2", None) and has_active_window
+        not user_is_validator
+        and current_status_cod in ("0", "2", None)
+        and has_active_window
     )
-    can_validate = is_validator and current_status_cod == "1"
 
     dati_generali_form = MasterDatiBaseForm(instance=master)
 
@@ -154,9 +176,12 @@ def advancedtraining_info_edit(request, pk):
                 )
             )
 
+        # Verifica permessi POST (come nei laboratori)
+        if not (request.user.is_superuser or my_offices.exists() or can_edit):
+            return custom_message(request, _("Permission denied"))
+
         form_name = request.POST.get("tab_form_dict_key")
         form = None
-
         # Carica solo il form richiesto
         if form_name == "Dati generali":
             form = MasterDatiBaseForm(request.POST, request.FILES, instance=master)
@@ -207,7 +232,6 @@ def advancedtraining_info_edit(request, pk):
             )
         else:
             if form:
-                # Ricarica il form con errori
                 dati_generali_form = (
                     form if form_name == "Dati generali" else dati_generali_form
                 )
@@ -244,10 +268,10 @@ def advancedtraining_info_edit(request, pk):
             "available_statuses": available_statuses,
             "current_status_cod": current_status_cod,
             "is_readonly": is_readonly,
+            "is_validator": user_is_validator,
             "can_send_validation": can_send_validation,
-            "can_validate": can_validate,
+            "can_validate_actions": can_validate_actions,
             "has_active_window": has_active_window,
-            "user_permissions_and_offices": user_permissions_and_offices,
         },
     )
 
@@ -292,7 +316,6 @@ def advancedtraining_load_tab(request, pk, tab_name):
             context["form"] = form
 
         elif tab_name == "Consiglio Scientifico Interno":
-            # NUOVO: Carica i membri invece del formset
             consiglio_members = (
                 AltaFormazioneConsiglioScientificoInterno.objects.filter(
                     alta_formazione_dati_base=master
@@ -391,8 +414,8 @@ def advancedtraining_info_delete(request, pk):
 
 
 @login_required
-@check_temporal_window()
-def advancedtraining_status_change(request, pk, status_cod):
+@check_temporal_window(required=False)
+def advancedtraining_status_change(request, pk, status_cod, has_active_window=None):
     """Gestisce il cambio di stato del master"""
     if request.method != "POST":
         return custom_message(request, _("Metodo non consentito"))
@@ -400,16 +423,20 @@ def advancedtraining_status_change(request, pk, status_cod):
     dati_base = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
 
     # Verifica permessi
-    user_permissions_and_offices = dati_base.get_user_permissions_and_offices(
-        request.user
-    )
-    if not user_permissions_and_offices["permissions"]["access"]:
+    user_permissions = dati_base.get_user_permissions_and_offices(request.user)
+    if not user_permissions["permissions"]["access"]:
         return custom_message(request, _("Permission denied"))
 
     # Verifica se l'utente può cambiare a questo stato specifico
     if not dati_base.can_user_change_status(request.user, status_cod):
         messages.error(
             request, _("Non hai i permessi per effettuare questo cambio di stato")
+        )
+        return redirect("advanced-training:management:advanced-training-detail", pk=pk)
+
+    if status_cod == "1" and not has_active_window:
+        messages.error(
+            request, _("Cannot send for validation: no active temporal window")
         )
         return redirect("advanced-training:management:advanced-training-detail", pk=pk)
 
