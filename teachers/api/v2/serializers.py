@@ -175,19 +175,30 @@ class TeacherSerializer(serializers.ModelSerializer):
         )
     )
     def get_moreInfo(self, obj):
+        if hasattr(obj, "docente_pta_altri_dati"):
+            return [
+                {
+                    "ORCID": obj.docente_pta_altri_dati.orcid,
+                    "PHOTOPATH": build_media_path(obj.docente_pta_altri_dati.path_foto),
+                    "PATHCV": build_media_path(obj.docente_pta_altri_dati.path_cv_ita)
+                    if obj.docente_pta_altri_dati.path_cv_ita
+                    else build_media_path(obj.docente_pta_altri_dati.path_cv_en),
+                    "BREVEBIO": obj.docente_pta_altri_dati.breve_bio
+                    if obj.docente_pta_altri_dati.breve_bio
+                    else obj.docente_pta_altri_dati.breve_bio_en,
+                    "ORARIORICEVIMENTO": obj.docente_pta_altri_dati.orario_ricevimento
+                    if obj.docente_pta_altri_dati.orario_ricevimento
+                    else obj.docente_pta_altri_dati.orario_ricevimento_en,
+                }
+            ]
+            
         return [
             {
-                "ORCID": obj.docente_pta_altri_dati.orcid,
-                "PHOTOPATH": build_media_path(obj.docente_pta_altri_dati.path_foto),
-                "PATHCV": build_media_path(obj.docente_pta_altri_dati.path_cv_ita)
-                if obj.docente_pta_altri_dati.path_cv_ita
-                else build_media_path(obj.docente_pta_altri_dati.path_cv_en),
-                "BREVEBIO": obj.docente_pta_altri_dati.breve_bio
-                if obj.docente_pta_altri_dati.breve_bio
-                else obj.docente_pta_altri_dati.breve_bio_en,
-                "ORARIORICEVIMENTO": obj.docente_pta_altri_dati.orario_ricevimento
-                if obj.docente_pta_altri_dati.orario_ricevimento
-                else obj.docente_pta_altri_dati.orario_ricevimento_en,
+                "ORCID": "",
+                "PHOTOPATH": "",
+                "PATHCV": "",
+                "BREVEBIO": "",
+                "ORARIORICEVIMENTO": "",
             }
         ]
 
