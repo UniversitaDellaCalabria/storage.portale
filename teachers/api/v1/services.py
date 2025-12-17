@@ -600,47 +600,50 @@ class ServiceDocente:
 
         # last_academic_year = ServiceDidatticaCds.getAcademicYears()[0]['aa_reg_did']
 
-        query = (
-            Personale.objects.filter(
-                Q(fl_docente=1) | (Q(didatticacopertura__af__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R')),
+        # se visualizzo i docenti di un corso (anche passato)
+        # mostro anche quelli che sono cessati
+        # altrimenti solo quelli attivi
+        if not regdid and not cds:
+            query = Personale.objects.filter(
+                Q(fl_docente=1, flg_cessato=0)
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+                query_search,
+                query_roles,
+                query_year
+            )
+        else:
+            query = Personale.objects.filter(
+                Q(fl_docente=1)
+                | (Q(didatticacopertura__af__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R')),
                 query_search,
                 query_cds,
                 query_regdid,
                 query_roles,
                 query_year,
             )
-            .values(
-                "id_ab",
-                "matricola",
-                "nome",
-                "middle_name",
-                "cognome",
-                "cd_ruolo",
-                "ds_ruolo_locale",
-                "cd_ssd",
-                "cd_uo_aff_org",
-                "ds_ssd",
-                "cv_full_it",
-                "cv_short_it",
-                "cv_full_eng",
-                "cv_short_eng",
-                "profilo",
-                "ds_profilo",
-                "ds_profilo_breve",
-            )
-            .order_by("cognome", "nome", "middle_name")
-            .distinct()
-        )
 
-        # se visualizzo i docenti di un corso (anche passato)
-        # mostro anche quelli che sono cessati
-        # altrimenti solo quelli attivi
-        if not regdid and not cds:
-            query = query.filter(
-                Q(fl_docente=1, flg_cessato=0)
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R')
-            )
+        query = query.values(
+            "id_ab",
+            "matricola",
+            "nome",
+            "middle_name",
+            "cognome",
+            "cd_ruolo",
+            "ds_ruolo_locale",
+            "cd_ssd",
+            "cd_uo_aff_org",
+            "ds_ssd",
+            "cv_full_it",
+            "cv_short_it",
+            "cv_full_eng",
+            "cv_short_eng",
+            "profilo",
+            "ds_profilo",
+            "ds_profilo_breve",
+        )
+        .order_by("cognome", "nome", "middle_name")
+        .distinct()
 
         if dip:
             department = (
