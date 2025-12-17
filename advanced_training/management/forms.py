@@ -10,8 +10,7 @@ from advanced_training.models import (
     AltaFormazioneConsiglioScientificoInterno,
     AltaFormazioneStatusStorico,
 )
-
-
+from structures.models import DidatticaDipartimento
 class MasterDatiBaseForm(forms.ModelForm):
     tipo_selezione = forms.ModelChoiceField(
         queryset=AltaFormazioneModalitaSelezione.objects.all(),
@@ -128,8 +127,15 @@ class MasterDatiBaseForm(forms.ModelForm):
             "nome_proponente": "Nome proponente",
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, allowed_department_codes=None, **kwargs):
         super().__init__(*args, **kwargs)
+        
+        if allowed_department_codes:
+            self.fields['dipartimento_riferimento'].queryset = (
+                DidatticaDipartimento.objects.filter(
+                    dip_cod__in=allowed_department_codes
+                )
+            )
 
         required_fields = [
             "titolo_it",

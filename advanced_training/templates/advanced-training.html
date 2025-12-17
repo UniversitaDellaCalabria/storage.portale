@@ -4,11 +4,21 @@
 {% load static %}
 
 {% block centered_container %}
+
+{% if can_create %}
 <a href="{% url 'advanced-training:management:advanced-training-create' %}" class="btn btn-success btn-xs">
     <svg class="icon icon-xs icon-white">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
     </svg> {% trans "Add new" %}
 </a>
+{% else %}
+<button class="btn btn-secondary btn-xs" disabled title="{% trans 'You need to be part of a master office to create' %}">
+    <svg class="icon icon-xs icon-white">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+    </svg> {% trans "Add new" %}
+</button>
+{% endif %}
+
 <hr />
 <h3 style="font-weight: lighter;" class="mb-4">
     {% trans "Master" %}

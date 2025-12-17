@@ -321,11 +321,9 @@ getStatusBadgeClass(status) {
     return statusMap[String(status)] || 'badge-secondary';
 },
 canEdit(item) {
-    const status = String(item.status || '0');
-    return ['0', '2'].includes(status) || !item.status;
+    return item.can_edit === true;
 },
 canDelete(item) {
-    const status = String(item.status || '0');
-    return status === '0' || !item.status;
+    return item.can_delete === true;
 },
 {% endblock extra_methods %}
