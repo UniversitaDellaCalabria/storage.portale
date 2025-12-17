@@ -34,14 +34,19 @@ from advanced_training.management.forms import (
     ConsiglioInternoEsternoForm,
     ChoosenPersonForm,
 )
-from advanced_training.api.v2.views import AdvancedTrainingMastersViewSet
-from advanced_training.management.decorators import check_temporal_window
+from advanced_training.management.decorators import (
+    can_view_advanced_training,
+    check_temporal_window,
+)
 from addressbook.models import Personale
 from advanced_training.management.decorators import (
     can_manage_advanced_training,
 )
 from organizational_area.models import OrganizationalStructureOfficeEmployee
-
+from advanced_training.settings import (
+    OFFICE_ADVANCED_TRAINING_VALIDATOR,
+    OFFICE_ADVANCED_TRAINING,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -88,22 +93,44 @@ def is_temporal_window_active():
 
 @login_required
 def advancedtraining_masters(request):
+    """Vista lista master con controllo permessi creazione"""
+
+    # Verifica se può creare nuovi master
+    can_create = (
+        request.user.is_superuser
+        or OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=request.user,
+            office__is_active=True,
+            office__organizational_structure__is_active=True,
+            office__name__in=[
+                OFFICE_ADVANCED_TRAINING,
+                OFFICE_ADVANCED_TRAINING_VALIDATOR,
+            ],
+        ).exists()
+    )
+
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         "#": _("Advanced Training"),
     }
+
     context = {
         "breadcrumbs": breadcrumbs,
         "url": reverse("advanced-training:apiv2:advanced-training-list"),
+        "can_create": can_create,
     }
+
     return render(request, "advanced-training.html", context)
 
 
 @login_required
 @can_manage_advanced_training
-def advancedtraining_info_edit(request, pk, my_offices=None, is_validator=False):
+@can_view_advanced_training
+def advancedtraining_info_edit(
+    request, pk, advanced_training=None, my_offices=None, is_validator=False
+):
     """Vista principale - carica solo i dati generali"""
-    master = get_object_or_404(AdvancedTrainingMastersViewSet.queryset, pk=pk)
+    master = advanced_training  # Passato dal decoratore
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -117,7 +144,7 @@ def advancedtraining_info_edit(request, pk, my_offices=None, is_validator=False)
     current_status = get_current_status(master)
     current_status_cod = current_status.get("cod")
 
-    # COME NEI LABORATORI: Query diretta degli uffici nella vista
+    # Query diretta di TUTTI gli uffici attivi dell'utente
     user_all_offices = OrganizationalStructureOfficeEmployee.objects.filter(
         employee=request.user,
         office__is_active=True,
@@ -127,6 +154,37 @@ def advancedtraining_info_edit(request, pk, my_offices=None, is_validator=False)
     # Ottieni i nomi di TUTTI gli uffici dell'utente
     user_offices_names = list(user_all_offices.values_list("office__name", flat=True))
 
+    # L'utente è validatore se ha l'ufficio validatori
+    user_is_validator = OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names
+
+    print("OFFICES NAMES:")
+    print(master.get_offices_names())
+    print("USER OFFICES NAMES:")
+    print(user_offices_names)
+    print("USER IS VALIDATOR:")
+    print(user_is_validator)
+
+    # Verifica che l'utente abbia un ufficio master (non validatore) nello stesso dipartimento
+    department_code = (
+        master.dipartimento_riferimento.dip_cod
+        if master.dipartimento_riferimento
+        else None
+    )
+    print("DEPARTMENT CODE:")
+    print(department_code)
+
+    # Filtra gli uffici master (NON validatori) dell'utente per verificare il dipartimento
+    user_master_offices = user_all_offices.filter(
+        office__name=OFFICE_ADVANCED_TRAINING  # Solo uffici "master", non "master_validators"
+    )
+
+    user_has_same_department = user_master_offices.filter(
+        office__organizational_structure__unique_code=department_code
+    ).exists()
+
+    print("USER HAS SAME DEPARTMENT:")
+    print(user_has_same_department)
+
     # Verifica permessi usando i metodi del model
     can_edit = master._check_edit_permission(user_offices_names)
     is_readonly = not can_edit
@@ -134,30 +192,41 @@ def advancedtraining_info_edit(request, pk, my_offices=None, is_validator=False)
     has_active_window = is_temporal_window_active()
     available_statuses = AltaFormazioneStatus.objects.all()
 
-    # Calcola i permessi per i pulsanti usando la logica del model
-    offices_names = master.get_offices_names()
-
-    # L'utente è validatore se ha l'ufficio validatori
-    user_is_validator = offices_names[0] in user_offices_names
-
-    print("OFFICES NAMES:")
-    print(offices_names)
-    print("USER OFFICES NAMES:")
-    print(user_offices_names)
-    print("USER IS VALIDATOR:")
-    print(user_is_validator)
-
     # Pulsanti validatore: visibili solo ai validatori quando stato è 1
     can_validate_actions = user_is_validator and current_status_cod == "1"
 
-    # Pulsante Valida: visibile ai NON validatori quando stato è 0 o 2 e c'è finestra attiva
+    # Pulsante Valida: visibile ai NON validatori quando:
+    # - stato è 0 o 2
+    # - c'è finestra attiva
+    # - l'utente ha un ufficio master nello stesso dipartimento
     can_send_validation = (
         not user_is_validator
         and current_status_cod in ("0", "2", None)
         and has_active_window
+        and user_has_same_department
     )
 
-    dati_generali_form = MasterDatiBaseForm(instance=master)
+    # Ottieni i dipartimenti consentiti per il form
+    # Solo per utenti NON validatori, limita ai loro dipartimenti
+    allowed_department_codes = None
+    if not user_is_validator and user_master_offices.exists():
+        allowed_department_codes = list(
+            user_master_offices.values_list(
+                "office__organizational_structure__unique_code", flat=True
+            )
+        )
+        # Rimuovi duplicati
+        allowed_department_codes = list(set(allowed_department_codes))
+
+    print("ALLOWED DEPARTMENT CODES:")
+    print(allowed_department_codes)
+
+    # Crea il form con i parametri corretti
+    form_kwargs = {"instance": master}
+    if allowed_department_codes is not None:
+        form_kwargs["allowed_department_codes"] = allowed_department_codes
+
+    dati_generali_form = MasterDatiBaseForm(**form_kwargs)
 
     last_viewed_tab = request.GET.get("tab", "Dati generali")
 
@@ -176,15 +245,78 @@ def advancedtraining_info_edit(request, pk, my_offices=None, is_validator=False)
                 )
             )
 
-        # Verifica permessi POST (come nei laboratori)
-        if not (request.user.is_superuser or my_offices.exists() or can_edit):
-            return custom_message(request, _("Permission denied"))
+        # Verifica permessi POST
+        # L'utente può modificare se:
+        # - è superuser
+        # - è validatore (ma solo per azioni di validazione, non edit)
+        # - ha un ufficio master nello stesso dipartimento
+        can_modify = request.user.is_superuser or (
+            user_master_offices.exists() and user_has_same_department
+        )
+
+        if not can_modify:
+            return custom_message(
+                request,
+                _(
+                    "Permission denied - Department mismatch or insufficient permissions"
+                ),
+            )
 
         form_name = request.POST.get("tab_form_dict_key")
         form = None
+
         # Carica solo il form richiesto
         if form_name == "Dati generali":
-            form = MasterDatiBaseForm(request.POST, request.FILES, instance=master)
+            post_form_kwargs = {
+                "data": request.POST,
+                "files": request.FILES,
+                "instance": master,
+            }
+            if allowed_department_codes is not None:
+                post_form_kwargs["allowed_department_codes"] = allowed_department_codes
+
+            form = MasterDatiBaseForm(**post_form_kwargs)
+
+            # VALIDAZIONE DIPARTIMENTO
+            if form.is_valid():
+                new_department = form.cleaned_data.get("dipartimento_riferimento")
+                if new_department and not user_is_validator:
+                    new_department_code = new_department.dip_cod
+
+                    # Verifica che il nuovo dipartimento sia tra quelli consentiti
+                    if (
+                        allowed_department_codes
+                        and new_department_code not in allowed_department_codes
+                    ):
+                        messages.error(
+                            request,
+                            _(
+                                "Non puoi assegnare il master a un dipartimento diverso dal tuo"
+                            ),
+                        )
+                        dati_generali_form = form
+                        return render(
+                            request,
+                            "advanced-training-info.html",
+                            {
+                                "master": master,
+                                "dati_generali_form": dati_generali_form,
+                                "last_viewed_tab": form_name,
+                                "breadcrumbs": breadcrumbs,
+                                "current_status_description": current_status[
+                                    "description"
+                                ],
+                                "status_badge_class": current_status["badge_class"],
+                                "available_statuses": available_statuses,
+                                "current_status_cod": current_status_cod,
+                                "is_readonly": is_readonly,
+                                "is_validator": user_is_validator,
+                                "can_send_validation": can_send_validation,
+                                "can_validate_actions": can_validate_actions,
+                                "has_active_window": has_active_window,
+                            },
+                        )
+
         elif form_name == "Incarichi Didattici":
             form = IncaricoDidatticoFormSet(request.POST, instance=master)
         elif form_name == "Piano Didattico":
@@ -272,6 +404,7 @@ def advancedtraining_info_edit(request, pk, my_offices=None, is_validator=False)
             "can_send_validation": can_send_validation,
             "can_validate_actions": can_validate_actions,
             "has_active_window": has_active_window,
+            "user_has_same_department": user_has_same_department, 
         },
     )
 
@@ -340,10 +473,60 @@ def advancedtraining_load_tab(request, pk, tab_name):
 
 @login_required
 def advancedtraining_info_create(request):
+    """Crea un nuovo master - solo per utenti con ufficio master/validators"""
+
+    # Verifica permessi creazione
+    if not request.user.is_superuser:
+        has_office = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=request.user,
+            office__is_active=True,
+            office__organizational_structure__is_active=True,
+            office__name__in=[
+                OFFICE_ADVANCED_TRAINING,
+                OFFICE_ADVANCED_TRAINING_VALIDATOR,
+            ],
+        ).exists()
+
+        if not has_office:
+            return custom_message(
+                request,
+                _(
+                    "Permission denied - You need to be part of a master office to create"
+                ),
+            )
+
     master = AltaFormazioneDatiBase()
 
+    # Ottieni dipartimenti consentiti
+    user_is_validator = OrganizationalStructureOfficeEmployee.objects.filter(
+        employee=request.user,
+        office__is_active=True,
+        office__organizational_structure__is_active=True,
+        office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR,
+    ).exists()
+
+    allowed_department_codes = None
+    if not user_is_validator:
+        # Limita ai dipartimenti degli uffici master dell'utente
+        user_master_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=request.user,
+            office__is_active=True,
+            office__organizational_structure__is_active=True,
+            office__name=OFFICE_ADVANCED_TRAINING,
+        )
+        allowed_department_codes = list(
+            user_master_offices.values_list(
+                "office__organizational_structure__unique_code", flat=True
+            )
+        )
+
     if request.method == "POST":
-        form = MasterDatiBaseForm(request.POST, request.FILES, instance=master)
+        form_kwargs = {"data": request.POST, "files": request.FILES, "instance": master}
+        if allowed_department_codes:
+            form_kwargs["allowed_department_codes"] = allowed_department_codes
+
+        form = MasterDatiBaseForm(**form_kwargs)
+
         if form.is_valid():
             obj = form.save(commit=False)
             obj.dt_mod = timezone.now()
@@ -373,7 +556,19 @@ def advancedtraining_info_create(request):
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
     else:
-        form = MasterDatiBaseForm(instance=master)
+        form_kwargs = {"instance": master}
+        if allowed_department_codes:
+            form_kwargs["allowed_department_codes"] = allowed_department_codes
+
+        form = MasterDatiBaseForm(**form_kwargs)
+
+    breadcrumbs = {
+        reverse("generics:dashboard"): _("Dashboard"),
+        reverse("advanced-training:management:advanced-training"): _(
+            "Advanced Training"
+        ),
+        "#": _("New Master"),
+    }
 
     return render(
         request,
@@ -382,13 +577,15 @@ def advancedtraining_info_create(request):
             "master": master,
             "dati_generali_form": form,
             "last_viewed_tab": "Dati generali",
+            "breadcrumbs": breadcrumbs,
             "current_status_description": "Bozza",
             "status_badge_class": "secondary",
             "available_statuses": [],
             "current_status_cod": None,
             "is_readonly": False,
-            "user_is_validator": False,
+            "is_validator": user_is_validator,
             "can_send_validation": False,
+            "can_validate_actions": False,
             "has_active_window": is_temporal_window_active(),
         },
     )

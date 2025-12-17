@@ -2,8 +2,15 @@ from functools import wraps
 from django.utils.translation import gettext_lazy as _
 from generics.utils import custom_message
 from organizational_area.models import OrganizationalStructureOfficeEmployee
-from advanced_training.settings import OFFICE_ADVANCED_TRAINING_VALIDATOR
-from advanced_training.models import AltaFormazioneFinestraTemporale
+from advanced_training.settings import (
+    OFFICE_ADVANCED_TRAINING_VALIDATOR,
+    OFFICE_ADVANCED_TRAINING,
+)
+from advanced_training.models import (
+    AltaFormazioneFinestraTemporale,
+    AltaFormazioneDatiBase,
+)
+from django.shortcuts import get_object_or_404
 import datetime
 
 
@@ -11,13 +18,19 @@ def can_manage_advanced_training(func_to_decorate):
     """
     Decoratore che verifica se l'utente può gestire i master.
     Aggiunge al contesto:
-    - my_offices: uffici validatori dell'utente
+    - my_offices: uffici dell'utente relativi ai master (sia validatori che generici)
     - is_validator: True se l'utente è validatore
+    - advanced_training: oggetto master (se pk presente)
     """
 
     @wraps(func_to_decorate)
     def wrapper(*args, **kwargs):
         request = args[0]
+
+        # Recupera il master se presente
+        if kwargs.get("pk"):
+            master = get_object_or_404(AltaFormazioneDatiBase, pk=kwargs["pk"])
+            kwargs["advanced_training"] = master
 
         # Se è superuser, passa direttamente
         if request.user.is_superuser:
@@ -25,25 +38,32 @@ def can_manage_advanced_training(func_to_decorate):
             kwargs["my_offices"] = OrganizationalStructureOfficeEmployee.objects.none()
             return func_to_decorate(*args, **kwargs)
 
-        # Recupera gli uffici dell'utente
+        # Recupera TUTTI gli uffici attivi dell'utente
         offices = OrganizationalStructureOfficeEmployee.objects.filter(
             employee=request.user,
             office__is_active=True,
             office__organizational_structure__is_active=True,
         )
 
-        # Filtra solo gli uffici validatori
-        my_offices = offices.filter(office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR)
+        # Filtra uffici master (validatori + uffici generici)
+        my_offices = offices.filter(
+            office__name__in=[
+                OFFICE_ADVANCED_TRAINING_VALIDATOR,
+                OFFICE_ADVANCED_TRAINING,
+            ]
+        )
 
         # Verifica se è validatore
-        is_validator = my_offices.exists()
+        is_validator = offices.filter(
+            office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR
+        ).exists()
 
         # Aggiungi al contesto
         kwargs["my_offices"] = my_offices
         kwargs["is_validator"] = is_validator
 
         # Se non ha permessi, nega l'accesso
-        if not is_validator:
+        if not my_offices.exists():
             return custom_message(request, _("Permission denied"))
 
         return func_to_decorate(*args, **kwargs)
@@ -54,7 +74,7 @@ def can_manage_advanced_training(func_to_decorate):
 def can_view_advanced_training(func_to_decorate):
     """
     Decoratore che verifica se l'utente può visualizzare un master specifico.
-    Richiede che can_manage_advanced_training sia già stato applicato.
+    Filtra my_offices per dipartimento se non è validatore.
     """
 
     @wraps(func_to_decorate)
@@ -64,14 +84,31 @@ def can_view_advanced_training(func_to_decorate):
         if request.user.is_superuser:
             return func_to_decorate(*args, **kwargs)
 
-        # Verifica accesso tramite il metodo del model
         advanced_training = kwargs.get("advanced_training")
-        if advanced_training:
-            user_permissions = advanced_training.get_user_permissions_and_offices(
-                request.user
-            )
-            if not user_permissions["permissions"]["access"]:
-                return custom_message(request, _("Permission denied"))
+        my_offices = kwargs.get("my_offices")
+        is_validator = kwargs.get("is_validator", False)
+
+        if not advanced_training:
+            return custom_message(request, _("Advanced training not found"))
+
+        # I validatori vedono tutto
+        if is_validator:
+            return func_to_decorate(*args, **kwargs)
+
+        # Gli altri vedono solo i master del loro dipartimento
+        department_code = (
+            advanced_training.dipartimento_riferimento.dip_cod
+            if advanced_training.dipartimento_riferimento
+            else None
+        )
+
+        my_offices = my_offices.filter(
+            office__organizational_structure__unique_code=department_code
+        )
+        kwargs["my_offices"] = my_offices
+
+        if not my_offices.exists():
+            return custom_message(request, _("Permission denied"))
 
         return func_to_decorate(*args, **kwargs)
 
@@ -81,7 +118,7 @@ def can_view_advanced_training(func_to_decorate):
 def can_edit_advanced_training(func_to_decorate):
     """
     Decoratore che verifica se l'utente può modificare un master.
-    Considera anche lo stato del master.
+    Considera anche lo stato del master e il dipartimento.
     """
 
     @wraps(func_to_decorate)
@@ -92,14 +129,42 @@ def can_edit_advanced_training(func_to_decorate):
             return func_to_decorate(*args, **kwargs)
 
         advanced_training = kwargs.get("advanced_training")
+        my_offices = kwargs.get("my_offices")
+        is_validator = kwargs.get("is_validator", False)
+
         if not advanced_training:
             return custom_message(request, _("Advanced training not found"))
 
-        # Verifica permessi di modifica
-        user_permissions = advanced_training.get_user_permissions_and_offices(
-            request.user
+        # I validatori non possono editare (solo approvare/rifiutare)
+        if is_validator:
+            return custom_message(
+                request, _("Permission denied - Validators cannot edit")
+            )
+
+        # Verifica che l'ufficio sia dello stesso dipartimento
+        department_code = (
+            advanced_training.dipartimento_riferimento.dip_cod
+            if advanced_training.dipartimento_riferimento
+            else None
         )
-        if not user_permissions["permissions"]["edit"]:
+
+        my_offices = my_offices.filter(
+            office__organizational_structure__unique_code=department_code
+        )
+
+        if not my_offices.exists():
+            return custom_message(request, _("Permission denied - Department mismatch"))
+
+        # Verifica permessi di modifica basati sullo stato
+        user_offices_names = list(
+            OrganizationalStructureOfficeEmployee.objects.filter(
+                employee=request.user,
+                office__is_active=True,
+                office__organizational_structure__is_active=True,
+            ).values_list("office__name", flat=True)
+        )
+
+        if not advanced_training._check_edit_permission(user_offices_names):
             return custom_message(
                 request, _("Permission denied - Cannot edit in current status")
             )
