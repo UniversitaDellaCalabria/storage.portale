@@ -71,15 +71,22 @@ class TeachersViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.action == "list":
-            return (
-                Personale.objects.filter(
-                    Q(fl_docente=1)
-                    | (
-                        Q(didatticacopertura__af__isnull=False)
-                        & ~Q(didatticacopertura__stato_coper_cod="R")
-                    )
+            if not self.request.query_params.get('cds') and not self.request.query_params.get('regdid'):
+                query = Personale.objects.filter(
+                    Q(fl_docente=1, flg_cessato=0)
+                    |
+                    (Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R'))
+                    |
+                    (Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'))
                 )
-                .only(
+            else:
+                query = Personale.objects.filter(
+                    Q(fl_docente=1)
+                    |
+                    ((Q(didatticacopertura__af__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R')))
+                )
+            
+            return query.only(
                     "id_ab",
                     "cod_fis",
                     "matricola",
@@ -98,10 +105,7 @@ class TeachersViewSet(ReadOnlyModelViewSet):
                     "profilo",
                     "ds_profilo",
                     "ds_profilo_breve",
-                )
-                .order_by("cognome", "nome", "middle_name")
-                .distinct()
-            )
+                ).order_by("cognome", "nome", "middle_name").distinct()
 
         if self.action == "retrieve":
             teacher = get_personale_matricola(self.kwargs.get("matricola"))

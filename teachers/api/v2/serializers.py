@@ -30,6 +30,7 @@ class TeachersSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     role = serializers.CharField(source="cd_ruolo")
     roleDescription = serializers.CharField(source="ds_ruolo_locale")
+    department = serializers.CharField(source="cd_uo_aff_org")
     SSDCod = serializers.CharField(source="cd_ssd")
     SSDDescription = serializers.CharField(source="ds_ssd")
     CVFull = serializers.CharField(source="cv_full_it")
@@ -76,6 +77,7 @@ class TeachersSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "department",
             "role",
             "roleDescription",
             "SSDCod",

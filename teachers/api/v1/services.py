@@ -606,8 +606,10 @@ class ServiceDocente:
         if not regdid and not cds:
             query = Personale.objects.filter(
                 Q(fl_docente=1, flg_cessato=0)
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+                |
+                (Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R'))
+                |
+                (Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R')),
                 query_search,
                 query_roles,
                 query_year
@@ -615,7 +617,8 @@ class ServiceDocente:
         else:
             query = Personale.objects.filter(
                 Q(fl_docente=1)
-                | (Q(didatticacopertura__af__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R')),
+                |
+                ((Q(didatticacopertura__af__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R'))),
                 query_search,
                 query_cds,
                 query_regdid,

@@ -128,17 +128,22 @@ class TeachersFilter(filters.FilterSet):
         help_text="Search for research groups.",
     )
     dip  = filters.CharFilter(
-        method="filter_dip",
+        # ~ method="filter_dip",
+        field_name="cd_uo_aff_org",
+        lookup_expr="exact",
         label="Department",
         help_text="Search for department.",
     )
     regdid = filters.CharFilter(
-        method="filter_regdid",
+        # ~ method="filter_regdid",
+        field_name="didatticacopertura__regdid_id",
+        lookup_expr="exact",
         label="RegDid",
         help_text="Search for RegDid.",
     )
     cds = filters.CharFilter(
-        method="filter_cds",
+        # ~ method="filter_cds",
+        field_name="didatticacopertura__cds_cod",
         lookup_expr="exact",
         label="Cds",
         help_text="Search for Cds.",
@@ -155,71 +160,69 @@ class TeachersFilter(filters.FilterSet):
         help_text="Search for role.",
     )
 
-    def filter_dip(self, queryset, name, value):
-        if value:
-            department = (
-                DidatticaDipartimento.objects.filter(dip_cod=value)
-                .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
-                .first()
-            )
-            if not department:
-                return None
-            query = queryset.filter(cd_uo_aff_org=department["dip_cod"])
-            query = list(query)
-            for q in query:
-                q["dip_id"] = department["dip_id"]
-                q["dip_cod"] = department["dip_cod"]
-                q["dip_des_it"] = department["dip_des_it"]
-                q["dip_des_eng"] = department["dip_des_eng"]
+    # ~ def filter_dip(self, queryset, name, value):
+        # ~ if value:
+            # ~ department = (
+                # ~ DidatticaDipartimento.objects.filter(dip_cod=value)
+                # ~ .values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+                # ~ .first()
+            # ~ )
+            # ~ if not department:
+                # ~ return Personale.objects.none()
+            # ~ query = queryset.filter(cd_uo_aff_org=department["dip_cod"])
+            # ~ for q in query:
+                # ~ q.dip_id = department["dip_id"]
+                # ~ q.dip_cod = department["dip_cod"]
+                # ~ q.dip_des_it = department["dip_des_it"]
+                # ~ q.dip_des_eng = department["dip_des_eng"]
+            # ~ return query
+        # ~ else:
+            # ~ dip_cods = query.values_list("cd_uo_aff_org", flat=True).distinct()
+            # ~ dip_cods = list(dip_cods)
 
-        else:
-            dip_cods = query.values_list("cd_uo_aff_org", flat=True).distinct()
-            dip_cods = list(dip_cods)
+            # ~ departments = DidatticaDipartimento.objects.filter(
+                # ~ dip_cod__in=dip_cods
+            # ~ ).values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
 
-            departments = DidatticaDipartimento.objects.filter(
-                dip_cod__in=dip_cods
-            ).values("dip_id", "dip_cod", "dip_des_it", "dip_des_eng")
+            # ~ for q in queryset:
+                # ~ found = False
+                # ~ for dep in departments:
+                    # ~ if dep["dip_cod"] == q.cd_uo_aff_org:
+                        # ~ q.dip_id = dep["dip_id"]
+                        # ~ q.dip_cod = dep["dip_cod"]
+                        # ~ q.dip_des_it = dep["dip_des_it"]
+                        # ~ q.dip_des_eng = dep["dip_des_eng"]
+                        # ~ found = True
+                        # ~ break
 
-            for q in query:
-                found = False
-                for dep in departments:
-                    if dep["dip_cod"] == q["cd_uo_aff_org"]:
-                        q["dip_id"] = dep["dip_id"]
-                        q["dip_cod"] = dep["dip_cod"]
-                        q["dip_des_it"] = dep["dip_des_it"]
-                        q["dip_des_eng"] = dep["dip_des_eng"]
-                        found = True
-                        break
+                # ~ if not found:
+                    # ~ q.dip_id = None
+                    # ~ q.dip_cod = None
+                    # ~ q.dip_des_it = None
+                    # ~ q.dip_des_eng = None
+            # ~ return queryset
 
-                if not found:
-                    q["dip_id"] = None
-                    q["dip_cod"] = None
-                    q["dip_des_it"] = None
-                    q["dip_des_eng"] = None
+    # ~ def filter_cds(self, queryset, name, value):
+        # ~ if not value and not self.data.get("regdid"):
+            # ~ return queryset.filter(
+                # ~ Q(fl_docente=1, flg_cessato=0)
+                # ~ | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                # ~ & ~Q(didatticacopertura__stato_coper_cod="R")
+                # ~ | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                # ~ & ~Q(didatticacopertura__stato_coper_cod="R")
+            # ~ )
+        # ~ return queryset.filter(didatticacopertura__cds_cod=value)
 
-        
-    
-    def filter_cds(self, queryset, name, value):
-        if not value and not self.data.get("regdid"):
-            return queryset.filter(
-                Q(fl_docente=1, flg_cessato=0)
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-                & ~Q(didatticacopertura__stato_coper_cod="R")
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
-                & ~Q(didatticacopertura__stato_coper_cod="R")
-            )
-        return queryset.filter(didatticacopertura__cds_cod=value)
-
-    def filter_regdid(self, queryset, name, value):
-        if not value and not self.data.get("cds"):
-            return queryset.filter(
-                Q(fl_docente=1, flg_cessato=0)
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-                & ~Q(didatticacopertura__stato_coper_cod="R")
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
-                & ~Q(didatticacopertura__stato_coper_cod="R")
-            )
-        return queryset.filter(didatticacopertura__regdid_id=value)
+    # ~ def filter_regdid(self, queryset, name, value):
+        # ~ if not value and not self.data.get("cds"):
+            # ~ return queryset.filter(
+                # ~ Q(fl_docente=1, flg_cessato=0)
+                # ~ | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                # ~ & ~Q(didatticacopertura__stato_coper_cod="R")
+                # ~ | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                # ~ & ~Q(didatticacopertura__stato_coper_cod="R")
+            # ~ )
+        # ~ return queryset.filter(didatticacopertura__regdid_id=value)
 
     def filter_role(self, queryset, name, value):
         roles = value.split(",")
