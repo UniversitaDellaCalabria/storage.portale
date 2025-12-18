@@ -11,11 +11,6 @@ from advanced_training.models import (
     AltaFormazioneTipoCorso,
     AltaFormazioneStatusStorico,
 )
-from organizational_area.models import OrganizationalStructureOfficeEmployee
-from advanced_training.settings import (
-    OFFICE_ADVANCED_TRAINING,
-    OFFICE_ADVANCED_TRAINING_VALIDATOR,
-)
 
 
 @extend_schema_serializer(examples=examples.HIGH_FORMATION_MASTER_EXAMPLES)
@@ -90,8 +85,6 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     teachingPlan = serializers.SerializerMethodField()
     teachingAssignments = serializers.SerializerMethodField()
     trainingActivities = serializers.SerializerMethodField()
-    can_edit = serializers.SerializerMethodField()
-    can_delete = serializers.SerializerMethodField()
 
     @extend_schema_field(serializers.CharField())
     def get_scientificDirectorId(self, obj):
@@ -204,111 +197,6 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
             for t in getattr(obj, "training_activities", [])
         ]
 
-
-    def get_can_edit(self, obj):
-        request = self.context.get("request")
-        if not request or not request.user:
-            return False
-
-        # Superuser può sempre modificare
-        if request.user.is_superuser:
-            return True
-
-        # Ottieni lo stato corrente
-        status = obj.get_current_status()
-        status_cod = status.id_alta_formazione_status.status_cod if status else None
-
-        # Può modificare solo in stato 0 o 2
-        if status_cod not in ["0", "2", None]:
-            return False
-
-        # Ottieni TUTTI gli uffici dell'utente
-        user_all_offices = OrganizationalStructureOfficeEmployee.objects.filter(
-            employee=request.user,
-            office__is_active=True,
-            office__organizational_structure__is_active=True,
-        )
-
-        # Ottieni i nomi di TUTTI gli uffici
-        user_offices_names = list(user_all_offices.values_list("office__name", flat=True))
-
-        user_is_validator = OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names
-
-        # Se è validatore, può modificare usando solo il metodo del model
-        if user_is_validator:
-            return obj._check_edit_permission(user_offices_names)
-
-        # Se NON è validatore, deve avere un ufficio master nello stesso dipartimento
-        department_code = (
-            obj.dipartimento_riferimento.dip_cod if obj.dipartimento_riferimento else None
-        )
-
-        if not department_code:
-            return False
-
-        # Verifica che abbia un ufficio master nello stesso dipartimento
-        user_master_offices = user_all_offices.filter(office__name=OFFICE_ADVANCED_TRAINING)
-
-        user_has_same_department = user_master_offices.filter(
-            office__organizational_structure__unique_code=department_code
-        ).exists()
-
-        if not user_has_same_department:
-            return False
-
-        # Infine verifica i permessi generici
-        return obj._check_edit_permission(user_offices_names)
-
-
-    def get_can_delete(self, obj):
-        request = self.context.get("request")
-        if not request or not request.user:
-            return False
-
-        # Superuser può sempre eliminare
-        if request.user.is_superuser:
-            return True
-
-        # Può eliminare solo in stato Bozza
-        status = obj.get_current_status()
-        status_cod = status.id_alta_formazione_status.status_cod if status else None
-
-        if status_cod not in ["0", None]:
-            return False
-
-        # Ottieni TUTTI gli uffici dell'utente
-        user_all_offices = OrganizationalStructureOfficeEmployee.objects.filter(
-            employee=request.user,
-            office__is_active=True,
-            office__organizational_structure__is_active=True,
-        )
-
-        # Ottieni i nomi di TUTTI gli uffici
-        user_offices_names = list(user_all_offices.values_list("office__name", flat=True))
-
-        user_is_validator = OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names
-
-        # Se è validatore, può eliminare
-        if user_is_validator:
-            return True
-
-        # Se NON è validatore, deve avere un ufficio master nello stesso dipartimento
-        department_code = (
-            obj.dipartimento_riferimento.dip_cod if obj.dipartimento_riferimento else None
-        )
-
-        if not department_code:
-            return False
-
-        # Verifica che abbia un ufficio master nello stesso dipartimento
-        user_master_offices = user_all_offices.filter(office__name=OFFICE_ADVANCED_TRAINING)
-
-        user_has_same_department = user_master_offices.filter(
-            office__organizational_structure__unique_code=department_code
-        ).exists()
-
-        return user_has_same_department
-
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
@@ -370,8 +258,6 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
             "teachingPlan",
             "teachingAssignments",
             "trainingActivities",
-            "can_edit",
-            "can_delete",
         ]
         language_field_map = {
             "masterTitle": {"it": "titolo_it", "en": "titolo_en"},
