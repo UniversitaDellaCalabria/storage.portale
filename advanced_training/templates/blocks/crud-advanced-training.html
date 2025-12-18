@@ -21,7 +21,7 @@
                     <div class="mb-0">
                         <div class="row">
 
-                            {% block filters_department %}
+                            {% comment %} {% block filters_department %}
                             <loading-icon
                                 v-if="is_loading_departments"
                                 :loader_source="loader_source_departments">
@@ -48,7 +48,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {% endblock filters_department %}
+                            {% endblock filters_department %} {% endcomment %}
 
                             {% block filters_coursetype %}
                             <loading-icon
@@ -172,7 +172,7 @@
                                     </svg> {% trans "Duplica" %}
                                 </button>
 
-                                <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right ms-2" v-if="canEdit(item)">
+                                <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right ms-2">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
@@ -180,7 +180,7 @@
 
                                 <form :action="'{% url 'advanced-training:management:advanced-training-delete' 0 %}'.replace('0', item.id)"
                                     method="post"
-                                    class="d-inline float-right ms-2" v-if="canDelete(item)">
+                                    class="d-inline float-right ms-2">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm btn-danger"
                                             onclick="return confirm('{% trans 'Sei sicuro di voler eliminare questo master?' %}')">
@@ -260,7 +260,7 @@ let get_coursetype = params.get("coursetype")
 
 this.callMasterTypes();
 this.callErogations();
-this.callDepartments();
+{% comment %} this.callDepartments(); {% endcomment %}
 this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
 {% endblock extra_mounted %}
 
@@ -297,13 +297,13 @@ callErogations() {
             this.is_loading_erogations = false;
         });
 },
-callDepartments() {
+{% comment %} callDepartments() {
     axios.get(this.loader_source_departments)
         .then(response => {
             this.departments_filter = response.data.results;
             this.is_loading_departments = false
         })
-},
+}, {% endcomment %}
 duplicate(item) {
     window.location.href = `${item.id}/duplicate/`;
 },
@@ -319,11 +319,5 @@ getStatusBadgeClass(status) {
     };
     
     return statusMap[String(status)] || 'badge-secondary';
-},
-canEdit(item) {
-    return item.can_edit === true;
-},
-canDelete(item) {
-    return item.can_delete === true;
 },
 {% endblock extra_methods %}

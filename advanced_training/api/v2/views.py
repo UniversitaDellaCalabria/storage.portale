@@ -29,6 +29,12 @@ from advanced_training.models import (
     AltaFormazioneTipoCorso,
     AltaFormazioneStatusStorico,
 )
+from organizational_area.models import OrganizationalStructureOfficeEmployee
+from advanced_training.settings import (
+    OFFICE_ADVANCED_TRAINING_VALIDATOR,
+    OFFICE_ADVANCED_TRAINING,
+)
+from django.db.models import Q
 
 
 @extend_schema_view(
@@ -42,7 +48,9 @@ from advanced_training.models import (
     retrieve=extend_schema(
         summary=descriptions.ADVANCEDTRAINING_MASTERS_RETRIEVE_SUMMARY,
         description=descriptions.ADVANCEDTRAINING_MASTERS_RETRIEVE_DESCRIPTION,
-        responses=responses.COMMON_RETRIEVE_RESPONSES(AdvancedTrainingMastersSerializer),
+        responses=responses.COMMON_RETRIEVE_RESPONSES(
+            AdvancedTrainingMastersSerializer
+        ),
     ),
 )
 class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
@@ -50,150 +58,184 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     serializer_class = AdvancedTrainingMastersSerializer
     filterset_class = AdvancedTrainingMastersFilter
-    queryset = (
-        AltaFormazioneDatiBase.objects.prefetch_related(
-            Prefetch(
-                "altaformazionepartner_set",
-                queryset=(
-                    AltaFormazionePartner.objects.only(
-                        "id", "denominazione", "tipologia", "sito_web"
-                    ).distinct()
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = (
+            AltaFormazioneDatiBase.objects.prefetch_related(
+                Prefetch(
+                    "altaformazionepartner_set",
+                    queryset=(
+                        AltaFormazionePartner.objects.only(
+                            "id", "denominazione", "tipologia", "sito_web"
+                        ).distinct()
+                    ),
+                    to_attr="partners",
                 ),
-                to_attr="partners",
-            ),
-            Prefetch(
-                "altaformazionemodalitaselezione_set",
-                queryset=(
-                    AltaFormazioneModalitaSelezione.objects.only(
-                        "id",
-                        "tipo_selezione",
-                    ).distinct()
+                Prefetch(
+                    "altaformazionemodalitaselezione_set",
+                    queryset=(
+                        AltaFormazioneModalitaSelezione.objects.only(
+                            "id",
+                            "tipo_selezione",
+                        ).distinct()
+                    ),
+                    to_attr="selections",
                 ),
-                to_attr="selections",
-            ),
-            Prefetch(
-                "altaformazioneconsiglioscientificointerno_set",
-                queryset=(
-                    AltaFormazioneConsiglioScientificoInterno.objects.only(
-                        "matricola_cons",
-                        "nome_origine_cons",
-                    )
+                Prefetch(
+                    "altaformazioneconsiglioscientificointerno_set",
+                    queryset=(
+                        AltaFormazioneConsiglioScientificoInterno.objects.only(
+                            "matricola_cons",
+                            "nome_origine_cons",
+                        )
+                    ),
+                    to_attr="internal_scientific_council",
                 ),
-                to_attr="internal_scientific_council",
-            ),
-            Prefetch(
-                "altaformazioneconsiglioscientificoesterno_set",
-                queryset=(
-                    AltaFormazioneConsiglioScientificoEsterno.objects.only(
-                        "nome_cons",
-                        "ruolo_cons",
-                        "ente_cons",
-                    )
+                Prefetch(
+                    "altaformazioneconsiglioscientificoesterno_set",
+                    queryset=(
+                        AltaFormazioneConsiglioScientificoEsterno.objects.only(
+                            "nome_cons",
+                            "ruolo_cons",
+                            "ente_cons",
+                        )
+                    ),
+                    to_attr="external_scientific_council",
                 ),
-                to_attr="external_scientific_council",
-            ),
-            Prefetch(
-                "altaformazionepianodidattico_set",
-                queryset=(
-                    AltaFormazionePianoDidattico.objects.only(
-                        "id", "modulo", "ssd", "num_ore", "cfu", "verifica_finale"
-                    )
+                Prefetch(
+                    "altaformazionepianodidattico_set",
+                    queryset=(
+                        AltaFormazionePianoDidattico.objects.only(
+                            "id", "modulo", "ssd", "num_ore", "cfu", "verifica_finale"
+                        )
+                    ),
+                    to_attr="teaching_plan",
                 ),
-                to_attr="teaching_plan",
-            ),
-            Prefetch(
-                "altaformazioneincaricodidattico_set",
-                queryset=(
-                    AltaFormazioneIncaricoDidattico.objects.only(
-                        "id",
-                        "modulo",
-                        "num_ore",
-                        "docente",
-                        "qualifica",
-                        "ente",
-                        "tipologia",
-                    )
+                Prefetch(
+                    "altaformazioneincaricodidattico_set",
+                    queryset=(
+                        AltaFormazioneIncaricoDidattico.objects.only(
+                            "id",
+                            "modulo",
+                            "num_ore",
+                            "docente",
+                            "qualifica",
+                            "ente",
+                            "tipologia",
+                        )
+                    ),
+                    to_attr="teaching_assignments",
                 ),
-                to_attr="teaching_assignments",
-            ),
-            Prefetch(
-                "altaformazioneattivitaformative_set",
-                queryset=(
-                    AltaFormazioneAttivitaFormative.objects.only(
-                        "id",
-                        "nome",
-                        "programma",
-                        "bibliografia",
-                        "modalita_verifica_finale",
-                        "alta_formazione_attivita_formativa_padre",
-                    )
+                Prefetch(
+                    "altaformazioneattivitaformative_set",
+                    queryset=(
+                        AltaFormazioneAttivitaFormative.objects.only(
+                            "id",
+                            "nome",
+                            "programma",
+                            "bibliografia",
+                            "modalita_verifica_finale",
+                            "alta_formazione_attivita_formativa_padre",
+                        )
+                    ),
+                    to_attr="training_activities",
                 ),
-                to_attr="training_activities",
-            ),
-            Prefetch(
-                "altaformazionestatusstorico_set",
-                queryset=(
-                    AltaFormazioneStatusStorico.objects.select_related(
-                        "id_alta_formazione_status"
-                    ).order_by("-data_status")
+                Prefetch(
+                    "altaformazionestatusstorico_set",
+                    queryset=(
+                        AltaFormazioneStatusStorico.objects.select_related(
+                            "id_alta_formazione_status"
+                        ).order_by("-data_status")
+                    ),
+                    to_attr="status_history",
                 ),
-                to_attr="status_history",
-            ),
+            )
+            .only(
+                "id",
+                "titolo_it",
+                "titolo_en",
+                "alta_formazione_tipo_corso",
+                "alta_formazione_tipo_corso__tipo_corso_descr",
+                "alta_formazione_mod_erogazione",
+                "alta_formazione_mod_erogazione__descrizione",
+                "lingua",
+                "ore",
+                "mesi",
+                "anno_rilevazione",
+                "dipartimento_riferimento",
+                "dipartimento_riferimento__dip_cod",
+                "dipartimento_riferimento__dip_des_it",
+                "dipartimento_riferimento__dip_des_eng",
+                "data_inizio",
+                "data_fine",
+                "sede_corso",
+                "num_min_partecipanti",
+                "num_max_partecipanti",
+                "uditori_ammessi",
+                "num_max_uditori",
+                "requisiti_ammissione",
+                "titolo_rilasciato",
+                "doppio_titolo",
+                "matricola_direttore_scientifico",
+                "nome_origine_direttore_scientifico",
+                "quota_iscrizione",
+                "quota_uditori",
+                "funzione_lavoro",
+                "obiettivi_formativi_summer_school",
+                "competenze",
+                "sbocchi_occupazionali",
+                "obiettivi_formativi_corso",
+                "modalita_svolgimento_prova_finale",
+                "numero_moduli",
+                "stage_tirocinio",
+                "ore_stage_tirocinio",
+                "cfu_stage",
+                "mesi_stage",
+                "tipo_aziende_enti_tirocinio",
+                "contenuti_tempi_criteri_cfu",
+                "project_work",
+                "path_piano_finanziario",
+                "path_doc_delibera",
+                "matricola_proponente",
+                "cognome_proponente",
+                "nome_proponente",
+                "dt_mod",
+                "user_mod_id",
+            )
+            .order_by("titolo_it", "id")
         )
-        .only(
-            "id",
-            "titolo_it",
-            "titolo_en",
-            "alta_formazione_tipo_corso",
-            "alta_formazione_tipo_corso__tipo_corso_descr",
-            "alta_formazione_mod_erogazione",
-            "alta_formazione_mod_erogazione__descrizione",
-            "lingua",
-            "ore",
-            "mesi",
-            "anno_rilevazione",
-            "dipartimento_riferimento",
-            "dipartimento_riferimento__dip_cod",
-            "dipartimento_riferimento__dip_des_it",
-            "dipartimento_riferimento__dip_des_eng",
-            "data_inizio", 
-            "data_fine",  
-            "sede_corso",
-            "num_min_partecipanti",
-            "num_max_partecipanti",
-            "uditori_ammessi",
-            "num_max_uditori",
-            "requisiti_ammissione",
-            "titolo_rilasciato",
-            "doppio_titolo",
-            "matricola_direttore_scientifico",
-            "nome_origine_direttore_scientifico",
-            "quota_iscrizione",
-            "quota_uditori",
-            "funzione_lavoro",
-            "obiettivi_formativi_summer_school",
-            "competenze",
-            "sbocchi_occupazionali",
-            "obiettivi_formativi_corso",
-            "modalita_svolgimento_prova_finale",
-            "numero_moduli",
-            "stage_tirocinio",
-            "ore_stage_tirocinio",
-            "cfu_stage",
-            "mesi_stage",
-            "tipo_aziende_enti_tirocinio",
-            "contenuti_tempi_criteri_cfu",
-            "project_work",
-            "path_piano_finanziario",
-            "path_doc_delibera",
-            "matricola_proponente",
-            "cognome_proponente",
-            "nome_proponente",
-            "dt_mod",
-            "user_mod_id",
+        
+        if user.is_superuser:
+            return queryset
+        
+        user_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=user,
+            office__is_active=True,
+            office__organizational_structure__is_active=True,
         )
-        .order_by("titolo_it", "id")
-    )
+        user_offices_names = list(user_offices.values_list("office__name", flat=True))
+
+        if OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names:
+            return queryset
+        
+        user_master_offices = user_offices.filter(
+            office__name=OFFICE_ADVANCED_TRAINING
+        )
+        if user_master_offices.exists():
+            user_department_codes = list(
+                user_master_offices.values_list(
+                    "office__organizational_structure__unique_code", flat=True
+                )
+            )
+
+            queryset = queryset.filter(
+                Q(dipartimento_riferimento__dip_cod__in=user_department_codes) |
+                Q(dipartimento_riferimento__isnull=True)
+            )
+            
+            return queryset
+        return queryset.none()
 
 
 @extend_schema_view(
@@ -205,7 +247,9 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
         ),
     ),
 )
-class AdvancedTrainingCourseTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class AdvancedTrainingCourseTypesViewSet(
+    mixins.ListModelMixin, viewsets.GenericViewSet
+):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = AdvancedTrainingCourseTypesSerializer
