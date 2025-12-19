@@ -33,11 +33,6 @@ urlpatterns = [
     path('', include('import_assistant.urls')),
 
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck-editor-5-upload-file"),
-<<<<<<< HEAD
-] # + debug_toolbar_urls()
-=======
-] + debug_toolbar_urls()
->>>>>>> 7608c27 (fix: added edit to ricerca/urls)
 
 # API schemas
 # urlpatterns += path('api/', TemplateView.as_view(template_name='redoc.html', extra_context={'schema_url': 'openapi-schema'}), name='api-redoc'),
