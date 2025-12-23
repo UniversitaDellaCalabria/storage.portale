@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('addressbook', '0003_alter_personaleattivotuttiruoli_matricola'),
+        # ~ ('addressbook', '0003_alter_personaleattivotuttiruoli_matricola'),
         ('advanced_training', '0001_initial'),
     ]
 
