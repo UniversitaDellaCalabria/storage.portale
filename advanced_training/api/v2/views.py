@@ -218,10 +218,8 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
 
         if OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names:
             return queryset
-        
-        user_master_offices = user_offices.filter(
-            office__name=OFFICE_ADVANCED_TRAINING
-        )
+
+        user_master_offices = user_offices.filter(office__name=OFFICE_ADVANCED_TRAINING)
         if user_master_offices.exists():
             user_department_codes = list(
                 user_master_offices.values_list(
@@ -230,12 +228,15 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
             )
 
             queryset = queryset.filter(
-                Q(dipartimento_riferimento__dip_cod__in=user_department_codes) |
-                Q(dipartimento_riferimento__isnull=True)
+                Q(dipartimento_riferimento__dip_cod__in=user_department_codes)
+                | Q(dipartimento_riferimento__isnull=True)
             )
-            
+
             return queryset
-        return queryset.none()
+        # filtro che mostra solo quelli approvati
+        return queryset.filter(
+            altaformazionestatusstorico__id_alta_formazione_status__status_cod="4"
+        )[:1]
 
 
 @extend_schema_view(
