@@ -1,7 +1,7 @@
 from collections import defaultdict
 from .docs import examples
 from django.conf import settings
-from addressbook.utils import add_email_addresses
+from addressbook.utils import add_email_addresses, get_contacts
 from drf_spectacular.utils import (
     extend_schema_field,
     extend_schema_serializer,
@@ -291,16 +291,32 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
 
     @extend_schema_field(serializers.ListField())
     def get_otherData(self, obj):
-        email_id_coordinatore = obj.matricola_coordinatore.email.split("@")[0] if obj.matricola_coordinatore.email and obj.matricola_coordinatore.email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
-        email_id_vice = obj.matricola_vice_coordinatore.email.split("@")[0] if obj.matricola_vice_coordinatore.email and obj.matricola_vice_coordinatore.email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
+        email_id_coordinatore = (
+            obj.matricola_coordinatore.email.split("@")[0]
+            if obj.matricola_coordinatore.email
+            and obj.matricola_coordinatore.email.endswith(
+                f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"
+            )
+            else None
+        )
+        email_id_vice = (
+            obj.matricola_vice_coordinatore.email.split("@")[0]
+            if obj.matricola_vice_coordinatore.email
+            and obj.matricola_vice_coordinatore.email.endswith(
+                f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"
+            )
+            else None
+        )
 
         altri_dati = getattr(obj, "otherData", [])
         return [
             {
-                "coordinatorId": email_id_coordinatore or encrypt(obj.matricola_coordinatore),
+                "coordinatorId": email_id_coordinatore
+                or encrypt(obj.matricola_coordinatore),
                 "coordinatorName": ad.nome_origine_coordinatore,
                 # "viceCoordinatorId": ad.matricola_vice_coordinatore,
-                "viceCoordinatorId": email_id_vice or encrypt(ad.matricola_vice_coordinatore),
+                "viceCoordinatorId": email_id_vice
+                or encrypt(ad.matricola_vice_coordinatore),
                 "viceCoordinatorName": ad.nome_origine_vice_coordinatore,
                 "studyManifesto": ad.manifesto_studi,
                 "educationalRules": ad.regolamento_didattico,
@@ -312,13 +328,19 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
     @extend_schema_field(serializers.ListField())
     def get_officesData(self, obj):
         officeData = getattr(obj, "officesData", []) or []
-        email_id = obj.email.split("@")[0] if obj.email and obj.email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
+        email_id = (
+            obj.email.split("@")[0]
+            if obj.email
+            and obj.email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")
+            else None
+        )
         return [
             {
                 "ordine": item.ordine,
                 "nome_ufficio": item.nome_ufficio,
                 # "matricola_riferimento": item.matricola_riferimento,
-                "matricola_riferimento": email_id or encrypt(item.matricola_riferimento),
+                "matricola_riferimento": email_id
+                or encrypt(item.matricola_riferimento),
                 "nome_origine_riferimento": item.nome_origine_riferimento,
                 "telefono": item.telefono,
                 "email": item.email,
@@ -588,7 +610,6 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
                 ).data
         return None
 
-
     def get_father(self, obj):
         if obj.af_pdr_id and obj.af_pdr_id != obj.af_radice_id:
             activity_father = (
@@ -636,11 +657,18 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
             ]
 
     def get_hours(self, obj):
-        if not obj.email: 
+        if not obj.email:
             official_email = None
-        else: 
-            official_email = next((e for e in obj.email if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")), None)
-            
+        else:
+            official_email = next(
+                (
+                    e
+                    for e in obj.email
+                    if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")
+                ),
+                None,
+            )
+
         results = []
         for did in obj.didattica_copertura:
             for ore in did.didattica_copertura_dettaglio_ore:
@@ -660,7 +688,9 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
                         # "teacherID": encrypt(ore.coper.personale.matricola)
                         # if not ore.coper.personale.flg_cessato
                         # else None,
-                        "teacherID": official_email.split("@")[0] if official_email else encrypt(ore.coper.personale.matricola),
+                        "teacherID": official_email.split("@")[0]
+                        if official_email
+                        else encrypt(ore.coper.personale.matricola),
                         "teacherName": full_name,
                         "email": add_email_addresses(ore.coper.personale.cod_fis),
                     }
@@ -766,7 +796,9 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     fatherCode = serializers.CharField(
         source="af_radice_id", help_text="Parent activity's ID."
     )
-    fatherName = serializers.SerializerMethodField(help_text="Name of the parent activity.")
+    fatherName = serializers.SerializerMethodField(
+        help_text="Name of the parent activity."
+    )
     regDidId = serializers.CharField(
         source="regdid_id",
         help_text="Regulation identifier associated with the activity.",
@@ -903,7 +935,7 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     def get_teacherId(self, obj):
         matricola = getattr(obj, "matricola_resp_did", None)
         return encrypt(matricola)
-    
+
     def getFatherName(self, obj):
         if obj.af_radice_id and obj.af_radice_id != obj.af_id:
             activity_root = (
@@ -1065,7 +1097,21 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
 
     @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
-        return encrypt(obj.personale.matricola)
+        official = get_contacts(obj, "Posta Elettronica")
+        if not official:
+            official_email = None
+        else:
+            official_email = next(
+                (
+                    e
+                    for e in official
+                    if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")
+                ),
+                None,
+            )
+        return (
+            official_email.split("@")[0] if official_email else encrypt(obj.matricola)
+        )
 
     class Meta:
         model = DidatticaCopertura

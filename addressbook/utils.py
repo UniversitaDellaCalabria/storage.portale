@@ -6,7 +6,61 @@ from django.apps import apps
 from .settings import (
     ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN,
     PERSON_CONTACTS_EXCLUDE_STRINGS,
+    PERSON_CONTACTS_TO_TAKE,
 )
+
+
+def get_roles(obj):
+    for role in obj.pers_attivo_tutti_ruoli:
+        struct = role.cd_uo_aff_org
+        return [
+            {
+                "role": role.cd_ruolo,
+                "description": role.ds_ruolo,
+                "priorita": role.priorita,
+                "structureCod": struct.pk,
+                "structure": role.ds_aff_org,
+                "structureTypeCOD": struct.cd_tipo_nodo,
+                "profileId": role.cd_profilo,
+                "profileDescription": role.ds_profilo,
+            }
+        ]
+
+
+def get_roles_with_start(cls, obj):
+    for role in obj.pers_attivo_tutti_ruoli:
+        struct = role.cd_uo_aff_org
+        return [
+            {
+                "role": role.cd_ruolo,
+                "description": role.ds_ruolo,
+                "priorita": role.priorita,
+                "structureCod": struct.pk,
+                "structure": role.ds_aff_org,
+                "structureTypeCOD": struct.cd_tipo_nodo,
+                "start": role.dt_rap_ini,
+                "profileId": role.cd_profilo,
+                "profileDescription": role.ds_profilo,
+            }
+        ]
+
+
+def get_contacts(obj, contactDescr):
+    if obj.contatti is not None:
+        contacts = obj.contatti
+    elif obj.email is not None:
+        contacts = obj.email
+    else:
+        return []
+    results = []
+    if contactDescr in PERSON_CONTACTS_TO_TAKE:
+        for contact in contacts:
+            tipo = contact.cd_tipo_cont
+            if tipo.descr_contatto != contactDescr:
+                continue
+            if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                results.append(contact.contatto)  
+    return results
 
 
 def get_personale_matricola(personale_id):
@@ -30,15 +84,20 @@ def get_personale_matricola(personale_id):
 
 
 def add_email_addresses(cod_fis):
-    contatti =  apps.get_model("addressbook.PersonaleContatti").objects.filter(
-            cod_fis=cod_fis, cd_tipo_cont="EMAIL"
-        ).order_by("prg_priorita").only("contatto")
-    
+    contatti = (
+        apps.get_model("addressbook.PersonaleContatti")
+        .objects.filter(cod_fis=cod_fis, cd_tipo_cont="EMAIL")
+        .order_by("prg_priorita")
+        .only("contatto")
+    )
+
     return [
         c.contatto
         for c in contatti
-        if c.contatto and not any(x in c.contatto.lower() for x in PERSON_CONTACTS_EXCLUDE_STRINGS)
+        if c.contatto
+        and not any(x in c.contatto.lower() for x in PERSON_CONTACTS_EXCLUDE_STRINGS)
     ]
+
 
 def append_email_addresses(addressbook_queryset, id_ab_key):
     personalecontatti_model = apps.get_model("addressbook.PersonaleContatti")

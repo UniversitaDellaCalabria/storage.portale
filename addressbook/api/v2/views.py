@@ -88,6 +88,7 @@ class GetDecryptedPersonApi(ViewSet):
         #         status=status.HTTP_404_NOT_FOUND,
         #     )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.PERSONNEL_CF_LIST_SUMMARY,
@@ -121,6 +122,7 @@ class PersonnelCfViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         .order_by("cognome")
     )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.ADDRESSBOOK_LIST_SUMMARY,
@@ -137,166 +139,171 @@ class AddressbookViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = AddressbookFilter
-    lookup_field = "matricola"
+    lookup_url_kwarg = "personaleid"
+    lookup_value_regex = '[^/]+'
 
     def get_queryset(self):
-        if self.action == "list":
-            return (
-                Personale.objects.filter(
-                    Q(flg_cessato=0, dt_rap_fin__gte=datetime.datetime.today())
-                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-                    & ~Q(didatticacopertura__stato_coper_cod="R")
-                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
-                    & ~Q(didatticacopertura__stato_coper_cod="R"),
-                )
-                .prefetch_related(
-                    Prefetch(
-                        "personalecontatti",
-                        queryset=PersonaleContatti.objects.select_related(
-                            "cd_tipo_cont"
-                        ),
-                        to_attr="contatti",
-                    ),
-                    Prefetch(
-                        "personaleattivotuttiruoli",
-                        queryset=(
-                            PersonaleAttivoTuttiRuoli.objects.filter(
-                                cd_uo_aff_org__isnull=False
-                            )
-                            .select_related("cd_uo_aff_org")
-                            .annotate(
-                                priorita=Subquery(
-                                    PersonalePrioritaRuolo.objects.filter(
-                                        cd_ruolo=OuterRef("cd_ruolo")
-                                    )
-                                    .order_by("priorita")
-                                    .values("priorita")[:1]
+        # Questo è solo per la LIST
+        return (
+            Personale.objects.filter(
+                Q(flg_cessato=0, dt_rap_fin__gte=datetime.datetime.today())
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                & ~Q(didatticacopertura__stato_coper_cod="R")
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                & ~Q(didatticacopertura__stato_coper_cod="R"),
+            )
+            .prefetch_related(
+                Prefetch(
+                    "personalecontatti",
+                    queryset=PersonaleContatti.objects.select_related("cd_tipo_cont"),
+                    to_attr="contatti",
+                ),
+                Prefetch(
+                    "personaleattivotuttiruoli",
+                    queryset=(
+                        PersonaleAttivoTuttiRuoli.objects.filter(
+                            cd_uo_aff_org__isnull=False
+                        )
+                        .select_related("cd_uo_aff_org")
+                        .annotate(
+                            priorita=Subquery(
+                                PersonalePrioritaRuolo.objects.filter(
+                                    cd_ruolo=OuterRef("cd_ruolo")
                                 )
+                                .order_by("priorita")
+                                .values("priorita")[:1]
                             )
-                            .distinct()
-                        ),
-                        to_attr="pers_attivo_tutti_ruoli",
+                        )
+                        .distinct()
                     ),
-                )
-                .only(
-                    "nome",
-                    "middle_name",
-                    "cognome",
-                    "id_ab",
-                    "matricola",
-                    "fl_docente",
-                    # "profilo",
-                    # "ds_profilo",
-                    # "ds_profilo_breve",
-                    "cd_ruolo",
-                    "ds_ruolo_locale",
-                    "dt_rap_ini",
-                )
-                .order_by("cognome", "nome")
+                    to_attr="pers_attivo_tutti_ruoli",
+                ),
             )
-        else:
-            personale_id = get_personale_matricola(self.kwargs.get("matricola"))
-            query_teacher = Personale.objects.filter(
-                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
-                didatticacopertura__af__isnull=False,
-                matricola=personale_id,
+            .only(
+                "nome",
+                "middle_name",
+                "cognome",
+                "id_ab",
+                "matricola",
+                "fl_docente",
+                "cd_ruolo",
+                "ds_ruolo_locale",
+                "dt_rap_ini",
             )
-            return (
-                Personale.objects.filter(
-                    Q(flg_cessato=0)
-                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-                    & ~Q(didatticacopertura__stato_coper_cod="R")
-                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
-                    & ~Q(didatticacopertura__stato_coper_cod="R"),
-                    matricola=personale_id,
-                )
-                .prefetch_related(
-                    Prefetch(
-                        "personalecontatti",
-                        queryset=PersonaleContatti.objects.select_related(
-                            "cd_tipo_cont"
-                        ),
-                        to_attr="contatti",
-                    ),
-                    Prefetch(
-                        "personaleattivotuttiruoli",
-                        queryset=(
-                            PersonaleAttivoTuttiRuoli.objects.filter(
-                                cd_uo_aff_org__isnull=False
-                            )
-                            .select_related("cd_uo_aff_org")
-                            .annotate(
-                                priorita=Subquery(
-                                    PersonalePrioritaRuolo.objects.filter(
-                                        cd_ruolo=OuterRef("cd_ruolo")
-                                    )
-                                    .order_by("priorita")
-                                    .values("priorita")[:1]
-                                )
-                            )
-                            .distinct()
-                        ),
-                        to_attr="pers_attivo_tutti_ruoli",
-                    ),
-                    Prefetch(
-                        "unitaorganizzativafunzioni_set",
-                        queryset=(
-                            UnitaOrganizzativaFunzioni.objects.filter(
-                                termine__gt=datetime.datetime.now(),
-                                decorrenza__lt=datetime.datetime.now(),
-                                cd_csa__isnull=False
-                            ).select_related("cd_csa")
-                        ),
-                        to_attr="functions",
-                    ),
-                )
-                .only(
-                    "id_ab",
-                    "matricola",
-                    "cod_fis",
-                    "nome",
-                    "middle_name",
-                    "cognome",
-                    "cd_ruolo",
-                    "ds_ruolo_locale",
-                    "cd_ssd",
-                    "ds_ssd",
-                    "cd_uo_aff_org",
-                    "ds_aff_org",
-                    "telrif",
-                    "email",
-                    "fl_docente",
-                    "cv_full_it",
-                    "cv_short_it",
-                    "cv_full_eng",
-                    "cv_short_eng",
-                    # "profilo",
-                    # "ds_profilo",
-                    # "ds_profilo_breve",
-                    "cd_genere",
-                )
-                .annotate(
-                    has_copertura=Exists(query_teacher),
-                    cop_teacher=Case(
-                        When(Q(fl_docente=True), then=Value(False)),
-                        When(
-                            Q(fl_docente=False) & Q(has_copertura=True),
-                            then=Value(True),
-                        ),
-                        default=Value(False),
-                        output_field=BooleanField(),
-                    ),
-                )
-            )
+            .order_by("cognome", "nome")
+        )
+
+    def retrieve(self, request, *args, **kwargs):
+       
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     def get_object(self):
-        return self.get_queryset().first()
+        personale_id = get_personale_matricola(self.kwargs.get("personaleid"))
+        query_teacher = Personale.objects.filter(
+            Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
+            didatticacopertura__af__isnull=False,
+            matricola=personale_id,
+        )
+
+        obj = (
+            Personale.objects.filter(
+                Q(flg_cessato=0)
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                & ~Q(didatticacopertura__stato_coper_cod="R")
+                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                & ~Q(didatticacopertura__stato_coper_cod="R"),
+                matricola=personale_id,
+            )
+            .prefetch_related(
+                Prefetch(
+                    "personalecontatti",
+                    queryset=PersonaleContatti.objects.select_related("cd_tipo_cont"),
+                    to_attr="contatti",
+                ),
+                Prefetch(
+                    "personaleattivotuttiruoli",
+                    queryset=(
+                        PersonaleAttivoTuttiRuoli.objects.filter(
+                            cd_uo_aff_org__isnull=False
+                        )
+                        .select_related("cd_uo_aff_org")
+                        .annotate(
+                            priorita=Subquery(
+                                PersonalePrioritaRuolo.objects.filter(
+                                    cd_ruolo=OuterRef("cd_ruolo")
+                                )
+                                .order_by("priorita")
+                                .values("priorita")[:1]
+                            )
+                        )
+                        .distinct()
+                    ),
+                    to_attr="pers_attivo_tutti_ruoli",
+                ),
+                Prefetch(
+                    "unitaorganizzativafunzioni_set",
+                    queryset=(
+                        UnitaOrganizzativaFunzioni.objects.filter(
+                            termine__gt=datetime.datetime.now(),
+                            decorrenza__lt=datetime.datetime.now(),
+                            cd_csa__isnull=False,
+                        ).select_related("cd_csa")
+                    ),
+                    to_attr="functions",
+                ),
+            )
+            .only(
+                "id_ab",
+                "matricola",
+                "cod_fis",
+                "nome",
+                "middle_name",
+                "cognome",
+                "cd_ruolo",
+                "ds_ruolo_locale",
+                "cd_ssd",
+                "ds_ssd",
+                "cd_uo_aff_org",
+                "ds_aff_org",
+                "telrif",
+                "email",
+                "fl_docente",
+                "cv_full_it",
+                "cv_short_it",
+                "cv_full_eng",
+                "cv_short_eng",
+                "cd_genere",
+            )
+            .annotate(
+                has_copertura=Exists(query_teacher),
+                cop_teacher=Case(
+                    When(Q(fl_docente=True), then=Value(False)),
+                    When(
+                        Q(fl_docente=False) & Q(has_copertura=True),
+                        then=Value(True),
+                    ),
+                    default=Value(False),
+                    output_field=BooleanField(),
+                ),
+            )
+            .first()
+        )
+
+        if obj is None:
+            from rest_framework.exceptions import NotFound
+
+            raise NotFound(f"Personnel with id '{personale_id}' not found")
+
+        return obj
 
     def get_serializer_class(self):
         if self.action == "list":
             return AddressbookSerializer
         return AddressbookDetailSerializer
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -316,13 +323,14 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     filterset_class = AddressbookFilter
-    lookup_field = "matricola"
+    lookup_url_kwarg = "personaleid"
+    lookup_value_regex = '[^/]+'
 
     def get_queryset(self):
         if self.action == "list":
             return AddressbookViewSet.get_queryset(self)
         else:
-            personale_id = self.kwargs.get("matricola")
+            personale_id = self.kwargs.get("personaleid")
             query_teacher = Personale.objects.filter(
                 Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
                 | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
@@ -424,11 +432,14 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet):
             return AddressbookFullSerializer
         return AddressbookFullDetailSerializer
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.ADDRESSBOOK_STRUCTURES_LIST_SUMMARY,
         description=descriptions.ADDRESSBOOK_STRUCTURES_LIST_DESCRIPTION,
-        responses=responses.COMMON_LIST_RESPONSES(AddressbookStructuresSerializer(many=True)),
+        responses=responses.COMMON_LIST_RESPONSES(
+            AddressbookStructuresSerializer(many=True)
+        ),
     ),
 )
 class AddressbookStructuresViewSet(ReadOnlyModelViewSet):
@@ -448,6 +459,7 @@ class AddressbookStructuresViewSet(ReadOnlyModelViewSet):
         )
         .distinct()
     )
+
 
 @extend_schema_view(
     list=extend_schema(

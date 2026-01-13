@@ -64,7 +64,8 @@ class TeachersViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = TeachersFilter
-    lookup_field = "matricola"
+    lookup_url_kwarg = "personaleid"
+    lookup_value_regex = '[^/]+'
 
     def get_serializer_class(self):
         return TeacherSerializer if self.action == "retrieve" else TeachersSerializer
@@ -108,7 +109,7 @@ class TeachersViewSet(ReadOnlyModelViewSet):
                 ).order_by("cognome", "nome", "middle_name").distinct()
 
         if self.action == "retrieve":
-            teacher = get_personale_matricola(self.kwargs.get("matricola"))
+            teacher = get_personale_matricola(self.kwargs.get("personaleid"))
 
             return (
                 Personale.objects.filter(

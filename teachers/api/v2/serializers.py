@@ -20,7 +20,7 @@ from addressbook.settings import (
 )
 
 from cds.models import DidatticaCopertura
-from addressbook.utils import add_email_addresses
+from addressbook.utils import add_email_addresses, get_contacts
 from structures.models import DidatticaDipartimento
 
 
@@ -46,19 +46,18 @@ class TeachersSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
-        # return encrypt(obj["matricola"])
-        if not obj.email:
+        official = get_contacts(obj, "Posta Elettronica")
+        if not official:
             official_email = None
         else:
             official_email = next(
                 (
                     e
-                    for e in obj.email
+                    for e in official
                     if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")
                 ),
                 None,
             )
-
         return (
             official_email.split("@")[0] if official_email else encrypt(obj.matricola)
         )
@@ -123,19 +122,18 @@ class TeacherSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.CharField())
     def get_id(self, obj):
-        # return encrypt(obj.matricola)
-        if not obj.email:
+        official = get_contacts(obj, "Posta Elettronica")
+        if not official:
             official_email = None
         else:
             official_email = next(
                 (
                     e
-                    for e in obj.email
+                    for e in official
                     if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")
                 ),
                 None,
             )
-
         return (
             official_email.split("@")[0] if official_email else encrypt(obj.matricola)
         )
@@ -193,7 +191,7 @@ class TeacherSerializer(serializers.ModelSerializer):
                     else obj.docente_pta_altri_dati.orario_ricevimento_en,
                 }
             ]
-            
+
         return [
             {
                 "ORCID": "",

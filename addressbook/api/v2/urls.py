@@ -12,7 +12,6 @@ from .views import (
 app_name = "apiv2"
 
 router = DefaultRouter()
-
 urlpatterns = []
 
 router.register(r"get-person-id", GetPersonApi, basename="get-person-id")
