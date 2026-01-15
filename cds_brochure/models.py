@@ -79,14 +79,14 @@ class CdsBrochure(models.Model):
     come_iscriversi_en = models.TextField(
         db_column="COME_ISCRIVERSI_EN", blank=True, null=True
     )
-    tolc_label = models.CharField(
-        db_column="TOLC_LABEL",
+    access_test_label = models.CharField(
+        db_column="ACCESS_TEST_LABEL",
         max_length=100,
         blank=True,
         null=True
     )
-    tolc_url = models.URLField(
-        db_column="TOLC_URL",
+    access_test_url = models.URLField(
+        db_column="ACCESS_TEST_URL",
         max_length=200,
         blank=True,
         null=True
