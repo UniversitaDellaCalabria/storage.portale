@@ -114,6 +114,8 @@ class CdsBrochureSerializer(serializers.Serializer):
             "CDSExStudents": ex_students,
             "CDSLinks": cds_link,
             "CDSSliders": cds_sliders,
+            "CDSTolc": query["tolc_label"],
+            "CDSTolcUrl": query["tolc_url"]
         }
 
     @staticmethod

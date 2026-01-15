@@ -95,6 +95,8 @@ class ServiceCdsBrochure:
                 # "sito_web_it",
                 # "sito_web_en",
                 # 'id_didattica_regolamento'
+                "tolc_label",
+                "tolc_url",
             )
         )
 

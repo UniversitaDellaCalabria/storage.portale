@@ -20,9 +20,13 @@ class CdsBrochureDatiCorsoForm(forms.ModelForm):
         model = CdsBrochure
         fields = [
             "num_posti",
+            "tolc_label",
+            "tolc_url",
         ]
         labels = {
             "num_posti": _("Seats Number"),
+            "tolc_label": _("TOLC"),
+            "tolc_url": _("TOLC URL")
         }
 
 

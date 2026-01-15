@@ -79,6 +79,18 @@ class CdsBrochure(models.Model):
     come_iscriversi_en = models.TextField(
         db_column="COME_ISCRIVERSI_EN", blank=True, null=True
     )
+    tolc_label = models.CharField(
+        db_column="TOLC_LABEL",
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    tolc_url = models.URLField(
+        db_column="TOLC_URL",
+        max_length=200,
+        blank=True,
+        null=True
+    )
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
     user_mod = models.ForeignKey(
         get_user_model(),

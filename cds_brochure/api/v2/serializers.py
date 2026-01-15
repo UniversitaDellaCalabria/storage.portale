@@ -58,6 +58,8 @@ class BrochuresDetailSerializer(ReadOnlyModelSerializer):
     sliders = serializers.SerializerMethodField()
     cla_miur_cod = serializers.CharField(source="cds.cla_miur_cod")
     intercla_miur_cod = serializers.CharField(source="cds.intercla_miur_cod")
+    tolc_label = serializers.CharField(source="tolc_label")
+    tolc_url = serializers.URLField(source="tolc_url")
 
     def get_requestLang(self):
         request = self.context.get("request", None)
@@ -177,7 +179,9 @@ class BrochuresDetailSerializer(ReadOnlyModelSerializer):
             "links",
             "sliders",
             "cla_miur_cod",
-            "intercla_miur_cod"
+            "intercla_miur_cod",
+            "tolc_label",
+            "tolc_url"
         ]
         language_field_map = {
             "cdsName": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"},
