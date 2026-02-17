@@ -1,17 +1,18 @@
-from rest_framework import serializers
-
-from .docs import examples
 from drf_spectacular.utils import (
     extend_schema_field,
     extend_schema_serializer,
 )
+from rest_framework import serializers
+
 from generics.api.serializers import ReadOnlyModelSerializer
+from generics.utils import encrypt
 from projects.models import (
     ProgettoAmbitoTerritoriale,
     ProgettoDatiBase,
     ProgettoTipologiaProgramma,
 )
-from generics.utils import encrypt
+
+from .docs import examples
 
 
 @extend_schema_serializer(examples=examples.PROJECTS_SERIALIZER_EXAMPLE)
@@ -40,7 +41,7 @@ class ProjectsSerializer(ReadOnlyModelSerializer):
     projectImage = serializers.CharField(source="url_immagine")
     scientificDirectors = serializers.SerializerMethodField()
     researchers = serializers.SerializerMethodField()
-    url_sito_web  = serializers.CharField(source="url_sito_web")
+    url_sito_web = serializers.CharField()
     isActive = serializers.BooleanField(source="is_active")
 
     @extend_schema_field(serializers.ListField())
