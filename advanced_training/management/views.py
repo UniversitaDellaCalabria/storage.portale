@@ -80,7 +80,8 @@ def get_current_status(master):
             ),
         }
 
-    return {"cod": None, "description": "Bozza", "badge_class": "secondary"}
+    # Default: Approvato (status_cod "3")
+    return {"cod": "3", "description": "Approvato", "badge_class": "success"}
 
 
 def is_temporal_window_active():
@@ -187,7 +188,7 @@ def advancedtraining_info_edit(
 
     # Verifica permessi usando i metodi del model
     can_edit = master._check_edit_permission(user_offices_names)
-    is_readonly = not can_edit
+    is_readonly = not can_edit or str(current_status_cod) in ["1", "3", "4"]
 
     has_active_window = is_temporal_window_active()
     available_statuses = AltaFormazioneStatus.objects.all()
@@ -404,7 +405,7 @@ def advancedtraining_info_edit(
             "can_send_validation": can_send_validation,
             "can_validate_actions": can_validate_actions,
             "has_active_window": has_active_window,
-            "user_has_same_department": user_has_same_department, 
+            "user_has_same_department": user_has_same_department,
         },
     )
 
@@ -597,7 +598,7 @@ def advancedtraining_info_delete(request, pk):
 
     # Verifica stato - può eliminare solo in stato 0 (Bozza)
     current_status = get_current_status(master)
-    if current_status.get("cod") not in [None, "0"]:
+    if current_status.get("cod") not in ["0"]:  # Rimosso None dalla lista
         messages.error(request, _("Puoi eliminare solo master in stato Bozza"))
         return redirect("advanced-training:management:advanced-training-detail", pk=pk)
 
@@ -631,11 +632,29 @@ def advancedtraining_status_change(request, pk, status_cod, has_active_window=No
         )
         return redirect("advanced-training:management:advanced-training-detail", pk=pk)
 
-    if status_cod == "1" and not has_active_window:
-        messages.error(
-            request, _("Cannot send for validation: no active temporal window")
+    # Per "Valida" (status_cod "1"): solo utenti master dello stesso dipartimento
+    if status_cod == "1" and not request.user.is_superuser:
+        user_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=request.user,
+            office__is_active=True,
+            office__organizational_structure__is_active=True,
+            office__name=OFFICE_ADVANCED_TRAINING,
         )
-        return redirect("advanced-training:management:advanced-training-detail", pk=pk)
+        department_code = (
+            dati_base.dipartimento_riferimento.dip_cod
+            if dati_base.dipartimento_riferimento
+            else None
+        )
+        user_has_same_department = user_offices.filter(
+            office__organizational_structure__unique_code=department_code
+        ).exists()
+
+        if not user_has_same_department:
+            messages.error(
+                request,
+                _("Non puoi mandare in validazione un master di un altro dipartimento"),
+            )
+            return redirect("advanced-training:management:advanced-training-detail", pk=pk)
 
     try:
         # Verifica lock
@@ -666,8 +685,10 @@ def advancedtraining_status_change(request, pk, status_cod, has_active_window=No
             )
 
         # Ottieni motivazione
+        OPTIONAL_MOTIVATION_STATUSES = {"1", "3"}  # Valida, Approva
+
         motivazione = request.POST.get("motivazione", "").strip()
-        if not motivazione:
+        if not motivazione and status_cod not in OPTIONAL_MOTIVATION_STATUSES:
             messages.error(
                 request,
                 _("Motivazione richiesta per questo cambiamento di stato."),
@@ -708,7 +729,6 @@ def advancedtraining_status_change(request, pk, status_cod, has_active_window=No
 
     return redirect("advanced-training:management:advanced-training-detail", pk=pk)
 
-
 @login_required
 @transaction.atomic
 def advancedtraining_duplicate(request, pk):
@@ -726,7 +746,18 @@ def advancedtraining_duplicate(request, pk):
 
     # Duplica il master
     old.pk = None
-    old.titolo_it = f"{old.titolo_it} (copia)"
+    
+    # Genera un titolo univoco
+    base_title = old.titolo_it
+    new_title = f"{base_title} (copia)"
+    counter = 1
+    
+    # Verifica se esiste già un titolo con "(copia)" e incrementa il contatore
+    while AltaFormazioneDatiBase.objects.filter(titolo_it=new_title).exists():
+        counter += 1
+        new_title = f"{base_title} (copia {counter})"
+    
+    old.titolo_it = new_title
     old.dt_mod = timezone.now()
     old.user_mod_id = request.user.id
     old.save()
@@ -761,11 +792,10 @@ def advancedtraining_duplicate(request, pk):
         id_alta_formazione_status=draft_status,
     )
 
-    messages.success(request, "Master duplicato con successo")
+    messages.success(request, f"Master duplicato con successo come '{new_title}'")
     return redirect(
         reverse("advanced-training:management:advanced-training-detail", args=[new.id])
     )
-
 
 @login_required
 def consiglio_interno_new(request, master_id):

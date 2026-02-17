@@ -1,5 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
@@ -29,10 +31,12 @@ from advanced_training.models import (
     AltaFormazioneTipoCorso,
     AltaFormazioneStatusStorico,
 )
+from structures.models import DidatticaDipartimento 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from advanced_training.settings import (
     OFFICE_ADVANCED_TRAINING_VALIDATOR,
     OFFICE_ADVANCED_TRAINING,
+    ADVANCED_TRAINING_YEAR,
 )
 from django.db.models import Q
 
@@ -58,6 +62,56 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     serializer_class = AdvancedTrainingMastersSerializer
     filterset_class = AdvancedTrainingMastersFilter
+
+    @action(detail=False, methods=["get"])
+    def available_years(self, request):
+        """Restituisce gli anni disponibili per il filtro"""
+        years = (
+            AltaFormazioneDatiBase.objects.values_list("anno_rilevazione", flat=True)
+            .distinct()
+            .order_by("-anno_rilevazione")
+        )
+        return Response({"results": [{"year": year} for year in years if year]})
+
+    @action(detail=False, methods=['get'])
+    def available_departments(self, request):
+        """Restituisce i dipartimenti disponibili per il filtro"""        
+        user = request.user
+        
+        # Se è superuser o validatore, mostra tutti i dipartimenti
+        if user.is_superuser:
+            departments = DidatticaDipartimento.objects.filter(
+                dip_id__in=AltaFormazioneDatiBase.objects.values_list('dipartimento_riferimento', flat=True).distinct()
+            ).values('dip_id', 'dip_cod', 'dip_des_it').order_by('dip_des_it')
+        else:
+            user_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+                employee=user,
+                office__is_active=True,
+                office__organizational_structure__is_active=True,
+            )
+            user_offices_names = list(user_offices.values_list("office__name", flat=True))
+            
+            if OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names:
+                # Validatori vedono tutti i dipartimenti
+                departments = DidatticaDipartimento.objects.filter(
+                    dip_id__in=AltaFormazioneDatiBase.objects.values_list('dipartimento_riferimento', flat=True).distinct()
+                ).values('dip_id', 'dip_cod', 'dip_des_it').order_by('dip_des_it')
+            else:
+                # Utenti normali vedono tutti i dipartimenti che hanno almeno un master
+                departments = DidatticaDipartimento.objects.filter(
+                    dip_id__in=AltaFormazioneDatiBase.objects.values_list('dipartimento_riferimento', flat=True).distinct()
+                ).values('dip_id', 'dip_cod', 'dip_des_it').order_by('dip_des_it')
+        
+        return Response({
+            'results': [
+                {
+                    'id': dept['dip_id'],
+                    'code': dept['dip_cod'],
+                    'name': dept['dip_des_it']
+                }
+                for dept in departments
+            ]
+        })
 
     def get_queryset(self):
         user = self.request.user
@@ -151,6 +205,11 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                     to_attr="status_history",
                 ),
             )
+            .select_related(
+                "dipartimento_riferimento",
+                "alta_formazione_tipo_corso",
+                "alta_formazione_mod_erogazione",
+            )
             .only(
                 "id",
                 "titolo_it",
@@ -205,6 +264,14 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
             )
             .order_by("titolo_it", "id")
         )
+
+           # Filtro di default per anno corrente se non specificato nei parametri
+        year_param = self.request.query_params.get('year')
+        if year_param is None and ADVANCED_TRAINING_YEAR:
+            try:
+                queryset = queryset.filter(anno_rilevazione=int(ADVANCED_TRAINING_YEAR))
+            except (ValueError, TypeError):
+                pass
         
         if user.is_superuser:
             return queryset
@@ -216,6 +283,7 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
         )
         user_offices_names = list(user_offices.values_list("office__name", flat=True))
 
+        # Se è validatore, vede tutto
         if OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names:
             return queryset
 
@@ -227,16 +295,35 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                 )
             )
 
-            queryset = queryset.filter(
-                Q(dipartimento_riferimento__dip_cod__in=user_department_codes)
-                | Q(dipartimento_riferimento__isnull=True)
-            )
+            # Ottieni il parametro department dal filtro
+            department_param = self.request.query_params.get('department')
+            
+            if department_param:
+                # Se viene specificato un dipartimento nel filtro
+                if department_param in user_department_codes:
+                    # Se è il proprio dipartimento, mostra tutto
+                    queryset = queryset.filter(dipartimento_riferimento__dip_cod=department_param)
+                else:
+                    # Se è un altro dipartimento, mostra solo gli approvati
+                    queryset = queryset.filter(
+                        dipartimento_riferimento__dip_cod=department_param,
+                        altaformazionestatusstorico__id_alta_formazione_status__status_cod="3"
+                    ).distinct()
+            else:
+                # Se non viene specificato un dipartimento, mostra:
+                # - Tutti quelli del proprio dipartimento
+                # - Solo approvati degli altri dipartimenti
+                queryset = queryset.filter(
+                    Q(dipartimento_riferimento__dip_cod__in=user_department_codes) |  # Tutti del proprio dipartimento
+                    Q(altaformazionestatusstorico__id_alta_formazione_status__status_cod="3")  # Solo approvati degli altri
+                ).distinct()
 
             return queryset
-        # filtro che mostra solo quelli approvati
+        
+        # Utenti senza ufficio master: mostrano solo quelli approvati
         return queryset.filter(
-            altaformazionestatusstorico__id_alta_formazione_status__status_cod="4"
-        )[:1]
+            altaformazionestatusstorico__id_alta_formazione_status__status_cod="3"
+        ).distinct()
 
 
 @extend_schema_view(

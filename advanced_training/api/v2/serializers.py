@@ -107,7 +107,7 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
         if status_storico:
             return status_storico.id_alta_formazione_status.status_cod
 
-        return None  # Bozza (nessuno stato registrato)
+        return "3"  # Approvato (nessuno stato registrato)
 
     @extend_schema_field(serializers.CharField())
     def get_statusDescription(self, obj):
@@ -122,7 +122,7 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
         if status_storico:
             return status_storico.id_alta_formazione_status.status_desc
 
-        return "Bozza"  # Default quando non c'è stato
+        return "Approvato"  # Default quando non c'è stato
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_partners(self, obj):

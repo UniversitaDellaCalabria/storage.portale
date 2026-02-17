@@ -464,7 +464,7 @@ class AltaFormazioneFinestraTemporale(models.Model):
     titolo = models.CharField(db_column="TITOLO", max_length=256)
     data_inizio = models.DateField(db_column="DATA_INIZIO")
     data_fine = models.DateField(db_column="DATA_FINE")
-    anno_accademico = models.CharField(db_column="ANNO_ACCADEMICO", max_length=9)
+    anno_accademico = models.CharField(db_column="ANNO_ACCADEMICO", max_length=9, blank=False, null=False)
     note = models.TextField(db_column="NOTE", blank=True, null=True)
 
     class Meta:

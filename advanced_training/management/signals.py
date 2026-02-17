@@ -1,30 +1,15 @@
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
-from laboratories.models import LaboratorioDatiBase
+from advanced_training.models import AltaFormazioneDatiBase
+import os
 
-
-@receiver(post_delete, sender=LaboratorioDatiBase)
-def post_save_image(sender, instance, *args, **kwargs):
-    """Clean Old Image file"""
-    try:
-        instance.nome_file_logo.delete(save=False)
-    except Exception:
-        pass
-
-
-@receiver(pre_save, sender=LaboratorioDatiBase)
-def pre_save_image(sender, instance, *args, **kwargs):
-    """instance old image file will delete from os"""
-    try:
-        old = instance.__class__.objects.get(id=instance.id).nome_file_logo.path
-        try:
-            new = instance.nome_file_logo.path
-        except Exception:
-            new = None
-        if new != old:
-            import os
-
-            if os.path.exists(old):
-                os.remove(old)
-    except Exception:
-        pass
+@receiver(post_delete, sender=AltaFormazioneDatiBase)
+def delete_master_files(sender, instance, **kwargs):
+    """Elimina i file fisici quando viene eliminato un master"""
+    if instance.path_piano_finanziario:
+        if os.path.isfile(instance.path_piano_finanziario.path):
+            os.remove(instance.path_piano_finanziario.path)
+    
+    if instance.path_doc_delibera:
+        if os.path.isfile(instance.path_doc_delibera.path):
+            os.remove(instance.path_doc_delibera.path)

@@ -21,6 +21,66 @@
                     <div class="mb-0">
                         <div class="row">
 
+                            <!-- FILTRO ANNO -->
+                            {% block filters_year %}
+                            <loading-icon
+                                v-if="is_loading_years"
+                                :loader_source="loader_source_years">
+                            </loading-icon>
+
+                            <div class="col-sm form-group mb-0" v-else>
+                                <div>
+                                    <label for="{{ id }}_year_input">
+                                        {% trans "Anno" %}
+                                    </label>
+                                    <div class="w-30 mt-5">
+                                        <select id="{{ id }}_year_input"
+                                                title="{% trans 'Choose an option' %}"
+                                                name="{{ id }}_year_input"
+                                                class="form-control"
+                                                @change="{{ id }}.search()">
+                                            <option value="">- {% trans 'Choose an option' %} -</option>
+                                            <option v-for="item in available_years"
+                                                    :value="item.year"
+                                                    :selected="item.year == selected_year">
+                                                [[ item.year ]]
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endblock filters_year %}
+
+                            <!-- FILTRO DIPARTIMENTO -->
+                            {% block filters_department %}
+                            <loading-icon
+                                v-if="is_loading_departments"
+                                :loader_source="loader_source_departments">
+                            </loading-icon>
+
+                            <div class="col-sm form-group mb-0" v-else>
+                                <div>
+                                    <label for="{{ id }}_department_input">
+                                        {% trans "Dipartimento" %}
+                                    </label>
+                                    <div class="w-30 mt-5">
+                                        <select id="{{ id }}_department_input"
+                                                title="{% trans 'Choose an option' %}"
+                                                name="{{ id }}_department_input"
+                                                class="form-control"
+                                                @change="{{ id }}.search()">
+                                            <option value="">- {% trans 'Choose an option' %} -</option>
+                                            <option v-for="dept in available_departments"
+                                                    :value="dept.code"
+                                                    :selected="dept.code == selected_department">
+                                                [[ dept.name ]]
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endblock filters_department %}
+
                             {% comment %} {% block filters_department %}
                             <loading-icon
                                 v-if="is_loading_departments"
@@ -59,7 +119,7 @@
                             <div class="col-sm form-group mb-0" v-else>
                                 <div>
                                     <label for="{{ id }}_master_type">
-                                        {% trans "Master type" %}
+                                        {% trans "Tipologia Master" %}
                                     </label>
                                     <div class="w-30 mt-5">
                                         <select id="{{ id }}_coursetype_input"
@@ -89,7 +149,7 @@
                             <div class="col-sm form-group mb-0" v-else>
                                 <div>
                                     <label for="{{ id }}_erogation_input">
-                                        {% trans "Erogation Mode" %}
+                                        {% trans "Modalità di Erogazione" %}
                                     </label>
 
                                     <div class="w-30 mt-5">
@@ -144,7 +204,7 @@
                                     :class="getStatusBadgeClass(item.status)"
                                     class="badge ms-3"
                                     style="white-space: nowrap;">
-                                    [[ item.statusDescription || 'Bozza' ]]
+                                    [[ item.statusDescription || 'Approvato' ]]
                                 </span>
                             </div>
                             
@@ -178,7 +238,9 @@
                                     </svg> {% trans "Edit" %}
                                 </a>
 
-                                <form :action="'{% url 'advanced-training:management:advanced-training-delete' 0 %}'.replace('0', item.id)"
+                                <!-- Mostra pulsante elimina solo se lo stato è "0" (Bozza) -->
+                                <form v-if="item.status === '0'"
+                                    :action="'{% url 'advanced-training:management:advanced-training-delete' 0 %}'.replace('0', item.id)"
                                     method="post"
                                     class="d-inline float-right ms-2">
                                     {% csrf_token %}
@@ -217,6 +279,8 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     if (coursetype && coursetype.value) dict['coursetype'] = coursetype.value
     let erogation = document.getElementById('{{ id }}_erogation_input')
     if (erogation && erogation.value) dict['erogation'] = erogation.value
+    let year = document.getElementById('{{ id }}_year_input')
+    if (year && year.value) dict['year'] = year.value
     let department = document.getElementById('{{ id }}_department_input')
     if (department && department.value) dict['department'] = department.value
     setItemInSession("{{ id }}", dict)
@@ -233,22 +297,23 @@ initial_academic_year: 2025,
 selected_coursetype: this.getItemFromSession("{{ id }}", 'coursetype'),
 selected_erogation: this.getItemFromSession("{{ id }}", 'erogation'),
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
-selected_department_id: this.getItemFromSession("{{ id }}", 'department'),
+selected_year: this.getItemFromSession("{{ id }}", 'year') || '{{ ADVANCED_TRAINING_YEAR }}',
+selected_department: this.getItemFromSession("{{ id }}", 'department'),
 
 master_types: [],
 erogations: [],
+available_years: [],
+available_departments: [],
 
 is_loading_mastertypes: true,
 is_loading_erogations: true,
+is_loading_years: true,
 is_loading_departments: true,
 
-loader_source_departments: '{% url 'structures:apiv1:departments-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 loader_source_mastertypes: '{% url "advanced-training:apiv2:advanced-training-course-types-list" %}',
 loader_source_erogations: '{% url "advanced-training:apiv2:erogation-modes-list" %}',
-
-academic_years_filter: [],
-departments_filter: [],
-erogations: [],
+loader_source_years: '/api/v2/advanced-training/available_years/',
+loader_source_departments: '/api/v2/advanced-training/available_departments/',
 
 show_pdf_import_button: false,
 
@@ -260,27 +325,11 @@ let get_coursetype = params.get("coursetype")
 
 this.callMasterTypes();
 this.callErogations();
-{% comment %} this.callDepartments(); {% endcomment %}
+this.callAvailableYears();
+this.callAvailableDepartments();
+
 this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
 {% endblock extra_mounted %}
-
-{% block method_callurl %}
-CallURL(url, initial=false) {
-    this.is_loading = true
-    this.loader_source = url
-
-    axios
-        .get(url)
-        .then(response => {
-            if (initial) this.initial_items = response.data.results;
-            this.items = response.data;
-            this.next_page = response.data.next;
-            this.previous_page = response.data.previous;
-            this.labels = response.data.labels;
-            this.is_loading = false;
-        })
-},
-{% endblock method_callurl %}
 
 {% block extra_methods %}
 callMasterTypes() {
@@ -297,18 +346,35 @@ callErogations() {
             this.is_loading_erogations = false;
         });
 },
-{% comment %} callDepartments() {
+callAvailableYears() {
+    axios.get(this.loader_source_years)
+        .then(response => {
+            this.available_years = response.data.results;
+            this.is_loading_years = false;
+        })
+        .catch(error => {
+            console.error('Errore nel caricamento anni:', error);
+            this.is_loading_years = false;
+        });
+},
+callAvailableDepartments() {
     axios.get(this.loader_source_departments)
         .then(response => {
-            this.departments_filter = response.data.results;
-            this.is_loading_departments = false
+            this.available_departments = response.data.results;
+            this.is_loading_departments = false;
         })
-}, {% endcomment %}
+        .catch(error => {
+            console.error('Errore nel caricamento dipartimenti:', error);
+            this.is_loading_departments = false;
+        });
+},
 duplicate(item) {
-    window.location.href = `${item.id}/duplicate/`;
+    if (confirm('{% trans "Sei sicuro di voler duplicare questo master?" %}')) {
+        window.location.href = `${item.id}/duplicate/`;
+    }
 },
 getStatusBadgeClass(status) {
-    if (!status) return 'badge-secondary';
+    if (!status || status === '3') return 'badge-success';
     
     const statusMap = {
         '0': 'badge-secondary',
@@ -318,6 +384,6 @@ getStatusBadgeClass(status) {
         '4': 'badge-danger',
     };
     
-    return statusMap[String(status)] || 'badge-secondary';
+    return statusMap[String(status)] || 'badge-success';
 },
 {% endblock extra_methods %}

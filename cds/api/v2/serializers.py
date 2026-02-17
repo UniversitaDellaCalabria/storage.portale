@@ -1,7 +1,7 @@
 from collections import defaultdict
 from .docs import examples
 from django.conf import settings
-from addressbook.utils import add_email_addresses, get_contacts
+from addressbook.utils import append_email_addresses, get_contacts
 from drf_spectacular.utils import (
     extend_schema_field,
     extend_schema_serializer,
@@ -22,6 +22,7 @@ from cds.models import (
     DidatticaCopertura,
     DidatticaCdsPeriodi,
     DidatticaTestiAf,
+    DidatticaCoperturaDettaglioOre
 )
 
 
@@ -530,12 +531,12 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
     regDidId = serializers.CharField(source="regdid.regdid_id")
     pdsCod = serializers.CharField(source="pds_cod")
     pdsDes = serializers.CharField(source="pds_des")
-    erogationYear = serializers.SerializerMethodField()
+    erogationYear = serializers.SerializerMethodField() 
     year = serializers.SerializerMethodField()
     semester = serializers.CharField(source="ciclo_des")
     erogationLanguage = serializers.SerializerMethodField()
     ECTS = serializers.IntegerField(source="peso")
-    hours = serializers.SerializerMethodField()
+    hours = serializers.SerializerMethodField() 
     modalities = serializers.SerializerMethodField()
     SSD = serializers.CharField(source="sett_des")
     SSDCod = serializers.CharField(source="sett_cod")
@@ -546,21 +547,14 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
     interclassTeachingUnitTypeCod = serializers.CharField(source="tipo_af_intercla_cod")
     interclassTeachingUnitType = serializers.CharField(source="tipo_af_intercla_des")
     modules = serializers.SerializerMethodField()
-    root = serializers.SerializerMethodField()
+    root = serializers.SerializerMethodField() 
     father = serializers.SerializerMethodField()
-    borrowedFrom = serializers.SerializerMethodField()
+    borrowedFrom = serializers.SerializerMethodField() 
     borrowedFromThis = serializers.SerializerMethodField()
 
     def get_modules(self, obj):
         language = self.context.get("lang", "it")
-
-        groups_qs = DidatticaAttivitaFormativa.objects.filter(
-            af_pdr_id=obj.af_id, fat_part_stu_cod="GRP"
-        ).values("af_id")
-
-        groups_list = [{"id": g["af_id"]} for g in groups_qs]
-
-        submodules = (
+        submodules = list(
             DidatticaAttivitaFormativa.objects.filter(
                 Q(af_radice_id=obj.af_id) | Q(af_pdr_id=obj.af_id)
             )
@@ -570,32 +564,82 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
                 "af_gen_cod",
                 "des",
                 "af_gen_des_eng",
-                "fat_part_stu_cod",
-                "lista_lin_did_af",
+                "ciclo_des",
                 "part_stu_cod",
                 "part_stu_des",
+                "fat_part_stu_cod",
                 "fat_part_stu_des",
-                "ciclo_des",
-                "matricola_resp_did",
+                "af_pdr_id",
             )
         )
 
-        results = [
-            {
-                "id": s["af_id"],
-                "cod": s["af_gen_cod"],
-                "name": s["des"] if language == "it" else s["af_gen_des_eng"],
-                "semester": s["ciclo_des"],
-                "partitionCod": s["part_stu_cod"],
-                "partitionDescription": s["part_stu_des"],
-                "extendedPartitionCod": s["fat_part_stu_cod"],
-                "extendedPartitionDescription": s["fat_part_stu_des"],
-                "groups": groups_list,
-            }
-            for s in submodules
-        ]
+        if not submodules:
+            return []
 
-        return results
+        submodule_ids = [s["af_id"] for s in submodules]
+
+        all_groups = list(
+            DidatticaAttivitaFormativa.objects.filter(
+                af_pdr_id__in=submodule_ids,
+                fat_part_stu_cod="GRP",
+            ).values(
+                "af_id",
+                "af_gen_cod",
+                "des",
+                "af_gen_des_eng",
+                "af_pdr_id",
+                "fat_part_stu_cod",
+                "fat_part_stu_des",
+                "part_stu_cod",
+                "part_stu_des",
+            )
+        )
+
+        groups_by_parent: dict[int, list] = defaultdict(list)
+        group_ids: set[int] = set()
+        for g in all_groups:
+            groups_by_parent[g["af_pdr_id"]].append(g)
+            group_ids.add(g["af_id"])
+
+        def serialize_name(item: dict) -> str:
+            eng = item.get("af_gen_des_eng")
+            return item["des"] if language == "it" or eng is None else eng
+
+        def serialize_group(g: dict) -> dict:
+            return {
+                "id": g["af_id"],
+                "cod": g["af_gen_cod"],
+                "name": serialize_name(g),
+                "partitionCod": g["part_stu_cod"],
+                "partitionDescription": g["part_stu_des"],
+                "extendedPartitionCod": g["fat_part_stu_cod"],
+                "extendedPartitionDes": g["fat_part_stu_des"],
+            }
+
+        modules = []
+        for sub in submodules:
+            if sub["af_id"] in group_ids:
+                continue
+
+            groups_serialized = [
+                serialize_group(g) for g in groups_by_parent.get(sub["af_id"], [])
+            ]
+
+            modules.append(
+                {
+                    "id": sub["af_id"],
+                    "cod": sub["af_gen_cod"],
+                    "name": serialize_name(sub),
+                    "semester": sub["ciclo_des"],
+                    "partitionCod": sub["part_stu_cod"],
+                    "partitionDescription": sub["part_stu_des"],
+                    "extendedPartitionCod": sub["fat_part_stu_cod"],
+                    "extendedPartitionDes": sub["fat_part_stu_des"],
+                    "groups": groups_serialized,
+                }
+            )
+
+        return modules 
 
     def get_root(self, obj):
         if obj.af_radice_id and obj.af_radice_id != obj.af_id:
@@ -657,67 +701,86 @@ class StudyActivitiesDetailSerializer(serializers.ModelSerializer):
             ]
 
     def get_hours(self, obj):
-        if not obj.email:
-            official_email = None
-        else:
+        filtered_hours = DidatticaCoperturaDettaglioOre.objects.filter(
+            ~Q(coper_id__stato_coper_cod="R"), coper_id__af_id=obj.af_id
+        ).values(
+            "tipo_att_did_cod",
+            "ore",
+            "coper_id__personale_id__id_ab",
+            "coper_id__personale_id__matricola",
+            "coper_id__personale_id__nome",
+            "coper_id__personale_id__cognome",
+            "coper_id__personale_id__middle_name",
+            "coper_id__personale_id__flg_cessato",
+            "coper_id",
+        )
+
+        append_email_addresses(filtered_hours, "coper_id__personale_id__id_ab")
+        filtered_hours = list(filtered_hours)
+
+        aggregated: dict[tuple, dict] = {}
+        for hour in filtered_hours:
+            matricola = hour["coper_id__personale_id__matricola"]
+            key = (hour["tipo_att_did_cod"], matricola)
+
+            if key not in aggregated:
+                aggregated[key] = hour.copy()
+            else:
+                aggregated[key]["ore"] += hour["ore"]
+
+        hours = []
+        for q in aggregated.values():
+            email_list = q.get("email") or []
             official_email = next(
-                (
-                    e
-                    for e in obj.email
-                    if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")
-                ),
+                (e for e in email_list if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")),
                 None,
             )
 
-        results = []
-        for did in obj.didattica_copertura:
-            for ore in did.didattica_copertura_dettaglio_ore:
-                if ore.coper.personale.cognome and ore.coper.personale.nome:
-                    full_name = (
-                        ore.coper.personale.cognome + " " + ore.coper.personale.nome
-                    )
-                    if ore.coper.personale.middle_name:
-                        full_name += " " + ore.coper.personale.middle_name
-                else:
-                    full_name = None
+            parts = filter(None, [
+                q["coper_id__personale_id__cognome"],
+                q["coper_id__personale_id__nome"],
+                q["coper_id__personale_id__middle_name"],
+            ])
+            full_name = " ".join(parts) or None
 
-                results.append(
-                    {
-                        "activityType": ore.tipo_att_did_cod,
-                        "hours": ore.ore,
-                        # "teacherID": encrypt(ore.coper.personale.matricola)
-                        # if not ore.coper.personale.flg_cessato
-                        # else None,
-                        "teacherID": official_email.split("@")[0]
-                        if official_email
-                        else encrypt(ore.coper.personale.matricola),
-                        "teacherName": full_name,
-                        "email": add_email_addresses(ore.coper.personale.cod_fis),
-                    }
-                )
-        return results
+            hours.append({
+                "activityType": q["tipo_att_did_cod"],
+                "hours": q["ore"],
+                "studyActivityTeacherID": official_email.split("@")[0] if official_email else encrypt(q["coper_id__personale_id__matricola"]),
+                "studyActivityTeacherName": full_name,
+                "teacherEmail": email_list,
+            })
 
-    def get_erogationLanguage(self, obj):
-        lang = self.context.get("lang", "it")
-        result = []
-        for lang in obj.languages:
-            if lang == "it":
-                result.append(lang.testo_af_ita)
-            else:
-                result.append(lang.testo_af_eng)
-        return result
-        # ~ else:
+        return hours
 
-        # ~ return obj.languages[0].testo_af_ita if obj.languages else None
-        # ~ return obj.languages[0].testo_af_eng if obj.languages else None
+    def get_erogationLanguage(self, obj):    
+        return obj.lista_lin_did_af
 
     def get_year(self, obj):
         if obj.anno_corso:
             return obj.anno_corso
 
+        activity_root = DidatticaAttivitaFormativa.objects.filter(
+            af_id=obj.af_radice_id
+        ).exclude(af_id=obj.af_id).first()
+
+        if activity_root is not None:
+            return self.get_year(activity_root)
+        
+        return None
+    
     def get_erogationYear(self, obj):
         if obj.anno_corso:
             return obj.regdid.aa_reg_did + obj.anno_corso - 1
+        
+        activity_root = DidatticaAttivitaFormativa.objects.filter(
+            af_id=obj.af_radice_id
+        ).exclude(af_id=obj.af_id).first()
+        
+        if activity_root is not None:
+            return self.get_erogationYear(activity_root)
+        
+        return None
 
     def get_language(self, obj):
         if obj.lista_lin_did_af:
@@ -936,7 +999,7 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
         matricola = getattr(obj, "matricola_resp_did", None)
         return encrypt(matricola)
 
-    def getFatherName(self, obj):
+    def get_fatherName(self, obj):
         if obj.af_radice_id and obj.af_radice_id != obj.af_id:
             activity_root = (
                 DidatticaAttivitaFormativa.objects.filter(af_id=obj.af_radice_id)
