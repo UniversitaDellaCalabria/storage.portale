@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
-from django.db.models import Q
-from advanced_training.models import AltaFormazioneDatiBase
+from django.db.models import Q, Subquery, OuterRef
+from advanced_training.models import AltaFormazioneDatiBase, AltaFormazioneStatusStorico
 
 
 class AdvancedTrainingMastersFilter(filters.FilterSet):
@@ -44,6 +44,11 @@ class AdvancedTrainingMastersFilter(filters.FilterSet):
         label="Year",
         help_text="Filter by course year.",
     )
+    status = filters.CharFilter(
+        method="filter_status",
+        label="Status",
+        help_text="Filter by current status code (0=Bozza, 1=In Validazione, 2=Respinto, 3=Approvato, 4=Annullato).",
+    )
 
     def filter_coursetype(self, queryset, name, value):
         coursetypes = value.split(",")
@@ -57,6 +62,25 @@ class AdvancedTrainingMastersFilter(filters.FilterSet):
                 matricola_direttore_scientifico__cognome__istartswith=k
             )
             queryset = queryset.filter(q_nome)
+        return queryset
+
+    def filter_status(self, queryset, name, value):
+        latest_status_subquery = (
+            AltaFormazioneStatusStorico.objects.filter(
+                id_alta_formazione_dati_base=OuterRef("pk")
+            )
+            .order_by("-data_status", "-dt_mod", "-id")
+            .values("id_alta_formazione_status__status_cod")[:1]
+        )
+
+        queryset = queryset.annotate(current_status=Subquery(latest_status_subquery))
+        if value == "3":
+            queryset = queryset.filter(
+                Q(current_status=value) | Q(current_status__isnull=True)
+            )
+        else:
+            queryset = queryset.filter(current_status=value)
+
         return queryset
 
     class Meta:

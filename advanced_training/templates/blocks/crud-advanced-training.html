@@ -81,35 +81,6 @@
                             </div>
                             {% endblock filters_department %}
 
-                            {% comment %} {% block filters_department %}
-                            <loading-icon
-                                v-if="is_loading_departments"
-                                :loader_source="loader_source_departments">
-                            </loading-icon>
-
-                            <div class="col-sm form-group mb-0" v-else>
-                                <div>
-                                    <label for="{{ id }}_department_input">
-                                        {% trans "Department" %}
-                                    </label>
-                                    <div class="w-30 mt-5">
-                                        <select id="{{ id }}_department_input"
-                                                title="{% trans 'Choose an option' %}"
-                                                name="{{ id }}_department_input"
-                                                class="form-control"
-                                                @change="{{ id }}.search()">
-                                            <option value="">- {% trans 'Choose an option' %} -</option>
-                                            <option v-for="item in departments_filter"
-                                                    :value="item.DepartmentCod"
-                                                    :selected="item.DepartmentCod == selected_department_id">
-                                                [[ item.DepartmentName ]]
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endblock filters_department %} {% endcomment %}
-
                             {% block filters_coursetype %}
                             <loading-icon
                                 v-if="is_loading_mastertypes"
@@ -169,6 +140,30 @@
                                 </div>
                             </div>
                             {% endblock filters_erogation %}
+                            
+                            {% block filters_status %}
+                            <div class="col-sm form-group mb-0">
+                                <div>
+                                    <label for="{{ id }}_status_input">
+                                        {% trans "Stato" %}
+                                    </label>
+                                    <div class="w-30 mt-5">
+                                        <select id="{{ id }}_status_input"
+                                                title="{% trans 'Choose an option' %}"
+                                                name="{{ id }}_status_input"
+                                                class="form-control"
+                                                @change="{{ id }}.search()">
+                                            <option value="">- {% trans 'Tutti' %} -</option>
+                                            <option value="0" :selected="selected_status == '0'">{% trans "Bozza" %}</option>
+                                            <option value="1" :selected="selected_status == '1'">{% trans "In Validazione" %}</option>
+                                            <option value="2" :selected="selected_status == '2'">{% trans "Respinto" %}</option>
+                                            <option value="3" :selected="selected_status == '3'">{% trans "Approvato" %}</option>
+                                            <option value="4" :selected="selected_status == '4'">{% trans "Annullato" %}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endblock filters_status %}
                         </div>
                     </div>
                     {% endblock filters_masterlist %}
@@ -262,8 +257,10 @@
 </div>
 
 {% block storage_block_bottom %}
-<div v-else>
-    {% trans "No items here" %}
+<div v-else-if="!is_loading && items.results !== undefined && items.results.length === 0">
+    <template v-if="selected_status !== '1'">
+        {% trans "No items here" %}
+    </template>
 </div>
 {% endblock storage_block_bottom %}
 {% endblock content %}
@@ -283,6 +280,8 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     if (year && year.value) dict['year'] = year.value
     let department = document.getElementById('{{ id }}_department_input')
     if (department && department.value) dict['department'] = department.value
+    let status = document.getElementById('{{ id }}_status_input')
+    if (status && status.value) dict['status'] = status.value
     setItemInSession("{{ id }}", dict)
     return dict
 }
@@ -299,6 +298,7 @@ selected_erogation: this.getItemFromSession("{{ id }}", 'erogation'),
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
 selected_year: this.getItemFromSession("{{ id }}", 'year') || '{{ ADVANCED_TRAINING_YEAR }}',
 selected_department: this.getItemFromSession("{{ id }}", 'department'),
+selected_status: this.getItemFromSession("{{ id }}", 'status') {% if is_validator %}|| '1'{% endif %},
 
 master_types: [],
 erogations: [],
@@ -316,6 +316,8 @@ loader_source_years: '/api/v2/advanced-training/available_years/',
 loader_source_departments: '/api/v2/advanced-training/available_departments/',
 
 show_pdf_import_button: false,
+
+is_validator: {% if is_validator %}true{% else %}false{% endif %},
 
 {% endblock extra_data %}
 

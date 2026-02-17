@@ -110,6 +110,14 @@ def advancedtraining_masters(request):
         ).exists()
     )
 
+    # Verifica se l'utente è un validatore
+    is_validator = OrganizationalStructureOfficeEmployee.objects.filter(
+        employee=request.user,
+        office__is_active=True,
+        office__organizational_structure__is_active=True,
+        office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR,
+    ).exists()
+
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
         "#": _("Advanced Training"),
@@ -119,6 +127,7 @@ def advancedtraining_masters(request):
         "breadcrumbs": breadcrumbs,
         "url": reverse("advanced-training:apiv2:advanced-training-list"),
         "can_create": can_create,
+        "is_validator": is_validator,
     }
 
     return render(request, "advanced-training.html", context)
@@ -654,7 +663,9 @@ def advancedtraining_status_change(request, pk, status_cod, has_active_window=No
                 request,
                 _("Non puoi mandare in validazione un master di un altro dipartimento"),
             )
-            return redirect("advanced-training:management:advanced-training-detail", pk=pk)
+            return redirect(
+                "advanced-training:management:advanced-training-detail", pk=pk
+            )
 
     try:
         # Verifica lock
@@ -729,6 +740,7 @@ def advancedtraining_status_change(request, pk, status_cod, has_active_window=No
 
     return redirect("advanced-training:management:advanced-training-detail", pk=pk)
 
+
 @login_required
 @transaction.atomic
 def advancedtraining_duplicate(request, pk):
@@ -746,17 +758,17 @@ def advancedtraining_duplicate(request, pk):
 
     # Duplica il master
     old.pk = None
-    
+
     # Genera un titolo univoco
     base_title = old.titolo_it
     new_title = f"{base_title} (copia)"
     counter = 1
-    
+
     # Verifica se esiste già un titolo con "(copia)" e incrementa il contatore
     while AltaFormazioneDatiBase.objects.filter(titolo_it=new_title).exists():
         counter += 1
         new_title = f"{base_title} (copia {counter})"
-    
+
     old.titolo_it = new_title
     old.dt_mod = timezone.now()
     old.user_mod_id = request.user.id
@@ -796,6 +808,7 @@ def advancedtraining_duplicate(request, pk):
     return redirect(
         reverse("advanced-training:management:advanced-training-detail", args=[new.id])
     )
+
 
 @login_required
 def consiglio_interno_new(request, master_id):
