@@ -166,22 +166,12 @@ def advancedtraining_info_edit(
 
     # L'utente è validatore se ha l'ufficio validatori
     user_is_validator = OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names
-
-    print("OFFICES NAMES:")
-    print(master.get_offices_names())
-    print("USER OFFICES NAMES:")
-    print(user_offices_names)
-    print("USER IS VALIDATOR:")
-    print(user_is_validator)
-
     # Verifica che l'utente abbia un ufficio master (non validatore) nello stesso dipartimento
     department_code = (
         master.dipartimento_riferimento.dip_cod
         if master.dipartimento_riferimento
         else None
     )
-    print("DEPARTMENT CODE:")
-    print(department_code)
 
     # Filtra gli uffici master (NON validatori) dell'utente per verificare il dipartimento
     user_master_offices = user_all_offices.filter(
@@ -192,8 +182,6 @@ def advancedtraining_info_edit(
         office__organizational_structure__unique_code=department_code
     ).exists()
 
-    print("USER HAS SAME DEPARTMENT:")
-    print(user_has_same_department)
 
     # Verifica permessi usando i metodi del model
     can_edit = master._check_edit_permission(user_offices_names)
@@ -227,9 +215,6 @@ def advancedtraining_info_edit(
         )
         # Rimuovi duplicati
         allowed_department_codes = list(set(allowed_department_codes))
-
-    print("ALLOWED DEPARTMENT CODES:")
-    print(allowed_department_codes)
 
     # Crea il form con i parametri corretti
     form_kwargs = {"instance": master}

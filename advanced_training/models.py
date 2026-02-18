@@ -2,6 +2,7 @@ from django.db import models
 from generics.models import Permissions
 from advanced_training.settings import (
     OFFICE_ADVANCED_TRAINING_VALIDATOR,
+    OFFICE_ADVANCED_TRAINING
 )
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
@@ -185,17 +186,20 @@ class AltaFormazioneDatiBase(Permissions):
 
     @classmethod
     def get_offices_names(cls, **kwargs):
-        return (OFFICE_ADVANCED_TRAINING_VALIDATOR,)
+        return (OFFICE_ADVANCED_TRAINING,)
 
     def _is_valid_office(self, office_name, all_user_offices, **kwargs):
         offices_names = self.get_offices_names()
 
         if office_name == offices_names[0]:
-
-            return True
+            user_office = all_user_offices.get(office__name=office_name)
+            return (
+                user_office.office.organizational_structure.unique_code
+                == self.dipartimento_riferimento.dip_cod
+            )
 
         return False
-    
+
     def get_current_status(self):
         return (
             self.altaformazionestatusstorico_set.filter(
@@ -210,6 +214,8 @@ class AltaFormazioneDatiBase(Permissions):
         Determina se l'utente può editare in base allo stato corrente
         """
         offices_names = self.get_offices_names()
+        print("USER OFFICES NAMES EDIT:", user_offices_names)
+        print("OFFICES NAMES EDIT:", offices_names)
 
         status_storico = self.get_current_status()
 
@@ -218,11 +224,9 @@ class AltaFormazioneDatiBase(Permissions):
         else:
             status_cod = status_storico.id_alta_formazione_status.status_cod
 
-        if offices_names[0] in user_offices_names:
-            return False
-
-        if status_cod in ["0", "2"]:
+        if offices_names[0] in user_offices_names and status_cod in ["0", "2"]:
             return True
+
         return False
 
     def _check_lock_permission(self, user_offices_names, **kwargs):
@@ -234,32 +238,9 @@ class AltaFormazioneDatiBase(Permissions):
         """
         if user.is_superuser:
             return True
-
-        # Ottieni stato corrente
-        status_storico = self.get_current_status()
-        current_status_cod = (
-            "0"
-            if status_storico is None
-            else status_storico.id_alta_formazione_status.status_cod
-        )
-
-        offices_names = self.get_offices_names()
-        if offices_names[0] in [
-            o.office.name
-            for o in OrganizationalStructureOfficeEmployee.objects.filter(
-                employee=user,
-                office__is_active=True,
-                office__organizational_structure__is_active=True,
-            )
-        ]:
-            if current_status_cod != "1":
-                return False
-            return new_status_cod in ["2", "3", "4"]
-
-        else:
-            if current_status_cod not in ["0", "2"]:
-                return False
-            return new_status_cod == "1"
+        
+        user_offices_names = self.get_user_offices_names(user)
+        return self._check_access_permission(user_offices_names) and self._check_edit_permission(user_offices_names)
 
     class Meta:
         managed = True
@@ -464,7 +445,9 @@ class AltaFormazioneFinestraTemporale(models.Model):
     titolo = models.CharField(db_column="TITOLO", max_length=256)
     data_inizio = models.DateField(db_column="DATA_INIZIO")
     data_fine = models.DateField(db_column="DATA_FINE")
-    anno_accademico = models.CharField(db_column="ANNO_ACCADEMICO", max_length=9, blank=False, null=False)
+    anno_accademico = models.CharField(
+        db_column="ANNO_ACCADEMICO", max_length=9, blank=False, null=False
+    )
     note = models.TextField(db_column="NOTE", blank=True, null=True)
 
     class Meta:
