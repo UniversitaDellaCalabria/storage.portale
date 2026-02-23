@@ -5,7 +5,7 @@ from functools import reduce
 from addressbook.utils import append_email_addresses
 from django.conf import settings
 from django.core.exceptions import BadRequest
-from django.db.models import Exists, F, OuterRef, Q
+from django.db.models import Exists, F, OuterRef, Q, Subquery
 from django.http import Http404
 from structures.models import DidatticaDipartimentoUrl
 
@@ -96,6 +96,15 @@ class ServiceDidatticaCds:
         items = DidatticaCds.objects.filter(q4, q1, q2, q3)
         # didatticacdslingua__lin_did_ord_id__isnull=False
 
+        # Definiamo la subquery:
+        # per ogni item prendiamo il PK del regolamento più recente
+        latest_didatticaregolamento = DidatticaRegolamento.objects\
+            .exclude(stato_regdid_cod="E")\
+            .filter(cds_id=OuterRef('pk'))\
+            .order_by('-pk')\
+            .values('pk')[:1]
+        items = items.filter(didatticaregolamento__pk=Subquery(latest_didatticaregolamento))
+        
         if not query_params.get("academicyear", ""):
             items = items.filter(didatticaregolamento__stato_regdid_cod="A")
 
