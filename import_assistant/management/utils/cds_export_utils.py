@@ -3,7 +3,7 @@ from io import BytesIO
 import openpyxl
 from cds.models import DidatticaCds
 from django.conf import settings
-from django.db.models import F
+from django.db.models import F, OuterRef, Q, Subquery
 from import_assistant.settings import (
     ACCEPTED_TIPO_CORSO_COD,
     EXCEL_FIELDS_MAPPINGS,
@@ -22,10 +22,18 @@ def gen_xlsx_for_cds_export():
     for col_num, header in enumerate(HEADERS, start=1):
         sheet.cell(row=1, column=col_num, value=header)
 
+    latest_didatticaregolamento = DidatticaRegolamento.objects\
+        .exclude(stato_regdid_cod__in=["E","R"])\
+        .filter(cds_id=OuterRef('pk'))\
+        .filter(aa_reg_did__exact=settings.CURRENT_YEAR)\
+        .order_by('-pk')\
+        .values('pk')[:1]
+                
     data = (
         DidatticaCds.objects.filter(
-            didatticaregolamento__aa_reg_did=settings.CURRENT_YEAR,
-            didatticaregolamento__stato_regdid_cod="A",
+            # ~ didatticaregolamento__aa_reg_did=settings.CURRENT_YEAR,
+            # ~ didatticaregolamento__stato_regdid_cod="A",
+            didatticaregolamento__pk=Subquery(latest_didatticaregolamento),
             tipo_corso_cod__in=ACCEPTED_TIPO_CORSO_COD,
         )
         .prefetch_related("didatticacdslingua")
