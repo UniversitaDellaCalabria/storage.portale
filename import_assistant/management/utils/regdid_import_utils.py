@@ -120,7 +120,7 @@ def _fetch_active_cds(year):
             DidatticaRegolamento.objects.filter(
                 cds=OuterRef("cds_id"),
                 aa_reg_did=year,
-            ).exclude(stato_regdid_cod="R")
+            ).exclude(stato_regdid_cod__in=["E","R"])
         ),
         tipo_corso_cod__in=ACCEPTED_TIPO_CORSO_COD,
     )

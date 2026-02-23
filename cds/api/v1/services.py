@@ -99,7 +99,7 @@ class ServiceDidatticaCds:
         # Definiamo la subquery:
         # per ogni item prendiamo il PK del regolamento più recente
         latest_didatticaregolamento = DidatticaRegolamento.objects\
-            .exclude(stato_regdid_cod="E")\
+            .exclude(stato_regdid_cod__in=["E","R"])\
             .filter(cds_id=OuterRef('pk'))\
             .order_by('-pk')\
             .values('pk')[:1]
@@ -435,13 +435,13 @@ class ServiceDidatticaCds:
                     DidatticaRegolamento.objects.filter(
                         cds=OuterRef("cds"),
                         aa_reg_did__gt=OuterRef("aa_reg_did"),
-                    ).exclude(stato_regdid_cod="R")
+                    ).exclude(stato_regdid_cod__in=["E","R"])
                 ),
                 query_year_from,
                 query_course_types,
                 aa_reg_did__lt=settings.CURRENT_YEAR,
             )
-            .exclude(stato_regdid_cod="R")
+            .exclude(stato_regdid_cod__in=["E","R"])
             # exclude courses that have finished their regular life cycle
             .exclude(aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni")))
             # exclude morphed courses

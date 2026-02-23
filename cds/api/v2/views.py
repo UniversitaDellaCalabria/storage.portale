@@ -147,11 +147,11 @@ class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                     DidatticaRegolamento.objects.filter(
                         cds=OuterRef("cds"),
                         aa_reg_did__gt=OuterRef("aa_reg_did"),
-                    ).exclude(stato_regdid_cod="R")
+                    ).exclude(stato_regdid_cod__in=["E","R"])
                 ),
                 aa_reg_did__lt=settings.CURRENT_YEAR,
             )
-            .exclude(stato_regdid_cod="R")
+            .exclude(stato_regdid_cod__in=["E","R"])
             .exclude(aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni")))
             .exclude(cds__cds_cod__in=cds_morphed)
         )
