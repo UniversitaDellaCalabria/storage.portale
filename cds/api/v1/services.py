@@ -58,7 +58,7 @@ class ServiceDidatticaCds:
         }
 
         didatticaregolamento_params_to_query_field = {
-            "academicyear": "didatticaregolamento__aa_reg_did__exact",
+            # ~ "academicyear": "didatticaregolamento__aa_reg_did__exact",
             "jointdegree": "didatticaregolamento__titolo_congiunto_cod",
             "regdid": "didatticaregolamento__regdid_id",
         }
@@ -96,18 +96,28 @@ class ServiceDidatticaCds:
         items = DidatticaCds.objects.filter(q4, q1, q2, q3)
         # didatticacdslingua__lin_did_ord_id__isnull=False
 
-        # Definiamo la subquery:
-        # per ogni item prendiamo il PK del regolamento più recente
-        latest_didatticaregolamento = DidatticaRegolamento.objects\
-            .exclude(stato_regdid_cod__in=["E","R"])\
-            .filter(cds_id=OuterRef('pk'))\
-            .order_by('-pk')\
-            .values('pk')[:1]
+        if query_params.get("academicyear"):
+            # Definiamo la subquery:
+            # per ogni item prendiamo il PK del regolamento più recente
+            latest_didatticaregolamento = DidatticaRegolamento.objects\
+                .exclude(stato_regdid_cod__in=["E","R"])\
+                .filter(cds_id=OuterRef('pk'))\
+                .filter(aa_reg_did__exact=query_params.get("academicyear"))\
+                .order_by('-pk')\
+                .values('pk')[:1]
+        # ~ if not query_params.get("academicyear", ""):
+        else:
+            # ~ items = items.filter(didatticaregolamento__stato_regdid_cod="A")
+            # Definiamo la subquery:
+            # per ogni item prendiamo il PK del regolamento più recente
+            latest_didatticaregolamento = DidatticaRegolamento.objects\
+                .filter(cds_id=OuterRef('pk'))\
+                .filter(stato_regdid_cod="A")\
+                .order_by('-pk')\
+                .values('pk')[:1]
+
         items = items.filter(didatticaregolamento__pk=Subquery(latest_didatticaregolamento))
         
-        if not query_params.get("academicyear", ""):
-            items = items.filter(didatticaregolamento__stato_regdid_cod="A")
-
         if courses_allowed != "":
             items = items.filter(tipo_corso_cod__in=courses_allowed)
 
