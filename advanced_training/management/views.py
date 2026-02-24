@@ -285,7 +285,7 @@ def advancedtraining_info_edit(
                     return _render()
 
     elif form_name in TAB_FORMSET_MAP:
-        FormClass, _ = TAB_FORMSET_MAP[form_name]
+        FormClass, _template = TAB_FORMSET_MAP[form_name] 
         form = FormClass(request.POST, instance=master)
     elif form_name == "Consiglio Scientifico Interno":
         form = ConsiglioInternoEsternoForm(request.POST, instance=master)
