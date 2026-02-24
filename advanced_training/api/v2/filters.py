@@ -39,7 +39,7 @@ class AdvancedTrainingMastersFilter(filters.FilterSet):
         help_text="Filter by course language.",
     )
     year = filters.CharFilter(
-        field_name="anno_rilevazione",
+        field_name="anno_erogazione",
         lookup_expr="exact",
         label="Year",
         help_text="Filter by course year.",

@@ -61,8 +61,8 @@ class AltaFormazioneDatiBase(Permissions):
     titolo_en = models.CharField(
         db_column="TITOLO_EN", max_length=512, blank=True, null=True
     )
-    anno_rilevazione = models.IntegerField(
-        db_column="ANNO_RILEVAZIONE", blank=True, null=True
+    anno_erogazione = models.IntegerField(
+        db_column="ANNO_EROGAZIONE", blank=True, null=True
     )
     dipartimento_riferimento = models.ForeignKey(
         "structures.DidatticaDipartimento",

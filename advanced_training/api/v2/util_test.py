@@ -58,7 +58,7 @@ class ApiAdvancedTrainingUnitTestMethods(TestCase):
             "titolo_it": "AAAA",
             "titolo_en": "AAAA",
             "lingua": "ita",
-            "anno_rilevazione": 2021,
+            "anno_erogazione": 2021,
         }
         data.update(kwargs)
         return AltaFormazioneDatiBase.objects.create(**data)

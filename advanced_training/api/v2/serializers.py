@@ -30,7 +30,7 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     courseStructure = serializers.CharField(source="sede_corso")
     minParticipants = serializers.IntegerField(source="num_min_partecipanti")
     maxParticipants = serializers.IntegerField(source="num_max_partecipanti")
-    masterYear = serializers.IntegerField(source="anno_rilevazione")
+    masterYear = serializers.IntegerField(source="anno_erogazione")
     departmentId = serializers.IntegerField(source="dipartimento_riferimento.dip_id")
     departmentCod = serializers.CharField(source="dipartimento_riferimento.dip_cod")
     departmentName = serializers.CharField(source="dipartimento_riferimento.dip_des_it")

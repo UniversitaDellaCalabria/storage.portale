@@ -67,9 +67,9 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
     def available_years(self, request):
         """Restituisce gli anni disponibili per il filtro"""
         years = (
-            AltaFormazioneDatiBase.objects.values_list("anno_rilevazione", flat=True)
+            AltaFormazioneDatiBase.objects.values_list("anno_erogazione", flat=True)
             .distinct()
-            .order_by("-anno_rilevazione")
+            .order_by("-anno_erogazione")
         )
         return Response({"results": [{"year": year} for year in years if year]})
 
@@ -221,7 +221,7 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                 "lingua",
                 "ore",
                 "mesi",
-                "anno_rilevazione",
+                "anno_erogazione",
                 "dipartimento_riferimento",
                 "dipartimento_riferimento__dip_cod",
                 "dipartimento_riferimento__dip_des_it",
@@ -256,7 +256,7 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                 "project_work",
                 "path_piano_finanziario",
                 "path_doc_delibera",
-                "matricola_proponente",
+                # "matricola_proponente",
                 "cognome_proponente",
                 "nome_proponente",
                 "dt_mod",
@@ -269,7 +269,7 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
         year_param = self.request.query_params.get('year')
         if year_param is None and ADVANCED_TRAINING_YEAR:
             try:
-                queryset = queryset.filter(anno_rilevazione=int(ADVANCED_TRAINING_YEAR))
+                queryset = queryset.filter(anno_erogazione=int(ADVANCED_TRAINING_YEAR))
             except (ValueError, TypeError):
                 pass
         

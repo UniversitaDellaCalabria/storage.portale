@@ -23,7 +23,7 @@ class MasterDatiBaseForm(forms.ModelForm):
         fields = [
             "titolo_it",
             "titolo_en",
-            "anno_rilevazione",
+            "anno_erogazione",
             "dipartimento_riferimento",
             "alta_formazione_tipo_corso",
             "lingua",
@@ -60,19 +60,19 @@ class MasterDatiBaseForm(forms.ModelForm):
             "nome_origine_direttore_scientifico",
             "path_piano_finanziario",
             "path_doc_delibera",
-            "matricola_proponente",
+            # "matricola_proponente",
             "cognome_proponente",
             "nome_proponente",
         ]
         widgets = {
             "data_inizio": forms.DateInput(attrs={"type": "date"}),
             "data_fine": forms.DateInput(attrs={"type": "date"}),
-            "ore": forms.NumberInput(attrs={"min": 0}),
+            "ore": forms.NumberInput(attrs={"min": 0, "step": 1}),
             "mesi": forms.NumberInput(attrs={"min": 0}),
             "num_min_partecipanti": forms.NumberInput(attrs={"min": 0}),
             "num_max_partecipanti": forms.NumberInput(attrs={"min": 0}),
             "num_max_uditori": forms.NumberInput(attrs={"min": 0}),
-            "ore_stage_tirocinio": forms.NumberInput(attrs={"min": 0}),
+            "ore_stage_tirocinio": forms.NumberInput(attrs={"min": 0, "step": 1}),
             "cfu_stage": forms.NumberInput(attrs={"min": 0}),
             "mesi_stage": forms.NumberInput(attrs={"min": 0}),
             "uditori_ammessi": forms.CheckboxInput(),
@@ -85,7 +85,7 @@ class MasterDatiBaseForm(forms.ModelForm):
         labels = {
             "titolo_it": "Titolo (IT)",
             "titolo_en": "Titolo (EN)",
-            "anno_rilevazione": "Anno rilevazione",
+            "anno_erogazione": "Anno erogazione",
             "dipartimento_riferimento": "Dipartimento di riferimento",
             "alta_formazione_tipo_corso": "Tipo di corso",
             "lingua": "Lingua",
@@ -139,7 +139,7 @@ class MasterDatiBaseForm(forms.ModelForm):
 
         required_fields = [
             "titolo_it",
-            "anno_rilevazione",
+            "anno_erogazione",
             "dipartimento_riferimento",
             "alta_formazione_tipo_corso",
             "lingua",
@@ -198,7 +198,7 @@ class PianoDidatticoForm(forms.ModelForm):
         model = AltaFormazionePianoDidattico
         fields = ["modulo", "ssd", "num_ore", "cfu", "verifica_finale"]
         widgets = {
-            "num_ore": forms.NumberInput(attrs={"min": 0}),
+            "num_ore": forms.NumberInput(attrs={"min": 0, "step": 1}),
             "cfu": forms.NumberInput(attrs={"min": 0}),
         }
         labels = {
@@ -224,7 +224,7 @@ class IncaricoDidatticoForm(forms.ModelForm):
         model = AltaFormazioneIncaricoDidattico
         fields = ["modulo", "num_ore", "docente", "qualifica", "ente", "tipologia"]
         widgets = {
-            "num_ore": forms.TextInput(attrs={"type": "number", "min": 0}),
+            "num_ore": forms.NumberInput(attrs={"min": 0, "step": 1}),
         }
         labels = {
             "modulo": "Modulo",

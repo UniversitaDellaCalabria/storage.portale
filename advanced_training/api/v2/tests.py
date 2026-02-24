@@ -26,7 +26,7 @@ class AdvancedTrainingUnitTest(TestCase):
             alta_formazione_tipo_corso=aftc,
             alta_formazione_mod_erogazione=afme,
             dipartimento_riferimento=dip,
-            anno_rilevazione=2022
+            anno_erogazione=2022
             
         )
         ApiAdvancedTrainingUnitTestMethods.create_altaFormazioneConsiglioScientificoEsterno(
