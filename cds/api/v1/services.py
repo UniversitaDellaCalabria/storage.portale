@@ -5,7 +5,7 @@ from functools import reduce
 from addressbook.utils import append_email_addresses
 from django.conf import settings
 from django.core.exceptions import BadRequest
-from django.db.models import Exists, F, OuterRef, Q
+from django.db.models import Exists, F, OuterRef, Q, Subquery
 from django.http import Http404
 from structures.models import DidatticaDipartimentoUrl
 
@@ -58,7 +58,7 @@ class ServiceDidatticaCds:
         }
 
         didatticaregolamento_params_to_query_field = {
-            "academicyear": "didatticaregolamento__aa_reg_did__exact",
+            # ~ "academicyear": "didatticaregolamento__aa_reg_did__exact",
             "jointdegree": "didatticaregolamento__titolo_congiunto_cod",
             "regdid": "didatticaregolamento__regdid_id",
         }
@@ -96,9 +96,28 @@ class ServiceDidatticaCds:
         items = DidatticaCds.objects.filter(q4, q1, q2, q3)
         # didatticacdslingua__lin_did_ord_id__isnull=False
 
-        if not query_params.get("academicyear", ""):
-            items = items.filter(didatticaregolamento__stato_regdid_cod="A")
+        if query_params.get("academicyear"):
+            # Definiamo la subquery:
+            # per ogni item prendiamo il PK del regolamento più recente
+            latest_didatticaregolamento = DidatticaRegolamento.objects\
+                .exclude(stato_regdid_cod__in=["E","R"])\
+                .filter(cds_id=OuterRef('pk'))\
+                .filter(aa_reg_did__exact=query_params.get("academicyear"))\
+                .order_by('-pk')\
+                .values('pk')[:1]
+        # ~ if not query_params.get("academicyear", ""):
+        else:
+            # ~ items = items.filter(didatticaregolamento__stato_regdid_cod="A")
+            # Definiamo la subquery:
+            # per ogni item prendiamo il PK del regolamento più recente
+            latest_didatticaregolamento = DidatticaRegolamento.objects\
+                .filter(cds_id=OuterRef('pk'))\
+                .filter(stato_regdid_cod="A")\
+                .order_by('-pk')\
+                .values('pk')[:1]
 
+        items = items.filter(didatticaregolamento__pk=Subquery(latest_didatticaregolamento))
+        
         if courses_allowed != "":
             items = items.filter(tipo_corso_cod__in=courses_allowed)
 
@@ -426,13 +445,13 @@ class ServiceDidatticaCds:
                     DidatticaRegolamento.objects.filter(
                         cds=OuterRef("cds"),
                         aa_reg_did__gt=OuterRef("aa_reg_did"),
-                    ).exclude(stato_regdid_cod="R")
+                    ).exclude(stato_regdid_cod__in=["E","R"])
                 ),
                 query_year_from,
                 query_course_types,
                 aa_reg_did__lt=settings.CURRENT_YEAR,
             )
-            .exclude(stato_regdid_cod="R")
+            .exclude(stato_regdid_cod__in=["E","R"])
             # exclude courses that have finished their regular life cycle
             .exclude(aa_reg_did__lte=(settings.CURRENT_YEAR - F("cds__durata_anni")))
             # exclude morphed courses
