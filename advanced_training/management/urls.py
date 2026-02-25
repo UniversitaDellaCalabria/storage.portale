@@ -5,6 +5,7 @@ from .views import (
     advancedtraining_masters,
     advancedtraining_info_create,
     advancedtraining_info_delete,
+    advancedtraining_proponente_edit,
     advancedtraining_status_change,
     advancedtraining_load_tab,
     consiglio_interno_new,
@@ -60,5 +61,10 @@ urlpatterns = [
         'master/<int:master_id>/consiglio-interno/<int:consiglio_id>/delete/',
         consiglio_interno_delete,
         name='consiglio-interno-delete'
+    ),
+    path(
+        "advanced-training/<int:pk>/proponente/",
+        advancedtraining_proponente_edit,
+        name="advanced-training-proponente-edit",
     ),
 ]

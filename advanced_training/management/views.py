@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
+from addressbook.utils import get_personale_matricola
 
 from advanced_training.management.decorators import (
     can_manage_advanced_training,
@@ -28,6 +29,7 @@ from advanced_training.management.forms import (
     MasterDatiBaseForm,
     PartnerFormSet,
     PianoDidatticoFormSet,
+    ProponenteEsternoForm,
 )
 from advanced_training.models import (
     AltaFormazioneConsiglioScientificoInterno,
@@ -67,6 +69,7 @@ TAB_FORMSET_MAP = {
 }
 
 OPTIONAL_MOTIVATION_STATUSES = {"1", "3"}
+
 
 def _get_status_badge_class(status_cod):
     return {
@@ -128,6 +131,7 @@ def _save_formset(form, user):
     form.save_m2m()
     for deleted in form.deleted_objects:
         deleted.delete()
+
 
 @login_required
 def advancedtraining_masters(request):
@@ -768,4 +772,87 @@ def consiglio_interno_delete(request, master_id, consiglio_id, master=None):
 
     return redirect(
         f"{reverse('advanced-training:management:advanced-training-detail', args=[master_id])}?tab=Consiglio Scientifico Interno"
+    )
+
+
+@login_required
+def advancedtraining_proponente_edit(request, pk):
+    master = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
+
+    old_label = None
+    initial = {}
+
+    if master.matricola_proponente:
+        staff = master.matricola_proponente
+        old_label = f"{staff.cognome} {staff.nome}"
+        initial = {"choosen_person": encrypt(staff.matricola)}
+    else:
+        old_label = (
+            f"{master.cognome_proponente or ''} {master.nome_proponente or ''}".strip()
+        )
+        initial = {
+            "nome_proponente": master.nome_proponente,
+            "cognome_proponente": master.cognome_proponente,
+        }
+
+    external_form = ProponenteEsternoForm(initial=initial)
+    internal_form = ChoosenPersonForm(initial=initial, required=True)
+
+    if request.POST:
+        if request.POST.get("choosen_person"):
+            internal_form = ChoosenPersonForm(data=request.POST, required=True)
+            form = internal_form
+        else:
+            external_form = ProponenteEsternoForm(data=request.POST)
+            form = external_form
+
+        if form.is_valid():
+            if form.cleaned_data.get("choosen_person"):
+                member = get_object_or_404(
+                    Personale, matricola=get_personale_matricola(form.cleaned_data["choosen_person"])
+                )
+                master.matricola_proponente = member
+                master.nome_proponente = member.nome
+                master.cognome_proponente = member.cognome
+            else:
+                master.matricola_proponente = None
+                master.nome_proponente = form.cleaned_data["nome_proponente"]
+                master.cognome_proponente = form.cleaned_data["cognome_proponente"]
+
+            master.dt_mod = timezone.now()
+            master.user_mod_id = request.user.id
+            master.save()
+
+            messages.success(request, "Proponente salvato con successo.")
+            return redirect(
+                "advanced-training:management:advanced-training-detail", pk=pk
+            )
+
+        for k, v in form.errors.items():
+            messages.error(request, f"<b>{form.fields[k].label}</b>: {v}")
+
+    return render(
+        request,
+        "proponente.html",
+        {
+            "master": master,
+            "choosen_person": old_label,
+            "external_form": external_form,
+            "internal_form": internal_form,
+            "item_label": _("Proponente"),
+            "edit": bool(master.matricola_proponente or master.nome_proponente),
+            "url": reverse("teachers:apiv1:teachers-list"),
+            "including": "blocks/crud_teacherslist.html",
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Proponente"),
+            },
+        },
     )

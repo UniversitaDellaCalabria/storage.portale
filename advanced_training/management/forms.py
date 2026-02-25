@@ -60,9 +60,6 @@ class MasterDatiBaseForm(forms.ModelForm):
             "nome_origine_direttore_scientifico",
             "path_piano_finanziario",
             "path_doc_delibera",
-            # "matricola_proponente",
-            "cognome_proponente",
-            "nome_proponente",
         ]
         widgets = {
             "data_inizio": forms.DateInput(attrs={"type": "date"}),
@@ -122,9 +119,6 @@ class MasterDatiBaseForm(forms.ModelForm):
             "nome_origine_direttore_scientifico": "Nome direttore scientifico",
             "path_piano_finanziario": "Piano finanziario (allegato)",
             "path_doc_delibera": "Delibera (allegato)",
-            "matricola_proponente": "Matricola proponente",
-            "cognome_proponente": "Cognome proponente",
-            "nome_proponente": "Nome proponente",
         }
 
     def __init__(self, *args, allowed_department_codes=None, **kwargs):
@@ -303,6 +297,11 @@ class ConsiglioInternoEsternoForm(forms.ModelForm):
                 "placeholder": "Inserisci nome e cognome del membro esterno",
             }
         )
+
+
+class ProponenteEsternoForm(forms.Form):
+    nome_proponente = forms.CharField(label="Nome proponente", required=True)
+    cognome_proponente = forms.CharField(label="Cognome proponente", required=True)
 
 
 class ChoosenPersonForm(forms.Form):
