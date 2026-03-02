@@ -2,7 +2,7 @@ from django.db import models
 from generics.models import Permissions
 from advanced_training.settings import (
     OFFICE_ADVANCED_TRAINING_VALIDATOR,
-    OFFICE_ADVANCED_TRAINING
+    OFFICE_ADVANCED_TRAINING,
 )
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
@@ -53,6 +53,12 @@ class AltaFormazioneConsiglioScientificoInterno(models.Model):
         db_table = "ALTA_FORMAZIONE_CONSIGLIO_SCIENTIFICO_INTERNO"
 
 
+class TipoSelezioneChoices(models.TextChoices):
+    ALTRO = "Altro", "Altro"
+    COLLOQUIO = "Colloquio", "Colloquio"
+    TITOLI = "Titoli", "Titoli"
+
+
 class AltaFormazioneDatiBase(Permissions):
     id = models.AutoField(db_column="ID", primary_key=True)
     titolo_it = models.CharField(
@@ -85,6 +91,13 @@ class AltaFormazioneDatiBase(Permissions):
         db_column="ID_ALTA_FORMAZIONE_MOD_EROGAZIONE",
         blank=True,
         null=True,
+    )
+    tipo_selezione = models.CharField(
+        db_column="TIPO_SELEZIONE",
+        max_length=100,
+        blank=True,
+        null=True,
+        choices=TipoSelezioneChoices.choices,
     )
     ore = models.IntegerField(blank=True, null=True, db_column="ORE")
     mesi = models.IntegerField(blank=True, null=True, db_column="MESI")
@@ -238,9 +251,11 @@ class AltaFormazioneDatiBase(Permissions):
         """
         if user.is_superuser:
             return True
-        
+
         user_offices_names = self.get_user_offices_names(user)
-        return self._check_access_permission(user_offices_names) and self._check_edit_permission(user_offices_names)
+        return self._check_access_permission(
+            user_offices_names
+        ) and self._check_edit_permission(user_offices_names)
 
     class Meta:
         managed = True

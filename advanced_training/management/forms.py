@@ -5,19 +5,17 @@ from advanced_training.models import (
     AltaFormazioneIncaricoDidattico,
     AltaFormazionePianoDidattico,
     AltaFormazionePartner,
-    AltaFormazioneModalitaSelezione,
     AltaFormazioneConsiglioScientificoEsterno,
     AltaFormazioneConsiglioScientificoInterno,
     AltaFormazioneStatusStorico,
 )
 from structures.models import DidatticaDipartimento
 class MasterDatiBaseForm(forms.ModelForm):
-    tipo_selezione = forms.ModelChoiceField(
-        queryset=AltaFormazioneModalitaSelezione.objects.all(),
-        required=False,
-        label="Modalità di selezione",
-    )
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields["data_inizio"].input_formats = ["%Y-%m-%d", "%d/%m/%Y"]
+        self.fields["data_fine"].input_formats = ["%Y-%m-%d", "%d/%m/%Y"]
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
@@ -61,8 +59,8 @@ class MasterDatiBaseForm(forms.ModelForm):
             "path_doc_delibera",
         ]
         widgets = {
-            "data_inizio": forms.DateInput(attrs={"type": "date"}),
-            "data_fine": forms.DateInput(attrs={"type": "date"}),
+            "data_inizio": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "data_fine": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
             "ore": forms.NumberInput(attrs={"min": 0, "step": 1}),
             "mesi": forms.NumberInput(attrs={"min": 0}),
             "num_min_partecipanti": forms.NumberInput(attrs={"min": 0}),
@@ -77,6 +75,7 @@ class MasterDatiBaseForm(forms.ModelForm):
             "stage_tirocinio": forms.CheckboxInput(),
             "path_piano_finanziario": forms.ClearableFileInput(),
             "path_doc_delibera": forms.ClearableFileInput(),
+            "tipo_selezione": forms.Select(),
         }
         labels = {
             "titolo_it": "Titolo (IT)",

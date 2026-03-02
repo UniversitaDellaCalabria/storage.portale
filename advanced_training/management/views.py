@@ -94,8 +94,16 @@ def get_current_status(master):
             "cod": cod,
             "description": entry.id_alta_formazione_status.status_desc,
             "badge_class": _get_status_badge_class(cod),
+            "motivazione": entry.motivazione or "",
+            "data_status": entry.data_status,
         }
-    return {"cod": "3", "description": "Approvato", "badge_class": "success"}
+    return {
+        "cod": "3",
+        "description": "Approvato",
+        "badge_class": "success",
+        "motivazione": "",
+        "data_status": None,
+    }
 
 
 def is_temporal_window_active():
@@ -241,6 +249,8 @@ def advancedtraining_info_edit(
             "can_validate_actions": can_validate_actions,
             "has_active_window": has_active_window,
             "user_has_same_department": user_has_same_department,
+            "current_status_motivazione": current_status.get("motivazione", ""),
+            "current_status_date": current_status.get("data_status"),
         }
         if extra:
             ctx.update(extra)
@@ -290,7 +300,7 @@ def advancedtraining_info_edit(
                     return _render()
 
     elif form_name in TAB_FORMSET_MAP:
-        FormClass, _template = TAB_FORMSET_MAP[form_name] 
+        FormClass, _template = TAB_FORMSET_MAP[form_name]
         form = FormClass(request.POST, instance=master)
     elif form_name == "Consiglio Scientifico Interno":
         form = ConsiglioInternoEsternoForm(request.POST, instance=master)
@@ -609,6 +619,7 @@ def advancedtraining_duplicate(request, pk):
         reverse("advanced-training:management:advanced-training-detail", args=[new.id])
     )
 
+
 def _apply_consiglio_member(consiglio_member, form):
     if form.cleaned_data.get("choosen_person"):
         member_id = decrypt(form.cleaned_data["choosen_person"])
@@ -810,7 +821,10 @@ def advancedtraining_proponente_edit(request, pk):
         if form.is_valid():
             if form.cleaned_data.get("choosen_person"):
                 member = get_object_or_404(
-                    Personale, matricola=get_personale_matricola(form.cleaned_data["choosen_person"])
+                    Personale,
+                    matricola=get_personale_matricola(
+                        form.cleaned_data["choosen_person"]
+                    ),
                 )
                 master.matricola_proponente = member
                 master.nome_proponente = member.nome

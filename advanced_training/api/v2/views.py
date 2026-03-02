@@ -272,7 +272,12 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                 queryset = queryset.filter(anno_erogazione=int(ADVANCED_TRAINING_YEAR))
             except (ValueError, TypeError):
                 pass
-        
+        elif year_param:
+            try:
+                queryset = queryset.filter(anno_erogazione=int(year_param))
+            except (ValueError, TypeError):
+                pass
+            
         if user.is_superuser:
             return queryset
         

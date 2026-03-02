@@ -277,7 +277,8 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
     let erogation = document.getElementById('{{ id }}_erogation_input')
     if (erogation && erogation.value) dict['erogation'] = erogation.value
     let year = document.getElementById('{{ id }}_year_input')
-    if (year && year.value) dict['year'] = year.value
+    let yearValue = (year && year.value) ? year.value : '{{ ADVANCED_TRAINING_YEAR }}'
+    if (yearValue) dict['year'] = yearValue
     let department = document.getElementById('{{ id }}_department_input')
     if (department && department.value) dict['department'] = department.value
     let status = document.getElementById('{{ id }}_status_input')

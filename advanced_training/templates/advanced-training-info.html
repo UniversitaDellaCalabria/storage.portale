@@ -22,6 +22,21 @@
         </div>
       </div>
 
+      {% if current_status_motivazione %}
+      <div class="alert alert-info border-left-info" role="alert">
+        <div class="d-flex align-items-start">
+          <i class="fas fa-comment-alt mt-1 mr-2"></i>
+          <div>
+            <strong>Motivazione:</strong>
+            <p class="mb-0 mt-1">{{ current_status_motivazione }}</p>
+            {% if current_status_date %}
+            <small class="text-muted">{{ current_status_date|date:"d/m/Y" }}</small>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
       <!-- AVVISO FINESTRA TEMPORALE -->
       {% if not has_active_window %}
       <div class="alert alert-warning" role="alert">
