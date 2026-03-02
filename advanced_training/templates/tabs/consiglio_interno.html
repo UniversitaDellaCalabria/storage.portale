@@ -1,109 +1,191 @@
 {% load i18n %}
 {% load static %}
 
-<div class="card-wrapper card-space">
-  <div class="card card-bg no-after">
-    <div class="card-body">
-      <h4 style="font-weight: lighter;">
-        {% trans "Internal Scientific Council" %}
-      </h4>
-      
-      {% if consiglio_members %}
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th>{% trans "Name" %}</th>
-            <th>{% trans "Type" %}</th>
-            <th class="text-right">{% trans "Actions" %}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for member in consiglio_members %}
-          <tr>
-            <td>{{ member.nome_origine_cons|default:"-" }}</td>
-            <td>
-              {% if member.matricola_cons %}
-                <span class="badge badge-success">{% trans "Internal" %}</span>
-              {% else %}
-                <span class="badge badge-info">{% trans "External" %}</span>
-              {% endif %}
-            </td>
-            <td class="text-right">
-              {% if not is_readonly %}
-              <a href="{% url 'advanced-training:management:consiglio-interno-edit' master_id=master.pk consiglio_id=member.pk %}" 
-                 class="btn btn-primary btn-xs">
-                <svg class="icon icon-xs icon-white">
-                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                </svg> {% trans "Edit" %}
-              </a>
-              <a href="" 
-                 class="btn btn-danger btn-xs"
-                 data-toggle="modal"
-                 data-target="#delete_member_{{ member.pk }}">
-                <svg class="icon icon-xs icon-white">
-                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                </svg> {% trans "Remove" %}
-              </a>
-              {% endif %}
-            </td>
-          </tr>
-          
-          <!-- Modal conferma eliminazione -->
-          <div class="modal fade"
-               tabindex="-1"
-               role="dialog"
-               id="delete_member_{{ member.pk }}">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">
-                    {% trans "Confirm" %}
-                  </h5>
-                  <button class="close"
-                          type="button"
-                          data-dismiss="modal"
-                          aria-label="Close">
-                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                    </svg>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <p>
-                    {% trans "Do you want to delete the selected council member?" %}
-                  </p>
-                  <p class="font-weight-bold">{{ member.nome_origine_cons }}</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">
-                    {% trans 'Cancel' %}
-                  </button>
-                  <a class="btn btn-danger btn-sm" 
-                     href="{% url 'advanced-training:management:consiglio-interno-delete' master_id=master.pk consiglio_id=member.pk %}">
-                    {% trans 'Yes, proceed' %}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      <div class="alert alert-info" role="alert">
-        <i class="fas fa-info-circle"></i>
-        {% trans "No internal council members added yet." %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0">
+    <i class="fas fa-users mr-2"></i>
+    Consiglio Scientifico Interno
+  </h5>
+  {% if not is_readonly %}
+  <a href="{% url 'advanced-training:management:consiglio-interno-new' master_id=master.pk %}"
+     class="btn btn-sm btn-primary">
+    <i class="fas fa-plus"></i> Aggiungi
+  </a>
+  {% endif %}
+</div>
+
+{% if consiglio_members %}
+<div id="accordion-cons-interno">
+  {% for member in consiglio_members %}
+
+  <div
+    style="
+      border: 1px solid #dee2e6;
+      border-radius: 0.4rem;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    "
+  >
+    <!-- HEADER -->
+    <div
+      style="
+        cursor: pointer;
+        pointer-events: auto !important;
+        background: #fff;
+        padding: 0.55rem 1rem;
+      "
+      onclick="toggleAccordionConsInterno('cl-ci-{{ forloop.counter }}', this)"
+      class="d-flex justify-content-between align-items-center"
+    >
+      <strong style="font-size: 0.9rem">
+        {{ member.nome_origine_cons|default:"—" }}
+      </strong>
+
+      <div class="d-flex align-items-center" style="gap: 0.4rem">
+        {% if member.matricola_cons %}
+        <span class="badge badge-success" style="font-size: 0.75rem">
+          {% trans "Interno" %}
+        </span>
+        {% else %}
+        <span class="badge badge-info" style="font-size: 0.75rem">
+          {% trans "Esterno" %}
+        </span>
+        {% endif %}
+        {% if not is_readonly %}
+        <a
+          href="{% url 'advanced-training:management:consiglio-interno-edit' master_id=master.pk consiglio_id=member.pk %}"
+          class="btn btn-sm btn-outline-primary py-0 px-2"
+          onclick="event.stopPropagation()"
+          style="pointer-events: auto !important; font-size: 0.75rem"
+          title="{% trans 'Modifica' %}"
+        >
+          <i class="fas fa-edit fa-sm"></i>
+        </a>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger py-0 px-2"
+          onclick="event.stopPropagation(); event.preventDefault(); $('#del-ci-{{ member.pk }}').modal('show');"
+          style="pointer-events: auto !important; font-size: 0.75rem"
+          title="{% trans 'Elimina' %}"
+        >
+          <i class="fas fa-trash-alt fa-sm"></i>
+        </button>
+        {% endif %}
+
+        <span
+          style="
+            font-size: 0.75rem;
+            color: #6c757d;
+            white-space: nowrap;
+            user-select: none;
+          "
+        >
+          Dettagli&nbsp;
+          <i
+            class="fas fa-chevron-down acc-chevron"
+            style="transition: transform 0.2s; font-size: 0.6rem"
+          ></i>
+        </span>
       </div>
-      {% endif %}
-      
-      {% if not is_readonly %}
-      <a href="{% url 'advanced-training:management:consiglio-interno-new' master_id=master.pk %}" 
-         class="btn btn-block btn-success">
-        <svg class="icon icon-xs icon-white">
-          <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-        </svg> {% trans "Add new member" %}
-      </a>
-      {% endif %}
+    </div>
+
+    <!-- BODY -->
+    <div
+      id="cl-ci-{{ forloop.counter }}"
+      style="
+        display: none;
+        background: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        padding: 0.75rem 1rem;
+      "
+    >
+      <div class="row" style="font-size: 0.85rem">
+        <div class="col-6 col-md-4 mb-2">
+          <small
+            class="text-uppercase text-muted d-block"
+            style="font-size: 0.65rem; letter-spacing: 0.05em"
+          >
+            Nome e Cognome
+          </small>
+          {{ member.nome_origine_cons|default:"—" }}
+        </div>
+        <div class="col-6 col-md-4 mb-2">
+          <small
+            class="text-uppercase text-muted d-block"
+            style="font-size: 0.65rem; letter-spacing: 0.05em"
+          >
+            Tipologia
+          </small>
+          {% if member.matricola_cons %}
+          <span class="text-success">
+            <i class="fas fa-university"></i> {% trans "Personale interno" %}
+          </span>
+          {% else %}
+          <span class="text-info">
+            <i class="fas fa-external-link-alt"></i> {% trans "Membro esterno" %}
+          </span>
+          {% endif %}
+        </div>
+        {% if member.matricola_cons %}
+        <div class="col-6 col-md-4 mb-2">
+          <small
+            class="text-uppercase text-muted d-block"
+            style="font-size: 0.65rem; letter-spacing: 0.05em"
+          >
+            Matricola
+          </small>
+          {{ member.matricola_cons.matricola|default:"—" }}
+        </div>
+        {% endif %}
+      </div>
     </div>
   </div>
+
+  <!-- Modale conferma eliminazione -->
+  {% if not is_readonly %}
+  <div class="modal fade" id="del-ci-{{ member.pk }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{% trans "Conferma eliminazione" %}</h5>
+          <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <p>{% trans "Sei sicuro di voler rimuovere il seguente membro?" %}</p>
+          <p class="font-weight-bold">{{ member.nome_origine_cons }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">
+            {% trans "Annulla" %}
+          </button>
+          <a class="btn btn-danger btn-sm"
+             href="{% url 'advanced-training:management:consiglio-interno-delete' master_id=master.pk consiglio_id=member.pk %}">
+            {% trans "Sì, elimina" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% endfor %}
 </div>
+
+{% else %}
+<div class="alert alert-light border text-center py-3">
+  <i class="fas fa-inbox fa-2x text-muted mb-2 d-block"></i>
+  <span class="text-muted">{% trans "Nessun membro del consiglio scientifico interno." %}</span>
+</div>
+{% endif %}
+
+<script>
+  function toggleAccordionConsInterno(bodyId, headerEl) {
+    var body = document.getElementById(bodyId);
+    if (!body) return;
+    var chevron = headerEl.querySelector(".acc-chevron");
+    var isOpen = body.style.display === "block";
+    body.style.display = isOpen ? "none" : "block";
+    if (chevron)
+      chevron.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
+  }
+</script>

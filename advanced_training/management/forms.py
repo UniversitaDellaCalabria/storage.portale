@@ -57,7 +57,6 @@ class MasterDatiBaseForm(forms.ModelForm):
             "project_work",
             "modalita_svolgimento_prova_finale",
             "numero_moduli",
-            "nome_origine_direttore_scientifico",
             "path_piano_finanziario",
             "path_doc_delibera",
         ]
@@ -116,16 +115,15 @@ class MasterDatiBaseForm(forms.ModelForm):
             "project_work": "Project Work",
             "modalita_svolgimento_prova_finale": "Modalità svolgimento prova finale",
             "numero_moduli": "Numero moduli",
-            "nome_origine_direttore_scientifico": "Nome direttore scientifico",
             "path_piano_finanziario": "Piano finanziario (allegato)",
             "path_doc_delibera": "Delibera (allegato)",
         }
 
     def __init__(self, *args, allowed_department_codes=None, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         if allowed_department_codes:
-            self.fields['dipartimento_riferimento'].queryset = (
+            self.fields["dipartimento_riferimento"].queryset = (
                 DidatticaDipartimento.objects.filter(
                     dip_cod__in=allowed_department_codes
                 )
@@ -327,4 +325,13 @@ class AltaFormazioneStatusForm(forms.ModelForm):
         fields = ["motivazione"]
         labels = {
             "motivazione": "Motivazione",
+        }
+
+
+class DirettoreScientificoEsternoForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazioneDatiBase
+        fields = ["nome_origine_direttore_scientifico"]
+        labels = {
+            "nome_origine_direttore_scientifico": "Nome e Cognome",
         }

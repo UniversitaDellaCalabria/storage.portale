@@ -25,6 +25,7 @@ from advanced_training.management.forms import (
     ChoosenPersonForm,
     ConsiglioInternoEsternoForm,
     ConsiglioScientificoEsternoFormSet,
+    DirettoreScientificoEsternoForm,
     IncaricoDidatticoFormSet,
     MasterDatiBaseForm,
     PartnerFormSet,
@@ -853,6 +854,94 @@ def advancedtraining_proponente_edit(request, pk):
                     kwargs={"pk": pk},
                 ): master.titolo_it,
                 "#": _("Proponente"),
+            },
+        },
+    )
+
+
+@login_required
+def advancedtraining_direttore_edit(request, pk):
+    master = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
+
+    old_label = None
+    initial = {}
+
+    if master.matricola_direttore_scientifico:
+        staff = master.matricola_direttore_scientifico
+        old_label = f"{staff.cognome} {staff.nome}"
+        initial = {"choosen_person": encrypt(staff.matricola)}
+    else:
+        old_label = master.nome_origine_direttore_scientifico or ""
+        initial = {
+            "nome_origine_direttore_scientifico": master.nome_origine_direttore_scientifico,
+        }
+
+    external_form = DirettoreScientificoEsternoForm(initial=initial)
+    internal_form = ChoosenPersonForm(initial=initial, required=True)
+
+    if request.POST:
+        if request.POST.get("choosen_person"):
+            internal_form = ChoosenPersonForm(data=request.POST, required=True)
+            form = internal_form
+        else:
+            external_form = DirettoreScientificoEsternoForm(data=request.POST)
+            form = external_form
+
+        if form.is_valid():
+            if form.cleaned_data.get("choosen_person"):
+                member = get_object_or_404(
+                    Personale,
+                    matricola=get_personale_matricola(
+                        form.cleaned_data["choosen_person"]
+                    ),
+                )
+                master.matricola_direttore_scientifico = member
+                master.nome_origine_direttore_scientifico = (
+                    f"{member.cognome} {member.nome}"
+                )
+            else:
+                master.matricola_direttore_scientifico = None
+                master.nome_origine_direttore_scientifico = form.cleaned_data[
+                    "nome_origine_direttore_scientifico"
+                ]
+
+            master.dt_mod = timezone.now()
+            master.user_mod_id = request.user.id
+            master.save()
+
+            messages.success(request, _("Direttore scientifico salvato con successo."))
+            return redirect(
+                "advanced-training:management:advanced-training-detail", pk=pk
+            )
+
+        for k, v in form.errors.items():
+            messages.error(request, f"<b>{form.fields[k].label}</b>: {v}")
+
+    return render(
+        request,
+        "proponente.html",  # reuses the same template
+        {
+            "master": master,
+            "choosen_person": old_label,
+            "external_form": external_form,
+            "internal_form": internal_form,
+            "item_label": _("Direttore Scientifico"),
+            "edit": bool(
+                master.matricola_direttore_scientifico
+                or master.nome_origine_direttore_scientifico
+            ),
+            "url": reverse("teachers:apiv1:teachers-list"),
+            "including": "blocks/crud_teacherslist.html",
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Direttore Scientifico"),
             },
         },
     )

@@ -1,113 +1,149 @@
 {% load i18n %}
 
-<form method="post" novalidate class="{% if is_readonly and not user_is_validator %}readonly{% endif %}">
-  {% csrf_token %}
-  
-  {% if form.management_form %}
-  <div style="display:none">{{ form.management_form }}</div>
-  
-  <div class="mb-3">
-    <p class="text-muted">
-      <i class="fas fa-info-circle"></i>
-      Totale record: <strong>{{ form.total_form_count }}</strong> | 
-      Record esistenti: <strong>{{ form.initial_form_count }}</strong> | 
-      Form vuoti disponibili: <strong>{{ form.extra }}</strong>
-    </p>
-  </div>
-  
-  {% if form.forms %}
-  <table class="table table-striped table-bordered">
-    <thead class="thead-light">
-      <tr>
-        <th style="width: 25%">Nome *</th>
-        <th style="width: 25%">Ruolo</th>
-        <th style="width: 35%">Ente</th>
-        <th style="width: 15%" class="text-center">Elimina</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for f in form %}
-      <tr class="formset-row {% if f.instance.pk %}existing-row{% else %}new-row{% endif %}">
-        <td style="display:none;">
-          {{ f.id }}
-          {{ f.alta_formazione_dati_base }}
-        </td>
-        <td>{{ f.nome_cons }}</td>
-        <td>{{ f.ruolo_cons }}</td>
-        <td>{{ f.ente_cons }}</td>
-        <td class="text-center">
-          {% if not is_readonly or user_is_validator %}
-            {{ f.DELETE }}
-          {% else %}
-            <span class="text-muted">—</span>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  
-  {% if not is_readonly or user_is_validator %}
-  <button type="button" class="btn btn-sm btn-secondary mb-3" id="add-more-esterno">
-    <i class="fas fa-plus"></i> Aggiungi membro
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0">
+    <i class="fas fa-user-tie mr-2"></i>
+    Consiglio Scientifico Esterno
+  </h5>
+  {% if not is_readonly %}
+  <button type="button" class="btn btn-sm btn-primary">
+    <i class="fas fa-plus"></i>
+    Aggiungi
   </button>
   {% endif %}
-  
-  {% else %}
-  <div class="alert alert-info">
-    <i class="fas fa-info-circle"></i>
-    Nessun membro del consiglio scientifico esterno presente.
-  </div>
-  {% endif %}
-  
-  {% else %}
-  <div class="alert alert-danger">
-    <i class="fas fa-exclamation-triangle"></i>
-    <strong>Errore:</strong> Management form non disponibile. Contatta l'amministratore.
-  </div>
-  {% endif %}
+</div>
 
-  <input type="hidden" name="tab_form_dict_key" value="Consiglio Scientifico Esterno">
+{% with items=form.forms %} {% if items %}
+<div id="accordion-cons-esterno">
+  {% for f in items %}{% if f.instance.pk %}
 
-  <div class="mt-4 d-flex justify-content-between">
-    {% if not is_readonly or user_is_validator %}
-    <button type="submit" class="btn btn-primary">
-      <i class="fas fa-save"></i> Salva Consiglio Scientifico Esterno
-    </button>
-    {% endif %}
+  <div
+    style="
+      border: 1px solid #dee2e6;
+      border-radius: 0.4rem;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    "
+  >
+    <!-- HEADER -->
+    <div
+      style="
+        cursor: pointer;
+        pointer-events: auto !important;
+        background: #fff;
+        padding: 0.55rem 1rem;
+      "
+      onclick="toggleAccordionConsEsterno('cl-ce-{{ forloop.counter }}', this)"
+      class="d-flex justify-content-between align-items-center"
+    >
+      <strong style="font-size: 0.9rem">
+        {{ f.instance.nome_cons|default:"Nome non specificato" }}
+      </strong>
 
-    <a href="{% url 'advanced-training:management:advanced-training' %}" 
-       class="btn btn-outline-secondary btn-sm">
-      <i class="fas fa-arrow-left"></i> {% trans "Torna alla lista" %}
-    </a>
+      <div class="d-flex align-items-center" style="gap: 0.4rem">
+        {% if f.instance.ente_cons %}
+        <span class="badge badge-secondary" style="font-size: 0.75rem">
+          {{ f.instance.ente_cons }}
+        </span>
+        {% endif %}
+        {% if not is_readonly %}
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary py-0 px-2"
+          onclick="event.stopPropagation()"
+          style="pointer-events: auto !important; font-size: 0.75rem"
+          title="Modifica"
+        >
+          <i class="fas fa-edit fa-sm"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger py-0 px-2"
+          onclick="event.stopPropagation()"
+          style="pointer-events: auto !important; font-size: 0.75rem"
+          title="Elimina"
+        >
+          <i class="fas fa-trash-alt fa-sm"></i>
+        </button>
+        {% endif %}
+
+        <span
+          style="
+            font-size: 0.75rem;
+            color: #6c757d;
+            white-space: nowrap;
+            user-select: none;
+          "
+        >
+          Dettagli&nbsp;
+          <i
+            class="fas fa-chevron-down acc-chevron"
+            style="transition: transform 0.2s; font-size: 0.6rem"
+          ></i>
+        </span>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div
+      id="cl-ce-{{ forloop.counter }}"
+      style="
+        display: none;
+        background: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        padding: 0.75rem 1rem;
+      "
+    >
+      <div class="row" style="font-size: 0.85rem">
+        <div class="col-6 col-md-4 mb-2">
+          <small
+            class="text-uppercase text-muted d-block"
+            style="font-size: 0.65rem; letter-spacing: 0.05em"
+          >
+            Nome
+          </small>
+          {{ f.instance.nome_cons|default:"—" }}
+        </div>
+        <div class="col-6 col-md-4 mb-2">
+          <small
+            class="text-uppercase text-muted d-block"
+            style="font-size: 0.65rem; letter-spacing: 0.05em"
+          >
+            Ruolo
+          </small>
+          {{ f.instance.ruolo_cons|default:"—" }}
+        </div>
+        <div class="col-6 col-md-4 mb-2">
+          <small
+            class="text-uppercase text-muted d-block"
+            style="font-size: 0.65rem; letter-spacing: 0.05em"
+          >
+            Ente
+          </small>
+          {{ f.instance.ente_cons|default:"—" }}
+        </div>
+      </div>
+    </div>
   </div>
-</form>
+
+  {% endif %}{% endfor %}
+</div>
+
+{% else %}
+<div class="alert alert-light border text-center py-3">
+  <i class="fas fa-inbox fa-2x text-muted mb-2 d-block"></i>
+  <span class="text-muted">Nessun membro del consiglio scientifico esterno.</span>
+</div>
+{% endif %} {% endwith %}
 
 <script>
-  $(document).ready(function() {
-    // Nascondi le righe vuote tranne la prima
-    $('.new-row').each(function(index) {
-      if (index > 0) $(this).hide();
-    });
-    
-    // Bottone aggiungi
-    $('#add-more-esterno').on('click', function() {
-      var hiddenRows = $('.new-row:hidden');
-      if (hiddenRows.length > 0) {
-        hiddenRows.first().show();
-      } else {
-        alert('Nessuna riga disponibile. Salva il form per aggiungerne altre.');
-      }
-    });
-    
-    // Gestione checkbox DELETE
-    $('input[id$="-DELETE"]').on('change', function() {
-      var row = $(this).closest('tr');
-      if ($(this).is(':checked')) {
-        row.addClass('table-danger').find('input:not([id$="-DELETE"]), select, textarea').prop('disabled', true);
-      } else {
-        row.removeClass('table-danger').find('input, select, textarea').prop('disabled', false);
-      }
-    });
-  });
+  function toggleAccordionConsEsterno(bodyId, headerEl) {
+    var body = document.getElementById(bodyId);
+    if (!body) return;
+    var chevron = headerEl.querySelector(".acc-chevron");
+    var isOpen = body.style.display === "block";
+    body.style.display = isOpen ? "none" : "block";
+    if (chevron)
+      chevron.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
+  }
 </script>

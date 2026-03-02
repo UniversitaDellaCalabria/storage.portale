@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    advancedtraining_direttore_edit,
     advancedtraining_duplicate,
     advancedtraining_info_edit,
     advancedtraining_masters,
@@ -66,5 +67,10 @@ urlpatterns = [
         "advanced-training/<int:pk>/proponente/",
         advancedtraining_proponente_edit,
         name="advanced-training-proponente-edit",
+    ),
+    path(
+        "<int:pk>/direttore-scientifico/",
+        advancedtraining_direttore_edit,
+        name="advanced-training-direttore-edit",
     ),
 ]

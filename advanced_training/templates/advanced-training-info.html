@@ -203,6 +203,48 @@
             </div>
           </form>
 
+          <!-- SEZIONE DIRETTORE SCIENTIFICO -->
+          {% if master.pk %}
+          <hr class="mt-5">
+          <div class="mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="mb-0">
+                <i class="fas fa-user-tie mr-2"></i> {% trans "Direttore Scientifico" %}
+              </h5>
+              {% if not is_readonly %}
+              <a href="{% url 'advanced-training:management:advanced-training-direttore-edit' master.pk %}"
+                class="btn btn-sm btn-outline-primary">
+                {% if master.matricola_direttore_scientifico or master.nome_origine_direttore_scientifico %}
+                  <i class="fas fa-edit"></i> {% trans "Modifica direttore scientifico" %}
+                {% else %}
+                  <i class="fas fa-plus"></i> {% trans "Aggiungi direttore scientifico" %}
+                {% endif %}
+              </a>
+              {% endif %}
+            </div>
+
+            {% if master.matricola_direttore_scientifico or master.nome_origine_direttore_scientifico %}
+            <div class="card border-left-primary shadow-sm p-3">
+              <div class="row">
+                <div class="col-md-4">
+                  <small class="text-muted d-block">{% trans "Matricola" %}</small>
+                  <strong>{{ master.matricola_direttore_scientifico|default:"—" }}</strong>
+                </div>
+                <div class="col-md-8">
+                  <small class="text-muted d-block">{% trans "Nome e Cognome" %}</small>
+                  <strong>{{ master.nome_origine_direttore_scientifico|default:"—" }}</strong>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="alert alert-light border" role="alert">
+              <i class="fas fa-info-circle text-muted mr-1"></i>
+              <span class="text-muted">{% trans "Nessun direttore scientifico inserito." %}</span>
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+
           <!-- SEZIONE PROPONENTE -->
           {% if master.pk %}
           <hr class="mt-5">
