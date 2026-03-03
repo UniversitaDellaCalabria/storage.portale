@@ -24,18 +24,26 @@ from advanced_training.management.decorators import (
 from advanced_training.management.forms import (
     ChoosenPersonForm,
     ConsiglioInternoEsternoForm,
+    ConsiglioScientificoEsternoForm,
     ConsiglioScientificoEsternoFormSet,
     DirettoreScientificoEsternoForm,
+    IncaricoDidatticoForm,
     IncaricoDidatticoFormSet,
     MasterDatiBaseForm,
+    PartnerForm,
     PartnerFormSet,
+    PianoDidatticoForm,
     PianoDidatticoFormSet,
     ProponenteEsternoForm,
 )
 from advanced_training.models import (
+    AltaFormazioneConsiglioScientificoEsterno,
     AltaFormazioneConsiglioScientificoInterno,
     AltaFormazioneDatiBase,
     AltaFormazioneFinestraTemporale,
+    AltaFormazioneIncaricoDidattico,
+    AltaFormazionePartner,
+    AltaFormazionePianoDidattico,
     AltaFormazioneStatus,
     AltaFormazioneStatusStorico,
 )
@@ -963,4 +971,590 @@ def advancedtraining_direttore_edit(request, pk):
                 "#": _("Direttore Scientifico"),
             },
         },
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def incarico_didattico_new(
+    request, pk, advanced_training=None, my_offices=None, is_validator=False
+):
+    master = advanced_training
+    form = IncaricoDidatticoForm()
+
+    if request.method == "POST":
+        form = IncaricoDidatticoForm(data=request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.alta_formazione_dati_base = master
+            obj.dt_mod = timezone.now()
+            obj.user_mod_id = request.user.id
+            obj.save()
+
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=ADDITION,
+                msg=f"Aggiunto incarico didattico: {obj.modulo}",
+            )
+            messages.success(request, _("Incarico didattico aggiunto con successo"))
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Incarichi Didattici"
+            )
+
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, f"<b>{form.fields[field].label}</b>: {error}")
+
+    return render(
+        request,
+        "forms/incarico_didattico_form.html",
+        {
+            "master": master,
+            "form": form,
+            "is_edit": False,
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Nuovo Incarico Didattico"),
+            },
+        },
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def incarico_didattico_edit(
+    request,
+    pk,
+    incarico_id,
+    advanced_training=None,
+    my_offices=None,
+    is_validator=False,
+):
+    master = advanced_training
+    incarico = get_object_or_404(
+        AltaFormazioneIncaricoDidattico,
+        pk=incarico_id,
+        alta_formazione_dati_base=master,
+    )
+    form = IncaricoDidatticoForm(instance=incarico)
+
+    if request.method == "POST":
+        form = IncaricoDidatticoForm(data=request.POST, instance=incarico)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.dt_mod = timezone.now()
+            obj.user_mod_id = request.user.id
+            obj.save()
+
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=CHANGE,
+                msg=f"Modificato incarico didattico: {obj.modulo}",
+            )
+            messages.success(request, _("Incarico didattico modificato con successo"))
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Incarichi Didattici"
+            )
+
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, f"<b>{form.fields[field].label}</b>: {error}")
+
+    return render(
+        request,
+        "forms/incarico_didattico_form.html",
+        {
+            "master": master,
+            "form": form,
+            "incarico": incarico,
+            "is_edit": True,
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Modifica Incarico Didattico"),
+            },
+        },
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def incarico_didattico_delete(
+    request,
+    pk,
+    incarico_id,
+    advanced_training=None,
+    my_offices=None,
+    is_validator=False,
+):
+    master = advanced_training
+    incarico = get_object_or_404(
+        AltaFormazioneIncaricoDidattico,
+        pk=incarico_id,
+        alta_formazione_dati_base=master,
+    )
+
+    modulo_label = incarico.modulo or f"#{incarico.pk}"
+    incarico.delete()
+
+    log_action(
+        user=request.user,
+        obj=master,
+        flag=DELETION,
+        msg=f"Eliminato incarico didattico: {modulo_label}",
+    )
+    messages.success(request, _("Incarico didattico eliminato con successo"))
+    return redirect(
+        f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Incarichi Didattici"
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def piano_didattico_new(
+    request, pk, advanced_training=None, my_offices=None, is_validator=False
+):
+    master = advanced_training
+    form = PianoDidatticoForm()
+
+    if request.method == "POST":
+        form = PianoDidatticoForm(data=request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.alta_formazione_dati_base = master
+            obj.dt_mod = timezone.now()
+            obj.user_mod_id = request.user.id
+            obj.save()
+
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=ADDITION,
+                msg=f"Aggiunto modulo piano didattico: {obj.modulo}",
+            )
+            messages.success(request, _("Modulo piano didattico aggiunto con successo"))
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Piano Didattico"
+            )
+
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, f"<b>{form.fields[field].label}</b>: {error}")
+
+    return render(
+        request,
+        "forms/piano_didattico_form.html",
+        {
+            "master": master,
+            "form": form,
+            "is_edit": False,
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Nuovo Modulo Piano Didattico"),
+            },
+        },
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def piano_didattico_edit(
+    request,
+    pk,
+    modulo_id,
+    advanced_training=None,
+    my_offices=None,
+    is_validator=False,
+):
+    master = advanced_training
+    modulo = get_object_or_404(
+        AltaFormazionePianoDidattico,  # ← adatta al nome reale del tuo modello
+        pk=modulo_id,
+        alta_formazione_dati_base=master,
+    )
+    form = PianoDidatticoForm(instance=modulo)
+
+    if request.method == "POST":
+        form = PianoDidatticoForm(data=request.POST, instance=modulo)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.dt_mod = timezone.now()
+            obj.user_mod_id = request.user.id
+            obj.save()
+
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=CHANGE,
+                msg=f"Modificato modulo piano didattico: {obj.modulo}",
+            )
+            messages.success(
+                request, _("Modulo piano didattico modificato con successo")
+            )
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Piano Didattico"
+            )
+
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, f"<b>{form.fields[field].label}</b>: {error}")
+
+    return render(
+        request,
+        "forms/piano_didattico_form.html",
+        {
+            "master": master,
+            "form": form,
+            "modulo": modulo,
+            "is_edit": True,
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Modifica Modulo Piano Didattico"),
+            },
+        },
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def piano_didattico_delete(
+    request,
+    pk,
+    modulo_id,
+    advanced_training=None,
+    my_offices=None,
+    is_validator=False,
+):
+    master = advanced_training
+    modulo = get_object_or_404(
+        AltaFormazionePianoDidattico,
+        pk=modulo_id,
+        alta_formazione_dati_base=master,
+    )
+
+    modulo_label = modulo.modulo or f"#{modulo.pk}"
+    modulo.delete()
+
+    log_action(
+        user=request.user,
+        obj=master,
+        flag=DELETION,
+        msg=f"Eliminato modulo piano didattico: {modulo_label}",
+    )
+    messages.success(request, _("Modulo piano didattico eliminato con successo"))
+    return redirect(
+        f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Piano Didattico"
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def partner_new(
+    request, pk, advanced_training=None, my_offices=None, is_validator=False
+):
+    master = advanced_training
+    form = PartnerForm()
+
+    if request.method == "POST":
+        form = PartnerForm(data=request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.alta_formazione_dati_base = master
+            obj.dt_mod = timezone.now()
+            obj.user_mod_id = request.user.id
+            obj.save()
+
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=ADDITION,
+                msg=f"Aggiunto partner: {obj.denominazione}",
+            )
+            messages.success(request, _("Partner aggiunto con successo"))
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Partner"
+            )
+
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, f"<b>{form.fields[field].label}</b>: {error}")
+
+    return render(
+        request,
+        "forms/partner_form.html",
+        {
+            "master": master,
+            "form": form,
+            "is_edit": False,
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Nuovo Partner"),
+            },
+        },
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def partner_edit(
+    request, pk, partner_id, advanced_training=None, my_offices=None, is_validator=False
+):
+    master = advanced_training
+    partner = get_object_or_404(
+        AltaFormazionePartner,
+        pk=partner_id,
+        alta_formazione_dati_base=master,
+    )
+    form = PartnerForm(instance=partner)
+
+    if request.method == "POST":
+        form = PartnerForm(data=request.POST, instance=partner)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.dt_mod = timezone.now()
+            obj.user_mod_id = request.user.id
+            obj.save()
+
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=CHANGE,
+                msg=f"Modificato partner: {obj.denominazione}",
+            )
+            messages.success(request, _("Partner modificato con successo"))
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Partner"
+            )
+
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, f"<b>{form.fields[field].label}</b>: {error}")
+
+    return render(
+        request,
+        "forms/partner_form.html",
+        {
+            "master": master,
+            "form": form,
+            "partner": partner,
+            "is_edit": True,
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Modifica Partner"),
+            },
+        },
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def partner_delete(
+    request, pk, partner_id, advanced_training=None, my_offices=None, is_validator=False
+):
+    master = advanced_training
+    partner = get_object_or_404(
+        AltaFormazionePartner,
+        pk=partner_id,
+        alta_formazione_dati_base=master,
+    )
+
+    denominazione_label = partner.denominazione or f"#{partner.pk}"
+    partner.delete()
+
+    log_action(
+        user=request.user,
+        obj=master,
+        flag=DELETION,
+        msg=f"Eliminato partner: {denominazione_label}",
+    )
+    messages.success(request, _("Partner eliminato con successo"))
+    return redirect(
+        f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Partner"
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def consiglio_esterno_new(
+    request, pk, advanced_training=None, my_offices=None, is_validator=False
+):
+    master = advanced_training
+    form = ConsiglioScientificoEsternoForm()
+
+    if request.method == "POST":
+        form = ConsiglioScientificoEsternoForm(data=request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.alta_formazione_dati_base = master
+            obj.dt_mod = timezone.now()
+            obj.user_mod_id = request.user.id
+            obj.save()
+
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=ADDITION,
+                msg=f"Aggiunto membro consiglio esterno: {obj.nome_cons}",
+            )
+            messages.success(
+                request, _("Membro consiglio esterno aggiunto con successo")
+            )
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Consiglio Scientifico Esterno"
+            )
+
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, f"<b>{form.fields[field].label}</b>: {error}")
+
+    return render(
+        request,
+        "forms/consiglio_esterno_form.html",
+        {
+            "master": master,
+            "form": form,
+            "is_edit": False,
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Nuovo Membro Consiglio Esterno"),
+            },
+        },
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def consiglio_esterno_edit(
+    request, pk, cons_id, advanced_training=None, my_offices=None, is_validator=False
+):
+    master = advanced_training
+    membro = get_object_or_404(
+        AltaFormazioneConsiglioScientificoEsterno,
+        pk=cons_id,
+        alta_formazione_dati_base=master,
+    )
+    form = ConsiglioScientificoEsternoForm(instance=membro)
+
+    if request.method == "POST":
+        form = ConsiglioScientificoEsternoForm(data=request.POST, instance=membro)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.dt_mod = timezone.now()
+            obj.user_mod_id = request.user.id
+            obj.save()
+
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=CHANGE,
+                msg=f"Modificato membro consiglio esterno: {obj.nome_cons}",
+            )
+            messages.success(
+                request, _("Membro consiglio esterno modificato con successo")
+            )
+            return redirect(
+                f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Consiglio Scientifico Esterno"
+            )
+
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, f"<b>{form.fields[field].label}</b>: {error}")
+
+    return render(
+        request,
+        "forms/consiglio_esterno_form.html",
+        {
+            "master": master,
+            "form": form,
+            "membro": membro,
+            "is_edit": True,
+            "breadcrumbs": {
+                reverse("generics:dashboard"): _("Dashboard"),
+                reverse("advanced-training:management:advanced-training"): _(
+                    "Advanced Training"
+                ),
+                reverse(
+                    "advanced-training:management:advanced-training-detail",
+                    kwargs={"pk": pk},
+                ): master.titolo_it,
+                "#": _("Modifica Membro Consiglio Esterno"),
+            },
+        },
+    )
+
+
+@login_required
+@can_manage_advanced_training
+def consiglio_esterno_delete(
+    request, pk, cons_id, advanced_training=None, my_offices=None, is_validator=False
+):
+    master = advanced_training
+    membro = get_object_or_404(
+        AltaFormazioneConsiglioScientificoEsterno,
+        pk=cons_id,
+        alta_formazione_dati_base=master,
+    )
+
+    nome_label = membro.nome_cons or f"#{membro.pk}"
+    membro.delete()
+
+    log_action(
+        user=request.user,
+        obj=master,
+        flag=DELETION,
+        msg=f"Eliminato membro consiglio esterno: {nome_label}",
+    )
+    messages.success(request, _("Membro consiglio esterno eliminato con successo"))
+    return redirect(
+        f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Consiglio Scientifico Esterno"
     )

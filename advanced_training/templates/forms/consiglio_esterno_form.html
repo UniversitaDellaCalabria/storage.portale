@@ -1,0 +1,60 @@
+{% extends "storage_crud_base.html" %}
+{% load i18n %}
+
+{% block centered_container %}
+<h3 style="font-weight: lighter;" class="mb-4">
+  {% if is_edit %}
+    {% trans "Modifica membro Consiglio Scientifico Esterno per" %}
+  {% else %}
+    {% trans "Nuovo membro Consiglio Scientifico Esterno per" %}
+  {% endif %}
+  {{ master.titolo_it }}
+</h3>
+
+<div class="card-wrapper card-space">
+  <div class="card card-bg no-after">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="{{ form.nome_cons.id_for_label }}"><strong>{{ form.nome_cons.label }}</strong></label>
+          {{ form.nome_cons }}
+          {% if form.nome_cons.errors %}
+            <small class="text-danger">{{ form.nome_cons.errors|join:", " }}</small>
+          {% endif %}
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label for="{{ form.ruolo_cons.id_for_label }}"><strong>{{ form.ruolo_cons.label }}</strong></label>
+            {{ form.ruolo_cons }}
+            {% if form.ruolo_cons.errors %}
+              <small class="text-danger">{{ form.ruolo_cons.errors|join:", " }}</small>
+            {% endif %}
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="{{ form.ente_cons.id_for_label }}"><strong>{{ form.ente_cons.label }}</strong></label>
+            {{ form.ente_cons }}
+            {% if form.ente_cons.errors %}
+              <small class="text-danger">{{ form.ente_cons.errors|join:", " }}</small>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-3" style="gap: 0.5rem">
+          <a
+            href="{% url 'advanced-training:management:advanced-training-detail' master.pk %}?tab=Consiglio Scientifico Esterno"
+            class="btn btn-secondary"
+          >
+            <i class="fas fa-times mr-1"></i>{% trans "Annulla" %}
+          </a>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save mr-1"></i>{% trans "Salva" %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock centered_container %}

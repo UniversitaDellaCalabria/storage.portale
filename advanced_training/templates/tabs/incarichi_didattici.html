@@ -5,11 +5,11 @@
     <i class="fas fa-chalkboard-teacher mr-2"></i>
     Incarichi Didattici
   </h5>
-  {% if not is_readonly %}
-  <button type="button" class="btn btn-sm btn-primary">
-    <i class="fas fa-plus"></i>
+    {% if not is_readonly %}
+  
+  <a href="{% url 'advanced-training:management:incarico-didattico-new' master.pk %}" class="btn btn-sm btn-primary">
     Aggiungi
-  </button>
+  </a>
   {% endif %}
 </div>
 
@@ -46,24 +46,24 @@
           {{ f.instance.num_ore }} h
         </span>
         {% endif %} {% if not is_readonly %}
-        <button
-          type="button"
+        <a
+          href="{% url 'advanced-training:management:incarico-didattico-edit' master.pk f.instance.pk %}"
           class="btn btn-sm btn-outline-primary py-0 px-2"
           onclick="event.stopPropagation()"
-          style="pointer-events: auto !important; font-size: 0.75rem"
+          style="font-size:0.75rem"
           title="Modifica"
         >
           <i class="fas fa-edit fa-sm"></i>
-        </button>
-        <button
-          type="button"
+        </a>
+        <a
+          href="{% url 'advanced-training:management:incarico-didattico-delete' master.pk f.instance.pk %}"
           class="btn btn-sm btn-outline-danger py-0 px-2"
-          onclick="event.stopPropagation()"
-          style="pointer-events: auto !important; font-size: 0.75rem"
+          onclick="event.stopPropagation(); return confirm('Eliminare questo incarico?')"
+          style="font-size:0.75rem"
           title="Elimina"
         >
           <i class="fas fa-trash-alt fa-sm"></i>
-        </button>
+        </a>
         {% endif %}
 
         <span

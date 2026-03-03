@@ -10,12 +10,15 @@ from advanced_training.models import (
     AltaFormazioneStatusStorico,
 )
 from structures.models import DidatticaDipartimento
+
+
 class MasterDatiBaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         self.fields["data_inizio"].input_formats = ["%Y-%m-%d", "%d/%m/%Y"]
         self.fields["data_fine"].input_formats = ["%Y-%m-%d", "%d/%m/%Y"]
+
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
@@ -185,6 +188,16 @@ class MasterDatiBaseForm(forms.ModelForm):
 
 
 class PianoDidatticoForm(forms.ModelForm):
+    verifica_finale = forms.TypedChoiceField(
+        choices=[
+            (True, "Sì"),
+            (False, "No"),
+        ],
+        coerce=lambda x: x == "True",
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Verifica finale",
+    )
+
     class Meta:
         model = AltaFormazionePianoDidattico
         fields = ["modulo", "ssd", "num_ore", "cfu", "verifica_finale"]
@@ -334,3 +347,44 @@ class DirettoreScientificoEsternoForm(forms.ModelForm):
         labels = {
             "nome_origine_direttore_scientifico": "Nome e Cognome",
         }
+
+
+from advanced_training.models import AltaFormazioneIncaricoDidattico
+
+
+class IncaricoDidatticoForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazioneIncaricoDidattico
+        fields = ["modulo", "docente", "qualifica", "ente", "num_ore", "tipologia"]
+        widgets = {
+            "num_ore": forms.NumberInput(attrs={"min": 0, "step": 1}),
+        }
+        labels = {
+            "modulo": "Modulo",
+            "docente": "Docente",
+            "qualifica": "Qualifica",
+            "ente": "Ente",
+            "num_ore": "Numero Ore",
+            "tipologia": "Tipologia",
+        }
+
+
+class IncaricoDidatticoEsternoForm(forms.Form):
+    docente = forms.CharField(label="Docente", required=False)
+    qualifica = forms.CharField(label="Qualifica", required=False)
+    ente = forms.CharField(label="Ente", required=False)
+
+
+class ConsiglioScientificoEsternoForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazioneConsiglioScientificoEsterno
+        fields = ["nome_cons", "ruolo_cons", "ente_cons"]
+        labels = {
+            "nome_cons": "Nome e Cognome",
+            "ruolo_cons": "Ruolo",
+            "ente_cons": "Ente",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["nome_cons"].required = True

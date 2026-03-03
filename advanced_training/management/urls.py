@@ -9,9 +9,21 @@ from .views import (
     advancedtraining_proponente_edit,
     advancedtraining_status_change,
     advancedtraining_load_tab,
+    consiglio_esterno_delete,
+    consiglio_esterno_edit,
+    consiglio_esterno_new,
     consiglio_interno_new,
     consiglio_interno_edit,
     consiglio_interno_delete,
+    incarico_didattico_delete,
+    incarico_didattico_edit,
+    incarico_didattico_new,
+    partner_delete,
+    partner_edit,
+    partner_new,
+    piano_didattico_delete,
+    piano_didattico_edit,
+    piano_didattico_new,
 )
 
 app_name = "management"
@@ -49,19 +61,19 @@ urlpatterns = [
         name="advanced-training-load-tab",
     ),
     path(
-        'master/<int:master_id>/consiglio-interno/new/',
+        "master/<int:master_id>/consiglio-interno/new/",
         consiglio_interno_new,
-        name='consiglio-interno-new'
+        name="consiglio-interno-new",
     ),
     path(
-        'master/<int:master_id>/consiglio-interno/<int:consiglio_id>/edit/',
+        "master/<int:master_id>/consiglio-interno/<int:consiglio_id>/edit/",
         consiglio_interno_edit,
-        name='consiglio-interno-edit'
+        name="consiglio-interno-edit",
     ),
     path(
-        'master/<int:master_id>/consiglio-interno/<int:consiglio_id>/delete/',
+        "master/<int:master_id>/consiglio-interno/<int:consiglio_id>/delete/",
         consiglio_interno_delete,
-        name='consiglio-interno-delete'
+        name="consiglio-interno-delete",
     ),
     path(
         "advanced-training/<int:pk>/proponente/",
@@ -72,5 +84,61 @@ urlpatterns = [
         "<int:pk>/direttore-scientifico/",
         advancedtraining_direttore_edit,
         name="advanced-training-direttore-edit",
+    ),
+    path(
+        "advanced-training/<int:pk>/incarichi/new/",
+        incarico_didattico_new,
+        name="incarico-didattico-new",
+    ),
+    path(
+        "advanced-training/<int:pk>/incarichi/<int:incarico_id>/edit/",
+        incarico_didattico_edit,
+        name="incarico-didattico-edit",
+    ),
+    path(
+        "advanced-training/<int:pk>/incarichi/<int:incarico_id>/delete/",
+        incarico_didattico_delete,
+        name="incarico-didattico-delete",
+    ),
+    path(
+        "advanced-training/<int:pk>/piano-didattico/new/",
+        piano_didattico_new,
+        name="piano-didattico-new",
+    ),
+    path(
+        "advanced-training/<int:pk>/piano-didattico/<int:modulo_id>/edit/",
+        piano_didattico_edit,
+        name="piano-didattico-edit",
+    ),
+    path(
+        "advanced-training/<int:pk>/piano-didattico/<int:modulo_id>/delete/",
+        piano_didattico_delete,
+        name="piano-didattico-delete",
+    ),
+    path("<int:pk>/partner/new/", partner_new, name="partner-new"),
+    path(
+        "<int:pk>/partner/<int:partner_id>/edit/",
+        partner_edit,
+        name="partner-edit",
+    ),
+    path(
+        "<int:pk>/partner/<int:partner_id>/delete/",
+        partner_delete,
+        name="partner-delete",
+    ),
+    path(
+        "<int:pk>/consiglio-esterno/new/",
+        consiglio_esterno_new,
+        name="consiglio-esterno-new",
+    ),
+    path(
+        "<int:pk>/consiglio-esterno/<int:cons_id>/edit/",
+       consiglio_esterno_edit,
+        name="consiglio-esterno-edit",
+    ),
+    path(
+        "<int:pk>/consiglio-esterno/<int:cons_id>/delete/",
+        consiglio_esterno_delete,
+        name="consiglio-esterno-delete",
     ),
 ]

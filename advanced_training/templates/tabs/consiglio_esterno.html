@@ -6,33 +6,21 @@
     Consiglio Scientifico Esterno
   </h5>
   {% if not is_readonly %}
-  <button type="button" class="btn btn-sm btn-primary">
-    <i class="fas fa-plus"></i>
-    Aggiungi
-  </button>
+  <a href="{% url 'advanced-training:management:consiglio-esterno-new' master.pk %}"
+     class="btn btn-sm btn-primary">
+    <i class="fas fa-plus"></i> Aggiungi
+  </a>
   {% endif %}
 </div>
 
-{% with items=form.forms %} {% if items %}
+{% with items=form.forms %}{% if items %}
 <div id="accordion-cons-esterno">
   {% for f in items %}{% if f.instance.pk %}
 
-  <div
-    style="
-      border: 1px solid #dee2e6;
-      border-radius: 0.4rem;
-      overflow: hidden;
-      margin-bottom: 0.5rem;
-    "
-  >
+  <div style="border: 1px solid #dee2e6; border-radius: 0.4rem; overflow: hidden; margin-bottom: 0.5rem;">
     <!-- HEADER -->
     <div
-      style="
-        cursor: pointer;
-        pointer-events: auto !important;
-        background: #fff;
-        padding: 0.55rem 1rem;
-      "
+      style="cursor: pointer; pointer-events: auto !important; background: #fff; padding: 0.55rem 1rem;"
       onclick="toggleAccordionConsEsterno('cl-ce-{{ forloop.counter }}', this)"
       class="d-flex justify-content-between align-items-center"
     >
@@ -47,39 +35,29 @@
         </span>
         {% endif %}
         {% if not is_readonly %}
-        <button
-          type="button"
+        <a
+          href="{% url 'advanced-training:management:consiglio-esterno-edit' master.pk f.instance.pk %}"
           class="btn btn-sm btn-outline-primary py-0 px-2"
           onclick="event.stopPropagation()"
           style="pointer-events: auto !important; font-size: 0.75rem"
           title="Modifica"
         >
           <i class="fas fa-edit fa-sm"></i>
-        </button>
-        <button
-          type="button"
+        </a>
+        <a
+          href="{% url 'advanced-training:management:consiglio-esterno-delete' master.pk f.instance.pk %}"
           class="btn btn-sm btn-outline-danger py-0 px-2"
-          onclick="event.stopPropagation()"
+          onclick="event.stopPropagation(); return confirm('Eliminare questo membro?')"
           style="pointer-events: auto !important; font-size: 0.75rem"
           title="Elimina"
         >
           <i class="fas fa-trash-alt fa-sm"></i>
-        </button>
+        </a>
         {% endif %}
 
-        <span
-          style="
-            font-size: 0.75rem;
-            color: #6c757d;
-            white-space: nowrap;
-            user-select: none;
-          "
-        >
+        <span style="font-size: 0.75rem; color: #6c757d; white-space: nowrap; user-select: none;">
           Dettagli&nbsp;
-          <i
-            class="fas fa-chevron-down acc-chevron"
-            style="transition: transform 0.2s; font-size: 0.6rem"
-          ></i>
+          <i class="fas fa-chevron-down acc-chevron" style="transition: transform 0.2s; font-size: 0.6rem"></i>
         </span>
       </div>
     </div>
@@ -87,39 +65,19 @@
     <!-- BODY -->
     <div
       id="cl-ce-{{ forloop.counter }}"
-      style="
-        display: none;
-        background: #f8f9fa;
-        border-top: 1px solid #dee2e6;
-        padding: 0.75rem 1rem;
-      "
+      style="display: none; background: #f8f9fa; border-top: 1px solid #dee2e6; padding: 0.75rem 1rem;"
     >
       <div class="row" style="font-size: 0.85rem">
         <div class="col-6 col-md-4 mb-2">
-          <small
-            class="text-uppercase text-muted d-block"
-            style="font-size: 0.65rem; letter-spacing: 0.05em"
-          >
-            Nome
-          </small>
+          <small class="text-uppercase text-muted d-block" style="font-size: 0.65rem; letter-spacing: 0.05em">Nome</small>
           {{ f.instance.nome_cons|default:"—" }}
         </div>
         <div class="col-6 col-md-4 mb-2">
-          <small
-            class="text-uppercase text-muted d-block"
-            style="font-size: 0.65rem; letter-spacing: 0.05em"
-          >
-            Ruolo
-          </small>
+          <small class="text-uppercase text-muted d-block" style="font-size: 0.65rem; letter-spacing: 0.05em">Ruolo</small>
           {{ f.instance.ruolo_cons|default:"—" }}
         </div>
         <div class="col-6 col-md-4 mb-2">
-          <small
-            class="text-uppercase text-muted d-block"
-            style="font-size: 0.65rem; letter-spacing: 0.05em"
-          >
-            Ente
-          </small>
+          <small class="text-uppercase text-muted d-block" style="font-size: 0.65rem; letter-spacing: 0.05em">Ente</small>
           {{ f.instance.ente_cons|default:"—" }}
         </div>
       </div>
@@ -134,7 +92,7 @@
   <i class="fas fa-inbox fa-2x text-muted mb-2 d-block"></i>
   <span class="text-muted">Nessun membro del consiglio scientifico esterno.</span>
 </div>
-{% endif %} {% endwith %}
+{% endif %}{% endwith %}
 
 <script>
   function toggleAccordionConsEsterno(bodyId, headerEl) {
