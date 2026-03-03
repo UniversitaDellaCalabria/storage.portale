@@ -47,7 +47,7 @@ class AdvancedTrainingMastersFilter(filters.FilterSet):
     status = filters.CharFilter(
         method="filter_status",
         label="Status",
-        help_text="Filter by current status code (0=Bozza, 1=In Validazione, 2=Respinto, 3=Approvato, 4=Annullato).",
+        help_text="Filter by current status code (0=Bozza, 1=In Validazione, 2=Da Correggere, 3=Approvato, 4=Respinto).",
     )
 
     def filter_coursetype(self, queryset, name, value):

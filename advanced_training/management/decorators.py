@@ -60,11 +60,6 @@ def can_manage_advanced_training(func_to_decorate):
 
 
 def can_view_advanced_training(func_to_decorate):
-    """
-    Verifica se l'utente può visualizzare un master specifico.
-    I validatori vedono tutto; gli altri solo i master del loro dipartimento.
-    """
-
     @wraps(func_to_decorate)
     def wrapper(*args, **kwargs):
         request = args[0]
@@ -84,15 +79,26 @@ def can_view_advanced_training(func_to_decorate):
             if advanced_training.dipartimento_riferimento
             else None
         )
-        my_offices = kwargs.get("my_offices").filter(
+
+        my_offices = kwargs.get("my_offices")
+        same_dept_offices = my_offices.filter(
             office__organizational_structure__unique_code=department_code
         )
-        kwargs["my_offices"] = my_offices
 
-        if not my_offices.exists():
+        if same_dept_offices.exists():
+            kwargs["my_offices"] = same_dept_offices
+            return func_to_decorate(*args, **kwargs)
+
+        if my_offices.exists():
+            from advanced_training.management.views import get_current_status
+
+            current_status = get_current_status(advanced_training)
+            if current_status["cod"] == "3":
+                kwargs["my_offices"] = my_offices
+                return func_to_decorate(*args, **kwargs)
             return custom_message(request, _("Permission denied"))
 
-        return func_to_decorate(*args, **kwargs)
+        return custom_message(request, _("Permission denied"))
 
     return wrapper
 
