@@ -156,9 +156,9 @@
                                             <option value="">- {% trans 'Tutti' %} -</option>
                                             <option value="0" :selected="selected_status == '0'">{% trans "Bozza" %}</option>
                                             <option value="1" :selected="selected_status == '1'">{% trans "In Validazione" %}</option>
-                                            <option value="2" :selected="selected_status == '2'">{% trans "Respinto" %}</option>
-                                            <option value="3" :selected="selected_status == '3'">{% trans "Approvato" %}</option>
-                                            <option value="4" :selected="selected_status == '4'">{% trans "Annullato" %}</option>
+                                            <option value="2" :selected="selected_status == '2'">{% trans "Da Corregere" %}</option>
+                                            <option value="3" :selected="selected_status == '3'">{% trans "Respinto" %}</option>
+                                            <option value="4" :selected="selected_status == '4'">{% trans "Approvato" %}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -258,9 +258,15 @@
 
 {% block storage_block_bottom %}
 <div v-else-if="!is_loading && items.results !== undefined && items.results.length === 0">
-    <template v-if="selected_status !== '1'">
-        {% trans "No items here" %}
-    </template>
+    <div class="alert alert-info mt-3" role="alert">
+        <i class="fas fa-info-circle mr-2"></i>
+        <span v-if="items.empty_message">
+            [[ items.empty_message ]]
+        </span>
+        <span v-else>
+            {% trans "No items here" %}
+        </span>
+    </div>
 </div>
 {% endblock storage_block_bottom %}
 {% endblock content %}
@@ -299,7 +305,10 @@ selected_erogation: this.getItemFromSession("{{ id }}", 'erogation'),
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
 selected_year: this.getItemFromSession("{{ id }}", 'year') || '{{ ADVANCED_TRAINING_YEAR }}',
 selected_department: this.getItemFromSession("{{ id }}", 'department'),
-selected_status: this.getItemFromSession("{{ id }}", 'status') {% if is_validator %}|| '1'{% endif %},
+selected_status: this.getItemFromSession("{{ id }}", 'status')
+    {% if is_validator %}|| '1'
+    {% elif is_office_master %}|| '2'
+    {% endif %},
 
 master_types: [],
 erogations: [],
@@ -331,7 +340,14 @@ this.callErogations();
 this.callAvailableYears();
 this.callAvailableDepartments();
 
-this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
+// Imposta i default se non presenti in sessione
+if (!this.getItemFromSession("{{ id }}", 'year')) {
+    this.selected_year = '{{ ADVANCED_TRAINING_YEAR }}';
+}
+
+// get_form_paramenters salva in sessione e restituisce il dict,
+// encodeQueryData lo converte in stringa per la chiamata API
+this.parameters = {{ id }}_encodeQueryData({{ id }}_get_form_paramenters());
 {% endblock extra_mounted %}
 
 {% block extra_methods %}

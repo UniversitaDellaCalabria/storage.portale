@@ -154,6 +154,10 @@ def advancedtraining_masters(request):
     is_validator = offices_qs.filter(
         office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR
     ).exists()
+    is_office_master = (
+        not is_validator
+        and offices_qs.filter(office__name=OFFICE_ADVANCED_TRAINING).exists()
+    )
 
     return render(
         request,
@@ -166,6 +170,7 @@ def advancedtraining_masters(request):
             "url": reverse("advanced-training:apiv2:advanced-training-list"),
             "can_create": can_create,
             "is_validator": is_validator,
+            "is_office_master": is_office_master,
         },
     )
 
@@ -202,7 +207,7 @@ def advancedtraining_info_edit(
         not user_is_validator
         and current_status_cod in ("0", "2", None)
         and has_active_window
-        and user_has_same_department
+        and (user_has_same_department or not master.dipartimento_riferimento)
     )
 
     allowed_department_codes = None

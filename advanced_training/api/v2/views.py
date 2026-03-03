@@ -2,22 +2,19 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from drf_spectacular.utils import (
-    extend_schema,
-    extend_schema_view,
-)
-from .docs import descriptions
-from api_docs import responses
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
-from django.db.models import Prefetch
+from drf_spectacular.utils import extend_schema, extend_schema_view
+from django.db.models import Prefetch, Subquery, OuterRef, Q
 
+from .docs import descriptions
 from .filters import AdvancedTrainingMastersFilter
 from .serializers import (
     AdvancedTrainingMastersSerializer,
     AdvancedTrainingCourseTypesSerializer,
     ErogationModesSerializer,
 )
+from api_docs import responses
 from advanced_training.models import (
     AltaFormazioneAttivitaFormative,
     AltaFormazioneConsiglioScientificoEsterno,
@@ -31,14 +28,43 @@ from advanced_training.models import (
     AltaFormazioneTipoCorso,
     AltaFormazioneStatusStorico,
 )
-from structures.models import DidatticaDipartimento 
+from structures.models import DidatticaDipartimento
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from advanced_training.settings import (
     OFFICE_ADVANCED_TRAINING_VALIDATOR,
     OFFICE_ADVANCED_TRAINING,
     ADVANCED_TRAINING_YEAR,
 )
-from django.db.models import Q
+
+def _latest_status_subquery():
+    """Subquery che restituisce il status_cod più recente per ogni master."""
+    return (
+        AltaFormazioneStatusStorico.objects.filter(
+            id_alta_formazione_dati_base=OuterRef("pk")
+        )
+        .order_by("-data_status", "-dt_mod", "-id")
+        .values("id_alta_formazione_status__status_cod")[:1]
+    )
+
+
+def _filter_approved(queryset):
+    """Filtra solo i master approvati (status 3) o senza storico (default approvato)."""
+    return queryset.annotate(
+        _current_status=Subquery(_latest_status_subquery())
+    ).filter(Q(_current_status="3") | Q(_current_status__isnull=True))
+
+
+def _get_departments_for_masters():
+    """Restituisce i dipartimenti che hanno almeno un master."""
+    return (
+        DidatticaDipartimento.objects.filter(
+            dip_id__in=AltaFormazioneDatiBase.objects.values_list(
+                "dipartimento_riferimento", flat=True
+            ).distinct()
+        )
+        .values("dip_id", "dip_cod", "dip_des_it")
+        .order_by("dip_des_it")
+    )
 
 
 @extend_schema_view(
@@ -63,145 +89,218 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
     serializer_class = AdvancedTrainingMastersSerializer
     filterset_class = AdvancedTrainingMastersFilter
 
+    def _get_user_office_names(self, user):
+        return list(
+            OrganizationalStructureOfficeEmployee.objects.filter(
+                employee=user,
+                office__is_active=True,
+                office__organizational_structure__is_active=True,
+            ).values_list("office__name", flat=True)
+        )
+
+    def _get_default_status_for_offices(self, office_names):
+        if OFFICE_ADVANCED_TRAINING_VALIDATOR in office_names:
+            return "1"
+        if OFFICE_ADVANCED_TRAINING in office_names:
+            return "2"
+        return "3"
+
+    def _pks_with_status(self, queryset, status_cod):
+        """Restituisce i PK del queryset il cui status corrente è status_cod."""
+        return set(
+            queryset.annotate(_cs=Subquery(_latest_status_subquery()))
+            .filter(_cs=status_cod)
+            .values_list("pk", flat=True)
+        )
+    
     @action(detail=False, methods=["get"])
     def available_years(self, request):
-        """Restituisce gli anni disponibili per il filtro"""
+        """Restituisce gli anni disponibili per il filtro."""
         years = (
             AltaFormazioneDatiBase.objects.values_list("anno_erogazione", flat=True)
             .distinct()
             .order_by("-anno_erogazione")
         )
-        return Response({"results": [{"year": year} for year in years if year]})
+        return Response({"results": [{"year": y} for y in years if y]})
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def available_departments(self, request):
-        """Restituisce i dipartimenti disponibili per il filtro"""        
-        user = request.user
-        
-        # Se è superuser o validatore, mostra tutti i dipartimenti
-        if user.is_superuser:
-            departments = DidatticaDipartimento.objects.filter(
-                dip_id__in=AltaFormazioneDatiBase.objects.values_list('dipartimento_riferimento', flat=True).distinct()
-            ).values('dip_id', 'dip_cod', 'dip_des_it').order_by('dip_des_it')
-        else:
-            user_offices = OrganizationalStructureOfficeEmployee.objects.filter(
-                employee=user,
-                office__is_active=True,
-                office__organizational_structure__is_active=True,
-            )
-            user_offices_names = list(user_offices.values_list("office__name", flat=True))
-            
-            if OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names:
-                # Validatori vedono tutti i dipartimenti
-                departments = DidatticaDipartimento.objects.filter(
-                    dip_id__in=AltaFormazioneDatiBase.objects.values_list('dipartimento_riferimento', flat=True).distinct()
-                ).values('dip_id', 'dip_cod', 'dip_des_it').order_by('dip_des_it')
-            else:
-                # Utenti normali vedono tutti i dipartimenti che hanno almeno un master
-                departments = DidatticaDipartimento.objects.filter(
-                    dip_id__in=AltaFormazioneDatiBase.objects.values_list('dipartimento_riferimento', flat=True).distinct()
-                ).values('dip_id', 'dip_cod', 'dip_des_it').order_by('dip_des_it')
-        
-        return Response({
-            'results': [
-                {
-                    'id': dept['dip_id'],
-                    'code': dept['dip_cod'],
-                    'name': dept['dip_des_it']
-                }
-                for dept in departments
-            ]
-        })
+        """Restituisce i dipartimenti disponibili per il filtro."""
+        departments = _get_departments_for_masters()
+        return Response(
+            {
+                "results": [
+                    {"id": d["dip_id"], "code": d["dip_cod"], "name": d["dip_des_it"]}
+                    for d in departments
+                ]
+            }
+        )
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+
+        if (
+            not response.data.get("results")
+            and request.query_params.get("status") is None
+            and not request.user.is_superuser
+        ):
+            office_names = self._get_user_office_names(request.user)
+            default_status = self._get_default_status_for_offices(office_names)
+            response.data["empty_message"] = EMPTY_MESSAGES.get(default_status, "")
+
+        return response
 
     def get_queryset(self):
         user = self.request.user
-        queryset = (
+        base_qs = self._build_base_queryset()
+        base_qs = self._apply_year_filter(base_qs)
+
+        if user.is_superuser:
+            return base_qs
+
+        office_names = self._get_user_office_names(user)
+        status_param = self.request.query_params.get("status")
+
+        # Validatori: default → In Validazione (1)
+        if OFFICE_ADVANCED_TRAINING_VALIDATOR in office_names:
+            if status_param is None:
+                return base_qs.filter(pk__in=self._pks_with_status(base_qs, "1"))
+            return base_qs
+
+        # Utenti ufficio master
+        user_offices = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=user,
+            office__is_active=True,
+            office__organizational_structure__is_active=True,
+            office__name=OFFICE_ADVANCED_TRAINING,
+        )
+        if user_offices.exists():
+            return self._queryset_for_office_user(base_qs, user_offices, status_param)
+
+        # Utenti senza ufficio master: solo approvati
+        approved_pks = set(_filter_approved(base_qs).values_list("pk", flat=True))
+        return base_qs.filter(pk__in=approved_pks)
+
+    def _queryset_for_office_user(self, base_qs, user_offices, status_param):
+        """Logica di visibilità per gli utenti dell'ufficio master."""
+        user_dept_codes = list(
+            user_offices.values_list(
+                "office__organizational_structure__unique_code", flat=True
+            )
+        )
+        department_param = self.request.query_params.get("department")
+
+        own_qs = base_qs.filter(dipartimento_riferimento__dip_cod__in=user_dept_codes)
+        other_qs = base_qs.exclude(
+            dipartimento_riferimento__dip_cod__in=user_dept_codes
+        )
+
+        if department_param:
+            if department_param in user_dept_codes:
+                # Proprio dipartimento: default → Da Correggere (2)
+                own_qs = own_qs.filter(
+                    dipartimento_riferimento__dip_cod=department_param
+                )
+                if status_param is None:
+                    return base_qs.filter(pk__in=self._pks_with_status(own_qs, "2"))
+                return own_qs
+            else:
+                # Dipartimento altrui: sempre solo approvati
+                other_qs = other_qs.filter(
+                    dipartimento_riferimento__dip_cod=department_param
+                )
+                approved_pks = set(
+                    _filter_approved(other_qs).values_list("pk", flat=True)
+                )
+                return base_qs.filter(pk__in=approved_pks)
+
+        # Nessun dipartimento selezionato: proprio → default (2), altri → approvati
+        own_pks = (
+            self._pks_with_status(own_qs, "2")
+            if status_param is None
+            else set(own_qs.values_list("pk", flat=True))
+        )
+        approved_pks = set(_filter_approved(other_qs).values_list("pk", flat=True))
+        return base_qs.filter(pk__in=own_pks | approved_pks)
+
+    def _apply_year_filter(self, queryset):
+        year_param = self.request.query_params.get("year")
+        year = year_param if year_param is not None else ADVANCED_TRAINING_YEAR
+        if year:
+            try:
+                queryset = queryset.filter(anno_erogazione=int(year))
+            except (ValueError, TypeError):
+                pass
+        return queryset
+
+    def _build_base_queryset(self):
+        return (
             AltaFormazioneDatiBase.objects.prefetch_related(
                 Prefetch(
                     "altaformazionepartner_set",
-                    queryset=(
-                        AltaFormazionePartner.objects.only(
-                            "id", "denominazione", "tipologia", "sito_web"
-                        ).distinct()
-                    ),
+                    queryset=AltaFormazionePartner.objects.only(
+                        "id", "denominazione", "tipologia", "sito_web"
+                    ).distinct(),
                     to_attr="partners",
                 ),
                 Prefetch(
                     "altaformazionemodalitaselezione_set",
-                    queryset=(
-                        AltaFormazioneModalitaSelezione.objects.only(
-                            "id",
-                            "tipo_selezione",
-                        ).distinct()
-                    ),
+                    queryset=AltaFormazioneModalitaSelezione.objects.only(
+                        "id", "tipo_selezione"
+                    ).distinct(),
                     to_attr="selections",
                 ),
                 Prefetch(
                     "altaformazioneconsiglioscientificointerno_set",
-                    queryset=(
-                        AltaFormazioneConsiglioScientificoInterno.objects.only(
-                            "matricola_cons",
-                            "nome_origine_cons",
-                        )
+                    queryset=AltaFormazioneConsiglioScientificoInterno.objects.only(
+                        "matricola_cons", "nome_origine_cons"
                     ),
                     to_attr="internal_scientific_council",
                 ),
                 Prefetch(
                     "altaformazioneconsiglioscientificoesterno_set",
-                    queryset=(
-                        AltaFormazioneConsiglioScientificoEsterno.objects.only(
-                            "nome_cons",
-                            "ruolo_cons",
-                            "ente_cons",
-                        )
+                    queryset=AltaFormazioneConsiglioScientificoEsterno.objects.only(
+                        "nome_cons", "ruolo_cons", "ente_cons"
                     ),
                     to_attr="external_scientific_council",
                 ),
                 Prefetch(
                     "altaformazionepianodidattico_set",
-                    queryset=(
-                        AltaFormazionePianoDidattico.objects.only(
-                            "id", "modulo", "ssd", "num_ore", "cfu", "verifica_finale"
-                        )
+                    queryset=AltaFormazionePianoDidattico.objects.only(
+                        "id", "modulo", "ssd", "num_ore", "cfu", "verifica_finale"
                     ),
                     to_attr="teaching_plan",
                 ),
                 Prefetch(
                     "altaformazioneincaricodidattico_set",
-                    queryset=(
-                        AltaFormazioneIncaricoDidattico.objects.only(
-                            "id",
-                            "modulo",
-                            "num_ore",
-                            "docente",
-                            "qualifica",
-                            "ente",
-                            "tipologia",
-                        )
+                    queryset=AltaFormazioneIncaricoDidattico.objects.only(
+                        "id",
+                        "modulo",
+                        "num_ore",
+                        "docente",
+                        "qualifica",
+                        "ente",
+                        "tipologia",
                     ),
                     to_attr="teaching_assignments",
                 ),
                 Prefetch(
                     "altaformazioneattivitaformative_set",
-                    queryset=(
-                        AltaFormazioneAttivitaFormative.objects.only(
-                            "id",
-                            "nome",
-                            "programma",
-                            "bibliografia",
-                            "modalita_verifica_finale",
-                            "alta_formazione_attivita_formativa_padre",
-                        )
+                    queryset=AltaFormazioneAttivitaFormative.objects.only(
+                        "id",
+                        "nome",
+                        "programma",
+                        "bibliografia",
+                        "modalita_verifica_finale",
+                        "alta_formazione_attivita_formativa_padre",
                     ),
                     to_attr="training_activities",
                 ),
                 Prefetch(
                     "altaformazionestatusstorico_set",
-                    queryset=(
-                        AltaFormazioneStatusStorico.objects.select_related(
-                            "id_alta_formazione_status"
-                        ).order_by("-data_status")
-                    ),
+                    queryset=AltaFormazioneStatusStorico.objects.select_related(
+                        "id_alta_formazione_status"
+                    ).order_by("-data_status"),
                     to_attr="status_history",
                 ),
             )
@@ -256,7 +355,6 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                 "project_work",
                 "path_piano_finanziario",
                 "path_doc_delibera",
-                # "matricola_proponente",
                 "cognome_proponente",
                 "nome_proponente",
                 "dt_mod",
@@ -264,72 +362,6 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
             )
             .order_by("titolo_it", "id")
         )
-
-           # Filtro di default per anno corrente se non specificato nei parametri
-        year_param = self.request.query_params.get('year')
-        if year_param is None and ADVANCED_TRAINING_YEAR:
-            try:
-                queryset = queryset.filter(anno_erogazione=int(ADVANCED_TRAINING_YEAR))
-            except (ValueError, TypeError):
-                pass
-        elif year_param:
-            try:
-                queryset = queryset.filter(anno_erogazione=int(year_param))
-            except (ValueError, TypeError):
-                pass
-            
-        if user.is_superuser:
-            return queryset
-        
-        user_offices = OrganizationalStructureOfficeEmployee.objects.filter(
-            employee=user,
-            office__is_active=True,
-            office__organizational_structure__is_active=True,
-        )
-        user_offices_names = list(user_offices.values_list("office__name", flat=True))
-
-        # Se è validatore, vede tutto
-        if OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names:
-            return queryset
-
-        user_master_offices = user_offices.filter(office__name=OFFICE_ADVANCED_TRAINING)
-        if user_master_offices.exists():
-            user_department_codes = list(
-                user_master_offices.values_list(
-                    "office__organizational_structure__unique_code", flat=True
-                )
-            )
-
-            # Ottieni il parametro department dal filtro
-            department_param = self.request.query_params.get('department')
-            
-            if department_param:
-                # Se viene specificato un dipartimento nel filtro
-                if department_param in user_department_codes:
-                    # Se è il proprio dipartimento, mostra tutto
-                    queryset = queryset.filter(dipartimento_riferimento__dip_cod=department_param)
-                else:
-                    # Se è un altro dipartimento, mostra solo gli approvati
-                    queryset = queryset.filter(
-                        dipartimento_riferimento__dip_cod=department_param,
-                        altaformazionestatusstorico__id_alta_formazione_status__status_cod="3"
-                    ).distinct()
-            else:
-                # Se non viene specificato un dipartimento, mostra:
-                # - Tutti quelli del proprio dipartimento
-                # - Solo approvati degli altri dipartimenti
-                queryset = queryset.filter(
-                    Q(dipartimento_riferimento__dip_cod__in=user_department_codes) |  # Tutti del proprio dipartimento
-                    Q(altaformazionestatusstorico__id_alta_formazione_status__status_cod="3")  # Solo approvati degli altri
-                ).distinct()
-
-            return queryset
-        
-        # Utenti senza ufficio master: mostrano solo quelli approvati
-        return queryset.filter(
-            altaformazionestatusstorico__id_alta_formazione_status__status_cod="3"
-        ).distinct()
-
 
 @extend_schema_view(
     list=extend_schema(
