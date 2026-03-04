@@ -1142,15 +1142,20 @@ class ServiceDidatticaAttivitaFormativa:
         # se l'insegnamento è mutuato, recupero gli eventuali testi mancanti
         # dall'insegnamento principale
         if id_master and mutuata_da:
-            existent_texts = texts_af.values_list('tipo_testo_af_cod', flat=True)
-            missing_texts = dict_activity.keys() - existent_texts
-            texts_master_af = DidatticaTestiAf.objects.filter(
-                af_id=id_master,
-                tipo_testo_af_cod__in=missing_texts
+            # ~ existent_texts = texts_af.values_list('tipo_testo_af_cod', flat=True)
+            # ~ missing_texts = dict_activity.keys() - existent_texts
+            # ~ texts_master_af = DidatticaTestiAf.objects.filter(
+                # ~ af_id=id_master,
+                # ~ tipo_testo_af_cod__in=missing_texts
+            # ~ ).values(
+                # ~ "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
+            # ~ )
+            # ~ texts_af = texts_af | texts_master_af
+            texts_af = DidatticaTestiAf.objects.filter(
+                af_id=id_master
             ).values(
                 "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
             )
-            texts_af = texts_af | texts_master_af
         # fine
 
         lingue = texts_af.filter(tipo_testo_af_cod="LINGUA_INS")
