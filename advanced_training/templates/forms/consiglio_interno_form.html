@@ -16,7 +16,12 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            {% include "blocks/includes/teacher_tabs.html" %}
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% include "blocks/includes/choose_teacher.html" with choosen_person=choosen_person person_label=person_label|default:"choosen_person" uid=uid|add:"_choices" %}
+                {% include "form_template.html" with form=internal_form %}
+                {% include "includes/form_submit.html" %}
+            </form>
         </div>
     </div>
 </div>

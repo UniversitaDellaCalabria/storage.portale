@@ -54,7 +54,7 @@
         {% if not is_readonly %}
         <a
           href="{% url 'advanced-training:management:consiglio-interno-edit' master_id=master.pk consiglio_id=member.pk %}"
-          class="btn btn-sm btn-outline-primary py-0 px-2"
+          class="btn btn-sm btn-outline-primary px-2"
           onclick="event.stopPropagation()"
           style="pointer-events: auto !important; font-size: 0.75rem"
           title="{% trans 'Modifica' %}"
@@ -63,7 +63,7 @@
         </a>
         <button
           type="button"
-          class="btn btn-sm btn-outline-danger py-0 px-2"
+          class="btn btn-sm btn-outline-danger px-2"
           onclick="event.stopPropagation(); event.preventDefault(); $('#del-ci-{{ member.pk }}').modal('show');"
           style="pointer-events: auto !important; font-size: 0.75rem"
           title="{% trans 'Elimina' %}"

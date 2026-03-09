@@ -21,7 +21,6 @@
     style="
       border: 1px solid #dee2e6;
       border-radius: 0.4rem;
-      overflow: hidden;
       margin-bottom: 0.5rem;
     "
   >
@@ -48,18 +47,16 @@
         {% endif %} {% if not is_readonly %}
         <a
           href="{% url 'advanced-training:management:incarico-didattico-edit' master.pk f.instance.pk %}"
-          class="btn btn-sm btn-outline-primary py-0 px-2"
+          class="btn btn-sm btn-outline-primary px-2" style="line-height: 1.4; height: auto; font-size: 0.75rem;"
           onclick="event.stopPropagation()"
-          style="font-size:0.75rem"
           title="Modifica"
         >
           <i class="fas fa-edit fa-sm"></i>
         </a>
         <a
           href="{% url 'advanced-training:management:incarico-didattico-delete' master.pk f.instance.pk %}"
-          class="btn btn-sm btn-outline-danger py-0 px-2"
+          class="btn btn-sm btn-outline-danger px-2" style="line-height: 1.4; height: auto; font-size: 0.75rem;"
           onclick="event.stopPropagation(); return confirm('Eliminare questo incarico?')"
-          style="font-size:0.75rem"
           title="Elimina"
         >
           <i class="fas fa-trash-alt fa-sm"></i>

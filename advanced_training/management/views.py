@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
@@ -93,17 +93,22 @@ def _get_status_badge_class(status_cod):
 def get_current_status(master):
     entry = (
         AltaFormazioneStatusStorico.objects.filter(id_alta_formazione_dati_base=master)
+        .select_related("id_alta_formazione_status", "utente_cambio_stato")
         .order_by("-data_status", "-dt_mod", "-id")
         .first()
     )
     if entry:
         cod = entry.id_alta_formazione_status.status_cod
+        utente = entry.utente_cambio_stato
         return {
             "cod": cod,
             "description": entry.id_alta_formazione_status.status_desc,
             "badge_class": _get_status_badge_class(cod),
             "motivazione": entry.motivazione or "",
             "data_status": entry.data_status,
+            "utente": f"{utente.get_full_name() or utente.username}" if utente else "",
+            "dipartimento_utente": entry.dipartimento_utente or "",
+            "dipartimento_master": entry.dipartimento_master or "",
         }
     return {
         "cod": "3",
@@ -111,6 +116,9 @@ def get_current_status(master):
         "badge_class": "success",
         "motivazione": "",
         "data_status": None,
+        "utente": "",
+        "dipartimento_utente": "",
+        "dipartimento_master": "",
     }
 
 
@@ -246,6 +254,11 @@ def advancedtraining_info_edit(
         "#": _("Edit Master"),
     }
 
+    logs_master = LogEntry.objects.filter(
+        content_type_id=ContentType.objects.get_for_model(master).pk,
+        object_id=master.pk,
+    )
+
     def _render(extra=None):
         ctx = {
             "master": master,
@@ -264,6 +277,14 @@ def advancedtraining_info_edit(
             "user_has_same_department": user_has_same_department,
             "current_status_motivazione": current_status.get("motivazione", ""),
             "current_status_date": current_status.get("data_status"),
+            "logs_master": logs_master,
+            "current_status_utente": current_status.get("utente", ""),
+            "current_status_dipartimento_utente": current_status.get(
+                "dipartimento_utente", ""
+            ),
+            "current_status_dipartimento_master": current_status.get(
+                "dipartimento_master", ""
+            ),
         }
         if extra:
             ctx.update(extra)
@@ -440,6 +461,14 @@ def advancedtraining_info_create(request):
             obj.user_mod_id = request.user.id
             obj.save()
 
+            log_action(
+                user=request.user,
+                obj=obj,
+                flag=ADDITION,
+                msg=_("Nuovo master creato"),
+            )
+            messages.success(request, "Nuovo master creato con successo")
+
             draft_status = AltaFormazioneStatus.objects.get(status_cod="0")
             AltaFormazioneStatusStorico.objects.create(
                 motivazione="Nuovo master creato",
@@ -499,7 +528,14 @@ def advancedtraining_info_delete(request, pk):
         return redirect("advanced-training:management:advanced-training-detail", pk=pk)
 
     if request.method == "POST":
+        master_title = master.titolo_it
         master.delete()
+        log_action(
+            user=request.user,
+            obj=master,
+            flag=DELETION,
+            msg=_("Eliminato master") + f": {master_title}",
+        )
         messages.success(request, _("Master eliminato con successo"))
         return redirect("advanced-training:management:advanced-training")
 
@@ -546,6 +582,34 @@ def advancedtraining_status_change(
                 "advanced-training:management:advanced-training-detail", pk=pk
             )
 
+        # ── Recupera il dipartimento dell'ufficio dell'utente ──
+        user_office = (
+            OrganizationalStructureOfficeEmployee.objects.filter(
+                employee=request.user,
+                office__is_active=True,
+                office__organizational_structure__is_active=True,
+                office__name__in=[
+                    OFFICE_ADVANCED_TRAINING,
+                    OFFICE_ADVANCED_TRAINING_VALIDATOR,
+                ],
+            )
+            .select_related("office__organizational_structure")
+            .first()
+        )
+
+        dipartimento_utente = (
+            user_office.office.organizational_structure.unique_code
+            if user_office
+            else None
+        )
+
+        # ── Dipartimento del master al momento del cambio ──
+        dipartimento_master = (
+            dati_base.dipartimento_riferimento.dip_cod
+            if dati_base.dipartimento_riferimento
+            else None
+        )
+
         AltaFormazioneStatusStorico.objects.create(
             motivazione=motivazione,
             data_status=timezone.now().date(),
@@ -553,6 +617,9 @@ def advancedtraining_status_change(
             user_mod_id=request.user.pk,
             id_alta_formazione_dati_base=dati_base,
             id_alta_formazione_status=status,
+            utente_cambio_stato=request.user,
+            dipartimento_utente=dipartimento_utente,
+            dipartimento_master=dipartimento_master,
         )
 
         try:
@@ -561,7 +628,12 @@ def advancedtraining_status_change(
                 obj=dati_base,
                 flag=CHANGE,
                 msg=_("Changed advanced training status to")
-                + f" '{status.status_desc}'",
+                + f" '{status.status_desc}'"
+                + (
+                    f" [dip. utente: {dipartimento_utente}]"
+                    if dipartimento_utente
+                    else ""
+                ),
             )
         except Exception:
             logger.exception("log_action failed")
@@ -648,17 +720,14 @@ def _apply_consiglio_member(consiglio_member, form):
 @can_manage_consiglio_interno
 def consiglio_interno_new(request, master_id, master=None):
     internal_form = ChoosenPersonForm(required=True)
-    external_form = ConsiglioInternoEsternoForm()
 
     if request.POST:
         internal_form = ChoosenPersonForm(data=request.POST, required=True)
-        external_form = ConsiglioInternoEsternoForm(data=request.POST)
-        form = internal_form if "choosen_person" in request.POST else external_form
 
-        if form.is_valid():
+        if internal_form.is_valid():
             member = AltaFormazioneConsiglioScientificoInterno()
             member.alta_formazione_dati_base = master
-            _apply_consiglio_member(member, form)
+            _apply_consiglio_member(member, internal_form)
             member.user_ins_id = request.user.id
             member.dt_mod = timezone.now()
             member.save()
@@ -674,12 +743,12 @@ def consiglio_interno_new(request, master_id, master=None):
                 f"{reverse('advanced-training:management:advanced-training-detail', args=[master_id])}?tab=Consiglio Scientifico Interno"
             )
 
-        for k, v in form.errors.items():
-            messages.error(request, f"<b>{form.fields[k].label}</b>: {v}")
+        for k, v in internal_form.errors.items():
+            messages.error(request, f"<b>{internal_form.fields[k].label}</b>: {v}")
 
     return render(
         request,
-        "consiglio_interno_form.html",
+        "forms/consiglio_interno_form.html",
         {
             "breadcrumbs": {
                 reverse("generics:dashboard"): _("Dashboard"),
@@ -693,7 +762,6 @@ def consiglio_interno_new(request, master_id, master=None):
                 "#": _("New Council Member"),
             },
             "choosen_person": "",
-            "external_form": external_form,
             "internal_form": internal_form,
             "master": master,
             "url": reverse("teachers:apiv1:teachers-list"),
@@ -752,7 +820,7 @@ def consiglio_interno_edit(request, master_id, consiglio_id, master=None):
 
     return render(
         request,
-        "consiglio_interno_form.html",
+        "forms/consiglio_interno_form.html",
         {
             "breadcrumbs": {
                 reverse("generics:dashboard"): _("Dashboard"),
@@ -851,6 +919,13 @@ def advancedtraining_proponente_edit(request, pk):
             master.user_mod_id = request.user.id
             master.save()
 
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=CHANGE,
+                msg=_("Modificato proponente")
+                + f": {master.cognome_proponente} {master.nome_proponente}".strip(),
+            )
             messages.success(request, "Proponente salvato con successo.")
             return redirect(
                 "advanced-training:management:advanced-training-detail", pk=pk
@@ -861,7 +936,7 @@ def advancedtraining_proponente_edit(request, pk):
 
     return render(
         request,
-        "proponente.html",
+        "forms/proponente_form.html",
         {
             "master": master,
             "choosen_person": old_label,
@@ -936,6 +1011,13 @@ def advancedtraining_direttore_edit(request, pk):
             master.user_mod_id = request.user.id
             master.save()
 
+            log_action(
+                user=request.user,
+                obj=master,
+                flag=CHANGE,
+                msg=_("Modificato direttore scientifico")
+                + f": {master.nome_origine_direttore_scientifico}",
+            )
             messages.success(request, _("Direttore scientifico salvato con successo."))
             return redirect(
                 "advanced-training:management:advanced-training-detail", pk=pk
@@ -946,7 +1028,7 @@ def advancedtraining_direttore_edit(request, pk):
 
     return render(
         request,
-        "proponente.html",  # reuses the same template
+        "forms/proponente_form.html",
         {
             "master": master,
             "choosen_person": old_label,

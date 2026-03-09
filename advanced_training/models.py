@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from generics.models import Permissions
 from advanced_training.settings import (
@@ -124,7 +125,9 @@ class AltaFormazioneDatiBase(Permissions):
     titolo_rilasciato = models.TextField(
         db_column="TITOLO_RILASCIATO", blank=True, null=True
     )
-    doppio_titolo = models.TextField(db_column="DOPPIO_TITOLO", blank=True, null=True)
+    doppio_titolo = models.CharField(
+        db_column="DOPPIO_TITOLO", max_length=100, blank=True, null=True
+    )
     matricola_direttore_scientifico = models.ForeignKey(
         "addressbook.Personale",
         models.SET_NULL,
@@ -134,8 +137,11 @@ class AltaFormazioneDatiBase(Permissions):
         null=True,
         related_name="direttore_scientifico",
     )
-    nome_origine_direttore_scientifico = models.TextField(
-        db_column="NOME_ORIGINE_DIRETTORE_SCIENTIFICO", blank=True, null=True
+    nome_origine_direttore_scientifico = models.CharField(
+        db_column="NOME_ORIGINE_DIRETTORE_SCIENTIFICO",
+        max_length=100,
+        blank=True,
+        null=True,
     )
     quota_iscrizione = models.FloatField(
         db_column="QUOTA_ISCRIZIONE", blank=True, null=True
@@ -227,8 +233,6 @@ class AltaFormazioneDatiBase(Permissions):
         Determina se l'utente può editare in base allo stato corrente
         """
         offices_names = self.get_offices_names()
-        print("USER OFFICES NAMES EDIT:", user_offices_names)
-        print("OFFICES NAMES EDIT:", offices_names)
 
         status_storico = self.get_current_status()
 
@@ -498,10 +502,27 @@ class AltaFormazioneStatusStorico(models.Model):
     id_alta_formazione_status = models.ForeignKey(
         AltaFormazioneStatus, models.CASCADE, db_column="ID_ALTA_FORMAZIONE_STATUS"
     )
+    utente_cambio_stato = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        models.SET_NULL,
+        db_column="UTENTE_CAMBIO_STATO_ID",
+        blank=True,
+        null=True,
+        related_name="status_changes",
+    )
+    dipartimento_utente = models.CharField(
+        db_column="DIPARTIMENTO_UTENTE",
+        max_length=200,
+        blank=True,
+        null=True,
+    )
+    dipartimento_master = models.CharField(
+        db_column="DIPARTIMENTO_MASTER",
+        max_length=200,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         managed = True
         db_table = "ALTA_FORMAZIONE_STATUS_STORICO"
-
-    def __str__(self):
-        return self.status_desc

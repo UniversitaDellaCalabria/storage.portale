@@ -22,21 +22,42 @@
         </div>
       </div>
 
-      {% if current_status_motivazione %}
+      {% if current_status_motivazione or current_status_utente %}
       <div class="alert alert-info border-left-info" role="alert">
         <div class="d-flex align-items-start">
           <i class="fas fa-comment-alt mt-1 mr-2"></i>
           <div>
+            {% if current_status_motivazione %}
             <strong>Motivazione:</strong>
             <p class="mb-0 mt-1">{{ current_status_motivazione }}</p>
-            {% if current_status_date %}
-            <small class="text-muted">{{ current_status_date|date:"d/m/Y" }}</small>
+            {% else %}
+            <strong>Richiesta validazione inviata</strong>
             {% endif %}
+            <div class="mt-2 d-flex flex-wrap">
+              {% if current_status_date %}
+              <small class="text-muted mr-3">
+                <i class="fas fa-calendar-alt mr-1"></i>{{ current_status_date|date:"d/m/Y" }}
+                {% if current_status_utente %}
+                &nbsp;·&nbsp;
+                <i class="fas fa-user mr-1"></i>{{ current_status_utente }}
+                {% endif %}
+              </small>
+              {% endif %}
+              {% if current_status_dipartimento_utente %}
+              <small class="text-muted mr-3">
+                <i class="fas fa-building mr-1"></i>Ufficio: {{ current_status_dipartimento_utente }}
+              </small>
+              {% endif %}
+              {% if current_status_dipartimento_master %}
+              <small class="text-muted">
+                <i class="fas fa-university mr-1"></i>Dip. master: {{ current_status_dipartimento_master }}
+              </small>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
       {% endif %}
-
       <!-- AVVISO FINESTRA TEMPORALE -->
       {% if not has_active_window %}
       <div class="alert alert-warning" role="alert">
@@ -82,7 +103,7 @@
                 data-target="#statusModal"
                 data-status-cod="1"
                 data-status-label="Valida">
-                <i class="fas fa-paper-plane"></i> Valida
+                <i class="fas fa-paper-plane"></i> Richiedi validazione
             </button>
             {% elif not is_validator and current_status_cod in "0,2,None" %}
             <button
@@ -90,7 +111,7 @@
                 class="btn btn-sm btn-secondary ms-2"
                 disabled
                 title="Finestra temporale non attiva">
-                <i class="fas fa-paper-plane"></i> Valida
+                <i class="fas fa-paper-plane"></i> Richiedi validazione
             </button>
             {% endif %}
           </div>
@@ -436,7 +457,7 @@
 
     $(this).find("#nuovoStatoHidden").val(cod);
     $(this).find("#actionLabel").text(label);
-    $(this).find("#confirmButton").text("Conferma " + label);
+    $(this).find("#confirmButton").text("Conferma");
     $(this).find("#motivazione").val("");
 
     let isOptional = OPTIONAL_MOTIVATION_STATUSES.includes(String(cod));
@@ -533,24 +554,9 @@
       if (data.error) throw new Error(data.error);
       
       if (data.html) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = data.html;
-        const hasContent = tempDiv.textContent.trim().length > 0 || 
-                          tempDiv.querySelector('input, select, textarea, button');
-        
-        if (!hasContent) {
-          tabPane.html(`
-            <div class="alert alert-info" role="alert">
-              <i class="fas fa-info-circle"></i>
-              Nessun dato disponibile per <strong>${tabName}</strong>.
-              <br><small>Il tab è stato caricato ma non contiene dati.</small>
-            </div>
-          `);
-        } else {
-          tabPane.html(data.html);
-          tabPane.data('loaded', 'true');
-          if (IS_READONLY) tabPane.addClass('readonly');
-        }
+        tabPane.html(data.html);
+        tabPane.data('loaded', 'true');
+        if (IS_READONLY) tabPane.addClass('readonly');
       } else {
         throw new Error('Risposta senza HTML dal server');
       }
@@ -587,5 +593,16 @@
   border-left: 4px solid #0066cc !important;
 }
 </style>
+
+{% if master.pk %}
+<div class="card-wrapper card-space mt-4">
+    <div class="card card-bg no-after">
+        <div class="card-body">
+            <h4 style="font-weight: lighter;">Logs Master</h4>
+            {% include "obj_logs.html" with logs=logs_master id=master.pk %}
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% endblock form_container %}
