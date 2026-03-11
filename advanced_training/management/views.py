@@ -51,8 +51,9 @@ from advanced_training.settings import (
     OFFICE_ADVANCED_TRAINING,
     OFFICE_ADVANCED_TRAINING_VALIDATOR,
 )
+from structures.models import DidatticaDipartimento
 from addressbook.models import Personale
-from generics.utils import custom_message, decrypt, encrypt, log_action
+from generics.utils import custom_message, encrypt, log_action
 from locks.concurrency import get_lock_from_cache
 from locks.exceptions import LockCannotBeAcquiredException
 from organizational_area.models import OrganizationalStructureOfficeEmployee
@@ -659,10 +660,10 @@ def advancedtraining_duplicate(request, pk):
             office__organizational_structure__is_active=True,
             office__name__in=[
                 OFFICE_ADVANCED_TRAINING,
-                OFFICE_ADVANCED_TRAINING_VALIDATOR,
+                # OFFICE_ADVANCED_TRAINING_VALIDATOR,
             ],
-        ).exists()
-        if not has_office:
+        )
+        if not has_office.exists():
             return custom_message(
                 request,
                 _(
@@ -691,10 +692,14 @@ def advancedtraining_duplicate(request, pk):
         counter += 1
         new_title = f"{base_title} (copia {counter})"
 
+    dip_cod = has_office.first().office.organizational_structure.unique_code
+
     old.pk = None
     old.titolo_it = new_title
     old.dt_mod = timezone.now()
     old.user_mod_id = request.user.id
+    old.dipartimento_riferimento = DidatticaDipartimento.objects.filter(dip_cod=dip_cod).first()
+    
     old.save()
     new = old
 
@@ -725,7 +730,7 @@ def advancedtraining_duplicate(request, pk):
 
 def _apply_consiglio_member(consiglio_member, form):
     if form.cleaned_data.get("choosen_person"):
-        member_id = decrypt(form.cleaned_data["choosen_person"])
+        member_id = get_personale_matricola(form.cleaned_data["choosen_person"])
         member = get_object_or_404(Personale, matricola=member_id)
         consiglio_member.matricola_cons = member
         consiglio_member.nome_origine_cons = f"{member.cognome} {member.nome}"
