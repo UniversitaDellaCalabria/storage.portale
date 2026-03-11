@@ -652,6 +652,24 @@ def advancedtraining_status_change(
 @login_required
 @transaction.atomic
 def advancedtraining_duplicate(request, pk):
+    if not request.user.is_superuser:
+        has_office = OrganizationalStructureOfficeEmployee.objects.filter(
+            employee=request.user,
+            office__is_active=True,
+            office__organizational_structure__is_active=True,
+            office__name__in=[
+                OFFICE_ADVANCED_TRAINING,
+                OFFICE_ADVANCED_TRAINING_VALIDATOR,
+            ],
+        ).exists()
+        if not has_office:
+            return custom_message(
+                request,
+                _(
+                    "Permission denied - You need to be part of a master office to duplicate"
+                ),
+            )
+
     old = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
 
     relations = {
