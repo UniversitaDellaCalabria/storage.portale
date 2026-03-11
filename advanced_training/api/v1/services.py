@@ -44,7 +44,7 @@ class ServiceAltaFormazione:
         if language:
             query_language = Q(lingua__exact=language)
         if year:
-            query_year = Q(anno_rilevazione__exact=year)
+            query_year = Q(anno_erogazione__exact=year)
 
         query = (
             AltaFormazioneDatiBase.objects.filter(
@@ -67,7 +67,7 @@ class ServiceAltaFormazione:
                 "lingua",
                 "ore",
                 "mesi",
-                "anno_rilevazione",
+                "anno_erogazione",
                 "dipartimento_riferimento",
                 "dipartimento_riferimento__dip_cod",
                 "dipartimento_riferimento__dip_des_it",
@@ -191,7 +191,7 @@ class ServiceAltaFormazione:
                 "ore",
                 "mesi",
                 "lingua",
-                "anno_rilevazione",
+                "anno_erogazione",
                 "dipartimento_riferimento",
                 "dipartimento_riferimento__dip_cod",
                 "dipartimento_riferimento__dip_des_it",

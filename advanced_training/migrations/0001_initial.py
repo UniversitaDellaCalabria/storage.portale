@@ -34,9 +34,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "anno_rilevazione",
+                    "anno_erogazione",
                     models.IntegerField(
-                        blank=True, db_column="ANNO_RILEVAZIONE", null=True
+                        blank=True, db_column="ANNO_EROGAZIONE", null=True
                     ),
                 ),
                 (

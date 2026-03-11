@@ -71,7 +71,7 @@ class HighFormationMastersSerializer(serializers.Serializer):
             "HighFormationCourseStructure": query["sede_corso"],
             "HighFormationMinParticipants": query["num_min_partecipanti"],
             "HighFormationMaxParticipants": query["num_max_partecipanti"],
-            "HighFormationMasterYear": query["anno_rilevazione"],
+            "HighFormationMasterYear": query["anno_erogazione"],
             "DepartmentId": query["dipartimento_riferimento"],
             "DepartmentCod": query["dipartimento_riferimento__dip_cod"],
             "DepartmentName": query["dipartimento_riferimento__dip_des_it"]
