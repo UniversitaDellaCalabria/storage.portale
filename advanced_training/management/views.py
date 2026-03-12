@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 from addressbook.utils import get_personale_matricola
+from django.db.models import Sum
 
 from advanced_training.management.decorators import (
     can_manage_advanced_training,
@@ -344,6 +345,9 @@ def advancedtraining_info_edit(
         if isinstance(form, FORMSET_CLASSES):
             _save_formset(form, request.user)
         else:
+            if hasattr(form, '_ore_warning'):
+                messages.warning(request, form._ore_warning)
+            
             obj = form.save(commit=False)
             obj.dt_mod = timezone.now()
             obj.user_mod_id = request.user.id
@@ -394,6 +398,18 @@ def advancedtraining_load_tab(request, pk, tab_name):
                 .select_related("matricola_cons")
                 .order_by("nome_origine_cons")
             )
+        elif tab_name == "Piano Didattico":
+            FormClass, template = TAB_FORMSET_MAP[tab_name]
+            context["form"] = FormClass(instance=master)
+            
+            ore_moduli = master.altaformazionepianodidattico_set.aggregate(
+                tot=Sum("num_ore")
+            )["tot"] or 0
+            ore_tirocinio = master.ore_stage_tirocinio or 0
+            context["ore_piano_totale"]   = ore_moduli + ore_tirocinio
+            context["ore_piano_moduli"]   = ore_moduli
+            context["ore_piano_tirocinio"]= ore_tirocinio
+            context["ore_piano_mancanti"] = max(0, 1500 - (ore_moduli + ore_tirocinio))
         else:
             return JsonResponse(
                 {"error": "Tab non trovato", "tab_name": tab_name}, status=404
@@ -468,7 +484,6 @@ def advancedtraining_info_create(request):
                 flag=ADDITION,
                 msg=_("Nuovo master creato"),
             )
-            messages.success(request, "Nuovo master creato con successo")
 
             draft_status = AltaFormazioneStatus.objects.get(status_cod="0")
             AltaFormazioneStatusStorico.objects.create(
@@ -544,12 +559,39 @@ def advancedtraining_info_delete(request, pk):
     return redirect("advanced-training:management:advanced-training-detail", pk=pk)
 
 
+def _check_ore_piano_didattico(master):
+    """
+    Restituisce (ok, totale) dove ok=False se il totale è sotto 1500.
+    """
+    from django.db.models import Sum
+
+    ore_moduli = (
+        master.altaformazionepianodidattico_set.aggregate(tot=Sum("num_ore"))["tot"]
+        or 0
+    )
+    ore_tirocinio = master.ore_stage_tirocinio or 0
+    totale = ore_moduli + ore_tirocinio
+    return totale >= 1500, totale
+
+
 @login_required
 @check_temporal_window(required=False)
 @can_change_master_status
 def advancedtraining_status_change(
     request, pk, status_cod, dati_base=None, has_active_window=None
 ):
+    if status_cod == "1": 
+        ore_ok, ore_totali = _check_ore_piano_didattico(dati_base)
+        if not ore_ok:
+            messages.error(
+                request,
+                f"Impossibile inviare in validazione: il totale ore del piano didattico "
+                f"+ tirocinio è {ore_totali} su 1500 richieste. "
+                f"Completa il piano didattico prima di procedere."
+            )
+            return redirect(
+                "advanced-training:management:advanced-training-detail", pk=pk
+            )
     if request.method != "POST":
         return custom_message(request, _("Metodo non consentito"))
 
@@ -698,8 +740,10 @@ def advancedtraining_duplicate(request, pk):
     old.titolo_it = new_title
     old.dt_mod = timezone.now()
     old.user_mod_id = request.user.id
-    old.dipartimento_riferimento = DidatticaDipartimento.objects.filter(dip_cod=dip_cod).first()
-    
+    old.dipartimento_riferimento = DidatticaDipartimento.objects.filter(
+        dip_cod=dip_cod
+    ).first()
+
     old.save()
     new = old
 
@@ -1235,13 +1279,17 @@ def piano_didattico_new(
     request, pk, advanced_training=None, my_offices=None, is_validator=False
 ):
     master = advanced_training
-    form = PianoDidatticoForm()
+    form = PianoDidatticoForm(master=master)
 
     if request.method == "POST":
-        form = PianoDidatticoForm(data=request.POST)
+        form = PianoDidatticoForm(data=request.POST, master=master)
         if form.is_valid():
             obj = form.save(commit=False)
+            if hasattr(form, "_ore_warning"):
+                messages.warning(request, form._ore_warning)
             obj.alta_formazione_dati_base = master
+            # obj = form.save(commit=False)
+            # obj.alta_formazione_dati_base = master
             obj.dt_mod = timezone.now()
             obj.user_mod_id = request.user.id
             obj.save()
@@ -1295,15 +1343,17 @@ def piano_didattico_edit(
 ):
     master = advanced_training
     modulo = get_object_or_404(
-        AltaFormazionePianoDidattico,  # ← adatta al nome reale del tuo modello
+        AltaFormazionePianoDidattico,
         pk=modulo_id,
         alta_formazione_dati_base=master,
     )
-    form = PianoDidatticoForm(instance=modulo)
+    form = PianoDidatticoForm(instance=modulo, master=master)
 
     if request.method == "POST":
-        form = PianoDidatticoForm(data=request.POST, instance=modulo)
+        form = PianoDidatticoForm(data=request.POST, instance=modulo, master=master)
         if form.is_valid():
+            if hasattr(form, "_ore_warning"):
+                messages.warning(request, form._ore_warning)
             obj = form.save(commit=False)
             obj.dt_mod = timezone.now()
             obj.user_mod_id = request.user.id

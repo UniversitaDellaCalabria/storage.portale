@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Sum
 from django.forms import inlineformset_factory
 from advanced_training.models import (
     AltaFormazioneDatiBase,
@@ -184,15 +185,30 @@ class MasterDatiBaseForm(forms.ModelForm):
         if quota_uditori and quota_uditori < 0:
             raise forms.ValidationError("La quota uditori non può essere negativa")
 
+        ore_stage_new = cleaned_data.get("ore_stage_tirocinio") or 0
+
+        if self.instance and self.instance.pk:
+            from django.db.models import Sum
+            ore_moduli = (
+                self.instance.altaformazionepianodidattico_set
+                .aggregate(tot=Sum("num_ore"))["tot"] or 0
+            )
+            totale = ore_moduli + ore_stage_new
+
+            if totale > 1500:
+                self.add_error(
+                    "ore_stage_tirocinio",
+                    f"Il totale ore piano didattico ({ore_moduli} h) + tirocinio "
+                    f"({ore_stage_new} h) supera 1500 ({totale} h). "
+                    f"Riduci le ore di tirocinio o modifica il piano didattico."
+                )
+
         return cleaned_data
 
 
 class PianoDidatticoForm(forms.ModelForm):
     verifica_finale = forms.TypedChoiceField(
-        choices=[
-            (True, "Sì"),
-            (False, "No"),
-        ],
+        choices=[(True, "Sì"), (False, "No")],
         coerce=lambda x: x == "True",
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Verifica finale",
@@ -212,6 +228,34 @@ class PianoDidatticoForm(forms.ModelForm):
             "cfu": "CFU",
             "verifica_finale": "Verifica finale",
         }
+
+    def __init__(self, *args, master=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._master = master 
+
+    def clean(self):
+        cleaned_data = super().clean()
+        num_ore_new = cleaned_data.get("num_ore") or 0
+
+        if self._master:
+            qs = self._master.altaformazionepianodidattico_set.all()
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            ore_altri_moduli = qs.aggregate(tot=Sum("num_ore"))["tot"] or 0
+
+            ore_tirocinio = self._master.ore_stage_tirocinio or 0
+            totale = ore_altri_moduli + num_ore_new + ore_tirocinio
+
+            if totale > 1500:
+                self.add_error(
+                    "num_ore",
+                    f"Attenzione: il totale ore piano didattico + tirocinio "
+                    f"supererebbe 1500 ({totale} ore). "
+                    f"Verifica i dati prima di salvare.",
+                )
+
+        return cleaned_data
 
 
 PianoDidatticoFormSet = inlineformset_factory(

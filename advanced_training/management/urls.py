@@ -25,6 +25,7 @@ from .views import (
     piano_didattico_edit,
     piano_didattico_new,
 )
+from advanced_training.pdf_view import advancedtraining_export_pdf
 
 app_name = "management"
 
@@ -133,12 +134,17 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/consiglio-esterno/<int:cons_id>/edit/",
-       consiglio_esterno_edit,
+        consiglio_esterno_edit,
         name="consiglio-esterno-edit",
     ),
     path(
         "<int:pk>/consiglio-esterno/<int:cons_id>/delete/",
         consiglio_esterno_delete,
         name="consiglio-esterno-delete",
+    ),
+    path(
+        "<int:pk>/export/pdf/",
+        advancedtraining_export_pdf,
+        name="advanced-training-export-pdf",
     ),
 ]

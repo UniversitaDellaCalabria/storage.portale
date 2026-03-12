@@ -19,6 +19,16 @@
           <span class="badge badge-{{ status_badge_class }} badge-pill">
             {{ current_status_description }}
           </span>
+          {% if master.pk %}
+            <a
+              href="{% url 'advanced-training:management:advanced-training-export-pdf' master.pk %}"
+              class="btn btn-sm btn-outline-danger ml-2"
+              title="Scarica scheda master in PDF"
+              target="_blank"
+            >
+              <i class="fas fa-file-pdf mr-1"></i> Esporta PDF
+            </a>
+            {% endif %}
         </div>
       </div>
 

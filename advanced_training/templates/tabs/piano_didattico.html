@@ -1,5 +1,20 @@
 {% load i18n %}
 
+{% with ore_moduli=master.altaformazionepianodidattico_set.all %}
+{% with ore_tirocinio=master.ore_stage_tirocinio|default:0 %}
+<div class="alert alert-light border d-flex align-items-center justify-content-between mb-3 py-2">
+  <div>
+    <i class="fas fa-clock mr-2 text-primary"></i>
+    <strong>Ore tirocinio (dati generali):</strong>
+    <span class="ml-1">{{ master.ore_stage_tirocinio|default:"0" }} h</span>
+  </div>
+  <div class="text-muted" style="font-size: 0.85rem">
+    Il totale ore moduli + tirocinio deve raggiungere <strong>1500 h</strong>
+  </div>
+</div>
+{% endwith %}
+{% endwith %}
+
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h5 class="mb-0">
     <i class="fas fa-book-open mr-2"></i>
