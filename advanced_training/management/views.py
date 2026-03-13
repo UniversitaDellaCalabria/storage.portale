@@ -14,6 +14,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 from addressbook.utils import get_personale_matricola
 from django.db.models import Sum
+from django.core.mail import send_mail
+from django.conf import settings
 
 from advanced_training.management.decorators import (
     can_manage_advanced_training,
@@ -663,6 +665,37 @@ def advancedtraining_status_change(
             utente_cambio_stato=request.user,
             dipartimento_utente=dipartimento_utente,
             dipartimento_master=dipartimento_master,
+        )
+        recipients = []
+        if status_cod == "1":
+            recipients = OrganizationalStructureOfficeEmployee.objects.filter(
+                office__is_active=True,
+                office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR,
+                office__organizational_structure__is_active=True,
+            ).values_list("employee__email", flat=True)
+        else:
+            recipients = OrganizationalStructureOfficeEmployee.objects.filter(
+                office__is_active=True,
+                office__name=OFFICE_ADVANCED_TRAINING,
+                office__organizational_structure__unique_code=dipartimento_master,
+                office__organizational_structure__is_active=True,
+            ).values_list("employee__email", flat=True)
+
+        recipients = list(set(recipients))
+
+        master_url = request.build_absolute_uri(
+            reverse(
+                "advanced-training:management:advanced-training-detail",
+                kwargs={"pk": dati_base.pk},
+            )
+        )
+
+        send_mail(
+            "Cambio stato Master",
+            f"Il master '{dati_base.titolo_it}' è stato portato allo stato '{status.status_desc}'. {master_url}",
+            settings.DEFAULT_FROM_EMAIL,
+            recipients,
+            fail_silently=True,
         )
 
         try:
