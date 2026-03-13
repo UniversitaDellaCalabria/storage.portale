@@ -10,262 +10,264 @@
 {% include "blocks/includes/vue_check.html" %}
 {% endblock storage_block_top %}
 
-<div class="row">
-    <div class="col-12">
-        <div class="card-wrapper card-space">
-            <div class="card card-bg no-after">
-                <div class="card-body">
-
-                    {% include "includes/vue_search_input.html" with id=id %}
-                    {% block filters_masterlist %}
-                    <div class="mb-0">
-                        <div class="row">
-
-                            <!-- FILTRO ANNO -->
-                            {% block filters_year %}
-                            <loading-icon
-                                v-if="is_loading_years"
-                                :loader_source="loader_source_years">
-                            </loading-icon>
-
-                            <div class="col-sm form-group mb-0" v-else>
-                                <div>
-                                    <label for="{{ id }}_year_input">
-                                        {% trans "Anno" %}
-                                    </label>
-                                    <div class="w-30 mt-5">
-                                        <select id="{{ id }}_year_input"
-                                                title="{% trans 'Choose an option' %}"
-                                                name="{{ id }}_year_input"
-                                                class="form-control"
-                                                @change="{{ id }}.search()">
-                                            <option value="">- {% trans 'Choose an option' %} -</option>
-                                            <option v-for="item in available_years"
-                                                    :value="item.year"
-                                                    :selected="item.year == selected_year">
-                                                [[ item.year ]]
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endblock filters_year %}
-
-                            <!-- FILTRO DIPARTIMENTO -->
-                            {% block filters_department %}
-                            <loading-icon
-                                v-if="is_loading_departments"
-                                :loader_source="loader_source_departments">
-                            </loading-icon>
-
-                            <div class="col-sm form-group mb-0" v-else>
-                                <div>
-                                    <label for="{{ id }}_department_input">
-                                        {% trans "Dipartimento" %}
-                                    </label>
-                                    <div class="w-30 mt-5">
-                                        <select id="{{ id }}_department_input"
-                                                title="{% trans 'Choose an option' %}"
-                                                name="{{ id }}_department_input"
-                                                class="form-control"
-                                                @change="{{ id }}.search()">
-                                            <option value="">- {% trans 'Choose an option' %} -</option>
-                                            <option v-for="dept in available_departments"
-                                                    :value="dept.code"
-                                                    :selected="dept.code == selected_department">
-                                                [[ dept.name ]]
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endblock filters_department %}
-
-                            {% block filters_coursetype %}
-                            <loading-icon
-                                v-if="is_loading_mastertypes"
-                                :loader_source="loader_source_mastertypes">
-                            </loading-icon>
-
-                            <div class="col-sm form-group mb-0" v-else>
-                                <div>
-                                    <label for="{{ id }}_master_type">
-                                        {% trans "Tipologia Master" %}
-                                    </label>
-                                    <div class="w-30 mt-5">
-                                        <select id="{{ id }}_coursetype_input"
-                                                title="{% trans 'Choose an option' %}"
-                                                name="{{ id }}_coursetype_input"
-                                                class="form-control"
-                                                @change="{{ id }}.search()">
-                                            <option value="">- {% trans 'Choose an option' %} -</option>
-                                            <template v-for="master in master_types">
-                                                <option :value="master.id"
-                                                        :selected="master.description == selected_coursetype">
-                                                    [[ master.description ]]
-                                                </option>
-                                            </template>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endblock filters_coursetype %}
-
-                            {% block filters_erogation %}
-                            <loading-icon
-                                v-if="is_loading_erogations"
-                                :loader_source="loader_source_erogations">
-                            </loading-icon>
-
-                            <div class="col-sm form-group mb-0" v-else>
-                                <div>
-                                    <label for="{{ id }}_erogation_input">
-                                        {% trans "Modalità di Erogazione" %}
-                                    </label>
-
-                                    <div class="w-30 mt-5">
-                                        <select id="{{ id }}_erogation_input"
-                                                title="{% trans 'Choose an option' %}"
-                                                name="{{ id }}_erogation_input"
-                                                class="form-control"
-                                                @change="{{ id }}.search()">
-                                            <option value="">- {% trans 'Choose an option' %} -</option>
-                                            <option v-for="item in erogations"
-                                                    :value="item.id"
-                                                    :selected="item.description == selected_erogation">
-                                                [[ item.description ]]
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endblock filters_erogation %}
-                            
-                            {% block filters_status %}
-                            <div class="col-sm form-group mb-0">
-                                <div>
-                                    <label for="{{ id }}_status_input">
-                                        {% trans "Stato" %}
-                                    </label>
-                                    <div class="w-30 mt-5">
-                                        <select id="{{ id }}_status_input"
-                                                title="{% trans 'Choose an option' %}"
-                                                name="{{ id }}_status_input"
-                                                class="form-control"
-                                                @change="{{ id }}.search()">
-                                            <option value="">- {% trans 'Tutti' %} -</option>
-                                            <option value="0" :selected="selected_status == '0'">{% trans "Bozza" %}</option>
-                                            <option value="1" :selected="selected_status == '1'">{% trans "In Validazione" %}</option>
-                                            <option value="2" :selected="selected_status == '2'">{% trans "Da Correggere" %}</option>
-                                            <option value="3" :selected="selected_status == '3'">{% trans "Approvato" %}</option>
-                                            <option value="4" :selected="selected_status == '4'">{% trans "Respinto" %}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endblock filters_status %}
-                        </div>
-                    </div>
-                    {% endblock filters_masterlist %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
-
-<loading-icon
-    v-if="is_loading"
-    :loader_source="loader_source">
-</loading-icon>
-
-<div v-else>
-    <div class="row mb-3" v-for="item in items.results">
+    <div class="row">
         <div class="col-12">
-            <!--start card-->
-            <div class="card-wrapper pb-0">
-                <div class="card no-after" style="border-top:1px solid #b71918">
-                    <div class="card-body p-1 pt-3 d-flex">
-                        <div class="col">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="mb-0">
-                                    <a :href="item.id+'/?status='+item.status" class="no-color">
-                                        <b>[[ item.masterTitle ]]</b>
-                                    </a>
-                                </h5>
-                                <!-- BADGE STATO -->
-                                <span 
-                                    :class="getStatusBadgeClass(item.status)"
-                                    class="badge ms-3"
-                                    style="white-space: nowrap;">
-                                    [[ item.statusDescription || 'Approvato' ]]
-                                </span>
-                            </div>
-                            
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                    <div class="card-body">
+
+                        {% include "includes/vue_search_input.html" with id=id %}
+                        {% block filters_masterlist %}
+                        <div class="mb-0">
                             <div class="row">
-                                <div class="col-12 col-md-auto me-md-4">
-                                    <b>
-                                        <span v-if="item.erogationMode">
-                                            [[ item.erogationModeDescription ]]
-                                        </span>
-                                    </b>
+
+                                <!-- FILTRO ANNO -->
+                                {% block filters_year %}
+                                <loading-icon
+                                    v-if="is_loading_years"
+                                    :loader_source="loader_source_years">
+                                </loading-icon>
+
+                                <div class="col-sm form-group mb-0" v-else>
+                                    <div>
+                                        <label for="{{ id }}_year_input">
+                                            {% trans "Anno" %}
+                                        </label>
+                                        <div class="w-30 mt-5">
+                                            <select id="{{ id }}_year_input"
+                                                    title="{% trans 'Choose an option' %}"
+                                                    name="{{ id }}_year_input"
+                                                    class="form-control"
+                                                    @change="{{ id }}.search()">
+                                                <option value="">- {% trans 'Choose an option' %} -</option>
+                                                <option v-for="item in available_years"
+                                                        :value="item.year"
+                                                        :selected="item.year == selected_year">
+                                                    [[ item.year ]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-12 col-md-auto" v-if="item.scientificDirectorName">
-                                    <small>
-                                        {% trans "Manager" %} >
-                                        <b>[[ item.scientificDirectorName ]]</b>
-                                    </small>
+                                {% endblock filters_year %}
+
+                                <!-- FILTRO DIPARTIMENTO -->
+                                {% block filters_department %}
+                                <loading-icon
+                                    v-if="is_loading_departments"
+                                    :loader_source="loader_source_departments">
+                                </loading-icon>
+
+                                <div class="col-sm form-group mb-0" v-else>
+                                    <div>
+                                        <label for="{{ id }}_department_input">
+                                            {% trans "Dipartimento" %}
+                                        </label>
+                                        <div class="w-30 mt-5">
+                                            <select id="{{ id }}_department_input"
+                                                    title="{% trans 'Choose an option' %}"
+                                                    name="{{ id }}_department_input"
+                                                    class="form-control"
+                                                    @change="{{ id }}.search()">
+                                                <option value="">- {% trans 'Choose an option' %} -</option>
+                                                <option v-for="dept in available_departments"
+                                                        :value="dept.code"
+                                                        :selected="dept.code == selected_department">
+                                                    [[ dept.name ]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
+                                {% endblock filters_department %}
+
+                                {% block filters_coursetype %}
+                                <loading-icon
+                                    v-if="is_loading_mastertypes"
+                                    :loader_source="loader_source_mastertypes">
+                                </loading-icon>
+
+                                <div class="col-sm form-group mb-0" v-else>
+                                    <div>
+                                        <label for="{{ id }}_master_type">
+                                            {% trans "Tipologia Master" %}
+                                        </label>
+                                        <div class="w-30 mt-5">
+                                            <select id="{{ id }}_coursetype_input"
+                                                    title="{% trans 'Choose an option' %}"
+                                                    name="{{ id }}_coursetype_input"
+                                                    class="form-control"
+                                                    @change="{{ id }}.search()">
+                                                <option value="">- {% trans 'Choose an option' %} -</option>
+                                                <template v-for="master in master_types">
+                                                    <option :value="master.id"
+                                                            :selected="master.description == selected_coursetype">
+                                                        [[ master.description ]]
+                                                    </option>
+                                                </template>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endblock filters_coursetype %}
+
+                                {% block filters_erogation %}
+                                <loading-icon
+                                    v-if="is_loading_erogations"
+                                    :loader_source="loader_source_erogations">
+                                </loading-icon>
+
+                                <div class="col-sm form-group mb-0" v-else>
+                                    <div>
+                                        <label for="{{ id }}_erogation_input">
+                                            {% trans "Modalità di Erogazione" %}
+                                        </label>
+
+                                        <div class="w-30 mt-5">
+                                            <select id="{{ id }}_erogation_input"
+                                                    title="{% trans 'Choose an option' %}"
+                                                    name="{{ id }}_erogation_input"
+                                                    class="form-control"
+                                                    @change="{{ id }}.search()">
+                                                <option value="">- {% trans 'Choose an option' %} -</option>
+                                                <option v-for="item in erogations"
+                                                        :value="item.id"
+                                                        :selected="item.description == selected_erogation">
+                                                    [[ item.description ]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endblock filters_erogation %}
+                                
+                                {% block filters_status %}
+                                <div class="col-sm form-group mb-0">
+                                    <div>
+                                        <label for="{{ id }}_status_input">
+                                            {% trans "Stato" %}
+                                        </label>
+                                        <div class="w-30 mt-5">
+                                            <select id="{{ id }}_status_input"
+                                                    title="{% trans 'Choose an option' %}"
+                                                    name="{{ id }}_status_input"
+                                                    class="form-control"
+                                                    @change="{{ id }}.search()">
+                                                <option value="">- {% trans 'Tutti' %} -</option>
+                                                <option value="0" :selected="selected_status == '0'">{% trans "Bozza" %}</option>
+                                                <option value="1" :selected="selected_status == '1'">{% trans "In Validazione" %}</option>
+                                                <option value="2" :selected="selected_status == '2'">{% trans "Da Correggere" %}</option>
+                                                <option value="3" :selected="selected_status == '3'">{% trans "Approvato" %}</option>
+                                                <option value="4" :selected="selected_status == '4'">{% trans "Respinto" %}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endblock filters_status %}
                             </div>
+                        </div>
+                        {% endblock filters_masterlist %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                            <!-- Pulsanti -->
-                            <div class="float-right mt-2">
-                                <button type="button" class="btn btn-sm btn-outline-secondary float-right ms-2" @click="duplicate(item)">
-                                    <svg class="icon icon-xs">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
-                                    </svg> {% trans "Duplica" %}
-                                </button>
+    <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
 
-                                <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right ms-2">
-                                    <svg class="icon icon-xs icon-white">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                                    </svg> {% trans "Edit" %}
-                                </a>
+    <loading-icon
+        v-if="is_loading"
+        :loader_source="loader_source">
+    </loading-icon>
 
-                                <!-- Mostra pulsante elimina solo se lo stato è "0" (Bozza) -->
-                                <form v-if="item.status === '0'"
-                                    :action="'{% url 'advanced-training:management:advanced-training-delete' 0 %}'.replace('0', item.id)"
-                                    method="post"
-                                    class="d-inline float-right ms-2">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                            onclick="return confirm('{% trans 'Sei sicuro di voler eliminare questo master?' %}')">
-                                        <svg class="icon icon-xs icon-white">
-                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                        </svg> {% trans "Elimina" %}
+    <div v-else>
+        <div class="row mb-3" v-for="item in items.results">
+            <div class="col-12">
+                <!--start card-->
+                <div class="card-wrapper pb-0">
+                    <div class="card no-after" style="border-top:1px solid #b71918">
+                        <div class="card-body p-1 pt-3 d-flex">
+                            <div class="col">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0">
+                                        <a :href="item.id+'/?status='+item.status" class="no-color">
+                                            <b>[[ item.masterTitle ]]</b>
+                                        </a>
+                                    </h5>
+                                    <!-- BADGE STATO -->
+                                    <span 
+                                        :class="getStatusBadgeClass(item.status)"
+                                        class="badge ms-3"
+                                        style="white-space: nowrap;">
+                                        [[ item.statusDescription || 'Approvato' ]]
+                                    </span>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-12 col-md-auto me-md-4">
+                                        <b>
+                                            <span v-if="item.erogationMode">
+                                                [[ item.erogationModeDescription ]]
+                                            </span>
+                                        </b>
+                                    </div>
+                                    <div class="col-12 col-md-auto" v-if="item.scientificDirectorName">
+                                        <small>
+                                            {% trans "Manager" %} >
+                                            <b>[[ item.scientificDirectorName ]]</b>
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Pulsanti -->
+                                <div class="float-right mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary float-right ms-2" @click="duplicate(item)">
+                                        <svg class="icon icon-xs">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
+                                        </svg> {% trans "Duplica" %}
                                     </button>
-                                </form>
+
+                                    <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right ms-2">
+                                        <svg class="icon icon-xs icon-white">
+                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                                        </svg> {% trans "Edit" %}
+                                    </a>
+
+                                    <!-- Mostra pulsante elimina solo se lo stato è "0" (Bozza) -->
+                                    <form v-if="item.status === '0'"
+                                        :action="'{% url 'advanced-training:management:advanced-training-delete' 0 %}'.replace('0', item.id)"
+                                        method="post"
+                                        class="d-inline float-right ms-2">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('{% trans 'Sei sicuro di voler eliminare questo master?' %}')">
+                                            <svg class="icon icon-xs icon-white">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+                                            </svg> {% trans "Elimina" %}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!--end card-->
             </div>
-            <!--end card-->
         </div>
     </div>
+    <list-panel v-bind:data="items" v-if="items.results" id="{{ id }}"></list-panel>
 </div>
-
 {% block storage_block_bottom %}
-<div v-else-if="!is_loading && items.results !== undefined && items.results.length === 0">
-    <div class="alert alert-info mt-3" role="alert">
-        <i class="fas fa-info-circle mr-2"></i>
-        <span v-if="items.empty_message">
-            [[ items.empty_message ]]
-        </span>
-        <span v-else>
-            {% trans "No items here" %}
-        </span>
+    <div v-else-if="!is_loading && items.results !== undefined && items.results.length === 0">
+        <div class="alert alert-info mt-3" role="alert">
+            <i class="fas fa-info-circle mr-2"></i>
+            <span v-if="items.empty_message">
+                [[ items.empty_message ]]
+            </span>
+            <span v-else>
+                {% trans "No items here" %}
+            </span>
+        </div>
     </div>
 </div>
 {% endblock storage_block_bottom %}
