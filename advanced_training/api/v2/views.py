@@ -98,13 +98,6 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
             ).values_list("office__name", flat=True)
         )
 
-    def _get_default_status_for_offices(self, office_names):
-        if OFFICE_ADVANCED_TRAINING_VALIDATOR in office_names:
-            return "1"
-        if OFFICE_ADVANCED_TRAINING in office_names:
-            return "2"
-        return "3"
-
     def _pks_with_status(self, queryset, status_cod):
         """Restituisce i PK del queryset il cui status corrente è status_cod."""
         return set(
@@ -135,20 +128,6 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                 ]
             }
         )
-
-    def list(self, request, *args, **kwargs):
-        response = super().list(request, *args, **kwargs)
-
-        if (
-            not response.data.get("results")
-            and request.query_params.get("status") is None
-            and not request.user.is_superuser
-        ):
-            office_names = self._get_user_office_names(request.user)
-            default_status = self._get_default_status_for_offices(office_names)
-            response.data["empty_message"] = EMPTY_MESSAGES.get(default_status, "")
-
-        return response
 
     def get_queryset(self):
         user = self.request.user
