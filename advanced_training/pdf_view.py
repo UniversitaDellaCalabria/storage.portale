@@ -75,6 +75,7 @@ def _styles():
             textColor=colors.black,
             fontName="Helvetica",
             spaceAfter=4,
+            wordWrap="LTR",
         ),
         "TableHeader": ParagraphStyle(
             "TableHeader",
@@ -87,6 +88,7 @@ def _styles():
             fontSize=9,
             textColor=colors.black,
             fontName="Helvetica",
+            wordWrap="LTR",
         ),
         "StatusBadge": ParagraphStyle(
             "StatusBadge",
@@ -140,7 +142,8 @@ def _two_col_table(pairs, styles):
         rows.append([[left_label, left_value], [right_label, right_value]])
 
     data = [[r[0], r[1]] for r in rows]
-    t = Table(data, colWidths=["50%", "50%"])
+    t = Table(data, colWidths=["50%", "50%"], splitByRow=1)
+    t.canSplit = 1
     t.setStyle(
         TableStyle(
             [
@@ -149,6 +152,7 @@ def _two_col_table(pairs, styles):
                 ("RIGHTPADDING", (0, 0), (-1, -1), 12),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
                 ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("WORDWRAP", (0, 0), (-1, -1), "LTR"),
             ]
         )
     )
@@ -166,7 +170,8 @@ def _generic_table(headers, rows_data, styles, col_widths=None):
     if col_widths is None:
         col_widths = [f"{100 / n_cols:.1f}%"] * n_cols
 
-    t = Table(data, colWidths=col_widths, repeatRows=1)
+    t = Table(data, colWidths=col_widths, repeatRows=1, splitByRow=1)
+    t.canSplit = 1
     style = [
         ("BACKGROUND", (0, 0), (-1, 0), PRIMARY),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
@@ -181,6 +186,7 @@ def _generic_table(headers, rows_data, styles, col_widths=None):
         ("RIGHTPADDING", (0, 0), (-1, -1), 6),
         ("TOPPADDING", (0, 0), (-1, -1), 4),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("WORDWRAP", (0, 0), (-1, -1), "LTR"),
     ]
     t.setStyle(TableStyle(style))
     return t
@@ -198,7 +204,6 @@ def advancedtraining_export_pdf(request, pk):
     master = get_object_or_404(AltaFormazioneDatiBase, pk=pk)
 
     # ── recupera stato corrente ──────────────────────────────────────────
-
     status = get_current_status(master)
     status_cod = status["cod"]
     status_desc = status["description"]
@@ -214,6 +219,7 @@ def advancedtraining_export_pdf(request, pk):
         bottomMargin=2 * cm,
         title=f"Master – {master.titolo_it or 'Scheda'}",
         author="Sistema Advanced Training",
+        allowSplitting=1,
     )
 
     styles = _styles()
