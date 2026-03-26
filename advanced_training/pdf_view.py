@@ -34,22 +34,29 @@ STATUS_COLORS = {
     "4": colors.HexColor("#dc3545"),  # Rifiutato   → rosso
 }
 
+_TABLE_MAX_CHARS = 120
+_FIELD_MAX_CHARS = 300
 
-def _val(v, max_chars=300):
+
+def _val(v, max_chars=_FIELD_MAX_CHARS):
     """Restituisce una stringa leggibile o '—' se vuoto."""
     if v is None or v == "":
         return "—"
     if isinstance(v, bool):
         return "Sì" if v else "No"
     s = str(v)
-    s = s.replace("\u201c", '"').replace("\u201d", '"')  
-    s = s.replace("\u2018", "'").replace("\u2019", "'") 
-    s = s.replace("\u2013", "-").replace("\u2014", "-") 
-    s = s.replace("\u2026", "...")  
-    s = s.replace("\n", " ").replace("\r", " ")
+    s = s.replace("\u201c", '"').replace("\u201d", '"')
+    s = s.replace("\u2018", "'").replace("\u2019", "'")
+    s = s.replace("\u2013", "-").replace("\u2014", "-")
+    s = s.replace("\u2026", "...")
+    s = " ".join(s.split())
     if len(s) > max_chars:
         s = s[:max_chars] + "..."
     return s
+
+
+def _tval(v):
+    return _val(v, max_chars=_TABLE_MAX_CHARS)
 
 
 def _styles():
@@ -90,6 +97,7 @@ def _styles():
             fontSize=9,
             textColor=colors.white,
             fontName="Helvetica-Bold",
+            wordWrap="LTR",
         ),
         "TableCell": ParagraphStyle(
             "TableCell",
@@ -97,6 +105,8 @@ def _styles():
             textColor=colors.black,
             fontName="Helvetica",
             wordWrap="LTR",
+            allowWidows=1,
+            allowOrphans=1,
         ),
         "StatusBadge": ParagraphStyle(
             "StatusBadge",
@@ -110,6 +120,16 @@ def _styles():
             textColor=TEXT_MUTED,
             spaceAfter=2,
             fontName="Helvetica",
+        ),
+        "ModuleText": ParagraphStyle(
+            "ModuleText",
+            fontSize=9,
+            textColor=colors.black,
+            fontName="Helvetica",
+            spaceAfter=6,
+            spaceBefore=2,
+            wordWrap="LTR",
+            leading=11,
         ),
     }
     extra["Normal"] = base["Normal"]
@@ -172,7 +192,7 @@ def _generic_table(headers, rows_data, styles, col_widths=None):
     header_row = [Paragraph(h, styles["TableHeader"]) for h in headers]
     data = [header_row]
     for row in rows_data:
-        data.append([Paragraph(_val(cell), styles["TableCell"]) for cell in row])
+        data.append([Paragraph(_tval(cell), styles["TableCell"]) for cell in row])
 
     n_cols = len(headers)
     if col_widths is None:
@@ -382,24 +402,47 @@ def advancedtraining_export_pdf(request, pk):
     story += _section_title("Piano Didattico", styles)
     piano = master.altaformazionepianodidattico_set.all().order_by("modulo")
     if piano.exists():
-        rows = [
-            (
-                p.modulo,
-                p.ssd,
-                _val(p.num_ore) + " h",
-                _val(p.cfu) + " CFU",
-                "Sì" if p.verifica_finale else "No",
-            )
-            for p in piano
-        ]
-        story.append(
-            _generic_table(
-                ["Modulo", "SSD", "Ore", "CFU", "Verifica Finale"],
-                rows,
-                styles,
-                col_widths=["32%", "20%", "12%", "12%", "24%"],
-            )
-        )
+        for idx, p in enumerate(piano, 1):
+            modulo_text = str(p.modulo) if p.modulo else ""
+            is_long = len(modulo_text) > 200
+
+            if is_long:
+                story.append(Spacer(1, 0.2 * cm))
+                story.append(Paragraph(f"<b>Modulo {idx}</b>", styles["FieldValue"]))
+                story.append(
+                    Paragraph(_val(p.modulo, max_chars=2000), styles["ModuleText"])
+                )
+                story.append(Spacer(1, 0.15 * cm))
+
+                modulo_data = [
+                    ("SSD", p.ssd),
+                    ("Ore", _val(p.num_ore) + " h" if p.num_ore else "—"),
+                    ("CFU", _val(p.cfu) + " CFU" if p.cfu else "—"),
+                    ("Verifica Finale", "Sì" if p.verifica_finale else "No"),
+                ]
+                story.append(_two_col_table(modulo_data, styles))
+            else:
+                rows = [
+                    [
+                        (
+                            modulo_text[:120] + "..."
+                            if len(modulo_text) > 120
+                            else modulo_text
+                        ),
+                        p.ssd or "—",
+                        _val(p.num_ore) + " h" if p.num_ore else "—",
+                        _val(p.cfu) + " CFU" if p.cfu else "—",
+                        "Sì" if p.verifica_finale else "No",
+                    ]
+                ]
+                story.append(
+                    _generic_table(
+                        ["Modulo", "SSD", "Ore", "CFU", "Verifica Finale"],
+                        rows,
+                        styles,
+                        col_widths=["32%", "20%", "12%", "12%", "24%"],
+                    )
+                )
     else:
         story.append(_empty_table_note("Nessun modulo nel piano didattico.", styles))
 
