@@ -35,13 +35,21 @@ STATUS_COLORS = {
 }
 
 
-def _val(v):
+def _val(v, max_chars=300):
     """Restituisce una stringa leggibile o '—' se vuoto."""
     if v is None or v == "":
         return "—"
     if isinstance(v, bool):
         return "Sì" if v else "No"
-    return str(v)
+    s = str(v)
+    s = s.replace("\u201c", '"').replace("\u201d", '"')  
+    s = s.replace("\u2018", "'").replace("\u2019", "'") 
+    s = s.replace("\u2013", "-").replace("\u2014", "-") 
+    s = s.replace("\u2026", "...")  
+    s = s.replace("\n", " ").replace("\r", " ")
+    if len(s) > max_chars:
+        s = s[:max_chars] + "..."
+    return s
 
 
 def _styles():
