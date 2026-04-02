@@ -153,6 +153,7 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
             office__organizational_structure__is_active=True,
             office__name=OFFICE_ADVANCED_TRAINING,
         )
+
         if user_offices.exists():
             return self._queryset_for_office_user(base_qs, user_offices, status_param)
 
@@ -167,13 +168,24 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
                 "office__organizational_structure__unique_code", flat=True
             )
         )
-        department_param = self.request.query_params.get("department")
 
         own_qs = base_qs.filter(dipartimento_riferimento__dip_cod__in=user_dept_codes)
-        other_qs = base_qs.exclude(
-            dipartimento_riferimento__dip_cod__in=user_dept_codes
+        
+        other_qs = _filter_approved(
+            base_qs.exclude(
+                dipartimento_riferimento__dip_cod__in=user_dept_codes,
+            )
         )
+        result = own_qs | other_qs
 
+        department_param = self.request.query_params.get("department")
+        if department_param:
+            return result.filter(dipartimento_riferimento__dip_cod=department_param)
+        return result
+
+
+
+        ### DA ELIMINARE ###
         if department_param:
             if department_param in user_dept_codes:
                 # Proprio dipartimento: default → Da Correggere (2)
@@ -201,6 +213,7 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
         )
         approved_pks = set(_filter_approved(other_qs).values_list("pk", flat=True))
         return base_qs.filter(pk__in=own_pks | approved_pks)
+        ### DA ELIMINARE ###
 
     def _apply_year_filter(self, queryset):
         year_param = self.request.query_params.get("year")

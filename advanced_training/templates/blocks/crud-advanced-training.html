@@ -309,7 +309,7 @@ selected_year: this.getItemFromSession("{{ id }}", 'year') || '{{ ADVANCED_TRAIN
 selected_department: this.getItemFromSession("{{ id }}", 'department'),
 selected_status: this.getItemFromSession("{{ id }}", 'status')
     {% if is_validator %}|| '1'
-    {% elif is_office_master %}|| '2'
+    {% elif is_office_master %}|| ''
     {% endif %},
 
 master_types: [],
