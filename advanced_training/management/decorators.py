@@ -36,12 +36,10 @@ def can_manage_advanced_training(func_to_decorate):
             kwargs["my_offices"] = OrganizationalStructureOfficeEmployee.objects.none()
             return func_to_decorate(*args, **kwargs)
 
-        offices = OrganizationalStructureOfficeEmployee.objects.filter(
+        my_offices = OrganizationalStructureOfficeEmployee.objects.filter(
             employee=request.user,
             office__is_active=True,
             office__organizational_structure__is_active=True,
-        )
-        my_offices = offices.filter(
             office__name__in=[
                 OFFICE_ADVANCED_TRAINING_VALIDATOR,
                 OFFICE_ADVANCED_TRAINING,
@@ -51,7 +49,7 @@ def can_manage_advanced_training(func_to_decorate):
             return custom_message(request, _("Permission denied"))
 
         kwargs["my_offices"] = my_offices
-        kwargs["is_validator"] = offices.filter(
+        kwargs["is_validator"] = my_offices.filter(
             office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR
         ).exists()
         return func_to_decorate(*args, **kwargs)

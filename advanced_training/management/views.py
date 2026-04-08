@@ -163,22 +163,8 @@ def _save_formset(form, user):
 
 
 @login_required
-def advancedtraining_masters(request):
-    offices_qs = OrganizationalStructureOfficeEmployee.objects.filter(
-        employee=request.user,
-        office__is_active=True,
-        office__organizational_structure__is_active=True,
-        office__name__in=[OFFICE_ADVANCED_TRAINING, OFFICE_ADVANCED_TRAINING_VALIDATOR],
-    )
-    can_create = request.user.is_superuser or offices_qs.exists()
-    is_validator = offices_qs.filter(
-        office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR
-    ).exists()
-    is_office_master = (
-        not is_validator
-        and offices_qs.filter(office__name=OFFICE_ADVANCED_TRAINING).exists()
-    )
-
+@can_manage_advanced_training
+def advancedtraining_masters(request, advanced_training=None, my_offices=None, is_validator=False):
     return render(
         request,
         "advanced-training.html",
@@ -188,9 +174,7 @@ def advancedtraining_masters(request):
                 "#": _("Advanced Training"),
             },
             "url": reverse("advanced-training:apiv2:advanced-training-list"),
-            "can_create": can_create,
             "is_validator": is_validator,
-            "is_office_master": is_office_master,
         },
     )
 

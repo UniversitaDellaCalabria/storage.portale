@@ -307,10 +307,7 @@ selected_erogation: this.getItemFromSession("{{ id }}", 'erogation'),
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
 selected_year: this.getItemFromSession("{{ id }}", 'year') || '{{ ADVANCED_TRAINING_YEAR }}',
 selected_department: this.getItemFromSession("{{ id }}", 'department'),
-selected_status: this.getItemFromSession("{{ id }}", 'status')
-    {% if is_validator %}|| '1'
-    {% elif is_office_master %}|| ''
-    {% endif %},
+selected_status: this.getItemFromSession("{{ id }}", 'status') {% if is_validator %}|| '1'{% else %}|| ''{% endif %},
 
 master_types: [],
 erogations: [],
