@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from generics.models import Permissions
+from generics.validators import validate_file_size, validate_pdf_file_extension
 from advanced_training.settings import (
     OFFICE_ADVANCED_TRAINING_VALIDATOR,
     OFFICE_ADVANCED_TRAINING,
@@ -181,10 +182,12 @@ class AltaFormazioneDatiBase(Permissions):
     )
     path_piano_finanziario = models.FileField(
         upload_to=advanced_training_media_path,
+        validators=[validate_pdf_file_extension, validate_file_size],
         db_column="PATH_PIANO_FINANZIARIO", max_length=500, blank=True, null=True
     )
     path_doc_delibera = models.FileField(
         upload_to=advanced_training_media_path,
+        validators=[validate_pdf_file_extension, validate_file_size],
         db_column="PATH_DOC_DELIBERA", max_length=500, blank=True, null=True
     )
     matricola_proponente = models.ForeignKey(
