@@ -77,8 +77,8 @@ class MasterDatiBaseForm(forms.ModelForm):
             "doppio_titolo": forms.CheckboxInput(),
             "project_work": forms.CheckboxInput(),
             "stage_tirocinio": forms.CheckboxInput(),
-            "path_piano_finanziario": forms.ClearableFileInput(),
-            "path_doc_delibera": forms.ClearableFileInput(),
+            # ~ "path_piano_finanziario": forms.ClearableFileInput(),
+            # ~ "path_doc_delibera": forms.ClearableFileInput(),
             "tipo_selezione": forms.Select(),
         }
         labels = {
