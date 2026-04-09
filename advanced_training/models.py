@@ -6,7 +6,7 @@ from advanced_training.settings import (
     OFFICE_ADVANCED_TRAINING,
 )
 from organizational_area.models import OrganizationalStructureOfficeEmployee
-
+from .settings import advanced_training_media_path
 
 class AltaFormazioneConsiglioScientificoEsterno(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -179,10 +179,12 @@ class AltaFormazioneDatiBase(Permissions):
     contenuti_tempi_criteri_cfu = models.TextField(
         db_column="CONTENUTI_TEMPI_CRITERI_CFU", blank=True, null=True
     )
-    path_piano_finanziario = models.CharField(
+    path_piano_finanziario = models.FileField(
+        upload_to=advanced_training_media_path,
         db_column="PATH_PIANO_FINANZIARIO", max_length=500, blank=True, null=True
     )
-    path_doc_delibera = models.CharField(
+    path_doc_delibera = models.FileField(
+        upload_to=advanced_training_media_path,
         db_column="PATH_DOC_DELIBERA", max_length=500, blank=True, null=True
     )
     matricola_proponente = models.ForeignKey(

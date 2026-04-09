@@ -692,18 +692,23 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="altaformazionedatibase",
             name="path_doc_delibera",
-            field=models.CharField(
-                blank=True, db_column="PATH_DOC_DELIBERA", max_length=500, null=True
+            field=models.FileField(
+                blank=True,
+                db_column="PATH_DOC_DELIBERA",
+                max_length=500,
+                null=True,
+                upload_to=advanced_training.settings.advanced_training_media_path,
             ),
         ),
         migrations.AddField(
             model_name="altaformazionedatibase",
             name="path_piano_finanziario",
-            field=models.CharField(
+            field=models.FileField(
                 blank=True,
                 db_column="PATH_PIANO_FINANZIARIO",
                 max_length=500,
                 null=True,
+                upload_to=advanced_training.settings.advanced_training_media_path,
             ),
         ),
         migrations.AddField(
