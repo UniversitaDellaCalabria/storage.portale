@@ -396,11 +396,18 @@ def advancedtraining_load_tab(request, pk, tab_name):
                 ]
                 or 0
             )
+            cfu_moduli = (
+                master.altaformazionepianodidattico_set.aggregate(tot_cfu=Sum("tot_cfu"))[
+                    "tot_cfu"
+                ]
+                or 0
+            )
             ore_tirocinio = master.ore_stage_tirocinio or 0
             context["ore_piano_totale"] = ore_moduli + ore_tirocinio
             context["ore_piano_moduli"] = ore_moduli
             context["ore_piano_tirocinio"] = ore_tirocinio
             context["ore_piano_mancanti"] = max(0, 1500 - (ore_moduli + ore_tirocinio))
+            context["cfu_piano_mancanti"] = max(0, 60 - cfu_moduli)
         else:
             return JsonResponse(
                 {"error": "Tab non trovato", "tab_name": tab_name}, status=404
