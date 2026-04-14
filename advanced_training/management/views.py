@@ -565,12 +565,21 @@ def _check_ore_piano_didattico(master):
     return totale >= 1500, totale
 
 @login_required
-@check_temporal_window(required=False)
+# ~ @check_temporal_window(required=False)
 @can_change_master_status
 def advancedtraining_status_change(
-    request, pk, status_cod, dati_base=None, has_active_window=None
-):
-    if status_cod == "1": 
+    request, pk, status_cod, dati_base=None): #, has_active_window=None
+        
+    if status_cod == "1":
+        if not dati_base.is_valid_for_validation():
+            messages.error(
+                request,
+                "Anno accademico non valido: l'anno di erogazione del master non è coerente con la finestra temporale attiva."
+            )
+            return redirect(
+                "advanced-training:management:advanced-training-detail", pk=pk
+            )
+            
         ore_ok, ore_totali = _check_ore_piano_didattico(dati_base)
         if not ore_ok:
             messages.error(

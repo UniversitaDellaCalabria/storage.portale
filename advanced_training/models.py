@@ -293,16 +293,12 @@ class AltaFormazioneDatiBase(Permissions):
 
         finestra = AltaFormazioneFinestraTemporale.objects.filter(
             data_inizio__lte=today,
-            data_fine__gte=today
-        ).first()
+            data_fine__gte=today,
+            anno_accademico=self._extract_year(self.anno_erogazione)
+        ).exists()
 
-        if not finestra:
-            return False
-
-        anno_finestra = self._extract_year(finestra.anno_accademico)
-        anno_erogazione = self._extract_year(self.anno_erogazione)
-        return anno_erogazione == anno_finestra
-
+        return finestra
+        
     class Meta:
         managed = True
         db_table = "ALTA_FORMAZIONE_DATI_BASE"
