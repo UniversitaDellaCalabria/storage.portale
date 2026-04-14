@@ -210,17 +210,20 @@ class AltaFormazioneDatiBase(Permissions):
 
     @classmethod
     def get_offices_names(cls, **kwargs):
-        return (OFFICE_ADVANCED_TRAINING,)
+        return (OFFICE_ADVANCED_TRAINING, OFFICE_ADVANCED_TRAINING_VALIDATOR)
 
     def _is_valid_office(self, office_name, all_user_offices, **kwargs):
         offices_names = self.get_offices_names()
 
-        if office_name == offices_names[0]:
+        if office_name in offices_names:
             user_office = all_user_offices.get(office__name=office_name)
-            return (
-                user_office.office.organizational_structure.unique_code
-                == self.dipartimento_riferimento.dip_cod
-            )
+            if user_office.office.name == OFFICE_ADVANCED_TRAINING:
+                return (
+                    user_office.office.organizational_structure.unique_code
+                    == self.dipartimento_riferimento.dip_cod
+                )
+            if user_office.office.name == OFFICE_ADVANCED_TRAINING_VALIDATOR:
+                return True
 
         return False
 
@@ -237,8 +240,6 @@ class AltaFormazioneDatiBase(Permissions):
         """
         Determina se l'utente può editare in base allo stato corrente
         """
-        offices_names = self.get_offices_names()
-
         status_storico = self.get_current_status()
 
         if status_storico is None:
@@ -246,9 +247,11 @@ class AltaFormazioneDatiBase(Permissions):
         else:
             status_cod = status_storico.id_alta_formazione_status.status_cod
 
-        if offices_names[0] in user_offices_names and status_cod in ["0", "2"]:
+        if OFFICE_ADVANCED_TRAINING in user_offices_names and status_cod in ["0", "2"]:
             return True
-
+        if OFFICE_ADVANCED_TRAINING_VALIDATOR in user_offices_names and status_cod == "1":
+            return True
+        
         return False
 
     def _check_lock_permission(self, user_offices_names, **kwargs):
