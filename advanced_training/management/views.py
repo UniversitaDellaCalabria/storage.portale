@@ -562,7 +562,19 @@ def _check_ore_piano_didattico(master):
     )
     ore_tirocinio = master.ore_stage_tirocinio or 0
     totale = ore_moduli + ore_tirocinio
-    return totale >= 1500, totale
+    return totale == 1500, totale
+    
+def _check_cfu_piano_didattico(master):
+    """
+    Restituisce (ok, totale) dove ok=False se il totale è sotto 60.
+    """
+    from django.db.models import Sum
+
+    cfu_moduli = (
+        master.altaformazionepianodidattico_set.aggregate(tot=Sum("cfu"))["tot"]
+        or 0
+    )
+    return cfu_moduli == 60, cfu_moduli
 
 @login_required
 # ~ @check_temporal_window(required=False)
@@ -581,11 +593,22 @@ def advancedtraining_status_change(
             )
             
         ore_ok, ore_totali = _check_ore_piano_didattico(dati_base)
+        cfu_ok, cfu_totali = _check_cfu_piano_didattico(dati_base)
         if not ore_ok:
             messages.error(
                 request,
                 f"Impossibile inviare in validazione: il totale ore del piano didattico "
                 f"+ tirocinio è {ore_totali} su 1500 richieste. "
+                f"Completa il piano didattico prima di procedere."
+            )
+            return redirect(
+                "advanced-training:management:advanced-training-detail", pk=pk
+            )
+        if not cfu_ok:
+            messages.error(
+                request,
+                f"Impossibile inviare in validazione: il totale CFU del piano didattico "
+                f"è {cfu_totali} su 60 richiesti. "
                 f"Completa il piano didattico prima di procedere."
             )
             return redirect(

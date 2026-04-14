@@ -236,6 +236,7 @@ class PianoDidatticoForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         num_ore_new = cleaned_data.get("num_ore") or 0
+        cfu_new = cleaned_data.get("cfu") or 0
 
         if self._master:
             qs = self._master.altaformazionepianodidattico_set.all()
@@ -243,15 +244,25 @@ class PianoDidatticoForm(forms.ModelForm):
                 qs = qs.exclude(pk=self.instance.pk)
 
             ore_altri_moduli = qs.aggregate(tot=Sum("num_ore"))["tot"] or 0
-
+            cfu_altri_moduli = qs.aggregate(tot_cfu=Sum("cfu"))["tot_cfu"] or 0
+            
             ore_tirocinio = self._master.ore_stage_tirocinio or 0
             totale = ore_altri_moduli + num_ore_new + ore_tirocinio
+            tot_cfu = cfu_altri_moduli + cfu_new
 
             if totale > 1500:
                 self.add_error(
                     "num_ore",
                     f"Attenzione: il totale ore piano didattico + tirocinio "
                     f"supererebbe 1500 ({totale} ore). "
+                    f"Verifica i dati prima di salvare.",
+                )
+                
+            if tot_cfu > 60:
+                self.add_error(
+                    "cfu",
+                    f"Attenzione: il totale dei CFU del piano didattico "
+                    f"supererebbe i 60 ({tot_cfu}). "
                     f"Verifica i dati prima di salvare.",
                 )
 
