@@ -207,10 +207,12 @@ def advancedtraining_info_edit(
     has_active_window = is_temporal_window_active()
 
     can_validate_actions = user_is_validator and current_status_cod == "1"
+    is_valid_for_validation = master.is_valid_for_validation()
+
     can_send_validation = (
         not user_is_validator
         and current_status_cod in ("0", "2", None)
-        and has_active_window
+        and is_valid_for_validation
         and (user_has_same_department or not master.dipartimento_riferimento)
     )
 
@@ -387,14 +389,17 @@ def advancedtraining_load_tab(request, pk, tab_name):
         elif tab_name == "Piano Didattico":
             FormClass, template = TAB_FORMSET_MAP[tab_name]
             context["form"] = FormClass(instance=master)
-            
-            ore_moduli = master.altaformazionepianodidattico_set.aggregate(
-                tot=Sum("num_ore")
-            )["tot"] or 0
+
+            ore_moduli = (
+                master.altaformazionepianodidattico_set.aggregate(tot=Sum("num_ore"))[
+                    "tot"
+                ]
+                or 0
+            )
             ore_tirocinio = master.ore_stage_tirocinio or 0
-            context["ore_piano_totale"]   = ore_moduli + ore_tirocinio
-            context["ore_piano_moduli"]   = ore_moduli
-            context["ore_piano_tirocinio"]= ore_tirocinio
+            context["ore_piano_totale"] = ore_moduli + ore_tirocinio
+            context["ore_piano_moduli"] = ore_moduli
+            context["ore_piano_tirocinio"] = ore_tirocinio
             context["ore_piano_mancanti"] = max(0, 1500 - (ore_moduli + ore_tirocinio))
         else:
             return JsonResponse(
@@ -558,7 +563,6 @@ def _check_ore_piano_didattico(master):
     ore_tirocinio = master.ore_stage_tirocinio or 0
     totale = ore_moduli + ore_tirocinio
     return totale >= 1500, totale
-
 
 @login_required
 @check_temporal_window(required=False)

@@ -14,6 +14,8 @@ from advanced_training.models import (
     AltaFormazioneFinestraTemporale,
     AltaFormazioneDatiBase,
 )
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 def can_manage_advanced_training(func_to_decorate):
@@ -43,7 +45,7 @@ def can_manage_advanced_training(func_to_decorate):
             office__name__in=[
                 OFFICE_ADVANCED_TRAINING_VALIDATOR,
                 OFFICE_ADVANCED_TRAINING,
-            ]
+            ],
         )
         if not my_offices.exists():
             return custom_message(request, _("Permission denied"))
@@ -228,8 +230,6 @@ def can_change_master_status(func_to_decorate):
             return custom_message(request, _("Permission denied"))
 
         if not dati_base.can_user_change_status(request.user, status_cod):
-            from django.contrib import messages
-            from django.shortcuts import redirect
 
             messages.error(
                 request, _("Non hai i permessi per effettuare questo cambio di stato")
@@ -252,13 +252,20 @@ def can_change_master_status(func_to_decorate):
                 office__organizational_structure__unique_code=department_code,
             ).exists()
             if not same_dept:
-                from django.contrib import messages
-                from django.shortcuts import redirect
-
                 messages.error(
                     request,
                     _(
                         "Non puoi mandare in validazione un master di un altro dipartimento"
+                    ),
+                )
+                return redirect(
+                    "advanced-training:management:advanced-training-detail", pk=pk
+                )
+            if not dati_base.is_valid_for_validation():
+                messages.error(
+                    request,
+                    _(
+                        "Non puoi inviare a validazione: l'anno di inizio del master non è coerente con la finestra temporale attiva."
                     ),
                 )
                 return redirect(

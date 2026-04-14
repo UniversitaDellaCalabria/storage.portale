@@ -268,6 +268,40 @@ class AltaFormazioneDatiBase(Permissions):
         return self._check_access_permission(
             user_offices_names
         ) and self._check_edit_permission(user_offices_names)
+    
+    def _extract_year(self, value):
+        if isinstance(value, int):
+            return value
+        if "/" in str(value):
+            return int(str(value).split("/")[0])
+        return int(value)
+
+
+    def is_valid_for_validation(self):
+        """
+        Verifica che:
+        - esista una finestra temporale attiva
+        - l'anno accademico della finestra coincida con l'anno di erogazione
+        """
+        if not self.anno_erogazione:
+            return False
+
+        import datetime
+        today = datetime.date.today()
+
+        from advanced_training.models import AltaFormazioneFinestraTemporale
+
+        finestra = AltaFormazioneFinestraTemporale.objects.filter(
+            data_inizio__lte=today,
+            data_fine__gte=today
+        ).first()
+
+        if not finestra:
+            return False
+
+        anno_finestra = self._extract_year(finestra.anno_accademico)
+        anno_erogazione = self._extract_year(self.anno_erogazione)
+        return anno_erogazione == anno_finestra
 
     class Meta:
         managed = True
