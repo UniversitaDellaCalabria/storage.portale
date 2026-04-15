@@ -269,14 +269,6 @@ class AltaFormazioneDatiBase(Permissions):
             user_offices_names
         ) and self._check_edit_permission(user_offices_names)
     
-    def _extract_year(self, value):
-        if isinstance(value, int):
-            return value
-        if "/" in str(value):
-            return int(str(value).split("/")[0])
-        return int(value)
-
-
     def is_valid_for_validation(self):
         """
         Verifica che:
@@ -294,7 +286,7 @@ class AltaFormazioneDatiBase(Permissions):
         finestra = AltaFormazioneFinestraTemporale.objects.filter(
             data_inizio__lte=today,
             data_fine__gte=today,
-            anno_accademico=self._extract_year(self.anno_erogazione)
+            anno_accademico=self.anno_erogazione
         ).exists()
 
         return finestra

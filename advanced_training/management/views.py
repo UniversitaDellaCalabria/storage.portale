@@ -22,7 +22,7 @@ from advanced_training.management.decorators import (
     can_view_advanced_training,
     can_manage_consiglio_interno,
     can_change_master_status,
-    check_temporal_window,
+    # ~ check_temporal_window,
 )
 from advanced_training.management.forms import (
     ChoosenPersonForm,
@@ -204,7 +204,7 @@ def advancedtraining_info_edit(
 
     can_edit = master._check_edit_permission(office_info["names"])
     is_readonly = not can_edit or str(current_status_cod) in ["1", "3", "4"]
-    has_active_window = is_temporal_window_active()
+    # ~ has_active_window = is_temporal_window_active()
 
     can_validate_actions = user_is_validator and current_status_cod == "1"
     is_valid_for_validation = master.is_valid_for_validation()
@@ -263,7 +263,7 @@ def advancedtraining_info_edit(
             "is_validator": user_is_validator,
             "can_send_validation": can_send_validation,
             "can_validate_actions": can_validate_actions,
-            "has_active_window": has_active_window,
+            "has_active_window": is_valid_for_validation,
             "user_has_same_department": user_has_same_department,
             "current_status_motivazione": current_status.get("motivazione", ""),
             "current_status_date": current_status.get("data_status"),
@@ -528,7 +528,7 @@ def advancedtraining_info_create(request):
             "is_validator": user_is_validator,
             "can_send_validation": False,
             "can_validate_actions": False,
-            "has_active_window": is_temporal_window_active(),
+            # ~ "has_active_window": is_valid_for_validation(),
         },
     )
 

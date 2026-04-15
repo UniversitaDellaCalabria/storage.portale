@@ -277,33 +277,33 @@ def can_change_master_status(func_to_decorate):
     return wrapper
 
 
-def check_temporal_window(required=True):
-    """
-    Verifica se esiste una finestra temporale attiva.
-    Se required=True, blocca l'accesso se non c'è finestra attiva.
-    Se required=False, inietta solo has_active_window=True/False in kwargs.
-    """
+# ~ def check_temporal_window(required=True):
+    # ~ """
+    # ~ Verifica se esiste una finestra temporale attiva.
+    # ~ Se required=True, blocca l'accesso se non c'è finestra attiva.
+    # ~ Se required=False, inietta solo has_active_window=True/False in kwargs.
+    # ~ """
 
-    def decorator(func_to_decorate):
-        @wraps(func_to_decorate)
-        def wrapper(*args, **kwargs):
-            request = args[0]
-            today = datetime.date.today()
-            has_active_window = AltaFormazioneFinestraTemporale.objects.filter(
-                data_inizio__lte=today, data_fine__gte=today
-            ).exists()
-            kwargs["has_active_window"] = has_active_window
+    # ~ def decorator(func_to_decorate):
+        # ~ @wraps(func_to_decorate)
+        # ~ def wrapper(*args, **kwargs):
+            # ~ request = args[0]
+            # ~ today = datetime.date.today()
+            # ~ has_active_window = AltaFormazioneFinestraTemporale.objects.filter(
+                # ~ data_inizio__lte=today, data_fine__gte=today
+            # ~ ).exists()
+            # ~ kwargs["has_active_window"] = has_active_window
 
-            if required and not has_active_window:
-                return custom_message(
-                    request,
-                    _("No active temporal window. This operation is not available."),
-                )
-            return func_to_decorate(*args, **kwargs)
+            # ~ if required and not has_active_window:
+                # ~ return custom_message(
+                    # ~ request,
+                    # ~ _("No active temporal window. This operation is not available."),
+                # ~ )
+            # ~ return func_to_decorate(*args, **kwargs)
 
-        return wrapper
+        # ~ return wrapper
 
-    return decorator
+    # ~ return decorator
 
 
 def is_validator_user(func_to_decorate):

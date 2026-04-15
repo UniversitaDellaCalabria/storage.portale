@@ -69,19 +69,12 @@
       </div>
       {% endif %}
       <!-- AVVISO FINESTRA TEMPORALE -->
-      {% if not has_active_window %}
-      <div class="alert alert-danger" role="alert">0
+      {% if master.pk and not has_active_window and not is_validator and current_status_cod in "0,2,None" %}
+      <div class="alert alert-danger" role="alert">
         -
         <i class="fas fa-exclamation-triangle"></i>
         <strong>Invio non disponibile:</strong><br>
-        Non è presente una finestra temporale attiva.
-      </div>
-
-      {% elif not has_valid_academic_year %}
-      <div class="alert alert-warning" role="alert">
-        <i class="fas fa-exclamation-circle"></i>
-        <strong>Anno accademico non valido:</strong><br>
-        L’anno di erogazione del master non è coerente con la finestra temporale attiva.
+        Non è presente una finestra temporale attiva per poter inviare la validazione.
       </div>
       {% endif %}
 
