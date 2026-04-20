@@ -84,7 +84,7 @@ class MasterDatiBaseForm(forms.ModelForm):
         labels = {
             "titolo_it": "Titolo (IT)",
             "titolo_en": "Titolo (EN)",
-            "anno_erogazione": "Anno erogazione",
+            "anno_erogazione": "Anno accademico",
             "dipartimento_riferimento": "Dipartimento di riferimento",
             "alta_formazione_tipo_corso": "Tipo di corso",
             "lingua": "Lingua",

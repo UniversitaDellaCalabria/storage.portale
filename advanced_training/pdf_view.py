@@ -335,12 +335,16 @@ def advancedtraining_export_pdf(request, pk):
 
     # ── TAB 1: DATI GENERALI ─────────────────────────────────────────────
     story += _section_title("Dati Generali", styles)
-    
+
+    anno_accademico = None
+    if getattr(master, "anno_erogazione", None):
+        anno_accademico = f"{master.anno_erogazione}/{master.anno_erogazione + 1}"
+        
     dati_generali = [
         ("Titolo (IT)", master.titolo_it),
         ("Titolo (EN)", master.titolo_en),
         ("Dipartimento", master.dipartimento_riferimento),
-        ("Anno Erogazione", getattr(master, "anno_erogazione", None)),
+        ("Anno Accademico", anno_accademico),
         ("Tipo Master", getattr(master, "alta_formazione_tipo_corso", None)),
         # ~ ("Livello", getattr(master, "livello", None)),
         ("Durata (mesi)", getattr(master, "mesi", None)),
