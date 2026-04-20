@@ -17,7 +17,7 @@ from reportlab.platypus import (
 )
 
 from advanced_training.models import AltaFormazioneDatiBase
-from advanced_training.management.views import get_current_status
+from advanced_training.management.views import get_current_status, _check_cfu_piano_didattico
 
 # ── palette colori ──────────────────────────────────────────────────────────
 PRIMARY = colors.HexColor("#0066cc")
@@ -246,7 +246,7 @@ def advancedtraining_export_pdf(request, pk):
         topMargin=2 * cm,
         bottomMargin=2 * cm,
         title=f"Master – {master.titolo_it or 'Scheda'}",
-        author="Sistema Advanced Training",
+        author="storage.portale.unical.it - Università della Calabria",
         allowSplitting=1,
     )
 
@@ -257,7 +257,7 @@ def advancedtraining_export_pdf(request, pk):
     status_color = STATUS_COLORS.get(str(status_cod), TEXT_MUTED)
     badge_text = f'<font color="white"><b> {status_desc} </b></font>'
     badge = Paragraph(badge_text, styles["StatusBadge"])
-    badge_cell = Table([[badge]], colWidths=[3.5 * cm])
+    badge_cell = Table([[badge]], colWidths=["100%"])
     badge_cell.setStyle(
         TableStyle(
             [
@@ -271,14 +271,44 @@ def advancedtraining_export_pdf(request, pk):
         )
     )
 
-    header_table = Table(
+    style_titolo = styles["DocTitle"].clone('DocTitleAuto')
+    style_titolo.leading = style_titolo.fontSize * 1.25   # Questo evita l'accavallamento delle righe
+
+    badge_table = Table(
         [
             [
-                Paragraph(master.titolo_it or "Scheda Master", styles["DocTitle"]),
                 badge_cell,
             ]
         ],
-        colWidths=["80%", "20%"],
+        colWidths=["100%"],
+    )
+    badge_table.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                # Aggiungiamo un padding verticale per dare "aria" al titolo
+                ("TOPPADDING", (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ]
+        )
+    )
+    story.append(badge_table)
+
+    story.append(
+        HRFlowable(
+            width="100%", thickness=1, color="#ffffff", spaceBefore=5, spaceAfter=5
+        )
+    )
+    
+    header_table = Table(
+        [
+            [
+                Paragraph(master.titolo_it or "Scheda Master", style_titolo),
+            ]
+        ],
+        colWidths=["100%"],
     )
     header_table.setStyle(
         TableStyle(
@@ -286,6 +316,9 @@ def advancedtraining_export_pdf(request, pk):
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 0),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                # Aggiungiamo un padding verticale per dare "aria" al titolo
+                ("TOPPADDING", (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
             ]
         )
     )
@@ -296,26 +329,26 @@ def advancedtraining_export_pdf(request, pk):
 
     story.append(
         HRFlowable(
-            width="100%", thickness=2, color=PRIMARY, spaceBefore=6, spaceAfter=10
+            width="100%", thickness=2, color=PRIMARY, spaceBefore=10, spaceAfter=10
         )
     )
 
     # ── TAB 1: DATI GENERALI ─────────────────────────────────────────────
     story += _section_title("Dati Generali", styles)
-
+    
     dati_generali = [
         ("Titolo (IT)", master.titolo_it),
         ("Titolo (EN)", master.titolo_en),
         ("Dipartimento", master.dipartimento_riferimento),
-        ("Anno Accademico", getattr(master, "anno_accademico", None)),
-        ("Tipo Master", getattr(master, "tipo_master", None)),
-        ("Livello", getattr(master, "livello", None)),
-        ("Durata (mesi)", getattr(master, "durata_mesi", None)),
-        ("CFU Totali", getattr(master, "cfu_totali", None)),
-        ("N. Max Iscritti", getattr(master, "num_max_iscritti", None)),
-        ("N. Min Iscritti", getattr(master, "num_min_iscritti", None)),
+        ("Anno Erogazione", getattr(master, "anno_erogazione", None)),
+        ("Tipo Master", getattr(master, "alta_formazione_tipo_corso", None)),
+        # ~ ("Livello", getattr(master, "livello", None)),
+        ("Durata (mesi)", getattr(master, "mesi", None)),
+        ("CFU Totali", str(_check_cfu_piano_didattico(master)[1])),
+        ("N. Max Iscritti", getattr(master, "num_max_partecipanti", None)),
+        ("N. Min Iscritti", getattr(master, "num_min_partecipanti", None)),
         ("Quota Iscrizione", getattr(master, "quota_iscrizione", None)),
-        ("Sede", getattr(master, "sede", None)),
+        ("Sede", getattr(master, "sede_corso", None)),
     ]
     story.append(_two_col_table(dati_generali, styles))
 
