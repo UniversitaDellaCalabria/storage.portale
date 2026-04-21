@@ -34,7 +34,7 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     departmentId = serializers.IntegerField(source="dipartimento_riferimento.dip_id")
     departmentCod = serializers.CharField(source="dipartimento_riferimento.dip_cod")
     departmentName = serializers.CharField(source="dipartimento_riferimento.dip_des_it")
-    listenersAccepted = serializers.CharField(source="uditori_ammessi")
+    listenersAccepted = serializers.BooleanField(source="uditori_ammessi")
     maxListeners = serializers.IntegerField(source="num_max_uditori")
     admissionRequirements = serializers.CharField(source="requisiti_ammissione")
     titleIssued = serializers.CharField(source="titolo_rilasciato")
@@ -54,7 +54,7 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     courseObjectives = serializers.CharField(source="obiettivi_formativi_corso")
     finalTestMode = serializers.CharField(source="modalita_svolgimento_prova_finale")
     numModules = serializers.IntegerField(source="numero_moduli")
-    internship = serializers.CharField(source="stage_tirocinio")
+    internship = serializers.BooleanField(source="stage_tirocinio")
     internshipHours = serializers.IntegerField(source="ore_stage_tirocinio")
     internshipCFU = serializers.IntegerField(source="cfu_stage")
     internshipMonths = serializers.IntegerField(source="mesi_stage")
@@ -64,7 +64,7 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     contentTimesCriteriaCFU = serializers.CharField(
         source="contenuti_tempi_criteri_cfu"
     )
-    projectWork = serializers.CharField(source="project_work")
+    projectWork = serializers.BooleanField(source="project_work")
     startDate = serializers.DateField(source="data_inizio")
     endDate = serializers.DateField(source="data_fine")
     financialPlanPath = serializers.CharField(source="path_piano_finanziario")
