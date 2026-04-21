@@ -114,8 +114,8 @@ class AltaFormazioneDatiBase(Permissions):
     num_max_partecipanti = models.IntegerField(
         db_column="NUM_MAX_PARTECIPANTI", blank=True, null=True
     )
-    uditori_ammessi = models.CharField(
-        db_column="UDITORI_AMMESSI", max_length=200, blank=True, null=True
+    uditori_ammessi = models.BooleanField(
+        db_column="UDITORI_AMMESSI", default=False
     )
     num_max_uditori = models.IntegerField(
         db_column="NUM_MAX_UDITORI", blank=True, null=True
@@ -126,8 +126,8 @@ class AltaFormazioneDatiBase(Permissions):
     titolo_rilasciato = models.TextField(
         db_column="TITOLO_RILASCIATO", blank=True, null=True
     )
-    doppio_titolo = models.CharField(
-        db_column="DOPPIO_TITOLO", max_length=100, blank=True, null=True
+    doppio_titolo = models.BooleanField(
+        db_column="DOPPIO_TITOLO", default=False
     )
     matricola_direttore_scientifico = models.ForeignKey(
         "addressbook.Personale",
@@ -165,8 +165,8 @@ class AltaFormazioneDatiBase(Permissions):
         db_column="MODALITA_SVOLGIMENTO_PROVA_FINALE", blank=True, null=True
     )
     numero_moduli = models.FloatField(db_column="NUMERO_MODULI", blank=True, null=True)
-    stage_tirocinio = models.TextField(
-        db_column="STAGE_TIROCINIO", blank=True, null=True
+    stage_tirocinio = models.BooleanField(
+        db_column="STAGE_TIROCINIO", default=False
     )
     ore_stage_tirocinio = models.IntegerField(
         db_column="ORE_STAGE_TIROCINIO", blank=True, null=True
@@ -176,7 +176,7 @@ class AltaFormazioneDatiBase(Permissions):
     tipo_aziende_enti_tirocinio = models.TextField(
         db_column="TIPO_AZIENDE_ENTI_TIROCINIO", blank=True, null=True
     )
-    project_work = models.TextField(db_column="PROJECT_WORK", blank=True, null=True)
+    project_work = models.BooleanField(db_column="PROJECT_WORK", default=False)
     contenuti_tempi_criteri_cfu = models.TextField(
         db_column="CONTENUTI_TEMPI_CRITERI_CFU", blank=True, null=True
     )
