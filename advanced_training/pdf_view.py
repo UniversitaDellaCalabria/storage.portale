@@ -188,6 +188,33 @@ def _two_col_table(pairs, styles):
     return t
 
 
+def _one_col_table(pairs, styles):
+    """
+    Tabella a colonna singola per campi testuali lunghi (es. obiettivi, competenze).
+    `pairs` è una lista di tuple (label, value).
+    """
+    data = []
+    for label, value in pairs:
+        data.append([Paragraph(label.upper(), styles["FieldLabel"])])
+        data.append([Paragraph(_val(value), styles["FieldValue"])])
+
+    t = Table(data, colWidths=["100%"], splitByRow=1)
+    t.canSplit = 1
+    t.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("WORDWRAP", (0, 0), (-1, -1), "LTR"),
+            ]
+        )
+    )
+    return t
+
+
 def _generic_table(headers, rows_data, styles, col_widths=None):
     """Tabella generica con intestazione colorata."""
     header_row = [Paragraph(h, styles["TableHeader"]) for h in headers]
@@ -346,16 +373,111 @@ def advancedtraining_export_pdf(request, pk):
         ("Titolo (EN)", master.titolo_en),
         ("Dipartimento", master.dipartimento_riferimento),
         ("Anno Accademico", anno_accademico),
-        ("Tipo Master", getattr(master, "alta_formazione_tipo_corso", None)),
-        # ~ ("Livello", getattr(master, "livello", None)),
+        ("Tipo corso", getattr(master, "alta_formazione_tipo_corso", None)),
+        ("Lingua", getattr(master, "lingua", None)),
+        (
+            "Modalità di erogazione",
+            getattr(master, "alta_formazione_mod_erogazione", None),
+        ),
+        ("Modalità di selezione", getattr(master, "tipo_selezione", None)),
+        ("Ore complessive", getattr(master, "ore", None)),
         ("Durata (mesi)", getattr(master, "mesi", None)),
+        ("Data inizio", getattr(master, "data_inizio", None)),
+        ("Data fine", getattr(master, "data_fine", None)),
+        ("Sede del corso", getattr(master, "sede_corso", None)),
         ("CFU Totali", str(_check_cfu_piano_didattico(master)[1])),
-        ("N. Max Iscritti", getattr(master, "num_max_partecipanti", None)),
         ("N. Min Iscritti", getattr(master, "num_min_partecipanti", None)),
-        ("Quota Iscrizione", getattr(master, "quota_iscrizione", None)),
-        ("Sede", getattr(master, "sede_corso", None)),
+        ("N. Max Iscritti", getattr(master, "num_max_partecipanti", None)),
+        ("Quota Iscrizione (€)", getattr(master, "quota_iscrizione", None)),
+        ("Numero moduli", getattr(master, "numero_moduli", None)),
+        ("Titolo rilasciato", getattr(master, "titolo_rilasciato", None)),
+        ("Doppio titolo", getattr(master, "doppio_titolo", None)),
     ]
     story.append(_two_col_table(dati_generali, styles))
+
+    # ── UDITORI ──────────────────────────────────────────────────────────
+    story += _section_title("Uditori", styles)
+    story.append(
+        _two_col_table(
+            [
+                ("Uditori ammessi", getattr(master, "uditori_ammessi", None)),
+                ("N. Max Uditori", getattr(master, "num_max_uditori", None)),
+                ("Quota uditori (€)", getattr(master, "quota_uditori", None)),
+                ("", ""),
+            ],
+            styles,
+        )
+    )
+
+    # ── REQUISITI DI AMMISSIONE ───────────────────────────────────────────
+    req = getattr(master, "requisiti_ammissione", None)
+    if req:
+        story += _section_title("Requisiti di Ammissione", styles)
+        story.append(_one_col_table([("Requisiti di ammissione", req)], styles))
+
+    # ── OBIETTIVI E COMPETENZE ────────────────────────────────────────────
+    story += _section_title("Obiettivi Formativi e Competenze", styles)
+    obiettivi_pairs = []
+    for label, attr in [
+        ("Funzione lavoro", "funzione_lavoro"),
+        ("Obiettivi formativi del corso", "obiettivi_formativi_corso"),
+        ("Obiettivi formativi Summer School", "obiettivi_formativi_summer_school"),
+        ("Competenze", "competenze"),
+        ("Sbocchi occupazionali", "sbocchi_occupazionali"),
+    ]:
+        val = getattr(master, attr, None)
+        if val:
+            obiettivi_pairs.append((label, val))
+
+    if obiettivi_pairs:
+        story.append(_one_col_table(obiettivi_pairs, styles))
+    else:
+        story.append(
+            _empty_table_note("Nessun obiettivo o competenza inserita.", styles)
+        )
+
+    # ── STAGE / TIROCINIO ─────────────────────────────────────────────────
+    story += _section_title("Stage / Tirocinio", styles)
+    story.append(
+        _two_col_table(
+            [
+                (
+                    "Stage / Tirocinio previsto",
+                    getattr(master, "stage_tirocinio", None),
+                ),
+                ("Ore di tirocinio", getattr(master, "ore_stage_tirocinio", None)),
+                ("CFU tirocinio", getattr(master, "cfu_stage", None)),
+                ("Mesi tirocinio", getattr(master, "mesi_stage", None)),
+            ],
+            styles,
+        )
+    )
+    tipo_az = getattr(master, "tipo_aziende_enti_tirocinio", None)
+    contenuti = getattr(master, "contenuti_tempi_criteri_cfu", None)
+    stage_extra = []
+    if tipo_az:
+        stage_extra.append(("Tipologia aziende/enti tirocinio", tipo_az))
+    if contenuti:
+        stage_extra.append(("Contenuti / Tempi / Criteri CFU", contenuti))
+    if stage_extra:
+        story.append(_one_col_table(stage_extra, styles))
+
+    # ── PROVA FINALE E PROJECT WORK ───────────────────────────────────────
+    story += _section_title("Prova Finale e Project Work", styles)
+    story.append(
+        _two_col_table(
+            [
+                ("Project Work", getattr(master, "project_work", None)),
+                ("", ""),
+            ],
+            styles,
+        )
+    )
+    modalita = getattr(master, "modalita_svolgimento_prova_finale", None)
+    if modalita:
+        story.append(
+            _one_col_table([("Modalità svolgimento prova finale", modalita)], styles)
+        )
 
     # Direttore scientifico
     story += _section_title("Direttore Scientifico", styles)
@@ -490,15 +612,15 @@ def advancedtraining_export_pdf(request, pk):
     partners = master.altaformazionepartner_set.all().order_by("denominazione")
     if partners.exists():
         rows = [
-            (p.denominazione, getattr(p, "tipo", ""), getattr(p, "nazione", ""))
+            (p.denominazione, getattr(p, "tipologia", ""), getattr(p, "sito_web", ""))
             for p in partners
         ]
         story.append(
             _generic_table(
-                ["Denominazione", "Tipo", "Nazione"],
+                ["Denominazione", "Tipologia", "Sito Web"],
                 rows,
                 styles,
-                col_widths=["50%", "25%", "25%"],
+                col_widths=["40%", "25%", "35%"],
             )
         )
     else:
