@@ -50,9 +50,10 @@ def _val(v, max_chars=_FIELD_MAX_CHARS):
     s = s.replace("\u2013", "-").replace("\u2014", "-")
     s = s.replace("\u2026", "...")
     s = " ".join(s.split())
-    if len(s) > max_chars:
-        s = s[:max_chars] + "..."
     return s
+    # ~ if len(s) > max_chars:
+        # ~ s = s[:max_chars] + "..."
+    # ~ return s
 
 
 def _tval(v):
@@ -462,9 +463,10 @@ def advancedtraining_export_pdf(request, pk):
                 rows = [
                     [
                         (
-                            modulo_text[:120] + "..."
-                            if len(modulo_text) > 120
-                            else modulo_text
+                            # ~ modulo_text[:120] + "..."
+                            # ~ if len(modulo_text) > 120
+                            # ~ else modulo_text
+                            modulo_text
                         ),
                         p.ssd or "—",
                         _val(p.num_ore) + " h" if p.num_ore else "—",
