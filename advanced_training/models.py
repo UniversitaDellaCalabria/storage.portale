@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core import validators
 from django.db import models
 from generics.models import Permissions
 from generics.validators import validate_file_size, validate_pdf_file_extension
@@ -168,11 +169,13 @@ class AltaFormazioneDatiBase(Permissions):
     stage_tirocinio = models.BooleanField(
         db_column="STAGE_TIROCINIO", default=False
     )
-    ore_stage_tirocinio = models.IntegerField(
+    ore_stage_tirocinio = models.PositiveIntegerField(
         db_column="ORE_STAGE_TIROCINIO", blank=True, null=True
     )
-    cfu_stage = models.IntegerField(db_column="CFU_STAGE", blank=True, null=True)
-    mesi_stage = models.IntegerField(db_column="MESI_STAGE", blank=True, null=True)
+    cfu_stage = models.FloatField(
+        db_column="CFU_STAGE", blank=True, null=True, validators=[validators.MinValueValidator(0.1)]
+    )
+    mesi_stage = models.PositiveIntegerField(db_column="MESI_STAGE", blank=True, null=True)
     tipo_aziende_enti_tirocinio = models.TextField(
         db_column="TIPO_AZIENDE_ENTI_TIROCINIO", blank=True, null=True
     )
@@ -447,8 +450,12 @@ class AltaFormazionePianoDidattico(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     modulo = models.TextField(db_column="MODULO")
     ssd = models.CharField(db_column="SSD", max_length=500, blank=True, null=True)
-    num_ore = models.IntegerField(db_column="NUM_ORE", blank=True, null=True)
-    cfu = models.IntegerField(db_column="CFU", blank=True, null=True)
+    num_ore = models.IntegerField(
+        db_column="NUM_ORE", blank=True, null=True, validators=[validators.MinValueValidator(1)]
+    )
+    cfu = models.FloatField(
+        db_column="CFU", blank=True, null=True, validators=[validators.MinValueValidator(0.1)]
+    )
     verifica_finale = models.IntegerField(
         db_column="VERIFICA_FINALE", blank=True, null=True
     )
