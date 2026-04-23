@@ -1,4 +1,6 @@
 import io
+import re
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -14,6 +16,8 @@ from reportlab.platypus import (
     Table,
     TableStyle,
     HRFlowable,
+    ListFlowable,
+    ListItem
 )
 
 from advanced_training.models import AltaFormazioneDatiBase
@@ -137,6 +141,10 @@ def _styles():
     return extra
 
 
+import re
+from reportlab.platypus import Paragraph, Spacer
+
+    
 def _section_title(title, styles):
     return [
         Spacer(1, 0.3 * cm),
@@ -193,6 +201,7 @@ def _one_col_table(pairs, styles):
     Tabella a colonna singola per campi testuali lunghi (es. obiettivi, competenze).
     `pairs` è una lista di tuple (label, value).
     """
+    
     data = []
     for label, value in pairs:
         data.append([Paragraph(label.upper(), styles["FieldLabel"])])
@@ -214,6 +223,29 @@ def _one_col_table(pairs, styles):
     )
     return t
 
+
+def _one_col_elements(pairs, styles):
+    """
+    Versione corretta: restituisce una lista di elementi (Flowables).
+    Permette ai testi lunghi di fluire correttamente tra le pagine.
+    `pairs` è una lista di tuple (label, value).
+    """
+    elements = []
+    
+    for label, value in pairs:
+        # 1. Aggiunge l'etichetta (Label)
+        elements.append(Paragraph(label.upper(), styles["FieldLabel"]))
+        
+        # 2. Aggiunge il valore (Value)
+        # _val() è la tua funzione di utility per gestire i None/stringhe
+        elements.append(Paragraph(_val(value), styles["FieldValue"]))
+        
+        # 3. Aggiunge un piccolo spazio dopo ogni coppia campo/valore
+        # Sostituisce il BOTTOMPADDING della vecchia tabella
+        elements.append(Spacer(1, 6))
+
+    return elements
+    
 
 def _generic_table(headers, rows_data, styles, col_widths=None):
     """Tabella generica con intestazione colorata."""
@@ -282,8 +314,53 @@ def advancedtraining_export_pdf(request, pk):
     story = []
 
     # ── INTESTAZIONE ─────────────────────────────────────────────────────
-    style_titolo = styles["DocTitle"].clone("DocTitleAuto")
-    style_titolo.leading = style_titolo.fontSize * 1.25
+    status_color = STATUS_COLORS.get(str(status_cod), TEXT_MUTED)
+    badge_text = f'<font color="white"><b> {status_desc} </b></font>'
+    badge = Paragraph(badge_text, styles["StatusBadge"])
+    badge_cell = Table([[badge]], colWidths=["100%"])
+    badge_cell.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (0, 0), status_color),
+                ("ROUNDEDCORNERS", (0, 0), (0, 0), [4, 4, 4, 4]),
+                ("LEFTPADDING", (0, 0), (0, 0), 6),
+                ("RIGHTPADDING", (0, 0), (0, 0), 6),
+                ("TOPPADDING", (0, 0), (0, 0), 2),
+                ("BOTTOMPADDING", (0, 0), (0, 0), 2),
+            ]
+        )
+    )
+
+    style_titolo = styles["DocTitle"].clone('DocTitleAuto')
+    style_titolo.leading = style_titolo.fontSize * 1.25   # Questo evita l'accavallamento delle righe
+
+    badge_table = Table(
+        [
+            [
+                badge_cell,
+            ]
+        ],
+        colWidths=["100%"],
+    )
+    badge_table.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                # Aggiungiamo un padding verticale per dare "aria" al titolo
+                ("TOPPADDING", (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ]
+        )
+    )
+    story.append(badge_table)
+
+    story.append(
+        HRFlowable(
+            width="100%", thickness=1, color="#ffffff", spaceBefore=5, spaceAfter=5
+        )
+    )
 
     header_table = Table(
         [
@@ -385,7 +462,9 @@ def advancedtraining_export_pdf(request, pk):
             obiettivi_pairs.append((label, val))
 
     if obiettivi_pairs:
-        story.append(_one_col_table(obiettivi_pairs, styles))
+        # ~ story.append(_one_col_table(obiettivi_pairs, styles))
+        elements = _one_col_elements(obiettivi_pairs, styles)
+        story.extend(elements)
     else:
         story.append(
             _empty_table_note("Nessun obiettivo o competenza inserita.", styles)
@@ -415,7 +494,9 @@ def advancedtraining_export_pdf(request, pk):
     if contenuti:
         stage_extra.append(("Contenuti / Tempi / Criteri CFU", contenuti))
     if stage_extra:
-        story.append(_one_col_table(stage_extra, styles))
+        #story.append(_one_col_table(stage_extra, styles))
+        elements = _one_col_elements(stage_extra, styles)
+        story.extend(elements)
 
     # ── PROVA FINALE E PROJECT WORK ───────────────────────────────────────
     story += _section_title("Prova Finale e Project Work", styles)
@@ -472,20 +553,20 @@ def advancedtraining_export_pdf(request, pk):
     )
 
     # Stato corrente
-    story += _section_title("Stato Corrente", styles)
-    story.append(
-        _two_col_table(
-            [
-                ("Stato", status_desc),
-                ("Data", status.get("data_status") or "—"),
-                ("Utente", status.get("utente") or "—"),
-                ("Dip. utente", status.get("dipartimento_utente") or "—"),
-                ("Dip. master", status.get("dipartimento_master") or "—"),
-                ("Motivazione", status.get("motivazione") or "—"),
-            ],
-            styles,
-        )
-    )
+    # ~ story += _section_title("Stato Corrente", styles)
+    # ~ story.append(
+        # ~ _two_col_table(
+            # ~ [
+                # ~ ("Stato", status_desc),
+                # ~ ("Data", status.get("data_status") or "—"),
+                # ~ ("Utente", status.get("utente") or "—"),
+                # ~ ("Dip. utente", status.get("dipartimento_utente") or "—"),
+                # ~ ("Dip. master", status.get("dipartimento_master") or "—"),
+                # ~ ("Motivazione", status.get("motivazione") or "—"),
+            # ~ ],
+            # ~ styles,
+        # ~ )
+    # ~ )
 
     # ── TAB 2: INCARICHI DIDATTICI ───────────────────────────────────────
     story += _section_title("Incarichi Didattici", styles)

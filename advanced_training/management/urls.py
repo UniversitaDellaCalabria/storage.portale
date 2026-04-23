@@ -29,35 +29,37 @@ from advanced_training.pdf_view import advancedtraining_export_pdf
 
 app_name = "management"
 
+prefix = "advanced-training"
+
 urlpatterns = [
-    path("advanced-training/", advancedtraining_masters, name="advanced-training"),
+    path(f"{prefix}/", advancedtraining_masters, name="advanced-training"),
     path(
-        "advanced-training/<int:pk>/",
+        f"{prefix}/<int:pk>/",
         advancedtraining_info_edit,
         name="advanced-training-detail",
     ),
     path(
-        "advanced-training/new/",
+        f"{prefix}/new/",
         advancedtraining_info_create,
         name="advanced-training-create",
     ),
     path(
-        "advanced-training/<int:pk>/delete/",
+        f"{prefix}/<int:pk>/delete/",
         advancedtraining_info_delete,
         name="advanced-training-delete",
     ),
     path(
-        "advanced-training/<int:pk>/status/<str:status_cod>/",
+        f"{prefix}/<int:pk>/status/<str:status_cod>/",
         advancedtraining_status_change,
         name="advanced-training-status-change",
     ),
     path(
-        "advanced-training/<int:pk>/duplicate/",
+        f"{prefix}/<int:pk>/duplicate/",
         advancedtraining_duplicate,
         name="advanced-training-duplicate",
     ),
     path(
-        "advanced-training/<int:pk>/load-tab/<str:tab_name>/",
+        f"{prefix}/<int:pk>/load-tab/<str:tab_name>/",
         advancedtraining_load_tab,
         name="advanced-training-load-tab",
     ),
@@ -77,7 +79,7 @@ urlpatterns = [
         name="consiglio-interno-delete",
     ),
     path(
-        "advanced-training/<int:pk>/proponente/",
+        f"{prefix}/<int:pk>/proponente/",
         advancedtraining_proponente_edit,
         name="advanced-training-proponente-edit",
     ),
@@ -87,63 +89,63 @@ urlpatterns = [
         name="advanced-training-direttore-edit",
     ),
     path(
-        "advanced-training/<int:pk>/incarichi/new/",
+        f"{prefix}/<int:pk>/incarichi/new/",
         incarico_didattico_new,
         name="incarico-didattico-new",
     ),
     path(
-        "advanced-training/<int:pk>/incarichi/<int:incarico_id>/edit/",
+        f"{prefix}/<int:pk>/incarichi/<int:incarico_id>/edit/",
         incarico_didattico_edit,
         name="incarico-didattico-edit",
     ),
     path(
-        "advanced-training/<int:pk>/incarichi/<int:incarico_id>/delete/",
+        f"{prefix}/<int:pk>/incarichi/<int:incarico_id>/delete/",
         incarico_didattico_delete,
         name="incarico-didattico-delete",
     ),
     path(
-        "advanced-training/<int:pk>/piano-didattico/new/",
+        f"{prefix}/<int:pk>/piano-didattico/new/",
         piano_didattico_new,
         name="piano-didattico-new",
     ),
     path(
-        "advanced-training/<int:pk>/piano-didattico/<int:modulo_id>/edit/",
+        f"{prefix}/<int:pk>/piano-didattico/<int:modulo_id>/edit/",
         piano_didattico_edit,
         name="piano-didattico-edit",
     ),
     path(
-        "advanced-training/<int:pk>/piano-didattico/<int:modulo_id>/delete/",
+        f"{prefix}/<int:pk>/piano-didattico/<int:modulo_id>/delete/",
         piano_didattico_delete,
         name="piano-didattico-delete",
     ),
-    path("<int:pk>/partner/new/", partner_new, name="partner-new"),
+    path(f"{prefix}/<int:pk>/partner/new/", partner_new, name="partner-new"),
     path(
-        "<int:pk>/partner/<int:partner_id>/edit/",
+        f"{prefix}/<int:pk>/partner/<int:partner_id>/edit/",
         partner_edit,
         name="partner-edit",
     ),
     path(
-        "<int:pk>/partner/<int:partner_id>/delete/",
+        f"{prefix}/<int:pk>/partner/<int:partner_id>/delete/",
         partner_delete,
         name="partner-delete",
     ),
     path(
-        "<int:pk>/consiglio-esterno/new/",
+        f"{prefix}/<int:pk>/consiglio-esterno/new/",
         consiglio_esterno_new,
         name="consiglio-esterno-new",
     ),
     path(
-        "<int:pk>/consiglio-esterno/<int:cons_id>/edit/",
+        f"{prefix}/<int:pk>/consiglio-esterno/<int:cons_id>/edit/",
         consiglio_esterno_edit,
         name="consiglio-esterno-edit",
     ),
     path(
-        "<int:pk>/consiglio-esterno/<int:cons_id>/delete/",
+        f"{prefix}/<int:pk>/consiglio-esterno/<int:cons_id>/delete/",
         consiglio_esterno_delete,
         name="consiglio-esterno-delete",
     ),
     path(
-        "<int:pk>/export/pdf/",
+        f"{prefix}/<int:pk>/export/pdf/",
         advancedtraining_export_pdf,
         name="advanced-training-export-pdf",
     ),
