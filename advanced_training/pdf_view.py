@@ -282,54 +282,9 @@ def advancedtraining_export_pdf(request, pk):
     story = []
 
     # ── INTESTAZIONE ─────────────────────────────────────────────────────
-    status_color = STATUS_COLORS.get(str(status_cod), TEXT_MUTED)
-    badge_text = f'<font color="white"><b> {status_desc} </b></font>'
-    badge = Paragraph(badge_text, styles["StatusBadge"])
-    badge_cell = Table([[badge]], colWidths=["100%"])
-    badge_cell.setStyle(
-        TableStyle(
-            [
-                ("BACKGROUND", (0, 0), (0, 0), status_color),
-                ("ROUNDEDCORNERS", (0, 0), (0, 0), [4, 4, 4, 4]),
-                ("LEFTPADDING", (0, 0), (0, 0), 6),
-                ("RIGHTPADDING", (0, 0), (0, 0), 6),
-                ("TOPPADDING", (0, 0), (0, 0), 2),
-                ("BOTTOMPADDING", (0, 0), (0, 0), 2),
-            ]
-        )
-    )
+    style_titolo = styles["DocTitle"].clone("DocTitleAuto")
+    style_titolo.leading = style_titolo.fontSize * 1.25
 
-    style_titolo = styles["DocTitle"].clone('DocTitleAuto')
-    style_titolo.leading = style_titolo.fontSize * 1.25   # Questo evita l'accavallamento delle righe
-
-    badge_table = Table(
-        [
-            [
-                badge_cell,
-            ]
-        ],
-        colWidths=["100%"],
-    )
-    badge_table.setStyle(
-        TableStyle(
-            [
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 0),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
-                # Aggiungiamo un padding verticale per dare "aria" al titolo
-                ("TOPPADDING", (0, 0), (-1, -1), 5),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-            ]
-        )
-    )
-    story.append(badge_table)
-
-    story.append(
-        HRFlowable(
-            width="100%", thickness=1, color="#ffffff", spaceBefore=5, spaceAfter=5
-        )
-    )
-    
     header_table = Table(
         [
             [
