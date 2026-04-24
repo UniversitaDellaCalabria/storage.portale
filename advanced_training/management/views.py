@@ -601,26 +601,26 @@ def advancedtraining_status_change(
             
         ore_ok, ore_totali = _check_ore_piano_didattico(dati_base)
         cfu_ok, cfu_totali = _check_cfu_piano_didattico(dati_base)
-        if not ore_ok:
-            messages.error(
-                request,
-                f"Impossibile inviare in validazione: il totale ore del piano didattico "
-                f"+ tirocinio è {ore_totali} su 1500 richieste. "
-                f"Completa il piano didattico prima di procedere."
-            )
-            return redirect(
-                "advanced-training:management:advanced-training-detail", pk=pk
-            )
-        if not cfu_ok:
-            messages.error(
-                request,
-                f"Impossibile inviare in validazione: il totale CFU del piano didattico "
-                f"è {cfu_totali} su 60 richiesti. "
-                f"Completa il piano didattico prima di procedere."
-            )
-            return redirect(
-                "advanced-training:management:advanced-training-detail", pk=pk
-            )
+        # ~ if not ore_ok:
+            # ~ messages.error(
+                # ~ request,
+                # ~ f"Impossibile inviare in validazione: il totale ore del piano didattico "
+                # ~ f"+ tirocinio è {ore_totali} su 1500 richieste. "
+                # ~ f"Completa il piano didattico prima di procedere."
+            # ~ )
+            # ~ return redirect(
+                # ~ "advanced-training:management:advanced-training-detail", pk=pk
+            # ~ )
+        # ~ if not cfu_ok:
+            # ~ messages.error(
+                # ~ request,
+                # ~ f"Impossibile inviare in validazione: il totale CFU del piano didattico "
+                # ~ f"è {cfu_totali} su 60 richiesti. "
+                # ~ f"Completa il piano didattico prima di procedere."
+            # ~ )
+            # ~ return redirect(
+                # ~ "advanced-training:management:advanced-training-detail", pk=pk
+            # ~ )
     if request.method != "POST":
         return custom_message(request, _("Metodo non consentito"))
 
