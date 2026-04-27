@@ -12,6 +12,29 @@ from advanced_training.models import (
 )
 from structures.models import DidatticaDipartimento
 
+class MasterTirocinioForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazioneDatiBase
+        fields = [
+            "stage_tirocinio",
+            "ore_stage_tirocinio",
+            "cfu_stage",
+            "mesi_stage",
+            "tipo_aziende_enti_tirocinio",
+            "project_work",
+        ]
+        widgets = {
+            "ore_stage_tirocinio": forms.NumberInput(attrs={"min": 0, "step": 1}),
+            "cfu_stage": forms.NumberInput(attrs={"min": 0}),
+            "mesi_stage": forms.NumberInput(attrs={"min": 0}),
+        }
+
+class MasterProvaFinaleForm(forms.ModelForm):
+    class Meta:
+        model = AltaFormazioneDatiBase
+        fields = [
+            "modalita_svolgimento_prova_finale",
+        ]
 
 class MasterDatiBaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -50,14 +73,14 @@ class MasterDatiBaseForm(forms.ModelForm):
             "obiettivi_formativi_summer_school",
             "competenze",
             "sbocchi_occupazionali",
-            "stage_tirocinio",
-            "ore_stage_tirocinio",
-            "cfu_stage",
-            "mesi_stage",
-            "tipo_aziende_enti_tirocinio",
-            "contenuti_tempi_criteri_cfu",
-            "project_work",
-            "modalita_svolgimento_prova_finale",
+            # "stage_tirocinio",
+            # "ore_stage_tirocinio",
+            # "cfu_stage",
+            # "mesi_stage",
+            # "tipo_aziende_enti_tirocinio",
+            # "contenuti_tempi_criteri_cfu",
+            # "project_work",
+            # "modalita_svolgimento_prova_finale",
             "numero_moduli",
             "path_piano_finanziario",
             "path_doc_delibera",
@@ -70,9 +93,9 @@ class MasterDatiBaseForm(forms.ModelForm):
             "num_min_partecipanti": forms.NumberInput(attrs={"min": 0}),
             "num_max_partecipanti": forms.NumberInput(attrs={"min": 0}),
             "num_max_uditori": forms.NumberInput(attrs={"min": 0}),
-            "ore_stage_tirocinio": forms.NumberInput(attrs={"min": 0, "step": 1}),
-            "cfu_stage": forms.NumberInput(attrs={"min": 0}),
-            "mesi_stage": forms.NumberInput(attrs={"min": 0}),
+            # "ore_stage_tirocinio": forms.NumberInput(attrs={"min": 0, "step": 1}),
+            # "cfu_stage": forms.NumberInput(attrs={"min": 0}),
+            # "mesi_stage": forms.NumberInput(attrs={"min": 0}),
             # ~ "uditori_ammessi": forms.CheckboxInput(),
             # ~ "doppio_titolo": forms.CheckboxInput(),
             # ~ "project_work": forms.CheckboxInput(),
@@ -109,14 +132,14 @@ class MasterDatiBaseForm(forms.ModelForm):
             "obiettivi_formativi_summer_school": "Obiettivi formativi Summer School",
             "competenze": "Competenze",
             "sbocchi_occupazionali": "Sbocchi occupazionali",
-            "stage_tirocinio": "Stage / Tirocinio previsto",
-            "ore_stage_tirocinio": "Ore di tirocinio",
-            "cfu_stage": "CFU tirocinio",
-            "mesi_stage": "Mesi tirocinio",
-            "tipo_aziende_enti_tirocinio": "Tipologia aziende/enti tirocinio",
-            "contenuti_tempi_criteri_cfu": "Contenuti / Tempi / Criteri CFU",
-            "project_work": "Project Work",
-            "modalita_svolgimento_prova_finale": "Modalità svolgimento prova finale",
+            # "stage_tirocinio": "Stage / Tirocinio previsto",
+            # "ore_stage_tirocinio": "Ore di tirocinio",
+            # "cfu_stage": "CFU tirocinio",
+            # "mesi_stage": "Mesi tirocinio",
+            # "tipo_aziende_enti_tirocinio": "Tipologia aziende/enti tirocinio",
+            # "contenuti_tempi_criteri_cfu": "Contenuti / Tempi / Criteri CFU",
+            # "project_work": "Project Work",
+            # "modalita_svolgimento_prova_finale": "Modalità svolgimento prova finale",
             "numero_moduli": "Numero moduli",
             "path_piano_finanziario": "Piano finanziario (allegato)",
             "path_doc_delibera": "Delibera (allegato)",
@@ -188,7 +211,6 @@ class MasterDatiBaseForm(forms.ModelForm):
         ore_stage_new = cleaned_data.get("ore_stage_tirocinio") or 0
 
         if self.instance and self.instance.pk:
-            from django.db.models import Sum
             ore_moduli = (
                 self.instance.altaformazionepianodidattico_set
                 .aggregate(tot=Sum("num_ore"))["tot"] or 0
@@ -250,21 +272,21 @@ class PianoDidatticoForm(forms.ModelForm):
             totale = ore_altri_moduli + num_ore_new + ore_tirocinio
             tot_cfu = cfu_altri_moduli + cfu_new
 
-            if totale > 1500:
-                self.add_error(
-                    "num_ore",
-                    f"Attenzione: il totale ore piano didattico + tirocinio "
-                    f"supererebbe 1500 ({totale} ore). "
-                    f"Verifica i dati prima di salvare.",
-                )
+            # if totale > 1500:
+            #     self.add_error(
+            #         "num_ore",
+            #         f"Attenzione: il totale ore piano didattico + tirocinio "
+            #         f"supererebbe 1500 ({totale} ore). "
+            #         f"Verifica i dati prima di salvare.",
+            #     )
                 
-            if tot_cfu > 60:
-                self.add_error(
-                    "cfu",
-                    f"Attenzione: il totale dei CFU del piano didattico "
-                    f"supererebbe i 60 ({tot_cfu}). "
-                    f"Verifica i dati prima di salvare.",
-                )
+            # if tot_cfu > 60:
+            #     self.add_error(
+            #         "cfu",
+            #         f"Attenzione: il totale dei CFU del piano didattico "
+            #         f"supererebbe i 60 ({tot_cfu}). "
+            #         f"Verifica i dati prima di salvare.",
+            #     )
 
         return cleaned_data
 

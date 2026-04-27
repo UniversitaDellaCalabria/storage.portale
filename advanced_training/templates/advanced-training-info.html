@@ -159,6 +159,31 @@
           </a>
         </li>
         {% if master.pk %}
+          <li class="nav-item">
+            <a class="nav-link {% if last_viewed_tab == 'Tirocinio' %}active{% endif %}"
+              id="tirocinio-nav-item"
+              data-toggle="tab"
+              href="#tirocinio-tab"
+              data-tab-name="Tirocinio"
+              role="tab"
+              aria-controls="tirocinio-tab"
+              aria-selected="false">
+              Tirocinio
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link {% if last_viewed_tab == 'Prova Finale' %}active{% endif %}"
+              id="prova-finale-nav-item"
+              data-toggle="tab"
+              href="#prova-finale-tab"
+              data-tab-name="Prova Finale"
+              role="tab"
+              aria-controls="prova-finale-tab"
+              aria-selected="false">
+              Prova Finale
+            </a>
+          </li>
         <li class="nav-item">
           <a class="nav-link {% if last_viewed_tab == 'Incarichi Didattici' %}active{% endif %}"
              id="incarichi-didattici-nav-item"
@@ -344,6 +369,31 @@
 
         <!-- TAB LAZY LOADING (placeholder) -->
          {% if master.pk %}
+            <div class="tab-pane fade p-4 mt-3 {% if last_viewed_tab == 'Tirocinio' %}show active{% endif %}"
+              id="tirocinio-tab"
+              role="tabpanel"
+              aria-labelledby="tirocinio-nav-item"
+              data-loaded="false">
+              <div class="text-center py-5">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Caricamento...</span>
+                </div>
+                <p class="mt-3">Caricamento dati in corso...</p>
+              </div>
+            </div>
+
+            <div class="tab-pane fade p-4 mt-3 {% if last_viewed_tab == 'Prova Finale' %}show active{% endif %}"
+              id="prova-finale-tab"
+              role="tabpanel"
+              aria-labelledby="prova-finale-nav-item"
+              data-loaded="false">
+              <div class="text-center py-5">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Caricamento...</span>
+                </div>
+                <p class="mt-3">Caricamento dati in corso...</p>
+              </div>
+            </div>
         <div class="tab-pane fade p-4 mt-3 {% if last_viewed_tab == 'Incarichi Didattici' %}show active{% endif %}"
           id="incarichi-didattici-tab"
           role="tabpanel"

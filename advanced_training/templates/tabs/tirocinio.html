@@ -1,0 +1,10 @@
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="tab_form_dict_key" value="Tirocinio" />
+
+  {{ form.as_p }}
+
+  {% if not is_readonly %}
+  <button type="submit" class="btn btn-primary">Salva</button>
+  {% endif %}
+</form>

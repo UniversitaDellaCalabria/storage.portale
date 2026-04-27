@@ -38,6 +38,8 @@ from advanced_training.management.forms import (
     PianoDidatticoForm,
     PianoDidatticoFormSet,
     ProponenteEsternoForm,
+    MasterTirocinioForm,
+    MasterProvaFinaleForm,
 )
 from advanced_training.models import (
     AltaFormazioneConsiglioScientificoEsterno,
@@ -79,6 +81,8 @@ TAB_FORMSET_MAP = {
         ConsiglioScientificoEsternoFormSet,
         "tabs/consiglio_esterno.html",
     ),
+    "Tirocinio": (MasterTirocinioForm, "tabs/tirocinio.html"),
+    "Prova Finale": (MasterProvaFinaleForm, "tabs/prova_finale.html"),
 }
 
 OPTIONAL_MOTIVATION_STATUSES = {"1", "3"}
@@ -374,7 +378,31 @@ def advancedtraining_load_tab(request, pk, tab_name):
     context = {"tab_name": tab_name, "is_readonly": is_readonly, "master": master}
 
     try:
-        if tab_name in TAB_FORMSET_MAP:
+        if tab_name == "Piano Didattico":
+            FormClass, template = TAB_FORMSET_MAP[tab_name]
+            context["form"] = FormClass(instance=master)
+
+            ore_moduli = (
+                master.altaformazionepianodidattico_set.aggregate(tot=Sum("num_ore"))["tot"] or 0
+            )
+            cfu_moduli = (
+                master.altaformazionepianodidattico_set.aggregate(tot_cfu=Sum("cfu"))["tot_cfu"] or 0
+            )
+            ore_tirocinio = master.ore_stage_tirocinio or 0
+            cfu_tirocinio = master.cfu_stage or 0
+
+            context["ore_piano_totale"]    = ore_moduli + ore_tirocinio
+            context["ore_piano_moduli"]    = ore_moduli
+            context["ore_piano_tirocinio"] = ore_tirocinio
+            context["ore_piano_mancanti"]  = max(0, 1500 - (ore_moduli + ore_tirocinio))
+            context["cfu_piano_totale"]    = cfu_moduli + cfu_tirocinio
+            context["cfu_piano_moduli"]    = cfu_moduli
+            context["cfu_piano_tirocinio"] = cfu_tirocinio
+            context["cfu_piano_mancanti"]  = max(0, 60 - (cfu_moduli + cfu_tirocinio))
+        elif tab_name in TAB_FORMSET_MAP:
+            FormClass, template = TAB_FORMSET_MAP[tab_name]
+            context["form"] = FormClass(instance=master)
+        elif tab_name in ["Tirocinio", "Prova Finale"]:
             FormClass, template = TAB_FORMSET_MAP[tab_name]
             context["form"] = FormClass(instance=master)
         elif tab_name == "Consiglio Scientifico Interno":
@@ -386,28 +414,6 @@ def advancedtraining_load_tab(request, pk, tab_name):
                 .select_related("matricola_cons")
                 .order_by("nome_origine_cons")
             )
-        elif tab_name == "Piano Didattico":
-            FormClass, template = TAB_FORMSET_MAP[tab_name]
-            context["form"] = FormClass(instance=master)
-
-            ore_moduli = (
-                master.altaformazionepianodidattico_set.aggregate(tot=Sum("num_ore"))[
-                    "tot"
-                ]
-                or 0
-            )
-            cfu_moduli = (
-                master.altaformazionepianodidattico_set.aggregate(tot_cfu=Sum("tot_cfu"))[
-                    "tot_cfu"
-                ]
-                or 0
-            )
-            ore_tirocinio = master.ore_stage_tirocinio or 0
-            context["ore_piano_totale"] = ore_moduli + ore_tirocinio
-            context["ore_piano_moduli"] = ore_moduli
-            context["ore_piano_tirocinio"] = ore_tirocinio
-            context["ore_piano_mancanti"] = max(0, 1500 - (ore_moduli + ore_tirocinio))
-            context["cfu_piano_mancanti"] = max(0, 60 - cfu_moduli)
         else:
             return JsonResponse(
                 {"error": "Tab non trovato", "tab_name": tab_name}, status=404
