@@ -390,15 +390,15 @@ def advancedtraining_load_tab(request, pk, tab_name):
             )
             ore_tirocinio = master.ore_stage_tirocinio or 0
             cfu_tirocinio = master.cfu_stage or 0
+            cfu_prova_finale = master.cfu_prova_finale or 0
 
             context["ore_piano_totale"]    = ore_moduli + ore_tirocinio
             context["ore_piano_moduli"]    = ore_moduli
             context["ore_piano_tirocinio"] = ore_tirocinio
-            context["ore_piano_mancanti"]  = max(0, 1500 - (ore_moduli + ore_tirocinio))
-            context["cfu_piano_totale"]    = cfu_moduli + cfu_tirocinio
+            context["cfu_piano_totale"]    = cfu_moduli + cfu_tirocinio + cfu_prova_finale
             context["cfu_piano_moduli"]    = cfu_moduli
             context["cfu_piano_tirocinio"] = cfu_tirocinio
-            context["cfu_piano_mancanti"]  = max(0, 60 - (cfu_moduli + cfu_tirocinio))
+            context["cfu_piano_prova_finale"] = cfu_prova_finale
         elif tab_name in TAB_FORMSET_MAP:
             FormClass, template = TAB_FORMSET_MAP[tab_name]
             context["form"] = FormClass(instance=master)
@@ -1359,6 +1359,8 @@ def piano_didattico_new(
             obj.dt_mod = timezone.now()
             obj.user_mod_id = request.user.id
             obj.save()
+            master.numero_moduli = master.altaformazionepianodidattico_set.count()
+            master.save(update_fields=["numero_moduli"])
 
             log_action(
                 user=request.user,
@@ -1484,6 +1486,8 @@ def piano_didattico_delete(
 
     modulo_label = modulo.modulo or f"#{modulo.pk}"
     modulo.delete()
+    master.numero_moduli = master.altaformazionepianodidattico_set.count()
+    master.save(update_fields=["numero_moduli"])
 
     log_action(
         user=request.user,

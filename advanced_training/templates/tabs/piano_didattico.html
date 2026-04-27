@@ -49,6 +49,13 @@
             <strong>{{ cfu_piano_tirocinio|default:"0" }}</strong>
           </span>
           <span
+            class="badge badge-warning px-2 py-1" style="font-size: 0.8rem"
+          >
+            <i class="fas fa-graduation-cap mr-1"></i>
+            CFU prova finale:
+            <strong>{{ cfu_piano_prova_finale|default:"0" }}</strong>
+          </span>
+            <span
             class="badge {% if cfu_piano_mancanti == 0 %}badge-success{% else %}badge-primary{% endif %} px-2 py-1"
             style="font-size: 0.8rem"
           >

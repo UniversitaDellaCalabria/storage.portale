@@ -175,11 +175,16 @@ class AltaFormazioneDatiBase(Permissions):
     cfu_stage = models.FloatField(
         db_column="CFU_STAGE", blank=True, null=True, validators=[validators.MinValueValidator(0.1)]
     )
+    cfu_prova_finale = models.FloatField(
+        db_column="CFU_PROVA_FINALE", blank=True, null=True, validators=[validators.MinValueValidator(0.1)]
+    )
     mesi_stage = models.PositiveIntegerField(db_column="MESI_STAGE", blank=True, null=True)
     tipo_aziende_enti_tirocinio = models.TextField(
         db_column="TIPO_AZIENDE_ENTI_TIROCINIO", blank=True, null=True
     )
     project_work = models.BooleanField(db_column="PROJECT_WORK", default=False)
+    prova_finale = models.BooleanField(db_column="PROVA_FINALE", default=False)
+    rinnovo = models.BooleanField(db_column="RINNOVO", default=False)
     contenuti_tempi_criteri_cfu = models.TextField(
         db_column="CONTENUTI_TEMPI_CRITERI_CFU", blank=True, null=True
     )

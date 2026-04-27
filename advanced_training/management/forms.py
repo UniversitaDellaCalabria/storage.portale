@@ -33,6 +33,8 @@ class MasterProvaFinaleForm(forms.ModelForm):
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
+            "prova_finale",
+            "cfu_prova_finale",
             "modalita_svolgimento_prova_finale",
         ]
 
@@ -46,6 +48,7 @@ class MasterDatiBaseForm(forms.ModelForm):
     class Meta:
         model = AltaFormazioneDatiBase
         fields = [
+            "rinnovo",
             "titolo_it",
             "titolo_en",
             "anno_erogazione",
@@ -81,7 +84,7 @@ class MasterDatiBaseForm(forms.ModelForm):
             # "contenuti_tempi_criteri_cfu",
             # "project_work",
             # "modalita_svolgimento_prova_finale",
-            "numero_moduli",
+            # "numero_moduli",
             "path_piano_finanziario",
             "path_doc_delibera",
         ]
@@ -105,6 +108,7 @@ class MasterDatiBaseForm(forms.ModelForm):
             "tipo_selezione": forms.Select(),
         }
         labels = {
+            "rinnovo": "Rinnovo",
             "titolo_it": "Titolo (IT)",
             "titolo_en": "Titolo (EN)",
             "anno_erogazione": "Anno accademico",
@@ -140,7 +144,7 @@ class MasterDatiBaseForm(forms.ModelForm):
             # "contenuti_tempi_criteri_cfu": "Contenuti / Tempi / Criteri CFU",
             # "project_work": "Project Work",
             # "modalita_svolgimento_prova_finale": "Modalità svolgimento prova finale",
-            "numero_moduli": "Numero moduli",
+            # "numero_moduli": "Numero moduli",
             "path_piano_finanziario": "Piano finanziario (allegato)",
             "path_doc_delibera": "Delibera (allegato)",
         }
