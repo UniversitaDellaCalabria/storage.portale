@@ -294,6 +294,7 @@ class IncaricoDidatticoForm(forms.ModelForm):
             "tipologia": "Tipologia docente",
             "path_cv": "Curriculum Vitae"
         }
+        help_texts = {"path_cv": "Carica il file se il docente è esterno"}
 
 
 IncaricoDidatticoFormSet = inlineformset_factory(
