@@ -281,7 +281,7 @@ PianoDidatticoFormSet = inlineformset_factory(
 class IncaricoDidatticoForm(forms.ModelForm):
     class Meta:
         model = AltaFormazioneIncaricoDidattico
-        fields = ["modulo", "num_ore", "docente", "qualifica", "ente", "tipologia"]
+        fields = ["modulo", "num_ore", "docente", "path_cv", "qualifica", "ente", "tipologia"]
         widgets = {
             "num_ore": forms.NumberInput(attrs={"min": 0, "step": 1}),
         }
@@ -292,6 +292,7 @@ class IncaricoDidatticoForm(forms.ModelForm):
             "qualifica": "Qualifica",
             "ente": "Ente",
             "tipologia": "Tipologia docente",
+            "path_cv": "Curriculum Vitae"
         }
 
 
@@ -404,30 +405,10 @@ class DirettoreScientificoEsternoForm(forms.ModelForm):
         }
 
 
-from advanced_training.models import AltaFormazioneIncaricoDidattico
-
-
-class IncaricoDidatticoForm(forms.ModelForm):
-    class Meta:
-        model = AltaFormazioneIncaricoDidattico
-        fields = ["modulo", "docente", "qualifica", "ente", "num_ore", "tipologia"]
-        widgets = {
-            "num_ore": forms.NumberInput(attrs={"min": 0, "step": 1}),
-        }
-        labels = {
-            "modulo": "Modulo",
-            "docente": "Docente",
-            "qualifica": "Qualifica",
-            "ente": "Ente",
-            "num_ore": "Numero Ore",
-            "tipologia": "Tipologia",
-        }
-
-
-class IncaricoDidatticoEsternoForm(forms.Form):
-    docente = forms.CharField(label="Docente", required=False)
-    qualifica = forms.CharField(label="Qualifica", required=False)
-    ente = forms.CharField(label="Ente", required=False)
+# ~ class IncaricoDidatticoEsternoForm(forms.Form):
+    # ~ docente = forms.CharField(label="Docente", required=False)
+    # ~ qualifica = forms.CharField(label="Qualifica", required=False)
+    # ~ ente = forms.CharField(label="Ente", required=False)
 
 
 class ConsiglioScientificoEsternoForm(forms.ModelForm):

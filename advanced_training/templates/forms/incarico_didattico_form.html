@@ -16,71 +16,17 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
-
-                <div class="form-group">
-                    <label for="{{ form.modulo.id_for_label }}"><strong>{{ form.modulo.label }}</strong></label>
-                    {{ form.modulo }}
-                    {% if form.modulo.errors %}
-                        <small class="text-danger">{{ form.modulo.errors|join:", " }}</small>
-                    {% endif %}
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label for="{{ form.num_ore.id_for_label }}"><strong>{{ form.num_ore.label }}</strong></label>
-                        {{ form.num_ore }}
-                        {% if form.num_ore.errors %}
-                            <small class="text-danger">{{ form.num_ore.errors|join:", " }}</small>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label for="{{ form.tipologia.id_for_label }}"><strong>{{ form.tipologia.label }}</strong></label>
-                        {{ form.tipologia }}
-                        {% if form.tipologia.errors %}
-                            <small class="text-danger">{{ form.tipologia.errors|join:", " }}</small>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label for="{{ form.docente.id_for_label }}"><strong>{{ form.docente.label }}</strong></label>
-                        {{ form.docente }}
-                        {% if form.docente.errors %}
-                            <small class="text-danger">{{ form.docente.errors|join:", " }}</small>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label for="{{ form.qualifica.id_for_label }}"><strong>{{ form.qualifica.label }}</strong></label>
-                        {{ form.qualifica }}
-                        {% if form.qualifica.errors %}
-                            <small class="text-danger">{{ form.qualifica.errors|join:", " }}</small>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.ente.id_for_label }}"><strong>{{ form.ente.label }}</strong></label>
-                    {{ form.ente }}
-                    {% if form.ente.errors %}
-                        <small class="text-danger">{{ form.ente.errors|join:", " }}</small>
-                    {% endif %}
-                </div>
-
+                {% include "form_template.html" with form=form %}
                 <div class="d-flex justify-content-end mt-3" style="gap: 0.5rem">
-                    <a
-                        href="{% url 'advanced-training:management:advanced-training-detail' master.pk %}?tab=Incarichi Didattici"
-                        class="btn btn-secondary"
-                    >
-                        <i class="fas fa-times mr-1"></i>{% trans "Annulla" %}
+                    <a href="{% url 'advanced-training:management:advanced-training-detail' master.pk %}?tab=Incarichi Didattici" class="btn btn-secondary">
+                        <i class="fas fa-times mr-1"></i> {% trans "Annulla" %}
                     </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save mr-1"></i>{% trans "Salva" %}
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save mr-1"></i> {% trans "Salva" %}
                     </button>
                 </div>
-
             </form>
         </div>
     </div>

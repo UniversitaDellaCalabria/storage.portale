@@ -14,52 +14,9 @@
 <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
         <div class="card-body">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
-
-                <div class="form-group">
-                    <label for="{{ form.modulo.id_for_label }}"><strong>{{ form.modulo.label }}</strong></label>
-                    {{ form.modulo }}
-                    {% if form.modulo.errors %}
-                        <small class="text-danger">{{ form.modulo.errors|join:", " }}</small>
-                    {% endif %}
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4 form-group">
-                        <label for="{{ form.ssd.id_for_label }}"><strong>{{ form.ssd.label }}</strong></label>
-                        {{ form.ssd }}
-                        {% if form.ssd.errors %}
-                            <small class="text-danger">{{ form.ssd.errors|join:", " }}</small>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-4 form-group">
-                        <label for="{{ form.num_ore.id_for_label }}"><strong>{{ form.num_ore.label }}</strong></label>
-                        {{ form.num_ore }}
-                        {% if form.num_ore.errors %}
-                            <small class="text-danger">{{ form.num_ore.errors|join:", " }}</small>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-4 form-group">
-                        <label for="{{ form.cfu.id_for_label }}"><strong>{{ form.cfu.label }}</strong></label>
-                        {{ form.cfu }}
-                        {% if form.cfu.errors %}
-                            <small class="text-danger">{{ form.cfu.errors|join:", " }}</small>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="select-wrapper">
-                        <label for="{{ form.verifica_finale.id_for_label }}">
-                            <strong>{{ form.verifica_finale.label }}</strong>
-                        </label>
-                        {{ form.verifica_finale }}
-                        {% if form.verifica_finale.errors %}
-                            <small class="text-danger">{{ form.verifica_finale.errors|join:", " }}</small>
-                        {% endif %}
-                    </div>
-                </div>
+                {% include "form_template.html" with form=form %}
 
                 <div class="d-flex justify-content-end mt-3" style="gap: 0.5rem">
                     <a

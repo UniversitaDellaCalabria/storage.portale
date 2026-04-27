@@ -1,4 +1,7 @@
 {% load i18n %}
+{% load management_templatetags %}
+
+{% settings_value "MEDIA_URL" as media_url %}
 
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h5 class="mb-0">
@@ -108,6 +111,19 @@
             Docente
           </small>
           {{ f.instance.docente|default:"—" }}
+        </div>
+        <div class="col-12 mb-2">
+          <small
+            class="text-uppercase text-muted d-block"
+            style="font-size: 0.65rem; letter-spacing: 0.05em"
+          >
+            Curriculum vitae
+          </small>
+          {% if f.instance.path_cv %}
+          <a href="{{ media_url }}{{ f.instance.path_cv }}">Download</a>
+          {% else %}
+          -
+          {% endif %}
         </div>
         <div class="col-6 col-md-4 mb-2">
           <small

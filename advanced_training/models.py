@@ -8,7 +8,7 @@ from advanced_training.settings import (
     OFFICE_ADVANCED_TRAINING,
 )
 from organizational_area.models import OrganizationalStructureOfficeEmployee
-from .settings import advanced_training_media_path
+from .settings import advanced_training_media_path, advanced_training_cv_media_path
 
 class AltaFormazioneConsiglioScientificoEsterno(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -389,6 +389,11 @@ class AltaFormazioneIncaricoDidattico(models.Model):
     ente = models.TextField(db_column="ENTE", blank=True, null=True)
     tipologia = models.CharField(
         db_column="TIPOLOGIA", max_length=1000, blank=True, null=True
+    )
+    path_cv = models.FileField(
+        upload_to=advanced_training_cv_media_path,
+        validators=[validate_pdf_file_extension, validate_file_size],
+        db_column="CV", max_length=500, blank=True, null=True
     )
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO

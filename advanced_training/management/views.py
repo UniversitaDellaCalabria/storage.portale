@@ -1192,7 +1192,7 @@ def incarico_didattico_new(
     form = IncaricoDidatticoForm()
 
     if request.method == "POST":
-        form = IncaricoDidatticoForm(data=request.POST)
+        form = IncaricoDidatticoForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.alta_formazione_dati_base = master
@@ -1256,7 +1256,7 @@ def incarico_didattico_edit(
     form = IncaricoDidatticoForm(instance=incarico)
 
     if request.method == "POST":
-        form = IncaricoDidatticoForm(data=request.POST, instance=incarico)
+        form = IncaricoDidatticoForm(data=request.POST, files=request.FILES, instance=incarico)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.dt_mod = timezone.now()
