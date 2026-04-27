@@ -8,7 +8,7 @@ OFFICE_ADVANCED_TRAINING = getattr(settings, 'OFFICE_ADVANCED_TRAINING', 'master
 
 ADVANCED_TRAINING_MEDIA_PATH_BASE = getattr(settings, "ADVANCED_TRAINING_MEDIA_PATH_BASE", "portale/alta_formazione")
 def advanced_training_media_path(instance, filename):
-    return f'{ADVANCED_TRAINING_MEDIA_PATH_BASE}/{filename}'
+    return f'{ADVANCED_TRAINING_MEDIA_PATH_BASE}/{instance.pk}/{filename}'
     
 def advanced_training_cv_media_path(instance, filename):
     return f'{ADVANCED_TRAINING_MEDIA_PATH_BASE}/{instance.pk}/cv/{filename}'
