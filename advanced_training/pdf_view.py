@@ -2,6 +2,7 @@ import io
 import re
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
@@ -399,7 +400,14 @@ def advancedtraining_export_pdf(request, pk):
     anno_accademico = None
     if getattr(master, "anno_erogazione", None):
         anno_accademico = f"{master.anno_erogazione}/{master.anno_erogazione + 1}"
-        
+
+
+    cfu_moduli = (
+        master.altaformazionepianodidattico_set.aggregate(tot_cfu=Sum("cfu"))["tot_cfu"] or 0
+    )
+    cfu_tirocinio = master.cfu_stage or 0
+    cfu_prova_finale = master.cfu_prova_finale or 0
+            
     dati_generali = [
         ("Titolo (IT)", master.titolo_it),
         ("Titolo (EN)", master.titolo_en),
@@ -417,7 +425,7 @@ def advancedtraining_export_pdf(request, pk):
         ("Data inizio", getattr(master, "data_inizio", None)),
         ("Data fine", getattr(master, "data_fine", None)),
         ("Sede del corso", getattr(master, "sede_corso", None)),
-        ("CFU Totali", str(_check_cfu_piano_didattico(master)[1])),
+        ("CFU Totali", str(cfu_moduli + cfu_tirocinio + cfu_prova_finale)),
         ("N. Min Iscritti", getattr(master, "num_min_partecipanti", None)),
         ("N. Max Iscritti", getattr(master, "num_max_partecipanti", None)),
         ("Quota Iscrizione (€)", getattr(master, "quota_iscrizione", None)),
