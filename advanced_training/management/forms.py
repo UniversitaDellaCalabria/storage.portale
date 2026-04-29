@@ -11,6 +11,8 @@ from advanced_training.models import (
     AltaFormazioneStatusStorico,
 )
 from structures.models import DidatticaDipartimento
+from . widgets import CustomFileWidget
+
 
 class MasterTirocinioForm(forms.ModelForm):
     class Meta:
@@ -96,6 +98,8 @@ class MasterDatiBaseForm(forms.ModelForm):
             "num_min_partecipanti": forms.NumberInput(attrs={"min": 0}),
             "num_max_partecipanti": forms.NumberInput(attrs={"min": 0}),
             "num_max_uditori": forms.NumberInput(attrs={"min": 0}),
+            "path_doc_delibera": CustomFileWidget(),
+            "path_piano_finanziario": CustomFileWidget(),
             # "ore_stage_tirocinio": forms.NumberInput(attrs={"min": 0, "step": 1}),
             # "cfu_stage": forms.NumberInput(attrs={"min": 0}),
             # "mesi_stage": forms.NumberInput(attrs={"min": 0}),
@@ -321,7 +325,9 @@ class IncaricoDidatticoForm(forms.ModelForm):
             "path_cv": "Curriculum Vitae"
         }
         help_texts = {"path_cv": "Carica il file se il docente è esterno"}
-
+        widgets = {
+            "path_cv": CustomFileWidget(),
+        }
 
 IncaricoDidatticoFormSet = inlineformset_factory(
     AltaFormazioneDatiBase,

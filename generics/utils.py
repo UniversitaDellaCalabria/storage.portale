@@ -1,11 +1,11 @@
 import logging
-
 import magic
+import os
 from cryptography.fernet import Fernet
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
 from PIL import Image
@@ -163,3 +163,19 @@ def get_latest_available_dummy_id(model, id_field_name, threshold=FIRST_DUMMY_ID
     )
     latest_id = getattr(instance, id_field_name)
     return max(threshold, latest_id) + 1
+
+
+def download_file(file_path):
+    """
+    Downloads a file
+    """
+    if os.path.exists(file_path):
+        mime = magic.Magic(mime=True)
+        content_type = mime.from_file(file_path)
+        with open(file_path, "rb") as fh:
+            response = HttpResponse(fh.read(), content_type=content_type)
+            response["Content-Disposition"] = "inline; filename=" + os.path.basename(
+                file_path
+            )
+            return response
+    raise Http404

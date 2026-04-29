@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.db import transaction
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -58,7 +58,7 @@ from advanced_training.settings import (
 )
 from structures.models import DidatticaDipartimento
 from addressbook.models import Personale
-from generics.utils import custom_message, encrypt, log_action
+from generics.utils import custom_message, encrypt, log_action, download_file
 from locks.concurrency import get_lock_from_cache
 from locks.exceptions import LockCannotBeAcquiredException
 from organizational_area.models import OrganizationalStructureOfficeEmployee
@@ -1783,3 +1783,61 @@ def consiglio_esterno_delete(
     return redirect(
         f"{reverse('advanced-training:management:advanced-training-detail', args=[pk])}?tab=Consiglio Scientifico Esterno"
     )
+
+@login_required
+@can_manage_advanced_training
+def download_delibera(request, pk, advanced_training=None, my_offices=None, is_validator=False):
+    """
+    Downloads attachment
+    :return: file
+    """
+    master = get_object_or_404(
+        AltaFormazioneDatiBase,
+        pk=pk,
+    )
+    doc = master.path_doc_delibera
+    if doc:
+        result = download_file(doc.path)
+        return result
+    raise Http404
+
+    
+@login_required
+@can_manage_advanced_training
+def download_piano_finanziario(request, pk, advanced_training=None, my_offices=None, is_validator=False):
+    """
+    Downloads attachment
+    :return: file
+    """
+    master = get_object_or_404(
+        AltaFormazioneDatiBase,
+        pk=pk,
+    )
+    doc = master.path_piano_finanziario
+    if doc:
+        result = download_file(doc.path)
+        return result
+    raise Http404
+
+    
+@login_required
+@can_manage_advanced_training
+def download_cv_incarico(request, pk, pk_incarico, advanced_training=None, my_offices=None, is_validator=False):
+    """
+    Downloads attachment
+    :return: file
+    """
+    master = get_object_or_404(
+        AltaFormazioneDatiBase,
+        pk=pk,
+    )
+    incarico = get_object_or_404(
+        AltaFormazioneIncaricoDidattico,
+        alta_formazione_dati_base=master,
+        pk=pk_incarico
+    )
+    doc = incarico.path_cv
+    if doc:
+        result = download_file(doc.path)
+        return result
+    raise Http404

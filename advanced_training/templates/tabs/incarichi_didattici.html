@@ -1,7 +1,6 @@
 {% load i18n %}
 {% load management_templatetags %}
 
-{% settings_value "MEDIA_URL" as media_url %}
 
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h5 class="mb-0">
@@ -120,7 +119,7 @@
             Curriculum vitae
           </small>
           {% if f.instance.path_cv %}
-          <a href="{{ media_url }}{{ f.instance.path_cv }}">Download</a>
+          <a href="{% url 'advanced-training:management:advanced-training-download-cv-incarico' pk=master.pk pk_incarico=f.instance.pk %}">Download</a>
           {% else %}
           -
           {% endif %}

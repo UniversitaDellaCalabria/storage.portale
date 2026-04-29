@@ -1,30 +1,5 @@
 from django.urls import path
-from .views import (
-    advancedtraining_direttore_edit,
-    advancedtraining_duplicate,
-    advancedtraining_info_edit,
-    advancedtraining_masters,
-    advancedtraining_info_create,
-    advancedtraining_info_delete,
-    advancedtraining_proponente_edit,
-    advancedtraining_status_change,
-    advancedtraining_load_tab,
-    consiglio_esterno_delete,
-    consiglio_esterno_edit,
-    consiglio_esterno_new,
-    consiglio_interno_new,
-    consiglio_interno_edit,
-    consiglio_interno_delete,
-    incarico_didattico_delete,
-    incarico_didattico_edit,
-    incarico_didattico_new,
-    partner_delete,
-    partner_edit,
-    partner_new,
-    piano_didattico_delete,
-    piano_didattico_edit,
-    piano_didattico_new,
-)
+from .views import *
 from advanced_training.pdf_view import advancedtraining_export_pdf
 
 app_name = "management"
@@ -149,4 +124,20 @@ urlpatterns = [
         advancedtraining_export_pdf,
         name="advanced-training-export-pdf",
     ),
+    path(
+        f"{prefix}/<int:pk>/download/delibera/",
+        download_delibera,
+        name="advanced-training-download-delibera",
+    ),
+    path(
+        f"{prefix}/<int:pk>/download/piano-finanziario/",
+        download_piano_finanziario,
+        name="advanced-training-download-piano-finanziario",
+    ),
+    path(
+        f"{prefix}/<int:pk>/incarichi/<int:pk_incarico>/download/cv/",
+        download_cv_incarico,
+        name="advanced-training-download-cv-incarico",
+    ),
+    
 ]
