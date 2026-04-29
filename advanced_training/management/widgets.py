@@ -49,7 +49,7 @@ class CustomFileWidget(ClearableFileInput):
                 
             if self.current_field_name == 'path_cv':
                 response = reverse(
-                    "advanced-training:management:advanced-training-download-delibera",
+                    "advanced-training:management:advanced-training-download-cv-incarico",
                     kwargs={
                         "pk": value.instance.alta_formazione_dati_base.pk,
                         "pk_incarico": value.instance.pk
