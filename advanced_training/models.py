@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core import validators
 from django.db import models
+from django.db.models import Q
 from generics.models import Permissions
 from generics.validators import validate_file_size, validate_pdf_file_extension
 from advanced_training.settings import (
@@ -221,19 +222,36 @@ class AltaFormazioneDatiBase(Permissions):
         return (OFFICE_ADVANCED_TRAINING, OFFICE_ADVANCED_TRAINING_VALIDATOR)
 
     def _is_valid_office(self, office_name, all_user_offices, **kwargs):
-        offices_names = self.get_offices_names()
+        if not office_name in self.get_offices_names():
+            return False
+        
+        is_valid = all_user_offices.filter(
+            Q(office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR) |
+            Q(
+                office__name=OFFICE_ADVANCED_TRAINING,
+                office__organizational_structure__unique_code=self.dipartimento_riferimento.dip_cod
+            )
+        ).exists()
 
-        if office_name in offices_names:
-            user_office = all_user_offices.get(office__name=office_name)
-            if user_office.office.name == OFFICE_ADVANCED_TRAINING:
-                return (
-                    user_office.office.organizational_structure.unique_code
-                    == self.dipartimento_riferimento.dip_cod
-                )
-            if user_office.office.name == OFFICE_ADVANCED_TRAINING_VALIDATOR:
-                return True
+        return is_valid
+        
+        # ~ is_valid = all_user_offices.filter(
+            # ~ Q(office__name=OFFICE_ADVANCED_TRAINING_VALIDATOR) |
+            # ~ Q(office__)
+        # ~ )
+        # ~ offices_names = self.get_offices_names()
 
-        return False
+        # ~ if office_name in offices_names:
+            # ~ user_office = all_user_offices.get(office__name=office_name)
+            # ~ if user_office.office.name == OFFICE_ADVANCED_TRAINING:
+                # ~ return (
+                    # ~ user_office.office.organizational_structure.unique_code
+                    # ~ == self.dipartimento_riferimento.dip_cod
+                # ~ )
+            # ~ if user_office.office.name == OFFICE_ADVANCED_TRAINING_VALIDATOR:
+                # ~ return True
+
+        # ~ return False
 
     def get_current_status(self):
         return (
