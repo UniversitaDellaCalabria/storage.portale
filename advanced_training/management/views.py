@@ -210,7 +210,7 @@ def advancedtraining_info_edit(
         and (
             (current_status_cod in ("0", None) and has_active_window)
             or
-            current_status == "2"
+            current_status_cod == "2"
         )
         and (user_has_same_department or not master.dipartimento_riferimento)
     )
