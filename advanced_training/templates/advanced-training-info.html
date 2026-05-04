@@ -251,7 +251,7 @@
       <div class="tab-content pt-2" id="master-tabsContent">
         
         <!-- TAB DATI GENERALI (sempre caricato) -->
-        <div class="tab-pane fade p-4 mt-3 {% if last_viewed_tab == 'Dati generali' %}show active{% endif %} {% if is_readonly %}readonly{% endif %}"
+        <div class="tab-pane fade p-4 mt-3 {% if last_viewed_tab == 'Dati generali' %}show active{% endif %}"
           id="dati-generali-tab"
           role="tabpanel"
           aria-labelledby="dati-generali-nav-item">
@@ -506,7 +506,7 @@
 
 <script>
   const MASTER_ID = {{ master.pk|default:"null" }};
-  const IS_READONLY = {% if is_readonly %}true{% else %}false{% endif %};
+  //~ const IS_READONLY = {% if is_readonly %}true{% else %}false{% endif %};
   const LAST_VIEWED_TAB = "{{ last_viewed_tab|escapejs }}";
   
   const OPTIONAL_MOTIVATION_STATUSES = ["1", "3"];
@@ -617,7 +617,7 @@
       if (data.html) {
         tabPane.html(data.html);
         tabPane.data('loaded', 'true');
-        if (IS_READONLY) tabPane.addClass('readonly');
+        //~ if (IS_READONLY) tabPane.addClass('readonly');
       } else {
         throw new Error('Risposta senza HTML dal server');
       }
