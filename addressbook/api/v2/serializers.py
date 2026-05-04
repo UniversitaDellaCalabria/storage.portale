@@ -328,7 +328,6 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
                 ),
                 None,
             )
-            print("Offf: ", official_email)
         return (
             official_email.split("@")[0] if official_email else encrypt(obj.matricola)
         )

@@ -2,7 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
+# ~ from rest_framework.pagination import PageNumberPagination
 from rest_framework import mixins, viewsets
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from django.db.models import Prefetch, Subquery, OuterRef, Q
@@ -35,6 +35,9 @@ from advanced_training.settings import (
     OFFICE_ADVANCED_TRAINING,
     ADVANCED_TRAINING_YEAR,
 )
+
+from generics.api.pagination import PageNumberPagination
+
 
 def _latest_status_subquery():
     """Subquery che restituisce il status_cod più recente per ogni master."""

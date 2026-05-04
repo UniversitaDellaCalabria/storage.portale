@@ -26,7 +26,9 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 from cds.settings import OFFICE_CDS, OFFICE_CDS_DOCUMENTS, OFFICE_CDS_TEACHING_SYSTEM
 
 from rest_framework import mixins, viewsets
-from rest_framework.pagination import PageNumberPagination
+# ~ from rest_framework.pagination import PageNumberPagination
+from generics.api.pagination import PageNumberPagination
+
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from structures.models import DidatticaDipartimentoUrl

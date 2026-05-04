@@ -8,7 +8,9 @@ from .docs import descriptions
 from api_docs import responses
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
-from rest_framework.pagination import PageNumberPagination
+# ~ from rest_framework.pagination import PageNumberPagination
+from generics.api.pagination import PageNumberPagination
+
 from rest_framework import mixins, viewsets
 from .filters import LaboratoriesFilters
 from laboratories.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS

@@ -6,7 +6,9 @@ from drf_spectacular.utils import (
 from .docs import descriptions
 from api_docs import responses
 
-from rest_framework.pagination import PageNumberPagination
+# ~ from rest_framework.pagination import PageNumberPagination
+from generics.api.pagination import PageNumberPagination
+
 from rest_framework.response import Response
 
 from rest_framework.viewsets import ReadOnlyModelViewSet

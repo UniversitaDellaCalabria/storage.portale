@@ -103,12 +103,20 @@ class PageNumberPagination(pagination.PageNumberPagination):
     page_size = api_settings.PAGE_SIZE or 10
     max_page_size = 1000
 
+    def url_refactor(self, url):
+        pattern = re.compile(r"https?://")
+        return pattern.sub("//", url) if url else None
+        
     def get_paginated_response(self, data):
         response = super().get_paginated_response(data)
         response.data = {
-            "pageNumber": self.page.number,
-            "totPages": self.page.paginator.num_pages,
-        } | response.data
+            "page_number": self.page.number,
+            "total_pages": self.page.paginator.num_pages,
+            "count": self.page.paginator.count,
+            "next": self.url_refactor(self.get_next_link()),
+            "previous": self.url_refactor(self.get_previous_link()),
+            "results": data,
+        } # | response.data
         return response
 
     def get_paginated_response_schema(self, schema):
