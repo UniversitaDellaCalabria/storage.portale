@@ -261,7 +261,7 @@ def can_change_master_status(func_to_decorate):
                 return redirect(
                     "advanced-training:management:advanced-training-detail", pk=pk
                 )
-            if not dati_base.is_valid_for_validation():
+            if not dati_base.has_active_window():
                 messages.error(
                     request,
                     _(

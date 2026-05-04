@@ -130,13 +130,6 @@ def get_current_status(master):
     }
 
 
-def is_temporal_window_active():
-    today = datetime.date.today()
-    return AltaFormazioneFinestraTemporale.objects.filter(
-        data_inizio__lte=today, data_fine__gte=today
-    ).exists()
-
-
 def _get_user_office_info(user):
     """Return a dict with office membership details for the given user."""
     all_offices = OrganizationalStructureOfficeEmployee.objects.filter(
@@ -208,15 +201,17 @@ def advancedtraining_info_edit(
 
     can_edit = master._check_edit_permission(office_info["names"])
     is_readonly = not can_edit or str(current_status_cod) in ["1", "3", "4"]
-    # ~ has_active_window = is_temporal_window_active()
 
     can_validate_actions = user_is_validator and current_status_cod == "1"
-    is_valid_for_validation = master.is_valid_for_validation()
+    has_active_window = master.has_active_window()
 
     can_send_validation = (
         not user_is_validator
-        and current_status_cod in ("0", "2", None)
-        and is_valid_for_validation
+        and (
+            (current_status_cod in ("0", None) and has_active_window)
+            or
+            current_status == "2"
+        )
         and (user_has_same_department or not master.dipartimento_riferimento)
     )
 
@@ -267,7 +262,7 @@ def advancedtraining_info_edit(
             "is_validator": user_is_validator,
             "can_send_validation": can_send_validation,
             "can_validate_actions": can_validate_actions,
-            "has_active_window": is_valid_for_validation,
+            "has_active_window": has_active_window,
             "user_has_same_department": user_has_same_department,
             "current_status_motivazione": current_status.get("motivazione", ""),
             "current_status_date": current_status.get("data_status"),
@@ -534,7 +529,7 @@ def advancedtraining_info_create(request):
             "is_validator": user_is_validator,
             "can_send_validation": False,
             "can_validate_actions": False,
-            # ~ "has_active_window": is_valid_for_validation(),
+            # ~ "has_active_window": has_active_window(),
         },
     )
 
@@ -596,7 +591,7 @@ def advancedtraining_status_change(
     request, pk, status_cod, dati_base=None): #, has_active_window=None
         
     if status_cod == "1":
-        if not dati_base.is_valid_for_validation():
+        if not dati_base.has_active_window():
             messages.error(
                 request,
                 "Anno accademico non valido: l'anno di erogazione del master non è coerente con la finestra temporale attiva."

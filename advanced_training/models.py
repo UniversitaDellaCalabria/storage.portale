@@ -295,7 +295,7 @@ class AltaFormazioneDatiBase(Permissions):
             user_offices_names
         ) and self._check_edit_permission(user_offices_names)
     
-    def is_valid_for_validation(self):
+    def has_active_window(self):
         """
         Verifica che:
         - esista una finestra temporale attiva
