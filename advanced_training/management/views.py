@@ -589,6 +589,9 @@ def _check_cfu_piano_didattico(master):
 @can_change_master_status
 def advancedtraining_status_change(
     request, pk, status_cod, dati_base=None): #, has_active_window=None
+
+    if request.method != "POST":
+        return custom_message(request, _("Metodo non consentito"))
         
     if status_cod == "1":
         if not dati_base.has_active_window():
@@ -622,8 +625,7 @@ def advancedtraining_status_change(
             # ~ return redirect(
                 # ~ "advanced-training:management:advanced-training-detail", pk=pk
             # ~ )
-    if request.method != "POST":
-        return custom_message(request, _("Metodo non consentito"))
+    
 
     try:
         content_type_id = ContentType.objects.get_for_model(dati_base).pk
