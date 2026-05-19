@@ -11,7 +11,7 @@ from structures.models import DidatticaDipartimentoUrl
 
 from cds.models import (
     DidatticaAttivitaFormativa,
-    DidatticaAttivitaFormativaModalita,
+    # ~ DidatticaAttivitaFormativaModalita,
     DidatticaCds,
     DidatticaCdsAltriDati,
     DidatticaCdsAltriDatiUfficio,
@@ -1099,9 +1099,9 @@ class ServiceDidatticaAttivitaFormativa:
 
         query[0]["Hours"] = filtered_hours
 
-        query[0]["Modalities"] = DidatticaAttivitaFormativaModalita.objects.filter(
-            af_id=af_id
-        ).values("mod_did_af_id", "mod_did_cod", "mod_did_des")
+        # ~ query[0]["Modalities"] = DidatticaAttivitaFormativaModalita.objects.filter(
+            # ~ af_id=af_id
+        # ~ ).values("mod_did_af_id", "mod_did_cod", "mod_did_des")
 
         query[0]["LANGUAGEIT"] = None
         query[0]["LANGUAGEEN"] = None

@@ -48,7 +48,7 @@ from cds.models import (
     DidatticaCdsGruppi,
     DidatticaCdsGruppiComponenti,
     DidatticaCoperturaDettaglioOre,
-    DidatticaAttivitaFormativaModalita
+    # ~ DidatticaAttivitaFormativaModalita
 )
 
 from .filters import (
@@ -629,13 +629,13 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
                         ),
                         to_attr="didattica_copertura",
                     ),
-                    Prefetch(
-                        "didatticaattivitaformativamodalita_set",
-                        queryset=DidatticaAttivitaFormativaModalita.objects.only(
-                            "mod_did_af_id", "mod_did_cod", "mod_did_des"
-                        ),
-                        to_attr="didattica_attivita_formativa_modalita",
-                    ),
+                    # ~ Prefetch(
+                        # ~ "didatticaattivitaformativamodalita_set",
+                        # ~ queryset=DidatticaAttivitaFormativaModalita.objects.only(
+                            # ~ "mod_did_af_id", "mod_did_cod", "mod_did_des"
+                        # ~ ),
+                        # ~ to_attr="didattica_attivita_formativa_modalita",
+                    # ~ ),
                 )
                 .only(
                     "af_id",
