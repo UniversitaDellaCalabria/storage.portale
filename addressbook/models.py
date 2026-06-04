@@ -212,7 +212,7 @@ class Personale(InsModAbstract):
     cv_short_eng = models.TextField(db_column="CV_SHORT_ENG", blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PERSONALE"
 
     def __str__(self):  # pragma: no cover
@@ -312,7 +312,7 @@ class PersonaleAttivoTuttiRuoli(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PERSONALE_ATTIVO_TUTTI_RUOLI"
 
 
@@ -323,7 +323,7 @@ class PersonaleUoTipoContatto(models.Model):
     descr_contatto = models.CharField(db_column="DESCR_CONTATTO", max_length=200)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PERSONALE_UO_TIPO_CONTATTO"
 
 
@@ -348,7 +348,7 @@ class PersonaleContatti(models.Model):
     dt_ins_mod = models.DateField(db_column="DT_INS_MOD", blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PERSONALE_CONTATTI"
         unique_together = (("id_ab", "cd_tipo_cont", "prg_priorita"),)
 
@@ -361,5 +361,5 @@ class PersonalePrioritaRuolo(models.Model):
     priorita = models.IntegerField(db_column="PRIORITA", blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PERSONALE_PRIORITA_RUOLO"

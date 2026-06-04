@@ -29,7 +29,7 @@ class AltaFormazioneConsiglioScientificoEsterno(models.Model):
     user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_CONSIGLIO_SCIENTIFICO_ESTERNO"
 
 
@@ -53,7 +53,7 @@ class AltaFormazioneConsiglioScientificoInterno(models.Model):
     user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_CONSIGLIO_SCIENTIFICO_INTERNO"
 
 
@@ -318,7 +318,7 @@ class AltaFormazioneDatiBase(Permissions):
         return finestra
         
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_DATI_BASE"
         unique_together = (("titolo_it", "data_inizio"),)
 
@@ -345,7 +345,7 @@ class AltaFormazioneAttivitaFormative(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_ATTIVITA_FORMATIVE"
 
 
@@ -385,7 +385,7 @@ class AltaFormazioneAttivitaFormativeDocenti(models.Model):
     argomento = models.TextField(db_column="ARGOMENTO", blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_ATTIVITA_FORMATIVE_DOCENTI"
 
 
@@ -422,7 +422,7 @@ class AltaFormazioneIncaricoDidattico(models.Model):
     user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_INCARICO_DIDATTICO"
 
 
@@ -433,7 +433,7 @@ class AltaFormazioneModalitaErogazione(models.Model):
     user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_MODALITA_EROGAZIONE"
 
     def __str__(self):
@@ -450,7 +450,7 @@ class AltaFormazioneModalitaSelezione(models.Model):
     user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_MODALITA_SELEZIONE"
 
 
@@ -470,7 +470,7 @@ class AltaFormazionePartner(models.Model):
     user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_PARTNER"
 
 
@@ -494,7 +494,7 @@ class AltaFormazionePianoDidattico(models.Model):
     user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_PIANO_DIDATTICO"
 
 
@@ -503,7 +503,7 @@ class AltaFormazioneTipologiaDocente(models.Model):
     descrizione = models.CharField(db_column="DESCRIZIONE", max_length=500)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_TIPOLOGIA_DOCENTE"
 
     def __str__(self):
@@ -517,7 +517,7 @@ class AltaFormazioneTipoCorso(models.Model):
     user_mod_id = models.IntegerField(blank=True, null=True)  # AGGIUNTO
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_TIPO_CORSO"
 
     def __str__(self):
@@ -535,7 +535,7 @@ class AltaFormazioneFinestraTemporale(models.Model):
     note = models.TextField(db_column="NOTE", blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_FINESTRA_TEMPORALE"
 
     def __str__(self):
@@ -548,7 +548,7 @@ class AltaFormazioneStatus(models.Model):
     status_desc = models.CharField(db_column="STATUS_DESC", max_length=256)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_STATUS"
 
     def __str__(self):
@@ -589,5 +589,5 @@ class AltaFormazioneStatusStorico(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "ALTA_FORMAZIONE_STATUS_STORICO"

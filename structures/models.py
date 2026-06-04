@@ -37,7 +37,7 @@ class ComuniAll(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "COMUNI_ALL"
 
 
@@ -106,7 +106,7 @@ class UnitaOrganizzativa(models.Model):
         return "{}".format(self.denominazione)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "UNITA_ORGANIZZATIVA"
 
 
@@ -153,7 +153,7 @@ class UnitaOrganizzativaFunzioni(models.Model):
     id_ab = models.IntegerField(db_column="ID_AB", blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "UNITA_ORGANIZZATIVA_FUNZIONI"
 
 
@@ -165,7 +165,7 @@ class UnitaOrganizzativaTipoFunzioni(models.Model):
     descr_funzione = models.CharField(db_column="DESCR_FUNZIONE", max_length=1000)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "UNITA_ORGANIZZATIVA_TIPO_FUNZIONI"
         unique_together = (("cd_tipo_nod", "funzione"),)
 
@@ -194,7 +194,7 @@ class UnitaOrganizzativaContatti(models.Model):
     dt_fine_val = models.DateTimeField(db_column="DT_FINE_VAL", blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "UNITA_ORGANIZZATIVA_CONTATTI"
         unique_together = (("ab", "cd_tipo_cont", "prg_priorita"),)
 
@@ -223,7 +223,7 @@ class TerritorioIt(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "TERRITORIO_IT"
 
     def __str__(self):  # pragma: no cover
@@ -232,31 +232,24 @@ class TerritorioIt(models.Model):
 
 class DidatticaDipartimento(InsModAbstract):
     dip_id = models.IntegerField(db_column="DIP_ID", primary_key=True)
+    id_dip_gda = models.IntegerField(db_column="ID_DIP_GDA", unique=True)
     dip_cod = models.CharField(
         db_column="DIP_COD", unique=True, max_length=40, blank=True, null=True
     )
     dip_des_it = models.CharField(
-        db_column="DIP_DES_IT", max_length=255, blank=True, null=True
+        db_column="DIP_DESC_ITA", max_length=255, blank=True, null=True
     )
     dip_des_eng = models.CharField(
-        db_column="DIP_DES_ENG", max_length=255, blank=True, null=True
+        db_column="DIP_DESC_ENG", max_length=255, blank=True, null=True
     )
     dip_nome_breve = models.CharField(
-        db_column="DIP_NOME_BREVE", max_length=100, blank=True, null=True
+        db_column="DIP_DESC_BREVE_ITA", max_length=100, blank=True, null=True
     )
-    dip_cd_csa = models.CharField(
-        db_column="DIP_CD_CSA", max_length=40, blank=True, null=True
-    )
-    miur_dip_id = models.IntegerField(db_column="MIUR_DIP_ID", blank=True, null=True)
-    url_pubbl_off_f = models.URLField(
-        db_column="URL_PUBBL_OFF_F", max_length=255, blank=True, null=True
-    )
-    dip_vis_web_flg = models.IntegerField(
-        db_column="DIP_VIS_WEB_FLG", blank=True, null=True
-    )
+    dt_ins = models.DateTimeField(db_column='DT_INS', blank=True, null=True)  # Field name made lowercase.
+    dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "DIDATTICA_DIPARTIMENTO"
 
     def __str__(self):  # pragma: no cover
@@ -274,7 +267,7 @@ class DidatticaDipartimentoUrl(models.Model):
     dip_url = models.URLField(db_column="DIP_URL", max_length=4000)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "DIDATTICA_DIPARTIMENTO_URL"
 
 
@@ -301,7 +294,7 @@ class DidatticaDipartimentoGruppi(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "DIDATTICA_DIPARTIMENTO_GRUPPI"
         ordering = ("ordine",)
 
@@ -343,6 +336,6 @@ class DidatticaDipartimentoGruppiComponenti(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "DIDATTICA_DIPARTIMENTO_GRUPPI_COMPONENTI"
         ordering = ("ordine",)

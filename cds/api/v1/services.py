@@ -25,7 +25,7 @@ from cds.models import (
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
     DidatticaRegolamentoAltriDati,
-    DidatticaTestiAf,
+    DidatticaTestiAfErogata,
     DidatticaTestiRegolamento,
 )
 

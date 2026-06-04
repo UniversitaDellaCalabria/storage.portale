@@ -17,6 +17,8 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce, Concat
 from django_filters.rest_framework import DjangoFilterBackend
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import (
     OpenApiParameter,
     extend_schema,
@@ -34,13 +36,15 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from structures.models import DidatticaDipartimentoUrl
 from cds.models import (
     DidatticaAttivitaFormativa,
+    DidatticaAttivitaFormativaErogata,
+    DidatticaAttivitaFormativaPds,
     DidatticaCds,
     DidatticaCdsAltriDati,
     DidatticaCdsCollegamento,
     DidatticaCopertura,
     DidatticaPdsRegolamento,
     DidatticaRegolamento,
-    DidatticaTestiAf,
+    DidatticaTestiAfErogata,
     DidatticaTestiRegolamento,
     DidatticaRegolamentoAltriDati,
     DidatticaCdsLingua,
@@ -480,206 +484,123 @@ class CdsViewSet(ReadOnlyModelViewSet):
         responses=responses.COMMON_RETRIEVE_RESPONSES(StudyActivitiesDetailSerializer),
     ),
 )
+
+
 class StudyActivitiesViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = StudyActivitiesFilter
-    queryset = DidatticaAttivitaFormativa.objects.all()
 
     def get_queryset(self):
-        if self.action == "list":
-            coperture_qs = DidatticaCopertura.objects.filter(
-                af_id=OuterRef("af_id")
-            ).values("af_gen_cod", "anno_corso", "ciclo_des")[:1]
+        queryset = (
+            DidatticaAttivitaFormativaErogata.objects
+            .select_related("mod_off_id")
+            .select_related("mod_off_id__af_off")
+            .select_related("mod_off_id__af_off__id_cds")
+            .select_related("mod_off_id__af_off__id_cds__dip")
+            .select_related("mod_off_id__doc_resp_mod_id_ab")
+            .prefetch_related("pds")
+        ).exclude(erog_id=-999999999)
+        return queryset
 
-            queryset = (
-                DidatticaAttivitaFormativa.objects.select_related(
-                    "cds__dip", "matricola_resp_did"
+    def get_object(self):
+        # Prendiamo l'id passato nell'URL
+        af_id = self.kwargs.get("pk")
+        
+        results = DidatticaAttivitaFormativaPds.objects.filter(
+            erog_id__erog_id=af_id
+        )\
+        .select_related("id_cds", "erog_id")\
+        .prefetch_related(
+            Prefetch(
+                'erog_id__coperture',
+                queryset=DidatticaCopertura.objects.exclude(stato_coper_cod="R"),
+                to_attr='coperture_attive'
+            ),
+            'erog_id__coperture__dettaglio_ore',
+            'erog_id__testi'
+        )
+        
+        # attività effettivamente erogata (erog_id)
+        if results.exists():
+            erog_found = True
+            results = list(results)
+            result = results[0]
+
+            # pds
+            pds_list = []
+            for r in results:
+                pds_list.append(r.pds_desc_ita)
+            result.pds = set(pds_list)
+
+            # moduli
+            result.moduli = DidatticaAttivitaFormativaPds.objects.none()
+            erog_master_id = DidatticaAttivitaFormativaErogata.objects.filter(
+                erog_master_id=af_id
+            ).exclude(erog_id=af_id).first()
+
+            # mutuazioni
+            if not erog_master_id:
+                mutuazioni = []
+            else:
+                mutuazioni = list(
+                    DidatticaAttivitaFormativaErogata.objects.filter(
+                        erog_id=erog_master_id
+                    ).prefetch_related('pds')
                 )
-                .only(
-                    "af_id",
-                    "af_gen_cod",
-                    "af_gen_des_eng",
-                    "cds_id",
-                    "cds__cds_cod",
-                    "des",
-                    "lista_lin_did_af",
-                    "af_radice_id",
-                    "regdid_id",
-                    "cds__dip__dip_des_it",
-                    "cds__dip__dip_des_eng",
-                    "cds__dip__dip_cod",
-                    "anno_corso",
-                    "aa_off_id",
-                    "ciclo_des",
-                    "sett_cod",
-                    "sett_des",
-                    "part_stu_cod",
-                    "part_stu_des",
-                    "fat_part_stu_cod",
-                    "fat_part_stu_des",
-                    "cds__nome_cds_it",
-                    "cds__nome_cds_eng",
-                    "matricola_resp_did__matricola",
-                    "matricola_resp_did__cognome",
-                    "matricola_resp_did__nome",
-                    "matricola_resp_did__middle_name",
-                    "pds_des",
-                )
-                .annotate(
-                    full_name=Case(
-                        When(
-                            matricola_resp_did__cognome__isnull=True,
-                            matricola_resp_did__nome__isnull=True,
-                            matricola_resp_did__middle_name__isnull=True,
-                            then=Value(""),
-                        ),
-                        default=Concat(
-                            F("matricola_resp_did__cognome"),
-                            Value(" "),
-                            F("matricola_resp_did__nome"),
-                            Case(
-                                When(
-                                    matricola_resp_did__middle_name__isnull=False,
-                                    then=Concat(
-                                        Value(" "),
-                                        F("matricola_resp_did__middle_name"),
-                                    ),
-                                ),
-                                default=Value(""),
-                                output_field=models.CharField(),
-                            ),
-                            output_field=models.CharField(),
-                        ),
-                    ),
-                    group_description=Concat(
-                        F("des"),
-                        Case(
-                            When(
-                                part_stu_des__isnull=False,
-                                then=Concat(Value(" ("), F("part_stu_des"), Value(")")),
-                            )
-                        ),
-                        output_field=models.CharField(),
-                    ),
-                    fatherName=F("des"),
-                    af_gen_cod_final=Coalesce(
-                        F("af_gen_cod"),
-                        Subquery(coperture_qs.values("af_gen_cod")),
-                        output_field=models.CharField(),
-                    ),
-                    anno_corso_final=Coalesce(
-                        F("anno_corso"),
-                        Subquery(coperture_qs.values("anno_corso")),
-                        output_field=models.IntegerField(),
-                    ),
-                    ciclo_des_final=Coalesce(
-                        F("ciclo_des"),
-                        Subquery(coperture_qs.values("ciclo_des")),
-                        output_field=models.CharField(),
-                    ),
-                )
-                .filter(
-                    Q(
-                        af_id__in=Subquery(
-                            DidatticaCopertura.objects.filter(
-                                ~Q(stato_coper_cod="R")
-                                | Q(stato_coper_cod__isnull=True)
-                            ).values("af_id")
-                        )
-                    )
-                    | Q(
-                        af_master_id__in=Subquery(
-                            DidatticaCopertura.objects.filter(
-                                ~Q(stato_coper_cod="R")
-                                | Q(stato_coper_cod__isnull=True)
-                            ).values("af_id")
-                        )
-                    )
-                )
-                .order_by("des")
-            )
-            return queryset
-        if self.action == "retrieve":
-            af_id = self.kwargs.get("pk")
-            return (
-                DidatticaAttivitaFormativa.objects.filter(af_id=af_id)
-                .order_by("anno_corso", "ciclo_des")
-                .prefetch_related(
-                    Prefetch(
-                        "didatticaf",
-                        queryset=DidatticaTestiAf.objects.only(
-                            "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
-                        ),
-                        to_attr="testi_af",
-                    ),
-                    Prefetch(
-                        "didatticacopertura_set",
-                        queryset=DidatticaCopertura.objects.prefetch_related(
-                            Prefetch(
-                                "didatticacoperturadettaglioore_set",
-                                queryset=(
-                                    DidatticaCoperturaDettaglioOre.objects.filter(
-                                        ~Q(coper_id__stato_coper_cod="R"),
-                                        coper_id__af_id=af_id,
-                                    ).select_related("coper__personale")
-                                ),
-                                to_attr="didattica_copertura_dettaglio_ore",
-                            )
-                        ),
-                        to_attr="didattica_copertura",
-                    ),
-                    # ~ Prefetch(
-                        # ~ "didatticaattivitaformativamodalita_set",
-                        # ~ queryset=DidatticaAttivitaFormativaModalita.objects.only(
-                            # ~ "mod_did_af_id", "mod_did_cod", "mod_did_des"
-                        # ~ ),
-                        # ~ to_attr="didattica_attivita_formativa_modalita",
-                    # ~ ),
-                )
-                .only(
-                    "af_id",
-                    "af_gen_cod",
-                    "des",
-                    "af_gen_des_eng",
-                    "cds__cds_cod",
-                    "cds__cds_id",
-                    "lista_lin_did_af",
+            result.mutuazioni = mutuazioni
+
+            # mutuato da
+            result.mutuato_da = None
+            if not result.erog_id.master:
+                result.mutuato_da = DidatticaAttivitaFormativaPds.objects.filter(
+                    erog_id=result.erog_id.erog_master_id
+                ).select_related("id_cds", "erog_id").only(
+                    "erog_id",
+                    "ana_mod_desc_ita",
+                    "ana_mod_desc_eng",
                     "pds_cod",
-                    "pds_des",
-                    "regdid__regdid_id",
-                    "regdid__aa_reg_did",
-                    "anno_corso",
-                    "ciclo_des",
-                    "peso",
-                    "sett_cod",
-                    "sett_des",
-                    "freq_obblig_flg",
-                    "cds__nome_cds_it",
-                    "cds__nome_cds_eng",
-                    "tipo_af_des",
-                    "tipo_af_cod",
-                    "tipo_af_intercla_cod",
-                    "tipo_af_intercla_des",
-                    "matricola_resp_did",
-                    "mutuata_flg",
-                    "af_master_id",
-                    "af_radice_id",
-                    "af_pdr_id",
-                    "didatticacopertura__coper_peso",
-                    "part_stu_cod",
-                    "fat_part_stu_cod",
-                    "part_stu_des",
-                    "fat_part_stu_des",
+                    "pds_desc_ita",
+                    "id_cds__nome_cds_it",
+                    "id_cds__nome_cds_eng",
+                    "cds_cod"
                 )
-            )
+        # troviamo af_pds_id
+        else:
+            erog_found = False
+            results = DidatticaAttivitaFormativaPds.objects.filter(
+                af_pds_id=af_id
+            ).select_related("erog_id")
+            
+            if not results.exists():
+                raise Http404
 
+            num_erogazioni = results.values("erog_id").distinct().count()
+            results = list(results)
+            result = results[0]
+            result.num_erogazioni = num_erogazioni
+                
+            moduli = DidatticaAttivitaFormativaPds.objects.filter(
+                af_pds_id=af_id
+            ).only(
+                "erog_id",
+                "ana_mod_cod",
+                "ana_mod_desc_ita",
+                "ana_mod_desc_eng",
+            ).select_related("erog_id")
 
+            result.moduli = moduli
+
+            result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
+            result.mutuato_da = None
+        
+        result.erog_found = erog_found
+        return result
+        
     def get_serializer_class(self):
         if self.action == "retrieve":
             return StudyActivitiesDetailSerializer
-        else:
-            return StudyActivitiesListSerializer
+        return StudyActivitiesListSerializer
 
 
 @extend_schema_view(

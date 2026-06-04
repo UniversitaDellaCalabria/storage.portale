@@ -11,7 +11,7 @@ class DidatticaAttivitaFormativaEsse3(models.Model):
     data_mod = models.DateTimeField(db_column="DATA_MOD", blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "DIDATTICA_ATTIVITA_FORMATIVA_ESSE3"
 
 
@@ -87,5 +87,5 @@ class DidatticaCdsEsse3(models.Model):
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "DIDATTICA_CDS_ESSE3"

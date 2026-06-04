@@ -101,7 +101,7 @@ class CdsBrochure(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "CDS_BROCHURE"
         constraints = [
             models.UniqueConstraint(
@@ -147,7 +147,7 @@ class CdsBrochureExStudenti(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "CDS_BROCHURE_EX_STUDENTI"
 
 
@@ -182,7 +182,7 @@ class CdsBrochureLink(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "CDS_BROCHURE_LINK"
 
 
@@ -209,5 +209,5 @@ class CdsBrochureSlider(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "CDS_BROCHURE_SLIDER"

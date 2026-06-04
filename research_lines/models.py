@@ -29,7 +29,7 @@ class RicercaAster1(InsModAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_ASTER1"
 
     def __str__(self):  # pragma: no cover
@@ -58,7 +58,7 @@ class RicercaAster2(InsModAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_ASTER2"
 
     def __str__(self):  # pragma: no cover
@@ -99,7 +99,7 @@ class RicercaDocenteLineaApplicata(InsModAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_DOCENTE_LINEA_APPLICATA"
 
 
@@ -137,7 +137,7 @@ class RicercaDocenteLineaBase(InsModAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_DOCENTE_LINEA_BASE"
 
 
@@ -151,7 +151,7 @@ class RicercaErc0(models.Model):
     )  # Field name made lowercase.
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_ERC0"
 
 
@@ -178,7 +178,7 @@ class RicercaErc1(InsModAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_ERC1"
 
     def __str__(self):  # pragma: no cover
@@ -208,7 +208,7 @@ class RicercaErc2(InsModAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_ERC2"
 
     def __str__(self):  # pragma: no cover
@@ -241,7 +241,7 @@ class RicercaLineaApplicata(InsModAbstract, VisibileAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_LINEA_APPLICATA"
 
     def __str__(self):  # pragma: no cover
@@ -274,7 +274,7 @@ class RicercaLineaBase(InsModAbstract, VisibileAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_LINEA_BASE"
 
     def __str__(self):  # pragma: no cover

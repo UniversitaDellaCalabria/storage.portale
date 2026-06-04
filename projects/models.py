@@ -12,7 +12,7 @@ class ProgettoAmbitoTerritoriale(models.Model):
         return self.ambito_territoriale
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PROGETTO_AMBITO_TERRITORIALE"
 
 
@@ -70,7 +70,7 @@ class ProgettoDatiBase(models.Model):
     ordinamento = models.IntegerField(default=10, db_column="ORDINE")
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PROGETTO_DATI_BASE"
         ordering = ["ordinamento"]
 
@@ -94,7 +94,7 @@ class ProgettoRicercatore(models.Model):
         return self.nome_origine
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PROGETTO_RICERCATORE"
 
 
@@ -118,7 +118,7 @@ class ProgettoResponsabileScientifico(models.Model):
         return self.nome_origine
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PROGETTO_RESPONSABILE_SCIENTIFICO"
 
 
@@ -131,5 +131,5 @@ class ProgettoTipologiaProgramma(models.Model):
         return self.nome_programma
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PROGETTO_TIPOLOGIA_PROGRAMMA"

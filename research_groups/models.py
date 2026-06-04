@@ -33,7 +33,7 @@ class RicercaDocenteGruppo(InsModAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_DOCENTE_GRUPPO"
 
     def __str__(self):  # pragma: no cover
@@ -67,7 +67,7 @@ class RicercaGruppo(InsModAbstract):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "RICERCA_GRUPPO"
 
     def __str__(self):  # pragma: no cover

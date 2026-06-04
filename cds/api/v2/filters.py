@@ -4,6 +4,8 @@ from generics.utils import decrypt
 
 from cds.models import (
     DidatticaAttivitaFormativa,
+    DidatticaAttivitaFormativaErogata,
+    DidatticaAttivitaFormativaPds,
     DidatticaCdsLingua,
     DidatticaCdsTipoCorso,
     DidatticaCopertura,
@@ -121,6 +123,7 @@ class CdsFilter(filters.FilterSet):
         model = DidatticaRegolamento
         fields = []
 
+
 class CdsExpiredFilter(filters.FilterSet):
     year_from = filters.NumberFilter(
         field_name="aa_reg_did",
@@ -147,86 +150,93 @@ class StudyActivitiesFilter(filters.FilterSet):
         label="Teaching name",
         help_text="Name of the study activity.",
     )
+    academic_year = filters.NumberFilter(
+        method="filter_academic_year",
+        label="Academic Year",
+        help_text="Academic year.",
+    )
+    course_year = filters.NumberFilter(
+        method="filter_course_year",
+        label="Course Year",
+        help_text="Year of erogation of the course.",
+    )
     cds_name = filters.CharFilter(
         method="filter_cds_name",
         label="Study course name",
         help_text="Name of the study course.",
     )
-    academic_year = filters.NumberFilter(
-        field_name="aa_off_id",
-        lookup_expr="iexact",
-        label="Academic Year",
-        help_text="Academic year.",
-    )
-    course_year = filters.NumberFilter(
-        field_name="anno_corso",
-        lookup_expr="iexact",
-        label="Course Year",
-        help_text="Year of erogation of the course.",
-    )
     cds_cod = filters.CharFilter(
-        field_name="cds__cds_cod",
-        lookup_expr="exact",
-        label="Cds code",
-        help_text="Code of the course of study.",
+        method="filter_cds_cod",
+        label="Study course name",
+        help_text="Name of the study course.",
     )
     department_cod = filters.CharFilter(
-        field_name="cds__dip__dip_cod",
-        lookup_expr="exact",
+        method="department_cod",
         label="Department code",
         help_text="Code of the departmental structure.",
-    )
-    teacher_last_name = filters.CharFilter(
-        field_name="matricola_resp_did__cognome",
-        lookup_expr="icontains",
-        label="Teacher last name",
-        help_text="Teacher's last name.",
-    )
-    ssd = filters.CharFilter(
-        field_name="sett_cod",
-        lookup_expr="icontains",
-        label="SSD",
-        help_text="(Scientific Disciplinary Sector) SSD/SDS code.",
-    )
-    cycle = filters.CharFilter(
-        method="filter_cycle",
-        label="Cycle",
-        help_text="Activity cycle.",
     )
     teacher_matricola = filters.CharFilter(
         method="filter_teacher_matricola",
         label="Teacher matricola",
         help_text="Encrypted teacher matricola.",
     )
+    ssd = filters.CharFilter(
+        method="filter_ssd",
+        label="SSD",
+        help_text="(Scientific Disciplinary Sector) SSD/SDS code.",
+    )
+    
+    def filter_name(self, queryset, name, value):
+        return queryset.filter(
+            Q(mod_off_id__ana_mod_desc_ita__icontains=value) |
+            Q(mod_off_id__ana_mod_desc_ita__icontains=value) |
+            Q(mod_off_id__af_off__ana_af_desc_ita__icontains=value) |
+            Q(mod_off_id__af_off__ana_af_desc_ita__icontains=value)
+        )
+        
+    def filter_academic_year(self, queryset, name, value):
+        return queryset.filter(pds__aa_off_id=value).distinct()
+
+    def filter_course_year(self, queryset, name, value):
+        return queryset.filter(pds__anno_corso=value).distinct()
+
+    def filter_cds_name(self, queryset, name, value):
+        return queryset.filter(
+            Q(mod_off_id__af_off__id_cds__nome_cds_it__icontains=value) |
+            Q(mod_off_id__af_off__id_cds__nome_cds_eng__icontains=value)
+        )
+
+    def filter_cds_cod(self, queryset, name, value):
+        return queryset.filter(
+            mod_off_id__af_off__id_cds__cds_cod=value
+        )
+
+    def filter_department_cod(self, queryset, name, value):
+        return queryset.filter(
+            mod_off_id__af_off__id_cds__dip__dip_cod__iexact=value
+        )
+
+    def filter_teacher_last_name(self, queryset, name, value):
+        return queryset.filter(
+            mod_off_id__doc_resp_mod_id_ab__cognome__iexact=value
+        )
+        
+    def filter_ssd(self, queryset, name, value):
+        return queryset.filter(
+            sett_cod__iexact=value
+        )
 
     def filter_teacher_matricola(self, queryset, name, value):
         decrypted_matricola = decrypt(value)
         return queryset.filter(
             Exists(
                 DidatticaCopertura.objects.filter(
-                    Q(af_id=OuterRef("af_id")) | Q(af_id=OuterRef("af_master_id")),
-                    matricola_resp_did=decrypted_matricola,
+                    Q(erog_id=OuterRef("erog_id")),
+                    doc_matricola=decrypted_matricola,
                 ).exclude(stato_coper_cod="R")
             )
         )
 
-    def filter_cycle(self, queryset, name, value):
-        return queryset.filter(
-            Q(tipo_ciclo_cod__icontains=value)
-            | Q(des_tipo_ciclo__icontains=value)
-            | Q(ciclo_des__icontains=value)
-        )
-
-    def filter_name(self, queryset, name, value):
-        return queryset.filter(
-            Q(des__icontains=value) | Q(af_gen_des_eng__icontains=value)
-        )
-
-    def filter_cds_name(self, queryset, name, value):
-        return queryset.filter(
-            Q(cds__nome_cds_it__icontains=value) | Q(cds__nome_cds_eng__icontains=value)
-        )
-
     class Meta:
-        model = DidatticaAttivitaFormativa
+        model = DidatticaAttivitaFormativaErogata
         fields = []
