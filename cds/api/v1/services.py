@@ -251,10 +251,10 @@ class ServiceDidatticaCds:
             "regdid__regdid_id",
             "clob_txt_ita",
             "clob_txt_eng",
-            "testo_regdid_url",
+            # ~ "testo_regdid_url",
             "tipo_testo_regdid_cod",
-            "profilo",
-            "profilo_eng",
+            # ~ "profilo",
+            # ~ "profilo_eng",
         )
 
         other_data = DidatticaRegolamentoAltriDati.objects.filter(

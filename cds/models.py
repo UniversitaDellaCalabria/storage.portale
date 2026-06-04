@@ -254,18 +254,18 @@ class DidatticaCds(models.Model):
     durata_anni = models.IntegerField(db_column='DURATA_ANNI', blank=True, null=True)  # Field name made lowercase. 
     valore_min = models.IntegerField(db_column='VALORE_MIN', blank=True, null=True)  # Field name made lowercase.
     tipo_corso_cod = models.CharField(db_column='TIPO_CORSO_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
-    id_classe_miur = models.ForeignKey('DidatticaClasseLaurea', models.DO_NOTHING, db_column='ID_CLASSE_MIUR', blank=True, null=True)  # Field name made lowercase.
-    classe_miur_cod = models.CharField(db_column='CLASSE_MIUR_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    classe_miur_desc_ita = models.CharField(db_column='CLASSE_MIUR_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    id_interclasse_miur = models.IntegerField(db_column='ID_INTERCLASSE_MIUR', blank=True, null=True)  # Field name made lowercase.
-    interclasse_miur_cod = models.CharField(db_column='INTERCLASSE_MIUR_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    interclasse_miur_desc_ita = models.CharField(db_column='INTERCLASSE_MIUR_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    cla_m_id = models.ForeignKey('DidatticaClasseLaurea', models.DO_NOTHING, db_column='ID_CLASSE_MIUR', blank=True, null=True)  # Field name made lowercase.
+    cla_miur_cod = models.CharField(db_column='CLASSE_MIUR_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    cla_miur_des = models.CharField(db_column='CLASSE_MIUR_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    intercla_m_id = models.IntegerField(db_column='ID_INTERCLASSE_MIUR', blank=True, null=True)  # Field name made lowercase.
+    intercla_miur_cod = models.CharField(db_column='INTERCLASSE_MIUR_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    intercla_miur_des = models.CharField(db_column='INTERCLASSE_MIUR_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
     codicione = models.CharField(db_column='CODICIONE', max_length=255, blank=True, null=True)  # Field name made lowercase.
     flg_exp_seg_stu = models.IntegerField(db_column='FLG_EXP_SEG_STU', blank=True, null=True)  # Field name made lowercase.
     cdsord_id = models.IntegerField(db_column='ORD_ID', unique=True, blank=True, null=True)  # Field name made lowercase.
     cdsord_cod = models.CharField(db_column='ORD_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
     aa_ord_id = models.IntegerField(db_column='AA_ORD_ID', blank=True, null=True)  # Field name made lowercase.
-    stato_ord_cod = models.CharField(db_column='STATO_ORD_COD', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    stato_cdsord_cod = models.CharField(db_column='STATO_ORD_COD', max_length=50, blank=True, null=True)  # Field name made lowercase.
     area_cds = models.CharField(db_column='AREA_CDS', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     area_cds_en = models.CharField(db_column='AREA_CDS_EN', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     dt_ins_mod = models.DateTimeField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
@@ -359,6 +359,7 @@ class DidatticaCdsAltriDatiUfficio(models.Model):
 
 
 class DidatticaCdsLingua(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
     # ~ lin_did_ord_id = models.IntegerField(db_column="LIN_DID_ORD_ID", primary_key=True)
     cdsord = models.ForeignKey(
         DidatticaCds,
@@ -383,7 +384,7 @@ class DidatticaCdsLingua(models.Model):
     
     class Meta:
         managed = False
-        db_table = "DIDATTICA_CDS_LINGUA"
+        db_table = "DIDATTICA_CDS_LINGUA_ID"
         verbose_name = "Cds language"
         verbose_name_plural = "Cds languages"
 
@@ -459,7 +460,7 @@ class DidatticaCoperturaDettaglioOre(models.Model):
         verbose_name_plural = "Teaching coverage hours details"
 
 
-class DidatticaPdsRegolamento(InsModAbstract):
+class DidatticaPdsRegolamento(models.Model):
     pds_regdid_id = models.IntegerField(db_column="PDS_REGDID_ID", primary_key=True)
     pds_cod = models.CharField(
         db_column="PDS_COD", max_length=30, blank=True, null=True
@@ -488,7 +489,7 @@ class DidatticaPdsRegolamento(InsModAbstract):
         verbose_name_plural = "Academic pathways"
 
 
-class DidatticaRegolamento(InsModAbstract):
+class DidatticaRegolamento(models.Model):
     regdid_id = models.IntegerField(db_column="REGDID_ID", primary_key=True)
     regdid_cod = models.CharField(db_column='REGDID_COD', max_length=10, blank=True, null=True)
     aa_reg_did = models.IntegerField(db_column="AA_ATT_ID", blank=True, null=True)
@@ -511,7 +512,8 @@ class DidatticaRegolamento(InsModAbstract):
     titolo_congiunto_cod = models.CharField(
         db_column="TITOLO_CONGIUNTO", max_length=100, blank=True, null=True
     )
-   
+    dt_ins_mod = models.DateTimeField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+    
     class Meta:
         managed = False
         db_table = "DIDATTICA_REGOLAMENTO"
@@ -608,7 +610,8 @@ class DidatticaTestiAfErogata(models.Model):
         verbose_name_plural = "Study activity texts"
 
 
-class DidatticaTestiRegolamento(InsModAbstract):
+class DidatticaTestiRegolamento(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
     regdid = models.ForeignKey(
         DidatticaRegolamento, models.DO_NOTHING, db_column="REGDID_ID"
     )
@@ -625,7 +628,7 @@ class DidatticaTestiRegolamento(InsModAbstract):
 
     class Meta:
         managed = False
-        db_table = "DIDATTICA_TESTI_REGOLAMENTO"
+        db_table = "DIDATTICA_TESTI_REGOLAMENTO_ID"
         verbose_name = "Didactic regulation text"
         verbose_name_plural = "Didactic regulation texts"
 

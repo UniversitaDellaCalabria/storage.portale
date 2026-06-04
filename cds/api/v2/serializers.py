@@ -331,7 +331,10 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
 
     @extend_schema_field(serializers.ListField())
     def get_officesData(self, obj):
-        officeData = getattr(obj, "officesData", []) or []
+        return []
+
+        # toDO GDA REFACTOR
+        officeData = getattr(obj, "officesData", [])
         email_id = (
             obj.email.split("@")[0]
             if obj.email
