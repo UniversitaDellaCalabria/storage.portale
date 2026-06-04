@@ -1,9 +1,18 @@
 from addressbook.settings import ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN
 
 from rest_framework import serializers
+
+from drf_spectacular.utils import (
+    extend_schema_field,
+    extend_schema_serializer,
+)
+
+from ..v2.docs import examples
+
+from generics.api.serializers import ReadOnlyModelSerializer
 from generics.utils import build_media_path, encrypt
 
-from cds.models import DidatticaRegolamento
+from cds.models import *
 from cds.settings import CDS_BROCHURE_IS_VISIBLE, CDS_BROCHURE_MEDIA_PATH
 
 
@@ -471,19 +480,7 @@ class StudyActivitiesSerializer(serializers.Serializer):
             "StudyActivityTeacherName": full_name,
             "StudyPlanDes": query["pds_des"],
         }
-
-    # @staticmethod
-    # def to_dict_teachers(query):
-    #     result = []
-    #     for q in query:
-    #         full_name = q['cognome'] + " " + q['nome'] + \
-    #                     (" " + q['middle_name']
-    #                      if q['middle_name'] is not None else "")
-    #         result.append({
-    #             'TeacherName': full_name,
-    #         })
-    #     return result
-
+        
 
 class StudyActivityInfoSerializer(serializers.Serializer):
     def to_representation(self, instance):
@@ -728,3 +725,551 @@ class CdsExpiredSerializer(serializers.Serializer):
             "LastErogationYear": query["aa_reg_did"],
             "CdSDuration" : query["cds__durata_anni"]
         }
+
+
+
+
+# v2 serializers
+
+class StudyActivitiesDetailSerializerV1(ReadOnlyModelSerializer):
+    StudyActivityID = serializers.IntegerField(source="af_pds_id")
+    StudyActivityCod = serializers.CharField(
+        source="ana_mod_cod",
+        help_text="",
+        default=None,
+    )
+    StudyActivityCdSID = serializers.IntegerField(
+        source="id_cds.cds_id",
+        help_text="",
+        default=None,
+    )
+    StudyActivityCdSCod = serializers.CharField(
+        source="cds_cod",
+        help_text="",
+        default=None,
+    )
+    StudyActivityRegDidId = serializers.IntegerField(
+        source="regdid_id",
+        help_text="",
+        default=None,
+    )
+    StudyActivityErogationYear = serializers.IntegerField(
+        source="aa_off_id",
+        help_text="",
+        default=None,
+    )
+    StudyActivityECTS = serializers.IntegerField(
+        source="cfu",
+        help_text="",
+        default=None,
+    )
+    StudyActivityYear = serializers.IntegerField(
+        source="anno_corso",
+        help_text="",
+        default=None,
+    )
+    StudyActivityTeachingUnitTypeCod = serializers.CharField(
+        source="taf_cod",
+        help_text="",
+        default=None,
+    )
+    StudyActivityTeachingUnitType = serializers.CharField(
+        source="taf_desc_ita",
+        help_text="",
+        default=None,
+    )
+    StudyActivityName  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityLanguage  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityModalities  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityTeacherID  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityTeacherName  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivitiesModules  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityPartitions  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityRoot  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityHours  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivitiyBorrows = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivitiyBorrowedFrom  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivitiyContents  = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityStudyPlans = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityCdSName = serializers.CharField(
+        source="id_cds.nome_cds_it",
+        help_text="",
+        default=None,
+    )
+    StudyActivityCompulsory = serializers.CharField(
+        source="flag_obbl",
+        help_text="",
+        default=None,
+    )
+    StudyActivitySSDCod = serializers.CharField(
+        source="sett_cod",
+        help_text="",
+        default=None,
+    )
+    StudyActivitySSD = serializers.CharField(
+        source="sett_desc_ita",
+        help_text="",
+        default=None,
+    )
+    StudyActivityPartitionDes = serializers.CharField(
+        source="erog_id.part_stu_desc_ita",
+        help_text="",
+        default=None,
+    )
+    StudyActivitySemester = serializers.CharField(
+        source="erog_id.tipo_periodo_did_desc_ita",
+        help_text="",
+        default=None,
+    )
+    
+    def get_StudyActivityName(self, obj):
+        if not obj.erog_found: return obj.ana_af_desc_ita
+        return obj.ana_mod_desc_ita
+        
+    def get_StudyActivityStudyPlans(self, obj):
+        if obj.erog_found: return getattr(obj, "pds", [])
+        return [obj.pds_desc_ita]
+        
+    def get_StudyActivityLanguage(self, obj):
+        if obj.erog_found: return [obj.erog_id.lingua_did_desc_ita]
+        result = []
+        for erog in obj.moduli:
+            result.append(erog.erog_id.lingua_did_desc_ita)
+        return set(result)
+
+    def get_StudyActivityTeacherID(self, obj):
+        if obj.erog_id.mod_off_id.af_off.doc_tit_matricola == "-999999999":
+            return None
+        email = obj.erog_id.mod_off_id.af_off.doc_tit_id_ab.email
+        if email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
+            return email.split("@")[0]
+        return encrypt(obj.erog_id.mod_off_id.af_off.doc_tit_matricola)
+
+    def get_StudyActivityTeacherName(self, obj):
+        try:
+            doc = Personale.objects.filter(id_ab=obj.erog_id.mod_off_id.af_off.doc_tit_id_ab.id_ab).first()
+            if doc: return f"{doc.cognome} {doc.nome}"
+        except:
+            pass
+        return None
+
+    def get_StudyActivityModalities(self, obj):
+        if obj.erog_found:
+            return [{
+                "ModalityActivityCod": obj.mod_did_cod,
+                "ModalityActivityDescription": obj.mod_did_desc_ita
+            }]
+        modalities = []
+        for mod in obj.moduli:
+            m = {
+                    "ModalityActivityCod": mod.mod_did_cod,
+                    "ModalityActivityDescription": mod.mod_did_desc_ita
+                }
+            if not m in modalities:
+                modalities.append(m)
+        return modalities
+
+    def get_StudyActivitiesModules(self, obj):
+        if not obj.moduli: return []
+        moduli = obj.moduli.values("ana_mod_id", "ana_mod_cod", "ana_mod_desc_ita").distinct()
+        if moduli.count() == 1: return []
+        result = []
+        for m in moduli:
+            erog_list = []
+            erogazioni = obj.moduli.filter(ana_mod_id=m["ana_mod_id"]).values(
+                "erog_id",
+                "erog_id__part_stu_cod",
+                "erog_id__part_stu_desc_ita",
+                "erog_id__fatt_part_stu_cod",
+                "erog_id__fatt_part_stu_desc_ita",
+                "erog_id__tipo_periodo_did_desc_ita",
+            ).distinct().order_by("erog_id")
+            if erogazioni.count() > 1:
+                m_id = None
+                for e in erogazioni:
+                    erog_list.append(
+                        {
+                            "StudyActivityID": e["erog_id"],
+                            "StudyActivityPartitionCod": e["erog_id__part_stu_cod"],
+                            "StudyActivityPartitionDes": e["erog_id__part_stu_desc_ita"],
+                            "StudyActivityExtendedPartitionCod": e["erog_id__fatt_part_stu_cod"],
+                            "StudyActivityExtendedPartitionDes": e["erog_id__fatt_part_stu_desc_ita"],
+                        }
+                    )
+            else:
+                m_id = erogazioni.first()["erog_id"]
+            
+            result.append(
+                {
+                    "StudyActivityID": m_id,
+                    "StudyActivityCod": m["ana_mod_cod"],
+                    "StudyActivityName": m["ana_mod_desc_ita"],
+                    "StudyActivitySemester": erogazioni.first()["erog_id__tipo_periodo_did_desc_ita"],
+                    "StudyActivityPartitions": erog_list,
+                }
+            ) 
+        return result
+        
+    def get_StudyActivityPartitions(self, obj):
+        moduli = obj.moduli.values("ana_mod_id").distinct()
+        if moduli.count() > 1:
+            return []
+        erog_list = []
+        erogazioni = obj.moduli.values(
+            "erog_id",
+            "erog_id__part_stu_cod",
+            "erog_id__part_stu_desc_ita",
+            "erog_id__fatt_part_stu_cod",
+            "erog_id__fatt_part_stu_desc_ita",
+            "erog_id__tipo_periodo_did_desc_ita",
+        ).distinct().order_by("erog_id")
+        if erogazioni.count() > 1:
+            for e in erogazioni:
+                erog_list.append(
+                    {
+                        "StudyActivityID": e["erog_id"],
+                        "StudyActivityPartitionCod": e["erog_id__part_stu_cod"],
+                        "StudyActivityPartitionDes": e["erog_id__part_stu_desc_ita"],
+                        "StudyActivityExtendedPartitionCod": e["erog_id__fatt_part_stu_cod"],
+                        "StudyActivityExtendedPartitionDes": e["erog_id__fatt_part_stu_desc_ita"],
+                    }
+                )
+        return erog_list
+
+    def get_StudyActivityRoot(self, obj):
+        if not obj.erog_found: return None
+        if DidatticaAttivitaFormativaPds.objects.filter(af_pds_id=obj.erog_id.erog_id).exists():
+            return None
+        return {
+            "StudyActivityID": obj.af_pds_id,
+            "StudyActivityName": obj.ana_af_desc_ita,
+            "StudyActivityCod": obj.ana_af_cod
+        }
+
+    def get_StudyActivityHours(self, obj):
+        if not obj.erog_found: return []
+        coperture = getattr(obj.erog_id, 'coperture_attive', [])
+        result = []
+        for cop in coperture:
+            teacher_id = None
+            if cop.doc_matricola != "-999999999":
+                email = getattr(cop.doc_id_ab, "email", None)
+                if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
+                    teacher_id = email.split("@")[0]
+                else:
+                    teacher_id = encrypt(cop.doc_matricola)
+            ore = cop.dettaglio_ore.all()
+            for ora in ore:
+                d = {
+                    "ActivityType": ora.tipo_att_did_cod,
+                    "Hours": ora.ore,
+                    "StudyActivityTeacherID": teacher_id,
+                    "StudyActivityTeacherName": f"{cop.doc_cognome} {cop.doc_nome}",
+                }
+                result.append(d)
+        return result
+
+    def get_StudyActivitiyBorrows(self, obj):
+        result = []
+        for m in obj.mutuazioni:
+            for pds in m.pds:
+                result.append({
+                    "StudyActivityID": m.erog_id,
+                    "StudyActivityName": pds.ana_mod_desc_ita,
+                    "StudyActivityPartitionCod": m.part_stu_cod,
+                    "StudyActivityPartition": m.part_stu_desc_ita,
+                    "StudyActivityCdSCod": pds.cds_cod,
+                    "StudyActivityCdSName": pds.id_cds.nome_cds_it,
+                })
+        return result
+        
+    def get_StudyActivitiyBorrowedFrom(self, obj):
+        # ho trovato l'erog_id e corrisponde all'erogazione master
+        # sono io l'attività master
+        if not obj.mutuato_da: return None
+        m = obj.mutuato_da.first()
+        result = {
+            "StudyActivityID": m.erog_id.erog_master_id,
+            "StudyActivityName": m.ana_mod_desc_ita,
+            "StudyActivityPartition": m.erog_id.part_stu_desc_ita,
+            "StudyActivityCdSCod": m.cds_cod,
+            "StudyActivityCdSName": m.id_cds.nome_cds_it,
+            "StudyActivityStudyPlans": [],
+        }
+        for m in obj.mutuato_da:
+            result["StudyActivityStudyPlans"].append(m.pds_desc_ita)
+        result["StudyActivityStudyPlans"] = set(result["StudyActivityStudyPlans"])
+        return result
+    
+    def get_StudyActivitiyContents(self, obj):
+        if getattr(obj, "num_erogazioni", 1) > 1: return []
+        result = []
+        for testo in DidatticaTestiAfErogata.objects.filter(erog_id=obj.erog_id.erog_master_id).all():
+            result.append({
+                "StudyActivitiyContentCod": testo.campo_cod,
+                "StudyActivitiyContentTitle": testo.campo_desc_ita,
+                "StudyActivitiyContentDes": testo.testo_fmt_ita
+            })
+        return result
+    
+    class Meta:
+        model = DidatticaAttivitaFormativaPds
+        fields = [
+            "StudyActivityID",
+            "StudyActivityCod",
+            "StudyActivityName",
+            "StudyActivityPartitionDes",
+            "StudyActivityRoot",
+            "StudyActivityCdSID",
+            "StudyActivityCdSCod",
+            "StudyActivityRegDidId",
+            "StudyActivityStudyPlans",
+            "StudyActivityErogationYear",
+            "StudyActivityECTS",
+            "StudyActivityLanguage",
+            "StudyActivityModalities",
+            "StudyActivitySSDCod",
+            "StudyActivitySSD",
+            "StudyActivityCompulsory",
+            "StudyActivityCdSName",
+            "StudyActivityYear",
+            "StudyActivitySemester",
+            "StudyActivityTeacherID",
+            "StudyActivityTeacherName",
+            "StudyActivityTeachingUnitTypeCod",
+            "StudyActivityTeachingUnitType",
+            "StudyActivitiesModules",
+            "StudyActivityPartitions",
+            "StudyActivityHours",
+            "StudyActivitiyBorrows",
+            "StudyActivitiyBorrowedFrom",
+            "StudyActivitiyContents",
+        ]
+
+        language_field_map = {
+            "cds_name": {"it": "id_cds.nome_cds_it", "en": "id_cds.nome_cds_eng"},
+            "sett_desc": {"it": "sett_desc_ita", "en": "sett_desc_eng"},
+            "part": {"it": "erog_id.part_stu_desc_ita", "en": "erog_id.part_stu_desc_eng"},
+        }
+
+    
+@extend_schema_serializer(examples=examples.STUDY_ACTIVITY_LIST_SERIALIZER_EXAMPLE)
+class StudyActivitiesListSerializerV1(ReadOnlyModelSerializer):
+    StudyActivityID = serializers.IntegerField(
+        source="erog_id",
+        help_text="",
+        default=None,
+    )
+    StudyActivityCod = serializers.CharField(
+        source="mod_off_id.ana_mod_cod",
+        help_text="",
+        default=None,
+    )
+    StudyActivityName = serializers.CharField(
+        source="mod_off_id.ana_mod_desc_ita",
+        help_text="",
+        default=None,
+    )
+    StudyActivityCdSID = serializers.IntegerField(
+        source="mod_off_id.af_off.id_cds.cds_id",
+        help_text="",
+        default=None,
+    )
+    StudyActivityCdSCod = serializers.CharField(
+        source="mod_off_id.af_off.cds_cod",
+        help_text="",
+        default=None,
+    )
+    StudyActivityCdSName = serializers.CharField(
+        source="mod_off_id.af_off.id_cds.nome_cds_it",
+        help_text="",
+        default=None,
+    )
+    DepartmentName = serializers.CharField(
+        source="mod_off_id.af_off.id_cds.dip.dip_desc_ita",
+        help_text="",
+        default=None,
+    )
+    DepartmentCod = serializers.CharField(
+        source="mod_off_id.af_off.id_cds.dip.dip_cod",
+        help_text="",
+        default=None,
+    )
+    StudyActivityLanguage = serializers.CharField(
+        source="lingua_did_desc_ita",
+        help_text="",
+        default=None,
+    )
+    StudyActivitySemester = serializers.CharField(
+        source="tipo_periodo_did_desc_ita",
+        help_text="",
+        default=None,
+    )
+    StudyActivityTeacherID = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityPartitionCod = serializers.CharField(
+        source="part_stu_cod",
+        help_text="",
+        default=None,
+    )
+    StudyActivityPartitionDes = serializers.CharField(
+        source="part_stu_desc_ita",
+        help_text="",
+        default=None,
+    )
+    StudyActivityExtendedPartitionCod = serializers.CharField(
+        source="fatt_part_stu_cod",
+        help_text="",
+        default=None,
+    )
+    StudyActivityExtendedPartitionDes = serializers.CharField(
+        source="fatt_part_stu_desc_ita",
+        help_text="",
+        default=None,
+    )
+    StudyActivityStudyPlans = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityFathers = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityAcademicYear = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityYear = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivitySSDCod = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivitySSD = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityRegDidId = serializers.SerializerMethodField(
+        help_text=""
+    )
+    StudyActivityTeacherName = serializers.SerializerMethodField(
+        help_text="",
+    )
+
+    def to_representation(self, instance):
+        # Usiamo il prefetch in modo sicuro. 
+        # Se non ci sono pds, first_pds sarà None (senza crashare!)
+        instance._pds_list= list(instance.pds.all())
+        return super().to_representation(instance)
+
+    def get_StudyActivityTeacherName(self, obj):
+        if obj.mod_off_id.af_off.doc_tit_matricola == "-999999999":
+            return None
+        try:
+            nome = obj.mod_off_id.doc_tit_id_ab.nome
+            cognome = obj.mod_off_id.doc_tit_id_ab.cognome
+            if nome and cognome:
+                return f"{cognome} {nome}"
+        except:
+            pass
+        return None
+        
+    def get_StudyActivityTeacherID(self, obj):
+        if obj.mod_off_id.af_off.doc_tit_matricola == "-999999999":
+            return None
+        try:
+            email = getattr(obj.mod_off_id.doc_tit_id_ab, "email", None)
+            if email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
+                return email.split("@")[0]
+            return encrypt(obj.mod_off_id.af_off.doc_tit_matricola)
+        except:
+            pass
+        return None
+        
+    def get_StudyActivityStudyPlans(self, obj):
+        result = []
+        for pds in obj._pds_list:
+            result.append(pds.pds_desc_ita)
+        return set(result)
+
+    def get_StudyActivityFathers(self, obj):
+        # Check in Python invece di .filter().exists()
+        if any(pds.af_pds_id == obj.erog_id for pds in obj._pds_list):
+            return []
+        
+        result = []
+        for pds in obj._pds_list:
+            result.append({
+                "id": pds.af_pds_id,
+                "cod": pds.ana_af_cod,
+                "name": pds.ana_af_desc_ita,
+                "pds": pds.pds_desc_ita,
+            })
+        return [dict(t) for t in {tuple(d.items()) for d in result}]
+
+    def get_StudyActivityYear(self, obj):
+        return obj._pds_list[0].anno_corso if obj._pds_list else None
+
+    def get_StudyActivityAcademicYear(self, obj):
+        return obj._pds_list[0].aa_off_id if obj._pds_list else None
+        
+    def get_StudyActivitySSDCod(self, obj):
+        return obj._pds_list[0].sett_cod if obj._pds_list else None
+        
+    def get_StudyActivitySSD(self, obj):
+        return obj._pds_list[0].sett_desc_ita if obj._pds_list else None
+    
+    def get_StudyActivityRegDidId(self, obj):
+        return obj._pds_list[0].regdid_id if obj._pds_list else None
+    
+    class Meta:
+        model = DidatticaAttivitaFormativaErogata
+        fields = [
+            "StudyActivityID",
+            "StudyActivityCdSID",
+            "StudyActivityCdSCod",
+            "StudyActivityCdSName",
+            "DepartmentName",
+            "DepartmentCod",
+            "StudyActivityFathers",
+            "StudyActivityRegDidId",
+            "StudyActivityCod",
+            "StudyActivityName",
+            "StudyActivityYear",
+            "StudyActivityAcademicYear",
+            "StudyActivityLanguage",
+            "StudyActivitySemester",
+            "StudyActivitySSDCod",
+            "StudyActivitySSD",
+            "StudyActivityTeacherName",
+            "StudyActivityTeacherID",
+            "StudyActivityStudyPlans",
+            "StudyActivityPartitionCod",
+            "StudyActivityPartitionDes",
+            "StudyActivityExtendedPartitionCod",
+            "StudyActivityExtendedPartitionDes",
+        ]
+

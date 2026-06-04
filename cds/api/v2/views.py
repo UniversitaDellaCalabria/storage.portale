@@ -75,6 +75,10 @@ from .serializers import (
     SortingContactsSerializer,
 )
 
+from ..v1.serializers import (
+    StudyActivitiesDetailSerializerV1,
+    StudyActivitiesListSerializerV1
+)
 
 @extend_schema_view(
     list=extend_schema(
@@ -490,7 +494,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = StudyActivitiesFilter
-
+    
     def get_queryset(self):
         queryset = (
             DidatticaAttivitaFormativaErogata.objects
@@ -596,13 +600,19 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
         
         result.erog_found = erog_found
         return result
-        
+
     def get_serializer_class(self):
         if self.action == "retrieve":
             return StudyActivitiesDetailSerializer
         return StudyActivitiesListSerializer
 
 
+class StudyActivitiesViewSetV1(StudyActivitiesViewSet):
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return StudyActivitiesDetailSerializerV1
+        return StudyActivitiesListSerializerV1
+    
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.ACADEMICPATHS_LIST_SUMMARY,
