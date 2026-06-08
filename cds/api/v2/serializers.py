@@ -25,7 +25,7 @@ from cds.models import (
     DidatticaCopertura,
     DidatticaCdsPeriodi,
     DidatticaTestiAfErogata,
-    DidatticaCoperturaDettaglioOre
+    DidatticaCoperturaDettaglioOre,
 )
 
 
@@ -874,9 +874,52 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
             "part": {"it": "erog_id.part_stu_desc_ita", "en": "erog_id.part_stu_desc_eng"},
         }
 
-    
+
+class PdsListMixin:
+    """Mixin con helper per accedere a _pds_list in modo sicuro."""
+
+    def _first_pds(self, obj):
+        return obj._pds_list[0] if obj._pds_list else None
+
+
+class StudyActivityTeacherSerializer(serializers.Serializer):
+    id = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+
+    def get_id(self, obj):
+        if obj.af_off.doc_tit_matricola == "-999999999":
+            return None
+        try:
+            email = getattr(obj.doc_tit_id_ab, "email", None)
+            if email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
+                return email.split("@")[0]
+            return encrypt(obj.af_off.doc_tit_matricola)
+        except Exception:
+            pass
+        return None
+
+    def get_name(self, obj):
+        if obj.af_off.doc_tit_matricola == "-999999999":
+            return None
+        try:
+            nome = obj.doc_tit_id_ab.nome
+            cognome = obj.doc_tit_id_ab.cognome
+            if nome and cognome:
+                return f"{cognome} {nome}"
+        except Exception:
+            pass
+        return None
+
+
+class StudyActivityFatherSerializer(serializers.Serializer):
+    id = serializers.IntegerField(source="af_pds_id")
+    cod = serializers.CharField(source="ana_af_cod")
+    name = serializers.CharField(source="ana_af_desc_ita")
+    pds = serializers.CharField(source="pds_desc_ita")
+
+
 @extend_schema_serializer(examples=examples.STUDY_ACTIVITY_LIST_SERIALIZER_EXAMPLE)
-class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
+class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer):
     StudyActivityID = serializers.IntegerField(
         source="erog_id",
         help_text="",
@@ -927,9 +970,7 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
         help_text="",
         default=None,
     )
-    StudyActivityTeacherID = serializers.SerializerMethodField(
-        help_text=""
-    )
+    StudyActivityTeacherID = serializers.SerializerMethodField(help_text="")
     StudyActivityPartitionCod = serializers.CharField(
         source="part_stu_cod",
         help_text="",
@@ -950,97 +991,59 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
         help_text="",
         default=None,
     )
-    StudyActivityStudyPlans = serializers.SerializerMethodField(
-        help_text=""
-    )
-    StudyActivityFathers = serializers.SerializerMethodField(
-        help_text=""
-    )
-    StudyActivityAcademicYear = serializers.SerializerMethodField(
-        help_text=""
-    )
-    StudyActivityYear = serializers.SerializerMethodField(
-        help_text=""
-    )
-    StudyActivitySSDCod = serializers.SerializerMethodField(
-        help_text=""
-    )
-    StudyActivitySSD = serializers.SerializerMethodField(
-        help_text=""
-    )
-    StudyActivityRegDidId = serializers.SerializerMethodField(
-        help_text=""
-    )
+    StudyActivityStudyPlans = serializers.SerializerMethodField(help_text="")
+    StudyActivityFathers = serializers.SerializerMethodField(help_text="")
+    StudyActivityAcademicYear = serializers.SerializerMethodField(help_text="")
+    StudyActivityYear = serializers.SerializerMethodField(help_text="")
+    StudyActivitySSDCod = serializers.SerializerMethodField(help_text="")
+    StudyActivitySSD = serializers.SerializerMethodField(help_text="")
+    StudyActivityRegDidId = serializers.SerializerMethodField(help_text="")
     StudyActivityTeacherName = serializers.SerializerMethodField(
         help_text="",
     )
 
     def to_representation(self, instance):
-        # Usiamo il prefetch in modo sicuro. 
-        # Se non ci sono pds, first_pds sarà None (senza crashare!)
-        instance._pds_list= list(instance.pds.all())
+        instance._pds_list = list(instance.pds.all())
         return super().to_representation(instance)
 
     def get_StudyActivityTeacherName(self, obj):
-        if obj.mod_off_id.af_off.doc_tit_matricola == "-999999999":
-            return None
-        try:
-            nome = obj.mod_off_id.doc_tit_id_ab.nome
-            cognome = obj.mod_off_id.doc_tit_id_ab.cognome
-            if nome and cognome:
-                return f"{cognome} {nome}"
-        except:
-            pass
-        return None
-        
+        return StudyActivityTeacherSerializer(obj.mod_off_id).data.get("name")
+
     def get_StudyActivityTeacherID(self, obj):
-        if obj.mod_off_id.af_off.doc_tit_matricola == "-999999999":
-            return None
-        try:
-            email = getattr(obj.mod_off_id.doc_tit_id_ab, "email", None)
-            if email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
-                return email.split("@")[0]
-            return encrypt(obj.mod_off_id.af_off.doc_tit_matricola)
-        except:
-            pass
-        return None
-        
+        return StudyActivityTeacherSerializer(obj.mod_off_id).data.get("id")
+
     def get_StudyActivityStudyPlans(self, obj):
-        result = []
-        for pds in obj._pds_list:
-            result.append(pds.pds_desc_ita)
-        return set(result)
+        return {pds.pds_desc_ita for pds in obj._pds_list}
 
     def get_StudyActivityFathers(self, obj):
-        # Check in Python invece di .filter().exists()
         if any(pds.af_pds_id == obj.erog_id for pds in obj._pds_list):
             return []
-        
-        result = []
-        for pds in obj._pds_list:
-            result.append({
-                "id": pds.af_pds_id,
-                "cod": pds.ana_af_cod,
-                "name": pds.ana_af_desc_ita,
-                "pds": pds.pds_desc_ita,
-            })
-        return [dict(t) for t in {tuple(d.items()) for d in result}]
+        unique = {
+            tuple(d.items())
+            for d in StudyActivityFatherSerializer(obj._pds_list, many=True).data
+        }
+        return [dict(t) for t in unique]
 
     def get_StudyActivityYear(self, obj):
-        return obj._pds_list[0].anno_corso if obj._pds_list else None
+        pds = self._first_pds(obj)
+        return pds.anno_corso if pds else None
 
     def get_StudyActivityAcademicYear(self, obj):
-        return obj._pds_list[0].aa_off_id if obj._pds_list else None
-        
+        pds = self._first_pds(obj)
+        return pds.aa_off_id if pds else None
+
     def get_StudyActivitySSDCod(self, obj):
-        return obj._pds_list[0].sett_cod if obj._pds_list else None
-        
+        pds = self._first_pds(obj)
+        return pds.sett_cod if pds else None
+
     def get_StudyActivitySSD(self, obj):
-        return obj._pds_list[0].sett_desc_ita if obj._pds_list else None
-    
+        pds = self._first_pds(obj)
+        return pds.sett_desc_ita if pds else None
+
     def get_StudyActivityRegDidId(self, obj):
-        return obj._pds_list[0].regdid_id if obj._pds_list else None
-    
+        pds = self._first_pds(obj)
+        return pds.regdid_id if pds else None
+
     class Meta:
         model = DidatticaAttivitaFormativaErogata
         fields = [
