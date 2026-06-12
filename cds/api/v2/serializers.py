@@ -666,15 +666,20 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
         context = kwargs.get('context', {})
         request = context.get('request', None)
         
-        self.lang = request.query_params.get('lang', 'ita') if request else 'ita'
-        if self.lang not in ['ita', 'eng']:
-            self.lang = 'ita'
+        self.lang = 'ita'
+        if request:
+            url_lang = request.query_params.get('lang')
+            if url_lang in ['ita', 'eng']:
+                self.lang = url_lang
+            else:
+                browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                if browser_lang.strip().startswith('en'):
+                    self.lang = 'eng'
             
         cds_suffix = 'it' if self.lang == 'ita' else 'eng'
 
         super().__init__(*args, **kwargs)
 
-       
         self.fields['StudyActivityTeachingUnitType'].source = f"taf_desc_{self.lang}"
         self.fields['StudyActivityCdSName'].source = f"id_cds.nome_cds_{cds_suffix}"
         self.fields['StudyActivitySSD'].source = f"sett_desc_{self.lang}"
@@ -927,13 +932,20 @@ class StudyActivityFatherSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
         context = kwargs.get('context', {})
         request = context.get('request', None)
-        lang = request.query_params.get('lang', 'ita') if request else 'ita'
-        if lang not in ['ita', 'eng']: 
-            lang = 'ita'
+        
+        lang = 'ita'
+        if request:
+            url_lang = request.query_params.get('lang')
+            if url_lang in ['ita', 'eng']:
+                lang = url_lang
+            else:
+                browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                if browser_lang.strip().startswith('en'):
+                    lang = 'eng'
 
         super().__init__(*args, **kwargs)
 
-        self.fields['name'].source = f"ana_af_desc_{lang}"
+        self.fields['name'].source = f"ana_af_cod_desc_{lang}"
         self.fields['pds'].source = f"pds_desc_{lang}"
 
 
@@ -970,9 +982,15 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer):
         context = kwargs.get('context', {})
         request = context.get('request', None)
         
-        self.lang = request.query_params.get('lang', 'ita') if request else 'ita'
-        if self.lang not in ['ita', 'eng']:
-            self.lang = 'ita'
+        self.lang = 'ita'
+        if request:
+            url_lang = request.query_params.get('lang')
+            if url_lang in ['ita', 'eng']:
+                self.lang = url_lang
+            else:
+                browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                if browser_lang.strip().startswith('en'):
+                    self.lang = 'eng'
 
         super().__init__(*args, **kwargs)
 
