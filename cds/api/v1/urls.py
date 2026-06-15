@@ -22,6 +22,7 @@ from .views import (
 from cds.api.v2.views import (
     AcademicPathwaysViewSet,
     StudyActivitiesViewSet,
+    StudyActivitiesViewSetV1,
 )
 
 app_name = "apiv1"
@@ -55,7 +56,7 @@ router.register(
     basename="academic-pathways",
 )
 
-router.register(r"activities", StudyActivitiesViewSet, basename="activities")
+router.register(r"activities", StudyActivitiesViewSetV1, basename="activities")
 urlpatterns += router.urls
 
 

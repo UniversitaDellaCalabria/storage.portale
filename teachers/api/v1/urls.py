@@ -24,7 +24,9 @@ app_name = "apiv1"
 urlpatterns = [
     path("teachers/", ApiTeachersList.as_view(), name="teachers-list"),
     path("teachers/<str:teacherid>/", ApiTeacherDetail.as_view(), name="teacher-info"),
-    path("teachers/<str:teacherid>/studyactivities/", ApiTeacherStudyActivitiesList.as_view(), name="teacher-study-activities"),
+
+    # path("teachers/<str:teacherid>/studyactivities/", ApiTeacherStudyActivitiesList.as_view(), name="teacher-study-activities"),
+
     path("teachers/<str:teacherid>/materials/", ApiTeacherMaterials.as_view(), name="teacher-materials"),
     path("teachers/<str:teacherid>/researchlines/", ApiTeacherResearchLinesList.as_view(), name="teacher-research-lines"),
     path("teachers/<str:teacherid>/news/", ApiTeacherNews.as_view(), name="teacher-news"),
@@ -34,7 +36,9 @@ urlpatterns = [
     path("publications/<str:publicationid>/", ApiPublicationDetail.as_view(), name="publication-info"),
     path("publicationscommunitytypes/", ApiPublicationsCommunityTypesList.as_view(), name="publications-community-types"),
     path("teaching-coverages/", ApiTeachingCoveragesList.as_view(), name="teaching-coverages-list"),
-    path("teaching-coverages/<str:teacherid>/studyactivities/", ApiTeachingCoverageActivitiesList.as_view(), name="teaching-coverages-studyactivities"),
+
+    # path("teaching-coverages/<str:teacherid>/studyactivities/", ApiTeachingCoverageActivitiesList.as_view(), name="teaching-coverages-studyactivities"),
+    
     path("teaching-coverages/<str:teacherid>/", ApiTeachingCoverageDetail.as_view(), name="teaching-coverages-info"),
     path("teaching-coverages/<str:teacherid>/publications/", ApiTeachingCoveragePublicationsList.as_view(), name="teaching-coverages-publications"),
     path("teaching-coverages/<str:teacherid>/publications/<str:publicationid>/", ApiTeachingCoveragePublicationDetail.as_view(), name="teaching-coverages-publication-detail"),
