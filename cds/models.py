@@ -471,7 +471,7 @@ class DidatticaPdsRegolamento(models.Model):
     pds_des_eng = models.CharField(
         db_column="PDS_DESC_ENG", max_length=2000, blank=True, null=True
     )
-    comune_flg = models.IntegerField(db_column="FLAG_COMUNE", blank=True, null=True)
+    comune_flg = models.CharField(db_column="FLAG_COMUNE", max_length=2, blank=True, null=True)
     valore_min = models.IntegerField(db_column="VALORE_MIN", blank=True, null=True)
     regdid = models.ForeignKey(
         "DidatticaRegolamento",
@@ -812,869 +812,869 @@ class DidatticaAmbiti(models.Model):
         verbose_name_plural = "Scopes"
 
 
-class DidatticaPianoRegolamento(models.Model):
-    regpiani_id = models.IntegerField(db_column="REGPIANI_ID", primary_key=True)
-    regdid = models.ForeignKey(
-        "DidatticaRegolamento",
-        models.DO_NOTHING,
-        db_column="REGDID_ID",
-        blank=True,
-        null=True,
-    )
-    attinenza_cod = models.CharField(
-        db_column="ATTINENZA_COD", max_length=10, blank=True, null=True
-    )
-    cod = models.CharField(db_column="COD", max_length=10, blank=True, null=True)
-    aa_coorte_id = models.IntegerField(db_column="AA_COORTE_ID", blank=True, null=True)
-    aa_regpiani_id = models.IntegerField(
-        db_column="AA_REGPIANI_ID", blank=True, null=True
-    )
-    des = models.CharField(db_column="DES", max_length=255, blank=True, null=True)
-    def_flg = models.IntegerField(db_column="DEF_FLG", blank=True, null=True)
-    stato_cod = models.CharField(
-        db_column="STATO_COD", max_length=5, blank=True, null=True
-    )
-    stato_des = models.CharField(
-        db_column="STATO_DES", max_length=40, blank=True, null=True
-    )
-    regpiani_pdr_id = models.IntegerField(
-        db_column="REGPIANI_PDR_ID", blank=True, null=True
-    )
-    regpiani_pdr_cod = models.CharField(
-        db_column="REGPIANI_PDR_COD", max_length=10, blank=True, null=True
-    )
-    regpiani_pdr_des = models.CharField(
-        db_column="REGPIANI_PDR_DES", max_length=255, blank=True, null=True
-    )
-    regpiani_pdr_aa_coorte_id = models.IntegerField(
-        db_column="REGPIANI_PDR_AA_COORTE_ID", blank=True, null=True
-    )
-    regpiani_pdr_aa_regpiani_id = models.IntegerField(
-        db_column="REGPIANI_PDR_AA_REGPIANI_ID", blank=True, null=True
-    )
-    flg_exp_seg_stu = models.IntegerField(
-        db_column="FLG_EXP_SEG_STU", blank=True, null=True
-    )
-    data_exp_seg_stu = models.DateField(
-        db_column="DATA_EXP_SEG_STU", blank=True, null=True
-    )
-    nota = models.CharField(db_column="NOTA", max_length=1000, blank=True, null=True)
+# ~ class DidatticaPianoRegolamento(models.Model):
+    # ~ regpiani_id = models.IntegerField(db_column="REGPIANI_ID", primary_key=True)
+    # ~ regdid = models.ForeignKey(
+        # ~ "DidatticaRegolamento",
+        # ~ models.DO_NOTHING,
+        # ~ db_column="REGDID_ID",
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ attinenza_cod = models.CharField(
+        # ~ db_column="ATTINENZA_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ cod = models.CharField(db_column="COD", max_length=10, blank=True, null=True)
+    # ~ aa_coorte_id = models.IntegerField(db_column="AA_COORTE_ID", blank=True, null=True)
+    # ~ aa_regpiani_id = models.IntegerField(
+        # ~ db_column="AA_REGPIANI_ID", blank=True, null=True
+    # ~ )
+    # ~ des = models.CharField(db_column="DES", max_length=255, blank=True, null=True)
+    # ~ def_flg = models.IntegerField(db_column="DEF_FLG", blank=True, null=True)
+    # ~ stato_cod = models.CharField(
+        # ~ db_column="STATO_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ stato_des = models.CharField(
+        # ~ db_column="STATO_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ regpiani_pdr_id = models.IntegerField(
+        # ~ db_column="REGPIANI_PDR_ID", blank=True, null=True
+    # ~ )
+    # ~ regpiani_pdr_cod = models.CharField(
+        # ~ db_column="REGPIANI_PDR_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ regpiani_pdr_des = models.CharField(
+        # ~ db_column="REGPIANI_PDR_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ regpiani_pdr_aa_coorte_id = models.IntegerField(
+        # ~ db_column="REGPIANI_PDR_AA_COORTE_ID", blank=True, null=True
+    # ~ )
+    # ~ regpiani_pdr_aa_regpiani_id = models.IntegerField(
+        # ~ db_column="REGPIANI_PDR_AA_REGPIANI_ID", blank=True, null=True
+    # ~ )
+    # ~ flg_exp_seg_stu = models.IntegerField(
+        # ~ db_column="FLG_EXP_SEG_STU", blank=True, null=True
+    # ~ )
+    # ~ data_exp_seg_stu = models.DateField(
+        # ~ db_column="DATA_EXP_SEG_STU", blank=True, null=True
+    # ~ )
+    # ~ nota = models.CharField(db_column="NOTA", max_length=1000, blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = "DIDATTICA_PIANO_REGOLAMENTO"
-        verbose_name = "Regulation study plan"
-        verbose_name_plural = "Regulation study plans"
-
-
-class DidatticaPianoSceltaAf(models.Model):
-    sce_af_id = models.IntegerField(db_column="SCE_AF_ID", primary_key=True)
-    sce = models.ForeignKey(
-        "DidatticaPianoSceltaVincoli",
-        models.DO_NOTHING,
-        db_column="SCE_ID",
-        blank=True,
-        null=True,
-    )
-    pds_regdid = models.ForeignKey(
-        DidatticaPdsRegolamento,
-        models.DO_NOTHING,
-        db_column="PDS_REGDID_ID",
-        blank=True,
-        null=True,
-    )
-    pds_cod = models.CharField(
-        db_column="PDS_COD", max_length=10, blank=True, null=True
-    )
-    pds_des = models.CharField(
-        db_column="PDS_DES", max_length=255, blank=True, null=True
-    )
-    sce_blk_id = models.IntegerField(db_column="SCE_BLK_ID", blank=True, null=True)
-    min_unt_blk = models.DecimalField(
-        db_column="MIN_UNT_BLK", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    max_unt_blk = models.DecimalField(
-        db_column="MAX_UNT_BLK", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    lingua_id = models.IntegerField(db_column="LINGUA_ID", blank=True, null=True)
-    blk_prg = models.IntegerField(db_column="BLK_PRG", blank=True, null=True)
-    lingua_iso6392_cod = models.CharField(
-        db_column="LINGUA_ISO6392_COD", max_length=3, blank=True, null=True
-    )
-    lingua_des = models.CharField(
-        db_column="LINGUA_DES", max_length=40, blank=True, null=True
-    )
-    lingua_num = models.IntegerField(db_column="LINGUA_NUM", blank=True, null=True)
-    af = models.ForeignKey(
-        DidatticaAttivitaFormativa,
-        models.DO_NOTHING,
-        db_column="AF_ID",
-        blank=True,
-        null=True,
-    )
-    regud_des_auto = models.CharField(
-        db_column="REGUD_DES_AUTO", max_length=1000, blank=True, null=True
-    )
-    regud_des_ute = models.CharField(
-        db_column="REGUD_DES_UTE", max_length=1000, blank=True, null=True
-    )
-    min_unt_af = models.DecimalField(
-        db_column="MIN_UNT_AF", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    max_unt_af = models.DecimalField(
-        db_column="MAX_UNT_AF", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    statutario_flg = models.IntegerField(
-        db_column="STATUTARIO_FLG", blank=True, null=True
-    )
-    def_verifica_flg = models.IntegerField(
-        db_column="DEF_VERIFICA_FLG", blank=True, null=True
-    )
-    contr_aa_off_flg = models.IntegerField(
-        db_column="CONTR_AA_OFF_FLG", blank=True, null=True
-    )
-    regdid_af_id = models.IntegerField(db_column="REGDID_AF_ID", blank=True, null=True)
-    pds_regdid_af_id = models.IntegerField(
-        db_column="PDS_REGDID_AF_ID", blank=True, null=True
-    )
-    pds_af_cod = models.CharField(
-        db_column="PDS_AF_COD", max_length=10, blank=True, null=True
-    )
-    pds_af_des = models.CharField(
-        db_column="PDS_AF_DES", max_length=255, blank=True, null=True
-    )
-    comune_af_flg = models.IntegerField(
-        db_column="COMUNE_AF_FLG", blank=True, null=True
-    )
-    attinenza_af_cod = models.CharField(
-        db_column="ATTINENZA_AF_COD", max_length=10, blank=True, null=True
-    )
-    of_id = models.IntegerField(db_column="OF_ID", blank=True, null=True)
-    cds_af_id = models.IntegerField(db_column="CDS_AF_ID", blank=True, null=True)
-    cds_af_cod = models.CharField(
-        db_column="CDS_AF_COD", max_length=10, blank=True, null=True
-    )
-    nome_af_cds = models.CharField(
-        db_column="NOME_AF_CDS", max_length=255, blank=True, null=True
-    )
-    cdsord_af_cod = models.CharField(
-        db_column="CDSORD_AF_COD", max_length=10, blank=True, null=True
-    )
-    aa_off_id = models.IntegerField(db_column="AA_OFF_ID", blank=True, null=True)
-    stato_of_cod = models.CharField(
-        db_column="STATO_OF_COD", max_length=5, blank=True, null=True
-    )
-    tipo_comp_af_id = models.IntegerField(
-        db_column="TIPO_COMP_AF_ID", blank=True, null=True
-    )
-    tipo_comp_af_cod = models.CharField(
-        db_column="TIPO_COMP_AF_COD", max_length=10, blank=True, null=True
-    )
-    des_tipo_comp_af = models.CharField(
-        db_column="DES_TIPO_COMP_AF", max_length=255, blank=True, null=True
-    )
-    af_gen_id = models.IntegerField(db_column="AF_GEN_ID", blank=True, null=True)
-    af_gen_cod = models.CharField(
-        db_column="AF_GEN_COD", max_length=20, blank=True, null=True
-    )
-    af_gen_des = models.CharField(
-        db_column="AF_GEN_DES", max_length=255, blank=True, null=True
-    )
-    anno_corso_af = models.IntegerField(
-        db_column="ANNO_CORSO_AF", blank=True, null=True
-    )
-    lista_anni_corso_af = models.CharField(
-        db_column="LISTA_ANNI_CORSO_AF", max_length=20, blank=True, null=True
-    )
-    af_regdid_id = models.IntegerField(db_column="AF_REGDID_ID", blank=True, null=True)
-    sett_cod = models.CharField(
-        db_column="SETT_COD", max_length=12, blank=True, null=True
-    )
-    tipo_af_cod_af = models.CharField(
-        db_column="TIPO_AF_COD_AF", max_length=10, blank=True, null=True
-    )
-    tipo_af_des_af = models.CharField(
-        db_column="TIPO_AF_DES_AF", max_length=80, blank=True, null=True
-    )
-    amb_id_af = models.ForeignKey(
-        DidatticaAmbiti, models.DO_NOTHING, db_column="AMB_ID_AF", blank=True, null=True
-    )
-    ambito_des_af = models.CharField(
-        db_column="AMBITO_DES_AF", max_length=255, blank=True, null=True
-    )
-    tipo_af_intercla_cod_af = models.CharField(
-        db_column="TIPO_AF_INTERCLA_COD_AF", max_length=10, blank=True, null=True
-    )
-    tipo_af_intercla_des_af = models.CharField(
-        db_column="TIPO_AF_INTERCLA_DES_AF", max_length=80, blank=True, null=True
-    )
-    amb_intercla_id_af = models.IntegerField(
-        db_column="AMB_INTERCLA_ID_AF", blank=True, null=True
-    )
-    ambito_intercla_des_af = models.CharField(
-        db_column="AMBITO_INTERCLA_DES_AF", max_length=255, blank=True, null=True
-    )
-    peso = models.DecimalField(
-        db_column="PESO", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    peso_foglie_non_log = models.DecimalField(
-        db_column="PESO_FOGLIE_NON_LOG",
-        max_digits=5,
-        decimal_places=2,
-        blank=True,
-        null=True,
-    )
-    num_max_reit = models.IntegerField(db_column="NUM_MAX_REIT", blank=True, null=True)
-    non_erogabile_flg = models.IntegerField(
-        db_column="NON_EROGABILE_FLG", blank=True, null=True
-    )
-    livello_af_cod = models.CharField(
-        db_column="LIVELLO_AF_COD", max_length=10, blank=True, null=True
-    )
-    livello_af_des = models.CharField(
-        db_column="LIVELLO_AF_DES", max_length=40, blank=True, null=True
-    )
-    tipo_esa_cod = models.CharField(
-        db_column="TIPO_ESA_COD", max_length=5, blank=True, null=True
-    )
-    tipo_esa_des = models.CharField(
-        db_column="TIPO_ESA_DES", max_length=40, blank=True, null=True
-    )
-    tipo_val_cod = models.CharField(
-        db_column="TIPO_VAL_COD", max_length=5, blank=True, null=True
-    )
-    tipo_val_des = models.CharField(
-        db_column="TIPO_VAL_DES", max_length=40, blank=True, null=True
-    )
-    af_pdr_id = models.IntegerField(db_column="AF_PDR_ID", blank=True, null=True)
-    af_radice_id = models.IntegerField(db_column="AF_RADICE_ID", blank=True, null=True)
-    num_liv_albero = models.IntegerField(
-        db_column="NUM_LIV_ALBERO", blank=True, null=True
-    )
-    ciclo_id = models.IntegerField(db_column="CICLO_ID", blank=True, null=True)
-    ciclo_des = models.CharField(
-        db_column="CICLO_DES", max_length=40, blank=True, null=True
-    )
-    tipo_ciclo_cod = models.CharField(
-        db_column="TIPO_CICLO_COD", max_length=5, blank=True, null=True
-    )
-    des_tipo_ciclo = models.CharField(
-        db_column="DES_TIPO_CICLO", max_length=40, blank=True, null=True
-    )
-    org_did_sua_cod = models.IntegerField(
-        db_column="ORG_DID_SUA_COD", blank=True, null=True
-    )
-    sede_id = models.IntegerField(db_column="SEDE_ID", blank=True, null=True)
-    sede_des = models.CharField(
-        db_column="SEDE_DES", max_length=255, blank=True, null=True
-    )
-    tipo_rag_cod = models.CharField(
-        db_column="TIPO_RAG_COD", max_length=5, blank=True, null=True
-    )
-    tipo_rag_des = models.CharField(
-        db_column="TIPO_RAG_DES", max_length=40, blank=True, null=True
-    )
-    af_capogruppo_id = models.IntegerField(
-        db_column="AF_CAPOGRUPPO_ID", blank=True, null=True
-    )
-    scelta_mod_flg = models.IntegerField(
-        db_column="SCELTA_MOD_FLG", blank=True, null=True
-    )
-    num_regud = models.DecimalField(
-        db_column="NUM_REGUD", max_digits=38, decimal_places=0, blank=True, null=True
-    )
-
-    class Meta:
-        managed = False
-        db_table = "DIDATTICA_PIANO_SCELTA_AF"
-        ordering = ("ciclo_des",)
-        verbose_name = "Study plan study activity choice"
-        verbose_name_plural = "Study plan study activity choices"
+    # ~ class Meta:
+        # ~ managed = False
+        # ~ db_table = "DIDATTICA_PIANO_REGOLAMENTO"
+        # ~ verbose_name = "Regulation study plan"
+        # ~ verbose_name_plural = "Regulation study plans"
 
 
-class DidatticaPianoSceltaFilAnd(models.Model):
-    sce_fil_and_id = models.IntegerField(db_column="SCE_FIL_AND_ID", primary_key=True)
-    sce = models.ForeignKey(
-        "DidatticaPianoSceltaVincoli",
-        models.DO_NOTHING,
-        db_column="SCE_ID",
-        blank=True,
-        null=True,
-    )
-    sce_fil_or_id = models.IntegerField(
-        db_column="SCE_FIL_OR_ID", blank=True, null=True
-    )
-    sce_fil_or_des = models.CharField(
-        db_column="SCE_FIL_OR_DES", max_length=255, blank=True, null=True
-    )
-    tipo_filtro_cod = models.CharField(
-        db_column="TIPO_FILTRO_COD", max_length=10, blank=True, null=True
-    )
-    tipo_filtro_des = models.CharField(
-        db_column="TIPO_FILTRO_DES", max_length=255, blank=True, null=True
-    )
-    af_gen_id = models.IntegerField(db_column="AF_GEN_ID", blank=True, null=True)
-    af_gen_cod = models.CharField(
-        db_column="AF_GEN_COD", max_length=20, blank=True, null=True
-    )
-    af_gen_des = models.CharField(
-        db_column="AF_GEN_DES", max_length=255, blank=True, null=True
-    )
-    dip_sce_fil_and_id = models.IntegerField(
-        db_column="DIP_SCE_FIL_AND_ID", blank=True, null=True
-    )
-    dip_sce_fil_and_cod = models.CharField(
-        db_column="DIP_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
-    )
-    dip_sce_fil_and_des = models.CharField(
-        db_column="DIP_SCE_FIL_AND_DES", max_length=255, blank=True, null=True
-    )
-    strac_sce_fil_and_id = models.IntegerField(
-        db_column="STRAC_SCE_FIL_AND_ID", blank=True, null=True
-    )
-    strac_sce_fil_and_cod = models.CharField(
-        db_column="STRAC_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
-    )
-    strac_sce_fil_and_des = models.CharField(
-        db_column="STRAC_SCE_FIL_AND_DES", max_length=255, blank=True, null=True
-    )
-    cds_sce_fil_and_id = models.IntegerField(
-        db_column="CDS_SCE_FIL_AND_ID", blank=True, null=True
-    )
-    cds_sce_fil_and_cod = models.CharField(
-        db_column="CDS_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
-    )
-    cds_sce_fil_and_nome = models.CharField(
-        db_column="CDS_SCE_FIL_AND_NOME", max_length=255, blank=True, null=True
-    )
-    cfu = models.DecimalField(
-        db_column="CFU", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    tipo_af_sce_fil_and_cod = models.CharField(
-        db_column="TIPO_AF_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
-    )
-    tipo_af_sce_fil_and_des = models.CharField(
-        db_column="TIPO_AF_SCE_FIL_AND_DES", max_length=80, blank=True, null=True
-    )
-    sett_cod = models.CharField(
-        db_column="SETT_COD", max_length=12, blank=True, null=True
-    )
-    tipo_corso_sce_fil_and_cod = models.CharField(
-        db_column="TIPO_CORSO_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
-    )
-    cla_miur_sce_fil_and_id = models.IntegerField(
-        db_column="CLA_MIUR_SCE_FIL_AND_ID", blank=True, null=True
-    )
-    cla_miur_sce_fil_and_cod = models.CharField(
-        db_column="CLA_MIUR_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
-    )
-    cla_miur_sce_fil_and_des = models.CharField(
-        db_column="CLA_MIUR_SCE_FIL_AND_DES", max_length=255, blank=True, null=True
-    )
-    rif_cod = models.CharField(
-        db_column="RIF_COD", max_length=10, blank=True, null=True
-    )
-    sett_post_rif_flg = models.IntegerField(
-        db_column="SETT_POST_RIF_FLG", blank=True, null=True
-    )
-    tipo_ins_cod = models.CharField(
-        db_column="TIPO_INS_COD", max_length=10, blank=True, null=True
-    )
-    peso_sce_fil_and = models.IntegerField(
-        db_column="PESO_SCE_FIL_AND", blank=True, null=True
-    )
-    not_flg = models.IntegerField(db_column="NOT_FLG", blank=True, null=True)
+# ~ class DidatticaPianoSceltaAf(models.Model):
+    # ~ sce_af_id = models.IntegerField(db_column="SCE_AF_ID", primary_key=True)
+    # ~ sce = models.ForeignKey(
+        # ~ "DidatticaPianoSceltaVincoli",
+        # ~ models.DO_NOTHING,
+        # ~ db_column="SCE_ID",
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ pds_regdid = models.ForeignKey(
+        # ~ DidatticaPdsRegolamento,
+        # ~ models.DO_NOTHING,
+        # ~ db_column="PDS_REGDID_ID",
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ pds_cod = models.CharField(
+        # ~ db_column="PDS_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ pds_des = models.CharField(
+        # ~ db_column="PDS_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ sce_blk_id = models.IntegerField(db_column="SCE_BLK_ID", blank=True, null=True)
+    # ~ min_unt_blk = models.DecimalField(
+        # ~ db_column="MIN_UNT_BLK", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ max_unt_blk = models.DecimalField(
+        # ~ db_column="MAX_UNT_BLK", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ lingua_id = models.IntegerField(db_column="LINGUA_ID", blank=True, null=True)
+    # ~ blk_prg = models.IntegerField(db_column="BLK_PRG", blank=True, null=True)
+    # ~ lingua_iso6392_cod = models.CharField(
+        # ~ db_column="LINGUA_ISO6392_COD", max_length=3, blank=True, null=True
+    # ~ )
+    # ~ lingua_des = models.CharField(
+        # ~ db_column="LINGUA_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ lingua_num = models.IntegerField(db_column="LINGUA_NUM", blank=True, null=True)
+    # ~ af = models.ForeignKey(
+        # ~ DidatticaAttivitaFormativa,
+        # ~ models.DO_NOTHING,
+        # ~ db_column="AF_ID",
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ regud_des_auto = models.CharField(
+        # ~ db_column="REGUD_DES_AUTO", max_length=1000, blank=True, null=True
+    # ~ )
+    # ~ regud_des_ute = models.CharField(
+        # ~ db_column="REGUD_DES_UTE", max_length=1000, blank=True, null=True
+    # ~ )
+    # ~ min_unt_af = models.DecimalField(
+        # ~ db_column="MIN_UNT_AF", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ max_unt_af = models.DecimalField(
+        # ~ db_column="MAX_UNT_AF", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ statutario_flg = models.IntegerField(
+        # ~ db_column="STATUTARIO_FLG", blank=True, null=True
+    # ~ )
+    # ~ def_verifica_flg = models.IntegerField(
+        # ~ db_column="DEF_VERIFICA_FLG", blank=True, null=True
+    # ~ )
+    # ~ contr_aa_off_flg = models.IntegerField(
+        # ~ db_column="CONTR_AA_OFF_FLG", blank=True, null=True
+    # ~ )
+    # ~ regdid_af_id = models.IntegerField(db_column="REGDID_AF_ID", blank=True, null=True)
+    # ~ pds_regdid_af_id = models.IntegerField(
+        # ~ db_column="PDS_REGDID_AF_ID", blank=True, null=True
+    # ~ )
+    # ~ pds_af_cod = models.CharField(
+        # ~ db_column="PDS_AF_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ pds_af_des = models.CharField(
+        # ~ db_column="PDS_AF_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ comune_af_flg = models.IntegerField(
+        # ~ db_column="COMUNE_AF_FLG", blank=True, null=True
+    # ~ )
+    # ~ attinenza_af_cod = models.CharField(
+        # ~ db_column="ATTINENZA_AF_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ of_id = models.IntegerField(db_column="OF_ID", blank=True, null=True)
+    # ~ cds_af_id = models.IntegerField(db_column="CDS_AF_ID", blank=True, null=True)
+    # ~ cds_af_cod = models.CharField(
+        # ~ db_column="CDS_AF_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ nome_af_cds = models.CharField(
+        # ~ db_column="NOME_AF_CDS", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ cdsord_af_cod = models.CharField(
+        # ~ db_column="CDSORD_AF_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ aa_off_id = models.IntegerField(db_column="AA_OFF_ID", blank=True, null=True)
+    # ~ stato_of_cod = models.CharField(
+        # ~ db_column="STATO_OF_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ tipo_comp_af_id = models.IntegerField(
+        # ~ db_column="TIPO_COMP_AF_ID", blank=True, null=True
+    # ~ )
+    # ~ tipo_comp_af_cod = models.CharField(
+        # ~ db_column="TIPO_COMP_AF_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ des_tipo_comp_af = models.CharField(
+        # ~ db_column="DES_TIPO_COMP_AF", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ af_gen_id = models.IntegerField(db_column="AF_GEN_ID", blank=True, null=True)
+    # ~ af_gen_cod = models.CharField(
+        # ~ db_column="AF_GEN_COD", max_length=20, blank=True, null=True
+    # ~ )
+    # ~ af_gen_des = models.CharField(
+        # ~ db_column="AF_GEN_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ anno_corso_af = models.IntegerField(
+        # ~ db_column="ANNO_CORSO_AF", blank=True, null=True
+    # ~ )
+    # ~ lista_anni_corso_af = models.CharField(
+        # ~ db_column="LISTA_ANNI_CORSO_AF", max_length=20, blank=True, null=True
+    # ~ )
+    # ~ af_regdid_id = models.IntegerField(db_column="AF_REGDID_ID", blank=True, null=True)
+    # ~ sett_cod = models.CharField(
+        # ~ db_column="SETT_COD", max_length=12, blank=True, null=True
+    # ~ )
+    # ~ tipo_af_cod_af = models.CharField(
+        # ~ db_column="TIPO_AF_COD_AF", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ tipo_af_des_af = models.CharField(
+        # ~ db_column="TIPO_AF_DES_AF", max_length=80, blank=True, null=True
+    # ~ )
+    # ~ amb_id_af = models.ForeignKey(
+        # ~ DidatticaAmbiti, models.DO_NOTHING, db_column="AMB_ID_AF", blank=True, null=True
+    # ~ )
+    # ~ ambito_des_af = models.CharField(
+        # ~ db_column="AMBITO_DES_AF", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ tipo_af_intercla_cod_af = models.CharField(
+        # ~ db_column="TIPO_AF_INTERCLA_COD_AF", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ tipo_af_intercla_des_af = models.CharField(
+        # ~ db_column="TIPO_AF_INTERCLA_DES_AF", max_length=80, blank=True, null=True
+    # ~ )
+    # ~ amb_intercla_id_af = models.IntegerField(
+        # ~ db_column="AMB_INTERCLA_ID_AF", blank=True, null=True
+    # ~ )
+    # ~ ambito_intercla_des_af = models.CharField(
+        # ~ db_column="AMBITO_INTERCLA_DES_AF", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ peso = models.DecimalField(
+        # ~ db_column="PESO", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ peso_foglie_non_log = models.DecimalField(
+        # ~ db_column="PESO_FOGLIE_NON_LOG",
+        # ~ max_digits=5,
+        # ~ decimal_places=2,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ num_max_reit = models.IntegerField(db_column="NUM_MAX_REIT", blank=True, null=True)
+    # ~ non_erogabile_flg = models.IntegerField(
+        # ~ db_column="NON_EROGABILE_FLG", blank=True, null=True
+    # ~ )
+    # ~ livello_af_cod = models.CharField(
+        # ~ db_column="LIVELLO_AF_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ livello_af_des = models.CharField(
+        # ~ db_column="LIVELLO_AF_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ tipo_esa_cod = models.CharField(
+        # ~ db_column="TIPO_ESA_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ tipo_esa_des = models.CharField(
+        # ~ db_column="TIPO_ESA_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ tipo_val_cod = models.CharField(
+        # ~ db_column="TIPO_VAL_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ tipo_val_des = models.CharField(
+        # ~ db_column="TIPO_VAL_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ af_pdr_id = models.IntegerField(db_column="AF_PDR_ID", blank=True, null=True)
+    # ~ af_radice_id = models.IntegerField(db_column="AF_RADICE_ID", blank=True, null=True)
+    # ~ num_liv_albero = models.IntegerField(
+        # ~ db_column="NUM_LIV_ALBERO", blank=True, null=True
+    # ~ )
+    # ~ ciclo_id = models.IntegerField(db_column="CICLO_ID", blank=True, null=True)
+    # ~ ciclo_des = models.CharField(
+        # ~ db_column="CICLO_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ tipo_ciclo_cod = models.CharField(
+        # ~ db_column="TIPO_CICLO_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ des_tipo_ciclo = models.CharField(
+        # ~ db_column="DES_TIPO_CICLO", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ org_did_sua_cod = models.IntegerField(
+        # ~ db_column="ORG_DID_SUA_COD", blank=True, null=True
+    # ~ )
+    # ~ sede_id = models.IntegerField(db_column="SEDE_ID", blank=True, null=True)
+    # ~ sede_des = models.CharField(
+        # ~ db_column="SEDE_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ tipo_rag_cod = models.CharField(
+        # ~ db_column="TIPO_RAG_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ tipo_rag_des = models.CharField(
+        # ~ db_column="TIPO_RAG_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ af_capogruppo_id = models.IntegerField(
+        # ~ db_column="AF_CAPOGRUPPO_ID", blank=True, null=True
+    # ~ )
+    # ~ scelta_mod_flg = models.IntegerField(
+        # ~ db_column="SCELTA_MOD_FLG", blank=True, null=True
+    # ~ )
+    # ~ num_regud = models.DecimalField(
+        # ~ db_column="NUM_REGUD", max_digits=38, decimal_places=0, blank=True, null=True
+    # ~ )
 
-    class Meta:
-        managed = False
-        db_table = "DIDATTICA_PIANO_SCELTA_FIL_AND"
-        verbose_name = "Study plan choice filter"
-        verbose_name_plural = "Study plan choice filters"
-
-
-class DidatticaPianoSceltaSchePiano(models.Model):
-    sche_piano = models.OneToOneField(
-        "DidatticaPianoSche",
-        models.DO_NOTHING,
-        db_column="SCHE_PIANO_ID",
-        primary_key=True,
-        related_name="didatticapianosceltaschepiano"
-    )
-    sche_statutario_flg = models.BooleanField(
-        db_column="SCHE_STATUTARIO_FLG", default=False
-    )
-    sche_pds_regdid_id = models.IntegerField(
-        db_column="SCHE_PDS_REGDID_ID", blank=True, null=True
-    )
-    sche_pds_cod = models.CharField(
-        db_column="SCHE_PDS_COD", max_length=10, blank=True, null=True
-    )
-    sche_pds_des = models.CharField(
-        db_column="SCHE_PDS_DES", max_length=255, blank=True, null=True
-    )
-    sche_ori_id = models.IntegerField(db_column="SCHE_ORI_ID", blank=True, null=True)
-    sche_cla_m_id = models.IntegerField(
-        db_column="SCHE_CLA_M_ID", blank=True, null=True
-    )
-    sche_apt_id = models.IntegerField(db_column="SCHE_APT_ID", blank=True, null=True)
-    sche_nota = models.CharField(
-        db_column="SCHE_NOTA", max_length=1000, blank=True, null=True
-    )
-    data_ini_val = models.DateField(db_column="DATA_INI_VAL", blank=True, null=True)
-    data_fine_val = models.DateField(db_column="DATA_FINE_VAL", blank=True, null=True)
-    stato_piano_gen_cod = models.CharField(
-        db_column="STATO_PIANO_GEN_COD", max_length=10, blank=True, null=True
-    )
-    contr_ac_piano_stu_cod = models.CharField(
-        db_column="CONTR_AC_PIANO_STU_COD", max_length=10, blank=True, null=True
-    )
-    blocco_af_freq_piano_stu_flg = models.IntegerField(
-        db_column="BLOCCO_AF_FREQ_PIANO_STU_FLG", blank=True, null=True
-    )
-    sce = models.ForeignKey(
-        "DidatticaPianoSceltaVincoli", models.DO_NOTHING, db_column="SCE_ID"
-    )
-    ord_num = models.IntegerField(db_column="ORD_NUM", blank=True, null=True)
-    apt_slot_id = models.IntegerField(db_column="APT_SLOT_ID", blank=True, null=True)
-    apt_slot_cod = models.CharField(
-        db_column="APT_SLOT_COD", max_length=10, blank=True, null=True
-    )
-    apt_slot_des = models.CharField(
-        db_column="APT_SLOT_DES", max_length=255, blank=True, null=True
-    )
-    apt_slot_anno_corso = models.IntegerField(
-        db_column="APT_SLOT_ANNO_CORSO", blank=True, null=True
-    )
-    apt_slot_ord_num = models.IntegerField(
-        db_column="APT_SLOT_ORD_NUM", blank=True, null=True
-    )
-    sce_des = models.CharField(
-        db_column="SCE_DES", max_length=255, blank=True, null=True
-    )
-    pds_regdid_id = models.IntegerField(
-        db_column="PDS_REGDID_ID", blank=True, null=True
-    )
-    pds_cod = models.CharField(
-        db_column="PDS_COD", max_length=10, blank=True, null=True
-    )
-    pds_des = models.CharField(
-        db_column="PDS_DES", max_length=255, blank=True, null=True
-    )
-    comune_flg = models.IntegerField(db_column="COMUNE_FLG", blank=True, null=True)
-    anno_corso = models.IntegerField(db_column="ANNO_CORSO", blank=True, null=True)
-    anno_corso_ant = models.IntegerField(
-        db_column="ANNO_CORSO_ANT", blank=True, null=True
-    )
-    tipo_regsce_cod = models.CharField(
-        db_column="TIPO_REGSCE_COD", max_length=10, blank=True, null=True
-    )
-    tipo_sce_cod = models.CharField(
-        db_column="TIPO_SCE_COD", max_length=5, blank=True, null=True
-    )
-    tipo_sce_des = models.CharField(
-        db_column="TIPO_SCE_DES", max_length=40, blank=True, null=True
-    )
-    tipo_regsce_des = models.CharField(
-        db_column="TIPO_REGSCE_DES", max_length=40, blank=True, null=True
-    )
-    tipo_um_regsce_cod = models.CharField(
-        db_column="TIPO_UM_REGSCE_COD", max_length=5, blank=True, null=True
-    )
-    opz_flg = models.IntegerField(db_column="OPZ_FLG", blank=True, null=True)
-    min_unt = models.DecimalField(
-        db_column="MIN_UNT", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    max_unt = models.DecimalField(
-        db_column="MAX_UNT", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    livello = models.IntegerField(db_column="LIVELLO", blank=True, null=True)
-    vin_id = models.IntegerField(db_column="VIN_ID", blank=True, null=True)
-    vin_ord_num = models.IntegerField(db_column="VIN_ORD_NUM", blank=True, null=True)
-    vin_sce_des = models.CharField(
-        db_column="VIN_SCE_DES", max_length=255, blank=True, null=True
-    )
-    tipi_af_tipi_sce_id = models.IntegerField(
-        db_column="TIPI_AF_TIPI_SCE_ID", blank=True, null=True
-    )
-    tipo_af_cod = models.CharField(
-        db_column="TIPO_AF_COD", max_length=10, blank=True, null=True
-    )
-    tipo_af_des = models.CharField(
-        db_column="TIPO_AF_DES", max_length=80, blank=True, null=True
-    )
-    amb = models.ForeignKey(
-        DidatticaAmbiti, models.DO_NOTHING, db_column="AMB_ID", blank=True, null=True
-    )
-    ambito_des = models.CharField(
-        db_column="AMBITO_DES", max_length=255, blank=True, null=True
-    )
-    sovran_flg = models.IntegerField(db_column="SOVRAN_FLG", blank=True, null=True)
-    sostegno_flg = models.IntegerField(db_column="SOSTEGNO_FLG", blank=True, null=True)
-    peso_sce = models.IntegerField(db_column="PESO_SCE", blank=True, null=True)
-    tesoretto_flg = models.IntegerField(
-        db_column="TESORETTO_FLG", blank=True, null=True
-    )
-    assegnazione_posti_flg = models.IntegerField(
-        db_column="ASSEGNAZIONE_POSTI_FLG", blank=True, null=True
-    )
-    delibera_flg = models.IntegerField(db_column="DELIBERA_FLG", blank=True, null=True)
-    azzera_cfu_flg = models.IntegerField(
-        db_column="AZZERA_CFU_FLG", blank=True, null=True
-    )
-    parametri_logistica_flg = models.IntegerField(
-        db_column="PARAMETRI_LOGISTICA_FLG", blank=True, null=True
-    )
-    tag_regsce_cod = models.CharField(
-        db_column="TAG_REGSCE_COD", max_length=20, blank=True, null=True
-    )
-    peso_af_sce = models.DecimalField(
-        db_column="PESO_AF_SCE", max_digits=38, decimal_places=0, blank=True, null=True
-    )
-    peso_min_singola_af = models.DecimalField(
-        db_column="PESO_MIN_SINGOLA_AF",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    peso_max_singola_af = models.DecimalField(
-        db_column="PESO_MAX_SINGOLA_AF",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    num_af_sce = models.DecimalField(
-        db_column="NUM_AF_SCE", max_digits=38, decimal_places=0, blank=True, null=True
-    )
-    peso_af_sce_stat = models.DecimalField(
-        db_column="PESO_AF_SCE_STAT",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    peso_af_sce_def_verifica = models.DecimalField(
-        db_column="PESO_AF_SCE_DEF_VERIFICA",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    num_blk = models.DecimalField(
-        db_column="NUM_BLK", max_digits=38, decimal_places=0, blank=True, null=True
-    )
-    num_blk_stat = models.DecimalField(
-        db_column="NUM_BLK_STAT", max_digits=38, decimal_places=0, blank=True, null=True
-    )
-    num_blk_def_verifica = models.DecimalField(
-        db_column="NUM_BLK_DEF_VERIFICA",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    num_blk_contr_aa_off = models.DecimalField(
-        db_column="NUM_BLK_CONTR_AA_OFF",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    num_blk_statutario_flg_div = models.DecimalField(
-        db_column="NUM_BLK_STATUTARIO_FLG_DIV",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    num_blk_def_verifica_flg_div = models.DecimalField(
-        db_column="NUM_BLK_DEF_VERIFICA_FLG_DIV",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    num_blk_contr_aa_off_flg_div = models.DecimalField(
-        db_column="NUM_BLK_CONTR_AA_OFF_FLG_DIV",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    peso_blk = models.DecimalField(
-        db_column="PESO_BLK", max_digits=38, decimal_places=0, blank=True, null=True
-    )
-    af_stessa_taf_flg = models.DecimalField(
-        db_column="AF_STESSA_TAF_FLG",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    af_stessa_taf_intercla_flg = models.DecimalField(
-        db_column="AF_STESSA_TAF_INTERCLA_FLG",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    af_stesso_ambito_flg = models.DecimalField(
-        db_column="AF_STESSO_AMBITO_FLG",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    af_stesso_ambito_intercla_flg = models.DecimalField(
-        db_column="AF_STESSO_AMBITO_INTERCLA_FLG",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    amb_id_af_regsce = models.DecimalField(
-        db_column="AMB_ID_AF_REGSCE",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    tipo_af_cod_af_regsce = models.CharField(
-        db_column="TIPO_AF_COD_AF_REGSCE", max_length=10, blank=True, null=True
-    )
-    amb_intercla_id_af_regsce = models.DecimalField(
-        db_column="AMB_INTERCLA_ID_AF_REGSCE",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    tipo_af_intercla_cod_af_regsce = models.CharField(
-        db_column="TIPO_AF_INTERCLA_COD_AF_REGSCE", max_length=10, blank=True, null=True
-    )
-    num_af_taf_d = models.DecimalField(
-        db_column="NUM_AF_TAF_D", max_digits=38, decimal_places=0, blank=True, null=True
-    )
-    num_af_taf_intercla_d = models.DecimalField(
-        db_column="NUM_AF_TAF_INTERCLA_D",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    num_af_taf_e_f_s = models.DecimalField(
-        db_column="NUM_AF_TAF_E_F_S",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    num_af_taf_intercla_e_f_s = models.DecimalField(
-        db_column="NUM_AF_TAF_INTERCLA_E_F_S",
-        max_digits=38,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
-    sett_cod_af_regsce = models.CharField(
-        db_column="SETT_COD_AF_REGSCE", max_length=12, blank=True, null=True
-    )
-    nota_pre = models.TextField(db_column="NOTA_PRE", blank=True, null=True)
-    nota_pre_vis_web_flg = models.IntegerField(
-        db_column="NOTA_PRE_VIS_WEB_FLG", blank=True, null=True
-    )
-    nota_post = models.TextField(db_column="NOTA_POST", blank=True, null=True)
-    nota_post_vis_web_flg = models.IntegerField(
-        db_column="NOTA_POST_VIS_WEB_FLG", blank=True, null=True
-    )
-
-    class Meta:
-        managed = False
-        db_table = "DIDATTICA_PIANO_SCELTA_SCHE_PIANO"
-        unique_together = (("sche_piano", "sce"),)
-        verbose_name = "Study plan sheet choice plan"
-        verbose_name_plural = "Study plan sheet choice plans"
+    # ~ class Meta:
+        # ~ managed = False
+        # ~ db_table = "DIDATTICA_PIANO_SCELTA_AF"
+        # ~ ordering = ("ciclo_des",)
+        # ~ verbose_name = "Study plan study activity choice"
+        # ~ verbose_name_plural = "Study plan study activity choices"
 
 
-class DidatticaPianoSceltaVincoli(models.Model):
-    sce_id = models.IntegerField(db_column="SCE_ID", primary_key=True)
-    regpiani = models.ForeignKey(
-        DidatticaPianoRegolamento,
-        models.DO_NOTHING,
-        db_column="REGPIANI_ID",
-        blank=True,
-        null=True,
-    )
-    ord_num = models.IntegerField(db_column="ORD_NUM", blank=True, null=True)
-    sce_des = models.CharField(
-        db_column="SCE_DES", max_length=255, blank=True, null=True
-    )
-    pds_regdid = models.ForeignKey(
-        DidatticaPdsRegolamento,
-        models.DO_NOTHING,
-        db_column="PDS_REGDID_ID",
-        blank=True,
-        null=True,
-    )
-    pds_cod = models.CharField(
-        db_column="PDS_COD", max_length=10, blank=True, null=True
-    )
-    pds_des = models.CharField(
-        db_column="PDS_DES", max_length=255, blank=True, null=True
-    )
-    comune_flg = models.IntegerField(db_column="COMUNE_FLG", blank=True, null=True)
-    anno_corso = models.IntegerField(db_column="ANNO_CORSO", blank=True, null=True)
-    anno_corso_ant = models.IntegerField(
-        db_column="ANNO_CORSO_ANT", blank=True, null=True
-    )
-    tipo_regsce_cod = models.CharField(
-        db_column="TIPO_REGSCE_COD", max_length=10, blank=True, null=True
-    )
-    tipo_sce_cod = models.CharField(
-        db_column="TIPO_SCE_COD", max_length=5, blank=True, null=True
-    )
-    tipo_um_regsce_cod = models.CharField(
-        db_column="TIPO_UM_REGSCE_COD", max_length=5, blank=True, null=True
-    )
-    opz_flg = models.IntegerField(db_column="OPZ_FLG", blank=True, null=True)
-    min_unt = models.DecimalField(
-        db_column="MIN_UNT", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    max_unt = models.DecimalField(
-        db_column="MAX_UNT", max_digits=5, decimal_places=2, blank=True, null=True
-    )
-    livello = models.IntegerField(db_column="LIVELLO", blank=True, null=True)
-    vin = models.ForeignKey(
-        "self", models.DO_NOTHING, db_column="VIN_ID", blank=True, null=True
-    )
-    vin_ord_num = models.IntegerField(db_column="VIN_ORD_NUM", blank=True, null=True)
-    vin_sce_des = models.CharField(
-        db_column="VIN_SCE_DES", max_length=255, blank=True, null=True
-    )
-    tipi_af_tipi_sce_id = models.IntegerField(
-        db_column="TIPI_AF_TIPI_SCE_ID", blank=True, null=True
-    )
-    tipo_af_cod = models.CharField(
-        db_column="TIPO_AF_COD", max_length=10, blank=True, null=True
-    )
-    tipo_af_des = models.CharField(
-        db_column="TIPO_AF_DES", max_length=80, blank=True, null=True
-    )
-    amb_id = models.IntegerField(db_column="AMB_ID", blank=True, null=True)
-    ambito_des = models.CharField(
-        db_column="AMBITO_DES", max_length=255, blank=True, null=True
-    )
-    sovran_flg = models.IntegerField(db_column="SOVRAN_FLG", blank=True, null=True)
-    sostegno_flg = models.IntegerField(db_column="SOSTEGNO_FLG", blank=True, null=True)
-    peso_sce = models.IntegerField(db_column="PESO_SCE", blank=True, null=True)
-    tesoretto_flg = models.IntegerField(
-        db_column="TESORETTO_FLG", blank=True, null=True
-    )
-    assegnazione_posti_flg = models.IntegerField(
-        db_column="ASSEGNAZIONE_POSTI_FLG", blank=True, null=True
-    )
-    delibera_flg = models.IntegerField(db_column="DELIBERA_FLG", blank=True, null=True)
-    azzera_cfu_flg = models.IntegerField(
-        db_column="AZZERA_CFU_FLG", blank=True, null=True
-    )
-    parametri_logistica_flg = models.IntegerField(
-        db_column="PARAMETRI_LOGISTICA_FLG", blank=True, null=True
-    )
-    tag_regsce_cod = models.CharField(
-        db_column="TAG_REGSCE_COD", max_length=20, blank=True, null=True
-    )
-    nota_pre = models.TextField(db_column="NOTA_PRE", blank=True, null=True)
-    nota_pre_vis_web_flg = models.IntegerField(
-        db_column="NOTA_PRE_VIS_WEB_FLG", blank=True, null=True
-    )
-    nota_post = models.TextField(db_column="NOTA_POST", blank=True, null=True)
-    nota_post_vis_web_flg = models.IntegerField(
-        db_column="NOTA_POST_VIS_WEB_FLG", blank=True, null=True
-    )
+# ~ class DidatticaPianoSceltaFilAnd(models.Model):
+    # ~ sce_fil_and_id = models.IntegerField(db_column="SCE_FIL_AND_ID", primary_key=True)
+    # ~ sce = models.ForeignKey(
+        # ~ "DidatticaPianoSceltaVincoli",
+        # ~ models.DO_NOTHING,
+        # ~ db_column="SCE_ID",
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ sce_fil_or_id = models.IntegerField(
+        # ~ db_column="SCE_FIL_OR_ID", blank=True, null=True
+    # ~ )
+    # ~ sce_fil_or_des = models.CharField(
+        # ~ db_column="SCE_FIL_OR_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ tipo_filtro_cod = models.CharField(
+        # ~ db_column="TIPO_FILTRO_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ tipo_filtro_des = models.CharField(
+        # ~ db_column="TIPO_FILTRO_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ af_gen_id = models.IntegerField(db_column="AF_GEN_ID", blank=True, null=True)
+    # ~ af_gen_cod = models.CharField(
+        # ~ db_column="AF_GEN_COD", max_length=20, blank=True, null=True
+    # ~ )
+    # ~ af_gen_des = models.CharField(
+        # ~ db_column="AF_GEN_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ dip_sce_fil_and_id = models.IntegerField(
+        # ~ db_column="DIP_SCE_FIL_AND_ID", blank=True, null=True
+    # ~ )
+    # ~ dip_sce_fil_and_cod = models.CharField(
+        # ~ db_column="DIP_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ dip_sce_fil_and_des = models.CharField(
+        # ~ db_column="DIP_SCE_FIL_AND_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ strac_sce_fil_and_id = models.IntegerField(
+        # ~ db_column="STRAC_SCE_FIL_AND_ID", blank=True, null=True
+    # ~ )
+    # ~ strac_sce_fil_and_cod = models.CharField(
+        # ~ db_column="STRAC_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ strac_sce_fil_and_des = models.CharField(
+        # ~ db_column="STRAC_SCE_FIL_AND_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ cds_sce_fil_and_id = models.IntegerField(
+        # ~ db_column="CDS_SCE_FIL_AND_ID", blank=True, null=True
+    # ~ )
+    # ~ cds_sce_fil_and_cod = models.CharField(
+        # ~ db_column="CDS_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ cds_sce_fil_and_nome = models.CharField(
+        # ~ db_column="CDS_SCE_FIL_AND_NOME", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ cfu = models.DecimalField(
+        # ~ db_column="CFU", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ tipo_af_sce_fil_and_cod = models.CharField(
+        # ~ db_column="TIPO_AF_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ tipo_af_sce_fil_and_des = models.CharField(
+        # ~ db_column="TIPO_AF_SCE_FIL_AND_DES", max_length=80, blank=True, null=True
+    # ~ )
+    # ~ sett_cod = models.CharField(
+        # ~ db_column="SETT_COD", max_length=12, blank=True, null=True
+    # ~ )
+    # ~ tipo_corso_sce_fil_and_cod = models.CharField(
+        # ~ db_column="TIPO_CORSO_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ cla_miur_sce_fil_and_id = models.IntegerField(
+        # ~ db_column="CLA_MIUR_SCE_FIL_AND_ID", blank=True, null=True
+    # ~ )
+    # ~ cla_miur_sce_fil_and_cod = models.CharField(
+        # ~ db_column="CLA_MIUR_SCE_FIL_AND_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ cla_miur_sce_fil_and_des = models.CharField(
+        # ~ db_column="CLA_MIUR_SCE_FIL_AND_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ rif_cod = models.CharField(
+        # ~ db_column="RIF_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ sett_post_rif_flg = models.IntegerField(
+        # ~ db_column="SETT_POST_RIF_FLG", blank=True, null=True
+    # ~ )
+    # ~ tipo_ins_cod = models.CharField(
+        # ~ db_column="TIPO_INS_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ peso_sce_fil_and = models.IntegerField(
+        # ~ db_column="PESO_SCE_FIL_AND", blank=True, null=True
+    # ~ )
+    # ~ not_flg = models.IntegerField(db_column="NOT_FLG", blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = "DIDATTICA_PIANO_SCELTA_VINCOLI"
-        verbose_name = "Study plan constraint choice"
-        verbose_name_plural = "Study plan constraint choices"
+    # ~ class Meta:
+        # ~ managed = False
+        # ~ db_table = "DIDATTICA_PIANO_SCELTA_FIL_AND"
+        # ~ verbose_name = "Study plan choice filter"
+        # ~ verbose_name_plural = "Study plan choice filters"
 
 
-class DidatticaPianoSche(models.Model):
-    sche_piano_id = models.IntegerField(db_column="SCHE_PIANO_ID", primary_key=True)
-    regpiani = models.ForeignKey(
-        DidatticaPianoRegolamento, models.DO_NOTHING, db_column="REGPIANI_ID", related_name="didatticapianosche"
-    )
-    sche_piano_cod = models.CharField(
-        db_column="SCHE_PIANO_COD", max_length=10, blank=True, null=True
-    )
-    sche_piano_des = models.CharField(
-        db_column="SCHE_PIANO_DES", max_length=255, blank=True, null=True
-    )
-    sche_piano_vis_web_flg = models.IntegerField(
-        db_column="SCHE_PIANO_VIS_WEB_FLG", blank=True, null=True
-    )
-    pds_regdid = models.ForeignKey(
-        DidatticaPdsRegolamento,
-        models.DO_NOTHING,
-        db_column="PDS_REGDID_ID",
-        blank=True,
-        null=True,
-    )
-    pds_cod = models.CharField(
-        db_column="PDS_COD", max_length=10, blank=True, null=True
-    )
-    pds_des = models.CharField(
-        db_column="PDS_DES", max_length=255, blank=True, null=True
-    )
-    comune_flg = models.IntegerField(db_column="COMUNE_FLG", blank=True, null=True)
-    ori_id = models.IntegerField(db_column="ORI_ID", blank=True, null=True)
-    ori_cod = models.CharField(
-        db_column="ORI_COD", max_length=10, blank=True, null=True
-    )
-    ori_des = models.CharField(
-        db_column="ORI_DES", max_length=255, blank=True, null=True
-    )
-    cla_m_id = models.IntegerField(db_column="CLA_M_ID", blank=True, null=True)
-    cla_miur_cod = models.CharField(
-        db_column="CLA_MIUR_COD", max_length=10, blank=True, null=True
-    )
-    cla_miur_des = models.CharField(
-        db_column="CLA_MIUR_DES", max_length=255, blank=True, null=True
-    )
-    apt_id = models.IntegerField(db_column="APT_ID", blank=True, null=True)
-    apt_cod = models.CharField(
-        db_column="APT_COD", max_length=10, blank=True, null=True
-    )
-    apt_des = models.CharField(
-        db_column="APT_DES", max_length=80, blank=True, null=True
-    )
-    data_ini_val = models.DateField(db_column="DATA_INI_VAL", blank=True, null=True)
-    data_fine_val = models.DateField(db_column="DATA_FINE_VAL", blank=True, null=True)
-    stato_piano_gen_cod = models.CharField(
-        db_column="STATO_PIANO_GEN_COD", max_length=10, blank=True, null=True
-    )
-    stato_piano_gen_des = models.CharField(
-        db_column="STATO_PIANO_GEN_DES", max_length=40, blank=True, null=True
-    )
-    contr_ac_piano_stu_cod = models.CharField(
-        db_column="CONTR_AC_PIANO_STU_COD", max_length=10, blank=True, null=True
-    )
-    blocco_af_freq_piano_stu_flg = models.IntegerField(
-        db_column="BLOCCO_AF_FREQ_PIANO_STU_FLG", blank=True, null=True
-    )
-    nota_sche_piano = models.CharField(
-        db_column="NOTA_SCHE_PIANO", max_length=1000, blank=True, null=True
-    )
-    sche_piano_des_txt_id = models.IntegerField(
-        db_column="SCHE_PIANO_DES_TXT_ID", blank=True, null=True
-    )
+# ~ class DidatticaPianoSceltaSchePiano(models.Model):
+    # ~ sche_piano = models.OneToOneField(
+        # ~ "DidatticaPianoSche",
+        # ~ models.DO_NOTHING,
+        # ~ db_column="SCHE_PIANO_ID",
+        # ~ primary_key=True,
+        # ~ related_name="didatticapianosceltaschepiano"
+    # ~ )
+    # ~ sche_statutario_flg = models.BooleanField(
+        # ~ db_column="SCHE_STATUTARIO_FLG", default=False
+    # ~ )
+    # ~ sche_pds_regdid_id = models.IntegerField(
+        # ~ db_column="SCHE_PDS_REGDID_ID", blank=True, null=True
+    # ~ )
+    # ~ sche_pds_cod = models.CharField(
+        # ~ db_column="SCHE_PDS_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ sche_pds_des = models.CharField(
+        # ~ db_column="SCHE_PDS_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ sche_ori_id = models.IntegerField(db_column="SCHE_ORI_ID", blank=True, null=True)
+    # ~ sche_cla_m_id = models.IntegerField(
+        # ~ db_column="SCHE_CLA_M_ID", blank=True, null=True
+    # ~ )
+    # ~ sche_apt_id = models.IntegerField(db_column="SCHE_APT_ID", blank=True, null=True)
+    # ~ sche_nota = models.CharField(
+        # ~ db_column="SCHE_NOTA", max_length=1000, blank=True, null=True
+    # ~ )
+    # ~ data_ini_val = models.DateField(db_column="DATA_INI_VAL", blank=True, null=True)
+    # ~ data_fine_val = models.DateField(db_column="DATA_FINE_VAL", blank=True, null=True)
+    # ~ stato_piano_gen_cod = models.CharField(
+        # ~ db_column="STATO_PIANO_GEN_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ contr_ac_piano_stu_cod = models.CharField(
+        # ~ db_column="CONTR_AC_PIANO_STU_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ blocco_af_freq_piano_stu_flg = models.IntegerField(
+        # ~ db_column="BLOCCO_AF_FREQ_PIANO_STU_FLG", blank=True, null=True
+    # ~ )
+    # ~ sce = models.ForeignKey(
+        # ~ "DidatticaPianoSceltaVincoli", models.DO_NOTHING, db_column="SCE_ID"
+    # ~ )
+    # ~ ord_num = models.IntegerField(db_column="ORD_NUM", blank=True, null=True)
+    # ~ apt_slot_id = models.IntegerField(db_column="APT_SLOT_ID", blank=True, null=True)
+    # ~ apt_slot_cod = models.CharField(
+        # ~ db_column="APT_SLOT_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ apt_slot_des = models.CharField(
+        # ~ db_column="APT_SLOT_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ apt_slot_anno_corso = models.IntegerField(
+        # ~ db_column="APT_SLOT_ANNO_CORSO", blank=True, null=True
+    # ~ )
+    # ~ apt_slot_ord_num = models.IntegerField(
+        # ~ db_column="APT_SLOT_ORD_NUM", blank=True, null=True
+    # ~ )
+    # ~ sce_des = models.CharField(
+        # ~ db_column="SCE_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ pds_regdid_id = models.IntegerField(
+        # ~ db_column="PDS_REGDID_ID", blank=True, null=True
+    # ~ )
+    # ~ pds_cod = models.CharField(
+        # ~ db_column="PDS_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ pds_des = models.CharField(
+        # ~ db_column="PDS_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ comune_flg = models.IntegerField(db_column="COMUNE_FLG", blank=True, null=True)
+    # ~ anno_corso = models.IntegerField(db_column="ANNO_CORSO", blank=True, null=True)
+    # ~ anno_corso_ant = models.IntegerField(
+        # ~ db_column="ANNO_CORSO_ANT", blank=True, null=True
+    # ~ )
+    # ~ tipo_regsce_cod = models.CharField(
+        # ~ db_column="TIPO_REGSCE_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ tipo_sce_cod = models.CharField(
+        # ~ db_column="TIPO_SCE_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ tipo_sce_des = models.CharField(
+        # ~ db_column="TIPO_SCE_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ tipo_regsce_des = models.CharField(
+        # ~ db_column="TIPO_REGSCE_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ tipo_um_regsce_cod = models.CharField(
+        # ~ db_column="TIPO_UM_REGSCE_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ opz_flg = models.IntegerField(db_column="OPZ_FLG", blank=True, null=True)
+    # ~ min_unt = models.DecimalField(
+        # ~ db_column="MIN_UNT", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ max_unt = models.DecimalField(
+        # ~ db_column="MAX_UNT", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ livello = models.IntegerField(db_column="LIVELLO", blank=True, null=True)
+    # ~ vin_id = models.IntegerField(db_column="VIN_ID", blank=True, null=True)
+    # ~ vin_ord_num = models.IntegerField(db_column="VIN_ORD_NUM", blank=True, null=True)
+    # ~ vin_sce_des = models.CharField(
+        # ~ db_column="VIN_SCE_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ tipi_af_tipi_sce_id = models.IntegerField(
+        # ~ db_column="TIPI_AF_TIPI_SCE_ID", blank=True, null=True
+    # ~ )
+    # ~ tipo_af_cod = models.CharField(
+        # ~ db_column="TIPO_AF_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ tipo_af_des = models.CharField(
+        # ~ db_column="TIPO_AF_DES", max_length=80, blank=True, null=True
+    # ~ )
+    # ~ amb = models.ForeignKey(
+        # ~ DidatticaAmbiti, models.DO_NOTHING, db_column="AMB_ID", blank=True, null=True
+    # ~ )
+    # ~ ambito_des = models.CharField(
+        # ~ db_column="AMBITO_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ sovran_flg = models.IntegerField(db_column="SOVRAN_FLG", blank=True, null=True)
+    # ~ sostegno_flg = models.IntegerField(db_column="SOSTEGNO_FLG", blank=True, null=True)
+    # ~ peso_sce = models.IntegerField(db_column="PESO_SCE", blank=True, null=True)
+    # ~ tesoretto_flg = models.IntegerField(
+        # ~ db_column="TESORETTO_FLG", blank=True, null=True
+    # ~ )
+    # ~ assegnazione_posti_flg = models.IntegerField(
+        # ~ db_column="ASSEGNAZIONE_POSTI_FLG", blank=True, null=True
+    # ~ )
+    # ~ delibera_flg = models.IntegerField(db_column="DELIBERA_FLG", blank=True, null=True)
+    # ~ azzera_cfu_flg = models.IntegerField(
+        # ~ db_column="AZZERA_CFU_FLG", blank=True, null=True
+    # ~ )
+    # ~ parametri_logistica_flg = models.IntegerField(
+        # ~ db_column="PARAMETRI_LOGISTICA_FLG", blank=True, null=True
+    # ~ )
+    # ~ tag_regsce_cod = models.CharField(
+        # ~ db_column="TAG_REGSCE_COD", max_length=20, blank=True, null=True
+    # ~ )
+    # ~ peso_af_sce = models.DecimalField(
+        # ~ db_column="PESO_AF_SCE", max_digits=38, decimal_places=0, blank=True, null=True
+    # ~ )
+    # ~ peso_min_singola_af = models.DecimalField(
+        # ~ db_column="PESO_MIN_SINGOLA_AF",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ peso_max_singola_af = models.DecimalField(
+        # ~ db_column="PESO_MAX_SINGOLA_AF",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ num_af_sce = models.DecimalField(
+        # ~ db_column="NUM_AF_SCE", max_digits=38, decimal_places=0, blank=True, null=True
+    # ~ )
+    # ~ peso_af_sce_stat = models.DecimalField(
+        # ~ db_column="PESO_AF_SCE_STAT",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ peso_af_sce_def_verifica = models.DecimalField(
+        # ~ db_column="PESO_AF_SCE_DEF_VERIFICA",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ num_blk = models.DecimalField(
+        # ~ db_column="NUM_BLK", max_digits=38, decimal_places=0, blank=True, null=True
+    # ~ )
+    # ~ num_blk_stat = models.DecimalField(
+        # ~ db_column="NUM_BLK_STAT", max_digits=38, decimal_places=0, blank=True, null=True
+    # ~ )
+    # ~ num_blk_def_verifica = models.DecimalField(
+        # ~ db_column="NUM_BLK_DEF_VERIFICA",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ num_blk_contr_aa_off = models.DecimalField(
+        # ~ db_column="NUM_BLK_CONTR_AA_OFF",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ num_blk_statutario_flg_div = models.DecimalField(
+        # ~ db_column="NUM_BLK_STATUTARIO_FLG_DIV",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ num_blk_def_verifica_flg_div = models.DecimalField(
+        # ~ db_column="NUM_BLK_DEF_VERIFICA_FLG_DIV",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ num_blk_contr_aa_off_flg_div = models.DecimalField(
+        # ~ db_column="NUM_BLK_CONTR_AA_OFF_FLG_DIV",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ peso_blk = models.DecimalField(
+        # ~ db_column="PESO_BLK", max_digits=38, decimal_places=0, blank=True, null=True
+    # ~ )
+    # ~ af_stessa_taf_flg = models.DecimalField(
+        # ~ db_column="AF_STESSA_TAF_FLG",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ af_stessa_taf_intercla_flg = models.DecimalField(
+        # ~ db_column="AF_STESSA_TAF_INTERCLA_FLG",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ af_stesso_ambito_flg = models.DecimalField(
+        # ~ db_column="AF_STESSO_AMBITO_FLG",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ af_stesso_ambito_intercla_flg = models.DecimalField(
+        # ~ db_column="AF_STESSO_AMBITO_INTERCLA_FLG",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ amb_id_af_regsce = models.DecimalField(
+        # ~ db_column="AMB_ID_AF_REGSCE",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ tipo_af_cod_af_regsce = models.CharField(
+        # ~ db_column="TIPO_AF_COD_AF_REGSCE", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ amb_intercla_id_af_regsce = models.DecimalField(
+        # ~ db_column="AMB_INTERCLA_ID_AF_REGSCE",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ tipo_af_intercla_cod_af_regsce = models.CharField(
+        # ~ db_column="TIPO_AF_INTERCLA_COD_AF_REGSCE", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ num_af_taf_d = models.DecimalField(
+        # ~ db_column="NUM_AF_TAF_D", max_digits=38, decimal_places=0, blank=True, null=True
+    # ~ )
+    # ~ num_af_taf_intercla_d = models.DecimalField(
+        # ~ db_column="NUM_AF_TAF_INTERCLA_D",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ num_af_taf_e_f_s = models.DecimalField(
+        # ~ db_column="NUM_AF_TAF_E_F_S",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ num_af_taf_intercla_e_f_s = models.DecimalField(
+        # ~ db_column="NUM_AF_TAF_INTERCLA_E_F_S",
+        # ~ max_digits=38,
+        # ~ decimal_places=0,
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ sett_cod_af_regsce = models.CharField(
+        # ~ db_column="SETT_COD_AF_REGSCE", max_length=12, blank=True, null=True
+    # ~ )
+    # ~ nota_pre = models.TextField(db_column="NOTA_PRE", blank=True, null=True)
+    # ~ nota_pre_vis_web_flg = models.IntegerField(
+        # ~ db_column="NOTA_PRE_VIS_WEB_FLG", blank=True, null=True
+    # ~ )
+    # ~ nota_post = models.TextField(db_column="NOTA_POST", blank=True, null=True)
+    # ~ nota_post_vis_web_flg = models.IntegerField(
+        # ~ db_column="NOTA_POST_VIS_WEB_FLG", blank=True, null=True
+    # ~ )
 
-    class Meta:
-        managed = False
-        db_table = "DIDATTICA_PIANO_SCHE"
-        verbose_name = "Study plan sheet"
-        verbose_name_plural = "Study plan sheets"
+    # ~ class Meta:
+        # ~ managed = False
+        # ~ db_table = "DIDATTICA_PIANO_SCELTA_SCHE_PIANO"
+        # ~ unique_together = (("sche_piano", "sce"),)
+        # ~ verbose_name = "Study plan sheet choice plan"
+        # ~ verbose_name_plural = "Study plan sheet choice plans"
+
+
+# ~ class DidatticaPianoSceltaVincoli(models.Model):
+    # ~ sce_id = models.IntegerField(db_column="SCE_ID", primary_key=True)
+    # ~ regpiani = models.ForeignKey(
+        # ~ DidatticaPianoRegolamento,
+        # ~ models.DO_NOTHING,
+        # ~ db_column="REGPIANI_ID",
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ ord_num = models.IntegerField(db_column="ORD_NUM", blank=True, null=True)
+    # ~ sce_des = models.CharField(
+        # ~ db_column="SCE_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ pds_regdid = models.ForeignKey(
+        # ~ DidatticaPdsRegolamento,
+        # ~ models.DO_NOTHING,
+        # ~ db_column="PDS_REGDID_ID",
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ pds_cod = models.CharField(
+        # ~ db_column="PDS_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ pds_des = models.CharField(
+        # ~ db_column="PDS_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ comune_flg = models.IntegerField(db_column="COMUNE_FLG", blank=True, null=True)
+    # ~ anno_corso = models.IntegerField(db_column="ANNO_CORSO", blank=True, null=True)
+    # ~ anno_corso_ant = models.IntegerField(
+        # ~ db_column="ANNO_CORSO_ANT", blank=True, null=True
+    # ~ )
+    # ~ tipo_regsce_cod = models.CharField(
+        # ~ db_column="TIPO_REGSCE_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ tipo_sce_cod = models.CharField(
+        # ~ db_column="TIPO_SCE_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ tipo_um_regsce_cod = models.CharField(
+        # ~ db_column="TIPO_UM_REGSCE_COD", max_length=5, blank=True, null=True
+    # ~ )
+    # ~ opz_flg = models.IntegerField(db_column="OPZ_FLG", blank=True, null=True)
+    # ~ min_unt = models.DecimalField(
+        # ~ db_column="MIN_UNT", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ max_unt = models.DecimalField(
+        # ~ db_column="MAX_UNT", max_digits=5, decimal_places=2, blank=True, null=True
+    # ~ )
+    # ~ livello = models.IntegerField(db_column="LIVELLO", blank=True, null=True)
+    # ~ vin = models.ForeignKey(
+        # ~ "self", models.DO_NOTHING, db_column="VIN_ID", blank=True, null=True
+    # ~ )
+    # ~ vin_ord_num = models.IntegerField(db_column="VIN_ORD_NUM", blank=True, null=True)
+    # ~ vin_sce_des = models.CharField(
+        # ~ db_column="VIN_SCE_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ tipi_af_tipi_sce_id = models.IntegerField(
+        # ~ db_column="TIPI_AF_TIPI_SCE_ID", blank=True, null=True
+    # ~ )
+    # ~ tipo_af_cod = models.CharField(
+        # ~ db_column="TIPO_AF_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ tipo_af_des = models.CharField(
+        # ~ db_column="TIPO_AF_DES", max_length=80, blank=True, null=True
+    # ~ )
+    # ~ amb_id = models.IntegerField(db_column="AMB_ID", blank=True, null=True)
+    # ~ ambito_des = models.CharField(
+        # ~ db_column="AMBITO_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ sovran_flg = models.IntegerField(db_column="SOVRAN_FLG", blank=True, null=True)
+    # ~ sostegno_flg = models.IntegerField(db_column="SOSTEGNO_FLG", blank=True, null=True)
+    # ~ peso_sce = models.IntegerField(db_column="PESO_SCE", blank=True, null=True)
+    # ~ tesoretto_flg = models.IntegerField(
+        # ~ db_column="TESORETTO_FLG", blank=True, null=True
+    # ~ )
+    # ~ assegnazione_posti_flg = models.IntegerField(
+        # ~ db_column="ASSEGNAZIONE_POSTI_FLG", blank=True, null=True
+    # ~ )
+    # ~ delibera_flg = models.IntegerField(db_column="DELIBERA_FLG", blank=True, null=True)
+    # ~ azzera_cfu_flg = models.IntegerField(
+        # ~ db_column="AZZERA_CFU_FLG", blank=True, null=True
+    # ~ )
+    # ~ parametri_logistica_flg = models.IntegerField(
+        # ~ db_column="PARAMETRI_LOGISTICA_FLG", blank=True, null=True
+    # ~ )
+    # ~ tag_regsce_cod = models.CharField(
+        # ~ db_column="TAG_REGSCE_COD", max_length=20, blank=True, null=True
+    # ~ )
+    # ~ nota_pre = models.TextField(db_column="NOTA_PRE", blank=True, null=True)
+    # ~ nota_pre_vis_web_flg = models.IntegerField(
+        # ~ db_column="NOTA_PRE_VIS_WEB_FLG", blank=True, null=True
+    # ~ )
+    # ~ nota_post = models.TextField(db_column="NOTA_POST", blank=True, null=True)
+    # ~ nota_post_vis_web_flg = models.IntegerField(
+        # ~ db_column="NOTA_POST_VIS_WEB_FLG", blank=True, null=True
+    # ~ )
+
+    # ~ class Meta:
+        # ~ managed = False
+        # ~ db_table = "DIDATTICA_PIANO_SCELTA_VINCOLI"
+        # ~ verbose_name = "Study plan constraint choice"
+        # ~ verbose_name_plural = "Study plan constraint choices"
+
+
+# ~ class DidatticaPianoSche(models.Model):
+    # ~ sche_piano_id = models.IntegerField(db_column="SCHE_PIANO_ID", primary_key=True)
+    # ~ regpiani = models.ForeignKey(
+        # ~ DidatticaPianoRegolamento, models.DO_NOTHING, db_column="REGPIANI_ID", related_name="didatticapianosche"
+    # ~ )
+    # ~ sche_piano_cod = models.CharField(
+        # ~ db_column="SCHE_PIANO_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ sche_piano_des = models.CharField(
+        # ~ db_column="SCHE_PIANO_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ sche_piano_vis_web_flg = models.IntegerField(
+        # ~ db_column="SCHE_PIANO_VIS_WEB_FLG", blank=True, null=True
+    # ~ )
+    # ~ pds_regdid = models.ForeignKey(
+        # ~ DidatticaPdsRegolamento,
+        # ~ models.DO_NOTHING,
+        # ~ db_column="PDS_REGDID_ID",
+        # ~ blank=True,
+        # ~ null=True,
+    # ~ )
+    # ~ pds_cod = models.CharField(
+        # ~ db_column="PDS_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ pds_des = models.CharField(
+        # ~ db_column="PDS_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ comune_flg = models.IntegerField(db_column="COMUNE_FLG", blank=True, null=True)
+    # ~ ori_id = models.IntegerField(db_column="ORI_ID", blank=True, null=True)
+    # ~ ori_cod = models.CharField(
+        # ~ db_column="ORI_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ ori_des = models.CharField(
+        # ~ db_column="ORI_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ cla_m_id = models.IntegerField(db_column="CLA_M_ID", blank=True, null=True)
+    # ~ cla_miur_cod = models.CharField(
+        # ~ db_column="CLA_MIUR_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ cla_miur_des = models.CharField(
+        # ~ db_column="CLA_MIUR_DES", max_length=255, blank=True, null=True
+    # ~ )
+    # ~ apt_id = models.IntegerField(db_column="APT_ID", blank=True, null=True)
+    # ~ apt_cod = models.CharField(
+        # ~ db_column="APT_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ apt_des = models.CharField(
+        # ~ db_column="APT_DES", max_length=80, blank=True, null=True
+    # ~ )
+    # ~ data_ini_val = models.DateField(db_column="DATA_INI_VAL", blank=True, null=True)
+    # ~ data_fine_val = models.DateField(db_column="DATA_FINE_VAL", blank=True, null=True)
+    # ~ stato_piano_gen_cod = models.CharField(
+        # ~ db_column="STATO_PIANO_GEN_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ stato_piano_gen_des = models.CharField(
+        # ~ db_column="STATO_PIANO_GEN_DES", max_length=40, blank=True, null=True
+    # ~ )
+    # ~ contr_ac_piano_stu_cod = models.CharField(
+        # ~ db_column="CONTR_AC_PIANO_STU_COD", max_length=10, blank=True, null=True
+    # ~ )
+    # ~ blocco_af_freq_piano_stu_flg = models.IntegerField(
+        # ~ db_column="BLOCCO_AF_FREQ_PIANO_STU_FLG", blank=True, null=True
+    # ~ )
+    # ~ nota_sche_piano = models.CharField(
+        # ~ db_column="NOTA_SCHE_PIANO", max_length=1000, blank=True, null=True
+    # ~ )
+    # ~ sche_piano_des_txt_id = models.IntegerField(
+        # ~ db_column="SCHE_PIANO_DES_TXT_ID", blank=True, null=True
+    # ~ )
+
+    # ~ class Meta:
+        # ~ managed = False
+        # ~ db_table = "DIDATTICA_PIANO_SCHE"
+        # ~ verbose_name = "Study plan sheet"
+        # ~ verbose_name_plural = "Study plan sheets"
 
 
 class DidatticaCdsTipoCorso(Permissions):
@@ -1704,3 +1704,164 @@ class DidatticaCdsTipoCorso(Permissions):
         db_table = "DIDATTICA_CDS_TIPO_CORSO"
         verbose_name = "Cds course type"
         verbose_name_plural = "Cds course types"
+
+
+class DidatticaPianiStudio(models.Model):
+    piano_studio_id = models.IntegerField(db_column='PIANO_STUDIO_ID', primary_key=True)  # Field name made lowercase.
+    piano_studio_cod = models.CharField(db_column='PIANO_STUDIO_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    regdid = models.ForeignKey('DidatticaRegolamento', models.DO_NOTHING, db_column='REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    aa_coorte_id = models.IntegerField(db_column='AA_COORTE_ID', blank=True, null=True)  # Field name made lowercase.
+    aa_revisione_id = models.IntegerField(db_column='AA_REVISIONE_ID', blank=True, null=True)  # Field name made lowercase.
+    stato_piano_studio_cod = models.CharField(db_column='STATO_PIANO_STUDIO_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    stato_piano_studio_desc_ita = models.CharField(db_column='STATO_PIANO_STUDIO_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    stato_piano_studio_desc_eng = models.CharField(db_column='STATO_PIANO_STUDIO_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DIDATTICA_PIANI_STUDIO'
+
+
+class DidatticaPianiSchema(models.Model):
+    schema_piano_id = models.IntegerField(db_column='SCHEMA_PIANO_ID', primary_key=True)  # Field name made lowercase.
+    piano_studio = models.ForeignKey('DidatticaPianiStudio', models.DO_NOTHING, db_column='PIANO_STUDIO_ID', related_name="schemi")  # Field name made lowercase.
+    schema_piano_cod = models.CharField(db_column='SCHEMA_PIANO_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    schema_piano_desc_ita = models.CharField(db_column='SCHEMA_PIANO_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    schema_piano_desc_eng = models.CharField(db_column='SCHEMA_PIANO_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    flag_schema_visibile_web = models.CharField(db_column='FLAG_SCHEMA_VISIBILE_WEB', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    pds_regdid = models.ForeignKey('DidatticaPdsRegolamento', models.DO_NOTHING, db_column='PDS_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    id_classe_miur = models.IntegerField(db_column='ID_CLASSE_MIUR', blank=True, null=True)  # Field name made lowercase.
+    classe_miur_cod = models.CharField(db_column='CLASSE_MIUR_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    classe_miur_desc_ita = models.CharField(db_column='CLASSE_MIUR_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    classe_miur_desc_eng = models.CharField(db_column='CLASSE_MIUR_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DIDATTICA_PIANI_SCHEMA'
+
+
+class DidatticaPianiRegSce(models.Model):
+    reg_sce_id = models.IntegerField(db_column='REG_SCE_ID', primary_key=True)  # Field name made lowercase.
+    schema_piano = models.ForeignKey('DidatticaPianiSchema', models.DO_NOTHING, db_column='SCHEMA_PIANO_ID', related_name="regole")  # Field name made lowercase.
+    aa_off_id_reg_sce = models.IntegerField(db_column='AA_OFF_ID_REG_SCE', blank=True, null=True)  # Field name made lowercase.
+    anno_corso_reg_sce = models.IntegerField(db_column='ANNO_CORSO_REG_SCE', blank=True, null=True)  # Field name made lowercase.
+    progressivo_reg_sce = models.IntegerField(db_column='PROGRESSIVO_REG_SCE', blank=True, null=True)  # Field name made lowercase.
+    tipo_reg_sce_cod = models.CharField(db_column='TIPO_REG_SCE_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    tipo_um_reg_sce_cod = models.CharField(db_column='TIPO_UM_REG_SCE_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    minimo = models.DecimalField(db_column='MINIMO', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    massimo = models.DecimalField(db_column='MASSIMO', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    anno_anticipo = models.IntegerField(db_column='ANNO_ANTICIPO', blank=True, null=True)  # Field name made lowercase.
+    reg_sce_desc_ita = models.CharField(db_column='REG_SCE_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    reg_sce_desc_eng = models.CharField(db_column='REG_SCE_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    nota_pre_desc_ita = models.TextField(db_column='NOTA_PRE_DESC_ITA', blank=True, null=True)  # Field name made lowercase.
+    nota_pre_desc_eng = models.TextField(db_column='NOTA_PRE_DESC_ENG', blank=True, null=True)  # Field name made lowercase.
+    nota_post_desc_ita = models.TextField(db_column='NOTA_POST_DESC_ITA', blank=True, null=True)  # Field name made lowercase.
+    nota_post_desc_eng = models.TextField(db_column='NOTA_POST_DESC_ENG', blank=True, null=True)  # Field name made lowercase.
+    filtri_reg_sce_desc = models.TextField(db_column='FILTRI_REG_SCE_DESC', blank=True, null=True)  # Field name made lowercase.
+    cond_reg_sce_desc = models.TextField(db_column='COND_REG_SCE_DESC', blank=True, null=True)  # Field name made lowercase.
+    ateneo_id = models.IntegerField(db_column='ATENEO_ID', blank=True, null=True)  # Field name made lowercase.
+    ateneo_des = models.CharField(db_column='ATENEO_DES', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    taf_cod = models.CharField(db_column='TAF_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    id_ambito = models.IntegerField(db_column='ID_AMBITO', blank=True, null=True)  # Field name made lowercase.
+    dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DIDATTICA_PIANI_REG_SCE'
+
+
+class DidatticaPianiBloccoSce(models.Model):
+    blocco_sce_id = models.IntegerField(db_column='BLOCCO_SCE_ID', primary_key=True)  # Field name made lowercase.
+    reg_sce = models.ForeignKey('DidatticaPianiRegSce', models.DO_NOTHING, db_column='REG_SCE_ID', blank=True, null=True, related_name='blocchi')  # Field name made lowercase.
+    progressivo_blocco_sce = models.IntegerField(db_column='PROGRESSIVO_BLOCCO_SCE', blank=True, null=True)  # Field name made lowercase.
+    lingua_cod = models.CharField(db_column='LINGUA_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    ord_num_lingua = models.IntegerField(db_column='ORD_NUM_LINGUA', blank=True, null=True)  # Field name made lowercase.
+    cond_blocco_sce_desc = models.TextField(db_column='COND_BLOCCO_SCE_DESC', blank=True, null=True)  # Field name made lowercase.
+    dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DIDATTICA_PIANI_BLOCCO_SCE'
+
+        
+class DidatticaPianiAfRegSce(models.Model):
+    af_reg_sce_id = models.IntegerField(db_column='AF_REG_SCE_ID', primary_key=True)  # Field name made lowercase.
+    reg_sce = models.ForeignKey('DidatticaPianiRegSce', models.DO_NOTHING, db_column='REG_SCE_ID', blank=True, null=True, related_name='af')  # Field name made lowercase.
+    blocco_sce = models.ForeignKey('DidatticaPianiBloccoSce', models.DO_NOTHING, db_column='BLOCCO_SCE_ID', blank=True, null=True, related_name='af_blocco')  # Field name made lowercase.
+    af_pds_id = models.IntegerField(db_column='AF_PDS_ID', blank=True, null=True)  # Field name made lowercase.
+    aa_off_id_af_reg_sce = models.IntegerField(db_column='AA_OFF_ID_AF_REG_SCE', blank=True, null=True)  # Field name made lowercase.
+    flag_statutaria = models.CharField(db_column='FLAG_STATUTARIA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    flag_verifica_piani = models.CharField(db_column='FLAG_VERIFICA_PIANI', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    flag_controllo_anno_offerta = models.CharField(db_column='FLAG_CONTROLLO_ANNO_OFFERTA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DIDATTICA_PIANI_AF_REG_SCE'
+
+
+class VDidatticaAfPianiStudio(models.Model):
+    af_pds_id = models.IntegerField(db_column='AF_PDS_ID', blank=True, null=True)  # Field name made lowercase.
+    id_cds = models.IntegerField(db_column='ID_CDS', blank=True, null=True)  # Field name made lowercase.
+    cds_cod = models.CharField(db_column='CDS_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ord_id = models.IntegerField(db_column='ORD_ID', blank=True, null=True)  # Field name made lowercase.
+    ord_cod = models.CharField(db_column='ORD_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    aa_ord_id = models.IntegerField(db_column='AA_ORD_ID', blank=True, null=True)  # Field name made lowercase.
+    regdid_id = models.IntegerField(db_column='REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    regdid_cod = models.CharField(db_column='REGDID_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    aa_regdid_id = models.IntegerField(db_column='AA_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    id_off = models.CharField(db_column='ID_OFF', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    anno_di_scelta_percorso = models.DecimalField(db_column='ANNO_DI_SCELTA_PERCORSO', max_digits=2, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    pds_regdid_comune_id = models.IntegerField(db_column='PDS_REGDID_COMUNE_ID', blank=True, null=True)  # Field name made lowercase.
+    num_pds = models.IntegerField(db_column='NUM_PDS', blank=True, null=True)  # Field name made lowercase.
+    pds_regdid_id = models.IntegerField(db_column='PDS_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
+    pds_cod = models.CharField(db_column='PDS_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    pds_desc_ita = models.CharField(db_column='PDS_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    pds_desc_eng = models.CharField(db_column='PDS_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    pds_id_riferimento = models.IntegerField(db_column='PDS_ID_RIFERIMENTO', blank=True, null=True)  # Field name made lowercase.
+    lingua_cod = models.CharField(db_column='LINGUA_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_af_id = models.IntegerField(db_column='ANA_AF_ID', blank=True, null=True)  # Field name made lowercase.
+    ana_af_cod = models.CharField(db_column='ANA_AF_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_af_desc_ita = models.CharField(db_column='ANA_AF_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_af_desc_eng = models.CharField(db_column='ANA_AF_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_af_capog_id = models.IntegerField(db_column='ANA_AF_CAPOG_ID', blank=True, null=True)  # Field name made lowercase.
+    ana_af_capog_cod = models.CharField(db_column='ANA_AF_CAPOG_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_af_capog_desc_ita = models.CharField(db_column='ANA_AF_CAPOG_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_af_capog_desc_eng = models.CharField(db_column='ANA_AF_CAPOG_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    anno_corso = models.DecimalField(db_column='ANNO_CORSO', max_digits=2, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    flag_obbl = models.CharField(db_column='FLAG_OBBL', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    aa_off_id = models.IntegerField(db_column='AA_OFF_ID', blank=True, null=True)  # Field name made lowercase.
+    flag_raggruppamento = models.CharField(db_column='FLAG_RAGGRUPPAMENTO', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    flag_capogruppo = models.CharField(db_column='FLAG_CAPOGRUPPO', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    flag_raggruppata = models.CharField(db_column='FLAG_RAGGRUPPATA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    flag_no_raggr_o_capog = models.CharField(db_column='FLAG_NO_RAGGR_O_CAPOG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    cfu = models.DecimalField(db_column='CFU', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    ore = models.DecimalField(db_column='ORE', max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    erog_id = models.ForeignKey('DidatticaAttivitaFormativaErogata', models.DO_NOTHING, db_column='EROG_ID', blank=True, null=True, related_name="v_pds")  # Field name made lowercase.
+    mod_did_cod = models.CharField(db_column='MOD_DID_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    mod_did_desc_ita = models.CharField(db_column='MOD_DID_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    mod_did_desc_eng = models.CharField(db_column='MOD_DID_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    moduli_pds_id = models.IntegerField(db_column='MODULI_PDS_ID', blank=True, null=True)  # Field name made lowercase.
+    ana_mod_sett_id = models.IntegerField(db_column='ANA_MOD_SETT_ID', blank=True, null=True)  # Field name made lowercase.
+    flag_segmento = models.CharField(db_column='FLAG_SEGMENTO', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    sett_cod = models.CharField(db_column='SETT_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    sett_desc_ita = models.CharField(db_column='SETT_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    sett_desc_eng = models.CharField(db_column='SETT_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_mod_id = models.IntegerField(db_column='ANA_MOD_ID', blank=True, null=True)  # Field name made lowercase.
+    ana_mod_cod = models.CharField(db_column='ANA_MOD_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_mod_desc_ita = models.CharField(db_column='ANA_MOD_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_mod_desc_eng = models.CharField(db_column='ANA_MOD_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    taf_cod = models.CharField(db_column='TAF_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    taf_desc_ita = models.CharField(db_column='TAF_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    taf_desc_eng = models.CharField(db_column='TAF_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    id_ambito = models.IntegerField(db_column='ID_AMBITO', blank=True, null=True)  # Field name made lowercase.
+    ambito_desc_ita = models.CharField(db_column='AMBITO_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ambito_desc_eng = models.CharField(db_column='AMBITO_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+    off_did_id = models.IntegerField(db_column='OFF_DID_ID', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'V_DIDATTICA_AF_PIANI_STUDIO'
+

@@ -9,7 +9,8 @@ from .views import (
     CdsAreasViewSet,
     CdsExpiredViewSet,
     CdsMorphViewSet,
-    SortingContactsViewSet
+    SortingContactsViewSet,
+    StudyPlansViewSet
 )
 
 app_name = "apiv2"
@@ -31,4 +32,5 @@ router.register(r"cds-areas", CdsAreasViewSet, basename="cds-areas")
 router.register(r"cds-expired", CdsExpiredViewSet, basename="cds-expired")
 router.register(r"cds-morph", CdsMorphViewSet, basename="cds-morph")
 router.register(r"sorting-contacts", SortingContactsViewSet, basename="sorting-contacts")
+router.register(r"studyplans-activities/(?P<regdidid>\d+)", StudyPlansViewSet, basename="studyplans")
 urlpatterns += router.urls

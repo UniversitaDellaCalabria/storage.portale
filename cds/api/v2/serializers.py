@@ -20,6 +20,7 @@ from cds.models import (
     DidatticaCds,
     DidatticaCdsTipoCorso,
     DidatticaPdsRegolamento,
+    DidatticaPianiStudio,
     DidatticaRegolamento,
     DidatticaCdsCollegamento,
     DidatticaCopertura,
@@ -794,7 +795,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
     def get_StudyActivitiyBorrows(self, obj):
         result = []
         for m in obj.mutuazioni:
-            for pds in m.pds:
+            for pds in m.pds.all():
                 result.append({
                     "StudyActivityID": m.erog_id,
                     "StudyActivityName": pds.ana_mod_desc_ita,
@@ -978,6 +979,7 @@ class StudyActivitiesListSerializer(ReadOnlyModelSerializer):
     def to_representation(self, instance):
         # Usiamo il prefetch in modo sicuro. 
         # Se non ci sono pds, first_pds sarà None (senza crashare!)
+        # ~ instance._pds_list= list(instance.pds.all())
         instance._pds_list= list(instance.pds.all())
         return super().to_representation(instance)
 
@@ -1205,4 +1207,86 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
             "teacherDepartmentID",
             "teacherOffice",
             "departmentURL",
+        ]
+
+
+# ~ @extend_schema_serializer(examples=examples.STUDY_PLANS_SERIALIZER_EXAMPLE)
+class StudyPlansSerializer(ReadOnlyModelSerializer):
+    id = serializers.IntegerField(source="piano_studio_id")
+    regDidId = serializers.IntegerField(source="regdid_id")
+    # ~ relevanceCod = serializers.CharField(source="attinenza_cod")
+    yearCoorteId = serializers.IntegerField(source="aa_coorte_id")
+    # ~ yearRegPlanId = serializers.IntegerField(source="aa_regpiani_id")
+    # ~ regPlanDes = serializers.CharField(source="stato_piano_studio_desc_ita")
+    # ~ defFlg = serializers.CharField(source="def_flg")
+    # ~ statusCod = serializers.CharField(source="stato_piano_studio_cod")
+    # ~ statusDes = serializers.CharField(source="stato_piano_studio_desc_ita")
+    # ~ regPlansPdrId = serializers.CharField(source="regpiani_pdr_id")
+    # ~ regPlansPdrCod = serializers.CharField(source="regpiani_pdr_cod")
+    # ~ regPlansPdrDes = serializers.CharField(source="regpiani_pdr_des")
+    # ~ regPlansPdrCoorteIdYear = serializers.CharField(source="regpiani_pdr_aa_coorte_id")
+    # ~ regPlansPdrYear = serializers.CharField(source="regpiani_pdr_aa_regpiani_id")
+    # ~ flgExpSegStu = serializers.CharField(source="flg_exp_seg_stu")
+    cdSDuration = serializers.IntegerField(source="regdid.cds.durata_anni")
+    planTabs = serializers.SerializerMethodField()
+
+    def get_requestLang(self):
+        request = self.context.get("request", None)
+        return "en" if request and request.GET.get("lang") == "en" else "it"
+
+    @extend_schema_field(serializers.ListField())
+    def get_planTabs(self, obj):
+        lang = self.get_requestLang()
+        result = {}
+        for q in obj.schemi.all():
+            
+            # evitiamo di prendere i percorsi part-time
+            regole_standard = []
+            for r in q.regole_filtrate:
+                if len(q.regole_filtrate) == obj.regdid.cds.durata_anni:
+                    regole_standard.append(r)
+
+            if not regole_standard: continue
+        
+            result[q.schema_piano_id] = {
+                "StudyPlanCOD": q.schema_piano_cod,
+                "StudyPlanName": q.schema_piano_desc_ita,
+                "StudyActivities": [
+                    {
+                        q.anno_corso_reg_sce: [
+                                {
+                                    "StudyActivityID": af.activities[0].af_pds_id,
+                                    "StudyActivityCod": af.activities[0].ana_af_cod,
+                                    "StudyActivityName": af.activities[0].ana_af_desc_ita,
+                                    # ~ "CreditValue": af.activities[0].cfu if len(af.activities) == 1 else None,
+                                    "StudyActivitySSD": set([activity.sett_cod for activity in af.activities]),
+                                    # ~ "AfType": af.activities[0].ambito_desc_ita if len(af.activities) == 1 else None,
+                                    "AfScope": af.activities[0].taf_desc_ita if len(af.activities) == 1 else None,
+                                } for af in q.af.all() if af.activities
+                            ],
+                    } for q in regole_standard
+                ]
+            }
+        return result
+        
+    class Meta:
+        model = DidatticaPianiStudio
+        fields = [
+            "id",
+            "regDidId",
+            # ~ "relevanceCod",
+            "yearCoorteId",
+            # ~ "yearRegPlanId",
+            # ~ "regPlanDes",
+            # ~ "defFlg",
+            # ~ "statusCod",
+            # ~ "statusDes",
+            # ~ "regPlansPdrId",
+            # ~ "regPlansPdrCod",
+            # ~ "regPlansPdrDes",
+            # ~ "regPlansPdrCoorteIdYear",
+            # ~ "regPlansPdrYear",
+            # ~ "flgExpSegStu",
+            "cdSDuration",
+            "planTabs",
         ]

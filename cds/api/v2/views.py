@@ -52,6 +52,9 @@ from cds.models import (
     DidatticaCdsGruppi,
     DidatticaCdsGruppiComponenti,
     DidatticaCoperturaDettaglioOre,
+    DidatticaPianiStudio,
+    VDidatticaAfPianiStudio,
+    DidatticaPianiRegSce
     # ~ DidatticaAttivitaFormativaModalita
 )
 
@@ -73,6 +76,7 @@ from .serializers import (
     StudyActivitiesListSerializer,
     CdsDetailSerializer,
     SortingContactsSerializer,
+    StudyPlansSerializer
 )
 
 from ..v1.serializers import (
@@ -524,7 +528,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
             'erog_id__coperture__dettaglio_ore',
             'erog_id__testi'
         )
-        
+
         # attività effettivamente erogata (erog_id)
         if results.exists():
             erog_found = True
@@ -541,7 +545,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
             result.moduli = DidatticaAttivitaFormativaPds.objects.none()
             erog_master_id = DidatticaAttivitaFormativaErogata.objects.filter(
                 erog_master_id=af_id
-            ).exclude(erog_id=af_id).first()
+            ).exclude(erog_id=af_id).only('erog_id').first()
 
             # mutuazioni
             if not erog_master_id:
@@ -549,7 +553,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
             else:
                 mutuazioni = list(
                     DidatticaAttivitaFormativaErogata.objects.filter(
-                        erog_id=erog_master_id
+                        erog_id=erog_master_id.erog_id
                     ).prefetch_related('pds')
                 )
             result.mutuazioni = mutuazioni
@@ -597,7 +601,6 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
 
             result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
             result.mutuato_da = None
-        
         result.erog_found = erog_found
         return result
 
@@ -647,6 +650,8 @@ class StudyActivitiesViewSetV1(StudyActivitiesViewSet):
         ],
     ),
 )
+
+
 class AcademicPathwaysViewSet(ReadOnlyModelViewSet):
     pagination_class = PageNumberPagination
     queryset = DidatticaPdsRegolamento.objects.all()
@@ -723,3 +728,68 @@ class SortingContactsViewSet(ReadOnlyModelViewSet):
                 )
             )
         )
+
+        
+class StudyPlansViewSet(ReadOnlyModelViewSet):
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = StudyPlansSerializer
+
+    def get_queryset(self):
+        regdid_id = str(self.kwargs["regdidid"])
+        if regdid_id:
+
+            piani_studio = (
+                DidatticaPianiStudio.objects.filter(
+                    regdid_id__regdid_id=regdid_id,
+                )
+                .select_related("regdid__cds")
+                .prefetch_related(
+                    'schemi',
+                    Prefetch(
+                        'schemi__regole',
+                        queryset=DidatticaPianiRegSce.objects.filter(
+                            tipo_reg_sce_cod="O"
+                        ),
+                        to_attr='regole_filtrate'
+                    ),
+                    'schemi__regole_filtrate__af',
+                )
+                .order_by("piano_studio_id")
+            )
+
+            set_af_pds_id = set()
+            
+            for p in piani_studio:
+                for s in p.schemi.all():
+                    for r in s.regole_filtrate:
+                        for af in r.af.all():
+                            if af.af_pds_id:  # Evitiamo valori None o vuoti (-99999 e #NULL# da gestire?)
+                                set_af_pds_id.add(af.af_pds_id)
+
+            tutte_le_attivita = VDidatticaAfPianiStudio.objects.filter(
+                af_pds_id__in=list(set_af_pds_id)
+            )
+
+            map_activities = {}
+            for act in tutte_le_attivita:
+                map_activities.setdefault(act.af_pds_id, []).append(act)
+
+            for p in piani_studio:
+                for s in p.schemi.all():
+                    for r in s.regole_filtrate:
+                        for af in r.af.all():
+                            af.activities = map_activities.get(
+                                af.af_pds_id, []
+                            )
+
+                # ~ schede = sorted(
+                    # ~ list(schede),
+                    # ~ key=lambda k: (
+                        # ~ k["cla_m_id"] if k["cla_m_id"] else 0,
+                        # ~ -k["isStatutario"],
+                        # ~ k["apt_id"] if k["apt_id"] else 0,
+                    # ~ ),
+                # ~ )
+                # ~ q.PlanTabs = schemi
+        return piani_studio
