@@ -383,9 +383,7 @@ class ServiceDidatticaCds:
         res[0]["CdsPeriods"] = DidatticaCdsPeriodi.objects.filter(
             cds_cod=res[0]["cds_cod"], aa_id=res[0]["didatticaregolamento__aa_reg_did"]
         ).values(
-            "ciclo_des",
             "tipo_ciclo_des",
-            "tipo_ciclo_des_eng",
             "data_inizio",
             "data_fine",
         )
@@ -393,9 +391,7 @@ class ServiceDidatticaCds:
         res[0]["CdsCurrentPeriods"] = DidatticaCdsPeriodi.objects.filter(
             cds_cod=res[0]["cds_cod"], aa_id=settings.CURRENT_YEAR
         ).values(
-            "ciclo_des",
             "tipo_ciclo_des",
-            "tipo_ciclo_des_eng",
             "data_inizio",
             "data_fine",
         )
@@ -497,24 +493,24 @@ class ServiceDidatticaCds:
         years = [last_year, current_year]
         query = (
             DidatticaCopertura.objects.filter(
-                Q(personale__flg_cessato=0, personale__fl_docente=1)
+                Q(doc_id_ab__flg_cessato=0, doc_id_ab__fl_docente=1)
                 | ~Q(stato_coper_cod="R"),
-                cds_cod=cdscod,
-                aa_off_id__in=years,
+                erog__mod_off_id__af_off__cds_cod=cdscod,
+                data_inizio_incarico_dida__year__in=years,
             )
             .values(
-                "personale__nome",
-                "personale__cognome",
-                "personale__middle_name",
-                "personale__matricola",
-                "personale__cd_uo_aff_org",
-                "personale__ds_aff_org",
+                "doc_id_ab__nome",
+                "doc_id_ab__cognome",
+                "doc_id_ab__middle_name",
+                "doc_id_ab__matricola",
+                "doc_id_ab__cd_uo_aff_org",
+                "doc_id_ab__ds_aff_org",
             )
-            .order_by("personale__cognome")
+            .order_by("doc_id_ab__cognome")
         )
         for q in query:
             q["DepartmentUrl"] = DidatticaDipartimentoUrl.objects.filter(
-                dip_cod=q["personale__cd_uo_aff_org"]
+                dip_cod=q["doc_id_ab__cd_uo_aff_org"]
             ).values("dip_url")
         return query
 

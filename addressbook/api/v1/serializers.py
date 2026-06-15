@@ -328,19 +328,19 @@ class SortingContactsSerializer(serializers.Serializer):
     @staticmethod
     def to_dict(query, req_lang="en"):
         full_name = (
-            query["personale__cognome"]
+            query["doc_id_ab__cognome"]
             + " "
-            + query["personale__nome"]
+            + query["doc_id_ab__nome"]
             + (
-                " " + query["personale__middle_name"]
-                if query["personale__middle_name"] is not None
+                " " + query["doc_id_ab__middle_name"]
+                if query["doc_id_ab__middle_name"] is not None
                 else ""
             )
         )
         return {
             "Name": full_name,
-            "ID": encrypt(query["personale__matricola"]),
-            "TeacherDepartmentID": query["personale__cd_uo_aff_org"],
-            "TeacherOffice": query["personale__ds_aff_org"],
+            "ID": encrypt(query["doc_id_ab__matricola"]),
+            "TeacherDepartmentID": query["doc_id_ab__cd_uo_aff_org"],
+            "TeacherOffice": query["doc_id_ab__ds_aff_org"],
             "DepartmentURL": query["DepartmentUrl"],
         }

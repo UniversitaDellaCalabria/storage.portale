@@ -581,35 +581,35 @@ class ServiceDocente:
         query_search = Q()
         query_roles = Q()
         query_cds = Q()
-        query_regdid = Q()
+        # query_regdid = Q()
         query_year = Q()
 
         if search is not None:
             q_cognome = Q(cognome__istartswith=search)
             query_search &= q_cognome
 
-        if regdid:
-            query_regdid = Q(didatticacopertura__af__regdid__regdid_id=regdid)
+        # if regdid:
+        #     query_regdid = Q(didatticacopertura__erog__mod_off_id__af_of__regdid__regdid_id=regdid)
         if role:
             roles = role.split(",")
             query_roles = Q(cd_ruolo__in=roles)
         if cds:
-            query_cds = Q(didatticacopertura__cds_cod=cds)
+            query_cds = Q(didatticacopertura__erog__mod_off_id__af_off__cds_cod=cds)
         if year:
-            query_year = Q(didatticacopertura__aa_off_id=year)
+            query_year = Q(didatticacopertura__data_inizio_incarico_dida__year=year)
 
         # last_academic_year = ServiceDidatticaCds.getAcademicYears()[0]['aa_reg_did']
 
         # se visualizzo i docenti di un corso (anche passato)
         # mostro anche quelli che sono cessati
         # altrimenti solo quelli attivi
-        if not regdid and not cds:
+        if not cds:
             query = Personale.objects.filter(
                 Q(fl_docente=1, flg_cessato=0)
                 |
-                (Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R'))
+                (Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R'))
                 |
-                (Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R')),
+                (Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R')),
                 query_search,
                 query_roles,
                 query_year
@@ -618,10 +618,10 @@ class ServiceDocente:
             query = Personale.objects.filter(
                 Q(fl_docente=1)
                 |
-                ((Q(didatticacopertura__af__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R'))),
+                ((Q(didatticacopertura__erog__mod_off_id__af_off__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R'))),
                 query_search,
                 query_cds,
-                query_regdid,
+                # query_regdid,
                 query_roles,
                 query_year,
             )
@@ -711,7 +711,7 @@ class ServiceDocente:
         if cds:
             query_cds = Q(didatticacopertura__cds_cod=cds)
         if year:
-            query_year = Q(didatticacopertura__aa_off_id=year)
+            query_year = Q(didatticacopertura__data_inizio_incarico_dida__year=year)
 
         query = (
             Personale.objects.filter(
@@ -720,7 +720,7 @@ class ServiceDocente:
                 query_regdid,
                 query_roles,
                 query_year,
-                didatticacopertura__af__isnull=False
+                didatticacopertura__erog__mod_off_id__af_off__isnull=False
             )
             .exclude(didatticacopertura__stato_coper_cod='R')
             .values(
@@ -802,16 +802,16 @@ class ServiceDocente:
         .select_related("personale", "af")
 
         if year:
-            query = query.filter(aa_off_id=year)
+            query = query.filter(didatticacopertura__data_inizio_incarico_dida__year=year)
         elif yearFrom and yearTo:
             query = query.filter(
-                aa_off_id__gte=yearFrom,
-                aa_off_id__lte=yearTo,
+                didatticacopertura__data_inizio_incarico_dida__year__gte=yearFrom,
+                didatticacopertura__data_inizio_incarico_dida__year__lte=yearTo,
             )
         elif yearFrom:
-            query = query.filter(aa_off_id__gte=yearFrom)
+            query = query.filter(didatticacopertura__data_inizio_incarico_dida__year__gte=yearFrom)
         elif yearTo:
-            query = query.filter(aa_off_id__lte=yearTo)
+            query = query.filter(didatticacopertura__data_inizio_incarico_dida__year__lte=yearTo)
 
         single_id = []
         to_exclude = []
@@ -824,7 +824,7 @@ class ServiceDocente:
         query = query.exclude(coper_id__in=to_exclude)
 
         return (
-            query.order_by("aa_off_id", "anno_corso", "af_gen_des", "af_gen_des_eng")
+            query.order_by("didatticacopertura__data_inizio_incarico_dida__year", "anno_corso", "af_gen_des", "af_gen_des_eng")
             .values(
                 "af_id",
                 "af_gen_cod",
@@ -839,7 +839,7 @@ class ServiceDocente:
                 "cds_des",
                 "af__cds__nome_cds_eng",
                 "af__lista_lin_did_af",
-                "aa_off_id",
+                "didatticacopertura__data_inizio_incarico_dida__year",
                 "cds_id",
                 "cds_cod",
                 "fat_part_stu_des",
@@ -852,7 +852,7 @@ class ServiceDocente:
                 "coper_peso",
                 "ore",
             )
-            .order_by("-aa_off_id")
+            .order_by("-didatticacopertura__data_inizio_incarico_dida__year")
         )
 
     @staticmethod
@@ -862,8 +862,8 @@ class ServiceDocente:
 
         query = Personale.objects.filter(
             Q(fl_docente=1, flg_cessato=0)
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+            | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+            | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
             matricola=teacher,
         ).distinct()
 
@@ -1002,8 +1002,8 @@ class ServiceDocente:
 
         query = Personale.objects.filter(
             Q(fl_docente=1, flg_cessato=0)
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+            | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+            | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
             matricola=teacher,
         ).distinct()
 
@@ -1060,8 +1060,8 @@ class ServiceDocente:
 
         query = Personale.objects.filter(
             Q(fl_docente=1, flg_cessato=0)
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+            | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R')
+            | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
             matricola=teacher,
         ).distinct()
 

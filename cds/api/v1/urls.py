@@ -28,7 +28,7 @@ from cds.api.v2.views import (
 app_name = "apiv1"
 
 urlpatterns = [
-    path("ricerca/cds/", ApiCdSList.as_view(), name="cds-list"),
+    path("cds/", ApiCdSList.as_view(), name="cds-list"),
     path("cds/<int:regdidid>/", ApiCdSInfo.as_view(), name="cds-info"),
     path("cds/<int:regdidid>/studyplans/", ApiCdSStudyPlansList.as_view(), name="cds-studyplans"),
     path("cds/<int:regdidid>/studyplans/<int:studyplanid>/", ApiStudyPlanDetail.as_view(), name="studyplan-detail"),
