@@ -1214,10 +1214,10 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
 
 # ~ @extend_schema_serializer(examples=examples.STUDY_PLANS_SERIALIZER_EXAMPLE)
 class StudyPlansSerializer(ReadOnlyModelSerializer):
-    id = serializers.IntegerField(source="piano_studio_id")
-    regDidId = serializers.IntegerField(source="regdid_id")
+    RegPlanId = serializers.IntegerField(source="piano_studio_id")
+    RegDidId = serializers.IntegerField(source="regdid_id")
     # ~ relevanceCod = serializers.CharField(source="attinenza_cod")
-    yearCoorteId = serializers.IntegerField(source="aa_coorte_id")
+    YearCoorteId = serializers.IntegerField(source="aa_coorte_id")
     # ~ yearRegPlanId = serializers.IntegerField(source="aa_regpiani_id")
     # ~ regPlanDes = serializers.CharField(source="stato_piano_studio_desc_ita")
     # ~ defFlg = serializers.CharField(source="def_flg")
@@ -1229,15 +1229,31 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
     # ~ regPlansPdrCoorteIdYear = serializers.CharField(source="regpiani_pdr_aa_coorte_id")
     # ~ regPlansPdrYear = serializers.CharField(source="regpiani_pdr_aa_regpiani_id")
     # ~ flgExpSegStu = serializers.CharField(source="flg_exp_seg_stu")
-    cdSDuration = serializers.IntegerField(source="regdid.cds.durata_anni")
-    planTabs = serializers.SerializerMethodField()
+    CdSDuration = serializers.IntegerField(source="regdid.cds.durata_anni")
+    PlanTabs = serializers.SerializerMethodField()
+
+    def __init__(self, *args, **kwargs):
+            context = kwargs.get('context', {})
+            request = context.get('request', None)
+            
+            self.lang = 'ita'
+            if request:
+                url_lang = request.query_params.get('lang')
+                if url_lang in ['ita', 'eng']:
+                    self.lang = url_lang
+                else:
+                    browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                    if browser_lang.strip().startswith('en'):
+                        self.lang = 'eng'
+                        
+            super().__init__(*args, **kwargs)
 
     def get_requestLang(self):
         request = self.context.get("request", None)
         return "en" if request and request.GET.get("lang") == "en" else "it"
 
     @extend_schema_field(serializers.ListField())
-    def get_planTabs(self, obj):
+    def get_PlanTabs(self, obj):
         lang = self.get_requestLang()
         result = {}
         for q in obj.schemi.all():
@@ -1252,18 +1268,18 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
         
             result[q.schema_piano_id] = {
                 "StudyPlanCOD": q.schema_piano_cod,
-                "StudyPlanName": q.schema_piano_desc_ita,
+                "StudyPlanName": getattr(q, f"schema_piano_desc_{self.lang}", None),
                 "StudyActivities": [
                     {
                         q.anno_corso_reg_sce: [
                                 {
                                     "StudyActivityID": af.activities[0].af_pds_id,
                                     "StudyActivityCod": af.activities[0].ana_af_cod,
-                                    "StudyActivityName": af.activities[0].ana_af_desc_ita,
+                                    "StudyActivityName": getattr(af.activities[0], f"ana_af_desc_{self.lang}", None),
                                     # ~ "CreditValue": af.activities[0].cfu if len(af.activities) == 1 else None,
                                     "StudyActivitySSD": set([activity.sett_cod for activity in af.activities]),
                                     # ~ "AfType": af.activities[0].ambito_desc_ita if len(af.activities) == 1 else None,
-                                    "AfScope": af.activities[0].taf_desc_ita if len(af.activities) == 1 else None,
+                                    "AfScope": getattr(af.activities[0], f"taf_desc_{self.lang}", None) if len(af.activities) == 1 else None,
                                 } for af in q.af.all() if af.activities
                             ],
                     } for q in regole_standard
