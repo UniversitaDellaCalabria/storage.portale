@@ -15,6 +15,7 @@ from .docs import descriptions
 from api_docs import responses
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from cds_brochure.models import (
@@ -50,7 +51,7 @@ from .serializers import BrochuresListSerializer, BrochuresDetailSerializer
         ],
     ),
 )
-class BrochuresViewSet(ReadOnlyModelViewSet):
+class BrochuresViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = BrochuresFilter

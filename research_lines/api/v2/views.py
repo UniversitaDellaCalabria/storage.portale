@@ -8,6 +8,7 @@ from api_docs import responses
 
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework import mixins, viewsets
 
@@ -33,7 +34,7 @@ from research_lines.settings import OFFICE_RESEARCH_LINES
         ),
     ),
 )
-class BaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class BaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = BaseResearchLinesSerializer
@@ -95,7 +96,7 @@ class BaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         ),
     ),
 )
-class AppliedResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class AppliedResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = AppliedResearchLinessSerializer

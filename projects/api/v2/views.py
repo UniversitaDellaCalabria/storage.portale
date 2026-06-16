@@ -10,6 +10,7 @@ from api_docs import responses
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework import mixins, viewsets
 
@@ -43,7 +44,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
         responses=responses.COMMON_RETRIEVE_RESPONSES(ProjectsSerializer),
     ),
 )
-class ProjectsViewSet(ReadOnlyModelViewSet):
+class ProjectsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProjectsFilter
@@ -124,7 +125,7 @@ class ProjectsViewSet(ReadOnlyModelViewSet):
         ),
     )
 )
-class TerritorialScopesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TerritorialScopesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TerritorialScopesSerializer
@@ -140,7 +141,7 @@ class TerritorialScopesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(ProgramTypesSerializer(many=True)),
     )
 )
-class ProgramTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class ProgramTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = ProgramTypesSerializer
@@ -158,7 +159,7 @@ class ProgramTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(InfrastructuresSerializer(many=True)),
     )
 )
-class InfrastructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class InfrastructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = InfrastructuresSerializer

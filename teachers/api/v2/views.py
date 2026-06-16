@@ -9,6 +9,7 @@ from api_docs import responses
 
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import mixins, viewsets
@@ -62,7 +63,7 @@ import teachers.utils
         responses=responses.COMMON_RETRIEVE_RESPONSES(TeacherSerializer),
     ),
 )
-class TeachersViewSet(ReadOnlyModelViewSet):
+class TeachersViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = TeachersFilter
@@ -177,7 +178,7 @@ class TeachersViewSet(ReadOnlyModelViewSet):
         responses=responses.COMMON_LIST_RESPONSES(TeachersSerializer(many=True)),
     ),
 )
-class CoveragesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class CoveragesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TeachersSerializer
@@ -249,7 +250,7 @@ class CoveragesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_RETRIEVE_RESPONSES(PublicationSerializer),
     ),
 )
-class PublicationsViewSet(ReadOnlyModelViewSet):
+class PublicationsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PublicationsSerializer
@@ -330,7 +331,7 @@ class PublicationsViewSet(ReadOnlyModelViewSet):
         responses=responses.COMMON_RETRIEVE_RESPONSES(TeachersStudyActivitiesSerializer),
     ),
 )
-class TeachersStudyActivitiesViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class TeachersStudyActivitiesViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TeachersStudyActivitiesSerializer
@@ -398,7 +399,7 @@ class TeachersStudyActivitiesViewSet(mixins.RetrieveModelMixin, viewsets.Generic
         responses=responses.COMMON_LIST_RESPONSES(TeachersMaterialsSerializer(many=True)),
     ),
 )
-class TeachersMaterialsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TeachersMaterialsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TeachersMaterialsSerializer
@@ -454,7 +455,7 @@ class TeachersMaterialsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(TeachersBaseResearchLinesSerializer(many=True)),
     ),
 )
-class TeachersBaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TeachersBaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TeachersBaseResearchLinesSerializer
@@ -512,7 +513,7 @@ class TeachersBaseResearchLinesViewSet(mixins.ListModelMixin, viewsets.GenericVi
     ),
 )
 class TeachersAppliedResearchLinesViewSet(
-    mixins.ListModelMixin, viewsets.GenericViewSet
+    mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet
 ):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -569,7 +570,7 @@ class TeachersAppliedResearchLinesViewSet(
         responses=responses.COMMON_LIST_RESPONSES(TeachersNewsSerializer(many=True)),
     ),
 )
-class TeachersNewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TeachersNewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TeachersNewsSerializer
@@ -621,7 +622,7 @@ class TeachersNewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(PublicationsCommunityTypesSerializer(many=True)),
     ),
 )
-class PublicationsCommunityTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class PublicationsCommunityTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PublicationsCommunityTypesSerializer

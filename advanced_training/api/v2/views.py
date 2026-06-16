@@ -37,7 +37,7 @@ from advanced_training.settings import (
 )
 
 from generics.api.pagination import PageNumberPagination
-
+from generics.views import ClearResponseViewSet
 
 def _latest_status_subquery():
     """Subquery che restituisce il status_cod più recente per ogni master."""
@@ -86,7 +86,7 @@ def _get_departments_for_masters():
         ),
     ),
 )
-class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
+class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = AdvancedTrainingMastersSerializer
@@ -368,7 +368,7 @@ class AdvancedTrainingMastersViewSet(ReadOnlyModelViewSet):
     ),
 )
 class AdvancedTrainingCourseTypesViewSet(
-    mixins.ListModelMixin, viewsets.GenericViewSet
+    mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet
 ):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
@@ -376,7 +376,7 @@ class AdvancedTrainingCourseTypesViewSet(
     queryset = AltaFormazioneTipoCorso.objects.only("id", "tipo_corso_descr")
 
 
-class ErogationModesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class ErogationModesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = ErogationModesSerializer

@@ -10,6 +10,7 @@ from api_docs import responses
 
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from .filters import StructuresFilter, TypesFilter
@@ -45,7 +46,7 @@ from structures.models import (
         responses=responses.COMMON_RETRIEVE_RESPONSES(StructuresSerializer),
     ),
 )
-class StructuresViewSet(ReadOnlyModelViewSet):
+class StructuresViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = StructuresSerializer
@@ -118,7 +119,7 @@ class StructuresViewSet(ReadOnlyModelViewSet):
         responses=responses.COMMON_LIST_RESPONSES(TypesSerializer(many=True)),
     ),
 )
-class TypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TypesSerializer
@@ -136,7 +137,7 @@ class TypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(FunctionSerializer(many=True)),
     ),
 )
-class FunctionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class FunctionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = FunctionSerializer
@@ -156,7 +157,7 @@ class FunctionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(DepartmentsSerializer(many=True)),
     ),
 )
-class DepartmentsViewSet(ReadOnlyModelViewSet):
+class DepartmentsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = DepartmentsSerializer

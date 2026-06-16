@@ -8,6 +8,7 @@ from api_docs import responses
 
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework.response import Response
 
@@ -45,7 +46,7 @@ from phd.settings import PHD_CYCLES
         ),
     )
 )
-class PhdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class PhdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PhdSerializer
@@ -86,7 +87,7 @@ class PhdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         summary=descriptions.PHD_CYCLES_LIST_SUMMARY,
     )
 )
-class PhdCyclesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class PhdCyclesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
 
@@ -105,7 +106,7 @@ class PhdCyclesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_RETRIEVE_RESPONSES(PhdActivitiesSerializer),
     ),
 )
-class PhdActivitiesViewSet(ReadOnlyModelViewSet):
+class PhdActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PhdActivitiesSerializer
@@ -166,7 +167,7 @@ class PhdActivitiesViewSet(ReadOnlyModelViewSet):
         ),
     )
 )
-class PhdActivitiesTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class PhdActivitiesTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PhdActivitiesTypesSerializer
@@ -186,7 +187,7 @@ class PhdActivitiesTypesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         ),
     )
 )
-class PhdActivitiesTypologiesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class PhdActivitiesTypologiesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PhdActivitiesTypologiesSerializer
@@ -199,7 +200,7 @@ class PhdActivitiesTypologiesViewSet(mixins.ListModelMixin, viewsets.GenericView
         responses=responses.COMMON_LIST_RESPONSES(PhdSsdSerializer(many=True)),
     )
 )
-class PhdSsdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class PhdSsdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PhdSsdSerializer
@@ -217,7 +218,7 @@ class PhdSsdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(RefPhdSerializer(many=True)),
     )
 )
-class RefPhdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class RefPhdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = RefPhdSerializer
@@ -236,7 +237,7 @@ class RefPhdViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(RefStructuresSerializer(many=True)),
     )
 )
-class RefStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class RefStructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = RefStructuresSerializer

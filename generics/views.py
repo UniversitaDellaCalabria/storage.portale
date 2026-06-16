@@ -4,9 +4,11 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.schemas.openapi_agid import AgidAutoSchema
+from rest_framework.viewsets import GenericViewSet, ViewSet
 from drf_spectacular.openapi import AutoSchema
 
 from .api.pagination import UnicalStorageApiPaginationList
+from .renderers import *
 from .utils import encode_labels
 
 
@@ -23,7 +25,11 @@ class ApiEndpointList(generics.ListAPIView):
     # ordering_fields = '__all__'
     allowed_methods = ("GET",)
     #schema = AgidAutoSchema(tags=["public"])
-
+    renderer_classes = [
+        CleanJSONRenderer,
+        CleanBrowsableAPIRenderer
+    ]
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.language = None
@@ -71,6 +77,11 @@ class ApiEndpointList(generics.ListAPIView):
 
 
 class ApiEndpointDetail(ApiEndpointList):
+    renderer_classes = [
+        CleanJSONRenderer,
+        CleanBrowsableAPIRenderer
+    ]
+    
     def get(self, obj, **kwargs):
         self.language = str(self.request.query_params.get("lang", "null")).lower()
         if self.language == "null":
@@ -93,7 +104,11 @@ class ApiEndpointListSupport(ApiEndpointList):
     pagination_class = None
     permission_classes = [permissions.AllowAny]
     allowed_methods = ("GET",)
-
+    renderer_classes = [
+        CleanJSONRenderer,
+        CleanBrowsableAPIRenderer
+    ]
+    
     def get(self, obj, **kwargs):
         self.language = str(self.request.query_params.get("lang", "null")).lower()
         if self.language == "null":
@@ -111,3 +126,11 @@ class ApiEndpointListSupport(ApiEndpointList):
             )
 
         return Response({"results": {}, "labels": {}})
+
+
+class ClearResponseViewSet(ViewSet):
+    renderer_classes = [
+        CleanJSONRenderer,
+        CleanBrowsableAPIRenderer
+    ]
+    

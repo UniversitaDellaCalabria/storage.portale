@@ -9,6 +9,7 @@ from api_docs import responses
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework import mixins, viewsets
 
@@ -35,7 +36,7 @@ from companies.settings import OFFICE_COMPANIES
         responses=responses.COMMON_RETRIEVE_RESPONSES(CompaniesSerializer),
     ),
 )
-class CompaniesViewSet(ReadOnlyModelViewSet):
+class CompaniesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = CompaniesFilter
@@ -89,7 +90,7 @@ class CompaniesViewSet(ReadOnlyModelViewSet):
         responses=responses.COMMON_LIST_RESPONSES(TechAreaSerializer(many=True)),
     )
 )
-class TechAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TechAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TechAreaSerializer

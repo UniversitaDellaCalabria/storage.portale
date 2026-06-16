@@ -18,6 +18,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework import mixins, viewsets
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -50,7 +51,7 @@ from django.db.models import (
 from rest_framework.viewsets import ViewSet
 
 
-class GetPersonApi(ViewSet):
+class GetPersonApi(ClearResponseViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     description = "Retrieves the encrypted matricola of a person."
@@ -68,7 +69,7 @@ class GetPersonApi(ViewSet):
         return Response(encrypt(matricola))
 
 
-class GetDecryptedPersonApi(ViewSet):
+class GetDecryptedPersonApi(ClearResponseViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     description = "Retrieves the decypted matricola of a person."
@@ -98,7 +99,7 @@ class GetDecryptedPersonApi(ViewSet):
         responses=responses.COMMON_LIST_RESPONSES(PersonnelCfSerializer(many=True)),
     ),
 )
-class PersonnelCfViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class PersonnelCfViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PersonnelCfSerializer
@@ -137,7 +138,7 @@ class PersonnelCfViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_RETRIEVE_RESPONSES(AddressbookSerializer),
     ),
 )
-class AddressbookViewSet(ReadOnlyModelViewSet):
+class AddressbookViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = AddressbookFilter
@@ -319,7 +320,7 @@ class AddressbookViewSet(ReadOnlyModelViewSet):
         responses=responses.COMMON_RETRIEVE_RESPONSES(AddressbookFullSerializer),
     ),
 )
-class AddressbookFullViewSet(ReadOnlyModelViewSet):
+class AddressbookFullViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     authentication_classes = [TokenAuthentication]
@@ -444,7 +445,7 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet):
         ),
     ),
 )
-class AddressbookStructuresViewSet(ReadOnlyModelViewSet):
+class AddressbookStructuresViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = AddressbookStructuresSerializer
@@ -470,7 +471,7 @@ class AddressbookStructuresViewSet(ReadOnlyModelViewSet):
         responses=responses.COMMON_LIST_RESPONSES(RolesSerializer(many=True)),
     ),
 )
-class RolesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class RolesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = RolesSerializer

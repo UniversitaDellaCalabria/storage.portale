@@ -30,6 +30,7 @@ from cds.settings import OFFICE_CDS, OFFICE_CDS_DOCUMENTS, OFFICE_CDS_TEACHING_S
 from rest_framework import mixins, viewsets
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -93,7 +94,7 @@ from ..v1.serializers import (
         ),
     )
 )
-class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     serializer_class = DegreeTypeSerializer
     queryset = (
         DidatticaCds.objects.values("tipo_corso_cod", "tipo_corso_des")
@@ -111,7 +112,7 @@ class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         ),
     )
 )
-class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     serializer_class = AcademicYearsSerializer
     queryset = (
         DidatticaRegolamento.objects.values("aa_reg_did")
@@ -129,7 +130,7 @@ class AcademicYearsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         ),
     )
 )
-class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     serializer_class = CdsAreasSerializer
     queryset = (
         DidatticaCds.objects.values("area_cds", "area_cds_en")
@@ -145,7 +146,7 @@ class CdsAreasViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(CdsExpiredSerializer(many=True)),
     )
 )
-class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     serializer_class = CdsExpiredSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = CdsExpiredFilter
@@ -183,7 +184,7 @@ class CdsExpiredViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_RETRIEVE_RESPONSES(CdsMorphSerializer),
     ),
 )
-class CdsMorphViewSet(ReadOnlyModelViewSet):
+class CdsMorphViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     serializer_class = CdsMorphSerializer
     queryset = DidatticaCds.objects.all()
 
@@ -256,7 +257,7 @@ class CdsMorphViewSet(ReadOnlyModelViewSet):
         responses=responses.COMMON_RETRIEVE_RESPONSES(CdsSerializer),
     ),
 )
-class CdsViewSet(ReadOnlyModelViewSet):
+class CdsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = CdsFilter
     queryset = DidatticaRegolamento.objects.all()
@@ -494,7 +495,7 @@ class CdsViewSet(ReadOnlyModelViewSet):
 )
 
 
-class StudyActivitiesViewSet(ReadOnlyModelViewSet):
+class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = StudyActivitiesFilter
@@ -610,7 +611,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet):
         return StudyActivitiesListSerializer
 
 
-class StudyActivitiesViewSetV1(StudyActivitiesViewSet):
+class StudyActivitiesViewSetV1(StudyActivitiesViewSet, ClearResponseViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return StudyActivitiesDetailSerializerV1
@@ -652,7 +653,7 @@ class StudyActivitiesViewSetV1(StudyActivitiesViewSet):
 )
 
 
-class AcademicPathwaysViewSet(ReadOnlyModelViewSet):
+class AcademicPathwaysViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     queryset = DidatticaPdsRegolamento.objects.all()
     lookup_field = "pds_regdid_id"
@@ -694,7 +695,7 @@ class AcademicPathwaysViewSet(ReadOnlyModelViewSet):
             )
 
 
-class SortingContactsViewSet(ReadOnlyModelViewSet):
+class SortingContactsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = SortingContactsSerializer
@@ -730,7 +731,7 @@ class SortingContactsViewSet(ReadOnlyModelViewSet):
         )
 
         
-class StudyPlansViewSet(ReadOnlyModelViewSet):
+class StudyPlansViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = StudyPlansSerializer

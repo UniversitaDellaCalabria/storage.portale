@@ -10,6 +10,7 @@ from api_docs import responses
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework import mixins, viewsets
 from .filters import LaboratoriesFilters
@@ -63,7 +64,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
         responses=responses.COMMON_RETRIEVE_RESPONSES(LaboratoriesSerializer),
     ),
 )
-class LaboratoriesViewSet(ReadOnlyModelViewSet):
+class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = LaboratoriesSerializer
@@ -298,7 +299,7 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet):
         ),
     )
 )
-class LaboratoriesAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class LaboratoriesAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = LaboratoriesAreaSerializer
@@ -316,7 +317,7 @@ class LaboratoriesAreaViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         ),
     ),
 )
-class LaboratoriesScopesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class LaboratoriesScopesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = LaboratoriesScopesSerializer
@@ -335,7 +336,7 @@ class LaboratoriesScopesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(InfrastructuresSerializer(many=True)),
     )
 )
-class InfrastructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class InfrastructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = InfrastructuresSerializer
@@ -351,7 +352,7 @@ class InfrastructuresViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(Erc1ListSerializer(many=True)),
     )
 )
-class ErcListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class ErcListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = Erc1ListSerializer
@@ -409,7 +410,7 @@ class ErcListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(),
     )
 )
-class AsterListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class AsterListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     queryset = RicercaErc0.objects.values("erc0_cod", "description", "description_en")

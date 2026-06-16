@@ -18,6 +18,7 @@ from api_docs import responses
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework import mixins, viewsets
 from cds_websites.settings import OFFICE_CDS_WEBSITES
@@ -54,7 +55,7 @@ from django.db.models import OuterRef, Subquery
         responses=responses.COMMON_LIST_RESPONSES(TopicListSerialzer(many=True)),
     ),
 )
-class TopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = TopicListSerialzer
@@ -70,7 +71,7 @@ class TopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(ArticlesTopicSerializer(many=True)),
     ),
 )
-class ArticlesTopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class ArticlesTopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = ArticlesTopicSerializer
@@ -175,7 +176,7 @@ class ArticlesTopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         responses=responses.COMMON_LIST_RESPONSES(StudyPlansSerializer(many=True)),
     ),
 )
-class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = StudyPlansSerializer

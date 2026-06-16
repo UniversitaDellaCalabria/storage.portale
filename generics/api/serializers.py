@@ -31,29 +31,9 @@ class ReadOnlyMixin:
             fields[field].read_only = True
         return fields
 
-
-class NullableAbstractSerializer(serializers.ModelSerializer):
-    """
-    Serializer astratto che converte determinati valori in None
-    durante la fase di deserializzazione (input).
-    """
-
-    def to_representation(self, instance):
-        # Ottieni la rappresentazione standard (un dizionario)
-        ret = super().to_representation(instance)
-        
-        # Modifica il dizionario di output
-        for key, value in ret.items():
-            if value in (-999999999, "-999999999", "#NULL#"):
-                ret[key] = None
-        return ret
-
-    class Meta:
-        abstract = True
-
         
 class ReadOnlyModelSerializer(
-    LanguageAwareMixin, ReadOnlyMixin, NullableAbstractSerializer
+    LanguageAwareMixin, ReadOnlyMixin, serializers.ModelSerializer
 ):
     pass
 

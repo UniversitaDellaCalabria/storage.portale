@@ -9,6 +9,7 @@ from api_docs import responses
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from django.db.models import Q, Prefetch
 from patents.models import BrevettoDatiBase, BrevettoInventori
@@ -30,7 +31,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
         responses=responses.COMMON_RETRIEVE_RESPONSES(PatentsSerializer),
     ),
 )
-class PatentsViewSet(ReadOnlyModelViewSet):
+class PatentsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = PatentsSerializer

@@ -7,6 +7,7 @@ from .docs import descriptions
 from api_docs import responses
 # ~ from rest_framework.pagination import PageNumberPagination
 from generics.api.pagination import PageNumberPagination
+from generics.views import ClearResponseViewSet
 
 from rest_framework import mixins, viewsets
 from .filters import ResearchGroupsFilter
@@ -22,7 +23,7 @@ from research_groups.models import RicercaGruppo, RicercaDocenteGruppo
         responses=responses.COMMON_LIST_RESPONSES(ResearchGroupsSerializer(many=True)),
     ),
 )
-class ResearchGroupsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class ResearchGroupsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = ResearchGroupsSerializer
