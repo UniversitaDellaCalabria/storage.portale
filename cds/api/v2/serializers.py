@@ -969,6 +969,180 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer):
     StudyActivityExtendedPartitionCod = serializers.CharField(source="fatt_part_stu_cod", default=None)
     StudyActivityExtendedPartitionDes = serializers.CharField(default=None)
 
+    # Convertiti in MethodField ottimizzati
+    StudyActivityTeacherID = serializers.SerializerMethodField()
+    StudyActivityTeacherName = serializers.SerializerMethodField()
+    
+    StudyActivityStudyPlans = serializers.SerializerMethodField()
+    StudyActivityFathers = serializers.SerializerMethodField()
+    StudyActivityYear = serializers.SerializerMethodField()
+    StudyActivityAcademicYear = serializers.SerializerMethodField()
+    StudyActivityRegDidId = serializers.SerializerMethodField()
+    StudyActivitySSDCod = serializers.SerializerMethodField()
+    StudyActivitySSD = serializers.SerializerMethodField()
+
+    def __init__(self, *args, **kwargs):
+        context = kwargs.get('context', {})
+        request = context.get('request', None)
+        
+        self.lang = 'ita'
+        if request:
+            url_lang = request.query_params.get('lang')
+            if url_lang in ['ita', 'eng']:
+                self.lang = url_lang
+            else:
+                browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                if browser_lang.strip().startswith('en'):
+                    self.lang = 'eng'
+
+        super().__init__(*args, **kwargs)
+
+        self.fields['StudyActivityName'].source = f"mod_off_id.ana_mod_desc_{self.lang}"
+        self.fields['StudyActivityLanguage'].source = f"lingua_did_desc_{self.lang}"
+        self.fields['StudyActivitySemester'].source = f"tipo_periodo_did_desc_{self.lang}"
+        self.fields['StudyActivityPartitionDes'].source = f"part_stu_desc_{self.lang}"
+        self.fields['StudyActivityExtendedPartitionDes'].source = f"fatt_part_stu_desc_{self.lang}"
+
+    def to_representation(self, instance):
+        # Mettiamo in cache la lista dei pds per evitare query N+1 successive
+        instance._pds_list = list(instance.pds.all())
+        return super().to_representation(instance)
+
+    # --- 1. FUNZIONE DI CACHE PER LA LOGICA DEI DOCENTI (Sostituisce il vecchio sub-serializer) ---
+    def _get_teacher_data(self, obj):
+        if hasattr(obj, '_cached_teacher_data'):
+            return obj._cached_teacher_data
+
+        mod_off = obj.mod_off_id
+        teacher_info = {"id": None, "name": None}
+
+        # Controllo iniziale sulla matricola
+        if not mod_off or getattr(mod_off.af_off, "doc_tit_matricola", None) == "-999999999":
+            obj._cached_teacher_data = teacher_info
+            return teacher_info
+
+        # Calcolo ID (con controllo dominio ed eventuale cifratura)
+        try:
+            email = getattr(mod_off.doc_tit_id_ab, "email", None)
+            if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
+                teacher_info["id"] = email.split("@")[0]
+            else:
+                teacher_info["id"] = encrypt(mod_off.af_off.doc_tit_matricola)
+        except Exception:
+            pass
+
+        # Calcolo Name
+        try:
+            nome = mod_off.doc_tit_id_ab.nome
+            cognome = mod_off.doc_tit_id_ab.cognome
+            if nome and cognome:
+                teacher_info["name"] = f"{cognome} {nome}"
+        except Exception:
+            pass
+
+        obj._cached_teacher_data = teacher_info
+        return teacher_info
+
+    def get_StudyActivityTeacherID(self, obj):
+        return self._get_teacher_data(obj)["id"]
+
+    def get_StudyActivityTeacherName(self, obj):
+        return self._get_teacher_data(obj)["name"]
+
+    # --- 2. OTTIMIZZAZIONE FATHERS (Senza StudyActivityFatherSerializer) ---
+    def get_StudyActivityFathers(self, obj):
+        if any(pds.af_pds_id == obj.erog_id for pds in obj._pds_list):
+            return []
+        
+        # Estraiamo i dati unici via dizionario Python nativo basandoci su af_pds_id (o la chiave del padre)
+        unique_fathers = {}
+        for pds in obj._pds_list:
+            father_id = getattr(pds, 'af_pds_id', None) # Modifica questo campo se la chiave del padre è un'altra
+            if father_id and father_id not in unique_fathers:
+                unique_fathers[father_id] = {
+                    "FatherID": father_id,
+                    "FatherName": getattr(pds, f"pds_desc_{self.lang}", None) # Adatta le chiavi a quelle che sputava fuori il vecchio serializer
+                }
+        return list(unique_fathers.values())
+
+    def get_StudyActivityStudyPlans(self, obj):
+        attr_name = f"pds_desc_{self.lang}"
+        return [getattr(pds, attr_name, None) for pds in obj._pds_list if getattr(pds, attr_name, None)]
+
+    # --- 3. FUNZIONE DI CACHE PER RIDURRE LE CHIAMATE A _first_pds da 5 a 1 ---
+    def _get_cached_pds(self, obj):
+        if not hasattr(obj, '_cached_first_pds'):
+            obj._cached_first_pds = self._first_pds(obj)
+        return obj._cached_first_pds
+
+    def get_StudyActivityYear(self, obj):
+        pds = self._get_cached_pds(obj)
+        return pds.anno_corso if pds else None
+
+    def get_StudyActivityAcademicYear(self, obj):
+        pds = self._get_cached_pds(obj)
+        return pds.aa_off_id if pds else None
+
+    def get_StudyActivitySSDCod(self, obj):
+        pds = self._get_cached_pds(obj)
+        return pds.sett_cod if pds else None
+
+    def get_StudyActivitySSD(self, obj):
+        pds = self._get_cached_pds(obj)
+        return getattr(pds, f"sett_desc_{self.lang}", None) if pds else None
+
+    def get_StudyActivityRegDidId(self, obj):
+        pds = self._get_cached_pds(obj)
+        return pds.regdid_id if pds else None
+
+    class Meta:
+        model = DidatticaAttivitaFormativaErogata
+        fields = [
+            "StudyActivityID",
+            "StudyActivityCdSID",
+            "StudyActivityCdSCod",
+            "StudyActivityCdSName",
+            "DepartmentName",
+            "DepartmentCod",
+            "StudyActivityFathers",
+            "StudyActivityRegDidId",
+            "StudyActivityCod",
+            "StudyActivityName",
+            "StudyActivityYear",
+            "StudyActivityAcademicYear",
+            "StudyActivityLanguage",
+            "StudyActivitySemester",
+            "StudyActivitySSDCod",
+            "StudyActivitySSD",
+            "StudyActivityTeacherName",
+            "StudyActivityTeacherID",
+            "StudyActivityStudyPlans",
+            "StudyActivityPartitionCod",
+            "StudyActivityPartitionDes",
+            "StudyActivityExtendedPartitionCod",
+            "StudyActivityExtendedPartitionDes",
+        ]
+
+                
+@extend_schema_serializer(examples=examples.STUDY_ACTIVITY_LIST_SERIALIZER_EXAMPLE)
+class StudyActivitiesListSerializerBKP(PdsListMixin, ReadOnlyModelSerializer):
+    StudyActivityID = serializers.IntegerField(source="erog_id", default=None)
+    StudyActivityCod = serializers.CharField(source="mod_off_id.ana_mod_cod", default=None)
+    StudyActivityCdSID = serializers.IntegerField(source="mod_off_id.af_off.id_cds.cds_id", default=None)
+    StudyActivityCdSCod = serializers.CharField(source="mod_off_id.af_off.cds_cod", default=None)
+
+    DepartmentName = serializers.CharField(source="mod_off_id.af_off.id_cds.dip.dip_des_it", default=None) 
+    DepartmentCod = serializers.CharField(source="mod_off_id.af_off.id_cds.dip.dip_cod", default=None)
+    StudyActivityCdSName = serializers.CharField(source="mod_off_id.af_off.id_cds.nome_cds_it", default=None)
+
+    StudyActivityName = serializers.CharField(default=None)
+    StudyActivityLanguage = serializers.CharField(default=None)
+    StudyActivitySemester = serializers.CharField(default=None)
+    StudyActivityPartitionCod = serializers.CharField(source="part_stu_cod", default=None)
+    StudyActivityPartitionDes = serializers.CharField(default=None)
+    StudyActivityExtendedPartitionCod = serializers.CharField(source="fatt_part_stu_cod", default=None)
+    StudyActivityExtendedPartitionDes = serializers.CharField(default=None)
+
     StudyActivityTeacherID = serializers.SerializerMethodField()
     StudyActivityTeacherName = serializers.SerializerMethodField()
     StudyActivityStudyPlans = serializers.SerializerMethodField()
