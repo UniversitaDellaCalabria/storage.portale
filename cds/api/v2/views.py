@@ -28,9 +28,12 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 from cds.settings import OFFICE_CDS, OFFICE_CDS_DOCUMENTS, OFFICE_CDS_TEACHING_SYSTEM
 
 from rest_framework import mixins, viewsets
+from generics.api.labels import LABEL_MAPPING
 # ~ from rest_framework.pagination import PageNumberPagination
-from generics.api.pagination import PageNumberPagination
+
+from generics.api.pagination import PageNumberPagination, UnicalStorageApiPaginationList
 from generics.views import ClearResponseViewSet
+
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -496,7 +499,7 @@ class CdsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
 
 
 class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
-    pagination_class = PageNumberPagination
+    pagination_class = UnicalStorageApiPaginationList
     filter_backends = [DjangoFilterBackend]
     filterset_class = StudyActivitiesFilter
     
@@ -610,8 +613,45 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             return StudyActivitiesDetailSerializer
         return StudyActivitiesListSerializer
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+        
+            lang = request.query_params.get('lang', 'ita')
+            if lang not in ['ita', 'eng']:
+                browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                lang = 'eng' if browser_lang.strip().startswith('en') else 'ita'
 
-class StudyActivitiesViewSetV1(StudyActivitiesViewSet, ClearResponseViewSet):
+            pagination_envelope = {
+                "data": serializer.data,
+                "language": lang
+            }
+            return self.get_paginated_response(pagination_envelope)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+
+        lang = request.query_params.get('lang', 'ita')
+        if lang not in ['ita', 'eng']:
+            browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            lang = 'eng' if browser_lang.strip().startswith('en') else 'ita'
+
+        labels = {}
+        for key in data.keys():
+            labels[key] = LABEL_MAPPING.get(lang, {}).get(key, key)
+
+        return Response({
+            "results": data,
+            "labels": labels
+        })
+    
     def get_serializer_class(self):
         if self.action == "retrieve":
             return StudyActivitiesDetailSerializerV1
@@ -651,7 +691,6 @@ class StudyActivitiesViewSetV1(StudyActivitiesViewSet, ClearResponseViewSet):
         ],
     ),
 )
-
 
 class AcademicPathwaysViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
