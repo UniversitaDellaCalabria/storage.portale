@@ -604,21 +604,27 @@ class ServiceDocente:
         # mostro anche quelli che sono cessati
         # altrimenti solo quelli attivi
         if not cds:
+            id_personale_didattica = DidatticaCopertura.objects.filter(
+                data_inizio_incarico_dida__year__in=[datetime.datetime.now().year, datetime.datetime.now().year - 1]
+            ).exclude(
+                stato_coper_cod='R'
+            ).values_list('doc_id_ab', flat=True).distinct()
+
             query = Personale.objects.filter(
-                Q(fl_docente=1, flg_cessato=0)
-                |
-                (Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R'))
-                |
-                (Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R')),
+                Q(fl_docente=1, flg_cessato=0) | Q(id_ab__in=id_personale_didattica),
                 query_search,
                 query_roles,
                 query_year
-            )
+            ).distinct()
         else:
+            id_personale_didattica = DidatticaCopertura.objects.filter(
+                erog__mod_off_id__af_off__isnull=False
+            ).exclude(
+                stato_coper_cod='R'
+            ).values_list('doc_id_ab', flat=True).distinct() 
+            
             query = Personale.objects.filter(
-                Q(fl_docente=1)
-                |
-                ((Q(didatticacopertura__erog__mod_off_id__af_off__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R'))),
+                Q(fl_docente=1) | Q(id_ab__in=id_personale_didattica),
                 query_search,
                 query_cds,
                 # query_regdid,
