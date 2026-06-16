@@ -1067,7 +1067,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer):
 
     def get_StudyActivityStudyPlans(self, obj):
         attr_name = f"pds_desc_{self.lang}"
-        return [getattr(pds, attr_name, None) for pds in obj._pds_list if getattr(pds, attr_name, None)]
+        return set([getattr(pds, attr_name, None) for pds in obj._pds_list if getattr(pds, attr_name, None)])
 
     # --- 3. FUNZIONE DI CACHE PER RIDURRE LE CHIAMATE A _first_pds da 5 a 1 ---
     def _get_cached_pds(self, obj):
