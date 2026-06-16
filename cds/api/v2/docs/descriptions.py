@@ -73,3 +73,11 @@ ACADEMICPATHS_RETRIEVE_DESCRIPTION = (
     "Retrieve detailed information for a single academic pathway. "
     "The academic pathway is identified by its ID."
 )
+
+
+# Study Plans
+## List
+STUDYPLANS_FULL_LIST_SUMMARY = "List of all study plans"
+STUDYPLANS_FULL_LIST_DESCRIPTION = (
+    "Retrieves the list of study plans for courses of study with detailed informations"
+)

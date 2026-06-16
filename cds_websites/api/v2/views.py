@@ -26,23 +26,12 @@ from cds_websites.settings import OFFICE_CDS_WEBSITES
 from .serializers import (
     TopicListSerialzer,
     ArticlesTopicSerializer,
-    StudyPlansSerializer,
 )
 from cds_websites.models import (
     SitoWebCdsTopic,
     SitoWebCdsTopicArticoliRegAltriDati,
     SitoWebCdsSubArticoliRegolamento,
     SitoWebCdsTopicArticoliReg,
-)
-from cds.models import (
-    DidatticaAttivitaFormativa,
-    DidatticaAttivitaFormativaPds,
-    DidatticaPianiStudio,
-    DidatticaPianiSchema,
-    DidatticaPianiRegSce,
-    DidatticaPianiBloccoSce,
-    DidatticaPianiAfRegSce,
-    VDidatticaAfPianiStudio
 )
 
 from django.db.models import OuterRef, Subquery
@@ -169,79 +158,3 @@ class ArticlesTopicListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, C
         )
 
 
-@extend_schema_view(
-    list=extend_schema(
-        summary=descriptions.STUDYPLANS_LIST_SUMMARY,
-        description=descriptions.STUDYPLANS_LIST_DESCRIPTION,
-        responses=responses.COMMON_LIST_RESPONSES(StudyPlansSerializer(many=True)),
-    ),
-)
-class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
-    pagination_class = PageNumberPagination
-    filter_backends = [DjangoFilterBackend]
-    serializer_class = StudyPlansSerializer
-
-    def get_queryset(self):
-        cds_cod = self.kwargs.get("cds_cod")
-        year = self.kwargs.get("year")
-
-        if cds_cod and year: 
-            query_cds = Q(regdid__cds_id__cds_cod=cds_cod)
-            query_year = Q(aa_coorte_id=year)
-            
-            piani_studio = (
-                DidatticaPianiStudio.objects.filter(
-                    query_cds,
-                    query_year,
-                    stato_piano_studio_cod="A",
-                )
-                .select_related("regdid__cds")
-                .prefetch_related(
-                    'schemi',
-                    'schemi__regole',
-                    'schemi__regole__af',
-                    'schemi__regole__blocchi',
-                    'schemi__regole__blocchi__af_blocco')
-                .order_by("piano_studio_id")
-            )
-
-            set_af_pds_id = set()
-
-            for p in piani_studio:
-                for s in p.schemi.all():
-                    for r in s.regole.all():
-                        for af in r.af.all():
-                            if af.af_pds_id:  # Evitiamo valori None o vuoti (-99999 e #NULL# da gestire?)
-                                set_af_pds_id.add(af.af_pds_id)
-
-            tutte_le_attivita = VDidatticaAfPianiStudio.objects.filter(
-                af_pds_id__in=list(set_af_pds_id)
-            ).select_related('erog_id')
-
-            map_activities = {}
-            for act in tutte_le_attivita:
-                map_activities.setdefault(act.af_pds_id, []).append(act)
-
-            for p in piani_studio:
-                for s in p.schemi.all():
-                    for r in s.regole.all():
-                        for af in r.af.all():
-                            af.activities = map_activities.get(
-                                af.af_pds_id, []
-                            )
-                        for bl in r.blocchi.all():
-                            for blaf in bl.af_blocco.all():
-                                blaf.activities = map_activities.get(
-                                    blaf.af_pds_id, []
-                                )
-
-                # ~ schede = sorted(
-                    # ~ list(schede),
-                    # ~ key=lambda k: (
-                        # ~ k["cla_m_id"] if k["cla_m_id"] else 0,
-                        # ~ -k["isStatutario"],
-                        # ~ k["apt_id"] if k["apt_id"] else 0,
-                    # ~ ),
-                # ~ )
-                # ~ q.PlanTabs = schemi
-        return piani_studio

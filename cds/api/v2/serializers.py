@@ -957,7 +957,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer):
     StudyActivityCdSID = serializers.IntegerField(source="mod_off_id.af_off.id_cds.cds_id", default=None)
     StudyActivityCdSCod = serializers.CharField(source="mod_off_id.af_off.cds_cod", default=None)
 
-    DepartmentName = serializers.CharField(source="mod_off_id.af_off.id_cds.dip.dip_desc_ita", default=None) 
+    DepartmentName = serializers.CharField(source="mod_off_id.af_off.id_cds.dip.dip_des_it", default=None) 
     DepartmentCod = serializers.CharField(source="mod_off_id.af_off.id_cds.dip.dip_cod", default=None)
     StudyActivityCdSName = serializers.CharField(source="mod_off_id.af_off.id_cds.nome_cds_it", default=None)
 
@@ -1233,20 +1233,20 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
     PlanTabs = serializers.SerializerMethodField()
 
     def __init__(self, *args, **kwargs):
-            context = kwargs.get('context', {})
-            request = context.get('request', None)
-            
-            self.lang = 'ita'
-            if request:
-                url_lang = request.query_params.get('lang')
-                if url_lang in ['ita', 'eng']:
-                    self.lang = url_lang
-                else:
-                    browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
-                    if browser_lang.strip().startswith('en'):
-                        self.lang = 'eng'
-                        
-            super().__init__(*args, **kwargs)
+        context = kwargs.get('context', {})
+        request = context.get('request', None)
+        
+        self.lang = 'ita'
+        if request:
+            url_lang = request.query_params.get('lang')
+            if url_lang in ['ita', 'eng']:
+                self.lang = url_lang
+            else:
+                browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                if browser_lang.strip().startswith('en'):
+                    self.lang = 'eng'
+                    
+        super().__init__(*args, **kwargs)
 
     def get_requestLang(self):
         request = self.context.get("request", None)
@@ -1290,10 +1290,10 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = DidatticaPianiStudio
         fields = [
-            "id",
-            "regDidId",
+            "RegPlanId",
+            "RegDidId",
             # ~ "relevanceCod",
-            "yearCoorteId",
+            "YearCoorteId",
             # ~ "yearRegPlanId",
             # ~ "regPlanDes",
             # ~ "defFlg",
@@ -1305,6 +1305,157 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
             # ~ "regPlansPdrCoorteIdYear",
             # ~ "regPlansPdrYear",
             # ~ "flgExpSegStu",
-            "cdSDuration",
-            "planTabs",
+            "CdSDuration",
+            "PlanTabs",
+        ]
+
+
+@extend_schema_serializer(examples=examples.STUDY_PLANS_SERIALIZER_FULL_EXAMPLE)
+class StudyPlansFullSerializer(ReadOnlyModelSerializer):
+    RegPlanId = serializers.IntegerField(source="piano_studio_id")
+    RegDidId = serializers.IntegerField(source="regdid_id")
+    # ~ relevanceCod = serializers.CharField(source="attinenza_cod")
+    YearCoorteId = serializers.IntegerField(source="aa_coorte_id")
+    # ~ yearRegPlanId = serializers.IntegerField(source="aa_regpiani_id")
+    # ~ regPlanDes = serializers.CharField(source="stato_piano_studio_desc_ita")
+    # ~ defFlg = serializers.CharField(source="def_flg")
+    StatusCod = serializers.CharField(source="stato_piano_studio_cod")
+    StatusDes = serializers.CharField(source="stato_piano_studio_desc_ita")
+    # ~ regPlansPdrId = serializers.CharField(source="regpiani_pdr_id")
+    # ~ regPlansPdrCod = serializers.CharField(source="regpiani_pdr_cod")
+    # ~ regPlansPdrDes = serializers.CharField(source="regpiani_pdr_des")
+    # ~ regPlansPdrCoorteIdYear = serializers.CharField(source="regpiani_pdr_aa_coorte_id")
+    # ~ regPlansPdrYear = serializers.CharField(source="regpiani_pdr_aa_regpiani_id")
+    # ~ flgExpSegStu = serializers.CharField(source="flg_exp_seg_stu")
+    CdSDuration = serializers.IntegerField(source="regdid.cds.durata_anni")
+    PlanTabs = serializers.SerializerMethodField()
+
+    def __init__(self, *args, **kwargs):
+        context = kwargs.get('context', {})
+        request = context.get('request', None)
+
+        self.lang = 'ita'
+        if request:
+            url_lang = request.query_params.get('lang')
+            if url_lang in ['ita', 'eng']:
+                self.lang = url_lang
+            else:
+                browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                if browser_lang.strip().startswith('en'):
+                    self.lang = 'eng'
+                    
+        super().__init__(*args, **kwargs)
+
+        self.fields['StatusDes'].source = f"stato_piano_studio_desc_{self.lang}"
+
+    @extend_schema_field(serializers.ListField())
+    def get_PlanTabs(self, obj):
+        result = {}
+        
+        for q in obj.schemi.all():
+            if q.schema_piano_cod not in result:
+                result[q.schema_piano_cod] = []
+                
+            result[q.schema_piano_cod].append(
+                {
+                    "PlanTabId": q.schema_piano_id,
+                    "PlanTabDes": getattr(q, f"schema_piano_desc_{self.lang}", None),
+                    "PlanTabCod": q.schema_piano_cod,
+                    # ~ "pdsCod": q.pds_regdid.pds_cod,
+                    # ~ "pdsDes": q.pds_regdid.pds_des_it,
+                    "ClaMiurCod": q.classe_miur_cod,
+                    "ClaMiurDes": getattr(q, f"classe_miur_desc_{self.lang}", None),
+                    "CommonFlg": q.pds_regdid.comune_flg,
+                    "Rules": [
+                        {
+                            "SceId": rule.reg_sce_id,
+                            "SceDes": getattr(rule, f"reg_sce_desc_{self.lang}", None),
+                            # ~ "vinId": q["vin_id"],
+                            "Year": rule.anno_corso_reg_sce,
+                            # ~ if q["apt_slot_ord_num"]
+                            # ~ else q["anno_corso"],
+                            "RegSceCodType": rule.tipo_reg_sce_cod,
+                            # ~ "regSceCodDes": q.reg_sce_desc_ita,
+                            # ~ "sceCodType": q["tipo_sce_cod"],
+                            # ~ "eceDesType": q["tipo_sce_des"],
+                            "UmRegSceCodType": rule.tipo_um_reg_sce_cod,
+                            "MinUnt": rule.minimo,
+                            "MaxUnt": rule.massimo,
+                            "NotePre": getattr(rule, f"nota_pre_desc_{self.lang}", None),
+                            "NotePost": getattr(rule, f"nota_post_desc_{self.lang}", None),
+                            "Filters": rule.filtri_reg_sce_desc,
+                            # ~ "opzFlg": q["opz_flg"],
+                            "AfSubModules": [
+                                {
+                                    # ~ "scopeId": q["amb_id_af"],
+                                    "StudyActivityID": af.activities[0].af_pds_id,
+                                    "StudyActivityCod": af.activities[0].ana_af_cod,
+                                    "StudyActivityName": getattr(af.activities[0], f"ana_af_desc_{self.lang}", None),
+                                    "StudyActivitySemester": set([getattr(activity.erog_id, f"tipo_periodo_did_desc_{self.lang}", None) for activity in af.activities if getattr(activity, 'erog_id', None)]),
+                                    "CreditValue": af.activities[0].cfu if len(af.activities) == 1 else None,
+                                    "SettCod": set([activity.sett_cod for activity in af.activities]),
+                                    "AfType": getattr(af.activities[0], f"ambito_desc_{self.lang}", None) if len(af.activities) == 1 else None,
+                                    "AfScope": getattr(af.activities[0], f"taf_desc_{self.lang}", None) if len(af.activities) == 1 else None,
+                                    "AfSubModules": [
+                                        {
+                                            "StudyActivityID": m.erog_id.erog_id if m.erog_id else None,
+                                            "StudyActivityCod": m.ana_mod_cod,
+                                            "StudyActivityName": getattr(m, f"ana_mod_desc_{self.lang}", None),
+                                            "studyActivityPartitionCod": m.erog_id.part_stu_cod if m.erog_id and m.erog_id.part_stu_cod != "-999999999" else None,
+                                            "studyActivityPartitionDes": getattr(m.erog_id, f"part_stu_desc_{self.lang}", None) if m.erog_id and getattr(m.erog_id, f"part_stu_desc_{self.lang}", None) != "#NULL#" else None,
+                                            "StudyActivitySemester": getattr(m.erog_id, f"tipo_periodo_did_desc_{self.lang}", None) if m.erog_id else None,
+                                            "StudyActivitySettCod": m.sett_cod,
+                                            "StudyActivityCreditValue": m.cfu,
+                                            "StudyActivityScope": getattr(m, f"ambito_desc_{self.lang}", None),
+                                            "StudyActivityType": getattr(m, f"taf_desc_{self.lang}", None),
+                                        } for m in af.activities
+                                    ] if len(af.activities) > 1 else []
+                                    
+                                } for af in rule.af.all() if af.activities
+                            ],
+                            "blocchi": [
+                                [
+                                    {
+                                        # ~ "scopeId": q["amb_id_af"],
+                                        "AfId": af.activities[0].af_pds_id,
+                                        "AfCod": af.activities[0].ana_af_cod,
+                                        "AfDescription": getattr(af.activities[0], f"ana_af_desc_{self.lang}", None),
+                                        "StudyActivitySemester": getattr(af.activities[0].erog_id, f"tipo_periodo_did_desc_{self.lang}", None) if len(af.activities) == 1 and getattr(af.activities[0], 'erog_id', None) else None,
+                                        "CreditValue": af.activities[0].cfu if len(af.activities) == 1 else None,
+                                        "SettCod": af.activities[0].sett_cod if len(af.activities) == 1 else None,
+                                        "AfType": getattr(af.activities[0], f"ambito_desc_{self.lang}", None) if len(af.activities) == 1 else None,
+                                        "AfScope": getattr(af.activities[0], f"taf_desc_{self.lang}", None) if len(af.activities) == 1 else None,
+                                        "AfSubModules": [
+                                            {
+                                                "StudyActivityID": m.erog_id.erog_id if m.erog_id else None,
+                                                "StudyActivityCod": m.ana_mod_cod,
+                                                "StudyActivityName": getattr(m, f"ana_mod_desc_{self.lang}", None),
+                                                "StudyActivitySemester": getattr(m.erog_id, f"tipo_periodo_did_desc_{self.lang}", None) if m.erog_id else None,
+                                                "StudyActivitySettCod": m.sett_cod,
+                                                "StudyActivityCreditValue": m.cfu,
+                                                "StudyActivityScope": getattr(m, f"ambito_desc_{self.lang}", None),
+                                                "StudyActivityType": getattr(m, f"taf_desc_{self.lang}", None),
+                                            } for m in af.activities
+                                        ] if len(af.activities) > 1 else []
+                                        
+                                    } for af in b.af_blocco.all() if af.activities
+                                ] for b in rule.blocchi.all()
+                            ]
+
+                        } for rule in q.regole.all()
+                    ] 
+                } 
+            )
+        return result
+        
+    class Meta:
+        model = DidatticaPianiStudio
+        fields = [
+            "RegPlanId",
+            "RegDidId",
+            "YearCoorteId",
+            "StatusCod",
+            "StatusDes",
+            "CdSDuration",
+            "PlanTabs",
         ]
