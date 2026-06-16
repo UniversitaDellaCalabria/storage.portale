@@ -652,6 +652,8 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             "labels": labels
         })
     
+
+class StudyActivitiesViewSetV1(StudyActivitiesViewSet, ClearResponseViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return StudyActivitiesDetailSerializerV1
@@ -691,6 +693,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         ],
     ),
 )
+
 
 class AcademicPathwaysViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
