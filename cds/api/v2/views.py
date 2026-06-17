@@ -502,7 +502,7 @@ class CdsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
 
 
 class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
-    pagination_class = UnicalStorageApiPaginationList
+    pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = StudyActivitiesFilter
     
@@ -657,6 +657,8 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     
 
 class StudyActivitiesViewSetV1(StudyActivitiesViewSet, ClearResponseViewSet):
+    pagination_class = UnicalStorageApiPaginationList
+    
     def get_serializer_class(self):
         if self.action == "retrieve":
             return StudyActivitiesDetailSerializerV1
