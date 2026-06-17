@@ -1005,7 +1005,11 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer):
 
     def to_representation(self, instance):
         # Mettiamo in cache la lista dei pds per evitare query N+1 successive
+        if hasattr(instance, 'pds_filtrati'):
+            instance._pds_list = list(instance.pds_filtrati)
+        # Se l'utente NON ha usato il filtro, restituiamo tutti i PDS normalmente
         instance._pds_list = list(instance.pds.all())
+        # ~ instance._pds_list = list(instance.pds.all())
         return super().to_representation(instance)
 
     # --- 1. FUNZIONE DI CACHE PER LA LOGICA DEI DOCENTI (Sostituisce il vecchio sub-serializer) ---

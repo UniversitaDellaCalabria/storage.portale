@@ -1,4 +1,4 @@
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Exists, OuterRef, Q, Prefetch
 from django_filters import rest_framework as filters
 from generics.utils import decrypt
 
@@ -193,12 +193,29 @@ class StudyActivitiesFilter(filters.FilterSet):
             Q(mod_off_id__af_off__ana_af_desc_ita__icontains=value) |
             Q(mod_off_id__af_off__ana_af_desc_ita__icontains=value)
         )
-        
+    
     def filter_academic_year(self, queryset, name, value):
-        return queryset.filter(pds__aa_off_id=value).distinct()
+        return queryset.filter(mod_off_id__af_off_id__aa_off_id=value).distinct()
 
     def filter_course_year(self, queryset, name, value):
-        return queryset.filter(pds__anno_corso=value).distinct()
+        # ~ return queryset.filter(pds__anno_corso=value).distinct()
+        if not value:
+            return queryset
+
+        # 1. Diciamo a Django di fare il prefetch dei PDS FILTRATI per l'anno richiesto
+        pds_ottimizzato = Prefetch(
+            "pds",
+            queryset=DidatticaAttivitaFormativaPds.objects.filter(anno_corso=value),
+            to_attr="pds_filtrati" # Li salviamo in una lista temporanea in memoria
+        )
+
+        # 2. Applichiamo il filtro e passiamo il prefetch ottimizzato
+        return (
+            queryset
+            .filter(pds__anno_corso=value)   # Filtra le attività formative
+            .prefetch_related(pds_ottimizzato) # Sovrascrive il vecchio prefetch generico della View
+            .distinct()
+        )
 
     def filter_cds_name(self, queryset, name, value):
         return queryset.filter(
