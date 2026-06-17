@@ -584,17 +584,19 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             # mutuato da
             result.mutuato_da = None
             if not result.erog_id.master:
-                result.mutuato_da = DidatticaAttivitaFormativaPds.objects.filter(
-                    erog_id=result.erog_id.erog_master_id
-                ).select_related("id_cds", "erog_id").only(
-                    "erog_id",
-                    "ana_mod_desc_ita",
-                    "ana_mod_desc_eng",
-                    "pds_cod",
-                    "pds_desc_ita",
-                    "id_cds__nome_cds_it",
-                    "id_cds__nome_cds_eng",
-                    "cds_cod"
+                result.mutuato_da = list(
+                    DidatticaAttivitaFormativaPds.objects.filter(
+                        erog_id=result.erog_id.erog_master_id
+                    ).select_related("id_cds", "erog_id").only(
+                        "erog_id",
+                        "ana_mod_desc_ita",
+                        "ana_mod_desc_eng",
+                        "pds_cod",
+                        "pds_desc_ita",
+                        "id_cds__nome_cds_it",
+                        "id_cds__nome_cds_eng",
+                        "cds_cod"
+                    )
                 )
         # troviamo af_pds_id
         else:
@@ -625,7 +627,6 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
             result.mutuato_da = None
         result.erog_found = erog_found
-        print(result)
         return result
 
     def get_serializer_class(self):
