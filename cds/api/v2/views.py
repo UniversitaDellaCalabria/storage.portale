@@ -521,25 +521,41 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     def get_object(self):
         # Prendiamo l'id passato nell'URL
         af_id = self.kwargs.get("pk")
-        
-        results = DidatticaAttivitaFormativaPds.objects.filter(
-            erog_id__erog_id=af_id
-        )\
-        .select_related("id_cds", "erog_id")\
-        .prefetch_related(
-            Prefetch(
-                'erog_id__coperture',
-                queryset=DidatticaCopertura.objects.exclude(stato_coper_cod="R"),
-                to_attr='coperture_attive'
-            ),
-            'erog_id__coperture__dettaglio_ore',
-            'erog_id__testi'
+
+
+        prefetch_coperture = Prefetch(
+            'erog_id__coperture',
+            queryset=DidatticaCopertura.objects.exclude(stato_coper_cod="R").prefetch_related('dettaglio_ore'),
+            to_attr='coperture_attive'
         )
 
+        queryset_base = DidatticaAttivitaFormativaPds.objects.filter(
+            erog_id__erog_id=af_id
+        ).select_related(
+            "id_cds", 
+            "erog_id"
+        ).prefetch_related(
+            prefetch_coperture,
+            'erog_id__testi'
+        )
+        # ~ results = DidatticaAttivitaFormativaPds.objects.filter(
+            # ~ erog_id__erog_id=af_id
+        # ~ )\
+        # ~ .select_related("id_cds", "erog_id")\
+        # ~ .prefetch_related(
+            # ~ Prefetch(
+                # ~ 'erog_id__coperture',
+                # ~ queryset=DidatticaCopertura.objects.exclude(stato_coper_cod="R"),
+                # ~ to_attr='coperture_attive'
+            # ~ ),
+            # ~ 'erog_id__coperture__dettaglio_ore',
+            # ~ 'erog_id__testi'
+        # ~ )
+
         # attività effettivamente erogata (erog_id)
-        if results.exists():
+        results = list(queryset_base)
+        if results:
             erog_found = True
-            results = list(results)
             result = results[0]
 
             # pds
@@ -570,16 +586,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             if not result.erog_id.master:
                 result.mutuato_da = DidatticaAttivitaFormativaPds.objects.filter(
                     erog_id=result.erog_id.erog_master_id
-                ).select_related("id_cds", "erog_id").only(
-                    "erog_id",
-                    "ana_mod_desc_ita",
-                    "ana_mod_desc_eng",
-                    "pds_cod",
-                    "pds_desc_ita",
-                    "id_cds__nome_cds_it",
-                    "id_cds__nome_cds_eng",
-                    "cds_cod"
-                )
+                ).select_related("id_cds", "erog_id").first()
         # troviamo af_pds_id
         else:
             erog_found = False
@@ -609,6 +616,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
             result.mutuato_da = None
         result.erog_found = erog_found
+
         return result
 
     def get_serializer_class(self):

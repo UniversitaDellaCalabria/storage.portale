@@ -849,7 +849,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
         if not obj.mutuato_da:
             return None
         
-        m = obj.mutuato_da.first()
+        m = obj.mutuato_da
         cds_suffix = 'it' if self.lang == 'ita' else 'eng'
         
         result = {
