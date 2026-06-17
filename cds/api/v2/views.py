@@ -625,7 +625,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
             result.mutuato_da = None
         result.erog_found = erog_found
-
+        print(result)
         return result
 
     def get_serializer_class(self):

@@ -606,7 +606,7 @@ class StudyActivityBorrowSerializer(serializers.Serializer):
     StudyActivityPartitionCod = serializers.CharField(source="part_stu_cod")
     StudyActivityPartition = serializers.CharField(source="part_stu_desc_ita")
     StudyActivityCdSCod = serializers.CharField(source="cds_cod")
-    StudyActivityCdSName = serializers.CharField(source="id_cds.nome_cds_it")
+    StudyActivityCdSName = serializers.CharField(source="nome_cds_it")
 
     def __init__(self, *args, **kwargs):
         lang = kwargs.pop('lang', 'ita')
@@ -796,7 +796,9 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
     def get_StudyActivityRoot(self, obj):
         if not obj.erog_found:
             return None
-        if DidatticaAttivitaFormativaPds.objects.filter(af_pds_id=obj.erog_id.erog_id).exists():
+            
+        # ~ if DidatticaAttivitaFormativaPds.objects.filter(af_pds_id=obj.erog_id.erog_id).exists():
+        if obj.af_pds_id==obj.erog_id.erog_id:
             return None
         
         return {
@@ -834,7 +836,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
         cds_suffix = 'it' if self.lang == 'ita' else 'eng'
         
         for m in obj.mutuazioni:
-            for pds in m.pds:
+            for pds in m.pds.all():
                 mapped_mutuazioni.append({
                     "erog_id": m.erog_id,
                     f"ana_mod_desc_{self.lang}": getattr(pds, f"ana_mod_desc_{self.lang}", None),
@@ -869,11 +871,21 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
         return result
 
     def get_StudyActivitiyContents(self, obj):
-        if getattr(obj, "num_erogazioni", 1) > 1:
+        if getattr(obj, "num_erogazioni", 1) > 1 or not obj.erog_found:
             return []
         
-        testi_queryset = DidatticaTestiAfErogata.objects.filter(erog_id=obj.erog_id.erog_master_id)
-        return StudyActivityContentSerializer(testi_queryset, many=True, lang=self.lang).data
+        # Recupera i testi direttamente dalla cache in memoria del prefetch
+        testi_precaricati = obj.erog_id.testi.all()
+        return StudyActivityContentSerializer(testi_precaricati, many=True, lang=self.lang).data
+
+
+
+        
+        # ~ if getattr(obj, "num_erogazioni", 1) > 1:
+            # ~ return []
+        
+        # ~ testi_queryset = DidatticaTestiAfErogata.objects.filter(erog_id=obj.erog_id.erog_master_id)
+        # ~ return StudyActivityContentSerializer(testi_queryset, many=True, lang=self.lang).data
 
     class Meta:
         model = DidatticaAttivitaFormativaPds
