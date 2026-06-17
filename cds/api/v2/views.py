@@ -634,6 +634,18 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             return StudyActivitiesDetailSerializer
         return StudyActivitiesListSerializer
 
+    @staticmethod
+    def _get_request_lang(request):
+        url_lang = request.query_params.get('lang') or request.GET.get('lang')
+        if url_lang:
+            return url_lang.lower()
+        
+        accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+        if accept_language:
+            return accept_language.split(',')[0].split('-')[0].lower()
+            
+        return 'it'
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
@@ -641,10 +653,6 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             serializer = self.get_serializer(page, many=True)
         
             lang = request.query_params.get('lang', 'ita')
-            if lang not in ['ita', 'eng']:
-                browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
-                lang = 'eng' if browser_lang.strip().startswith('en') else 'ita'
-
             pagination_envelope = {
                 "data": serializer.data,
                 "language": lang
@@ -659,14 +667,16 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         serializer = self.get_serializer(instance)
         data = serializer.data
 
-        lang = request.query_params.get('lang', 'ita')
-        if lang not in ['ita', 'eng']:
-            browser_lang = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
-            lang = 'eng' if browser_lang.strip().startswith('en') else 'ita'
+        lang = self._get_request_lang(request)
 
         labels = {}
         for key in data.keys():
-            labels[key] = LABEL_MAPPING.get(lang, {}).get(key, key)
+            label = LABEL_MAPPING.get(lang, {}).get(key) or LABEL_MAPPING.get(f"{lang}a" if lang=='it' else f"{lang}g", {}).get(key)
+            if not label:
+                label = LABEL_MAPPING.get('en', {}).get(key) or LABEL_MAPPING.get('eng', {}).get(key)
+            if not label:
+                label = LABEL_MAPPING.get('it', {}).get(key) or LABEL_MAPPING.get('ita', {}).get(key)
+            labels[key] = label or key
 
         return Response({
             "results": data,

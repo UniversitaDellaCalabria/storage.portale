@@ -19,6 +19,47 @@ class LanguageAwareMixin:
                 )
         return fields
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        field_map = getattr(self.Meta, "language_field_map", {})
+
+        for field_name, sources in field_map.items():
+            if data.get(field_name) is not None:
+                continue
+
+            for fallback_lang in ("it", "en"):
+                fallback_source = sources.get(fallback_lang)
+                if not fallback_source:
+                    continue
+                value = self._get_by_path(instance, fallback_source)
+                if value is not None:
+                    data[field_name] = value
+                    break
+
+        return data
+
+    def _get_by_path(self, obj, path):
+        current = obj
+        for part in path.split("."):
+            current = getattr(current, part, None)
+            if current is None:
+                return None
+        return current
+    
+    def _get_lang(self):
+        request = self.context.get('request')
+        if request:
+            url_lang = request.query_params.get('lang') or request.GET.get('lang')
+            if url_lang:
+                return url_lang.lower()
+            
+            if hasattr(request, 'META'):
+                accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                if accept_language:
+                    return accept_language.split(',')[0].split('-')[0].lower()
+                    
+        return getattr(self, 'lang', 'it').lower()
+
 
 class ReadOnlyMixin:
     """
