@@ -80,13 +80,15 @@ from .serializers import (
     StudyActivitiesListSerializer,
     CdsDetailSerializer,
     SortingContactsSerializer,
+    StudyPlansActivitiesSerializer,
     StudyPlansSerializer,
-    StudyPlansFullSerializer,
 )
 
 from ..v1.serializers import (
     StudyActivitiesDetailSerializerV1,
-    StudyActivitiesListSerializerV1
+    StudyActivitiesListSerializerV1,
+    StudyPlansSerializerV1,
+    StudyPlansActivitiesSerializerV1
 )
 
 @extend_schema_view(
@@ -659,6 +661,7 @@ class StudyActivitiesViewSetV1(StudyActivitiesViewSet, ClearResponseViewSet):
         if self.action == "retrieve":
             return StudyActivitiesDetailSerializerV1
         return StudyActivitiesListSerializerV1
+        
     
 @extend_schema_view(
     list=extend_schema(
@@ -774,10 +777,10 @@ class SortingContactsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         )
 
         
-class StudyPlansViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
+class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
-    serializer_class = StudyPlansSerializer
+    serializer_class = StudyPlansActivitiesSerializer
 
     def get_queryset(self):
         regdid_id = str(self.kwargs["regdidid"])
@@ -839,17 +842,21 @@ class StudyPlansViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         return piani_studio
 
 
+class StudyPlansActivitiesViewSetV1(StudyPlansActivitiesViewSet):
+    serializer_class = StudyPlansActivitiesSerializerV1
+        
+
 @extend_schema_view(
     list=extend_schema(
         summary=descriptions.STUDYPLANS_FULL_LIST_SUMMARY,
         description=descriptions.STUDYPLANS_FULL_LIST_DESCRIPTION,
-        responses=responses.COMMON_LIST_RESPONSES(StudyPlansSerializer(many=True)),
+        responses=responses.COMMON_LIST_RESPONSES(StudyPlansActivitiesSerializer(many=True)),
     ),
 )
-class StudyPlansFullViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
+class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
-    serializer_class = StudyPlansFullSerializer
+    serializer_class = StudyPlansSerializer
 
     def get_queryset(self):
         cds_cod = self.kwargs.get("cds_cod")
@@ -915,3 +922,7 @@ class StudyPlansFullViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, Clea
                 # ~ )
                 # ~ q.PlanTabs = schemi
         return piani_studio
+
+
+class StudyPlansViewSetV1(StudyPlansViewSet):
+    serializer_class = StudyPlansSerializerV1

@@ -1387,7 +1387,7 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
 
 
 # ~ @extend_schema_serializer(examples=examples.STUDY_PLANS_SERIALIZER_EXAMPLE)
-class StudyPlansSerializer(ReadOnlyModelSerializer):
+class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer):
     RegPlanId = serializers.IntegerField(source="piano_studio_id")
     RegDidId = serializers.IntegerField(source="regdid_id")
     # ~ relevanceCod = serializers.CharField(source="attinenza_cod")
@@ -1485,7 +1485,7 @@ class StudyPlansSerializer(ReadOnlyModelSerializer):
 
 
 @extend_schema_serializer(examples=examples.STUDY_PLANS_SERIALIZER_FULL_EXAMPLE)
-class StudyPlansFullSerializer(ReadOnlyModelSerializer):
+class StudyPlansSerializer(ReadOnlyModelSerializer):
     RegPlanId = serializers.IntegerField(source="piano_studio_id")
     RegDidId = serializers.IntegerField(source="regdid_id")
     # ~ relevanceCod = serializers.CharField(source="attinenza_cod")

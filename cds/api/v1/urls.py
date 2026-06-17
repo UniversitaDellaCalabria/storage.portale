@@ -23,6 +23,8 @@ from cds.api.v2.views import (
     AcademicPathwaysViewSet,
     StudyActivitiesViewSet,
     StudyActivitiesViewSetV1,
+    StudyPlansViewSetV1,
+    StudyPlansActivitiesViewSetV1,
 )
 
 app_name = "apiv1"
@@ -50,13 +52,10 @@ urlpatterns = [
 
 router = DefaultRouter()
 
-router.register(
-    r"academic-pathways/(?P<regdid_id>\d+)",
-    AcademicPathwaysViewSet,
-    basename="academic-pathways",
-)
-
 router.register(r"activities", StudyActivitiesViewSetV1, basename="activities")
+router.register(r"studyplans/(?P<cds_cod>\d+)/(?P<year>\d+)",StudyPlansViewSetV1, basename="studyplans",)
+router.register(r"studyplans-activities/(?P<regdidid>\d+)", StudyPlansActivitiesViewSetV1, basename="studyplans-activities")
+
 urlpatterns += router.urls
 
 

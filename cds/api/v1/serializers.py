@@ -6,7 +6,12 @@ from drf_spectacular.utils import (
     extend_schema_field,
     extend_schema_serializer,
 )
-from ..v2.serializers import StudyActivitiesDetailSerializer, StudyActivitiesListSerializer
+from ..v2.serializers import (
+    StudyActivitiesDetailSerializer,
+    StudyActivitiesListSerializer,
+    StudyPlansSerializer,
+    StudyPlansActivitiesSerializer
+)
 from ..v2.docs import examples
 
 from generics.api.serializers import ReadOnlyModelSerializer
@@ -736,4 +741,10 @@ class StudyActivitiesDetailSerializerV1(StudyActivitiesDetailSerializer):
 
 @extend_schema_serializer(examples=examples.STUDY_ACTIVITY_LIST_SERIALIZER_EXAMPLE)
 class StudyActivitiesListSerializerV1(StudyActivitiesListSerializer):
+    pass
+
+class StudyPlansSerializerV1(StudyPlansSerializer):
+    pass
+
+class StudyPlansActivitiesSerializerV1(StudyPlansActivitiesSerializer):
     pass
