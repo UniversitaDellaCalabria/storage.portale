@@ -539,16 +539,16 @@ class StudyActivityModalitySerializer(serializers.Serializer):
 
 class StudyActivityModulePartitionSerializer(serializers.Serializer):
     StudyActivityID = serializers.IntegerField(source="erog_id")
-    StudyActivityPartitionCod = serializers.CharField(source="erog_id__part_stu_cod")
-    StudyActivityPartitionDes = serializers.CharField(source="erog_id__part_stu_desc_ita")
-    StudyActivityExtendedPartitionCod = serializers.CharField(source="erog_id__fatt_part_stu_cod")
-    StudyActivityExtendedPartitionDes = serializers.CharField(source="erog_id__fatt_part_stu_desc_ita")
+    StudyActivityPartitionCod = serializers.CharField(source="part_stu_cod")
+    StudyActivityPartitionDes = serializers.CharField(source="part_stu_desc_ita")
+    StudyActivityExtendedPartitionCod = serializers.CharField(source="fatt_part_stu_cod")
+    StudyActivityExtendedPartitionDes = serializers.CharField(source="fatt_part_stu_desc_ita")
 
     def __init__(self, *args, **kwargs):
         lang = kwargs.pop('lang', 'ita')
         super().__init__(*args, **kwargs)
-        self.fields['StudyActivityPartitionDes'].source = f"erog_id__part_stu_desc_{lang}"
-        self.fields['StudyActivityExtendedPartitionDes'].source = f"erog_id__fatt_part_stu_desc_{lang}"
+        self.fields['StudyActivityPartitionDes'].source = f"part_stu_desc_{lang}"
+        self.fields['StudyActivityExtendedPartitionDes'].source = f"fatt_part_stu_desc_{lang}"
 
 
 class StudyActivityModuleSerializer(serializers.Serializer):
@@ -739,6 +739,71 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer):
         return StudyActivityModalitySerializer(unique_moduli, many=True, lang=self.lang).data
 
     def get_StudyActivitiesModules(self, obj):
+        # obj.moduli ora è una normale lista Python (es. [mod1, mod2, mod3])
+        if not obj.moduli:
+            return []
+
+        # 1. Raggruppiamo i moduli per 'ana_mod_id' usando un dizionario Python
+        # Invece di chiedere al DB di fare la DISTINCT, la facciamo noi in RAM.
+        moduli_raggruppati = {}
+        for modulo in obj.moduli:
+            m_id = modulo.ana_mod_id
+            if m_id not in moduli_raggruppati:
+                moduli_raggruppati[m_id] = []
+            moduli_raggruppati[m_id].append(modulo)
+
+        # L'equivalente in RAM di moduli.count() == 1
+        if len(moduli_raggruppati) <= 1:
+            return []
+
+        result = []
+        
+        # 2. Cicliamo sui gruppi che abbiamo creato in memoria
+        for ana_mod_id, lista_moduli_stesso_id in moduli_raggruppati.items():
+            # Prendiamo il primo elemento per leggere i campi anagrafici (es. ana_mod_cod)
+            primo_mod = lista_moduli_stesso_id[0]
+            
+            # 3. Raggruppiamo le erogazioni distinte per questo modulo
+            # L'equivalente in RAM del tuo secondo .values(...).distinct()
+            erogazioni_uniche = {}
+            for m in lista_moduli_stesso_id:
+                # Usiamo erog_id come chiave del dizionario per scartare i duplicati
+                if m.erog_id_id not in erogazioni_uniche:
+                    # Navighiamo l'oggetto relazionato (pre-caricato con select_related)
+                    erogazioni_uniche[m.erog_id_id] = {
+                        "erog_id": m.erog_id_id,
+                        "part_stu_cod": getattr(m.erog_id, 'part_stu_cod', None),
+                        f"part_stu_desc_{self.lang}": getattr(m.erog_id, f"part_stu_desc_{self.lang}", None),
+                        "fatt_part_stu_cod": getattr(m.erog_id, 'fatt_part_stu_cod', None),
+                        f"fatt_part_stu_desc_{self.lang}": getattr(m.erog_id, f"fatt_part_stu_desc_{self.lang}", None),
+                        f"tipo_periodo_did_desc_{self.lang}": getattr(m.erog_id, f"tipo_periodo_did_desc_{self.lang}", None),
+                    }
+            
+            # Trasformiamo il dizionario delle erogazioni in una lista
+            lista_erogazioni = list(erogazioni_uniche.values())
+            
+            if len(lista_erogazioni) > 1:
+                m_id_val = None
+                # Assicurati che il tuo serializer accetti dizionari (come abbiamo risolto per Borrows)
+                erog_list = StudyActivityModulePartitionSerializer(lista_erogazioni, many=True, lang=self.lang).data
+            else:
+                first_erog = lista_erogazioni[0] if lista_erogazioni else None
+                m_id_val = first_erog["erog_id"] if first_erog else None
+                erog_list = []
+
+            first_elem = lista_erogazioni[0] if lista_erogazioni else None
+            
+            result.append({
+                "StudyActivityID": m_id_val,
+                "StudyActivityCod": getattr(primo_mod, "ana_mod_cod", None),
+                "StudyActivityName": getattr(primo_mod, f"ana_mod_desc_{self.lang}", None),
+                "StudyActivitySemester": first_elem.get(f"tipo_periodo_did_desc_{self.lang}") if first_elem else None,
+                "StudyActivityPartitions": erog_list,
+            })
+
+        return result
+    
+    def get_StudyActivitiesModulesBKP(self, obj):
         if not obj.moduli:
             return []
         
