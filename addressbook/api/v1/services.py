@@ -10,6 +10,7 @@ from addressbook.settings import (
     PERSON_CONTACTS_TO_TAKE,
 )
 from addressbook.utils import get_personale_matricola
+from cds.models import DidatticaCopertura
 from django.db.models import CharField, Q, Value
 from django.http import Http404
 from structures.api.v1.serializers import StructuresSerializer
@@ -43,14 +44,18 @@ class ServicePersonale:
         if taxpayer_id is not None:
             query_search = Q(cod_fis=taxpayer_id)
 
+        id_personale_didattica = DidatticaCopertura.objects.filter(
+            data_inizio_incarico_dida__year__in=[datetime.datetime.now().year, datetime.datetime.now().year - 1]
+        ).exclude(
+            stato_coper_cod='R'
+        ).values_list('doc_id_ab', flat=True).distinct()
+            
         query = (
             Personale.objects.filter(
                 query_search,
                 # flg_cessato=0,
                 # cd_uo_aff_org__isnull=False,
-                Q(flg_cessato=0, dt_rap_fin__gte=datetime.datetime.today()) |
-                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R') |
-                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+                Q(flg_cessato=0, dt_rap_fin__gte=datetime.datetime.today()) | Q(id_ab__in=id_personale_didattica),
             ).values(
                 "nome",
                 "middle_name",
