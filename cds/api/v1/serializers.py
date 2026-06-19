@@ -322,9 +322,9 @@ class CdsInfoSerializer(serializers.Serializer):
         for q in query:
             data.append(
                 {
-                    "Description": q["tipo_ciclo_des"]
-                    if req_lang == "it" or q["tipo_ciclo_des_eng"] is None
-                    else q["tipo_ciclo_des_eng"],
+                    "Description": q["tipo_ciclo_des"],
+                    # ~ if req_lang == "it" or q["tipo_ciclo_des_eng"] is None
+                    # ~ else q["tipo_ciclo_des_eng"],
                     "Start": q["data_inizio"],
                     "End": q["data_fine"],
                 }

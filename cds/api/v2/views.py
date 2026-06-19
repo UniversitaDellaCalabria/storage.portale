@@ -522,7 +522,6 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         # Prendiamo l'id passato nell'URL
         af_id = self.kwargs.get("pk")
 
-
         prefetch_coperture = Prefetch(
             'erog_id__coperture',
             queryset=DidatticaCopertura.objects.exclude(stato_coper_cod="R").prefetch_related('dettaglio_ore'),
@@ -846,7 +845,7 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
 
             tutte_le_attivita = VDidatticaAfPianiStudio.objects.filter(
                 af_pds_id__in=list(set_af_pds_id)
-            )
+            ).select_related('erog_id')
 
             map_activities = {}
             for act in tutte_le_attivita:

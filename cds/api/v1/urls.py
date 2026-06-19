@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from rest_framework.routers import DefaultRouter
 
@@ -54,8 +54,13 @@ router = DefaultRouter()
 
 router.register(r"activities", StudyActivitiesViewSetV1, basename="activities")
 router.register(r"studyplans/(?P<cds_cod>\d+)/(?P<year>\d+)",StudyPlansViewSetV1, basename="studyplans",)
-router.register(r"studyplans-activities/(?P<regdidid>\d+)", StudyPlansActivitiesViewSetV1, basename="studyplans-activities")
+# ~ router.register(r"cds/(?P<regdidid>\d+)/studyplans-activities/", study_plans_list, basename="studyplans-activities")
 
 urlpatterns += router.urls
 
-
+study_plans_list = StudyPlansActivitiesViewSetV1.as_view({
+    'get': 'list',
+})
+urlpatterns.append(
+    re_path(r"^cds/(?P<regdidid>\d+)/studyplans-activities/", study_plans_list, name="studyplans-activities")
+)

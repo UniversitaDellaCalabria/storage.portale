@@ -539,11 +539,15 @@ class StudyActivityModalitySerializer(serializers.Serializer):
 
 class StudyActivityModulePartitionSerializer(serializers.Serializer):
     StudyActivityID = serializers.IntegerField(source="erog_id")
-    StudyActivityPartitionCod = serializers.CharField(source="part_stu_cod")
-    StudyActivityPartitionDes = serializers.CharField(source="part_stu_desc_ita")
-    StudyActivityExtendedPartitionCod = serializers.CharField(source="fatt_part_stu_cod")
-    StudyActivityExtendedPartitionDes = serializers.CharField(source="fatt_part_stu_desc_ita")
+    StudyActivityPartitionCod = serializers.CharField(source="erog_id__part_stu_cod")
+    StudyActivityPartitionDes = serializers.CharField(source="erog_id__part_stu_desc_ita")
+    StudyActivityExtendedPartitionCod = serializers.CharField(source="erog_id__fatt_part_stu_cod")
+    # ~ StudyActivityExtendedPartitionDes = serializers.CharField(source="erog_id__fatt_part_stu_desc_ita")
 
+    def __init__(self, *args, **kwargs):
+        lang = kwargs.pop('lang', 'ita')
+        super().__init__(*args, **kwargs)
+        
     class Meta:
         fields = [
             "StudyActivityID",
@@ -553,8 +557,14 @@ class StudyActivityModulePartitionSerializer(serializers.Serializer):
             "StudyActivityExtendedPartitionDes",
         ]
         language_field_map = {
-            "StudyActivityPartitionDes": {"it": "erog_id__part_stu_desc_ita", "en": "part_stu_desc_eng"},
-            "StudyActivityExtendedPartitionDes": {"it": "fatt_part_stu_desc_ita", "en": "fatt_part_stu_desc_eng"},
+            "StudyActivityPartitionDes": {
+                "it": "erog_id__part_stu_desc_ita",
+                "en": "erog_id__part_stu_desc_eng"
+            },
+            "StudyActivityExtendedPartitionDes": {
+                "it": "erog_id__fatt_part_stu_desc_ita",
+                "en": "erog_id__fatt_part_stu_desc_eng"
+            },
         }
 
 
@@ -631,15 +641,15 @@ class StudyActivityBorrowSerializer(serializers.Serializer):
         self.fields['StudyActivityCdSName'].source = f"nome_cds_{'it' if lang == 'ita' else 'eng'}"
 
 class StudyActivityContentSerializer(serializers.Serializer):
-    StudyActivitiyContentCod = serializers.CharField(source="campo_cod")
-    StudyActivitiyContentTitle = serializers.CharField(source="campo_desc_ita")
-    StudyActivitiyContentDes = serializers.CharField(source="testo_fmt_ita")
+    StudyActivityContentCod = serializers.CharField(source="campo_cod")
+    StudyActivityContentTitle = serializers.CharField(source="campo_desc_ita")
+    StudyActivityContentDes = serializers.CharField(source="testo_fmt_ita")
 
     def __init__(self, *args, **kwargs):
         lang = kwargs.pop('lang', 'ita')
         super().__init__(*args, **kwargs)
-        self.fields['StudyActivitiyContentTitle'].source = f"campo_desc_{lang}"
-        self.fields['StudyActivitiyContentDes'].source = f"testo_fmt_{lang}"
+        self.fields['StudyActivityContentTitle'].source = f"campo_desc_{lang}"
+        self.fields['StudyActivityContentDes'].source = f"testo_fmt_{lang}"
 
 
 @extend_schema_serializer(examples=examples.STUDY_ACTIVITY_DETAIL_SERIALIZER_EXAMPLE)
@@ -659,9 +669,9 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
     StudyActivityTeachingUnitType = serializers.CharField(source="taf_desc_ita", default=None)
     StudyActivityCdSName = serializers.CharField(source="id_cds.nome_cds_it", default=None)
     StudyActivitySSD = serializers.CharField(source="sett_desc_ita", default=None)
-    StudyActivityPartitionDes = serializers.CharField(source="erog_id.part_stu_desc_ita", default=None)
     StudyActivitySemester = serializers.CharField(source="erog_id.tipo_periodo_did_desc_ita", default=None)
 
+    StudyActivityPartitionDes = serializers.SerializerMethodField()
     StudyActivityName = serializers.SerializerMethodField()
     StudyActivityStudyPlans = serializers.SerializerMethodField()
     StudyActivityLanguage = serializers.SerializerMethodField()
@@ -672,15 +682,20 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
     StudyActivityPartitions = serializers.SerializerMethodField()
     StudyActivityRoot = serializers.SerializerMethodField()
     StudyActivityHours = serializers.SerializerMethodField()
-    StudyActivitiyBorrows = serializers.SerializerMethodField()
-    StudyActivitiyBorrowedFrom = serializers.SerializerMethodField()
-    StudyActivitiyContents = serializers.SerializerMethodField()
+    StudyActivityBorrows = serializers.SerializerMethodField()
+    StudyActivityBorrowedFrom = serializers.SerializerMethodField()
+    StudyActivityContents = serializers.SerializerMethodField()
 
     def get_StudyActivityName(self, obj):
         if isinstance(obj, str):
             return obj
         lang = self._get_lang()
         return obj.ana_mod_desc_ita if lang == 'it' else (obj.ana_mod_desc_eng or obj.ana_mod_desc_ita)
+
+    def get_StudyActivityPartitionDes(self, obj):
+        if not obj.erog_found: return None
+        lang = self._get_lang()
+        return obj.erog_id.part_stu_desc_ita if lang == 'it' else (obj.erog_id.part_stu_desc_eng or erog_id.part_stu_desc_ita)
 
     def get_StudyActivityStudyPlans(self, obj):
         lang = self._get_lang()
@@ -700,10 +715,11 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         if obj.erog_found:
             val = obj.erog_id.lingua_did_desc_ita if lang == 'it' else (obj.erog_id.lingua_did_desc_eng or obj.erog_id.lingua_did_desc_ita)
             return [val] if val else []
-        return {
-            (modulo.erog_id.lingua_did_desc_ita if lang == 'it' else (modulo.erog_id.lingua_did_desc_eng or modulo.erog_id.lingua_did_desc_ita))
-            for modulo in obj.moduli
-        }
+        return []
+        # ~ return {
+            # ~ (modulo.erog_id.lingua_did_desc_ita if lang == 'it' else (modulo.erog_id.lingua_did_desc_eng or modulo.erog_id.lingua_did_desc_ita))
+            # ~ for modulo in obj.moduli
+        # ~ }
     
     def get_StudyActivityTeacherID(self, obj):
         try:
@@ -772,11 +788,11 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                     # Navighiamo l'oggetto relazionato (pre-caricato con select_related)
                     erogazioni_uniche[m.erog_id_id] = {
                         "erog_id": m.erog_id_id,
-                        "part_stu_cod": getattr(m.erog_id, 'part_stu_cod', None),
-                        "part_stu_desc_ita" if self._get_lang() == "it" else "part_stu_desc_eng": getattr(m.erog_id, "part_stu_desc_ita" if self._get_lang() == "it" else "part_stu_desc_eng", None),
-                        "fatt_part_stu_cod": getattr(m.erog_id, 'fatt_part_stu_cod', None),
-                        "fatt_part_stu_desc_ita" if self._get_lang() == "it" else "fatt_part_stu_desc_eng": getattr(m.erog_id, "fatt_part_stu_desc_ita" if self._get_lang() == "it" else "fatt_part_stu_desc_eng", None),
-                        "tipo_periodo_did_desc_ita" if self._get_lang() == "it" else "tipo_periodo_did_desc_eng": getattr(m.erog_id, "tipo_periodo_did_desc_ita" if self._get_lang() == "it" else "tipo_periodo_did_desc_eng", None),
+                        "erog_id__part_stu_cod": getattr(m.erog_id, 'part_stu_cod', None),
+                        "erog_id__part_stu_desc_ita" if self._get_lang() == "it" else "erog_id__part_stu_desc_eng": getattr(m.erog_id, "part_stu_desc_ita" if self._get_lang() == "it" else "part_stu_desc_eng", None),
+                        "erog_id__fatt_part_stu_cod": getattr(m.erog_id, 'erog_id__fatt_part_stu_cod', None),
+                        "erog_id__fatt_part_stu_desc_ita" if self._get_lang() == "it" else "erog_id__fatt_part_stu_desc_eng": getattr(m.erog_id, "fatt_part_stu_desc_ita" if self._get_lang() == "it" else "fatt_part_stu_desc_eng", None),
+                        "erog_id__tipo_periodo_did_desc_ita" if self._get_lang() == "it" else "erog_id__tipo_periodo_did_desc_eng": getattr(m.erog_id, "tipo_periodo_did_desc_ita" if self._get_lang() == "it" else "tipo_periodo_did_desc_eng", None),
                     }
             
             # Trasformiamo il dizionario delle erogazioni in una lista
@@ -899,7 +915,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             result.extend(serializer.data)
         return result
 
-    def get_StudyActivitiyBorrows(self, obj):
+    def get_StudyActivityBorrows(self, obj):
         mapped_mutuazioni = []
 
         ana_mod_desc = "ana_mod_desc_ita" if self._get_lang() == "it" else "ana_mod_desc_eng"
@@ -917,7 +933,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                 })
         return StudyActivityBorrowSerializer(mapped_mutuazioni, many=True, lang=self._get_lang()).data
 
-    def get_StudyActivitiyBorrowedFrom(self, obj):
+    def get_StudyActivityBorrowedFrom(self, obj):
         if not obj.mutuato_da:
             return None
         
@@ -941,7 +957,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         result["StudyActivityStudyPlans"] = set(result["StudyActivityStudyPlans"])
         return result
 
-    def get_StudyActivitiyContents(self, obj):
+    def get_StudyActivityContents(self, obj):
         if getattr(obj, "num_erogazioni", 1) > 1 or not obj.erog_found:
             return []
         
@@ -968,12 +984,11 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             "StudyActivityCompulsory", "StudyActivityCdSName", "StudyActivityYear", "StudyActivitySemester",
             "StudyActivityTeacherID", "StudyActivityTeacherName", "StudyActivityTeachingUnitTypeCod",
             "StudyActivityTeachingUnitType", "StudyActivitiesModules", "StudyActivityPartitions",
-            "StudyActivityHours", "StudyActivitiyBorrows", "StudyActivitiyBorrowedFrom", "StudyActivitiyContents",
+            "StudyActivityHours", "StudyActivityBorrows", "StudyActivityBorrowedFrom", "StudyActivityContents",
         ]
         language_field_map = {
             "StudyActivityName": {"it": "ana_mod_desc_ita", "en": "ana_mod_desc_eng"},
-            "StudyActivityPartitionDes": {"it": "erog_id__part_stu_desc_ita", "en": "erog_id__part_stu_desc_eng"},
-            "StudyActivitySemester": {"it": "erog_id__tipo_periodo_did_desc_ita", "en": "erog_id__tipo_periodo_did_desc_eng"},
+            "StudyActivitySemester": {"it": "erog_id.tipo_periodo_did_desc_ita", "en": "erog_id.tipo_periodo_did_desc_eng"},
             "StudyActivityTeachingUnitType": {"it": "taf_desc_ita", "en": "taf_desc_eng"},
             "StudyActivityCdSName": {"it": "id_cds.nome_cds_it", "en": "id_cds.nome_cds_eng"},
             "StudyActivitySSD": {"it": "sett_desc_ita", "en": "sett_desc_eng"},
@@ -1058,7 +1073,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
     StudyActivityLanguage = serializers.CharField(default=None)
     StudyActivitySemester = serializers.CharField(default=None)
     StudyActivityPartitionCod = serializers.CharField(source="part_stu_cod", default=None)
-    StudyActivityPartitionDes = serializers.CharField(default=None)
+    StudyActivityPartitionDes = serializers.CharField(source="part_stu_desc_ita", default=None)
     StudyActivityExtendedPartitionCod = serializers.CharField(source="fatt_part_stu_cod", default=None)
     StudyActivityExtendedPartitionDes = serializers.CharField(default=None)
 
@@ -1517,7 +1532,7 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
     @extend_schema_field(serializers.ListField())
     def get_PlanTabs(self, obj):
         lang = self._get_lang()
-        result = {}
+        result = []
         for q in obj.schemi.all():
             
             # evitiamo di prendere i percorsi part-time
@@ -1527,26 +1542,30 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
                     regole_standard.append(r)
 
             if not regole_standard: continue
-        
-            result[q.schema_piano_id] = {
+
+            activities = {}
+
+            for r in regole_standard:
+                activities[r.anno_corso_reg_sce] = [
+                    {
+                        "StudyActivityID": af.activities[0].af_pds_id,
+                        "StudyActivityCod": af.activities[0].ana_af_cod,
+                        "StudyActivityName": af.activities[0].ana_af_desc_ita if lang == 'it' else (af.activities[0].ana_af_desc_eng or af.activities[0].ana_af_desc_ita),
+                        "StudyActivityECTS": af.activities[0].cfu,
+                        "StudyActivityCompulsory": True if af.activities[0].flag_obbl == 'Si' else False,
+                        "StudyActivitySSD": set(activity.sett_cod for activity in af.activities),
+                        "StudyActivitySemester": set(activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id) if lang == 'it' else set(activity.erog_id.tipo_periodo_did_desc_eng or activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id),
+                        # ~ "AfType": af.activities[0].ambito_desc_ita if len(af.activities) == 1 else None,
+                        "StudyActivityTeachingUnitType": af.activities[0].taf_desc_ita if lang == 'it' else (af.activities[0].taf_desc_eng or af.activities[0].taf_desc_ita) if len(af.activities) == 1 else None,
+                    } for af in r.af.all() if af.activities
+                ]
+            
+            result.append({
+                "StudyPlanID": q.schema_piano_id,
                 "StudyPlanCOD": q.schema_piano_cod,
                 "StudyPlanName": q.schema_piano_desc_ita if lang == 'it' else (q.schema_piano_desc_eng or q.schema_piano_desc_ita),
-                "StudyActivities": [
-                    {
-                        q.anno_corso_reg_sce: [
-                                {
-                                    "StudyActivityID": af.activities[0].af_pds_id,
-                                    "StudyActivityCod": af.activities[0].ana_af_cod,
-                                    "StudyActivityName": af.activities[0].ana_af_desc_ita if lang == 'it' else (af.activities[0].ana_af_desc_eng or af.activities[0].ana_af_desc_ita),
-                                    # ~ "CreditValue": af.activities[0].cfu if len(af.activities) == 1 else None,
-                                    "StudyActivitySSD": set(activity.sett_cod for activity in af.activities),
-                                    # ~ "AfType": af.activities[0].ambito_desc_ita if len(af.activities) == 1 else None,
-                                    "AfScope": af.activities[0].taf_desc_ita if lang == 'it' else (af.activities[0].taf_desc_eng or af.activities[0].taf_desc_ita) if len(af.activities) == 1 else None,
-                                } for af in q.af.all() if af.activities
-                            ],
-                    } for q in regole_standard
-                ]
-            }
+                "StudyActivities": activities
+            })
         return result
         
     class Meta:
