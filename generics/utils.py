@@ -179,3 +179,8 @@ def download_file(file_path):
             )
             return response
     raise Http404
+
+def is_nullable(value):
+    if value in ("#NULL#", "-999999999", -999999999):
+        return None
+    return value
