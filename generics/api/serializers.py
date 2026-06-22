@@ -9,7 +9,7 @@ class LanguageAwareMixin:
 
     def get_fields(self):
         fields = super().get_fields()
-        current_language = get_language()
+        current_language = self._get_lang() 
         field_map = getattr(self.Meta, "language_field_map", {})
 
         for field_name, sources in field_map.items():
@@ -22,12 +22,15 @@ class LanguageAwareMixin:
     def to_representation(self, instance):
         data = super().to_representation(instance)
         field_map = getattr(self.Meta, "language_field_map", {})
+        current_language = self._get_lang()
 
         for field_name, sources in field_map.items():
             if data.get(field_name) is not None:
                 continue
 
-            for fallback_lang in ("it", "en"):
+        
+            languages_order = ("it", "en") if current_language == "it" else ("en", "it")
+            for fallback_lang in languages_order:
                 fallback_source = sources.get(fallback_lang)
                 if not fallback_source:
                     continue
@@ -51,13 +54,10 @@ class LanguageAwareMixin:
         if request:
             url_lang = request.query_params.get('lang') or request.GET.get('lang')
             if url_lang:
-                return url_lang.lower()
-            
-            if hasattr(request, 'META'):
-                accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
-                if accept_language:
-                    return accept_language.split(',')[0].split('-')[0].lower()
-                    
+                return url_lang.lower()       
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '') if hasattr(request, 'META') else ''
+            if accept_language:
+                return accept_language.split(',')[0].split('-')[0].lower()
         return getattr(self, 'lang', 'it').lower()
 
 
