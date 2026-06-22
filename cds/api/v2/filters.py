@@ -2,6 +2,7 @@ from django.db.models import Exists, OuterRef, Q, Prefetch
 from django_filters import rest_framework as filters
 from generics.utils import decrypt
 
+from addressbook.utils import get_personale_matricola
 from cds.models import (
     DidatticaAttivitaFormativa,
     DidatticaAttivitaFormativaErogata,
@@ -244,7 +245,7 @@ class StudyActivitiesFilter(filters.FilterSet):
         )
 
     def filter_teacher_matricola(self, queryset, name, value):
-        decrypted_matricola = decrypt(value)
+        decrypted_matricola = get_personale_matricola(value)
         return queryset.filter(
             Exists(
                 DidatticaCopertura.objects.filter(

@@ -79,15 +79,15 @@ class TeachersViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                 query = Personale.objects.filter(
                     Q(fl_docente=1, flg_cessato=0)
                     |
-                    (Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R'))
+                    (Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R'))
                     |
-                    (Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'))
+                    (Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'))
                 )
             else:
                 query = Personale.objects.filter(
                     Q(fl_docente=1)
                     |
-                    ((Q(didatticacopertura__af__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R')))
+                    ((Q(didatticacopertura__erog__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R')))
                 )
             
             return query.only(
@@ -117,9 +117,9 @@ class TeachersViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             return (
                 Personale.objects.filter(
                     Q(fl_docente=1, flg_cessato=0)
-                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                    | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year)
                     & ~Q(didatticacopertura__stato_coper_cod="R")
-                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                    | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1)
                     & ~Q(didatticacopertura__stato_coper_cod="R"),
                     matricola=teacher,
                 )
@@ -202,7 +202,7 @@ class CoveragesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResp
         ).values("dip_cod")[:1]
 
         query = (
-            Personale.objects.filter(didatticacopertura__af__isnull=False)
+            Personale.objects.filter(didatticacopertura__erog__isnull=False)
             .exclude(didatticacopertura__stato_coper_cod="R")
             .annotate(
                 dip_id=dip_id_subquery,

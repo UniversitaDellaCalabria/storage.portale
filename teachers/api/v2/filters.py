@@ -134,22 +134,20 @@ class TeachersFilter(filters.FilterSet):
         label="Department",
         help_text="Search for department.",
     )
-    regdid = filters.CharFilter(
-        # ~ method="filter_regdid",
-        field_name="didatticacopertura__regdid_id",
-        lookup_expr="exact",
-        label="RegDid",
-        help_text="Search for RegDid.",
-    )
+    # ~ regdid = filters.CharFilter(
+        # ~ field_name="didatticacopertura__regdid_id",
+        # ~ lookup_expr="exact",
+        # ~ label="RegDid",
+        # ~ help_text="Search for RegDid.",
+    # ~ )
     cds = filters.CharFilter(
-        # ~ method="filter_cds",
-        field_name="didatticacopertura__cds_cod",
+        field_name="didatticacopertura__erog__mod_off_id__af_off__cds_cod",
         lookup_expr="exact",
         label="Cds",
         help_text="Search for Cds.",
     )
     year = filters.CharFilter(
-        field_name="didatticacopertura__aa_off_id",
+        field_name="didatticacopertura__erog__mod_off_id__af_off__aa_off_id",
         lookup_expr="exact",
         label="Year",
         help_text="Search for year.",
@@ -206,9 +204,9 @@ class TeachersFilter(filters.FilterSet):
         # ~ if not value and not self.data.get("regdid"):
             # ~ return queryset.filter(
                 # ~ Q(fl_docente=1, flg_cessato=0)
-                # ~ | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                # ~ | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year)
                 # ~ & ~Q(didatticacopertura__stato_coper_cod="R")
-                # ~ | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                # ~ | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year - 1)
                 # ~ & ~Q(didatticacopertura__stato_coper_cod="R")
             # ~ )
         # ~ return queryset.filter(didatticacopertura__cds_cod=value)
@@ -217,9 +215,9 @@ class TeachersFilter(filters.FilterSet):
         # ~ if not value and not self.data.get("cds"):
             # ~ return queryset.filter(
                 # ~ Q(fl_docente=1, flg_cessato=0)
-                # ~ | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                # ~ | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year)
                 # ~ & ~Q(didatticacopertura__stato_coper_cod="R")
-                # ~ | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                # ~ | Q(didatticacopertura__data_inizio_incarico_dida__year=datetime.datetime.now().year - 1)
                 # ~ & ~Q(didatticacopertura__stato_coper_cod="R")
             # ~ )
         # ~ return queryset.filter(didatticacopertura__regdid_id=value)
@@ -240,20 +238,20 @@ class CoveragesFilter(filters.FilterSet):
         label="Search",
         help_text="Search for research groups.",
     )
-    regdid = filters.CharFilter(
-        field_name="didatticacopertura__af__regdid__regdid_id",
-        lookup_expr="exact",
-        label="RegDid",
-        help_text="Search for RegDid.",
-    )
+    # ~ regdid = filters.CharFilter(
+        # ~ field_name="didatticacopertura__af__regdid__regdid_id",
+        # ~ lookup_expr="exact",
+        # ~ label="RegDid",
+        # ~ help_text="Search for RegDid.",
+    # ~ )
     cds = filters.CharFilter(
-        field_name="didatticacopertura__cds_cod",
+        field_name="didatticacopertura__erog__mod_off_id__af_off__cds_cod",
         lookup_expr="exact",
         label="Cds",
         help_text="Search for Cds.",
     )
     year = filters.CharFilter(
-        field_name="didatticacopertura__aa_off_id",
+        field_name="didatticacopertura__erog__mod_off_id__af_off__aa_off_id",
         lookup_expr="exact",
         label="Year",
         help_text="Search for year.",

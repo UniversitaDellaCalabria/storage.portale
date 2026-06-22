@@ -380,15 +380,15 @@ class ServicePersonale:
                 Q(matricola=personale_id) |
                 Q(cod_fis=personale_id),
                 Q(flg_cessato=0) |
-                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R') |
-                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R')
+                Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R') |
+                Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R')
             )
         else:
             personale_id = get_personale_matricola(personale_id)
             query = Personale.objects.filter(
                 Q(flg_cessato=0) |
-                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R') |
-                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
+                Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year) & ~Q(didatticacopertura__stato_coper_cod='R') |
+                Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1) & ~Q(didatticacopertura__stato_coper_cod='R'),
                 matricola=personale_id,
             )
         if not query:
@@ -564,9 +564,9 @@ class ServicePersonale:
             q["cop_teacher"] = False
             if not q["fl_docente"]:
                 query_teacher = Personale.objects.filter(
-                    Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
-                    didatticacopertura__af__isnull=False,
+                    Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year)
+                    | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1),
+                    didatticacopertura__erog__isnull=False,
                     matricola__exact=personale_id,
                 ).exists()
                 if query_teacher:

@@ -150,9 +150,9 @@ class AddressbookViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         return (
             Personale.objects.filter(
                 Q(flg_cessato=0, dt_rap_fin__gte=datetime.datetime.today())
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year)
                 & ~Q(didatticacopertura__stato_coper_cod="R")
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1)
                 & ~Q(didatticacopertura__stato_coper_cod="R"),
             )
             .prefetch_related(
@@ -205,18 +205,18 @@ class AddressbookViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     def get_object(self):
         personale_id = get_personale_matricola(self.kwargs.get("personaleid"))
         query_teacher = Personale.objects.filter(
-            Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-            | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
-            didatticacopertura__af__isnull=False,
+            Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year)
+            | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1),
+            didatticacopertura__erog__isnull=False,
             matricola=personale_id,
         )
 
         obj = (
             Personale.objects.filter(
                 Q(flg_cessato=0)
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year)
                 & ~Q(didatticacopertura__stato_coper_cod="R")
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1)
                 & ~Q(didatticacopertura__stato_coper_cod="R"),
                 matricola=personale_id,
             )
@@ -335,8 +335,8 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         else:
             personale_id = self.kwargs.get("personaleid")
             query_teacher = Personale.objects.filter(
-                Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
-                | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1),
+                Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year)
+                | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1),
                 didatticacopertura__af__isnull=False,
                 matricola=personale_id,
             )
@@ -344,9 +344,9 @@ class AddressbookFullViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                 Personale.objects.filter(
                     Q(matricola=personale_id) | Q(cod_fis=personale_id),
                     Q(flg_cessato=0)
-                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year)
+                    | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year)
                     & ~Q(didatticacopertura__stato_coper_cod="R")
-                    | Q(didatticacopertura__aa_off_id=datetime.datetime.now().year - 1)
+                    | Q(didatticacopertura__erog__mod_off_id__af_off__aa_off_id=datetime.datetime.now().year - 1)
                     & ~Q(didatticacopertura__stato_coper_cod="R"),
                 )
                 .prefetch_related(
