@@ -592,7 +592,7 @@ class StudyActivityModuleSerializer(serializers.Serializer, LanguageAwareMixin):
         ).distinct().order_by("erog_id")
         
         if erogazioni.count() > 1:
-            return StudyActivityModulePartitionSerializer(erogazioni, many=True, lang=self._get_lang()).data
+            return StudyActivityModulePartitionSerializer(erogazioni, many=True, context=self.context).data
         return []
 
     class Meta:
@@ -759,7 +759,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
 
     def get_StudyActivityModalities(self, obj):
         if obj.erog_found:
-            return StudyActivityModalitySerializer([obj], many=True, lang=self._get_lang()).data
+            return StudyActivityModalitySerializer([obj], many=True, context=self.context).data
         
         seen = set()
         unique_moduli = []
@@ -767,7 +767,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             if modulo.mod_did_cod not in seen:
                 seen.add(modulo.mod_did_cod)
                 unique_moduli.append(modulo)
-        return StudyActivityModalitySerializer(unique_moduli, many=True, lang=self._get_lang()).data
+        return StudyActivityModalitySerializer(unique_moduli, many=True, context=self.context).data
 
     def get_StudyActivitiesModules(self, obj):
         # obj.moduli ora è una normale lista Python (es. [mod1, mod2, mod3])
@@ -816,7 +816,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             if len(lista_erogazioni) > 1:
                 m_id_val = None
                 # Assicurati che il tuo serializer accetti dizionari (come abbiamo risolto per Borrows)
-                erog_list = StudyActivityModulePartitionSerializer(lista_erogazioni, many=True, lang=self._get_lang()).data
+                erog_list = StudyActivityModulePartitionSerializer(lista_erogazioni, many=True, context=self.context).data
             else:
                 first_erog = lista_erogazioni[0] if lista_erogazioni else None
                 m_id_val = first_erog["erog_id"] if first_erog else None
@@ -860,7 +860,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
 
             if erogazioni.count() > 1:
                 m_id = None
-                erog_list = StudyActivityModulePartitionSerializer(erogazioni, many=True, lang=self._get_lang()).data
+                erog_list = StudyActivityModulePartitionSerializer(erogazioni, many=True, context=self.context).data
             else:
                 first_erog = erogazioni.first()
                 m_id = first_erog["erog_id"] if first_erog else None
@@ -877,20 +877,19 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         return result
 
     def get_StudyActivityPartitions(self, obj):
-        moduli = obj.moduli.values("ana_mod_id").distinct()
-        if moduli.count() > 1:
+        moduli = obj.moduli 
+        ids_moduli = {m.ana_mod_id for m in moduli}
+        if len(ids_moduli) > 1:
             return []
         
-        erogazioni = obj.moduli.values(
-            "erog_id",
-            "erog_id__part_stu_cod",
-            "erog_id__part_stu_desc_ita" if self._get_lang() == "it" else (is_nullable("erog_id__part_stu_desc_eng") or "erog_id__part_stu_desc_ita"),
-            "erog_id__fatt_part_stu_cod",
-            "erog_id__fatt_part_stu_desc_ita" if self._get_lang() == "it" else (is_nullable("erog_id__fatt_part_stu_desc_eng") or "erog_id__fatt_part_stu_desc_ita"),
-        ).distinct().order_by("erog_id")
-        
-        if erogazioni.count() > 1:
-            return StudyActivityModulePartitionSerializer(erogazioni, many=True, lang=self._get_lang()).data
+        erogazioni = {}
+        for m in moduli:
+            if m.erog_id_id not in erogazioni:
+                erogazioni[m.erog_id_id] = { ... }
+        if len(erogazioni) > 1:
+            return StudyActivityModulePartitionSerializer(
+                list(erogazioni.values()), many=True, context=self.context
+            ).data
         return []
 
     def get_StudyActivityRoot(self, obj):
@@ -909,12 +908,25 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
     def get_StudyActivityHours(self, obj):
         if not obj.erog_found:
             return []
-        
+
         coperture = getattr(obj.erog_id, 'coperture_attive', [])
+        
+        ids_ab = [
+            cop.doc_id_ab_id
+            for cop in coperture
+            if cop.doc_matricola != "-999999999" and cop.doc_id_ab_id
+        ]
+        personale_map = {
+            p.id_ab: p
+            for p in Personale.objects.filter(id_ab__in=ids_ab).only('id_ab', 'cognome', 'nome')
+        }
+
         result = []
         for cop in coperture:
-            teacher_id = None
+            teacher_id, teacher_name = None, None
             if cop.doc_matricola != "-999999999":
+                doc = personale_map.get(cop.doc_id_ab_id)
+                teacher_name = f"{doc.cognome} {doc.nome}" if doc else None
                 email = getattr(cop.doc_id_ab, "email", None)
                 if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                     teacher_id = email.split("@")[0]
@@ -922,10 +934,10 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                     teacher_id = encrypt(cop.doc_matricola)
             
             serializer = StudyActivityHourSerializer(
-                cop.dettaglio_ore.all(), 
-                many=True, 
-                teacher_id=teacher_id, 
-                teacher_name=f"{cop.doc_cognome} {cop.doc_nome}"
+                cop.dettaglio_ore.all(),
+                many=True,
+                teacher_id=teacher_id,
+                teacher_name=teacher_name,
             )
             result.extend(serializer.data)
         return result
@@ -946,7 +958,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                     "cds_cod": pds.cds_cod,
                     nome_cds: getattr(pds.id_cds, nome_cds, None),
                 })
-        return StudyActivityBorrowSerializer(mapped_mutuazioni, many=True, lang=self._get_lang()).data
+        return StudyActivityBorrowSerializer(mapped_mutuazioni, many=True, context=self.context).data
 
     def get_StudyActivityBorrowedFrom(self, obj):
         if not obj.mutuato_da:
@@ -969,7 +981,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         for item in obj.mutuato_da:
             result["StudyActivityStudyPlans"].append(getattr(item, pds_desc, None))
             
-        result["StudyActivityStudyPlans"] = set(result["StudyActivityStudyPlans"])
+        result["StudyActivityStudyPlans"] = list(set(result["StudyActivityStudyPlans"]))
         return result
 
     def get_StudyActivityContents(self, obj):
@@ -978,7 +990,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         
         # Recupera i testi direttamente dalla cache in memoria del prefetch
         testi_precaricati = obj.erog_id.testi.all()
-        return StudyActivityContentSerializer(testi_precaricati, many=True, lang=self._get_lang()).data
+        return StudyActivityContentSerializer(testi_precaricati, many=True, context=self.context).data
 
 
 
