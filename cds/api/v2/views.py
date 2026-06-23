@@ -608,7 +608,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     'pds_cod', 'pds_desc_ita', 'pds_desc_eng',
                     'id_cds__nome_cds_it', 'id_cds__nome_cds_eng',
                     'cds_cod',
-                    'part_stu_desc_ita', 'part_stu_desc_eng',
+                    'erog_id__part_stu_desc_ita', 'erog_id__part_stu_desc_eng',
                 )
             )
         # troviamo af_pds_id

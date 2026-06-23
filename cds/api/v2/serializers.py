@@ -1166,13 +1166,18 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
         unique_fathers = {}
         for pds in pds_list:
             father_id = getattr(pds, 'af_pds_id', None)
+            regdid_id = getattr(pds, 'regdid_id', None)
             if father_id and father_id not in unique_fathers:
                 pds_desc = "pds_desc_ita" if self._get_lang() == "it" else (is_nullable("pds_desc_eng") or "pds_desc_ita")
-                father_name = getattr(pds, pds_desc, None)
+                name = "ana_af_desc_ita" if self._get_lang() == "it" else (is_nullable("ana_af_desc_eng") or "ana_af_desc_ita")
+
+                father_name = getattr(pds, name, None)
+                father_pds = getattr(pds, pds_desc, None)
 
                 unique_fathers[father_id] = {
                     "FatherID": father_id,
-                    "FatherName": father_name
+                    "FatherName": f"{father_name} ({father_pds})",
+                    "RegdidId": regdid_id
                 }
         return list(unique_fathers.values())
 
