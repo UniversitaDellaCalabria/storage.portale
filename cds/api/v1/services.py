@@ -469,7 +469,7 @@ class ServiceDidatticaCds:
     @staticmethod
     def getAcademicYears():
         query = (
-            DidatticaRegolamento.objects.values("aa_reg_did")
+            DidatticaRegolamento.objects.exclude(aa_reg_did=-999999999).values("aa_reg_did")
             .order_by("-aa_reg_did")
             .distinct()
         )
