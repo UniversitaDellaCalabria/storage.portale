@@ -172,7 +172,7 @@ class StudyActivitiesFilter(filters.FilterSet):
         help_text="Name of the study course.",
     )
     department_cod = filters.CharFilter(
-        method="department_cod",
+        method="filter_department_cod",
         label="Department code",
         help_text="Code of the departmental structure.",
     )
@@ -241,8 +241,10 @@ class StudyActivitiesFilter(filters.FilterSet):
         
     def filter_ssd(self, queryset, name, value):
         return queryset.filter(
-            sett_cod__iexact=value
-        )
+            Q(pds__sett_cod__iexact=value) |
+            Q(pds__sett_desc_ita__icontains=value) |
+            Q(pds__sett_desc_eng__icontains=value)
+        ).distinct()
 
     def filter_teacher_matricola(self, queryset, name, value):
         decrypted_matricola = get_personale_matricola(value)
