@@ -923,7 +923,7 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
             tutte_le_attivita = VDidatticaAfPianiStudio.objects.filter(
                 af_pds_id__in=list(set_af_pds_id)
             ).select_related('erog_id')
-
+            
             map_activities = {}
             for act in tutte_le_attivita:
                 map_activities.setdefault(act.af_pds_id, []).append(act)
