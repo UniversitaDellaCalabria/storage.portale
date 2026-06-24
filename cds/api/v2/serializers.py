@@ -745,7 +745,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             if email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 return email.split("@")[0]
             return encrypt(af_off.doc_tit_matricola)
-        except AttributeError:
+        except Exception:
             return None
 
     def get_StudyActivityTeacherName(self, obj):

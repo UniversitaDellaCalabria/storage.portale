@@ -32,6 +32,7 @@ from generics.api.labels import LABEL_MAPPING
 # ~ from rest_framework.pagination import PageNumberPagination
 
 from generics.api.pagination import PageNumberPagination, UnicalStorageApiPaginationList
+from generics.utils import is_nullable
 from generics.views import ClearResponseViewSet
 
 
@@ -614,18 +615,19 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         # troviamo af_pds_id
         else:
             erog_found = False
-            result.moduli = list(
-                DidatticaAttivitaFormativaPds.objects.filter(af_pds_id=af_id)
-                .select_related("erog_id")
-                .only("erog_id", "ana_mod_id", "ana_mod_cod", "ana_mod_desc_ita", "ana_mod_desc_eng")
-            ).select_related("erog_id")
-            
-            if not results.exists():
+            if not results:
                 raise Http404
 
             num_erogazioni = results.values("erog_id").distinct().count()
             results = list(results)
             result = results[0]
+
+            result.moduli = list(
+                DidatticaAttivitaFormativaPds.objects.filter(af_pds_id=af_id)
+                .select_related("erog_id")
+                .only("erog_id", "ana_mod_id", "ana_mod_cod", "ana_mod_desc_ita", "ana_mod_desc_eng")
+            )
+            
             result.num_erogazioni = num_erogazioni
                 
             moduli = DidatticaAttivitaFormativaPds.objects.filter(
@@ -933,17 +935,17 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
                 for s in p.schemi.all():
                     for r in s.regole.all():
                         for af in r.af.all():
-                            if af.af_pds_id:  # Evitiamo valori None o vuoti (-99999 e #NULL# da gestire?)
+                            if is_nullable(af.af_pds_id):
                                 set_af_pds_id.add(af.af_pds_id)
 
             tutte_le_attivita = VDidatticaAfPianiStudio.objects.filter(
-                af_pds_id__in=list(set_af_pds_id)
+                af_pds_id__in=set_af_pds_id
             ).select_related('erog_id')
             
             map_activities = {}
             for act in tutte_le_attivita:
                 map_activities.setdefault(act.af_pds_id, []).append(act)
-
+            
             for p in piani_studio:
                 for s in p.schemi.all():
                     for r in s.regole.all():
@@ -957,15 +959,15 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
                                     blaf.af_pds_id, []
                                 )
 
-                # ~ schede = sorted(
-                    # ~ list(schede),
-                    # ~ key=lambda k: (
-                        # ~ k["cla_m_id"] if k["cla_m_id"] else 0,
-                        # ~ -k["isStatutario"],
-                        # ~ k["apt_id"] if k["apt_id"] else 0,
-                    # ~ ),
-                # ~ )
-                # ~ q.PlanTabs = schemi
+            # ~ schede = sorted(
+                # ~ list(schede),
+                # ~ key=lambda k: (
+                    # ~ k["cla_m_id"] if k["cla_m_id"] else 0,
+                    # ~ -k["isStatutario"],
+                    # ~ k["apt_id"] if k["apt_id"] else 0,
+                # ~ ),
+            # ~ )
+            # ~ q.PlanTabs = schemi
         return piani_studio
 
 
