@@ -79,7 +79,7 @@ def gen_xlsx_for_cds_export():
         field_name = EXCEL_FIELDS_MAPPINGS["LINGUE"]
         col_num = HEADERS.index(field_name) + 1
         lingue = ",".join(
-            record.didatticacdslingua.order_by("lingua_id").values_list(
+            record.didatticacdslingua.order_by("iso6392_cod").values_list(
                 "iso6392_cod", flat=True
             )
         )
