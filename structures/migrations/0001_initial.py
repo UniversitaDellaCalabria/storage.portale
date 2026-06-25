@@ -36,8 +36,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DidatticaDipartimento',
             fields=[
-                ('dip_id', models.IntegerField(db_column='DIP_ID', primary_key=True, serialize=False)),
-                ('id_dip', models.IntegerField(db_column='ID_DIP', unique=True)),
+                ('dip_id', models.IntegerField(db_column='ID_DIP', primary_key=True, serialize=False)),
                 ('dip_cod', models.CharField(blank=True, db_column='DIP_COD', max_length=40, null=True, unique=True)),
                 ('dip_des_it', models.CharField(blank=True, db_column='DIP_DESC_ITA', max_length=255, null=True)),
                 ('dip_des_eng', models.CharField(blank=True, db_column='DIP_DESC_ENG', max_length=255, null=True)),
