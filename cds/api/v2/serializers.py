@@ -629,11 +629,11 @@ class StudyActivityHourSerializer(serializers.Serializer):
 
 class StudyActivityBorrowSerializer(serializers.Serializer):
     StudyActivityID = serializers.IntegerField(source="erog_id")
-    StudyActivityName = serializers.CharField(source="ana_mod_desc_ita")
+    StudyActivityName = serializers.CharField(source="ana_mod_desc")
     StudyActivityPartitionCod = serializers.CharField(source="part_stu_cod")
-    StudyActivityPartition = serializers.CharField(source="part_stu_desc_ita")
+    StudyActivityPartition = serializers.CharField(source="part_stu_desc")
     StudyActivityCdSCod = serializers.CharField(source="cds_cod")
-    StudyActivityCdSName = serializers.CharField(source="nome_cds_it")
+    StudyActivityCdSName = serializers.CharField(source="nome_cds")
 
     class Meta:
         fields = [
@@ -644,11 +644,11 @@ class StudyActivityBorrowSerializer(serializers.Serializer):
             "StudyActivityCdSCod",
             "StudyActivityCdSName",
         ]
-        language_field_map = {
-            "StudyActivityName": {"it": "ana_mod_desc_ita", "en": "ana_mod_desc_eng"},
-            "StudyActivityPartition": {"it": "part_stu_desc_ita", "en": "part_stu_desc_eng"},
-            "StudyActivityCdSName": {"it": "nome_cds_it", "en": "nome_cds_en"},
-        }
+        # ~ language_field_map = {
+            # ~ "StudyActivityName": {"it": "ana_mod_desc_ita", "en": "ana_mod_desc_eng"},
+            # ~ "StudyActivityPartition": {"it": "part_stu_desc_ita", "en": "part_stu_desc_eng"},
+            # ~ "StudyActivityCdSName": {"it": "nome_cds_it", "en": "nome_cds_en"},
+        # ~ }
 
 class StudyActivityContentSerializer(serializers.Serializer):
     StudyActivityContentCod = serializers.CharField(source="campo_cod")
@@ -952,11 +952,11 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             for pds in m.pds.all():
                 mapped_mutuazioni.append({
                     "erog_id": m.erog_id,
-                    ana_mod_desc : getattr(pds, ana_mod_desc, None),
+                    "ana_mod_desc": getattr(pds, ana_mod_desc, None),
                     "part_stu_cod": m.part_stu_cod,
-                    part_stu_desc: getattr(m, part_stu_desc, None),
+                    "part_stu_desc": getattr(m, part_stu_desc, None),
                     "cds_cod": pds.cds_cod,
-                    nome_cds: getattr(pds.id_cds, nome_cds, None),
+                    "nome_cds": getattr(pds.id_cds, nome_cds, None),
                 })
         return StudyActivityBorrowSerializer(mapped_mutuazioni, many=True, context=self.context).data
 
