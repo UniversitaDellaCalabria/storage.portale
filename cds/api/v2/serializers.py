@@ -1565,7 +1565,7 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
                         "StudyActivityID": af.activities[0].af_pds_id,
                         "StudyActivityCod": af.activities[0].ana_af_cod,
                         "StudyActivityName": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
-                        "StudyActivityECTS": sum(activity.cfu for activity in af.activities if is_nullable(activity.cfu)),
+                        "StudyActivityECTS": af.activities[0].cfu,
                         "StudyActivityCompulsory": True if af.activities[0].flag_obbl == 'Si' else False,
                         "StudyActivitySSD": set(activity.sett_cod for activity in af.activities),
                         "StudyActivitySemester": set(activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id) if lang == 'it' else set(is_nullable(activity.erog_id.tipo_periodo_did_desc_eng) or activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id),
