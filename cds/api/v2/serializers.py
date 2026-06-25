@@ -1479,7 +1479,7 @@ class AcademicPathwaysDetailSerializer(ReadOnlyModelSerializer):
         #     "name": {"en": "pds_des_eng"},
         # }
 
-
+@extend_schema_serializer(examples=examples.SORTING_CONTACTS_SERIALIZER_EXAMPLE)
 class SortingContactsSerializer(ReadOnlyModelSerializer):
     fullName = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
@@ -1523,7 +1523,7 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
         ]
 
 
-# ~ @extend_schema_serializer(examples=examples.STUDY_PLANS_SERIALIZER_EXAMPLE)
+@extend_schema_serializer(examples=examples.STUDY_PLANS_SERIALIZER_EXAMPLE)
 class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
     RegPlanId = serializers.IntegerField(source="piano_studio_id")
     RegDidId = serializers.IntegerField(source="regdid_id")
