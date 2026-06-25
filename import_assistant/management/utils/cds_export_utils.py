@@ -1,7 +1,7 @@
 from io import BytesIO
 
 import openpyxl
-from cds.models import DidatticaCds
+from cds.models import DidatticaCds, DidatticaRegolamento
 from django.conf import settings
 from django.db.models import F, OuterRef, Q, Subquery
 from import_assistant.settings import (
