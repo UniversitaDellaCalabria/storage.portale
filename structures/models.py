@@ -231,8 +231,7 @@ class TerritorioIt(models.Model):
 
 
 class DidatticaDipartimento(InsModAbstract):
-    dip_id = models.IntegerField(db_column="DIP_ID", primary_key=True)
-    id_dip = models.IntegerField(db_column="ID_DIP", unique=True)
+    dip_id = models.IntegerField(db_column="ID_DIP", primary_key=True)
     dip_cod = models.CharField(
         db_column="DIP_COD", unique=True, max_length=40, blank=True, null=True
     )
