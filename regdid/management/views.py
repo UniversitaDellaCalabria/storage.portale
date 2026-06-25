@@ -1439,7 +1439,7 @@ def regdid_articles_publish(request, regdid_id):
         )
         .order_by("didattica_articoli_regolamento_struttura__numero")
     )
-
+    print(articles_to_publish)
     try:
         with transaction.atomic():
             # Delete (swcta_reg that doesn't match any article that should be published)

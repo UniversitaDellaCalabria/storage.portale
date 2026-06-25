@@ -543,6 +543,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             prefetch_coperture,
             'erog_id__testi'
         )
+        
         # ~ results = DidatticaAttivitaFormativaPds.objects.filter(
             # ~ erog_id__erog_id=af_id
         # ~ )\
@@ -615,32 +616,22 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         # troviamo af_pds_id
         else:
             erog_found = False
-            if not results:
+
+            queryset = DidatticaAttivitaFormativaPds.objects.filter(
+                af_pds_id=af_id
+            ).only("erog_id", "ana_mod_id", "ana_mod_cod", "ana_mod_desc_ita", "ana_mod_desc_eng")
+
+            if not queryset.exists():
                 raise Http404
 
-            num_erogazioni = results.values("erog_id").distinct().count()
-            results = list(results)
+            num_erogazioni = queryset.values("erog_id").distinct().count()
+
+            results = list(queryset.select_related("erog_id"))
             result = results[0]
 
-            result.moduli = list(
-                DidatticaAttivitaFormativaPds.objects.filter(af_pds_id=af_id)
-                .select_related("erog_id")
-                .only("erog_id", "ana_mod_id", "ana_mod_cod", "ana_mod_desc_ita", "ana_mod_desc_eng")
-            )
+            result.moduli = results
             
             result.num_erogazioni = num_erogazioni
-                
-            moduli = DidatticaAttivitaFormativaPds.objects.filter(
-                af_pds_id=af_id
-            ).only(
-                "erog_id",
-                "ana_mod_cod",
-                "ana_mod_desc_ita",
-                "ana_mod_desc_eng",
-            ).select_related("erog_id")
-
-            result.moduli = moduli
-
             result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
             result.mutuato_da = None
         result.erog_found = erog_found
