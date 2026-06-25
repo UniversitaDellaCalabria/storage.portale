@@ -248,7 +248,7 @@ class DidatticaCds(models.Model):
     nome_cds_eng = models.CharField(db_column='CDS_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     normativa_cod = models.CharField(db_column='NORMATIVA_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
     normativa_desc_ita = models.CharField(db_column='NORMATIVA_DESC_ITA', max_length=40, blank=True, null=True)  # Field name made lowercase.
-    dip = models.ForeignKey('structures.DidatticaDipartimento', models.DO_NOTHING, db_column='ID_DIP', to_field='id_dip_gda', blank=True, null=True)  # Field name made lowercase.
+    dip = models.ForeignKey('structures.DidatticaDipartimento', models.DO_NOTHING, db_column='ID_DIP', to_field='id_dip', blank=True, null=True)  # Field name made lowercase.
     dip_cod = models.CharField(db_column='DIP_COD', max_length=6, blank=True, null=True)
     tipo_corso_des = models.CharField(db_column='TIPO_CORSO_DESC_ITA', max_length=80, blank=True, null=True)  # Field name made lowercase.
     durata_anni = models.IntegerField(db_column='DURATA_ANNI', blank=True, null=True)  # Field name made lowercase. 
