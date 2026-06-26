@@ -843,7 +843,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         
         erogazioni = {}
         for m in moduli:
-            if m.erog_id_id not in erogazioni:
+            if is_nullable(m.erog_id) and m.erog_id_id not in erogazioni:
                 erogazioni[m.erog_id_id] = {
                     "erog_id": m.erog_id_id,
                     "erog_id__part_stu_cod": m.erog_id.part_stu_cod,
