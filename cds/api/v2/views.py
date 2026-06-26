@@ -583,18 +583,19 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                 mutuazioni = list(
                     DidatticaAttivitaFormativaErogata.objects.filter(
                         erog_id=erog_master_id['erog_id']
-                    ).prefetch_related(
-                        Prefetch(
-                            'pds',
-                            queryset=DidatticaAttivitaFormativaPds.objects
-                                .select_related('id_cds')
-                                .only(
-                                    'af_pds_id', 'cds_cod', 'pds_desc_ita', 'pds_desc_eng',
-                                    'ana_mod_desc_ita', 'ana_mod_desc_eng',
-                                    'id_cds__nome_cds_it', 'id_cds__nome_cds_eng',
-                                )
-                        )
                     )
+                    # ~ .prefetch_related(
+                        # ~ Prefetch(
+                            # ~ 'pds',
+                            # ~ queryset=DidatticaAttivitaFormativaPds.objects
+                                # ~ .select_related('id_cds')
+                                # ~ .only(
+                                    # ~ 'af_pds_id', 'cds_cod', 'pds_desc_ita', 'pds_desc_eng',
+                                    # ~ 'ana_mod_desc_ita', 'ana_mod_desc_eng',
+                                    # ~ 'id_cds__nome_cds_it', 'id_cds__nome_cds_eng',
+                                # ~ )
+                        # ~ )
+                    # ~ )
                 )
             result.mutuazioni = mutuazioni
 
