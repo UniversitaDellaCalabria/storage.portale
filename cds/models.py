@@ -174,7 +174,7 @@ class DidatticaAttivitaFormativaModulo(models.Model):
 
 
 class DidatticaAttivitaFormativaPds(models.Model):
-    af_pds_id = models.IntegerField(db_column='AF_PDS_ID')  # Field name made lowercase.
+    af_pds_id = models.IntegerField(db_column='AF_PDS_ID', primary_key=True)  # Field name made lowercase.
     id_cds = models.ForeignKey('DidatticaCds', models.DO_NOTHING, db_column='ID_CDS', blank=True, null=True)  # Field name made lowercase.
     cds_cod = models.CharField(db_column='CDS_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
     ord_id = models.IntegerField(db_column='ORD_ID', blank=True, null=True)  # Field name made lowercase.
@@ -236,7 +236,8 @@ class DidatticaAttivitaFormativaPds(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'DIDATTICA_ATTIVITA_FORMATIVA_PDS_ID'
+        # ~ db_table = 'DIDATTICA_ATTIVITA_FORMATIVA_PDS_ID'
+        db_table = 'DIDATTICA_ATTIVITA_FORMATIVA_PDS'
         unique_together = (('af_pds_id', 'moduli_pds_id', 'erog_id', 'coper_id', 'off_did_id'),)
         ordering = ('ana_mod_desc_ita',)
 
