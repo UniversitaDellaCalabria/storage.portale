@@ -360,7 +360,7 @@ class DidatticaCdsAltriDatiUfficio(models.Model):
 
 
 class DidatticaCdsLingua(models.Model):
-    id = models.AutoField(db_column="ID", primary_key=True)
+    # ~ id = models.AutoField(db_column="ID", primary_key=True)
     # ~ lin_did_ord_id = models.IntegerField(db_column="LIN_DID_ORD_ID", primary_key=True)
     cdsord = models.ForeignKey(
         DidatticaCds,
@@ -370,6 +370,7 @@ class DidatticaCdsLingua(models.Model):
         null=True,
         to_field="cdsord_id",
         related_name="didatticacdslingua",
+        primary_key=True
     )
     # ~ lingua_id = models.IntegerField(db_column="LINGUA_ID", blank=True, null=True)
     lingua_des_it = models.CharField(
@@ -385,7 +386,8 @@ class DidatticaCdsLingua(models.Model):
     
     class Meta:
         managed = False
-        db_table = "DIDATTICA_CDS_LINGUA_ID"
+        # ~ db_table = "DIDATTICA_CDS_LINGUA_ID"
+        db_table = "DIDATTICA_CDS_LINGUA"
         verbose_name = "Cds language"
         verbose_name_plural = "Cds languages"
 
