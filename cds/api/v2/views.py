@@ -523,6 +523,11 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         # Prendiamo l'id passato nell'URL
         af_id = self.kwargs.get("pk")
 
+        try:
+            af_id = int(af_id)
+        except (TypeError, ValueError):
+            raise Http404()
+
         prefetch_coperture = Prefetch(
             'erog_id__coperture',
             queryset=DidatticaCopertura.objects
