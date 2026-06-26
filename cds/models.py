@@ -366,8 +366,8 @@ class DidatticaCdsLingua(models.Model):
         DidatticaCds,
         models.DO_NOTHING,
         db_column="ORD_ID",
-        blank=True,
-        null=True,
+        # ~ blank=True,
+        # ~ null=True,
         to_field="cdsord_id",
         related_name="didatticacdslingua",
         primary_key=True
