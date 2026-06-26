@@ -658,8 +658,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='VDidatticaAfPianiStudio',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('af_pds_id', models.IntegerField(blank=True, db_column='AF_PDS_ID', null=True)),
+                # ~ ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('af_pds_id', models.IntegerField(blank=True, db_column='AF_PDS_ID', primary_key=True)),
                 ('id_cds', models.IntegerField(blank=True, db_column='ID_CDS', null=True)),
                 ('cds_cod', models.CharField(blank=True, db_collation='utf8mb4_unicode_ci', db_column='CDS_COD', max_length=20, null=True)),
                 ('ord_id', models.IntegerField(blank=True, db_column='ORD_ID', null=True)),
@@ -718,7 +718,7 @@ class Migration(migrations.Migration):
                 ('off_did_id', models.IntegerField(blank=True, db_column='OFF_DID_ID', null=True)),
             ],
             options={
-                'db_table': 'V_DIDATTICA_AF_PIANI_STUDIO',
+                'db_table': 'V2_DIDATTICA_AF_PIANI_STUDIO',
                 'managed': False,
             },
         ),

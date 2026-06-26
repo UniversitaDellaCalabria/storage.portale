@@ -835,47 +835,6 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
 
         return result
     
-    def get_StudyActivitiesModulesBKP(self, obj):
-        if not obj.moduli:
-            return []
-        ana_mod_desc = "ana_mod_desc_ita" if self._get_lang() == "it" else is_nullable("ana_mod_desc_eng") or "ana_mod_desc_ita"
-        fields_to_value = ["ana_mod_id", "ana_mod_cod", ana_mod_desc]
-        moduli = obj.moduli.values(*fields_to_value).distinct()
-        if moduli.count() == 1:
-            return []
-
-        result = []
-        erog_id__part_stu_desc = "erog_id__part_stu_desc_ita" if self._get_lang() == "it" else is_nullable("erog_id__part_stu_desc_eng") or "erog_id__part_stu_desc_ita"
-        erog_id__fatt_part_stu_desc_ = "erog_id__fatt_part_stu_desc_ita" if self._get_lang() == "it" else is_nullable("erog_id__fatt_part_stu_desc_eng") or "erog_id__fatt_part_stu_desc_ita"
-        erog_id__tipo_periodo_did_desc_ = f"erog_id__tipo_periodo_did_desc_{self._get_lang()}"
-        for m in moduli:
-            erogazioni = obj.moduli.filter(ana_mod_id=m["ana_mod_id"]).values(
-                "erog_id",
-                "erog_id__part_stu_cod",
-                erog_id__part_stu_desc,
-                "erog_id__fatt_part_stu_cod",
-                erog_id__fatt_part_stu_desc_,
-                erog_id__tipo_periodo_did_desc_,
-            ).distinct().order_by("erog_id")
-
-            if erogazioni.count() > 1:
-                m_id = None
-                erog_list = StudyActivityModulePartitionSerializer(erogazioni, many=True, context=self.context).data
-            else:
-                first_erog = erogazioni.first()
-                m_id = first_erog["erog_id"] if first_erog else None
-                erog_list = []
-
-            first_elem = erogazioni.first()
-            result.append({
-                "StudyActivityID": m_id,
-                "StudyActivityCod": m["ana_mod_cod"],
-                "StudyActivityName": m.ana_mod_desc_ita if self._get_lang() == "it" else (is_nullable(m.ana_mod_desc_eng) or m.ana_mod_desc_ita),
-                "StudyActivitySemester": first_elem[erog_id__tipo_periodo_did_desc_] if first_elem else None,
-                "StudyActivityPartitions": erog_list,
-            })
-        return result
-
     def get_StudyActivityPartitions(self, obj):
         moduli = obj.moduli 
         ids_moduli = {m.ana_mod_id for m in moduli}

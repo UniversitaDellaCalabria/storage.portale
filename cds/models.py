@@ -1805,7 +1805,7 @@ class DidatticaPianiAfRegSce(models.Model):
 
 
 class VDidatticaAfPianiStudio(models.Model):
-    af_pds_id = models.IntegerField(db_column='AF_PDS_ID', blank=True, null=True)  # Field name made lowercase.
+    af_pds_id = models.IntegerField(db_column='AF_PDS_ID', primary_key=True)  # Field name made lowercase.
     id_cds = models.IntegerField(db_column='ID_CDS', blank=True, null=True)  # Field name made lowercase.
     cds_cod = models.CharField(db_column='CDS_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
     ord_id = models.IntegerField(db_column='ORD_ID', blank=True, null=True)  # Field name made lowercase.
@@ -1866,5 +1866,5 @@ class VDidatticaAfPianiStudio(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'V_DIDATTICA_AF_PIANI_STUDIO'
+        db_table = 'V2_DIDATTICA_AF_PIANI_STUDIO'
 
