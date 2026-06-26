@@ -885,7 +885,13 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         erogazioni = {}
         for m in moduli:
             if m.erog_id_id not in erogazioni:
-                erogazioni[m.erog_id_id] = { ... }
+                erogazioni[m.erog_id_id] = {
+                    "erog_id": m.erog_id_id,
+                    "erog_id__part_stu_cod": m.erog_id.part_stu_cod,
+                    "erog_id__part_stu_desc_ita": m.erog_id.part_stu_desc_ita,
+                    "erog_id__fatt_part_stu_cod": m.erog_id.fatt_part_stu_cod,
+                }
+
         if len(erogazioni) > 1:
             return StudyActivityModulePartitionSerializer(
                 list(erogazioni.values()), many=True, context=self.context
