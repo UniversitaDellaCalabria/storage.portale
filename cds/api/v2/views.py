@@ -619,18 +619,17 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
 
             queryset = DidatticaAttivitaFormativaPds.objects.filter(
                 af_pds_id=af_id
-            ).only("erog_id", "ana_mod_id", "ana_mod_cod", "ana_mod_desc_ita", "ana_mod_desc_eng")
+            ).select_related("erog_id")
 
-            if not queryset.exists():
+            results = list(queryset)
+            
+            if not results:
                 raise Http404
 
-            num_erogazioni = queryset.values("erog_id").distinct().count()
+            num_erogazioni = len({obj.erog_id_id for obj in results if obj.erog_id_id})
 
-            results = list(queryset.select_related("erog_id"))
             result = results[0]
-
             result.moduli = results
-            
             result.num_erogazioni = num_erogazioni
             result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
             result.mutuato_da = None
