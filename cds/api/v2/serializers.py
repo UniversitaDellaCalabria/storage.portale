@@ -702,8 +702,6 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
     StudyActivityContents = serializers.SerializerMethodField()
 
     def get_StudyActivityName(self, obj):
-        if isinstance(obj, str):
-            return obj
         lang = self._get_lang()
         if not obj.erog_found:
             return obj.ana_af_desc_ita if lang == 'it' else (is_nullable(obj.ana_af_desc_eng) or obj.ana_af_desc_ita)
@@ -981,7 +979,6 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             "StudyActivityHours", "StudyActivityBorrows", "StudyActivityBorrowedFrom", "StudyActivityContents",
         ]
         language_field_map = {
-            "StudyActivityName": {"it": "ana_mod_desc_ita", "en": "ana_mod_desc_eng"},
             "StudyActivitySemester": {"it": "erog_id.tipo_periodo_did_desc_ita", "en": "erog_id.tipo_periodo_did_desc_eng"},
             "StudyActivityTeachingUnitType": {"it": "taf_desc_ita", "en": "taf_desc_eng"},
             "StudyActivityCdSName": {"it": "id_cds.nome_cds_it", "en": "id_cds.nome_cds_eng"},
