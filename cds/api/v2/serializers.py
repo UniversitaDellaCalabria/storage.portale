@@ -586,9 +586,9 @@ class StudyActivityModuleSerializer(serializers.Serializer, LanguageAwareMixin):
         erogazioni = self.moduli_queryset.filter(ana_mod_id=obj["ana_mod_id"]).values(
             "erog_id",
             "erog_id__part_stu_cod",
-            "erog_id__part_stu_desc_ita" if self._get_lang() == "it" else is_nullable("erog_id__part_stu_desc_eng") or "erog_id__part_stu_desc_ita",
+            "erog_id__part_stu_desc_ita" if self._get_lang() == "it" else is_nullable(getattr(obj, "erog_id__part_stu_desc_eng", None)) or "erog_id__part_stu_desc_ita",
             "erog_id__fatt_part_stu_cod",
-            "erog_id__fatt_part_stu_desc_ita" if self._get_lang() == "it" else is_nullable("erog_id__fatt_part_stu_desc_eng") or "erog_id__fatt_part_stu_desc_ita",
+            "erog_id__fatt_part_stu_desc_ita" if self._get_lang() == "it" else is_nullable(getattr(obj, "erog_id__fatt_part_stu_desc_eng", None)) or "erog_id__fatt_part_stu_desc_ita",
         ).distinct().order_by("erog_id")
         
         if erogazioni.count() > 1:
@@ -716,13 +716,15 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         lang = self._get_lang()
         if obj.erog_found:
             pds_list = getattr(obj, "pds", [])
-            attr = "pds_desc_ita" if lang == 'it' else is_nullable("pds_desc_eng") or "pds_desc_ita"
             return [
-                getattr(pds, attr, None) or getattr(pds, "pds_desc_ita", None)
-                if not isinstance(pds, str) else pds
+                pds if isinstance(pds, str) else (
+                    (is_nullable(getattr(pds, "pds_desc_eng", None)) or getattr(pds, "pds_desc_ita", None))
+                    if lang != 'it' else getattr(pds, "pds_desc_ita", None)
+                )
                 for pds in pds_list
             ]
-        pds = obj.pds_desc_ita if lang == 'it' else (is_nullable(obj.pds_desc_eng) or obj.pds_desc_ita)
+        
+        pds = getattr(obj, "pds_desc_ita", None) if lang == 'it' else (is_nullable(getattr(obj, "pds_desc_eng", None)) or getattr(obj, "pds_desc_ita", None))
         return [pds]
 
     def get_StudyActivityLanguage(self, obj):
@@ -801,13 +803,18 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                 # Usiamo erog_id come chiave del dizionario per scartare i duplicati
                 if m.erog_id_id not in erogazioni_uniche:
                     # Navighiamo l'oggetto relazionato (pre-caricato con select_related)
+                    lang = self._get_lang()
+
+                    part_stu_desc = getattr(m.erog_id, "part_stu_desc_ita", None) if lang == "it" else is_nullable(getattr(m.erog_id, "part_stu_desc_eng", None)) or getattr(m.erog_id, "part_stu_desc_ita", None)
+                    fatt_part_stu_desc = getattr(m.erog_id, "fatt_part_stu_desc_ita", None) if lang == "it" else getattr(m.erog_id, "fatt_part_stu_desc_eng", None)
+                    tipo_periodo_did_desc = getattr(m.erog_id, "tipo_periodo_did_desc_ita", None) if lang == "it" else getattr(m.erog_id, "tipo_periodo_did_desc_eng", None)
                     erogazioni_uniche[m.erog_id_id] = {
                         "erog_id": m.erog_id_id,
                         "erog_id__part_stu_cod": getattr(m.erog_id, 'part_stu_cod', None),
-                        "erog_id__part_stu_desc" : getattr(m.erog_id, "part_stu_desc_ita" if self._get_lang() == "it" else (is_nullable("part_stu_desc_eng") or "part_stu_desc_ita"), None),
-                        "erog_id__fatt_part_stu_cod": getattr(m.erog_id, 'erog_id__fatt_part_stu_cod', None),
-                        "erog_id__fatt_part_stu_desc": getattr(m.erog_id, "fatt_part_stu_desc_ita" if self._get_lang() == "it" else (is_nullable("fatt_part_stu_desc_eng") or "fatt_part_stu_desc_ita"), None),
-                        "erog_id__tipo_periodo_did_desc": getattr(m.erog_id, "tipo_periodo_did_desc_ita" if self._get_lang() == "it" else (is_nullable("tipo_periodo_did_desc_eng") or "tipo_periodo_did_desc_ita"), None),
+                        "erog_id__part_stu_desc": part_stu_desc,
+                        "erog_id__fatt_part_stu_cod": getattr(m.erog_id, 'fatt_part_stu_cod', None),
+                        "erog_id__fatt_part_stu_desc": fatt_part_stu_desc,
+                        "erog_id__tipo_periodo_did_desc": tipo_periodo_did_desc,
                     }
             
             # Trasformiamo il dizionario delle erogazioni in una lista
@@ -823,13 +830,19 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                 erog_list = []
 
             first_elem = lista_erogazioni[0] if lista_erogazioni else None
-            ana_mod_desc = "ana_mod_desc_ita" if self._get_lang() == "it" else (is_nullable("ana_mod_desc_eng") or "ana_mod_desc_ita")
-            tipo_periodo_did_desc = "tipo_periodo_did_desc_ita" if self._get_lang() == "it" else (is_nullable("tipo_periodo_did_desc_eng") or "tipo_periodo_did_desc_ita")
+            lang = self._get_lang()
+
+            study_activity_name = getattr(primo_mod, "ana_mod_desc_ita", None) if lang == "it" else is_nullable(getattr(primo_mod, "ana_mod_desc_eng", None)) or getattr(primo_mod, "ana_mod_desc_ita", None)
+
+            study_activity_semester = None
+            if first_elem:
+                study_activity_semester = first_elem.get("tipo_periodo_did_desc_ita") if lang == "it" else is_nullable(first_elem.get("tipo_periodo_did_desc_eng")) or first_elem.get("tipo_periodo_did_desc_ita")
+
             result.append({
                 "StudyActivityID": m_id_val,
                 "StudyActivityCod": getattr(primo_mod, "ana_mod_cod", None),
-                "StudyActivityName": getattr(primo_mod, ana_mod_desc, None),
-                "StudyActivitySemester": first_elem.get(tipo_periodo_did_desc) if first_elem else None,
+                "StudyActivityName": study_activity_name,
+                "StudyActivitySemester": study_activity_semester,
                 "StudyActivityPartitions": erog_list,
             })
 
@@ -909,19 +922,21 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
 
     def get_StudyActivityBorrows(self, obj):
         mapped_mutuazioni = []
+        lang = self._get_lang()
 
-        ana_mod_desc = "ana_mod_desc_ita" if self._get_lang() == "it" else (is_nullable("ana_mod_desc_eng") or "ana_mod_desc_ita")
-        part_stu_desc = "part_stu_desc_ita" if self._get_lang() == "it" else (is_nullable("part_stu_desc_eng") or "part_stu_desc_ita")
-        nome_cds = "nome_cds_it" if self._get_lang() == "it" else (is_nullable("nome_cds_eng") or "nome_cds_it")
         for m in obj.mutuazioni:
             for pds in m.pds.all():
+                ana_mod_desc = getattr(pds, "ana_mod_desc_ita", None) if lang == "it" else (is_nullable(getattr(pds, "ana_mod_desc_eng", None)) or getattr(pds, "ana_mod_desc_ita", None))
+                part_stu_desc = getattr(m, "part_stu_desc_ita", None) if lang == "it" else (is_nullable(getattr(m, "part_stu_desc_eng", None)) or getattr(m, "part_stu_desc_ita", None))
+                nome_cds = getattr(m.id_cds, "nome_cds_it", None) if lang == "it" else (is_nullable(getattr(m.id_cds, "nome_cds_eng", None)) or getattr(m.id_cds, "nome_cds_it", None))
+
                 mapped_mutuazioni.append({
                     "erog_id": m.erog_id,
-                    "ana_mod_desc": getattr(pds, ana_mod_desc, None),
+                    "ana_mod_desc": ana_mod_desc,
                     "part_stu_cod": m.part_stu_cod,
-                    "part_stu_desc": getattr(m, part_stu_desc, None),
+                    "part_stu_desc": part_stu_desc,
                     "cds_cod": pds.cds_cod,
-                    "nome_cds": getattr(pds.id_cds, nome_cds, None),
+                    "nome_cds": nome_cds,
                 })
         return StudyActivityBorrowSerializer(mapped_mutuazioni, many=True, context=self.context).data
 
@@ -930,22 +945,25 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             return None
         
         m = obj.mutuato_da[0]
+        lang = self._get_lang()
 
-        ana_mod_desc = "ana_mod_desc_ita" if self._get_lang() == "it" else (is_nullable("ana_mod_desc_eng") or "ana_mod_desc_ita")
-        part_stu_desc = "part_stu_desc_ita" if self._get_lang() == "it" else (is_nullable("part_stu_desc_eng") or "part_stu_desc_ita")
-        nome_cds = "nome_cds_it" if self._get_lang() == "it" else (is_nullable("nome_cds_eng") or "nome_cds_it")
+        ana_mod_desc = getattr(m, "ana_mod_desc_ita", None) if lang == "it" else (is_nullable(getattr(m, "ana_mod_desc_eng", None)) or getattr(m, "ana_mod_desc_ita", None))
+        part_stu_desc = getattr(m.erog_id, "part_stu_desc_ita", None) if lang == "it" else (is_nullable(getattr(m.erog_id, "part_stu_desc_eng", None)) or getattr(m.erog_id, "part_stu_desc_ita", None))
+        nome_cds = getattr(m.id_cds, "nome_cds_it", None) if lang == "it" else (is_nullable(getattr(m.id_cds, "nome_cds_eng", None)) or getattr(m.id_cds, "nome_cds_it", None))
+
         result = {
             "StudyActivityID": m.erog_id.erog_master_id,
-            "StudyActivityName": getattr(m, ana_mod_desc, None),
-            "StudyActivityPartition": getattr(m.erog_id, part_stu_desc, None),
+            "StudyActivityName": ana_mod_desc,
+            "StudyActivityPartition": part_stu_desc,
             "StudyActivityCdSCod": m.cds_cod,
-            "StudyActivityCdSName": getattr(m.id_cds, nome_cds, None),
+            "StudyActivityCdSName": nome_cds,
             "StudyActivityStudyPlans": [],
         }
-        pds_desc = "pds_desc_ita" if self._get_lang() == "it" else (is_nullable("pds_desc_eng") or "pds_desc_ita")
+
+        pds_desc_attr = "pds_desc_ita" if lang == "it" else None
         for item in obj.mutuato_da:
-            result["StudyActivityStudyPlans"].append(getattr(item, pds_desc, None))
-            
+            pds_val = getattr(item, "pds_desc_ita", None) if lang == "it" else (is_nullable(getattr(item, "pds_desc_eng", None)) or getattr(item, "pds_desc_ita", None))
+            result["StudyActivityStudyPlans"].append(pds_val)
         result["StudyActivityStudyPlans"] = list(set(result["StudyActivityStudyPlans"]))
         return result
 
@@ -1127,24 +1145,25 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
         if any(pds.af_pds_id == obj.erog_id for pds in pds_list):
             return []
         
+        lang = self._get_lang()
         unique_fathers = {}
+        
         for pds in pds_list:
             father_id = getattr(pds, 'af_pds_id', None)
             regdid_id = getattr(pds, 'regdid_id', None)
+            
             if father_id and father_id not in unique_fathers:
-                pds_desc = "pds_desc_ita" if self._get_lang() == "it" else (is_nullable("pds_desc_eng") or "pds_desc_ita")
-                name = "ana_af_desc_ita" if self._get_lang() == "it" else (is_nullable("ana_af_desc_eng") or "ana_af_desc_ita")
-
-                father_name = getattr(pds, name, None)
-                father_pds = getattr(pds, pds_desc, None)
+                father_pds = getattr(pds, "pds_desc_ita", None) if lang == "it" else is_nullable(getattr(pds, "pds_desc_eng", None)) or getattr(pds, "pds_desc_ita", None)
+                father_name = getattr(pds, "ana_af_desc_ita", None) if lang == "it" else is_nullable(getattr(pds, "ana_af_desc_eng", None)) or getattr(pds, "ana_af_desc_ita", None)
 
                 unique_fathers[father_id] = {
                     "FatherID": father_id,
                     "FatherName": f"{father_name} ({father_pds})",
                     "RegdidId": regdid_id
                 }
+                
         return list(unique_fathers.values())
-
+    
     def get_StudyActivityStudyPlans(self, obj):
         study_plans = set()
         
