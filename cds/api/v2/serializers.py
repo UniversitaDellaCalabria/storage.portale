@@ -705,6 +705,8 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         if isinstance(obj, str):
             return obj
         lang = self._get_lang()
+        if not obj.erog_found:
+            return obj.ana_af_desc_ita if lang == 'it' else (is_nullable(obj.ana_af_desc_eng) or obj.ana_af_desc_ita)
         return obj.ana_mod_desc_ita if lang == 'it' else (is_nullable(obj.ana_mod_desc_eng) or obj.ana_mod_desc_ita)
 
     def get_StudyActivityPartitionDes(self, obj):
