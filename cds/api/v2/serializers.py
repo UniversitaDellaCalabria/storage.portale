@@ -929,7 +929,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             for pds in m.pds.all():
                 ana_mod_desc = getattr(pds, "ana_mod_desc_ita", None) if lang == "it" else (is_nullable(getattr(pds, "ana_mod_desc_eng", None)) or getattr(pds, "ana_mod_desc_ita", None))
                 part_stu_desc = getattr(m, "part_stu_desc_ita", None) if lang == "it" else (is_nullable(getattr(m, "part_stu_desc_eng", None)) or getattr(m, "part_stu_desc_ita", None))
-                nome_cds = getattr(pds.id_cds, "nome_cds_it", None) if lang == "it" else (is_nullable(getattr(pds.id_cds, "nome_cds_eng", None)) or getattr(pd.id_cds, "nome_cds_it", None))
+                nome_cds = getattr(pds.id_cds, "nome_cds_it", None) if lang == "it" else (is_nullable(getattr(pds.id_cds, "nome_cds_eng", None)) or getattr(pds.id_cds, "nome_cds_it", None))
 
                 mapped_mutuazioni.append({
                     "erog_id": m.erog_id,
