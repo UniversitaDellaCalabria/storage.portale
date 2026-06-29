@@ -9,8 +9,8 @@ from drf_spectacular.utils import (
 from generics.api.serializers import LanguageAwareMixin, ReadOnlyModelSerializer
 from generics.utils import encrypt, build_media_path, is_nullable
 from rest_framework import serializers
-from django.db.models import Q
-from django.db.models import Prefetch
+# from django.db.models import Q
+# from django.db.models import Prefetch
 from addressbook.models import Personale
 from addressbook.settings import ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN
 from cds.models import (
@@ -541,17 +541,13 @@ class StudyActivityModalitySerializer(serializers.Serializer):
         }
 
 
-class StudyActivityModulePartitionSerializer(serializers.Serializer):
+class StudyActivityModulePartitionSerializer(LanguageAwareMixin, serializers.Serializer):
     StudyActivityID = serializers.IntegerField(source="erog_id")
     StudyActivityPartitionCod = serializers.CharField(source="erog_id__part_stu_cod")
     StudyActivityPartitionDes = serializers.CharField(source="erog_id__part_stu_desc_ita")
     StudyActivityExtendedPartitionCod = serializers.CharField(source="erog_id__fatt_part_stu_cod")
     StudyActivityExtendedPartitionDes = serializers.CharField(source="erog_id__fatt_part_stu_desc_ita")
 
-    def __init__(self, *args, **kwargs):
-        lang = kwargs.pop('lang', 'ita')
-        super().__init__(*args, **kwargs)
-        
     class Meta:
         fields = [
             "StudyActivityID",
@@ -805,16 +801,17 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                     # Navighiamo l'oggetto relazionato (pre-caricato con select_related)
                     lang = self._get_lang()
 
-                    part_stu_desc = getattr(m.erog_id, "part_stu_desc_ita", None) if lang == "it" else is_nullable(getattr(m.erog_id, "part_stu_desc_eng", None)) or getattr(m.erog_id, "part_stu_desc_ita", None)
-                    fatt_part_stu_desc = getattr(m.erog_id, "fatt_part_stu_desc_ita", None) if lang == "it" else getattr(m.erog_id, "fatt_part_stu_desc_eng", None)
-                    tipo_periodo_did_desc = getattr(m.erog_id, "tipo_periodo_did_desc_ita", None) if lang == "it" else getattr(m.erog_id, "tipo_periodo_did_desc_eng", None)
+                    # part_stu_desc = getattr(m.erog_id, "part_stu_desc_ita", None) if lang == "it" else is_nullable(getattr(m.erog_id, "part_stu_desc_eng", None)) or getattr(m.erog_id, "part_stu_desc_ita", None)
+                    # fatt_part_stu_desc = getattr(m.erog_id, "fatt_part_stu_desc_ita", None) if lang == "it" else getattr(m.erog_id, "fatt_part_stu_desc_eng", None)
+                    # tipo_periodo_did_desc = getattr(m.erog_id, "tipo_periodo_did_desc_ita", None) if lang == "it" else getattr(m.erog_id, "tipo_periodo_did_desc_eng", None)
                     erogazioni_uniche[m.erog_id_id] = {
                         "erog_id": m.erog_id_id,
                         "erog_id__part_stu_cod": getattr(m.erog_id, 'part_stu_cod', None),
-                        "erog_id__part_stu_desc_ita": part_stu_desc,
+                        "erog_id__part_stu_desc_ita": getattr(m.erog_id, 'part_stu_desc_ita', None),
+                        "erog_id__part_stu_desc_eng": getattr(m.erog_id, 'part_stu_desc_eng', None),
                         "erog_id__fatt_part_stu_cod": getattr(m.erog_id, 'fatt_part_stu_cod', None),
-                        "erog_id__fatt_part_stu_desc_ita": fatt_part_stu_desc,
-                        # ~ "erog_id__tipo_periodo_did_desc": tipo_periodo_did_desc,
+                        "erog_id__fatt_part_stu_desc_ita": getattr(m.erog_id, 'fatt_part_stu_desc_ita', None),
+                        "erog_id__fatt_part_stu_desc_eng": getattr(m.erog_id, 'fatt_part_stu_desc_eng', None),
                     }
             
             # Trasformiamo il dizionario delle erogazioni in una lista
@@ -1527,6 +1524,17 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
     CdSDuration = serializers.IntegerField(source="regdid.cds.durata_anni")
     PlanTabs = serializers.SerializerMethodField()
 
+    def _sum_cfu(self, activities):
+        seen = set()
+        total = 0.0
+        for a in activities:
+            key = a.moduli_pds_id or a.af_pds_id
+            if key not in seen:
+                seen.add(key)
+                if a.cfu is not None:
+                    total += float(a.cfu)
+        return total
+
     @extend_schema_field(serializers.ListField())
     def get_PlanTabs(self, obj):
         lang = self._get_lang()
@@ -1549,7 +1557,7 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
                         "StudyActivityID": af.activities[0].af_pds_id,
                         "StudyActivityCod": af.activities[0].ana_af_cod,
                         "StudyActivityName": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
-                        "StudyActivityECTS": af.activities[0].cfu,
+                        "StudyActivityECTS": self._sum_cfu(af.activities),
                         "StudyActivityCompulsory": True if af.activities[0].flag_obbl == 'Si' else False,
                         "StudyActivitySSD": set(activity.sett_cod for activity in af.activities),
                         "StudyActivitySemester": set(activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id) if lang == 'it' else set(is_nullable(activity.erog_id.tipo_periodo_did_desc_eng) or activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id),

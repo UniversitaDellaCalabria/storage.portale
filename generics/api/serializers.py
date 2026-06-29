@@ -43,8 +43,12 @@ class LanguageAwareMixin:
 
     def _get_by_path(self, obj, path):
         current = obj
-        for part in path.split("."):
-            current = getattr(current, part, None)
+        parts = path.replace("__", ".").split(".")
+        for part in parts:
+            if isinstance(current, dict):
+                current = current.get(part)
+            else:
+                current = getattr(current, part, None)
             if current is None:
                 return None
         return current
