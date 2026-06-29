@@ -862,7 +862,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                     "erog_id__part_stu_cod": m.erog_id.part_stu_cod,
                     "erog_id__part_stu_desc_ita": m.erog_id.part_stu_desc_ita if self._get_lang() == "it" else is_nullable(m.erog_id.part_stu_desc_eng) or m.erog_id.part_stu_desc_ita,
                     "erog_id__fatt_part_stu_cod": m.erog_id.fatt_part_stu_cod,
-                    "erog_id__fatt_part_stu_cod": m.erog_id.fatt_part_stu_desc_ita if self._get_lang() == "it" else is_nullable(m.erog_id.fatt_part_stu_desc_eng) or m.erog_id.fatt_part_stu_desc_ita
+                    "erog_id__fatt_part_stu_desc_ita": m.erog_id.fatt_part_stu_desc_ita if self._get_lang() == "it" else is_nullable(m.erog_id.fatt_part_stu_desc_eng) or m.erog_id.fatt_part_stu_desc_ita
                 }
 
         if len(erogazioni) > 1:
