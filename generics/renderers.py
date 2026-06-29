@@ -1,4 +1,5 @@
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from generics.utils import is_nullable
 
 
 def recursive_clean(val):
@@ -6,9 +7,7 @@ def recursive_clean(val):
         return {k: recursive_clean(v) for k, v in val.items()}
     elif isinstance(val, list):
         return [recursive_clean(item) for item in val]
-    elif val in ("#NULL#", "-999999999", -999999999):
-        return None
-    return val
+    return is_nullable(val)
 
 
 # 1. Questo pulisce il JSON puro (es. Postman / Axios / Fetch)
