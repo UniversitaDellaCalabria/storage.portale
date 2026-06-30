@@ -191,6 +191,11 @@ class StudyActivitiesFilter(filters.FilterSet):
         label="SSD",
         help_text="(Scientific Disciplinary Sector) SSD/SDS code.",
     )
+    period = filters.CharFilter(
+        method="filter_period",
+        label="Period",
+        help_text="Year period",
+    )
     
     def filter_name(self, queryset, name, value):
         return queryset.filter(
@@ -250,6 +255,9 @@ class StudyActivitiesFilter(filters.FilterSet):
             Q(pds__sett_desc_ita__icontains=value) |
             Q(pds__sett_desc_eng__icontains=value)
         ).distinct()
+        
+    def filter_period(self, queryset, name, value):
+        return queryset.filter(tipo_periodo_did_desc_ita=value)
 
     def filter_teacher_matricola(self, queryset, name, value):
         decrypted_matricola = get_personale_matricola(value)
