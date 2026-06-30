@@ -12,7 +12,8 @@ class ServiceStructure:
     @staticmethod
     def getStructureChilds(structureid=None):
         child = UnitaOrganizzativa.objects.filter(
-            uo_padre=structureid, dt_fine_val__gte=datetime.datetime.today()
+            uo_padre=structureid,
+            dt_fine_val__gte=datetime.datetime.today()
         ).values_list("uo", flat=True)
         result = [structureid]
         for c in child:
@@ -25,7 +26,7 @@ class ServiceStructure:
 class ServiceDipartimento:
     @staticmethod
     def getDepartmentsList(language):
-        query = DidatticaDipartimento.objects.all().values(
+        query = DidatticaDipartimento.objects.exclude(dip_id=-999999999).values(
             "dip_id", "dip_cod", "dip_des_it", "dip_des_eng", "dip_nome_breve"
         )
 

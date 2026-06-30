@@ -170,6 +170,9 @@ class DepartmentsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             DidatticaDipartimentoUrl.objects.filter(dip_cod=OuterRef("dip_cod")).values("dip_url")[:1]
         )
         return (
-            DidatticaDipartimento.objects.annotate(urls=urls_subquery)
-            .order_by(ordering_field)
+            DidatticaDipartimento.objects.exclude(
+                dip_id=-999999999
+            ).annotate(
+                urls=urls_subquery
+            ).order_by(ordering_field)
         )
