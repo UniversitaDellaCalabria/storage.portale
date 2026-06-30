@@ -209,7 +209,7 @@ STUDY_ACTIVITY_DETAIL_SERIALIZER_EXAMPLE = [
             "StudyActivityTeacherName": "Rossi Mario",
             "StudyActivityTeachingUnitTypeCod": "B",
             "StudyActivityTeachingUnitType": "Caratterizzanti",
-            "StudyActivitiesModules": [],
+            "StudyActivityModules": [],
             "StudyActivityPartitions": [],
             "StudyActivityHours": [
                 {

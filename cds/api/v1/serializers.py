@@ -590,7 +590,7 @@ class StudyActivityInfoSerializer(serializers.Serializer):
             "StudyActivityElearningInfo": query["StudyActivityElearningInfo"],
             "StudyActivityPrerequisites": query["StudyActivityPrerequisites"],
             "StudyActivityDevelopmentGoal": query["StudyActivityDevelopmentGoal"],
-            "StudyActivitiesModules": query["MODULES"],
+            "StudyActivityModules": query["MODULES"],
             "StudyActivityRoot": studyactivityroot,
             "StudyActivityFather": studyactivityfather,
             "StudyActivityBorrowedFrom": studyactivityborrowed,

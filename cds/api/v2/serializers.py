@@ -671,7 +671,6 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
     StudyActivityCdSCod = serializers.CharField(source="cds_cod", default=None)
     StudyActivityRegDidId = serializers.IntegerField(source="regdid_id", default=None)
     StudyActivityErogationYear = serializers.IntegerField(source="aa_off_id", default=None)
-    StudyActivityECTS = serializers.IntegerField(source="cfu", default=None)
     StudyActivityYear = serializers.IntegerField(source="anno_corso", default=None)
     StudyActivityTeachingUnitTypeCod = serializers.CharField(source="taf_cod", default=None)
     StudyActivityCompulsory = serializers.CharField(source="flag_obbl", default=None)
@@ -682,6 +681,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
     StudyActivitySSD = serializers.CharField(source="sett_desc_ita", default=None)
     StudyActivitySemester = serializers.CharField(source="erog_id.tipo_periodo_did_desc_ita", default=None)
 
+    StudyActivityECTS = serializers.SerializerMethodField()
     StudyActivityPartitionDes = serializers.SerializerMethodField()
     StudyActivityName = serializers.SerializerMethodField()
     StudyActivityStudyPlans = serializers.SerializerMethodField()
@@ -689,7 +689,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
     StudyActivityTeacherID = serializers.SerializerMethodField()
     StudyActivityTeacherName = serializers.SerializerMethodField()
     StudyActivityModalities = serializers.SerializerMethodField()
-    StudyActivitiesModules = serializers.SerializerMethodField()
+    StudyActivityModules = serializers.SerializerMethodField()
     StudyActivityPartitions = serializers.SerializerMethodField()
     StudyActivityRoot = serializers.SerializerMethodField()
     StudyActivityHours = serializers.SerializerMethodField()
@@ -767,11 +767,21 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                 unique_moduli.append(modulo)
         return StudyActivityModalitySerializer(unique_moduli, many=True, context=self.context).data
 
-    def get_StudyActivitiesModules(self, obj):
+    def get_StudyActivityECTS(self, obj):
+        if not obj.moduli: return obj.cfu
+        cfu = 0
+        checked = []
+        for m in obj.moduli:
+            if m.ana_mod_id not in checked:
+                checked.append(m.ana_mod_id)
+                cfu += m.cfu
+        return cfu
+        
+    def get_StudyActivityModules(self, obj):
         # obj.moduli ora è una normale lista Python (es. [mod1, mod2, mod3])
         if not obj.moduli:
             return []
-
+        
         # 1. Raggruppiamo i moduli per 'ana_mod_id' usando un dizionario Python
         # Invece di chiedere al DB di fare la DISTINCT, la facciamo noi in RAM.
         moduli_raggruppati = {}
@@ -856,10 +866,12 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             if is_nullable(m.erog_id) and m.erog_id_id not in erogazioni:
                 erogazioni[m.erog_id_id] = {
                     "erog_id": m.erog_id_id,
-                    "erog_id__part_stu_cod": m.erog_id.part_stu_cod,
-                    "erog_id__part_stu_desc_ita": m.erog_id.part_stu_desc_ita if self._get_lang() == "it" else is_nullable(m.erog_id.part_stu_desc_eng) or m.erog_id.part_stu_desc_ita,
-                    "erog_id__fatt_part_stu_cod": m.erog_id.fatt_part_stu_cod,
-                    "erog_id__fatt_part_stu_desc_ita": m.erog_id.fatt_part_stu_desc_ita if self._get_lang() == "it" else is_nullable(m.erog_id.fatt_part_stu_desc_eng) or m.erog_id.fatt_part_stu_desc_ita
+                    "erog_id__part_stu_cod": getattr(m.erog_id, 'part_stu_cod', None),
+                    "erog_id__part_stu_desc_ita": getattr(m.erog_id, 'part_stu_desc_ita', None),
+                    "erog_id__part_stu_desc_eng": getattr(m.erog_id, 'part_stu_desc_eng', None),
+                    "erog_id__fatt_part_stu_cod": getattr(m.erog_id, 'fatt_part_stu_cod', None),
+                    "erog_id__fatt_part_stu_desc_ita": getattr(m.erog_id, 'fatt_part_stu_desc_ita', None),
+                    "erog_id__fatt_part_stu_desc_eng": getattr(m.erog_id, 'fatt_part_stu_desc_eng', None),
                 }
 
         if len(erogazioni) > 1:
@@ -991,7 +1003,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             "StudyActivityLanguage", "StudyActivityModalities", "StudyActivitySSDCod", "StudyActivitySSD",
             "StudyActivityCompulsory", "StudyActivityCdSName", "StudyActivityYear", "StudyActivitySemester",
             "StudyActivityTeacherID", "StudyActivityTeacherName", "StudyActivityTeachingUnitTypeCod",
-            "StudyActivityTeachingUnitType", "StudyActivitiesModules", "StudyActivityPartitions",
+            "StudyActivityTeachingUnitType", "StudyActivityModules", "StudyActivityPartitions",
             "StudyActivityHours", "StudyActivityBorrows", "StudyActivityBorrowedFrom", "StudyActivityContents",
         ]
         language_field_map = {

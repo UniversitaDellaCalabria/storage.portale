@@ -548,22 +548,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             prefetch_coperture,
             'erog_id__testi'
         )
-        
-        # ~ results = DidatticaAttivitaFormativaPds.objects.filter(
-            # ~ erog_id__erog_id=af_id
-        # ~ )\
-        # ~ .select_related("id_cds", "erog_id")\
-        # ~ .prefetch_related(
-            # ~ Prefetch(
-                # ~ 'erog_id__coperture',
-                # ~ queryset=DidatticaCopertura.objects.exclude(stato_coper_cod="R"),
-                # ~ to_attr='coperture_attive'
-            # ~ ),
-            # ~ 'erog_id__coperture__dettaglio_ore',
-            # ~ 'erog_id__testi'
-        # ~ )
 
-        # attività effettivamente erogata (erog_id)
         results = list(queryset_base)
         if results:
             erog_found = True
