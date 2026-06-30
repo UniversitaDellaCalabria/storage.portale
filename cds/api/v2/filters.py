@@ -161,7 +161,7 @@ class StudyActivitiesFilter(filters.FilterSet):
         label="Course Year",
         help_text="Year of erogation of the course.",
     )
-    cds_name = filters.CharFilter(
+    cds = filters.CharFilter(
         method="filter_cds_name",
         label="Study course name",
         help_text="Name of the study course.",
