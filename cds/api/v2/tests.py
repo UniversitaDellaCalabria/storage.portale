@@ -113,11 +113,11 @@ class ApiCdsUnitTest(TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.json()["results"]), 1)
-        self.assert_data_len(url, {"department_cod": "DIP01"}, 1)
+        self.assert_data_len(url, {"department": "DIP01"}, 1)
         self.assert_data_len(url, {"name": "matematica"}, 0)
         self.assert_data_len(url, {"teacher_last_name": "Garofalo"}, 1)
         self.assert_data_len(url, {"cds_cod": "aaaa"}, 1)
-        self.assert_data_len(url, {"teacher_matricola": encrypt("111111")}, 1)
+        self.assert_data_len(url, {"teacher": encrypt("111111")}, 1)
         self.assert_data_len(url, {"cds_name": "Informatica"}, 0)
         self.assert_data_len(url, {"ssd": "INF"}, 1)
         self.assert_data_len(url, {"ssd": "MAT"}, 0)

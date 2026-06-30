@@ -171,10 +171,15 @@ class StudyActivitiesFilter(filters.FilterSet):
         label="Study course name",
         help_text="Name of the study course.",
     )
-    department_cod = filters.CharFilter(
+    department = filters.CharFilter(
         method="filter_department_cod",
         label="Department code",
         help_text="Code of the departmental structure.",
+    )
+    teacher = filters.CharFilter(
+        method="filter_teacher_last_name",
+        label="Teacher",
+        help_text="Teacher last name.",
     )
     teacher_matricola = filters.CharFilter(
         method="filter_teacher_matricola",
