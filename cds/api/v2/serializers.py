@@ -900,22 +900,22 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
 
         coperture = getattr(obj.erog_id, 'coperture_attive', [])
         
-        ids_ab = [
-            cop.doc_id_ab_id
-            for cop in coperture
-            if is_nullable(cop.doc_matricola) and cop.doc_id_ab_id
-        ]
-        personale_map = {
-            p.id_ab: p
-            for p in Personale.objects.filter(id_ab__in=ids_ab).only('id_ab', 'cognome', 'nome')
-        }
+        # ~ ids_ab = [
+            # ~ cop.doc_id_ab_id
+            # ~ for cop in coperture
+            # ~ if is_nullable(cop.doc_matricola) and cop.doc_id_ab_id
+        # ~ ]
+        # ~ personale_map = {
+            # ~ p.id_ab: p
+            # ~ for p in Personale.objects.filter(id_ab__in=ids_ab).only('id_ab', 'cognome', 'nome')
+        # ~ }
 
         result = []
         for cop in coperture:
             teacher_id, teacher_name = None, None
             if is_nullable(cop.doc_matricola):
-                doc = personale_map.get(cop.doc_id_ab_id)
-                teacher_name = f"{doc.cognome} {doc.nome}" if doc else None
+                # ~ doc = personale_map.get(cop.doc_id_ab_id)
+                teacher_name = f"{cop.doc_cognome} {cop.doc_nome}"
                 email = getattr(cop.doc_id_ab, "email", None)
                 if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                     teacher_id = email.split("@")[0]
