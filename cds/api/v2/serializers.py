@@ -1552,7 +1552,7 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
         lang = self._get_lang()
         result = []
         for q in obj.schemi.all():
-            
+            if q.flag_schema_visibile_web == 'No': continue
             # evitiamo di prendere i percorsi part-time
             regole_standard = []
             for r in q.regole_filtrate:
@@ -1635,6 +1635,7 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
         result = []
         
         for q in obj.schemi.all():
+            if q.flag_schema_visibile_web == 'No': continue
             # ~ if q.schema_piano_cod not in result:
                 # ~ result[q.schema_piano_cod] = []
                 
