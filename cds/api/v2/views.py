@@ -532,7 +532,9 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             af_pds_id=af_id
         ).select_related("erog_id")
 
+        erog_found = True
         if queryset.exists():
+            erog_ids_set = set()
             erog_found = False
 
             results = list(queryset)
@@ -540,17 +542,26 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             if not results:
                 raise Http404
 
-            num_erogazioni = len({obj.erog_id_id for obj in results if obj.erog_id_id})
+            for obj in results:
+                if obj.erog_id_id:
+                    erog_ids_set.add(obj.erog_id_id)
+                    
+                if obj.erog_id_id == af_id:
+                    erog_found = True
+                    break
 
-            result = results[0]
-            result.moduli = results
-            result.num_erogazioni = num_erogazioni
-            result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
-            result.mutuato_da = None
+            if not erog_found:
+                num_erogazioni = len(erog_ids_set)
+                
+                # ~ num_erogazioni = len({obj.erog_id_id for obj in results if obj.erog_id_id})
 
-        else:
-            erog_found = True
-            
+                result = results[0]
+                result.moduli = results
+                result.num_erogazioni = num_erogazioni
+                result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
+                result.mutuato_da = None
+
+        if erog_found:            
             prefetch_coperture = Prefetch(
                 'erog_id__coperture',
                 queryset=DidatticaCopertura.objects

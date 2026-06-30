@@ -893,6 +893,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             "StudyActivityName": obj.ana_af_desc_ita if lang == 'it' else (is_nullable(obj.ana_af_desc_eng) or obj.ana_af_desc_ita),
             "StudyActivityCod": obj.ana_af_cod
         }
+        
     def get_StudyActivityHours(self, obj):
         if not obj.erog_found:
             return []
