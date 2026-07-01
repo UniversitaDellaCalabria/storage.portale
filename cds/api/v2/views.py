@@ -528,106 +528,72 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         except (TypeError, ValueError):
             raise Http404()
 
-        queryset = DidatticaAttivitaFormativaPds.objects.filter(
-            af_pds_id=af_id
-        ).select_related("erog_id")
+        prefetch_coperture = Prefetch(
+            'erog_id__coperture',
+            queryset=DidatticaCopertura.objects
+                .exclude(stato_coper_cod="R")
+                .select_related('doc_id_ab')          
+                .prefetch_related('dettaglio_ore'),
+            to_attr='coperture_attive'
+        )
+
+        queryset_base = DidatticaAttivitaFormativaPds.objects.filter(
+            erog_id__erog_id=af_id
+        ).select_related(
+            "id_cds", 
+            "erog_id",
+            "erog_id__mod_off_id__af_off",            
+            "erog_id__mod_off_id__doc_tit_id_ab",
+        ).prefetch_related(
+            prefetch_coperture,
+            'erog_id__testi'
+        )
+
+        results = list(queryset_base)
+
+        if not results: raise Http404()
 
         erog_found = True
-        if queryset.exists():
-            erog_ids_set = set()
-            erog_found = False
+        result = results[0]
 
-            results = list(queryset)
-            
-            if not results:
-                raise Http404
+        # pds
+        pds_list = []
+        for r in results:
+            pds_list.append(r.pds_desc_ita)
+        result.pds = set(pds_list)
 
-            for obj in results:
-                if obj.erog_id_id:
-                    erog_ids_set.add(obj.erog_id_id)
-                    
-                if obj.erog_id_id == af_id:
-                    erog_found = True
-                    break
+        # moduli
+        result.moduli = DidatticaAttivitaFormativaPds.objects.none()
+        erog_master_id = DidatticaAttivitaFormativaErogata.objects.filter(
+            erog_master_id=af_id
+        ).exclude(erog_id=af_id).values('erog_id').first()
 
-            if not erog_found:
-                num_erogazioni = len(erog_ids_set)
-                
-                # ~ num_erogazioni = len({obj.erog_id_id for obj in results if obj.erog_id_id})
-
-                result = results[0]
-                result.moduli = results
-                result.num_erogazioni = num_erogazioni
-                result.mutuazioni = DidatticaAttivitaFormativaPds.objects.none()
-                result.mutuato_da = None
-
-        if erog_found:            
-            prefetch_coperture = Prefetch(
-                'erog_id__coperture',
-                queryset=DidatticaCopertura.objects
-                    .exclude(stato_coper_cod="R")
-                    .select_related('doc_id_ab')          
-                    .prefetch_related('dettaglio_ore'),
-                to_attr='coperture_attive'
-            )
-
-            queryset_base = DidatticaAttivitaFormativaPds.objects.filter(
-                erog_id__erog_id=af_id
-            ).select_related(
-                "id_cds", 
-                "erog_id",
-                "erog_id__mod_off_id__af_off",            
-                "erog_id__mod_off_id__doc_tit_id_ab",
-            ).prefetch_related(
-                prefetch_coperture,
-                'erog_id__testi'
-            )
-
-            results = list(queryset_base)
-
-            if not results: raise Http404()
-
-            erog_found = True
-            result = results[0]
-
-            # pds
-            pds_list = []
-            for r in results:
-                pds_list.append(r.pds_desc_ita)
-            result.pds = set(pds_list)
-
-            # moduli
-            result.moduli = DidatticaAttivitaFormativaPds.objects.none()
-            erog_master_id = DidatticaAttivitaFormativaErogata.objects.filter(
-                erog_master_id=af_id
-            ).exclude(erog_id=af_id).values('erog_id').first()
-
-            # mutuazioni
-            if not erog_master_id:
-                mutuazioni = []
-            else:
-                mutuazioni = list(
-                    DidatticaAttivitaFormativaErogata.objects.filter(
-                        erog_id=erog_master_id['erog_id']
-                    )
-                )
-            result.mutuazioni = mutuazioni
-
-            # mutuato da
-            result.mutuato_da = None
-            if not result.erog_id.master:
-                result.mutuato_da = list(
-                DidatticaAttivitaFormativaPds.objects.filter(
-                    erog_id=result.erog_id.erog_master_id
-                ).select_related("id_cds", "erog_id").only(
-                    'af_pds_id', 'erog_id', 'erog_id__erog_master_id',
-                    'ana_mod_desc_ita', 'ana_mod_desc_eng',
-                    'pds_cod', 'pds_desc_ita', 'pds_desc_eng',
-                    'id_cds__nome_cds_it', 'id_cds__nome_cds_eng',
-                    'cds_cod',
-                    'erog_id__part_stu_desc_ita', 'erog_id__part_stu_desc_eng',
+        # mutuazioni
+        if not erog_master_id:
+            mutuazioni = []
+        else:
+            mutuazioni = list(
+                DidatticaAttivitaFormativaErogata.objects.filter(
+                    erog_id=erog_master_id['erog_id']
                 )
             )
+        result.mutuazioni = mutuazioni
+
+        # mutuato da
+        result.mutuato_da = None
+        if not result.erog_id.master:
+            result.mutuato_da = list(
+            DidatticaAttivitaFormativaPds.objects.filter(
+                erog_id=result.erog_id.erog_master_id
+            ).select_related("id_cds", "erog_id").only(
+                'af_pds_id', 'erog_id', 'erog_id__erog_master_id',
+                'ana_mod_desc_ita', 'ana_mod_desc_eng',
+                'pds_cod', 'pds_desc_ita', 'pds_desc_eng',
+                'id_cds__nome_cds_it', 'id_cds__nome_cds_eng',
+                'cds_cod',
+                'erog_id__part_stu_desc_ita', 'erog_id__part_stu_desc_eng',
+            )
+        )
         
         result.erog_found = erog_found
         return result

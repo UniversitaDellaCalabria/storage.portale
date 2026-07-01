@@ -889,7 +889,8 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             return None
         
         return {
-            "StudyActivityID": obj.af_pds_id,
+            # ~ "StudyActivityID": obj.af_pds_id,
+            "StudyActivityID": None,
             "StudyActivityName": obj.ana_af_desc_ita if lang == 'it' else (is_nullable(obj.ana_af_desc_eng) or obj.ana_af_desc_ita),
             "StudyActivityCod": obj.ana_af_cod
         }
@@ -986,9 +987,6 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         testi_precaricati = obj.erog_id.testi.all()
         return StudyActivityContentSerializer(testi_precaricati, many=True, context=self.context).data
 
-
-
-        
         # ~ if getattr(obj, "num_erogazioni", 1) > 1:
             # ~ return []
         
@@ -1567,7 +1565,8 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
             for r in regole_standard:
                 activities[r.anno_corso_reg_sce] = [
                     {
-                        "StudyActivityID": af.activities[0].af_pds_id,
+                        # ~ "StudyActivityID": af.activities[0].af_pds_id,
+                        "StudyActivityID": None,
                         "StudyActivityCod": af.activities[0].ana_af_cod,
                         "StudyActivityName": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
                         "StudyActivityECTS": self._sum_cfu(af.activities),
@@ -1672,7 +1671,7 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                             "Required": [
                                 {
                                     # ~ "scopeId": q["amb_id_af"],
-                                    "AfId": af.activities[0].af_pds_id,
+                                    "AfId": af.activities[0].af_pds_id if len(af.activities) <= 1 else None,
                                     "AfCod": af.activities[0].ana_af_cod,
                                     "AfDescription": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
                                     "CycleDes": set(
@@ -1708,7 +1707,7 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                                 [
                                     {
                                         # ~ "scopeId": q["amb_id_af"],
-                                        "AfId": af.activities[0].af_pds_id,
+                                        "AfId": af.activities[0].af_pds_id if len(af.activities) <= 1 else None,
                                         "AfCod": af.activities[0].ana_af_cod,
                                         "AfDescription": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
                                         "StudyActivitySemester": (
