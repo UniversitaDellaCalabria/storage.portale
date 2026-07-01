@@ -884,9 +884,12 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         lang = self._get_lang()
         
         # ~ if DidatticaAttivitaFormativaPds.objects.filter(af_pds_id=obj.erog_id.erog_id).exists():
-        if obj.af_pds_id==obj.erog_id.erog_id:
+        if obj.af_pds_id == obj.erog_id.erog_id:
             return None
-        
+
+        if obj.ana_mod_cod == obj.ana_af_cod:
+            return None
+            
         return {
             # ~ "StudyActivityID": obj.af_pds_id,
             "StudyActivityID": None,
