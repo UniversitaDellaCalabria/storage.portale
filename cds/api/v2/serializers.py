@@ -665,7 +665,7 @@ class StudyActivityContentSerializer(serializers.Serializer):
 
 @extend_schema_serializer(examples=examples.STUDY_ACTIVITY_DETAIL_SERIALIZER_EXAMPLE)
 class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
-    StudyActivityID = serializers.IntegerField(source="af_pds_id")
+    StudyActivityID = serializers.IntegerField(source="erog_id.erog_id")
     StudyActivityCod = serializers.CharField(source="ana_mod_cod", default=None)
     StudyActivityCdSID = serializers.IntegerField(source="id_cds.cds_id", default=None)
     StudyActivityCdSCod = serializers.CharField(source="cds_cod", default=None)
