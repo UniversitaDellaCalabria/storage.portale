@@ -665,7 +665,7 @@ class StudyActivityContentSerializer(serializers.Serializer):
 
 @extend_schema_serializer(examples=examples.STUDY_ACTIVITY_DETAIL_SERIALIZER_EXAMPLE)
 class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
-    StudyActivityID = serializers.IntegerField(source="erog_id.erog_id")
+    StudyActivityID = serializers.IntegerField(source="af_pds_id")
     StudyActivityCod = serializers.CharField(source="ana_mod_cod", default=None)
     StudyActivityCdSID = serializers.IntegerField(source="id_cds.cds_id", default=None)
     StudyActivityCdSCod = serializers.CharField(source="cds_cod", default=None)
@@ -882,8 +882,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
 
     def get_StudyActivityRoot(self, obj):
         lang = self._get_lang()
-        if not obj.erog_found:
-            return None
+        
         # ~ if DidatticaAttivitaFormativaPds.objects.filter(af_pds_id=obj.erog_id.erog_id).exists():
         if obj.af_pds_id==obj.erog_id.erog_id:
             return None
@@ -901,22 +900,22 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
 
         coperture = getattr(obj.erog_id, 'coperture_attive', [])
         
-        # ~ ids_ab = [
-            # ~ cop.doc_id_ab_id
-            # ~ for cop in coperture
-            # ~ if is_nullable(cop.doc_matricola) and cop.doc_id_ab_id
-        # ~ ]
-        # ~ personale_map = {
-            # ~ p.id_ab: p
-            # ~ for p in Personale.objects.filter(id_ab__in=ids_ab).only('id_ab', 'cognome', 'nome')
-        # ~ }
+        ids_ab = [
+            cop.doc_id_ab_id
+            for cop in coperture
+            if is_nullable(cop.doc_matricola) and cop.doc_id_ab_id
+        ]
+        personale_map = {
+            p.id_ab: p
+            for p in Personale.objects.filter(id_ab__in=ids_ab).only('id_ab', 'cognome', 'nome')
+        }
 
         result = []
         for cop in coperture:
             teacher_id, teacher_name = None, None
             if is_nullable(cop.doc_matricola):
-                # ~ doc = personale_map.get(cop.doc_id_ab_id)
-                teacher_name = f"{cop.doc_cognome} {cop.doc_nome}"
+                doc = personale_map.get(cop.doc_id_ab_id)
+                teacher_name = f"{doc.cognome} {doc.nome}" if doc else None
                 email = getattr(cop.doc_id_ab, "email", None)
                 if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                     teacher_id = email.split("@")[0]
@@ -987,6 +986,9 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         testi_precaricati = obj.erog_id.testi.all()
         return StudyActivityContentSerializer(testi_precaricati, many=True, context=self.context).data
 
+
+
+        
         # ~ if getattr(obj, "num_erogazioni", 1) > 1:
             # ~ return []
         
@@ -1166,8 +1168,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
                 father_name = getattr(pds, "ana_af_desc_ita", None) if lang == "it" else is_nullable(getattr(pds, "ana_af_desc_eng", None)) or getattr(pds, "ana_af_desc_ita", None)
 
                 unique_fathers[father_id] = {
-                    # ~ "FatherID": father_id,
-                    "FatherID": None,
+                    "FatherID": father_id,
                     "FatherName": f"{father_name} ({father_pds})",
                     "RegdidId": regdid_id
                 }
@@ -1552,7 +1553,7 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
         lang = self._get_lang()
         result = []
         for q in obj.schemi.all():
-            if q.flag_schema_visibile_web == 'No': continue
+            
             # evitiamo di prendere i percorsi part-time
             regole_standard = []
             for r in q.regole_filtrate:
@@ -1566,8 +1567,7 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
             for r in regole_standard:
                 activities[r.anno_corso_reg_sce] = [
                     {
-                        # ~ "StudyActivityID": af.activities[0].af_pds_id,
-                        "StudyActivityID": None,
+                        "StudyActivityID": af.activities[0].af_pds_id,
                         "StudyActivityCod": af.activities[0].ana_af_cod,
                         "StudyActivityName": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
                         "StudyActivityECTS": self._sum_cfu(af.activities),
@@ -1636,7 +1636,6 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
         result = []
         
         for q in obj.schemi.all():
-            if q.flag_schema_visibile_web == 'No': continue
             # ~ if q.schema_piano_cod not in result:
                 # ~ result[q.schema_piano_cod] = []
                 
@@ -1672,7 +1671,7 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                             "Required": [
                                 {
                                     # ~ "scopeId": q["amb_id_af"],
-                                    "AfId": af.activities[0].erog_id_id if len(af.activities) == 1 and is_nullable(af.activities[0].erog_id) else None,
+                                    "AfId": af.activities[0].erog_id_id if len(af.activities) == 1 else af.activities[0].af_pds_id,
                                     "AfCod": af.activities[0].ana_af_cod,
                                     "AfDescription": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
                                     "CycleDes": set(
@@ -1708,7 +1707,7 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                                 [
                                     {
                                         # ~ "scopeId": q["amb_id_af"],
-                                        "AfId": af.activities[0].af_pds_id if len(af.activities) == 1 else None,
+                                        "AfId": af.activities[0].af_pds_id,
                                         "AfCod": af.activities[0].ana_af_cod,
                                         "AfDescription": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
                                         "StudyActivitySemester": (

@@ -897,7 +897,7 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
             map_activities = {}
             for act in tutte_le_attivita:
                 map_activities.setdefault(act.af_pds_id, []).append(act)
-            
+                
             for p in piani_studio:
                 for s in p.schemi.all():
                     for r in s.regole.all():
@@ -910,7 +910,7 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
                                 blaf.activities = map_activities.get(
                                     blaf.af_pds_id, []
                                 )
-
+            
             # ~ schede = sorted(
                 # ~ list(schede),
                 # ~ key=lambda k: (
