@@ -531,7 +531,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         prefetch_coperture = Prefetch(
             'erog_id__coperture',
             queryset=DidatticaCopertura.objects
-                .exclude(stato_coper_cod="R")
+                .exclude(Q(stato_coper_cod="R") | Q(doc_id_ab=-999999999))
                 .select_related('doc_id_ab')          
                 .prefetch_related('dettaglio_ore'),
             to_attr='coperture_attive'
