@@ -517,7 +517,7 @@ class StudyActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             .select_related("mod_off_id__af_off__id_cds__dip")
             .select_related("mod_off_id__doc_resp_mod_id_ab")
             .prefetch_related("pds")
-        ).exclude(erog_id=-999999999)
+        ).exclude(erog_id=-999999999).order_by('mod_off_id__ana_mod_cod')
         return queryset
 
     def get_object(self):
