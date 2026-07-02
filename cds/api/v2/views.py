@@ -58,6 +58,7 @@ from cds.models import (
     DidatticaCdsGruppiComponenti,
     DidatticaCoperturaDettaglioOre,
     DidatticaPianiStudio,
+    DidatticaPianiSchema,
     VDidatticaAfPianiStudio,
     DidatticaPianiRegSce
     # ~ DidatticaAttivitaFormativaModalita
@@ -791,15 +792,22 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                 )
                 .select_related("regdid__cds")
                 .prefetch_related(
-                    'schemi',
+                    # 1. Sostituiamo 'schemi' semplice con il Prefetch filtrato + to_attr
                     Prefetch(
-                        'schemi__regole',
-                        queryset=DidatticaPianiRegSce.objects.filter(
-                            tipo_reg_sce_cod="O"
+                        "schemi",
+                        queryset=DidatticaPianiSchema.objects.filter(
+                            flag_schema_visibile_web='Si'
+                        ).prefetch_related(
+                            Prefetch(
+                                'regole',
+                                queryset=DidatticaPianiRegSce.objects.filter(
+                                    tipo_reg_sce_cod="O"
+                                ).prefetch_related('af'),
+                                to_attr='regole_filtrate'
+                            ),
                         ),
-                        to_attr='regole_filtrate'
-                    ),
-                    'schemi__regole_filtrate__af',
+                        to_attr="schemi_visibili",
+                    )
                 )
                 .order_by("piano_studio_id")
             )
@@ -807,7 +815,7 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             set_af_pds_id = set()
             
             for p in piani_studio:
-                for s in p.schemi.all():
+                for s in p.schemi_visibili:
                     for r in s.regole_filtrate:
                         for af in r.af.all():
                             if af.af_pds_id:  # Evitiamo valori None o vuoti (-99999 e #NULL# da gestire?)
@@ -822,7 +830,7 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                 map_activities.setdefault(act.af_pds_id, []).append(act)
 
             for p in piani_studio:
-                for s in p.schemi.all():
+                for s in p.schemi_visibili:
                     for r in s.regole_filtrate:
                         for af in r.af.all():
                             af.activities = map_activities.get(
@@ -873,18 +881,25 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
                 )
                 .select_related("regdid__cds")
                 .prefetch_related(
-                    'schemi',
-                    'schemi__regole',
-                    'schemi__regole__af',
-                    'schemi__regole__blocchi',
-                    'schemi__regole__blocchi__af_blocco')
+                    Prefetch(
+                        "schemi",
+                        queryset=DidatticaPianiSchema.objects.filter(
+                            flag_schema_visibile_web='Si'
+                        ),
+                        to_attr="schemi_visibili",
+                    ),
+                    'schemi_visibili__regole',
+                    'schemi_visibili__regole__af',
+                    'schemi_visibili__regole__blocchi',
+                    'schemi_visibili__regole__blocchi__af_blocco'
+                )
                 .order_by("piano_studio_id")
             )
 
             set_af_pds_id = set()
 
             for p in piani_studio:
-                for s in p.schemi.all():
+                for s in p.schemi_visibili:
                     for r in s.regole.all():
                         for af in r.af.all():
                             if is_nullable(af.af_pds_id):
@@ -899,7 +914,7 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
                 map_activities.setdefault(act.af_pds_id, []).append(act)
                 
             for p in piani_studio:
-                for s in p.schemi.all():
+                for s in p.schemi_visibili:
                     for r in s.regole.all():
                         for af in r.af.all():
                             af.activities = map_activities.get(

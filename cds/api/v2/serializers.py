@@ -1555,8 +1555,7 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
     def get_PlanTabs(self, obj):
         lang = self._get_lang()
         result = []
-        for q in obj.schemi.all():
-            
+        for q in obj.schemi_visibili:
             # evitiamo di prendere i percorsi part-time
             regole_standard = []
             for r in q.regole_filtrate:
@@ -1638,7 +1637,8 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
         lang = self._get_lang()
         result = []
         
-        for q in obj.schemi.all():
+        for q in obj.schemi_visibili:
+            
             # ~ if q.schema_piano_cod not in result:
                 # ~ result[q.schema_piano_cod] = []
                 
