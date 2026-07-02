@@ -1556,30 +1556,34 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
         lang = self._get_lang()
         result = []
         for q in obj.schemi_visibili:
+
             # evitiamo di prendere i percorsi part-time
-            regole_standard = []
-            for r in q.regole_filtrate:
-                if len(q.regole_filtrate) == obj.regdid.cds.durata_anni:
-                    regole_standard.append(r)
+            regole_standard = q.regole_filtrate
+            # ~ for r in q.regole_filtrate:
+                # ~ if len(q.regole_filtrate) == obj.regdid.cds.durata_anni:
+                    # ~ regole_standard.append(r)
 
             if not regole_standard: continue
 
             activities = {}
 
             for r in regole_standard:
-                activities[r.anno_corso_reg_sce] = [
-                    {
-                        "StudyActivityID": af.activities[0].af_pds_id,
-                        "StudyActivityCod": af.activities[0].ana_af_cod,
-                        "StudyActivityName": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
-                        "StudyActivityECTS": self._sum_cfu(af.activities),
-                        "StudyActivityCompulsory": True if af.activities[0].flag_obbl == 'Si' else False,
-                        "StudyActivitySSD": set(activity.sett_cod for activity in af.activities),
-                        "StudyActivitySemester": set(activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id) if lang == 'it' else set(is_nullable(activity.erog_id.tipo_periodo_did_desc_eng) or activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id),
-                        # ~ "AfType": af.activities[0].ambito_desc_ita if len(af.activities) == 1 else None,
-                        "StudyActivityTeachingUnitType": af.activities[0].taf_desc_ita if lang == 'it' else (is_nullable(af.activities[0].taf_desc_eng) or af.activities[0].taf_desc_ita) if len(af.activities) == 1 else None,
-                    } for af in r.af.all() if af.activities
-                ]
+                if not r.anno_corso_reg_sce in activities.keys():
+                    activities[r.anno_corso_reg_sce] = []
+                    
+                for af in r.af.all():
+                    if af.activities:
+                        activities[r.anno_corso_reg_sce].append({
+                            "StudyActivityID": af.activities[0].af_pds_id,
+                            "StudyActivityCod": af.activities[0].ana_af_cod,
+                            "StudyActivityName": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
+                            "StudyActivityECTS": self._sum_cfu(af.activities),
+                            "StudyActivityCompulsory": True if af.activities[0].flag_obbl == 'Si' else False,
+                            "StudyActivitySSD": set(activity.sett_cod for activity in af.activities),
+                            "StudyActivitySemester": set(activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id) if lang == 'it' else set(is_nullable(activity.erog_id.tipo_periodo_did_desc_eng) or activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id),
+                            # ~ "AfType": af.activities[0].ambito_desc_ita if len(af.activities) == 1 else None,
+                            "StudyActivityTeachingUnitType": af.activities[0].taf_desc_ita if lang == 'it' else (is_nullable(af.activities[0].taf_desc_eng) or af.activities[0].taf_desc_ita) if len(af.activities) == 1 else None,
+                        })
             
             result.append({
                 "StudyPlanID": q.schema_piano_id,

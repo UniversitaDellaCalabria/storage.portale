@@ -801,7 +801,7 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                             Prefetch(
                                 'regole',
                                 queryset=DidatticaPianiRegSce.objects.filter(
-                                    tipo_reg_sce_cod="O"
+                                    tipo_reg_sce_cod__in=["O","F"]
                                 ).prefetch_related('af'),
                                 to_attr='regole_filtrate'
                             ),
@@ -820,7 +820,7 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                         for af in r.af.all():
                             if af.af_pds_id:  # Evitiamo valori None o vuoti (-99999 e #NULL# da gestire?)
                                 set_af_pds_id.add(af.af_pds_id)
-
+            
             tutte_le_attivita = VDidatticaAfPianiStudio.objects.filter(
                 af_pds_id__in=list(set_af_pds_id)
             ).select_related('erog_id')
@@ -846,6 +846,7 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     # ~ ),
                 # ~ )
                 # ~ q.PlanTabs = schemi
+
         return piani_studio
 
 
