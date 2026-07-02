@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from generics.utils import encrypt
+from generics.utils import encrypt, is_nullable
 
 
 class DepartmentSerializer(serializers.Serializer):
@@ -15,7 +15,7 @@ class DepartmentSerializer(serializers.Serializer):
             "DepartmentID": query["dip_id"],
             "DepartmentCod": query["dip_cod"],
             "DepartmentName": query["dip_des_it"]
-            if req_lang == "it" or query["dip_des_eng"] is None
+            if req_lang == "it" or not is_nullable(query["dip_des_eng"])
             else query["dip_des_eng"],
             "DepartmentNameShort": query["dip_nome_breve"],
             "DepartmentURL": query["dip_url"],
