@@ -807,8 +807,8 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                             ),
                         ).order_by(
                             '-flag_schema_statutario',
-                            'schema_piano_cod',
                             'alt_part_time_cod',
+                            'schema_piano_cod',
                         ),
                         to_attr="schemi_visibili",
                     )
