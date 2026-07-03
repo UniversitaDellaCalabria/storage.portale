@@ -805,6 +805,10 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                                 ).prefetch_related('af'),
                                 to_attr='regole_filtrate'
                             ),
+                        ).order_by(
+                            '-flag_schema_statutario',
+                            'schema_piano_cod',
+                            'alt_part_time_cod',
                         ),
                         to_attr="schemi_visibili",
                     )
@@ -886,6 +890,10 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
                         "schemi",
                         queryset=DidatticaPianiSchema.objects.filter(
                             flag_schema_visibile_web='Si'
+                        ).order_by(
+                            '-flag_schema_statutario',
+                            'schema_piano_cod',
+                            'alt_part_time_cod',
                         ),
                         to_attr="schemi_visibili",
                     ),
