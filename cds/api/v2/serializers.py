@@ -887,7 +887,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         if obj.af_pds_id == obj.erog_id.erog_id:
             return None
 
-        if obj.ana_mod_cod == obj.ana_af_cod:
+        if obj.ana_mod_cod == obj.ana_af_cod and not is_nullable(obj.erog_id.part_stu_cod):
             return None
             
         return {
