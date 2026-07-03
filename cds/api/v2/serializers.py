@@ -1126,7 +1126,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
             return teacher_info
 
         try:
-            email = getattr(mod_off.doc_tit_id_ab, "email", None)
+            email = getattr(mod_off.af_off.doc_tit_id_ab, "email", None)
             if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 teacher_info["id"] = email.split("@")[0]
             else:
@@ -1135,8 +1135,8 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
             pass
 
         try:
-            nome = mod_off.doc_tit_id_ab.nome
-            cognome = mod_off.doc_tit_id_ab.cognome
+            nome = mod_off.af_off.doc_tit_id_ab.nome
+            cognome = mod_off.af_off.doc_tit_id_ab.cognome
             if nome and cognome:
                 teacher_info["name"] = f"{cognome} {nome}"
         except Exception:
