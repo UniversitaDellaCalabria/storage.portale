@@ -530,6 +530,8 @@ class Migration(migrations.Migration):
                 ('classe_miur_cod', models.CharField(blank=True, db_column='CLASSE_MIUR_COD', max_length=20, null=True)),
                 ('classe_miur_desc_ita', models.CharField(blank=True, db_column='CLASSE_MIUR_DESC_ITA', max_length=255, null=True)),
                 ('classe_miur_desc_eng', models.CharField(blank=True, db_column='CLASSE_MIUR_DESC_ENG', max_length=255, null=True)),
+                ('flag_schema_statutario', models.CharField(blank=True, db_column='FLAG_SCHEMA_STATUTARIO', max_length=255, null=True)),
+                ('alt_part_time_cod', models.CharField(blank=True, db_column='ALT_PART_TIME_COD', max_length=10, null=True)),
                 ('dt_ins_mod', models.DateField(blank=True, db_column='DT_INS_MOD', null=True)),
             ],
             options={

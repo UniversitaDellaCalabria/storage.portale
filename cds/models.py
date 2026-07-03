@@ -1737,6 +1737,8 @@ class DidatticaPianiSchema(models.Model):
     classe_miur_cod = models.CharField(db_column='CLASSE_MIUR_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
     classe_miur_desc_ita = models.CharField(db_column='CLASSE_MIUR_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
     classe_miur_desc_eng = models.CharField(db_column='CLASSE_MIUR_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    flag_schema_statutario = models.CharField(db_column='FLAG_SCHEMA_STATUTARIO', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    alt_part_time_cod = models.CharField(db_column='ALT_PART_TIME_COD', max_length=10, blank=True, null=True)  # Field name made lowercase.
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:

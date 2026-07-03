@@ -906,7 +906,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         ids_ab = [
             cop.doc_id_ab_id
             for cop in coperture
-            if is_nullable(cop.doc_matricola) and cop.doc_id_ab_id
+            if is_nullable(cop.doc_matricola) and is_nullable(cop.doc_id_ab_id)
         ]
         personale_map = {
             p.id_ab: p
