@@ -892,8 +892,8 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
                             flag_schema_visibile_web='Si'
                         ).order_by(
                             '-flag_schema_statutario',
-                            'schema_piano_cod',
                             'alt_part_time_cod',
+                            'schema_piano_cod',
                         ),
                         to_attr="schemi_visibili",
                     ),
