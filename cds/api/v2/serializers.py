@@ -1586,15 +1586,36 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
                 for af in r.af.all():
                     if af.activities:
                         activities[r.anno_corso_reg_sce].append({
-                            "StudyActivityID": af.activities[0].af_pds_id,
+                            "StudyActivityID": af.activities[0].erog_id_id if len(af.activities) == 1 else None,
                             "StudyActivityCod": af.activities[0].ana_af_cod,
                             "StudyActivityName": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
-                            "StudyActivityECTS": self._sum_cfu(af.activities),
+                            "StudyActivityECTS": af.activities[0].cfu if len(af.activities) == 1 else None, #self._sum_cfu(af.activities),
                             "StudyActivityCompulsory": True if af.activities[0].flag_obbl == 'Si' else False,
                             "StudyActivitySSD": set(activity.sett_cod for activity in af.activities),
-                            "StudyActivitySemester": set(activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id) if lang == 'it' else set(is_nullable(activity.erog_id.tipo_periodo_did_desc_eng) or activity.erog_id.tipo_periodo_did_desc_ita for activity in af.activities if activity.erog_id),
+                            "StudyActivitySemester": set(
+                                activity.erog_id.tipo_periodo_did_desc_ita if lang == 'it' else (is_nullable(activity.erog_id.tipo_periodo_did_desc_eng) or activity.erog_id.tipo_periodo_did_desc_ita)
+                                for activity in af.activities
+                                if getattr(activity, 'erog_id', None)
+                            ),
                             # ~ "AfType": af.activities[0].ambito_desc_ita if len(af.activities) == 1 else None,
-                            "StudyActivityTeachingUnitType": af.activities[0].taf_desc_ita if lang == 'it' else (is_nullable(af.activities[0].taf_desc_eng) or af.activities[0].taf_desc_ita) if len(af.activities) == 1 else None,
+                            "StudyActivityTeachingUnitType": (af.activities[0].taf_desc_ita if lang == 'it' else (is_nullable(af.activities[0].taf_desc_eng) or af.activities[0].taf_desc_ita)) if len(af.activities) == 1 else None,
+                            "AfSubModules": [
+                                {
+                                    "StudyActivityID": m.erog_id.erog_id if is_nullable(m.erog_id) else None,
+                                    "StudyActivityCod": m.ana_mod_cod,
+                                    "StudyActivityName": m.ana_mod_desc_ita if lang == 'it' else (is_nullable(m.ana_mod_desc_eng) or m.ana_mod_desc_ita),
+                                    "studyActivityPartitionCod": m.erog_id.part_stu_cod if is_nullable(m.erog_id) and is_nullable(m.erog_id.part_stu_cod) else None,
+                                    "studyActivityPartitionDes": (
+                                        (m.erog_id.part_stu_desc_ita if lang == 'it' else (is_nullable(m.erog_id.part_stu_desc_eng) or m.erog_id.part_stu_desc_ita))
+                                        if is_nullable(m.erog_id) else None
+                                    ),
+                                    "StudyActivitySemester": (m.erog_id.tipo_periodo_did_desc_ita if lang == 'it' else (is_nullable(m.erog_id.tipo_periodo_did_desc_eng) or m.erog_id.tipo_periodo_did_desc_ita)) if is_nullable(m.erog_id) else None,
+                                    "StudyActivitySettCod": m.sett_cod,
+                                    "StudyActivityCreditValue": m.cfu,
+                                    "StudyActivityScope": m.ambito_desc_ita if lang == 'it' else (is_nullable(m.ambito_desc_eng) or m.ambito_desc_ita),
+                                    "StudyActivityType": m.taf_desc_ita if lang == 'it' else (is_nullable(m.taf_desc_eng) or m.taf_desc_ita),
+                                } for m in af.activities
+                            ] if len(af.activities) > 1 else []
                         })
             
             result.append({
