@@ -788,7 +788,9 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     Prefetch(
                         "schemi",
                         queryset=DidatticaPianiSchema.objects.filter(
-                            flag_schema_visibile_web='Si'
+                            flag_schema_visibile_web='Si',
+                            # ~ flag_schema_statutario='Si',
+                            alt_part_time_cod='-999999999'
                         ).prefetch_related(
                             Prefetch(
                                 'regole',

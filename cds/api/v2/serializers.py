@@ -1600,7 +1600,7 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
             result.append({
                 "StudyPlanID": q.schema_piano_id,
                 "StudyPlanCOD": q.schema_piano_cod,
-                "StudyPlanName": q.schema_piano_desc_ita if lang == 'it' else (is_nullable(q.schema_piano_desc_eng) or q.schema_piano_desc_ita),
+                "StudyPlanName": f"{q.schema_piano_desc_ita if lang == 'it' else (is_nullable(q.schema_piano_desc_eng) or q.schema_piano_desc_ita)} ({q.schema_piano_cod})",
                 "StudyActivities": activities
             })
         return result
