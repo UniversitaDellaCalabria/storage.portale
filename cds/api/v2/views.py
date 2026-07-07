@@ -776,74 +776,63 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
 
     def get_queryset(self):
         regdid_id = str(self.kwargs["regdidid"])
-        if regdid_id:
 
-            piani_studio = (
-                DidatticaPianiStudio.objects.filter(
-                    regdid_id__regdid_id=regdid_id,
-                )
-                .select_related("regdid__cds")
-                .prefetch_related(
-                    # 1. Sostituiamo 'schemi' semplice con il Prefetch filtrato + to_attr
-                    Prefetch(
-                        "schemi",
-                        queryset=DidatticaPianiSchema.objects.filter(
-                            flag_schema_visibile_web='Si',
-                            # ~ flag_schema_statutario='Si',
-                            alt_part_time_cod='-999999999'
-                        ).prefetch_related(
-                            Prefetch(
-                                'regole',
-                                queryset=DidatticaPianiRegSce.objects.filter(
-                                    tipo_reg_sce_cod__in=["O","F"]
-                                ).prefetch_related('af'),
-                                to_attr='regole_filtrate'
-                            ),
-                        ).order_by(
-                            '-flag_schema_statutario',
-                            'alt_part_time_cod',
-                            'schema_piano_cod',
-                        ),
-                        to_attr="schemi_visibili",
-                    )
-                )
-                .order_by("piano_studio_id")
+        piani_studio = (
+            DidatticaPianiStudio.objects.filter(
+                regdid_id__regdid_id=regdid_id,
             )
+            .select_related("regdid__cds")
+            .prefetch_related(
+                # 1. Sostituiamo 'schemi' semplice con il Prefetch filtrato + to_attr
+                Prefetch(
+                    "schemi",
+                    queryset=DidatticaPianiSchema.objects.filter(
+                        flag_schema_visibile_web='Si',
+                        # ~ flag_schema_statutario='Si',
+                        alt_part_time_cod='-999999999'
+                    ).prefetch_related(
+                        Prefetch(
+                            'regole',
+                            queryset=DidatticaPianiRegSce.objects.filter(
+                                tipo_reg_sce_cod__in=["O","F"]
+                            ).prefetch_related('af'),
+                            to_attr='regole_filtrate'
+                        ),
+                    ).order_by(
+                        '-flag_schema_statutario',
+                        'alt_part_time_cod',
+                        'schema_piano_cod',
+                    ),
+                    to_attr="schemi_visibili",
+                )
+            )
+            .order_by("piano_studio_id")
+        )
 
-            set_af_pds_id = set()
-            
-            for p in piani_studio:
-                for s in p.schemi_visibili:
-                    for r in s.regole_filtrate:
-                        for af in r.af.all():
-                            if af.af_pds_id:  # Evitiamo valori None o vuoti (-99999 e #NULL# da gestire?)
-                                set_af_pds_id.add(af.af_pds_id)
-            
-            tutte_le_attivita = VDidatticaAfPianiStudio.objects.filter(
-                af_pds_id__in=list(set_af_pds_id)
-            ).select_related('erog_id')
+        set_af_pds_id = set()
+        
+        for p in piani_studio:
+            for s in p.schemi_visibili:
+                for r in s.regole_filtrate:
+                    for af in r.af.all():
+                        if af.af_pds_id:  # Evitiamo valori None o vuoti (-99999 e #NULL# da gestire?)
+                            set_af_pds_id.add(af.af_pds_id)
+        
+        tutte_le_attivita = VDidatticaAfPianiStudio.objects.filter(
+            af_pds_id__in=list(set_af_pds_id)
+        ).select_related('erog_id')
 
-            map_activities = {}
-            for act in tutte_le_attivita:
-                map_activities.setdefault(act.af_pds_id, []).append(act)
+        map_activities = {}
+        for act in tutte_le_attivita:
+            map_activities.setdefault(act.af_pds_id, []).append(act)
 
-            for p in piani_studio:
-                for s in p.schemi_visibili:
-                    for r in s.regole_filtrate:
-                        for af in r.af.all():
-                            af.activities = map_activities.get(
-                                af.af_pds_id, []
-                            )
-
-                # ~ schede = sorted(
-                    # ~ list(schede),
-                    # ~ key=lambda k: (
-                        # ~ k["cla_m_id"] if k["cla_m_id"] else 0,
-                        # ~ -k["isStatutario"],
-                        # ~ k["apt_id"] if k["apt_id"] else 0,
-                    # ~ ),
-                # ~ )
-                # ~ q.PlanTabs = schemi
+        for p in piani_studio:
+            for s in p.schemi_visibili:
+                for r in s.regole_filtrate:
+                    for af in r.af.all():
+                        af.activities = map_activities.get(
+                            af.af_pds_id, []
+                        )
 
         return piani_studio
 
