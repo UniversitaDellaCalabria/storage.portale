@@ -1621,7 +1621,7 @@ class StudyPlansActivitiesSerializer(ReadOnlyModelSerializer, LanguageAwareMixin
             result.append({
                 "StudyPlanID": q.schema_piano_id,
                 "StudyPlanCOD": q.schema_piano_cod,
-                "StudyPlanName": f"{q.schema_piano_desc_ita if lang == 'it' else (is_nullable(q.schema_piano_desc_eng) or q.schema_piano_desc_ita)} ({q.schema_piano_cod})",
+                "StudyPlanName": q.schema_piano_desc_ita if lang == 'it' else (is_nullable(q.schema_piano_desc_eng) or q.schema_piano_desc_ita),
                 "StudyActivities": activities
             })
         return result
@@ -1721,8 +1721,8 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                                     ),
                                     "CreditValue": af.activities[0].cfu if len(af.activities) == 1 else None,
                                     "SettCod": set(activity.sett_cod for activity in af.activities),
-                                    "AfType": af.activities[0].ambito_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ambito_desc_eng) or af.activities[0].ambito_desc_ita) if len(af.activities) == 1 else None,
-                                    "AfScope": af.activities[0].taf_desc_ita if lang == 'it' else (is_nullable(af.activities[0].taf_desc_eng) or af.activities[0].taf_desc_ita) if len(af.activities) == 1 else None,
+                                    "AfScope": af.activities[0].ambito_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ambito_desc_eng) or af.activities[0].ambito_desc_ita) if len(af.activities) == 1 else None,
+                                    "AfType": af.activities[0].taf_desc_ita if lang == 'it' else (is_nullable(af.activities[0].taf_desc_eng) or af.activities[0].taf_desc_ita) if len(af.activities) == 1 else None,
                                     "AfSubModules": [
                                         {
                                             "StudyActivityID": m.erog_id.erog_id if is_nullable(m.erog_id) else None,
@@ -1762,8 +1762,8 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                                             for activity in af.activities
                                             if getattr(activity, 'erog_id', None)
                                         ),
-                                        "AfType": af.activities[0].ambito_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ambito_desc_eng) or af.activities[0].ambito_desc_ita) if len(af.activities) == 1 else None,
-                                        "AfScope": af.activities[0].taf_desc_ita if lang == 'it' else (is_nullable(af.activities[0].taf_desc_eng) or af.activities[0].taf_desc_ita) if len(af.activities) == 1 else None,
+                                        "AfScope": af.activities[0].ambito_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ambito_desc_eng) or af.activities[0].ambito_desc_ita) if len(af.activities) == 1 else None,
+                                        "AfType": af.activities[0].taf_desc_ita if lang == 'it' else (is_nullable(af.activities[0].taf_desc_eng) or af.activities[0].taf_desc_ita) if len(af.activities) == 1 else None,
                                         "AfSubModules": [
                                             {
                                                 "StudyActivityID": m.erog_id.erog_id if is_nullable(m.erog_id) else None,
