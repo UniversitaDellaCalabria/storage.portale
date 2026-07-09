@@ -646,7 +646,7 @@ class StudyActivityBorrowSerializer(serializers.Serializer):
             # ~ "StudyActivityCdSName": {"it": "nome_cds_it", "en": "nome_cds_en"},
         # ~ }
 
-class StudyActivityContentSerializer(serializers.Serializer):
+class StudyActivityContentSerializer(LanguageAwareMixin, serializers.Serializer):
     StudyActivityContentCod = serializers.CharField(source="campo_cod")
     StudyActivityContentTitle = serializers.CharField(source="campo_desc_ita")
     StudyActivityContentDes = serializers.CharField(source="testo_fmt_ita")
