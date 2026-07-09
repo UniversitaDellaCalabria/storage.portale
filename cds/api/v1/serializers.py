@@ -15,7 +15,7 @@ from ..v2.serializers import (
 from ..v2.docs import examples
 
 from generics.api.serializers import ReadOnlyModelSerializer
-from generics.utils import build_media_path, encrypt
+from generics.utils import build_media_path, encrypt, is_nullable
 
 from cds.models import *
 from cds.settings import CDS_BROCHURE_IS_VISIBLE, CDS_BROCHURE_MEDIA_PATH
@@ -64,7 +64,7 @@ class CdSSerializer(serializers.Serializer):
             "DepartmentId": query["dip__dip_id"],
             "DepartmentCod": query["dip__dip_cod"],
             "DepartmentName": query["dip__dip_des_it"]
-            if req_lang == "it" or query["dip__dip_des_eng"] is None
+            if req_lang == "it" or not is_nullable(query["dip__dip_des_eng"])
             else query["dip__dip_des_eng"],
             "CourseType": query["tipo_corso_cod"],
             "CourseTypeDescription": query["tipo_corso_des"],
@@ -182,7 +182,7 @@ class CdsInfoSerializer(serializers.Serializer):
             "DepartmentId": query["dip__dip_id"],
             "DepartmentCod": query["dip__dip_cod"],
             "DepartmentName": query["dip__dip_des_it"]
-            if req_lang == "it" or query["dip__dip_des_eng"] is None
+            if req_lang == "it" or not is_nullable(query["dip__dip_des_eng"])
             else query["dip__dip_des_eng"],
             "CourseType": query["tipo_corso_cod"],
             "CourseTypeDescription": query["tipo_corso_des"],
@@ -464,7 +464,7 @@ class StudyActivitiesSerializer(serializers.Serializer):
             "StudyActivityFatherName": query["Father"].des if req_lang == "it" else query["Father"].af_gen_des_eng,
             "StudyActivityRegDidId": query["regdid_id"],
             "DepartmentName": query["cds_id__dip_id__dip_des_it"]
-            if req_lang == "it" or query["cds_id__dip_id__dip_des_eng"] is None
+            if req_lang == "it" or not is_nullable(query["cds_id__dip_id__dip_des_eng"])
             else query["cds_id__dip_id__dip_des_eng"],
             "DepartmentCod": query["cds_id__dip_id__dip_cod"],
             "StudyActivityYear": query["anno_corso"],

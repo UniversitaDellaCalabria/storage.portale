@@ -31,7 +31,7 @@ from cds.models import (
 
 
 @extend_schema_serializer(examples=examples.CDS_SERIALIZER_EXAMPLE)
-class CdsSerializer(ReadOnlyModelSerializer):
+class CdsSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
     regDidId = serializers.IntegerField(source="regdid_id")
     cdSId = serializers.IntegerField(source="cds.cds_id")
     cdSCod = serializers.CharField(source="cds.cds_cod")
@@ -148,12 +148,12 @@ class CdsSerializer(ReadOnlyModelSerializer):
         language_field_map = {
             "area": {"it": "cds.area_cds", "en": "cds.area_cds_en"},
             "name": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"},
-            "departmentName": {"it": "cds.dip.dip_des_it", "en": "cds.dip.dip_des_eng"},
+            # ~ "departmentName": {"it": "cds.dip.dip_des_it", "en": "cds.dip.dip_des_eng"},
         }
 
 
 @extend_schema_serializer(examples=examples.CDS_DETAIL_SERIALIZER_EXAMPLE)
-class CdsDetailSerializer(ReadOnlyModelSerializer):
+class CdsDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
     regDidId = serializers.IntegerField(source="regdid_id")
     status = serializers.CharField(source="stato_regdid_cod")
     cdsId = serializers.IntegerField(source="cds.cds_id")
@@ -457,7 +457,7 @@ class CdsDetailSerializer(ReadOnlyModelSerializer):
         language_field_map = {
             "area": {"it": "cds.area_cds", "en": "cds.area_cds_en"},
             "name": {"it": "cds.nome_cds_it", "en": "cds.nome_cds_eng"},
-            "departmentName": {"it": "cds.dip.dip_des_it", "en": "cds.dip.dip_des_eng"},
+            # ~ "departmentName": {"it": "cds.dip.dip_des_it", "en": "cds.dip.dip_des_eng"},
         }
 
 
