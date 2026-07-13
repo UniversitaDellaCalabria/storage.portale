@@ -1863,7 +1863,7 @@ class VDidatticaAfPianiStudio(models.Model):
     id_ambito = models.IntegerField(db_column='ID_AMBITO', blank=True, null=True)  # Field name made lowercase.
     ambito_desc_ita = models.CharField(db_column='AMBITO_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
     ambito_desc_eng = models.CharField(db_column='AMBITO_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
+    # ~ dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
     off_did_id = models.IntegerField(db_column='OFF_DID_ID', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:

@@ -716,7 +716,7 @@ class Migration(migrations.Migration):
                 ('id_ambito', models.IntegerField(blank=True, db_column='ID_AMBITO', null=True)),
                 ('ambito_desc_ita', models.CharField(blank=True, db_collation='utf8mb4_unicode_ci', db_column='AMBITO_DESC_ITA', max_length=255, null=True)),
                 ('ambito_desc_eng', models.CharField(blank=True, db_collation='utf8mb4_unicode_ci', db_column='AMBITO_DESC_ENG', max_length=255, null=True)),
-                ('dt_ins_mod', models.DateField(blank=True, db_column='DT_INS_MOD', null=True)),
+                # ~ ('dt_ins_mod', models.DateField(blank=True, db_column='DT_INS_MOD', null=True)),
                 ('off_did_id', models.IntegerField(blank=True, db_column='OFF_DID_ID', null=True)),
             ],
             options={
