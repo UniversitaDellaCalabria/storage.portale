@@ -1816,7 +1816,7 @@ class VDidatticaAfPianiStudio(models.Model):
     regdid_id = models.IntegerField(db_column='REGDID_ID', blank=True, null=True)  # Field name made lowercase.
     regdid_cod = models.CharField(db_column='REGDID_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
     aa_regdid_id = models.IntegerField(db_column='AA_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
-    id_off = models.CharField(db_column='ID_OFF', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    # ~ id_off = models.CharField(db_column='ID_OFF', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
     anno_di_scelta_percorso = models.DecimalField(db_column='ANNO_DI_SCELTA_PERCORSO', max_digits=2, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
     pds_regdid_comune_id = models.IntegerField(db_column='PDS_REGDID_COMUNE_ID', blank=True, null=True)  # Field name made lowercase.
     num_pds = models.IntegerField(db_column='NUM_PDS', blank=True, null=True)  # Field name made lowercase.

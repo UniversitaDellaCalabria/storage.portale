@@ -670,7 +670,7 @@ class Migration(migrations.Migration):
                 ('regdid_id', models.IntegerField(blank=True, db_column='REGDID_ID', null=True)),
                 ('regdid_cod', models.CharField(blank=True, db_collation='utf8mb4_unicode_ci', db_column='REGDID_COD', max_length=20, null=True)),
                 ('aa_regdid_id', models.IntegerField(blank=True, db_column='AA_REGDID_ID', null=True)),
-                ('id_off', models.CharField(blank=True, db_collation='utf8mb4_unicode_ci', db_column='ID_OFF', max_length=255, null=True)),
+                # ~ ('id_off', models.CharField(blank=True, db_collation='utf8mb4_unicode_ci', db_column='ID_OFF', max_length=255, null=True)),
                 ('anno_di_scelta_percorso', models.DecimalField(blank=True, db_column='ANNO_DI_SCELTA_PERCORSO', decimal_places=0, max_digits=2, null=True)),
                 ('pds_regdid_comune_id', models.IntegerField(blank=True, db_column='PDS_REGDID_COMUNE_ID', null=True)),
                 ('num_pds', models.IntegerField(blank=True, db_column='NUM_PDS', null=True)),
