@@ -20,14 +20,3 @@ def set_int_format_to_int32(result, generator, request, public):
 
     process_schema(result)
     return result
-
-
-def set_servers_from_request(result, generator, request, public):
-    if request:
-        scheme = request.scheme
-        host = request.get_host()
-        result['servers'] = [{
-            'url': f'{scheme}://{host}',
-            'description': 'Current server'
-        }]
-    return result
