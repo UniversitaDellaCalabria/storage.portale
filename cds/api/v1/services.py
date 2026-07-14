@@ -460,7 +460,8 @@ class ServiceDidatticaCds:
     @staticmethod
     def getDegreeTypes():
         query = (
-            DidatticaCds.objects.values("tipo_corso_cod", "tipo_corso_des")
+            DidatticaCds.objects.exclude(tipo_corso_cod=-999999999)
+            .values("tipo_corso_cod", "tipo_corso_des")
             .order_by("tipo_corso_des")
             .distinct()
         )

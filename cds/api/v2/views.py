@@ -105,7 +105,8 @@ from ..v1.serializers import (
 class DegreeTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet):
     serializer_class = DegreeTypeSerializer
     queryset = (
-        DidatticaCds.objects.values("tipo_corso_cod", "tipo_corso_des")
+        DidatticaCds.objects.exclude(tipo_corso_cod=-999999999)
+        .values("tipo_corso_cod", "tipo_corso_des")
         .distinct()
         .order_by("tipo_corso_des")
     )
