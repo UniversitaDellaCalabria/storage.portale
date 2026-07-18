@@ -831,9 +831,10 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             for s in p.schemi_visibili:
                 for r in s.regole_filtrate:
                     for af in r.af.all():
-                        af.activities = map_activities.get(
-                            af.af_pds_id, []
-                        )
+                        af.activities = [x for x in map_activities.get(af.af_pds_id, []) if x.anno_corso == r.anno_corso_reg_sce]
+                        # ~ af.activities = map_activities.get(
+                            # ~ af.af_pds_id, []
+                        # ~ )
 
         return piani_studio
 
@@ -910,14 +911,16 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
                 for s in p.schemi_visibili:
                     for r in s.regole.all():
                         for af in r.af.all():
-                            af.activities = map_activities.get(
-                                af.af_pds_id, []
-                            )
+                            af.activities = [x for x in map_activities.get(af.af_pds_id, []) if x.anno_corso == r.anno_corso_reg_sce]
+                            # ~ af.activities = map_activities.get(
+                                # ~ af.af_pds_id, []
+                            # ~ )
                         for bl in r.blocchi.all():
                             for blaf in bl.af_blocco.all():
-                                blaf.activities = map_activities.get(
-                                    blaf.af_pds_id, []
-                                )
+                                blaf.activities = [x for x in map_activities.get(blaf.af_pds_id, []) if x.anno_corso == r.anno_corso_reg_sce]
+                                # ~ blaf.activities = map_activities.get(
+                                    # ~ blaf.af_pds_id, []
+                                # ~ )
             
             # ~ schede = sorted(
                 # ~ list(schede),
