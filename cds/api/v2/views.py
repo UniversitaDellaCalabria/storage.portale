@@ -794,9 +794,10 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     ).prefetch_related(
                         Prefetch(
                             'regole',
-                            queryset=DidatticaPianiRegSce.objects.filter(
-                                tipo_reg_sce_cod__in=["O","F"]
-                            ).prefetch_related('af'),
+                            queryset=DidatticaPianiRegSce.objects.prefetch_related('af'),
+                            #queryset=DidatticaPianiRegSce.objects.filter(
+                            #    tipo_reg_sce_cod__in=["O","F"]
+                            #).prefetch_related('af'),
                             to_attr='regole_filtrate'
                         ),
                     ).order_by(
