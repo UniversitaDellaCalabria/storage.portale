@@ -246,7 +246,8 @@ class StudyActivitiesFilter(filters.FilterSet):
 
     def filter_teacher_last_name(self, queryset, name, value):
         return queryset.filter(
-            mod_off_id__doc_resp_mod_id_ab__cognome__iexact=value
+            mod_off_id__af_off__doc_tit_id_ab__cognome=value
+            # mod_off_id__doc_resp_mod_id_ab__cognome__iexact=value
         )
         
     def filter_ssd(self, queryset, name, value):
