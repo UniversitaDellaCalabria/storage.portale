@@ -265,7 +265,6 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     surname = serializers.CharField(source="cognome")
     id = serializers.SerializerMethodField()
-    taxpayer_ID = serializers.CharField(source="cod_fis")
     roles = serializers.SerializerMethodField()
     officeReference = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
@@ -374,7 +373,6 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
             "name",
             "surname",
             "id",
-            "taxpayer_ID",
             "roles",
             "officeReference",
             "email",
