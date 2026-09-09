@@ -203,12 +203,17 @@ class TeacherSerializer(serializers.ModelSerializer):
         ]
 
     def get_contacts(self, obj, contactDescr):
-        if contactDescr in PERSON_CONTACTS_TO_TAKE:
-            for contact in obj.contatti:
-                tipo = contact.cd_tipo_cont
-                if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                    return contact.contatto
-        return []
+        result = []
+        if contactDescr not in PERSON_CONTACTS_TO_TAKE:
+            return []
+        for contact in obj.contatti:
+            tipo = contact.cd_tipo_cont
+            if tipo.descr_contatto in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                continue
+            descr = tipo.descr_contatto
+            if descr == contactDescr:
+                result.append(contact.contatto)
+        return result
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_officeReference(self, obj):
