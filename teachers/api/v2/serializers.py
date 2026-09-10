@@ -203,9 +203,11 @@ class TeacherSerializer(serializers.ModelSerializer):
         ]
 
     def get_contacts(self, obj, contactDescr):
-        result = []
         if contactDescr not in PERSON_CONTACTS_TO_TAKE:
             return []
+        if not getattr(obj, 'contatti', None):
+            return []
+        result = []
         for contact in obj.contatti:
             tipo = contact.cd_tipo_cont
             if tipo.descr_contatto in PERSON_CONTACTS_EXCLUDE_STRINGS:

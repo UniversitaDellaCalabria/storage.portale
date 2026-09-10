@@ -46,21 +46,19 @@ def get_roles_with_start(cls, obj):
 
 
 def get_contacts(obj, contactDescr):
-    if obj.contatti is not None:
-        contacts = obj.contatti
-    elif obj.email is not None:
-        contacts = obj.email
-    else:
+    if contactDescr not in PERSON_CONTACTS_TO_TAKE:
         return []
-    results = []
-    if contactDescr in PERSON_CONTACTS_TO_TAKE:
-        for contact in contacts:
-            tipo = contact.cd_tipo_cont
-            if tipo.descr_contatto != contactDescr:
-                continue
-            if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                results.append(contact.contatto)  
-    return results
+    if not getattr(obj, 'contatti', None):
+        return []
+    result = []
+    for contact in obj.contatti:
+        tipo = contact.cd_tipo_cont
+        if tipo.descr_contatto in PERSON_CONTACTS_EXCLUDE_STRINGS:
+            continue
+        descr = tipo.descr_contatto
+        if descr == contactDescr:
+            result.append(contact.contatto)
+    return result
 
 
 def get_personale_matricola(personale_id):
