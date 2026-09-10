@@ -240,19 +240,22 @@ SPECTACULAR_SETTINGS = {
 ### patch per tabelle unmanaged nei test
 
 import sys
-from django.db.models.signals import pre_migrate
-
-# Controlla se siamo all'interno di un'esecuzione di test o coverage
-IS_TESTING = "test" in sys.argv or any("coverage" in arg for arg in sys.argv)
+from django.test.runner import DiscoverRunner
 
 
-def handle_unmanaged_models(sender, **kwargs):
-    from django.apps import apps
+class UnmanagedModelsTestRunner(DiscoverRunner):
 
-    for model in apps.get_models():
-        if not model._meta.managed:
-            model._meta.managed = True
+    def setup_databases(self, **kwargs):
+        from django.apps import apps
+
+        # Prima di creare e migrare il DB di test, forza managed=True su tutti i modelli
+        for model in apps.get_models():
+            if not model._meta.managed:
+                model._meta.managed = True
+
+        return super().setup_databases(**kwargs)
 
 
-if IS_TESTING:
-    pre_migrate.connect(handle_unmanaged_models)
+# Forza l'uso del runner personalizzato solo durante l'esecuzione dei test / coverage
+if "test" in sys.argv or any("coverage" in arg for arg in sys.argv):
+    TEST_RUNNER = "ricerca.settingslocal_test.UnmanagedModelsTestRunner"  # <--- adatta al percorso del tuo settings
