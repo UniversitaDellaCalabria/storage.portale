@@ -107,7 +107,7 @@ class StructureDetailSerializer(serializers.Serializer):
                 )
             result.append(
                 {
-                    "ID": encrypt(q["cod_fis__matricola"]),
+                    "ID": q["cod_fis__id_ab"],
                     "Name": full_name,
                     "Function": q["ds_funzione"],
                     "FunctionCod": q["funzione"],

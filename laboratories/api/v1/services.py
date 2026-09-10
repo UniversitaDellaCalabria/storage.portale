@@ -92,6 +92,7 @@ class ServiceLaboratorio:
                 "sede_dimensione",
                 "responsabile_scientifico",
                 "matricola_responsabile_scientifico",
+                "matricola_responsabile_scientifico__id_ab",
                 "laboratorio_interdipartimentale",
                 "finalita_servizi_it",
                 "finalita_servizi_en",
@@ -121,6 +122,7 @@ class ServiceLaboratorio:
             personale_ricerca = LaboratorioPersonaleRicerca.objects.filter(
                 laboratorio_dati_base__id=q["id"]
             ).values(
+                "matricola_personale_ricerca__id_ab",
                 "matricola_personale_ricerca__matricola",
                 "matricola_personale_ricerca__nome",
                 "matricola_personale_ricerca__cognome",
@@ -129,6 +131,7 @@ class ServiceLaboratorio:
             personale_tecnico = LaboratorioPersonaleTecnico.objects.filter(
                 laboratorio_dati_base__id=q["id"]
             ).values(
+                "matricola_personale_tecnico__id_ab",
                 "matricola_personale_tecnico__matricola",
                 "matricola_personale_tecnico__nome",
                 "matricola_personale_tecnico__cognome",
@@ -250,6 +253,7 @@ class ServiceLaboratorio:
             "id",
             "referente_compilazione",
             "matricola_referente_compilazione",
+            "matricola_referente_compilazione__id_ab",
             "nome_laboratorio",
             "acronimo",
             "nome_file_logo",

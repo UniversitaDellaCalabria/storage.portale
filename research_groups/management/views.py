@@ -290,7 +290,7 @@ def researchgroup_teacher_edit(
         RicercaDocenteGruppo.objects.select_related("personale"), pk=teacher_rgroup_id
     )
     teacher = teacher_rgroup.personale
-    encrypted_matricola = encrypt(teacher.matricola)
+    encrypted_matricola = teacher.id_ab
     teacher_data = f"{teacher.nome} {teacher.cognome}"
 
     form = RicercaGruppoDocenteForm(

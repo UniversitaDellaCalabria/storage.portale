@@ -302,7 +302,7 @@ def project_director_edit(request, project_id, director_id, project=None):
     director_data = ""
     if director:
         director_data = f"{director.cognome} {director.nome}"
-        initial = {"choosen_person": encrypt(director.matricola)}
+        initial = {"choosen_person": director.id_ab}
 
     external_form = ProgettoResponsabileScientificoForm(instance=project_director)
     internal_form = ChoosenPersonForm(initial=initial, required=True)
@@ -482,7 +482,7 @@ def project_researcher_edit(request, project_id, researcher_id, project=None):
     researcher_data = ""
     if researcher:
         researcher_data = f"{researcher.cognome} {researcher.nome}"
-        initial = {"choosen_person": encrypt(researcher.matricola)}
+        initial = {"choosen_person": researcher.id_ab}
 
     external_form = ProgettoRicercatoreForm(instance=project_researcher)
     internal_form = ChoosenPersonForm(initial=initial, required=True)

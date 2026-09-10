@@ -117,7 +117,7 @@ class ApiCdsUnitTest(TestCase):
         self.assert_data_len(url, {"name": "matematica"}, 0)
         self.assert_data_len(url, {"teacher": "Garofalo"}, 1)
         self.assert_data_len(url, {"cds_cod": "aaaa"}, 1)
-        self.assert_data_len(url, {"teacher_matricola": encrypt("111111")}, 1)
+        self.assert_data_len(url, {"teacher_matricola": 1}, 1)
         self.assert_data_len(url, {"cds": "Informatica"}, 0)
         self.assert_data_len(url, {"ssd": "INF"}, 1)
         self.assert_data_len(url, {"ssd": "MAT"}, 0)

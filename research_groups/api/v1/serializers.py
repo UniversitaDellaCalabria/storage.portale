@@ -39,7 +39,7 @@ class AllResearchGroupsSerializer(serializers.Serializer):
             )
             result.append(
                 {
-                    "TeacherID": encrypt(q["personale_id__matricola"]),
+                    "TeacherID": q["personale_id__id_ab"],
                     "TeacherName": full_name,
                     "DepartmentName": q["personale_id__ds_sede"],
                     "DepartmentCod": q["personale_id__sede"],

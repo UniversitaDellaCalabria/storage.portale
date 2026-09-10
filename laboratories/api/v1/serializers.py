@@ -34,11 +34,9 @@ class LaboratoryDetailSerializer(serializers.Serializer):
 
         return {
             "LaboratoryId": query["id"],
-            "CompletionReferentId": encrypt(query["matricola_referente_compilazione"]),
+            "CompletionReferentId": query["matricola_referente_compilazione__id_ab"],
             "CompletionReferentName": query["referente_compilazione"],
-            "ScientificDirectorId": encrypt(
-                query["matricola_responsabile_scientifico"]
-            ),
+            "ScientificDirectorId": query["matricola_responsabile_scientifico__id_ab"],
             "ScientificDirectorName": query["responsabile_scientifico"],
             "ScientificDirectorEmail": query["email"],
             "LaboratoryName": query["nome_laboratorio"],
@@ -137,9 +135,7 @@ class LaboratoryDetailSerializer(serializers.Serializer):
                 )
             result.append(
                 {
-                    "ResearchPersonnelID": encrypt(
-                        q["matricola_personale_ricerca__matricola"]
-                    ),
+                    "ResearchPersonnelID": q["matricola_personale_ricerca__id_ab"],
                     "ResearchPersonnelName": full_name,
                     "ResearchPersonnelEmail": q["email"],
                 }
@@ -165,9 +161,7 @@ class LaboratoryDetailSerializer(serializers.Serializer):
                 )
             result.append(
                 {
-                    "TechPersonnelID": encrypt(
-                        q["matricola_personale_tecnico__matricola"]
-                    ),
+                    "TechPersonnelID": q["matricola_personale_tecnico__id_ab"],
                     "TechPersonnelName": full_name,
                     "TechPersonnelRole": q["ruolo"],
                     "TechPersonnelEmail": q["email"],
@@ -232,9 +226,7 @@ class LaboratoriesSerializer(serializers.Serializer):
             "InfrastructureName": query["infrastruttura_riferimento__descrizione"],
             "Dimension": query["sede_dimensione"],
             "ScientificDirector": query["responsabile_scientifico"],
-            "ScientificDirectorId": encrypt(
-                query["matricola_responsabile_scientifico"]
-            ),
+            "ScientificDirectorId": query["matricola_responsabile_scientifico__id_ab"],
             "LaboratoryResearchPersonnel": research_personnel,
             "LaboratoryScopes": scopes,
             "LaboratoryTechPersonnel": tech_personnel,
@@ -295,9 +287,7 @@ class LaboratoriesSerializer(serializers.Serializer):
                 )
             result.append(
                 {
-                    "ResearchPersonnelID": encrypt(
-                        q["matricola_personale_ricerca__matricola"]
-                    ),
+                    "ResearchPersonnelID": q["matricola_personale_ricerca__id_ab"],
                     "ResearchPersonnelName": full_name,
                 }
             )
@@ -322,9 +312,7 @@ class LaboratoriesSerializer(serializers.Serializer):
                 )
             result.append(
                 {
-                    "TechPersonnelID": encrypt(
-                        q["matricola_personale_tecnico__matricola"]
-                    ),
+                    "TechPersonnelID": q["matricola_responsabile_scientifico__id_ab"],
                     "TechPersonnelName": full_name,
                     "TechPersonnelRole": q["ruolo"],
                 }

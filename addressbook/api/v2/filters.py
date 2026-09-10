@@ -168,12 +168,19 @@ class AddressbookFilter(filters.FilterSet):
         return queryset.filter(id_ab__in=result)
     
     def get_contacts(self, obj, contactDescr):
-        if contactDescr in PERSON_CONTACTS_TO_TAKE:
-            for contact in obj.contatti:
-                tipo = contact.cd_tipo_cont
-                if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                    return contact.contatto
-        return []
+        if contactDescr not in PERSON_CONTACTS_TO_TAKE:
+            return []
+        if not getattr(obj, 'contatti', None):
+            return []
+        result = []
+        for contact in obj.contatti:
+            tipo = contact.cd_tipo_cont
+            if tipo.descr_contatto in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                continue
+            descr = tipo.descr_contatto
+            if descr == contactDescr:
+                result.append(contact.contatto)
+        return result
 
     def filter_by_phone(self, queryset, name, value):
         if not value:

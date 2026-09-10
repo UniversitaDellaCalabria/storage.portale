@@ -83,6 +83,7 @@ class ServiceDocente:
                 teachers = RicercaDocenteGruppo.objects.filter(
                     ricerca_gruppo_id=q["id"]
                 ).values(
+                    "personale_id__id_ab",
                     "personale_id__matricola",
                     "personale_id__nome",
                     "personale_id__middle_name",
@@ -124,6 +125,7 @@ class ServiceDocente:
                 teachers = RicercaDocenteGruppo.objects.filter(
                     ricerca_gruppo_id=q["id"]
                 ).values(
+                    "personale_id__id_ab",
                     "personale_id__matricola",
                     "personale_id__nome",
                     "personale_id__middle_name",

@@ -36,9 +36,9 @@ class ResearchLinesUnitTest(TestCase):
         self.assert_data_len(url, {"search": "reg"}, 1)
         self.assert_data_len(url, {"year": 2020}, 0)
         self.assert_data_len(
-            url, {"teacher": encrypt("111112"), "department": "1111"}, 1
+            url, {"teacher": 1, "department": "1111"}, 1
         )
-        self.assert_data_len(url, {"teacher": encrypt("111112")}, 1)
+        self.assert_data_len(url, {"teacher": 1}, 1)
         self.assert_data_len(url, {"department": "1111"}, 1)
 
 class AppliedResearchLinesUnitTest(TestCase):
@@ -72,7 +72,7 @@ class AppliedResearchLinesUnitTest(TestCase):
         self.assert_data_len(url, {"year": 2020}, 0)
         
         self.assert_data_len(
-            url, {"teacher": encrypt("111112"), "department": "1111"}, 1
+            url, {"teacher": 1, "department": "1111"}, 1
         )
-        self.assert_data_len(url, {"teacher": encrypt("111112")}, 1)
+        self.assert_data_len(url, {"teacher": 1}, 1)
         self.assert_data_len(url, {"department": "1111"}, 1)

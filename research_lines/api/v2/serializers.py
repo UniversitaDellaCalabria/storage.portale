@@ -26,7 +26,7 @@ class BaseResearchLinesSerializer(serializers.ModelSerializer):
     def get_teachers(self, obj):
         return [
             {
-                "id": encrypt(docente.personale.matricola),
+                "id": docente.personale.id_ab,
                 "name": (
                     f"{docente.personale.cognome} {docente.personale.nome}"
                     + (
@@ -73,7 +73,7 @@ class AppliedResearchLinessSerializer(serializers.ModelSerializer):
     def get_teachers(self, obj):
         return [
             {
-                "id": encrypt(docente.personale.matricola),
+                "id": docente.personale.id_ab,
                 "name": (
                     f"{docente.personale.cognome} {docente.personale.nome}"
                     + (

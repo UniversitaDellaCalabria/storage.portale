@@ -621,6 +621,7 @@ class ServicePersonale:
                 "cod_fis__cognome",
                 "cod_fis__middle_name",
                 "cod_fis__matricola",
+                "cod_fis__id_ab",
             )
             if len(funzioni_personale) > 0:
                 q["FunzioniPersonale"] = funzioni_personale

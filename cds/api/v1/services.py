@@ -333,9 +333,11 @@ class ServiceDidatticaCds:
             DidatticaCdsAltriDati.objects.filter(regdid_id=cdsid_param)
             .values(
                 "matricola_coordinatore",
+                "matricola_coordinatore__id_ab",
                 "nome_origine_coordinatore",
                 "matricola_coordinatore__email",
                 "matricola_vice_coordinatore",
+                "matricola_vice_coordinatore__id_ab",
                 "nome_origine_vice_coordinatore",
                 "matricola_vice_coordinatore__email",
                 # 'num_posti',
@@ -353,6 +355,7 @@ class ServiceDidatticaCds:
                 "ordine",
                 "nome_ufficio",
                 "matricola_riferimento",
+                "matricola_riferimento__id_ab",
                 "nome_origine_riferimento",
                 "telefono",
                 "email",
@@ -405,6 +408,7 @@ class ServiceDidatticaCds:
                     "ordine",
                     "id",
                     "matricola",
+                    "matricola__id_ab",
                     "cognome",
                     "nome",
                     "funzione_it",
@@ -779,6 +783,7 @@ class ServiceDidatticaAttivitaFormativa:
                 "anno_corso",
                 "matricola_resp_did",
                 "matricola_resp_did__nome",
+                "matricola_resp_did__id_ab",
                 "matricola_resp_did__cognome",
                 "matricola_resp_did__middle_name",
                 "pds_des",
@@ -888,6 +893,7 @@ class ServiceDidatticaAttivitaFormativa:
                 "fat_part_stu_des",
                 "ciclo_des",
                 "matricola_resp_did",
+                "matricola_resp_did__id_ab"
             )
         )
 
@@ -919,6 +925,7 @@ class ServiceDidatticaAttivitaFormativa:
                 "tipo_af_intercla_cod",
                 "tipo_af_intercla_des",
                 "matricola_resp_did",
+                "matricola_resp_did__id_ab",
                 "mutuata_flg",
                 "af_master_id",
                 "af_radice_id",

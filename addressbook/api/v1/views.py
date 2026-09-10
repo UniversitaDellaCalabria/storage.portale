@@ -152,7 +152,7 @@ class ApiPersonId(APIView):
         p = Personale.objects.filter(matricola=matricola).first()
         if not p:
             return Response("Il dato non esiste", status=status.HTTP_404_NOT_FOUND)
-        return Response(encrypt(matricola))
+        return Response(p.id_ab)
 
 
 class ApiDecryptedPersonId(APIView):

@@ -3,6 +3,9 @@ from django.http import Http404
 from generics.utils import decrypt
 from django.apps import apps
 
+from .models import (
+    Personale, PersonaleContatti
+)
 from .settings import (
     ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN,
     PERSON_CONTACTS_EXCLUDE_STRINGS,
@@ -46,37 +49,57 @@ def get_roles_with_start(cls, obj):
 
 
 def get_contacts(obj, contactDescr):
-    if obj.contatti is not None:
-        contacts = obj.contatti
-    elif obj.email is not None:
-        contacts = obj.email
-    else:
+    if contactDescr not in PERSON_CONTACTS_TO_TAKE:
         return []
-    results = []
-    if contactDescr in PERSON_CONTACTS_TO_TAKE:
-        for contact in contacts:
-            tipo = contact.cd_tipo_cont
-            if tipo.descr_contatto != contactDescr:
-                continue
-            if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                results.append(contact.contatto)  
-    return results
+    if not getattr(obj, 'contatti', None):
+        return []
+    result = []
+    for contact in obj.contatti:
+        tipo = contact.cd_tipo_cont
+        if tipo.descr_contatto in PERSON_CONTACTS_EXCLUDE_STRINGS:
+            continue
+        descr = tipo.descr_contatto
+        if descr == contactDescr:
+            result.append(contact.contatto)
+    return result
+
+# def get_contacts(obj, contactDescr):
+#     if getattr(obj, 'contatti', None):
+#         contacts = obj.contatti
+#     elif obj.email is not None:
+#         contacts = obj.email
+#     else:
+#         return []
+#     results = []
+#     if contactDescr in PERSON_CONTACTS_TO_TAKE:
+#         for contact in contacts:
+#             print(contact)
+#             descr = contact["cd_tipo_cont__descr_contatto"]
+#             if descr != contactDescr:
+#                 continue
+#             if descr not in PERSON_CONTACTS_EXCLUDE_STRINGS:
+#                 results.append(contact["contatto"])
+                  
+#     return results
 
 
 def get_personale_matricola(personale_id):
-    if personale_id[len(personale_id) - 2:] == "==":
-        return decrypt(personale_id)
+    # if personale_id[len(personale_id) - 2:] == "==":
+    #     return decrypt(personale_id)
 
-    personale_model = apps.get_model("addressbook.Personale")
-    personalecontatti_model = apps.get_model("addressbook.PersonaleContatti")
-
-    contatto = personalecontatti_model.objects.filter(
-        contatto__istartswith=f"{personale_id}@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"
-    ).first()
-    if not contatto:
-        raise Http404
+    # personale_model = apps.get_model("addressbook.Personale")
+    # personalecontatti_model = apps.get_model("addressbook.PersonaleContatti")
+    
+    try:
+        id_ab= int(personale_id)
+    except ValueError:
+        c = PersonaleContatti.objects.filter(
+            contatto__istartswith=f"{personale_id}@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"
+        ).first()
+        if not c: raise Http404
+        id_ab = c.id_ab
     personale = (
-        personale_model.objects.filter(id_ab=contatto.id_ab).values("matricola").first()
+        Personale.objects.filter(id_ab=id_ab).values("matricola").first()
     )
     if not personale:
         raise Http404
@@ -85,7 +108,7 @@ def get_personale_matricola(personale_id):
 
 def add_email_addresses(cod_fis):
     contatti = (
-        apps.get_model("addressbook.PersonaleContatti")
+        PersonaleContatti
         .objects.filter(cod_fis=cod_fis, cd_tipo_cont="EMAIL")
         .order_by("prg_priorita")
         .only("contatto")
@@ -100,12 +123,11 @@ def add_email_addresses(cod_fis):
 
 
 def append_email_addresses(addressbook_queryset, id_ab_key):
-    personalecontatti_model = apps.get_model("addressbook.PersonaleContatti")
     cache_key = "addressbook_email_list"
     if cache.get(cache_key) is None:
         cached_contacts = {}
         contacts = (
-            personalecontatti_model.objects.filter(
+            PersonaleContatti.objects.filter(
                 cd_tipo_cont__descr_contatto="Posta Elettronica"
             )
             .order_by("prg_priorita")

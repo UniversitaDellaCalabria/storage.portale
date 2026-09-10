@@ -72,6 +72,7 @@ class CompaniesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                 "descrizione_eng",
                 "referente_unical",
                 "matricola_referente_unical",
+                "matricola_referente_unical__id_ab",
                 "area_tecnologica",
                 "area_tecnologica__descr_area_ita",
                 "area_tecnologica__descr_area_eng",

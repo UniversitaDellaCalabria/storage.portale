@@ -178,7 +178,7 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
         )
 
         url = reverse(
-            "teachers:apiv1:teacher-research-lines", kwargs={"teacherid": encrypt("111112")}
+            "teachers:apiv1:teacher-research-lines", kwargs={"teacherid": 1}
         )
 
         # check url
@@ -196,7 +196,7 @@ class ApiTeacherResearchLinesUnitTest(TestCase):
         # teacher 2 has one ricercalineabase (ended) and one
         # ricercalineaapplicata
         url = reverse(
-            "teachers:apiv1:teacher-research-lines", kwargs={"teacherid": encrypt("111111")}
+            "teachers:apiv1:teacher-research-lines", kwargs={"teacherid": 2}
         )
         res = req.get(url)
         assert len(res.json()["results"]) == 2
@@ -340,7 +340,7 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {"search": "gar"}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == "111111"
+        assert decrypt(res.json()["results"][0]["TeacherID"]) == 2
 
         data = {"role": "PA", "lang": "it"}
         res = req.get(url, data=data)
@@ -360,15 +360,15 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {"regdid": 1}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == "111112"
+        assert decrypt(res.json()["results"][0]["TeacherID"]) == 1
 
         data = {"regdid": 2}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == "111111"
+        assert decrypt(res.json()["results"][0]["TeacherID"]) == 2
 
         data = {"regdid": 1, "role": "PA"}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == "111112"
+        assert decrypt(res.json()["results"][0]["TeacherID"]) == 1
 
         data = {"cds": 1}
         res = req.get(url, data=data)
@@ -443,7 +443,7 @@ class ApiTeacherStudyActivitiesUnitTest(TestCase):
         )
 
         url = reverse(
-            "teachers:apiv1:teacher-study-activities", kwargs={"teacherid": encrypt("111112")}
+            "teachers:apiv1:teacher-study-activities", kwargs={"teacherid": 1}
         )
 
         # check url
@@ -695,7 +695,7 @@ class ApiTeacherInfoUnitTest(TestCase):
             }
         )
 
-        url = reverse("teachers:apiv1:teacher-info", kwargs={"teacherid": encrypt("111112")})
+        url = reverse("teachers:apiv1:teacher-info", kwargs={"teacherid": 1})
 
         # check url
         res = req.get(url)
@@ -704,9 +704,9 @@ class ApiTeacherInfoUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert decrypt(res.json()["results"]["TeacherID"]) == "111112"
+        assert decrypt(res.json()["results"]["TeacherID"]) == 1
 
-        url = reverse("teachers:apiv1:teacher-info", kwargs={"teacherid": encrypt("111113")})
+        url = reverse("teachers:apiv1:teacher-info", kwargs={"teacherid": 3})
         res = req.get(url)
         assert res.json()["results"]["TeacherFirstName"] == "Lionel"
 
@@ -749,7 +749,7 @@ class ApiTeacherNewsUnitTest(TestCase):
             }
         )
 
-        url = reverse("teachers:apiv1:teacher-news", kwargs={"teacherid": encrypt("111112")})
+        url = reverse("teachers:apiv1:teacher-news", kwargs={"teacherid": 1})
 
         # check url
         res = req.get(url)
@@ -799,7 +799,7 @@ class ApiTeacherMaterialsUnitTest(TestCase):
         )
 
         url = reverse(
-            "teachers:apiv1:teacher-materials", kwargs={"teacherid": encrypt("111112")}
+            "teachers:apiv1:teacher-materials", kwargs={"teacherid": 1}
         )
 
         # check url
@@ -977,7 +977,7 @@ class ApiPublicationsListUnitTest(TestCase):
 
         req = Client()
 
-        url = reverse("teachers:apiv1:publications", kwargs={"teacherid": encrypt("111112")})
+        url = reverse("teachers:apiv1:publications", kwargs={"teacherid": 1})
 
         # check url
         res = req.get(url)
@@ -1167,7 +1167,7 @@ class ApiPublicationDetailUnitTest(TestCase):
 
         url = reverse(
             "teachers:apiv1:publication-detail",
-            kwargs={"teacherid": encrypt("111112"), "publicationid": "1"},
+            kwargs={"teacherid": 1, "publicationid": "1"},
         )
 
         # check url
@@ -1180,7 +1180,7 @@ class ApiPublicationDetailUnitTest(TestCase):
 
         url = reverse(
             "teachers:apiv1:publication-detail",
-            kwargs={"teacherid": encrypt("111112"), "publicationid": "2"},
+            kwargs={"teacherid": 1, "publicationid": "2"},
         )
 
         res = req.get(url)
@@ -1596,7 +1596,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
 
         data = {"search": "gar"}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == "111111"
+        assert decrypt(res.json()["results"][0]["TeacherID"]) == 2
 
         data = {"role": "PA", "lang": "it"}
         res = req.get(url, data=data)
@@ -1619,15 +1619,15 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
 
         data = {"regdid": 1}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == "111112"
+        assert decrypt(res.json()["results"][0]["TeacherID"]) == 1
 
         data = {"regdid": 2}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == "111111"
+        assert decrypt(res.json()["results"][0]["TeacherID"]) == 2
 
         data = {"regdid": 1, "role": "PA"}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == "111112"
+        assert decrypt(res.json()["results"][0]["TeacherID"]) == 1
 
         data = {"cds": 1}
         res = req.get(url, data=data)

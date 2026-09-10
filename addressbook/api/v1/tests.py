@@ -583,13 +583,13 @@ class ApiPersonaleDetailUnitTest(TestCase):
         )
 
         url = reverse(
-            "addressbook:apiv1:personale-detail", kwargs={"personaleid": encrypt("111112")}
+            "addressbook:apiv1:personale-detail", kwargs={"personaleid": 1}
         )
         url1 = reverse(
-            "addressbook:apiv1:personale-detail", kwargs={"personaleid": encrypt("111113")}
+            "addressbook:apiv1:personale-detail", kwargs={"personaleid": 2}
         )
         url2 = reverse(
-            "addressbook:apiv1:personale-detail", kwargs={"personaleid": encrypt("111114")}
+            "addressbook:apiv1:personale-detail", kwargs={"personaleid": 3}
         )
 
         # check url
@@ -605,8 +605,8 @@ class ApiPersonaleDetailUnitTest(TestCase):
         res = req.get(url)
         res1 = req.get(url1)
 
-        assert decrypt(res.json()["results"]["ID"]) == "111112"
-        assert decrypt(res1.json()["results"]["ID"]) == "111113"
+        assert decrypt(res.json()["results"]["ID"]) == 1
+        assert decrypt(res1.json()["results"]["ID"]) == 2
 
         usr = get_user_model().objects.create(
             **{
@@ -617,7 +617,7 @@ class ApiPersonaleDetailUnitTest(TestCase):
         token = Token.objects.create(user=usr)
 
         url = reverse(
-            "addressbook:apiv1:personale-detail", kwargs={"personaleid": encrypt("111112")}
+            "addressbook:apiv1:personale-detail", kwargs={"personaleid": 1}
         )
         res = req.get(url, {}, HTTP_AUTHORIZATION=f"Token {token.key}")
         assert res.status_code == 200
@@ -910,9 +910,8 @@ class ApiPersonIdUnitTest(TestCase):
         assert res.status_code == 404
 
         # POST
-        m_test_encrypted = encrypt("111111")
         res = req.post(
-            url, {"id": m_test_encrypted}, HTTP_AUTHORIZATION=f"Token {token.key}"
+            url, {"id": 2}, HTTP_AUTHORIZATION=f"Token {token.key}"
         )
         assert res.status_code == 200
 

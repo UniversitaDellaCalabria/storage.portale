@@ -34,7 +34,8 @@ class TeachersSerializer(serializers.Serializer):
             + (" " + query["middle_name"] if query["middle_name"] is not None else "")
         )
         return {
-            "TeacherID": official_email.split("@")[0] if official_email else encrypt(query["matricola"]),
+            "TeacherID": query["id_ab"],
+            "TeacherFriendlyID": official_email.split("@")[0] if official_email else None,
             "TeacherName": full_name,
             "TeacherDepartmentID": query["dip_id"],
             "TeacherDepartmentCod": query["dip_cod"],
@@ -105,15 +106,16 @@ class TeacherInfoSerializer(serializers.Serializer):
 
     @staticmethod
     def to_dict(query, req_lang="en"):
-        if not query["email"]: official_email = None
-        else: official_email = next((e for e in query["email"] if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")), None)
+        if not query["Posta Elettronica"]: official_email = None
+        else: official_email = next((e for e in query["Posta Elettronica"] if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")), None)
 
         functions = None
         if query["Functions"] is not None:
             functions = TeacherInfoSerializer.to_dict_functions(query["Functions"])
 
         return {
-            "TeacherID": official_email.split("@")[0] if official_email else encrypt(query["matricola"]),
+            "TeacherID": query["id_ab"],
+            "TeacherFriendlyID": official_email.split("@")[0] if official_email else None,
             "TeacherFirstName": query["nome"]
             + (" " + query["middle_name"] if query["middle_name"] is not None else ""),
             "TeacherLastName": query["cognome"],
@@ -316,7 +318,7 @@ class PublicationSerializer(serializers.Serializer):
                 )
             result.append(
                 {
-                    "AuthorId": encrypt(q["ab__matricola"]),
+                    "AuthorId": q["ab__id_ab"],
                     "AuthorName": full_name,
                     "AuthorEmail": q["email"],
                 }

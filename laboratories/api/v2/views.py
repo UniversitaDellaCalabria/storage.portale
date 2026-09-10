@@ -161,6 +161,7 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     "sede_dimensione",
                     "responsabile_scientifico",
                     "matricola_responsabile_scientifico",
+                    "matricola_responsabile_scientifico__id_ab",
                     "laboratorio_interdipartimentale",
                     "finalita_servizi_it",
                     "finalita_servizi_en",
@@ -202,6 +203,7 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     Prefetch(
                         "laboratoriopersonalericerca_set",
                         queryset=LaboratorioPersonaleRicerca.objects.only(
+                            "matricola_personale_ricerca__id_ab",
                             "matricola_personale_ricerca__matricola",
                             "matricola_personale_ricerca__nome",
                             "matricola_personale_ricerca__cognome",
@@ -212,6 +214,7 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     Prefetch(
                         "laboratoriopersonaletecnico_set",
                         queryset=LaboratorioPersonaleTecnico.objects.only(
+                            "matricola_personale_tecnico__id_ab",
                             "matricola_personale_tecnico__matricola",
                             "matricola_personale_tecnico__nome",
                             "matricola_personale_tecnico__cognome",
@@ -260,6 +263,7 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     "id",
                     "referente_compilazione",
                     "matricola_referente_compilazione",
+                    "matricola_referente_compilazione__id_ab",
                     "nome_laboratorio",
                     "acronimo",
                     "nome_file_logo",

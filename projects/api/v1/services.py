@@ -98,12 +98,14 @@ class ServiceProgetto:
                 progetto=q["id"]
             ).values(
                 "matricola",
+                "matricola__id_ab",
                 "nome_origine",
             )
             ricercatori = ProgettoRicercatore.objects.filter(
                 progetto=q["id"]
             ).values(
                 "matricola",
+                "matricola__id_ab",
                 "nome_origine",
             )
             if len(responsabili) == 0:
@@ -150,12 +152,14 @@ class ServiceProgetto:
                 progetto=q["id"]
             ).values(
                 "matricola",
+                "matricola__id_ab",
                 "nome_origine",
             )
             ricercatori = ProgettoRicercatore.objects.filter(
                 progetto=q["id"]
             ).values(
                 "matricola",
+                "matricola__id_ab",
                 "nome_origine",
             )
             if len(responsabili) == 0:

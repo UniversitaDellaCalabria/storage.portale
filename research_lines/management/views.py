@@ -569,7 +569,7 @@ def base_research_line_teacher_edit(
         RicercaDocenteLineaBase.objects.select_related("personale"), pk=teacher_rline_id
     )
     teacher = teacher_rline.personale
-    teacher_matricola = encrypt(teacher.matricola)
+    teacher_matricola = teacher.id_ab
     teacher_data = f"{teacher.nome} {teacher.cognome}"
     form = RicercaDocenteLineaBaseForm(
         instance=teacher_rline, initial={"choosen_person": teacher_matricola}
@@ -640,7 +640,7 @@ def applied_researchline_teacher_edit(
         pk=teacher_rline_id,
     )
     teacher = teacher_rline.personale
-    teacher_matricola = encrypt(teacher.matricola)
+    teacher_matricola = teacher.id_ab
     teacher_data = f"{teacher.nome} {teacher.cognome}"
     form = RicercaDocenteLineaApplicataForm(
         instance=teacher_rline, initial={"choosen_person": teacher_matricola}

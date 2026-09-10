@@ -94,30 +94,30 @@ class LaboratoriesUnitTest(TestCase):
         self.assertEqual(res.status_code, 200)
 
         self.assert_equal_with_data(
-            url, "id", {"department": "1", "teacher": encrypt("111111")}, 1
+            url, "id", {"department": "1", "teacher": 1}, 1
         )
         self.assert_equal_with_data(
             url,
             "scientificDirector",
-            {"department": "1", "teacher": encrypt("111111")},
+            {"department": "1", "teacher": 1},
             "Mungari Simone",
         )
 
         self.assert_equal_with_data(
-            url, "id", {"department": "1", "teacher": encrypt("111111")}, 1
+            url, "id", {"department": "1", "teacher": 1}, 1
         )
         self.assert_equal_with_data(
             url,
             "scientificDirector",
-            {"department": "1", "teacher": encrypt("111111")},
+            {"department": "1", "teacher": 1},
             "Mungari Simone",
         )
 
-        self.assert_data_len(url, {"teacher": encrypt("111111")}, 2)
+        self.assert_data_len(url, {"teacher": 1}, 2)
         # self.assert_data_len(url, {"scope": "1"}, 1)
-        self.assert_data_len(url, {"teacher": encrypt("111112")}, 3)
-        self.assert_data_len(url, {"teacher": encrypt("111112"), "scope": "1"}, 1)
-        self.assert_data_len(url, {"teacher": encrypt("111111"), "scope": "1"}, 1)
+        self.assert_data_len(url, {"teacher": 2}, 3)
+        self.assert_data_len(url, {"teacher": 2, "scope": "1"}, 1)
+        self.assert_data_len(url, {"teacher": 1, "scope": "1"}, 1)
 
         self.assert_equal_with_data(url, "id", {"area": "Tecnico"}, 1)
         self.assert_equal_with_data(url, "dimension", {"area": "Tecnico"}, "290")

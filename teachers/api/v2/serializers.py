@@ -26,7 +26,8 @@ from structures.models import DidatticaDipartimento
 
 @extend_schema_serializer(examples=examples.TEACHERS_SERIALIZER_EXAMPLE)
 class TeachersSerializer(serializers.ModelSerializer):
-    id = serializers.SerializerMethodField()
+    id = serializers.IntegerField(source="id_ab")
+    friendlyId = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
     role = serializers.CharField(source="cd_ruolo")
     roleDescription = serializers.CharField(source="ds_ruolo_locale")
@@ -45,7 +46,7 @@ class TeachersSerializer(serializers.ModelSerializer):
         return add_email_addresses(obj.cod_fis)
 
     @extend_schema_field(serializers.CharField())
-    def get_id(self, obj):
+    def get_friendlyId(self, obj):
         official = get_contacts(obj, "Posta Elettronica")
         if not official:
             official_email = None
@@ -59,7 +60,7 @@ class TeachersSerializer(serializers.ModelSerializer):
                 None,
             )
         return (
-            official_email.split("@")[0] if official_email else encrypt(obj.matricola)
+            official_email.split("@")[0] if official_email else None
         )
 
     @extend_schema_field(serializers.CharField())
@@ -75,6 +76,7 @@ class TeachersSerializer(serializers.ModelSerializer):
         model = Personale
         fields = [
             "id",
+            "friendlyId",
             "name",
             "department",
             "role",
@@ -96,7 +98,8 @@ class TeachersSerializer(serializers.ModelSerializer):
 
 @extend_schema_serializer(examples=examples.TEACHER_SERIALIZER_EXAMPLE)
 class TeacherSerializer(serializers.ModelSerializer):
-    id = serializers.SerializerMethodField()
+    id = serializers.IntegerField(source="id_ab")
+    friendlyId = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
     departmentInfo = serializers.SerializerMethodField()
     role = serializers.CharField(source="cd_ruolo")
@@ -121,21 +124,19 @@ class TeacherSerializer(serializers.ModelSerializer):
     profileShortDescription = serializers.CharField(source="ds_profilo_breve")
 
     @extend_schema_field(serializers.CharField())
-    def get_id(self, obj):
+    def get_friendlyId(self, obj):
         official = get_contacts(obj, "Posta Elettronica")
-        if not official:
-            official_email = None
-        else:
-            official_email = next(
-                (
-                    e
-                    for e in official
-                    if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")
-                ),
-                None,
-            )
+        if not official: return None
+        official_email = next(
+            (
+                e
+                for e in official
+                if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")
+            ),
+            None,
+        )
         return (
-            official_email.split("@")[0] if official_email else encrypt(obj.matricola)
+            official_email.split("@")[0] if official_email else None
         )
 
     @extend_schema_field(serializers.CharField())
@@ -203,12 +204,19 @@ class TeacherSerializer(serializers.ModelSerializer):
         ]
 
     def get_contacts(self, obj, contactDescr):
-        if contactDescr in PERSON_CONTACTS_TO_TAKE:
-            for contact in obj.contatti:
-                tipo = contact.cd_tipo_cont
-                if tipo.descr_contatto not in PERSON_CONTACTS_EXCLUDE_STRINGS:
-                    return contact.contatto
-        return []
+        if contactDescr not in PERSON_CONTACTS_TO_TAKE:
+            return []
+        if not getattr(obj, 'contatti', None):
+            return []
+        result = []
+        for contact in obj.contatti:
+            tipo = contact.cd_tipo_cont
+            if tipo.descr_contatto in PERSON_CONTACTS_EXCLUDE_STRINGS:
+                continue
+            descr = tipo.descr_contatto
+            if descr == contactDescr:
+                result.append(contact.contatto)
+        return result
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_officeReference(self, obj):
@@ -261,6 +269,7 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = Personale
         fields = [
             "id",
+            "friendlyId",
             "name",
             "departmentInfo",
             "role",
@@ -362,7 +371,7 @@ class PublicationSerializer(serializers.ModelSerializer):
 
             authors.append(
                 {
-                    "id": encrypt(a.ab.matricola),
+                    "id": a.ab.id_ab,
                     "name": full_name,
                     "email": add_email_addresses(a.ab.cod_fis),
                 }

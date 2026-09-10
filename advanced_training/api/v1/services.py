@@ -81,6 +81,7 @@ class ServiceAltaFormazione:
                 "titolo_rilasciato",
                 "doppio_titolo",
                 "matricola_direttore_scientifico",
+                "matricola_direttore_scientifico__id_ab",
                 "nome_origine_direttore_scientifico",
                 "quota_iscrizione",
                 "quota_uditori",
@@ -135,7 +136,7 @@ class ServiceAltaFormazione:
             internal_scientific_council = (
                 AltaFormazioneConsiglioScientificoInterno.objects.filter(
                     alta_formazione_dati_base=q["id"]
-                ).values("matricola_cons", "nome_origine_cons")
+                ).values("matricola_cons", "matricola_cons__id_ab", "nome_origine_cons")
             )
 
             if len(internal_scientific_council) == 0:
@@ -205,6 +206,7 @@ class ServiceAltaFormazione:
                 "titolo_rilasciato",
                 "doppio_titolo",
                 "matricola_direttore_scientifico",
+                "matricola_direttore_scientifico__id_ab",
                 "nome_origine_direttore_scientifico",
                 "quota_iscrizione",
                 "quota_uditori",
@@ -248,7 +250,7 @@ class ServiceAltaFormazione:
             AltaFormazioneConsiglioScientificoInterno.objects.filter(
                 alta_formazione_dati_base=master_id
             )
-            .values("matricola_cons", "nome_origine_cons")
+            .values("matricola_cons", "matricola_cons__id_ab", "nome_origine_cons")
             .distinct()
         )
 

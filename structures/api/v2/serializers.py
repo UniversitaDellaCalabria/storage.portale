@@ -61,7 +61,7 @@ class StructureSerializer(serializers.ModelSerializer):
                 full_name = full_name + " " + f.cod_fis.middle_name
             return [
                 {
-                    "id": encrypt(f.cod_fis.matricola),
+                    "id": f.cod_fis.id_ab,
                     "name": full_name,
                     "function": f.ds_funzione,
                     "functionCod": f.funzione,

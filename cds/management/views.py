@@ -388,7 +388,7 @@ def cds_other_data_coordinator(
 
     if teacher:
         teacher_data = f"{teacher.nome} {teacher.cognome}"
-        initial = {"choosen_person": encrypt(teacher.matricola)}
+        initial = {"choosen_person": teacher.id_ab}
 
     form = DidatticaCdsAltriDatiCoordinatorForm(initial=initial)
 
@@ -478,7 +478,7 @@ def cds_other_data_deputy_coordinator(
 
     if teacher:
         teacher_data = f"{teacher.nome} {teacher.cognome}"
-        initial = {"choosen_person": encrypt(teacher.matricola)}
+        initial = {"choosen_person": teacher.id_ab}
 
     form = DidatticaCdsAltriDatiCoordinatorForm(initial=initial)
 
@@ -806,7 +806,7 @@ def cds_office_data_responsible(
     initial = {}
     if person:
         person_data = f"{person.nome} {person.cognome}"
-        initial = {"choosen_person": encrypt(person.matricola)}
+        initial = {"choosen_person": person.id_ab}
 
     form = DidatticaCdsAltriDatiCoordinatorForm(initial=initial)
 
@@ -1344,7 +1344,7 @@ def cds_group_member_edit(
 
     if member.matricola:
         member_data = f"{member.matricola.cognome} {member.matricola.nome}"
-        initial = {"choosen_person": encrypt(member.matricola.matricola)}
+        initial = {"choosen_person": member.matricola.id_ab}
 
     external_form = DidatticaCdsGruppoComponenteForm(instance=member)
     internal_form = ChoosenPersonForm(initial=initial, instance=member, required=True)

@@ -382,8 +382,10 @@ class CdsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                         "didatticacdsaltridati",
                         queryset=DidatticaCdsAltriDati.objects.only(
                             "matricola_coordinatore",
+                            "matricola_coordinatore__id_ab",
                             "nome_origine_coordinatore",
                             "matricola_vice_coordinatore",
+                            "matricola_vice_coordinatore__id_ab",
                             "nome_origine_vice_coordinatore",
                             "manifesto_studi",
                             "regolamento_didattico",
@@ -397,6 +399,7 @@ class CdsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                             "ordine",
                             "nome_ufficio",
                             "matricola_riferimento",
+                            "matricola_riferimento__id_ab",
                             "nome_origine_riferimento",
                             "telefono",
                             "email",

@@ -778,8 +778,7 @@ def laboratory_scientific_director_edit(
     if laboratory.matricola_responsabile_scientifico:
         scientific_director = laboratory.matricola_responsabile_scientifico
         old_label = f"{scientific_director.cognome} {scientific_director.nome}"
-        scientific_director_ecode = encrypt(scientific_director.matricola)
-        initial = {"choosen_person": scientific_director_ecode}
+        initial = {"choosen_person": scientific_director.id_ab}
 
     else:
         old_label = laboratory.responsabile_scientifico
@@ -890,8 +889,7 @@ def laboratory_safety_manager_edit(
         safety_manager = laboratory.matricola_preposto_sicurezza
         old_label = f"{safety_manager.cognome} {safety_manager.nome}"
         choosen_person = old_label
-        safety_manager_ecode = encrypt(safety_manager.matricola)
-        initial = {"choosen_person": safety_manager_ecode}
+        initial = {"choosen_person": safety_manager.id_ab}
 
     else:
         old_label = laboratory.preposto_sicurezza
@@ -2380,7 +2378,7 @@ def laboratory_provided_services_edit(
         manager = get_object_or_404(
             Personale, matricola=provided_service.matricola_responsabile
         )
-        cpf_initial["choosen_person"] = encrypt(provided_service.matricola_responsabile)
+        cpf_initial["choosen_person"] = provided_service.matricola_responsabile.id_ab
         manager_origine = f"{manager.cognome} {manager.nome}"
     else:
         lpf_initial["laboratory_manager"] = provided_service.responsabile_origine

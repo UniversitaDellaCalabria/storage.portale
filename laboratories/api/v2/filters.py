@@ -44,11 +44,11 @@ class LaboratoriesFilters(filters.FilterSet):
     )
 
     def filter_teacher(self, queryset, name, value):
-        valueDecript = decrypt(value)
+        # valueDecript = decrypt(value)
         return queryset.filter(
-            Q(matricola_responsabile_scientifico__matricola=valueDecript)
-            | Q(laboratoriopersonaletecnico__matricola_personale_tecnico__matricola=valueDecript)
-            | Q(laboratoriopersonalericerca__matricola_personale_ricerca__matricola=valueDecript)
+            Q(matricola_responsabile_scientifico__id_ab=value)
+            | Q(laboratoriopersonaletecnico__matricola_personale_tecnico__id_ab=value)
+            | Q(laboratoriopersonalericerca__matricola_personale_ricerca__id_ab=value)
         ).distinct()
 
     def filter_scope(self, queryset, name, value):

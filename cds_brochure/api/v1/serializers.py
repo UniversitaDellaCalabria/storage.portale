@@ -170,20 +170,3 @@ class CdsBrochureSerializer(serializers.Serializer):
                 }
             )
         return sliders
-
-    # @staticmethod
-    # def to_dict_offices_data(query):
-    #     data = []
-    #     for q in query:
-    #         data.append({
-    #             'Order': q['ordine'],
-    #             'OfficeName': q['nome_ufficio'],
-    #             'OfficeDirector': encrypt(q['matricola_riferimento']),
-    #             'OfficeDirectorName': q['nome_origine_riferimento'],
-    #             'TelOffice': q['telefono'],
-    #             'Email': q['email'],
-    #             'Floor': q['piano'],
-    #             'Timetables': q['orari'],
-    #             'OnlineCounter': q['sportello_online']
-    #         })
-    #     return data

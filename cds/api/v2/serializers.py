@@ -316,12 +316,10 @@ class CdsDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
         altri_dati = getattr(obj, "otherData", [])
         return [
             {
-                "coordinatorId": email_id_coordinatore
-                or encrypt(obj.matricola_coordinatore),
+                "coordinatorId": email_id_coordinatore or obj.matricola_coordinatore.id_ab,
                 "coordinatorName": ad.nome_origine_coordinatore,
                 # "viceCoordinatorId": ad.matricola_vice_coordinatore,
-                "viceCoordinatorId": email_id_vice
-                or encrypt(ad.matricola_vice_coordinatore),
+                "viceCoordinatorId": email_id_vice or ad.matricola_vice_coordinatore.id_ab,
                 "viceCoordinatorName": ad.nome_origine_vice_coordinatore,
                 "studyManifesto": ad.manifesto_studi,
                 "educationalRules": ad.regolamento_didattico,
@@ -347,8 +345,7 @@ class CdsDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                 "ordine": item.ordine,
                 "nome_ufficio": item.nome_ufficio,
                 # "matricola_riferimento": item.matricola_riferimento,
-                "matricola_riferimento": email_id
-                or encrypt(item.matricola_riferimento),
+                "matricola_riferimento": email_id or item.matricola_riferimento__id_ab,
                 "nome_origine_riferimento": item.nome_origine_riferimento,
                 "telefono": item.telefono,
                 "email": item.email,
@@ -735,7 +732,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             email = af_off.doc_tit_id_ab.email
             if email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 return email.split("@")[0]
-            return encrypt(af_off.doc_tit_matricola)
+            return af_off.doc_tit_id_ab
         except Exception:
             return None
 
@@ -922,7 +919,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                 if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                     teacher_id = email.split("@")[0]
                 else:
-                    teacher_id = encrypt(cop.doc_matricola)
+                    teacher_id = cop.doc_id_ab
             
             serializer = StudyActivityHourSerializer(
                 cop.dettaglio_ore.all(),
@@ -1049,7 +1046,7 @@ class StudyActivityTeacherSerializer(serializers.Serializer):
             email = getattr(obj.doc_tit_id_ab, "email", None)
             if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 return email.split("@")[0]
-            return encrypt(obj.af_off.doc_tit_matricola)
+            return obj.af_off.doc_tit_id_ab
         except Exception:
             pass
         return None
@@ -1142,7 +1139,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
             if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 teacher_info["id"] = email.split("@")[0]
             else:
-                teacher_info["id"] = encrypt(mod_off.af_off.doc_tit_matricola)
+                teacher_info["id"] = mod_off.af_off.doc_tit_id_ab
         except Exception:
             pass
 
@@ -1518,7 +1515,7 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
                 None,
             )
         return (
-            official_email.split("@")[0] if official_email else encrypt(obj.matricola)
+            official_email.split("@")[0] if official_email else obj.id_ab
         )
 
     class Meta:

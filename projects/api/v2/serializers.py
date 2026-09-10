@@ -47,14 +47,14 @@ class ProjectsSerializer(ReadOnlyModelSerializer):
     @extend_schema_field(serializers.ListField())
     def get_scientificDirectors(self, obj):
         return [
-            {"id": encrypt(r.matricola), "name": r.nome_origine}
+            {"id": r.id_ab, "name": r.nome_origine}
             for r in obj.responsabili
         ]
 
     @extend_schema_field(serializers.ListField())
     def get_researchers(self, obj):
         return [
-            {"id": encrypt(r.matricola), "name": r.nome_origine}
+            {"id": r.id_ab, "name": r.nome_origine}
             for r in obj.ricercatori
         ]
 

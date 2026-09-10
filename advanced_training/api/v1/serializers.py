@@ -83,7 +83,7 @@ class HighFormationMastersSerializer(serializers.Serializer):
             "AdmissionRequirements": query["requisiti_ammissione"],
             "TitleIssued": query["titolo_rilasciato"],
             "DoubleTitle": query["doppio_titolo"],
-            "ScientificDirectorId": encrypt(query["matricola_direttore_scientifico"]),
+            "ScientificDirectorId": query["matricola_direttore_scientifico__id_ab"],
             "ScientificDirectorName": query["nome_origine_direttore_scientifico"],
             "SubscriptionFee": query["quota_iscrizione"],
             "ListenersFee": query["quota_uditori"],
@@ -141,7 +141,7 @@ class HighFormationMastersSerializer(serializers.Serializer):
             full_name = q["nome_origine_cons"]
             result.append(
                 {
-                    "PersonId": encrypt(q["matricola_cons"]),
+                    "PersonId": q["matricola_cons__id_ab"],
                     "PersonName": full_name,
                 }
             )

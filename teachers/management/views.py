@@ -69,7 +69,7 @@ def teacher_detail(
         "#": teacher,
     }
 
-    m = encrypt(teacher.matricola)
+    m = teacher.id_ab
 
     return render(
         request,

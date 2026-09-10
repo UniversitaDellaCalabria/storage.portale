@@ -221,7 +221,7 @@ def patent_inventor_edit(request, patent_id, inventor_id, patent=None):
     inventor_data = ""
     if inventor:
         inventor_data = f"{inventor.cognome} {inventor.nome}"
-        initial = {"choosen_person": encrypt(inventor.matricola)}
+        initial = {"choosen_person": inventor.id_ab}
 
     external_form = BrevettoInventoriForm(instance=patent_inventor)
     internal_form = ChoosenPersonForm(initial=initial, required=True)

@@ -217,7 +217,7 @@ def company_unical_referent_edit(request, company_id, data_id, company=None):
     referent_data = ""
     if referent:
         referent_data = f"{referent.cognome} {referent.nome}"
-        initial = {"choosen_person": encrypt(referent.matricola)}
+        initial = {"choosen_person": referent.id_ab}
 
     form = ChoosenPersonForm(initial=initial, required=True)
 

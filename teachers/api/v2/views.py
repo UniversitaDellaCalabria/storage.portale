@@ -89,7 +89,13 @@ class TeachersViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     |
                     ((Q(didatticacopertura__erog__isnull=False) & ~Q(didatticacopertura__stato_coper_cod='R')))
                 )
-            
+            query = query.prefetch_related(
+                Prefetch(
+                    "personalecontatti",
+                    queryset=PersonaleContatti.objects.select_related("cd_tipo_cont"),
+                    to_attr="contatti",
+                ),
+            )
             return query.only(
                     "id_ab",
                     "cod_fis",
@@ -164,10 +170,12 @@ class TeachersViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     "profilo",
                     "ds_profilo",
                     "ds_profilo_breve",
+                    "docente_pta_altri_dati"
                 )
                 .distinct()
             )
 
+            
     def get_object(self):
         return self.get_queryset().first()
 

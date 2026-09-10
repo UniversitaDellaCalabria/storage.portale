@@ -37,7 +37,7 @@ class CompaniesSerializer(ReadOnlyModelSerializer):
 
     @extend_schema_field(serializers.CharField())
     def get_unicalReferentId(self, obj):
-        return encrypt(obj["matricola_referente_unical"])
+        return obj["matricola_referente_unical__id_ab"]
 
     class Meta:
         model = SpinoffStartupDatiBase

@@ -168,7 +168,7 @@ class TeachersUnitTest(TestCase):
         ApiTeachersUnitTestMethods.create_docentePtaBacheca(matricola=p1)
 
         url = reverse(
-            "teachers:apiv2:teachers-news-list", kwargs={"id": encrypt("111112")}
+            "teachers:apiv2:teachers-news-list", kwargs={"id": 1}
         )
         res = self.req.get(url)
         self.assertEqual(res.status_code, 200)
@@ -182,7 +182,7 @@ class TeachersUnitTest(TestCase):
         ApiTeachersUnitTestMethods.create_docenteMaterialeDidattico(matricola=p1)
 
         url = reverse(
-            "teachers:apiv2:teachers-materials-list", kwargs={"id": encrypt("111112")}
+            "teachers:apiv2:teachers-materials-list", kwargs={"id": 1}
         )
         res = self.req.get(url)
         self.assertEqual(res.status_code, 200)
@@ -259,7 +259,7 @@ class TeachersUnitTest(TestCase):
 
         url = (
             reverse("teachers:apiv2:publications-list")
-            + f"?teacherid={encrypt('111112')}"
+            + f"?teacherid=1"
         )
 
         res = self.req.get(url)

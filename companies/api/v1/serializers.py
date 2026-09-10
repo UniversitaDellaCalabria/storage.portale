@@ -21,7 +21,7 @@ class CompaniesSerializer(serializers.Serializer):
             if req_lang == "it" or query["descrizione_eng"] is None
             else query["descrizione_eng"],
             "SpinoffUnicalReferent": query["referente_unical"],
-            "SpinoffUnicalReferentId": encrypt(query["matricola_referente_unical"]),
+            "SpinoffUnicalReferentId": query["matricola_referente_unical__id_ab"],
             "TechAreaId": query["area_tecnologica"],
             "TechAreaDescription": query["area_tecnologica__descr_area_ita"]
             if req_lang == "it" or query["area_tecnologica__descr_area_eng"] is None

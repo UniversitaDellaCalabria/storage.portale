@@ -116,7 +116,7 @@ class PhdActivitiesSerializer(serializers.ModelSerializer):
     def get_mainTeachers(self, obj):
         return [
             {
-                "personId": encrypt(docente.matricola),
+                "personId": docente.id_ab,
                 "personName": docente.cognome_nome_origine,
             }
             for docente in obj.docente
@@ -126,7 +126,7 @@ class PhdActivitiesSerializer(serializers.ModelSerializer):
     def get_otherTeachers(self, obj):
         return [
             {
-                "personId": encrypt(docente.matricola),
+                "personId": docente.id_ab,
                 "personName": docente.cognome_nome_origine,
             }
             for docente in obj.altri_docenti

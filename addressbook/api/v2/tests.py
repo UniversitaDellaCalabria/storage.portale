@@ -340,20 +340,20 @@ class AddressBookUnitTest(TestCase):
             ds_ruolo="test"
         )
         
-        url1 = reverse("addressbook:apiv2:addressbook-detail", kwargs={"matricola": encrypt("111112")})
+        url1 = reverse("addressbook:apiv2:addressbook-detail", kwargs={"matricola": 1})
         res1 = self.req.get(url1)
         self.assertEqual(res1.status_code, 200)
         
-        url2 = reverse("addressbook:apiv2:addressbook-detail", kwargs={"matricola": encrypt("111113")})
+        url2 = reverse("addressbook:apiv2:addressbook-detail", kwargs={"matricola": 2})
         res2 = self.req.get(url2)
         self.assertEqual(res2.status_code, 200)
         
-        url3 = reverse("addressbook:apiv2:addressbook-detail", kwargs={"matricola": encrypt("111114")})
+        url3 = reverse("addressbook:apiv2:addressbook-detail", kwargs={"matricola": 3})
         res3 = self.req.get(url3)
         self.assertEqual(res3.status_code, 200)
         
-        self.assertEqual(decrypt(res1.json()["id"]), "111112")
-        self.assertEqual(decrypt(res2.json()["id"]), "111113")
+        self.assertEqual(decrypt(res1.json()["id"]), 1)
+        self.assertEqual(decrypt(res2.json()["id"]), 2)
         
         usr = get_user_model().objects.create(
             **{
@@ -364,7 +364,7 @@ class AddressBookUnitTest(TestCase):
         token = Token.objects.create(user=usr)
 
         url = reverse(
-            "addressbook:apiv1:personale-detail", kwargs={"personaleid": encrypt("111112")}
+            "addressbook:apiv1:personale-detail", kwargs={"personaleid": 1}
         )
         res = self.req.get(url, {}, HTTP_AUTHORIZATION=f"Token {token.key}")
         self.assertEqual(res.status_code, 200)
@@ -537,9 +537,8 @@ class AddressBookUnitTest(TestCase):
         assert res.status_code == 404
 
         # POST
-        m_test_encrypted = encrypt("111111")
         res = self.req.post(
-            url, {"id": m_test_encrypted}, HTTP_AUTHORIZATION=f"Token {token.key}"
+            url, {"id": 2}, HTTP_AUTHORIZATION=f"Token {token.key}"
         )
         assert res.status_code == 200
         

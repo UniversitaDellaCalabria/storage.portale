@@ -914,7 +914,7 @@ def consiglio_interno_edit(request, master_id, consiglio_id, master=None):
     old_label = consiglio_member.nome_origine_cons
     staff = consiglio_member.matricola_cons
     member_data = f"{staff.cognome} {staff.nome}" if staff else ""
-    initial = {"choosen_person": encrypt(staff.matricola)} if staff else {}
+    initial = {"choosen_person": staff.id_ab} if staff else {}
 
     internal_form = ChoosenPersonForm(initial=initial, required=True)
     external_form = ConsiglioInternoEsternoForm(instance=consiglio_member)
@@ -1008,7 +1008,7 @@ def advancedtraining_proponente_edit(request, pk):
     if master.matricola_proponente:
         staff = master.matricola_proponente
         old_label = f"{staff.cognome} {staff.nome}"
-        initial = {"choosen_person": encrypt(staff.matricola)}
+        initial = {"choosen_person": staff.id_ab}
     else:
         old_label = (
             f"{master.cognome_proponente or ''} {master.nome_proponente or ''}".strip()
@@ -1101,7 +1101,7 @@ def advancedtraining_direttore_edit(request, pk):
     if master.matricola_direttore_scientifico:
         staff = master.matricola_direttore_scientifico
         old_label = f"{staff.cognome} {staff.nome}"
-        initial = {"choosen_person": encrypt(staff.matricola)}
+        initial = {"choosen_person": staff.id_ab}
     else:
         old_label = master.nome_origine_direttore_scientifico or ""
         initial = {

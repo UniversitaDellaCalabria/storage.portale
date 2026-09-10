@@ -137,7 +137,7 @@ class ServiceDottorato:
 
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
                 didattica_dottorato_attivita_formativa=q["id"]
-            ).values("matricola", "cognome_nome_origine")
+            ).values("matricola", "matricola__id_ab", "cognome_nome_origine")
 
             if len(main_teachers) == 0:
                 q["MainTeachers"] = []
@@ -147,7 +147,7 @@ class ServiceDottorato:
             other_teachers = (
                 DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
                     didattica_dottorato_attivita_formativa=q["id"]
-                ).values("matricola", "cognome_nome_origine")
+                ).values("matricola", "matricola__id_ab", "cognome_nome_origine")
             )
 
             if len(other_teachers) == 0:
@@ -219,7 +219,7 @@ class ServiceDottorato:
 
             main_teachers = DidatticaDottoratoAttivitaFormativaDocente.objects.filter(
                 query_filter_teachers, didattica_dottorato_attivita_formativa=q["id"]
-            ).values("matricola", "cognome_nome_origine")
+            ).values("matricola", "matricola__id_ab", "cognome_nome_origine")
 
             if len(main_teachers) == 0:
                 q["MainTeachers"] = []
@@ -230,7 +230,7 @@ class ServiceDottorato:
                 DidatticaDottoratoAttivitaFormativaAltriDocenti.objects.filter(
                     didattica_dottorato_attivita_formativa=q["id"],
                     cognome_nome_origine__isnull=False,
-                ).values("matricola", "cognome_nome_origine")
+                ).values("matricola", "matricola__id_ab", "cognome_nome_origine")
             )
 
             if len(other_teachers) == 0:

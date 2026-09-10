@@ -90,11 +90,11 @@ class ApiBaseResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()["results"]) == 0
 
-        data = {"teacher": encrypt("111112"), "department": "1111"}
+        data = {"teacher": 1, "department": "1111"}
         res = req.get(url, data=data)
         assert len(res.json()["results"]) == 1
 
-        data = {"teacher": encrypt("111112")}
+        data = {"teacher": 1}
         res = req.get(url, data=data)
         assert len(res.json()["results"]) == 1
 
@@ -183,7 +183,7 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()["results"]) == 0
 
-        data = {"teacher": encrypt("111112")}
+        data = {"teacher": 1}
         res = req.get(url, data=data)
         assert len(res.json()["results"]) == 1
 
@@ -191,7 +191,7 @@ class ApiAppliedResearchLineUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()["results"]) == 1
 
-        data = {"teacher": encrypt("111112"), "department": "1111"}
+        data = {"teacher": 1, "department": "1111"}
         res = req.get(url, data=data)
         assert len(res.json()["results"]) == 1
 

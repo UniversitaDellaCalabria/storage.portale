@@ -48,6 +48,7 @@ class ServiceBrevetto:
                 BrevettoInventori.objects.filter(brevetto=q["id"])
                 .values(
                     "matricola_inventore",
+                    "matricola_inventore__id_ab",
                     "cognomenome_origine",
                 )
                 .distinct()
@@ -83,6 +84,7 @@ class ServiceBrevetto:
                 BrevettoInventori.objects.filter(brevetto=q["id"])
                 .values(
                     "matricola_inventore",
+                    "matricola_inventore__id_ab",
                     "cognomenome_origine",
                 )
                 .distinct()

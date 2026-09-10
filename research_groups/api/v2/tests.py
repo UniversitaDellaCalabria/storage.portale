@@ -30,10 +30,10 @@ class ResearchGroupsUnitTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json()["results"][0]["id"], 1)
         self.assertEqual(len(res.json()["results"]), 2)
-        self.assert_data_len(url, {"teacher": encrypt("111112")}, 1)
+        self.assert_data_len(url, {"teacher": 1}, 1)
         self.assert_data_len(url, {"coderc1": "cod1_erc1"}, 2)
         self.assert_data_len(url, {"search": "Intel"}, 1)
-        self.assert_data_len(url, {"teacher": encrypt("111112"), "department": "1111"}, 1)
+        self.assert_data_len(url, {"teacher": 1, "department": "1111"}, 1)
         self.assert_data_len(url, {"department": "1111"}, 1)
 
         

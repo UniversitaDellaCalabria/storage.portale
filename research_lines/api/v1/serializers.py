@@ -41,7 +41,7 @@ class BaseResearchLinesSerializer(serializers.Serializer):
             )
             result.append(
                 {
-                    "TeacherID": encrypt(q["personale_id__matricola"]),
+                    "TeacherID": q["personale_id__id_ab"],
                     "TeacherName": full_name,
                     "DepartmentName": q["personale_id__ds_sede"],
                     "DepartmentCod": q["personale_id__sede"],
@@ -91,7 +91,7 @@ class AppliedResearchLinesSerializer(serializers.Serializer):
             )
             result.append(
                 {
-                    "TeacherID": encrypt(q["personale_id__matricola"]),
+                    "TeacherID": q["personale_id__id_ab"],
                     "TeacherName": full_name,
                     "DepartmentName": q["personale_id__ds_sede"],
                     "DepartmentCod": q["personale_id__sede"],
@@ -167,7 +167,7 @@ class AllResearchLinesSerializer(serializers.Serializer):
             )
             result.append(
                 {
-                    "TeacherID": encrypt(q["personale_id__matricola"])
+                    "TeacherID": q["personale_id__id_ab"]
                     if not q["personale_id__flg_cessato"]
                     else None,
                     "TeacherName": full_name,

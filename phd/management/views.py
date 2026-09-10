@@ -251,7 +251,7 @@ def phd_main_teacher(request, phd_id, teacher_id, phd=None, my_offices=None):
     teacher_data = ""
     if teacher:
         teacher_data = f"{teacher.cognome} {teacher.nome}"
-        initial = {"choosen_person": encrypt(teacher.matricola)}
+        initial = {"choosen_person": teacher.id_ab}
 
     external_form = DidatticaDottoratoAttivitaFormativaDocenteForm(
         instance=activity_teacher
@@ -463,7 +463,7 @@ def phd_other_teacher(request, phd_id, teacher_id, my_offices=None, phd=None):
     teacher_data = ""
     if teacher:
         teacher_data = f"{teacher.cognome} {teacher.nome}"
-        initial = {"choosen_person": encrypt(teacher.matricola)}
+        initial = {"choosen_person": teacher.id_ab}
 
     external_form = DidatticaDottoratoAttivitaFormativaAltriDocentiForm(
         instance=activity_teacher

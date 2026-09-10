@@ -682,7 +682,7 @@ class ApiAllStudyActivitiesListUnitTest(TestCase):
         res = req.get(url, data=data)
         assert len(res.json()["results"]) == 1
 
-        data = {"teacher_code": encrypt("111111")}
+        data = {"teacher_code": 1}
         res = req.get(url, data=data)
         assert len(res.json()["results"]) == 1
 
