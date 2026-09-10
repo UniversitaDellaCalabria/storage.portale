@@ -47,13 +47,7 @@ class AddressbookListFilter(GenericApiFilter):
             "in": "query",
             "schema": {
                 "type": "string",
-                "example": ",".join(
-                    f"{role['cd_ruolo']}"
-                    for role in Personale.objects.all()
-                    .values("cd_ruolo", "ds_ruolo_locale")
-                    .order_by("ds_ruolo_locale")
-                    .distinct()[:3]
-                ),
+                "example": "PO,PA,RU"
             },
         },
         {
@@ -86,13 +80,7 @@ class PersonnelCfListFilter(GenericApiFilter):
             "in": "query",
             "schema": {
                 "type": "string",
-                "example": ",".join(
-                    f"{role['cd_ruolo']}"
-                    for role in Personale.objects.all()
-                    .values("cd_ruolo", "ds_ruolo_locale")
-                    .order_by("ds_ruolo_locale")
-                    .distinct()[:3]
-                ),
+                "example": "PO,PA,RU"
             },
         },
     ]

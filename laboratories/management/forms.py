@@ -296,30 +296,38 @@ class LaboratorioAttrezzatureForm(forms.ModelForm):
 
 
 class LaboratorioAttrezzatureFondiForm(forms.Form):
-    choices = tuple(
-        LaboratorioFondo.objects.all()
-        .order_by("-nome_fondo")
-        .values_list("id", "nome_fondo")
-    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # La query viene eseguita solo quando il form viene istanziato (durante le richieste/test)
+        self.fields["laboratorio_fondo"].choices = tuple(
+            LaboratorioFondo.objects.all()
+            .order_by("-nome_fondo")
+            .values_list("id", "nome_fondo")
+        )
 
     laboratorio_fondo = forms.MultipleChoiceField(
         label=_("Funds"),
-        choices=choices,
+        choices=(),
         required=False,
         widget=forms.CheckboxSelectMultiple(),
     )
 
 
 class LaboratorioAttrezzatureRischiForm(forms.Form):
-    choices = tuple(
-        TipologiaRischio.objects.all()
-        .order_by("descr_tipologia")
-        .values_list("id", "descr_tipologia")
-    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # La query viene eseguita solo quando il form viene istanziato (durante le richieste/test)
+        self.fields["tipologia_rischio"].choices = tuple(
+            TipologiaRischio.objects.all()
+            .order_by("-descr_tipologia")
+            .values_list("id", "descr_tipologia")
+        )
 
     tipologia_rischio = forms.MultipleChoiceField(
         label=_("Risk Types"),
-        choices=choices,
+        choices=(),
         required=False,
         widget=forms.CheckboxSelectMultiple(),
     )

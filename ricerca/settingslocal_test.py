@@ -184,3 +184,75 @@ PERSON_CONTACTS_TO_TAKE = [
 
 CURRENT_YEAR = 2024
 HIGH_FORMATION_YEAR = 2023
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "test",
+    "DESCRIPTION": "test opendata",
+    "VERSION": "1.0.0",
+    "TOS": "https://example.com/terms/",
+    "CONTACT": {
+        "name": "test",
+        "url": "https://example.com/support",
+        "email": "support@example.com",
+    },
+    "LICENSE": {
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    "SCHEMA_VERSION": "3.1.0",  # OpenAPI 3.1.0
+    "SERVERS": [
+        {
+            "url": "test",
+            "description": "test",
+        },
+        # {
+        #     "url": "http://localhost:8000",
+        #     "description": "Staging server",
+        # },
+    ],
+    "COMPONENT_SPLIT_REQUEST": True,  # Adjust this as needed
+    "GET_MOCK_REQUEST": "drf_spectacular.plumbing.build_mock_request",
+    "POSTPROCESSING_HOOKS": [
+        "api_docs.hooks.set_int_format_to_int32",
+    ],
+    # 'TAGS': [
+    #     {'name': 'v1', 'description': 'Endpoints for legacy APIs, deprecated but still supported for backward compatibility.'},
+    #     {'name': 'v2', 'description': 'Endpoints for the new API, designed with modern standards.'},
+    # ],
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": """{{
+        filter: true,
+        deepLinking: true,
+        persistAuthorization: true,
+        displayOperationId: true,
+        presets: [SwaggerUIStandalonePreset, SwaggerUIBundle.presets.apis],
+        layout: "StandaloneLayout",
+        validatorUrl: null,
+        urls: {urls}
+    }}""",
+    "SWAGGER_SHOW_TOP_BAR": True,
+    "SWAGGER_UI_FAVICON_HREF": STATIC_URL + "images/favicon/favicon-32x32.png",
+}
+
+
+
+### patch per tabelle unmanaged nei test
+
+import sys
+from django.db.models.signals import pre_migrate
+
+# Controlla se siamo all'interno di un'esecuzione di test o coverage
+IS_TESTING = "test" in sys.argv or any("coverage" in arg for arg in sys.argv)
+
+
+def handle_unmanaged_models(sender, **kwargs):
+    from django.apps import apps
+
+    for model in apps.get_models():
+        if not model._meta.managed:
+            model._meta.managed = True
+
+
+if IS_TESTING:
+    pre_migrate.connect(handle_unmanaged_models)
