@@ -1118,7 +1118,7 @@ class ServiceDidatticaAttivitaFormativa:
         # (che prima avveniva da ETL) deve essere gestita qui.
         # I testi che non sono definiti devono essere recuperati
         # dall'eventuale insegnamento che mutua quello attuale
-        texts_af = DidatticaTestiAf.objects.filter(
+        texts_af = DidatticaTestiAfErogata.objects.filter(
             af_id=af_id
         ).values(
             "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
@@ -1155,7 +1155,7 @@ class ServiceDidatticaAttivitaFormativa:
                 # ~ "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"
             # ~ )
             # ~ texts_af = texts_af | texts_master_af
-            texts_af = DidatticaTestiAf.objects.filter(
+            texts_af = DidatticaTestiAfErogata.objects.filter(
                 af_id=id_master
             ).values(
                 "tipo_testo_af_cod", "testo_af_ita", "testo_af_eng"

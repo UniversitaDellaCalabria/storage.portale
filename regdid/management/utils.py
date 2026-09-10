@@ -37,7 +37,6 @@ def extractArticlesFromPdf(file, first_page, last_page):
 
     def save_article():
         nonlocal current_content
-        nonlocal current_num
 
         if RE_MISSING_ARTICLE.match(current_content):
             current_content = None
