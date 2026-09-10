@@ -23,7 +23,7 @@ class ApiBaseResearchLinesList(ApiEndpointList):
     def get_queryset(self):
         request = self.request
         search = request.query_params.get("search")
-        teacher = decrypt(self.request.query_params.get("teacher"))
+        teacher = self.request.query_params.get("teacher")
         department = request.query_params.get("department")
         year = request.query_params.get("year")
 
@@ -55,7 +55,7 @@ class ApiAppliedResearchLinesList(ApiEndpointList):
     def get_queryset(self):
         request = self.request
         search = request.query_params.get("search")
-        teacher = decrypt(self.request.query_params.get("teacher"))
+        teacher = self.request.query_params.get("teacher")
         department = request.query_params.get("department")
         year = request.query_params.get("year")
 

@@ -340,7 +340,7 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {"search": "gar"}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == 2
+        assert res.json()["results"][0]["TeacherID"] == 2
 
         data = {"role": "PA", "lang": "it"}
         res = req.get(url, data=data)
@@ -360,15 +360,15 @@ class ApiTeachersListUnitTest(TestCase):
 
         data = {"regdid": 1}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == 1
+        assert res.json()["results"][0]["TeacherID"] == 1
 
         data = {"regdid": 2}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == 2
+        assert res.json()["results"][0]["TeacherID"] == 2
 
         data = {"regdid": 1, "role": "PA"}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == 1
+        assert res.json()["results"][0]["TeacherID"] == 1
 
         data = {"cds": 1}
         res = req.get(url, data=data)
@@ -704,7 +704,7 @@ class ApiTeacherInfoUnitTest(TestCase):
         # GET
 
         res = req.get(url)
-        assert decrypt(res.json()["results"]["TeacherID"]) == 1
+        assert res.json()["results"]["TeacherID"] == 1
 
         url = reverse("teachers:apiv1:teacher-info", kwargs={"teacherid": 3})
         res = req.get(url)
@@ -1596,7 +1596,7 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
 
         data = {"search": "gar"}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == 2
+        assert res.json()["results"][0]["TeacherID"] == 2
 
         data = {"role": "PA", "lang": "it"}
         res = req.get(url, data=data)
@@ -1619,15 +1619,15 @@ class ApiTeachingsCoveragesListUnitTest(TestCase):
 
         data = {"regdid": 1}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == 1
+        assert res.json()["results"][0]["TeacherID"] == 1
 
         data = {"regdid": 2}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == 2
+        assert res.json()["results"][0]["TeacherID"] == 2
 
         data = {"regdid": 1, "role": "PA"}
         res = req.get(url, data=data)
-        assert decrypt(res.json()["results"][0]["TeacherID"]) == 1
+        assert res.json()["results"][0]["TeacherID"] == 1
 
         data = {"cds": 1}
         res = req.get(url, data=data)

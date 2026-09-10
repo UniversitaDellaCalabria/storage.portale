@@ -44,7 +44,6 @@ class LaboratoriesFilters(filters.FilterSet):
     )
 
     def filter_teacher(self, queryset, name, value):
-        # valueDecript = decrypt(value)
         return queryset.filter(
             Q(matricola_responsabile_scientifico__id_ab=value)
             | Q(laboratoriopersonaletecnico__matricola_personale_tecnico__id_ab=value)

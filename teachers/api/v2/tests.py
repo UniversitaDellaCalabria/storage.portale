@@ -129,7 +129,7 @@ class TeachersUnitTest(TestCase):
 
         data = {"search": "gar"}
         res = self.req.get(url, data=data)
-        self.assertEqual(decrypt(res.json()["results"][0]["id"]), "111111")
+        self.assertEqual(res.json()["results"][0]["id"], 2)
 
         data = {"role": "PA", "lang": "it"}
         res = self.req.get(url, data=data)
@@ -521,7 +521,7 @@ class TeachersUnitTest(TestCase):
 
         data = {"search": "gar"}
         res = self.req.get(url, data=data)
-        self.assertEqual(decrypt(res.json()["results"][0]["id"]), "111111")
+        self.assertEqual(res.json()["results"][0]["id"], 2)
 
         data = {"role": "PA", "lang": "it"}
         res = self.req.get(url, data=data)
@@ -532,15 +532,15 @@ class TeachersUnitTest(TestCase):
         
         data = {"regdid": 1}
         res = self.req.get(url, data=data)
-        self.assertEqual(decrypt(res.json()["results"][0]["id"]), "111112")
+        self.assertEqual(res.json()["results"][0]["id"], 1)
 
         data = {"regdid": 2}
         res = self.req.get(url, data=data)
-        self.assertEqual(decrypt(res.json()["results"][0]["id"]), "111111")
+        self.assertEqual(res.json()["results"][0]["id"], 2)
 
         data = {"regdid": 1, "role": "PA"}
         res = self.req.get(url, data=data)
-        self.assertEqual(decrypt(res.json()["results"][0]["id"]), "111112")
+        self.assertEqual(res.json()["results"][0]["id"], 1)
 
         data = {"cds": 1}
         res = self.req.get(url, data=data)

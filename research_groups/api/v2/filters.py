@@ -51,20 +51,20 @@ class ResearchGroupsFilter(filters.FilterSet):
         teacher = self.data.get("teacher")
         department = self.data.get("department")
 
-        if teacher:
-            try:
-                teacher = decrypt(teacher)
-            except Exception:
-                teacher = None
+        # if teacher:
+        #     try:
+        #         teacher = decrypt(teacher)
+        #     except Exception:
+        #         teacher = None
 
         query = Q()
         if teacher and department:
             query = Q(
-                ricercadocentegruppo__personale__matricola=teacher,
+                ricercadocentegruppo__personale__id_ab=teacher,
                 ricercadocentegruppo__personale__sede=department,
             )
         elif teacher:
-            query = Q(ricercadocentegruppo__personale__matricola=teacher)
+            query = Q(ricercadocentegruppo__personale__id_ab=teacher)
         elif department:
             query = Q(ricercadocentegruppo__personale__sede=department)
 

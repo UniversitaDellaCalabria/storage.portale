@@ -84,12 +84,6 @@ def get_contacts(obj, contactDescr):
 
 
 def get_personale_matricola(personale_id):
-    # if personale_id[len(personale_id) - 2:] == "==":
-    #     return decrypt(personale_id)
-
-    # personale_model = apps.get_model("addressbook.Personale")
-    # personalecontatti_model = apps.get_model("addressbook.PersonaleContatti")
-    
     try:
         id_ab= int(personale_id)
     except ValueError:

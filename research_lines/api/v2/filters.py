@@ -45,20 +45,20 @@ class BaseResearchLinesFilter(filters.FilterSet):
         teacher = self.data.get("teacher")
         department = self.data.get("department")
 
-        if teacher:
-            try:
-                teacher = decrypt(teacher)
-            except Exception:
-                teacher = None
+        # if teacher:
+        #     try:
+        #         teacher = decrypt(teacher)
+        #     except Exception:
+        #         teacher = None
 
         query = Q()
         if teacher and department:
             query = Q(
-                ricercadocentelineabase__personale__matricola=teacher,
+                ricercadocentelineabase__personale__id_ab=teacher,
                 ricercadocentelineabase__personale__sede=department,
             )
         elif teacher:
-            query = Q(ricercadocentelineabase__personale__matricola=teacher)
+            query = Q(ricercadocentelineabase__personale__id_ab=teacher)
         elif department:
             query = Q(ricercadocentelineabase__personale__sede=department)
 
@@ -107,20 +107,20 @@ class AppliedResearchLinesFilter(filters.FilterSet):
         teacher = self.data.get("teacher")
         department = self.data.get("department")
 
-        if teacher:
-            try:
-                teacher = decrypt(teacher)
-            except Exception:
-                teacher = None
+        # if teacher:
+        #     try:
+        #         teacher = decrypt(teacher)
+        #     except Exception:
+        #         teacher = None
 
         query = Q()
         if teacher and department:
             query = Q(
-                ricercadocentelineaapplicata__personale__matricola=teacher,
+                ricercadocentelineaapplicata__personale__id_ab=teacher,
                 ricercadocentelineaapplicata__personale__sede=department,
             )
         elif teacher:
-            query = Q(ricercadocentelineaapplicata__personale__matricola=teacher)
+            query = Q(ricercadocentelineaapplicata__personale__id_ab=teacher)
         elif department:
             query = Q(ricercadocentelineaapplicata__personale__sede=department)
 

@@ -605,8 +605,8 @@ class ApiPersonaleDetailUnitTest(TestCase):
         res = req.get(url)
         res1 = req.get(url1)
 
-        assert decrypt(res.json()["results"]["ID"]) == 1
-        assert decrypt(res1.json()["results"]["ID"]) == 2
+        assert res.json()["results"]["ID"] == 1
+        assert res1.json()["results"]["ID"] == 2
 
         usr = get_user_model().objects.create(
             **{

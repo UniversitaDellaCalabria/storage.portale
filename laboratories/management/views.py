@@ -591,7 +591,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 
     if request.POST.get("choosen_scientific_director", ""):
         scientific_director = get_object_or_404(
-            Personale, matricola=(decrypt(request.POST["choosen_scientific_director"]))
+            Personale, id_ab=(request.POST["choosen_scientific_director"])
         )
 
     if request.POST:
@@ -620,11 +620,9 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 
             # scientific director
             if scientific_director_form.cleaned_data.get("choosen_scientific_director"):
-                scientific_director_code = decrypt(
-                    scientific_director_form.cleaned_data["choosen_scientific_director"]
-                )
+                scientific_director_code = scientific_director_form.cleaned_data["choosen_scientific_director"]
                 scientific_director = get_object_or_404(
-                    Personale, matricola=scientific_director_code
+                    Personale, id_ab=scientific_director_code
                 )
                 laboratory.matricola_responsabile_scientifico = scientific_director
                 laboratory.responsabile_scientifico = (

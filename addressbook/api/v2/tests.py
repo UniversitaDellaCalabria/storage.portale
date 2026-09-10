@@ -352,8 +352,8 @@ class AddressBookUnitTest(TestCase):
         res3 = self.req.get(url3)
         self.assertEqual(res3.status_code, 200)
         
-        self.assertEqual(decrypt(res1.json()["id"]), 1)
-        self.assertEqual(decrypt(res2.json()["id"]), 2)
+        self.assertEqual(res1.json()["id"], 1)
+        self.assertEqual(res2.json()["id"], 2)
         
         usr = get_user_model().objects.create(
             **{
