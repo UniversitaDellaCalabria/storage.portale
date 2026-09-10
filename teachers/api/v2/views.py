@@ -164,6 +164,7 @@ class TeachersViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     "profilo",
                     "ds_profilo",
                     "ds_profilo_breve",
+                    "docente_pta_altri_dati"
                 )
                 .distinct()
             )
