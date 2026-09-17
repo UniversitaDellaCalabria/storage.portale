@@ -910,7 +910,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         #     for cop in coperture
         #     if is_nullable(cop.doc_matricola) and (is_nullable(cop.doc_id_ab.id_ab) if cop.doc_id_ab else None)
         # ]
-        
+
         personale_map = {
             p.id_ab: p
             for p in Personale.objects.filter(id_ab__in=ids_ab).only('id_ab', 'cognome', 'nome')
@@ -919,7 +919,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         result = []
         for cop in coperture:
             teacher_id, teacher_name = None, None
-            if is_nullable(cop.doc_matricola):
+            if is_nullable(cop.doc_matricola) and getattr(cop, "doc_id_ab", None):
                 doc = personale_map.get(cop.doc_id_ab.id_ab)
                 teacher_name = f"{doc.cognome} {doc.nome}" if doc else None
                 email = getattr(cop.doc_id_ab, "email", None)
