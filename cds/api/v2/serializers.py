@@ -921,7 +921,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             teacher_id, teacher_name = None, None
             if is_nullable(cop.doc_matricola) and getattr(cop, "doc_id_ab", None):
                 doc = personale_map.get(cop.doc_id_ab.id_ab)
-                teacher_name = f"{doc.cognome} {doc.nome}" if doc else None
+                teacher_name = f"{doc.cognome} {doc.nome}" if doc else f"{cop.doc_cognome} {cop.doc_nome}"
                 email = getattr(cop.doc_id_ab, "email", None)
                 if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                     teacher_id = email.split("@")[0]
