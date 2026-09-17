@@ -88,7 +88,7 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.CharField())
     def get_scientificDirectorId(self, obj):
-        return str(obj.matricola_direttore_scientifico.id_ab)
+        return str(obj.matricola_direttore_scientifico.id_ab) if obj.matricola_direttore_scientifico else None
 
     @extend_schema_field(serializers.CharField())
     def get_proposerId(self, obj):
