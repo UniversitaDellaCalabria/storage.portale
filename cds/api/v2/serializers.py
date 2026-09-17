@@ -899,11 +899,18 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
 
         coperture = getattr(obj, 'coperture_attive', [])
         
-        ids_ab = [
-            cop.doc_id_ab.id_ab
-            for cop in coperture
-            if is_nullable(cop.doc_matricola) and (is_nullable(cop.doc_id_ab.id_ab) if cop.doc_id_ab else None)
-        ]
+        ids_ab = []
+        for cop in coperture:
+            if not is_nullable(cop.doc_matricola):
+                continue
+            if not getattr(cop, "doc_id_ab", None):
+                continue
+            ids_ab.append(cop.doc_id_ab.id_ab)
+        #     cop.doc_id_ab.id_ab
+        #     for cop in coperture
+        #     if is_nullable(cop.doc_matricola) and (is_nullable(cop.doc_id_ab.id_ab) if cop.doc_id_ab else None)
+        # ]
+        
         personale_map = {
             p.id_ab: p
             for p in Personale.objects.filter(id_ab__in=ids_ab).only('id_ab', 'cognome', 'nome')
