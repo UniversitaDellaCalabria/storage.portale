@@ -919,15 +919,17 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         result = []
         for cop in coperture:
             teacher_id, teacher_name = None, None
+            print(getattr(cop, "doc_id_ab", None))
             if is_nullable(cop.doc_matricola) and getattr(cop, "doc_id_ab", None):
-                doc = personale_map.get(cop.doc_id_ab.id_ab)
-                teacher_name = f"{doc.cognome} {doc.nome}" if doc else f"{cop.doc_cognome} {cop.doc_nome}"
+                # doc = personale_map.get(cop.doc_id_ab.id_ab)
+                # teacher_name = f"{doc.cognome} {doc.nome}" if doc else None
                 email = getattr(cop.doc_id_ab, "email", None)
                 if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                     teacher_id = email.split("@")[0]
                 else:
                     teacher_id = cop.doc_id_ab.id_ab
-            
+            teacher_name = f"{cop.doc_cognome} {cop.doc_nome}"
+
             serializer = StudyActivityHourSerializer(
                 cop.dettaglio_ore.all(),
                 many=True,
