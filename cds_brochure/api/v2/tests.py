@@ -53,4 +53,4 @@ class ApiCdsBrochureUnitTest(TestCase):
         res = self.req.get(url)
 
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.json()["results"]["cdsCod"], "0999")
+        self.assertEqual(res.json()["cdsCod"], "0999")

@@ -163,12 +163,12 @@ class ApiDecryptedPersonId(APIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        encrypted_matricola = data.get("id", "")
-        if not encrypted_matricola:
+        personale_id = data.get("id", "")
+        if not personale_id:
             return Response(
                 "Il dato non è stato inserito", status=status.HTTP_404_NOT_FOUND
             )
-        return Response(get_personale_matricola(encrypted_matricola))
+        return Response(get_personale_matricola(personale_id))
         # ~ try:
             # ~ m = decrypt(encrypted_matricola)
             # ~ return Response(m)

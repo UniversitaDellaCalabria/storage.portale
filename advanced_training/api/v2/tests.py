@@ -54,14 +54,14 @@ class AdvancedTrainingUnitTest(TestCase):
         self.assertEqual(len(res.json()["results"]), result)
 
     def test_apierogationmodeslist(self):
-        url = reverse("advanced-training:apiv2:erogation-modes-list")
+        url = reverse("advanced-training:apiv2:erogation-modes")
         res = self.req.get(url)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.json()["results"]), 2)
         
     def test_apihighformationmasterslist(self):
-        url = reverse("advanced-training:apiv2:high-formation-masters-list")
+        url = reverse("advanced-training:apiv2:advanced-training-list")
         res = self.req.get(url)
 
         self.assertEqual(res.status_code, 200)
@@ -73,7 +73,7 @@ class AdvancedTrainingUnitTest(TestCase):
         self.assert_data_len(url, {"year": 2021}, 1)
         
     def test_apihighformationmasterdetail(self):
-        url = reverse("advanced-training:apiv2:high-formation-masters-detail", kwargs={"pk": 1})
+        url = reverse("advanced-training:apiv2:advanced-training-detail", kwargs={"pk": 1})
         res = self.req.get(url)
 
         self.assertEqual(res.status_code, 200)

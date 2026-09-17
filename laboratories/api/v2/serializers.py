@@ -66,7 +66,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.CharField())
     def get_completionReferentId(self, obj):
-        return obj.matricola_referente_compilazione__id_ab
+        return obj.matricola_referente_compilazione.id_ab if obj.matricola_responsabile_scientifico else None
 
     @extend_schema_field(serializers.CharField())
     def get_logo(self, obj):
@@ -74,7 +74,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_scientificDirectorId(self, obj):
-        return obj.matricola_responsabile_scientifico__id_ab
+        return obj.matricola_responsabile_scientifico.id_ab if obj.matricola_responsabile_scientifico else None
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_extraDepartments(self, obj):
@@ -290,7 +290,7 @@ class LaboratoriesSerializer(serializers.Serializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_scientificDirectorId(self, obj):
-        return obj.matricola_responsabile_scientifico__id_ab
+        return obj.matricola_responsabile_scientifico.id_ab if obj.matricola_responsabile_scientifico else None
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_extraDepartments(self, obj):

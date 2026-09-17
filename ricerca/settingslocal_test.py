@@ -21,6 +21,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 STATIC_URL = '/static/'
 
+IS_TESTING = True
+
 INSTALLED_APPS = [
     'accounts',
     'django.contrib.admin',
@@ -33,6 +35,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
 
+    'test_without_migrations',
     # 'silk',
    
     # OAS 3 specs
@@ -185,6 +188,7 @@ PERSON_CONTACTS_TO_TAKE = [
 CURRENT_YEAR = 2024
 HIGH_FORMATION_YEAR = 2023
 
+BROCHURES_VISIBLE = True
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "test",
@@ -236,29 +240,3 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-
-### patch per tabelle unmanaged nei test
-
-import sys
-from django.db.models.signals import pre_migrate
-
-# Rileva se stiamo eseguendo il comando test o coverage
-IS_TESTING = "test" in sys.argv or any("coverage" in arg for arg in sys.argv)
-
-
-def make_unmanaged_models_managed(sender, **kwargs):
-    """
-    Istruisce Django a trattare le tabelle 'managed = False' come normali tabelle
-    durante la creazione dello schema per i test.
-    """
-    from django.apps import apps
-
-    for model in apps.get_models():
-        if not model._meta.managed:
-            model._meta.managed = True
-
-
-if IS_TESTING:
-    # Collega la funzione al segnale 'pre_migrate'
-    # In questo modo scatta UN ATTIMO PRIMA che Django applichi le migrazioni nel DB di test
-    pre_migrate.connect(make_unmanaged_models_managed)

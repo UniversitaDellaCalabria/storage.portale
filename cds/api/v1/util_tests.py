@@ -34,7 +34,7 @@ class DidatticaCdsLinguaUnitTest(TestCase):
     @classmethod
     def create_didatticaCdsLingua(cls, **kwargs):
         data = {
-            "lin_did_ord_id": 1,
+            # "lin_did_ord_id": 1,
             "lingua_des_it": "ITALIANO",
             "lingua_des_eng": "ITALIAN",
         }
@@ -65,7 +65,8 @@ class DidatticaTestiRegolamentoUnitTest(TestCase):
     @classmethod
     def create_didatticaTestiRegolamento(cls, **kwargs):
         data = {
-            "txt_id": 1,
+            # "txt_id": 1,
+            "id": 1,
             "tipo_testo_regdid_cod": "testo regolamento",
         }
         for k, v in kwargs.items():

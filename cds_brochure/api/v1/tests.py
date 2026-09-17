@@ -112,7 +112,6 @@ class ApiSitoWebCdsListUnitTest(TestCase):
 
         # check url
         res = req.get(url)
-
         assert res.status_code == 200
 
         # GET

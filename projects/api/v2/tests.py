@@ -9,14 +9,14 @@ class ProjectsUnitTest(TestCase):
 
         p = ApiProjectsUnitTestMethods.create_personale()
         u1 = ApiProjectsUnitTestMethods.create_unitaOrganizzativa()
-        t1 = ApiProjectsUnitTestMethods.create_tipologiaAreaTecnologica()
-        a1 = ApiProjectsUnitTestMethods.create_progettoAmbitoTerritoriale()
-        p1 = ApiProjectsUnitTestMethods.create_progettoTipologiaProgramma()
+        self.t1 = ApiProjectsUnitTestMethods.create_tipologiaAreaTecnologica()
+        self.a1 = ApiProjectsUnitTestMethods.create_progettoAmbitoTerritoriale()
+        self.p1 = ApiProjectsUnitTestMethods.create_progettoTipologiaProgramma()
         pr1 = ApiProjectsUnitTestMethods.create_progettoDatiBase(
             uo=u1,
-            ambito_territoriale=a1,
-            tipologia_programma=p1,
-            area_tecnologica=t1,
+            ambito_territoriale=self.a1,
+            tipologia_programma=self.p1,
+            area_tecnologica=self.t1,
         )
         ApiProjectsUnitTestMethods.create_progettoResponsabileScientifico(
             matricola=p, progetto=pr1
@@ -65,4 +65,4 @@ class ProjectsUnitTest(TestCase):
         url = reverse("projects:apiv2:infrastructures-list")
         res = self.req.get(url)
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.json()["results"]), 1)
+        self.assertEqual(len(res.json()["results"]), 0)

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -36,7 +37,7 @@ class DidatticaCdsCollegamento(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_CDS_COLLEGAMENTO"
         ordering = ["-cds__cds_cod"]
         unique_together = (("cds", "cds_prec"),)
@@ -52,7 +53,7 @@ class DidatticaSsd(models.Model):
     ssd_des = models.CharField(db_column="SSD_DES", max_length=2000)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_SSD"
         verbose_name = "SSD"
         verbose_name_plural = verbose_name
@@ -89,7 +90,7 @@ class DidatticaAttivitaFormativa(models.Model):
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_ATTIVITA_FORMATIVA"
         verbose_name = "Study activity"
         verbose_name_plural = "Study activities"
@@ -144,7 +145,7 @@ class DidatticaAttivitaFormativaErogata(models.Model):
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = 'DIDATTICA_ATTIVITA_FORMATIVA_EROGATA'
         ordering = ('erog_id',)
 
@@ -169,7 +170,7 @@ class DidatticaAttivitaFormativaModulo(models.Model):
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = 'DIDATTICA_ATTIVITA_FORMATIVA_MODULO'
 
 
@@ -235,7 +236,7 @@ class DidatticaAttivitaFormativaPds(models.Model):
     off_did_id = models.IntegerField(db_column='OFF_DID_ID', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         # ~ db_table = 'DIDATTICA_ATTIVITA_FORMATIVA_PDS_ID'
         db_table = 'DIDATTICA_ATTIVITA_FORMATIVA_PDS'
         unique_together = (('af_pds_id', 'moduli_pds_id', 'erog_id', 'coper_id', 'off_did_id'),)
@@ -272,7 +273,7 @@ class DidatticaCds(models.Model):
     dt_ins_mod = models.DateTimeField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
     
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_CDS"
         verbose_name = "Cds"
         verbose_name_plural = verbose_name
@@ -311,7 +312,7 @@ class DidatticaCdsPeriodi(models.Model):
     dt_ins_mod = models.DateTimeField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
     
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_CDS_PERIODI"
         verbose_name = "Study course period"
         verbose_name_plural = "Study course periods"
@@ -351,7 +352,7 @@ class DidatticaCdsAltriDatiUfficio(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_CDS_ALTRI_DATI_UFFICIO"
         ordering = ("ordine",)
         # unique_together = (('cds', 'ordine'),)
@@ -385,7 +386,7 @@ class DidatticaCdsLingua(models.Model):
     dt_ins_mod = models.DateField(db_column="DT_INS_MOD", blank=True, null=True)
     
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         # ~ db_table = "DIDATTICA_CDS_LINGUA_ID"
         db_table = "DIDATTICA_CDS_LINGUA"
         verbose_name = "Cds language"
@@ -443,7 +444,7 @@ class DidatticaCopertura(models.Model):
     dt_ins_mod = models.DateTimeField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_COPERTURA"
         verbose_name = "Teaching coverage"
         verbose_name_plural = "Teaching coverages"
@@ -457,7 +458,7 @@ class DidatticaCoperturaDettaglioOre(models.Model):
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_COPERTURA_DETTAGLIO_ORE"
         verbose_name = "Teaching coverage hours detail"
         verbose_name_plural = "Teaching coverage hours details"
@@ -486,7 +487,7 @@ class DidatticaPdsRegolamento(models.Model):
     dt_ins_mod = models.DateTimeField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_PDS_REGOLAMENTO"
         verbose_name = "Academic pathway"
         verbose_name_plural = "Academic pathways"
@@ -518,7 +519,7 @@ class DidatticaRegolamento(models.Model):
     dt_ins_mod = models.DateTimeField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
     
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_REGOLAMENTO"
         verbose_name = "Didactic regulation"
         verbose_name_plural = "Didactic regulations"
@@ -558,7 +559,7 @@ class DidatticaRegolamentoTipologiaAltriDati(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_REGOLAMENTO_TIPOLOGIA_ALTRI_DATI"
         verbose_name = "Didactic regulation other data type"
         verbose_name_plural = "Didactic regulation other data types"
@@ -587,7 +588,7 @@ class DidatticaRegolamentoAltriDati(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_REGOLAMENTO_ALTRI_DATI"
         verbose_name = "Didactic regulation other data"
         verbose_name_plural = "Didactic regulation other data"
@@ -596,7 +597,7 @@ class DidatticaRegolamentoAltriDati(models.Model):
 class DidatticaTestiAfErogata(models.Model):
     syll_inc_doc_id = models.IntegerField(db_column='SYLL_INC_DOC_ID', primary_key=True)  # Field name made lowercase. The composite primary key (SYLL_INC_DOC_ID, EROG_ID, CAMPO_COD) found, that is not supported. The first column is selected.
     erog_id = models.ForeignKey('DidatticaAttivitaFormativaErogata', on_delete=models.DO_NOTHING, db_column='EROG_ID', null=True, blank=True, related_name="testi")  # Field name made lowercase.
-    campo_cod = models.CharField(db_column='CAMPO_COD', max_length=100, db_collation='utf8mb4_unicode_ci')  # Field name made lowercase.
+    campo_cod = models.CharField(db_column='CAMPO_COD', max_length=100)  # Field name made lowercase.
     campo_etic_ita = models.CharField(db_column='CAMPO_ETIC_ITA', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     campo_etic_eng = models.CharField(db_column='CAMPO_ETIC_ENG', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     campo_desc_ita = models.CharField(db_column='CAMPO_DESC_ITA', max_length=2000, blank=True, null=True)  # Field name made lowercase.
@@ -606,7 +607,7 @@ class DidatticaTestiAfErogata(models.Model):
     dt_ins_mod = models.DateTimeField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = 'DIDATTICA_TESTI_AF_EROGATA'
         unique_together = (('syll_inc_doc_id', 'erog_id', 'campo_cod'),)
         verbose_name = "Study activity text"
@@ -630,7 +631,7 @@ class DidatticaTestiRegolamento(models.Model):
     dt_ins_mod = models.DateTimeField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_TESTI_REGOLAMENTO_ID"
         verbose_name = "Didactic regulation text"
         verbose_name_plural = "Didactic regulation texts"
@@ -701,7 +702,7 @@ class DidatticaCdsAltriDati(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_CDS_ALTRI_DATI"
         verbose_name = "Cds other data"
         verbose_name_plural = verbose_name
@@ -730,7 +731,7 @@ class DidatticaCdsGruppi(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_CDS_GRUPPI"
         ordering = ("ordine",)
         verbose_name = "Cds group"
@@ -775,7 +776,7 @@ class DidatticaCdsGruppiComponenti(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_CDS_GRUPPI_COMPONENTI"
         ordering = ("ordine",)
         verbose_name = "Cds group member"
@@ -791,7 +792,7 @@ class DidatticaClasseLaurea(models.Model):
     cla_miur_des = models.CharField(db_column="CLASSE_MIUR_DESC_ITA", max_length=1000)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_CLASSE_LAUREA"
         verbose_name = "Classe laurea"
         verbose_name_plural = "Classi laurea"
@@ -809,7 +810,7 @@ class DidatticaAmbiti(models.Model):
     # ~ dt_ins = models.DateField(db_column="DT_INS_MOD", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_AMBITI"
         verbose_name = "Scope"
         verbose_name_plural = "Scopes"
@@ -864,7 +865,7 @@ class DidatticaAmbiti(models.Model):
     # ~ nota = models.CharField(db_column="NOTA", max_length=1000, blank=True, null=True)
 
     # ~ class Meta:
-        # ~ managed = False
+        # ~ managed = getattr(settings, 'IS_TESTING', False)
         # ~ db_table = "DIDATTICA_PIANO_REGOLAMENTO"
         # ~ verbose_name = "Regulation study plan"
         # ~ verbose_name_plural = "Regulation study plans"
@@ -1088,7 +1089,7 @@ class DidatticaAmbiti(models.Model):
     # ~ )
 
     # ~ class Meta:
-        # ~ managed = False
+        # ~ managed = getattr(settings, 'IS_TESTING', False)
         # ~ db_table = "DIDATTICA_PIANO_SCELTA_AF"
         # ~ ordering = ("ciclo_des",)
         # ~ verbose_name = "Study plan study activity choice"
@@ -1189,7 +1190,7 @@ class DidatticaAmbiti(models.Model):
     # ~ not_flg = models.IntegerField(db_column="NOT_FLG", blank=True, null=True)
 
     # ~ class Meta:
-        # ~ managed = False
+        # ~ managed = getattr(settings, 'IS_TESTING', False)
         # ~ db_table = "DIDATTICA_PIANO_SCELTA_FIL_AND"
         # ~ verbose_name = "Study plan choice filter"
         # ~ verbose_name_plural = "Study plan choice filters"
@@ -1493,7 +1494,7 @@ class DidatticaAmbiti(models.Model):
     # ~ )
 
     # ~ class Meta:
-        # ~ managed = False
+        # ~ managed = getattr(settings, 'IS_TESTING', False)
         # ~ db_table = "DIDATTICA_PIANO_SCELTA_SCHE_PIANO"
         # ~ unique_together = (("sche_piano", "sce"),)
         # ~ verbose_name = "Study plan sheet choice plan"
@@ -1597,7 +1598,7 @@ class DidatticaAmbiti(models.Model):
     # ~ )
 
     # ~ class Meta:
-        # ~ managed = False
+        # ~ managed = getattr(settings, 'IS_TESTING', False)
         # ~ db_table = "DIDATTICA_PIANO_SCELTA_VINCOLI"
         # ~ verbose_name = "Study plan constraint choice"
         # ~ verbose_name_plural = "Study plan constraint choices"
@@ -1674,7 +1675,7 @@ class DidatticaAmbiti(models.Model):
     # ~ )
 
     # ~ class Meta:
-        # ~ managed = False
+        # ~ managed = getattr(settings, 'IS_TESTING', False)
         # ~ db_table = "DIDATTICA_PIANO_SCHE"
         # ~ verbose_name = "Study plan sheet"
         # ~ verbose_name_plural = "Study plan sheets"
@@ -1703,7 +1704,7 @@ class DidatticaCdsTipoCorso(Permissions):
         )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_CDS_TIPO_CORSO"
         verbose_name = "Cds course type"
         verbose_name_plural = "Cds course types"
@@ -1721,7 +1722,7 @@ class DidatticaPianiStudio(models.Model):
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = 'DIDATTICA_PIANI_STUDIO'
 
 
@@ -1742,7 +1743,7 @@ class DidatticaPianiSchema(models.Model):
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = 'DIDATTICA_PIANI_SCHEMA'
 
 
@@ -1772,7 +1773,7 @@ class DidatticaPianiRegSce(models.Model):
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = 'DIDATTICA_PIANI_REG_SCE'
 
 
@@ -1786,7 +1787,7 @@ class DidatticaPianiBloccoSce(models.Model):
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = 'DIDATTICA_PIANI_BLOCCO_SCE'
 
         
@@ -1802,71 +1803,71 @@ class DidatticaPianiAfRegSce(models.Model):
     dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = 'DIDATTICA_PIANI_AF_REG_SCE'
 
 
 class VDidatticaAfPianiStudio(models.Model):
     af_pds_id = models.IntegerField(db_column='AF_PDS_ID', primary_key=True)  # Field name made lowercase.
     id_cds = models.IntegerField(db_column='ID_CDS', blank=True, null=True)  # Field name made lowercase.
-    cds_cod = models.CharField(db_column='CDS_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    cds_cod = models.CharField(db_column='CDS_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
     ord_id = models.IntegerField(db_column='ORD_ID', blank=True, null=True)  # Field name made lowercase.
-    ord_cod = models.CharField(db_column='ORD_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ord_cod = models.CharField(db_column='ORD_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
     aa_ord_id = models.IntegerField(db_column='AA_ORD_ID', blank=True, null=True)  # Field name made lowercase.
     regdid_id = models.IntegerField(db_column='REGDID_ID', blank=True, null=True)  # Field name made lowercase.
-    regdid_cod = models.CharField(db_column='REGDID_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    regdid_cod = models.CharField(db_column='REGDID_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
     aa_regdid_id = models.IntegerField(db_column='AA_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
-    # ~ id_off = models.CharField(db_column='ID_OFF', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    # ~ id_off = models.CharField(db_column='ID_OFF', max_length=255, blank=True, null=True)  # Field name made lowercase.
     anno_di_scelta_percorso = models.DecimalField(db_column='ANNO_DI_SCELTA_PERCORSO', max_digits=2, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
     pds_regdid_comune_id = models.IntegerField(db_column='PDS_REGDID_COMUNE_ID', blank=True, null=True)  # Field name made lowercase.
     num_pds = models.IntegerField(db_column='NUM_PDS', blank=True, null=True)  # Field name made lowercase.
     pds_regdid_id = models.IntegerField(db_column='PDS_REGDID_ID', blank=True, null=True)  # Field name made lowercase.
-    pds_cod = models.CharField(db_column='PDS_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    pds_desc_ita = models.CharField(db_column='PDS_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    pds_desc_eng = models.CharField(db_column='PDS_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    pds_cod = models.CharField(db_column='PDS_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    pds_desc_ita = models.CharField(db_column='PDS_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    pds_desc_eng = models.CharField(db_column='PDS_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     pds_id_riferimento = models.IntegerField(db_column='PDS_ID_RIFERIMENTO', blank=True, null=True)  # Field name made lowercase.
-    lingua_cod = models.CharField(db_column='LINGUA_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    lingua_cod = models.CharField(db_column='LINGUA_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
     ana_af_id = models.IntegerField(db_column='ANA_AF_ID', blank=True, null=True)  # Field name made lowercase.
-    ana_af_cod = models.CharField(db_column='ANA_AF_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    ana_af_desc_ita = models.CharField(db_column='ANA_AF_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    ana_af_desc_eng = models.CharField(db_column='ANA_AF_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_af_cod = models.CharField(db_column='ANA_AF_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    ana_af_desc_ita = models.CharField(db_column='ANA_AF_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    ana_af_desc_eng = models.CharField(db_column='ANA_AF_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     ana_af_capog_id = models.IntegerField(db_column='ANA_AF_CAPOG_ID', blank=True, null=True)  # Field name made lowercase.
-    ana_af_capog_cod = models.CharField(db_column='ANA_AF_CAPOG_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    ana_af_capog_desc_ita = models.CharField(db_column='ANA_AF_CAPOG_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    ana_af_capog_desc_eng = models.CharField(db_column='ANA_AF_CAPOG_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_af_capog_cod = models.CharField(db_column='ANA_AF_CAPOG_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    ana_af_capog_desc_ita = models.CharField(db_column='ANA_AF_CAPOG_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    ana_af_capog_desc_eng = models.CharField(db_column='ANA_AF_CAPOG_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     anno_corso = models.DecimalField(db_column='ANNO_CORSO', max_digits=2, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
-    flag_obbl = models.CharField(db_column='FLAG_OBBL', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    flag_obbl = models.CharField(db_column='FLAG_OBBL', max_length=255, blank=True, null=True)  # Field name made lowercase.
     aa_off_id = models.IntegerField(db_column='AA_OFF_ID', blank=True, null=True)  # Field name made lowercase.
-    flag_raggruppamento = models.CharField(db_column='FLAG_RAGGRUPPAMENTO', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    flag_capogruppo = models.CharField(db_column='FLAG_CAPOGRUPPO', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    flag_raggruppata = models.CharField(db_column='FLAG_RAGGRUPPATA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    flag_no_raggr_o_capog = models.CharField(db_column='FLAG_NO_RAGGR_O_CAPOG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    flag_raggruppamento = models.CharField(db_column='FLAG_RAGGRUPPAMENTO', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    flag_capogruppo = models.CharField(db_column='FLAG_CAPOGRUPPO', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    flag_raggruppata = models.CharField(db_column='FLAG_RAGGRUPPATA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    flag_no_raggr_o_capog = models.CharField(db_column='FLAG_NO_RAGGR_O_CAPOG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     cfu = models.DecimalField(db_column='CFU', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     ore = models.DecimalField(db_column='ORE', max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     erog_id = models.ForeignKey('DidatticaAttivitaFormativaErogata', models.DO_NOTHING, db_column='EROG_ID', blank=True, null=True, related_name="v_pds")  # Field name made lowercase.
-    mod_did_cod = models.CharField(db_column='MOD_DID_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    mod_did_desc_ita = models.CharField(db_column='MOD_DID_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    mod_did_desc_eng = models.CharField(db_column='MOD_DID_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    mod_did_cod = models.CharField(db_column='MOD_DID_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    mod_did_desc_ita = models.CharField(db_column='MOD_DID_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    mod_did_desc_eng = models.CharField(db_column='MOD_DID_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     moduli_pds_id = models.IntegerField(db_column='MODULI_PDS_ID', blank=True, null=True)  # Field name made lowercase.
     ana_mod_sett_id = models.IntegerField(db_column='ANA_MOD_SETT_ID', blank=True, null=True)  # Field name made lowercase.
-    flag_segmento = models.CharField(db_column='FLAG_SEGMENTO', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    sett_cod = models.CharField(db_column='SETT_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    sett_desc_ita = models.CharField(db_column='SETT_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    sett_desc_eng = models.CharField(db_column='SETT_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    flag_segmento = models.CharField(db_column='FLAG_SEGMENTO', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sett_cod = models.CharField(db_column='SETT_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    sett_desc_ita = models.CharField(db_column='SETT_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sett_desc_eng = models.CharField(db_column='SETT_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     ana_mod_id = models.IntegerField(db_column='ANA_MOD_ID', blank=True, null=True)  # Field name made lowercase.
-    ana_mod_cod = models.CharField(db_column='ANA_MOD_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    ana_mod_desc_ita = models.CharField(db_column='ANA_MOD_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    ana_mod_desc_eng = models.CharField(db_column='ANA_MOD_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    taf_cod = models.CharField(db_column='TAF_COD', max_length=20, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    taf_desc_ita = models.CharField(db_column='TAF_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    taf_desc_eng = models.CharField(db_column='TAF_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ana_mod_cod = models.CharField(db_column='ANA_MOD_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    ana_mod_desc_ita = models.CharField(db_column='ANA_MOD_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    ana_mod_desc_eng = models.CharField(db_column='ANA_MOD_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    taf_cod = models.CharField(db_column='TAF_COD', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    taf_desc_ita = models.CharField(db_column='TAF_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    taf_desc_eng = models.CharField(db_column='TAF_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     id_ambito = models.IntegerField(db_column='ID_AMBITO', blank=True, null=True)  # Field name made lowercase.
-    ambito_desc_ita = models.CharField(db_column='AMBITO_DESC_ITA', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
-    ambito_desc_eng = models.CharField(db_column='AMBITO_DESC_ENG', max_length=255, db_collation='utf8mb4_unicode_ci', blank=True, null=True)  # Field name made lowercase.
+    ambito_desc_ita = models.CharField(db_column='AMBITO_DESC_ITA', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    ambito_desc_eng = models.CharField(db_column='AMBITO_DESC_ENG', max_length=255, blank=True, null=True)  # Field name made lowercase.
     # ~ dt_ins_mod = models.DateField(db_column='DT_INS_MOD', blank=True, null=True)  # Field name made lowercase.
     off_did_id = models.IntegerField(db_column='OFF_DID_ID', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = 'V2_DIDATTICA_AF_PIANI_STUDIO'
 

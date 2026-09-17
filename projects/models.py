@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class ProgettoAmbitoTerritoriale(models.Model):
@@ -12,7 +13,7 @@ class ProgettoAmbitoTerritoriale(models.Model):
         return self.ambito_territoriale
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "PROGETTO_AMBITO_TERRITORIALE"
 
 
@@ -70,7 +71,7 @@ class ProgettoDatiBase(models.Model):
     ordinamento = models.IntegerField(default=10, db_column="ORDINE")
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "PROGETTO_DATI_BASE"
         ordering = ["ordinamento"]
 
@@ -94,7 +95,7 @@ class ProgettoRicercatore(models.Model):
         return self.nome_origine
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "PROGETTO_RICERCATORE"
 
 
@@ -118,7 +119,7 @@ class ProgettoResponsabileScientifico(models.Model):
         return self.nome_origine
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "PROGETTO_RESPONSABILE_SCIENTIFICO"
 
 
@@ -131,5 +132,5 @@ class ProgettoTipologiaProgramma(models.Model):
         return self.nome_programma
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "PROGETTO_TIPOLOGIA_PROGRAMMA"

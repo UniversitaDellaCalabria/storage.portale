@@ -203,8 +203,25 @@ class PubblicazioneAutori(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PUBBLICAZIONE_AUTORI"
+
+
+class PubblicazioneCommunity(models.Model):
+    community_id = models.IntegerField(db_column="COMMUNITY_ID", primary_key=True)
+    community_name = models.CharField(
+        db_column="COMMUNITY_NAME", max_length=512, blank=True, null=True
+    )
+    parent_community_id = models.IntegerField(
+        db_column="PARENT_COMMUNITY_ID", blank=True, null=True
+    )
+    parent_community_name = models.CharField(
+        db_column="PARENT_COMMUNITY_NAME", max_length=512, blank=True, null=True
+    )
+
+    class Meta:
+        managed = False
+        db_table = "PUBBLICAZIONE_COMMUNITY"
 
 
 class PubblicazioneCollection(models.Model):
@@ -224,25 +241,8 @@ class PubblicazioneCollection(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PUBBLICAZIONE_COLLECTION"
-
-
-class PubblicazioneCommunity(models.Model):
-    community_id = models.IntegerField(db_column="COMMUNITY_ID", primary_key=True)
-    community_name = models.CharField(
-        db_column="COMMUNITY_NAME", max_length=512, blank=True, null=True
-    )
-    parent_community_id = models.IntegerField(
-        db_column="PARENT_COMMUNITY_ID", blank=True, null=True
-    )
-    parent_community_name = models.CharField(
-        db_column="PARENT_COMMUNITY_NAME", max_length=512, blank=True, null=True
-    )
-
-    class Meta:
-        managed = True
-        db_table = "PUBBLICAZIONE_COMMUNITY"
 
 
 class PubblicazioneDatiBase(models.Model):
@@ -280,5 +280,5 @@ class PubblicazioneDatiBase(models.Model):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = "PUBBLICAZIONE_DATI_BASE"

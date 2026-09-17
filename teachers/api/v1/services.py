@@ -302,6 +302,7 @@ class ServiceDocente:
             teachers = RicercaDocenteLineaBase.objects.filter(
                 ricerca_linea_base_id=q["id"]
             ).values(
+                "personale_id__id_ab",
                 "personale_id__matricola",
                 "personale_id__nome",
                 "personale_id__middle_name",
@@ -320,6 +321,7 @@ class ServiceDocente:
             teachers = RicercaDocenteLineaApplicata.objects.filter(
                 ricerca_linea_applicata_id=q["id"]
             ).values(
+                "personale_id__id_ab",
                 "personale_id__matricola",
                 "personale_id__nome",
                 "personale_id__middle_name",
@@ -348,6 +350,7 @@ class ServiceDocente:
                 teachers = RicercaDocenteLineaBase.objects.filter(
                     ricerca_linea_base_id=q["id"]
                 ).values(
+                    "personale_id__id_ab",
                     "personale_id__matricola",
                     "personale_id__nome",
                     "personale_id__middle_name",
@@ -370,6 +373,7 @@ class ServiceDocente:
                 teachers = RicercaDocenteLineaApplicata.objects.filter(
                     ricerca_linea_applicata_id=q["id"]
                 ).values(
+                    "personale_id__id_ab",
                     "personale_id__matricola",
                     "personale_id__nome",
                     "personale_id__middle_name",
@@ -430,6 +434,7 @@ class ServiceDocente:
                 teachers = RicercaDocenteLineaBase.objects.filter(
                     ricerca_linea_base_id=q["id"]
                 ).values(
+                    "personale_id__id_ab",
                     "personale_id__matricola",
                     "personale_id__nome",
                     "personale_id__middle_name",
@@ -441,7 +446,7 @@ class ServiceDocente:
                 q["Teachers"] = None
                 if dip is None:
                     for t in teachers:
-                        if t["personale_id__matricola"] == teacher:
+                        if t["personale_id__id_ab"] == teacher:
                             q["Teachers"] = teachers
 
                     if q["Teachers"] is not None:
@@ -458,7 +463,7 @@ class ServiceDocente:
                     for t in teachers:
                         if (
                             t["personale_id__sede"] == dip
-                            and t["personale_id__matricola"] == teacher
+                            and t["personale_id__id_ab"] == teacher
                         ):
                             q["Teachers"] = teachers
 
@@ -471,6 +476,7 @@ class ServiceDocente:
             teachers = RicercaDocenteLineaBase.objects.filter(
                 ricerca_linea_base_id=q["id"]
             ).values(
+                "personale_id__id_ab",
                 "personale_id__matricola",
                 "personale_id__nome",
                 "personale_id__middle_name",
@@ -522,6 +528,7 @@ class ServiceDocente:
                 teachers = RicercaDocenteLineaApplicata.objects.filter(
                     ricerca_linea_applicata_id=q["id"]
                 ).values(
+                    "personale_id__id_ab",
                     "personale_id__matricola",
                     "personale_id__nome",
                     "personale_id__middle_name",
@@ -533,7 +540,8 @@ class ServiceDocente:
                 q["Teachers"] = None
                 if dip is None:
                     for t in teachers:
-                        if t["personale_id__matricola"] == teacher:
+                        # if t["personale_id__matricola"] == teacher:
+                        if t["personale_id__id_ab"] == teacher:
                             q["Teachers"] = teachers
 
                     if q["Teachers"] is not None:
@@ -550,7 +558,8 @@ class ServiceDocente:
                     for t in teachers:
                         if (
                             t["personale_id__sede"] == dip
-                            and t["personale_id__matricola"] == teacher
+                            # and t["personale_id__matricola"] == teacher
+                            and t["personale_id__id_ab"] == teacher
                         ):
                             q["Teachers"] = teachers
 
@@ -563,6 +572,7 @@ class ServiceDocente:
             teachers = RicercaDocenteLineaApplicata.objects.filter(
                 ricerca_linea_applicata_id=q["id"]
             ).values(
+                "personale_id__id_ab",
                 "personale_id__matricola",
                 "personale_id__nome",
                 "personale_id__middle_name",

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from generics.validators import validate_file_size, validate_image_file_extension
@@ -101,7 +102,7 @@ class CdsBrochure(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "CDS_BROCHURE"
         constraints = [
             models.UniqueConstraint(
@@ -147,7 +148,7 @@ class CdsBrochureExStudenti(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "CDS_BROCHURE_EX_STUDENTI"
 
 
@@ -182,7 +183,7 @@ class CdsBrochureLink(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "CDS_BROCHURE_LINK"
 
 
@@ -209,5 +210,5 @@ class CdsBrochureSlider(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "CDS_BROCHURE_SLIDER"

@@ -312,7 +312,7 @@ class LaboratoriesSerializer(serializers.Serializer):
                 )
             result.append(
                 {
-                    "TechPersonnelID": q["matricola_responsabile_scientifico__id_ab"],
+                    "TechPersonnelID": q["matricola_personale_tecnico__id_ab"],
                     "TechPersonnelName": full_name,
                     "TechPersonnelRole": q["ruolo"],
                 }

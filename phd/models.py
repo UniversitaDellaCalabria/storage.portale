@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from generics.models import InsModAbstract
@@ -11,7 +12,7 @@ class DidatticaDottoratoAttivitaFormativaTipologia(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA_TIPOLOGIA"
 
     def __str__(self):
@@ -81,7 +82,7 @@ class DidatticaDottoratoAttivitaFormativa(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA"
 
 
@@ -111,7 +112,7 @@ class DidatticaDottoratoAttivitaFormativaAltriDocenti(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA_ALTRI_DOCENTI"
 
 
@@ -144,7 +145,7 @@ class DidatticaDottoratoAttivitaFormativaDocente(models.Model):
         return self.cognome_nome_origine
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DOTTORATO_ATTIVITA_FORMATIVA_DOCENTE"
 
 
@@ -235,7 +236,7 @@ class DidatticaDottoratoCds(InsModAbstract):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DOTTORATO_CDS"
         unique_together = (("cds_id_esse3", "aa_ord_id"),)
 
@@ -285,7 +286,7 @@ class DidatticaDottoratoPds(InsModAbstract):
     val_min_tesi = models.IntegerField(db_column="VAL_MIN_TESI", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DOTTORATO_PDS"
 
 
@@ -323,5 +324,5 @@ class DidatticaDottoratoRegolamento(InsModAbstract):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DOTTORATO_REGOLAMENTO"

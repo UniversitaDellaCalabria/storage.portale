@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from generics.models import InsModAbstract
@@ -33,7 +34,7 @@ class RicercaDocenteGruppo(InsModAbstract):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "RICERCA_DOCENTE_GRUPPO"
 
     def __str__(self):  # pragma: no cover
@@ -67,7 +68,7 @@ class RicercaGruppo(InsModAbstract):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "RICERCA_GRUPPO"
 
     def __str__(self):  # pragma: no cover

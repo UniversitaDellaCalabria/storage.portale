@@ -910,9 +910,7 @@ class ApiPersonIdUnitTest(TestCase):
         assert res.status_code == 404
 
         # POST
-        res = req.post(
-            url, {"id": 2}, HTTP_AUTHORIZATION=f"Token {token.key}"
-        )
+        res = req.post(url, {"id": 1}, HTTP_AUTHORIZATION=f"Token {token.key}")
         assert res.status_code == 200
 
 

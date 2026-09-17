@@ -33,6 +33,7 @@ class ApiStructuresUnitTestMethods(TestCase):
             "cd_tipo_nodo": "RET",
             "denominazione": "RETTORATO",
             "uo_padre": "1",
+            "id_ab": 1,
             "dt_fine_val": datetime.datetime.today() + datetime.timedelta(days=1),
         }
         data.update(kwargs)

@@ -19,7 +19,6 @@ from addressbook.utils import get_contacts, get_roles, get_roles_with_start
 class AddressbookSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
-    friendlyId = serializers.SerializerMethodField()
     roles = serializers.SerializerMethodField()
     officeReference = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
@@ -45,14 +44,15 @@ class AddressbookSerializer(serializers.ModelSerializer):
             else obj.cognome + " " + obj.nome + " " + obj.middle_name
         )
 
-    @extend_schema_field(serializers.IntegerField())
-    def get_id(self, obj):
-        return obj.id_ab
+    # @extend_schema_field(serializers.IntegerField())
+    # def get_id(self, obj):
+    #     return obj.id_ab
     
     @extend_schema_field(serializers.CharField())
-    def get_friednlyId(self, obj):
+    def get_id(self, obj):
         official = get_contacts(obj, "Posta Elettronica")
-        if not official: return None
+        if not official: 
+            return obj.id_ab
         official_email = next(
             (
                 e
@@ -62,7 +62,7 @@ class AddressbookSerializer(serializers.ModelSerializer):
             None,
         )
         return (
-            official_email.split("@")[0] if official_email else None
+            official_email.split("@")[0] if official_email else obj.id_ab
         )
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
@@ -116,7 +116,6 @@ class AddressbookSerializer(serializers.ModelSerializer):
         fields = [
             "name",
             "id",
-            "friendlyId",
             "roles",
             "officeReference",
             "email",
@@ -168,24 +167,6 @@ class AddressbookFullSerializer(serializers.ModelSerializer):
     def get_profileShortDescription(self, obj):
         return (
             obj.ds_profilo_breve if obj.ds_profilo_breve in ALLOWED_PROFILE_ID else None
-        )
-
-    @extend_schema_field(serializers.CharField())
-    def get_id(self, obj):
-        official = get_contacts(obj, "Posta Elettronica")
-        if not official:
-            official_email = None
-        else:
-            official_email = next(
-                (
-                    e
-                    for e in official
-                    if e.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}")
-                ),
-                None,
-            )
-        return (
-            official_email.split("@")[0] if official_email else obj.id_ab
         )
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
@@ -251,7 +232,6 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     surname = serializers.CharField(source="cognome")
     id = serializers.SerializerMethodField()
-    friendlyId = serializers.SerializerMethodField()
     roles = serializers.SerializerMethodField()
     officeReference = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
@@ -300,15 +280,11 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
             obj.ds_profilo_breve if obj.ds_profilo_breve in ALLOWED_PROFILE_ID else None
         )
 
-    @extend_schema_field(serializers.IntegerField())
-    def get_id(self, obj):
-        return obj.id_ab
-
     @extend_schema_field(serializers.CharField())
-    def get_friendlyId(self, obj):
+    def get_id(self, obj):
         official = get_contacts(obj, "Posta Elettronica")
         if not official:
-            official_email = None
+            return obj.id_ab
         else:
             official_email = next(
                 (
@@ -319,7 +295,7 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
                 None,
             )
         return (
-            official_email.split("@")[0] if official_email else None
+            official_email.split("@")[0] if official_email else obj.id_ab
         )
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
@@ -364,7 +340,6 @@ class AddressbookDetailSerializer(serializers.ModelSerializer):
             "name",
             "surname",
             "id",
-            "friendlyId",
             "roles",
             "officeReference",
             "email",

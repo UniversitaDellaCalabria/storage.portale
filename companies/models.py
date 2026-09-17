@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from generics.validators import (
     validate_file_size,
@@ -19,7 +20,7 @@ class TipologiaAreaTecnologica(models.Model):
         return self.descr_area_ita
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "TIPOLOGIA_AREA_TECNOLOGICA"
 
 
@@ -31,7 +32,7 @@ class SpinoffStartupAreaInnovazioneS3Calabria(models.Model):
         return self.descr_area_s3
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "SPINOFF_STARTUP_AREA_INNOVAZIONE_S3_CALABRIA"
 
 
@@ -87,7 +88,7 @@ class SpinoffStartupDatiBase(models.Model):
     ordinamento = models.IntegerField(default=10, db_column="ORDINE")
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "SPINOFF_STARTUP_DATI_BASE"
         ordering = ["ordinamento"]
 
@@ -112,5 +113,5 @@ class SpinoffStartupDipartimento(models.Model):
         return self.nome_origine_dipartimento
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "SPINOFF_STARTUP_DIPARTIMENTO"

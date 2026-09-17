@@ -34,8 +34,7 @@ class TeachersSerializer(serializers.Serializer):
             + (" " + query["middle_name"] if query["middle_name"] is not None else "")
         )
         return {
-            "TeacherID": query["id_ab"],
-            "TeacherFriendlyID": official_email.split("@")[0] if official_email else None,
+            "TeacherID": official_email.split("@")[0] if official_email else query["id_ab"],
             "TeacherName": full_name,
             "TeacherDepartmentID": query["dip_id"],
             "TeacherDepartmentCod": query["dip_cod"],
@@ -114,8 +113,7 @@ class TeacherInfoSerializer(serializers.Serializer):
             functions = TeacherInfoSerializer.to_dict_functions(query["Functions"])
 
         return {
-            "TeacherID": query["id_ab"],
-            "TeacherFriendlyID": official_email.split("@")[0] if official_email else None,
+            "TeacherID": official_email.split("@")[0] if official_email else query["id_ab"],
             "TeacherFirstName": query["nome"]
             + (" " + query["middle_name"] if query["middle_name"] is not None else ""),
             "TeacherLastName": query["cognome"],

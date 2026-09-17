@@ -22,12 +22,12 @@ class PatentFilter(filters.FilterSet):
     )
 
     def filter_search(self, queryset, search, value):
-        for k in search.split(" "):
-            return queryset.filter(Q(titolo__icontains=k))
+        for k in value.split(" "):
+            return queryset.filter(titolo__icontains=k)
 
     def filter_structure(self, queryset, structure, value):
         return queryset.filter(
-            Q(brevettoinventori__matricola_inventore__cd_uo_aff_org=structure)
+            brevettoinventori__matricola_inventore__cd_uo_aff_org=structure
         )
 
     class Meta:

@@ -345,7 +345,7 @@ class CdsDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                 "ordine": item.ordine,
                 "nome_ufficio": item.nome_ufficio,
                 # "matricola_riferimento": item.matricola_riferimento,
-                "matricola_riferimento": email_id or item.matricola_riferimento__id_ab,
+                "matricola_riferimento": email_id or item.matricola_riferimento.id_ab,
                 "nome_origine_riferimento": item.nome_origine_riferimento,
                 "telefono": item.telefono,
                 "email": item.email,
@@ -1504,7 +1504,7 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
     def get_id(self, obj):
         official = get_contacts(obj, "Posta Elettronica")
         if not official:
-            official_email = None
+            return obj.id_ab
         else:
             official_email = next(
                 (

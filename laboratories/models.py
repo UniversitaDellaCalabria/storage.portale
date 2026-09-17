@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from generics.validators import validate_file_size, validate_image_file_extension
@@ -10,7 +11,7 @@ class TipologiaRischio(models.Model):
     descr_tipologia = models.CharField(db_column="DESCR_TIPOLOGIA", max_length=1000)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "TIPOLOGIA_RISCHIO"
 
 
@@ -33,7 +34,7 @@ class LaboratorioAltriDipartimenti(models.Model):
     descr_dip_lab = models.CharField(max_length=400, db_column="DESCR_DIP_LAB", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_ALTRI_DIPARTIMENTI"
 
 
@@ -60,7 +61,7 @@ class LaboratorioAttivita(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_ATTIVITA"
 
 
@@ -90,7 +91,7 @@ class LaboratorioAttrezzatureRischi(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_ATTREZZATURE_RISCHI"
 
 
@@ -101,7 +102,7 @@ class LaboratorioFondo(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_FONDO"
 
 
@@ -131,7 +132,7 @@ class LaboratorioAttrezzatureFondi(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_ATTREZZATURE_FONDI"
 
 
@@ -154,7 +155,7 @@ class LaboratorioAttrezzature(models.Model):
     quantita = models.IntegerField(db_column="QUANTITA", blank=False, null=True)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_ATTREZZATURE"
 
 
@@ -166,7 +167,7 @@ class LaboratorioInfrastruttura(models.Model):
         return self.descrizione
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_INFRASTRUTTURA"
 
 
@@ -175,7 +176,7 @@ class LaboratorioTipologiaAttivita(models.Model):
     descrizione = models.CharField(db_column="DESCRIZIONE", max_length=1000)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_TIPOLOGIA_ATTIVITA"
 
 
@@ -327,7 +328,7 @@ class LaboratorioDatiBase(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_DATI_BASE"
 
 
@@ -349,7 +350,7 @@ class LaboratorioDatiErc1(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_DATI_ERC1"
 
 
@@ -375,7 +376,7 @@ class LaboratorioPersonaleRicerca(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_PERSONALE_RICERCA"
 
 
@@ -405,7 +406,7 @@ class LaboratorioPersonaleTecnico(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_PERSONALE_TECNICO"
 
 
@@ -436,7 +437,7 @@ class LaboratorioServiziErogati(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_SERVIZI_EROGATI"
 
 
@@ -455,7 +456,7 @@ class LaboratorioServiziOfferti(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_SERVIZI_OFFERTI"
 
 
@@ -480,7 +481,7 @@ class LaboratorioTipologiaRischio(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_TIPOLOGIA_RISCHIO"
 
 
@@ -503,5 +504,5 @@ class LaboratorioUbicazione(models.Model):
     note = models.TextField(db_column="NOTE", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "LABORATORIO_UBICAZIONE"

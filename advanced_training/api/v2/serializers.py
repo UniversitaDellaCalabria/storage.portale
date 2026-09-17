@@ -145,7 +145,8 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_internalScientificCouncil(self, obj):
         return [
-            {"id": c.matricola_cons__id_ab, "name": c.nome_origine_cons}
+            {"id": c.matricola_cons.id_ab if c.matricola_cons else None, 
+             "name": c.nome_origine_cons}
             for c in getattr(obj, "internal_scientific_council")
         ]
 

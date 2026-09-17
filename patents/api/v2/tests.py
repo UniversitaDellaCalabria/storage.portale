@@ -27,7 +27,7 @@ class PatentsUnitTest(TestCase):
         self.assert_data_len(url, {"techarea": 1}, 1)
 
     def test_apipatentdetail(self):
-        url = reverse("patents:apiv2:patents-detail", kwargs={"patentid": "1"})
+        url = reverse("patents:apiv2:patents-detail", kwargs={"pk": "1"})
         res = self.req.get(url)
 
         self.assertEqual(res.status_code, 200)

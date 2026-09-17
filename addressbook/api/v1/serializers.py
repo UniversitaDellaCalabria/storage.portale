@@ -28,8 +28,7 @@ class AddressbookSerializer(serializers.Serializer):
 
         return {
             "Name": full_name,
-            "ID": query["id_ab"],
-            "FriendlyID": official_email.split("@")[0] if official_email else None,
+            "ID": official_email.split("@")[0] if official_email else query["id_ab"],
             "Roles": roles,
             "OfficeReference": query["Riferimento Ufficio"]
             if "Riferimento Ufficio" in PERSON_CONTACTS_TO_TAKE
@@ -162,8 +161,7 @@ class PersonaleSerializer(serializers.Serializer):
 
         return {
             "Name": full_name,
-            "ID": query["id_ab"],
-            "FriendlyID": official_email.split("@")[0] if official_email else None,
+            "ID": official_email.split("@")[0] if official_email else query["id_ab"],
             "Roles": roles,
             "OfficeReference": query["Riferimento Ufficio"]
             if "Riferimento Ufficio" in PERSON_CONTACTS_TO_TAKE

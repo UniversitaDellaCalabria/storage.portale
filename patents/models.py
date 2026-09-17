@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from generics.validators import validate_image_file_extension, validate_file_size
 from patents.settings import patents_media_path
@@ -11,7 +12,7 @@ class BrevettoDirittiCommerciali(models.Model):
         return self.descr_diritto
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "BREVETTO_DIRITTI_COMMERCIALI"
 
 
@@ -23,7 +24,7 @@ class BrevettoTerritori(models.Model):
         return self.territorio
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "BREVETTO_TERRITORI"
 
 
@@ -37,7 +38,7 @@ class BrevettoDisponibilita(models.Model):
         return self.descr_disponibilita
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "BREVETTO_DISPONIBILITA"
 
 
@@ -49,7 +50,7 @@ class BrevettoStatusLegale(models.Model):
         return self.descr_status
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "BREVETTO_STATUS_LEGALE"
 
 
@@ -128,7 +129,7 @@ class BrevettoDatiBase(models.Model):
     ordinamento = models.IntegerField(default=10, db_column="ORDINE")
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "BREVETTO_DATI_BASE"
         ordering = ["ordinamento"]
 
@@ -154,5 +155,5 @@ class BrevettoInventori(models.Model):
         return self.cognomenome_origine
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "BREVETTO_INVENTORI"

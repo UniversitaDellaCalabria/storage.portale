@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from generics.models import InsModAbstract
@@ -37,7 +38,7 @@ class ComuniAll(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "COMUNI_ALL"
 
 
@@ -106,7 +107,7 @@ class UnitaOrganizzativa(models.Model):
         return "{}".format(self.denominazione)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "UNITA_ORGANIZZATIVA"
 
 
@@ -153,7 +154,7 @@ class UnitaOrganizzativaFunzioni(models.Model):
     id_ab = models.IntegerField(db_column="ID_AB", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "UNITA_ORGANIZZATIVA_FUNZIONI"
 
 
@@ -165,7 +166,7 @@ class UnitaOrganizzativaTipoFunzioni(models.Model):
     descr_funzione = models.CharField(db_column="DESCR_FUNZIONE", max_length=1000)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "UNITA_ORGANIZZATIVA_TIPO_FUNZIONI"
         unique_together = (("cd_tipo_nod", "funzione"),)
 
@@ -194,7 +195,7 @@ class UnitaOrganizzativaContatti(models.Model):
     dt_fine_val = models.DateTimeField(db_column="DT_FINE_VAL", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "UNITA_ORGANIZZATIVA_CONTATTI"
         unique_together = (("ab", "cd_tipo_cont", "prg_priorita"),)
 
@@ -223,7 +224,7 @@ class TerritorioIt(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "TERRITORIO_IT"
 
     def __str__(self):  # pragma: no cover
@@ -248,7 +249,7 @@ class DidatticaDipartimento(InsModAbstract):
     dt_mod = models.DateTimeField(db_column='DT_MOD', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DIPARTIMENTO"
 
     def __str__(self):  # pragma: no cover
@@ -266,7 +267,7 @@ class DidatticaDipartimentoUrl(models.Model):
     dip_url = models.URLField(db_column="DIP_URL", max_length=4000)
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DIPARTIMENTO_URL"
 
 
@@ -293,7 +294,7 @@ class DidatticaDipartimentoGruppi(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DIPARTIMENTO_GRUPPI"
         ordering = ("ordine",)
 
@@ -335,6 +336,6 @@ class DidatticaDipartimentoGruppiComponenti(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = getattr(settings, 'IS_TESTING', False)
         db_table = "DIDATTICA_DIPARTIMENTO_GRUPPI_COMPONENTI"
         ordering = ("ordine",)
