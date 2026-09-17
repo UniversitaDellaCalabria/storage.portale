@@ -732,7 +732,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             email = af_off.doc_tit_id_ab.email
             if email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 return email.split("@")[0]
-            return af_off.doc_tit_id_ab
+            return af_off.doc_tit_id_ab.id_ab
         except Exception:
             return None
 
@@ -1046,7 +1046,7 @@ class StudyActivityTeacherSerializer(serializers.Serializer):
             email = getattr(obj.doc_tit_id_ab, "email", None)
             if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 return email.split("@")[0]
-            return obj.af_off.doc_tit_id_ab
+            return obj.af_off.doc_tit_id_ab.id_ab
         except Exception:
             pass
         return None
@@ -1139,7 +1139,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
             if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 teacher_info["id"] = email.split("@")[0]
             else:
-                teacher_info["id"] = mod_off.af_off.doc_tit_id_ab
+                teacher_info["id"] = mod_off.af_off.doc_tit_id_ab.id_ab
         except Exception:
             pass
 
