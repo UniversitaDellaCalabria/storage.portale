@@ -34,7 +34,7 @@ class PatentsSerializer(ReadOnlyModelSerializer):
     def get_inventors(self, obj):
         return [
             {
-                "authorId": inv.matricola_inventore.id_ab,
+                "authorId": str(inv.matricola_inventore.id_ab),
                 "authorName": inv.cognomenome_origine,
             }
             for inv in obj.inventori

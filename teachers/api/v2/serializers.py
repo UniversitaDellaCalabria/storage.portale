@@ -48,7 +48,7 @@ class TeachersSerializer(serializers.ModelSerializer):
     def get_id(self, obj):
         official = get_contacts(obj, "Posta Elettronica")
         if not official:
-            return obj.id_ab
+            return str(obj.id_ab)
         else:
             official_email = next(
                 (
@@ -59,7 +59,7 @@ class TeachersSerializer(serializers.ModelSerializer):
                 None,
             )
         return (
-            official_email.split("@")[0] if official_email else obj.id_ab
+            official_email.split("@")[0] if official_email else str(obj.id_ab)
         )
 
     @extend_schema_field(serializers.CharField())
@@ -134,7 +134,7 @@ class TeacherSerializer(serializers.ModelSerializer):
             None,
         )
         return (
-            official_email.split("@")[0] if official_email else obj.id_ab
+            official_email.split("@")[0] if official_email else str(obj.id_ab)
         )
 
     @extend_schema_field(serializers.CharField())
@@ -368,7 +368,7 @@ class PublicationSerializer(serializers.ModelSerializer):
 
             authors.append(
                 {
-                    "id": a.ab.id_ab,
+                    "id": str(a.ab.id_ab),
                     "name": full_name,
                     "email": add_email_addresses(a.ab.cod_fis),
                 }

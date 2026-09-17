@@ -66,7 +66,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.CharField())
     def get_completionReferentId(self, obj):
-        return obj.matricola_referente_compilazione.id_ab if obj.matricola_responsabile_scientifico else None
+        return str(obj.matricola_referente_compilazione.id_ab) if obj.matricola_responsabile_scientifico else None
 
     @extend_schema_field(serializers.CharField())
     def get_logo(self, obj):
@@ -74,7 +74,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_scientificDirectorId(self, obj):
-        return obj.matricola_responsabile_scientifico.id_ab if obj.matricola_responsabile_scientifico else None
+        return str(obj.matricola_responsabile_scientifico.id_ab) if obj.matricola_responsabile_scientifico else None
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_extraDepartments(self, obj):
@@ -135,7 +135,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
 
                 return [
                     {
-                        "id": p.matricola_personale_ricerca.id_ab,
+                        "id": str(p.matricola_personale_ricerca.id_ab),
                         "name": full_name,
                         "email": add_email_addresses(
                             p.matricola_personale_ricerca.cod_fis
@@ -147,7 +147,7 @@ class LaboratorySerializer(serializers.ModelSerializer):
     def get_techPersonnel(self, obj):
         return [
             {
-                "matricola": p.matricola_personale_tecnico.id_ab,
+                "matricola": str(p.matricola_personale_tecnico.id_ab),
                 "name": p.matricola_personale_tecnico.cognome
                 + " "
                 + p.matricola_personale_tecnico.nome
@@ -290,7 +290,7 @@ class LaboratoriesSerializer(serializers.Serializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_scientificDirectorId(self, obj):
-        return obj.matricola_responsabile_scientifico.id_ab if obj.matricola_responsabile_scientifico else None
+        return str(obj.matricola_responsabile_scientifico.id_ab) if obj.matricola_responsabile_scientifico else None
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_extraDepartments(self, obj):
@@ -351,7 +351,7 @@ class LaboratoriesSerializer(serializers.Serializer):
 
                 return [
                     {
-                        "id": p.matricola_personale_ricerca.id_ab,
+                        "id": str(p.matricola_personale_ricerca.id_ab),
                         "name": full_name,
                         "email": add_email_addresses(
                             p.matricola_personale_ricerca.cod_fis
@@ -365,7 +365,7 @@ class LaboratoriesSerializer(serializers.Serializer):
 
         return [
             {
-                "matricola": p.matricola_personale_tecnico.id_ab,
+                "matricola": str(p.matricola_personale_tecnico.id_ab),
                 "name": p.matricola_personale_tecnico.cognome
                 + " "
                 + p.matricola_personale_tecnico.nome

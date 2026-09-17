@@ -28,7 +28,7 @@ class AddressbookSerializer(serializers.Serializer):
 
         return {
             "Name": full_name,
-            "ID": official_email.split("@")[0] if official_email else query["id_ab"],
+            "ID": official_email.split("@")[0] if official_email else str(query["id_ab"]),
             "Roles": roles,
             "OfficeReference": query["Riferimento Ufficio"]
             if "Riferimento Ufficio" in PERSON_CONTACTS_TO_TAKE
@@ -161,7 +161,7 @@ class PersonaleSerializer(serializers.Serializer):
 
         return {
             "Name": full_name,
-            "ID": official_email.split("@")[0] if official_email else query["id_ab"],
+            "ID": official_email.split("@")[0] if official_email else str(query["id_ab"]),
             "Roles": roles,
             "OfficeReference": query["Riferimento Ufficio"]
             if "Riferimento Ufficio" in PERSON_CONTACTS_TO_TAKE
@@ -339,7 +339,7 @@ class SortingContactsSerializer(serializers.Serializer):
         )
         return {
             "Name": full_name,
-            "ID": query["doc_id_ab__id_ab"],
+            "ID": str(query["doc_id_ab__id_ab"]),
             "TeacherDepartmentID": query["doc_id_ab__cd_uo_aff_org"],
             "TeacherOffice": query["doc_id_ab__ds_aff_org"],
             "DepartmentURL": query["DepartmentUrl"],

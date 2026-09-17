@@ -246,9 +246,9 @@ class CdsInfoSerializer(serializers.Serializer):
             # email_id_coordinatore = q["matricola_coordinatore__email"].split("@")[0] if q["matricola_coordinatore__email"] and q["matricola_coordinatore__email"].endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
             # email_id_vice = q["matricola_vice_coordinatore__email"].split("@")[0] if q["matricola_vice_coordinatore__email"] and q["matricola_vice_coordinatore__email"].endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}") else None
             return {
-                "DirectorId": q["matricola_coordinatore__id_ab"],
+                "DirectorId": str(q["matricola_coordinatore__id_ab"]),
                 "DirectorName": q["nome_origine_coordinatore"],
-                "DeputyDirectorId": q["matricola_vice_coordinatore__id_ab"],
+                "DeputyDirectorId": str(q["matricola_vice_coordinatore__id_ab"]),
                 "DeputyDirectorName": q["nome_origine_vice_coordinatore"],
                 # 'SeatsNumber': q['num_posti'],
                 # 'RegistrationMode': q['modalita_iscrizione'],
@@ -267,7 +267,7 @@ class CdsInfoSerializer(serializers.Serializer):
                 {
                     "Order": q["ordine"],
                     "OfficeName": q["nome_ufficio"],
-                    "OfficeDirector": q["matricola_riferimento__id_ab"],
+                    "OfficeDirector": str(q["matricola_riferimento__id_ab"]),
                     "OfficeDirectorName": q["nome_origine_riferimento"],
                     "TelOffice": q["telefono"],
                     "Email": q["email"],
@@ -306,7 +306,7 @@ class CdsInfoSerializer(serializers.Serializer):
             data.append(
                 {
                     "Order": q["ordine"],
-                    "ID": q["matricola__id_ab"],
+                    "ID": str(q["matricola__id_ab"]),
                     "Surname": q["cognome"],
                     "Name": q["nome"],
                     "Function": q["funzione_it"]
@@ -479,7 +479,7 @@ class StudyActivitiesSerializer(serializers.Serializer):
             "StudyActivityCdSName": query["cds_id__nome_cds_it"]
             if req_lang == "it" or query["cds_id__nome_cds_eng"] is None
             else query["cds_id__nome_cds_eng"],
-            "StudyActivityTeacherID": query["matricola_resp_did__id_ab"]
+            "StudyActivityTeacherID": str(query["matricola_resp_did__id_ab"])
             if query["matricola_resp_did"]
             else None,
             "StudyActivityTeacherName": full_name,
@@ -618,7 +618,7 @@ class StudyActivityInfoSerializer(serializers.Serializer):
                 {
                     "ActivityType": q["tipo_att_did_cod"],
                     "Hours": q["ore"],
-                    "StudyActivityTeacherID": official_email.split("@")[0] if official_email else q["coper_id__personale_id__id_ab"],
+                    "StudyActivityTeacherID": official_email.split("@")[0] if official_email else str(q["coper_id__personale_id__id_ab"]),
                     # if not q["coper_id__personale_id__flg_cessato"]
                     # else None,
                     "StudyActivityTeacherName": full_name,

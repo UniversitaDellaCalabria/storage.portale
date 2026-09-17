@@ -51,7 +51,7 @@ class ProjectSerializer(serializers.Serializer):
             full_name = q["nome_origine"]
             result.append(
                 {
-                    "ScientificDirectorId": q["matricola__id_ab"],
+                    "ScientificDirectorId": str(q["matricola__id_ab"]),
                     "ScientificDirectorName": full_name,
                 }
             )
@@ -64,7 +64,7 @@ class ProjectSerializer(serializers.Serializer):
             full_name = q["nome_origine"]
             result.append(
                 {
-                    "ResearcherId": q["matricola__id_ab"],
+                    "ResearcherId": str(q["matricola__id_ab"]),
                     "ResearcherName": full_name,
                 }
             )

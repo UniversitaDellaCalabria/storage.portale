@@ -39,7 +39,7 @@ class PatentsSerializer(serializers.Serializer):
             full_name = q["cognomenome_origine"]
             result.append(
                 {
-                    "AuthorId": q["matricola_inventore__id_ab"],
+                    "AuthorId": str(q["matricola_inventore__id_ab"]),
                     "AuthorName": full_name,
                 }
             )

@@ -88,11 +88,11 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.CharField())
     def get_scientificDirectorId(self, obj):
-        return obj.matricola_direttore_scientifico.id_ab
+        return str(obj.matricola_direttore_scientifico.id_ab)
 
     @extend_schema_field(serializers.CharField())
     def get_proposerId(self, obj):
-        return obj.matricola_proponente.id_ab if obj.matricola_proponente else None
+        return str(obj.matricola_proponente.id_ab) if obj.matricola_proponente else None
 
     @extend_schema_field(serializers.CharField(allow_null=True))
     def get_status(self, obj):
@@ -145,7 +145,7 @@ class AdvancedTrainingMastersSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_internalScientificCouncil(self, obj):
         return [
-            {"id": c.matricola_cons.id_ab if c.matricola_cons else None, 
+            {"id": str(c.matricola_cons.id_ab) if c.matricola_cons else None, 
              "name": c.nome_origine_cons}
             for c in getattr(obj, "internal_scientific_council")
         ]

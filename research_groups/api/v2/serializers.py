@@ -22,7 +22,7 @@ class ResearchGroupsSerializer(serializers.ModelSerializer):
     def get_teachers(self, obj):
         return [
             {
-                "id": docente.personale.id_ab,
+                "id": str(docente.personale.id_ab),
                 "name": (
                     f"{docente.personale.cognome} {docente.personale.nome}"
                     + (

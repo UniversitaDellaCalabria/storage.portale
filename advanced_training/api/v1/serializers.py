@@ -141,7 +141,7 @@ class HighFormationMastersSerializer(serializers.Serializer):
             full_name = q["nome_origine_cons"]
             result.append(
                 {
-                    "PersonId": q["matricola_cons__id_ab"],
+                    "PersonId": str(q["matricola_cons__id_ab"]),
                     "PersonName": full_name,
                 }
             )

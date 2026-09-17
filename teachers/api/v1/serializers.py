@@ -34,7 +34,7 @@ class TeachersSerializer(serializers.Serializer):
             + (" " + query["middle_name"] if query["middle_name"] is not None else "")
         )
         return {
-            "TeacherID": official_email.split("@")[0] if official_email else query["id_ab"],
+            "TeacherID": official_email.split("@")[0] if official_email else str(query["id_ab"]),
             "TeacherName": full_name,
             "TeacherDepartmentID": query["dip_id"],
             "TeacherDepartmentCod": query["dip_cod"],
@@ -113,7 +113,7 @@ class TeacherInfoSerializer(serializers.Serializer):
             functions = TeacherInfoSerializer.to_dict_functions(query["Functions"])
 
         return {
-            "TeacherID": official_email.split("@")[0] if official_email else query["id_ab"],
+            "TeacherID": official_email.split("@")[0] if official_email else str(query["id_ab"]),
             "TeacherFirstName": query["nome"]
             + (" " + query["middle_name"] if query["middle_name"] is not None else ""),
             "TeacherLastName": query["cognome"],
@@ -316,7 +316,7 @@ class PublicationSerializer(serializers.Serializer):
                 )
             result.append(
                 {
-                    "AuthorId": q["ab__id_ab"],
+                    "AuthorId": str(q["ab__id_ab"]),
                     "AuthorName": full_name,
                     "AuthorEmail": q["email"],
                 }

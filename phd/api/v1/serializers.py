@@ -72,7 +72,7 @@ class PhdActivitiesSerializer(serializers.Serializer):
             full_name = q["cognome_nome_origine"]
             result.append(
                 {
-                    "PersonId": q["matricola__id_ab"],
+                    "PersonId": str(q["matricola__id_ab"]),
                     "PersonName": full_name,
                 }
             )

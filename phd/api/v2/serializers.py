@@ -116,7 +116,7 @@ class PhdActivitiesSerializer(serializers.ModelSerializer):
     def get_mainTeachers(self, obj):
         return [
             {
-                "personId": docente.matricola.id_ab if docente.matricola else None,
+                "personId": str(docente.matricola.id_ab) if docente.matricola else None,
                 "personName": docente.cognome_nome_origine,
             }
             for docente in obj.docente
@@ -126,7 +126,7 @@ class PhdActivitiesSerializer(serializers.ModelSerializer):
     def get_otherTeachers(self, obj):
         return [
             {
-                "personId": docente.matricola.id_ab if docente.matricola else None,
+                "personId": str(docente.matricola.id_ab) if docente.matricola else None,
                 "personName": docente.cognome_nome_origine,
             }
             for docente in obj.altri_docenti

@@ -316,10 +316,10 @@ class CdsDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
         altri_dati = getattr(obj, "otherData", [])
         return [
             {
-                "coordinatorId": email_id_coordinatore or obj.matricola_coordinatore.id_ab,
+                "coordinatorId": email_id_coordinatore or str(obj.matricola_coordinatore.id_ab),
                 "coordinatorName": ad.nome_origine_coordinatore,
                 # "viceCoordinatorId": ad.matricola_vice_coordinatore,
-                "viceCoordinatorId": email_id_vice or ad.matricola_vice_coordinatore.id_ab,
+                "viceCoordinatorId": email_id_vice or str(ad.matricola_vice_coordinatore.id_ab),
                 "viceCoordinatorName": ad.nome_origine_vice_coordinatore,
                 "studyManifesto": ad.manifesto_studi,
                 "educationalRules": ad.regolamento_didattico,
@@ -345,7 +345,7 @@ class CdsDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                 "ordine": item.ordine,
                 "nome_ufficio": item.nome_ufficio,
                 # "matricola_riferimento": item.matricola_riferimento,
-                "matricola_riferimento": email_id or item.matricola_riferimento.id_ab,
+                "matricola_riferimento": email_id or str(item.matricola_riferimento.id_ab),
                 "nome_origine_riferimento": item.nome_origine_riferimento,
                 "telefono": item.telefono,
                 "email": item.email,
@@ -732,7 +732,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             email = af_off.doc_tit_id_ab.email
             if email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 return email.split("@")[0]
-            return af_off.doc_tit_id_ab.id_ab
+            return str(af_off.doc_tit_id_ab.id_ab)
         except Exception:
             return None
 
@@ -911,15 +911,14 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         #     if is_nullable(cop.doc_matricola) and (is_nullable(cop.doc_id_ab.id_ab) if cop.doc_id_ab else None)
         # ]
 
-        personale_map = {
-            p.id_ab: p
-            for p in Personale.objects.filter(id_ab__in=ids_ab).only('id_ab', 'cognome', 'nome')
-        }
+        # personale_map = {
+        #     p.id_ab: p
+        #     for p in Personale.objects.filter(id_ab__in=ids_ab).only('id_ab', 'cognome', 'nome')
+        # }
 
         result = []
         for cop in coperture:
             teacher_id, teacher_name = None, None
-            print(getattr(cop, "doc_id_ab", None))
             if is_nullable(cop.doc_matricola) and getattr(cop, "doc_id_ab", None):
                 # doc = personale_map.get(cop.doc_id_ab.id_ab)
                 # teacher_name = f"{doc.cognome} {doc.nome}" if doc else None
@@ -927,7 +926,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                 if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                     teacher_id = email.split("@")[0]
                 else:
-                    teacher_id = cop.doc_id_ab.id_ab
+                    teacher_id = str(cop.doc_id_ab.id_ab)
             teacher_name = f"{cop.doc_cognome} {cop.doc_nome}"
 
             serializer = StudyActivityHourSerializer(
@@ -1055,7 +1054,7 @@ class StudyActivityTeacherSerializer(serializers.Serializer):
             email = getattr(obj.doc_tit_id_ab, "email", None)
             if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 return email.split("@")[0]
-            return obj.af_off.doc_tit_id_ab.id_ab
+            return str(obj.af_off.doc_tit_id_ab.id_ab)
         except Exception:
             pass
         return None
@@ -1148,7 +1147,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
             if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
                 teacher_info["id"] = email.split("@")[0]
             else:
-                teacher_info["id"] = mod_off.af_off.doc_tit_id_ab.id_ab
+                teacher_info["id"] = str(mod_off.af_off.doc_tit_id_ab.id_ab)
         except Exception:
             pass
 
@@ -1513,7 +1512,7 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
     def get_id(self, obj):
         official = get_contacts(obj, "Posta Elettronica")
         if not official:
-            return obj.id_ab
+            return str(obj.id_ab)
         else:
             official_email = next(
                 (
@@ -1524,7 +1523,7 @@ class SortingContactsSerializer(ReadOnlyModelSerializer):
                 None,
             )
         return (
-            official_email.split("@")[0] if official_email else obj.id_ab
+            official_email.split("@")[0] if official_email else str(obj.id_ab)
         )
 
     class Meta:
