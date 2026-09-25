@@ -31,6 +31,34 @@ class TipologiaRischio(models.Model):
         managed = False
         db_table = "TIPOLOGIA_RISCHIO"
 
+class LaboratorioTipoRischio(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    tipo_rischio_it = models.CharField(
+        db_column="TIPO_RISCHIO_IT", max_length=500, blank=True, null=True
+    )
+    tipo_rischio_en = models.CharField(
+        db_column="TIPO_RISCHIO_EN", max_length=500, blank=True, null=True
+    )
+    descrizione_it = models.TextField(
+        db_column="DESCRIZIONE_IT", blank=True, null=True
+    )
+    descrizione_en = models.TextField(
+        db_column="DESCRIZIONE_EN", blank=True, null=True
+    )
+    dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    id_user_mod = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        db_column="user_mod_id",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        managed = False
+        db_table = "LABORATORIO_TIPO_RISCHIO"
+
+
 #TO DO
 class LaboratorioAltriDipartimenti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -119,11 +147,42 @@ class LaboratorioAttrezzatureRischi(models.Model):
         managed = False
         db_table = "LABORATORIO_ATTREZZATURE_RISCHI"
 
+class LaboratorioContestoFondo(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    descrizione_it = models.TextField(
+        db_column="DESCRIZIONE_IT", blank=True, null=True
+    )
+    descrizione_en = models.TextField(
+        db_column="DESCRIZIONE_EN", blank=True, null=True
+    )
+    dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
+    id_user_mod = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        db_column="id_user_mod",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        managed = False
+        db_table = "LABORATORIO_CONTESTO_FONDO"
+
 
 class LaboratorioFondo(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    nome_fondo = models.CharField(
-        db_column="NOME_FONDO", max_length=500, blank=False, null=False
+    nome_fondo_it = models.CharField(
+        db_column="NOME_FONDO_IT", max_length=500, blank=False, null=False
+    )
+    nome_fondo_en = models.CharField(
+        db_column="NOME_FONDO_EN", max_length=500, blank=True, null=True
+    )
+    laboratorio_contesto_fondo = models.ForeignKey(
+        "LaboratorioContestoFondo",
+        models.SET_NULL,
+        db_column="ID_LABORATORIO_CONTESTO_FONDO",
+        blank=True,
+        null=True,
     )
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
@@ -182,6 +241,13 @@ class LaboratorioAttrezzature(models.Model):
         "LaboratorioCatalogoAttrezzature",
         models.DO_NOTHING,
         db_column="ID_LABORATORIO_CATALOGO_ATTREZZATURE",
+        blank=True,
+        null=True,
+    )
+    laboratorio_ubicazione = models.ForeignKey(
+        "LaboratorioUbicazione",
+        models.SET_NULL,
+        db_column="ID_LABORATORIO_UBICAZIONE_ATTREZZATURE",
         blank=True,
         null=True,
     )
@@ -259,6 +325,50 @@ class LaboratorioTipologiaAttivita(models.Model):
         managed = False
         db_table = "LABORATORIO_TIPO_ATTIVITA"
 
+class AmbitiS3(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    codice = models.CharField(db_column="CODICE", max_length=100, blank=True, null=True)
+    denominazione_it = models.CharField(
+        db_column="DENOMINAZIONE_IT", max_length=500, blank=True, null=True
+    )
+    denominazione_en = models.CharField(
+        db_column="DENOMINAZIONE_EN", max_length=500, blank=True, null=True
+    )
+    descrizione_it = models.TextField(
+        db_column="DESCRIZIONE_IT", blank=True, null=True
+    )
+    descrizione_en = models.TextField(
+        db_column="DESCRIZIONE_EN", blank=True, null=True
+    )
+    attivo = models.BooleanField(db_column="ATTIVO", default=True)
+
+    class Meta:
+        managed = False
+        db_table = "AMBITI"
+
+class TraiettorieS3(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    ambito = models.ForeignKey(
+        "AmbitiS3",
+        models.CASCADE,
+        db_column="ID_AMBITO",
+        blank=True,
+        null=True,
+    )
+    numero = models.IntegerField(db_column="NUMERO", blank=True, null=True)
+    codice = models.CharField(db_column="CODICE", max_length=100, blank=True, null=True)
+    denominazione_it = models.CharField(
+        db_column="DENOMINAZIONE_IT", max_length=500, blank=True, null=True
+    )
+    denominazione_en = models.CharField(
+        db_column="DENOMINAZIONE_EN", max_length=500, blank=True, null=True
+    )
+    attiva = models.BooleanField(db_column="ATTIVA", default=True)
+
+    class Meta:
+        managed = False
+        db_table = "TRAIETTORIE"
+
 
 class LaboratorioDatiBase(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -317,13 +427,13 @@ class LaboratorioDatiBase(models.Model):
         db_column="DESCR_ALTRE_STRUTTURE_RIFERIMENTO_EN", blank=True, null=True
     )
     ambito_s3_prevalente = models.ForeignKey(
-        "AmbitiS3", # CONTROLLARE!
+        "AmbitiS3",
         models.SET_NULL,
         db_column="ID_AMBITO_S3_PREVALENTE",
         blank=True,
         null=True,
     )
-    ambito = models.CharField(db_column="AMBITO", max_length=100, blank=True, null=True)
+    tipologia = models.CharField(db_column="TIPOLOGIA", max_length=100, blank=True, null=True)
     finalita_ricerca_it = models.TextField(
         db_column="FINALITA_RICERCA_IT", blank=True, null=True
     )
@@ -603,10 +713,16 @@ class LaboratorioUbicazione(models.Model):
         db_column="EDIFICIO", max_length=200, blank=False, null=True
     )
     piano = models.CharField(db_column="PIANO", max_length=100, blank=False, null=True)
+    superficie_mq = models.IntegerField(
+        db_column="SUPERFICIE_MQ", blank=True, null=True
+    )
     sede_principale = models.CharField(
         db_column="SEDE_PRINCIPALE", max_length=10, blank=False, null=True
     )
     note = models.TextField(db_column="NOTE", blank=True, null=True)
+    path_file_planimetria = models.CharField(
+        db_column="PATH_FILE_PLANIMETRIA", max_length=1000, blank=True, null=True
+    )
     data_inizio = models.DateField(db_column="DATA_INIZIO", blank=True, null=True)
     data_fine = models.DateField(db_column="DATA_FINE", blank=True, null=True)
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
@@ -965,6 +1081,9 @@ class LaboratorioAttrezzatureManutenzioni(models.Model):
     ente = models.CharField(
         db_column="ENTE", max_length=1000, blank=True, null=True
     )
+    costo = models.DecimalField(
+        db_column="COSTO", max_digits=10, decimal_places=2, blank=True, null=True
+    )
     doc_certificazione = models.CharField(
         db_column="DOC_CERTIFICAZIONE", max_length=1000, blank=True, null=True
     )
@@ -1027,6 +1146,9 @@ class LaboratorioAffiliati(models.Model):
     )
     nome_cognome = models.CharField(
         db_column="NOME_COGNOME", max_length=200, blank=True, null=True
+    )
+    ente_provenienza = models.CharField(
+        db_column="ENTE_PROVENIENZA", max_length=500, blank=True, null=True
     )
     laboratorio_ruolo = models.ForeignKey(
         "LaboratorioRuolo",
