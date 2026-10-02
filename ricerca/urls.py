@@ -20,6 +20,7 @@ urlpatterns = [
     path('', include('esse3.urls')),
     path('', include('generics.urls')),
     path('', include('laboratories.urls')),
+    path('', include('laboratories_new.urls')),
     path('', include('locks.urls')),
     path('', include('patents.urls')),
     path('', include('pentaho.urls')),

@@ -14,6 +14,7 @@ class API_CONTEXTS(enum.Enum):
             "phd",
             "teachers",
             "laboratories",
+            "laboratories_new",
             "regdid",
         ],
     )

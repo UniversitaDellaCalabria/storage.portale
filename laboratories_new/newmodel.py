@@ -8,28 +8,26 @@ from .settings import laboratories_media_path
 class TipologiaRischio(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     tipo_rischio_it = models.CharField(
-            db_column="TIPO_RISCHIO_IT", max_length=500, blank=True, null=True
-        )
+        db_column="TIPO_RISCHIO_IT", max_length=500, blank=True, null=True
+    )
     tipo_rischio_en = models.CharField(
         db_column="TIPO_RISCHIO_EN", max_length=500, blank=True, null=True
     )
-    descrizione_it = models.TextField(
-        db_column="DESCRIZIONE_IT", blank=True, null=True
-    )
-    descrizione_en = models.TextField(
-        db_column="DESCRIZIONE_EN", blank=True, null=True
-    )
+    descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=True, null=True)
+    descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
-            get_user_model(),
-            on_delete=models.SET_NULL,
-            db_column="id_user_mod",
-            blank=True,
-            null=True,
-        )
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        db_column="id_user_mod",
+        blank=True,
+        null=True,
+    )
+
     class Meta:
         managed = False
         db_table = "TIPOLOGIA_RISCHIO"
+
 
 class LaboratorioTipoRischio(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -39,12 +37,8 @@ class LaboratorioTipoRischio(models.Model):
     tipo_rischio_en = models.CharField(
         db_column="TIPO_RISCHIO_EN", max_length=500, blank=True, null=True
     )
-    descrizione_it = models.TextField(
-        db_column="DESCRIZIONE_IT", blank=True, null=True
-    )
-    descrizione_en = models.TextField(
-        db_column="DESCRIZIONE_EN", blank=True, null=True
-    )
+    descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=True, null=True)
+    descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
         get_user_model(),
@@ -57,6 +51,7 @@ class LaboratorioTipoRischio(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_TIPO_RISCHIO"
+
 
 class LaboratorioAttivita(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -92,6 +87,7 @@ class LaboratorioAttivita(models.Model):
         managed = False
         db_table = "LABORATORIO_ATTIVITA"
 
+
 class LaboratorioAttrezzatureRischi(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     laboratorio_attrezzature = models.ForeignKey(
@@ -115,20 +111,18 @@ class LaboratorioAttrezzatureRischi(models.Model):
         db_column="id_user_mod",
         blank=True,
         null=True,
+        related_name="laboratories_new_attrezzaturerischi_set"
     )
 
     class Meta:
         managed = False
         db_table = "LABORATORIO_ATTREZZATURE_RISCHI"
 
+
 class LaboratorioContestoFondo(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    descrizione_it = models.TextField(
-        db_column="DESCRIZIONE_IT", blank=True, null=True
-    )
-    descrizione_en = models.TextField(
-        db_column="DESCRIZIONE_EN", blank=True, null=True
-    )
+    descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=True, null=True)
+    descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
     dt_mod = models.DateTimeField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
         get_user_model(),
@@ -141,6 +135,7 @@ class LaboratorioContestoFondo(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_CONTESTO_FONDO"
+
 
 class LaboratorioFondo(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -169,6 +164,7 @@ class LaboratorioFondo(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_FONDO"
+
 
 class LaboratorioAttrezzature(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -202,15 +198,14 @@ class LaboratorioAttrezzature(models.Model):
         managed = False
         db_table = "LABORATORIO_ATTREZZATURE"
 
+
 class LaboratorioInfrastruttura(models.Model):
     id = models.BigAutoField(db_column="ID", primary_key=True)
-    nome = models.CharField(
-        db_column="NOME", max_length=100, blank=True, null=True
+    nome = models.CharField(db_column="NOME", max_length=100, blank=True, null=True)
+    descrizione_it = models.TextField(
+        db_column="DESCRIZIONE_IT", blank=False, null=False
     )
-    descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=False, null=False)
-    descrizione_en = models.TextField(
-        db_column="DESCRIZIONE_EN", blank=True, null=True
-    )
+    descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
         get_user_model(),
@@ -227,12 +222,13 @@ class LaboratorioInfrastruttura(models.Model):
         managed = False
         db_table = "LABORATORIO_INFRASTRUTTURA"
 
+
 class LaboratorioTipologiaAttivita(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=False, null=False)
-    descrizione_en = models.TextField(
-        db_column="DESCRIZIONE_EN", blank=True, null=True
+    descrizione_it = models.TextField(
+        db_column="DESCRIZIONE_IT", blank=False, null=False
     )
+    descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
         get_user_model(),
@@ -246,6 +242,7 @@ class LaboratorioTipologiaAttivita(models.Model):
         managed = False
         db_table = "LABORATORIO_TIPO_ATTIVITA"
 
+
 class AmbitiS3(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     codice = models.CharField(db_column="CODICE", max_length=100, blank=True, null=True)
@@ -255,17 +252,14 @@ class AmbitiS3(models.Model):
     denominazione_en = models.CharField(
         db_column="DENOMINAZIONE_EN", max_length=500, blank=True, null=True
     )
-    descrizione_it = models.TextField(
-        db_column="DESCRIZIONE_IT", blank=True, null=True
-    )
-    descrizione_en = models.TextField(
-        db_column="DESCRIZIONE_EN", blank=True, null=True
-    )
+    descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=True, null=True)
+    descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
     attivo = models.BooleanField(db_column="ATTIVO", default=True)
 
     class Meta:
         managed = False
         db_table = "AMBITI"
+
 
 class TraiettorieS3(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -289,6 +283,7 @@ class TraiettorieS3(models.Model):
     class Meta:
         managed = False
         db_table = "TRAIETTORIE"
+
 
 class LaboratorioDatiBase(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -318,7 +313,9 @@ class LaboratorioDatiBase(models.Model):
         blank=True,
         null=True,
     )
-    tipologia = models.CharField(db_column="TIPOLOGIA", max_length=100, blank=True, null=True)
+    tipologia = models.CharField(
+        db_column="TIPOLOGIA", max_length=100, blank=True, null=True
+    )
     infrastruttura_riferimento = models.ForeignKey(
         "LaboratorioInfrastruttura",
         models.SET_NULL,
@@ -342,6 +339,7 @@ class LaboratorioDatiBase(models.Model):
         db_column="id_user_mod",
         blank=True,
         null=True,
+        related_name="laboratories_new_datibase_set"
     )
     tipologia_attivita = models.ManyToManyField(
         LaboratorioTipologiaAttivita, through="LaboratorioAttivita"
@@ -370,6 +368,7 @@ class LaboratorioDatiErc1(models.Model):
         db_column="ID_RICERCA_ERC1",
         blank=True,
         null=True,
+        related_name='laboratories_new_erc1',
     )
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
@@ -378,11 +377,13 @@ class LaboratorioDatiErc1(models.Model):
         db_column="id_user_mod",
         blank=True,
         null=True,
+        related_name="laboratories_new_datierc1_set"
     )
 
     class Meta:
         managed = False
         db_table = "LABORATORIO_DATI_ERC1"
+
 
 class LaboratorioServiziErogati(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -422,6 +423,7 @@ class LaboratorioServiziErogati(models.Model):
         managed = False
         db_table = "LABORATORIO_SERVIZI_EROGATI"
 
+
 class LaboratorioUbicazione(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     laboratorio_dati_base = models.ForeignKey(
@@ -460,17 +462,12 @@ class LaboratorioUbicazione(models.Model):
         managed = False
         db_table = "LABORATORIO_UBICAZIONE"
 
+
 class LaboratorioTipoManutenzione(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    tipo = models.CharField(
-        db_column="TIPO", max_length=100, blank=True, null=True
-    )
-    descrizione_it = models.TextField(
-        db_column="DESCRIZIONE_IT", blank=True, null=True
-    )
-    descrizione_en = models.TextField(
-        db_column="DESCRIZIONE_EN", blank=True, null=True
-    )
+    tipo = models.CharField(db_column="TIPO", max_length=100, blank=True, null=True)
+    descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=True, null=True)
+    descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
         get_user_model(),
@@ -484,20 +481,13 @@ class LaboratorioTipoManutenzione(models.Model):
         managed = False
         db_table = "LABORATORIO_TIPO_MANUTENZIONE"
 
+
 class LaboratorioTipoAccreditamento(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
-    tipo = models.CharField(
-        db_column="TIPO", max_length=100, blank=True, null=True
-    )
-    ente = models.CharField(
-        db_column="ENTE", max_length=1000, blank=True, null=True
-    )
-    descrizione_it = models.TextField(
-        db_column="DESCRIZIONE_IT", blank=True, null=True
-    )
-    descrizione_en = models.TextField(
-        db_column="DESCRIZIONE_EN", blank=True, null=True
-    )
+    tipo = models.CharField(db_column="TIPO", max_length=100, blank=True, null=True)
+    ente = models.CharField(db_column="ENTE", max_length=1000, blank=True, null=True)
+    descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=True, null=True)
+    descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
         get_user_model(),
@@ -510,6 +500,7 @@ class LaboratorioTipoAccreditamento(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_TIPO_ACCREDITAMENTO"
+
 
 class LaboratorioServiziAccreditamento(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -541,6 +532,7 @@ class LaboratorioServiziAccreditamento(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_SERVIZI_ACCREDITAMENTO"
+
 
 class LaboratorioServizi(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -597,6 +589,7 @@ class LaboratorioServizi(models.Model):
         managed = False
         db_table = "LABORATORIO_SERVIZI"
 
+
 class LaboratorioRuolo(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     descr_ruolo_it = models.CharField(
@@ -617,6 +610,7 @@ class LaboratorioRuolo(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_RUOLO"
+
 
 class LaboratorioResponsabile(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -657,6 +651,7 @@ class LaboratorioResponsabile(models.Model):
         managed = False
         db_table = "LABORATORIO_RESPONSABILE"
 
+
 class LaboratorioDipartimenti(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     laboratorio_dati_base = models.ForeignKey(
@@ -676,9 +671,7 @@ class LaboratorioDipartimenti(models.Model):
     descr_dip_lab = models.CharField(
         db_column="DESCR_DIP_LAB", max_length=400, blank=True, null=True
     )
-    principale = models.BooleanField(
-        db_column="PRINCIPALE", blank=True, null=True
-    )
+    principale = models.BooleanField(db_column="PRINCIPALE", blank=True, null=True)
     data_inizio = models.DateField(db_column="DATA_INIZIO", blank=True, null=True)
     data_fine = models.DateField(db_column="DATA_FINE", blank=True, null=True)
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
@@ -693,6 +686,7 @@ class LaboratorioDipartimenti(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_DIPARTIMENTI"
+
 
 class LaboratorioComitatoGestione(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -726,13 +720,12 @@ class LaboratorioComitatoGestione(models.Model):
         managed = False
         db_table = "LABORATORIO_COMITATO_GESTIONE"
 
+
 class LaboratorioCatalogoAttrezzature(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=True, null=True)
     descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
-    marca = models.CharField(
-        db_column="MARCA", max_length=200, blank=True, null=True
-    )
+    marca = models.CharField(db_column="MARCA", max_length=200, blank=True, null=True)
     modello = models.CharField(
         db_column="MODELLO", max_length=200, blank=True, null=True
     )
@@ -778,6 +771,7 @@ class LaboratorioCatalogoAttrezzature(models.Model):
         managed = False
         db_table = "LABORATORIO_CATALOGO_ATTREZZATURE"
 
+
 class LaboratorioAttrezzatureManutenzioni(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     laboratorio_catalogo_attrezzature = models.ForeignKey(
@@ -797,9 +791,7 @@ class LaboratorioAttrezzatureManutenzioni(models.Model):
     data_prevista = models.DateField(db_column="DATA_PREVISTA", blank=True, null=True)
     data_effettiva = models.DateField(db_column="DATA_EFFETTIVA", blank=True, null=True)
     descrizione = models.TextField(db_column="DESCRIZIONE", blank=True, null=True)
-    ente = models.CharField(
-        db_column="ENTE", max_length=1000, blank=True, null=True
-    )
+    ente = models.CharField(db_column="ENTE", max_length=1000, blank=True, null=True)
     costo = models.DecimalField(
         db_column="COSTO", max_digits=10, decimal_places=2, blank=True, null=True
     )
@@ -818,6 +810,7 @@ class LaboratorioAttrezzatureManutenzioni(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_ATTREZZATURE_MANUTENZIONI"
+
 
 class LaboratorioAnagraficaServizi(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
@@ -845,6 +838,7 @@ class LaboratorioAnagraficaServizi(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_ANAGRAFICA_SERVIZI"
+
 
 class LaboratorioAffiliati(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
