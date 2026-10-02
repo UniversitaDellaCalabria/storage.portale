@@ -87,6 +87,9 @@ def get_personale_matricola(personale_id):
     try:
         id_ab= int(personale_id)
     except ValueError:
+        personale = Personale.objects.filter(email__istartswith=f"{personale_id}@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}").values("matricola").first()
+        if personale: 
+            return personale["matricola"]
         c = PersonaleContatti.objects.filter(
             contatto__istartswith=f"{personale_id}@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"
         ).first()
