@@ -263,11 +263,14 @@ class StudyActivitiesFilter(filters.FilterSet):
     def filter_teacher_matricola(self, queryset, name, value):
         decrypted_matricola = get_personale_matricola(value)
         return queryset.filter(
-            Exists(
-                DidatticaCopertura.objects.filter(
-                    Q(erog_id=OuterRef("erog_id")),
-                    doc_matricola=decrypted_matricola,
-                ).exclude(stato_coper_cod="R")
+            Q(mod_off_id__doc_tit_matricola=decrypted_matricola) |
+            Q(
+                Exists(
+                    DidatticaCopertura.objects.filter(
+                        Q(erog_id=OuterRef("erog_id")),
+                        doc_matricola=decrypted_matricola,
+                    ).exclude(stato_coper_cod="R")
+                )
             )
         )
 
