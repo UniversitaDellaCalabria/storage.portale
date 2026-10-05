@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from addressbook.models import Personale
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
@@ -7,6 +9,8 @@ from drf_spectacular.utils import (
 from .docs import descriptions
 from api_docs import responses
 
+from rest_framework import mixins, viewsets
+
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from generics.api.pagination import PageNumberPagination
@@ -15,6 +19,14 @@ from generics.views import ClearResponseViewSet
 from .filters import LaboratoriesFilters
 from laboratories.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
 from .serializers import (
+    Aster1ListSerializer,
+    Aster2ListSerializer,
+    Erc0ListSerializer,
+    Erc1ListSerializer,
+    Erc2ListSerializer,
+    InfrastructuresSerializer,
+    LaboratoriesAreaSerializer,
+    LaboratoriesScopesSerializer,
     LaboratoriesSerializer,
     LaboratorySerializer,
 )
@@ -23,9 +35,19 @@ from laboratories_new.models import (
     LaboratorioDatiErc1,
     LaboratorioAffiliati,
     LaboratorioDipartimenti,
+    LaboratorioInfrastruttura,
     LaboratorioResponsabile,
     LaboratorioServizi,
     LaboratorioUbicazione,
+    AmbitiS3,
+    LaboratorioTipologiaAttivita,
+)
+from research_lines.models import (
+    RicercaAster1,
+    RicercaAster2,
+    RicercaErc0,
+    RicercaErc1,
+    RicercaErc2,
 )
 from django.db.models import Q, Prefetch
 
@@ -364,3 +386,169 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
             )
 
             return query
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.LABORATORIES_AREA_LIST_SUMMARY,
+        description=descriptions.LABORATORIES_AREA_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(
+            LaboratoriesAreaSerializer(many=True)
+        ),
+    )
+)
+class LaboratoriesAreaViewSet(
+    mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet
+):
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = LaboratoriesAreaSerializer
+    queryset = (
+        AmbitiS3.objects.filter(laboratoriodatibase__isnull=False)
+        .only("id", "denominazione_it", "denominazione_en")
+        .distinct()
+        .order_by("denominazione_it", "id")
+    )
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.LABORATORIES_SCOPES_LIST_SUMMARY,
+        description=descriptions.LABORATORIES_SCOPES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(
+            LaboratoriesScopesSerializer(many=True)
+        ),
+    ),
+)
+class LaboratoriesScopesViewSet(
+    mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet
+):
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = LaboratoriesScopesSerializer
+    queryset = LaboratorioTipologiaAttivita.objects.only(
+        "id", "descrizione_it", "descrizione_en"
+    ).order_by("id")
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.INFRASTRUCTURES_LIST_SUMMARY,
+        description=descriptions.INFRASTRUCTURES_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(InfrastructuresSerializer(many=True)),
+    )
+)
+class InfrastructuresViewSet(
+    mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet
+):
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = InfrastructuresSerializer
+    queryset = LaboratorioInfrastruttura.objects.only(
+        "id", "descrizione_it", "descrizione_en"
+    ).order_by("id")
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.ERC_LIST_SUMMARY,
+        description=descriptions.ERC_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(Erc1ListSerializer(many=True)),
+    )
+)
+class ErcListViewSet(
+    mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet
+):
+    pagination_class = PageNumberPagination
+
+    def get_serializer_class(self):
+        return {
+            "1": Erc1ListSerializer,
+            "2": Erc2ListSerializer,
+        }.get(self.kwargs.get("level"), Erc0ListSerializer)
+
+    def get_queryset(self):
+        level = self.kwargs.get("level")
+
+        erc0_list = list(
+            RicercaErc0.objects.values(
+                "erc0_cod", "description", "description_en"
+            ).order_by("erc0_cod")
+        )
+        if level not in ("1", "2"):
+            return erc0_list
+
+        erc1_by_erc0 = defaultdict(list)
+        erc1_by_id = {}
+        for e in RicercaErc1.objects.values(
+            "id", "cod_erc1", "descrizione", "ricerca_erc0_cod"
+        ).order_by("cod_erc1"):
+            e["erc2_list"] = []
+            erc1_by_erc0[e["ricerca_erc0_cod"]].append(e)
+            erc1_by_id[e["id"]] = e
+
+        if level == "2":
+            for x in RicercaErc2.objects.values(
+                "id", "cod_erc2", "descrizione", "ricerca_erc1_id"
+            ).order_by("cod_erc2"):
+                parent = erc1_by_id.get(x["ricerca_erc1_id"])
+                if parent:
+                    parent["erc2_list"].append(x)
+
+        for q in erc0_list:
+            q["erc1_list"] = erc1_by_erc0.get(q["erc0_cod"], [])
+        return erc0_list
+
+
+from collections import defaultdict
+from research_lines.models import RicercaErc0, RicercaAster1, RicercaAster2
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary=descriptions.ASTER_LIST_SUMMARY,
+        description=descriptions.ASTER_LIST_DESCRIPTION,
+        responses=responses.COMMON_LIST_RESPONSES(Aster1ListSerializer(many=True)),
+    )
+)
+class AsterListViewSet(
+    mixins.ListModelMixin, viewsets.GenericViewSet, ClearResponseViewSet
+):
+    pagination_class = PageNumberPagination
+
+    def get_serializer_class(self):
+        return (
+            Aster1ListSerializer
+            if self.kwargs.get("level") == "1"
+            else Aster2ListSerializer
+        )
+
+    def get_queryset(self):
+        level = self.kwargs.get("level")
+
+        erc0_list = list(
+            RicercaErc0.objects.values(
+                "erc0_cod", "description", "description_en"
+            ).order_by("erc0_cod")
+        )
+
+        aster1_by_erc0 = defaultdict(list)
+        aster1_by_id = {}
+        for a in RicercaAster1.objects.values(
+            "id", "descrizione", "ricerca_erc0_cod"
+        ).order_by("id"):
+            a["aster2_list"] = []
+            aster1_by_erc0[a["ricerca_erc0_cod"]].append(a)
+            aster1_by_id[a["id"]] = a
+
+        if level == "2":
+            for x in RicercaAster2.objects.values(
+                "id", "descrizione", "ricerca_aster1_id"
+            ).order_by("id"):
+                parent = aster1_by_id.get(x["ricerca_aster1_id"])
+                if parent:
+                    parent["aster2_list"].append(x)
+
+        for q in erc0_list:
+            q["aster1_list"] = aster1_by_erc0.get(q["erc0_cod"], [])
+        return erc0_list

@@ -1,17 +1,25 @@
 from rest_framework import serializers
-
+from generics.api.serializers import ReadOnlyModelSerializer
 from .docs import examples
 from drf_spectacular.utils import (
     extend_schema_field,
     extend_schema_serializer,
 )
-from laboratories.models import (
+from laboratories_new.models import (
     LaboratorioDatiBase,
+    AmbitiS3,
+    LaboratorioInfrastruttura,
+    LaboratorioTipologiaAttivita,
 )
 from generics.utils import build_media_path
 
 from addressbook.utils import add_email_addresses
 from datetime import date
+
+
+class LanguageMixin:
+    def _lang(self):
+        return self.context.get("language", "it")
 
 
 def _full_name(p):
@@ -337,4 +345,122 @@ class LaboratoriesSerializer(LaboratoryCommonMixin, serializers.Serializer):
             "researchPersonnel",
             "techPersonnel",
             "visible",
+        ]
+
+
+@extend_schema_serializer(examples=examples.LABORATORIES_AREA_SERIALIZER_EXAMPLE)
+class LaboratoriesAreaSerializer(LanguageMixin, ReadOnlyModelSerializer):
+    id = serializers.IntegerField()
+    area = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.CharField())
+    def get_area(self, obj):
+        return _tr(self._lang(), obj.denominazione_it, obj.denominazione_en)
+
+    class Meta:
+        model = AmbitiS3
+        fields = ["id", "area"]
+
+
+@extend_schema_serializer(examples=examples.LABORATORIES_SCOPES_SERIALIZER_EXAMPLE)
+class LaboratoriesScopesSerializer(LanguageMixin, ReadOnlyModelSerializer):
+    id = serializers.IntegerField()
+    description = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.CharField())
+    def get_description(self, obj):
+        return _tr(self._lang(), obj.descrizione_it, obj.descrizione_en)
+
+    class Meta:
+        model = LaboratorioTipologiaAttivita
+        fields = ["id", "description"]
+
+
+@extend_schema_serializer(examples=examples.INFRASTRUCTURE_SERIALIZER_EXAMPLE)
+class InfrastructuresSerializer(LanguageMixin, ReadOnlyModelSerializer):
+    id = serializers.IntegerField()
+    description = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.CharField())
+    def get_description(self, obj):
+        return _tr(self._lang(), obj.descrizione_it, obj.descrizione_en)
+
+    class Meta:
+        model = LaboratorioInfrastruttura
+        fields = ["id", "description"]
+
+
+class _ErcBaseSerializer(LanguageMixin, serializers.Serializer):
+    idErc0 = serializers.CharField(source="erc0_cod")
+    description = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.CharField())
+    def get_description(self, obj):
+        return _tr(self._lang(), obj["description"], obj.get("description_en"))
+
+
+@extend_schema_serializer(examples=examples.ERC0_SERIALIZER_EXAMPLE)
+class Erc0ListSerializer(_ErcBaseSerializer):
+    pass
+
+
+@extend_schema_serializer(examples=examples.ERC1_SERIALIZER_EXAMPLE)
+class Erc1ListSerializer(_ErcBaseSerializer):
+    erc1List = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
+    def get_erc1List(self, obj):
+        return [
+            {"codErc1": e["cod_erc1"], "description": e["descrizione"]}
+            for e in obj.get("erc1_list", [])
+        ]
+
+
+@extend_schema_serializer(examples=examples.ERC2_SERIALIZER_EXAMPLE)
+class Erc2ListSerializer(_ErcBaseSerializer):
+    erc1List = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
+    def get_erc1List(self, obj):
+        return [
+            {
+                "codErc1": e["cod_erc1"],
+                "description": e["descrizione"],
+                "erc2List": [
+                    {"codErc2": x["cod_erc2"], "description": x["descrizione"]}
+                    for x in e.get("erc2_list", [])
+                ],
+            }
+            for e in obj.get("erc1_list", [])
+        ]
+
+
+@extend_schema_serializer(examples=examples.ASTER1_SERIALIZER_EXAMPLE)
+class Aster1ListSerializer(_ErcBaseSerializer):
+    aster1_list = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
+    def get_aster1_list(self, obj):
+        return [
+            {"idAster1": a["id"], "description": a["descrizione"]}
+            for a in obj.get("aster1_list", [])
+        ]
+
+
+@extend_schema_serializer(examples=examples.ASTER2_SERIALIZER_EXAMPLE)
+class Aster2ListSerializer(_ErcBaseSerializer):
+    aster1_list = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
+    def get_aster1_list(self, obj):
+        return [
+            {
+                "idAster1": a["id"],
+                "description": a["descrizione"],
+                "aster2_list": [
+                    {"idAster2": a2["id"], "description": a2["descrizione"]}
+                    for a2 in a.get("aster2_list", [])
+                ],
+            }
+            for a in obj.get("aster1_list", [])
         ]

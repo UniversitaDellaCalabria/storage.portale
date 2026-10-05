@@ -4,6 +4,7 @@ from generics.validators import validate_file_size, validate_image_file_extensio
 
 from .settings import laboratories_media_path
 
+
 class LaboratorioInfrastruttura(models.Model):
     id = models.BigAutoField(db_column="ID", primary_key=True)
     nome = models.CharField(db_column="NOME", max_length=100, blank=True, null=True)
@@ -146,9 +147,6 @@ class LaboratorioDatiBase(models.Model):
         null=True,
         related_name="laboratories_new_datibase_set",
     )
-    # tipologia_attivita = models.ManyToManyField(
-    #     LaboratorioTipologiaAttivita, through="LaboratorioAttivita"
-    # )
 
     class Meta:
         managed = False
