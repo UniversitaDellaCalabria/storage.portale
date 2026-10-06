@@ -1113,7 +1113,9 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
 
     StudyActivityTeacherID = serializers.SerializerMethodField()
     StudyActivityTeacherName = serializers.SerializerMethodField()
-    
+    StudyActivityResponsibleID = serializers.SerializerMethodField()
+    StudyActivityResponsibleName = serializers.SerializerMethodField()
+
     StudyActivityStudyPlans = serializers.SerializerMethodField()
     StudyActivityFathers = serializers.SerializerMethodField()
     StudyActivityYear = serializers.SerializerMethodField()
@@ -1162,12 +1164,50 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
         obj._cached_teacher_data = teacher_info
         return teacher_info
 
+     # --- 1. FUNZIONE DI CACHE PER LA LOGICA DEI DOCENTI (Sostituisce il vecchio sub-serializer) ---
+    def _get_responsible_data(self, obj):
+        if hasattr(obj, '_cached_responsible_data'):
+            return obj._cached_responsible_data
+
+        mod_off = obj.mod_off_id
+        teacher_info = {"id": None, "name": None}
+
+        if not mod_off or not is_nullable(getattr(mod_off, "doc_resp_mod_matricola", None)):
+            obj._cached_responsible_data = teacher_info
+            return teacher_info
+
+        try:
+            email = getattr(mod_off.doc_resp_mod_id_ab, "email", None)
+            if email and email.endswith(f"@{ADDRESSBOOK_FRIENDLY_URL_MAIN_EMAIL_DOMAIN}"):
+                teacher_info["id"] = email.split("@")[0]
+            else:
+                teacher_info["id"] = str(mod_off.doc_resp_mod_id_ab.id_ab)
+        except Exception:
+            pass
+
+        try:
+            nome = mod_off.doc_resp_mod_id_ab.nome
+            cognome = mod_off.doc_resp_mod_id_ab.cognome
+            if nome and cognome:
+                teacher_info["name"] = f"{cognome} {nome}"
+        except Exception:
+            pass
+
+        obj._cached_responsible_data = teacher_info
+        return teacher_info
+    
     def get_StudyActivityTeacherID(self, obj):
         return self._get_teacher_data(obj)["id"]
 
     def get_StudyActivityTeacherName(self, obj):
         return self._get_teacher_data(obj)["name"]
 
+    def get_StudyActivityResponsibleID(self, obj):
+        return self._get_responsible_data(obj)["id"]
+
+    def get_StudyActivityResponsibleName(self, obj):
+        return self._get_responsible_data(obj)["name"]
+    
     def get_StudyActivityFathers(self, obj):
         pds_list = getattr(obj, '_pds_list', None)
         if not pds_list:
@@ -1265,6 +1305,8 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
             "StudyActivitySSD",
             "StudyActivityTeacherName",
             "StudyActivityTeacherID",
+            "StudyActivityResponsibleName",
+            "StudyActivityResponsibleID",
             "StudyActivityStudyPlans",
             "StudyActivityPartitionCod",
             "StudyActivityPartitionDes",
