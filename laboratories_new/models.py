@@ -198,9 +198,9 @@ class LaboratorioUbicazione(models.Model):
         db_column="EDIFICIO", max_length=200, blank=False, null=True
     )
     piano = models.CharField(db_column="PIANO", max_length=100, blank=False, null=True)
-    superficie_mq = models.IntegerField(
-        db_column="SUPERFICIE_MQ", blank=True, null=True
-    )
+    # superficie_mq = models.IntegerField(
+    #     db_column="SUPERFICIE_MQ", blank=True, null=True
+    # )
     sede_principale = models.CharField(
         db_column="SEDE_PRINCIPALE", max_length=10, blank=False, null=True
     )

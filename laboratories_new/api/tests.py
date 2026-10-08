@@ -92,10 +92,12 @@ class LaboratoriesListTest(LaboratoriesBaseTest):
             laboratorio_ruolo=U.create_laboratorioRuoloTecnico(),
         )
         U.create_laboratorioUbicazione(
-            laboratorio_dati_base=lab, edificio="A", piano="1", superficie_mq=100
+            laboratorio_dati_base=lab, edificio="A", piano="1", 
+            # superficie_mq=100
         )
         U.create_laboratorioUbicazione(
-            laboratorio_dati_base=lab, edificio="B", piano="2", superficie_mq=50
+            laboratorio_dati_base=lab, edificio="B", piano="2", 
+            # superficie_mq=50
         )
 
         results = self.get_results(self.url)

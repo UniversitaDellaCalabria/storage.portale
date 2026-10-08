@@ -1,0 +1,126 @@
+{
+  "id": 971,
+  "descrizione": null,
+  "nome_laboratorio": "Laboratorio di Tecnologia del Materiali e Catalisi Ambientale",
+  "acronimo": "TecAm",
+  "logo_laboratorio": "https://www.unical.it/media/medias/2023/Logo_TecAm.webp",
+  "altre_strutture_riferimento": null,
+  "descr_altre_strutture_riferimento_it": "",
+  "descr_altre_strutture_riferimento_en": "",
+  "ambito_s3_prevalente": null,
+  "tipologia": "Scientifico/Tecnologico",
+  "infrastruttura_riferimento": null,
+  "nome_file_logo": "portale/laboratori/loghi/Logo_TecAm.jpg",
+  "visibile": false,
+  "dt_mod": "2023-12-11T11:41:04Z",
+  "user_mod": {
+    "id": 10,
+    "password": "pbkdf2_sha256$260000$lprlHjzTN9rwZYdwhNHFVa$Q9jarlc4OUAsER5VenEtvP6k4jnEI0LzU1sO+J6m6lY=",
+    "last_login": "2026-09-02T11:44:49.845Z",
+    "is_superuser": true,
+    "username": "FLCFNC85M09D086Q",
+    "is_staff": true,
+    "date_joined": "2022-06-27T01:33:04.306Z",
+    "first_name": "FRANCESCO",
+    "last_name": "FILICETTI",
+    "is_active": true,
+    "email": "FRANCESCO.FILICETTI@UNICAL.IT",
+    "origin": null,
+    "manual_user_update": "2024-10-16T13:59:05.271Z",
+    "groups": [],
+    "user_permissions": []
+  },
+  "laboratoriodatierc1_set": [
+    {
+      "id": 369,
+      "laboratorio_dati_base": 971,
+      "ricerca_erc1": {
+        "dt_ins": "2021-01-03T15:35:04.925Z",
+        "dt_mod": null,
+        "id": 15,
+        "cod_erc1": "PE5",
+        "descrizione": "Synthetic Chemistry and Materials",
+        "user_ins": {
+          "id": 2,
+          "password": "xxxxx",
+          "last_login": null,
+          "is_superuser": false,
+          "username": "etl_process",
+          "is_staff": true,
+          "date_joined": "2021-01-03T08:00:00Z",
+          "first_name": null,
+          "last_name": null,
+          "is_active": false,
+          "email": null,
+          "origin": null,
+          "manual_user_update": null,
+          "groups": [],
+          "user_permissions": []
+        },
+        "user_mod": null,
+        "ricerca_erc0_cod": {
+          "erc0_cod": "PE",
+          "description": "Scienze e ingegneria",
+          "description_en": "Physical Sciences and Engineering"
+        }
+      },
+      "dt_mod": null,
+      "id_user_mod": null
+    },
+    {
+      "id": 370,
+      "laboratorio_dati_base": 971,
+      "ricerca_erc1": {
+        "dt_ins": "2021-01-03T15:35:04.925Z",
+        "dt_mod": null,
+        "id": 18,
+        "cod_erc1": "PE8",
+        "descrizione": "Products and Processes Engineering",
+        "user_ins": {
+          "id": 2,
+          "password": "xxxxx",
+          "last_login": null,
+          "is_superuser": false,
+          "username": "etl_process",
+          "is_staff": true,
+          "date_joined": "2021-01-03T08:00:00Z",
+          "first_name": null,
+          "last_name": null,
+          "is_active": false,
+          "email": null,
+          "origin": null,
+          "manual_user_update": null,
+          "groups": [],
+          "user_permissions": []
+        },
+        "user_mod": null,
+        "ricerca_erc0_cod": {
+          "erc0_cod": "PE",
+          "description": "Scienze e ingegneria",
+          "description_en": "Physical Sciences and Engineering"
+        }
+      },
+      "dt_mod": null,
+      "id_user_mod": null
+    }
+  ],
+  "laboratorioubicazione_set": [
+    {
+      "id": 290,
+      "laboratorio_dati_base": 971,
+      "edificio": "Cubo 46B",
+      "piano": "piano terra",
+      "sede_principale": "SI",
+      "note": "",
+      "path_file_planimetria": null,
+      "data_inizio": null,
+      "data_fine": null,
+      "dt_mod": null,
+      "id_user_mod": null
+    }
+  ],
+  "laboratorioservizi_set": [],
+  "laboratorioresponsabile_set": [],
+  "laboratoriodipartimenti_set": [],
+  "laboratorioaffiliati_set": []
+}

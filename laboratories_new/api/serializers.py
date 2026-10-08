@@ -321,7 +321,8 @@ class LaboratoriesSerializer(LaboratoryCommonMixin, serializers.Serializer):
         ubic = getattr(obj, "ubicazione", None)
         if not ubic:
             return None
-        total = sum(u.superficie_mq or 0 for u in ubic)
+        # total = sum(u.superficie_mq or 0 for u in ubic)
+        total = sum(0 for u in ubic)
         return str(total) if total else None
 
     class Meta:

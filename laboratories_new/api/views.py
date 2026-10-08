@@ -117,7 +117,8 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     Prefetch(
                         "laboratorioubicazione_set",
                         queryset=LaboratorioUbicazione.objects.only(
-                            "laboratorio_dati_base", "superficie_mq"
+                            "laboratorio_dati_base", 
+                            # "superficie_mq"
                         ),
                         to_attr="ubicazione",
                     ),
@@ -358,7 +359,7 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                             "laboratorio_dati_base",
                             "edificio",
                             "piano",
-                            "superficie_mq",
+                            # "superficie_mq",
                             "note",
                         ),
                         to_attr="ubicazione",

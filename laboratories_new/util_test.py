@@ -205,7 +205,9 @@ class ApiLaboratoriesUnitTestMethods:
     def create_laboratorioUbicazione(cls, **kwargs):
         return _create(
             LaboratorioUbicazione,
-            {"edificio": "31B", "piano": "1", "superficie_mq": 100},
+            {"edificio": "31B", "piano": "1", 
+            #  "superficie_mq": 100
+             },
             kwargs,
         )
 
