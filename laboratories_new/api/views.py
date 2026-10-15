@@ -10,6 +10,9 @@ from .docs import descriptions
 from api_docs import responses
 
 from rest_framework import mixins, viewsets
+from rest_framework.response import Response
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from django.http import Http404
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
@@ -38,6 +41,7 @@ from laboratories_new.models import (
     LaboratorioInfrastruttura,
     LaboratorioResponsabile,
     LaboratorioServizi,
+    LaboratorioSnapshot,
     LaboratorioUbicazione,
     AmbitiS3,
     LaboratorioTipologiaAttivita,
@@ -51,7 +55,53 @@ from research_lines.models import (
 )
 from django.db.models import Q, Prefetch
 
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from laboratories_new.snapshot_adapter import snapshot_to_obj
+
+
+class LaboratoryAccessMixin:
+    """Permessi di visibilita' sui laboratori, calcolati una volta per richiesta."""
+
+    def _access(self):
+        if hasattr(self, "_access_cache"):
+            return self._access_cache
+
+        user = self.request.user
+        is_staff_role = False  # superuser, operatore, validatore
+        is_director = False
+
+        if user.is_superuser:
+            is_staff_role = True
+        elif user.is_authenticated:
+            offices = OrganizationalStructureOfficeEmployee.objects.filter(
+                employee=user,
+                office__is_active=True,
+                office__organizational_structure__is_active=True,
+            )
+            is_staff_role = offices.filter(
+                office__name__in=[OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS]
+            ).exists()
+
+            if not is_staff_role and user.taxpayer_id is not None:
+                profile = Personale.objects.filter(cod_fis=user.taxpayer_id).first()
+                is_director = (
+                    profile is not None
+                    and LaboratorioResponsabile.objects.filter(
+                        matricola_personale=profile
+                    ).exists()
+                )
+
+        self._access_cache = {
+            "staff": is_staff_role,
+            "can_see_hidden": is_staff_role or is_director,
+        }
+        return self._access_cache
+
+    def _can_see_hidden(self):
+        return self._access()["can_see_hidden"]
+
+    def _wants_live(self):
+        """?live=1 salta gli snapshot: riservato a superuser/operatori/validatori."""
+        return self.request.query_params.get("live") == "1" and self._access()["staff"]
 
 
 @extend_schema_view(
@@ -66,7 +116,9 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
         responses=responses.COMMON_RETRIEVE_RESPONSES(LaboratoriesSerializer),
     ),
 )
-class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
+class LaboratoriesViewSet(
+    LaboratoryAccessMixin, ReadOnlyModelViewSet, ClearResponseViewSet
+):
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = LaboratoriesSerializer
@@ -75,37 +127,53 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     def get_serializer_class(self):
         return LaboratoriesSerializer if self.action == "list" else LaboratorySerializer
 
-    def get_queryset(self):
-        only_active = True
-        if self.request.user.is_superuser:
-            only_active = False  # pragma: no cover
-        elif self.request.user.is_authenticated:  # pragma: no cover
-            user_profile = None
-            if self.request.user.taxpayer_id is not None:
-                user_profile = Personale.objects.filter(
-                    cod_fis=self.request.user.taxpayer_id
-                ).first()
+    @staticmethod
+    def _serving_snapshots(lab_ids):
+        snaps = {}
+        qs = LaboratorioSnapshot.objects.filter(
+            data_fine_validita__isnull=True, laboratorio_id__in=lab_ids
+        ).order_by("id")
+        for s in qs:
+            snaps[s.laboratorio_id] = s  # se ce ne fosse più di uno vince il più recente
+        return snaps
 
-            offices = OrganizationalStructureOfficeEmployee.objects.filter(
-                employee=self.request.user,
-                office__is_active=True,
-                office__organizational_structure__is_active=True,
-            )
+    def _visibility_query(self):
+        # la visibilità resta quella delle tabelle live
+        return Q() if self._can_see_hidden() else Q(visibile=True)
 
-            is_scientific_director = (
-                user_profile is not None
-                and LaboratorioResponsabile.objects.filter(
-                    matricola_personale=user_profile
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        labs = page if page is not None else list(queryset)
+
+        snaps = (
+            {} if self._wants_live() else self._serving_snapshots([l.id for l in labs])
+        )
+        objs = [
+            snapshot_to_obj(snaps[lab.id].data) if lab.id in snaps else lab
+            for lab in labs
+        ]
+        serializer = self.get_serializer(objs, many=True)
+        if page is not None:
+            return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        pk = kwargs.get(self.lookup_field)
+        if str(pk).isdigit() and not self._wants_live():
+            snap = self._serving_snapshots([int(pk)]).get(int(pk))
+            if snap:
+                visible = LaboratorioDatiBase.objects.filter(
+                    self._visibility_query(), id=pk
                 ).exists()
-            )
-            is_operator = offices.filter(office__name=OFFICE_LABORATORIES).exists()
-            is_validator = offices.filter(
-                office__name=OFFICE_LABORATORY_VALIDATORS
-            ).exists()
-            if is_operator or is_validator or is_scientific_director:
-                only_active = False
+                if not visible:
+                    raise Http404
+                return Response(self.get_serializer(snapshot_to_obj(snap.data)).data)
+        return super().retrieve(request, *args, **kwargs)
 
-        query_is_active = Q(visibile=True) if only_active else Q()
+
+    def get_queryset(self):
+        query_is_active = self._visibility_query()
 
         if self.action == "list":
             return (
@@ -219,6 +287,7 @@ class LaboratoriesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
                     "visibile",
                 )
                 .distinct()
+                .order_by("nome_laboratorio", "id")
             )
         if self.action == "retrieve":
             query = (
@@ -499,10 +568,6 @@ class ErcListViewSet(
         for q in erc0_list:
             q["erc1_list"] = erc1_by_erc0.get(q["erc0_cod"], [])
         return erc0_list
-
-
-from collections import defaultdict
-from research_lines.models import RicercaErc0, RicercaAster1, RicercaAster2
 
 
 @extend_schema_view(

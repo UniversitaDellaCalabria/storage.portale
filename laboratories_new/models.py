@@ -3,6 +3,7 @@ from django.db import models
 from generics.validators import validate_file_size, validate_image_file_extension
 
 from .settings import laboratories_media_path
+import json
 
 
 class LaboratorioInfrastruttura(models.Model):
@@ -185,12 +186,45 @@ class LaboratorioDatiErc1(models.Model):
         db_table = "LABORATORIO_DATI_ERC1"
 
 
+class LaboratorioAnagraficaUbicazioni(models.Model):
+    id = models.AutoField(db_column="ID", primary_key=True)
+    edificio = models.CharField(db_column="EDIFICIO", max_length=200)
+    piano = models.CharField(db_column="PIANO", max_length=100)
+    superficie_mq = models.DecimalField(
+        db_column="SUPERFICIE_MQ",
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    descrizione = models.TextField(db_column="DESCRIZIONE", blank=True, null=True)
+    dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
+    id_user_mod = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        db_column="id_user_mod",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        managed = False
+        db_table = "LABORATORIO_ANAGRAFICA_UBICAZIONI"
+
+
 class LaboratorioUbicazione(models.Model):
     id = models.AutoField(db_column="ID", primary_key=True)
     laboratorio_dati_base = models.ForeignKey(
         LaboratorioDatiBase,
         models.CASCADE,
-        db_column="ID_LABORATORIO_DATI",
+        db_column="ID_LABORATORIO_DATI_BASE",
+        blank=True,
+        null=True,
+    )
+    anagrafica_ubicazione = models.ForeignKey(
+        "LaboratorioAnagraficaUbicazioni",
+        models.SET_NULL,
+        db_column="ID_LABORATORIO_ANAGRAFICA_UBICAZIONI",
         blank=True,
         null=True,
     )
@@ -198,9 +232,6 @@ class LaboratorioUbicazione(models.Model):
         db_column="EDIFICIO", max_length=200, blank=False, null=True
     )
     piano = models.CharField(db_column="PIANO", max_length=100, blank=False, null=True)
-    # superficie_mq = models.IntegerField(
-    #     db_column="SUPERFICIE_MQ", blank=True, null=True
-    # )
     sede_principale = models.CharField(
         db_column="SEDE_PRINCIPALE", max_length=10, blank=False, null=True
     )
@@ -450,3 +481,23 @@ class LaboratorioAffiliati(models.Model):
     class Meta:
         managed = False
         db_table = "LABORATORIO_AFFILIATI"
+
+
+class LaboratorioSnapshot(models.Model):
+    id = models.AutoField(primary_key=True, db_column="ID")
+    laboratorio_id = models.IntegerField(db_column="ID_LABORATORIO_DATI_BASE")
+    json_laboratorio = models.TextField(db_column="JSON_LABORATORIO")
+    data_inizio_validita = models.DateField(db_column="DATA_INIZIO_VALIDITA")
+    data_fine_validita = models.DateField(
+        db_column="DATA_FINE_VALIDITA", null=True, blank=True
+    )
+    dt_mod = models.DateField(db_column="DT_MOD", null=True, blank=True)
+    id_user_mod = models.IntegerField(db_column="id_user_mod", null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = "LABORATORIO_SNAPSHOT"
+
+    @property
+    def data(self):
+        return json.loads(self.json_laboratorio)

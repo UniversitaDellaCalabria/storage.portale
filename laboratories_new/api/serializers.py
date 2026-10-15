@@ -30,6 +30,12 @@ def _tr(lang, it, en):
     """Testo nella lingua richiesta, con fallback sull'italiano."""
     return en if lang != "it" and en else it
 
+_MISSING = object()
+
+def _email(pers):
+    email = getattr(pers, "snapshot_email", _MISSING)
+    return add_email_addresses(pers.cod_fis) if email is _MISSING else email
+
 
 class LaboratoryCommonMixin:
     def _lang(self):
@@ -78,7 +84,7 @@ class LaboratoryCommonMixin:
                     {
                         "id": str(pers.id_ab),
                         "name": _full_name(pers),
-                        "email": add_email_addresses(pers.cod_fis),
+                        "email": _email(pers),
                     }
                 )
         return out
@@ -184,7 +190,7 @@ class LaboratorySerializer(LaboratoryCommonMixin, serializers.ModelSerializer):
 
     def get_scientificDirectorEmail(self, obj):
         d = self._director(obj)
-        return add_email_addresses(d.cod_fis) if d else None
+        return _email(d) if d else None
 
     def get_departmentReferentId(self, obj):
         d = self._main_department(obj)

@@ -7,11 +7,18 @@ from django.db import connection, models
 
 from laboratories_new.models import LaboratorioDatiBase
 
+from addressbook.models import Personale
+from addressbook.utils import add_email_addresses
+from django.contrib.auth import get_user_model
+
 logger = logging.getLogger(__name__)
 
 # Campi da non esportare mai (dati personali sensibili)
 EXCLUDED_FIELDS = {"cod_fis", "taxpayer_id"}
 MAX_DEPTH = 2  # profondità di espansione delle FK in avanti
+FIELD_WHITELIST = {
+    Personale: {"matricola", "id_ab", "nome", "cognome", "middle_name"},
+}
 
 
 @lru_cache(maxsize=None)
@@ -42,18 +49,28 @@ def _manager(model):
     return model._default_manager.defer(*_missing_fields(model))
 
 
+USER_MODEL = get_user_model()
+
+
 def _serialize(obj, depth=MAX_DEPTH):
     """Dizionario con i campi concreti; le FK vengono espanse fino a `depth`."""
     data = {}
     missing = set(_missing_fields(type(obj)))
+    allowed = FIELD_WHITELIST.get(type(obj))
     for f in obj._meta.concrete_fields:
         if f.name in EXCLUDED_FIELDS or f.name in missing:
+            continue
+        if allowed is not None and f.name not in allowed:
             continue
         if f.is_relation:
             raw = getattr(obj, f.attname)
             if raw is None:
                 data[f.name] = None
-            elif depth > 0 and f.related_model is not LaboratorioDatiBase:
+            elif (
+                depth > 0
+                and f.related_model is not LaboratorioDatiBase
+                and f.related_model is not USER_MODEL
+            ):
                 related = (
                     _manager(f.related_model)
                     .filter(**{f.target_field.name: raw})
@@ -68,8 +85,11 @@ def _serialize(obj, depth=MAX_DEPTH):
         else:
             data[f.name] = f.value_from_object(obj)
 
-    for f in obj._meta.many_to_many:
-        data[f.name] = list(getattr(obj, f.name).values_list("pk", flat=True))
+    if allowed is None:
+        for f in obj._meta.many_to_many:
+            data[f.name] = list(getattr(obj, f.name).values_list("pk", flat=True))
+    if isinstance(obj, Personale):
+        data["snapshot_email"] = add_email_addresses(obj.cod_fis)
     return data
 
 
