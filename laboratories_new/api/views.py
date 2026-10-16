@@ -128,6 +128,19 @@ class LaboratoriesViewSet(
         return LaboratoriesSerializer if self.action == "list" else LaboratorySerializer
 
     @staticmethod
+    def _open_snapshot_visibility():
+        """{id_laboratorio: visibile} letto dal JSON degli snapshot aperti.
+        Sono pochi (solo i laboratori in modifica), quindi si leggono in Python."""
+        out = {}
+        qs = LaboratorioSnapshot.objects.filter(data_fine_validita__isnull=True).order_by("id")
+        for s in qs:
+            try:
+                out[s.laboratorio_id] = bool(s.data.get("visibile"))
+            except ValueError:  # JSON non valido: quel laboratorio resta sui dati live
+                out.pop(s.laboratorio_id, None)
+        return out
+
+    @staticmethod
     def _serving_snapshots(lab_ids):
         snaps = {}
         qs = LaboratorioSnapshot.objects.filter(
@@ -138,8 +151,13 @@ class LaboratoriesViewSet(
         return snaps
 
     def _visibility_query(self):
-        # la visibilità resta quella delle tabelle live
-        return Q() if self._can_see_hidden() else Q(visibile=True)
+        if self._can_see_hidden():
+            return Q()
+        vis = self._open_snapshot_visibility()
+        in_edit = list(vis)
+        shown = [lab_id for lab_id, v in vis.items() if v]
+        # laboratori normali: visibile live; laboratori in modifica: visibile nello snapshot
+        return (Q(visibile=True) & ~Q(id__in=in_edit)) | Q(id__in=shown)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -163,12 +181,10 @@ class LaboratoriesViewSet(
         if str(pk).isdigit() and not self._wants_live():
             snap = self._serving_snapshots([int(pk)]).get(int(pk))
             if snap:
-                visible = LaboratorioDatiBase.objects.filter(
-                    self._visibility_query(), id=pk
-                ).exists()
-                if not visible:
+                data = snap.data
+                if not (self._can_see_hidden() or data.get("visibile")):
                     raise Http404
-                return Response(self.get_serializer(snapshot_to_obj(snap.data)).data)
+                return Response(self.get_serializer(snapshot_to_obj(data)).data)
         return super().retrieve(request, *args, **kwargs)
 
 

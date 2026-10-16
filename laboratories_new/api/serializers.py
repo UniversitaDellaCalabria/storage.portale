@@ -91,7 +91,9 @@ class LaboratoryCommonMixin:
 
     @extend_schema_field(serializers.CharField())
     def get_logo(self, obj):
-        return build_media_path(obj.nome_file_logo)
+        f = obj.nome_file_logo
+        name = getattr(f, "name", f)  # FieldFile (dati live) oppure stringa (snapshot)
+        return build_media_path(name) if name else None
 
     @extend_schema_field(serializers.CharField())
     def get_scientificDirectorId(self, obj):
