@@ -1794,7 +1794,7 @@ class StudyPlansSerializer(ReadOnlyModelSerializer, LanguageAwareMixin):
                                 [
                                     {
                                         # ~ "scopeId": q["amb_id_af"],
-                                        "AfId": af.activities[0].af_pds_id,
+                                        "AfId": af.activities[0].erog_id.erog_id if getattr(af.activities[0], 'erog_id', None) else None,
                                         "AfCod": af.activities[0].ana_af_cod,
                                         "AfDescription": af.activities[0].ana_af_desc_ita if lang == 'it' else (is_nullable(af.activities[0].ana_af_desc_eng) or af.activities[0].ana_af_desc_ita),
                                         "StudyActivitySemester": (
